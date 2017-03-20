@@ -38,7 +38,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
@@ -83,11 +82,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xDecimalField3.setName("entity.extrate"); // NOI18N
         xDecimalField3.setRequired(true);
         xFormPanel2.add(xDecimalField3);
-
-        xDateField1.setCaption("Start date");
-        xDateField1.setName("entity.startdate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xDateField1);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -186,10 +180,9 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xFormPanel3.setCaptionWidth(120);
 
-        xDateField2.setCaption("Paid Until Date");
+        xDateField2.setCaption("Start Date");
         xDateField2.setCaptionWidth(120);
-        xDateField2.setName("entity.todate"); // NOI18N
-        xDateField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xDateField2.setName("entity.startdate"); // NOI18N
         xFormPanel3.add(xDateField2);
 
         xDecimalField1.setCaption("Partial Balance");
@@ -272,7 +265,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;

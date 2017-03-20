@@ -16,9 +16,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="xButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="524" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -28,7 +31,9 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="355" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="314" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -103,5 +108,14 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="getInfos" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Get Infos"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xButton1ActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

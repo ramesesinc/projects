@@ -17,7 +17,6 @@
 			includefields="code,unittype,cluster.name,term,section.name,cluster.market.name,cluster.market.objid">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
-		<field name="startdate" required="true"/>
 		<field name="dateclosed" type="date" />
 
 
@@ -27,7 +26,7 @@
 		
 
 		<!-- store the partial balances -->
-		<field name="todate" caption="Paid Until" type="date"/>
+		<field name="startdate" required="true"/>
 		<field name="partialbalance" type="decimal" defaultValue="0"/>
 		<field name="partialextbalance" type="decimal" defaultValue="0"/>
 

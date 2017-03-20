@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_payment">
+    <invokers>
+        <invoker type="market_payment:open" caption="Market" action="open" index="100" target="popup" />
+        <invoker type="formActions" caption="Close" action="_close" />
+        <invoker type="formActions" caption="View Receipt" action="viewReceipt" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketPaymentModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketPaymentPage"/>
+    </pages>    
+</workunit>

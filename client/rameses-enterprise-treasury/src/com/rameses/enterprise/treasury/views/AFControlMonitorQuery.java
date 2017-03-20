@@ -4,6 +4,9 @@
  */
 package com.rameses.enterprise.treasury.views;
 
+import com.rameses.osiris2.Invoker;
+
+
 /**
  *
  * @author rameses
@@ -17,6 +20,8 @@ public class AFControlMonitorQuery extends javax.swing.JPanel {
         initComponents();
     }
 
+
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

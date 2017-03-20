@@ -21,14 +21,14 @@ public class GenerateMarketLedgerStatus implements RuleActionHandler {
 		def facts = ct.facts;
 		//check if market ledger status exists
 		def v = facts.find{ it instanceof MarketLedgerStatus };
-		if(!v  || v.todate.before(todate) ) {
+		if(!v  || v.startdate.before(todate) ) {
 			//println adding market ledger status
 			def mp = new MarketLedgerStatus();
 			def r1 = bi.amount % mu.rate;
 			def ex1 = ext.amount % mu.extrate;
 			if(r1 > 0) mp.partialbalance = NumberUtil.round( mu.rate - r1) ;
 			if(ex1 > 0) mp.partialextbalance = NumberUtil.round(mu.extrate - ex1);
-			mp.todate = todate;
+			mp.startdate = DateUtil.add( todate, "1d" );
 			if( v!=null) facts.remove(v);
 			facts << mp;
 		}

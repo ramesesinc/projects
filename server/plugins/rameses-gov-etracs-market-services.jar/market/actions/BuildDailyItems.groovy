@@ -51,13 +51,15 @@ public class BuildDailyItems implements RuleActionHandler {
 		   int _yr = cal.get( Calendar.YEAR );
 		   int _mon = cal.get( Calendar.MONTH )+1;
 
-		   int _days = cal.getActualMaximum( Calendar.DAY_OF_MONTH );
-		   cal.add( Calendar.DAY_OF_MONTH, _days - 1 );
+		   //move to next month then less 1 day.
+		   cal.set(Calendar.DAY_OF_MONTH, 1 );
+		   cal.add( Calendar.MONTH, 1 );
+		   cal.add( Calendar.DATE, -1 );
 		   def _todate = cal.getTime();
 		   if( _todate.after(todate) ) {
 		   		_todate = todate;
-		   		_days = DateFunc.daysDiff( _fromdate, _todate )+1;
 		   }		
+		   int _days = DateFunc.daysDiff( _fromdate, _todate )+1;
 		   
 		   MarketMonthEntry me = new MarketMonthEntry();
 		   me.fromdate = _fromdate;
@@ -68,13 +70,17 @@ public class BuildDailyItems implements RuleActionHandler {
 		   me.days = _days;
 		   me.todate = _todate;
 		   if(x==0) {
-		   		if( mu.partialbalance > 0 ) me.rate = NumberUtil.round( mu.partialbalance + (me.rate * (_days - 1)) ) ;
-		   		if( mu.partialextbalance > 0 ) me.extrate = NumberUtil.round( mu.partialextbalance + (me.extrate * (_days - 1)) );
+		   		if( mu.partialbalance > 0 ) {
+		   				me.rate = NumberUtil.round( mu.partialbalance + (rate * (_days - 1)) ) ;
+		   		}		
+		   		if( mu.partialextbalance > 0 ) {
+		   			me.extrate = NumberUtil.round( mu.partialextbalance + (extrate * (_days - 1)) );
+		   		}	
 		   }
 		   facts << me;
 
 		   //add 1 day to todate
-		   cal.add( Calendar.DAY_OF_MONTH, 1 );
+		   cal.add( Calendar.DATE, 1 );
 		   _fromdate = cal.getTime();
 		} 
 

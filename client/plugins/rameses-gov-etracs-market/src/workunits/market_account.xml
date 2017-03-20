@@ -4,10 +4,7 @@
         <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"/>
         
         <!-- -->
-        <invoker type="formActions" caption="Edit Last Payment Date" 
-                 action="changeLastPaymentDate"/>
-        <invoker type="formAction" caption="Edit Last Payment Date" 
-                 action="changeLastPaymentDate"/>
+        <invoker type="formActions" caption="Update Ledger" action="updateLedger"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketAccountModel" />
     <pages>

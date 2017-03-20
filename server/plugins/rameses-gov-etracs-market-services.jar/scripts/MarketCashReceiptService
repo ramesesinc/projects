@@ -38,47 +38,21 @@ public class MarketCashReceiptService  {
 		z.paidby = a.acctname + " (" + a.acctno + ")"; 
 		z.paidbyaddress = a.unit.code;
 		z.remarks = a.unit.code + " "  + a.unit.section.name + " (" + a.unit.cluster?.market?.name + ")";
+		z.particulars = a.unit.code + " "  + a.unit.section.name + " (" + a.unit.cluster?.market?.name + ")" + a.payfrequency;
+		z.payfrequency = a.payfrequency;
 
-		def m = [items:[]];
-		def resultHandler = [
-			getFactKeyValue : { v->
-				if( v instanceof MarketLedgerStatus ) {
-					m.ledgerstatus = [
-						todate: v.todate, 
-						partialbalance: v.partialbalance, 
-						partialextbalance: v.partialextbalance
-					];
-				}
-				else if(v instanceof BillItem) {
-					def itm = v.toMap();
-					itm.remarks = v.year + " " + v.monthname; 
-					if(m.todate==null) m.todate = itm.todate;
-					if(itm.todate.after(m.todate) ) {
-						m.todate = itm.todate;
-					}
-					m.items << itm;
-				}	
-				else if( v instanceof SummaryBillItem ) {
-					def itm = v.toMap();
-					m.items << itm;									
-				}
-				else if( v instanceof BillSubItem ) {
-					def itm = v.toMap();
-					itm.year = v.parent.year;
-					itm.month = v.parent.month;
-					itm.remarks = v.parent.year + " " + v.parent.monthname; 
-					m.items << itm;
-				}
-				return null;
-			}
-		] as ResultHandler;
+		//the billitems is used for updating payment ledger
 
-		billingSvc.getBilling( [acctid: a.objid, payoption: o.payment], resultHandler );
+		def m = billingSvc.getBilling( [acctid: a.objid, payoption: o.payment] );
 		z.items = m.items.sort{it.sortorder};
 		z.amount = NumberUtil.round(z.items.sum{ it.amount }); 
 		z.todate = m.todate;
-		z.particulars = m.todate;
+		z.fromdate = m.fromdate;
 		z.ledgerstatus = m.ledgerstatus;
+		z.billitems = m.billitems;
+		z.days = m.billitems.sum{ it.days };
+		z.months = m.billitems.size();
+
 		return z;
 	}
 

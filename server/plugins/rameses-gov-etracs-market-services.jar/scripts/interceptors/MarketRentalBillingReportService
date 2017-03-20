@@ -32,30 +32,12 @@ class MarketRentalBillingReportService {
 			pp.payoption = [todate: p.parameters.billdate ];
 		}
 
-		def items = [];
-		def cal = Calendar.instance;
+		def m = billingSvc.getBilling( pp );
 
-		def resultHandler = [
-			getFactKeyValue : { v->
-				if(v instanceof BillItem) {
-					def itm = v.toMap();
-					cal.setTime( itm.fromdate );
-					itm.fromday = cal.get(Calendar.DAY_OF_MONTH);
-					cal.setTime( itm.todate );
-					itm.today = cal.get(Calendar.DAY_OF_MONTH);
-					if(itm.surcharge == null) itm.surcharge = 0.0;
-					if(itm.interest == null) itm.interest = 0.0;
-					items << itm;
-				}	
-				return null;
-			}
-		] as ResultHandler;
-
-		billingSvc.getBilling( pp, resultHandler );
-
-		acct.items = items.sort{ it.sortorder };
-		acct.grandtotal =items.sum{ it.linetotal };
+		acct.items = m.billitems.sort{ it.sortorder };
+		acct.grandtotal = acct.items.sum{ it.linetotal };
 		acct.billdate = dateSvc.getServerDate();
+		
 		/*
 		acct.fromdate = billing.fromdate;
 		acct.todate = billing.todate;

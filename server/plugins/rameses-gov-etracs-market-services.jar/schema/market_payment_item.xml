@@ -3,7 +3,7 @@
 	<element tablename="market_payment_item">
 		<field name="objid" primary="true" prefix="MKTPMTITM"/>
 		<field name="parentid" />
-		<complex name="parent" ref="market_payment" jointype="many-to-one" includefields="reftype,refno,refid">
+		<complex name="parent" ref="market_payment" jointype="many-to-one" includefields="reftype,refno,refid" required="false">
 			<key field="parentid" target="objid"/>
 		</complex>	
 		
@@ -20,7 +20,8 @@
 		<field name="surcharge" type="decimal"  required="true"/>
 		<field name="interest" type="decimal"  required="true"/>
 
-		
+		<field name="monthname" expr="MONTH_ARRAY(month)"/>
+		<field name="linetotal" expr="rate+extrate+surcharge+interest"/>
 	</element>
 </schema>
 

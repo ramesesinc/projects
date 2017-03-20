@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+public class BuildingInfoService  {
+
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getInfos(o) {
+
+		def fb = new FactBuilder();
+		fb.facts << new BuildingUse( o.buildinguse );
+		fb.facts << new OboApplication(  o.application);
+		
+		def m = [items: []];	
+		def resultHandler = [
+			getFactKeyValue : { v->
+				if(v instanceof BillItem) {
+					m.items << v.toMap();
+				}	
+				else if(v instanceof OboApplication) {
+					m.constructioncost = v.constructioncost;
+				}
+				return null;
+			}
+		] as ResultHandler;
+
+		assmtSvc.execute( "oboassessment", [:], fb, resultHandler );
+
+		m.fees = m.items.sort{ it.sortorder };
+		m.amount = m.items.sum{ it.amount };
+		return m;
+	}
+
+	
+
+
+}

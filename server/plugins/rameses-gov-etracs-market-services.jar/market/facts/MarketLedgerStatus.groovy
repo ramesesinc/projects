@@ -8,8 +8,8 @@ import treasury.facts.*;
 *****************************************************/
 public class MarketLedgerStatus {
     
+	Date startdate;
 	double partialbalance;
 	double partialextbalance;
-	Date todate;
 
 }

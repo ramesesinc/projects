@@ -42,8 +42,19 @@ public class MarketBillItem extends BillItem {
         m.sortorder = (year*12)+month;
 
         m.linetotal = total;
-        m.rate = marketunit.rate;
-        m.extrate = marketunit.extrate;
+        m.unitrate = marketunit.rate;
+        m.unitextrate = marketunit.extrate;
+
+        def cal = Calendar.instance;
+        cal.setTime( m.fromdate );
+        m.fromday = cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTime( m.todate );
+        m.today = cal.get(Calendar.DAY_OF_MONTH);
+
+        //this is used in billing
+        m.rate = m.amount;
+        if(m.surcharge==null) m.surcharge = 0;
+        if(m.interest==null) m.interest = 0;
         return m;
     }
 

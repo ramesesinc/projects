@@ -18,10 +18,14 @@ class BuildingAssessmentAnalyzerModel  {
     @Service("BuildingAssessmentService")
     def assmtSvc;
     
+    @Service("BuildingInfoService")
+    def infoSvc;
+
     String title = "Building Assessment Analyzer";
     def mode = "default";
     
     def entity = [:];
+    def ruleExecutor;
     
     def assess() {
         def info = [:];
@@ -55,6 +59,10 @@ class BuildingAssessmentAnalyzerModel  {
         }
     ] as BasicListModel;
     
-    
+    def getInfos() {
+        if(!ruleExecutor) {
+            ruleExecutor = new RuleProcessor(  { p-> return infoService.getInfos(p) } );
+        }
+    }
     
 }

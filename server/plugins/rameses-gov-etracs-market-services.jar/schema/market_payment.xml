@@ -13,14 +13,10 @@
 		<field name="voided"/>
 		<field name="fromdate" required="true" type="date"/>
 		<field name="todate" required="true" type="date"/>
+		<field name="months" required="true" type="integer"/>
+		<field name="days" required="true" type="integer"/>
 
-		<!-- used for voiding -->
-		<field name="prevlastdatepaid" required="true" type="date"/>
-		<field name="prevpartialbalance" required="true" type="decimal"/>
-		<field name="prevpartialextbalance" required="true" type="decimal"/>
-		<field name="prevpaymentid" />
-
-		<complex name="items" ref="market_payment_item" jointype="one-to-many">
+		<complex name="items" ref="market_payment_item" jointype="one-to-many" orderBy="year,month">
 			<key field="objid" target="parentid"/> 	 
 		</complex>	
 	</element>

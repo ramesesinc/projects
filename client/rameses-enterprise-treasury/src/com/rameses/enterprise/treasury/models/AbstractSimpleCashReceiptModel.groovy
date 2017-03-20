@@ -6,6 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.enterprise.treasury.cashreceipt.*
 import com.rameses.util.*;
+import com.rameses.common.*;
         
 public abstract class AbstractSimpleCashReceiptModel extends AbstractCashReceipt {
     
@@ -27,18 +28,28 @@ public abstract class AbstractSimpleCashReceiptModel extends AbstractCashReceipt
         return "Details";
     }
 
+    public void loadPayOptions() {
+        def ivf = [
+            accept: { vv->
+                String vwhen = vv.properties.visibleWhen;
+                if(vwhen) {
+                    return ExpressionResolver.instance.evalBoolean( vwhen, [entity: entity] );
+                }
+                return true;
+            }
+        ] as InvokerFilter;
+        def list;
+        try {
+            list = Inv.lookupOpeners("simple_cashreceipt_payoption_type", [context: this])
+        }catch(e){;}
+        try {
+            def mlist = Inv.lookupOpeners(getContextName()+":cashreceipt_payoption_type", [context: this], ivf);
+            if(mlist) list += mlist;
+        }catch(e){;}
+        _payOptions = list;
+    }
+    
     public List getPayOptions() {
-        if(_payOptions==null){
-            def list;
-            try {
-                list = Inv.lookupOpeners("simple_cashreceipt_payoption_type", [context: this])
-            }catch(e){;}
-            try {
-                def mlist = Inv.lookupOpeners(getContextName()+":cashreceipt_payoption_type", [context: this]);
-                if(mlist) list += mlist;
-            }catch(e){;}
-            _payOptions = list;
-        } 
         return _payOptions;
     }
     
@@ -49,6 +60,7 @@ public abstract class AbstractSimpleCashReceiptModel extends AbstractCashReceipt
         entity.putAll(info);
         reloadItems(); 
         afterLoadInfo();
+        loadPayOptions();
     }
     
     void init() {

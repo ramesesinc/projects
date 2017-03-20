@@ -50,7 +50,7 @@
 	<field name="unit.market.address.text" class="java.lang.String"/>
 	<field name="unit.cluster.name" class="java.lang.String"/>
 	<field name="acctno" class="java.lang.String"/>
-	<field name="lastdatepaid" class="java.util.Date"/>
+	<field name="startdate" class="java.util.Date"/>
 	<field name="hasitems" class="java.lang.Boolean"/>
 	<field name="extrate" class="java.lang.Number"/>
 
@@ -398,7 +398,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Last date covered:]]></text>
+				<text><![CDATA[Start Date:]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="MMMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -418,7 +418,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{lastdatepaid}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{startdate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

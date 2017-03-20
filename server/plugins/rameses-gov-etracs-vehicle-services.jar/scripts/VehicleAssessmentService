@@ -37,6 +37,7 @@ class VehicleAssessmentService {
 		if(!o.appdate) o.appdate = svrDate;
 
 		def fb = new FactBuilder();
+		//fb.infoSchemaName = "vehicle_variable";
 		fb.facts << new VehicleApplication( o );
 		fb.facts << new VehicleFranchise( fran );
 		fb.facts << new AppDate( o.appdate );

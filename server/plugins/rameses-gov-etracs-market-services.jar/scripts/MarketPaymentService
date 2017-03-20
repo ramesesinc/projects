@@ -27,11 +27,6 @@ class MarketPaymentService {
 	public def postCreate( def r ) {
 		//create the payment.
 		pmtEm.create( r );
-
-		r.ledgerstatus.each { k,v->
-			println k+"="+v;
-		}
-		//update the ledger
 		acctEm.find( [objid: r.acctid] ).update( r.ledgerstatus );
 	}
 
@@ -45,18 +40,20 @@ class MarketPaymentService {
 			is less than  
 	*********************************************************************/
 	@ProxyMethod
-	public def postVoid( def o ) {
-		def pmt = pmtEm.read( [objid: o.refid] );
-
-		def acct = acctEm.find( [objid: pmt.acctid] ).select("lastpaymentid").first(); 
-		if(acct.lastpaymentid!=null && acct.lastpaymentid != pmt.objid ) 
-			throw new Exception("Invalid last payment. Only the latest payment made can be voided. Please check the ledger");
-
+	public void postVoid( def o ) {
+		def pmt = pmtEm.find( [refid: o.refid] ).first();
+		def acct = acctEm.find( [objid: pmt.acctid] ).select("startdate,payfrequency,rate,extrate").first(); 
+		def itm = pmtiEm.find([parentid: pmt.objid]).select("rate:{SUM(rate)},extrate:{SUM(extrate)}").first();
+		
 		def z = [:];
-		z.partialbalance = pmt.prevpartialbalance;	
-		z.partialextbalance = pmt.prevpartialextbalance;
-		z.todate = pmt.prevtodate;
-		z.lastpaymentid = pmt.prevpaymentid;
+		z.startdate = DateUtil.add(acct.startdate,"-"+pmt.days);
+
+		//calculate prev balance
+		def r = (int)(itm.rate / acct.rate);
+		z.partialbalance = NumberUtil.round(itm.rate - (acct.rate * r));
+
+		r = (int)(itm.extrate / acct.extrate);
+		z.partialextbalance = NumberUtil.round(itm.extrate - (acct.extrate * r));
 
 		acctEm.find( [objid: pmt.acctid] ).update(z);
 

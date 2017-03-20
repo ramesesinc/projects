@@ -8,7 +8,7 @@ import com.rameses.osiris3.common.*;
 import treasury.facts.*;
 
 //This rule gets the market payment result. It gets the last item base on the date.
-public class GenerateMarketLedgerStatus implements RuleActionHandler {
+public class SetNextMarketLedgerState implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 

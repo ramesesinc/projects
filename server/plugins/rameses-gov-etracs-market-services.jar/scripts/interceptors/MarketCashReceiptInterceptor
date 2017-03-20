@@ -42,7 +42,7 @@ public class MarketCashReceiptInterceptor {
 		pmtSvc.postCreate( m );
 	} 
 
-	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='marketrental'}")
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler == 'marketrental'}")
 	public void voidTxn(def evt) {
 		def r = evt.args[0].receipt;
 		pmtSvc.postVoid( [refid: r.objid]); 		

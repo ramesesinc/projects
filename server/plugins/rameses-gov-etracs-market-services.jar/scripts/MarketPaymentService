@@ -52,13 +52,16 @@ class MarketPaymentService {
 		def r = (int)(itm.rate / acct.rate);
 		z.partialbalance = NumberUtil.round(itm.rate - (acct.rate * r));
 
-		r = (int)(itm.extrate / acct.extrate);
-		z.partialextbalance = NumberUtil.round(itm.extrate - (acct.extrate * r));
+		z.partialbalance = 0;
+		if( acct.extrate > 0 ) {
+			r = (int)(itm.extrate / acct.extrate);
+			z.partialextbalance = NumberUtil.round(itm.extrate - (acct.extrate * r));
+		}
 
 		acctEm.find( [objid: pmt.acctid] ).update(z);
 
 		//void this payment	
-		pmtEm.find( [refid: pmt.objid] ).update( [voided: 1] );
+		pmtEm.find( [objid: pmt.objid] ).update( [voided: 1] );
 	}
 
 

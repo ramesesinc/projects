@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="market:cashreceipt_payoption_type" caption="Speicfy To Date" index="0"/>
+        <invoker type="market:cashreceipt_payoption_type" caption="Specify To Date" index="0"/>
     </invokers>
     
     <code>
@@ -15,7 +15,7 @@
             def getValue() {
                 return [
                     name:'TODATE',
-                    months: todate
+                    todate: todate
                 ];
             }
         }

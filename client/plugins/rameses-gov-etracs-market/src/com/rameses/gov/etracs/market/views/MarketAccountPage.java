@@ -148,7 +148,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xLabel3.setCaption("Market Name");
         xLabel3.setDepends(new String[] {"entity.unit"});
-        xLabel3.setExpression("#{entity.unit.cluster.market.name}");
+        xLabel3.setExpression("#{entity.unit.cluster.market.name} - #{entity.unit.cluster.name}");
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 

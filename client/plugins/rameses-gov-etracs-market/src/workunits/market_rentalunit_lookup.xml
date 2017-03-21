@@ -7,4 +7,11 @@
                  customFilter="currentacctid IS NULL"
                  action="init"/> 
     </invokers> 
+    <invokers>
+        <invoker type="market_rentalunit_all:lookup" 
+                cols="objid,code,unittype,section.name,cluster.market.name,rate,payfrequency"
+                 caption="Lookup Rental Unit" 
+                 target="popup" 
+                 action="init"/> 
+    </invokers>
 </workunit> 

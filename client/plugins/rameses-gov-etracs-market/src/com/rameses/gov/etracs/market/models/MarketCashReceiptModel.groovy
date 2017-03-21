@@ -23,7 +23,6 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      public def getPaymentInfo( def app ) {
          return cashReceiptSvc.getInfo( app );
      }
-        
     
 }
 

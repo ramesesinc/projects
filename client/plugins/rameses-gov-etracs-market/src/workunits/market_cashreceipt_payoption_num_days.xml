@@ -17,7 +17,7 @@
             def getValue() {
                 return [
                     name:'NUM_DAYS',
-                    months: days
+                    numdays: days
                 ];
             }
         }

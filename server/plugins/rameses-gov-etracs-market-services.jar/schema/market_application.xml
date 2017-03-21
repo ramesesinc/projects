@@ -2,20 +2,29 @@
 	<element tablename="market_application">
 		<field name="objid" primary="true" prefix="MKTAPP"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
-		<field name="appno" required="true" />
-		<field name="acctname" required="true" />
-		<field name="dtcreated" required="true" />
+		<field name="appno" required="true" caption="App No"/>
+		<field name="dtcreated" required="true" caption="Date Created"/>
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 
 		<field name="owner_objid" />
-		<field name="owner_name"  />
+		<field name="owner_name"  caption="Applicant"/>
 		<field name="owner_address_text" />
+		
+		<complex name="cluster" ref="market_cluster" jointype="many-to-one"  
+			includefields="objid,name,description,market.name,market.objid">
+			<key field="clusterid" target="objid" />
+		</complex>
+
+		<complex name="section" ref="market_section" jointype="many-to-one" required="false" includefields="objid,name">
+			<key field="sectionid" target="objid" />
+		</complex>
+
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,term,rate,section,market.name,market.address.*">
+			includefields="code,unittype,term,rate" required="false">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
-		
+
 		<field name="remarks" caption="Remarks"  visible="false"/>
 	</element>
 </schema>

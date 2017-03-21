@@ -16,7 +16,7 @@
             def getValue() {
                 return [
                     name:'NUM_MONTHS',
-                    months: months
+                    nummonths: months
                 ];
             }
         }

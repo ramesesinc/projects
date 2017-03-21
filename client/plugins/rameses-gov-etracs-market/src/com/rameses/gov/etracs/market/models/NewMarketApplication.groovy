@@ -9,7 +9,7 @@ import com.rameses.rulemgmt.*;
 import java.rmi.server.*;
 import com.rameses.seti2.models.*;
 
-public class NewMarketApplication extends WorkflowTaskInitialModel {
+public class NewMarketApplication extends CrudPageFlowModel {
     
     public void afterSave() {
         MsgBox.alert("App No. " + entity.appno + " created");

@@ -25,7 +25,8 @@ public class SetNextMarketLedgerState implements RuleActionHandler {
 			//println adding market ledger status
 			def mp = new MarketLedgerStatus();
 			def r1 = bi.amount % mu.rate;
-			def ex1 = ext.amount % mu.extrate;
+			def ex1 = 0;
+			if( mu.extrate > 0 ) ext.amount % mu.extrate;
 			if(r1 > 0) mp.partialbalance = NumberUtil.round( mu.rate - r1) ;
 			if(ex1 > 0) mp.partialextbalance = NumberUtil.round(mu.extrate - ex1);
 			mp.startdate = DateUtil.add( todate, "1d" );

@@ -276,7 +276,7 @@
                             <StringItem index="0" value="entity.unit"/>
                           </StringArray>
                         </Property>
-                        <Property name="expression" type="java.lang.String" value="#{entity.unit.cluster.market.name}"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.unit.cluster.market.name} - #{entity.unit.cluster.name}"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 20]"/>
                         </Property>

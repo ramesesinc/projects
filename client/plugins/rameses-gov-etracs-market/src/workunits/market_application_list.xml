@@ -3,8 +3,6 @@
           cols="taskid,app.appno,app.owner.name,app.acctname,app.dtfiled,assignee.name,state,message"
           allowDelete="false" allowNotify="true">
     <invokers>
-        <!--
         <invoker folderid="home/market" caption="Market Application List" action="init"/>
-        -->
     </invokers>
 </workunit>

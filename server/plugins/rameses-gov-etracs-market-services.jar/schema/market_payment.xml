@@ -10,11 +10,12 @@
 		<field name="refdate" required="true"/>
 		<field name="txnmode" required="true"/>		
 		<field name="amount" required="true"/>
-		<field name="voided"/>
+		<field name="voided" datatype="checkbox" checkValue="1" uncheckvalue="0"/>
 		<field name="fromdate" required="true" type="date"/>
 		<field name="todate" required="true" type="date"/>
 		<field name="months" required="true" type="integer"/>
 		<field name="days" required="true" type="integer"/>
+		<field name="txntype" required="true"/>
 
 		<complex name="items" ref="market_payment_item" jointype="one-to-many" orderBy="year,month">
 			<key field="objid" target="parentid"/> 	 

@@ -1,0 +1,29 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_otherfee">
+    <invokers>
+        <invoker type="market_otherfee:create" caption="Market Other Fee" action="create" target="popup" />
+        <invoker type="market_otherfee:open" caption="Market Other Fee" action="open"  target="popup" />
+    </invokers>
+    <code>
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.seti2.models.*;
+        
+        class MarketOtherFee extends CrudFormModel {
+        
+            @Caller
+            def caller;
+        
+            void afterCreate() {
+                if(caller?.masterEntity?.objid) {
+                    entity.acctid = caller.masterEntity.objid;       
+                }    
+            }
+        
+        }
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketOtherFeePage" />
+    </pages>    
+</workunit>

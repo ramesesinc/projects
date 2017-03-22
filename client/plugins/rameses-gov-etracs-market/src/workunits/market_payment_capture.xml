@@ -1,11 +1,10 @@
 <workunit schemaName="market_payment">
     <invokers>
-        <invoker type="market_account:form:formActions" 
+        <invoker type="market_payment:create" 
             caption="Capture Payment" index="-10" 
             target="popup"
             visibleWhen="#{mode=='read'}"
             action="create"/> 
-        
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketCapturePaymentModel" />
     <pages>

@@ -8,7 +8,7 @@ import treasury.utils.*;
 import treasury.facts.*;
 
 
-public class MarketCashReceiptService  {
+public class MarketRentalCashReceiptService  {
 
 	@DataContext("market_account")
 	def acctEm;

@@ -1,0 +1,59 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import market.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+
+public class MarketOtherFeeCashReceiptService  {
+
+	@DataContext("market_account")
+	def acctEm;
+
+	@DataContext("market_otherfee")
+	def ofEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+	
+	@ProxyMethod
+	public def getInfo(o) {
+		def a = acctEm.find([acctno: o.id] ).first();
+		if(!a) a = acctEm.where("unit.code =:code",[code: o.id]).first();
+		if(!a) throw new Exception("Market account not found!");
+		def items = ofEm.select("refid:{objid},item.*,amount:{amount-amtpaid}").find( [acctid: a.objid ]).where("amount-amtpaid > 0 ").list();
+
+		if(!items) throw new Exception("No other fees found!");
+		def itmAcct = new ItemAccountUtil();
+
+		items.each {
+			it.item = itmAcct.lookup( it.item.objid );
+		};
+
+		def z = [:];
+		z.acctid = a.objid;
+		z.acctno = a.acctno;
+		z.acctname = a.acctname;
+		z.rate = a.rate;
+		z.extrate = a.extrate;
+		z.unit = a.unit;
+		z.term = a.term;
+		z.payer = a.owner;
+		z.paidby = a.acctname + " (" + a.acctno + ")"; 
+		z.paidbyaddress = a.unit.code;
+		z.payfrequency = a.payfrequency;
+		z.items = items; 
+		z.remarks = a.unit.code + " "  + a.unit.section.name + " (" + a.unit.cluster?.market?.name + ")";
+		z.particulars = z.remarks;
+		return z;
+	}
+
+	
+
+
+}

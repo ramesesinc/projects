@@ -1,0 +1,20 @@
+<schema  adapter="market">
+	<element tablename="market_otherfee">
+		<field name="objid" primary="true" prefix="MKTOTF"/>
+		<field name="acctid" required="true"/>
+		<field name="item_objid" required="true"/>
+		<field name="item_code" required="true" caption="Acct Code"/>
+		<field name="item_title" required="true" caption="Acct Title"/>
+		<field name="amount" required="true" type="decimal" caption="Amount" defaultValue="0"/>
+		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid" defaultValue="0"/>
+
+		<field name="year" caption="Year" required="true"/>
+		<field name="month" caption="Month" required="true"/>
+		<field name="remarks" caption="Remarks"/>
+
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true" caption="Created By"/>
+		<field name="dtcreated" required="true" type="date" caption="Date Created"/>
+		<field name="monthname" expr="MONTH_ARRAY(month)" />
+	</element>
+</schema>

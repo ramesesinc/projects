@@ -15,7 +15,6 @@ public class MarketAccountModel extends CrudFormModel {
     def listener = [
         'entity.unit' : { o->
             entity.rate = o.rate;
-            entity.payfrequency = o.payfrequency;
             binding.refresh("entity.(rate|payfrequency)");
         },
         'entity.owner': { o->

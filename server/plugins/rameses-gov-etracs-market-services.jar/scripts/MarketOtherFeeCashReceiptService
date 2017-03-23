@@ -14,10 +14,13 @@ public class MarketOtherFeeCashReceiptService  {
 	def acctEm;
 
 	@DataContext("market_otherfee")
-	def ofEm;
+	def feeEm;
 
 	@Service("DateService")
 	def dateSvc;
+
+	@Service("AssessmentRuleService")
+	def assmtSvc;
 
 	def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
 	
@@ -26,14 +29,28 @@ public class MarketOtherFeeCashReceiptService  {
 		def a = acctEm.find([acctno: o.id] ).first();
 		if(!a) a = acctEm.where("unit.code =:code",[code: o.id]).first();
 		if(!a) throw new Exception("Market account not found!");
-		def items = ofEm.select("refid:{objid},item.*,amount:{amount-amtpaid}").find( [acctid: a.objid ]).where("amount-amtpaid > 0 ").list();
+		def items = feeEm.select("objid,item.*,amount:{amount-amtpaid},year,month,monthname").find( [acctid: a.objid ]).where("amount-amtpaid > 0 ").list();
 
 		if(!items) throw new Exception("No other fees found!");
-		def itmAcct = new ItemAccountUtil();
+		
+		def data = [billitems: items];
 
-		items.each {
-			it.item = itmAcct.lookup( it.item.objid );
-		};
+		def svrDate = dateSvc.getServerDate();
+
+		def fb = [
+			getBillItemFact: { ac->
+				return new MarketOtherFeeBillItem(ac);
+			}
+		] as FactBuilder;
+		fb.facts << new treasury.facts.SystemDate(svrDate);
+		fb.facts << new treasury.facts.BillDate( (o.billdate) ?o.billdate: svrDate );
+
+		def m = assmtSvc.execute( "marketbilling", data, fb, null );		
+
+		if(!m.billitems) throw new Exception("Bill Items not found");
+		m.billitems.each {
+			it.remarks = it.year + " " + it.monthname;
+		}
 
 		def z = [:];
 		z.acctid = a.objid;
@@ -47,7 +64,7 @@ public class MarketOtherFeeCashReceiptService  {
 		z.paidby = a.acctname + " (" + a.acctno + ")"; 
 		z.paidbyaddress = a.unit.code;
 		z.payfrequency = a.payfrequency;
-		z.items = items; 
+		z.items = m.billitems; 
 		z.remarks = a.unit.code + " "  + a.unit.section.name + " (" + a.unit.cluster?.market?.name + ")";
 		z.particulars = z.remarks;
 		return z;

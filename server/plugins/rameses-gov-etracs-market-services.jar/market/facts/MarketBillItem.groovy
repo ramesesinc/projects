@@ -53,6 +53,7 @@ public class MarketBillItem extends BillItem {
 
         //this is used in billing
         m.rate = m.amount;
+        if(m.extrate==null) m.extrate = 0;
         if(m.surcharge==null) m.surcharge = 0;
         if(m.interest==null) m.interest = 0;
         return m;

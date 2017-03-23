@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
-          schemaName="market_payment"
-          cols="refno,refdate,amount,fromdate,todate,voided"
+          schemaName="market_rental_payment"
+          cols="refno,refdate,amount,fromdate,todate,days,voided"
           orderBy="refdate">
     <invokers>
         <invoker type="market_account:section" 

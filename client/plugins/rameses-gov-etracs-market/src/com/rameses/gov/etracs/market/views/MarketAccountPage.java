@@ -35,9 +35,9 @@ public class MarketAccountPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
@@ -65,12 +65,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xFormPanel2.setCaptionWidth(120);
 
-        xLabel4.setCaption("Pay Frequency");
-        xLabel4.setDepends(new String[] {"entity.unit"});
-        xLabel4.setExpression("#{entity.payfrequency}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel4);
-
         xLabel5.setCaption("Rate");
         xLabel5.setDepends(new String[] {"entity.unit"});
         xLabel5.setExpression("#{entity.rate}");
@@ -82,6 +76,12 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xDecimalField3.setName("entity.extrate"); // NOI18N
         xDecimalField3.setRequired(true);
         xFormPanel2.add(xDecimalField3);
+
+        xComboBox6.setCaption("Pay Frequency");
+        xComboBox6.setItems("lov.MARKET_PAY_FREQUENCY");
+        xComboBox6.setName("entity.payfrequency"); // NOI18N
+        xComboBox6.setRequired(true);
+        xFormPanel2.add(xComboBox6);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -265,6 +265,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
@@ -275,7 +276,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;

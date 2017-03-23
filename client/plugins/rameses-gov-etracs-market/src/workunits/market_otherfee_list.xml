@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
           schemaName="market_otherfee"
-          cols="item.code,item.title,dtcreated,year,monthname,amount,amtpaid,remarks,createdby.name"
+          cols="item.code,item.title,dtcreated,year,monthname,amount,amtpaid,balance,remarks,createdby.name"
           orderBy="dtcreated">
     <invokers>
         <invoker type="market_account:section" 

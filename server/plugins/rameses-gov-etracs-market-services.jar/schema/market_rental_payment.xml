@@ -1,6 +1,6 @@
 <schema  adapter="market">
 	
-	<element tablename="market_payment">
+	<element tablename="market_rental_payment">
 		<field name="objid" primary="true" prefix="MKTPMT"/>
 		<field name="acctid" required="true"/>
 		<field name="txndate" required="true" type="timestamp"/>
@@ -15,9 +15,8 @@
 		<field name="todate" required="true" type="date"/>
 		<field name="months" required="true" type="integer"/>
 		<field name="days" required="true" type="integer"/>
-		<field name="txntype" required="true"/>
 
-		<complex name="items" ref="market_payment_item" jointype="one-to-many" orderBy="year,month">
+		<complex name="items" ref="market_rental_payment_item" jointype="one-to-many" orderBy="year,month">
 			<key field="objid" target="parentid"/> 	 
 		</complex>	
 	</element>

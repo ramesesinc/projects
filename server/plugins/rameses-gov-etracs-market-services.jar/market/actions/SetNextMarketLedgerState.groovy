@@ -28,7 +28,7 @@ public class SetNextMarketLedgerState implements RuleActionHandler {
 			def ex1 = 0;
 			if( mu.extrate > 0 ) ext.amount % mu.extrate;
 			if(r1 > 0) mp.partialbalance = NumberUtil.round( mu.rate - r1) ;
-			if(ex1 > 0) mp.partialextbalance = NumberUtil.round(mu.extrate - ex1);
+			if(ex1 > 0 && ext!=null) mp.partialextbalance = NumberUtil.round(mu.extrate - ex1);
 			mp.startdate = DateUtil.add( todate, "1d" );
 			if( v!=null) facts.remove(v);
 			facts << mp;

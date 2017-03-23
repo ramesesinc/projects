@@ -32,7 +32,6 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
@@ -40,18 +39,12 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         xLookupField1.setCaption("Account");
-        xLookupField1.setExpression("#{entity.item.code} - #{entity.item.title}");
+        xLookupField1.setExpression("#{entity.item.code} #{entity.item.title}");
         xLookupField1.setHandler("revenueitem:lookup");
         xLookupField1.setName("entity.item"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
-
-        xLabel1.setCaption("Account Title");
-        xLabel1.setDepends(new String[] {"entity.item"});
-        xLabel1.setExpression("#{entity.item.title}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel1);
 
         xDecimalField1.setCaption("Amount");
         xDecimalField1.setName("entity.amount"); // NOI18N
@@ -98,7 +91,6 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables

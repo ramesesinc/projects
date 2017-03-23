@@ -1,12 +1,16 @@
 <schema  adapter="market">
 	<element tablename="market_otherfee">
-		<field name="objid" primary="true" prefix="MKTOTF"/>
+		<field name="objid" primary="true" prefix="MKFEE"/>
 		<field name="acctid" required="true"/>
+
 		<field name="item_objid" required="true"/>
-		<field name="item_code" required="true" caption="Acct Code"/>
-		<field name="item_title" required="true" caption="Acct Title"/>
+		<field name="item_code" caption="Item Code"/>
+		<field name="item_title" caption="Item Title" required="true" />
+
+
 		<field name="amount" required="true" type="decimal" caption="Amount" defaultValue="0"/>
 		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid" defaultValue="0"/>
+		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance" />
 
 		<field name="year" caption="Year" required="true"/>
 		<field name="month" caption="Month" required="true"/>

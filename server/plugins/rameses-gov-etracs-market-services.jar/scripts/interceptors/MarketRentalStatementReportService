@@ -10,7 +10,7 @@ class MarketRentalStatementReportService {
 	@DataContext("market_account")
 	def acctEm;
 	
-	@DataContext("market_payment")
+	@DataContext("market_rental_payment")
 	def pmtEm;
 
 	def dformat = new SimpleDateFormat("yyyy-MM-dd");

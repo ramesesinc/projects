@@ -4,12 +4,12 @@ import com.rameses.functions.*;
 import com.rameses.util.*;
 import com.rameses.rules.common.*;
 
-class MarketPaymentService {
+class MarketRentalPaymentService {
 	
-	@DataContext("market_payment")
+	@DataContext("market_rental_payment")
 	def pmtEm;
 
-	@DataContext("market_payment_item")
+	@DataContext("market_rental_payment_item")
 	def pmtiEm;
 
 	@DataContext("market_account")

@@ -12,7 +12,7 @@
 			includefields="objid,name,description,market.name,market.objid">
 			<key field="clusterid" target="objid" />
 		</complex>
-		<field name="payfrequency" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Frequency"/>
+		<field name="ratetype" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Rate Type"/>
 		<field name="rate" required="true" type="decimal" caption="Rate"/>
 
 		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 

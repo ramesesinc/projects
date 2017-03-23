@@ -15,17 +15,17 @@ import com.rameses.rules.common.*;
 **********************************************************/
 public class MarketRentalCashReceiptInterceptor {
 
-	@Service("MarketPaymentService")
+	@Service("MarketRentalPaymentService")
 	def pmtSvc;
 
 	@DataContext("market_otherfee")
-	def otherFeeEm;
+	def feeEm;
 
 
 	@After(pattern="MarketRentalCashReceiptService.getInfo")
 	public void checkNoMarketPendingFees(def evt) {
 		def r = evt.result;
- 		def unpaid = otherFeeEm.select("total:{SUM(amount-amtpaid)}").find( [acctid:r.acctid] ).where("amount-amtpaid > 0 ").first();
+ 		def unpaid = feeEm.select("total:{SUM(amount-amtpaid)}").find( [acctid:r.acctid] ).where("amount-amtpaid > 0 ").first();
  		if(unpaid?.total > 0 ) 
  			throw new Exception("There is still an unpaid balance of fees of " + unpaid.total + ". Please settle this first"); 
 	}

@@ -1,6 +1,6 @@
-<workunit schemaName="market_payment">
+<workunit schemaName="market_rental_payment">
     <invokers>
-        <invoker type="market_payment:create" 
+        <invoker type="market_rental_payment:create" 
             caption="Capture Payment" index="-10" 
             target="popup"
             visibleWhen="#{mode=='read'}"

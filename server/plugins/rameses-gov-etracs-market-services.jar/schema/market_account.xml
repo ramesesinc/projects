@@ -14,7 +14,7 @@
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,cluster.name,cluster.objid,term,section.objid,section.name,cluster.market.name,cluster.market.objid">
+			includefields="code,unittype,cluster.name,cluster.objid,term,section.objid,section.name,cluster.market.name,cluster.market.objid,ratetype">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
 		<field name="dateclosed" type="date" />
@@ -30,7 +30,7 @@
 		<field name="partialbalance" type="decimal" defaultValue="0"/>
 		<field name="partialextbalance" type="decimal" defaultValue="0"/>
 
-		<!-- link to market_payment -->
+		<!-- link to market_rental_payment -->
 		<field name="remarks" />
 	</element>
 </schema>

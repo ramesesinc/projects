@@ -10,7 +10,7 @@
         import com.rameses.osiris2.common.*
         import com.rameses.seti2.models.*;
         
-        class MarketOtherFee extends CrudFormModel {
+        class MarketFeeModel extends CrudFormModel {
         
             @Caller
             def caller;

@@ -1,4 +1,4 @@
-<workunit schemaName="market_payment">
+<workunit>
     <invokers>
         <invoker type="update_market_ledger" 
             caption="Update Market Ledger" index="-9" 

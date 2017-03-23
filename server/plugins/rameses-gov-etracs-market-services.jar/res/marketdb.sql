@@ -211,11 +211,69 @@ CREATE TABLE `market_duedate` (
   PRIMARY KEY (`year`,`month`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `market_payment` */
+/*Table structure for table `market_otherfee` */
 
-DROP TABLE IF EXISTS `market_payment`;
+DROP TABLE IF EXISTS `market_otherfee`;
 
-CREATE TABLE `market_payment` (
+CREATE TABLE `market_otherfee` (
+  `objid` varchar(50) NOT NULL,
+  `acctid` varchar(50) DEFAULT NULL,
+  `item_objid` varchar(50) DEFAULT NULL,
+  `item_code` varchar(50) DEFAULT NULL,
+  `item_title` varchar(255) DEFAULT NULL,
+  `typeid` varchar(50) DEFAULT NULL,
+  `amount` decimal(16,4) DEFAULT NULL,
+  `amtpaid` decimal(16,4) DEFAULT NULL,
+  `remarks` varchar(155) DEFAULT NULL,
+  `createdby_objid` varchar(50) DEFAULT NULL,
+  `createdby_name` varchar(155) DEFAULT NULL,
+  `dtcreated` date DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `month` int(11) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Table structure for table `market_otherfee_payment` */
+
+DROP TABLE IF EXISTS `market_otherfee_payment`;
+
+CREATE TABLE `market_otherfee_payment` (
+  `objid` varchar(50) NOT NULL,
+  `acctid` varchar(50) DEFAULT NULL,
+  `txndate` datetime DEFAULT NULL,
+  `amount` decimal(16,4) DEFAULT NULL,
+  `voided` int(11) DEFAULT NULL,
+  `refid` varchar(50) DEFAULT NULL,
+  `reftype` varchar(50) DEFAULT NULL,
+  `refno` varchar(50) DEFAULT NULL,
+  `refdate` date DEFAULT NULL,
+  `txnmode` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `market_otherfee_payment_item` */
+
+DROP TABLE IF EXISTS `market_otherfee_payment_item`;
+
+CREATE TABLE `market_otherfee_payment_item` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) DEFAULT NULL,
+  `refid` varchar(50) DEFAULT NULL,
+  `item_objid` varchar(50) DEFAULT NULL,
+  `item_title` varchar(255) DEFAULT NULL,
+  `month` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `amount` decimal(16,4) DEFAULT NULL,
+  `surcharge` decimal(16,4) DEFAULT NULL,
+  `interest` decimal(16,4) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `market_rental_payment` */
+
+DROP TABLE IF EXISTS `market_rental_payment`;
+
+CREATE TABLE `market_rental_payment` (
   `objid` varchar(50) NOT NULL,
   `acctid` varchar(50) DEFAULT NULL,
   `txndate` datetime DEFAULT NULL,
@@ -237,14 +295,14 @@ CREATE TABLE `market_payment` (
   KEY `ix_refdate` (`refdate`),
   KEY `ix_fromdate` (`fromdate`),
   KEY `ix_todate` (`todate`),
-  CONSTRAINT `market_payment_ibfk_1` FOREIGN KEY (`acctid`) REFERENCES `market_account` (`objid`)
+  CONSTRAINT `market_rental_payment_ibfk_1` FOREIGN KEY (`acctid`) REFERENCES `market_account` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `market_payment_item` */
+/*Table structure for table `market_rental_payment_item` */
 
-DROP TABLE IF EXISTS `market_payment_item`;
+DROP TABLE IF EXISTS `market_rental_payment_item`;
 
-CREATE TABLE `market_payment_item` (
+CREATE TABLE `market_rental_payment_item` (
   `objid` varchar(50) NOT NULL,
   `parentid` varchar(50) DEFAULT NULL,
   `month` int(11) DEFAULT NULL,
@@ -260,7 +318,7 @@ CREATE TABLE `market_payment_item` (
   `interest` decimal(16,4) DEFAULT NULL,
   PRIMARY KEY (`objid`),
   KEY `parentid` (`parentid`),
-  CONSTRAINT `market_payment_item_ibfk_1` FOREIGN KEY (`parentid`) REFERENCES `market_payment` (`objid`)
+  CONSTRAINT `market_rental_payment_item_ibfk_1` FOREIGN KEY (`parentid`) REFERENCES `market_rental_payment` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `market_rentalunit` */
@@ -281,7 +339,7 @@ CREATE TABLE `market_rentalunit` (
   `currentacctid` varchar(50) DEFAULT NULL,
   `areasqm` decimal(16,2) DEFAULT NULL,
   `clusterid` varchar(50) DEFAULT NULL,
-  `payfrequency` varchar(50) DEFAULT NULL,
+  `ratetype` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`objid`),
   UNIQUE KEY `uix_market_rentalunit_code` (`code`),
   KEY `section_objid` (`sectionid`),

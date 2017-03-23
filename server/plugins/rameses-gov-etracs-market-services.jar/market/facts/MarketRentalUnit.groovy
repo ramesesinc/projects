@@ -6,6 +6,7 @@ class MarketRentalUnit {
 	
 	String unittype;		//MARKET_UNIT_TYPES
 	String payfrequency;	//MARKET_PAY_FREQUENCY
+	String ratetype;		//DAY OR MONTH
 	double rate;
 	double extrate;
 

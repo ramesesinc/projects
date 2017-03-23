@@ -43,6 +43,7 @@ public class LobTopListingReportController extends ReportController
     def data;
 
     def permitTypes;
+    def lobClassifications;
 
     def initReport() {
         def outcome = super.initReport(); 

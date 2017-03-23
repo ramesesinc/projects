@@ -29,23 +29,20 @@ public class MarketOtherFeeCashReceiptService  {
 		def a = acctEm.find([acctno: o.id] ).first();
 		if(!a) a = acctEm.where("unit.code =:code",[code: o.id]).first();
 		if(!a) throw new Exception("Market account not found!");
-		def items = feeEm.select("objid,item.*,amount:{amount-amtpaid},year,month,monthname").find( [acctid: a.objid ]).where("amount-amtpaid > 0 ").list();
+		def items = feeEm.select("refid:{objid},txntype:{type.objid},amount:{amount-amtpaid},year,month,monthname").find( [acctid: a.objid ]).where("amount-amtpaid > 0 ").list();
 
 		if(!items) throw new Exception("No other fees found!");
 		
-		def data = [billitems: items];
-
 		def svrDate = dateSvc.getServerDate();
 
-		def fb = [
-			getBillItemFact: { ac->
-				return new MarketOtherFeeBillItem(ac);
-			}
-		] as FactBuilder;
+		def fb = new FactBuilder();
+		items.each { ac->
+			fb.facts << new MarketOtherFeeBillItem(ac);
+		}
 		fb.facts << new treasury.facts.SystemDate(svrDate);
 		fb.facts << new treasury.facts.BillDate( (o.billdate) ?o.billdate: svrDate );
 
-		def m = assmtSvc.execute( "marketbilling", data, fb, null );		
+		def m = assmtSvc.execute( "marketbilling", [:], fb, null );		
 
 		if(!m.billitems) throw new Exception("Bill Items not found");
 		m.billitems.each {

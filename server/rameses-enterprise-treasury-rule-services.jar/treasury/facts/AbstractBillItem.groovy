@@ -16,7 +16,15 @@ public abstract class AbstractBillItem {
 	String remarks;
 
 	public int hashCode() {
-		return (account?.objid+"_"+txntype).hashCode();			
+		if( account?.objid ) {
+			return account.objid.hashCode();
+		}
+		else if(txntype) {
+			return txntype.hashCode();
+		}
+		else {
+			return toString().hashCode();
+		}
 	}
 
 	public boolean equals( def o ) {

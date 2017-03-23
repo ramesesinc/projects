@@ -10,6 +10,7 @@ public class MarketOtherFeeBillItem extends BillItem {
     int year;
     def type;
     String monthname;
+    Date duedate;
 
     public int getPaypriority() {
        return (year*12)+month;

@@ -33,15 +33,18 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
-        xLookupField1.setCaption("Account");
-        xLookupField1.setExpression("#{entity.item.code} #{entity.item.title}");
-        xLookupField1.setHandler("revenueitem:lookup");
-        xLookupField1.setName("entity.item"); // NOI18N
+        xFormPanel1.setCaptionWidth(100);
+
+        xLookupField1.setCaption("Txn Type");
+        xLookupField1.setExpression("#{entity.type.title}");
+        xLookupField1.setHandler("market_otherfee_type:lookup");
+        xLookupField1.setName("entity.type"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
@@ -50,6 +53,11 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
         xDecimalField1.setName("entity.amount"); // NOI18N
         xDecimalField1.setRequired(true);
         xFormPanel1.add(xDecimalField1);
+
+        xDecimalField2.setCaption("Amount Paid");
+        xDecimalField2.setName("entity.amtpaid"); // NOI18N
+        xDecimalField2.setRequired(true);
+        xFormPanel1.add(xDecimalField2);
 
         monthList1.setCaption("Month");
         monthList1.setName("entity.month"); // NOI18N
@@ -89,6 +97,7 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLookupField xLookupField1;

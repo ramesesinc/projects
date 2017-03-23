@@ -13,10 +13,6 @@ public class MarketAccountModel extends CrudFormModel {
 
     @PropertyChangeListener
     def listener = [
-        'entity.unit' : { o->
-            entity.rate = o.rate;
-            binding.refresh("entity.(rate|payfrequency)");
-        },
         'entity.owner': { o->
             if(entity.acctname==null) {
                 entity.acctname = o.name;

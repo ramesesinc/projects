@@ -33,7 +33,6 @@ CREATE TABLE `market_account` (
   `startdate` date DEFAULT NULL,
   `totalprincipalpaid` decimal(18,2) DEFAULT NULL,
   `duedate` date DEFAULT NULL,
-  `rate` decimal(16,4) DEFAULT NULL,
   `extrate` decimal(16,4) DEFAULT NULL,
   `txntype` varchar(50) DEFAULT NULL,
   `createdby_objid` varchar(50) DEFAULT NULL,
@@ -218,10 +217,7 @@ DROP TABLE IF EXISTS `market_otherfee`;
 CREATE TABLE `market_otherfee` (
   `objid` varchar(50) NOT NULL,
   `acctid` varchar(50) DEFAULT NULL,
-  `item_objid` varchar(50) DEFAULT NULL,
-  `item_code` varchar(50) DEFAULT NULL,
-  `item_title` varchar(255) DEFAULT NULL,
-  `typeid` varchar(50) DEFAULT NULL,
+  `type_objid` varchar(50) DEFAULT NULL,
   `amount` decimal(16,4) DEFAULT NULL,
   `amtpaid` decimal(16,4) DEFAULT NULL,
   `remarks` varchar(155) DEFAULT NULL,
@@ -268,6 +264,16 @@ CREATE TABLE `market_otherfee_payment_item` (
   `interest` decimal(16,4) DEFAULT NULL,
   PRIMARY KEY (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `market_otherfee_type` */
+
+DROP TABLE IF EXISTS `market_otherfee_type`;
+
+CREATE TABLE `market_otherfee_type` (
+  `objid` varchar(50) NOT NULL,
+  `title` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `market_rental_payment` */
 

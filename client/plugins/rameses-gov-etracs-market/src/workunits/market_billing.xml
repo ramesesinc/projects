@@ -8,22 +8,5 @@
             visibleWhen="#{mode=='read'}"
             action="preview"/>
     </invokers>
-    <code>
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.seti2.models.*;
-        import com.rameses.common.*;
-        
-        class MyReport extends FormReportModel {
-            def preview() {
-                def billdate = null;
-                Modal.show("date:prompt", [handler: {o->billdate=o} ] );
-                query.acctid = caller.entityContext?.objid;
-                if(billdate) query.billdate = billdate;    
-                return super.preview();
-            };
-        };
-    </code>
-    
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalBillingModel" />
 </workunit>

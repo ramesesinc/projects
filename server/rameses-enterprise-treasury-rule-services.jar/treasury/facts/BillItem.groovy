@@ -26,6 +26,15 @@ class BillItem extends AbstractBillItem {
 		}
 	};
 
+	public int hashCode() {
+		if( !refid ) {
+			return refid.hashCode();
+		}
+		else {
+			return super.hashCode();
+		}
+	}
+
 	public def toMap() {
 		def m = super.toMap();
 		m.refid = refid;

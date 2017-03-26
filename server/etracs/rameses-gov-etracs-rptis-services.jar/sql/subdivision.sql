@@ -252,6 +252,7 @@ ORDER BY f.tdno
 [getMotherLands]
 SELECT cl.*,
 	cl.rpid as realpropertyid, 
+	f.objid as faasid, 
 	f.tdno,
 	f.owner_name,
 	f.administrator_name,

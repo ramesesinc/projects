@@ -9,8 +9,25 @@
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'processing'}"/>
         <invoker type="formActions" action="startImport" caption="Import" mnemonic="i" visibleWhen="#{mode == 'init'}" role="MASTER"/> 
     </invokers>
-    <code class="com.rameses.gov.etracs.rpt.util.ImportController" />
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        
+        class MasterImportModel extends com.rameses.gov.etracs.rptis.models.ImportModel
+        {
+            @Service('RPTISMasterImportService')
+            def svc; 
+            
+            public void importData(data, asyncHandler){
+                svc.importData(data, asyncHandler);
+            } 
+        }
+
+        ]]>
+    </code>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.util.ExportImportPage"/>
+        <page template="com.rameses.gov.etracs.rptis.util.ExportImportPage"/>
     </pages>
 </workunit>

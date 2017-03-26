@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rysetting:info" 
+                 action="init" caption="Applied to the following LGUs" 
+                 mnemonic="l" index="100"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.RYSettingLGUModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.RYSettingLGUPage"/>
+    </pages>
+</workunit>

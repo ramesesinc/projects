@@ -48,6 +48,9 @@ class RPTLedgerService
     @DataContext('faas')
     def faasDb
 
+    @DataContext('faas_previous')
+    def em_faas_previous
+
 
     def SCHEMA_LEDGER   = 'rptledger'
     def SCHEMA_ITEM   = 'ledgeritem'
@@ -1016,7 +1019,7 @@ class RPTLedgerService
 
         //check if currentledger is a child of the subledger's parent ledger
         //get current ledger previous faas 
-        def prevfaases = em.getPreviousFaas(currentledger)
+        def prevfaases = em_faas_previous.find([faasid:currentledger.faasid]).list()
         if (prevfaases && prevfaas[0].prevfaasid != ledger.subledger.parent.objid)
             throw new Exception("Current ledger is invalid. The previous ledger does not match subledger's parent ledger.")
     }

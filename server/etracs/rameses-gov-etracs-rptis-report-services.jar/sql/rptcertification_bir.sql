@@ -97,7 +97,7 @@ values ($P{objid}, $P{refid})
 [getItems]
 SELECT 
 	f.tdno,
-	f.taxpayer_name, 
+	e.name as taxpayer_name, 
 	f.owner_name, 
 	f.titleno,	
 	f.rpuid, 
@@ -121,6 +121,7 @@ FROM rptcertificationitem rci
 	INNER JOIN sys_org b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org op ON b.parent_objid = op.objid 
 	INNER JOIN sys_org ogp ON op.parent_objid = ogp.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE rci.rptcertificationid = $P{objid}  
 ORDER BY r.fullpin
 

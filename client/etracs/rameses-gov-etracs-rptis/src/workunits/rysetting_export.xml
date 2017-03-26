@@ -1,0 +1,36 @@
+<workunit extends="rpt_wtemplates/ExportModel.xml">
+    <invokers>
+        <invoker type="landrysetting:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Land Revision Schedule"
+                 serviceName="LandRYSettingService"
+                 role="MASTER" permission="rysetting.export" 
+                 target="popup" index="501" 
+                 visibleWhen="#{mode == 'read'}"/>
+        
+        <invoker type="bldgrysetting:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Building Revision Schedule"
+                 serviceName="BldgRYSettingService"
+                 role="MASTER" target="popup" index="501" visibleWhen="#{mode == 'read'}" />
+        
+        <invoker type="machrysetting:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Machine Revision Schedule"
+                 serviceName="MachRYSettingService"
+                 role="MASTER" target="popup" index="501" visibleWhen="#{mode == 'read'}" />
+        
+        <invoker type="planttreerysetting:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Plant/Tree Revision Schedule"
+                 serviceName="PlantTreeRYSettingService"
+                 role="MASTER" target="popup" index="501" visibleWhen="#{mode == 'read'}" />
+        
+        <invoker type="miscrysetting:formActions" 
+                 action="init" caption="Export" 
+                 title ="Export Miscellaneous Revision Schedule"
+                 serviceName="MiscRYSettingService"
+                 role="MASTER" target="popup" index="501" visibleWhen="#{mode == 'read'}" />
+    </invokers>
+</workunit>
+

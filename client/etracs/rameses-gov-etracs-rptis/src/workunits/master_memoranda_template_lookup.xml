@@ -1,7 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="rptis_memoranda_template" 
           allowEdit="false" 
           allowOpen="false"
-          customFilter="state='APPROVED'" 
           orderBy="code">
     <invokers>
         <invoker type="memorandatemplate:lookup" 

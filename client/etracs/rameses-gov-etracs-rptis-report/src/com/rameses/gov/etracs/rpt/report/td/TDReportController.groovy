@@ -6,7 +6,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.etracs.shared.*;
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 
 
 class TDReportController

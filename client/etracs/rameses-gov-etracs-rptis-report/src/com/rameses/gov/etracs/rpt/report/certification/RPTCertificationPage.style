@@ -13,7 +13,7 @@
     visible:false;
 }
 
-"entity.tdno|entity.taxpayer.*" [entity.certtype && entity.certtype.type == 'byfaas']{
+"entity.tdno|entity.(taxpayername|taxpayeraddress)" [entity.certtype && entity.certtype.type == 'byfaas']{
     visible:true;
 }
 

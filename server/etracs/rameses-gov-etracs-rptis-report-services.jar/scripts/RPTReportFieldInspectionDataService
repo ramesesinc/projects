@@ -8,6 +8,9 @@ class RPTReportFieldInspectionDataService
     @ActiveDB('rptreport_fieldinspection')
     def em
 
+    @DataContext('faas_previous')
+    def em_faas_previous 
+
 
     @Async
 	@ProxyMethod
@@ -16,6 +19,10 @@ class RPTReportFieldInspectionDataService
 		def list = em.getFieldInspectionDataBuilding(params)
 		if( ! list ) throw new Exception('Records not found.')
 		list.each{ rpu ->
+			def prevlist = em_faas_previous.find([faasid:rpu.faasid]).list()
+            if (prevlist){
+                rpu.prevowner = prevlist.prevowner.join(' / ')
+            }
 			if (rpu.rputype == 'land'){
 				def classes = em.getLandSpecificClasses(rpu)
 				if (classes){

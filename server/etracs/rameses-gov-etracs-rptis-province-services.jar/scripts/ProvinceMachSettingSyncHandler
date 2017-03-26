@@ -4,9 +4,11 @@ import com.rameses.common.*;
 
 class ProvinceMachSettingSyncHandler
 {   
-	@ActiveDB('machrysetting')
-	def em 
+	@DataContext('rysetting_mach')
+	def em_mach 
 
+	@DataContext('rysetting_lgu')
+	def em_setting_lgu
 
 	@Env
 	def env 
@@ -48,8 +50,12 @@ class ProvinceMachSettingSyncHandler
 		}
 		
 
-		//get landrysetting by lguid
-		def settings = em.getSettingsByLguIdRy([lguid:org.objid, ry:params.ry])
+		def settings = []
+		def lgusettings = em_setting_lgu.find([lguid:org.objid, settingtype:'mach']).list()
+		lgusettings.each{
+			settings << em_mach.find([objid:it.rysettingid, ry:params.ry]).first()
+		}
+
 		if (!settings){
 			queue.push([msgtype:'_ERROR_', msg:'Requested revision setting does not exist.'])
 			queue.push( new AsyncToken(closed:true) )
@@ -60,12 +66,12 @@ class ProvinceMachSettingSyncHandler
 			setting = machSvc.open(setting)
 			queue.push([msgtype:'machrysetting', data:setting])
 
-			def assesslevels = machSvc.getAssessLevels(setting.objid).each{lvl ->
-				lvl.ranges = machSvc.getRanges(lvl.objid)
+			def assesslevels = machSvc.getAssessLevels(setting).each{lvl ->
+				lvl.ranges = machSvc.getRanges(lvl)
 			}
 			queue.push([msgtype:'assesslevels', data:assesslevels])
 
-			def forexes = machSvc.getForexes(setting.objid)
+			def forexes = machSvc.getForexes(setting)
 			queue.push([msgtype:'forexes', data:forexes])
 
 		}

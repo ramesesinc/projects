@@ -1,13 +1,12 @@
 [getApproveFaasListing]
 SELECT 
+	f.objid, 
 	f.state,
 	f.tdno,
 	f.owner_name,
 	f.administrator_name, 
 	f.titleno,
 	f.prevtdno,
-	f.prevowner,
-	f.prevadministrator, 
 	f.effectivityyear,
 	cancelledbytdnos,
 	canceldate,

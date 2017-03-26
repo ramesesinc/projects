@@ -1,0 +1,59 @@
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="rysettinglgu:lookup" action="init" caption="Lookup LGU" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class LookupRYSettingLGUController 
+{
+    @Service('LGUService')
+    def lguSvc;
+    
+    def entity;
+    def onselect;
+    
+    void init(){
+        entity = [:]
+    }
+        
+    def select(){
+        if (onselect) 
+            onselect(entity);
+        return '_close';
+    }
+    
+    def getLgus(){
+        def orgclass = OsirisContext.env.ORGCLASS
+        def orgid = OsirisContext.env.ORGID
+
+        if ('PROVINCE'.equalsIgnoreCase(orgclass)) {
+            return lguSvc.lookupMunicipalities([:])
+        }
+        else if ('MUNICIPALITY'.equalsIgnoreCase(orgclass)) {
+            return [lguSvc.lookupMunicipalityById(orgid)]
+        }
+        else if ('CITY'.equalsIgnoreCase(orgclass)) {
+            return [lguSvc.lookupCityById(orgid)]
+        }
+        return []
+    }
+
+    def getBarangays(){
+        if (! entity.lgu)
+            return [];
+        return lguSvc.lookupBarangaysByRootId(entity.lgu?.objid);
+    }
+
+}  
+
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.RYSettingLGULookupPage" />
+    </pages>
+</workunit>

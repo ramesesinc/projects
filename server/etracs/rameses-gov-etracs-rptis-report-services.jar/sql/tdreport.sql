@@ -369,7 +369,7 @@ select
 	f.fullpin,
 	f.effectivityyear,
 	f.effectivityqtr
-from previousfaas pf 
+from faas_previous pf 
 	inner join faas f on pf.faasid = f.objid 
 where pf.prevfaasid = $P{objid}
 

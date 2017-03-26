@@ -10,3 +10,9 @@ SELECT * FROM entitymember WHERE entityid=$P{objid} ORDER BY itemno
 
 [removeMembers]
 DELETE FROM entitymember WHERE entityid=$P{objid} 
+
+[insertMultiple]
+insert int entitymultiple(
+	objid, fullname 
+)
+values ($P{objid}, $P{fullname})

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
+        <!--
         <invoker type="faas:changeinfo" 
             action="revertState" caption="Revert State to Interim" target="process"  
             role="ADMIN" permission="faas.change_approved_state" 
             index="99" />
+        -->
    </invokers>
    <code>       
 <![CDATA[

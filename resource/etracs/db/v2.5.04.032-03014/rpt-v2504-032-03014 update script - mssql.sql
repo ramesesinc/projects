@@ -134,3 +134,173 @@ go
 INSERT INTO sys_usergroup_permission (objid, usergroup_objid, object, permission, title) VALUES ('RPT.MASTER-faastxntype-read', 'RPT.MASTER', 'faastxntype', 'read', 'Open Transaction Types')
 go 
 
+
+
+-- RYSETTING UPDATES
+alter table landrysetting add remarks varchar(200)
+go
+
+alter table bldgrysetting add remarks varchar(200)
+go 
+alter table bldgrysetting alter column predominant int null
+go 
+alter table bldgrysetting alter column depreciatecoreanditemseparately int null
+go 
+alter table bldgrysetting alter column computedepreciationbasedonschedule int null
+go 
+alter table bldgrysetting alter column straightdepreciation int null
+go 
+alter table bldgrysetting alter column calcbldgagebasedondtoccupied int null
+go 
+
+alter table machrysetting add remarks varchar(200)
+go 
+alter table machrysetting alter column residualrate decimal(10,2) null
+go 
+
+
+alter table planttreerysetting add remarks varchar(200)
+go 
+alter table planttreerysetting alter column applyagriadjustment int null
+go 
+alter table planttreeassesslevel add fixrate int 
+go 
+update planttreeassesslevel set fixrate = 1 where fixrate is null
+go 
+	
+alter table miscrysetting add remarks varchar(200)
+go 
+
+
+
+
+create table faas_previous
+(
+	objid varchar(50) not null, 
+	faasid varchar(50) not null,
+	prevfaasid varchar(50) null,
+	prevrpuid varchar(50) null,
+	prevtdno varchar(800) null,
+	prevpin varchar(800) null,
+	prevowner text null,
+	prevadministrator text null,
+	prevav varchar(500) null,
+	prevmv varchar(500) null,
+	prevareasqm varchar(500)null,
+	prevareaha varchar(500) null,
+	preveffectivity varchar(10) null,
+	primary key(objid)
+)
+go 
+
+create index FK_faas_previous_faas on faas_previous(faasid)
+go 
+create index ix_faas_previous_tdno on faas_previous(prevtdno)
+go 
+create index ix_faas_previous_pin on faas_previous(prevpin)
+go 
+
+alter table faas_previous 
+	add constraint FK_faas_previous_faas 
+	foreign key(faasid) references faas(objid)
+go 
+
+
+insert into faas_previous(
+	objid,
+	faasid,
+	prevfaasid,
+	prevrpuid,
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+)
+select 
+	objid,
+	objid as faasid,
+	null as prevfaasid,
+	null as prevrpuid, 
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+from faas f 
+where datacapture =  1
+go 
+
+
+insert into faas_previous(
+	objid,
+	faasid,
+	prevfaasid,
+	prevrpuid,
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+)
+select 
+	concat(f.objid, '-', pf.tdno) as objid,
+	f.objid as faasid,
+	pf.objid as prevfaasid,
+	pf.rpuid as prevrpuid, 
+	pf.tdno as prevtdno,
+	pf.fullpin as prevpin,
+	pf.owner_name as prevowner,
+	pf.administrator_name as prevadministrator,
+	pr.totalav as prevav,
+	pr.totalmv as prevmv,
+	pr.totalareasqm as  prevareasqm,
+	pr.totalareaha as prevareaha,
+	pf.effectivityyear as preveffectivity
+from faas f 
+	inner join previousfaas p on f.objid = p.faasid 
+	inner join faas pf on p.prevfaasid = pf.objid
+	inner join rpu pr on pf.rpuid = pr.objid 
+go 	
+
+
+
+
+
+CREATE TABLE batchgr_items_forrevision (
+  objid varchar(50) NOT NULL,
+  rpuid varchar(50) NOT NULL,
+  realpropertyid varchar(50) NOT NULL,
+  barangayid varchar(50) NOT NULL,
+  rputype varchar(15) NOT NULL,
+  tdno varchar(25) NOT NULL,
+  fullpin varchar(30) NOT NULL,
+	pin varchar(30) not null,
+	suffix int not null,
+  PRIMARY KEY (objid)
+)
+go 
+
+
+
+
+
+CREATE TABLE batchgr_error (
+  objid varchar(50) NOT NULL,
+  newry integer NOT NULL,
+  msg text,
+  PRIMARY KEY (objid)
+)
+go 

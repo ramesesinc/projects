@@ -3,7 +3,7 @@
     <invokers>
         <invoker type="formActions" caption="Close" action="_close" />
     </invokers>
-    <code class="com.rameses.gov.etracs.rptis.model.TxnLogModel" />
+    <code class="com.rameses.gov.etracs.rptis.models.TxnLogModel" />
     <pages>
         <page template="com.rameses.gov.etracs.rpt.common.TxnLogPage"/>
     </pages>

@@ -4,30 +4,10 @@
         <invoker type="rpuland:open" action="init" caption="Land RPU" />
     </invokers>
     
-    <code>
-        
-<![CDATA[        
-        
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.* 
-import com.rameses.osiris2.common.* 
-
-public class RpuLandController extends com.rameses.gov.etracs.rpt.rpu.ui.RpuController
-{
-    void calculateAssessment(){
-        super.calculateAssessment();
-        entity.rpu.landvalueadjustment = 0.0;
-        if (entity.rpu.landadjustments)
-            entity.rpu.landvalueadjustment = entity.rpu.landadjustments.adjustment.sum();
-    }
-}
-                
-                
-]]>                
+    <code class="com.rameses.gov.etracs.rptis.models.RPUModel">
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.rpu.land.ui.RpuLandPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.RPULandPage"/>
     </pages>
 </workunit>

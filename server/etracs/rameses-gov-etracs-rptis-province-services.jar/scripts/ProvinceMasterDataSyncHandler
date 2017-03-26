@@ -34,7 +34,7 @@ class ProvinceMasterDataSyncHandler
 		def xconn = appCtx.getResource( XConnection.class, env.ASYNC.CONNECTION ); 
 		def queue = xconn.register( env.ASYNC.ID ); 
 		params._schemaname = params.schemaname
-		params.where = '1=1'
+		params.where = ['1=1']
 		def list = qrySvc.getList(params)
 		queue.push(list)
 		queue.push( new AsyncToken(closed:true) ); 

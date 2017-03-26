@@ -56,3 +56,149 @@ INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `p
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-requirementtype-read', 'RPT.MASTER', 'requirementtype', 'read', 'Open Requirement Type');
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-faastxntype-edit', 'RPT.MASTER', 'faastxntype', 'edit', 'Edit Transaction Types');
 INSERT INTO `sys_usergroup_permission` (`objid`, `usergroup_objid`, `object`, `permission`, `title`) VALUES ('RPT.MASTER-faastxntype-read', 'RPT.MASTER', 'faastxntype', 'read', 'Open Transaction Types');
+
+
+
+-- RYSETTING UPDATES
+alter table landrysetting add remarks varchar(200);
+
+alter table bldgrysetting add remarks varchar(200);
+alter table bldgrysetting modify column predominant int null;
+alter table bldgrysetting modify column depreciatecoreanditemseparately int null;
+alter table bldgrysetting modify column computedepreciationbasedonschedule int null;
+alter table bldgrysetting modify column straightdepreciation int null;
+alter table bldgrysetting modify column calcbldgagebasedondtoccupied int null;
+
+alter table machrysetting add remarks varchar(200);
+alter table machrysetting modify column residualrate decimal(10,2) null;
+
+
+alter table planttreerysetting add remarks varchar(200);
+alter table planttreerysetting modify column applyagriadjustment int null;
+alter table planttreeassesslevel add fixrate int ;
+update planttreeassesslevel set fixrate = 1 where fixrate is null;
+	
+alter table miscrysetting add remarks varchar(200);
+
+
+
+drop table if exists faas_previous;
+
+create table faas_previous
+(
+	objid varchar(50) not null, 
+	faasid varchar(50) not null,
+	prevfaasid varchar(50) null,
+	prevrpuid varchar(50) null,
+	prevtdno varchar(800) null,
+	prevpin varchar(800) null,
+	prevowner text null,
+	prevadministrator text null,
+	prevav varchar(500) null,
+	prevmv varchar(500) null,
+	prevareasqm varchar(500)null,
+	prevareaha varchar(500) null,
+	preveffectivity varchar(10) null,
+	primary key(objid),
+	index FK_faas_previous_faas(faasid),
+	index ix_faas_previous_tdno(prevtdno),
+	index ix_faas_previous_pin(prevpin),
+	constraint FK_faas_previous_faas foreign key(faasid)
+	references faas(objid)
+);
+
+
+insert into faas_previous(
+	objid,
+	faasid,
+	prevfaasid,
+	prevrpuid,
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+)
+select 
+	objid,
+	objid as faasid,
+	null as prevfaasid,
+	null as prevrpuid, 
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+from faas f 
+where datacapture =  1;
+
+
+insert into faas_previous(
+	objid,
+	faasid,
+	prevfaasid,
+	prevrpuid,
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+)
+select 
+	concat(f.objid, '-', pf.tdno) as objid,
+	f.objid as faasid,
+	pf.objid as prevfaasid,
+	pf.rpuid as prevrpuid, 
+	pf.tdno as prevtdno,
+	pf.fullpin as prevpin,
+	pf.owner_name as prevowner,
+	pf.administrator_name as prevadministrator,
+	pr.totalav as prevav,
+	pr.totalmv as prevmv,
+	pr.totalareasqm as  prevareasqm,
+	pr.totalareaha as prevareaha,
+	pf.effectivityyear as preveffectivity
+from faas f 
+	inner join previousfaas p on f.objid = p.faasid 
+	inner join faas pf on p.prevfaasid = pf.objid
+	inner join rpu pr on pf.rpuid = pr.objid ;
+
+
+
+
+
+CREATE TABLE `batchgr_items_forrevision` (
+  `objid` varchar(50) NOT NULL,
+  `rpuid` varchar(50) NOT NULL,
+  `realpropertyid` varchar(50) NOT NULL,
+  `barangayid` varchar(50) NOT NULL,
+  `rputype` varchar(15) NOT NULL,
+  `tdno` varchar(25) NOT NULL,
+  `fullpin` varchar(30) NOT NULL,
+	`pin` varchar(30) not null,
+	`suffix` int not null,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+
+CREATE TABLE `batchgr_error` (
+  `objid` varchar(50) NOT NULL,
+  `newry` int(11) NOT NULL,
+  `msg` longtext,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

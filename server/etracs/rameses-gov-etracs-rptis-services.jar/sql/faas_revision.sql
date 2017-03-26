@@ -30,36 +30,52 @@ order by f.fullpin
 [getAffectedRpusByLandFaasId]
 select bf.objid as prevfaasid
 from faas lf 
-	inner join bldgrpu br on br.landrpuid = lf.rpuid 
-	inner join faas bf on br.objid = bf.rpuid 
+	inner join rpu lr on lf.rpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid, 
+	bldgrpu b 
+	inner join rpu lbr on b.landrpuid = lbr.objid
+	inner join faas bf on b.objid = bf.rpuid 
 where lf.objid = $P{objid}
-  and bf.state = 'CURRENT'
+  and lm.objid = lbr.rpumasterid
+  and bf.state = 'current' 
 
 union 
   
 select bf.objid as prevfaasid
 from faas lf 
-	inner join machrpu br on br.landrpuid = lf.rpuid 
-	inner join faas bf on br.objid = bf.rpuid 
+	inner join rpu lr on lf.rpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid, 
+	machrpu b 
+	inner join rpu lbr on b.landrpuid = lbr.objid
+	inner join faas bf on b.objid = bf.rpuid 
 where lf.objid = $P{objid}
-  and bf.state = 'CURRENT'
+  and lm.objid = lbr.rpumasterid
+  and bf.state = 'current' 
 
 union 
   
 select bf.objid as prevfaasid
 from faas lf 
-	inner join planttreerpu br on br.landrpuid = lf.rpuid 
-	inner join faas bf on br.objid = bf.rpuid 
+	inner join rpu lr on lf.rpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid, 
+	planttreerpu b 
+	inner join rpu lbr on b.landrpuid = lbr.objid
+	inner join faas bf on b.objid = bf.rpuid 
 where lf.objid = $P{objid}
-  and bf.state = 'CURRENT'
+  and lm.objid = lbr.rpumasterid
+  and bf.state = 'current' 
 
 union 
 
 select bf.objid as prevfaasid
 from faas lf 
-	inner join miscrpu br on br.landrpuid = lf.rpuid 
-	inner join faas bf on br.objid = bf.rpuid 
+	inner join rpu lr on lf.rpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid, 
+	miscrpu b 
+	inner join rpu lbr on b.landrpuid = lbr.objid
+	inner join faas bf on b.objid = bf.rpuid 
 where lf.objid = $P{objid}
-  and bf.state = 'CURRENT'
+  and lm.objid = lbr.rpumasterid
+  and bf.state = 'current' 
 
 

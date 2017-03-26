@@ -1,0 +1,11 @@
+"createAdjustmentType|openAdjustmentType|removeAdjustmentType" [mode == "read"]{
+    enabled:false;
+}
+
+"createAdjustmentType|openAdjustmentType|removeAdjustmentType" [mode == "edit"]{
+    enabled:true;
+}
+
+"openAdjustmentType|removeAdjustmentType" [selectedItem == null]{
+    enabled:false;
+}

@@ -81,8 +81,8 @@ select
 	rli.year AS effectiveyear,
 	rli.taxdifference ,
 	(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear,
-	0 as qtrly,
-	0 as qtrlycomputed
+	rli.qtrly as qtrly,
+	rli.qtrly as qtrlycomputed
 from rptledger rl 
 	inner join rptledgeritem rli on rl.objid = rli.rptledgerid
 	inner join rptledgerfaas lf on rli.rptledgerfaasid = lf.objid 
@@ -705,7 +705,7 @@ and not exists(
 select year, qtr, av, basicav, sefav 
 from rptledgeritem_qtrly 
 where parentid = $P{parentid} 
-and (basic > basicpaid  or sef > sefpaid)
+and (basic > basicpaid  or sef > sefpaid or basicpaid = 0 or sefpaid =0)
 
 
 [getPaidLedgerBills]

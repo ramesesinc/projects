@@ -1,4 +1,4 @@
-<workunit>
+<workunit allowCreate="false">
     
     <code class="com.rameses.gov.etracs.rptis.master.models.MasterLookupModel"/>    
     <pages>

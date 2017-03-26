@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
+    <invokers>       
+        <invoker type="quick_launcher" code="RV01" action="init" caption="Change PIN" 
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"/>
+            
+        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change PIN" 
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"  />
+            
+        <invoker folderid="/home/rpt/txn" action="init" caption="Change PIN" 
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"  />
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Change PIN" 
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"  />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.models.FAASInitChangePinModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASInitChangePinPage"/>
+    </pages>    
+</workunit>
+
+

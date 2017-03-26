@@ -45,7 +45,7 @@ ORDER BY f.tdno
 
 
 [getPreviousFaases]
-select prevfaasid from previousfaas where faasid = $P{objid}
+select prevfaasid from faas_previous where faasid = $P{objid}
 
 
 [findCancelledFaasRecord]

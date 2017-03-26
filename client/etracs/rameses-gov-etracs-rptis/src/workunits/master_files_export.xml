@@ -9,8 +9,26 @@
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" visibleWhen="#{mode == 'processing'}"/>
         <invoker type="formActions" action="export" caption="Export" mnemonic="e" visibleWhen="#{mode == 'init'}" role="MASTER"/> 
     </invokers>
-    <code class="com.rameses.gov.etracs.rpt.util.ExportController" />
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        
+        class MasterExportModel extends com.rameses.gov.etracs.rptis.models.ExportModel
+        {
+            @Service('RPTISMasterExportService')
+            def svc; 
+            
+            void getData(asyncHandler){
+                svc.exportData(entity, asyncHandler)
+            }
+        }
+
+        ]]>
+                
+    </code>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.util.ExportImportPage"/>
+        <page template="com.rameses.gov.etracs.rptis.util.ExportImportPage"/>
     </pages>
 </workunit>

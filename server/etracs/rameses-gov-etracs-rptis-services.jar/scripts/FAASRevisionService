@@ -11,8 +11,8 @@ class FAASRevisionService
 	@ActiveDB('faas_revision')
 	def em
 
-	@ActiveDB('faas')
-	def faasEm
+	@DataContext('faas_affectedrpu')
+	def em_faas_affectedrpu
 
 	@Service('FAASService')
 	def faasSvc 
@@ -44,7 +44,7 @@ class FAASRevisionService
 
 	@ProxyMethod
 	public def saveAffectedRpu( arpu ) {
-		faasEm.save(arpu, SCHEMA_AFFECTED_RPU)
+		em_faas_affectedrpu.save(arpu)
 	}
 
 
@@ -89,7 +89,7 @@ class FAASRevisionService
             faas.fullpin = faas.rpu.fullpin 
             faasSvc.updateFaas(faas)
         }
-        faasEm.save(arpu, SCHEMA_AFFECTED_RPU)  
+        em_faas_affectedrpu.save(arpu)  
         return arpu 
     }
 

@@ -43,6 +43,13 @@ public class RPTBillingController
     
     String title = 'Real Property Tax Bill'
     
+    @PropertyChangeListener
+    def listener = [
+        'bill.taxpayer' : {
+            loadTaxpayerBillingInfo();
+        }
+    ]
+    
     void init() {
         mode = 'init'
         bill = svc.initBill(rptledgerid)
@@ -52,25 +59,6 @@ public class RPTBillingController
         init();
         clearLoadedProperties();
         return 'default' 
-    }
-    
-    def getLookupTaxpayer() {
-        return InvokerUtil.lookupOpener('entity:lookup', [
-            onselect : {
-                bill.taxpayer = it;
-                bill.taxpayer.address = it.address.text;
-                billto = bill.taxpayer;
-                bill.billto = billto;
-                clearLoadedProperties();
-                loadProperties();
-            },
-                
-            onempty : {
-                bill.taxpayer = null;
-                bill.billto = null;
-                clearLoadedProperties();
-            }
-        ] )
     }
     
     def selectedItems 
@@ -228,6 +216,22 @@ public class RPTBillingController
         items.each{
             it.bill = false;
             listHandler.reload();
+        }
+    }
+    
+    
+    void loadTaxpayerBillingInfo(){
+        if (bill.taxpayer){
+            bill.taxpayer.address = bill.taxpayer.address.text;
+            billto = bill.taxpayer;
+            bill.billto = billto;
+            clearLoadedProperties();
+            loadProperties();
+        }
+        else{
+            billto = null;
+            bill.billto = null;
+            clearLoadedProperties();
         }
     }
     

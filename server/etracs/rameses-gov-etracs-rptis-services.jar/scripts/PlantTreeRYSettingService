@@ -8,139 +8,94 @@ public class PlantTreeRYSettingService
     @Env 
     def env 
 
-    @ActiveDB('planttreerysetting')
-    def em
-     
-    @Service('PlantTreeRYSettingListService')
-    def listSvc 
+    @DataContext('planttree')
+    def planttree
 
-    @Service('RYSettingService')
-    def rysettingSvc
-    
-    @Service('Var')
-    def var 
+    @DataContext('rysetting_planttree')
+    def em_planttree
+
+    @DataContext('rysetting_planttree_assesslevel')
+    def em_assesslevel
+
+    @DataContext('rysetting_planttree_unitvalue')
+    def em_unitvalue
+
+    @DataContext('rysetting_lgu')
+    def em_rysettinglgu     
 
     @Service('RPTUtil')
     def util 
 
-    @DataContext('planttree')
-    def planttree
-    
-    def SCHEMA_ASSESSLEVEL  = 'assesslevel' 
-    def SCHEMA_UNITVALUE    = 'planttreeunitvalue' 
-    
-    def STATE_DRAFT     = 'DRAFT'
-    def STATE_APPROVED  = 'APPROVED'
 
-    def SETTING_TYPE    = 'planttree' 
-    
+    @ProxyMethod
+    public def getList( params ) {
+        def list = []
+        if (params.searchtext) 
+            list = em_planttree.orderBy('ry').find([ry:params.searchtext]).list()
+        else 
+            list = em_planttree.where('1=1').orderBy('ry').list()
+        return list 
+    }
+
     
     @ProxyMethod
-    public boolean settingExists() {
-        def settings = listSvc.getList( null )
-        return settings.size() > 0
+    public def getPlantTrees(params) {
+        if (!params.searchtext) params.searchtext = ''
+        params.searchtext += '%'
+        params.state = 'APPROVED'
+        def filter = 'state = :state and (code like :searchtext or name like :searchtext) '
+        return planttree.where(filter, params).orderBy('code').list()
     }
-    
+
 
     @ProxyMethod
     public def create( entity ) {
-        entity.state = STATE_DRAFT
-        buildAppliedToInfo(entity)
-        validate( entity )
-        em.create( entity )
-        rysettingSvc.createLgus( SETTING_TYPE, entity )
-        return entity 
+        entity.state = 'DRAFT'
+        if (entity.ry == null) throw new Exception('Revision year is required.')
+        if (entity.ry <= 0) throw new Exception('Revision year must be greater than zero.')
+
+        def exist = em_planttree.where('1=1').first()
+        if (exist) 
+            throw new Exception('A Revision Year setting has already been created.\nUse copy or revise setting instead.')
+
+        em_planttree.create(entity )
+        return open(entity)
     }
     
 
     @ProxyMethod 
     public Map open( entity ) {
-        entity = em.read(entity)
-        if (!entity)
-            throw new Exception('Setting does not exist or has already been deleted.')
-        entity.lgus = rysettingSvc.loadLgus(SETTING_TYPE, entity.objid)
+        entity = em_planttree.read(entity)
+        if (!entity) throw new Exception('Record does not exist or has already been deleted.')
+        entity.type = 'planttree'
         return entity
     }
 
     
     @ProxyMethod
     public def update( entity ) {
-        buildAppliedToInfo(entity)
-        validate( entity )
-        em.update( entity)
-        rysettingSvc.createLgus(SETTING_TYPE, entity )
-        return entity 
+        return em_planttree.update(entity)
     }
     
     
     @ProxyMethod
-    public void delete( entity ) {
-        em.deleteAssessLevels(entity)
-        em.deleteUnitValues(entity)
-        em.deleteRySettingLgus(entity)
-        em.delete(entity)
+    public void removeEntity( entity ) {
+        def params = [planttreerysettingid:entity.objid]
+        em_assesslevel.find(params).delete()
+        em_unitvalue.find(params).delete()
+        em_rysettinglgu.find([rysettingid:entity.objid]).delete()
+        em_planttree.delete(entity)
     }
 
 
     @ProxyMethod
     public def approve( entity ) {
-        checkApproved( entity )
-        entity.state = STATE_APPROVED
-        em.update(entity)    
-        return entity
-    }
-    
-
-    @ProxyMethod
-    public Map copy( objid, ry ) {
-        //create setting 
-        def oldsettingid = objid
-        def setting = em.read( [objid:objid] )
-        if (!setting) 
-            throw new Exception('Setting does not exist or has already been deleted.')
-
-        setting.previd = oldsettingid
-        setting.objid = util.generateId('PTS')
-        setting.ry = ry  
-        setting.appliedto = null
-        em.create(setting )
-        
-        copyAssessLevels(setting.objid, oldsettingid)
-        copyUnitValues(setting.objid, oldsettingid)
-        return open( setting )
-    }
-    
-
-    @ProxyMethod
-    public Map reviseSettings( newry, copyYear ) {
-        util.required('Copy Year', copyYear )
-        if( newry <= copyYear ) 
-        throw new Exception('New Revision Year must be greater than copy year.')
-        
-        def settings = em.getSettingsByRy([ry:copyYear])
-        if( !settings ) 
-            throw new Exception('Revision Year ' + copyYear  + ' setting is not defined.')
-        
-        settings.each{setting->
-            def oldsettingid = setting.objid 
-            setting          = em.read([objid:oldsettingid] )
-            setting.previd   = setting.objid 
-            setting.objid    = util.generateId('PTS')
-            setting.ry       = newry  
-            if ( ! isDuplicateSetting( setting ) ){
-                em.create(setting )
-                copyAssessLevels(setting.objid, oldsettingid)
-                copyUnitValues(setting.objid, oldsettingid)
-                rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, oldsettingid)
-            }
+        def old = open(entity)
+        if ('APPROVED'.equalsIgnoreCase(old.state)){
+            return old;
         }
-        return open( settings[0] )
-    }
-
-    
-    @ProxyMethod
-    public def getPlantTrees() {
-        return planttree.where("state = 'APPROVED'").orderBy('code').list()
+        entity.state = 'APPROVED';
+        return update(entity)
     }
     
 
@@ -148,113 +103,113 @@ public class PlantTreeRYSettingService
     * AssessLevel Methods
     ----------------------------------------------------------*/
     @ProxyMethod
-    public void saveAssessLevel( assesslevel ) {
-        em.save(assesslevel, SCHEMA_ASSESSLEVEL)
+    public def saveAssessLevel( assesslevel ) {
+        em_assesslevel.save(assesslevel)
     }
     
 
     @ProxyMethod
-    public void deleteAssessLevel( assesslevel ) {
-        em.delete(assesslevel, SCHEMA_ASSESSLEVEL)
+    public void removeAssessLevel( assesslevel ) {
+        em_assesslevel.delete(assesslevel)
     }
     
 
     @ProxyMethod
-    public List getAssessLevels( planttreerysettingid )  {
-        return em.getAssessLevels([planttreerysettingid:planttreerysettingid]).each{
-            it.fixrate = util.toBoolean(it.fixrate, true)
-        }
+    public List getAssessLevels( entity )  {
+        return em_assesslevel.find([planttreerysettingid:entity.objid])
+                .orderBy('classification.orderno, code')
+                .list()
+                .each{ it.fixrate = (it.fixrate == 1)}
     }
     
+
+    @ProxyMethod
+    public def getRanges(al) {
+        return []
+    }
 
 
     /*----------------------------------------------------------
     * UnitValue Methods
     ----------------------------------------------------------*/
     @ProxyMethod
-    public void saveUnitValue( unitvalue ) {
-        em.save(unitvalue, SCHEMA_UNITVALUE)
+    public def saveUnitValue( unitvalue ) {
+        em_unitvalue.save(unitvalue)
     }
     
 
     @ProxyMethod
     public void deleteUnitValue( unitvalue ) {
-        em.delete(unitvalue, SCHEMA_UNITVALUE)
+        em_unitvalue.delete(unitvalue)
     }
     
 
     @ProxyMethod
-    public List getUnitValues( planttreerysettingid, planttreeid )  {
-        return  em.getUnitValues([planttreerysettingid:planttreerysettingid, planttree_objid:planttreeid])
+    public List getUnitValues( setting, planttree )  {
+        def params = [:]
+        params.planttreerysettingid = setting.objid 
+        params.planttreeid = (planttree ? planttree.objid : '%')
+        def filter = "planttreerysettingid = :planttreerysettingid and planttree_objid like :planttreeid "
+        return  em_unitvalue.where(filter, params).orderBy('planttree.code, code').list()
     }
     
 
 
-    @ProxyMethod
-    public void syncData( msg ) {
-        println 'Synching data -> ' + msg.msgtype
-        if (msg.msgtype == 'planttreerysetting'){
-            em.save( msg.data )
-            rysettingSvc.createLgus( SETTING_TYPE, msg.data )
-        }
-        else if (msg.msgtype == 'assesslevels'){
-            msg.data.each{
-                saveAssessLevel(it)
-            }
-        }
-        else if (msg.msgtype == 'planttreeunitvalues'){
-            msg.data.each{
-                saveUnitValue(it)
-            }
-        }
-    }
-
-    
     /*----------------------------------------------------------
-    * Support Methods
+    * COPY AND REVISION support
     ----------------------------------------------------------*/
+    @ProxyMethod
+    public Map copy( objid, ry ) {
+        def newsetting = em_planttree.read(setting)
+        if (!newsetting) throw new Exception('Setting does not exist or has already been deleted.')
+
+        newsetting.objid = util.generateId('LS')
+        newsetting.appliedto = null
+        newsetting.previd = null
+        em_planttree.create( newsetting )
+        copyAssessLevels( newsetting, setting, false )
+        copyUnitValues(newsetting, setting, false)
+        return open( setting )
+    }
     
-    boolean isDuplicateSetting( entity ) {
-        def data = em.findDuplicate(entity)
-        return data != null 
-    }
 
-    void validate( entity ) {
-        if( entity.ry <= 0 ) 
-            throw new Exception('Revision Year must be greater than zero.')
-    }
+    @ProxyMethod
+    public Map revise( oldsetting, params) {
+        if (params.ry <= oldsetting.ry) 
+            throw new Exception('New Revision Year must be greater than ' + oldsetting.ry + '.')
 
-
-    void buildAppliedToInfo(entity){
-        if (entity.lgus == null)
-            entity.lgus = []
-        entity.appliedto = entity.lgus.sort{a,b -> a.lguname <=> b.lguname}.lguname.join(', ')
-    }
- 
-
-      
-    void checkApproved( entity ){
-        def old = open(entity)
-        if (old.state == STATE_APPROVED)
-            throw new Exception('Setting has already been approved.')
+        def settings = em_planttree.find([ry:oldsetting.ry]).list() 
+        if( !settings ) throw new Exception('Revision Year ' + oldsetting.ry  + ' settings are not defined.')
+        
+        settings.each{ setting ->
+            def newsetting = em_planttree.read(setting)
+            newsetting.objid = util.generateId('LS')
+            newsetting.previd = setting.objid 
+            newsetting.ry = params.ry  
+            em_planttree.create(newsetting )
+            copyAssessLevels( newsetting, setting, true)
+            copyUnitValues(newsetting, setting, true)
+            copyLgus(newsetting, setting)
+        }
+        return [:]
     }
 
 
-    void copyAssessLevels(newsettingid, oldsettingid){
-        getAssessLevels( oldsettingid ).each{
-            it.previd  = it.objid 
+    void copyAssessLevels(newsetting, setting, updateprevid){
+        getAssessLevels( setting ).each{
+            it.previd  = (updateprevid ? it.objid : null)
             it.objid   = util.generateId('AL')
-            it.planttreerysettingid  = newsettingid
+            it.planttreerysettingid  = newsetting.objid 
             saveAssessLevel( it )
         }
     }
 
-    void copyUnitValues(newsettingid, oldsettingid){
+    void copyUnitValues(newsetting, setting, updateprevid){
         getPlantTrees().each{pt ->
-            getUnitValues( oldsettingid, pt.objid ).each{ uv ->
-                uv.previd   = uv.objid;
+            getUnitValues( setting, pt).each{ uv ->
+                uv.previd   = (updateprevid ? uv.objid : null)
                 uv.objid    = util.generateId('UV')
-                uv.planttreerysettingid  = newsettingid
+                uv.planttreerysettingid  = newsetting.objid 
                 saveUnitValue( uv );
             }
         }
@@ -262,14 +217,17 @@ public class PlantTreeRYSettingService
 
 
 
-
+    /*----------------------------------------------------------
+    * Miscellaneous Support
+    ----------------------------------------------------------*/
     @Async
     @ProxyMethod
     public def exportData(setting) {
         setting = open(setting);
         setting.type = 'planttree';
-        setting.levels = getAssessLevels(setting.objid);
-        setting.unitvalues = getUnitValues(setting.objid, "%");
+        setting.levels = getAssessLevels(setting);
+        setting.unitvalues = getUnitValues(setting, null);
+        setting.lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
         return setting
     }
 
@@ -279,18 +237,35 @@ public class PlantTreeRYSettingService
     public def importData(setting) {
         if (setting.type != 'planttree')
             throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.');
-            
-        try{
-            create(setting);
-        }
-        catch( e){
-            update(setting);
-        }
-        
+
+        em_planttree.save(setting)
         setting.levels.each{ saveAssessLevel(it) }
         setting.unitvalues.each{ saveUnitValue(it) }
+        setting.lgus.each{em_rysettinglgu.save(it)}
     }
 
 
+    @ProxyMethod
+    public void syncData( msg ) {
+        println 'Synching data -> ' + msg.msgtype
+        if (msg.msgtype == 'planttreerysetting'){
+            em_planttree.save( msg.data )
+            msg.data.lgus?.each{
+                em_rysettinglgu.save(it)
+            }
+        }
+        else if (msg.msgtype == 'assesslevels'){
+            msg.data.each{
+                saveAssessLevel(it)
+            }
+        }
+        else if (msg.msgtype == 'planttreeunitvalues'){
+            msg.data.each{
+                it.planttree.state ='APPROVED'
+                planttree.save(it.planttree)
+                saveUnitValue(it)
+            }
+        }
+    }
 
 }

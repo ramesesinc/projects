@@ -10,326 +10,485 @@ public class LandRYSettingService
     def env 
 
     @ActiveDB('landrysetting')
-    def em
+    def em 
+
+    @DataContext('rysetting_land')
+    def em_land
+
+    @DataContext('rysetting_land_assesslevel')
+    def em_assesslevel
+
+    @DataContext('rysetting_land_assesslevel_range')
+    def em_assesslevelrange 
+
+    @DataContext('rysetting_land_specificclass')
+    def em_specificclass 
+
+    @DataContext('rysetting_land_subclass')
+    def em_subclass
+
+    @DataContext('rysetting_land_stripping')
+    def em_stripping 
+
+	@DataContext('rysetting_land_adjustmenttype')
+    def em_adjustmenttype 
+
+
+    @DataContext('rysetting_lgu')
+    def em_rysettinglgu 
 
     @DataContext('propertyclassification')
-    def propertyclassification
+    def em_classification 
 
-    @Service('LandRYSettingListService')
-    def listSvc 
-    
-    @Service('RYSettingService')
-    def rysettingSvc
-    
-    @Service('Var')
-    def var 
+
+    @Service('RPTParameterService')
+    def paramSvc 
 
     @Service('RPTUtil')
     def util
 
-    @Service()
+    @Service('LandRYSettingService')
     def self
-    
-    def SCHEMA_LANDASSESSLEVEL      = 'landassesslevel' 
-    def SCHEMA_LANDASSESSLEVELRANGE = 'landassesslevelrange' 
-    def SCHEMA_SPECIFICCLASS        = 'lcuvspecificclass' 
-    def SCHEMA_SUBCLASS             = 'lcuvsubclass' 
-    def SCHEMA_STRIPPING            = 'lcuvstripping' 
-    def SCHEMA_LANDADJUSTMENTTYPE   = 'landadjustmenttype' 
 
-    def STATE_DRAFT     = 'DRAFT'
-    def STATE_APPROVED  = 'APPROVED'
 
-    def SETTING_TYPE    = 'land' 
-    
-    
     @ProxyMethod
-    public boolean settingExists() {
-        def settings = listSvc.getList( null )
-        return settings.size() > 0
+    public def getList( params ) {
+    	def list = []
+        if (params.searchtext) 
+            list = em_land.orderBy('ry').find([ry:params.searchtext]).list()
+        else 
+        	list = em_land.where('1=1').orderBy('ry').list()
+        return list 
     }
-    
-    
-    @ProxyMethod
-    public List getPropertyClassifications() {
-        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
-    }
-    
-    
+
+
     @ProxyMethod
     public def create( entity ) {
-        entity.state = STATE_DRAFT
-        buildAppliedToInfo(entity)
-        validate( entity )
-        em.create(entity )
-        loadInitialAssessesLevels(entity)
-        rysettingSvc.createLgus( SETTING_TYPE, entity )
-        return entity 
+        entity.state = 'DRAFT'
+        if (entity.ry == null) throw new Exception('Revision year is required.')
+        if (entity.ry <= 0) throw new Exception('Revision year must be greater than zero.')
+
+        def exist = em_land.where('1=1').first()
+        if (exist) 
+        	throw new Exception('A Revision Year setting has already been created.\nUse copy or revise setting instead.')
+
+        em_land.create(entity )
+
+        //load initial assessment levels
+        getPropertyClassifications().each{pc->
+        	def al = [:]
+        	al.objid = 'AL' + new java.rmi.server.UID()
+			al.landrysettingid = entity.objid 
+			al.classification = pc 
+			al.code = 'A' + pc.code 
+			al.name = pc.name 
+			al.fixrate = true 
+			al.rate = 0.0 
+			saveAssessLevel(al)
+        }
+        return open(entity)
     }
 
 
-    @ProxyMethod 
-    public Map open( entity ) {
-        entity = em.read(entity)
-        entity.lgus = rysettingSvc.loadLgus(SETTING_TYPE, entity.objid)
+    @ProxyMethod
+    public def open(entity){
+        entity = em_land.read(entity)
+        if (!entity) throw new Exception('Record does not exist or has already been deleted.')
+        entity.type = 'land'
         return entity
     }
 
 
     @ProxyMethod
-    public def update( entity ) {
-        buildAppliedToInfo(entity)
-        validate( entity )
-        em.update( entity)
-        rysettingSvc.createLgus(SETTING_TYPE, entity )
-        return entity 
+    public def update(entity){
+        return em_land.update(entity)
     }
 
 
     @ProxyMethod
-    public void delete( entity ) {
-        em.deleteLandAdjustmentTypeClassificationBySettingId(entity)
-        em.deleteLandAdjustmentTypesBySettingId(entity)
-        em.deleteStrippingsBySettingId(entity)
-        em.deleteSubClassesBySettingId(entity)
-        em.deleteSpecificClassesBySettingId(entity)
-        em.deleteRangesBySettingId(entity)
-        em.deleteAssessLevelsBySettingId(entity)
-        em.deleteRySettingLgu(entity)
-        em.delete(entity)
-    }
-
-    @ProxyMethod
-    public def approve( entity ) {
-        checkApproved( entity )
-        entity.state = STATE_APPROVED
-        em.update(SCHEMA_LANDRYSETTING, entity)    
-        return entity
-    }
-    
-
-    
-
-    /*----------------------------------------------------------
-    * AssessLevel Methods
-    ----------------------------------------------------------*/
-    @ProxyMethod
-    public List getAssessLevels( landrysettingid )  {
-        return em.getAssessLevels([landrysettingid:landrysettingid]).each{
-            it.fixrate = util.toBoolean(it.fixrate, true)
+    public def approve(entity){
+        def old = open(entity)
+        if ('APPROVED'.equalsIgnoreCase(old.state)){
+            return old;
         }
+        entity.state = 'APPROVED';
+        return update(entity)
+    }
+
+    @ProxyMethod
+    public void removeEntity(entity) {
+        def params = [landrysettingid:entity.objid]
+        em.deleteAllAdjustmentTypeClassifications(params)
+        em_adjustmenttype.find(params).delete()
+        em_subclass.find(params).delete()
+        em_specificclass.find(params).delete()
+        em_stripping.find(params).delete()
+        em_assesslevelrange.find(params).delete()
+        em_assesslevel.find(params).delete()
+        em_rysettinglgu.find([rysettingid:entity.objid]).delete()
+        em_land.delete(entity)
     }
 
 
+    /*-------------------------------------------------------------------
+    * ASSESS LEVEL SUPPORT
+    -------------------------------------------------------------------*/
     @ProxyMethod
-    public void saveAssessLevel( assesslevel ) {
-        em.save(assesslevel, SCHEMA_LANDASSESSLEVEL)
-        if( util.isTrue(assesslevel.fixrate)) {
-            deleteRangesByAssessLevelId(assesslevel.objid)
+    public def getAssessLevels(entity){
+    	return em_assesslevel.find([landrysettingid:entity.objid])
+    			.orderBy('classification.orderno, code')
+    			.list()
+    			.each{ it.fixrate = util.toBoolean(it.fixrate, true)}
+    }
+
+    @ProxyMethod
+    public def saveAssessLevel( al ){
+        if (util.isTrue(al.fixrate)){
+            em_assesslevelrange.find([landassesslevelid:al.objid]).delete()
         }
-    }
-
-    
-    @ProxyMethod
-    public void deleteAssessLevel( assesslevel ) {
-        deleteRangesByAssessLevelId(assesslevel.objid)
-        em.delete(assesslevel, SCHEMA_LANDASSESSLEVEL)
+    	return em_assesslevel.save(al)
     }
 
 
     @ProxyMethod
-    public List getRanges( landassesslevelid )  {
-        return em.getAssessLevelRanges([landassesslevelid:landassesslevelid])
+    public void removeAssessLevel(al) {
+    	em_assesslevelrange.find([landassesslevelid:al.objid]).delete()
+        em_assesslevel.delete(al)
+    }
+
+    @ProxyMethod
+    public def getRanges(al){
+    	return em_assesslevelrange
+    				.find([landassesslevelid:al.objid])
+    				.orderBy('mvfrom')
+    				.list()
+    }
+
+    @ProxyMethod
+    public def saveRange( range ){
+    	return em_assesslevelrange.save(range)
+    }
+
+    @ProxyMethod
+    public void deleteRange( range ){
+    	em_assesslevelrange.delete(range)
+    }
+
+
+	/*----------------------------------------------------------
+    * LandAdjustmentTypes Support
+    -----------------------------------------------------------*/
+    @ProxyMethod
+    public List getAdjustmentTypes( setting )  {
+    	return em_adjustmenttype.find([landrysettingid:setting.objid]).orderBy('idx').list()
     }
 
 
     @ProxyMethod
-    public def saveRange( range  ) {
-        em.save(range,SCHEMA_LANDASSESSLEVELRANGE)
-    }
-
-
-    @ProxyMethod
-    public def deleteRange( range  ) {
-        em.delete(range, SCHEMA_LANDASSESSLEVELRANGE)
-    }
-
-    @ProxyMethod
-    public void deleteRangesByAssessLevelId(landassesslevelid){
-        em.deleteRangesByAssessLevelId([landassesslevelid:landassesslevelid])
-    }
-
-
-
-    /*----------------------------------------------------------
-    * SPECIFICCLASS SUPPORT
-    ----------------------------------------------------------*/
-    
-    @ProxyMethod
-    public def getSpecificClasses( landrysettingid, classificationid ){
-        return em.getSpecificClasses([landrysettingid:landrysettingid, classification_objid:classificationid])
-    }
-
-    
-    @ProxyMethod
-    public void saveSpecificClass( specificclass ) {
-        em.save(specificclass, SCHEMA_SPECIFICCLASS)
-    }
-
-    
-    @ProxyMethod
-    public void deleteSpecificClass( specificclass ) {
-        em.deleteSubclasses([specificclass_objid:specificclass.objid])
-        em.delete(specificclass, SCHEMA_SPECIFICCLASS)
-    }
-
-
-
-    /*----------------------------------------------------------
-    * SUBLCLASS SUPPORT
-    ----------------------------------------------------------*/
-    @ProxyMethod
-    public def getSubClasses( specificclassid ){
-        return em.getSubClasses([specificclass_objid:specificclassid])
-    }
-    
-    
-    @ProxyMethod
-    public void saveSubClass( subclass ) {
-        em.save(subclass, SCHEMA_SUBCLASS)
-    }
-
-    
-    @ProxyMethod
-    public void deleteSubClass( subclass ) {
-        em.delete(subclass, SCHEMA_SUBCLASS)
-    }
-
-
-
-    /*----------------------------------------------------------
-    * STRIPPING SUPPORT
-    ----------------------------------------------------------*/
-    @ProxyMethod
-    public def getStrippings( landrysettingid, classificationid ){
-        return em.getStrippings([landrysettingid:landrysettingid, classification_objid:classificationid])
-    }
-    
-
-    @ProxyMethod
-    public void saveStripping( stripping ) {
-        em.save(stripping, SCHEMA_STRIPPING)
-    }
-
-    
-    @ProxyMethod
-    public void deleteStripping( stripping ) {
-        em.delete(stripping, SCHEMA_STRIPPING)
-    }
-    
-    
-
-    /*----------------------------------------------------------
-    * LandAdjustmentTypes Methods
-    ----------------------------------------------------------*/
-    @ProxyMethod
-    public List getLandAdjustmentTypes( landrysettingid )  {
-        return em.getLandAdjustmentTypes([landrysettingid:landrysettingid])
-    }
-
-
-    @ProxyMethod
-    public void saveLandAdjustmentType( landadjustmentype ) {
-        em.save(landadjustmentype, SCHEMA_LANDADJUSTMENTTYPE)
-        deleteLandAdjustmentTypeClassifications(landadjustmentype)
-        landadjustmentype.classifications.each{
-            insertLandAdjustmentTypeClassification(landadjustmentype, it.classification)
+    public void saveAdjustmentType( adjtype) {
+    	em_adjustmenttype.save(adjtype)
+        deleteAdjustmentTypeClassifications(adjtype)
+        adjtype.classifications.each{
+            insertAdjustmentTypeClassification(adjtype, it.classification)
         }
     }
     
 
     @ProxyMethod
-    public def openLandAdjustmentType( objid  ) {
-        def adjustment = em.read([objid:objid], SCHEMA_LANDADJUSTMENTTYPE) 
-        if ( adjustment ){
-            adjustment.classifications = getAdjustmentClassifications( adjustment )
-        }
-        return adjustment 
-    }
-
-    @ProxyMethod
-    public List getAdjustmentClassifications( adjustment ){
-        return em.getLandAdjustmentTypeClassifications([landadjustmenttypeid:adjustment.objid])
+    public def openAdjustmentType( adjtype  ) {
+    	adjtype = em_adjustmenttype.read(adjtype)
+    	if (!adjtype) throw new Exception('Adjustment Type does not exist or has already been deleted.')
+    	adjtype.classifications = getAdjustmentClassifications( adjtype )
+        return adjtype 
     }
 
 
     @ProxyMethod
-    public void deleteLandAdjustmentType( landadjustmenttype ) {
-        deleteLandAdjustmentTypeClassifications(landadjustmenttype)
-        em.delete(landadjustmenttype, SCHEMA_LANDADJUSTMENTTYPE)
+    public List getAdjustmentClassifications( adjtype ){
+        return em.getAdjustmentTypeClassifications([adjustmenttypeid:adjtype.objid])
     }
 
-    void deleteLandAdjustmentTypeClassifications(landadjustmenttype){
-        em.deleteLandAdjustmentTypeClassifications([landadjustmenttypeid:landadjustmenttype.objid])
+
+    @ProxyMethod
+    public void deleteAdjustmentType( adjtype ) {
+        deleteAdjustmentTypeClassifications(adjtype)
+        em_adjustmenttype.delete(adjtype)
     }
 
-    void insertLandAdjustmentTypeClassification(landadjustmenttype, classification){
-        em.insertLandAdjustmentTypeClassification([
-            landrysettingid      : landadjustmenttype.landrysettingid,
-            landadjustmenttypeid : landadjustmenttype.objid,
+    void deleteAdjustmentTypeClassifications(adjtype){
+        em.deleteAdjustmentTypeClassifications([adjustmenttypeid:adjtype.objid])
+    }
+
+    void insertAdjustmentTypeClassification(adjtype, classification){
+        em.insertAdjustmentTypeClassification([
+            landrysettingid      : adjtype.landrysettingid ,
+            landadjustmenttypeid : adjtype.objid,
             classification_objid : classification.objid,
         ])
     }
-    
+
+
+    @ProxyMethod
+    public def getVariableList(){
+    	return paramSvc.getVariableList()
+    }
+
+
+
+	/*----------------------------------------------------------
+    * Specific Class Support
+    -----------------------------------------------------------*/
+    @ProxyMethod
+    public def getPropertyClassifications(){
+    	return em_classification.where("state='APPROVED'").orderBy('orderno').list()
+    }
+
+
+    @ProxyMethod
+    public def getSpecificClasses(entity, classification){
+    	def filter = [:]
+    	filter.landrysettingid = entity.objid
+    	filter.classificationid = (classification ? classification.objid : '%')
+    	return em_specificclass
+                    .where('landrysettingid = :landrysettingid and classification_objid like :classificationid', filter)
+                    .orderBy('landspecificclass.code')
+                    .list()
+    }
+
+
+    @ProxyMethod
+    public def saveSpecificClass( sc ){
+    	return em_specificclass.save(sc)
+    }
+
+
+    @ProxyMethod
+    public void deleteSpecificClass( sc){
+    	em_subclass.find([specificclass_objid:sc.objid]).delete()
+    	em_specificclass.delete(sc)
+    }
+
+
+
+	/*----------------------------------------------------------
+    * SubClass Support
+    -----------------------------------------------------------*/
+    @ProxyMethod
+    public def getSubClasses( specificclass){
+    	return em_subclass.find([specificclass_objid:specificclass.objid]).orderBy('code').list()
+    }
+
+    @ProxyMethod
+    public def saveSubClass( subclass ){
+    	return em_subclass.save(subclass)
+    }
+
+    @ProxyMethod
+    public void deleteSubClass( subclass ){
+    	em_subclass.delete(subclass)
+    }
+
+
+
+	/*----------------------------------------------------------
+    * Stripping Support
+    -----------------------------------------------------------*/
+    @ProxyMethod
+    public def getStrippings(entity, classification) {
+    	def filter = [:]
+    	filter.landrysettingid = entity.objid 
+    	filter.classificationid = (classification ? classification.objid : '%')
+        def whereclause = 'landrysettingid = :landrysettingid and classification_objid like :classificationid'
+    	return em_stripping.where(whereclause, filter).orderBy('striplevel').list()
+    }
+
+    @ProxyMethod
+    public def saveStripping(stripping){
+    	return em_stripping.save(stripping)
+    }
+
+    @ProxyMethod
+    public void deleteStripping( stripping ){
+    	em_stripping.delete(stripping)
+    }
 
 
     /*----------------------------------------------------------
-    * COPY Methods
+    * COPY AND REVISION support
     ----------------------------------------------------------*/
     @ProxyMethod
-    public Map copy( objid, ry ) {
-        //create setting 
-        def oldsettingid = objid
-        def setting = em.read([objid:objid] )
-        if (!setting) throw new Exception('Setting does not exists or has already been deleted.')
+    public void copy(setting) {
+        def newsetting = em_land.read(setting)
+        if (!newsetting) throw new Exception('Setting does not exist or has already been deleted.')
 
-        setting.previd = null
-        setting.objid = util.generateId('LS')
-        setting.ry = ry  
-        setting.appliedto = null
-        em.create( setting )
-        
-        copyAssessLevels( setting.objid, oldsettingid )
-        copyLcuvs( setting.objid, oldsettingid )
-        copyLandAdjustmentTypes( setting.objid, oldsettingid )
-        return open( setting )
+        newsetting.objid = util.generateId('LS')
+        newsetting.appliedto = null
+        newsetting.previd = null
+        em_land.create( newsetting )
+        copyAssessLevels( newsetting, setting, false )
+        copyLcuvs( newsetting, setting, false )
+        copyLandAdjustmentTypes( newsetting, setting, false )
     }
 
-    
+
     @ProxyMethod
-    public Map reviseSettings( newry, copyYear ) {
-        util.required('Copy Year', copyYear )
-        if( newry <= copyYear ) throw new Exception('New Revision Year must be greater than copy year.')
-        def settings = em.getSettingsByRy([ry:copyYear])
-        if( !settings ) throw new Exception('Revision Year ' + copyYear  + ' settings are not defined.')
+    public void revise( oldsetting, params ) {
+    	if (params.ry <= oldsetting.ry) 
+    		throw new Exception('New Revision Year must be greater than ' + oldsetting.ry + '.')
+
+        def settings = em_land.find([ry:oldsetting.ry]).list() 
+        if( !settings ) throw new Exception('Revision Year ' + oldsetting.ry  + ' settings are not defined.')
         
         settings.each{ setting ->
-            def oldsettingid = setting.objid 
-            setting = em.read([objid:oldsettingid] )
-            setting.previd = oldsettingid
-            setting.objid = util.generateId('LS')
-            setting.ry = newry  
-            if ( ! isDuplicateSetting( setting ) ){
-                em.create(setting )
-                copyAssessLevels( setting.objid, oldsettingid )
-                copyLcuvs( setting.objid, oldsettingid )
-                copyLandAdjustmentTypes( setting.objid, oldsettingid )
-                rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, oldsettingid)
-            }
+            def newsetting = em_land.read(setting)
+            newsetting.objid = util.generateId('LS')
+            newsetting.previd = setting.objid 
+            newsetting.ry = params.ry  
+            em_land.create(newsetting )
+            copyAssessLevels( newsetting, setting, true )
+            copyLcuvs( newsetting, setting, true )
+            copyLandAdjustmentTypes( newsetting, setting, true )
+            copyLgus(newsetting, setting)
         }
-        return open( settings[0] )
     }
 
+
+    void copyAssessLevels( newsetting, setting, updateprevid ) {
+        def assesslevels = getAssessLevels( setting )
+        assesslevels.each { al ->
+        	def ranges = getRanges(al)
+            al.previd = (updateprevid ? al.objid : null)
+            al.objid = util.generateId('AL')
+            al.landrysettingid = newsetting.objid 
+            al.fixrate = util.toBoolean(al.fixrate, true)
+            saveAssessLevel( al )
+
+            ranges.each{ range ->
+                range.previd = (updateprevid ? range.objid : null)
+                range.objid = util.generateId('RA')
+                range.landassesslevelid = al.objid 
+                range.landrysettingid = newsetting.objid 
+                saveRange( range )
+            }
+        }
+    }
+
+
+    void copyLcuvs( newsetting, setting, updateprevid ) {
+        getPropertyClassifications().each{ pc ->
+            def specificclasses = getSpecificClasses(setting, pc)
+            specificclasses.each { sc ->
+            	def subclasses = getSubClasses(sc)
+                sc.previd = (updateprevid ? sc.objid : null)
+                sc.objid = util.generateId('SC')
+                sc.landrysettingid = newsetting.objid 
+                saveSpecificClass( sc )
+                
+                subclasses.each { sbc ->
+                    sbc.previd = (updateprevid ? sbc.objid : null)
+                    sbc.objid = util.generateId('SB')
+                    sbc.specificclass_objid = sc.objid
+                    sbc.landrysettingid = newsetting.objid 
+                    saveSubClass( sbc )
+                }
+            }
+            
+            def strippings = getStrippings( setting, pc)
+            strippings.each { st ->
+                st.previd = (updateprevid ? st.objid : null)
+                st.objid = util.generateId('ST')
+                st.landrysettingid = newsetting.objid 
+                saveStripping( st )
+            }
+        }
+    }
+
+
+    void copyLandAdjustmentTypes( newsetting, setting, updateprevid ) {
+        def landadjustments = getAdjustmentTypes(setting);
+        landadjustments.each { la ->
+        	def adjclassifications = getAdjustmentClassifications(la)
+
+            la.previd = (updateprevid ? la.objid : null)
+            la.objid =  util.generateId('LA') 
+            la.landrysettingid = newsetting.objid
+            saveAdjustmentType( la );
+
+            adjclassifications.each{ac ->
+                ac.objid = la.objid 
+                ac.landrysettingid = newsetting.objid
+                insertAdjustmentTypeClassification(ac, ac.classification)
+            }
+        }
+    }
+
+    void copyLgus(newsetting, setting){
+    	def lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
+    	lgus.each{
+    		it.objid = 'RL' + new java.rmi.server.UID()
+    		it.rysettingid = newsetting.objid 
+    		em_rysettinglgu.create(it)
+    	}
+    }
+
+
+    @Async
+    @ProxyMethod
+    public def exportData(setting) {
+        setting = open(setting)
+        setting.type = 'land'
+        setting.levels = getAssessLevels(setting)
+        setting.ranges = []
+        setting.levels.each{
+            setting.ranges += getRanges(it)
+        }
+        setting.specificclasses = em_specificclass.find([landrysettingid:setting.objid]).list()
+        setting.subclasses = []
+        setting.specificclasses.each{
+            setting.subclasses += getSubClasses(it)
+        }
+        setting.strippings = em_stripping.find([landrysettingid:setting.objid]).list()
+        setting.adjustmenttypes = getAdjustmentTypes(setting)
+        setting.adjustmenttypes.each{
+            it.classifications = getAdjustmentClassifications(it)
+        }
+        setting.lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
+        return setting
+    }
+
+    @Async
+    @ProxyMethod
+    public def importData(setting) {
+    	if (setting.type != 'land')
+            throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.')
+            
+        em_land.save(setting)
+        setting.levels.each{
+            saveAssessLevel(it)
+        }
+        setting.ranges.each{
+            saveRange(it)
+        }
+        setting.specificclasses.each{
+            saveSpecificClass(it)
+        }
+        setting.subclasses.each{
+            saveSubClass(it)
+        }
+        setting.strippings.each{
+            saveStripping(it)
+        }
+        setting.adjustmenttypes.each{
+            saveAdjustmentType(it)
+        }
+        setting.lgus.each{em_rysettinglgu.save(it)}
+    }
+
+
+
+    /*----------------------------------------------------------
+    * SYNC support
+    ----------------------------------------------------------*/
 
     @ProxyMethod
     public void syncData( msg ) {
@@ -340,25 +499,23 @@ public class LandRYSettingService
     @ProxyMethod
     public void doSyncData( msg ) {
         if (msg.msgtype == 'landrysetting'){
-            em.save( msg.data )
-            rysettingSvc.createLgus( SETTING_TYPE, msg.data )
+            em_land.save( msg.data )
+            msg.data.lgus?.each{
+            	em_rysettinglgu.save(it)
+            }
         }
         else if (msg.msgtype == 'landassesslevels'){
             msg.data.each{lvl -> 
-                println 'updating landassesslevel -> ' + lvl.objid 
                 saveAssessLevel(lvl)
                 lvl.ranges.each{ range ->
-                    println 'updating landassesslevelrange -> ' + range.objid 
                     saveRange(range)
                 }
             }
         }
         else if (msg.msgtype == 'specificclasses'){
             msg.data.each{spc ->
-                println 'updating specificclass -> ' + spc.objid 
                 saveSpecificClass(spc)
                 spc.subclasses.each{sub ->
-                    println 'updating subclass -> ' + sub.objid 
                     saveSubClass(sub)
                 }
             }
@@ -370,188 +527,9 @@ public class LandRYSettingService
         }
         else if (msg.msgtype == 'adjustmenttypes'){
             msg.data.each{
-                saveLandAdjustmentType(it)
+                saveAdjustmentType(it)
             }
         } 
-    }
-
-
-    /*----------------------------------------------------------
-    * Support Methods
-    ----------------------------------------------------------*/
-    void validate( entity ) {
-        if( entity.ry <= 0 ) 
-            throw new Exception('Revision Year must be greater than zero.')
-    }
-    
-
-    boolean isDuplicateSetting( entity ) {
-        def data = em.findDuplicate(entity)
-        return data != null 
-    }
-    
-    
-    void buildAppliedToInfo(entity){
-        if (entity.lgus == null)
-            entity.lgus = []
-        entity.appliedto = entity.lgus.sort{a,b -> a.lguname <=> b.lguname}.lguname.join(', ')
-    }
-
-
-    void loadInitialAssessesLevels(entity){
-        getPropertyClassifications().each{
-            saveAssessLevel([
-                objid               : it.objid,
-                landrysettingid     : entity.objid,
-                classification_objid: it.objid,
-                classification      : it,
-                code                : it.code,
-                name                : it.name, 
-                fixrate             : true,
-                rate                : 0.0
-            ])
-        }
-    }
-
-
-    void copyLandAdjustments( newsettinTypegid, oldsettingid ) {
-        def landadjustments = getLandAdjustments( oldsettingid )
-        landadjustments.each {
-            it.previd = it.objid
-            it.objid = util.generateId('LA')
-            it.landrysettingid = newsettingid
-            saveLandAdjustmentType( it )
-        }
-    }
-    
-    void copyLcuvs( newsettingid, oldsettingid ) {
-        getPropertyClassifications().each{ pc ->
-            def specificclasses = getSpecificClasses( oldsettingid, pc.objid )
-            specificclasses.each { sc ->
-                sc.previd = sc.objid
-                sc.objid = util.generateId('SC')
-                sc.landrysettingid = newsettingid 
-                saveSpecificClass( sc )
-                
-                def subclasses = getSubClasses( sc.previd )
-                subclasses.each { sbc ->
-                    sbc.previd = sbc.objid
-                    sbc.objid = util.generateId('SB')
-                    sbc.specificclass_objid = sc.objid
-                    sbc.landrysettingid = newsettingid 
-                    saveSubClass( sbc )
-                }
-            }
-            
-            def strippings = getStrippings( oldsettingid, pc.objid )
-            strippings.each { st ->
-                st.previd = st.objid
-                st.objid = util.generateId('ST')
-                st.landrysettingid = newsettingid 
-                saveStripping( st )
-            }
-        }
-    }
-    
-    void copyAssessLevels( newsettingid, oldsettingid ) {
-        def assesslevels = getAssessLevels( oldsettingid )
-        assesslevels.each { al ->
-            al.previd = al.objid 
-            al.objid = util.generateId('AL')
-            al.landrysettingid = newsettingid
-            saveAssessLevel( al )
-
-            getRanges(al.previd).each{ range ->
-                range.previd = range.objid 
-                range.objid = util.generateId('RA')
-                range.landassesslevelid = al.objid 
-                range.landrysettingid = newsettingid
-                saveRange( range )
-            }
-        }
-    }
-
-    void copyLandAdjustmentTypes( newsettingid, oldsettingid ) {
-        def landadjustments = getLandAdjustmentTypes( oldsettingid );
-        landadjustments.each { la ->
-            la.previd = la.objid;
-            la.objid =  util.generateId('LA') 
-            la.landrysettingid = newsettingid
-            saveLandAdjustmentType( la );
-
-            def adjclassifications = getAdjustmentClassifications([objid:la.previd])
-            adjclassifications.each{ac ->
-                ac.objid = la.objid 
-                ac.landrysettingid = newsettingid
-                insertLandAdjustmentTypeClassification(ac, ac.classification)
-            }
-        }
-
-    }
-
-
-    void checkApproved( entity ){
-        def old = open(entity)
-        if (old.state == STATE_APPROVED)
-        throw new Exception('Setting has already been approved.')
-    }
-
-
-    @Async
-    @ProxyMethod
-    public def exportData(setting) {
-        setting = open(setting);
-        setting.type = 'land';
-        setting.levels = getAssessLevels(setting.objid);
-        setting.ranges = [];
-        setting.levels.each{
-            setting.ranges += getRanges(it.objid);
-        }
-        setting.specificclasses = getSpecificClasses(setting.objid, '%');
-        setting.subclasses = [];
-        setting.specificclasses.each{
-            setting.subclasses += getSubClasses(it.objid);
-        }
-        setting.strippings = getStrippings(setting.objid, '%');
-        setting.adjustmenttypes = getLandAdjustmentTypes(setting.objid);
-        setting.adjustmenttypes.each{
-            it.classifications = getAdjustmentClassifications(it)
-        }
-        return setting
-    }
-
-
-    @Async
-    @ProxyMethod
-    public def importData(setting) {
-        if (setting.type != 'land')
-            throw new Exception('Invalid data. Imported data is for ' + setting.type.toUpperCase() + ' setting.');
-            
-        try{
-            create(setting);
-        }
-        catch( e){
-            update(setting);
-        }
-        
-        setting.levels.each{
-            saveAssessLevel(it);
-        }
-        setting.ranges.each{
-            saveRange(it);
-        }
-        setting.specificclasses.each{
-            saveSpecificClass(it);
-        }
-        setting.subclasses.each{
-            saveSubClass(it);
-        }
-        setting.strippings.each{
-            saveStripping(it);
-        }
-        setting.adjustmenttypes.each{
-            saveLandAdjustmentType(it);
-        }
     }
 
 }

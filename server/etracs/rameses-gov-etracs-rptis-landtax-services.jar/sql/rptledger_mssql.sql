@@ -418,7 +418,7 @@ WHERE sl.objid = $P{objid}
 
 [getPreviousFaas]
 SELECT prevfaasid 
-FROM previousfaas pf
+FROM faas_previous pf
 WHERE faasid = $P{faasid}
 
 

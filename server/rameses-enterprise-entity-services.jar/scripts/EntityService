@@ -12,6 +12,18 @@ class EntityService
 	@Service('PersistenceService')
 	def persistenceSvc;	
 
+	@ActiveDB('entityindividual')
+	def em_individual 
+
+	@ActiveDB('entityjuridical')
+	def em_juridical 
+
+	@ActiveDB('entitymultiple')
+	def em_multiple 
+
+	@ActiveDB('entitymember')
+	def em_member
+
 
 	@ProxyMethod
 	public def open( o ) { 
@@ -25,9 +37,49 @@ class EntityService
 	public def save( o ) { 
 		o._schemaname = 'entity';
 		persistenceSvc.save( o ); 
+
 		o._schemaname = 'entity' + o.type.toString().toLowerCase(); 
-		return persistenceSvc.save( o ); 
+
+		def entity = null 
+		if ('entityindividual' == o._schemaname){
+			entity = em_individual.read(o)
+			if (entity)
+				em_individual.update(o)
+			else 
+				em_individual.insertIndividual(o)
+		}
+		else if ('entityjuridical' == o._schemaname){
+			entity = em_juridical.read(o)
+			if (entity){
+				em_juridical.update(o)
+			}
+			else {
+				o.administrator_name = o.adminstrator?.name
+				o.administrator_address = o.adminstrator?.address
+				o.administrator_position = o.adminstrator?.position
+				em_juridical.insertJuridical(o)
+			}
+		}
+		else if ('entitymultiple' == o._schemaname){
+			entity = em_multiple.read(o)
+			if (entity)
+				em_multiple.update(o)
+			else 
+				em_multiple.insertMultiple(o)
+			saveMember(o)
+		}
+		return o
 	} 
+
+	void saveMember(o){
+		o.members?.each{
+			def m  = em_member.read(it)
+			if (m)
+				em_member.update(it)
+			else 
+				em_member.create(it)
+		}
+	}
 
 	@ProxyMethod 
 	public def getPhoto( o ) {

@@ -61,7 +61,7 @@ ORDER BY f.tdno
 
 [getCancelledTmcrFaases]
 SELECT ${tmcrfields}
-FROM previousfaas pf 
+FROM faas_previous pf 
 	INNER JOIN faas f on pf.prevfaasid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid

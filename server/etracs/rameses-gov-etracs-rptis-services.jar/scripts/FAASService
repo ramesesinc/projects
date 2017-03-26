@@ -8,9 +8,50 @@ class FAASService
 {
 	@Env 
 	def env
-	
+
 	@ActiveDB('faas')	
 	def em 
+
+	@DataContext('faas')
+	def em_faas
+
+	@DataContext('faas_list')
+    def em_faaslist
+
+	@DataContext('faas_previous')
+	def em_faas_previous
+
+	@DataContext('faas_backtax')
+	def em_faas_backtax
+
+	@DataContext('faas_signatory')
+	def em_faas_signatory 
+
+	@DataContext('faas_task')
+	def em_faas_task 
+
+	@DataContext('faas_affectedrpu')
+	def em_faas_affectedrpu 
+
+	@DataContext('faas_stewardship')
+	def em_stewardship
+
+	@DataContext('faasupdate')
+	def em_faasupdate
+
+	@DataContext('faas_txntype')
+	def em_txntype 
+
+	@DataContext('faas_restriction_type')
+	def em_restrictiontype
+
+	@DataContext('exemptiontype')
+	def em_exemptiontype 
+
+	@DataContext('faasannotation')
+	def em_faasannotation 
+
+
 
 	@ActiveDB('faas_list')	
 	def faasListEm
@@ -37,7 +78,7 @@ class FAASService
 	def txnRef
 
     @Service('FAASService')
-    def faasSvc
+    def self
 
     @Service('DBImageService')
     def imageSvc
@@ -54,37 +95,25 @@ class FAASService
     @DataContext('realproperty')
     def realpropertyDb
 
-    @DataContext('faas')
-    def faasDb
-
-    @DataContext('faas_list')
-    def faaslistDb
-
-
-
-    
-    def SCHEMA_PREVIOUSFAAS		= 'previousfaas'
-	def SCHEMA_BACKTAX			= 'backtax'
-	def SCHEMA_SIGNATORY		= 'signatory'
 	
-	def STATE_INTERIM 				= 'INTERIM'
-	def STATE_FORAPPROVAL 				= 'FORAPPROVAL'
-	def STATE_CURRENT 				= 'CURRENT'
-	def STATE_CANCELLED  			= 'CANCELLED'
-
-	def UTDNO_KEY 				= 'UNIQUE_TDNO'
+	def STATE_INTERIM = 'INTERIM'
+	def STATE_FORAPPROVAL = 'FORAPPROVAL'
+	def STATE_CURRENT = 'CURRENT'
+	def STATE_CANCELLED = 'CANCELLED'
+	def UTDNO_KEY = 'UNIQUE_TDNO'
 
 
 	@ProxyMethod
 	public def initCaptureAndCreate( info ) {
 		def faas = initCapture(info)
-		faasSvc.createFaas(faas)
+		self.createFaas(faas)
 		return faas
 	}
 
 	@ProxyMethod
 	public def initCapture( info ) {
 		util.required('LGU', info.lgu)
+		info.datacapture = true 
 		info.lguid 		 = info.lgu.objid 
 		info.lgutype 	 = info.lgu.lgutype 
 		
@@ -96,6 +125,7 @@ class FAASService
 		faas.rpuid  		= faas.rpu.objid
 		faas.fullpin 		= faas.rpu.fullpin 
 		faas.datacapture    = true
+		faas.previousfaases = []
 		faas.autonumber  	= ( info.autonumber != null ? info.autonumber : false)
 		return faas
 	}	
@@ -103,7 +133,7 @@ class FAASService
 
 	@ProxyMethod
 	public def initOnlineTransaction( info ) {
-		def faas = faasSvc.initTransaction(info);
+		def faas = self.initTransaction(info);
 		createFaas(faas)
 		insertSketch(info, faas)
 		return faas
@@ -173,8 +203,32 @@ class FAASService
 
 	@ProxyMethod
 	public void savePreviousFaases( faas ) {
-		faas.previousfaases?.each{
-			em.save(it, SCHEMA_PREVIOUSFAAS)
+		//handle old data 
+		if (!faas.previousfaases) 
+			faas.previousfaases = []
+
+		if (faas.prevtdno && (! faas.previousfaases.find{it.prevtdno == faas.prevtdno})){
+			def pf = [:]
+			pf.objid = 'PF' + new java.rmi.server.UID()
+			pf.faasid = faas.objid 
+			pf.prevfaasid = null 
+			pf.prevrpuid = null 
+			pf.prevtdno = faas.prevtdno 
+			pf.prevpin = faas.prevpin
+			pf.prevowner = faas.prevowner
+			pf.prevadministrator = faas.prevadministrator
+			pf.prevav = faas.prevav
+			pf.prevmv = faas.prevmv
+			pf.prevareasqm = faas.prevareasqm
+			pf.prevareaha = faas.prevareaha
+			pf.preveffectivity = faas.preveffectivity
+			faas.previousfaases << pf 
+		}
+		faas.previousfaases.each{
+			em_faas_previous.save(it)
+		}			
+		faas._previousfaases?.each{
+			em_faas_previous.delete(it)
 		}			
 	}
 
@@ -186,7 +240,8 @@ class FAASService
 		updateFullPinInfo(faas)
 		updateRealProperty(faas)
 		updateRpu(faas)
-		em.update(faas)
+		em_faas.save(faas)
+		savePreviousFaases( faas )
 		saveSignatory(faas)
 		saveBackTaxes(faas)
 		updateRpuMasterInfo(faas)
@@ -203,23 +258,35 @@ class FAASService
 		return em.read(faas)
 	}
 
-
 	@ProxyMethod
 	public def openFaas(faas){
-		faas = em.findFaasById(faas)
+		faas = em_faas.read(faas)
 		if (!faas) throw new Exception('FAAS does not exist or has already been deleted.')
 		faas.rpu 			= rpuSvc.openRpu([objid:faas.rpuid])
 		faas.rp 			= rpSvc.open([objid:faas.realpropertyid])
 		faas.txntype 		= getTxnType( faas.txntype.objid )
-		faas.previousfaases = em.getPreviousFaases([faasid:faas.objid])
+		faas.previousfaases = em_faas_previous.find([faasid:faas.objid]).orderBy('prevtdno').list()
 		faas.backtaxes      = em.getBackTaxes([faasid: faas.objid]).each{ it.taxable = util.toBoolean(it.taxable, true) }
+		faas.taxpayer.address = faas.taxpayer.address?.text 
+		loadTaskInfo(faas)
 		loadSignatories(faas)
+		loadMessageList(faas)
 		return faas 
+	}
+
+	void loadTaskInfo(faas){
+		def tsk = em_faas_task.where('refid = :objid and enddate is null', faas).first()
+		if (tsk){
+			faas.taskid = tsk.objid 
+			faas.taskstate = tsk.state 
+			faas.taskmsg = tsk.message 
+			faas.assignee = tsk.assignee
+		}
 	}
 
 	@ProxyMethod
 	public def disapproveOnlineFaas(faas) {
-		faasSvc.deleteFaas(faas)
+		self.deleteFaas(faas)
 	}
 
 	@ProxyMethod
@@ -234,28 +301,22 @@ class FAASService
 
 		trackingSvc.delete(faas) 
 		txnRef.delete(faas.objid)
-		em.delete(faas, SCHEMA_SIGNATORY)
-		em.deleteTasks(faas)
-		em.deleteFaasUpdate(faas)
-		em.deleteFaasStewardship(faas.rpu)
+		em_faas_signatory.delete(faas)
+		em_faas_task.find([refid:faas.objid]).delete()
+		em_faasupdate.find([faasid:faas.objid]).delete()
+		em_stewardship.find([stewardrpumasterid:faas.rpu.rpumasterid]).delete()
 
 		def affectedrpus = em.getAffectedRpus(faas)
-		em.deleteAffectedRpus(faas)
+		em_faas_affectedrpu.find([faasid:faas.objid]).delete()
 		affectedrpus.each{
 			if (it.newfaasid){
-				faasSvc.deleteFaasById(it.newfaasid)
+				self.deleteFaasById(it.newfaasid)
 			}
 		}
 
-		em.getPreviousFaases([faasid:faas.objid]).each{
-			em.delete(it, SCHEMA_PREVIOUSFAAS)
-		}
-
-		faas.backtaxes.each{
-			em.delete(it, SCHEMA_BACKTAX)
-		}
-
-		em.delete(faas)
+		em_faas_previous.find([faasid:faas.objid]).delete()
+		em_faas_backtax.find([faasid:faas.objid]).delete()
+		em_faas.delete(faas)
 
 		if (faas.txntype.newrpu){
 			rpuSvc.deleteRpu(rpuSvc.openRpu(faas.rpu))
@@ -265,7 +326,7 @@ class FAASService
 		}
 
 		if (faas.parentfaasid){
-			faasSvc.deleteFaas(openFaas([objid:faas.parentfaasid]))
+			self.deleteFaas(openFaas([objid:faas.parentfaasid]))
 		}			
 		
 		return faas 
@@ -285,7 +346,7 @@ class FAASService
 	@ProxyMethod
 	public void deleteFaasById( faasid ) {
 		if (faasid) {
-			faasSvc.deleteFaas(faasSvc.openFaas([objid:faasid]))
+			self.deleteFaas(self.openFaas([objid:faasid]))
 		}
 	}	
 
@@ -364,8 +425,8 @@ class FAASService
 			}
 			def pf = em.findPreviousFaas(it)
 			if(pf){
-				faasDb.update([objid:pf.faasid, prevtdno:it.tdno])
-				faaslistDb.update([objid:pf.faasid, prevtdno:it.tdno])
+				em_faas.update([objid:pf.faasid, prevtdno:it.tdno])
+				em_faaslist.update([objid:pf.faasid, prevtdno:it.tdno])
 			}
 		}
 
@@ -374,7 +435,7 @@ class FAASService
 	void approveParentFaas(faas){
         if (faas.parentfaasid){
         	def pf = openFaas([objid:faas.parentfaasid])
-            faasSvc.approveFaas(pf)
+            self.approveFaas(pf)
         }
     }
 
@@ -403,7 +464,7 @@ class FAASService
 		em.getAffectedRpus(faas).each{
 			def afaas = openFaas([objid:it.newfaasid])
 			if(afaas){
-				faasSvc.approveFaas(afaas)
+				self.approveFaas(afaas)
 			}
 		}
 	}
@@ -485,7 +546,7 @@ class FAASService
     @ProxyMethod
     public void saveSignatory( signatory ) {
     	if (signatory)
-    		em.save(signatory, SCHEMA_SIGNATORY)
+    		em_faas_signatory.save(signatory)
     }
 
 
@@ -509,6 +570,23 @@ class FAASService
 	@ProxyMethod
 	public def loadSignatories(faas){
 		faas.putAll(findSignatory(faas)) 
+	}
+
+	void loadMessageList(faas){
+		def msgs = []
+
+		//redflag 
+		def redflagCount = getOpenRedflagCount(faas.objid);
+        if (redflagCount > 0){
+            msgs << 'FAAS has ' + redflagCount + ' Red Flag' + (redflagCount == 1 ? '' : 's') + ' to be resolved.\n';
+        }
+
+        //annotations
+        def annotations = em_faasannotation.find([faasid:faas.objid]).list()
+        if(annotations){
+        	msgs << 'FAAS has active Annotation.'
+        }
+		faas.messagelist = msgs;
 	}
 
 	@ProxyMethod
@@ -541,7 +619,7 @@ class FAASService
 
 	@ProxyMethod
 	public def findSignatory( faas ) {
-		def sig = em.read(faas, SCHEMA_SIGNATORY)
+		def sig = em_faas_signatory.read(faas)
 		if (!sig) 
 			sig = [appraiser:[:], taxmapper:[:], recommender:[:], approver:[]]
 		return sig
@@ -562,7 +640,11 @@ class FAASService
 
 	@ProxyMethod
 	public def findFaasById(faasid) {
-		return em.findFaasById([objid:faasid])
+		def faas = em_faas.read([objid:faasid])
+		if (faas){
+			loadTaskInfo(faas)
+		}
+		return faas 
 	}
 
 	@ProxyMethod
@@ -671,12 +753,13 @@ class FAASService
 		return name;
 	}
 
-/*------------------------------------------------------------------------
+	/*------------------------------------------------------------------------
 	**
 	** HELPER METHODS
 	**
 	------------------------------------------------------------------------*/
 	def initFaas(info){
+		def ry = (info.ry == null ? var.current_ry : info.ry)
 		def faas = [
 			objid 		  	: util.generateId('F'),
 			state 		  	: STATE_INTERIM,
@@ -686,7 +769,7 @@ class FAASService
 			prevareaha      : '0.000000',
 			prevareasqm     : '0.00',
 			prevpin     	: info.fullpin,
-			effectivityyear : dtSvc.serverYear + 1,
+			effectivityyear : (info.datacapture == true ? ry + 1 : dtSvc.serverYear + 1),
 			effectivityqtr  : 1,
 			backtaxyrs		: 0,
 			iscondo 		: info.iscondo,
@@ -733,11 +816,11 @@ class FAASService
 	@ProxyMethod 
 	public void saveBackTaxes(faas){
 		faas._backtaxes?.each{
-			em.delete(it, SCHEMA_BACKTAX)
+			em_faas_backtax.delete(it)
 		}
 		faas.backtaxes?.each{bt->
 			bt.faasid = faas.objid 
-			em.save(bt, SCHEMA_BACKTAX)
+			em_faas_backtax.save(bt)
 			savePreviousFaases(bt)
 			updateFaasPrevInfo(bt)
 		}
@@ -756,7 +839,7 @@ class FAASService
 		info.prevareasqm = bt.prevareasqm
 		info.prevareaha = bt.prevareaha
 		info.preveffectivity = bt.preveffectivity
-		faasDb.update(info)
+		em_faas.update(info)
 	}
 
     void checkTxnReference(faas){
@@ -770,8 +853,10 @@ class FAASService
 	void insertTxnReference(faas){
 		if (faas.previousfaases &&  ! faas.txntype.objid.matches('SD|CS')){
 			def prevfaasid = faas.previousfaases[0].prevfaasid
-			def refno = ( faas.tdno == null ? 'Doc No. ' + faas.utdno : 'TD No. ' + faas.tdno  ) 
-			txnRef.insert([objid:prevfaasid, refid:faas.objid, msg:'FAAS is currently referenced by ' + refno ])
+			if (prevfaasid){
+				def refno = ( faas.tdno == null ? 'Doc No. ' + faas.utdno : 'TD No. ' + faas.tdno  ) 
+				txnRef.insert([objid:prevfaasid, refid:faas.objid, msg:'FAAS is currently referenced by ' + refno ])
+			}
 		}
 	}	
 
@@ -798,7 +883,7 @@ class FAASService
 	@ProxyMethod
 	public void cancelPreviousFaases(faas){
 		def pdate = dtSvc.parseDate(faas.approver.dtsigned, null)
-		em.getPreviousFaases([faasid:faas.objid]).each{
+		em_faas_previous.where('faasid = :faasid and prevfaasid is not null', [faasid:faas.objid]).list().each{
 			def params = [
 				objid  				: it.prevfaasid,
 				rpuid 				: it.prevrpuid, 
@@ -846,14 +931,14 @@ class FAASService
 		util.required('cancelledbytdnos', params.cancelledbytdnos)
 
 		def pdate = dtSvc.parseDate(params.canceldate, null)
+		def info =[:]
 		params.cancelledyear 	= pdate.year
 		params.cancelledqtr 	= pdate.qtr
 		params.cancelledmonth 	= pdate.month
 		params.cancelledday 	= pdate.day 
-
 		em.cancelFaas(params)
 		faasListEm.updateFaasList(params)
-		if (params.txntype.newrpu){
+		if (util.isTrue(params.txntype.newrpu)){
 			em.cancelRpu([objid:params.rpuid])
 		}
 	}
@@ -954,26 +1039,56 @@ class FAASService
 		}
 	}	
 
+
+	@ProxyMethod
+    public def buildPreviousFaases(faas, oldfaases){
+        def prevfaases = []
+        oldfaases.each{
+            def pf = [:]
+            pf.objid = 'PF' + new java.rmi.server.UID()
+            pf.faasid = faas.objid 
+            pf.prevfaasid = it.faasid
+            pf.prevrpuid = it.rpuid 
+            pf.prevtdno = it.tdno
+            pf.prevpin = it.fullpin 
+            pf.prevowner = it.owner.name 
+            pf.prevadministrator = it.administrator?.name 
+            pf.prevav = numSvc.format('#,##0.00', it.totalav)
+            pf.prevmv = numSvc.format('#,##0.00', it.totalmv)
+            pf.prevareasqm = numSvc.format('#,##0.00', it.totalareasqm)
+            pf.prevareaha = numSvc.format('#,##0.000000', it.totalareaha)
+            pf.preveffectivity = it.effectivityyear
+            prevfaases << pf 
+        }
+        return prevfaases 
+    }
+
+
 	void initNewFaasInfo(info, newfaas){
 		def pdate 	= dtSvc.parseCurrentDate()
 
 		def oldid  			 	= newfaas.objid 
 		def newid 			 	= util.generateId('F')
 		newfaas.objid 			= newid 
-		newfaas.previousfaases  = [[faasid:newid, prevfaasid:oldid]]
+
+		def pf = [:]
+		pf.faasid = oldid 
+		pf.rpuid = newfaas.rpu.objid 
+		pf.tdno = newfaas.tdno 
+		pf.fullpin = newfaas.fullpin 
+		pf.owner = newfaas.owner 
+		pf.administrator = newfaas.administrator
+		pf.totalav = newfaas.rpu.totalav 
+		pf.totalmv = newfaas.rpu.totalmv 
+		pf.totalareasqm = newfaas.rpu.totalareasqm 
+		pf.totalareaha = newfaas.rpu.totalareaha 
+		pf.effectivityyear = newfaas.effectivityyear 
+		newfaas.previousfaases  = buildPreviousFaases([objid:newid], [pf])
+
 		newfaas.state 			= STATE_INTERIM
 		newfaas.parentfaasid    = null 
 		
 		newfaas.prevtdno		= newfaas.tdno
-		newfaas.prevpin		 	= newfaas.rpu.fullpin
-		newfaas.prevowner		= newfaas.owner.name
-		newfaas.prevadministrator = newfaas.administrator?.name
-		newfaas.prevav			=  numSvc.format('#,##0.00', newfaas.rpu.totalav)
-		newfaas.prevmv			= numSvc.format('#,##0.00', newfaas.rpu.totalmv)
-		newfaas.prevareasqm		= numSvc.format('#,##0.00', newfaas.rpu.totalareasqm)
-		newfaas.prevareaha		= numSvc.format('#,##0.000000', newfaas.rpu.totalareaha)
-		newfaas.preveffectivity = newfaas.effectivityyear 
-
 		newfaas.txntype 		= getTxnType( info.txntype.objid )
 		newfaas.datacapture 	= info.datacapture
 		newfaas.autonumber 	    = util.toBoolean(var.td_autonumber, false)
@@ -1083,5 +1198,14 @@ class FAASService
     	em.save(arpu, 'affectedrpu')
     }
 
+    @ProxyMethod
+    public def getExemptionTypes(){
+    	return em_exemptiontype.where("state ='APPROVED'").orderBy('code').list()
+    }
+
+    @ProxyMethod
+    public def getRestrictionTypes(){
+    	return em_restrictiontype.where('1=1').list()
+    }
 }
 

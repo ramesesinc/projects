@@ -132,7 +132,7 @@ SELECT
 	f.objid,
 	f.fullpin, 
 	f.tdno,
-	f.taxpayer_name, 
+	e.name as taxpayer_name, 
 	f.owner_name, 
 	f.administrator_name,
 	f.titleno,	
@@ -157,6 +157,7 @@ FROM rptcertificationitem rci
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org so on f.lguid = so.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE rci.rptcertificationid = $P{objid}
 ORDER BY f.tdno
 
@@ -186,7 +187,7 @@ SELECT
 	f.objid, 
 	f.tdno,
 	f.fullpin, 
-	f.taxpayer_name, 
+	e.name as taxpayer_name, 
 	f.owner_name, 
 	f.administrator_name,
 	f.titleno,	
@@ -211,6 +212,7 @@ FROM rptcertificationitem rci
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	LEFT JOIN sys_org so on f.lguid = so.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE rci.rptcertificationid = $P{objid}  
 ORDER BY f.tdno 
 
@@ -295,7 +297,7 @@ SELECT
 	r.objid as rpuid, 
 	rp.objid as realpropertyid, 
 	f.tdno,
-	f.taxpayer_name, 
+	e.name as taxpayer_name, 
 	f.owner_name, 
 	f.titleno,	
 	f.effectivityyear,
@@ -319,6 +321,7 @@ FROM rptcertificationitem rci
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org so ON f.lguid = so.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE rci.rptcertificationid = $P{objid}
 ORDER BY f.tdno 
 
@@ -409,7 +412,7 @@ WHERE f.state = 'CURRENT'
 SELECT 
 	f.tdno,
 	f.titleno,	
-	f.taxpayer_name, 
+	e.name as taxpayer_name, 
 	f.owner_name, 
 	f.administrator_name,
 	pc.code AS classcode,
@@ -431,6 +434,7 @@ FROM rptcertificationitem rci
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE rci.rptcertificationid = $P{objid}
 ORDER BY r.fullpin
 

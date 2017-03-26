@@ -12,7 +12,6 @@ class StructureService
 	public void updateMaterial(item){
 		item.structureid = item.structure.objid 
 		item.materialid = item.material.objid 
-		println 'item -> ' + item 
 		em.updateMaterial(item)
 	}
 

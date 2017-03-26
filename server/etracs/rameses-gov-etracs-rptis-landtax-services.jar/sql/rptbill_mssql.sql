@@ -705,7 +705,7 @@ and not exists(
 select year, qtr, av, basicav, sefav 
 from rptledgeritem_qtrly 
 where parentid = $P{parentid} 
-and (basic > basicpaid  or sef > sefpaid)
+and (basic > basicpaid  or sef > sefpaid or basicpaid = 0 or sefpaid =0)
 
 
 [getPaidLedgerBills]

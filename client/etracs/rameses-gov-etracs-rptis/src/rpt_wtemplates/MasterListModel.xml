@@ -15,7 +15,7 @@
             visibleWhen="#{allowExport}"/>
         
         <invoker type="listActions" 
-            caption="Sync from Province"
+            caption="Sync Data"
             action="syncData" 
             role="MASTER"
             permission="master.sync" 

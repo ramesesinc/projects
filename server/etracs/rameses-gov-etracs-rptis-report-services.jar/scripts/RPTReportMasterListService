@@ -15,6 +15,9 @@ class RPTReportMasterListService
     @DataContext('propertyclassification')
     def propertyclassification
 
+    @DataContext('faas_previous')
+    def em_faas_previous 
+
 
     @Service('DateService')
     def dtSvc 
@@ -55,6 +58,14 @@ class RPTReportMasterListService
 
 		if( ! list ) throw new Exception('Record not found.')
 		list.each{
+			def prevlist = em_faas_previous.find([faasid:it.objid]).list()
+            if (prevlist){
+                it.prevowner = prevlist.prevowner.join(' / ')
+                it.prevadministrator = prevlist.prevadministrator.join(' / ')
+                it.prevmv = prevlist.prevmv.join(' / ')
+                it.prevav = prevlist.prevmv.join(' / ')
+            }
+
 			if (it.administrator && it.administrator.name){
 				it.owner.name = it.owner.name + '\nAdmin: ' + it.administrator.name 
 			}

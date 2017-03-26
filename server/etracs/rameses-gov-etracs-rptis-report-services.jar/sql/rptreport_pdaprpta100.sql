@@ -10,7 +10,7 @@ SELECT
 	SUM( case when rp.claimno is null then r.totalareaha else 0 end ) AS landareatotal,
 	SUM( CASE WHEN rp.claimno is null and r.taxable = 1 THEN 1 ELSE 0.0 END ) AS tdtaxablecount,
 	SUM( CASE WHEN rp.claimno is null and r.taxable = 0 THEN 1 ELSE 0.0 END ) AS tdexemptcount,
-	SUM( CASE WHEN rp.claimno is null and  then 1 else 0 END ) AS tdcount,
+	SUM( CASE WHEN rp.claimno is null then 1 else 0 END ) AS tdcount,
 	SUM( CASE WHEN r.rputype = 'land' THEN r.totalav ELSE 0.0 END ) AS landavtotal,
 	SUM( CASE WHEN r.rputype <> 'land' THEN r.totalav ELSE 0.0 END ) AS improvavtotal,
 	SUM( r.totalav ) AS avtotal,

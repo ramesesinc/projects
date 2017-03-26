@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="landrysetting:info" 
+                 action="init" caption="Schedule of Market Values" 
+                 mnemonic="j" index="10"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.LandSMVInfoModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.LandSMVInfoPage"/>
+    </pages>
+</workunit>

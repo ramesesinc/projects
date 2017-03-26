@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*;
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 import com.rameses.etracs.shared.*;
 
 public abstract class AbstractCertificationController 
@@ -60,7 +60,10 @@ public abstract class AbstractCertificationController
     }
     
     def createEntity(){
-        return [:]
+        def map = [:]
+        def types = certificationTypes
+        map.certtype = (types ? types[0] : null)
+        return map;
     }
     
     void afterInit(){}

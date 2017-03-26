@@ -1,8 +1,0 @@
-"entity.rpu.*" [ allowEdit == true ] {
-    enabled:true;
-}
-
-"entity.rpu.*" [ allowEdit == false ] {
-    enabled:false;
-}
-

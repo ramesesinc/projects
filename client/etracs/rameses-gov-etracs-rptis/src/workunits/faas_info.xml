@@ -14,10 +14,10 @@
         <invoker type="formActions" caption="Remote Tools" name="popupChangeInfo"  visibleWhen="#{entity.state == 'CURRENT' || entity.taskstate.matches('provapprover')}" category="faas:info:remotetool" role="ADMIN"/>
    </invokers>
    
-   <code class="com.rameses.gov.etracs.rpt.faas.ui.FaasController">
+   <code class="com.rameses.gov.etracs.rptis.models.FAASModel">
    </code>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASPage"/>
     </pages>    
 </workunit>
 

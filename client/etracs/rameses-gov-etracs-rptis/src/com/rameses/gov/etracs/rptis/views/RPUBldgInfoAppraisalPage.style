@@ -1,0 +1,66 @@
+"selectedStructuralType" [allowEdit == true]{
+    readonly:false;
+}
+
+"selectedStructuralType" [allowEdit != true || (entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0)]{
+    readonly:true;
+}
+
+"selectedStructuralType" [entity.txntype.objid.matches('SD|CS')]{
+    readonly:true;
+}
+
+
+
+
+
+"selectedBldgUse" [selectedStructuralType != null && allowEdit == true]{
+    readonly:false;
+}
+
+"selectedBldgUse" [selectedStructuralType == null || allowEdit == false || (entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0)]{
+    readonly:true;
+}
+
+"selectedBldgUse" [entity.txntype.objid.matches('SD|CS')]{
+    readonly:true;
+}
+
+
+
+
+"selectedFloor" [ allowEdit == true && selectedBldgUse != null] {
+    readonly:false;
+}
+
+"selectedFloor" [ allowEdit == false || selectedBldgUse == null || (entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0)] {
+    readonly:true;
+}
+
+"selectedFloor" [entity.txntype.objid.matches('SD|CS')] {
+    readonly:true;
+}
+
+
+
+
+"selectedAdditionalItem" [ allowEdit == true && floor != null] {
+    readonly:false;
+}
+
+
+"selectedAdditionalItem" [ allowEdit == false || floor == null || (entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0)] {
+    readonly:true;
+}
+
+"selectedAdditionalItem" [entity.txntype.objid.matches('SD|CS')] {
+    readonly:true;
+}
+
+"selectedStructuralType|selectedBldgUse|selectedFloor|selectedAdditionalItem|selectedParam"  [entity._resolve == true] {
+    readonly:false;
+}
+
+"totalAdditional" [true]{
+    enabled:false;
+}

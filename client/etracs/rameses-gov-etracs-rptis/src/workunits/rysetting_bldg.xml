@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit extends="rpt_wtemplates/RYSetting.xml">
+<workunit extends="rpt_wtemplates/RYSettingModel.xml">
     <invokers>
-        <invoker type="bldgrysetting:create" action="create" caption="Create Building Revision Setting" mnemonic="b" icon="images/doc-new.png" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="bldgrysetting:open" action="open" caption="Edit Building Revision Setting" mnemonic="b" icon="images/edit.png" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="bldgrysetting:copy" action="copy" caption="Copy Building Revision Setting" mnemonic="b" icon="images/edit.png" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="bldgrysetting:create" 
+                 action="create" 
+                 caption="Building Revision Setting" 
+                 target="window" 
+                 entityName="bldgrysetting" 
+                 serviceName="BldgRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
+        <invoker type="bldgrysetting:open" 
+                 action="open" 
+                 caption="Edit Building Revision Setting" 
+                 target="window" 
+                 entityName="bldgrysetting" 
+                 serviceName="BldgRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
     </invokers>
-    
-    <code class="com.rameses.gov.etracs.rpt.rysetting.bldgrysetting.ui.BldgRYSettingController" />
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.rysetting.bldgrysetting.ui.BldgRYSettingPage"/>
-    </pages>
 </workunit>
-

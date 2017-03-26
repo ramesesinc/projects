@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="machrysetting:info" 
+                 action="init" caption="Forex Schedules" 
+                 mnemonic="f" index="10"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.MachForexInfoModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.MachForexInfoPage"/>
+    </pages>
+</workunit>

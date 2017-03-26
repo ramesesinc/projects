@@ -49,7 +49,7 @@ class FaasServiceInterceptor
 	public void beforeApproveFaas( evt ) {
 		def faas = evt.args[0]
 		util.required('Property Owner', faas.taxpayer)
-		util.required('Memoranda', faas.memoranda)
+		//util.required('Memoranda', faas.memoranda)
 	}
 
 

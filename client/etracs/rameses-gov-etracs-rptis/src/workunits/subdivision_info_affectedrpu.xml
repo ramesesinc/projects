@@ -11,13 +11,13 @@
         <invoker type="formActions" action="cancelImprovement" caption="Cancel Improvement" mnemonic="c" visibleWhen="#{mode != 'read' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.isnew != true}" />
    </invokers>
    
-   <code class="com.rameses.gov.etracs.rptis.model.SubdivisionAffectedRpuModel" >
+   <code class="com.rameses.gov.etracs.rptis.models.SubdivisionAffectedRpuModel" >
    </code>
     
     <pages> 
         <page template="com.rameses.gov.etracs.rpt.subdivision.ui.SubdivisionAffectedRpuPage"/>
-        <page name="newrpu" template="com.rameses.gov.etracs.rptis.view.SubdivisionAffectedRpuNewPage"/>
-        <page name="cancelinfo" template="com.rameses.gov.etracs.rptis.view.CancelledImprovementInfoPage"/>
+        <page name="newrpu" template="com.rameses.gov.etracs.rptis.views.SubdivisionAffectedRpuNewPage"/>
+        <page name="cancelinfo" template="com.rameses.gov.etracs.rptis.views.CancelledImprovementInfoPage"/>
     </pages>
 </workunit>
 

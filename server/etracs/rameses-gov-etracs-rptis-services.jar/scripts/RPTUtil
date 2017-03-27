@@ -31,6 +31,9 @@ class RPTUtil
     @Service('Var')
     def varSvc
 
+    @DataContext('org')
+    def em_org 
+
 
     @ProxyMethod
     public def sum( list, field  ) {
@@ -534,6 +537,14 @@ class RPTUtil
 
     @ProxyMethod
     public String getParentCode(){
+        if ('MUNICIPALITY'.equalsIgnoreCase(env.ORGCLASS)){
+            def muni = em_org.find([objid:env.ORGID]).first()
+            if (muni){
+                def prov = em_org.find([objid:muni.parent.objid]).first()
+                if(prov) 
+                    return prov.code.replaceAll('-','')
+            }
+        }
         return env.ORGCODE.replaceAll('-.*','')
     }
 

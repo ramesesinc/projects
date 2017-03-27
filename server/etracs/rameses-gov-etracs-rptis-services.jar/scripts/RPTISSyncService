@@ -34,15 +34,11 @@ class RPTISSyncService
             origin   : env.ORGID.replaceAll('-.*?', ''),
             data     : asyncreq, 
             channel  : (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs'), 
-            channelgroup: getParentOrgCode(),
+            channelgroup: util.getParentCode(),
 		]
 		cloudNotificationSvc.addMessage(msg)
 		asyncConn.register(asyncreq.id)
 		return new AsyncToken(asyncreq.id, asyncreq.connection)
 	}
 
-	def getParentOrgCode(){
-		return env.ORGCODE.replaceAll('-.*', '')
-
-	}
 }

@@ -396,7 +396,9 @@ public class RPTBillingService
 	
 	void distributeLedgerItemQtrlyData(item){
 		def qtrlyitems = em.getLedgerQtrlyItems([parentid:item.objid])
-		1.upto(4){qtr ->
+		def startqtr = qtrlyitems.qtr.min()
+		if (startqtr == null) startqtr = 1 
+		startqtr.upto(4){qtr ->
 			def id = item.objid + '-' + qtr 
 			def qitem = [objid:id]
 			qitem.putAll(item)

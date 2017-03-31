@@ -112,13 +112,13 @@ select x.*
 		lf.backtax,
 		lf.reclassed,
 		lf.idleland,
-		rli.basic - rli.basicpaid as basic,
+		rli.basic  as basic,
 		0.0 as basicint,
 		0.0 as basicdisc,
 		0.0 as basicidle,
 		0.0 as basicidleint,
 		0.0 as basicidledisc,
-		rli.sef - rli.sefpaid as sef, 
+		rli.sef as sef, 
 		0.0 as sefint,
 		0.0 as sefdisc,
 		0.0 as firecode,
@@ -156,13 +156,13 @@ select x.*
 		lf.backtax,
 		lf.reclassed,
 		lf.idleland,
-		rliq.basic - rliq.basicpaid as basic,
+		rliq.basic  as basic,
  		0.0 as basicint,
  		0.0 as basicdisc,
  		0.0 as basicidle,
  		0.0 as basicidleint,
  		0.0 as basicidledisc,
-		rliq.sef - rliq.sefpaid as sef,
+		rliq.sef as sef,
  		0.0 as sefint,
  		0.0 as sefdisc,
  		0.0 as firecode,
@@ -186,13 +186,13 @@ select x.*
 
 [updateLedgerItemData]
 update rptledgeritem set 
-        basic = case when $P{calctype} = 'penaltydisc' then $P{basic} + basicpaid else $P{basic} end, 
+        basic = $P{basic}, 
         basicint = $P{basicint}, 
         basicdisc = $P{basicdisc}, 
-        basicidle = case when $P{calctype} = 'penaltydisc' then $P{basicidle} + basicidlepaid else $P{basicidle} end, 
+        basicidle = $P{basicidle}, 
         basicidledisc = $P{basicidledisc}, 
         basicidleint = $P{basicidleint}, 
-        sef = case when $P{calctype} = 'penaltydisc'  then $P{sef} + sefpaid else $P{sef} end, 
+        sef = $P{sef}, 
         sefint = $P{sefint}, 
         sefdisc = $P{sefdisc}, 
         firecode = $P{firecode}, 
@@ -202,21 +202,22 @@ where objid = $P{objid}
 
 [updateLedgerItemQtrlyData]
 update rptledgeritem_qtrly set 
-        basic = case when $P{calctype} = 'penaltydisc' then $P{basic} + basicpaid else $P{basic} end, 
+        basic = $P{basic}, 
         basicint = $P{basicint}, 
         basicdisc = $P{basicdisc}, 
         basicdisctaken = case when $P{basicdisc} = 0 then 0 else basicdisctaken end, 
-        basicidle = case when $P{calctype} = 'penaltydisc' then $P{basicidle} + basicidlepaid else $P{basicidle} end, 
+        basicidle = $P{basicidle}, 
         basicidledisc = $P{basicidledisc}, 
         basicidledisctaken = case when $P{basicidledisc} = 0 then 0 else basicidledisctaken end, 
         basicidleint = $P{basicidleint}, 
-        sef = case when $P{calctype} = 'penaltydisc'  then $P{sef} + sefpaid else $P{sef} end, 
+        sef = $P{sef}, 
         sefint = $P{sefint}, 
         sefdisc = $P{sefdisc}, 
         sefdisctaken = case when $P{sefdisc} = 0 then 0 else sefdisctaken end, 
         firecode = $P{firecode}, 
         revperiod = $P{revperiod}
 where objid = $P{objid}        
+and fullypaid = 0
 
 
 [getLedgerItemQtrlyAggregates]
@@ -639,7 +640,8 @@ where objid = $P{objid}
 update rptledgeritem set qtrly = $P{qtrly} where objid = $P{objid}
 
 [resetLedgerItemQtrlyFlagByLedger]	
-update rptledgeritem set qtrly = 0 where rptledgerid = $P{rptledgerid} and fullypaid = 0 
+update rptledgeritem set qtrly =  0
+where rptledgerid = $P{rptledgerid} and fullypaid = 0 
 
 
 [getBillItems]
@@ -705,7 +707,6 @@ and not exists(
 select year, qtr, av, basicav, sefav 
 from rptledgeritem_qtrly 
 where parentid = $P{parentid} 
-and (basic > basicpaid  or sef > sefpaid or basicpaid = 0 or sefpaid =0)
 
 
 [getPaidLedgerBills]

@@ -112,13 +112,13 @@ select x.*
 		lf.backtax,
 		lf.reclassed,
 		lf.idleland,
-		rli.basic  as basic,
+		rli.basic,
 		0.0 as basicint,
 		0.0 as basicdisc,
 		0.0 as basicidle,
 		0.0 as basicidleint,
 		0.0 as basicidledisc,
-		rli.sef as sef, 
+		rli.sef, 
 		0.0 as sefint,
 		0.0 as sefdisc,
 		0.0 as firecode,
@@ -156,13 +156,13 @@ select x.*
 		lf.backtax,
 		lf.reclassed,
 		lf.idleland,
-		rliq.basic  as basic,
+		rliq.basic,
  		0.0 as basicint,
  		0.0 as basicdisc,
  		0.0 as basicidle,
  		0.0 as basicidleint,
  		0.0 as basicidledisc,
-		rliq.sef as sef,
+		rliq.sef,
  		0.0 as sefint,
  		0.0 as sefdisc,
  		0.0 as firecode,
@@ -205,15 +205,12 @@ update rptledgeritem_qtrly set
         basic = $P{basic}, 
         basicint = $P{basicint}, 
         basicdisc = $P{basicdisc}, 
-        basicdisctaken = case when $P{basicdisc} = 0 then 0 else basicdisctaken end, 
         basicidle = $P{basicidle}, 
         basicidledisc = $P{basicidledisc}, 
-        basicidledisctaken = case when $P{basicidledisc} = 0 then 0 else basicidledisctaken end, 
         basicidleint = $P{basicidleint}, 
         sef = $P{sef}, 
         sefint = $P{sefint}, 
         sefdisc = $P{sefdisc}, 
-        sefdisctaken = case when $P{sefdisc} = 0 then 0 else sefdisctaken end, 
         firecode = $P{firecode}, 
         revperiod = $P{revperiod}
 where objid = $P{objid}        
@@ -715,3 +712,19 @@ from rptbill b
 inner join rptbill_ledger bl on b.objid = bl.billid 
 where bl.rptledgerid = $P{objid}
 
+
+[resetLedgerItemQtrlyDiscTaken]
+update rptledgeritem_qtrly set 
+	basicdisctaken = 0, sefdisctaken = 0
+where rptledgerid = $P{rptledgerid}	
+and year = $P{curryear}
+and fullypaid = 0 
+
+
+
+[resetLedgerItemDiscTaken]
+update rptledgeritem set 
+	basicdisctaken = 0, sefdisctaken = 0
+where rptledgerid = $P{rptledgerid}	
+and year = $P{curryear}
+and fullypaid = 0 

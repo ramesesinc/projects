@@ -754,14 +754,12 @@ where rptledgerid = $P{rptledgerid}
 [fixLedgerDeleteQtrlyItems]  
 delete from rptledgeritem_qtrly 
 where rptledgerid = $P{rptledgerid}
-and  year > $P{lastyearpaid}
 and exists(select * from rptledgeritem where objid = rptledgeritem_qtrly.parentid and taxdifference = 0)
 
 
 [fixLedgerDeleteLedgerItems]
 delete from rptledgeritem  
 where rptledgerid = $P{rptledgerid}
-and year > $P{lastyearpaid} 
 and taxdifference = 0 
 
 
@@ -887,3 +885,11 @@ select objid from rptledgerfaas where tdno = $P{tdno}
 
 [getRestrictions]
 select * from faas_restriction_type order by idx
+
+
+[findLedgerItemQtrlyByYearQtr]
+select * from rptledgeritem_qtrly 
+where rptledgerid = $P{rptledgerid}
+and year = $P{year}
+and qtr = $P{qtr}
+and fullypaid = 0 

@@ -98,6 +98,8 @@ class RPTReceiptService
 
 			em.insertPaidOnlineItems(params)
 			em.insertPaidOnlineAccounts(params)
+			em.deletePartialledItems(params)
+			em.insertPartialledItems(params)
 
 			em.clearFaasRestrictions(params)
 			rptledger_restrictionDb.find([parentid:it.rptledgerid]).delete()

@@ -723,10 +723,6 @@ class RPTLedgerService
         em.fixLedgerDeleteBillLedgerItems(info)
         em.fixLedgerDeleteQtrlyItems(info)
         em.fixLedgerDeleteLedgerItems(info)
-        em.resetQtrlyItemFullyPaidFlagByYear(info)
-        em.resetItemFullyPaidFlagByYear(info)
-        em.fixLedgerSetQtrlyItemFullyPaid(info)
-        em.fixLedgerSetItemFullyPaid(info)
         generateLedgerBill(info.rptledgerid)
         em.fixLedgerSetQtrlyItemFullyPaid(info)
         em.fixLedgerSetItemFullyPaid(info)
@@ -1142,6 +1138,15 @@ class RPTLedgerService
         }
     }
 
+    @ProxyMethod
+    public def findLedgerItemQtrlyByYearQtr(params) {
+        return em.findLedgerItemQtrlyByYearQtr(params)
+    }
+
+    @ProxyMethod
+    public void updateLedgerItemQtrly(item) {
+        em.update(item, 'ledgeritemqtrly')
+    }
 }
 
 

@@ -135,6 +135,50 @@ WHERE rl.objid = $P{rptledgerid}
   and ba.billid = $P{billid}
 
 
+[deletePartialledItems]
+delete from rptledgeritem_qtrly_partial where rptledgerid = $P{rptledgerid}
+
+
+[insertPartialledItems]
+insert into rptledgeritem_qtrly_partial(
+    objid,
+    rptledgerid,
+    year,
+    qtr,
+    basicpaid,
+    basicintpaid,
+    basicdisctaken,
+    basicidlepaid,
+    basicidleintpaid,
+    basicidledisctaken,
+    sefpaid,
+    sefintpaid,
+    sefdisctaken,
+    firecodepaid
+)
+select
+    bi.objid,
+    bi.rptledgerid,
+    bi.year,
+    bi.qtr,
+    bi.basic as basicpaid,
+    bi.basicint as basicintpaid,
+    bi.basicdisc as basicdisctaken,
+    bi.basicidle as basicidlepaid,
+    bi.basicidleint as basicidleintpaid,
+    bi.basicidledisc as basicidledisctaken,
+    bi.sef as sefpaid,
+    bi.sefint as sefintpaid,
+    bi.sefdisc as sefdisctaken,
+    bi.firecode as firecodepaid
+FROM rptledger rl
+        INNER JOIN rptbill_ledger_item bi ON rl.objid = bi.rptledgerid
+        INNER JOIN rptledgeritem rli on bi.rptledgeritemid = rli.objid 
+WHERE rl.objid = $P{rptledgerid}
+    and bi.billid = $P{billid}
+    and bi.partialled = 1 
+      
+
 
 
 [deletePaidOnlineItems]  

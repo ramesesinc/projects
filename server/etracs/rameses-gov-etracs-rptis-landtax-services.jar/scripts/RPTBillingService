@@ -45,6 +45,9 @@ public class RPTBillingService
 	@DataContext('rptledger_restriction')
 	def rptledger_restrictionDb;
 
+	@DataContext('rptledgeritem_qtrly_partial')
+	def em_partial;
+
 	@Service()
 	def self 
 
@@ -95,6 +98,7 @@ public class RPTBillingService
 	        def endyear = ( bill.billtoyear < cy ? cy : bill.billtoyear)
 	        ledgerSvc.postLedgerItemsUptoYear(bill.rptledger, endyear)
         	bill.incentives = em.getIncentivesByLedgerId(bill)
+        	updatePartialledItems(bill)
         	calculateTaxDues(bill)
         	calculatePenaltyDiscount(bill)
         	updateNextBillDate(bill)
@@ -751,6 +755,7 @@ public class RPTBillingService
 		def pdate = dtSvc.parseCurrentDate()
 
 		bill.forcerecalcbill = 0
+		bill.curryear = pdate.year 
 		
 		if (bill.billdate == null) {
 			bill.billdate = pdate.date 
@@ -1016,27 +1021,28 @@ public class RPTBillingService
 					item.sefint 	= 0.0
 				}
 				else {
-					def linetotal 			= item.total - item.firecode - idletaxtotal
+					def netbasic 		= item.basic - item.basicdisc + item.basicint 
+					def netsef 			= item.sef - item.sefdisc + item.sefint 
+					def linetotal 		= netbasic + netsef 
 
-					def totalbasic 			= item.basic - item.basicdisc + item.basicint 
-					def totalsef 			= item.sef - item.sefdisc + item.sefint 
-
-					def partialpmtbasic    = numSvc.roundA(partialpmt * totalbasic / linetotal, 2);
+					def partialpmtbasic    = numSvc.roundA(partialpmt * netbasic / linetotal, 2);
 					def partialpmtsef      = numSvc.roundA(partialpmt - partialpmtbasic, 2);
+					def basicdiscrate    = item.basicdisc / item.basic
+					def sefdiscrate    = item.sefdisc / item.sef
 
-					def partialbasic     	= numSvc.round(  partialpmtbasic * (item.basic - item.basicdisc) / totalbasic )
-					def partialbasicint  	= numSvc.round(  partialpmtbasic * item.basicint / totalbasic )
-					def partialbasicdisc 	= numSvc.round(  partialpmtbasic - partialbasic - partialbasicint )
+					def partialbasic     = numSvc.round(  partialpmtbasic * item.basic  / netbasic )
+					def partialbasicint  = numSvc.round(  partialpmtbasic * item.basicint / netbasic )
+					def partialbasicdisc = numSvc.round(  partialbasic * basicdiscrate )
 
-					def partialsef     	= numSvc.round(  partialpmtsef * (item.sef - item.sefdisc) / totalsef )
-					def partialsefint  	= numSvc.round(  partialpmtsef * item.sefint / totalsef )
-					def partialsefdisc 	= numSvc.round(  partialpmtsef - partialsef - partialsefint )
+					def partialsef     	= numSvc.round(  partialpmtsef * item.sef  / netsef )
+					def partialsefint  	= numSvc.round(  partialpmtsef * item.sefint / netsef )
+					def partialsefdisc = numSvc.round(  partialsef * sefdiscrate )
 
-					item.basic 		= partialbasic + partialbasicdisc
-					item.basicdisc 	= partialbasicdisc
+					item.basic 		= partialbasic 
+					item.basicdisc 	= numSvc.round( item.basic * basicdiscrate)
 					item.basicint 	= partialbasicint
-					item.sef 		= partialsef + partialsefdisc
-					item.sefdisc 	= partialsefdisc
+					item.sef 		= partialsef 
+					item.sefdisc 	= numSvc.round( item.sef * sefdiscrate)
 					item.sefint 	= partialsefint
 				}
 
@@ -1087,6 +1093,32 @@ public class RPTBillingService
 			em.deleteRptBillLedgerItem(bill)
 			em.deleteRptBillLedger(bill)
 			em.deleteRptBill(bill)
+		}
+	}
+
+	void updatePartialledItems(bill){
+		if (bill.advancebill &&  dtSvc.getYear(bill.billdate) > bill.curryear){
+			println 'reset'
+			em.resetLedgerItemDiscTaken(bill)
+			em.resetLedgerItemQtrlyDiscTaken(bill)
+		}
+		else{
+			def partial = em_partial.find([rptledgerid:bill.rptledgerid]).first();
+			if (partial){
+				def qtrlyitem = ledgerSvc.findLedgerItemQtrlyByYearQtr(partial)
+				qtrlyitem.basicpaid = partial.basicpaid
+				qtrlyitem.basicintpaid = partial.basicintpaid
+				qtrlyitem.basicdisctaken = partial.basicdisctaken
+				qtrlyitem.basicidlepaid = partial.basicidlepaid
+				qtrlyitem.basicidledisctaken = partial.basicidledisctaken
+				qtrlyitem.basicidleintpaid = partial.basicidleintpaid
+				qtrlyitem.sefpaid = partial.sefpaid
+				qtrlyitem.sefintpaid = partial.sefintpaid
+				qtrlyitem.sefdisctaken = partial.sefdisctaken
+				qtrlyitem.firecodepaid = partial.firecodepaid
+				qtrlyitem.total = 
+				ledgerSvc.updateLedgerItemQtrly(qtrlyitem)
+			}
 		}
 	}
 }

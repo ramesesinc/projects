@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/explorer/txn/landtax/util" action="init" 
-                 caption="Generate Realty Tax Delinquency" target="window" index="101" 
+                 caption="Build Realty Tax Delinquency" target="window" index="101" 
                  role="REPORT"/>
     </invokers>
     <code>

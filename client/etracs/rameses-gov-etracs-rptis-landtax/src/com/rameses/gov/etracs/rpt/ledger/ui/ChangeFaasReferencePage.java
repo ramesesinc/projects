@@ -41,6 +41,7 @@ public class ChangeFaasReferencePage extends javax.swing.JPanel {
         xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
@@ -166,16 +167,25 @@ public class ChangeFaasReferencePage extends javax.swing.JPanel {
 
         com.rameses.rcp.control.border.XLineBorder xLineBorder11 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder11.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel12.setBorder(xLineBorder11);
+        xLabel10.setBorder(xLineBorder11);
+        xLabel10.setCaption("Administrator");
+        xLabel10.setDepends(new String[] {"newfaas"});
+        xLabel10.setExpression("#{newfaas.administrator.name}");
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel2.add(xLabel10);
+
+        com.rameses.rcp.control.border.XLineBorder xLineBorder12 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder12.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel12.setBorder(xLineBorder12);
         xLabel12.setCaption("Classification");
         xLabel12.setDepends(new String[] {"newfaas"});
         xLabel12.setExpression("#{newfaas.classcode}");
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel2.add(xLabel12);
 
-        com.rameses.rcp.control.border.XLineBorder xLineBorder12 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder12.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel13.setBorder(xLineBorder12);
+        com.rameses.rcp.control.border.XLineBorder xLineBorder13 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder13.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel13.setBorder(xLineBorder13);
         xLabel13.setCaption("Lot No.");
         xLabel13.setDepends(new String[] {"newfaas"});
         xLabel13.setExpression("#{newfaas.cadastrallotno}");
@@ -213,8 +223,8 @@ public class ChangeFaasReferencePage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -225,6 +235,7 @@ public class ChangeFaasReferencePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;

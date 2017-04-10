@@ -1269,10 +1269,10 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("General Information");
         formPanel6.setBorder(xTitledBorder1);
+        formPanel6.setCaptionWidth(100);
 
         xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel10.setCaption("Taxpayer");
-        xLabel10.setCaptionWidth(80);
+        xLabel10.setCaption("Declared Owner");
         xLabel10.setExpression("#{entity.taxpayer.name}");
         xLabel10.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1280,7 +1280,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setCaption("Address");
-        xLabel11.setCaptionWidth(80);
         xLabel11.setExpression("#{entity.taxpayer.address}");
         xLabel11.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1288,7 +1287,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel26.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel26.setCaption("Administrator");
-        xLabel26.setCaptionWidth(80);
         xLabel26.setExpression("#{entity.administrator.name}");
         xLabel26.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel26.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1296,7 +1294,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel21.setCaption("TD No.");
-        xLabel21.setCaptionWidth(80);
         xLabel21.setExpression("#{entity.tdno}");
         xLabel21.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1304,7 +1301,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel27.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel27.setCaption("Prev. TD No.");
-        xLabel27.setCaptionWidth(80);
         xLabel27.setExpression("#{entity.prevtdno}");
         xLabel27.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel27.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1312,7 +1308,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel31.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel31.setCaption("PIN ");
-        xLabel31.setCaptionWidth(80);
         xLabel31.setExpression("#{entity.fullpin}");
         xLabel31.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel31.setPreferredSize(new java.awt.Dimension(0, 19));

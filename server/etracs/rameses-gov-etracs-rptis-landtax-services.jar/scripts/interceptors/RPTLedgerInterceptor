@@ -25,6 +25,34 @@ class RPTLedgerInterceptor
     @Service('FAASService')
     def faasSvc
 
+    @DataContext('rptledger')
+    def em_ledger
+
+    @DataContext('rptledger_faas')
+    def em_ledger_faas 
+
+    @DataContext('rptledger_item')
+    def em_ledger_item
+
+    @DataContext('rptledger_item_qtrly')
+    def em_ledger_item_qtrly
+
+    @DataContext('rptledger_item_qtrly_partial')
+    def em_ledger_item_qtrly_partial
+
+    @DataContext('faas')
+    def em_faas
+
+    @DataContext('rptbill_ledger')
+    def em_bill_ledger
+
+    @DataContext('rptbill_ledger_item')
+    def em_bill_ledger_item 
+
+    @DataContext('rptbill_ledger_account')
+    def em_bill_ledger_account
+
+
 	def STATE_PENDING   = 'PENDING'
 	def STATE_APPROVED  = 'APPROVED'
 
@@ -82,5 +110,62 @@ class RPTLedgerInterceptor
         }
         
     }
+
+
+    @After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_appraisal'}", index=1000)
+    public void updateFaasHistory(evt){
+        println 'RPTLedgerInterceptor: updateFaasHistory...'
+        def changeinfo = evt.result
+        
+        //cancel original entry and cutoff toyear and to qtr 
+        def orig = em_ledger_faas.where('faasid = :faasid and state = :state', [faasid:changeinfo.faasid, state:'APPROVED']).first()
+        if (!orig) return 
+
+        orig.state = 'CANCELLED'
+        orig.toyear = em_faas.select('effectivityyear').find([objid:changeinfo.faasid]).first().effectivityyear
+        orig.toqtr = 4
+        em_ledger_faas.update(orig)
+
+        //insert new entry with modified appraisal
+        def rlf = createLedgerFaas(changeinfo, orig)
+        em_ledger_faas.create(rlf)
+
+        //reset ledger billing 
+        em_ledger.update([objid:orig.rptledgerid, nextbilldate:null])
+        em_bill_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
+        em_bill_ledger_account.find([rptledgerid:orig.rptledgerid]).delete()
+        em_bill_ledger.find([rptledgerid:orig.rptledgerid]).delete()
+        em_ledger_item_qtrly_partial.find([rptledgerid:orig.rptledgerid]).delete()
+        em_ledger_item_qtrly.find([rptledgerid:orig.rptledgerid]).delete()
+        em_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
+    }   
+
+
+    def createLedgerFaas(changeinfo, ledgerfaas){
+        def newrpu = changeinfo.newinfo
+        def faas = em_faas.find([objid:changeinfo.faasid]).first()
+
+        def rlf = [:]
+        rlf.objid = 'RLF' + new java.rmi.server.UID()
+        rlf.state = 'APPROVED'
+        rlf.rptledgerid = ledgerfaas.rptledgerid
+        rlf.faasid = faas.objid 
+        rlf.tdno = faas.tdno 
+        rlf.txntype = faas.txntype
+        rlf.classification = newrpu.classification
+        rlf.actualuse = newrpu.classification
+        rlf.taxable = newrpu.taxable 
+        rlf.idleland = (newrpu.idleland == null ? 0 : newrpu.idleland)
+        rlf.reclassed = false 
+        rlf.backtax = false 
+        rlf.fromyear = ledgerfaas.fromyear 
+        rlf.fromqtr = ledgerfaas.fromqtr 
+        rlf.toyear = 0
+        rlf.toqtr = 0 
+        rlf.assessedvalue = newrpu.totalav 
+        rlf.systemcreated = true 
+        return rlf 
+    }
+
 }
 

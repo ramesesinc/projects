@@ -45,7 +45,7 @@ public class RPTBillingService
 	@DataContext('rptledger_restriction')
 	def rptledger_restrictionDb;
 
-	@DataContext('rptledgeritem_qtrly_partial')
+	@DataContext('rptledger_item_qtrly_partial')
 	def em_partial;
 
 	@Service()

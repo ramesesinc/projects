@@ -1,0 +1,7 @@
+<schema>
+    <element tablename="rptbill_ledger">
+        <field name="rptledgerid" primary="true" />
+        <field name="billid" primary="true" />
+        <field name="updateflag" />
+    </element>
+</schema>

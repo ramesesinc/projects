@@ -1,0 +1,35 @@
+<schema>
+    <element tablename="rptledgeritem_qtrly">
+        <field name="objid" primary="true" />
+        <field name="parentid" required="true" />
+        <field name="rptledgerid" required="true"/>
+        <field name="year" type="integer" required="true" />
+        <field name="qtr" type="integer" required="true" />
+        <field name="basicav" type="decimal" required="true" />
+        <field name="sefav" type="decimal" required="true" />
+        <field name="av" type="decimal" required="true" />
+        <field name="basic" type="decimal" required="true" />
+        <field name="basicpaid" type="decimal" required="true" />
+        <field name="basicint" type="decimal" required="true" />
+        <field name="basicintpaid" type="decimal" required="true" />
+        <field name="basicdisc" type="decimal" required="true" />
+        <field name="basicdisctaken" type="decimal" required="true" />
+        <field name="basicidle" type="decimal" required="true" />
+        <field name="basicidlepaid" type="decimal" required="true" />
+        <field name="basicidledisc" type="decimal" required="true" />
+        <field name="basicidledisctaken" type="decimal" required="true" />
+        <field name="basicidleint" type="decimal" required="true" />
+        <field name="basicidleintpaid" type="decimal" required="true" />
+        <field name="sef" type="decimal" required="true" />
+        <field name="sefpaid" type="decimal" required="true" />
+        <field name="sefint" type="decimal" required="true" />
+        <field name="sefintpaid" type="decimal" required="true" />
+        <field name="sefdisc" type="decimal" required="true" />
+        <field name="sefdisctaken" type="decimal" required="true" />
+        <field name="firecode" type="decimal" required="true" />
+        <field name="firecodepaid" type="decimal" required="true" />
+        <field name="revperiod" />
+        <field name="partialled" required="true" type="integer" />
+        <field name="fullypaid" required="true" type="integer" />
+    </element>
+</schema>

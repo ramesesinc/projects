@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.etracs.bpls.reports.ui;
+package com.rameses.gov.etracs.bpls.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
@@ -14,12 +14,12 @@ import com.rameses.rcp.ui.annotations.Template;
  */
 @StyleSheet
 @Template(FormPage.class)
-public class DelinquencyBuildPage extends javax.swing.JPanel {
+public class DelinquencyPendingPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form DelinquencyBuildPage
+     * Creates new form DelinquencyPendingPage
      */
-    public DelinquencyBuildPage() {
+    public DelinquencyPendingPage() {
         initComponents();
     }
 

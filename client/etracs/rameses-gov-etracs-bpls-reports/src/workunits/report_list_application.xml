@@ -14,8 +14,11 @@ import com.rameses.osiris2.reports.*;
 
 public class ApplicationListingReportController extends com.rameses.etracs.shared.AsyncReportController {
 
-    @Service('LobClassificationService') 
-    def lobClassficationSvc;
+    @Script('BusinessReportUtil') 
+    def businessReportUtil;
+    
+    @Script('ReportPeriod') 
+    def periodUtil; 
 
     @Service('BarangayLookupService') 
     def brgySvc;
@@ -37,8 +40,6 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         } 
     ];  
 
-    @Script('ReportPeriod') 
-    def periodUtil; 
 
     def formControl = [
         getControlList: { 
@@ -73,6 +74,7 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     ] as FormPanelModel; 
 
     def permitTypes;
+    def lobClassifications; 
 
     def initReport() {
         def outcome = super.initReport(); 
@@ -80,7 +82,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         entity.period = periodUtil.types[0]; 
         entity.withgross = entity.withcapital = true; 
         permitTypes = permitTypeSvc.getList(); 
-        entity.permittype = (permitTypes? permitTypes[0] : null);         
+        entity.permittype = (permitTypes? permitTypes[0] : null); 
+        lobClassifications = businessReportUtil.getLOBClassifications();    
         return outcome; 
     } 
     
@@ -149,7 +152,7 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     }
 
     List getClassificationlist() {
-        return lobClassficationSvc.getList([:]);
+        return lobClassifications; 
     }
 
     def getLookupLOB() {

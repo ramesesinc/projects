@@ -1,0 +1,15 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="lob_report_category">
+    <invokers>
+        <invoker type="lob_report_category:lookup" caption="Lookup Lob Report Category" action="init"/>        
+    </invokers>
+    <code>
+        class CategoryLookup extends com.rameses.seti2.models.CrudLookupModel {
+            def groupid;
+        
+            public def getCustomFilter() {
+                return [  "groupid=:g", [g: groupid]  ];
+            }
+        
+        }
+    </code>
+</workunit>

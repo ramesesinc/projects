@@ -19,7 +19,7 @@ class BuildBusinessDelinquencyController
     @Binding
     def binding;
     
-    @Service('BPReportDelinquencyService') 
+    @Service('BPDelinquencyReportService') 
     def svc;
             
     String title = 'Build Business Tax Delinquency';
@@ -30,9 +30,18 @@ class BuildBusinessDelinquencyController
     def mode;
     def entity = [:];
     
-    void init(){
-        msg = 'Click Build to rebuild the business tax delinquency listing.';
-        mode = 'init';
+    def init(){ 
+        def o = svc.getStatus(); 
+        if ( o.pending ) { 
+            entity = o; 
+            msg = 'Pending rebuild of business tax delinquency listing'; 
+            return 'pending'; 
+        } else { 
+            entity = svc.init([:]);  
+            msg = 'Click Build to rebuild the business tax delinquency listing.'; 
+            mode = 'init';
+            return 'default'; 
+        } 
     }
    
     def oncomplete = {
@@ -84,5 +93,6 @@ class BuildBusinessDelinquencyController
     </code>
     <pages>
         <page template="com.rameses.gov.etracs.bpls.reports.ui.DelinquencyBuildPage"/>
+        <page name="pending" template="com.rameses.gov.etracs.bpls.views.DelinquencyPendingPage"/>
     </pages>
 </workunit>

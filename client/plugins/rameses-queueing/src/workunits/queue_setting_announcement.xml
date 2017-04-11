@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/setting" caption="Announcement" action="open" target="popup"/> 
+    </invokers>
+    <code class="queueing.model.QueueAnnouncementModel"/>
+    <pages>
+        <page template="queueing.view.QueueAnnouncementPage"/>
+    </pages>
+</workunit>    

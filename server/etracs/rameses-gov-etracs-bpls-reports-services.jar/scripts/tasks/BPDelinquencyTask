@@ -1,0 +1,66 @@
+import com.rameses.annotations.*;
+
+class BPDelinquencyTask {
+	
+	@DataContext('report_bpdelinquency') 
+	def reportdb;
+
+	@Service('BusinessBillingService') 
+	def billingSvc;
+
+	@Schedule( interval=2 )
+	public void processDraft( task ) {
+
+		def o = reportdb.find([ state: 'DRAFT' ]).orderBy('dtfiled desc').first(); 
+		if ( o ) reportdb.find([ objid: o.objid ]).update([ state: 'FOR-PROCESS' ]); 
+	}
+
+	@Schedule( interval=2 )
+	public void execForProcess( task ) {
+
+		def o = reportdb.find([ state: 'FOR-PROCESS' ]).orderBy('dtfiled desc').first(); 
+		if ( o == null ) return; 
+
+		reportdb.clearItems([ reportid: o.objid ]); 
+		reportdb.build([ reportid: o.objid ]); 
+		reportdb.updateHeader([ reportid: o.objid ]);
+		reportdb.find([ objid: o.objid ]).update([ state: 'FOR-UPDATE']);
+	} 
+
+	private def numformatter = new java.text.DecimalFormat('0.00'); 
+
+
+	@Schedule( interval=2 )
+	public void execForUpdate( task ) {
+
+		def o = reportdb.find([ state: 'FOR-UPDATE' ]).orderBy('dtfiled desc').first(); 
+		if ( o == null ) return; 
+
+		def params = [ reportid: o.objid, _start:0, _limit:10, filter:'' ]; 
+		def list = reportdb.getForUpdateBuildItems( params ); 
+		list.each{ 
+			def ledger = reportdb.findLedger( it );
+			def bill = getBilling( ledger ); 
+			if ( bill ) {
+				ledger.interest = (bill.interest ? bill.interest : 0.0 ); 
+				ledger.interest = new java.math.BigDecimal( numformatter.format( ledger.interest )); 
+
+				ledger.surcharge = (bill.surcharge ? bill.surcharge : 0.0 ); 
+				ledger.surcharge = new java.math.BigDecimal( numformatter.format( ledger.surcharge )); 
+				
+			} 
+		} 
+	} 
+
+	private def getBilling( o ) {
+		try {
+			def b = billingSvc.getBilling([ applicationid: o.applicationid ]); 
+			def items = b.items.collect{[ interest: it.interest, surcharge: it.surcharge ]}  
+			def interest = items.sum{( it.interest? it.interest: 0.0 )} 
+			def surcharge = items.sum{( it.surcharge? it.surcharge: 0.0 )} 
+			return [ interest : interest, surcharge : surcharge ]; 
+		} catch(Throwable t) {
+			return null; 
+		}
+	}
+}

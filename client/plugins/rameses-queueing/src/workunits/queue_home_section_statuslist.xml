@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="queue-home:section" caption=" Status " action="init"/> 
+        <invoker type="queue-home:section" caption=" Status " action="init" index="2"/> 
     </invokers>
     <code class="queueing.model.UserQueueStatusListModel"/>
     <pages>

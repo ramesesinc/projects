@@ -5,8 +5,13 @@
           allowSearch="false"> 
     
     <invokers>
-        <invoker folderid="/explorer/txn/treasury/monitoring" caption="Unremitted Collection Summary Monitoring" 
-                 role="ADMIN" index="-98"/>
+        <invoker folderid="/explorer/txn/treasury/monitoring" 
+                 caption="Unremitted Collection Summary Monitoring" 
+                 role="ADMIN,SHARED" index="-98"/>
+        
+        <invoker type="formActions" caption="Details" action="showItems"
+                 visibleWhen="#{selectedEntity != null}" 
+                 depends="selectedEntity"/>
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.UnremittedCollectionSummaryMonitorModel"/>

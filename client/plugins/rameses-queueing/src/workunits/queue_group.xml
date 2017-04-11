@@ -8,14 +8,63 @@
         <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode.matches('create|edit')}"/--> 
     </invokers>
     <code>
-    class QueueGroupModel extends com.rameses.seti2.models.CrudFormModel {
+<![CDATA[ 
+class QueueGroupModel extends com.rameses.seti2.models.CrudFormModel {
+
+    def selectedSection;
+
+    public void beforeSave(def mode){
+        reindexSections(); 
+    } 
+    public void afterSave(){ 
+        entity.sections?.sort{ it.sortorder } 
+    }
+    public void afterOpen(){
+        entity.sections?.sort{ it.sortorder } 
+    }
+    
+    void swapUp() {
+        swap( -1 );
+    } 
+    
+    void swapDown() {
+        swap( 1 ); 
+    } 
+    
+    void swap( int direction ) {
+        if ( !selectedSection ) return; 
         
-        public void beforeSave(def mode){
-            entity.sections.eachWithIndex{ o,idx-> 
-                o.sortorder = idx; 
-            } 
+        reindexSections(); 
+        def toitem = null; 
+        def fromitem = selectedSection;
+        if ( direction < 0 ) { 
+            toitem = entity.sections.find{ it.sortorder==(fromitem.sortorder-1)}
+        } else if ( direction > 0 ) {
+            toitem = entity.sections.find{ it.sortorder==(fromitem.sortorder+1)}
+        } 
+
+        if ( toitem ) { 
+            int idx1 = toitem.sortorder;
+            int idx2 = fromitem.sortorder;
+            fromitem.sortorder = idx1;
+            toitem.sortorder = idx2; 
+            entity.sections.sort{ it.sortorder } 
+            itemHandlers.sections.refresh();
+            itemHandlers.sections.setSelectedItem(idx1);
         } 
     } 
+    
+    private void reindexSections() {
+        entity.sections.eachWithIndex{ o,idx-> 
+            o.sortorder = idx; 
+        } 
+    } 
+
+    boolean isAllowSwap() {
+        return ( mode.toString().toLowerCase().matches('create|edit')); 
+    }     
+} 
+]]> 
     </code>
     <pages>
         <page template="queueing.view.QueueGroupPage"/>

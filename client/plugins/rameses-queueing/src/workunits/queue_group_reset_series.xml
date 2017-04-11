@@ -1,0 +1,39 @@
+<workunit>
+    <invokers>
+        <invoker type="queue_group:form:formActions" caption="Reset Series" action="resetSeries" 
+                role="ADMIN" target="process" visibleWhen="#{mode=='read'}"/> 
+    </invokers>
+    <code>
+<![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+ 
+class QueueGroupResetSeriesModel {
+
+    @Service('QueueGroupService') 
+    def groupSvc; 
+
+    @Caller 
+    def caller;
+
+    void resetSeries() { 
+        if ( MsgBox.confirm('You are about to reset the series. Continue?')) {
+            def o = getEntity();
+            if ( !o ) return; 
+            
+            groupSvc.resetSeries([ groupid: o.objid ]);  
+        } 
+    } 
+    
+    def getEntity() {
+        try { 
+            return caller.entity; 
+        } catch(Throwable t){
+            return null; 
+            
+        } 
+    } 
+} 
+]]> 
+    </code>
+</workunit>    

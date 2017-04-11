@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="queue-home:section" caption="Skip Tickets" action="init"/> 
+        <invoker type="queue-home:section" caption="Skip Tickets" action="init" index="0"/> 
     </invokers>
     <code class="queueing.model.UserQueueSkipTicketModel"/>
     <pages>

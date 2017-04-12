@@ -1,7 +1,10 @@
 <workunit>
     <invokers>
+        <!--
         <invoker type="home.action" action="start" caption="New Police Clearance" />
         <invoker type="policeclearance:open" action="open" caption="Police Clearance"/>
+        -->
+        
     </invokers>
     
     <code>

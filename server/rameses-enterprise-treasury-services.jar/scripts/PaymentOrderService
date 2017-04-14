@@ -13,9 +13,8 @@ class PaymentOrderService {
 	@Service("DateService")
 	def dtSvc 
 
-	
-	@DataContext("collectiontype")
-	def collectionType;
+	@DataContext("paymentorder_type")
+	def pmoType;
 
 	@DataContext("revenueitem")
 	def revItem;
@@ -26,65 +25,47 @@ class PaymentOrderService {
 	@ProxyMethod
 	public def create(def entity){	
 		if(! entity.payer ) throw new Exception("payer is required. ")
-		if(! entity.items ) throw new Exception("items is required. ")
 		if(! entity.amount ) throw new Exception("amount is required. ") 
 		if(! entity.paidby) throw new Exception("paidby is required. ") 
 		if(! entity.paidbyaddress) throw new Exception("paidbyaddress is required. ");
 		if(! entity.txntype) throw new Exception("txntype is required. ") 
 
-		if(!entity.collectiontype) {
-			entity.collectiontype = collectionType.find([barcodekey:'PMO']).first();
+		entity.txntype = pmoType.find([objid: entity.txntype ]).first();
+
+		if(!entity.txntype)
+			throw new Exception("Payment Order txntype " + entity.txntype?.objid + " not found!");
+
+		if(entity.items) {
+			entity.items.eachWithIndex{ o,idx-> 
+				if( !o.item?.objid ) throw new Exception("Items item must have an objid");
+				if( !o.amount ) throw new Exception("Items item must have an amount");
+				def item = revItem.find([objid: o.item.objid]).first(); 
+				if ( !item ) throw new Exception('Item #'+ (idx+1)  +' account '+ o.item.title +' does not exist'); 
+				o.item = item; 
+			}
+			if( entity.items.sum{it.amount} != entity.amount)
+				throw new Exception("Amount must be equal sum of amount of items");
 		}	
-		if(!entity.collectiontype)
-			throw new Exception("Collection type not found!");
-
-		entity.items.eachWithIndex{ o,idx-> 
-			println idx;
-			if( !o.item?.objid ) throw new Exception("Items item must have an objid");
-			if( !o.amount ) throw new Exception("Items item must have an amount");
-
-
-			def item = revItem.find([objid: o.item.objid]).first(); 
-			if ( !item ) throw new Exception('Item #'+ (idx+1)  +' account '+ o.item.title +' does not exist'); 
-
-			o.item = item; 
-		}
-		if( entity.items.sum{it.amount} != entity.amount)
-			throw new Exception("Amount must be equal sum of amount of items");
 
 		def m = [:];
-		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		m.expirydate = dtSvc.findNextDate('1y');
-		m.info = entity;
+		if (entity.expirydate){
+			m.expirydate = entity.expirydate
+		}
+		m.txnid = entity.txnid;
+		m.controlno = entity.controlno;
+		m.info = entity.info;
 		m.payer = entity.payer;
-		m.txntype = entity.txntype;
+		m.paidby = entity.paidby;
+		m.paidbyaddress = entity.paidbyaddress;
 		m.amount = entity.amount;
 		m.refid = entity.refid;
+		m.refno = entity.refno;
+		m.txntype = entity.txntype;
+		m.particulars = entity.particulars;
+
+		if(!entity.txndate) m.txndate = dtSvc.getServerDate();
 		pmt.create(m);
 		return m; 
 	}
-
-	@ProxyMethod
-	public def open( params) { 
-		if ( env.paymentorder ) { 
-			return env.paymentorder; 
-
-		} else {
-			def entity = pmt.find([txnid: 'PMO:'+params.txnid]).first();
-			if( !entity || entity.size()==0 ) {
-				throw new Exception("Payment Order Code does not exist. ")
-			}	
-			return entity; 
-		}
-	}
-
-	@ProxyMethod
-	def close( params ){ 
-		def data = pmt.find([txnid: params.txnid]).first(); 
-		pmt.find([txnid: params.txnid]).delete(); 
-		return data; 
-	}
-
-	
-
 }

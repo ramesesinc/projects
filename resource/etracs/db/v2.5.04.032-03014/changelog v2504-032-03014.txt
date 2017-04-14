@@ -6,6 +6,7 @@
 		
 - ASSESSOR	
 	- Updated Master file to SETI
+	- With Improvement Certification updates
 	- Plant/Tree revision setting listing adjustment
 	- Agricultural Land Summary update
 	- Allow Examination findings for Current FAAS

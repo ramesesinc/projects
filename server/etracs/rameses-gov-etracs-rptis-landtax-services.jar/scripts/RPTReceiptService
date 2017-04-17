@@ -77,6 +77,7 @@ class RPTReceiptService
 		
 		em.create(receipt)
 		postPaidItems(receipt)
+		validateReceiptTotal(receipt)
 		return receipt
 	}
 
@@ -113,7 +114,6 @@ class RPTReceiptService
 			em.deletePaidOnlineAccounts(params)
 		}
 		em.deleteRptBillLedgers(params)
-		em.deleteRptBill(params)
 		receipt.rptitems.each{
 			billingSvc.deletePendingPaymentOrderBills([objid:it.rptledgerid])
 		}
@@ -202,7 +202,13 @@ class RPTReceiptService
 		return  em.getUnpaidPropertiesForPayment(billingSvc.buildParams(bill))
 	}
 
+	void validateReceiptTotal(receipt){
+		def totalitem = em.findRPTReceiptItemTotal(receipt)
+		def totalacct = em.findRPTReceiptAcctTotal(receipt)
 
+		if (receipt.amount != totalitem.total || receipt.amount != totalacct.total)
+			throw new Exception('A problem was encountered when posting the credits.\nGenerate bills to ledgers paid and verify that the amount dues are correct.')
+	}
 	
 
 }

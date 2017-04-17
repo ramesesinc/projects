@@ -770,3 +770,9 @@ delete from rptledgeritem
 where rptledgerid = $P{rptledgerid}
 	and fullypaid = 1 
 
+
+[findRPTReceiptItemTotal]
+select sum(total) as total from cashreceiptitem_rpt_online where rptreceiptid = $P{objid}
+
+[findRPTReceiptAcctTotal]
+select sum(amount) as total from cashreceiptitem_rpt_account where rptreceiptid = $P{objid}

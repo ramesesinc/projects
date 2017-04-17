@@ -18,7 +18,7 @@ from subdividedland sl
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
 where sl.subdivisionid = $P{objid}
-order by cadastrallotno
+order by blockno, cadastrallotno
 
 
 [getMotherLandsSummary]

@@ -28,6 +28,7 @@
 	<field name="totalareaha" class="java.math.BigDecimal"/>
 	<field name="totalmv" class="java.math.BigDecimal"/>
 	<field name="totalav" class="java.math.BigDecimal"/>
+	<field name="fullpin" class="java.lang.String"/>
 
 	<variable name="TOTALAREAHA" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{totalareaha}]]></variableExpression>
@@ -56,7 +57,7 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="149"
+						width="104"
 						height="22"
 						key="staticText-1"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -72,9 +73,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="149"
+						x="210"
 						y="0"
-						width="79"
+						width="62"
 						height="22"
 						key="staticText-2"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -90,9 +91,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="228"
+						x="272"
 						y="0"
-						width="102"
+						width="84"
 						height="22"
 						key="staticText-3"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -108,9 +109,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="330"
+						x="356"
 						y="0"
-						width="102"
+						width="76"
 						height="22"
 						key="staticText-4"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -124,6 +125,24 @@
 					</textElement>
 				<text><![CDATA[Assessed Value]]></text>
 				</staticText>
+				<staticText>
+					<reportElement
+						x="104"
+						y="0"
+						width="106"
+						height="22"
+						key="staticText-6"/>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<text><![CDATA[PIN]]></text>
+				</staticText>
 			</band>
 		</columnHeader>
 		<detail>
@@ -132,7 +151,7 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="149"
+						width="104"
 						height="18"
 						key="textField-1"/>
 					<box leftPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -141,16 +160,16 @@
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
-					<textElement verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.000000" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="149"
+						x="210"
 						y="0"
-						width="79"
+						width="62"
 						height="18"
 						key="textField-2"/>
 					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -166,9 +185,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="228"
+						x="272"
 						y="0"
-						width="102"
+						width="84"
 						height="18"
 						key="textField-3"/>
 					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -182,14 +201,14 @@
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalmv}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="330"
+						x="356"
 						y="0"
-						width="102"
+						width="76"
 						height="18"
 						key="textField-4"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -199,6 +218,24 @@
 						<font/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="104"
+						y="0"
+						width="106"
+						height="18"
+						key="textField-8"/>
+					<box leftPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{fullpin}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -216,7 +253,7 @@
 					<reportElement
 						x="0"
 						y="0"
-						width="149"
+						width="210"
 						height="22"
 						key="staticText-5"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -232,9 +269,9 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.000000" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="149"
+						x="210"
 						y="0"
-						width="79"
+						width="62"
 						height="22"
 						key="textField-5"/>
 					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -250,9 +287,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="228"
+						x="272"
 						y="0"
-						width="102"
+						width="84"
 						height="22"
 						key="textField-6"/>
 					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -268,12 +305,12 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="330"
+						x="356"
 						y="0"
-						width="102"
+						width="76"
 						height="22"
 						key="textField-7"/>
-					<box rightPadding="3">					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>

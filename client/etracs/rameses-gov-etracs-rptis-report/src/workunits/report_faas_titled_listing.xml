@@ -21,8 +21,13 @@ class TitledFaasListingController extends com.rameses.gov.etracs.rpt.report.Asyn
     def svc 
     
     String title = 'List of Titled Properties'
+    String path = 'com/rameses/gov/etracs/rptis/report/';
     
-    String reportName = 'com/rameses/gov/etracs/rptis/report/faas_titled_listing.jasper';
+    String getReportName(){
+        if (entity.taxpayer)
+            return path + 'faas_titled_listing_bytaxpayer.jasper';
+        return path + 'faas_titled_listing.jasper';
+    }
     
     void buildReportData(entity, asyncHandler){
         svc.buildReport(entity, asyncHandler)
@@ -31,9 +36,10 @@ class TitledFaasListingController extends com.rameses.gov.etracs.rpt.report.Asyn
    def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false]),
                 new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, emptyText:'ALL']),
                 new FormControl( "text", [caption:'Section', name:'entity.section', depends:'entity.barangay',  visibleWhen:'#{entity.barangay != null}']),
+                new FormControl( "lookup", [caption:'Taxpayer', name:'entity.taxpayer', preferredSize:'[0,21]', handler:'entity:lookup', expression:'#{item.name}']),
             ]    
         },
    ] as FormPanelModel;

@@ -6,7 +6,7 @@
 		
 - ASSESSOR	
 	- Approved FAAS Listing: add section option 
-	- Titled FAAS Listing: add section option 
+	- Titled FAAS Listing: add section and by taxpayer option 
 	- SpecificClass report: add section option 
 	- Agriland Summary: add section option 
 	- ROA: add section option 

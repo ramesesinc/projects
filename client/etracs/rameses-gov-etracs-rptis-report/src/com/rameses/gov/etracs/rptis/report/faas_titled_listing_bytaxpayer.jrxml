@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="faas_titled_listing"
+		 name="faas_titled_listing_bytaxpayer"
 
 		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
@@ -194,7 +194,7 @@
 			</band>
 		</title>
 		<pageHeader>
-			<band height="48"  isSplitAllowed="true" >
+			<band height="60"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
@@ -226,7 +226,27 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TITLE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TITLE} ]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="40"
+						width="738"
+						height="18"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-43"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Taxpayer: " + $F{owner.name}]]></textFieldExpression>
 				</textField>
 			</band>
 		</pageHeader>
@@ -237,28 +257,7 @@
 						mode="Transparent"
 						x="0"
 						y="0"
-						width="155"
-						height="23"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-31"/>
-					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
-					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[Property Owner]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="155"
-						y="0"
-						width="98"
+						width="135"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -277,9 +276,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="253"
+						x="135"
 						y="0"
-						width="84"
+						width="106"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -298,9 +297,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="337"
+						x="241"
 						y="0"
-						width="92"
+						width="100"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -319,9 +318,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="429"
+						x="341"
 						y="0"
-						width="75"
+						width="87"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -340,9 +339,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="624"
+						x="588"
 						y="0"
-						width="62"
+						width="80"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -362,9 +361,9 @@ Value]]></text>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="686"
+						x="668"
 						y="0"
-						width="52"
+						width="70"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -384,9 +383,9 @@ Value]]></text>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="540"
+						x="483"
 						y="0"
-						width="24"
+						width="38"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -405,9 +404,9 @@ Value]]></text>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="564"
+						x="521"
 						y="0"
-						width="60"
+						width="67"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -426,9 +425,9 @@ Value]]></text>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="504"
+						x="428"
 						y="0"
-						width="36"
+						width="55"
 						height="23"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -451,9 +450,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="429"
+						x="341"
 						y="0"
-						width="75"
+						width="87"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -474,9 +473,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="337"
+						x="241"
 						y="0"
-						width="92"
+						width="100"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -494,33 +493,12 @@ Value]]></text>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{titleno}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="0"
-						y="0"
-						width="155"
-						height="14"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField"
-						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2" rightPadding="1" topPadding="1" bottomPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.name}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="253"
+						x="135"
 						y="0"
-						width="84"
+						width="106"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -539,9 +517,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="624"
+						x="588"
 						y="0"
-						width="62"
+						width="80"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -562,9 +540,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="686"
+						x="668"
 						y="0"
-						width="52"
+						width="70"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -585,9 +563,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="155"
+						x="0"
 						y="0"
-						width="98"
+						width="135"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -606,9 +584,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="540"
+						x="483"
 						y="0"
-						width="24"
+						width="38"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -629,9 +607,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="564"
+						x="521"
 						y="0"
-						width="60"
+						width="67"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -652,9 +630,9 @@ Value]]></text>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="504"
+						x="428"
 						y="0"
-						width="36"
+						width="55"
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"

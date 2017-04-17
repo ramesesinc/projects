@@ -25,10 +25,11 @@ from faas f
 	inner join barangay b on rp.barangayid = b.objid 
 	inner join sys_org o on f.lguid = o.objid 
 where f.lguid like $P{lguid}
-  and rp.barangayid like $P{barangayid}
-  and spc.classification_objid like $P{classificationid}
   and f.state = 'CURRENT'
   and lspc.objid = $P{landspecificclassid}
+  and rp.barangayid like $P{barangayid}
+  and spc.classification_objid like $P{classificationid}
+  and rp.section like $P{section}
 group by 
 	o.name, b.name, 
 	f.tdno, f.fullpin, f.owner_name, f.owner_address, f.administrator_name,

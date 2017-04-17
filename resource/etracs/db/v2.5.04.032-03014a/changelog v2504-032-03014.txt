@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- SpecificClass report: add section option 
 	- Agriland Summary: add section option 
 	- ROA: add section option 
 	- Display PIN in subdivision summary report

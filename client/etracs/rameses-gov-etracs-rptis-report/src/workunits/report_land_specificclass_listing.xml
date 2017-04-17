@@ -28,7 +28,7 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
     String reportName = 'com/rameses/gov/etracs/rpt/report/land_specificclass_listing.jasper';
         
     void buildReportData(entity, asyncHandler){
-        svc.generateReport(entity, asyncHandler)
+        svc.buildReport(entity, asyncHandler)
     }
     
     
@@ -58,6 +58,7 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
                 new FormControl( "combo", [caption:'Revision Year', name:'entity.ry', required:true, items:'revisionyears', allowNull:false,captionWidth:110]),
                 new FormControl( "combo", [caption:'Classification', name:'entity.classification', items:'classifications', expression:'#{item.name}', captionWidth:110, emptyText:'ALL']),
                 new FormControl( "combo", [caption:'Specific Class', name:'entity.specificclass', required:true, items:'specificclasses', expression:'#{item.name}', depends:'entity.ry', dynamic:true, allowNull:false,captionWidth:110]),
+                new FormControl( "text", [caption:'Section', captionWidth:110, name:'entity.section', depends:'entity.barangay',  visibleWhen:'#{entity.barangay != null}']),
             ]
         },
    ] as FormPanelModel;

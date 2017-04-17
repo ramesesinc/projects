@@ -183,6 +183,7 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	LEFT JOIN rpttracking t ON f.objid = t.objid 
 where 1=1  
 ${filters}

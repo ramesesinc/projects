@@ -50,6 +50,8 @@ class FAASLookupService
 	def getColumns(){
 		return '''
 			f.*,
+			e.name as taxpayer_name, 
+			e.address_text as taxpayer_address,
 			pc.code AS classification_code, 
 			pc.code AS classcode, 
 			pc.name AS classification_name, 

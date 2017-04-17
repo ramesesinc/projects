@@ -18,3 +18,8 @@ CREATE TABLE `rptledgeritem_qtrly_partial` (
   KEY `FK_rptledgeritemqtrlypartial_rptledger` (`rptledgerid`),
   CONSTRAINT `FK_rptledgeritemqtrlypartial_rptledger` FOREIGN KEY (`rptledgerid`) REFERENCES `rptledger` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+alter table faas 
+  drop column taxpayer_name,
+  drop column taxpayer_address;

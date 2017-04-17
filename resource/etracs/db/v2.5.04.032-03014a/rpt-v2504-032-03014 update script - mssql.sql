@@ -25,3 +25,10 @@ alter table rptledgeritem_qtrly_partial
 add CONSTRAINT FK_rptledgeritemqtrlypartial_rptledger 
 FOREIGN KEY (rptledgerid) REFERENCES rptledger (objid)
 go 
+
+
+
+alter table faas drop column taxpayer_name
+go 
+alter table faas drop column taxpayer_address
+go 

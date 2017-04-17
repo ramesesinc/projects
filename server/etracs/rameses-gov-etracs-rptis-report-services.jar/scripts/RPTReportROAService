@@ -40,6 +40,8 @@ class RPTReportROAService
         def barangayname = params.barangay?.name 
         params.barangay = params.barangay ? params.barangay.objid : '%';
         params.classification = params.classification ? params.classification.objid : '%';
+        params.section = params.section ? params.section : '%';
+
         params.ry = dtsvc? dtsvc.getServerYear() : '';
         def roalist = [];
         def currentlist = em.getCurrentFaasRecord(params);

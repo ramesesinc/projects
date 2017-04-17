@@ -41,6 +41,7 @@ WHERE ${filter}
  AND f.state = 'CURRENT'
 AND b.objid LIKE $P{barangay}
 AND r.classification_objid LIKE $P{classification}
+AND rp.section LIKE $P{section}
 ORDER BY f.tdno
 
 

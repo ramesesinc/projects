@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- ROA: add section option 
 	- Display PIN in subdivision summary report
 	- Cancel ledger appropriately for manual cancellation of faas 
 

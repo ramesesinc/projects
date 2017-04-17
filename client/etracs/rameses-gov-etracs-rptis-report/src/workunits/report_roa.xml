@@ -42,6 +42,7 @@ class ReportRoaController extends com.rameses.gov.etracs.rpt.report.AsyncReportC
     def getFormControl(){
         def controls = getStandardFormControls();
         controls << new FormControl( "combo", [captionWidth:110, caption:'Classification', name:'entity.classification', items:'classifications', expression:'#{item.name}'])
+        controls << new FormControl( "text", [captionWidth:110, caption:'Section', name:'entity.section'])
         return [
             getFormControls :{controls}
         ] as FormPanelModel;

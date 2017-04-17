@@ -10,7 +10,7 @@ SELECT t.* FROM (
 		INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 		INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	WHERE f.state = 'CURRENT'  AND f.lguid LIKE $P{lguid} AND rp.barangayid LIKE $P{barangayid}
-	  ${classidfilter} ${txntypefilter}
+	  ${classidfilter} ${txntypefilter} ${sectionfilter}
 
 	UNION ALL
 
@@ -24,7 +24,7 @@ SELECT t.* FROM (
 		INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	WHERE f.state = 'CANCELLED'  AND f.lguid LIKE $P{lguid} AND rp.barangayid LIKE $P{barangayid}
 	  AND f.cancelledyear = $P{currentyear}  
-	  ${classidfilter} ${txntypefilter}
+	  ${classidfilter} ${txntypefilter} ${sectionfilter}
 ) t 
 ${orderbyclause} 
 

@@ -38,18 +38,28 @@ class ReportRoaController extends com.rameses.gov.etracs.rpt.report.AsyncReportC
         svc.getROA(entity, asyncHandler);
     }
     
+    
+    def getFormControl(){
+        def controls = getStandardFormControls();
+        controls << new FormControl( "combo", [captionWidth:110, caption:'Classification', name:'entity.classification', items:'classifications', expression:'#{item.name}'])
+        return [
+            getFormControls :{controls}
+        ] as FormPanelModel;
+    }
+    
+    
     Map getParameters(){
         return data.parameters;
     }    
     
-    def getPropertyClassifications(){
+    List getClassifications(){
         def q = [_schemaname:'propertyclassification', where:['1=1'], orderBy:'orderno']
         return querySvc.getList(q)
     }
     
    def getReporttypes(){
         return [
-            [type:'period', caption:'PERIOD'],
+            [type:'period', caption:'STANDARD'],
             [type:'asof', caption:'AS OF DATE'],
         ]
    }    
@@ -58,7 +68,4 @@ class ReportRoaController extends com.rameses.gov.etracs.rpt.report.AsyncReportC
 ]]>        
         
     </code>
-    <pages>
-        <page name="default" template="com.rameses.gov.etracs.rpt.report.ReportInit2Page"/>
-    </pages>
 </workunit>

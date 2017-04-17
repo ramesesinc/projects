@@ -32,12 +32,18 @@ class RPTReportMasterListService
 		if( params.classification ) {
 			params.classidfilter = ' AND r.classification_objid = $P{classid} '
 		}
-		
+
+		params.sectionfilter = ''
+		if( params.section ) { 
+			params.sectionfilter = ' AND rp.section = $P{section} '
+		}
+
 		params.orderbyclause = ''
 		if( params.orderby ) { 
 			params.orderbyclause = 'ORDER BY ' + params.orderby.fieldname
 		}
 
+		
 		def title = 'Master List of Real Property' 
 
 		params.txntypeid = 'GR'

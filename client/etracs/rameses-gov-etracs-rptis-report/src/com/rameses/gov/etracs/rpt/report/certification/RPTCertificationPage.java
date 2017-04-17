@@ -300,7 +300,6 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xCheckBox1.setIndex(13);
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("officialuse"); // NOI18N
-        xCheckBox1.setOpaque(false);
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText("  Is for Official Use?");
         formPanel1.add(xCheckBox1);

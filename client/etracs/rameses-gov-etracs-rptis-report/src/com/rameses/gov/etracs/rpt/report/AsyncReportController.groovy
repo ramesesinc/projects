@@ -41,6 +41,17 @@ abstract class AsyncReportController
         return null;
     }
     
+    def getStandardFormControls(){
+        return [
+            new FormControl( "combo", [captionWidth:110, caption:'Report Type', name:'entity.reporttype', required:true, items:'reporttypes', allowNull:false, expression:'#{item.caption}', visibleWhen:'#{reporttypes!=null}']),
+            new FormControl( "integer", [captionWidth:110, caption:'Year', name:'entity.year', required:true]),
+            new FormControl( "combo", [captionWidth:110, caption:'Quarter', name:'entity.qtr', required:true, items:'quarters']),
+            new FormControl( "combo", [captionWidth:110, caption:'Month', name:'entity.month', required:true, depends:'entity.reporttype,entity.qtr', items:'months', expression:'#{item.name}', dynamic:true]),
+            new FormControl( "combo", [captionWidth:110, caption:'LGU', name:'entity.lgu', required:true, allowNull:false, items:'lgus', expression:'#{item.name}']),
+            new FormControl( "combo", [captionWidth:110, caption:'Barangay', name:'entity.barangay', required:true, allowNull:false, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
+        ]
+    }
+    
     
     SubReport[] getSubReports(){
         return null;
@@ -266,5 +277,6 @@ abstract class AsyncReportController
         Calendar cal = new GregorianCalendar(yr, mon, day);
         return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
-        
+    
+    
 }

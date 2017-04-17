@@ -25,7 +25,7 @@ class TitledFaasListingController extends com.rameses.gov.etracs.rpt.report.Asyn
     String reportName = 'com/rameses/gov/etracs/rptis/report/faas_titled_listing.jasper';
     
     void buildReportData(entity, asyncHandler){
-        svc.generateReport(entity, asyncHandler)
+        svc.buildReport(entity, asyncHandler)
     }
     
    def formControl = [
@@ -33,6 +33,7 @@ class TitledFaasListingController extends com.rameses.gov.etracs.rpt.report.Asyn
             return [
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
                 new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, emptyText:'ALL']),
+                new FormControl( "text", [caption:'Section', name:'entity.section', depends:'entity.barangay',  visibleWhen:'#{entity.barangay != null}']),
             ]    
         },
    ] as FormPanelModel;

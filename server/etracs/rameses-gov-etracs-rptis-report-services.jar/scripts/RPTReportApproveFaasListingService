@@ -23,6 +23,7 @@ class RPTReportApproveFaasListingService
     public def getApproveFaasListing(params){
     	params.lguid = params.lgu?.objid 
         params.barangayid = params.barangay?.objid
+        params.section = (params.section ? params.section : '%')
 
         util.buildEndingPeriodFilter(params)
 

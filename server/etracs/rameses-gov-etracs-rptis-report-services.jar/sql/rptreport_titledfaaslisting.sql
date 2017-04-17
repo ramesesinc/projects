@@ -22,6 +22,7 @@ from faas f
 	inner join propertyclassification pc on r.classification_objid = pc.objid 
 where f.lguid like $P{lguid}
    and rp.barangayid like $P{barangayid}
+   and rp.section like $P{section}
    and f.state = 'CURRENT'
    and r.rputype = 'land'
    and f.titleno is not null 

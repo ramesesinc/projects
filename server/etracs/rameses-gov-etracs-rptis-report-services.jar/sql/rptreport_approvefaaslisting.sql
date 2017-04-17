@@ -26,6 +26,7 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
 	AND f.state IN ('CURRENT', 'CANCELLED')
+	AND rp.section like $P{section}
 	${txntypefilter}
 ORDER BY f.tdno  	
 

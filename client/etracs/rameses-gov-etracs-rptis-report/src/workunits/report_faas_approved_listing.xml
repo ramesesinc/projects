@@ -48,6 +48,7 @@ class ApproveFaasListing extends com.rameses.gov.etracs.rpt.report.AsyncReportCo
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,21']),
                 new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'100,19']),
                 new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'100,21']),
+                new FormControl( "text", [caption:'Section', name:'entity.section', depends:'entity.barangay',  visibleWhen:'#{entity.barangay != null}', preferredSize:'100,21']),
             ]    
         },
    ] as FormPanelModel;

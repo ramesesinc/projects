@@ -11,7 +11,10 @@ class RPTLedgerInterceptor
     def em
 
 	@Service('RPTLedgerService')
-	def svc
+    def svc
+
+    @Service('Var')
+	def var
 
     @Service('RealPropertyService')
     def rpSvc
@@ -98,17 +101,19 @@ class RPTLedgerInterceptor
     }
 
     void postNewLedger(faas){
-        faas.txntype = faasSvc.getTxnType( faas.txntype.objid )
-        def manualledger = findManualLedger(faas)
+        def posttoledger = util.toBoolean(var.post_approved_faas_to_ledger,true)
+        if (posttoledger){
+            faas.txntype = faasSvc.getTxnType( faas.txntype.objid )
+            def manualledger = findManualLedger(faas)
 
-        if (util.isTrue(faas.txntype.reconcileledger) && manualledger){
-            manualledger.previousfaases = [[prevfaasid:faas.objid]]
-            svc.reconcileManualLedger(faas, manualledger)
+            if (util.isTrue(faas.txntype.reconcileledger) && manualledger){
+                manualledger.previousfaases = [[prevfaasid:faas.objid]]
+                svc.reconcileManualLedger(faas, manualledger)
+            }
+            else {
+                svc.postNewLedger(faas)
+            }
         }
-        else {
-            svc.postNewLedger(faas)
-        }
-        
     }
 
 

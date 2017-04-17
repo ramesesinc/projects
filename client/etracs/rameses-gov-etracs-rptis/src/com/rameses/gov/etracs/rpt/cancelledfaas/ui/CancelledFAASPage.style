@@ -14,3 +14,7 @@
 "entity.(txnno|txndate)"[1 == 1]{
     enabled:false;
 }
+
+"entity.lasttaxyear"[ledger != null]{
+    enabled:false;
+}

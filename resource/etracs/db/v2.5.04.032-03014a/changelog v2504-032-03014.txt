@@ -5,8 +5,9 @@
 - BPLS 
 		
 - ASSESSOR	
-	-
+	- Cancel ledger appropriately for manual cancellation of faas 
 
 - LANDTAX
-	- Billing Update
+	- Billing Updates
+
 	

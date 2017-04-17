@@ -25,6 +25,7 @@ class RPTReportAgriculturalService
         }
         params.lguid = (params.lgu ? params.lgu.objid : '%')
         params.barangayid = (params.barangay ? params.barangay.objid : '%')
+        params.section = (params.section ? params.section : '%')
 
         params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.serverDate)
         

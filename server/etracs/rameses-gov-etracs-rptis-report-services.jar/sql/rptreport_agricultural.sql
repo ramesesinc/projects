@@ -41,6 +41,7 @@ where f.lguid = $P{lguid}
   and f.state = 'current' 
   and pc.name = 'AGRICULTURAL' 
   and r.taxable = $P{taxable}
+  and rp.section like $P{section}
 group by case when c.objid is not null then c.name else m.name end, b.name, lspc.name
 order by case when c.objid is not null then c.name else m.name end, b.name, lspc.name 
 

@@ -59,6 +59,7 @@ class AgriLandActualUseSummaryController extends com.rameses.gov.etracs.rpt.repo
                 new FormControl( "combo", [caption:'LGU', captionWidth:120 , name:'entity.lgu', items:'lgus', expression:'#{item.name}', visibleWhen:"#{entity.summarytype.type=='brgy'}", allowNull:false, required:true, depends:'entity.summarytype']),
                 new FormControl( "combo", [caption:'Barangay', captionWidth:120, name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.(summarytype|lgu)', dynamic:true, emptyText:'ALL', visibleWhen:"#{entity.summarytype?.type=='brgy'}"]),
                 new FormControl( "combo", [caption:'Taxability', captionWidth:120, name:'entity.taxability', items:'taxabilities', required:true, preferredSize:'120,19', allowNull:false]),
+                new FormControl( "text", [caption:'Section', captionWidth:120, name:'entity.section', depends:'entity.barangay', preferredSize:'120,19', visibleWhen:'#{entity.barangay != null}']),
             ]
         },
    ] as FormPanelModel;

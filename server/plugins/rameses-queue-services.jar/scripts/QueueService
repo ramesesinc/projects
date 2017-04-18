@@ -35,11 +35,21 @@ class QueueService {
 	@Service 
 	def self; 
 
+	def dateFormatter = new java.text.SimpleDateFormat('MMMMM dd, yyyy'); 
+
 
 	/* initiated by taxpayer to get the next current series number  */
 	@ProxyMethod 
 	public def fetchNextNumber( o ) {
+		def dd = fetchNextTicket( o ); 
+		return dd.ticketno; 
+	} 
+
+	@ProxyMethod 
+	public def fetchNextTicket( o ) {
 		if ( !o.sectionid ) throw new Exception('sectionid parameter is required');
+
+		qs.find([ objid: o.sectionid ]).update([ lockid: new UID().toString() ]); 
 
 		def m = qs.find([ objid: o.sectionid ]).first(); 
 		if ( !m ) throw new Exception('queue section does not exist'); 
@@ -55,7 +65,10 @@ class QueueService {
 		]; 
 		dd.ticketno = formatSeriesNumber([ seriesno: dd.seriesno, prefix: prefix ]); 
 		qn.create( dd ); 
-		return dd.ticketno; 
+		dd.group = m.group; 
+		dd.section = [ objid: m.objid, title: m.title ]; 
+		dd.txndatestr = dateFormatter.format( dd.txndate );  
+		return dd; 
 	} 
 
 	@ProxyMethod
@@ -63,8 +76,8 @@ class QueueService {
 		if ( data.seriesno ) {
 			def prefix = (data.prefix? data.prefix : ''); 
 			def snum = data.seriesno.toString();
-			if ( snum.length() < 4 ) { 
-				snum = snum.padLeft(4,'0'); 
+			if ( snum.length() < 3 ) { 
+				snum = snum.padLeft(3,'0'); 
 			} 
 			return ''+prefix+snum; 
 		} else { 
@@ -73,8 +86,27 @@ class QueueService {
 	} 
 
 	@ProxyMethod 
-	public def getWaitingList( params ) {
-		return qn.getPendingList([ sectionid: params.sectionid, state:'PENDING', _limit: 3 ]); 
+	public def getWaitingList( params ) { 
+		if ( !params._start ) params._start = 0; 
+		if ( !params._limit ) params._limit = 20;
+
+		def rundate = dateSvc.getServerDate(); 
+		def startdate = new java.sql.Date( rundate.getTime()).toString(); 
+		def enddate = startdate +' 23:59:59'; 
+
+		def m = [state: 'PENDING', startdate: startdate, enddate: enddate]; 
+		m._start = params._start; 
+		m._limit = params._limit; 
+
+		if ( params.counterid ) { 
+			m.counterid = params.counterid; 
+			return qn.getPendingListByCounter( m ); 
+		} else if ( params.groupid ) {
+			m.groupid = params.groupid; 
+			return qn.getPendingListByGroup( m ); 
+		} else {
+			return []; 
+		} 
 	}
 
 	@ProxyMethod 

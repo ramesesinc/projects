@@ -21,13 +21,6 @@ public class UserQueuePage extends javax.swing.JPanel {
         tabitem1.setLayout( layout ); 
         tabitem1.removeAll(); 
         tabitem1.add( xFormPanel1, PageLayout.CONTENT);
-        tabitem1.add( footer1panel, PageLayout.FOOTER );
-        
-        layout = new PageLayout();
-        tabitem2.setLayout( layout ); 
-        tabitem2.removeAll(); 
-        tabitem2.add( xFormPanel2, PageLayout.CONTENT);
-        tabitem2.add( footer2panel, PageLayout.FOOTER );
     }
     
     /**
@@ -39,23 +32,19 @@ public class UserQueuePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         tabitem1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        footer1panel = new javax.swing.JPanel();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        tabitem2 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        footer2panel = new javax.swing.JPanel();
-        xButton2 = new com.rameses.rcp.control.XButton();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xList1 = new com.rameses.rcp.control.XList();
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setPreferredSize(new java.awt.Dimension(370, 400));
         setLayout(new java.awt.BorderLayout());
 
-        xTabbedPane1.setItems("tabitems");
-
-        tabitem1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabitem1.setBackground(new java.awt.Color(255, 255, 255));
+        tabitem1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         tabitem1.setLayout(new java.awt.BorderLayout());
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
@@ -65,48 +54,39 @@ public class UserQueuePage extends javax.swing.JPanel {
         xFormPanel1.setShowCategory(true);
         tabitem1.add(xFormPanel1, java.awt.BorderLayout.NORTH);
 
-        footer1panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        footer1panel.setLayout(new com.rameses.rcp.control.layout.XLayout());
+        add(tabitem1, java.awt.BorderLayout.CENTER);
 
-        xButton1.setExpression("Edit");
-        xButton1.setName("edit"); // NOI18N
-        footer1panel.add(xButton1);
+        xPanel1.setPreferredSize(new java.awt.Dimension(110, 140));
+        com.rameses.rcp.control.layout.YLayout yLayout1 = new com.rameses.rcp.control.layout.YLayout();
+        yLayout1.setAutoFill(true);
+        xPanel1.setLayout(yLayout1);
 
-        tabitem1.add(footer1panel, java.awt.BorderLayout.PAGE_END);
+        xLabel1.setExpression("Waiting List");
+        xLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        xLabel1.setForeground(new java.awt.Color(153, 0, 0));
+        xPanel1.add(xLabel1);
 
-        xTabbedPane1.addTab("  Allowed Sections  ", tabitem1);
+        xList1.setCellHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xList1.setCellHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        xList1.setExpression("#{item.ticketno}");
+        xList1.setFixedCellHeight(20);
+        xList1.setFixedCellWidth(70);
+        xList1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        xList1.setHandler("waitListHandler");
+        xList1.setLayoutOrientation(com.rameses.rcp.control.XList.VERTICAL_WRAP);
+        xList1.setVisibleRowCount(5);
+        jScrollPane1.setViewportView(xList1);
 
-        tabitem2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        tabitem2.setLayout(new java.awt.BorderLayout());
+        xPanel1.add(jScrollPane1);
 
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel2.setName("queueSectionHandler"); // NOI18N
-        xFormPanel2.setShowCaption(false);
-        xFormPanel2.setShowCategory(true);
-        tabitem2.add(xFormPanel2, java.awt.BorderLayout.NORTH);
-
-        footer2panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        footer2panel.setLayout(new com.rameses.rcp.control.layout.XLayout());
-
-        xButton2.setExpression("Refresh");
-        xButton2.setName("refreshQueueSections"); // NOI18N
-        footer2panel.add(xButton2);
-
-        tabitem2.add(footer2panel, java.awt.BorderLayout.PAGE_END);
-
-        xTabbedPane1.addTab("  Request Ticket   ", tabitem2);
-
-        add(xTabbedPane1, java.awt.BorderLayout.CENTER);
+        add(xPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel footer1panel;
-    private javax.swing.JPanel footer2panel;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel tabitem1;
-    private javax.swing.JPanel tabitem2;
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XList xList1;
+    private com.rameses.rcp.control.XPanel xPanel1;
     // End of variables declaration//GEN-END:variables
 }

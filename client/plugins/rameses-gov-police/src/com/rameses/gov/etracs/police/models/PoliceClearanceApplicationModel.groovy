@@ -2,19 +2,17 @@ package com.rameses.gov.police.models;
 
 import com.rameses.rcp.common.*
 import com.rameses.rcp.annotations.*
+import com.rameses.rcp.framework.ClientContext;
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
-import java.rmi.server.*;
-import com.rameses.seti2.models.*;
 import com.rameses.osiris2.reports.*;
+import com.rameses.seti2.models.*;
 import java.rmi.server.UID;
-import com.rameses.rcp.framework.ClientContext;
 
 public class PoliceClearanceApplicationModel extends CrudFormModel {
     
-    def showTrackingno() {
-        return Modal.show( "show_trackingno", [info: [trackingno: entity.barcode]] );
-    }
+    @Service('PoliceClearanceReportService') 
+    def reportSvc; 
     
     def feeListModel = [
         fetchList: { o->
@@ -22,15 +20,23 @@ public class PoliceClearanceApplicationModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    /*
-    void loadPhysical() {
-        def p = physicalSvc.open([objid:entity.person.objid]);            
-        entity.person.putAll( p );
+    def showTrackingno() {
+        return Modal.show( "show_trackingno", [info: [trackingno: entity.barcode]] );
     }
-
-    void savePhysical() {
-        physicalSvc.save( entity.person );
+    
+    boolean isCanPrintClearance() {
+        return (entity.state == 'CLOSED');
     }
-    */
-            
+    
+    def printClearance() { 
+        def params = [ appid: entity.objid ]; 
+        def o = reportSvc.getClearance( params ); 
+        if ( o == null ) o = reportSvc.create( params ); 
+        if ( o?.expired ) throw new Exception('''
+            Police Clearance is already expired. 
+            Please create another application. 
+        '''); 
+        
+        return Inv.lookupOpener("policeclearance:print", [ entity: entity ]); 
+    }    
 }

@@ -1,9 +1,10 @@
 <workunit>
     <invokers>
-        <invoker type="queue-home:section" caption=" Status " action="init" index="2"/> 
+        <invoker folderid="/menu/setting" caption="Queue Status" action="init" index="100"
+                 target="popup" role="ADMIN,USER"/> 
     </invokers>
     <code class="queueing.model.UserQueueStatusListModel"/>
     <pages>
         <page name="read" template="queueing.view.UserQueueStatusListPage"/>
     </pages>
-</workunit>   
+</workunit> 

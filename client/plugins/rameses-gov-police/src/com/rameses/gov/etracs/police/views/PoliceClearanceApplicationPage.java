@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.police.views;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -11,6 +12,7 @@ import com.rameses.seti2.views.CrudFormPage;
  *
  * @author dell
  */
+@StyleSheet
 @Template(CrudFormPage.class)
 public class PoliceClearanceApplicationPage extends javax.swing.JPanel {
 
@@ -33,7 +35,7 @@ public class PoliceClearanceApplicationPage extends javax.swing.JPanel {
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -42,34 +44,41 @@ public class PoliceClearanceApplicationPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
-        xLabel1.setCaption("App No");
-        xLabel1.setExpression("#{entity.appno}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel1.add(xLabel1);
+        xTextField1.setCaption("App No");
+        xTextField1.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        xTextField1.setName("entity.appno"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(200, 20));
+        xTextField1.setReadonly(true);
+        xFormPanel1.add(xTextField1);
 
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setCaption("App Date");
         xLabel6.setExpression("#{entity.appdate}");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel6);
 
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("App Type");
         xLabel2.setExpression("#{entity.apptype.title}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setCaption("Applicant ");
         xLabel3.setExpression("#{entity.applicant.name}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setCaption("Address");
         xLabel4.setExpression("#{entity.applicant.address.text}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel4);
 
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel5.setCaption("State");
         xLabel5.setExpression("#{entity.state}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel5);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -78,8 +87,8 @@ public class PoliceClearanceApplicationPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,9 +196,9 @@ public class PoliceClearanceApplicationPage extends javax.swing.JPanel {
             .addGap(0, 340, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(21, 21, 21)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                    .addGap(21, 21, 21)))
+                    .addContainerGap()
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         xTabbedPane1.addTab("Fees", jPanel2);
@@ -216,12 +225,12 @@ public class PoliceClearanceApplicationPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

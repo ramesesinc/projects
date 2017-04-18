@@ -11,16 +11,19 @@ class UserQueueStatusListModel {
     @Service("UserQueueService")
     def userQueueSvc;
 
-    @Caller 
-    def caller; 
-
-    void init() {
+    @Script('User') 
+    def user; 
+    
+    def counterid; 
+    
+    void init() { 
+        counterid = user.env.TERMINALID; 
     } 
 
     def selectedItem;
     def listHandler = [
         fetchList: { 
-            def m = [ counterid: caller.counterid ];
+            def m = [ counterid: counterid ];
             return userQueueSvc.getStatusList( m ); 
         } 
     ] as BasicListModel; 

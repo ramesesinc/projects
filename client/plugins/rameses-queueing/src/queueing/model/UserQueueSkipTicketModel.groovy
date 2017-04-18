@@ -11,16 +11,22 @@ class UserQueueSkipTicketModel {
     @Service("UserQueueService")
     def userQueueSvc;
 
-    @Caller 
-    def caller; 
-
-    void init() {
+    def serveditem = [:];
+    def counter;
+    def counterid;
+    
+    void init() { 
+        def o = userQueueSvc.getCounter(); 
+        if ( !o ) throw new Exception('This terminal is not registered for queueing'); 
+        
+        counter = o.code; 
+        counterid = o.objid; 
     } 
 
     def selectedItem;
     def listHandler = [
         fetchList: { 
-            def m = [ counterid: caller.counterid ];
+            def m = [ counterid: counterid ];
             return userQueueSvc.getSkipTicketsForTheDay( m ); 
         } 
     ] as BasicListModel; 
@@ -33,19 +39,47 @@ class UserQueueSkipTicketModel {
         } 
     } 
 
-    void retake() {
+    def retake() {
         if ( !selectedItem ) throw new Exception('Please select an item first'); 
         if ( MsgBox.confirm('You are about to process the selected ticket. Continue?' )) { 
-            def m = [ objid: selectedItem.objid, counterid: caller.counterid ]; 
+            def m = [ objid: selectedItem.objid, counterid: counterid ]; 
             def result = userQueueSvc.retake( m ); 
             listHandler.removeSelectedItem(); 
-            if ( !result ) return; 
+            if ( !result ) return null; 
 
             m.title = result.section?.title; 
             m.groupid = result.group?.objid; 
             m.groupname = result.group?.title; 
-            m.currentnumber = result.ticketno;
-            caller.showServingTicket( m ); 
+            m.ticketno = result.ticketno;
+            return showServingTicket( m );  
         } 
+        
+        return null; 
     } 
+    
+    def showServingTicket( item ) { 
+        if ( !item ) return null; 
+
+        serveditem.clear(); 
+        serveditem.putAll( item ); 
+        return 'view'; 
+    }     
+    
+    void buzz() {
+        userQueueSvc.buzzNumber([ counterid: counterid ]);
+    }
+    
+    def skip() {
+        userQueueSvc.skipNumber([ counterid: counterid ]);
+        return "default";
+    }
+    
+    def finish() {
+        userQueueSvc.consumeNumber([ counterid: counterid ]);
+        return "default";
+    }
+    
+    def forward() {
+        return null; 
+    }        
 } 

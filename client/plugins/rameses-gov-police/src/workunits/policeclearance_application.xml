@@ -2,6 +2,9 @@
     <invokers>
         <invoker type="policeclearance_application:open" caption="Police Clearance" action="open"/>
         <invoker type="formActions" caption="Show Tracking No" action="showTrackingno"/>
+        
+        <invoker type="formActions" caption="Print Clearance" action="printClearance" 
+                 depends="entity" visibleWhen="#{canPrintClearance == true}"/>
     </invokers>
     <code class="com.rameses.gov.etracs.police.models.PoliceClearanceApplicationModel" />
     <pages>

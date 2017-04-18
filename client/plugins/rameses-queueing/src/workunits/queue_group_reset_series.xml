@@ -2,6 +2,9 @@
     <invokers>
         <invoker type="queue_group:form:formActions" caption="Reset Series" action="resetSeries" 
                 role="ADMIN" target="process" visibleWhen="#{mode=='read'}"/> 
+        
+        <invoker folderid="/menu/setting" caption="Reset Series" action="resetSeries" 
+                role="ADMIN" target="process" index="100" separator="true"/> 
     </invokers>
     <code>
 <![CDATA[
@@ -19,9 +22,8 @@ class QueueGroupResetSeriesModel {
     void resetSeries() { 
         if ( MsgBox.confirm('You are about to reset the series. Continue?')) {
             def o = getEntity();
-            if ( !o ) return; 
-            
-            groupSvc.resetSeries([ groupid: o.objid ]);  
+            def groupid = (o ? o.objid: null);              
+            groupSvc.resetSeries([ groupid: groupid ]);  
         } 
     } 
     
@@ -29,8 +31,7 @@ class QueueGroupResetSeriesModel {
         try { 
             return caller.entity; 
         } catch(Throwable t){
-            return null; 
-            
+            return null;             
         } 
     } 
 } 

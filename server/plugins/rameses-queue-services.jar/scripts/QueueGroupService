@@ -41,4 +41,21 @@ class QueueGroupService {
 
 		return qg.getSectionCounters([ sectionid: sectionid ]); 
 	} 
+
+	@ProxyMethod 
+	public void resetSeries( params ) {
+		if ( params.groupid ) { 
+			resetSeriesByGroup( params.groupid ); 
+		} 
+		else {
+			qg.list().each{
+				resetSeriesByGroup( it.objid ); 
+			}
+		}
+	}
+
+	private void resetSeriesByGroup( groupid ) { 
+		qg.resetTickets([ groupid: groupid ]); 
+		qs.find([ groupid: groupid ]).update([ currentseries: 0 ]); 
+	} 
 } 

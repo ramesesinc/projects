@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entity_fingerprint">
+    <invokers>
+        <invoker type="entityindividual:section" caption="Finger Print" index="-40"
+                cols="idtype,idno,dtissued,dtexpiry" action="init" visibleWhen="#{mode=='read'}"/>
+    </invokers>
+    <code>
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.seti2.models.*;
+
+class EntityFingerPrintListModel extends CrudSubListModel {
+    def getListFilter() {
+        return [entityid: masterEntity.objid];
+    }
+}
+    ]]>
+    </code> 
+</workunit>

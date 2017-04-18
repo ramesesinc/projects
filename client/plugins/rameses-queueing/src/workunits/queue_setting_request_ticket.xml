@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/setting" caption="Request Ticket" action="init" 
+                 target="popup" role="ADMIN,USER"/> 
+    </invokers>
+    <code class="queueing.model.UserQueueTicketRequestModel"/>    
+    <pages>
+        <page template="queueing.view.UserQueueTicketRequestPage"/>
+    </pages>
+</workunit>    

@@ -1,6 +1,10 @@
 <workunit>
     <invokers>
-        <invoker type="queue_counter:show" caption="Queue Counter" action="init" /> 
+        <invoker folderid="/menu/setting" caption="Queue Counter" action="init" 
+                 index="110" target="popup" role="USER"/>         
+
+        <invoker type="queue_counter:show" caption="Queue Counter" action="init" 
+                 target="popup" role="USER"/> 
     </invokers>
     
     <code class="queueing.model.QueueCounter" />

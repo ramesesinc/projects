@@ -7,17 +7,11 @@ import com.rameses.osiris2.common.*
 import java.rmi.server.*;
 import com.rameses.util.*;
         
-class UserQueue {
+class UserQueue extends AbstractUserQueueHandler {
 
     @Service("UserQueueService")
     def userQueueSvc;
-
-    @Service("QueueCounterService")
-    def counterSvc;
-
-    @Service("QueueService")
-    def queueSvc;
-    
+        
     @Binding
     def binding;
     
@@ -25,11 +19,9 @@ class UserQueue {
     def counter;
     def counterid;
     
-    def serveditem = [:];     
+    def serveditem = [:];
     def controlList = [];
     
-    def tabitems = Inv.lookupOpeners('queue-home:section', [:]); 
-
     def formControls = [
         getControlList: {
             return controlList;
@@ -37,6 +29,7 @@ class UserQueue {
     ] as FormPanelModel;
 
     public def init() {
+        AbstractUserQueueHandler.add('user-queue-main', this); 
         def z = userQueueSvc.init();
         if( ! z?.code ) {
             boolean pass = false;
@@ -73,13 +66,13 @@ class UserQueue {
         }
 
         entityCounter = z;  
-        serveditem.clear(); 
         if ( z.current ) { 
-            serveditem.title = z.current.title; 
-            serveditem.groupid = z.current.groupid;
-            serveditem.groupname = z.current.groupname; 
-            serveditem.currentnumber = z.current.currentno;            
-            return "view";
+            def m = [:]; 
+            m.title = z.current.title; 
+            m.groupid = z.current.groupid;
+            m.groupname = z.current.groupname; 
+            m.ticketno = z.current.currentno;            
+            return showServingTicket( m ); 
             
         } else {
             return "default";
@@ -90,8 +83,8 @@ class UserQueue {
         if ( !item ) return; 
 
         def m = [ sectionid: item.sectionid, counterid: item.counterid ];
-        def currentnumber = userQueueSvc.takeNextNumber( m ); 
-        if ( !currentnumber ) {
+        def ticketno = userQueueSvc.takeNextNumber( m ); 
+        if ( !ticketno ) {
             MsgBox.alert('Queue is empty'); 
             return; 
         }
@@ -99,21 +92,32 @@ class UserQueue {
         m.title = item.title;
         m.groupid = item.groupid;
         m.groupname = item.group?.title;
-        m.currentnumber = currentnumber; 
-        showServingTicket( m ); 
+        m.ticketno = ticketno;         
+        def outcome = showServingTicket( m ); 
+        if ( outcome ) binding.fireNavigation( outcome ); 
     }
 
-    void showServingTicket( item ) { 
-        serveditem.clear(); 
-        if ( !item ) return; 
+    def showServingTicket( item ) { 
+        if ( !item ) return null; 
 
+        serveditem.clear(); 
         serveditem.putAll( item ); 
-        binding.fireNavigation("view");
+        return 'view'; 
     } 
     
     def selectNumber() {
         return "view";
     }
+        
+    /*def edit() { 
+        def h = { o-> 
+            reload( o ); 
+            formControls.reload(); 
+        }
+        def op = Inv.lookupOpener("queue_counter:show", [entity: entityCounter, handler: h]);
+        op.target = "popup";
+        return op;
+    }*/ 
     
     void buzz() {
         userQueueSvc.buzzNumber([ counterid: counterid ]);
@@ -130,42 +134,34 @@ class UserQueue {
     }
     
     def forward() {
-        
-    }
-    
-    def edit() { 
-        def h = { o-> 
-            reload( o ); 
-            formControls.reload(); 
-        }
-        def op = Inv.lookupOpener("queue_counter:show", [entity: entityCounter, handler: h]);
-        op.target = "popup";
-        return op;
-    } 
-
-
-    def pickhandler = { o-> 
-        if ( !o ) return; 
-        
-        def reqno = queueSvc.fetchNextNumber([ sectionid: o.objid ]); 
-        MsgBox.alert("<html>Your Queue Number <br> <font size=\"14\"><b>"+ reqno +"</b></font></html>"); 
+        return null; 
     }    
-    def queueSectionList = []; 
-    def queueSectionHandler = [
-        getControlList: { 
-            if ( !queueSectionList ) { 
-                userQueueSvc.getQueueSections().each{ o-> 
-                    queueSectionList << [
-                        type: 'qsectionitem', caption: o.title, 
-                        actionText: 'Pick', item: o, handler: pickhandler, 
-                        showCaption: false, categoryid: o.groupid  
-                    ]; 
-                } 
-            }
-            return queueSectionList;
-        }
-    ] as FormPanelModel;
     
-    void refreshQueueSections() {
+    public void notify( String action, def data ) { 
+        if ( action == 'change-counter-code' && data?.code ) {
+            counter = data.code; 
+            binding.refresh(); 
+        } else if ( action == 'remove-section' ) {
+            init(); 
+            formControls.reload(); 
+            binding.refresh(); 
+        } else if ( action == 'add-section' ) {
+            init(); 
+            formControls.reload();  
+            binding.refresh(); 
+        } 
     }
+    
+    def waitListHandler = [
+        getRefreshInterval: {
+            return 2000; 
+        }, 
+        fetchList: { 
+            try { 
+                return userQueueSvc.getWaitingList(); 
+            } catch(Throwable t) {
+                return null; 
+            } 
+        } 
+    ] as ListPaneModel; 
 }

@@ -1,0 +1,40 @@
+<workunit schemaName="policeclearance_application">
+    <invokers>
+        <invoker type="policeclearance_application:form:formActions" caption="Release" 
+                 action="release" target="process" depends="entity.*" 
+                 visibleWhen="#{entity?.state=='PROCESSING'}"/>
+    </invokers>
+    <code>
+    <![CDATA[ 
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+    
+class PoliceClearanceReleaseApplicationModel {
+    
+    @Caller 
+    def caller; 
+    
+    def getEntity() {
+        try {
+            return caller.entity; 
+        } catch(Throwable t) {
+            return null; 
+        } 
+    } 
+    
+    void release() {
+        def o = getEntity(); 
+        if ( o?.state != 'PROCESSING' ) return; 
+        
+        def params = [_schemaname: caller.getSchemaName(), _action: 'release']; 
+        params.objid = o.objid;
+        params.state = 'CLOSED'; 
+        caller.getPersistenceService().update( params ); 
+        o.state = params.state; 
+        caller.binding.refresh('entity.*'); 
+        caller.binding.refresh('formActions'); 
+    } 
+} 
+    ]]> 
+    </code>
+</workunit>

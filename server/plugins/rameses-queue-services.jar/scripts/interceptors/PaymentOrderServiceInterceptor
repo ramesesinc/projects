@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+
+class PaymentOrderServiceInterceptor {
+
+	@Service("QueueService")
+	def queueSvc;
+
+	@After( pattern="PaymentOrderService.create", eval="#{result.txntype?.queuesection!=null}") 
+	public void afterCreatePaymentOrder( evt ) { 
+		def r = evt.result;
+		def section = r.txntype.queuesection;
+		r.queueno = queueSvc.fetchNextNumber( [sectionid: section] );
+	} 
+
+}

@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entityid">
     <invokers>
-        <invoker type="entityindividual:section" caption="Identification" index="2"
+        <invoker type="entityindividual:section" caption="Identification" index="-50"
                 cols="idtype,idno,dtissued,dtexpiry" action="init" visibleWhen="#{mode=='read'}"/>
     </invokers>
     <code>

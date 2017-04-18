@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/setting" caption="Announcement" action="open" target="popup"/> 
+        <invoker folderid="/menu/setting" caption="Announcement" action="open" 
+                 target="popup" role="ADMIN,USER"/> 
     </invokers>
     <code class="queueing.model.QueueAnnouncementModel"/>
     <pages>

@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="ovs_violation" 
-          allowCreate="false" allowEdit="false" allowOpen="false">
+          allowCreate="false" allowEdit="false" allowOpen="false" cols="title">
     <invokers>
         <invoker type="violation:lookup" caption="Violation Lookup" action="init"/>
         <invoker type="ovs_violation:lookup" caption="Violation Lookup" action="init"/>

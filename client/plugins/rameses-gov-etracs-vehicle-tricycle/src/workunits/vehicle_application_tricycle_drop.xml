@@ -3,6 +3,11 @@
           apptype="DROP" 
          title="MTOP Drop">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="Drop" action="start" index="114" />
+        <invoker folderid="/home/vehicle/tricycle" caption="Drop" action="start" index="114" 
+                role="INFO"/>
     </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
+    </pages>
 </workunit>

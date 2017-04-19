@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleCapture.xml"
+        vehicletype="fishboat" 
+        apptype="CAPTURE"
+        title="MTOP Capture">
+    <invokers>
+        <invoker folderid="/home/vehicle/fishboat" caption="Capture" action="start" 
+                 role="INFO"/>
+    </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.fishboat.views.FishboatApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.fishboat.views.FishboatApplicationPage" />
+    </pages>
+</workunit>

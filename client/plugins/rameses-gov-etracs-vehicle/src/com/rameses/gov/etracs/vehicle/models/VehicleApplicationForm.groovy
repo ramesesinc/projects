@@ -18,13 +18,11 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     def franSvc;
     
     def vehicletype;
-    def vehicleTypeHandler;
     def ruleExecutor;
     
     public def open() {
         def retval = super.open();
         vehicletype = workunit.info.workunit_properties.vehicletype;
-        vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]); 
         ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
         return retval;
     }
@@ -66,7 +64,6 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
             return entity.payments;
         },
         onOpenItem: { o->
-            MsgBox.alert("refid " + o.refid);
             return Inv.lookupOpener( "cashreceiptinfo:open", [entity: [objid:o.refid] ] );
         }
     ] as BasicListModel;
@@ -97,7 +94,7 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     }
     
     void viewTrackingno() {
-        Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);
+        Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
  
     boolean isCanIssuePermit() {

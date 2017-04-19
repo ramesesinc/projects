@@ -13,15 +13,7 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleFranchiseForm extends CrudFormModel {
     
-    def vehicletype;
-    def vehicleTypeHandler;
-    
-    void afterOpen() {
-        vehicletype = workunit.info.workunit_properties.vehicletype;
-        if(!vehicletype) vehicletype = entity.vehicletype;
-        if(!vehicletype) throw new Exception("Please specify vehicle type");
-        vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]);
-    }
+    def selectedFee;
     
     public String getTitle() {
         return entity.controlno ;
@@ -35,7 +27,6 @@ public class VehicleFranchiseForm extends CrudFormModel {
         return entity.objid;
     }
     
-    /*
     def addItem() {
         def h = { o->
             def m = [_schemaname: 'vehicle_franchise_fee'];
@@ -45,12 +36,25 @@ public class VehicleFranchiseForm extends CrudFormModel {
             m.vehicle = [objid: entity.objid];
             m.txntype = "fee";
             m.sortorder = 100;
+            m.parentid = entity.objid;
+            m.remarks = o.remarks;
             persistenceService.create( m );
             feeListModel.reload();
         }
         Modal.show("revenueitem_entry:create", [handler: h ] );
     }
-    */
+    
+    def removeItem() {
+        if(!selectedFee) throw new Exception("select an item first");
+        if(selectedFee.amtpaid) 
+            throw new Exception("Cannot remove an item where there is already amount paid");
+        if(selectedFee.ledgertype == 'application') 
+            throw new Exception("Cannot remove application fee");
+        def m = [_schemaname: 'vehicle_franchise_fee'];
+        m.objid = selectedFee.objid;
+        persistenceService.removeEntity( m );
+        feeListModel.reload();
+    }
     
     def feeListModel = [
         fetchList: { o->
@@ -63,7 +67,7 @@ public class VehicleFranchiseForm extends CrudFormModel {
     
     def appListModel = [
         fetchList: { o->
-            def m = [_schemaname:'vehicle_application'];
+            def m = [_schemaname:'vehicle_application_'+entity.vehicletype];
             m.findBy = [ controlid: entity.objid ];
             m.orderBy = "dtfiled DESC";
             return queryService.getList(m);

@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
+        schemaName="vehicle_application_fishboat" 
+        vehicletype="fishboat">
+    <invokers>
+        <invoker type="vehicle_application_fishboat:open" caption="Vehicle Application" action="open" />
+        <invoker type="global:barcode:51010" caption="Vehicle Application" 
+            action="openBarcode" 
+            target="window" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.fishboat.views.FishboatApplicationPage" />
+    </pages>
+</workunit>

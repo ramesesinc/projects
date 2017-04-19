@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>220</x>
+      <y>670</y>
+      <w>200</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>vehicle_application_tricycle
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>980</x>
+      <y>190</y>
+      <w>180</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>vehicle_payment_item
+--
+txnrefid
+item_objid
+item_title
+amount
+surcharge
+interest
+discount
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>460</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;30;80;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>530</y>
+      <w>60</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>40;30;30;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>330</y>
+      <w>100</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;30;80;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>320</y>
+      <w>190</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>vehicle_application_type
+--
+NEW
+RENEW
+RETIRE</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>520</x>
+      <y>680</y>
+      <w>170</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>vehicle_tricycle
+--
+plateno
+engineno
+bodyno
+sidecarno
+make
+model
+color
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>330</x>
+      <y>90</y>
+      <w>180</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>vehicle_application_fee
+--
+item_objid
+item_title
+amount
+amtpaid
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>980</x>
+      <y>0</y>
+      <w>180</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>vehicle_payment
+--
+refno
+refdate
+reftype
+amount
+voided
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>100</x>
+      <y>90</y>
+      <w>220</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>vehicle_application_requirement
+--
+reqtype
+title
+completed
+dtcompleted
+verifiedby_objid
+verifiedby_name</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>600</x>
+      <y>270</y>
+      <w>102</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=.
+vehicle</panel_attributes>
+    <additional_attributes>60;120;50;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>550</x>
+      <y>550</y>
+      <w>70</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;50;130</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>750</x>
+      <y>380</y>
+      <w>180</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>vehicle_fee
+--
+item_objid
+item_title
+amount
+amtpaid
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>520</x>
+      <y>390</y>
+      <w>170</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>vehicle
+--
+objid
+owner_objid
+owner_name
+owner_address_text
+owner_address_objid
+barangay_objid
+barangay_name
+vehicletype
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>390</x>
+      <y>660</y>
+      <w>150</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+vehicle</panel_attributes>
+    <additional_attributes>130;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1020</x>
+      <y>100</y>
+      <w>84</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+1..m</panel_attributes>
+    <additional_attributes>50;30;50;90</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>570</x>
+      <y>240</y>
+      <w>170</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>vehicle_control
+--
+controlno
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>540</x>
+      <y>270</y>
+      <w>100</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+control</panel_attributes>
+    <additional_attributes>60;30;50;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>660</x>
+      <y>380</y>
+      <w>110</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+1..m</panel_attributes>
+    <additional_attributes>30;80;90;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>750</x>
+      <y>510</y>
+      <w>180</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>vehicle_violation
+--
+violationtype
+issuedby_objid
+issuedby_name
+resolved
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>210</y>
+      <w>130</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+1..m</panel_attributes>
+    <additional_attributes>110;120;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>240</x>
+      <y>330</y>
+      <w>200</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;vehicle_application&gt;&gt;
+--
+appno
+apptype 
+dtfiled
+appyear
+owner_objid
+owner_name
+owner_address_text
+owner_address_objid
+barangay_objid
+barangay_name
+vehicletype
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>310</x>
+      <y>210</y>
+      <w>84</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+1..m</panel_attributes>
+    <additional_attributes>50;120;50;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>660</x>
+      <y>460</y>
+      <w>110</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+1..m</panel_attributes>
+    <additional_attributes>30;30;90;90</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>100</y>
+      <w>520</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+txnref</panel_attributes>
+    <additional_attributes>30;30;500;130</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>900</x>
+      <y>320</y>
+      <w>170</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+txnref</panel_attributes>
+    <additional_attributes>30;110;150;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>450</y>
+      <w>190</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>vehicle_type
+--
+TRICYCLE
+BOAT
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

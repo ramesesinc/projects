@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="monthly_delinquency"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="period" isForPrompting="false" class="java.util.Date"/>
+
+	<field name="account.acctno" class="java.lang.String"/>
+	<field name="account.acctname" class="java.lang.String"/>
+	<field name="account.owner.address.text" class="java.lang.String"/>
+	<field name="account.unit.code" class="java.lang.String"/>
+	<field name="account.rate" class="java.lang.Number"/>
+	<field name="months" class="java.lang.Number"/>
+	<field name="surcharge" class="java.lang.Number"/>
+	<field name="subtotal" class="java.lang.Number"/>
+	<field name="interest" class="java.lang.Number"/>
+	<field name="total" class="java.lang.Number"/>
+	<field name="days" class="java.lang.Number"/>
+	<field name="amount" class="java.lang.Number"/>
+	<field name="rate" class="java.lang.Number"/>
+	<field name="extrate" class="java.lang.Number"/>
+	<field name="account.extrate" class="java.lang.Number"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="50"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="300"
+						y="0"
+						width="190"
+						height="20"
+						key="staticText-1"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[Market List of Delinquencies]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="370"
+						y="20"
+						width="120"
+						height="20"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{period}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="300"
+						y="20"
+						width="70"
+						height="20"
+						key="staticText-13"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Period]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="33"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="31"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="50"
+						height="31"
+						key="staticText-2"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Acct No]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="0"
+						width="110"
+						height="31"
+						key="staticText-3"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Owner Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="168"
+						y="0"
+						width="135"
+						height="31"
+						key="staticText-4"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Owner Address]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="310"
+						y="0"
+						width="40"
+						height="31"
+						key="staticText-5"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Unit No]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="551"
+						y="0"
+						width="54"
+						height="31"
+						key="staticText-6"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Subtotal]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="497"
+						y="0"
+						width="48"
+						height="31"
+						key="staticText-8"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[No. of Months Unpaid]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="612"
+						y="0"
+						width="54"
+						height="31"
+						key="staticText-9"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Surcharge]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="670"
+						y="0"
+						width="54"
+						height="31"
+						key="staticText-11"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Interest]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="725"
+						y="0"
+						width="54"
+						height="31"
+						key="staticText-12"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="30"
+						width="782"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="355"
+						y="0"
+						width="39"
+						height="31"
+						key="staticText-14"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Unit Rate]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="455"
+						y="0"
+						width="39"
+						height="31"
+						key="staticText-15"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Days Unpaid]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="402"
+						y="0"
+						width="39"
+						height="31"
+						key="staticText-16"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Extension Rate]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="22"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="61"
+						height="22"
+						key="textField"
+						isPrintWhenDetailOverflows="true"/>
+					<box></box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{account.acctno}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="52"
+						y="0"
+						width="110"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{account.acctname}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="168"
+						y="0"
+						width="135"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{account.owner.address.text}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="310"
+						y="0"
+						width="40"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{account.unit.code}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="551"
+						y="0"
+						width="54"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="497"
+						y="0"
+						width="48"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{months}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="612"
+						y="0"
+						width="54"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{surcharge}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="670"
+						y="0"
+						width="54"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{interest}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="725"
+						y="0"
+						width="54"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{total}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="355"
+						y="0"
+						width="39"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{account.rate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="455"
+						y="0"
+						width="39"
+						height="22"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{days}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="402"
+						y="0"
+						width="39"
+						height="22"
+						key="textField-1"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{account.extrate}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="30"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="50"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<lastPageFooter>
+			<band height="50"  isSplitAllowed="true" >
+			</band>
+		</lastPageFooter>
+		<summary>
+			<band height="50"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

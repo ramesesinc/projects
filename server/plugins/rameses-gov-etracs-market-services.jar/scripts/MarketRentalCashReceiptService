@@ -1,0 +1,63 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import market.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+
+public class MarketRentalCashReceiptService  {
+
+	@DataContext("market_account")
+	def acctEm;
+
+	@Service("MarketBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+	
+	@ProxyMethod
+	public def getInfo(o) {
+		def a = acctEm.find([acctno: o.id] ).first();
+		if(!a) a = acctEm.where("unit.code =:code",[code: o.id]).first();
+		if(!a) throw new Exception("Market account not found!");
+
+		def z = [:];
+		z.acctid = a.objid;
+		z.acctno = a.acctno;
+		z.acctname = a.acctname;
+		z.rate = a.rate;
+		z.extrate = a.extrate;
+		z.unit = a.unit;
+		z.term = a.term;
+		z.payer = a.owner;
+		z.paidby = a.acctname + " (" + a.acctno + ")"; 
+		z.paidbyaddress = a.unit.code;
+		
+		
+		z.payfrequency = a.payfrequency;
+
+		//the billitems is used for updating payment ledger
+		def m = billingSvc.getBilling( [acctid: a.objid, payoption: o.payment] );
+		z.items = m.items.sort{it.sortorder};
+		z.amount = NumberUtil.round(z.items.sum{ it.amount }); 
+		z.ledgerstatus = m.ledgerstatus;
+		z.billitems = m.billitems;
+		z.days = m.billitems.sum{ it.days };
+		z.fromdate = m.fromdate;
+		z.todate = m.todate;
+		z.months = m.billitems.size();
+		z.remarks = a.unit.code + " "  + a.unit.section.name + " (" + a.unit.cluster?.market?.name + ") From " + df.format(z.fromdate) + " to " + df.format( z.todate ) + "  - " + z.days + " days";
+		z.particulars = z.remarks;
+		return z;
+	}
+
+	
+
+
+}

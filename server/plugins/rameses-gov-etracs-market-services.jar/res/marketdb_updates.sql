@@ -1,0 +1,1 @@
+ALTER TABLE `marketdb`.`market_account` DROP COLUMN `rate`; 

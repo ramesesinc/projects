@@ -1,0 +1,19 @@
+<schema  adapter="market">
+	<element tablename="market_delinquency_item">
+		<field name="objid" primary="true" prefix="MKTDHI"/>
+		<field name="parentid" />
+		<complex name="account" ref="market_account" required="false" jointype="many-to-one"
+			includefields="acctno,acctname,owner.address.text,unit.code,rate,extrate,lastdatepaid">
+			<key field="acctid" target="objid" />
+		</complex> 
+		
+		<field name="months" type="integer" />
+		<field name="days"  type="integer"/>
+		<field name="rate" type="decimal" />
+		<field name="extrate" type="decimal" />
+		<field name="surcharge" type="decimal" />
+		<field name="interest" type="decimal" />
+		<field name="lastdatepaid" type="date" />
+		<field name="total" expr="rate+extrate+surcharge+interest" />
+	</element>
+</schema>

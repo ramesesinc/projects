@@ -66,6 +66,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
@@ -79,6 +81,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
@@ -92,6 +96,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd", null)}
             }),
@@ -105,6 +111,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -118,6 +126,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -131,6 +141,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -144,6 +156,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -157,6 +171,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
             }),
@@ -170,6 +186,8 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
@@ -255,7 +273,7 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
         xFormPanel2.add(xDecimalField3);
 
         xDateField5.setCaption("Last Pmt date");
-        xDateField5.setName("entity.lastpmtdate"); // NOI18N
+        xDateField5.setName("entity.lastdatepaid"); // NOI18N
         xDateField5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xDateField5);
 
@@ -346,7 +364,7 @@ public class MarketRuleAnalyzerPage extends javax.swing.JPanel {
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(87, 87, 87))
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(714, Short.MAX_VALUE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(xFormPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 433, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(112, 112, 112))
         );

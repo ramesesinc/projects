@@ -1,11 +1,12 @@
-<workunit schemaName="market_rentalunit">
+    <workunit schemaName="market_rentalunit">
     <invokers>
         <invoker type="market_rentalunit:create" caption="New Market Rental Unit" index="4" 
                  action="create" target="popup"/>
         <invoker type="market_rentalunit:open" caption="View Market Rental Unit" index="4" 
                  action="open" target="popup"/>
     </invokers>
-    <code class="com.rameses.seti2.models.CrudFormModel" />
+    
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalUnitModel" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketRentalUnitPage"/>
     </pages>

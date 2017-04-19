@@ -33,7 +33,6 @@ public class MarketApplicationPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xLabel7 = new com.rameses.rcp.control.XLabel();
@@ -58,13 +57,6 @@ public class MarketApplicationPage extends javax.swing.JPanel {
         xTextField1.setName("entity.acctname"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
-
-        xLookupField1.setCaption("Owner Name");
-        xLookupField1.setExpression("#{entity.owner.name}");
-        xLookupField1.setHandler("individualentity:lookup");
-        xLookupField1.setName("entity.owner"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLookupField1);
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -98,7 +90,7 @@ public class MarketApplicationPage extends javax.swing.JPanel {
 
         xLabel10.setCaption("Rate Type");
         xLabel10.setDepends(new String[] {"entity.unit"});
-        xLabel10.setExpression("#{entity.unit.rate} - #{entity.unit.term}");
+        xLabel10.setExpression("#{entity.unit.rate} - #{entity.unit.payfrequency}");
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel10);
 
@@ -220,7 +212,6 @@ public class MarketApplicationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;

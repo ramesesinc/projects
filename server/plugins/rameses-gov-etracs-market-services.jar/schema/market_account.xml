@@ -2,26 +2,34 @@
 	<element tablename="market_account">
 		<field name="objid" primary="true" prefix="MKTACCT"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
-		<field name="acctno" required="true" />
-		<field name="acctname" required="true" caption="Account Name"/>
+		<field name="txntype" required="true" defaultValue="CAPTURED"/>
+
+		<field name="acctno"  searchable="true" indexed="true"/>
+		<field name="acctname" required="true" caption="Account Name" searchable="true" indexed="true"/>
 		<field name="dtcreated" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+
 		<field name="owner_objid" />
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,cluster.name,term,rate,section.name,market.name,market.address.*">
+			includefields="code,unittype,cluster.name,cluster.objid,term,section.objid,section.name,cluster.market.name,cluster.market.objid,ratetype,rate">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
+		<field name="dateclosed" type="date" />
+
+
+		<field name="payfrequency" required="true" caption="Pay Frequency"/>
+		<field name="extrate" required="true" caption="Ext. Rate" defaultValue="0"/>
+		<field name="rate" expr="unit.rate" caption="Rate"/>		
+
+		<!-- store the partial balances -->
 		<field name="startdate" required="true"/>
-		<field name="lastpmtdate" type="date"/>
-		<field name="lastledgerdate" required="true"/>
-		<field name="totalprincipalpaid" required="true" defaultValue="0" type="decimal"/>
+		<field name="partialbalance" type="decimal" defaultValue="0"/>
+		<field name="partialextbalance" type="decimal" defaultValue="0"/>
 
-		<!-- dates -->
-		<field name="duedate" required="true" type="date"/>
-		<field name="padlockdate" required="true" type="date"/>
-
-		<field name="rate" required="true" />
-		<field name="term" required="true" />
+		<!-- link to market_rental_payment -->
+		<field name="remarks" />
 	</element>
 </schema>

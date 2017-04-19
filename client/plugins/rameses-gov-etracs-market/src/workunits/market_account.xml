@@ -1,9 +1,13 @@
 <workunit schemaName="market_account">
     <invokers>
         <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER"/>
-        <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"/>
+        <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"
+            formTitle="#{entity.unit.code} - #{entity.owner.name}" formId="#{entity.objid}"/>
+        
+        <invoker type="formActions" caption="Update Ledger" action="updateLedger" 
+                 visibleWhen="#{mode=='read'}" role="ADMIN"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.market.models.MarketAccount" />
+    <code class="com.rameses.gov.etracs.market.models.MarketAccountModel" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketAccountPage"/>
     </pages>

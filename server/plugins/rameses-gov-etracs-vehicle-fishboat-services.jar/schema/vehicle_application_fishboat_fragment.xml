@@ -1,0 +1,35 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_fishboat_fragment">
+		<field name="objid" primary="true" />
+		<field name="appno" caption="App No"/>
+		<field name="appdate" caption="App Date"/>
+		<field name="apptype" caption="App Type"/>
+		<field name="txnmode" caption="Txnmode"/>
+		<field name="appyear" caption="App Year"/>
+		<field name="vehicletype" />
+		<field name="controlid" />
+		<field name="dtfiled" />
+		<field name="filedby_objid" />
+		<field name="filedby_name" />
+		<field name="owner_objid" />
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_address_objid" />
+		<field name="owner_address_text" />
+		<field name="particulars" />
+		<field name="barangay_objid" />
+		<field name="barangay_name" />
+		<field name="billexpirydate" />
+		<field name="vesselname" caption="Vessel Name"/>
+		<field name="length" />
+		<field name="breadth" />
+		<field name="depth" />
+		<field name="grosstonnage" />
+		<field name="nettonnage" />
+		<field name="buildername" />
+		<field name="builderplace" />
+		<field name="buildyear" />
+		<field name="franchise_objid" />
+		<field name="franchise_controlno" caption="Control No"/>
+		<field name="franchise_dtregistered" />
+	</element>	
+</schema>

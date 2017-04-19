@@ -1,0 +1,59 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import com.rameses.util.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehiclePaymentService {
+	
+	@DataContext("vehicle_payment")
+	def pmtEm;
+
+	@DataContext("vehicle_payment_item")
+	def pmtItemEm;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_franchise_fee")
+	def franchiseFeeEm;
+
+
+	@ProxyMethod
+	public def postPayment( def m) {
+		pmtEm.create( m );
+		m.items.findAll{ it.apprefid }.each {
+			appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+		}
+		m.items.findAll{ it.franchiserefid }.each {
+			franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid+:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+		}
+	}
+
+	@ProxyMethod
+	public def postVoid( def o ) {
+		def r = pmtEm.find( [objid: o.objid] ).first();
+		if( r.voided == 1 )
+			throw new Exception("This payment is already voided");
+			
+		//check first the status of the application
+			
+		def pmtitems = pmtItemEm.find( [parentid: r.objid] ).list();
+		pmtitems.each {
+			if(it.apprefid) {
+				appFeeEm.find( [objid: it.apprefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+			}
+			else if( it.franchiserefid) {
+				franchiseFeeEm.find( [objid: it.franchiserefid ] ).update( [amtpaid: '{amtpaid-:amtpaid}' ], [amtpaid: it.amount + it.discount ] );
+			}
+		}
+		pmtEm.find([objid: r.objid] ).update( [voided: 1]);
+	}
+
+
+}

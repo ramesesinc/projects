@@ -1,0 +1,14 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_variable">
+	    <field name="objid" primary="true" style="code"/>
+		<field name="state" required="true" defaultValue="DRAFT"/>
+		<field name="name" required="true" searchable="true" editable="false"/>
+		<field name="datatype" required="true" lov="VAR_INFO_DATA_TYPES" editable="false" searchable="true"/>
+		<field name="caption" required="true"/>
+		<field name="description"/>
+		<field name="system" required="true"/>
+		<complex name="arrayvalues" serializer="default"/>
+		<field name="sortorder" required="true"/>
+		<field name="category" />
+	</element>
+</schema>

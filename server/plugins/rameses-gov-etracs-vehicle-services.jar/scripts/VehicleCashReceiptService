@@ -1,0 +1,97 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import vehicle.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import treasury.utils.*;
+
+import com.rameses.util.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehicleCashReceiptService {
+	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_fee")
+	def feeEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@Service("VehicleBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getInfo( def o ) {
+		if(!o.id) throw new Exception("id is required in VehicleCashReceiptService.getInfo");
+		o.id = o.id.trim();
+		/*************************************************************
+		* Determine first if code requested is appno or franchise no
+		**************************************************************/
+		def controlid = null;
+		def app = null;
+		def fran = franchiseEm.find( [controlno: o.id] ).first();
+		if( !fran ) {
+			app = appEm.find( [appno: o.id] ).first();
+			if( app ) fran = franchiseEm.find( [objid: app.controlid] ).first();
+		}
+		else {
+			app = appEm.find( [objid: fran.appid ] ).first();
+		}
+
+		if( fran==null && app==null ) {
+			throw new Exception("No vehicle record found for " + o.id);
+		};
+
+		controlid = fran?.objid;
+		if( !controlid ) controlid = app.controlid;
+
+		//check first if this is on payment mode...
+		def fees = feeEm.find( [controlid: controlid]  ).where("amount - amtpaid > 0").list();
+		if( !fees )
+			throw new Exception("There are no unpaid items");
+
+		fees.each { 
+			it.principal = it.amount;
+			it.amount = (it.amount - it.amtpaid);
+		}	
+
+		/*************************************************************************
+		* RUN BILLING ROUTINE
+		**************************************************************************/
+		app.billitems = fees;
+		app.payment = o.payment;
+		//app.billdate = o.receiptdate;
+		def res = billingSvc.process(app);
+
+		/*************************************************************************
+		* PACKAGE THE RESULT
+		**************************************************************************/
+		def entity = [:];
+		entity.info = [appid: app.objid, franchiseid: app.controlid, vehicletype: app.vehicletype ] ;
+
+		//if there is already an owner in the franchise, use that. If there is no owner yet like NEW, then use app.owner
+		if(fran.owner?.objid ) {
+			entity.payer = fran.owner
+			entity.paidby = fran.owner.name;
+			entity.paidbyaddress = fran.owner.address?.text; 	
+		}
+		else {
+			entity.payer = app.owner
+			entity.paidby = app.owner.name;
+			entity.paidbyaddress = app.owner.address?.text; 	
+		}
+		entity.particulars = fran.controlno;
+		entity.remarks = "Franchise No." + fran.controlno;
+		entity.items = res.billitems;
+		return entity;
+	}
+
+}

@@ -20,7 +20,7 @@ class CityFAASWorkflowInterceptor
 	def rpuSvc 
 
 
-	@Before(pattern="FAASWorkflowService.signal", eval="#{args[0].state.matches('approver')  && (args[0].action == null || !args[0].action.matches('return.*'))}") 
+	@Before(pattern="FAASWorkflowService.signal", eval="#{args[0].state.matches('approver')  && (args[0].action == null || args[0].action.length() == 0 || !args[0].action.matches('return.*'))}") 
 	public void approveFaas( evt ) {
 		def faas = evt.args[0].data;
 		faasSvc.approveFaas(faas)

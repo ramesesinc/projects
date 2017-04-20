@@ -23,6 +23,10 @@ public class VariableInfo {
 	//just add so that it will match database. if 1=yes 0=no
 	int system;
 
+	public VariableInfo(def o) {
+		copy(o);
+	}
+
 	public int hashCode() {
 		return name.hashCode();
 	}
@@ -49,6 +53,17 @@ public class VariableInfo {
 		m.arrayvalues = arrayvalues;
 		m.sortorder = sortorder;
 		return m;
+	}
+
+	public void copy( def o ) {
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass")) {
+				//add only if there is a setter
+				if( k.setter && o.containsKey(k.name)) {
+					this[(k.name)] = o.get( k.name );	
+				}
+			}
+		}
 	}
 
 }

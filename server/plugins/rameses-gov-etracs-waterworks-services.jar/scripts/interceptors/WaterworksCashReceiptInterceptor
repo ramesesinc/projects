@@ -13,21 +13,26 @@ class WaterworksCashReceiptInterceptor{
 	def billingSvc;
 
 	@DataContext("waterworks_account")
-	def waterworks_account;
+	def waccount_db; 
+
+	@DataContext('waterworks_payment')
+	def wpayment_db; 	
+
+	@DataContext('waterworks_payment_item')
+	def wpaymentitem_db;	
 
 	@After(pattern="CashReceiptBarcodeService.findPrefix", eval="#{result.prefix == null}", index=1000)
 	public void findWaterworksPrefix(def evt) {
 		def a = evt.args[0];
 		//try to check first if the barcode exists in account or in application...
 		
-		def acct = waterworks_account.find( [acctno: a.barcodeid]).first();
+		def acct = waccount_db.find( [acctno: a.barcodeid]).first();
 		if(acct?.objid) {
 			def o = evt.result;
 			o.prefix = "51030";
 			o.acctid = acct.objid;
 			o.barcodeid = a.barcodeid;
-		}
-		
+		} 		
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'waterworks'}")
@@ -77,11 +82,46 @@ class WaterworksCashReceiptInterceptor{
 		if( billres != null && appid ) {
 			taskSvc.signal( [processname:'waterworks_application', refid: appid, state:'for-payment', action:'submit'] );
 		} 
+
+		def result = evt.result; 
+		loadInfo( result, o.objid ); 
+
+		throw new Exception('stop'); 
 	}
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='waterworks'}")
 	public void voidPayment( evt) {
 		def rct = evt.result.receipt;
 		pmtSvc.postVoid( [refid: rct.objid] );
+	} 
+
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler=='waterworks'}" )
+	public void afterOpenReceipt( evt ) {
+		def result = evt.result;
+		loadInfo( result, result.objid ); 
+	} 
+
+	private void loadInfo( result, receiptid ) {
+		def wpay = wpayment_db.find([ refid: receiptid ]).first(); 
+		if ( !wpay?.acctid ) return; 
+
+		def o = waccount_db.find([ objid: wpay.acctid ]).first(); 
+		if ( !o ) return; 
+
+		result.account = o; 
+
+		def wpayitem = wpaymentitem_db
+						.find([ parentid: wpay.objid ])
+						.select(' year, month:{MAX(month)}')
+						.groupBy(' year ')
+						.orderBy(' year desc ')
+						.first(); 
+		if ( wpayitem ) { 
+			def months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']; 
+			if ( wpayitem.month >= 1 && wpayitem.month <= 12 ) { 
+				wpayitem.title = months[wpayitem.month-1] +''+ wpayitem.year;  
+				result.paidperiod = wpayitem; 
+			} 
+		} 
 	} 
 }

@@ -115,7 +115,7 @@ insert into faas_restriction(
 select
   concat(f.objid, f.restrictionid) as objid,
   f.objid as parent_objid,
-  null as ledger_objid,
+  (select distinct objid from rptledger where faasid = f.objid) as ledger_objid,
   'ACTIVE' as state,
   f.restrictionid as restrictiontype_objid,
   f.dtapproved as txndate,

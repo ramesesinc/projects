@@ -256,7 +256,7 @@ insert into faas_previous(
 	preveffectivity
 )
 select 
-	concat(f.objid, '-', pf.tdno) as objid,
+	(f.objid + '-' + pf.tdno) as objid,
 	f.objid as faasid,
 	pf.objid as prevfaasid,
 	pf.rpuid as prevrpuid, 

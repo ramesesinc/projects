@@ -23,10 +23,6 @@ public class VariableInfo {
 	//just add so that it will match database. if 1=yes 0=no
 	int system;
 
-	public VariableInfo(def o) {
-		copy(o);
-	}
-
 	public int hashCode() {
 		return name.hashCode();
 	}

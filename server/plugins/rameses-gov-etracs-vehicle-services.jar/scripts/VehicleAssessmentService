@@ -37,7 +37,22 @@ class VehicleAssessmentService {
 		if(!o.appdate) o.appdate = svrDate;
 
 		def fb = new FactBuilder();
-		//fb.infoSchemaName = "vehicle_variable";
+		fb.variableInfoProvider = new VariableInfoProvider(
+			schemaName:"vehicle_variable",
+			createIntegerFact: { dd->
+				return new VehicleIntegerInfo(dd);
+			},
+			createDecimalFact: {dd->
+				return new VehicleDecimalInfo(dd);
+			},
+			createBooleanFact: {dd->
+				return new VehicleBooleanInfo(dd);
+			},
+			createStringFact: {dd->
+				return new VehicleStringInfo(dd);
+			}
+		);
+
 		fb.facts << new VehicleApplication( o );
 		fb.facts << new VehicleFranchise( fran );
 		fb.facts << new AppDate( o.appdate );
@@ -80,6 +95,5 @@ class VehicleAssessmentService {
 		app.expirydate = res.duedate;
 		return app;
 	}
-
-
 }
+

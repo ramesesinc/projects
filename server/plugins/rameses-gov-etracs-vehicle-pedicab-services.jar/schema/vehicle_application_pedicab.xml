@@ -1,0 +1,8 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_pedicab" extends="vehicle_application">
+		<field name="objid" primary="true" prefix="PEDAPP"/>
+		<field name="plateno" caption="Plate No" searchable="true"  indexed="true"/>
+		<field name="bodyno" caption="Body No" searchable="true" indexed="true"/>
+		<field name="color" caption="Color"/>
+	</element>	
+</schema>

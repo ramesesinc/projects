@@ -6,6 +6,7 @@
 		<field name="vehicletype"  required="true" />
 		<field name="appid"  />
 		<field name="dtregistered"  />
+		<field name="startdate" />
 
 		<field name="owner_objid" />
 		<field name="owner_name"  caption="Owner Name"/>

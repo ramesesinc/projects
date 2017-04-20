@@ -27,9 +27,9 @@ class BillItem extends AbstractBillItem {
 	};
 
 	public int hashCode() {
-		if( !refid ) {
+		if( refid ) {
 			return refid.hashCode();
-		}
+		} 
 		else {
 			return super.hashCode();
 		}

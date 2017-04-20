@@ -37,7 +37,7 @@ class VehicleApplicationWorkflowInterceptor {
 		def entity = evt.result;
 
         //LOAD INFOS
-        def vi = new VariableInfoUtil();
+        def vi = new VariableInfoUtil("vehicle_variable");
         entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
         entity.infos.each {
         	vi.convertData( it );

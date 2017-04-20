@@ -15,9 +15,6 @@ public class FactBuilder {
 	}	
 
 	public BillItem getBillItemFact( def o ) {
-		o.remove("item");
-		o.remove("balance");
-		o.remove("total");
 		return new BillItem(o);
 	}
 

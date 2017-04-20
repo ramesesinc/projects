@@ -105,7 +105,7 @@ create table faas_previous
 	index ix_faas_previous_pin(prevpin)
 );
 
-alter table faas_previous add 
+alter table faas_previous 
 	add constraint FK_faas_previous_faas 
 	foreign key(faasid) references faas(objid);
 

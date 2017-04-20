@@ -21,6 +21,9 @@ public class RPTLedgerController
     @Service("RPTLedgerService")
     def svc;
     
+    @Service("FAASRestrictionService")
+    def restrictionSvc;
+    
     @Service('RPTBillingService')
     def billSvc;
     
@@ -341,47 +344,53 @@ public class RPTLedgerController
     *
     --------------------------------------------------------------*/    
     def selectedRestriction;
-    def restriction; 
-    def restrictions;
+    def _restrictions;
+    
+    def getRestrictions(){
+        if (_restrictions == null){
+            _restrictions = svc.getRestrictions([objid:entity.objid])
+        }
+        return _restrictions
+    }
     
     def restrictionListHandler = [
-        fetchList : { return entity.restrictions }        
+        fetchList : { return restrictions }        
     ] as BasicListModel;
     
+    def oncreate = {
+        restrictions << it 
+        restrictionListHandler.reload()
+    }    
+    def onupdate = {
+        selectedRestriction.putAll(it)
+        restrictionListHandler.refresh()
+    }
     
-    
+    def getRestrictionParam(){
+        def p = [oncreate:oncreate, onupdate:onupdate]
+        p.parent = [objid:entity.faasid, tdno:entity.tdno, fullpin:entity.fullpin, owner:entity.taxpayer]
+        p.ledger = [objid:entity.objid]
+        return p
+    }
     def addRestriction(){
-        restriction = [:]
-        restriction.objid = 'RLR' + new java.rmi.server.UID();
-        restriction.parentid = entity.objid 
-        return new PopupOpener(outcome:'restriction');
+        return Inv.lookupOpener('faas_restriction:create', restrictionParam)
     }
     
-    def doAddRestriction(){
-        svc.addRestriction(restriction);
-        entity.restrictions << restriction;
-        restrictionListHandler.reload();
-        binding.refresh(); 
-        return '_close';
-    }
+    def openRestriction(){
+        def p = restrictionParam
+        p.entity = selectedRestriction
+        return Inv.lookupOpener('faas_restriction:open', p)
+    }    
     
-    void removeRestriction(){
+    void deleteRestriction(){
         if (!selectedRestriction) return;
-        if (MsgBox.confirm('Remove restriction?')){
-            svc.removeRestriction(selectedRestriction);
-            entity.restrictions.remove(selectedRestriction);
+        if (MsgBox.confirm('Delete selected restriction?')){
+            restrictionSvc.removeRestriction(selectedRestriction);
+            restrictions.remove(selectedRestriction);
             restrictionListHandler.reload();
-            binding.refresh();
         }
     }
-    
-    List getRestrictions(){
-        if (! restrictions){
-            restrictions = svc.getRestrictions();
-        }
-         return restrictions;
-     }
-     
+
     def getMessagelist(){
         def queryinfo = [];
         if (entity.restrictions){

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas_restriction:create" action="create" caption="Restriction (New)" target="popup"/>
+        <invoker type="faas_restriction:open" action="open" caption="Restriction" target="popup"/>
+        
+        <invoker type="formActions" action="approve" caption="Approve" 
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"/>
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rptis.models.FAASRestrictionModel">
+   </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASRestrictionPage"/>
+    </pages>    
+</workunit>
+
+

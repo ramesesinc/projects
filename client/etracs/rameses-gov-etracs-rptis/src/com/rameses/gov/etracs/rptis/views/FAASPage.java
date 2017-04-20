@@ -59,7 +59,6 @@ public class FAASPage extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
         xFormPanel9 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xFormPanel13 = new com.rameses.rcp.control.XFormPanel();
         xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
         xComboBox11 = new com.rameses.rcp.control.XComboBox();
@@ -283,18 +282,12 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
         xFormPanel9.setCaptionBorder(null);
         xFormPanel9.setCaptionWidth(100);
-
-        xComboBox1.setCaption("Restriction");
-        xComboBox1.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
-        xComboBox1.setItems("restrictions");
-        xComboBox1.setName("entity.restrictionid"); // NOI18N
-        xComboBox1.setStretchWidth(100);
-        xFormPanel9.add(xComboBox1);
+        xFormPanel9.setPadding(new java.awt.Insets(10, 5, 5, 5));
 
         xFormPanel13.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel13.setCaptionWidth(110);
         xFormPanel13.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel13.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel13.setPadding(new java.awt.Insets(5, 5, 0, 0));
         xFormPanel13.setShowCaption(false);
 
         xCheckBox4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -323,7 +316,7 @@ public class FAASPage extends javax.swing.JPanel {
         xFormPanel10.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel10.setCaptionWidth(110);
         xFormPanel10.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel10.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel10.setPadding(new java.awt.Insets(0, 5, 0, 0));
         xFormPanel10.setShowCaption(false);
 
         xIntegerField4.setCaption("Revision Year");
@@ -368,7 +361,6 @@ public class FAASPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XCheckBox xCheckBox4;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox10;
     private com.rameses.rcp.control.XComboBox xComboBox11;
     private com.rameses.rcp.control.XDateField xDateField2;

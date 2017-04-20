@@ -1,6 +1,6 @@
 [getItemsForPayment]
 SELECT 
-	t.rptledgerid, t.tdno, t.owner_name,
+	t.rptledgerid, t.faasid, t.tdno, t.owner_name,
 	t.lastyearpaid, t.lastqtrpaid,
 	t.fromyear, 
 	(SELECT MIN(qtr) FROM rptbill_ledger_item WHERE billid = $P{billid} and rptledgerid = t.rptledgerid AND year = t.fromyear) AS fromqtr,
@@ -15,6 +15,7 @@ SELECT
 FROM (
 	SELECT
 		rl.objid AS rptledgerid, 
+		rl.faasid,
 		rl.lastyearpaid,
 		rl.lastqtrpaid,
 		rl.tdno, 
@@ -31,10 +32,10 @@ FROM (
 	WHERE rl.objid like $P{rptledgerid}
 	  and rl.state = 'APPROVED'
 	  and bi.billid = $P{billid}
-	GROUP BY rl.objid, rl.owner_name, rl.tdno, rl.lastyearpaid, rl.lastqtrpaid
+	GROUP BY rl.objid, rl.faasid, rl.owner_name, rl.tdno, rl.lastyearpaid, rl.lastqtrpaid
 	${mssqlcountfilter}
 ) t
-GROUP BY t.rptledgerid, t.owner_name, t.lastyearpaid, t.lastqtrpaid, t.tdno, t.fromyear, t.toyear, t.partialled
+GROUP BY t.rptledgerid, t.faasid, t.owner_name, t.lastyearpaid, t.lastqtrpaid, t.tdno, t.fromyear, t.toyear, t.partialled
 
 
 

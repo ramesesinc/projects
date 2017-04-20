@@ -452,7 +452,7 @@ WHERE rl.objid IN (
 	 )
 )
 and rl.totalav > 0 
-and not exists(select * from rptledger_restriction where parentid = rl.objid )
+and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 ORDER BY rl.tdno  
 
 
@@ -486,7 +486,7 @@ SELECT * FROM rptbill  WHERE barcode = $P{barcodeid}
 [getBillLedgers]  
 SELECT * FROM rptbill_ledger rbl 
 WHERE billid = $P{objid}
-and not exists(select * from rptledger_restriction where parentid = rbl.rptledgerid)
+and not exists(select * from faas_restriction where ledger_objid = rbl.rptledgerid and state='ACTIVE')
 
 
 [getBillLedgerAccounts]

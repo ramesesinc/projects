@@ -25,7 +25,7 @@ from (
 	and f.state = 'CURRENT'
     and rl.totalav > 0 
     and rl.taxable = 1
-    and not exists(select * from rptledger_restriction where parentid = rl.objid)
+    and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 )x
 order by x.fullpin
 

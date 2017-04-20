@@ -32,7 +32,7 @@ from (
 	and rl.taxable = 1 
 	and rl.totalav > 0
 	and f.state = 'CURRENT'
-	and not exists(select * from rptledger_restriction where parentid = rl.objid)
+	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 
 )x
 order by x.pin, x.suffix 

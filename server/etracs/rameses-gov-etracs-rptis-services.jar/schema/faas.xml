@@ -4,7 +4,7 @@
 		<field name="state" required="true"/>
 		<field name="datacapture" required="true"/>
 		<field name="autonumber" required="true"/>
-		<field name="tdno"  />
+		<field name="tdno"  caption="TD No." searchable="true" indexed="true" />
 		<field name="utdno" required="true" />
 		<field name="txntype_objid" required="true" />
 		<field name="effectivityyear" required="true"/>
@@ -14,9 +14,9 @@
 		<field name="titledate" />
 		<field name="rpuid" />
 		<field name="realpropertyid" />
-		<field name="fullpin" required="true"/>
+		<field name="fullpin" required="true"  caption="PIN" searchable="true" indexed="true"/>
 		<field name="taxpayer_objid" />
-		<field name="owner_name" />
+		<field name="owner_name" caption="Taxpayer" indexed="true"/>
 		<field name="owner_address" />
 		<field name="administrator_objid" />
 		<field name="administrator_name" />
@@ -61,6 +61,9 @@
 		<complex name="taxpayer" ref="entity" jointype="many-to-one" required="false" 
 			includefields="objid,entityno,name,address_text">
 			<key field="taxpayer_objid" target="objid" />
+		</complex>
+		<complex name="restrictions" ref="faas_restriction" jointype="one-to-many" required="false">
+			<key field="objid" target="parent_objid" />
 		</complex>
 	</element>
 

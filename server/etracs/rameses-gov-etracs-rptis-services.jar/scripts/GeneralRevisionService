@@ -75,6 +75,7 @@ class GeneralRevisionService
 		faas.rpu.ry = info.newry
 		faas.rp.ry = info.newry 
 		faas.rpu.rp = faas.rp
+		faas.restrictions.each{ it.objid = 'FR' + new java.rmi.server.UID()}
 		rpuSvc.reviseRpu(faas.rpu)
 		return faas 
 	}

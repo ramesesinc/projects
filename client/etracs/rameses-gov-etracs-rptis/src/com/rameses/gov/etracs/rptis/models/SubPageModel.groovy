@@ -23,12 +23,17 @@ public class SubPageModel implements SubPage
         
     }
     
+    void afterModeChanged(){
+        
+    }
+    
     void calculateAssessment(){
         rpumodel.calculateAssessment();
     }    
         
     void modeChanged(String mode){
         this.mode = mode;
+        afterModeChanged();
         binding?.refresh();
     }
     

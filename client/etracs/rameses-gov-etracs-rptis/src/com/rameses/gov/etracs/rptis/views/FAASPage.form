@@ -440,6 +440,9 @@
               <Border info="null"/>
             </Property>
             <Property name="captionWidth" type="int" value="100"/>
+            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[10, 5, 5, 5]"/>
+            </Property>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -447,17 +450,6 @@
             </Constraint>
           </Constraints>
           <SubComponents>
-            <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
-              <Properties>
-                <Property name="caption" type="java.lang.String" value="Restriction"/>
-                <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                  <Insets value="[2, 0, 0, 0]"/>
-                </Property>
-                <Property name="items" type="java.lang.String" value="restrictions"/>
-                <Property name="name" type="java.lang.String" value="entity.restrictionid" noResource="true"/>
-                <Property name="stretchWidth" type="int" value="100"/>
-              </Properties>
-            </Component>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel13">
               <Properties>
                 <Property name="captionBorder" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -468,7 +460,7 @@
                 <Property name="captionWidth" type="int" value="110"/>
                 <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
                 <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                  <Insets value="[0, 0, 0, 0]"/>
+                  <Insets value="[5, 5, 0, 0]"/>
                 </Property>
                 <Property name="showCaption" type="boolean" value="false"/>
               </Properties>
@@ -522,7 +514,7 @@
                 <Property name="captionWidth" type="int" value="110"/>
                 <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
                 <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                  <Insets value="[0, 0, 0, 0]"/>
+                  <Insets value="[0, 5, 0, 0]"/>
                 </Property>
                 <Property name="showCaption" type="boolean" value="false"/>
               </Properties>

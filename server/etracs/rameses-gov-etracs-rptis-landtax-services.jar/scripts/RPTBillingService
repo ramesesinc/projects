@@ -42,8 +42,8 @@ public class RPTBillingService
 	@Service('LGUService')
 	def lguSvc 
 
-	@DataContext('rptledger_restriction')
-	def rptledger_restrictionDb;
+	@DataContext('faas_restriction')
+	def em_faas_restriction;
 
 	@DataContext('rptledger_item_qtrly_partial')
 	def em_partial;
@@ -1079,11 +1079,7 @@ public class RPTBillingService
 
 	@ProxyMethod
 	public void checkRestrictions( ledgerid ) {
-		/*
-		def restriction = rptledger_restrictionDb.find([parentid:ledgerid]).first();
-		if (restriction)
-			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
-		*/
+		
 	}
 
 	@ProxyMethod

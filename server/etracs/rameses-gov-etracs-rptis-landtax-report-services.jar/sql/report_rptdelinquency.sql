@@ -48,7 +48,7 @@ FROM (
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total
 	FROM report_rptdelinquency r
 	WHERE barangayid LIKE $P{barangayid} 
-	AND NOT EXISTS(select * from rptledger_restriction where parentid = r.rptledgerid )
+	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
 	${filter} 
 	GROUP BY rptledgerid 
 )x 
@@ -87,7 +87,7 @@ FROM (
 		SUM(basic - basicdisc + basicint  + sef - sefdisc + sefint ) AS total
 	FROM report_rptdelinquency r
 	WHERE barangayid LIKE $P{barangayid} 
-	AND NOT EXISTS(select * from rptledger_restriction where parentid = r.rptledgerid )
+	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
 	${filter} 
 	GROUP BY rptledgerid, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
 )x 
@@ -126,7 +126,7 @@ from (
 		inner join rptledgerfaas rlf on rd.rptledgerid = rlf.rptledgerid
 		inner join propertyclassification pc on rlf.classification_objid = pc.objid 
 	where rd.barangayid LIKE $P{barangayid} 
-	 and not exists(select * from rptledger_restriction where parentid = rd.rptledgerid )
+	 and not exists(select * from faas_restriction where ledger_objid = rd.rptledgerid and state='ACTIVE')
 	 and rd.year >= rlf.fromyear 
 	 and (rd.year <= rlf.toyear or rlf.toyear = 0 )
 	 and rlf.state = 'APPROVED' 
@@ -164,7 +164,7 @@ FROM (
 		(select name from barangay where objid=rr.barangayid) as barangay_name, 
 		(select pin from barangay where objid=rr.barangayid) as barangay_pin 
 	FROM report_rptdelinquency rr 
-	WHERE NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
+	WHERE NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
 	GROUP BY barangayid, year  
 )x 
 WHERE year < $P{year} 
@@ -191,7 +191,7 @@ FROM (
 	FROM report_rptdelinquency rr 
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join propertyclassification pc on rl.classification_objid = pc.objid 
-	where NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
+	where NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
 )x 
 WHERE year < $P{year} 
 GROUP BY dtgenerated, barangayid, barangay_name, classification, idx 

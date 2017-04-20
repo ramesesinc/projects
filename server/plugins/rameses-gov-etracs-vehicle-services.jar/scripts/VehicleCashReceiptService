@@ -28,7 +28,7 @@ class VehicleCashReceiptService {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext
+	@DataContext(dynamic=true)
 	def em;
 
 	@ProxyMethod
@@ -48,7 +48,7 @@ class VehicleCashReceiptService {
 		else {
 			//we will locate the latest application that is for payment. 
 			def taskEm = em.lookup( "vehicle_application_" + fran.vehicletype + "_" );
-			def tt = taskEm.select("state").where("app.franchise.objid=:id AND state=:s", [id: o.id, s:"payment"]).first();
+			def tt = taskEm.select("state,refid").where("app.franchise.objid=:id AND state=:s", [id: fran.objid, s:"payment"]).first();
 			if(!tt?.refid ) {
 				throw new Exception("There is no current application for payment");
 			}	

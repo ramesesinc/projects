@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class ViolationTicketInterceptor {
+class ViolationTicketListInterceptor {
 
 	@Service("DateService")
     def dateSvc;

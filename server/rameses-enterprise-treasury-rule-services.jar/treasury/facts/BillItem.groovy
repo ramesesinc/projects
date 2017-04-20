@@ -50,4 +50,5 @@ class BillItem extends AbstractBillItem {
 	//call this after apply payment
 	void recalc() {;}
 
+
 }

@@ -1,4 +1,4 @@
-package rules.enterprise.actions;
+package enterprise.actions;
 
 import com.rameses.rules.common.*;
 import com.rameses.util.*;
@@ -13,6 +13,10 @@ import com.rameses.osiris3.common.*;
 *  defaultvalue  - 
 ****/
 public class AskInfo implements RuleActionHandler {
+
+	public String getInfoSchemaName() {
+		return null;	
+	}
 
 	public void execute(def params, def drools) {
 		def infotype = params.name;
@@ -45,6 +49,10 @@ public class AskInfo implements RuleActionHandler {
 			if(! ct.env.infoUtil ) {
 				ct.env.infoUtil = new VariableInfoUtil();
 			}	
+			String sname = getInfoSchemaName();
+			if( sname!=null ) {
+				 ct.env.infoUtil.schemaName = sname; 
+			}
 			def vinfo = ct.env.infoUtil.createFact([name: infoName, value: value]);
 			ct.result.askinfos.add( vinfo  );
 		}

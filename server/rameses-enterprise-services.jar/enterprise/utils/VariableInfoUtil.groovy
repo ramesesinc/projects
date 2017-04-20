@@ -10,6 +10,7 @@ public class VariableInfoUtil {
 	private def map = [:];
 	private def svc;
 	String schemaName = "variableinfo";
+	VariableInfoProvider provider;
 
 	public VariableInfoUtil() {
 
@@ -22,8 +23,13 @@ public class VariableInfoUtil {
 	}
  
 	public def lookup( def vname ) {
+		String sname = schemaName;
+		if( provider ) {
+			sname = provider.getSchemaName();
+		}
+
 		if(svc==null) {
-			svc = EntityManagerUtil.lookup( schemaName );
+			svc = EntityManagerUtil.lookup( sname );
 		}
 		if( ! map.containsKey(vname)) {
 			def m = svc.find( [name: vname] ).first();	
@@ -88,18 +94,22 @@ public class VariableInfoUtil {
 		}
 	}
 
-
 	public def createFact(def v) {
 		def o = lookup(v.name);
+		def vinfo = null;
+		if( provider ) {
+			vinfo = provider.createFact( o );
+		}
+		else {
+			vinfo = new VariableInfo();
+			vinfo.name = o.name;
+			vinfo.caption = o.caption;
+			vinfo.arrayvalues = o.arrayvalues;
+			vinfo.category = o.category;
+			vinfo.sortorder = o.sortorder;
+			vinfo.datatype = o.datatype;			
+		}
 		def value = v.value;
-		VariableInfo vinfo = new VariableInfo();
-		vinfo.name = o.name;
-		vinfo.caption = o.caption;
-		vinfo.arrayvalues = o.arrayvalues;
-		vinfo.category = o.category;
-		vinfo.sortorder = o.sortorder;
-		vinfo.datatype = o.datatype;		
-
 		fixData( vinfo, o.datatype, value );
 		return vinfo;
 	}

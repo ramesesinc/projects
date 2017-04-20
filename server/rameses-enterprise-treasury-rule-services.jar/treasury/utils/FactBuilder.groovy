@@ -2,9 +2,11 @@ package treasury.utils;
 
 import treasury.facts.*;
 import enterprise.facts.*;
+import enterprise.utils.*;
 
 public class FactBuilder {
 	
+	VariableInfoProvider variableInfoProvider;
 	String infoSchemaName = "variableinfo";
 	def facts = [];	
 	
@@ -13,6 +15,9 @@ public class FactBuilder {
 	}	
 
 	public BillItem getBillItemFact( def o ) {
+		o.remove("item");
+		o.remove("balance");
+		o.remove("total");
 		return new BillItem(o);
 	}
 

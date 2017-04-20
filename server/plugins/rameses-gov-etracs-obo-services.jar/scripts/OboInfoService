@@ -1,0 +1,37 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+public class OboInfoService  {
+
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getInfos(o) {
+		def data = [:];
+		if( o.infos ) data.infos = o.infos;
+		
+		def fb = new FactBuilder();
+		fb.infoSchemaName = 'obovariable';
+		fb.facts << new BuildingUse( o.buildinguse );
+		fb.facts << new OboApplication(  o.application );
+
+		o.permits?.each { p->
+			fb.facts << new AuxiliaryPermit( permittype:p.permittype );
+		}
+
+		return assmtSvc.execute( "oboinfo", data, fb, null );
+	}
+
+	
+
+
+}

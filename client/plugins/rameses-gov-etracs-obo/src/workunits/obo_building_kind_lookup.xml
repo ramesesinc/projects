@@ -1,5 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="obo_building_kind">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="obo_building_kind">
     <invokers>
         <invoker type="obo_building_kind:lookup" caption="Building Kind" 
                  target="popup"

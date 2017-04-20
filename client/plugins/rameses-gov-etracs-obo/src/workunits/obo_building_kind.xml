@@ -1,9 +1,8 @@
-<workunit schemaName="obo_building_kind">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="obo_building_kind">
     <invokers>
         <invoker type="obo_building_kind:create" caption="Building Kind"  action="create" target="popup"/>
         <invoker type="obo_building_kind:open" caption="Buidling Kind"  action="open" target="popup"/>
     </invokers>
-    <code class="com.rameses.seti2.models.CrudFormModel" />
     <pages>
         <page template="com.rameses.gov.etracs.obo.views.BuildingKindPage" />
     </pages>

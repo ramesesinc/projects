@@ -1,5 +1,32 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="obovariable">
     <invokers>
-        <invoker folderid="explorer/master/obo" caption="Obo Variable List" action="init" index="15"/>
+        <invoker folderid="explorer/master/obo" caption="Obo Variable List" action="init" index="15"
+            cols="caption,category,datatype,sortorder,name" orderBy="sortorder"/>
     </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        
+        class OboVariableList extends com.rameses.seti2.models.CrudListModel {
+        
+            def section;
+        
+            def getCustomFilter() {
+                return ["section=:s", [s: section ] ];
+            }
+        
+            @PropertyChangeListener
+            def listener = [
+                "section" : { o->
+                    reload();
+                }
+            ];
+        }
+        
+        ]]>
+    </code>
+    <pages>
+       <page name="queryForm" template="com.rameses.gov.etracs.obo.views.OboSectionList" />
+    </pages>
 </workunit>

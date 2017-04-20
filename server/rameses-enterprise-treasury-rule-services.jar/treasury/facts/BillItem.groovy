@@ -27,7 +27,7 @@ class BillItem extends AbstractBillItem {
 	};
 
 	public int hashCode() {
-		if( !refid ) {
+		if( refid ) {
 			return refid.hashCode();
 		}
 		else {
@@ -49,5 +49,6 @@ class BillItem extends AbstractBillItem {
 
 	//call this after apply payment
 	void recalc() {;}
+
 
 }

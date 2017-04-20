@@ -18,10 +18,11 @@ public class AuxiliaryPermitListModel extends CrudListModel {
     }
     
     public def getCustomFilter() {
-        return [ "type = :type", [type: permitType ]  ];
+        return [ "permittype = :type", [type: permitType ]  ];
     }
     
     public def open() {
+        MsgBox.alert(schemaName + "_" + permitType + ":open" );
         return Inv.lookupOpener(schemaName + "_" + permitType + ":open", [entity:selectedItem] );
     }
     

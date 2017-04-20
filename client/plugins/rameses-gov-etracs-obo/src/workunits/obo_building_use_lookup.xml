@@ -4,6 +4,6 @@
         <invoker type="obo_building_use:lookup" 
                  caption="Lookup Building Use"
                  target="popup"
-                action="init" cols="groupid,division,description"/>
+                action="init" cols="groupid,division,description,classificationid"/>
     </invokers>
 </workunit>

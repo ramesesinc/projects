@@ -1,13 +1,10 @@
 <schema adapter="obodb">
 
 	<element tablename="obo_building_kind">
-		<field name="objid" primary="true" prefix="OCCTYPE"/>
-		<field name="name" required="true" style="code" caption="Name" editable="false"/>
-		<complex name="classification" ref="obo_use_classification" ref="many-to-one" includefields="name">
-			<key field="classification_objid" target="objid" />
-		</complex>
-		<complex name="type" ref="obo_building_type" jointype="many-to-one" includefields="name,groupid,division">
-			<key field="type_objid" target="objid" />
+		<field name="objid" primary="true" prefix="OBK"/>
+		<field name="name" required="true" caption="Name" searchable="true"/>
+		<complex name="use" ref="obo_building_use" jointype="many-to-one" includefields="objid,groupid,division,classificationid">
+			<key field="useid" target="objid" />
 		</complex>
 	</element>
 

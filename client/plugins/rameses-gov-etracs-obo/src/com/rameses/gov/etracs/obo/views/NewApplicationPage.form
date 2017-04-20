@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="456" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xCheckBox1" min="-2" max="-2" attributes="0"/>
+                  <Component id="xFormPanel2" min="-2" pref="326" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="19" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="xCheckBox1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="xFormPanel2" min="-2" pref="132" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="xFormPanel1" min="-2" pref="256" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="124" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="captionWidth" type="int" value="120"/>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.entity.components.OrgTypeList" name="orgTypeList1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Ownership Type"/>
+            <Property name="name" type="java.lang.String" value="entity.orgtype" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 22]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.entity.components.EntityLookup" name="entityLookup1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Owner"/>
+            <Property name="name" type="java.lang.String" value="entity.owner" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 21]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 63]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XTextArea" name="xTextArea1">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="Project Description"/>
+                <Property name="name" type="java.lang.String" value="entity.description" noResource="true"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Building Use"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.buildinguse.name}"/>
+            <Property name="handler" type="java.lang.String" value="obo_building_kind:lookup"/>
+            <Property name="name" type="java.lang.String" value="entity.buildinguse" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Bldg Use Type"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="entity.buildinguse"/>
+              </StringArray>
+            </Property>
+            <Property name="expression" type="java.lang.String" value="#{entity.buildinguse.use.objid}"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 16]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Project Cost"/>
+            <Property name="name" type="java.lang.String" value="entity.projectcost" noResource="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+      <Properties>
+        <Property name="caption" type="java.lang.String" value=""/>
+        <Property name="name" type="java.lang.String" value="entity.lotowned" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Lot Owned"/>
+      </Properties>
+    </Component>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <Properties>
+        <Property name="caption" type="java.lang.String" value=""/>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="entity.lotowned"/>
+          </StringArray>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[0, 100]"/>
+        </Property>
+        <Property name="visibleWhen" type="java.lang.String" value="#{entity.lotowned == true}"/>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="TCT / OCT"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.rptinfo.tctno}"/>
+            <Property name="name" type="java.lang.String" value="entity.rptinfo" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Description"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.rptinfo.text}"/>
+            <Property name="name" type="java.lang.String" value="entity.rptinfo.text" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 16]"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

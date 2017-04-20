@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="obovariable_classification">
+    <invokers>
+        <invoker type="obovariable_classification_building:lookup" caption="Variable Classification Lookup" 
+                 action="init" customFilter="section='BUILDING'" />
+        
+        <invoker type="obovariable_classification_electrical:lookup" caption="Variable Classification Lookup" 
+                 action="init" customFilter="section='ELECTRICAL'" />
+        
+        <invoker type="obovariable_classification_mechanical:lookup" caption="Variable Classification Lookup" 
+                 action="init" customFilter="section='MECHANICAL'" />
+
+        <invoker type="obovariable_classification_electronic:lookup" caption="Variable Classification Lookup" 
+         action="init" customFilter="section='ELECTRONIC'" />
+
+        <invoker type="obovariable_classification_plumbing:lookup" caption="Variable Classification Lookup" 
+         action="init" customFilter="section='PLUMBING'" />
+
+    </invokers>
+</workunit>

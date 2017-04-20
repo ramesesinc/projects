@@ -13,7 +13,7 @@ import com.rameses.osiris3.common.*;
 *    application (obo.facts.OboApplication)
 *    amount
 ****/
-public class UpdateConstructionCost implements RuleActionHandler {
+public class ComputeConstructionCost implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def ba = params.application;

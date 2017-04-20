@@ -1,0 +1,15 @@
+import com.rameses.annotations.*; 
+
+class OboAuxiliaryPermitListInterceptor { 
+
+
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'obo_auxiliary_permit' }") 
+	public void getNodeList( def evt ) {
+		def list = evt.result;
+		list << [name:'pending',  title: 'Pending'];
+		list << [name:'approved', title: 'Approved'];
+	} 
+
+	
+
+} 

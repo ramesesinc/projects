@@ -1,0 +1,15 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationNew.xml"
+        vehicletype="pedicab" 
+        apptype="NEW" 
+        title="Pedicab New">
+    <invokers>
+        <invoker folderid="/home/vehicle/pedicab" caption="New Application" action="start" index="110" 
+                 role="INFO"/>
+        <invoker type="vehicle_application_pedicab:create" caption="New" action="start" 
+                 role="INFO"/>        
+    </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationPage" />
+    </pages>
+</workunit>

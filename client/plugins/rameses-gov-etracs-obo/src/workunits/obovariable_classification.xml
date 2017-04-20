@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="obovariable_classification">
+    <invokers>
+        <invoker type="obovariable_classification:create" caption="Obo Variable Classification"
+                action="create" index="1" target="popup"/>
+        <invoker type="obovariable_classification:open" caption="Obo Variable  Classification"
+                action="open" index="1" target="popup"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.OboVariableClassificationPage" />
+    </pages>
+</workunit>

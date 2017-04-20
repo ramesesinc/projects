@@ -60,7 +60,7 @@ public class MarketBillItem extends BillItem {
     }
 
     public int hashCode() {
-        return super.hashCode() + (this.year + "-" + this.month + "-" + this.fromdate + "-" + this.todate).hashCode(); 
+        return (this.year + "-" + this.month + "-" + this.fromdate + "-" + this.todate).hashCode(); 
     }
 
     //during the update partial we need to update the number of days and todate for

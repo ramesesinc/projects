@@ -23,7 +23,7 @@ public abstract class AbstractBillItem {
 			return txntype.hashCode();
 		}
 		else {
-			return toString().hashCode();
+			return this.hashCode();
 		}
 	}
 
@@ -42,4 +42,19 @@ public abstract class AbstractBillItem {
 		m.remarks = remarks;
 		return m;
 	}
+
+	def createClone() {
+		return this.class.newInstance();
+  	}  
+
+	public final def clone() {
+		def p = createClone();
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass")) {
+				p[(k.name)] = this.getProperty( k.name );
+			}
+		}
+		return p;
+	}
+
 }

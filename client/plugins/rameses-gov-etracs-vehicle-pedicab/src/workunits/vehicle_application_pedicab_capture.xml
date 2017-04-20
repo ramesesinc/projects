@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleCapture.xml"
+        vehicletype="pedicab" 
+        apptype="CAPTURE"
+        title="Pedicab Capture">
+    <invokers>
+        <invoker folderid="/home/vehicle/pedicab" caption="Capture" action="start" 
+                 role="INFO"/>
+    </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationPage" />
+    </pages>
+</workunit>

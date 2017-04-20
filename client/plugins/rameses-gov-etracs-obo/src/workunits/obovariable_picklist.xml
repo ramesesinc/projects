@@ -1,0 +1,20 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="obovariable" multiSelect="true" 
+          orderBy="sortorder" cols="caption" hiddenCols="objid,name,category,datatype">
+    <invokers>
+         <invoker type="obovariable_electrical:picklist" caption="Electrical Pick List" action="init" 
+                 customFilter="section = 'ELECTRICAL' "/>
+         
+        <invoker type="obovariable_mechanical:picklist" caption="Mechanical Pick List" action="init" 
+                 customFilter="section = 'MECHANICAL' "/>
+        
+         <invoker type="obovariable_plumbing:picklist" caption="Plumbing Pick List" action="init" 
+                 customFilter="section = 'PLUMBING' "/>
+        
+         <invoker type="obovariable_electronic:picklist" caption="Electronic Pick List" action="init" 
+                 customFilter="section = 'ELECTRONIC' "/>
+
+        <invoker type="obovariable_building:picklist" caption="Building Pick List" action="init" 
+                customFilter="section = 'BUILDING' "/>
+
+    </invokers>
+</workunit>

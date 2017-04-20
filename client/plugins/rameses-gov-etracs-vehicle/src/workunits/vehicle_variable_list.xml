@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="vehicle_variable" allowCreate="true" allowOpen="true" allowDelete="false"
+          cols="name,datatype,caption,category">
+    <invokers>
+        <invoker folderid="/explorer/master/vehicle" caption="Vehicle Variable" 
+                 index="10" role="MASTER" action="init"/>
+    </invokers>
+</workunit>

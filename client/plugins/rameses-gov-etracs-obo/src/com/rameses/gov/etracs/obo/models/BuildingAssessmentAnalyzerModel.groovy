@@ -18,7 +18,7 @@ class BuildingAssessmentAnalyzerModel  {
     @Service("BuildingAssessmentService")
     def assmtSvc;
     
-    @Service("BuildingInfoService")
+    @Service("OboInfoService")
     def infoSvc;
 
     String title = "Building Assessment Analyzer";
@@ -26,26 +26,57 @@ class BuildingAssessmentAnalyzerModel  {
     
     def entity = [:];
     def ruleExecutor;
+    def permits = [];
+    def bldginfos = [];
     
-    def assess() {
+    def buildInfo() {
         def info = [:];
         info.buildinguse = [
-            id: entity.buildinguse.objid, 
-            classificationid: entity.buildinguse.classificationid, 				
-            groupid:entity.buildinguse.groupid,				
-            division:entity.buildinguse.division
+            kind: entity.buildingkind.objid,
+            id: entity.buildingkind.use.objid, 
+            classificationid: entity.buildingkind.use.classificationid, 				
+            groupid:entity.buildingkind.use.groupid,				
+            division:entity.buildingkind.use.division,
         ];    
         info.application = [
             floorarea: entity.floorarea,
             worktype: entity.worktype,
-            numunits: entity.numunits
+            numunits: entity.numunits,
+            height: entity.height,
+            apptype: entity.apptype    
         ];
-        def r = assmtSvc.assess( info );
+        return info;
+    }
+    
+    def assess() {
+        def p = buildInfo();
+        p.permits = [];
+        p.infos = [];
+        if(permits) {
+            permits.each {
+                p.permits << [permittype: it.permitType];
+                p.infos.addAll( it.infos );
+            }
+        };
+        if(bldginfos) {
+            bldginfos.each {
+                p.infos << it;
+            }
+        }
+        def r = assmtSvc.assess( p );
         entity.fees = r.fees;
         entity.constructioncost = r.constructioncost;
+        r.infos?.each {
+            if(it.amount ) println it;
+        }
+        //entity.infos = r.infos;
         itemListModel.reload();
         mode = "result";
         return mode;
+    }
+    
+    def assessInspection() {
+        
     }
     
     def reset() {
@@ -59,10 +90,22 @@ class BuildingAssessmentAnalyzerModel  {
         }
     ] as BasicListModel;
     
-    def getInfos() {
-        if(!ruleExecutor) {
-            ruleExecutor = new RuleProcessor(  { p-> return infoService.getInfos(p) } );
+    def getPermit(String type) {
+        def permit = permits.find{ it.permitType == type };
+        if(!permit) {
+            permit = [permitType: type, infos: [] ];
+            permits << permit;
         }
+        return permit;
     }
     
+    def getElectricalPermit() { return getPermit( "ELECTRICAL" ).infos; }
+    def getMechanicalPermit() { return getPermit( "MECHANICAL" ).infos; }
+    def getPlumbingPermit() { return getPermit( "PLUMBING" ).infos; }
+    def getElectronicPermit() { return getPermit( "ELECTRONIC" ).infos; }
+    
+    def getBuildingInfos() { 
+        return bldginfos;
+    }
+
 }

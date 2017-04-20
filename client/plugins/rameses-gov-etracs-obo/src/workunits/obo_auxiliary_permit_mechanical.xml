@@ -1,7 +1,8 @@
 <workunit schemaName="obo_auxiliary_permit">
     <invokers>
         <invoker type="obo_auxiliary_permit_mechanical:open" action="open"
-                 caption="Mechanical" />
+                 caption="Mechanical" 
+                 customFilter=" permitttype='MECHANICAL' "/>
     </invokers>
     <code class="com.rameses.gov.etracs.obo.models.AuxiliaryPermitModel" />
     <pages>

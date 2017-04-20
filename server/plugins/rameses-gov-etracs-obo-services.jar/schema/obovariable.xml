@@ -2,16 +2,22 @@
 
 	<element tablename="obovariable">
 		<field name="objid" primary="true"/>
-		<field name="state" required="true" visible="false"/>
-		<field name="name" required="true" style="code" editable="false"/>
-		<field name="datatype" required="true"/>
-		<field name="caption" required="true"/>
-		<field name="description" required="true"/>
+		<field name="state" required="true" defaultValue="DRAFT" visible="false"/>
+		<field name="name" required="true" style="code" editable="false" searchable="true"/>
+		<field name="datatype" required="true" hidden="true"/>
+		<field name="caption" required="true" caption="Caption" searchable="true"/>
+		<field name="description" />
 		<field name="arrayvalues" required="false" visible="false"/>
-		<field name="system" required="false" defaultValue="0"/>
-		<field name="sortorder" required="true" visible="false"/>
-		<field name="category" required="true"/>
-		<field name="section" required="true"/>
+		<field name="system" required="false" defaultValue="0" visible="false"/>
+		<field name="sortorder" required="true" />
+		<field name="category" hidden="true"/>
+		<field name="section" required="true" hidden="true"/>
+		<complex name="classification" ref="obovariable_classification" jointype="many-to-one" required="false" inclufields="objid,title">
+			<key field="classificationid" target="objid" />
+		</complex>	
+		<complex name="attributes" ref="obovariable_attribute_entry" jointype="one-to-many" required="false">
+			<key field="objid" target="parentid"/>
+		</complex> 
 	</element>
 
 </schema>

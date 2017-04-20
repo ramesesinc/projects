@@ -4,7 +4,7 @@ import java.util.*;
 
 public class OboApplication {
 
-	String apptype;
+	String apptype;		//NEW OR RENEW
 	String worktype;	//LOV OBO_BUILDING_WORK_TYPE
 	String permittype;	//BUILDING,ELECTRICAL
 

@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleFranchiseList.xml"  
+          schemaName="vehicle_franchise_pedicab" vehicletype="pedicab">
+    <invokers>
+        <invoker folderid="/home/vehicle/pedicab" 
+                 caption="Pedicab Franchise List" index="-10"
+                 cols="controlno,activeyear,owner.name,owner.address.text,plateno,bodyno,barangay.name,state"
+                 action="init" orderBy="controlno" 
+                 role="INFO,SHARED"/>
+    </invokers>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.views.VehicleQueryForm" />
+    </pages>
+</workunit>

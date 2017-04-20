@@ -12,11 +12,17 @@ import com.rameses.enterprise.models.*;
 
 class AuxiliaryPermitModel extends CrudFormModel {
     
+    String permitType;
     String title;
     
     def open() {
         title = invoker.properties.caption;
+        permitType = invoker.properties.permitType;
         return super.open();
+    }
+    
+    void loadInfo() {
+        MsgBox.alert( 'load info ' + permitType );
     }
     
 }

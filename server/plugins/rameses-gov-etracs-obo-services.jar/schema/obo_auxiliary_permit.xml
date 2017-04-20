@@ -2,7 +2,7 @@
 	<element tablename="obo_auxiliary_permit">
 		<field name="objid" primary="true" prefix="AUXPMT"/>
 		<field name="state" required="true" defaultValue="PENDING"/>
-		<field name="type"  visible="false"/>
+		<field name="permittype"  visible="false"/>
 		<field name="assignto_objid" visible="false"/>
 		<field name="assignto_name"  />
 		<field name="dtcreated"   type="timestamp" required="true" />

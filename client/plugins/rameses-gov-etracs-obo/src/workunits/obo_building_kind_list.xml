@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="obo_building_kind_list">
+          schemaName="obo_building_kind">
     <invokers>
         <invoker folderid="explorer/master/obo" caption="Building Kind" action="init"/>
     </invokers>

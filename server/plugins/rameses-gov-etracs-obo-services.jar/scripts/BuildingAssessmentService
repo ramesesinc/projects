@@ -17,15 +17,37 @@ public class BuildingAssessmentService  {
 	@ProxyMethod
 	public def assess(o) {
 
-		def svrDate = dateSvc.getServerDate();
+		def data = [:];
+		if(o.infos) {
+			data.infos = o.infos;
+		}
 
-		def fb = new FactBuilder();
+		def svrDate = dateSvc.getServerDate();
+		def fb = [
+			getInfoFact : { xx->
+				if( xx.datatype == 'decimal' ) {
+					return new OboDecimalInfo(xx);
+				} 
+				else if( xx.datatype == 'integer' ) {
+					return new OboIntegerInfo(xx);
+				}
+				else if( xx.datatype == 'boolean') {
+					return new OboBooleanInfo(xx);
+				}
+				throw new Exception("build facts error datatype " + xx.datatype + " not supported");
+			}	
+		] as FactBuilder;
+
+		fb.infoSchemaName = 'obovariable';
 		fb.facts << new BuildingUse( o.buildinguse );
 		fb.facts << new OboApplication(  o.application);
 		fb.facts << new treasury.facts.SystemDate(svrDate);
 		fb.facts << new treasury.facts.BillDate( (o.billdate) ?o.billdate: svrDate );
-		
-		def m = [items: []];	
+		o.permits?.each { p->
+			fb.facts << new AuxiliaryPermit( permittype:p.permittype );
+		}		
+
+		def m = [items: [], infos:[]];	
 		def resultHandler = [
 			getFactKeyValue : { v->
 				if(v instanceof BillItem) {
@@ -33,14 +55,17 @@ public class BuildingAssessmentService  {
 				}	
 				else if(v instanceof OboApplication) {
 					m.constructioncost = v.constructioncost;
-
-					println "worktype is " + v.worktype;
+				}
+				else if( v instanceof OboVariableInfo ) {
+					if( v.amount > 0 ) {
+						m.infos << v.toMap();
+					}
 				}
 				return null;
 			}
 		] as ResultHandler;
 
-		assmtSvc.execute( "oboassessment", [:], fb, resultHandler );
+		assmtSvc.execute( "oboassessment", data, fb, resultHandler );
 
 		m.fees = m.items.sort{ it.sortorder };
 		m.amount = m.items.sum{ it.amount };

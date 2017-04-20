@@ -1,7 +1,8 @@
 <workunit schemaName="obo_auxiliary_permit">
     <invokers>
         <invoker type="obo_auxiliary_permit_electrical:open" action="open"
-                 caption="Electrical" index="1" />
+                 caption="Electrical" index="1" permitType="electrical"/>
+        <invoker type="formActions" caption="Get Info" action="loadInfo" />
     </invokers>
     <code class="com.rameses.gov.etracs.obo.models.AuxiliaryPermitModel" />
     <pages>

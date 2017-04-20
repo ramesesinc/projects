@@ -27,9 +27,11 @@ class AddBillItem extends AbstractAddBillItem {
 
 		def billitem = new BillItem(amount: NumberUtil.round( amt));
 		billitem.remarks = remarks;
+		if( params.txntype?.key ) {
+			billitem.txntype = params.txntype.key;
+		}
 		setAccountFact( billitem, acct.key );
 		addToFacts( billitem );
-
 	}
 
 }

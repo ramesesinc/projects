@@ -40,9 +40,11 @@ class ViolationTicketService {
         ] as ResultHandler;
 
         assmtSvc.execute( "ovscomputation", [:], fb, rh );
+
         if( item?.amount == 0 )
             throw new Exception('There are no computation fee found for this violation');
-
+        if(item==null)
+            throw new Exception("There are no rules found for this entry");    
 		return item;
 	}
 	

@@ -59,7 +59,7 @@ class VehicleApplicationService {
 			o.fees = o.fees.findAll{ !it.txntype.matches('surcharge|interest|discount') }
 		};
 
-		def vi = new VariableInfoUtil();
+		def vi = new VariableInfoUtil("vehicle_variable");
 		if(o.infos) {
 			o.infos.each {
 				vi.fixData( it, it.datatype, it.value );

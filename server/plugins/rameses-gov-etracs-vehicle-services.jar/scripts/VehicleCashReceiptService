@@ -28,6 +28,9 @@ class VehicleCashReceiptService {
 	@Service("DateService")
 	def dateSvc;
 
+	@DataContext(dynamic=true)
+	def em;
+
 	@ProxyMethod
 	public def getInfo( def o ) {
 		if(!o.id) throw new Exception("id is required in VehicleCashReceiptService.getInfo");
@@ -43,7 +46,13 @@ class VehicleCashReceiptService {
 			if( app ) fran = franchiseEm.find( [objid: app.controlid] ).first();
 		}
 		else {
-			app = appEm.find( [objid: fran.appid ] ).first();
+			//we will locate the latest application that is for payment. 
+			def taskEm = em.lookup( "vehicle_application_" + fran.vehicletype + "_task" );
+			def tt = taskEm.select("state,refid").where("app.franchise.objid=:id AND state=:s AND enddate IS NULL", [id: fran.objid, s:"payment"]).first();
+			if(!tt?.refid ) {
+				throw new Exception("There is no current application for payment");
+			}	
+			app = appEm.find( [objid: tt.refid ] ).first();
 		}
 
 		if( fran==null && app==null ) {

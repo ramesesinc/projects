@@ -29,7 +29,6 @@ class WaterworksAccountBillingService  {
 		//account based on consmption
 		def billCycle = facts.find{ it instanceof CurrentBillingCycle } 
 
-		//consumption.debug = true; 
 		def list = consumption.find([ acctid: o.objid ])
 			.select("year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid}")
 			.where(" (amount - amtpaid) > 0 ").list();
@@ -109,7 +108,6 @@ class WaterworksAccountBillingService  {
 		if(!a) throw new Exception("Waterworks Account not found");
 
 		def bc = billingCycleSvc.findCurrentCycle([sectorid:a.sector.objid, billdate: o.billdate]);
-
 		def currDate = dateSvc.getBasicServerDate();
 		def billDate = toDate( o.billdate !=null ? o.billdate : currDate);
 		if ( billDate == null ) billDate = currDate;  

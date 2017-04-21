@@ -13,13 +13,13 @@ class WaterworksCashReceiptInterceptor{
 	def billingSvc;
 
 	@DataContext("waterworks_account")
-	def waccount_db;
+	def waccount_db; 
 
 	@DataContext('waterworks_payment')
 	def wpayment_db; 	
 
 	@DataContext('waterworks_payment_item')
-	def wpaymentitem_db; 	
+	def wpaymentitem_db;	
 
 	@After(pattern="CashReceiptBarcodeService.findPrefix", eval="#{result.prefix == null}", index=1000)
 	public void findWaterworksPrefix(def evt) {
@@ -32,8 +32,7 @@ class WaterworksCashReceiptInterceptor{
 			o.prefix = "51030";
 			o.acctid = acct.objid;
 			o.barcodeid = a.barcodeid;
-		}
-		
+		} 		
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'waterworks'}")
@@ -86,13 +85,15 @@ class WaterworksCashReceiptInterceptor{
 
 		def result = evt.result; 
 		loadInfo( result, o.objid ); 
+
+		throw new Exception('stop'); 
 	}
 
-	@After(pattern="CashReceiptVoidService.post", index=0, eval="#{result.receipt.collectiontype.handler=='waterworks'}")
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='waterworks'}")
 	public void voidPayment( evt) {
 		def rct = evt.result.receipt;
 		pmtSvc.postVoid( [refid: rct.objid] );
-	}
+	} 
 
 	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler=='waterworks'}" )
 	public void afterOpenReceipt( evt ) {
@@ -122,5 +123,5 @@ class WaterworksCashReceiptInterceptor{
 				result.paidperiod = wpayitem; 
 			} 
 		} 
-	}	 
+	} 
 }

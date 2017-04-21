@@ -26,7 +26,6 @@ class WaterworksApplicationPersistenceInterceptor{
 	public void beforeUpdate(def evt) {
 		def o  = evt.args[0];
 		//find first any node with same applicationid and nullify it.
-		stubout_node.debug = true;
 		stubout_node.find( [applicationid: o.objid] ).update( [applicationid: "{NULL}"] );	
 		stubout_node.find( [objid: o.stuboutnodeid] ).update( [applicationid: o.objid] );	
 	}

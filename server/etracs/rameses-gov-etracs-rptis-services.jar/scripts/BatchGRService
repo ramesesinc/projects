@@ -33,6 +33,7 @@ class BatchGRService
 	public void buildItemsForRevision( params ) {
 		em_items_forrevision.where('1=1').delete();
 		params.barangayid = params.barangay.objid 
+		params.rputype = (params.rputype ? params.rputype : '%')
 		em.insertItemsForRevision(params)
 	}
 

@@ -26,7 +26,7 @@ FROM faas f
     INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
     INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE rp.barangayid = $P{barangayid}
-  AND r.rputype = $P{rputype}
+  AND r.rputype LIKE $P{rputype}
   AND r.ry < $P{newry}
   AND f.state = 'CURRENT'
   AND NOT EXISTS(

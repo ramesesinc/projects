@@ -100,15 +100,14 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xComboBox3.setRequired(true);
         formPanel1.add(xComboBox3);
 
-        xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Property Type");
         xComboBox2.setCaptionWidth(140);
+        xComboBox2.setEmptyText("ALL");
         xComboBox2.setExpression("#{item.name}");
         xComboBox2.setImmediate(true);
         xComboBox2.setItems("rputypes");
         xComboBox2.setName("params.rputype"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(120, 22));
-        xComboBox2.setRequired(true);
         formPanel1.add(xComboBox2);
 
         xComboBox1.setAllowNull(false);

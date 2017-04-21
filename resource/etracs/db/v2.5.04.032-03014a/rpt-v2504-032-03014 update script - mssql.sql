@@ -151,3 +151,11 @@ and not exists(select * from rptledger rl
    and f.restrictionid = rlr.restrictionid)
 go 
 
+
+INSERT INTO sys_usergroup (objid, title, domain, userclass, orgclass, role) VALUES ('LANDTAX.RECORD', 'RECORD', 'LANDTAX', NULL, NULL, 'RECORD')
+go 
+INSERT INTO sys_usergroup (objid, title, domain, userclass, orgclass, role) VALUES ('LANDTAX.RECORD_APPROVER', 'RECORD APPROVER', 'LANDTAX', NULL, NULL, 'RECORD_APPROVER')
+go 
+
+
+

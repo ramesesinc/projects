@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas_restriction:create" action="create" caption="Restriction (New)" target="popup"/>
+        <invoker type="faas_restriction:create" 
+                 action="create" caption="Restriction (New)" 
+                 role="RECORD" target="popup"/>
+        
+        <invoker type="faas_restriction:create" 
+                 action="create" caption="Restriction (New)" 
+                 domain="LANDTAX" role="LANDTAX" target="popup"/>
+        
         <invoker type="faas_restriction:open" action="open" caption="Restriction" target="popup"/>
         
         <invoker type="formActions" action="approve" caption="Approve" 
-                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"/>
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"
+                 role="RECORD_APPROVER" permission="faas_restriction.approve"/>
+                 
+        <invoker type="formActions" action="approve" caption="Approve" 
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"
+                 domain="LANDTAX" role="RECORD_APPROVER" permission="faas_restriction.approve"/>
    </invokers>
    
    <code class="com.rameses.gov.etracs.rptis.models.FAASRestrictionModel">

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- FAAS Restriction updates
 	- Approved FAAS Listing: add section option 
 	- Titled FAAS Listing: add section and by taxpayer option 
 	- SpecificClass report: add section option 

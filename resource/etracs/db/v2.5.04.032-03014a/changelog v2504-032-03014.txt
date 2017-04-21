@@ -15,6 +15,7 @@
 	- Cancel ledger appropriately for manual cancellation of faas 
 
 - LANDTAX
+	- Report on Real Property Collection Advance (support yearly)
 	- Consolidated Report on Undated Real Properties (NEW!!!)
 	- Billing Updates
 

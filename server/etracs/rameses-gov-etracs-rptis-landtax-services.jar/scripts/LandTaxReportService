@@ -150,20 +150,57 @@ class LandTaxReportService
 
 		data.items = []; 
 		if ( params.reporttype=='standard' ) {
-			data.items = landtaxreport_collection.getStandardReport( params ); 
+			buildStandardReport(data, params)
 		} else { 
-			data.items = landtaxreport_collection.getAdvanceReport( params );
+			buildAdvanceReport(data, params)
 		} 
 
-		if ( !data.items ) throw new Exception("No record(s) found.      "); 
+		data.title = periodcode.toUpperCase() + " REPORT ON REAL PROPERTY TAX COLLECTIONS"; 
+		data.period = period; 
+		return [reportdata : data]; 
+	} 
+
+
+	void buildStandardReport(data, params){
+		data.items = landtaxreport_collection.getStandardReport( params ); 
+		if ( !data.items ) throw new Exception("No record(s) found."); 
 
 		data.items.each {
 			it.classname =  (it.special == 1? "  *" + it.classname : it.classname); 
 		}
-	
+
+		initShares(data)
+
+		def disposition = landtaxreport_collection.findStandardDispositionReport( params ); 		
+		if ( disposition ) {
+			data.putAll ( disposition ); 
+			data.provcityshare = data.provcitybasicshare.add( data.provcitysefshare );
+			data.munishare = data.munibasicshare.add( data.munisefshare );
+			data.brgyshare = data.brgybasicshare.add( data.brgysefshare );
+		} 
+	}
+
+
+	void buildAdvanceReport(data, params){
+		data.items = landtaxreport_collection.getAdvanceReport( params );
+		if (!data.items) throw new Exception('No record(s) found.')
+
+		data.items.each {
+			it.classname =  (it.special == 1? "  *" + it.classname : it.classname); 
+		}
+
+		initShares(data)
+		buildShares(data, params)
+	}
+
+	void initShares(data){
 		data.provcitybasicshare = 0.0
 		data.munibasicshare = 0.0
 		data.brgybasicshare = 0.0
+
+		data.provcityidleshare = 0.0
+		data.muniidleshare = 0.0
+		data.brgyidleshare = 0.0
 
 		data.provcitysefshare = 0.0
 		data.munisefshare = 0.0
@@ -172,25 +209,35 @@ class LandTaxReportService
 		data.provcityshare = 0.0
 		data.munishare = 0.0
 		data.brgyshare = 0.0
+	}
 
-		def disposition = null;
-		if ( params.reporttype=='standard' ) {
-			disposition = landtaxreport_collection.findStandardDispositionReport( params ); 
-		} else { 
-			disposition = landtaxreport_collection.findAdvanceDispositionReport( params );
-		} 
-
+	/* this is temporary, yearly advance is not supported in cashreceiptitem_rpt_account */
+	void buildShares(data, params){
+		def disposition = landtaxreport_collection.findAdvanceDispositionReport2( params );	
 		if ( disposition ) {
-			data.putAll ( disposition ); 
-			data.provcityshare = data.provcitybasicshare.add( data.provcitysefshare );
-			data.munishare = data.munibasicshare.add( data.munisefshare );
-			data.brgyshare = data.brgybasicshare.add( data.brgysefshare );
-		} 
+			if ('city'.equalsIgnoreCase(env.ORGCLASS)){
+				data.brgybasicshare = numSvc.round((disposition.basic - disposition.basicdisc) * 0.30)
+				data.provcitybasicshare = (disposition.basic - disposition.basicdisc) - data.brgybasicshare - data.munibasicshare
+				data.provcityidleshare = disposition.basicidle - disposition.basicidledisc
+				data.provcitysefshare = (disposition.sef - disposition.sefdisc) 
+				data.provcityshare = data.provcitybasicshare + data.provcitysefshare
+				data.brgyshare = data.brgybasicshare + data.brgysefshare
+			}
+			else {
+				data.brgybasicshare = numSvc.round((disposition.basic - disposition.basicdisc) * 0.25)
+				data.munibasicshare = numSvc.round((disposition.basic - disposition.basicdisc) * 0.40)
+				data.provcitybasicshare = (disposition.basic - disposition.basicdisc) - data.brgybasicshare - data.munibasicshare
+				data.provcityidleshare = numSvc.round( (disposition.basicidle - disposition.basicidledisc) * 0.50)
+				data.muniidleshare = (disposition.basicidle - disposition.basicidledisc) - data.provcityidleshare
 
-		data.title = periodcode.toUpperCase() + " REPORT ON REAL PROPERTY TAX COLLECTIONS"; 
-		data.period = period; 
-		return [reportdata : data]; 
-	} 
+				data.provcitysefshare = numSvc.round((disposition.sef - disposition.sefdisc) * 0.50)
+				data.munisefshare = (disposition.sef - disposition.sefdisc) - data.provcitysefshare
+				data.provcityshare = data.provcitybasicshare + data.provcitysefshare
+				data.munishare = data.munibasicshare + data.munisefshare
+				data.brgyshare = data.brgybasicshare + data.brgysefshare
+			}
+		} 
+	}
 
 
 	@ProxyMethod 

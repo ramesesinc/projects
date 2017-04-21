@@ -22,6 +22,16 @@ class RPTCollectionAdvanceReportController extends com.rameses.gov.etracs.rpt.re
     String title = 'Real Property Tax Collection (Advance)';
     String reportPath = 'com/rameses/gov/etracs/rpt/report/landtax/'
     String reportName = reportPath + 'rptcollection_advance.jasper'
+    
+    boolean isadvance = true;
+    
+    @PropertyChangeListener
+    def listener = [
+        'entity.year' : {
+            entity.advanceyear = entity.year + 1;
+            binding.refresh('entity.advanceyear');
+        },
+    ]
  
     def periods = [
         [code:'monthly', name:'MONTHLY'], 
@@ -48,19 +58,17 @@ class RPTCollectionAdvanceReportController extends com.rameses.gov.etracs.rpt.re
         def outcome = super.initReport();         
         entity.period = periods[0]; 
         months = dtSvc.getMonths(); 
+        entity.advanceyear = entity.year + 1;
         return outcome; 
     } 
     
     void buildReportData(entity, asyncHandler){
+        if (entity.advanceyear <= entity.year) 
+            throw new Exception('Advance Year must be greater than ' + entity.year + '.');
         entity.reporttype = 'advance';
         svc.generateRPTCollectionReport(entity, asyncHandler);
     } 
     
-    SubReport[] getSubReports() { 
-        return [ 
-            new SubReport("rptcollectionitem", reportPath + "rptcollection_advance_item.jasper") 
-        ] as SubReport[]; 
-    } 
 } 
 ]]> 
     </code>

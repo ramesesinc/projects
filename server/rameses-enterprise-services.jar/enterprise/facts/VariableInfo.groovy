@@ -51,4 +51,15 @@ public class VariableInfo {
 		return m;
 	}
 
+	public void copy( def o ) {
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass")) {
+				//add only if there is a setter
+				if( k.setter && o.containsKey(k.name)) {
+					this[(k.name)] = o.get( k.name );	
+				}
+			}
+		}
+	}
+
 }

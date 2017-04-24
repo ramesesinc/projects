@@ -9,5 +9,8 @@
 		<field name="fullpin" />
 		<field name="pin" />
 		<field name="suffix" type="integer" />
+		<complex name="barangay" ref="barangay" jointype="many-to-one" includefields="name">
+			<key field="barangayid" target="objid" /> 
+		</complex>
 	</element>
 </schema>

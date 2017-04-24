@@ -40,6 +40,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
         xFormPanel11 = new com.rameses.rcp.control.XFormPanel();
         formPanel4 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
@@ -139,6 +140,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xCheckBox1.setCaptionWidth(140);
         xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xCheckBox1.setName("params.autoapprove"); // NOI18N
+        xCheckBox1.setPreferredSize(new java.awt.Dimension(0, 23));
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText("Automatically approve FAAS?");
         xCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -147,6 +149,19 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
             }
         });
         formPanel1.add(xCheckBox1);
+
+        xCheckBox2.setCaption("Re-initialize Item for Revision");
+        xCheckBox2.setCaptionWidth(140);
+        xCheckBox2.setName("params.inititems"); // NOI18N
+        xCheckBox2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xCheckBox2.setShowCaption(false);
+        xCheckBox2.setText("Initialize Items for Revision?");
+        xCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox2ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xCheckBox2);
 
         xFormPanel11.setCellspacing(1);
         xFormPanel11.setPadding(new java.awt.Insets(0, 5, 0, 0));
@@ -283,18 +298,22 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xFormPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 132, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(layout.createSequentialGroup()
                     .add(382, 382, 382)
                     .add(xPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addContainerGap(30, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void xCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_xCheckBox1ActionPerformed
+
+    private void xCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xCheckBox2ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -305,6 +324,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml"
+    allowEdit="#{false}"
+    allowPrint="#{false}"
+    allowCreate="#{false}">
     <invokers>
-        <invoker folderid="/home/rpt/manualtxn" action="init"  caption="Batch GR Error" index="25" role="ASSESSOR_SHARED,SHARED" permission="batchgr.create"/>
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" />
-        <invoker type="formActions" action="refresh" caption="Refresh" immediate="true" />
-        <invoker type="formActions" action="revise" caption="Revise" mnemonic="r" visibleWhen="#{selectedItem != null}" depends="selectedItem"/>
+        <invoker type="batchgr_error:open" 
+                 action="open" caption="Batch General Revision Error" 
+                 target="popup" 
+                 role="APPRAISER" />
     </invokers>
-    <code class="com.rameses.gov.etracs.rptis.models.FAASGRErrorModel" >
-    </code>
-    
     <pages>
         <page template="com.rameses.gov.etracs.rptis.views.FAASGRErrorPage" />
     </pages>

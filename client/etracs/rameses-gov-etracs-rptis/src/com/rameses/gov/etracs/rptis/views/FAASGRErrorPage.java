@@ -6,15 +6,12 @@
 
 package com.rameses.gov.etracs.rptis.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
-/**
- *
- * @author  jzamora
- */
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
+@StyleSheet()
 public class FAASGRErrorPage extends javax.swing.JPanel {
     
     /** Creates new form FAASNewPage */
@@ -30,98 +27,52 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
-
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        jSplitPane1.setDividerLocation(200);
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("List of Errors");
-        xDataTable1.setBorder(xTitledBorder1);
-        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "newry"}
-                , new Object[]{"caption", "RY"}
-                , new Object[]{"width", 60}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 60}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "faas.tdno"}
-                , new Object[]{"caption", "TD No."}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "faas.fullpin"}
-                , new Object[]{"caption", "PIN"}
-                , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "faas.owner.name"}
-                , new Object[]{"caption", "Owner"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            })
-        });
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
-        jSplitPane1.setTopComponent(xDataTable1);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Error Information");
-        jPanel1.setBorder(xTitledBorder2);
+        xTitledBorder1.setTitle("Error Information");
+        jPanel1.setBorder(xTitledBorder1);
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         xTextArea2.setEditable(false);
         xTextArea2.setDepends(new String[] {"selectedItem"});
-        xTextArea2.setName("selectedItem.msg"); // NOI18N
+        xTextArea2.setName("entity.msg"); // NOI18N
         jScrollPane2.setViewportView(xTextArea2);
 
         jPanel1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        jSplitPane1.setRightComponent(jPanel1);
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setPadding(new java.awt.Insets(25, 10, 10, 10));
+        xTitledBorder2.setTitle("Batch General Revision Error");
+        xFormPanel1.setBorder(xTitledBorder2);
+        xFormPanel1.setCaptionWidth(100);
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setCaption("Revision Year");
+        xLabel1.setExpression("#{entity.newry}");
+        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel1);
+
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel2.setCaption("TD No.");
+        xLabel2.setExpression("#{entity.faas.tdno}");
+        xLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel2);
+
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel3.setCaption("PIN");
+        xLabel3.setExpression("#{entity.faas.fullpin}");
+        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLabel3);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -129,14 +80,18 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -145,8 +100,10 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSplitPane jSplitPane1;
-    private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XTextArea xTextArea2;
     // End of variables declaration//GEN-END:variables
     

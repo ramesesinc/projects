@@ -1,12 +1,10 @@
 <schema>
 	<element tablename="batchgr_error">
 		<field name="objid" primary="true" />
-		<field name="newry" />
-		<field name="msg" />
-		<complex name="faas" ref="faas" jointype="many-to-one" 
-			required="false"
-			includefields="objid,tdno,fullpin,owner_name">
-			<key field="objid" target="objid" />
+		<field name="newry" caption="Revision Year" width="100"/>
+		<field name="msg" caption="Error" width="500"/>
+		<complex name="faas" ref="faas" jointype="many-to-one" includefields="tdno,fullpin" required="false">
+			<key field="objid" target="objid"/>
 		</complex>
 	</element>
 </schema>

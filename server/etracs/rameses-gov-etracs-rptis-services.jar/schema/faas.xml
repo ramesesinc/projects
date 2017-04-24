@@ -4,7 +4,7 @@
 		<field name="state" required="true"/>
 		<field name="datacapture" required="true"/>
 		<field name="autonumber" required="true"/>
-		<field name="tdno"  caption="TD No." searchable="true" indexed="true" />
+		<field name="tdno"  caption="TD No." searchable="true" indexed="true" width="140"/>
 		<field name="utdno" required="true" />
 		<field name="txntype_objid" required="true" />
 		<field name="effectivityyear" required="true"/>
@@ -14,9 +14,9 @@
 		<field name="titledate" />
 		<field name="rpuid" />
 		<field name="realpropertyid" />
-		<field name="fullpin" required="true"  caption="PIN" searchable="true" indexed="true"/>
+		<field name="fullpin" required="true"  caption="PIN" searchable="true" indexed="true"  width="150"/>
 		<field name="taxpayer_objid" />
-		<field name="owner_name" caption="Taxpayer" indexed="true"/>
+		<field name="owner_name" caption="Taxpayer" indexed="true"  width="250"/>
 		<field name="owner_address" />
 		<field name="administrator_objid" />
 		<field name="administrator_name" />

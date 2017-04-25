@@ -76,8 +76,6 @@ where objid = $P{rpuid}
 [updateFaasOwnerInfo]
 update faas set 
 	taxpayer_objid = $P{taxpayer_objid},
-	taxpayer_name = $P{taxpayer_name},
-	taxpayer_address = $P{taxpayer_address},
 	owner_name = $P{owner_name},
 	owner_address = $P{owner_address},
 	administrator_objid = $P{administrator_objid},

@@ -108,7 +108,10 @@ class RPTReportDelinquencyService
 		if ( params.reporttype == 'summary' ) {
 			list = em.getDelinquentLedgersSummary( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
-
+		} 
+		else if ( params.reporttype == 'certifiedlist' ) {
+			list = em.getCertifiedList( params ); 
+			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 		} 
 		else if ( params.reporttype == 'byclassification' ) {
 			list = buildDelinquentLedgersByClassification(params)

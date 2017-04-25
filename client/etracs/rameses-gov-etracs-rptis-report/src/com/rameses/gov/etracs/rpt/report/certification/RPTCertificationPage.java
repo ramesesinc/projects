@@ -187,7 +187,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField8.setRequired(true);
         formPanel1.add(xTextField8);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 50));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 40));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
@@ -201,7 +201,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         formPanel1.add(jScrollPane1);
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 50));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 80));
 
         xTextArea2.setLineWrap(true);
         xTextArea2.setWrapStyleWord(true);
@@ -216,6 +216,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
 
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel1.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel1.setShowCaption(false);
 
         xTextField3.setCaption("<html><u>C</u>ertified By:<font color=\"red\">*</font></html>");
@@ -224,6 +225,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField3.setName("entity.certifiedby"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(200, 21));
         xTextField3.setRequired(true);
+        xTextField3.setStretchWidth(50);
         xFormPanel1.add(xTextField3);
 
         xTextField4.setCaption("Job Title:");
@@ -233,12 +235,14 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField4.setName("entity.certifiedbytitle"); // NOI18N
         xTextField4.setPreferredSize(new java.awt.Dimension(200, 21));
         xTextField4.setRequired(true);
+        xTextField4.setStretchWidth(50);
         xFormPanel1.add(xTextField4);
 
         formPanel1.add(xFormPanel1);
 
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel2.setShowCaption(false);
 
         xTextField9.setCaption("Authority of");
@@ -246,6 +250,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField9.setIndex(12);
         xTextField9.setName("entity.byauthority"); // NOI18N
         xTextField9.setPreferredSize(new java.awt.Dimension(200, 21));
+        xTextField9.setStretchWidth(50);
         xFormPanel2.add(xTextField9);
 
         xTextField10.setCaption("Job Title:");
@@ -254,12 +259,14 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField10.setIndex(12);
         xTextField10.setName("entity.byauthoritytitle"); // NOI18N
         xTextField10.setPreferredSize(new java.awt.Dimension(200, 21));
+        xTextField10.setStretchWidth(50);
         xFormPanel2.add(xTextField10);
 
         formPanel1.add(xFormPanel2);
 
         xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel3.setShowCaption(false);
 
         xTextField11.setCaption("Attested By");
@@ -267,6 +274,7 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField11.setIndex(12);
         xTextField11.setName("entity.attestedby"); // NOI18N
         xTextField11.setPreferredSize(new java.awt.Dimension(200, 21));
+        xTextField11.setStretchWidth(50);
         xFormPanel3.add(xTextField11);
 
         xTextField12.setCaption("Job Title:");
@@ -275,27 +283,28 @@ public class RPTCertificationPage extends javax.swing.JPanel {
         xTextField12.setIndex(12);
         xTextField12.setName("entity.attestedbytitle"); // NOI18N
         xTextField12.setPreferredSize(new java.awt.Dimension(200, 21));
+        xTextField12.setStretchWidth(50);
         xFormPanel3.add(xTextField12);
 
         formPanel1.add(xFormPanel3);
 
-        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
 
         org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 617, Short.MAX_VALUE)
+            .add(0, 672, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
+            .add(0, 10, Short.MAX_VALUE)
         );
 
         formPanel1.add(xSeparator1);
 
         xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xCheckBox1.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
+        xCheckBox1.setCellPadding(new java.awt.Insets(0, 0, 5, 0));
         xCheckBox1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         xCheckBox1.setIndex(13);
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -350,8 +359,8 @@ public class RPTCertificationPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 631, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 686, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

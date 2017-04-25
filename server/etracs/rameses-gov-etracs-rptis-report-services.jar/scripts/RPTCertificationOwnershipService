@@ -20,6 +20,7 @@ class RPTCertificationOwnershipService
 		certSvc.createCertification(cert)
 		cert.putAll(certSvc.getFaasInfo(cert.faasid))
 		updateAreaInfo(cert)
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 

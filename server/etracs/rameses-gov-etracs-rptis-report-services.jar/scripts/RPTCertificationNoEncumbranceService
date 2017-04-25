@@ -20,6 +20,7 @@ class RPTCertificationNoEncumbranceService
 		validateAnnotated(cert)
 		certSvc.createCertification(cert)
 		cert.putAll(certSvc.getFaasInfo(cert.faasid))
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 

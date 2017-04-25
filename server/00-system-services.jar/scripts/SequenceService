@@ -36,9 +36,9 @@ class SequenceService
 		def seq = em.read([ objid: objid ]); 
 		if ( !seq ) seq = create( objid );
 
+		def nextSeries = seq.nextSeries;
 		em.incrementNextSeries([ objid: seq.objid ]); 
-		seq = em.read([ objid: objid ])
-		return seq.nextSeries - 1;
+		return nextSeries;
 	} 
 
 	@ProxyMethod(local=true)

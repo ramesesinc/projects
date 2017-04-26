@@ -517,19 +517,19 @@ class FAASService
 	}	
 
 
+
 	@ProxyMethod
 	public def generateUniqueTdNo(faas){
 		if (faas.tdno) {
 			faas.utdno = faas.tdno
 		}
 		else {
-			if (env.ORGCODE)
-				faas.utdno = env.ORGCODE.replaceAll('-','') + seqSvc.getNextFormattedSeries(UTDNO_KEY)
-			else 
-				faas.utdno = seqSvc.getNextFormattedSeries(UTDNO_KEY)
+			def key = UTDNO_KEY + '-' + faas.rp.barangayid 
+			faas.utdno = faas.rp.barangayid + '-' + seqSvc.getNextFormattedSeries(key)
 		}
 		return faas.utdno 
 	}
+
 
 
 	@ProxyMethod

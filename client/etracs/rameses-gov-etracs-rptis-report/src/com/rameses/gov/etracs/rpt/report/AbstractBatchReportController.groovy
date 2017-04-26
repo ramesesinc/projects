@@ -162,8 +162,8 @@ abstract class AbstractBatchReportController
                     def reportInvoker = Inv.lookupOpener(getReportInvokerName(), reportdata )
                     def report = reportInvoker.handle.report.report
                     
-                    if (params.copies > 1){
-                        1.upto(params.copies - 1){copycnt -> 
+                    if (params.copies >= 1){
+                        1.upto(params.copies){copycnt -> 
                             ReportUtil.print( report, params.showprinterdialog) ;
                             updateMessage(getItemMessage(data, copycnt));
                             Thread.sleep(params.printinterval * 1000)

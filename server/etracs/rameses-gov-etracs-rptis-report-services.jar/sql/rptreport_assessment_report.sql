@@ -11,7 +11,8 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-where f.state = 'CURRENT'
+where f.lguid = $P{lguid}
+and f.state = 'CURRENT'
 and (f.year < $P{year} or (f.year = $P{year} and f.month < $P{monthid}))
 group by b.objid, b.name 
 
@@ -29,7 +30,8 @@ from faas f
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-where f.state = 'CURRENT'
+where f.lguid = $P{lguid}
+and f.state = 'CURRENT'
 and f.year = $P{year} 
 and f.month = $P{monthid}
 group by b.objid, b.name 
@@ -49,7 +51,8 @@ from faas f
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-where f.state = 'CANCELLED'
+where f.lguid = $P{lguid}
+and f.state = 'CANCELLED'
 and f.cancelledyear = $P{year} 
 and f.cancelledmonth = $P{monthid}
 group by b.objid, b.name 
@@ -68,7 +71,8 @@ from faas f
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join barangay b on rp.barangayid = b.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-where f.state = 'CURRENT'
+where f.lguid = $P{lguid}
+and f.state = 'CURRENT'
 and (f.year < $P{year} or (f.year = $P{year} and f.month <= $P{monthid}))
 group by b.objid, b.name 
 

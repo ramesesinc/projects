@@ -13,8 +13,8 @@ class RPTReportAssessmentReportService
 	@Service('NumberService')
 	def numSvc 
 
-	@Service('LGUService')
-	def lguSvc 
+	@DataContext('barangay')
+	def em_barangay
 
 
 	@Async
@@ -31,7 +31,7 @@ class RPTReportAssessmentReportService
 			params.valuecaption = 'ASSESSED VALUE'
 		}
 
-		def brgys = lguSvc.getBarangaysByParentId(params.lguid).collect{[objid:it.objid, barangay:it.name]}
+		def brgys = getBarangays(params)
 
 		em.getPreceedingList(params).each{v ->
 			def brgy = brgys.find{it.objid == v.objid }
@@ -93,6 +93,13 @@ class RPTReportAssessmentReportService
 				if (v == 0.0) brgy[k] = null 
 			}
 		}
+	}
+
+	def getBarangays(params){
+		if ('city'.equalsIgnoreCase(env.ORGCLASS)){
+			return em_barangay.select('objid,index,pin,name').where('1=1').orderBy('pin').list()
+		}
+		return em_barangay.select('objid,index,pin,name').find([parentid:params.lguid]).orderBy('pin').list()
 	}
 
 }

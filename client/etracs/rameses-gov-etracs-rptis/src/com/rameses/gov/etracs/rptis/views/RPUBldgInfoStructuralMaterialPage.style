@@ -2,7 +2,7 @@
     readonly:false;
 }
 
-"selectedStructure" [entity.datacapture == 0 && (entity.txntype.allowEditAppraisal==0 || entity.txntype.objid.matches('SD|CS'))]{
+"selectedStructure" [entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0]{
     readonly:true;
 }
 

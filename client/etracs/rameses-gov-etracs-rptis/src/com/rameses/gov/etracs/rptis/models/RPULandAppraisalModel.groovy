@@ -14,7 +14,6 @@ class RPULandAppraisalModel extends SubPageModel
     def entity;
     def rpuSvc;
     
-    def classification;
     def classifications;
     
     void init(){
@@ -23,7 +22,7 @@ class RPULandAppraisalModel extends SubPageModel
     
     void loadComboItems(){
         classifications = rpuSvc.getClassifications();
-        classification = entity.rpu.classification
+        entity.rpu.classification = classifications.find{it.objid == entity.rpu.classification?.objid}
     }
     
     

@@ -3,6 +3,7 @@
     <invokers>
         <invoker type="subdivision:info" action="init" caption="Subdivided Lands" index="15"/>
         <invoker type="pinActions" action="add" caption="Add" mnemonic="a" visibleWhen="#{showActions == true}" role="TAXMAPPER"/>
+        <invoker type="pinActions" action="removeItem" caption="Remove" mnemonic="d" visibleWhen="#{showActions == true &amp;&amp; selectedItem != null}" role="TAXMAPPER" depends="selectedItem"/>
    </invokers>
    <code>
 
@@ -54,17 +55,26 @@ class SubdividedLandController
         fetchList    : {return lands},
         
         onRemoveItem : {item ->
-            if (MsgBox.confirm('Remove selected PIN?')){
-                svc.deleteSubdividedLand(item);
-                lands.remove(item);
-                listHandler.load();
-                binding.refresh('count');
+            if (MsgBox.confirm('Remove selected item?')){
+                doRemoveItem();
                 return true;
             }
             return false;
         },
     ] as EditorListModel;
     
+    void doRemoveItem(){
+        svc.deleteSubdividedLand(selectedItem);
+        lands.remove(selectedItem);
+        listHandler.load();
+        binding.refresh('count');
+    }
+    
+    void removeItem(){
+        if (MsgBox.confirm('Remove selected item?')){
+            doRemoveItem();
+        }
+    }
     
     def add(){
         motherlands = svc.getMotherLands([objid:entity.objid]);

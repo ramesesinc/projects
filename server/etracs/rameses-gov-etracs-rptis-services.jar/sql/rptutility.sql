@@ -55,6 +55,13 @@ update faas set
   realpropertyid = $P{realpropertyid}
 where objid = $P{faasid}
 
+[modifyFaasListPin]
+update faas_list set 
+  displaypin=$P{newpin},
+  pin=$P{pin},
+  realpropertyid = $P{realpropertyid}
+where objid = $P{faasid}
+
 
 [findFaasInfo]
 select objid, fullpin, rpuid, realpropertyid, taxpayer_objid from faas where objid = $P{faasid}

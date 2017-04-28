@@ -117,7 +117,7 @@ class TDReportService
 
 	def getPreviousInfo(list, fieldname){
 		def info = ''
-		list[fieldname].each{
+		list[fieldname].unique().each{
 			if (it){
 				if (info) info += ' / '
 				info += it 

@@ -54,12 +54,14 @@ class RPTUtilityService
 		if (info.rputype != 'land' || (info.rputype == 'land' && info.claimno != null)){
 			faasSvc.updateFullPinInfo(info)
 			info.newpin = info.fullpin 
+			info.pin = info.fullpin.replace('(', '')
+			info.pin = info.pin.replace(')', '')
 		}
 
 		em.modifyRpuPin(info)
 		em.modifyFaasPin(info)
 		em.modifyLedgerPin(info)
-		faasListEm.updateFaasList([objid:info.faasid])
+		em.modifyFaasListPin(info)
 		log(info.faasid, info.oldfullpin, info.newpin)
 	}
 

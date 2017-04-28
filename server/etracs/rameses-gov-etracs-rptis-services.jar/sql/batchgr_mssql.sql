@@ -22,7 +22,7 @@ SELECT
   r.suffix
 FROM faas f 
     INNER JOIN rpu r ON f.rpuid = r.objid 
-    INNER JOIN realproperty rp ON r.realpropertyid = rp.objid
+    INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
     INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
     INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE rp.barangayid = $P{barangayid}
@@ -44,13 +44,13 @@ SELECT
   pc.code AS classcode, 
   pc.name AS classification_name, 
   pc.name AS classname, 
-  r.ry, r.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,
+  r.ry, f.realpropertyid, r.rputype, r.fullpin, r.totalmv, r.totalav,
   r.totalareasqm, r.totalareaha, 
   rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.lgutype, rp.pintype, 
   b.name AS barangay_name
   FROM faas f 
     INNER JOIN rpu r ON f.rpuid = r.objid 
-    INNER JOIN realproperty rp ON r.realpropertyid = rp.objid
+    INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
     INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
     INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE f.objid = $P{objid}

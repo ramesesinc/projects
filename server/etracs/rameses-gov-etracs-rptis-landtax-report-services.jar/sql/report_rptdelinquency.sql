@@ -89,7 +89,7 @@ FROM (
 	WHERE barangayid LIKE $P{barangayid} 
 	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
 	${filter} 
-	GROUP BY rptledgerid, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
+	GROUP BY rptledgerid, year, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
 )x 
 	INNER JOIN rptledger rl ON x.rptledgerid = rl.objid 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
@@ -130,6 +130,7 @@ from (
 	 and rd.year >= rlf.fromyear 
 	 and (rd.year <= rlf.toyear or rlf.toyear = 0 )
 	 and rlf.state = 'APPROVED' 
+	 and rl.classification_objid like $P{classificationid}
 	 ${filter} 
 	group by 
 		rd.dtgenerated,

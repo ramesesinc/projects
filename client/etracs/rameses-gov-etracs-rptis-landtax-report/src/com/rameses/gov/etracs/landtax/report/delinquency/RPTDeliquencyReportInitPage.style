@@ -27,3 +27,11 @@
 "entity.period"[entity.format.type == 'format2']{
     visible:false;
 }
+
+"entity.classification"[entity.format.type != 'format3']{
+    visible:false;
+}
+
+"entity.classification"[entity.format.type == 'format3']{
+    visible:true;
+}

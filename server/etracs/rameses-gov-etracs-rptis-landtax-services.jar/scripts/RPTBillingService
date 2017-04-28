@@ -390,10 +390,16 @@ public class RPTBillingService
 	def computeQtrlyValues(totalav, qtrlyitems, avfield, value){
 		def qtrly = []
 		qtrly[0] = [value:0.0]
-		qtrly[1] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 1) / totalav * value)]
-		qtrly[2] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 2) / totalav * value)]
-		qtrly[3] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 3) / totalav * value)]
-		qtrly[4] = [value:value - qtrly.value.sum()]
+		qtrly[1] = [value:0.0]
+		qtrly[2] = [value:0.0]
+		qtrly[3] = [value:0.0]
+		qtrly[4] = [value:0.0]
+		if (totalav > 0){
+			qtrly[1] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 1) / totalav * value)]
+			qtrly[2] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 2) / totalav * value)]
+			qtrly[3] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 3) / totalav * value)]
+			qtrly[4] = [value:value - qtrly.value.sum()]
+		}
 		return qtrly 
 	}
 

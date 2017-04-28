@@ -61,8 +61,7 @@ class RPTDelinquencySummaryController extends com.rameses.gov.etracs.rpt.report.
     def getPeriods(){
         def p = []
         p << [code:'FOR_THE_YEAR', caption:'FOR THE YEAR']
-        if (entity.format.reporttype == 'summary')
-            p << [code:'AS_OF_YEAR', caption:'AS OF YEAR']
+        p << [code:'AS_OF_YEAR', caption:'AS OF YEAR']
         return p;
     }
     

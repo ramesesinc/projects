@@ -2,7 +2,7 @@
 insert into rptledger_forprocess (objid)
 select objid 
 from rptledger rl 
-where state <> 'CANCELLED'
+where state = 'APPROVED'
 and lastyearpaid = $P{lastyearpaid}
 and lastqtrpaid = $P{lastqtrpaid}
 and not exists(select * from rptledger_compromise where rptledgerid = rl.objid and state='APPROVED')

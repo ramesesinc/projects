@@ -16,6 +16,7 @@ class RPUMiscInfoAppraisalModel extends SubPageModel
     
     void init(){
         entity.rpu.dtappraised = entity.appraiser?.dtsigned;
+        entity.rpu.classification = classifications.find{it.objid == entity.rpu.classification?.objid}
         entity.rpu.actualuse = actualUses?.find{it.objid == entity.rpu.actualuse?.objid}
     }
     

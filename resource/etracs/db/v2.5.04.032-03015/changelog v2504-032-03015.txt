@@ -5,7 +5,11 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Report: land specific listing: filter by revision year
+	- FAAS : fix incorrect display of classification
 	- Batch GR Update 
 
 - LANDTAX
+	- Top N Delinquent Taxpayer : fix mssql statement error 
+	- Delinquency Listing : add classification option for format3
 	- Certified LIst of Real Property Tax Delinquencies (NEW)

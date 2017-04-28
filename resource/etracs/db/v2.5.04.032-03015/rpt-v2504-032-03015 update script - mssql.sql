@@ -25,3 +25,10 @@ inner join realproperty rp on f.realpropertyid = rp.objid
 inner join barangay b on rp.barangayid = b.objid 
 inner join sys_org o on f.lguid = o.objid 
 go 
+
+
+CREATE TABLE rptledger_forprocess (
+  objid varchar(255) NOT NULL,
+  PRIMARY KEY (objid)
+)
+go 

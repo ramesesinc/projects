@@ -38,7 +38,8 @@ class LandBySpecificClassReportController extends com.rameses.gov.etracs.rpt.rep
     
     
    def getSpecificclasses(){
-        return svc.getSpecificClasses(entity.ry);
+        def q = [_schemaname:'landspecificclass', where:["state='APPROVED'"], orderBy:'name']
+        return querySvc.getList(q)
    }
    
    def getRevisionyears(){

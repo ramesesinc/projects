@@ -14,6 +14,11 @@ class RPUPlantTreeInfoAppraisalModel extends SubPageModel
         return rpuSvc.getClassifications();
     }        
     
+        
+    void init(){
+        entity.rpu.classification = classifications.find{it.objid == entity.rpu.classification?.objid}
+    }    
+    
     void calculateAssessment(){
         super.calculateAssessment();
         listHandler.load();

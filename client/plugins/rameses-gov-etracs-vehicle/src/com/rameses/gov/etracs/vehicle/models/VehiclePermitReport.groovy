@@ -13,11 +13,6 @@ public class VehiclePermitReport extends CrudReportModel {
 
     def permit;
     
-    def createPermit() {
-        permit = permitSvc.create([ appid: entity.objid ]); 
-        return view();   
-    } 
-    
     def openPermit() {
         permit = permitSvc.open([ objid: entity.permit?.objid ]);
         return view(); 

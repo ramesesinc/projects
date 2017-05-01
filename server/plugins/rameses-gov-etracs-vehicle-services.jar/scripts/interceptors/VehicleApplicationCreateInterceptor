@@ -1,5 +1,6 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
+import com.rameses.util.*;
 
 /**************************************************************************************
 * This interceptor is exclusively for VehicleApplicationService.create method
@@ -10,62 +11,68 @@ class VehicleApplicationCreateInterceptor {
 	@Env
 	def env;
 
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("WorkflowTaskService")
-	def wfSvc;
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
 
-	@Service("VehicleFranchiseService")
-	def franchiseSvc;
+	@DataContext("vehicle_application")
+	def appEm;
 
-	@DataContext(dynamic=true)
-	def em;
-
-	
-	/********************************************
-	* start the appropriate workflow
-	********************************************/
-	private void startWorkflow( def o ) {
-		o.processname = 'vehicle_application_'+o.vehicletype.toLowerCase(); 
-		o.refid = o.objid;
-		wfSvc.start(o);
-	}
-
-	public void checkHasFees( def o ) {
-		if(!o.fees) throw new Exception("There must be at least 1 fee");
-	} 
-
-
-
-	/***********************************************************************
-	* for capture, it cannot displace info in the franchise data if exists
-	************************************************************************/
-	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype.matches('NEW|RENEW') && result.txnmode=='CAPTURE'}", index=10)
+	@After(pattern="VehicleApplicationService.create",
+		eval="#{ result.txnmode=='CAPTURE' && result.apptype.matches('NEW|RENEW')}", index=10)
 	public void afterCreateApplicationCapture(def evt) {
 		def entity = evt.result;
-		def franchiseEm = em.lookup("vehicle_franchise_"+ entity.vehicletype);
 		def z = franchiseEm.find([objid: entity.franchise.objid]).first();	
 		if(z.activeyear==null || entity.appyear > z.activeyear ) {
-			franchiseSvc.updateFranchiseInfo( entity, 'ACTIVE' );
+			def m =[:];
+			m.activeyear = entity.appyear;
+			m.state = "ACTIVE";
+			m.appid = entity.objid;
+			m.startdate = entity.startdate;	
+			if( !m.expirydate && m.startdate ) {
+				def expiryYrs = '3y';
+				def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				m.expirydate = DateUtil.add( df.parse( m.startdate ), expiryYrs );	
+			}
+			franchiseEm.find([objid: entity.franchise.objid]).update(m);
 		}
 	}
 
+	@Before(pattern="VehicleApplicationService.create", 
+		eval="#{args[0].txnmode!='CAPTURE' && args[0].apptype.matches('NEW|RENEW|CHANGE_OWNER_UNIT')}")
+	public void beforeCreateApplicationNewOrRenew(def evt) {
+		def entity = evt.args[0];
+		if(!entity.fees) 
+			throw new Exception("There must be at least 1 fee");
+	}
+
 	@After(pattern="VehicleApplicationService.create", 
-		eval="#{result.apptype.matches('NEW|RENEW|CHANGE_OWNER_UNIT') && result.txnmode!='CAPTURE'}", index=10)
+		eval="#{result.txnmode!='CAPTURE' && result.apptype.matches('NEW|RENEW|CHANGE_OWNER_UNIT')}")
 	public void afterCreateApplicationNewOrRenew(def evt) {
 		def entity = evt.result;
-		checkHasFees(entity);
-		franchiseSvc.updateFranchiseState( [controlid: entity.franchise.objid, 
-			vehicletype:entity.vehicletype, state:'PENDING', appid: entity.objid ] );
-		startWorkflow( entity );
+		//fire the workflow
+		def p = [:];
+		p.processname = 'vehicle_application';
+		p.refid = entity.objid;
+		p.startdate = dateSvc.serverDate;
+		taskSvc.start(p);
 	}
 
-	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype == 'DROP' }", index=10)
+	@After(pattern="VehicleApplicationService.create", eval="#{result.apptype == 'DROP' }")
 	public void afterCreateApplicationForDrop(def evt) {
 		def o = evt.result;
-		franchiseSvc.nullifyFranchiseInfo( [controlid: o.franchise.objid, vehicletype:o.vehicletype] );
+		def m = [:];
+		m.state = 'OPEN';
+		m.appid = null;
+		m.activeyear = null;
+		m.startdate = null;
+		m.expirydate = null;
+		franchiseEm.find( [objid:o.franchise.objid ] ).update(m);
 	}
-
 
 }

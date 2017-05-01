@@ -23,6 +23,9 @@ class VehicleApplicationService {
 	@DataContext("vehicle_application_fee")
 	def appfeeEm;
 
+	@DataContext("vehicle_application")
+	def appEm;
+
 	@Service("SequenceService")
 	def seqSvc;
 
@@ -58,9 +61,8 @@ class VehicleApplicationService {
 		if(o.fees) {
 			o.fees = o.fees.findAll{ !it.txntype.matches('surcharge|interest|discount') }
 		};
-
-		def vi = new VariableInfoUtil("vehicle_variable");
 		if(o.infos) {
+			def vi = new VariableInfoUtil("vehicle_variable");
 			o.infos.each {
 				vi.fixData( it, it.datatype, it.value );
 			}

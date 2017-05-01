@@ -1,10 +1,11 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application">
 		<field name="objid" primary="true" prefix="VAPP"/>
+		<field name="state" caption="State"/>
 
-		<field name="appno" required="true" caption="App No"/>
+		<field name="appno" required="true" caption="App No" searchable="true" indexed="true"/>
 		<field name="appdate" required="true" />
-		<field name="apptype" required="true" />
+		<field name="apptype" required="true" indexed="true"/>
 		<field name="txnmode" required="true" defaultValue="ONLINE"/>
 		<field name="appyear" required="true" />
 		<field name="dtfiled" required="true" />
@@ -13,18 +14,17 @@
 		<field name="particulars"  />
 
 		<field name="owner_objid" required="true" />
-		<field name="owner_name" required="true" caption="Owner Name"/>
+		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>
 		<field name="owner_address_text" required="true" />
 		<field name="owner_address_objid" required="true" />
 		<field name="barangay_objid"  />
-		<field name="barangay_name"  />
+		<field name="barangay_name" indexed="true"/>
 
 		<!-- this will be loaded automatically -->
 		<field name="vehicletype" required="true" />
+		<field name="billexpirydate" required="true" type="date"/>
 
-		<field name="billexpirydate" required="false" type="date"/>
-
-		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno,dtregistered" required="true">
+		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno,startdate,expirydate" required="true">
 			<key field="controlid" target="objid" />
 		</complex> 
 
@@ -35,6 +35,11 @@
 		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many" required="false">
 			<key field="objid" target="appid" />
 		</complex>
+
+		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" 
+				includefields=".*" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>	
 
 	</element>
 </schema>

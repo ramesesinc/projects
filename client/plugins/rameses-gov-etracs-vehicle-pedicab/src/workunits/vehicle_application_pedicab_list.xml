@@ -1,10 +1,10 @@
-<workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
-          processName="vehicle_application_pedicab" 
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="vehicle_application_pedicab" 
           allowDelete="false" allowNotify="true">
     
     <invokers>
         <invoker folderid="/home/vehicle/pedicab" action="init" index="-1"
-            cols="app.franchise.controlno,app.appno,app.apptype,app.appdate,app.owner.name,app.plateno,app.bodyno" 
+            cols="franchise.controlno,appno,apptype,appdate,owner.name,plateno,bodyno" 
             caption="Pedicab Application List" 
             role="INFO,SHARED"/>
     </invokers>

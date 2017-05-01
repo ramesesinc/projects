@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleReport.xml">
     <invokers>
         <invoker type="vehicle_application_tricycle:form:formActions" 
                  caption="Print Application" 
@@ -10,17 +10,4 @@
                  target="self" action="view"
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/application.jasper" />        
     </invokers>             
-    <code>
-    <![CDATA[ 
-
-    import com.rameses.seti2.models.*;
-               
-    class VehicleApplicationReport extends CrudReportModel {
-        
-        public def getReportData() { 
-            return entity;
-        }
-    }    
-    ]]>    
-    </code>
 </workunit>

@@ -201,9 +201,11 @@ from (
 		from business_application ba 
 			inner join business_payment bp on bp.applicationid=ba.objid 
 			inner join business b on b.objid=ba.business_objid  
-		where ba.appyear=$P{year} and bp.voided=0 and ba.state='COMPLETED' 
+		where ba.appyear=$P{year} and bp.voided=0 
+			and YEAR(bp.refdate)=ba.appyear 
+			and ba.state='COMPLETED' 
 			and (select count(*) from business_permit where businessid=ba.business_objid and activeyear=ba.appyear and state='ACTIVE')>0  
-			and b.permittype=$P{permittypeid} 
+			${filter} 
 		group by ba.appyear, bp.businessid, bp.applicationid, ba.apptype, month(bp.refdate) 
 	)xx 
 )a 
@@ -428,6 +430,7 @@ from (
 			inner join business_payment bp on bp.applicationid=ba.objid 
 			inner join business b on b.objid=ba.business_objid 			
 		where ba.appyear=$P{year} and bp.voided=0 
+			and YEAR(bp.refdate)=ba.appyear 
 			and ba.state in ('COMPLETED','RELEASE','PAYMENT') 
 			${filter} 
 		group by ba.appyear, bp.businessid, bp.applicationid, ba.apptype, month(bp.refdate) 

@@ -33,6 +33,8 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel4 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xList1 = new com.rameses.rcp.control.XList();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
@@ -42,14 +44,12 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
         xButton3 = new com.rameses.rcp.control.XButton();
         xButton5 = new com.rameses.rcp.control.XButton();
         xButton4 = new com.rameses.rcp.control.XButton();
-        xDataTable2 = new com.rameses.rcp.control.XDataTable();
         jPanel3 = new javax.swing.JPanel();
+        xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xList1 = new com.rameses.rcp.control.XList();
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -65,6 +65,14 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         jSplitPane1.setDividerLocation(150);
+
+        xList1.setExpression("#{item.title}");
+        xList1.setItems("nodes");
+        xList1.setName("selectedNode"); // NOI18N
+        xList1.setPreferredSize(new java.awt.Dimension(80, 150));
+        jScrollPane1.setViewportView(xList1);
+
+        jSplitPane1.setLeftComponent(jScrollPane1);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 5));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -120,7 +128,7 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
                     .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
@@ -132,7 +140,10 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
+        jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
+
+        jPanel3.setPreferredSize(new java.awt.Dimension(513, 60));
+        jPanel3.setLayout(new java.awt.BorderLayout());
 
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -145,6 +156,8 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -158,6 +171,8 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -171,8 +186,10 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd", null)}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd hh:mm:ss", null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "totalcash"}
@@ -184,12 +201,14 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "totalnoncash"}
-                , new Object[]{"caption", "Non cash"}
+                , new Object[]{"caption", "Total Non Cash"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -197,6 +216,23 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "totalamount"}
+                , new Object[]{"caption", "Total Amount"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -210,6 +246,8 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
@@ -219,61 +257,43 @@ public class UnliquidatedRemittancePage extends javax.swing.JPanel {
         xDataTable2.setHandler("listHandler");
         xDataTable2.setName("selectedItem"); // NOI18N
         xDataTable2.setPreferredSize(new java.awt.Dimension(20, 80));
-        jPanel1.add(xDataTable2, java.awt.BorderLayout.CENTER);
+        jPanel3.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(513, 60));
-
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setCellpadding(new java.awt.Insets(0, 20, 0, 0));
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
         xDecimalField1.setCaption("Total Cash");
+        xDecimalField1.setCaptionWidth(80);
         xDecimalField1.setEnabled(false);
-        xDecimalField1.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        xDecimalField1.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
         xDecimalField1.setName("entity.totalcash"); // NOI18N
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel1.add(xDecimalField1);
 
         xDecimalField2.setCaption("Total Non Cash");
         xDecimalField2.setEnabled(false);
-        xDecimalField2.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        xDecimalField2.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
         xDecimalField2.setName("entity.totalnoncash"); // NOI18N
+        xDecimalField2.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel1.add(xDecimalField2);
 
-        xDecimalField3.setCaption("Total For Remiitance");
-        xDecimalField3.setCaptionWidth(120);
+        xDecimalField3.setCaption("Total Amount");
+        xDecimalField3.setCaptionWidth(90);
+        xDecimalField3.setDepends(new String[] {"selectedNode", "selectedItem"});
         xDecimalField3.setEnabled(false);
-        xDecimalField3.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
-        xDecimalField3.setName("entity.totalcash"); // NOI18N
+        xDecimalField3.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        xDecimalField3.setName("total"); // NOI18N
+        xDecimalField3.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel1.add(xDecimalField3);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 703, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
-        );
+        jPanel3.add(xFormPanel1, java.awt.BorderLayout.SOUTH);
 
-        jPanel1.add(jPanel3, java.awt.BorderLayout.SOUTH);
+        jPanel1.add(jPanel3, java.awt.BorderLayout.CENTER);
 
         jSplitPane1.setRightComponent(jPanel1);
-
-        xList1.setExpression("#{item.title}");
-        xList1.setItems("nodes");
-        xList1.setName("selectedNode"); // NOI18N
-        xList1.setPreferredSize(new java.awt.Dimension(80, 150));
-        jScrollPane1.setViewportView(xList1);
-
-        jSplitPane1.setLeftComponent(jScrollPane1);
 
         add(jSplitPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents

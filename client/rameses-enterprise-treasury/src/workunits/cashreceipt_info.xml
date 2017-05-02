@@ -4,7 +4,6 @@
          <invoker type="cashreceiptinfo:open" caption="Cash Receipt Info" action="open" />
          
          <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
-         <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{entity.txnmode!='ONLINE' &amp;&amp; entity.remitted!=1}"/>
    </invokers>
    
    <code>
@@ -60,7 +59,7 @@ class CashReceiptController extends CRUDController {
         } 
         
         if ( handle instanceof com.rameses.osiris2.reports.ReportModel ) {
-            report = handle;  
+            report = handle; 
         } else { 
             report = handle.report; 
         } 
@@ -69,7 +68,11 @@ class CashReceiptController extends CRUDController {
             return 'preview'; 
         } 
         
-        ReportUtil.print(report, true);
+        if ( report instanceof com.rameses.osiris2.reports.ReportModel ) { 
+            report.print(); 
+        } else { 
+            ReportUtil.print(report, true); 
+        } 
         return null; 
     }
 
@@ -88,6 +91,14 @@ class CashReceiptController extends CRUDController {
     } 
     void refresh() { 
         binding.refresh(); 
+    } 
+    
+    def showReport = { o->   
+        if ( o instanceof com.rameses.osiris2.reports.ReportModel ) {
+            report = o; 
+            report.viewReport(); 
+            binding.fireNavigation('preview');  
+        } 
     } 
 } 
    ]]>

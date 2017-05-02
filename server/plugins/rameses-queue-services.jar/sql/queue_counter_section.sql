@@ -6,7 +6,7 @@ FROM queue_counter_section qcs
 	INNER JOIN queue_section qs on qcs.sectionid=qs.objid 
 	INNER JOIN queue_group qg on qs.groupid=qg.objid 
 WHERE qcs.counterid = $P{counterid}
-ORDER BY qs.groupid, qs.title 
+ORDER BY qs.groupid, qs.sortorder, qs.title 
 
 [findCounterSection]
 SELECT 

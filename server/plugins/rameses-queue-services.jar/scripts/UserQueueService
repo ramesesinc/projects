@@ -37,6 +37,9 @@ class UserQueueService {
 	@Service('QueueService')
 	def queueSvc;
 
+	@Service('PagingService')
+	def pagingSvc; 
+
 	@Service 
 	def self; 
 
@@ -44,11 +47,17 @@ class UserQueueService {
 	def env;
 
 	@ProxyMethod 
+	public def getCounter() {
+		return qc.find([ objid: env.TERMINALID ]).first(); 
+	} 
+
+
+	@ProxyMethod 
 	public def init() {
 		def m = qc.find([ objid: env.TERMINALID ]).first(); 
 		if( m == null ) return [objid:env.TERMINALID, sections: [] ];
 
-		if ( !m ) throw new Exception('No queue counter registered for this terminal. Please contact queue administrator');
+		if ( !m ) throw new Exception('No queue counter registered for this terminal. Please contact your system administrator');
 
 		m.sections = qcs.getCounterSections([ counterid: m.objid ]); 
 
@@ -68,7 +77,10 @@ class UserQueueService {
 		if ( !o.sectionid ) throw new Exception('sectionid parameter is required');
 		if ( !o.counterid ) throw new Exception('counterid parameter is required');
 
-		def rundate = dateSvc.getServerDate();
+		def rundate = dateSvc.getServerDate(); 
+		o.startdate = new java.sql.Date( rundate.getTime()).toString(); 
+		o.enddate = o.startdate +' 23:59:59'; 
+		
 		def a = qs.find([ objid: o.sectionid ]).first(); 
 		if ( !a ) throw new Exception('queue section does not exist'); 
 
@@ -98,10 +110,9 @@ class UserQueueService {
 			return dd.ticketno; 
 		} finally { 
 			notify([ 
-				sectionid: o.sectionid, counterid: o.counterid, 
-				seriesno: m.seriesno, ticketno: dd.ticketno,  
-				type:'TAKE_NUMBER', prefix: a.prefix, 
-				countercode: dd.counter?.code  
+				counterid: o.counterid, sectionid: o.sectionid, groupid: a.groupid, 
+				seriesno: m.seriesno, ticketno: dd.ticketno, prefix: a.prefix, 
+				type:'TAKE_NUMBER', countercode: dd.counter?.code  
 			]); 
 		} 
 	} 
@@ -125,9 +136,9 @@ class UserQueueService {
 
 		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
 		notify([ 
-			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
-			type:'CONSUME_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno, 
-			countercode: qcdata.code  
+			counterid: o.counterid, sectionid: qsdata.objid, groupid: qndata.groupid, 
+			seriesno: qndata.seriesno, ticketno: qndata.ticketno, prefix: qsdata.prefix, 
+			type:'CONSUME_NUMBER', countercode: qcdata.code  
 		]); 
 	} 
 
@@ -143,11 +154,10 @@ class UserQueueService {
 
 		def qndata = qn.find([ objid: qncdata.objid ]).first(); 
 		def qsdata = qs.find([ objid: qndata.sectionid ]).first(); 
-
 		notify([ 
-			counterid: o.counterid, sectionid: qsdata.objid, prefix: qsdata.prefix, 
-			type:'BUZZ_NUMBER', seriesno: qndata.seriesno, ticketno: qndata.ticketno, 
-			countercode: qcdata.code  
+			counterid: o.counterid, sectionid: qsdata.objid, groupid: qndata.groupid, 
+			seriesno: qndata.seriesno, ticketno: qndata.ticketno, prefix: qsdata.prefix, 
+			type:'BUZZ_NUMBER', countercode: qcdata.code  
 		]); 
 	} 
 
@@ -189,6 +199,11 @@ class UserQueueService {
 		def startdate = dateSvc.getBasicServerDate(); 
 		def enddate   = new java.sql.Date( dateSvc.findNextFromDate( startdate, '1d' ).getTime());   
 		return qn.getStatusList([ startdate: startdate, enddate: enddate, counterid: params.counterid ]);   
+	}
+
+	@ProxyMethod 
+	public def getSectionStatusList( params ) {
+		return qn.getSectionStatusList( params );    
 	}
 
 	@ProxyMethod 
@@ -237,23 +252,29 @@ class UserQueueService {
 		qnadata.enddate = null; 
 		qna.update( qnadata ); 
 		notify([ 
-			sectionid: qnadata.section?.objid, counterid: qnadata.counter?.objid, 
-			ticketno: qnadata.ticketno, type:'TAKE_NUMBER', countercode: qnadata.counter?.code 
+			counterid: qnadata.counter?.objid, sectionid: qnadata.section?.objid, 
+			groupid: qndata.groupid, ticketno: qnadata.ticketno, 
+			type:'TAKE_NUMBER', countercode: qnadata.counter?.code 
 		]); 
 		return qnadata; 
 	} 
 
-
+	@ProxyMethod 
+	public def getWaitingList() { 
+		def params = [ counterid: env.TERMINALID ]; 
+		return queueSvc.getWaitingList( params ); 
+	} 
 
 
 	void notify( data ) { 
 		def uuid = ''+ data.sectionid +'_'+ data.counterid; 
 		data.uuid = uuid.toLowerCase(); 
-		if ( data.ticketno ) {
+		if ( data.ticketno ) { 
 			data.formattedseriesno = data.ticketno; 
-		} else {
-			data.formattedseriesno = formatSeriesNumber( data ); 	
-		} 		
+		} else { 
+			data.formattedseriesno = formatSeriesNumber( data ); 
+			data.ticketno = data.formattedseriesno; 
+		} 
 		self.notifyHttp( data ); 
 		self.notifyWs( data ); 
 	} 
@@ -262,8 +283,8 @@ class UserQueueService {
 		if ( data.seriesno ) {
 			def prefix = (data.prefix? data.prefix : ''); 
 			def snum = data.seriesno.toString();
-			if ( snum.length() < 4 ) { 
-				snum = snum.padLeft(4,'0'); 
+			if ( snum.length() < 3 ) { 
+				snum = snum.padLeft(3,'0'); 
 			} 
 			return ''+prefix+snum; 
 		} else { 
@@ -275,7 +296,18 @@ class UserQueueService {
 	@ProxyMethod(local=true) 
 	public void notifyHttp( data ) { 
 		if ( data ) { 
-			queue_poll.send( data );  
+			queue_poll.send( data );
+
+			if ( data.type.toString().matches('TAKE_NUMBER|BUZZ_NUMBER') && data.ticketno ) { 
+				def buffer = new StringBuilder();
+				buffer.append('Ticket Number ') 
+				data.ticketno.toCharArray().each{
+					buffer.append(''+ it +', ');
+				}
+				buffer.append('Please proceed to counter ' + data.countercode );
+				data.msg = buffer.toString(); 
+				pagingSvc.send( data );  				
+			} 
 		} 
 	} 
 	@Async 

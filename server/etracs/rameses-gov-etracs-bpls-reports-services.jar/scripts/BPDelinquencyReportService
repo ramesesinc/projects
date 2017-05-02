@@ -5,6 +5,9 @@ class BPDelinquencyReportService {
 	@DataContext('report_bpdelinquency') 
 	def reportdb; 
 
+	@DataContext('barangay') 
+	def brgydb; 
+
 	@Env 
 	def env; 
 
@@ -15,7 +18,7 @@ class BPDelinquencyReportService {
 	public def getStatus() { 
 		return [
 			current : reportdb.find([ state: 'APPROVED' ]).orderBy('dtfiled desc').first(), 
-			pending : reportdb.find([ state: 'DRAFT' ]).orderBy('dtfiled desc').first() 
+			pending : reportdb.where(" state NOT IN ('APPROVED') ").orderBy('dtfiled desc').first() 
 		]; 		
 	} 
 
@@ -33,6 +36,30 @@ class BPDelinquencyReportService {
 	} 
 
 	@ProxyMethod 
+	public def open( params ) {
+		return reportdb.find([ objid: params.objid ]).first(); 
+	}
+
+	@ProxyMethod
+	public void removeReport( params ) {
+		reportdb.clearItems([ reportid: params.objid ]); 
+		reportdb.find([ objid: params.objid ]).delete();
+	}
+
+	@ProxyMethod
+	public def approve( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required');
+
+		def o = reportdb.find([ objid: params.objid ]).first(); 
+		if ( o.state.toString().toUpperCase() == 'COMPLETED' ) { 
+			reportdb.find([ objid: params.objid ]).update([ state: 'APPROVED' ]);
+			return reportdb.find([ objid: params.objid ]).first(); 			
+		} 
+
+		throw new Exception('The build report must be in COMPLETED state'); 
+	} 
+
+	@ProxyMethod 
 	public def build( params ) { 
 		if ( !params.reportid ) throw new Exception('reportid parameter is required');
 
@@ -45,4 +72,38 @@ class BPDelinquencyReportService {
 		return o; 
 	} 
 
+
+	@ProxyMethod 
+	public def initReport( params ) {
+		return [ 
+			barangays: brgydb.select('objid,name,pin').where(' 1=1 ').orderBy(' pin ').list()  
+		]; 
+	}	
+
+	@ProxyMethod 
+	public def getReport( params ) { 
+		def builddate = null; 
+		if ( !params.reportid ) {
+			def o = reportdb.find([ state: 'APPROVED' ]).orderBy(' dtfiled desc').first(); 
+			if ( o ) { 
+				builddate = o.dtfiled; 
+				params.reportid = o.objid; 
+			} 
+		}
+
+		if ( params.barangay?.objid ) {
+			params.barangayid = params.barangay.objid; 
+		}
+
+		params.filter = ''; 
+		if ( params.barangayid ) {
+			params.filter = ''' AND baddr.barangay_objid=$P{barangayid} ''';
+		}
+
+		params.currentyear = dateSvc.getServerYear(); 
+		return [ 
+			reportdata: reportdb.getReport( params ), 
+			builddate : builddate 
+		]; 
+	} 
 }

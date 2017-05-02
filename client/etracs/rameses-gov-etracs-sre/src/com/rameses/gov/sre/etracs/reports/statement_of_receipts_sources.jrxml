@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="statement_of_receipts_sources"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -43,6 +44,7 @@
 	<parameter name="TOTALEXCESS" isForPrompting="false" class="java.lang.Number"/>
 	<parameter name="TOTALPERCENTAGE" isForPrompting="false" class="java.lang.Number"/>
 	<parameter name="TOTALPERCENTAGEVALUE" isForPrompting="false" class="java.lang.Number"/>
+	<parameter name="HIDEINCOMETARGET" isForPrompting="false" class="java.lang.Boolean"/>
 
 	<field name="title" class="java.lang.String"/>
 	<field name="actual" class="java.lang.Number"/>
@@ -361,49 +363,13 @@ Approved Target]]></text>
 			<band height="13"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="235"
-						y="0"
-						width="78"
-						height="13"
-						key="textField-45"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[new Boolean($F{type}.toString().matches("root|group")==false)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{target}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="393"
-						y="0"
-						width="78"
-						height="13"
-						key="textField-47"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[new Boolean($F{type}.toString().matches("root|group")==false)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="4" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{excess}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
 						x="393"
 						y="0"
 						width="78"
 						height="13"
 						key="textField"
 						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[new Boolean($F{type}.toString().matches("root|group")==true)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : ($F{type}.toString().matches("root|group")==true))]]></printWhenExpression>
 						</reportElement>
 					<box leftPadding="2" rightPadding="3" topPadding="2">					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -419,9 +385,82 @@ Approved Target]]></text>
 						y="0"
 						width="67"
 						height="13"
+						key="textField-41"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : ($F{type}.toString().matches("root|group")==true))]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="2" rightPadding="5" topPadding="2">					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{percentagevalue}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="235"
+						y="0"
+						width="78"
+						height="13"
+						key="textField-45"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : ($F{type}.toString().matches("root|group")==false))]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{target}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="235"
+						y="0"
+						width="78"
+						height="13"
+						key="textField-35"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : ($F{type}.toString().matches("root|group")==true))]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{target}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="393"
+						y="0"
+						width="78"
+						height="13"
+						key="textField-47"
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : ($F{type}.toString().matches("root|group")==false))]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="2" rightPadding="4" topPadding="2">					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Top">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{excess}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="473"
+						y="0"
+						width="67"
+						height="13"
 						key="textField-48"
 						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[new Boolean($F{type}.toString().matches("root|group")==false)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : ($F{type}.toString().matches("root|group")==false))]]></printWhenExpression>
 						</reportElement>
 					<box leftPadding="2" rightPadding="5" topPadding="2">					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -493,43 +532,6 @@ Approved Target]]></text>
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{actual}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="235"
-						y="0"
-						width="78"
-						height="13"
-						key="textField-35"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[new Boolean($F{type}.toString().matches("root|group")==true)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{target}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="473"
-						y="0"
-						width="67"
-						height="13"
-						key="textField-41"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[new Boolean($F{type}.toString().matches("root|group")==true)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="5" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{percentagevalue}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -810,7 +812,9 @@ Approved Target]]></text>
 						width="89"
 						height="18"
 						key="textField-43"
-						stretchType="RelativeToBandHeight"/>
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : true)]]></printWhenExpression>
+						</reportElement>
 					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
 </box>
@@ -826,7 +830,9 @@ Approved Target]]></text>
 						width="78"
 						height="18"
 						key="textField-49"
-						stretchType="RelativeToBandHeight"/>
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : true)]]></printWhenExpression>
+						</reportElement>
 					<box leftPadding="2" rightPadding="3" topPadding="2">					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
 </box>
@@ -842,7 +848,9 @@ Approved Target]]></text>
 						width="67"
 						height="18"
 						key="textField-50"
-						stretchType="RelativeToBandHeight"/>
+						stretchType="RelativeToBandHeight">
+							<printWhenExpression><![CDATA[($P{HIDEINCOMETARGET}==true ? false : true)]]></printWhenExpression>
+						</reportElement>
 					<box leftPadding="2" rightPadding="5" topPadding="2">					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
 </box>

@@ -57,7 +57,7 @@ from(
   inner join cashreceipt c on c.objid = rc.objid 
   inner join cashreceiptitem cri on cri.receiptid = c.objid
   inner join itemaccount ri on ri.objid = cri.item_objid and ri.fund_objid = a.fund_objid
-where c.objid not in (select receiptid from cashreceipt_void where objid=c.objid) 
+where c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
 group by ri.fund_title, cri.item_objid, cri.item_code, cri.item_title 
 order by fundname, acctcode  
 

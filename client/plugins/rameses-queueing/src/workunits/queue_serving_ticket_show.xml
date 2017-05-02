@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="queue_serving_ticket:show" caption="Serving" action="init" 
+                 role="ADMIN,USER"/> 
+    </invokers>
+    <code class="queueing.model.UserQueueServingTicketModel"/>
+    <pages>
+        <page template="queueing.view.UserQueueServingTicketPage"/>
+    </pages>
+</workunit>    

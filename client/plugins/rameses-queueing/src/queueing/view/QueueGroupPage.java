@@ -109,6 +109,8 @@ public class QueueGroupPage extends javax.swing.JPanel {
         xDataTable1.setHandler("itemHandlers.sections");
         xDataTable1.setName("selectedSection"); // NOI18N
 
+        xButton1.setDepends(new String[] {"selectedSection"});
+        xButton1.setDisableWhen("#{allowSwap != true}");
         xButton1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         xButton1.setForeground(new java.awt.Color(51, 51, 255));
         xButton1.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -120,6 +122,8 @@ public class QueueGroupPage extends javax.swing.JPanel {
             }
         });
 
+        xButton3.setDepends(new String[] {"selectedSection"});
+        xButton3.setDisableWhen("#{allowSwap != true}");
         xButton3.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         xButton3.setForeground(new java.awt.Color(51, 51, 255));
         xButton3.setMargin(new java.awt.Insets(2, 2, 2, 2));

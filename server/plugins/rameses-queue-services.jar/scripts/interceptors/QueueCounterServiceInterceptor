@@ -41,7 +41,7 @@ class QueueCounterServiceInterceptor {
 
 		def msgs = []; 
 		def qcslist = qcs.find([ counterid: result.objid ]).list(); 
-		qcslist.each{
+		qcslist.each{ 
 			msgs << [ counterid: it.counterid, sectionid: it.sectionid, type: 'REMOVE_COUNTER_SECTION' ]; 
 		} 
 		qcslist.each{
@@ -69,7 +69,7 @@ class QueueCounterServiceInterceptor {
 	}
 
 	def createAddCounterSectionMessage( params ) {
-		def rec = qc.find([ objid: params.counterid ]).first();  
+		def rec = qc.find([ objid: params.counterid ]).first(); 
 		params.countercode = rec.code; 
 		params.sectionid = params.sectionid.toLowerCase(); 
 		params.uuid = (params.sectionid +'_'+ params.counterid).toLowerCase(); 
@@ -77,11 +77,17 @@ class QueueCounterServiceInterceptor {
 		return params; 
 	} 
 
+	void loadGroup( data ) {
+		def o = qs.find([ objid: data.sectionid ]).first(); 
+		if ( o ) data.groupid = o.groupid; 
+	} 
+
 	void notify( data ) { 
 		def msgs = (data instanceof List ? data : [data]); 
 		msgs.each{
 			def uuid = ''+ it.sectionid +'_'+ it.counterid; 
-			it.uuid = uuid.toLowerCase(); 	
+			it.uuid = uuid.toLowerCase(); 
+			loadGroup( it ); 
 		}
 		self.notifyHttp( msgs ); 
 		self.notifyWs( msgs ); 

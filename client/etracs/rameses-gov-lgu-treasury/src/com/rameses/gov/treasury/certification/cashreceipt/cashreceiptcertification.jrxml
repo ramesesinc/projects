@@ -74,6 +74,7 @@
 	<field name="amount" class="java.math.BigDecimal"/>
 	<field name="items" class="java.lang.Object"/>
 	<field name="givenat" class="java.lang.String"/>
+	<field name="remarks" class="java.lang.String"/>
 
 
 		<group  name="PAYOR" >
@@ -118,6 +119,9 @@
 						width="432"
 						height="20"
 						key="subreport-1"/>
+					<subreportParameter  name="REMARKS">
+						<subreportParameterExpression><![CDATA[$F{remarks}]]></subreportParameterExpression>
+					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
 					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{item}]]></subreportExpression>
 				</subreport>

@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/setting" caption="Skip Tickets" action="init" 
+                 target="popup" role="USER" /> 
+    </invokers>
+    <code class="queueing.model.UserQueueSkipTicketModel"/>
+    <pages>
+        <page template="queueing.view.UserQueueSkipTicketListPage"/> 
+        <page name="view" template="queueing.view.UserQueueServingPage"/> 
+    </pages>
+</workunit>   

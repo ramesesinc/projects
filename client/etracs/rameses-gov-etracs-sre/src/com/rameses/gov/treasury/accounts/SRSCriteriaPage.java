@@ -48,6 +48,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
 
         jPanel2.setLayout(new com.rameses.rcp.control.layout.YLayout());
 
@@ -169,6 +170,12 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xCheckBox3.setText(" Hide No Actual Values");
         xFormPanel1.add(xCheckBox3);
 
+        xCheckBox4.setCellPadding(new java.awt.Insets(0, 115, 0, 0));
+        xCheckBox4.setName("entity.opthideincometarget"); // NOI18N
+        xCheckBox4.setShowCaption(false);
+        xCheckBox4.setText(" Hide Income Targets");
+        xFormPanel1.add(xCheckBox4);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -209,6 +216,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
+    private com.rameses.rcp.control.XCheckBox xCheckBox4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;

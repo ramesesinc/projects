@@ -16,7 +16,7 @@ public class ItemAccountUtil {
 		}
 		if( ! map.containsKey(acctid)) {
 			def m = svc.find( [objid: acctid] ).first();	
-			if( !m ) throw new Exception("Account not found in item account. " + m.title);
+			if( !m ) throw new Exception("Account not found in item account. " );
 			map.put(acctid, m );
 		}
 		return map.get(acctid);		

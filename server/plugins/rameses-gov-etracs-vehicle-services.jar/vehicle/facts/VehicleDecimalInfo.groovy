@@ -5,8 +5,6 @@ import enterprise.facts.*;
 
 public class VehicleDecimalInfo extends DecimalInfo {
 	
-	public VehicleDecimalInfo(def o) {
-		copy(o);
-	}
+	
 	
 }

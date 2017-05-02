@@ -2,7 +2,8 @@ package obo.facts;
 
 public abstract class OboVariableInfo extends enterprise.facts.VariableInfo {
 
-	double amount;
+	String excludeFields = "|classificationid|section|classification";
+	def amount;
 
 	public def toMap() {
 		def m = super.toMap();

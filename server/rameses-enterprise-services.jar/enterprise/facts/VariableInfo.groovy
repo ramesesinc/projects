@@ -20,8 +20,14 @@ public class VariableInfo {
 	Date datevalue;
 	String datatype;
 
+	
+
 	//just add so that it will match database. if 1=yes 0=no
 	int system;
+
+	public String getExcludeFields(){
+		return "";
+	};
 
 	public int hashCode() {
 		return name.hashCode();
@@ -52,8 +58,9 @@ public class VariableInfo {
 	}
 
 	public void copy( def o ) {
+		println "fields to unmatch ->" + 	"class|metaClass"+excludeFields;
 		this.metaClass.properties.each { k ->
-			if( !k.name.matches("class|metaClass")) {
+			if( !k.name.matches("class|metaClass"+excludeFields)) {
 				//add only if there is a setter
 				if( k.setter && o.containsKey(k.name)) {
 					this[(k.name)] = o.get( k.name );	

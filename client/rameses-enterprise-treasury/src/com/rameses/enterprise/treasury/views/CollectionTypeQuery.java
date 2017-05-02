@@ -31,6 +31,7 @@ public class CollectionTypeQuery extends javax.swing.JPanel {
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
 
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 

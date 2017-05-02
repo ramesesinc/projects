@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="cashreceiptcertificationitem"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -43,6 +44,7 @@
 	<parameter name="ISSUEDBYTIN" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="docno" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="LOGOASSESSOR" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="REMARKS" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="item.title" class="java.lang.String"/>
 	<field name="amount" class="java.math.BigDecimal"/>
@@ -137,7 +139,22 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="25"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[($P{REMARKS} != null)]]></printWhenExpression>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="9"
+						width="387"
+						height="15"
+						key="textField-4"
+						stretchType="RelativeToBandHeight"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Tahoma" size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{REMARKS} ? ("-  " + $P{REMARKS}) : "")]]></textFieldExpression>
+				</textField>
 			</band>
 		</summary>
 </jasperReport>

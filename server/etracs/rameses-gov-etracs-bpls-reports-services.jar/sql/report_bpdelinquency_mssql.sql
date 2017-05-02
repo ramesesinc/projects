@@ -11,7 +11,7 @@ insert into report_bpdelinquency_item (
 	objid, parentid, applicationid 
 ) 
 select 
-	UUID() as objid, $P{reportid} as parentid, tmpa.applicationid 
+	NEWID() as objid, $P{reportid} as parentid, tmpa.applicationid 
 from ( 
 	select applicationid, sum(amount-amtpaid) as balance 
 	from business_receivable  
@@ -55,9 +55,9 @@ order by barangayname, appyear, appno
 [findLedger]
 select 
 	tmpa.applicationid, b.appyear, b.appno, b.tradename, b.apptype, 
-	ifnull(tmpa.amount,0.0) as amount, ifnull(tmpa.amtpaid,0.0) as amtpaid, 
-	ifnull(tmpa.tax,0.0) as tax, ifnull(tmpa.regfee,0.0) as regfee, 
-	ifnull(tmpa.othercharge,0.0) as othercharge 
+	isnull(tmpa.amount,0.0) as amount, isnull(tmpa.amtpaid,0.0) as amtpaid, 
+	isnull(tmpa.tax,0.0) as tax, isnull(tmpa.regfee,0.0) as regfee, 
+	isnull(tmpa.othercharge,0.0) as othercharge 
 from ( 
 	select 
 		ba.objid as applicationid, 
@@ -70,7 +70,8 @@ from (
 	where ba.objid=$P{applicationid} 
 )tmpa, business_application b   
 where b.objid=tmpa.applicationid 
- 
+
+
 [getReport]
 select 
 	tmpc.dtgenerated, tmpc.businessid, tmpc.tradename, tmpc.businessname, tmpc.ownername, 
@@ -110,16 +111,15 @@ from (
 		inner join business b on ba.business_objid=b.objid 
 		left join business_address baddr on b.address_objid=baddr.objid 
 	where ba.apptype <> 'RETIRE' 
-		and ba.appyear < $P{currentyear}  
+		and ba.appyear < $P{currentyear} 
 		and ba.dtfiled >= $P{startdate} 
-		and ba.dtfiled <  $P{enddate} 
-		${filter} 		
+		and ba.dtfiled <  $P{enddate}  
+		${filter} 
 )tmpc 
 group by 
 	tmpc.dtgenerated, tmpc.businessid, tmpc.tradename, tmpc.businessname, 
 	tmpc.ownername, tmpc.barangayid, tmpc.barangayname 
 order by tmpc.barangayname, tmpc.tradename 
-
 
 [getReportB]
 select 

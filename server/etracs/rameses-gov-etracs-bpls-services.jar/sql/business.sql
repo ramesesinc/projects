@@ -81,11 +81,52 @@ WHERE bin = $P{bin}
 [updateApplicationId]
 UPDATE business SET currentapplicationid=$P{applicationid} WHERE objid=$P{businessid}
 
-[getListByOwner]
-SELECT * FROM business WHERE owner_objid=$P{ownerid}
-
 [updateOnRelease]
 UPDATE business SET state=$P{state}, activeyear=$P{activeyear} WHERE objid=$P{objid}  
 
 [updateForRetire]
 UPDATE business SET state=$P{state}, apptype=$P{apptype} WHERE objid=$P{objid}  
+
+[getListByOwner]
+select 
+    b.*, 
+    (case when tmpc.capital is null then 0.0 else tmpc.capital end) as capital, 
+    (case when tmpc.gross is null then 0.0 else tmpc.gross end) as latestgross, 
+    (case when tmpc.amtdue is null then 0.0 else tmpc.amtdue end) as amtdue 
+from ( 
+    select 
+        businessid, sum(capital) as capital, 
+        sum(gross) as gross, sum(amtdue) as amtdue 
+    from ( 
+        select 
+            ba.business_objid as businessid, 
+            (
+                select sum(bai.decimalvalue) from business_application xba 
+                    inner join business_application_info bai on bai.applicationid=xba.objid  
+                where xba.business_objid=tmpa.business_objid 
+                    and xba.state in ('RELEASE','COMPLETED') 
+                    and bai.attribute_objid='CAPITAL' 
+            ) as capital, 
+            (
+                select sum(decimalvalue) from business_application_info 
+                where applicationid=ba.objid and attribute_objid='GROSS' 
+            ) as gross, 
+            (
+                select sum(br.amount-br.amtpaid) from business_application xba 
+                    inner join business_receivable br on br.applicationid=xba.objid 
+                where xba.business_objid=tmpa.business_objid 
+                    and xba.state in ('RELEASE','COMPLETED') 
+            ) as amtdue 
+        from ( 
+            select a.business_objid, max(a.appyear) as maxyear  
+            from business b, business_application a 
+            where b.owner_objid = $P{ownerid} 
+                and a.business_objid = b.objid 
+            group by a.business_objid 
+        )tmpa 
+            inner join business_application ba on ba.business_objid=tmpa.business_objid 
+        where ba.appyear=tmpa.maxyear  
+    )tmpb 
+    group by businessid 
+)tmpc, business b 
+where b.objid=tmpc.businessid 

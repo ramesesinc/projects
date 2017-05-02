@@ -3,33 +3,36 @@ SELECT * FROM cashreceipt_txntype
 
 [getList]
 SELECT c.*, 
-CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
-CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
+	CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
+	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
 FROM cashreceipt c 
-LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
-LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
+	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
+	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 WHERE c.receiptno LIKE $P{searchtext} 
-ORDER BY c.formno, c.receiptno 
+ORDER BY ${orderBy} 
+
 
 [getListByPaidBy]
 SELECT c.*, 
-CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
-CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
+	CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
+	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
 FROM cashreceipt c 
-LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
-LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
+	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
+	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 WHERE c.paidby LIKE $P{searchtext} 
-ORDER BY c.formno, c.receiptno 
+ORDER BY ${orderBy} 
+
 
 [getListByPayer]
 SELECT c.*, 
-CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
-CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
+	CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
+	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
 FROM cashreceipt c 
-LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
-LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
+	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
+	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 WHERE c.payer_name LIKE $P{searchtext} 
-ORDER BY c.formno, c.receiptno 
+ORDER BY ${orderBy} 
+
 
 [findCashReceiptInfo]
 SELECT c.*, 

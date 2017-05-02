@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.treasury.accounts;
+package com.rameses.gov.etracs.bpls.reports.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
@@ -14,12 +14,12 @@ import com.rameses.rcp.ui.annotations.Template;
  */
 @StyleSheet
 @Template(FormPage.class)
-public class SRSCriteriaPage extends javax.swing.JPanel {
+public class DelinquencyCriteriaPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form SRSCriteriaPage
+     * Creates new form DelinquencyCriteriaPage
      */
-    public SRSCriteriaPage() {
+    public DelinquencyCriteriaPage() {
         initComponents();
     }
 
@@ -43,12 +43,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
-        xComboBox7 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
-        xComboBox6 = new com.rameses.rcp.control.XComboBox();
-        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
-        xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
 
         jPanel2.setLayout(new com.rameses.rcp.control.layout.YLayout());
 
@@ -124,57 +119,13 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
-        xComboBox7.setAllowNull(false);
-        xComboBox7.setCaption("Posting Type");
-        xComboBox7.setCaptionWidth(120);
-        xComboBox7.setExpression("#{item.name}");
-        xComboBox7.setImmediate(true);
-        xComboBox7.setItems("postingTypes");
-        xComboBox7.setName("entity.postingtype"); // NOI18N
-        xComboBox7.setPreferredSize(new java.awt.Dimension(300, 20));
-        xComboBox7.setRequired(true);
-        xFormPanel1.add(xComboBox7);
-
-        xComboBox4.setAllowNull(false);
-        xComboBox4.setCaption("Report Type");
+        xComboBox4.setCaption("Barangay");
         xComboBox4.setCaptionWidth(120);
+        xComboBox4.setEmptyText("--- All Barangays ---");
         xComboBox4.setExpression("#{item.name}");
-        xComboBox4.setImmediate(true);
-        xComboBox4.setItems("reportTypes");
-        xComboBox4.setName("entity.type"); // NOI18N
-        xComboBox4.setPreferredSize(new java.awt.Dimension(300, 20));
-        xComboBox4.setRequired(true);
+        xComboBox4.setItems("barangays");
+        xComboBox4.setName("entity.barangay"); // NOI18N
         xFormPanel1.add(xComboBox4);
-
-        xComboBox5.setCaption("Acct Group");
-        xComboBox5.setCaptionWidth(120);
-        xComboBox5.setExpression("#{item.name}");
-        xComboBox5.setImmediate(true);
-        xComboBox5.setItems("acctgroups");
-        xComboBox5.setName("entity.acctgroup"); // NOI18N
-        xComboBox5.setPreferredSize(new java.awt.Dimension(300, 20));
-        xFormPanel1.add(xComboBox5);
-
-        xComboBox6.setCaption("Fund");
-        xComboBox6.setCaptionWidth(120);
-        xComboBox6.setExpression("#{item.title}");
-        xComboBox6.setImmediate(true);
-        xComboBox6.setItems("funds");
-        xComboBox6.setName("entity.fund"); // NOI18N
-        xComboBox6.setPreferredSize(new java.awt.Dimension(300, 20));
-        xFormPanel1.add(xComboBox6);
-
-        xCheckBox3.setCellPadding(new java.awt.Insets(0, 115, 0, 0));
-        xCheckBox3.setName("entity.opthidenoactual"); // NOI18N
-        xCheckBox3.setShowCaption(false);
-        xCheckBox3.setText(" Hide No Actual Values");
-        xFormPanel1.add(xCheckBox3);
-
-        xCheckBox4.setCellPadding(new java.awt.Insets(0, 115, 0, 0));
-        xCheckBox4.setName("entity.opthideincometarget"); // NOI18N
-        xCheckBox4.setShowCaption(false);
-        xCheckBox4.setText(" Hide Income Targets");
-        xFormPanel1.add(xCheckBox4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -202,28 +153,23 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(91, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private com.rameses.rcp.control.XCheckBox xCheckBox3;
-    private com.rameses.rcp.control.XCheckBox xCheckBox4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
-    private com.rameses.rcp.control.XComboBox xComboBox5;
-    private com.rameses.rcp.control.XComboBox xComboBox6;
-    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

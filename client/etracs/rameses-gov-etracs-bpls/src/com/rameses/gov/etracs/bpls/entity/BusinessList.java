@@ -33,28 +33,47 @@ public class BusinessList extends javax.swing.JPanel {
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "businessname"}
-                , new Object[]{"caption", "Business Name"}
-                , new Object[]{"width", 250}
+                new Object[]{"name", "tradename"}
+                , new Object[]{"caption", "Trade Name"}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "businessname"}
+                , new Object[]{"caption", "Business Name"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "address.text"}
                 , new Object[]{"caption", "Business Address"}
-                , new Object[]{"width", 250}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -62,12 +81,14 @@ public class BusinessList extends javax.swing.JPanel {
                 new Object[]{"name", "state"}
                 , new Object[]{"caption", "Status"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 10}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -75,25 +96,29 @@ public class BusinessList extends javax.swing.JPanel {
                 new Object[]{"name", "capital"}
                 , new Object[]{"caption", "Capital"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 10}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "latestgross"}
-                , new Object[]{"caption", "Current Gross"}
+                , new Object[]{"caption", "Latest Gross"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 10}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -101,12 +126,14 @@ public class BusinessList extends javax.swing.JPanel {
                 new Object[]{"name", "amtdue"}
                 , new Object[]{"caption", "Amt Due"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 10}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })

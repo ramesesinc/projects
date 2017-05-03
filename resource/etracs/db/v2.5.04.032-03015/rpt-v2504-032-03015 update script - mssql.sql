@@ -32,3 +32,36 @@ CREATE TABLE rptledger_forprocess (
   PRIMARY KEY (objid)
 )
 go 
+
+
+alter table rptledgeritem drop column basicintpaid
+go 
+alter table rptledgeritem drop column basicdisctaken
+go 
+alter table rptledgeritem drop column basicidledisctaken
+go 
+alter table rptledgeritem drop column basicidleintpaid
+go 
+alter table rptledgeritem drop column sefintpaid
+go 
+alter table rptledgeritem drop column sefdisctaken
+go 
+
+
+
+alter table rptledgeritem_qtrly drop column basicintpaid
+go 
+alter table rptledgeritem_qtrly drop column basicdisctaken
+go 
+alter table rptledgeritem_qtrly drop column basicidledisctaken
+go 
+alter table rptledgeritem_qtrly drop column basicidleintpaid
+go 
+alter table rptledgeritem_qtrly drop column sefintpaid
+go 
+alter table rptledgeritem_qtrly drop column sefdisctaken
+go 
+
+
+drop table rptledgeritem_qtrly_partial
+go 

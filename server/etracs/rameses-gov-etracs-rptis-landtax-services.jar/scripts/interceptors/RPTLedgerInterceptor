@@ -40,9 +40,6 @@ class RPTLedgerInterceptor
     @DataContext('rptledger_item_qtrly')
     def em_ledger_item_qtrly
 
-    @DataContext('rptledger_item_qtrly_partial')
-    def em_ledger_item_qtrly_partial
-
     @DataContext('faas')
     def em_faas
 
@@ -140,7 +137,6 @@ class RPTLedgerInterceptor
         em_bill_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
         em_bill_ledger_account.find([rptledgerid:orig.rptledgerid]).delete()
         em_bill_ledger.find([rptledgerid:orig.rptledgerid]).delete()
-        em_ledger_item_qtrly_partial.find([rptledgerid:orig.rptledgerid]).delete()
         em_ledger_item_qtrly.find([rptledgerid:orig.rptledgerid]).delete()
         em_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
     }   

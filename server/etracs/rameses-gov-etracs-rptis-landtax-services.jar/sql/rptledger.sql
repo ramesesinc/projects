@@ -268,14 +268,8 @@ where rptledgerid = $P{rptledgerid}
 update rptledgeritem set 
 	fullypaid = 0,
 	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
 	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
 	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
 	firecodepaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and (
@@ -288,14 +282,8 @@ update rptledgeritem_qtrly set
 	fullypaid = 0,
 	partialled = 0,
 	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
 	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
 	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
 	firecodepaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and ( 
@@ -311,22 +299,16 @@ select
  	rli.basic,
 	sum(rliq.basic) as basicpaid,
  	rli.basicint as basicint,
-	sum(rliq.basicint) as basicintpaid,
- 	rli.basicdisc as basicdisc,
-	sum(rliq.basicdisc) as basicdisctaken,
- 	rli.basicidle as basicidle,
+	rli.basicdisc as basicdisc,
+	rli.basicidle as basicidle,
 	sum(rliq.basicidle) as basicidlepaid,
  	rli.basicidledisc as basicidledisc,
-	sum(rliq.basicidledisc) as basicidledisctaken,
- 	rli.basicidleint as basicidleint,
-	sum(rliq.basicidleint) as basicidleintpaid,
- 	rli.sef,
+	rli.basicidleint as basicidleint,
+	rli.sef,
 	sum(rliq.sef) as sefpaid,
  	rli.sefint as sefint,
-	sum(rliq.sefint) as sefintpaid,
- 	rli.sefdisc as sefdisc,
-	sum(rliq.sefdisc) as sefdisctaken,
- 	rli.firecode as firecode,
+	rli.sefdisc as sefdisc,
+	rli.firecode as firecode,
 	sum(rliq.firecode) as firecodepaid,
 	rliq.revperiod
  from rptledgeritem rli
@@ -345,14 +327,14 @@ and rli.qtrly = 0
 [closeFullyPaidQtrlyItems]
 update rptledgeritem_qtrly set 
 	basicpaid = basic,
-	basicintpaid = basicint,
-	basicdisctaken = basicdisc,
+	basicint = 0,
+	basicdisc = 0,
 	basicidlepaid = basicidle,
-	basicidledisctaken = basicidledisc,
-	basicidleintpaid = basicidleint,
+	basicidledisc = 0,
+	basicidleint = 0,
 	sefpaid = sef,
-	sefintpaid = sefint,
-	sefdisctaken = sefdisc,
+	sefint = 0,
+	sefdisc = 0,
 	firecodepaid = firecode
 where rptledgerid = $P{rptledgerid}	
 and fullypaid = 1
@@ -489,9 +471,7 @@ from (
 		rli.basicidle - rli.basicidledisc + rli.basicidleint + 
 		rli.sef + rli.sefint - rli.sefdisc + rli.firecode 
 		) as total,
-		(rli.basicpaid + rli.basicintpaid - rli.basicdisctaken + 
-		rli.basicidlepaid + rli.basicidleintpaid - rli.basicidledisctaken + 
-		rli.sefpaid + rli.sefintpaid - rli.sefdisctaken + rli.firecodepaid) as amtpaid
+		(rli.basicpaid + rli.basicidlepaid + rli.sefpaid + rli.firecodepaid) as amtpaid
 	from rptledgeritem rli
 		inner join propertyclassification pc on rli.classification_objid = pc.objid
 		left join propertyclassification au on rli.actualuse_objid = au.objid 
@@ -650,8 +630,8 @@ where rli.rptledgerfaasid = $P{objid}
 
 [findPartialPayment]
 select 
-	basicpaid, basicdisctaken, basicintpaid,
-	sefpaid, sefdisctaken, sefintpaid
+	basicpaid, basicdisc, basicint,
+	sefpaid, sefdisc, sefint
 from rptledgeritem_qtrly
 where rptledgerid = $P{objid}	
 and partialled = 1
@@ -668,11 +648,11 @@ and fullypaid = 0
 [updatePartialledQtrlyItem]
 update rptledgeritem_qtrly set 
 	basicpaid = $P{basicpaid},
-	basicintpaid = $P{basicintpaid},
-	basicdisctaken = $P{basicdisctaken},
+	basicint = basicint - $P{basicintpaid},
+	basicdisc = basicdisc - $P{basicdisctaken},
 	sefpaid = $P{sefpaid},
-	sefintpaid = $P{sefintpaid},
-	sefdisctaken = $P{sefdisctaken},
+	sefint = sefint - $P{sefintpaid},
+	sefdisc = sefdisc - $P{sefdisctaken},
 	partialled = 1
 where rptledgerid = $P{objid}	
 and year = $P{partialledyear}
@@ -682,11 +662,11 @@ and fullypaid = 0
 [addPartialToLedgerItemPayment]
 update rptledgeritem set 
 	basicpaid = basicpaid + $P{basicpaid},
-	basicintpaid = basicintpaid + $P{basicintpaid},
-	basicdisctaken = basicdisctaken + $P{basicdisctaken},
+	basicint = basicint - $P{basicintpaid},
+	basicdisc = basicdisc - $P{basicdisctaken},
 	sefpaid = sefpaid + $P{sefpaid},
-	sefintpaid = sefintpaid + $P{sefintpaid},
-	sefdisctaken = sefdisctaken + $P{sefdisctaken}
+	sefint = sefint - $P{sefintpaid},
+	sefdisc = sefdisc - $P{sefdisctaken}
 where objid = $P{rptledgeritemid}
 
 
@@ -704,14 +684,8 @@ update rptledgeritem_qtrly rliq, rptledgeritem rli set
 	rliq.fullypaid = 0,
 	rliq.partialled = 0,
 	rliq.basicpaid = 0.0,
-	rliq.basicintpaid = 0.0,
-	rliq.basicdisctaken = 0.0,
 	rliq.basicidlepaid = 0.0,
-	rliq.basicidledisctaken = 0.0,
-	rliq.basicidleintpaid = 0.0,
 	rliq.sefpaid = 0.0,
-	rliq.sefintpaid = 0.0,
-	rliq.sefdisctaken = 0.0,
 	rliq.firecodepaid = 0.0
 where rliq.parentid = rli.objid 
   and rliq.rptledgerid = $P{rptledgerid}
@@ -723,14 +697,8 @@ where rliq.parentid = rli.objid
 update rptledgeritem  set 
 	fullypaid = 0,
 	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
 	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
 	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
 	firecodepaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and year > $P{lastyearpaid}  
@@ -767,14 +735,14 @@ and taxdifference = 0
 update rptledgeritem_qtrly rliq, rptledgeritem rli set 
 	rliq.fullypaid = 1,
 	rliq.basicpaid = rliq.basic,
-	rliq.basicintpaid = rliq.basicint,
-	rliq.basicdisctaken = rliq.basicdisc,
+	rliq.basicint = 0,
+	rliq.basicdisc = 0,
 	rliq.basicidlepaid = rliq.basicidle,
-	rliq.basicidledisctaken = rliq.basicidledisc,
-	rliq.basicidleintpaid = rliq.basicidleint,
+	rliq.basicidledisc = 0,
+	rliq.basicidleint = 0,
 	rliq.sefpaid = rliq.sef,
-	rliq.sefintpaid = rliq.sefint,
-	rliq.sefdisctaken = rliq.sefdisc,
+	rliq.sefint = 0,
+	rliq.sefdisc = 0,
 	rliq.firecodepaid = rliq.firecode,
 	rliq.partialled = 0 
 where rliq.parentid = rli.objid 
@@ -789,14 +757,8 @@ update rptledgeritem rli,
 		select 
 			parentid, 
 			sum(basicpaid) as basicpaid, 
-			sum(basicintpaid) as basicintpaid, 
-			sum(basicdisctaken) as basicdisctaken, 
 			sum(basicidlepaid) as basicidlepaid, 
-			sum(basicidledisctaken) as basicidledisctaken, 
-			sum(basicidleintpaid) as basicidleintpaid, 
 			sum(sefpaid) as sefpaid, 
-			sum(sefintpaid) as sefintpaid, 
-			sum(sefdisctaken) as sefdisctaken, 
 			sum(firecodepaid) as firecodepaid,
 			max(qtr) as paidqtr 
 		from rptledgeritem_qtrly 
@@ -808,14 +770,14 @@ update rptledgeritem rli,
 set 
 	rli.fullypaid = case when rliq.paidqtr = 4 then 1 else 0 end,
 	rli.basicpaid = rliq.basicpaid,
-	rli.basicintpaid = rliq.basicintpaid,
-	rli.basicdisctaken = rliq.basicdisctaken,
+	rli.basicint = 0,
+	rli.basicdisc = 0,
 	rli.basicidlepaid = rliq.basicidlepaid,
-	rli.basicidledisctaken = rliq.basicidledisctaken,
-	rli.basicidleintpaid = rliq.basicidleintpaid,
+	rli.basicidledisc = 0,
+	rli.basicidleint = 0,
 	rli.sefpaid = rliq.sefpaid,
-	rli.sefintpaid = rliq.sefintpaid,
-	rli.sefdisctaken = rliq.sefdisctaken,
+	rli.sefint = 0,
+	rli.sefdisc = 0,
 	rli.firecodepaid = rliq.firecodepaid
 where rli.objid = rliq.parentid 
 and rli.taxdifference like $P{taxdifference}

@@ -11,11 +11,9 @@ create view vw_batchgr_error
 as 
 select 
 	err.*,
-	f.tdno as tdno,
 	f.fullpin as fullpin, 
 	rp.pin as pin,
-	o.name as lguname, 
-	b.name as barangay 
+	o.name as lguname
 from batchgr_error err 
 inner join faas f on err.objid = f.objid 
 inner join realproperty rp on f.realpropertyid = rp.objid 

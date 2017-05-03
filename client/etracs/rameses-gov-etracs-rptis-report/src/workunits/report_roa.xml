@@ -40,7 +40,14 @@ class ReportRoaController extends com.rameses.gov.etracs.rpt.report.AsyncReportC
     
     
     def getFormControl(){
-        def controls = getStandardFormControls();
+        def controls = []
+        controls << new FormControl( "combo", [captionWidth:110, caption:'Report Type', name:'entity.reporttype', required:true, items:'reporttypes', allowNull:false, expression:'#{item.caption}', visibleWhen:'#{reporttypes!=null}'])
+        controls << new FormControl( "integer", [captionWidth:110, caption:'Year', name:'entity.year', required:true, depends:'entity.reporttype', visibleWhen:'#{entity.reporttype.type=="period"}'])
+        controls << new FormControl( "combo", [captionWidth:110, caption:'Quarter', name:'entity.qtr', required:true, items:'quarters', visibleWhen:'#{entity.reporttype.type=="period"}'])
+        controls << new FormControl( "combo", [captionWidth:110, caption:'Month', name:'entity.month', required:true, depends:'entity.reporttype,entity.qtr', items:'months', expression:'#{item.name}', dynamic:true, visibleWhen:'#{entity.reporttype.type=="period"}'])
+        controls << new FormControl( "date", [captionWidth:110, caption:'As of Date', name:'entity.asofdate', required:true, depends:'entity.reporttype', visibleWhen:'#{entity.reporttype.type!="period"}'])
+        controls << new FormControl( "combo", [captionWidth:110, caption:'LGU', name:'entity.lgu', required:true, allowNull:false, items:'lgus', expression:'#{item.name}'])
+        controls << new FormControl( "combo", [captionWidth:110, caption:'Barangay', name:'entity.barangay', required:true, allowNull:false, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true])
         controls << new FormControl( "combo", [captionWidth:110, caption:'Classification', name:'entity.classification', items:'classifications', expression:'#{item.name}'])
         controls << new FormControl( "text", [captionWidth:110, caption:'Section', name:'entity.section'])
         return [

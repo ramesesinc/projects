@@ -51,7 +51,10 @@ class RPTReportROAService
                 previousfaases.each{pf ->
                     if (roalist.find{it.objid == pf.prevfaasid} == null){
                         roalist.add(obj)
-                        roalist.add(em.findCancelledFaasRecord(pf))
+                        def ppf = em.findCancelledFaasRecord(pf)
+                        if (ppf){
+                            roalist.add(ppf)
+                        }
                     }
                     else{
                         roalist.add(roalist.size() - 1, obj)

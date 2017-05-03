@@ -112,7 +112,7 @@ class FAASReportService
 
 	def getPreviousInfo(list, fieldname){
 		def info = ''
-		list[fieldname].each{
+		list[fieldname].unique().each{
 			if (it){
 				if (info) info += ' / '
 				info += it 
@@ -131,6 +131,7 @@ class FAASReportService
 		faas.prevmv = getPreviousInfo(list, 'prevmv')
 		faas.prevareasqm = getPreviousInfo(list, 'prevareasqm')
 		faas.prevareaha = getPreviousInfo(list, 'prevareaha')
+		faas.preveffectivity = getPreviousInfo(list, 'preveffectivity')
 	}
 
 	void buildSignatories(faas){

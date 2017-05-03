@@ -33,8 +33,10 @@ public class QueueSectionItem extends XComponentPanel {
         xButton2 = new com.rameses.rcp.control.XButton();
         jLabel1 = new javax.swing.JLabel();
 
+        setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
+        jPanel1.setOpaque(false);
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
         xLabel1.setExpression("#{caption}");

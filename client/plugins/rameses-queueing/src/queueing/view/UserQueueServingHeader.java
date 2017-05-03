@@ -47,7 +47,7 @@ public class UserQueueServingHeader extends javax.swing.JPanel {
 
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         xLabel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)), javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        xLabel1.setExpression("#{serveditem.currentnumber}");
+        xLabel1.setExpression("#{serveditem.ticketno}");
         xLabel1.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         jPanel1.add(xLabel1);
 

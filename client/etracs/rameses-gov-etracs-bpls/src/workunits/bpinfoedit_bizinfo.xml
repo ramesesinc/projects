@@ -51,7 +51,7 @@
                 }    
                 hasLookup = true;
 
-                String lookupName = (entity.orgtype == 'SING') ?'individualentity:lookup':'juridicalentity:lookup';
+                String lookupName = (entity.orgtype == 'SING') ? 'entityindividual:lookup' : 'entityjuridical:lookup';
                 return InvokerUtil.lookupOpener( lookupName, [
                     "query.orgtype": entity.orgtype,
                     onselect: { o->
@@ -73,14 +73,14 @@
                 if(action == ":create" && !hasLookup )
                     throw new Exception("Please attempt first a lookup before creating a new record");
 
-                String openerName = (entity.orgtype=='SING'?'individual':'juridical')+'entity';
+                String openerName = 'entity' + (entity.orgtype=='SING' ? 'individual':'juridical');
                 if( entity.orgtype == 'SING' ) {
                     def initial = [:];
                     def sh = { o->
                         entity.owner = [ objid:o.objid, name:o.name, address:o.address ];
                         binding.refresh("entity.owner.*");
                     }
-                    return InvokerUtil.lookupOpener( "individualentity"+action, [entity: entity.owner, initial:initial, saveHandler:sh] );
+                    return InvokerUtil.lookupOpener( "entityindividual"+action, [entity: entity.owner, initial:initial, saveHandler:sh] );
                 }
                 else {
                     def initial = [:];
@@ -89,7 +89,7 @@
                         entity.owner = [ objid:o.objid, name:o.name, address:o.address ];
                         binding.refresh("entity.owner.*");
                     }
-                    return InvokerUtil.lookupOpener( "juridicalentity"+action, [entity: entity.owner, initial: initial, saveHandler:sh] );
+                    return InvokerUtil.lookupOpener( "entityjuridical"+action, [entity: entity.owner, initial: initial, saveHandler:sh] );
                 }
             }
             

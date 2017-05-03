@@ -2,97 +2,22 @@
     <invokers>
         <invoker folderid="/explorer/txn/bpls/util" action="init" 
                  caption="Build Delinquency Data" target="window" 
-                 role="REPORT"/>
+                 role="REPORT"/> 
+        
+        
+        <invoker type="formActions" caption="Close" action="_close"/> 
+        <invoker type="formActions" caption="Build" action="doBuild" visibleWhen="#{mode=='init'}"/> 
+        <invoker type="formActions" caption="Refresh" action="doRefresh" visibleWhen="#{mode=='pending'}"/> 
+        <invoker type="formActions" caption="Delete" action="doDelete" visibleWhen="#{mode=='pending'}"/> 
+        
+        <invoker type="formActions" caption="Approve" action="doApprove" visibleWhen="#{mode=='completed'}"/> 
+        <invoker type="formActions" caption="Delete" action="doDelete" visibleWhen="#{mode=='completed'}"/> 
     </invokers>
-    <code>
+    
+    <code class="com.rameses.gov.etracs.bpls.reports.models.BPDelinquencyBuilderModel"/>
 
-<![CDATA[
-
-import com.rameses.gov.etracs.bpls.reports.ui.BPDelinquencyTask;
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.osiris2.reports.*;
-
-class BuildBusinessDelinquencyController 
-{
-    @Binding
-    def binding;
-    
-    @Service('BPDelinquencyReportService') 
-    def svc;
-            
-    String title = 'Build Business Tax Delinquency';
-    
-    def task;
-    
-    def msg;
-    def mode;
-    def entity = [:];
-    
-    def init(){ 
-        def o = svc.getStatus(); 
-        if ( o.pending ) { 
-            entity = o; 
-            msg = 'Pending rebuild of business tax delinquency listing'; 
-            return 'pending'; 
-        } else { 
-            entity = svc.init([:]);  
-            msg = 'Click Build to rebuild the business tax delinquency listing.'; 
-            mode = 'init';
-            return 'default'; 
-        } 
-    }
-   
-    def oncomplete = {
-        mode = 'init';
-        task = null;
-        msg = 'Delinquency listing has been successfully generated.';
-        binding.refresh();
-    }
-    
-    def updateStatus = {o ->
-        msg = o; 
-        binding.refresh('msg');
-    }
-    
-    def oncancel = {
-        init(); 
-        binding.refresh(); 
-    } 
-    
-       
-    void doBuild() {
-        getBarangays();
-        
-        task = new BPDelinquencyTask([
-            svc          : svc,
-            oncomplete   : oncomplete,
-            oncancel     : oncancel, 
-            updateStatus : updateStatus,
-            params       : entity 
-        ]);
-        task.start();
-        mode = 'building';
-    }
-
-    void doCancel(){
-        task?.cancel(); 
-        init();
-    }
-
-    def getBarangays(){ 
-        if (entity.barangaylist == null) { 
-            entity.barangaylist = svc.getBarangayList(); 
-        } 
-        return entity.barangaylist; 
-    } 
-} 
-]]> 
-        
-    </code>
     <pages>
-        <page template="com.rameses.gov.etracs.bpls.reports.ui.DelinquencyBuildPage"/>
-        <page name="pending" template="com.rameses.gov.etracs.bpls.views.DelinquencyPendingPage"/>
+        <page template="com.rameses.gov.etracs.bpls.reports.views.DelinquencyBuildPage"/>
+        <page name="pending" template="com.rameses.gov.etracs.bpls.reports.views.DelinquencyPendingPage"/>
     </pages>
 </workunit>

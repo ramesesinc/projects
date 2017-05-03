@@ -29,6 +29,8 @@
           <BorderConstraints direction="East"/>
         </Constraint>
       </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
           <Properties>
@@ -37,7 +39,6 @@
         </Component>
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox3">
           <Properties>
-            <Property name="allowNull" type="boolean" value="false"/>
             <Property name="caption" type="java.lang.String" value="Type"/>
             <Property name="captionWidth" type="int" value="50"/>
             <Property name="emptyText" type="java.lang.String" value="- - All Types - -"/>

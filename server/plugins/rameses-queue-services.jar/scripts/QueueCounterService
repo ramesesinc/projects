@@ -11,6 +11,14 @@ class QueueCounterService {
 	@Env
 	def env;
 
+	@ProxyMethod 
+	public def getCounter() {
+		def o = em.find([ objid: env.TERMINALID ]).first(); 
+		if ( o ) o.sections = sect.getCounterSections([ counterid: o.objid ]); 
+
+		return o; 
+	} 
+
 	@ProxyMethod
 	public def create( def o ) { 
 		def data = em.create( o );

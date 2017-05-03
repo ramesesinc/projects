@@ -13,6 +13,9 @@ class PlatformCounterRegistrationModel {
     
     @Service("QueueCounterService")
     def queueCounterSvc;
+
+    @Script("User")
+    def user;
     
     @Binding
     def binding;
@@ -20,6 +23,19 @@ class PlatformCounterRegistrationModel {
     def entity;
     
     public def init() {
+        def env = [ 
+            SESSIONID : "GUEST"+ new java.rmi.server.UID(), 
+            USERID: "GUEST", USER: "GUEST", NAME: "GUEST", FULLNAME: "GUEST", 
+            ROLES: ["ALLOWED": "system.*", "QUEUE.USER": null],
+            TERMINALID: user.env.TERMINALID, 
+            
+            "toolbar.type" : "queue-toolbar", 
+            "statusbar.type" : "queue-statusbar"  
+        ]; 
+        def usr = [ USERID: env.USERID, env: env ];     
+        OsirisContext.env.putAll( env );
+        OsirisContext.clientContext.properties.PROFILE = usr; 
+        
         entity = userQueueSvc.init();
         if( entity?.code ) return '_close'; 
 

@@ -96,7 +96,7 @@ class  BusinessInfoController {
     def showOwner() {
         if( !entity.owner?.objid )
             throw new Exception("No owner assigned");
-        String stype = (entity.orgtype == 'SING') ?'individualentity':'juridicalentity';
+        String stype = (entity.orgtype == 'SING') ?'entityindividual':'entityjuridical';
         return Inv.lookupOpener( stype + ":open", [entity: entity.owner] ); 
     }
     

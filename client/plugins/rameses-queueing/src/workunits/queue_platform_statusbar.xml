@@ -1,6 +1,6 @@
 <workunit>    
     <invokers>
-        <invoker type="queue-statusbar" action="init" allowOffline="true"/> 
+        <invoker type="queue-statusbar" action="init"/> 
     </invokers> 
     
     <code class="queueing.model.PlatformStatusbarModel"/>    

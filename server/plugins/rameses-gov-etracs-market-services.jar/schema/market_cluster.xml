@@ -1,11 +1,12 @@
 <schema  adapter="market">
 	<element tablename="market_cluster">
 		<field name="objid" primary="true" prefix="MKTCLU"/>
-		<complex name="market" ref="market" jointype="many-to-one" required="false" 
-			includefields="objid,code,name,address.text">
-			<key field="marketid" target="objid" />
-		</complex>
-		<field name="name" required="true" caption="Cluster Name"/>
+		<field name="market_objid" visible="false"/>
+		<field name="market_name" />
+		<field name="market_barangay_objid" />
+		<field name="market_barangay_name" />
+
+		<field name="name" required="true" caption="Cluster Name" searchable="true" indexed="true"/>
 		<field name="description" />
 	</element>
 </schema>

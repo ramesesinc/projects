@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="queue-loader" caption="Queue Counter Registration" action="init" /> 
+    </invokers>
+    
+    <code class="queueing.model.PlatformCounterRegistrationModel"/>
+    
+    <pages>
+        <page template="queueing.view.PlatformRegistrationPage"/>
+    </pages>
+</workunit>    

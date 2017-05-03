@@ -52,8 +52,9 @@ class  ETRACSCashReceiptCertificationController extends CertificationController
         entity.name = receipt.paidby;
         entity.address = receipt.paidbyaddress;
         entity.amount = receipt.amount;
+        entity.remarks = receipt.remarks;
         entity.receiptno = receipt.receiptno;
-        entity.receiptdate = new java.text.SimpleDateFormat('MMMMM dd, yyyy').format(receipt.receiptdate);
+        entity.receiptdate = new java.text.SimpleDateFormat('MMMMM dd, yyyy').format(receipt.receiptdate); 
         entity.items = receipt.items;
         entity.formno = receipt.formno; 
         if(receipt.formno == '56') {

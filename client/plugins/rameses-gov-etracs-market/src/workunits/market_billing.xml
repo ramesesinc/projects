@@ -1,44 +1,12 @@
-<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+<workunit extends="com/rameses/seti2/templates/FormReport.xml">
     <invokers>
-        <invoker type="market_account:form:formActions" caption="Billing" index="-10" 
-            reportName="com/rameses/gov/etracs/market/reports/billing/marketbilling.jasper" 
-            action="view"/>
+        <invoker type="market_account:form:formActions" 
+            caption="View Billing" index="-10" 
+            reportName="com/rameses/gov/etracs/market/reports/market_account_billing.jasper" 
+            reportId="market_account_billing"
+            target="popup"
+            visibleWhen="#{mode=='read'}"
+            action="preview"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.seti2.models.*;
-        import com.rameses.util.*;
-        import java.text.*;
-        
-        class MarketBill extends CrudReportModel {
-            
-            @Service("MarketBillingService")
-            def billSvc;    
-            
-            def df = new SimpleDateFormat("yyyy-MM-dd");
-        
-            def view() {
-                def param = [acctid:caller.entityContext.objid];
-                boolean pass = false;
-                def h = { o->
-                    if( o.billdate ) param.billdate = df.parse(o.billdate);
-                    pass = true;
-                };
-                def fc = [
-                    [name:'billdate', datatype:'date', caption:'Bill Date', required:false]
-                ];
-                Modal.show("dynamic_field:entry", [title:'Enter Bill Date', formControls:fc, handler:h] );
-                if(!pass) {
-                    throw new BreakException();
-                }
-                entity = billSvc.getBilling(param);
-                return super.view();
-            }
-        }
-        ]]>
-    </code>    
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalBillingModel" />
 </workunit>

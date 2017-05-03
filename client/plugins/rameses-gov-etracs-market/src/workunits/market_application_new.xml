@@ -1,11 +1,25 @@
 <workunit schemaName="market_application" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker type="market_application:create" caption="New Market Application" 
-                 action="create" role="MASTER" />
+                 action="start" role="MASTER" />
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.NewMarketApplication" />
+    <pageflow>
+        <start>
+            <transition to="initial" action="init"/>
+        </start>
+        <page name="initial" title="Market New Application (Initial)">
+            <transition to="confirm" caption="Submit" />
+        </page>
+        <page name="confirm" title="Market New Application (Confirm)">
+            <transition to="initial" caption="Back" />
+            <transition to="end" caption="Submit" />
+        </page>
+        <end/>
+    </pageflow>    
     <pages>
-        <page template="com.rameses.gov.etracs.market.views.MarketApplicationInitialPage"/>
+        <page name="initial" template="com.rameses.gov.etracs.market.views.MarketApplicationInitialPage"/>
+        <page name="confirm" template="com.rameses.gov.etracs.market.views.MarketApplicationInitialPage"/>
     </pages>
     
 </workunit>

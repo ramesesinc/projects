@@ -1,0 +1,24 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicletype_cluster" caption="Vehicle Type Cluster"/>
+    </invokers>
+    <code>
+        class VehicleTypeClusterEntry {
+        
+            def entity = [:];
+            def handler;
+        
+            def doOk() {
+                handler(entity);
+                return "_close";
+            }
+        
+            def doCancel() {
+                return "_close";
+            }
+        }
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VehicleTypeClusterPage" />
+    </pages>    
+</workunit>

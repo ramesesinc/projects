@@ -1,0 +1,49 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import police.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+public class PoliceClearanceCashReceiptInterceptor  {
+
+	@DataContext("policeclearance_payment")
+	def pmt;
+
+	@DataContext("policeclearance_application")
+	def app;
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'policeclearance'}")
+	public void postPayment(def evt) {
+		def r = evt.result;
+		def p = [:];
+		p.refno = r.receiptno;
+		p.refdate = r.receiptdate;
+		p.reftype = 'cashreceipt';
+		p.refid = r.objid;
+		p.appid = r.appid;
+		p.amount = r.amount;
+		p.txndate = r.txndate;
+		p.voided = 0;
+		p = pmt.create(p);
+
+		def u = [:];
+		u.state = 'PROCESSING';
+		u.payment = [objid: p.objid, refno:p.refno, refdate:p.refdate];
+		app.find([objid: r.appid]).update(u);
+	} 
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='policeclearance'}")
+	public void voidPayment(def evt) {
+		def r = evt.args[0].receipt;
+		def p = pmt.find( [refid: r.objid] ).first();
+		pmt.find( [objid: p.objid] ).update( [voided: 1] );
+		def u = [:];
+		u.state = 'PAYMENT';
+		u.payment = [:];
+		app.find([objid: p.appid]).update(u);
+	}
+	
+
+
+}

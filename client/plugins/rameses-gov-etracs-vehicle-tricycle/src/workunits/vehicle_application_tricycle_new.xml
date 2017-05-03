@@ -3,7 +3,13 @@
         apptype="NEW" 
         title="MTOP New">
     <invokers>
-        <invoker folderid="/home/vehicle/tricycle" caption="New Application" action="start" index="110" />
-        <invoker type="vehicle_application_tricycle:create" caption="New" action="start" />
+        <invoker folderid="/home/vehicle/tricycle" caption="New Application" action="start" index="110" 
+                 role="INFO"/>
+        <invoker type="vehicle_application_tricycle:create" caption="New" action="start" 
+                 role="INFO"/>        
     </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleApplicationPage" />
+    </pages>
 </workunit>

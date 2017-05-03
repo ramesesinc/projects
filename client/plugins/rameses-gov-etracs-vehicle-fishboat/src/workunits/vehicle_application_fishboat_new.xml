@@ -1,0 +1,15 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationNew.xml"
+        vehicletype="fishboat" 
+        apptype="NEW" 
+        title="Fishboat New">
+    <invokers>
+        <invoker folderid="/home/vehicle/fishboat" caption="New Application" action="start" index="110" 
+                 role="INFO"/>
+        <invoker type="vehicle_application_fishboat:create" caption="New" action="start" 
+                 role="INFO"/>        
+    </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.fishboat.views.FishboatApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.fishboat.views.FishboatApplicationPage" />
+    </pages>
+</workunit>

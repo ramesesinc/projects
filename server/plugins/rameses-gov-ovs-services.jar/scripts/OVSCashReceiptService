@@ -1,42 +1,43 @@
 import com.rameses.annotations.*;
 
+import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import ovs.facts.*;
+
 class OVSCashReceiptService {
 
     @DataContext("ovs_violation_ticket_entry")
     def entries;
 
-    @DataContext("itemaccount")
-    def itemaccount;
+    @Service("AssessmentRuleService")
+    def assmtSvc;
 
     @ProxyMethod
     public def getUnpaidViolations(def o){
         def pp = ["parent.violator.objid":o.objid];
-        entries.select("objid,parent.objid,parent.ticketno,violation.title,violationcount,balance, account.objid");
+        entries.select("refid:{objid},parent.ticketno,parentid,violation.title,violationid,violationcount,balance,account.objid");
         def list = entries.find(pp).where("amount - amtpaid > 0").orderBy("parent.dtcreated").list();
         if(!list) throw new Exception("There are no unpaid violations for this payer.");
 
-        list.each{
-            it.item = itemaccount.find([objid:it.account.objid]).first();
-            it.amount = 0;
-            it.remarks = it.violation.title + " (" + getOrdinal( it.violationcount ) + " offense)";
-        }
-        return list;
-    }
+        def itemLookup = new ItemAccountUtil();
 
-    def getOrdinal( n ) {
-       def s = ["th","st","nd","rd"];
-       def v = n % 100;
-       int j = (v-20)%10;
-       if( j >= 0 && j <=3 ) {
-           return n+s[j];
-       }
-       else if( v >=0 && v<= 3) {
-           return n+s[v];
-       }
-       else {
-           return n+s[0];
-       }
-    }   
-  
+        def items = [];
+        int i = 0;
+        list.each {
+            def m = [:];
+            m.violation = it.violationid;
+            m.ticketid = it.parentid;
+            m.refid = it.refid; 
+            m.remarks = "${it.violation.title} ( ${NumberUtil.formatOrdinal( it.violationcount )} offense ) Ref.${it.parent.ticketno}".toString();                    
+            m.paypriority = (i++);
+            m.amount = it.balance;
+            m.balance = it.balance;
+            m.item = itemLookup.lookup( it.account.objid );
+            m.checked = true;
+            items << m;
+        }
+        return items;
+    }
 
 }

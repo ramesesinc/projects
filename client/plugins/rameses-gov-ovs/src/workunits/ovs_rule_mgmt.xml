@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/ovs" caption="Violation Fee Rules" 
+                 action="init" index="1" role="RULE_AUTHOR"  tag="ovscomputation"/>
+    </invokers>
+</workunit>

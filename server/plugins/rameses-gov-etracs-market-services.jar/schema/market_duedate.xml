@@ -1,0 +1,10 @@
+<schema adapter="market">
+
+	<element tablename="market_duedate">
+		<field name="year"  primary="true"/>
+		<field name="month" primary="true"/>
+		<field name="duedate" type="date"/>
+		<field name="remarks" />
+	</element>
+
+</schema>

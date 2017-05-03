@@ -1,23 +1,20 @@
 package treasury.actions;
 
 import com.rameses.rules.common.*;
+import market.facts.*;
 import com.rameses.util.*;
 import java.util.*;
+import com.rameses.osiris3.common.*;
 import treasury.facts.*;
 
 public class SetBillItemDueDate implements RuleActionHandler {
-
+	
 	public void execute(def params, def drools) {
 		def billitem = params.billitem;
-		if( billitem == null ) 
-			throw new Exception("SetBillItemDueDate error. Please specify a billitem");
+		def duedate = params.duedate.eval();
 
-		//update only if duedate not yet set.	
-		if( billitem.duedate == null ) {
-			def duedate = params.duedate.getStringValue();
-			def dd = new DueDate( duedate );
-			billitem.duedate = dd.date;	
-		}
-		
+		//check if there are overrides in the database for the dates:
+		def ct = RuleExecutionContext.getCurrentContext();
+		billitem.duedate = duedate;	
 	}
 }

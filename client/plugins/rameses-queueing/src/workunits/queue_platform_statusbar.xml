@@ -1,0 +1,11 @@
+<workunit>    
+    <invokers>
+        <invoker type="queue-statusbar" action="init"/> 
+    </invokers> 
+    
+    <code class="queueing.model.PlatformStatusbarModel"/>    
+    
+    <pages>
+        <page template="queueing.view.PlatformStatusbarPage"/>
+    </pages>
+</workunit>

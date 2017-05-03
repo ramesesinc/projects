@@ -1,0 +1,10 @@
+<workunit>
+    <invokers/> 
+    
+    <code class="queueing.model.UserQueue"/>
+    
+    <pages>
+        <page name="default" template="queueing.view.UserQueuePage"/>
+        <page name="view" template="queueing.view.UserQueueServingPage"/>
+    </pages>
+</workunit>    

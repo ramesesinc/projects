@@ -1,0 +1,12 @@
+<schema adapter="nsrp">
+	<element name="entity_eligibility" tablename="entity_eligibility">
+		<field name="objid" primary="true" prefix="INDELI"/>
+		<complex name="entity" ref="entityindividual" jointype="many-to-one" required="false" 
+			includefields="entityno,name">
+			<key field="entityid" target="objid"/>
+		</complex>
+		<field name="name" required="true" caption="Eligibility"/>
+		<field name="licenseno" required="true" caption="License No."/>
+		<field name="expirydate" required="true" caption="Expiry Date"/>
+	</element>
+</schema>

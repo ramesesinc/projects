@@ -1,0 +1,15 @@
+<schema adapter="police">
+	<element tablename="policeclearance" >
+		<field name="objid" required="true" prefix="PISCLR"/>
+		<field name="controlno" required="true"/>
+		<field name="dtissued" required="true"/>
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true"/>
+		<field name="dtcreated" required="true"/>
+
+		<complex name="app" ref="policeclearance_application" jointype="many-to-one" required="true">
+			<key field="appid" target="objid" />
+		</complex>		
+
+	</element>
+</schema>

@@ -1,7 +1,0 @@
-<workunit>
-    <code>
-        class VehicleFormHandler {
-            def entity;
-        }
-    </code>
-</workunit>

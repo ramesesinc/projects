@@ -1,0 +1,30 @@
+<workunit schemaName="policeclearance_application">
+    <invokers>
+        <invoker folderid="home/police" caption="New Application" action="start"/>
+        <invoker type="formActions" caption="Show Trackingno" action="showTrackingno" 
+            visibleWhen="#{entity.appno !=null}"/> 
+    </invokers>
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearanceNewApplicationModel" />
+    <pageflow>
+        <start>
+            <transition to="initial" action="init"/>
+        </start>
+        <page name="initial" title="Police Clearance Application (New)">
+            <transition to="fee" caption="Next" action="loadFees"/> 
+        </page>
+        <page name="fee" title="Police Clearance Fees">
+            <transition to="initial" caption="Back"/>
+            <transition to="view" caption="Next"/>
+        </page>
+        <page name="view" title="Police Clearance">
+            <transition to="fee" caption="Back"/>
+            <transition to="end" caption="Submit" action="saveCreate"/>
+        </page>
+        <end/>
+    </pageflow>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationInitialPage" />
+        <page name="fee" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationFeePage" />
+        <page name="view" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationPage" />
+    </pages>
+</workunit>

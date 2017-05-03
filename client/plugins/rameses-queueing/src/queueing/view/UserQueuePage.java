@@ -5,6 +5,7 @@
 package queueing.view;
 
 import com.rameses.rcp.ui.annotations.Template;
+import queueing.component.PageLayout;
 
 /**
  *
@@ -15,8 +16,13 @@ public class UserQueuePage extends javax.swing.JPanel {
 
     public UserQueuePage() {
         initComponents();
+                
+        PageLayout layout = new PageLayout();
+        tabitem1.setLayout( layout ); 
+        tabitem1.removeAll(); 
+        tabitem1.add( xFormPanel1, PageLayout.CONTENT);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,74 +32,61 @@ public class UserQueuePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        tabitem1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        jPanel2 = new javax.swing.JPanel();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        jPanel3 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        jPanel4 = new javax.swing.JPanel();
-        xButton2 = new com.rameses.rcp.control.XButton();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xList1 = new com.rameses.rcp.control.XList();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setPreferredSize(new java.awt.Dimension(370, 400));
         setLayout(new java.awt.BorderLayout());
 
-        jTabbedPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        tabitem1.setBackground(new java.awt.Color(255, 255, 255));
+        tabitem1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)), javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        tabitem1.setLayout(new java.awt.BorderLayout());
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setDynamic(true);
         xFormPanel1.setName("formControls"); // NOI18N
         xFormPanel1.setShowCaption(false);
         xFormPanel1.setShowCategory(true);
-        jPanel1.add(xFormPanel1, java.awt.BorderLayout.NORTH);
+        tabitem1.add(xFormPanel1, java.awt.BorderLayout.NORTH);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        jPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
+        add(tabitem1, java.awt.BorderLayout.CENTER);
 
-        xButton1.setExpression("Edit");
-        xButton1.setName("edit"); // NOI18N
-        jPanel2.add(xButton1);
+        xPanel1.setPreferredSize(new java.awt.Dimension(110, 140));
+        com.rameses.rcp.control.layout.YLayout yLayout1 = new com.rameses.rcp.control.layout.YLayout();
+        yLayout1.setAutoFill(true);
+        xPanel1.setLayout(yLayout1);
 
-        jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
+        xLabel1.setExpression("Waiting List");
+        xLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        xLabel1.setForeground(new java.awt.Color(153, 0, 0));
+        xPanel1.add(xLabel1);
 
-        jTabbedPane1.addTab("  Allowed Sections  ", jPanel1);
+        xList1.setCellHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xList1.setCellHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        xList1.setExpression("#{item.ticketno}");
+        xList1.setFixedCellHeight(20);
+        xList1.setFixedCellWidth(70);
+        xList1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        xList1.setHandler("waitListHandler");
+        xList1.setLayoutOrientation(com.rameses.rcp.control.XList.VERTICAL_WRAP);
+        xList1.setVisibleRowCount(5);
+        jScrollPane1.setViewportView(xList1);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        xPanel1.add(jScrollPane1);
 
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel2.setName("queueSectionHandler"); // NOI18N
-        xFormPanel2.setShowCaption(false);
-        xFormPanel2.setShowCategory(true);
-        jPanel3.add(xFormPanel2, java.awt.BorderLayout.NORTH);
-
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        jPanel4.setLayout(new com.rameses.rcp.control.layout.XLayout());
-
-        xButton2.setExpression("Refresh");
-        xButton2.setName("refreshQueueSections"); // NOI18N
-        xButton2.setText("Refresh");
-        jPanel4.add(xButton2);
-
-        jPanel3.add(jPanel4, java.awt.BorderLayout.PAGE_END);
-
-        jTabbedPane1.addTab("  Request Queue Number  ", jPanel3);
-
-        add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+        add(xPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel tabitem1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XList xList1;
+    private com.rameses.rcp.control.XPanel xPanel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,6 +4,7 @@
         <invoker folderid="/explorer/master/vehicle" 
                  caption="Vehicle Types" 
                  cols="objid,title,issued"
-                 action="init" />
+                 action="init" 
+                 role="MASTER" permission="vehicle.view"/>
     </invokers>
 </workunit>

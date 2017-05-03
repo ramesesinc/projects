@@ -1,0 +1,20 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="UnremittedCollectionMonitorService"
+          allowCreate="false"
+          allowOpen="false">
+    
+    <invokers>
+        <invoker type="unremitted-collection-detail-monitor:list" 
+                 caption="Unremitted Collection Monitoring: Details" 
+                 role="ADMIN,SHARED" />
+        
+        <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
+        <invoker type="formActions" action="refresh" caption="Refresh" icon="images/toolbars/refresh.png" mnemonic="r" shortcut="ctrl R"/>
+    </invokers>
+    
+    <code class="com.rameses.enterprise.treasury.models.UnremittedCollectionDetailMonitorModel"/>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.collection.UnremittedCollectionPage"/>
+    </pages>    
+</workunit>

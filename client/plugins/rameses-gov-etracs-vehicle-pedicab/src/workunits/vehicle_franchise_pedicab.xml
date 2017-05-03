@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleFranchise.xml"
+          schemaName="vehicle_franchise_pedicab" 
+          vehicletype="pedicab"
+          allowCreate="false" allowDelete="false">
+    <invokers>
+        <invoker type="vehicle_franchise_pedicab:open" 
+                 caption="Pedicab Franchise" index="-10"
+                 action="open"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabFranchisePage" />
+    </pages>
+</workunit>

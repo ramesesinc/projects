@@ -4,5 +4,8 @@
             <folder id="queueing" caption="Queue System" index="100"/>
         </folder>
     </folder>
+    <folder id="menu">
+        <folder id="setting" caption="Settings" index="5"/>
+    </folder>
 </folders>
 

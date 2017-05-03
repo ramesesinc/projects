@@ -1,102 +1,133 @@
 import com.rameses.annotations.*;
 import java.text.*;
 import com.rameses.functions.*;
+import com.rameses.util.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
 
 class MarketBillingService {
 	
-	@DataContext("market_account")
-	def acct;
+	@Service("AssessmentRuleService")
+	def assmtSvc;
 
-	@DataContext("itemaccount")
-	def itemacct;
+	@DataContext("market_account")
+	def acctEm;
 
 	@Service("DateService")
 	def dateSvc;
 
-	def dformat = new SimpleDateFormat("yyyy-MM-dd");
 
-	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+	/***************************************************************************************************
+	* STEPS: 
+	*     1. Determine where date to start. Startdate or last date paid (last date covered). Add 1 day.
+	*     2. If there is partial balance, do not move the date. to the next date from last payment date. 
+	*     3. This returns the bill items in its raw form i.e. not summaried to period
+	****************************************************************************************************/
+	@ProxyMethod
+	public def process( def o, def resultHandler ) {
+		if(!o.fromdate) throw new Exception("fromdate is required in MarketBillingService");
+		if(!o.marketunit) throw new Exception("marketunit is required in MarketBillingService");
+
+		def amtPaid = 0.0;
+		def svrDate = dateSvc.getBasicServerDate();
+		def todate = svrDate;
+		
+		if(o.payoption) {
+			if( o.payoption.todate ) {
+				todate = dateSvc.parseDate( o.payoption.todate, null ).date;
+			}
+			else if( o.payoption.numdays ) {
+				todate = DateUtil.add( o.fromdate, (o.payoption.numdays-1) + "d" );
+			}
+			else if( o.payoption.nummonths ) {
+				todate = DateUtil.add( o.fromdate, o.payoption.nummonths + "M" );
+				todate = DateUtil.add( todate, "-1d");
+			}
+			else if( o.payoption?.amount ) {
+				amtPaid = o.payoption.amount;
+			}
+		}
+
+		def fb = new FactBuilder();
+		fb.facts << new MarketRentalUnit( o.marketunit );
+		fb.facts << new MarketBillingPeriod( [fromdate: o.fromdate, todate: todate ] ) ;
+		fb.facts << new treasury.facts.SystemDate(svrDate);
+		fb.facts << new treasury.facts.BillDate( (o.billdate) ?o.billdate: svrDate );
+		fb.facts << new treasury.facts.Payment( amount: amtPaid );
+		return assmtSvc.execute( "marketbilling", [:], fb, resultHandler );
+	}
 
 
 	@ProxyMethod
 	public def getBilling( def o ) {
-		def p = [:];
-		if(o.acctid) p.acctid = o.acctid;
-		else if(o.acctno) p.acctno = o.acctno;
+		if( !o.acctid ) throw new Exception("acctid is required in MarketBillingService.getBilling");
+		def str = "startdate,rate,extrate,payfrequency,partialbalance,partialextbalance,unittype:{unit.unittype},sectionid:{unit.section.objid},clusterid:{unit.cluster.objid},unitid:{unit.objid},ratetype:{unit.ratetype}";
+		def acct = acctEm.select(str).find([objid:o.acctid]).first();
+		if(!acct) throw new Exception("Account not found");
 
-		def a = acct.find( p ).first();
-		def rate = a.rate;
-		def _startdate = a.startdate;
-		if( a.lastpmtdate ) {
-			def xcal = Calendar.instance;
-			xcal.setTime(a.lastpmtdate);
-			xcal.add( Calendar.DATE, 1 ); 
-			_startdate = xcal.getTime();
-		}
+		def svrDate = dateSvc.getBasicServerDate();
+		def req = [:];
+		req.marketunit = [
+			unittype:acct.unittype, 
+			unitid: acct.unitid,
+			ratetype: acct.ratetype,
+			sectionid:acct.sectionid,
+			clusterid:acct.clusterid,
+			payfrequency:acct.payfrequency,
+			rate:acct.rate, extrate:acct.extrate,
+			partialbalance:(acct.partialbalance==null)?0:acct.partialbalance, 
+			partialextbalance:(acct.partialextbalance==null)?0:acct.partialextbalance
+		];	
+		req.fromdate = acct.startdate; 
+		req.payoption = o.payoption;
+		req.billdate = (o.billdate!=null)? dateSvc.parseDate(o.billdate,null).date: svrDate;
 
-		def _enddate = (o.enddate)? o.enddate: dateSvc.getServerDate();
-		
-		def startdate = DateFunc.formatDate( _startdate , 'yyyy_MM-dd');
-		def enddate = DateFunc.formatDate( _enddate , 'yyyy_MM-dd');
-
-		//payoption
-		if(  o.date ) {
-			enddate = DateFunc.formatDate(o.date, 'yyyy-MM-dd');
-			if( enddate.before(startdate) ) throw new Exception("Inavlid date specified");
-		}
-		else if(o.numdays) {
-			def zc = Calendar.instance;
-			zc.setTime( startdate );
-			zc.add( Calendar.DATE, o.numdays-1 );
-			enddate = zc.getTime(); 
-		}
-
-		def cal1 = Calendar.instance;
-		cal1.setTime( startdate ); 
-
-		int monthsDiff = DateFunc.monthsDiff( startdate, enddate ); 
-		def list = [];
-
-		if( monthsDiff == 0 ) {
-		   int daysDiff = DateFunc.daysDiff( startdate, enddate ); 
-		   list << [ month: cal1.get(Calendar.MONTH)+1, year: cal1.get(Calendar.YEAR), days: daysDiff+1 ];
-		}
-		else {
-		    list << [month: cal1.get(Calendar.MONTH)+1, year: cal1.get(Calendar.YEAR), 
-		    			days: cal1.getActualMaximum( Calendar.DAY_OF_MONTH)-cal1.get(Calendar.DAY_OF_MONTH)+1 ];
-		    def v = monthsDiff - 2;
-
-		    if( v > 0 ) {
-		        def xcal = Calendar.instance;
-		        xcal.set( Calendar.YEAR, cal1.get(Calendar.YEAR));
-		        xcal.set( Calendar.MONTH, cal1.get(Calendar.MONTH));
-		        xcal.set( Calendar.DAY_OF_MONTH, 1 );
-		        for(int i=0; i<=v; i++) {
-		            xcal.add(Calendar.MONTH, 1);
-		            list << [ month: xcal.get(Calendar.MONTH)+1, year:xcal.get(Calendar.YEAR), 
-		            	days: xcal.getActualMaximum(Calendar.DAY_OF_MONTH) ];    
-		        }
-		    }
-			def cal2 = Calendar.instance;
-		    cal2.setTime( enddate ); 
-		    list << [month: cal2.get(Calendar.MONTH)+1, year: cal2.get(Calendar.YEAR), 
-		    	days: cal2.get(Calendar.DAY_OF_MONTH) ];
-		}
-		list.each {
-			it.amount = rate * it.days;
-			it.monthname = monthNames[it.month-1];
-			it.item = itemacct.find([objid:'ITMACCT-66ea9f6a:15543d56b21:-7f8c']).first(); 
-		}
-
-		//add the items.
-		a.fromdate = startdate;
-		a.todate = enddate;
-		a.amount = list.sum{ it.amount };
-		a.items = list;
-		return a;
+		def m = [items:[], billitems: []];
+		def resultHandler = [
+			getFactKeyValue : { v->
+				if( v instanceof MarketLedgerStatus ) {
+					m.ledgerstatus = [
+						startdate: v.startdate, 
+						partialbalance: v.partialbalance, 
+						partialextbalance: v.partialextbalance
+					];
+				}
+				else if(v instanceof BillItem) {
+					def itm = v.toMap();
+					itm.remarks = v.year + " " + v.monthname; 
+					m.items << itm;
+					if( v.txntype == 'market' ) {
+						m.billitems << itm;
+					};
+				}	
+				else if( v instanceof SummaryBillItem ) {
+					def itm = v.toMap();
+					m.items << itm;									
+					if(v.txntype == 'market') {
+						v.items.each { vv->
+							m.billitems << vv.toMap();
+						}
+					};	
+				}
+				else if( v instanceof BillSubItem ) {
+					def itm = v.toMap();
+					itm.year = v.parent.year;
+					itm.month = v.parent.month;
+					itm.remarks = v.parent.year + " " + v.parent.monthname; 
+					m.items << itm;
+				}
+				return null;
+			}
+		] as ResultHandler;
+		process( req, resultHandler);
+		if(!m.billitems) 
+			throw new Exception("No billitems found");
+		m.fromdate = acct.startdate;
+		m.todate = m.billitems.max{it.todate}.todate;
+		return m;
 	}
-
-
-
 
 }

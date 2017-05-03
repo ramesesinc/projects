@@ -1,0 +1,6 @@
+<schema adapter="police">
+	<element tablename="policeclearance_type" >
+		<field name="objid" primary="true" visible="true"/>
+		<field name="title" required="true"/>
+	</element>
+</schema>

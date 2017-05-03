@@ -3,8 +3,8 @@
 	<element name="collectiontype" tablename="collectiontype">
 		<field name="objid" primary="true"/>	
 		<field name="state" required="true"/>
-		<field name="name" required="true"/>
-		<field name="title" required="true"/>
+		<field name="name" required="true" searchable="true"/>
+		<field name="title" required="true" searchable="true"/>
 		<field name="formno" required="true"/>
 		<field name="handler" required="true"/>
 		<field name="allowbatch" />
@@ -17,6 +17,11 @@
 		<field name="fund_objid"  />
 		<field name="fund_title"  />
 		<field name="category"  />
+
+		<complex name="org" ref="sys_org" jointype="many-to-one" required="false" 
+			includefields="objid,name,orgclass">
+			<key field="org_objid" target="objid"/>		
+		</complex> 
 	</element>
 
 </schema>

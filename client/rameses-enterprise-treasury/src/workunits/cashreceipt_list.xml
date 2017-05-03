@@ -41,7 +41,28 @@ class CashReceiptQueryModel extends DefaultListController {
         } 
         return InvokerUtil.lookupOpener( "cashreceiptvoid:revert", params );  
     }   
+    
+    def sortType;
+    def sortTypes = ['ASC','DESC']; 
+    
+    def sortField; 
+    def sortFields = [
+        [name: 'receiptno', caption: "Receipt No."], 
+        [name: 'receiptdate', caption: "Receipt Date"],
+        [name: 'paidby', caption: "Payer"] 
+    ];  
+    
+    protected void beforeFetchList(Map params) {
+        if ( sortField?.name ) { 
+            params.sortfield = sortField.name; 
+            params.sorttype = sortType; 
+        } 
+    }
 }
     ]]>
-    </code>        
+    </code>      
+    
+    <pages>
+        <page name="queryform" template="com.rameses.enterprise.treasury.views.CashReceiptQueryFilter"/>
+    </pages>        
 </workunit>

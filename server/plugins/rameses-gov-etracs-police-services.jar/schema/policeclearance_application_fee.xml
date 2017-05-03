@@ -1,0 +1,12 @@
+<schema adapter="police">
+	<element tablename="policeclearance_application_fee" >
+		<field name="objid" primary="true" prefix="PISAPPFEE"/>
+		<field name="parentid" required="true" />
+		<field name="item_objid" required="true" />
+		<field name="item_code" required="true" />
+		<field name="item_title" required="true" />
+		<field name="amount" required="true" defaultValue="0" type="decimal"/>
+		<field name="amtpaid" required="true" defaultValue="0"  type="decimal"/>
+		<field name="balance" expr="amount - amtpaid" type="decimal"/>
+	</element>
+</schema>

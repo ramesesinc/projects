@@ -2,7 +2,6 @@
     <folder id="explorer">
         <folder id="master">
             <folder id="police" caption="Police" />
-            <folder id="test" caption="Test" />
         </folder>
         <folder id="txn">
             <folder id="police" caption="Police" />
@@ -14,9 +13,14 @@
             <folder id="police" caption="Police" />
         </folder>
     </folder>
-     <folder id="menu">
+    <folder id="menu">
         <folder id="txn" caption="Transaction">
             <folder id="police" caption="Police" />
         </folder>
     </folder>
+    
+    <folder id="home">
+        <folder id="police" caption="Police" icon="home/icons/police.png"/>
+    </folder>
+
 </folders>

@@ -7,4 +7,7 @@
                  caption="MTOP Franchise" index="-10"
                  action="open"/>
     </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.tricycle.views.TricycleFranchisePage" />
+    </pages>
 </workunit>

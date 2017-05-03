@@ -3,8 +3,12 @@
         <invoker type="sys_user:open" action="open" caption="User"  target="popup"/>
         <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{initiator!='create'}"/>
         <invoker type="formActions" action="_exit" caption="Close" visibleWhen="#{initiator=='create'}"/>
+        <invoker type="formActions" caption="Edit" action="edit"/>
+        <invoker type="formActions" caption="Reset Password" action="resetPassword" visibleWhen="#{initiator != 'create'}"/>
     </invokers>
+    <code class="com.rameses.admin.models.UserModel" />
    
+    <!--
     <code>
     <![CDATA[
         import com.rameses.rcp.annotations.*;
@@ -52,7 +56,12 @@
         
        ]]>
    </code>
+   -->
+   
    <pages>
+       <!--
        <page template="com.rameses.admin.user.UserInfoPage"/>
+       -->
+       <page template="com.rameses.admin.views.UserPage"/>
    </pages>
 </workunit>

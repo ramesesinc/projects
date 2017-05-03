@@ -1,0 +1,117 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleCashReceiptInterceptor {
+	
+	@Service("VehiclePaymentService")
+	def pmtSvc;
+
+	@DataContext(dynamic=true)
+	def em;
+
+	@DataContext("vehicle_fee")
+	def vFee;
+
+	@DataContext("revenueitem")
+	def revItem;
+
+	@Service("WorkflowTaskService")	
+	def wfService;
+
+	@DataContext("vehicle_payment")
+	def pmtEm;
+
+	@Env
+	def env;
+
+	@After(pattern="CashReceiptBarcodeService.findPrefix")
+	public void findBarcodePrefix(def evt) {
+		def result = evt.result;
+		def a = evt.args[0];
+		//search the database 
+		def z = appEm.find( [appno: a.barcodeid ] ).exists();
+		if(z) {
+			result.prefix = '51010';
+		}
+	}	
+
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'vehicle'}")
+	public void postPayment(def evt) {
+		def r = evt.args[0];
+		def t = evt.result;
+
+		def m = [:];
+		m.appid = r.info.appid;
+		m.franchiseid = r.info.franchiseid;
+
+		m.refno = r.receiptno;		
+		m.refid = r.objid;		
+		m.reftype = "cashreceipt";		
+		m.refdate = r.receiptdate;
+		m.txndate = t.txndate;
+		m.amount = r.amount;
+		m.txnmode = 'ONLINE';
+		m.voided = 0;
+		m.items = [];
+		r.items.findAll{it.refid!=null}.each {
+			it.parent = [objid: m.objid];
+			if(!it.discount) it.discount = 0;
+			if(!it.surcharge) it.surcharge = 0;
+			if(!it.interest) it.interest = 0;
+			if( it.ledgertype == 'application') {
+				it.apprefid = it.refid;
+			}
+			else {
+				it.franchiserefid = it.refid;
+			}
+			m.items << it;
+		}
+		pmtSvc.postPayment( m );
+		/*******************************************************************
+		* signal after
+		*******************************************************************/
+		if(m.appid) {
+			String pName = "vehicle_application_" + r.info.vehicletype;
+
+			def vapp = em.lookup(  pName + "_task" ).find( [refid: m.appid] ).first();
+			if( vapp.taskid ==null ) {
+				return;
+			}
+
+			//check balance first before signalling
+			def total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [controlid: r.info.franchiseid ] ).val();
+			if(total == 0) {
+				def wfParam = [
+					processname: pName, 
+					refid: m.appid,
+					action: 'post',
+					actor: [objid:env.USERID, name:env.FULLNAME]
+				];	
+				wfService.signal( wfParam );
+			}	
+		}
+	}
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")
+	public void voidPayment(def evt) {
+		def r = evt.args[0].receipt;
+
+		//find to reverse the payment.
+		def pmt = pmtEm.find( [refid: r.objid] ).first();
+		pmtSvc.postVoid( [objid: pmt.objid]); 
+
+		def app = appEm.find( [objid:pmt.appid ] ).first();
+
+		//check the state is not currently payment then error. 
+		//Test if you can move the record 
+		def wfParam = [
+			processname: 'vehicle_application_' + app.vehicletype, 
+			refid: app.objid,
+			action: 'return_payment',
+			actor: [objid:env.USERID, name:env.FULLNAME]
+		];	
+		wfService.signal( wfParam );
+	}
+
+}

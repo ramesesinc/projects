@@ -42,7 +42,7 @@
 	<field name="grandtotal" class="java.math.BigDecimal"/>
 	<field name="unit.code" class="java.lang.String"/>
 	<field name="unit.unittype" class="java.lang.String"/>
-	<field name="term" class="java.lang.String"/>
+	<field name="payfrequency" class="java.lang.String"/>
 	<field name="rate" class="java.math.BigDecimal"/>
 	<field name="unit.section.name" class="java.lang.String"/>
 	<field name="unit.market.name" class="java.lang.String"/>
@@ -335,7 +335,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{unit.market.name} + " " + $F{unit.market.address.text} ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{unit.market.name} + " " + $F{unit.market.address.text}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

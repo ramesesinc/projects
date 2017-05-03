@@ -36,7 +36,6 @@ public class EntityLookupQueryForm extends javax.swing.JPanel {
         xLabel1.setText("Type :");
         jPanel1.add(xLabel1);
 
-        xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Type");
         xComboBox3.setCaptionWidth(50);
         xComboBox3.setEmptyText("- - All Types - -");

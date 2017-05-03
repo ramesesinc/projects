@@ -68,24 +68,37 @@ AND qtybalance > 0
 
 
 [findAllAvailable]
-SELECT 
-   ac.objid AS controlid,  
-   ac.afid,
+select 
+   tmpa.categoryindex, tmpa.txndate, 
+   ac.objid AS controlid, ac.afid,
    ac.currentseries as startseries,
    ac.endseries as endseries,
    ac.currentstub as startstub,
-   ac.endstub as endstub,
-   ac.prefix,
-   ac.suffix,
-   ac.unit,
-   ac.qtybalance,
-   ac.cost 
-FROM af_inventory ac
-   inner join af_inventory_detail ad on ad.controlid = ac.objid and ad.[lineno]=1
-WHERE ac.afid=$P{afid} 
-   AND ac.respcenter_type = 'AFO' 
-   AND ac.qtybalance > 0
-ORDER BY ad.txndate, ac.currentseries
+   ac.endstub as endstub, 
+   ac.prefix, ac.suffix,
+   ac.unit, ac.qtybalance, ac.cost 
+from ( 
+   select 
+      0 as categoryindex, a.objid, a.dtfiled as txndate 
+   from af_inventory_return a   
+      inner join af_inventory b on b.objid=a.objid 
+   where b.afid=$P{afid} 
+      and b.respcenter_type = 'AFO' 
+      and b.qtybalance > 0 
+
+   union all  
+
+   select 
+      1 as categoryindex, ai.objid, ad.txndate  
+   from af_inventory ai  
+      inner join af_inventory_detail ad on (ad.controlid=ai.objid and ad.[lineno]=1)
+   where ai.afid=$P{afid} 
+      and ai.respcenter_type = 'AFO' 
+      and ai.qtybalance > 0 
+      and ai.objid not in (select objid from af_inventory_return where objid=ai.objid) 
+)tmpa, af_inventory ac  
+where ac.objid=tmpa.objid 
+order by tmpa.categoryindex, tmpa.txndate, ac.currentseries 
 
 
 [getAFDetails]

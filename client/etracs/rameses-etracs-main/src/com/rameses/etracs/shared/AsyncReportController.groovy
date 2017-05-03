@@ -143,12 +143,13 @@ abstract class AsyncReportController
                     data = o;                
                     has_result_preview = true; 
                     buildResult( data ); 
+                    
                     if ( data.reportdata == null ) {
                         MsgBox.err( "Please specify reportdata on your result" ); 
                     } else { 
                         printReport( data.reportdata ); 
-                        back(); 
-                    } 
+                        //back(); 
+                    }                         
                     binding.refresh(); 
                 }
             } 

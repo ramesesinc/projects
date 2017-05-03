@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationRenew.xml"
+          schemaName="vehicle_application" 
+          vehicletype="pedicab" 
+          apptype="RENEW"
+          title="Pedicab Renewal">
+    <invokers>
+        <invoker folderid="/home/vehicle/pedicab" caption="Renew" action="start" 
+                 role="INFO" index="111"/>
+    </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationPage" />
+    </pages>
+</workunit>

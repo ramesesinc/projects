@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+
+class MarketRentalUnitListInterceptor{
+	
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'market_rentalunit'}")
+	public void getNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'All', id:'all'];
+		result << [ title: 'Open', id:'open'];
+		result << [ title: 'Occupied', id:'occupied'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'market_rentalunit'}")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		if( !o.node?.id ) return;
+		
+		def str = '';
+		switch( o.node.id ) {
+			case 'all':
+				str = ' 1=1 ';
+				break;
+			case 'open':
+				str = ' currentacctid IS NULL '; 
+				break;
+
+			case 'occupied':
+				str = ' NOT( currentacctid IS NULL ) '; 
+				break;
+		}
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+		}
+		else {
+			o.where = [str];
+		}
+	}
+
+}

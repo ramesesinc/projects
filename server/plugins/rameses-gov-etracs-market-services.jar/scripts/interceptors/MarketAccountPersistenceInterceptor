@@ -1,0 +1,67 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+
+public class MarketAccountPersistenceInterceptor {
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("market_rentalunit")
+	def rentalunit;
+
+	@Service("OrgService")
+	def orgSvc;
+
+	@Env
+	def env;
+
+	def dformat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+
+	/**********************************************************
+	* called by new application or by data capture.
+	* Market Account naming standard = M{LGUCODE,3}{YEAR,4}{MONTH,2}{SEQ,5}
+	***********************************************************/
+	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'market_account'}")
+	public void beforeCreate( evt ) {
+		def o = evt.args[0];
+
+		if( o.todate == null ) {
+			o.todate = dformat.parse(o.startdate);
+		}
+		if( o.todate == null ) throw new Exception("Please specify startdate or last payment date");
+
+		def dd = dateSvc.parseDate( o.todate , null );
+		o.lastmonthpaid = dd.month;
+		o.lastyearpaid = dd.year;
+		if(!o.acctno) {
+			def lgucode = orgSvc.getRoot()?.code;
+			if(!lgucode)
+				throw new Exception("LGU code is null. Please check OrgService.getRoot. Ensure there is a root org");
+			lgucode = lgucode.replace("-", "");	
+			def yr = dateSvc.getServerYear();
+			def mnth = dateSvc.getServerMonth();
+			def smon = ( mnth < 10 ) ? "0"+mnth : mnth+"";
+			def prefix = "M"+lgucode+yr+smon;
+			o.acctno = prefix+seqSvc.getNextFormattedSeriesA(prefix, 4);
+		}
+		o.dtcreated = dateSvc.getServerDate();
+		o.createdby = [objid:env.USERID, name: env.USERNAME];
+	}
+
+	@After( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_account'}")
+	public void afterSave( evt ) {
+		def o = evt.args[0];
+		if( o.unit?.objid ) {
+			rentalunit.find([objid: o.unit.objid]).update([currentacctid: o.objid] );
+		}
+	}
+
+
+}

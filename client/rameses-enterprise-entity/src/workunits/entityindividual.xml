@@ -1,9 +1,8 @@
 <workunit schemaName="entityindividual">
     <invokers>
-        <invoker type="entityindividual:open" 
-                 caption="Individual" action="open"  
-                 role="MASTER" index="-1"
-                 windowTitle="#{entity.entityno}" formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
+        <invoker type="entityindividual:open" caption="Individual" action="open"  
+                 role="MASTER" index="-1" windowTitle="#{entity.entityno}" 
+                 formTitle="#{entity.entityno}" formId="#{entity.objid}"/>
     </invokers>
     <code class="com.rameses.entity.models.IndividualEntityModel" />
     <pages>

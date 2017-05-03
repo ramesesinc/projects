@@ -39,7 +39,7 @@ class DynamicInfoModel extends ComponentBean {
         def infos = handler.getControls(pInfos);
         if(!infos) return;
         
-        infos = infos.sort{ [it.categoryid, it.sortorder] }
+        infos = infos.sort{ it.sortorder }
         def xForms = [];
         infos.each {x->
             def i = [:];
@@ -68,7 +68,6 @@ class DynamicInfoModel extends ComponentBean {
             else {
                 i.value = x.value;
             }
-            println "got data->"+i.value;
             xForms << i;
         }
         infoStack.push(xForms);

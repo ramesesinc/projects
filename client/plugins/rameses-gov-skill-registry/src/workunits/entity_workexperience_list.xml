@@ -1,0 +1,22 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entity_workexperience">
+    <invokers>
+        <invoker type="entityindividual:section" caption="Work Experience" index="3"
+                cols="companyname,address,jobtitle.name,fromdate,todate,appoinmentstatus" action="init" visibleWhen="#{mode=='read'}"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        
+        class WorkExperienceListModel extends CrudSubListModel {
+            def getListFilter() {
+                return [entityid: masterEntity.objid];
+            }
+        }
+        ]]>
+    </code>    
+</workunit>

@@ -34,7 +34,7 @@ public abstract class AbstractSimpleCashReceiptModel extends AbstractCashReceipt
                 list = Inv.lookupOpeners("simple_cashreceipt_payoption_type", [context: this])
             }catch(e){;}
             try {
-                def mlist = Inv.lookupOpeners("simple_cashreceipt_payoption_type_"+getContextName(), [context: this]);
+                def mlist = Inv.lookupOpeners(getContextName()+":cashreceipt_payoption_type", [context: this]);
                 if(mlist) list += mlist;
             }catch(e){;}
             _payOptions = list;

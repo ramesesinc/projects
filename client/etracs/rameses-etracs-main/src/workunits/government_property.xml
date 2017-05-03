@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="government_property">
+    <invokers>
+        <invoker type="government_property:create" caption="Government Property" action="create" />
+        <invoker type="government_property:open" caption="Government Property" action="open" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.lgu.views.GovernmentPropertyPage"/>
+    </pages>
+</workunit>

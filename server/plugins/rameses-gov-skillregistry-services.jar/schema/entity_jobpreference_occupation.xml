@@ -1,0 +1,11 @@
+<schema adapter="nsrp">
+	<element name="entity_jobpreference_occupation" tablename="entity_jobpreference_occupation">
+		<field name="objid" primary="true" prefix="INDJPO"/>
+		<complex name="entity" ref="entityindividual" jointype="many-to-one" required="false" 
+			includefields="occupation,industry">
+			<key field="entityid" target="objid"/>
+		</complex>
+		<field name="occupation" required="true" caption="Occupation"/>
+		<field name="industry" required="true" caption="Industry"/>
+	</element>
+</schema>

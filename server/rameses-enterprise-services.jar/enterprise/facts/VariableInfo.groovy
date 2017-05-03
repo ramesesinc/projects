@@ -1,75 +1,72 @@
 package enterprise.facts;
 
-/** Creates a new instance of Variable */
-public class VariableInfo {
-    
-    String objid;
-    String name;
-    String datatype;
-    String category;
-    String caption;
-    int sortorder;
-    String stringvalue;
-    int intvalue;
-    boolean booleanvalue;
-    double decimalvalue;
-    
-    public VariableInfo() {
-    }
+import java.util.*;
 
-    public VariableInfo(def o) {
-        this( o.objid, o.name, o.datatype, o.value );
-    }    
-    
-    public VariableInfo(String objid, String name, String datatype, Object value) {
-        this.objid = objid;
-        this.name = name;
-        this.datatype = datatype.toLowerCase();
-        if( value!=null && (""+value).trim().length()>0 ) {
-            if( datatype == "decimal" ) {
-                decimalvalue = Double.parseDouble(value+"");
-            } 
-            else if(datatype == "integer") {
-                intvalue =  Integer.parseInt(value+"");
-            } 
-            else if( datatype == "boolean") {
-                String v = value.toString().toLowerCase().trim();
-                if(v == "1" || v == "true") {
-                    booleanvalue = true;
-                } 
-                else {
-                    booleanvalue = false;
-                }
-            } 
-            else if(datatype.startsWith("string")) {
-                stringvalue = (String)value;
-            }
-        }
-    }
-    
-    public def toMap() {
-        def m = [:];
-        m.objid = objid;
-        m.name = name;
-        m.category = category;
-        m.sortorder = sortorder;
-        m.caption = caption;
-        m.datatype = datatype;
-        if( datatype == "string" ) {
-            m.value = stringvalue;
-        }
-        else if( datatype == "integer" ) {
-            m.value = intvalue;
-        }
-        else if( datatype == "decimal" ) {
-            m.value = decimalvalue;
-        }
-        else if( datatype == "boolean" ) {
-            m.value = booleanvalue;
-        }
-        return m;
-    }
+public class VariableInfo {
+	
+	String objid;
+	String name;
+	String state;
+	String description;
+	String caption;
+	def arrayvalues;
+	String category;
+	int sortorder;
+
+	double decimalvalue;
+	int intvalue;
+	boolean booleanvalue;
+	String stringvalue;
+	Date datevalue;
+	String datatype;
+
+	
+
+	//just add so that it will match database. if 1=yes 0=no
+	int system;
+
+	public String getExcludeFields(){
+		return "";
+	};
+
+	public int hashCode() {
+		return name.hashCode();
+	}
+
+	public boolean equals( def o ) {
+		return (hashCode() == o.hashCode());
+	}
+
+	/********************************************
+	* This is from the fact to map data
+	********************************************/
+	public def toMap() {
+		def m = [:];
+		m.datatype = datatype;
+		m.caption = caption;
+		m.category = category;
+		m.name = name;
+		m.value = null;
+		if(m.datatype == 'decimal') m.value  = decimalvalue;
+		else if(m.datatype=="integer") m.value = intvalue;
+		else if(m.datatype=="boolean") m.value = booleanvalue;
+		else if(m.datatype == "date" ) m.value = datevalue;
+		else m.value = stringvalue;
+		m.arrayvalues = arrayvalues;
+		m.sortorder = sortorder;
+		return m;
+	}
+
+	public void copy( def o ) {
+		println "fields to unmatch ->" + 	"class|metaClass"+excludeFields;
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass"+excludeFields)) {
+				//add only if there is a setter
+				if( k.setter && o.containsKey(k.name)) {
+					this[(k.name)] = o.get( k.name );	
+				}
+			}
+		}
+	}
 
 }
-
-

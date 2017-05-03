@@ -1,0 +1,57 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+class MarketRentalBillingReportService {
+	
+	@Service("MarketBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("market_account")
+	def acctEm;
+	
+	/***************************************************************************************************************
+	* compress items into format:  year, month, (fromday, today), rate, extrate, surcharge, interest, linetotal
+	****************************************************************************************************************/
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'market_account_billing' }")
+	public void getData( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		result.status = 0;
+
+		def acctid = p.parameters.acctid;
+		def acct = acctEm.find([objid: acctid]).first();
+		def pp = [acctid: acctid ];
+		if( p.parameters.billdate ) {
+			pp.payoption = [todate: p.parameters.billdate ];
+		}
+
+		def m = billingSvc.getBilling( pp );
+
+		acct.items = m.billitems.sort{ it.sortorder };
+		acct.grandtotal = acct.items.sum{ it.linetotal };
+		acct.billdate = dateSvc.getServerDate();
+		
+		/*
+		acct.fromdate = billing.fromdate;
+		acct.todate = billing.todate;
+		acct.totalrate = billing.totalrate;
+		acct.totalextrate = billing.totalextrate;
+		acct.totalamount = billing.totalamount;
+		acct.totalsurcharge = billing.totalsurcharge;
+		acct.totalinterest = billing.totalinterest;
+		acct.grandtotal = billing.grandtotal;
+		*/
+		acct.hasitems = (acct.items) ? true : false;
+
+		result.data = acct;
+	}
+
+
+}

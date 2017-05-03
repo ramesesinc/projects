@@ -1,0 +1,12 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_requirement">
+		<field name="objid" primary="true" />
+
+		<field name="reqtype" required="true" />
+		<field name="title" required="true" />
+		<field name="completed" required="true" />
+		<field name="dtcompleted"  type="date"/>
+		<field name="verifiedby_objid" />
+		<field name="verifiedby_name" />
+	</element>
+</schema>

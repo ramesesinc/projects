@@ -1,0 +1,10 @@
+<workunit schemaName="vehicle_variable">
+    <invokers>
+        <invoker type="vehicle_variable:create" caption="Vehicle Variable" action="create" target="popup" role="MASTER"/>
+        <invoker type="vehicle_variable:open" caption="Vehicle Variable" action="open" target="popup" role="MASTER"/>
+    </invokers>
+    <code class="com.rameses.enterprise.models.VariableInfoModel" />
+    <pages>
+        <page template="com.rameses.enterprise.views.VariableInfoPage"/>
+    </pages>
+</workunit>

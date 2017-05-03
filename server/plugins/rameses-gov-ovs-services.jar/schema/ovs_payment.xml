@@ -1,5 +1,5 @@
-<schema adapter="violation">
-	<element name="ovs_payment" tablename="payment">
+<schema adapter="ovs">
+	<element name="ovs_payment" tablename="ovs_payment">
 		<field name="objid" primary="true" prefix="OVSPMT"/>
 		<field name="reftype" required="true"/>
 		<field name="refid" required="true"/>

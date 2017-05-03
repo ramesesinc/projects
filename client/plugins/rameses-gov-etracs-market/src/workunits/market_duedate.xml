@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_duedate">
+    <invokers>
+        <invoker type="market_duedate:create" caption="Market Due Date" action="create"  />
+        <invoker type="market_duedate:open" caption="Market Due Date" action="open"  />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketDueDatePage" />
+    </pages>    
+</workunit>

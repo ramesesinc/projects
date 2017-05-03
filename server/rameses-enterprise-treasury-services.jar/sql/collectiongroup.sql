@@ -8,11 +8,14 @@ from (
 	select objid as collectiongroupid 
 	from collectiongroup 
 	where org_objid like $P{orgid} 
+		and name like $P{searchtext}  
 	union 
 	select cgi.collectiongroupid 
 	from itemaccount ia 
 		inner join collectiongroup_revenueitem cgi on ia.objid=cgi.revenueitemid 
+		inner join collectiongroup cg on cgi.collectiongroupid=cg.objid 
 	where ia.fund_objid like $P{fundid} 
+		and cg.name like $P{searchtext} 
 )xx1, collectiongroup cg 
 where cg.objid=xx1.collectiongroupid 
 order by cg.name 

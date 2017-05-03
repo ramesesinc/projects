@@ -8,12 +8,10 @@ class CashReceiptBlockingInterceptor{
 
 	@Before(pattern="CashReceiptService.post", eval="#{args[0].payer?.objid!=null && !args[0].collectiontype?.handler?.toLowerCase().matches('ovs|rpt')}", index=-10)
 	public void checkBeforePayment(def evt) {
-
 		def pid = evt.args[0].payer.objid;
-		vte.debug = true;
 		def m = vte.select('xcount:{COUNT(*)}').find( ["parent.violator.objid": pid] ).where("amount-amtpaid>0").groupBy("parent.violator.objid").first();
 
 		if ( m && m.xcount > 0 ) 
-			throw new Exception("Please pay first pending violations");
+			throw new Exception("This payer has pending ordinance violations. Please settle it first");
 	}
 }

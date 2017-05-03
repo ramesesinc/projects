@@ -88,6 +88,7 @@ from (
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join cashreceiptpayment_noncash pc on cr.objid = pc.receiptid 
 where xx.voided=0 
+order by pc.bank, pc.refdate, pc.amount  
 
 
 [getNonCashPayments]

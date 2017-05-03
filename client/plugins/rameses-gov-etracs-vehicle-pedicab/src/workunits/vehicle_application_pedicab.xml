@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
+        schemaName="vehicle_application_pedicab" 
+        vehicletype="pedicab">
+    <invokers>
+        <invoker type="vehicle_application_pedicab:open" caption="Vehicle Application" action="open" />
+        <invoker type="global:barcode:51010" caption="Vehicle Application" 
+            action="openBarcode" 
+            target="window" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationPage" />
+    </pages>
+</workunit>

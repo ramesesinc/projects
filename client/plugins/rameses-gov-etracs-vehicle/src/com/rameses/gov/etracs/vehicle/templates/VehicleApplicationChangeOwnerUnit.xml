@@ -1,5 +1,5 @@
 <workunit>
-    <code class="com.rameses.gov.etracs.vehicle.models.ChangeApplicationForm" />
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationEntryForm" />
     <pageflow>
         <start>
             <transition to="search" action="setUp"/>
@@ -26,9 +26,7 @@
     </pageflow>
     <pages>
         <page name="search" template="com.rameses.gov.etracs.vehicle.views.AskVehicleFranchiseNoPage" />
-        <page name="initial" template="com.rameses.gov.etracs.vehicle.views.ChangeOwnerUnitPage" />
         <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.ApplicationAssessmentPage" />
-        <page name="confirm" template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />
         <page name="success" template="com.rameses.gov.etracs.vehicle.views.ApplicationSuccessPage" />
     </pages>
 </workunit>

@@ -1,0 +1,10 @@
+<workunit extends="wtemplates/SimpleReportController.xml" >
+    <invokers>
+       <invoker type="policeclearance_mayor:print" index="50" action="printReport"/>    
+       <invoker type="policeclearance_mayor:open" index="50" action="openReport" target="window"/>         
+       <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" /> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.police.models.MayorClearancePrintModel"/>
+    
+</workunit>    

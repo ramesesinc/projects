@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplicationChangeOwnerUnit.xml" 
+         vehicletype="pedicab" 
+          apptype="CHANGE_OWNER_UNIT" 
+         title="Pedicab Change Owner/Unit">
+    <invokers>
+        <invoker folderid="/home/vehicle/pedicab" caption="Change Owner Unit" action="start" index="114" 
+                 role="INFO" />
+    </invokers>
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationEntryPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.vehicle.pedicab.views.PedicabApplicationPage" />
+    </pages>
+</workunit>

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="userinfo:general:formActions" caption="Reset Password" target="popup" resizable="false"/>
+        <invoker type="user:resetpassword" caption="Reset Password" target="popup" resizable="false"/>
     </invokers>
    
     <code>

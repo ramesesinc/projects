@@ -80,7 +80,8 @@ class StatementOfReceiptsController extends com.rameses.etracs.shared.AsyncRepor
             TOTALTARGET: data.totaltarget, 
             TOTALEXCESS: data.totalexcess, 
             TOTALPERCENTAGE: data.totalpercentage,
-            TOTALPERCENTAGEVALUE: data.totalpercentagevalue 
+            TOTALPERCENTAGEVALUE: data.totalpercentagevalue, 
+            HIDEINCOMETARGET: (entity.opthideincometarget==true) 
         ] 
     }
 

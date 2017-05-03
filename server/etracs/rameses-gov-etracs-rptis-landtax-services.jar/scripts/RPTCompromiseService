@@ -309,14 +309,8 @@ class RPTCompromiseService {
 		def ledgeritem = em.findLedgerItem(compromise)
 		if (ledgeritem){
 			ledgeritem.basicpaid = partialleditems.basicpaid.sum()
-			ledgeritem.basicintpaid = partialleditems.basicintpaid.sum()
-			ledgeritem.basicdisctaken = 0.0
 			ledgeritem.basicidlepaid = partialleditems.basicidlepaid.sum()
-			ledgeritem.basicidledisctaken = 0.0
-			ledgeritem.basicidleintpaid = partialleditems.basicidleintpaid.sum()
 			ledgeritem.sefpaid = partialleditems.sefpaid.sum()
-			ledgeritem.sefintpaid = partialleditems.sefintpaid.sum()
-			ledgeritem.sefdisctaken = 0.0
 			ledgeritem.firecodepaid = partialleditems.firecodepaid.sum()
 			ledgeritem.fullypaid = 0
 			ledgerEm.update(ledgeritem, 'ledgeritem')

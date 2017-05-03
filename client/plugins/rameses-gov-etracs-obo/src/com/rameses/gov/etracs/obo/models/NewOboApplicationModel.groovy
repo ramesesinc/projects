@@ -12,9 +12,20 @@ import com.rameses.enterprise.models.*;
 
 class NewOboApplicationModel extends CrudPageFlowModel {
     
-    
     def ruleExecutor;
     def appTypes = LOV.OBO_APP_TYPE;
+    
+    void afterCreate() {
+        entity.apptype = 'NEW';
+    }
+    
+    public def getLookupRpu() {
+        def h = { o->
+            entity.rptinfo = o;
+            binding.refresh("entity.rptinfo.*");
+        }
+        return Inv.lookupOpener("faas:lookup", [onselect: h, rputype: 'land']);
+    }
     
     /*
     void save() {

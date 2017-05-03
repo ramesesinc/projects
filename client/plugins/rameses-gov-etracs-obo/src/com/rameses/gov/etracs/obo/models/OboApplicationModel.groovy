@@ -12,8 +12,6 @@ import com.rameses.enterprise.models.*;
 
 class OboApplicationModel extends WorkflowTaskModel {
     
-    def vehicletype;
-    def vehicleTypeHandler;
     def ruleExecutor;
     
     InvokerFilter sectionFilter = { inv->
@@ -21,15 +19,6 @@ class OboApplicationModel extends WorkflowTaskModel {
         if( !entity.permits ) return false;
         return entity.permits.find{ it.type.equalsIgnoreCase(inv.properties.section) }!=null;
     } as InvokerFilter;
-    
-    public def open() {
-        def retval = super.open();
-        //vehicletype = workunit.info.workunit_properties.vehicletype;
-        //vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]); 
-        //ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
-        return retval;
-    }
-    
     
     String getFormName() {
         return getSchemaName() + ":form";

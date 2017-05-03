@@ -2,15 +2,20 @@ import com.rameses.annotations.*;
 
 class OboApplicationInterceptor { 
 
-	@Service("WorkflowTaskService")
-	def wfSvc;
-
 	@Service("DateService")
 	def dateSvc;
 
 	@Service("SequenceService")
 	def seqSvc;
 
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@DataContext("obo_application")
+	def appEm;
+
+	@DataContext("faas")
+	def faasEm;
 
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'obo_application' }") 
@@ -23,10 +28,29 @@ class OboApplicationInterceptor {
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'obo_application' }") 
 	public void afterCreateStartWorkflow( def evt ) {
 		def o = evt.args[0];
-		o.processname = 'obo_application'; 
-		o.refid = o.objid;
-		wfSvc.start(o);
+		def p = [:];
+		p.processname = 'obo_application'; 
+		p.refid = o.objid;
+		p.startdate = dateSvc.serverDate;
+		taskSvc.start(p);		
 	} 
+
+	@After(pattern="WorkflowTaskService.(start|signal)", 
+	  eval="#{ args[0].processname=='obo_application' }", index=100)
+	public void afterWorkflowStartAndSignal( def evt ) {
+		def p = evt.args[0];
+		def task = evt.result;
+		appEm.find([objid: p.refid]).update([taskid: task.taskid]);
+	}
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname=='obo_application' }")
+	public void afterRead( def evt ) {
+		def entity = evt.result; 
+		if(faasEm!=null && entity.rptinfo?.objid!=null) {
+			faasEm.debug = true;
+			entity.rptinfo = faasEm.select("objid,fullpin,tdno").find([objid: entity.rptinfo.objid]).first();
+		}
+	}
 
 
 } 

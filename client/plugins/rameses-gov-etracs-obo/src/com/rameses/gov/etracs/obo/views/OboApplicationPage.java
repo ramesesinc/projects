@@ -32,6 +32,22 @@ public class OboApplicationPage extends javax.swing.JPanel {
 
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel1 = new javax.swing.JPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        lOVList1 = new com.rameses.enterprise.components.LOVList();
+        orgTypeList1 = new com.rameses.entity.components.OrgTypeList();
+        entityLookup1 = new com.rameses.entity.components.EntityLookup();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        localAddress1 = new com.rameses.etracs.components.LocalAddress();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jPanel2 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
@@ -42,15 +58,118 @@ public class OboApplicationPage extends javax.swing.JPanel {
 
         jPanel1.setName("sections"); // NOI18N
 
+        xFormPanel1.setCaptionWidth(120);
+
+        lOVList1.setCaption("Work Type");
+        lOVList1.setListName("OBO_BUILDING_WORK_TYPE");
+        lOVList1.setName("entity.worktype"); // NOI18N
+        lOVList1.setPreferredSize(new java.awt.Dimension(0, 22));
+        lOVList1.setRequired(true);
+        xFormPanel1.add(lOVList1);
+
+        orgTypeList1.setCaption("Ownership Type");
+        orgTypeList1.setName("entity.orgtype"); // NOI18N
+        orgTypeList1.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(orgTypeList1);
+
+        entityLookup1.setCaption("Owner");
+        entityLookup1.setName("entity.owner"); // NOI18N
+        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 21));
+        xFormPanel1.add(entityLookup1);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
+
+        xTextArea1.setCaption("Project Description");
+        xTextArea1.setName("entity.description"); // NOI18N
+        jScrollPane1.setViewportView(xTextArea1);
+
+        xFormPanel1.add(jScrollPane1);
+
+        xLookupField2.setCaption("Building Use");
+        xLookupField2.setExpression("#{entity.buildingkind.name}");
+        xLookupField2.setHandler("obo_building_kind:lookup");
+        xLookupField2.setName("entity.buildingkind"); // NOI18N
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField2.setRequired(true);
+        xFormPanel1.add(xLookupField2);
+
+        xLabel2.setCaption("Bldg Use Type");
+        xLabel2.setDepends(new String[] {"entity.buildingkind"});
+        xLabel2.setExpression("#{entity.buildingkind.use.objid}");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel1.add(xLabel2);
+
+        xDecimalField1.setCaption("Project Cost");
+        xDecimalField1.setName("entity.projectcost"); // NOI18N
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel1.add(xDecimalField1);
+
+        localAddress1.setName("entity.location"); // NOI18N
+
+        xFormPanel2.setCaption("");
+        xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 100));
+
+        xLookupField1.setCaption("TCT / OCT");
+        xLookupField1.setExpression("#{entity.rptinfo.tdno}");
+        xLookupField1.setHandler("lookupRpu");
+        xLookupField1.setName("entity.rptinfo"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLookupField1);
+
+        xLabel1.setCaption("PIN");
+        xLabel1.setExpression("#{entity.rptinfo.fullpin}");
+        xLabel1.setName("entity.rptinfo.text"); // NOI18N
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel1);
+
+        xLabel3.setCaption("Class");
+        xLabel3.setExpression("#{entity.rptinfo.classname}");
+        xLabel3.setName("entity.rptinfo.text"); // NOI18N
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel3);
+
+        xLabel5.setCaption("RPU Name");
+        xLabel5.setExpression("#{entity.rptinfo.name}");
+        xLabel5.setName("entity.rptinfo.text"); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel5);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setName("entity.lotowned"); // NOI18N
+        xCheckBox1.setText("Lot Owned");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 567, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(localAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 336, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(localAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -102,7 +221,7 @@ public class OboApplicationPage extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addContainerGap(477, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,7 +230,7 @@ public class OboApplicationPage extends javax.swing.JPanel {
                 .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("Auxiliary Permits", jPanel2);
@@ -120,11 +239,11 @@ public class OboApplicationPage extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 567, Short.MAX_VALUE)
+            .addGap(0, 877, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 336, Short.MAX_VALUE)
+            .addGap(0, 447, Short.MAX_VALUE)
         );
 
         xTabbedPane1.addTab("Assessment", jPanel3);
@@ -135,23 +254,39 @@ public class OboApplicationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.enterprise.components.LOVList lOVList1;
+    private com.rameses.etracs.components.LocalAddress localAddress1;
+    private com.rameses.entity.components.OrgTypeList orgTypeList1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
 }

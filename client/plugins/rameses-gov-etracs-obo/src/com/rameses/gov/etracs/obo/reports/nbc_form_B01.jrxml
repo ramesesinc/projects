@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="nbc_form_no_B-01"
+		 name="nbc_form_B01"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -23,6 +23,8 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
+
+	<field name="appno" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -62,7 +64,7 @@
 				</rectangle>
 				<rectangle>
 					<reportElement
-						x="1"
+						x="0"
 						y="584"
 						width="572"
 						height="95"
@@ -71,7 +73,7 @@
 				</rectangle>
 				<rectangle>
 					<reportElement
-						x="1"
+						x="0"
 						y="476"
 						width="572"
 						height="93"
@@ -2814,6 +2816,19 @@ the following:]]></text>
 					<pen lineWidth="0.5"/>
 </graphicElement>
 				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="106"
+						y="81"
+						width="100"
+						height="20"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{appno}]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>

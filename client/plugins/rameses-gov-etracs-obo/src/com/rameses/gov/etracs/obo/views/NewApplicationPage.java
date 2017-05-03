@@ -31,6 +31,7 @@ public class NewApplicationPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        lOVList1 = new com.rameses.enterprise.components.LOVList();
         orgTypeList1 = new com.rameses.entity.components.OrgTypeList();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -38,12 +39,26 @@ public class NewApplicationPage extends javax.swing.JPanel {
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        localAddress1 = new com.rameses.etracs.components.LocalAddress();
+        jPanel1 = new javax.swing.JPanel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xPanel3 = new com.rameses.rcp.control.XPanel();
 
         xFormPanel1.setCaptionWidth(120);
+
+        lOVList1.setCaption("Work Type");
+        lOVList1.setListName("OBO_BUILDING_WORK_TYPE");
+        lOVList1.setName("entity.worktype"); // NOI18N
+        lOVList1.setPreferredSize(new java.awt.Dimension(0, 22));
+        lOVList1.setRequired(true);
+        xFormPanel1.add(lOVList1);
 
         orgTypeList1.setCaption("Ownership Type");
         orgTypeList1.setName("entity.orgtype"); // NOI18N
@@ -64,43 +79,107 @@ public class NewApplicationPage extends javax.swing.JPanel {
         xFormPanel1.add(jScrollPane1);
 
         xLookupField2.setCaption("Building Use");
-        xLookupField2.setExpression("#{entity.buildinguse.name}");
+        xLookupField2.setExpression("#{entity.buildingkind.name}");
         xLookupField2.setHandler("obo_building_kind:lookup");
-        xLookupField2.setName("entity.buildinguse"); // NOI18N
+        xLookupField2.setName("entity.buildingkind"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
 
         xLabel2.setCaption("Bldg Use Type");
-        xLabel2.setDepends(new String[] {"entity.buildinguse"});
-        xLabel2.setExpression("#{entity.buildinguse.use.objid}");
+        xLabel2.setDepends(new String[] {"entity.buildingkind"});
+        xLabel2.setExpression("#{entity.buildingkind.use.objid}");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel1.add(xLabel2);
 
         xDecimalField1.setCaption("Project Cost");
         xDecimalField1.setName("entity.projectcost"); // NOI18N
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xDecimalField1);
+
+        localAddress1.setName("entity.location"); // NOI18N
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         xCheckBox1.setCaption("");
         xCheckBox1.setName("entity.lotowned"); // NOI18N
         xCheckBox1.setText("Lot Owned");
+        jPanel1.add(xCheckBox1, java.awt.BorderLayout.NORTH);
+
+        xPanel1.setLayout(new java.awt.CardLayout());
+
+        xPanel2.setDepends(new String[] {"entity.lotowned"});
+        xPanel2.setVisibleWhen("#{entity.lotowned == true }");
 
         xFormPanel2.setCaption("");
-        xFormPanel2.setDepends(new String[] {"entity.lotowned"});
         xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 100));
-        xFormPanel2.setVisibleWhen("#{entity.lotowned == true}");
 
         xLookupField1.setCaption("TCT / OCT");
-        xLookupField1.setExpression("#{entity.rptinfo.tctno}");
+        xLookupField1.setExpression("#{entity.rptinfo.tdno}");
+        xLookupField1.setHandler("lookupRpu");
         xLookupField1.setName("entity.rptinfo"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLookupField1);
 
-        xLabel1.setCaption("Description");
-        xLabel1.setExpression("#{entity.rptinfo.text}");
+        xLabel1.setCaption("PIN");
+        xLabel1.setExpression("#{entity.rptinfo.fullpin}");
         xLabel1.setName("entity.rptinfo.text"); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel2.add(xLabel1);
+
+        xLabel3.setCaption("Class");
+        xLabel3.setExpression("#{entity.rptinfo.classname}");
+        xLabel3.setName("entity.rptinfo.text"); // NOI18N
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel3);
+
+        xLabel5.setCaption("RPU Name");
+        xLabel5.setExpression("#{entity.rptinfo.name}");
+        xLabel5.setName("entity.rptinfo.text"); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel5);
+
+        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
+        xPanel2.setLayout(xPanel2Layout);
+        xPanel2Layout.setHorizontalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 280, Short.MAX_VALUE)
+            .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(xPanel2Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        xPanel2Layout.setVerticalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 163, Short.MAX_VALUE)
+            .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(xPanel2Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        xPanel1.add(xPanel2, "card3");
+
+        xPanel3.setDepends(new String[] {"entity.lotowned"});
+        xPanel3.setVisibleWhen("#{entity.lotowned != true }");
+
+        javax.swing.GroupLayout xPanel3Layout = new javax.swing.GroupLayout(xPanel3);
+        xPanel3.setLayout(xPanel3Layout);
+        xPanel3Layout.setHorizontalGroup(
+            xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 280, Short.MAX_VALUE)
+        );
+        xPanel3Layout.setVerticalGroup(
+            xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 163, Short.MAX_VALUE)
+        );
+
+        xPanel1.add(xPanel3, "card4");
+
+        jPanel1.add(xPanel1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -108,29 +187,32 @@ public class NewApplicationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                    .addComponent(localAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(60, 60, 60)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(154, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(124, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(localAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.entity.components.EntityLookup entityLookup1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.enterprise.components.LOVList lOVList1;
+    private com.rameses.etracs.components.LocalAddress localAddress1;
     private com.rameses.entity.components.OrgTypeList orgTypeList1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
@@ -138,8 +220,13 @@ public class NewApplicationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XPanel xPanel1;
+    private com.rameses.rcp.control.XPanel xPanel2;
+    private com.rameses.rcp.control.XPanel xPanel3;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
 }

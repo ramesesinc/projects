@@ -3,24 +3,45 @@
 		<field name="objid" primary="true" prefix="OBOAPP"/>
 		<field name="appno" caption="App No"/>
 		<field name="appdate" caption="App Date"/>
-
+		<field name="apptype" caption="App Type" required="true"/>
+		<field name="worktype" caption="Work Type" required="true"/>
+		<field name="worktypedetail" caption="Work Detail"/>
 
 		<field name="dtcreated" caption="Date Created" type="timestamp"/>
 		<field name="createdby_name" caption="Created By"/>
 		<field name="createdby_objid" visible="hidden" />
 
-
-		<field name="apptype" caption="App Type"/>
-		<field name="dtfiled" caption="Date Filed"/>
-		<field name="filedby_name" caption="Filed By"/>
 		<field name="owner_name" caption="Owner Name"/>
 		<field name="owner_objid" visible="false"/>
 		<field name="owner_address_text" caption="Owner Address"/>
 		<field name="owner_address_objid" visible="false"/>
 		<field name="description" caption="Description"/>
-		<field name="usetype_objid" caption="Use Type"/>
-		<field name="barangay_name" caption="Barangay"/>
-		<field name="estimatedcost" caption="Est. Cost"/>
+
+		<field name="location_unitno" />
+		<field name="location_bldgno" />
+		<field name="location_bldgname" />
+		<field name="location_street" />
+		<field name="location_subdivision" />
+		<field name="location_barangay_objid" required="true"/>
+		<field name="location_barangay_name"  required="true"/>
+
+		<field name="lotowned" />
+
+		<complex name="task" ref="obo_application_task" jointype="many-to-one" 
+				includefields=".*" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>
+
+		<field name="rptinfo_tdno" />
+		<field name="rptinfo_objid" />
+
+		<complex name="buildingkind" ref="obo_building_kind" jointype="many-to-one" 
+			includefields="name,use.*">
+			<key field="bldgkindid" target="objid"/>	
+		</complex>	
+
+		<field name="projectcost" caption="Project Cost" type="decimal"/>
+		<field name="estimatedcost" caption="Est. Cost"  type="decimal"/>
 
 		<complex name="permits" ref="obo_auxiliary_permit" jointype="one-to-many" required="false">
 			<key field="objid" target="appid"/>	

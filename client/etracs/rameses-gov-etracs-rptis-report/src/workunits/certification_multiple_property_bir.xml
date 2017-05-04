@@ -3,7 +3,7 @@
     <invokers>
         <invoker folderid="/explorer/txn/rpt/cert/bir" 
             action="init" 
-            caption="Multiple Property" 
+            caption="Real Property Holdings" 
             opener="multiplebir" index="2" 
             role="CERTIFICATION_ISSUER,RECORD" 
             permission="certification.multipleproperty"/>

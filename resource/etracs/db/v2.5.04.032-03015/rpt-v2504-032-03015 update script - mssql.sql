@@ -63,3 +63,6 @@ go
 
 drop table rptledgeritem_qtrly_partial
 go 
+
+create index ix_dtapproved on faas(dtapproved)
+go 

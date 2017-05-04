@@ -51,3 +51,7 @@ alter table rptledgeritem_qtrly
 
 drop table rptledgeritem_qtrly_partial;
 
+
+create index ix_dtapproved on faas(dtapproved);
+
+	

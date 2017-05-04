@@ -38,31 +38,9 @@ class RPTReportRPAService
     @Async
 	@ProxyMethod
 	public Map generateReportOnRPA( params ) {
-		params.lguid = params.lgu?.objid 
-		def title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
-		if ('period'.equalsIgnoreCase(params.reporttype.type)){
-			util.buildReportTitlePeriod(title, params)
-			util.buildEndingPeriodFilter(params)
-		}
-		else {
-			params.filter = ' f.dtapproved <= $P{asofdate} '
-			params.title = title 
-			params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.parse('yyyy-MM-dd', params.asofdate))
-		}
+		buildFilter(params)
 
-		if (params.barangay){
-			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
-			params.barangayid = params.barangay.objid 
-		}
-
-		if (params.classification){
-			params.filter += ' AND r.classification_objid = $P{classid} '
-			params.classid = params.classification.objid 
-		}
-
-		params.lguid = params.lgu?.objid 
-
-		def taxables = em.getReportOnRPATaxable(params).each{ 
+		def taxables = em.getTaxables(params).each{ 
 			it.rpucount = util.toInteger2( it.rpucount, 0)
 			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
 			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
@@ -90,7 +68,7 @@ class RPTReportRPAService
 			}
 		}
 		
-		def exempts  = em.getReportOnRPAExempt(params).each{ 
+		def exempts  = em.getExempts(params).each{ 
 			it.rpucount = util.toInteger2( it.rpucount, 0)
 			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
 			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
@@ -126,6 +104,32 @@ class RPTReportRPAService
 		]
 	}
 
+	void buildFilter(params){
+		params.filter = ''
+		params.title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
+
+		if ('period'.equalsIgnoreCase(params.reporttype.type)){
+			util.buildReportTitlePeriod(params.title, params)
+			util.buildStartEndDateFilter(params)
+		}
+		else {
+			params.enddate = params.asofdate
+			params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.parse('yyyy-MM-dd', params.asofdate))
+		}
+
+		if (params.barangay){
+			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
+			params.barangayid = params.barangay.objid 
+		}
+
+		if (params.classification){
+			params.filter += ' AND r.classification_objid = $P{classid} '
+			params.classid = params.classification.objid 
+		}
+
+		params.lguid = params.lgu?.objid 
+	}
+
 
     @ProxyMethod
     public def getClassifications(){
@@ -141,4 +145,6 @@ class RPTReportRPAService
     public def getBarangays(params){
     	return lguSvc.lookupBarangaysByRootId(params.lguid)	
     }
+
+
 }

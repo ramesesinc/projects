@@ -1,20 +1,20 @@
-package com.rameses.gov.etracs.rptis.report.model;
+package com.rameses.gov.etracs.rptis.report.models;
 
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*;
 
-public class UnrestrictedPropertyModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+public class RestrictedPropertyModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
 {
     @Service('RPTReportRestrictedPropertyService') 
     def svc 
     
-    String title = 'List of Unrestricted Properties'
-    String reportName = 'com/rameses/gov/etracs/rptis/report/unrestricted_properties.jasper';
+    String title = 'List of Restricted Properties'
+    String reportName = 'com/rameses/gov/etracs/rptis/report/restricted_properties.jasper';
     
     void buildReportData(entity, asyncHandler){
-        svc.getUnrestrictedProperties(entity, asyncHandler)
+        svc.getRestrictedProperties(entity, asyncHandler)
     }
     
     Map getParameters(){

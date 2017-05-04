@@ -53,7 +53,7 @@ SELECT
 	r.rputype 
 FROM faas f
 	inner join rpu rr on f.rpuid = rr.objid 
-	inner join propertyclassification dpc on r.classification_objid = dpc.objid 
+	inner join propertyclassification dpc on rr.classification_objid = dpc.objid 
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	LEFT JOIN landassesslevel lal ON r.actualuse_objid = lal.objid 

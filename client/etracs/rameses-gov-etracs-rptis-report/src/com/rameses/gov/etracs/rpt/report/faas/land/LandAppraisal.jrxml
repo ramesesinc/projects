@@ -38,7 +38,7 @@
 	<field name="taxable" class="java.lang.Boolean"/>
 
 	<variable name="TOTALBASEMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{basemarketvalue}]]></variableExpression>
+		<variableExpression><![CDATA[$F{taxable} ? $F{basemarketvalue} : 0.0]]></variableExpression>
 	</variable>
 	<variable name="SUM_area_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{area}]]></variableExpression>

@@ -34,7 +34,7 @@
 	<field name="taxable" class="java.lang.Boolean"/>
 
 	<variable name="TOTALBASEMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{marketvalue}]]></variableExpression>
+		<variableExpression><![CDATA[$F{taxable} ? $F{marketvalue} : 0.0]]></variableExpression>
 	</variable>
 	<variable name="TOTALASSESSEDVALUE" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{assessedvalue}]]></variableExpression>
@@ -144,7 +144,7 @@
 						width="138"
 						height="14"
 						key="textField">
-							<printWhenExpression><![CDATA[ $F{taxable} == true || $F{taxable} == 1]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{taxable} == true || $F{taxable} == 1]]></printWhenExpression>
 						</reportElement>
 					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
@@ -218,7 +218,7 @@
 						width="138"
 						height="14"
 						key="textField-1">
-							<printWhenExpression><![CDATA[ $F{taxable} == false || $F{taxable} == 0]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{taxable} == false || $F{taxable} == 0]]></printWhenExpression>
 						</reportElement>
 					<box rightPadding="2">					<pen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>
 					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#009900"/>

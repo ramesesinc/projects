@@ -88,14 +88,17 @@ public class LandAssessmentRuleService
 		}
 
 		if (rpu.landdetails){
-			rpu.totallandbmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}.basemarketvalue.sum()
-			rpu.totallandmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}.marketvalue.sum()
+			rpu.totallandbmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}?.basemarketvalue.sum()
+			if (rpu.totallandbmv == null) rpu.totallandbmv = 0.0 
+			rpu.totallandmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}?.marketvalue.sum()
+			if (rpu.totallandmv == null)  rpu.totallandmv = 0.0
 			rpu.totalareaha = numSvc.roundA(rpu.landdetails.areaha.sum(), 6)
 			rpu.totalareasqm = numSvc.round(rpu.landdetails.areasqm.sum())
 		}
 		rpu.totalbmv = rpu.totallandbmv + rpu.totalplanttreebmv
 
-		rpu.totalmv = rpu.assessments.findAll{util.isTrue(it.taxable)}.marketvalue.sum()
+		rpu.totalmv = rpu.assessments.findAll{util.isTrue(it.taxable)}?.marketvalue.sum()
+		if (rpu.totalmv == null) rpu.totalbmv = 0.0
 		if (rpu.totalmv == null) rpu.totalmv = 0.0 
 
 		if (rpu.totalav == 0) {

@@ -11,7 +11,7 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationForm extends WorkflowTaskModel {
     
-    def vehicletype;
+    boolean viewReportAllowed = false; 
     
     String getFormName() {
         return getSchemaName() + ":form";
@@ -61,6 +61,15 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
         Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
  
-    
-    
+    def printPermit() { 
+        String vehicletype = getSchemaName().toString();
+        int idx = vehicletype.lastIndexOf('_'); 
+        if ( idx > 0 ) { 
+            vehicletype = vehicletype.substring(idx+1);
+        }
+        
+        def opener = Inv.lookupOpener('vehicle_application_permit:print', [vehicletype: vehicletype, entity: entity]);
+        opener.target = 'self'; 
+        return opener;
+    }
 }

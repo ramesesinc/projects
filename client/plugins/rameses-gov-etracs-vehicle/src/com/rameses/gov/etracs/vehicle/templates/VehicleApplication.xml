@@ -5,13 +5,10 @@
         
         <invoker type="formActions" caption="View Tracking No" action="viewTrackingno" />  
         
-        <invoker type="formActions" caption="Issue Permit" target="self" action="createPermit"
-                 visibleWhen="#{entity.state =='ISSUANCE' &amp;&amp; entity.permit?.objid==null &amp;&amp; canIssuePermit==true}"/>
-                 
-        <invoker type="formActions" caption="Print Permit" target="self" action="openPermit"
-                 visibleWhen="#{ entity.permit?.objid != null }"/>        
-                 
-    </invokers>    
+        <invoker type="formActions" caption="Print Permit" target="self" action="printPermit"
+                 visibleWhen="#{ entity.permit?.objid != null }"
+                 role="LICENSING" />  
+    </invokers> 
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationForm"/>
     <pages>
         <page template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />

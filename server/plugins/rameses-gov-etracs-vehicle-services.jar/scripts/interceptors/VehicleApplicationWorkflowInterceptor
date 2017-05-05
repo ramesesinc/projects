@@ -41,7 +41,11 @@ class VehicleApplicationWorkflowInterceptor {
 	public void afterWorkflowStartAndSignal( def evt ) {
 		def p = evt.args[0];
 		def task = evt.result;
-		appEm.find([objid: p.refid]).update([taskid: task.taskid]);
+		if ( task.state != 'end') {
+			appEm.find([objid: p.refid]).update([taskid: task.taskid]);
+		} else {
+			appEm.find([objid: p.refid]).update([taskid: null]);
+		}
 	}
 
 	@After(pattern="WorkflowTaskService.start", 

@@ -62,7 +62,7 @@ create index ix_receiptno on faas_restriction(receipt_receiptno);
 create index ix_txndate on faas_restriction(txndate);
 create index ix_restrictiontype_objid on faas_restriction(restrictiontype_objid);
 
-insert into faas_restriction(
+replace into faas_restriction(
   objid,
   parent_objid,
   ledger_objid,
@@ -97,7 +97,7 @@ from faas f
 
 
 
-insert into faas_restriction(
+replace into faas_restriction(
   objid,
   parent_objid,
   ledger_objid,

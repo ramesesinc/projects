@@ -40,51 +40,21 @@ class RPTReportRPAService
 	public Map generateReportOnRPA( params ) {
 		buildFilter(params)
 
-		def taxables = em.getTaxables(params).each{ 
-			it.rpucount = util.toInteger2( it.rpucount, 0)
-			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
-			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+		def taxableclasses = []
+		def exemptclasses = []
+
+		if (params.reporttype.type == 'standard'){
+			taxableclasses = buildTaxableClasses(em.getTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getExempts(params), params)	
 		}
-		
-		int lineno = 1
-		int charindex = 'a' 
-		def taxableclasses = getClassifications()
-		def firstspecial = taxableclasses.find{ it.special == 1 }
-		taxableclasses.add( taxableclasses.indexOf( firstspecial), [objid:'SPECIAL', name:'SPECIAL', special:0] )
-		
-		taxableclasses.each{ item ->
-			def taxable = taxables.find{ it.classid == item.objid }
-			if( taxable ) {
-				item.putAll( taxable )
-			}
-			item.taxability = 'TAXABLE' 
-			if( item.special == 0 ) {
-				item.classname = lineno + '. ' + item.name 
-				lineno += 1
-			}
-			else {
-				item.classname = '   ' + ((char)charindex) + '. ' + item.name 
-				charindex += 1;
-			}
+		else if (params.reporttype.type == 'lift'){
+			taxableclasses = buildTaxableClasses(em.getLintTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getLintExempts(params), params)	
 		}
-		
-		def exempts  = em.getExempts(params).each{ 
-			it.rpucount = util.toInteger2( it.rpucount, 0)
-			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
-			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+		else{
+			throw new Exception('Report Type ' + params.reporttype.caption + ' is not supported.')
 		}
-		
-		lineno = 1 
-		def exemptclasses  = getExemptionTypes();
-		exemptclasses.each { item -> 
-			def exempt = exempts.find{ it.classid == item.objid }
-			if( exempt ) {
-				item.putAll( exempt )
-			}
-			item.classname = lineno + '. ' + item.name 
-			item.taxability = 'EXEMPT'
-			lineno += 1
-		}
+
 
 		def p = [
 			PERIOD 		: params.period,
@@ -108,7 +78,9 @@ class RPTReportRPAService
 		params.filter = ''
 		params.title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
 
-		if ('period'.equalsIgnoreCase(params.reporttype.type)){
+		params.lguid = params.lgu?.objid 
+
+		if (params.periodtype.type.matches('monthly|quarterly')){
 			util.buildReportTitlePeriod(params.title, params)
 			util.buildStartEndDateFilter(params)
 		}
@@ -121,13 +93,62 @@ class RPTReportRPAService
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
 			params.barangayid = params.barangay.objid 
 		}
+	}
 
-		if (params.classification){
-			params.filter += ' AND r.classification_objid = $P{classid} '
-			params.classid = params.classification.objid 
+	def buildTaxableClasses(taxables, params){
+		taxables.each{ 
+			if (it.totalrestrictionav){
+				it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
+				it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+			}
+			else {
+				it.basictax = numSvc.round(it.totalav * params.basicrate / 100.0)
+				it.seftax = numSvc.round(it.totalav * params.sefrate / 100.0)	
+			}
+			it.basicrate = params.basicrate
+			it.sefrate = params.sefrate
 		}
+		
+		int lineno = 1
+		int charindex = 'a' 
+		def taxableclasses = getClassifications()
+		def firstspecial = taxableclasses.find{ it.special == 1 }
+		taxableclasses.add( taxableclasses.indexOf( firstspecial), [objid:'SPECIAL', name:'SPECIAL', special:0] )
+		
+		taxableclasses.each{ item ->
+			def taxable = taxables.find{ it.classid == item.objid }
+			if( taxable ) {
+				item.putAll( taxable )
+			}
+			item.taxability = 'TAXABLE' 
+			if( item.special == 0 ) {
+				item.classname = lineno + '. ' + item.name 
+				lineno += 1
+			}
+			else {
+				item.classname = '   ' + ((char)charindex) + '. ' + item.name 
+				charindex += 1;
+			}
+		}
+	}
 
-		params.lguid = params.lgu?.objid 
+	def buildExemptClasses(exempts, params){
+		int lineno = 1
+		exempts.each{ 
+			it.basictax = 0.0
+			it.seftax = 0.0
+		}
+		
+		def exemptclasses  = getExemptionTypes();
+		exemptclasses.each { item -> 
+			def exempt = exempts.find{ it.classid == item.objid }
+			if( exempt ) {
+				item.putAll( exempt )
+			}
+			item.classname = lineno + '. ' + item.name 
+			item.taxability = 'EXEMPT'
+			lineno += 1
+		}
 	}
 
 

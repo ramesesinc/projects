@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Report: QRRPA (LIFT Format) 
 	- Report: update on ROA
 	- Report: land specific listing: filter by revision year
 	- FAAS : fix incorrect display of classification

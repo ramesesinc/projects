@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rpt.report.certification.CertificationBIRController;
 
-public class MultiplePropertyBIRController extends CertificationBIRController
+public class LandHoldingBIRController extends CertificationBIRController
 {
     @Service('RPTCertificationLandHoldingBirService')
     def svc;

@@ -61,7 +61,7 @@ class EntityService
 			}
 		}
 		else if ('entitymultiple' == o._schemaname){
-			entity = em_multiple.read(o)
+			entity = em_multiple.findById(o)
 			if (entity)
 				em_multiple.update(o)
 			else 

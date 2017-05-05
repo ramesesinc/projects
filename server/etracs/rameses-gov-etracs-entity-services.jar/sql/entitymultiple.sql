@@ -12,7 +12,12 @@ SELECT * FROM entitymember WHERE entityid=$P{objid} ORDER BY itemno
 DELETE FROM entitymember WHERE entityid=$P{objid} 
 
 [insertMultiple]
-insert int entitymultiple(
+insert into entitymultiple(
 	objid, fullname 
 )
 values ($P{objid}, $P{fullname})
+
+
+[findById]
+select * from entitymultiple where objid = $P{objid}
+

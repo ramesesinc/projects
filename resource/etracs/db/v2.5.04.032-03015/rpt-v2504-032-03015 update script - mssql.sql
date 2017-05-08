@@ -66,3 +66,15 @@ go
 
 create index ix_dtapproved on faas(dtapproved)
 go 
+
+
+alter table faas_restriction add rpumaster_objid varchar(50)
+go 
+
+update fr set 
+	fr.rpumaster_objid = r.rpumasterid
+from faas_restriction fr, faas f, rpu r	
+where fr.parent_objid = f.objid 
+and f.rpuid = r.objid 
+and fr.rpumaster_objid is null
+go 

@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class RealPropertyAssessmentReportModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+class RealPropertyAssessmentReportModel extends AsyncReportModel
 {
     @Service('RPTReportRPAService') 
     def svc 
@@ -66,15 +66,16 @@ class RealPropertyAssessmentReportModel extends com.rameses.gov.etracs.rpt.repor
     def reporttypes = [
         [type:'standard', caption:'STANDARD', reportname:'reportonrpa.jasper'],
         [type:'lift', caption:'LIFT', reportname:'reportonrpa_lift.jasper'],
+        [type:'lift_restriction', caption:'LIFT - RESTRICTION', reportname:'reportonrpa_lift_restriction.jasper'],
     ]
 
-    List getQuarters() {
+    def getQuarters() {
         if (entity.periodtype.type == 'quarterly')
             return [1,2,3,4]
         return [];
     }
     
-    List getMonths(){
+    def getMonths(){
         if (entity.periodtype.type == 'monthly')
             return dtSvc.getMonths();
         return [];

@@ -54,4 +54,13 @@ drop table rptledgeritem_qtrly_partial;
 
 create index ix_dtapproved on faas(dtapproved);
 
-	
+
+alter table faas_restriction add rpumaster_objid varchar(50); 
+
+
+update faas_restriction fr, faas f, rpu r set 
+	fr.rpumaster_objid = r.rpumasterid
+where fr.parent_objid = f.objid 
+and f.rpuid = r.objid 
+and fr.rpumaster_objid is null;
+

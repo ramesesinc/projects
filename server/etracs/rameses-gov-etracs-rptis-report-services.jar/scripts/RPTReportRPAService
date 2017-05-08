@@ -42,6 +42,7 @@ class RPTReportRPAService
 
 		def taxableclasses = []
 		def exemptclasses = []
+		def restrictions = []
 
 		if (params.reporttype.type == 'standard'){
 			taxableclasses = buildTaxableClasses(em.getTaxables(params), params)
@@ -50,6 +51,9 @@ class RPTReportRPAService
 		else if (params.reporttype.type == 'lift'){
 			taxableclasses = buildTaxableClasses(em.getLintTaxables(params), params)
 			exemptclasses = buildExemptClasses(em.getLintExempts(params), params)	
+		}
+		else if (params.reporttype.type == 'lift_restriction'){
+			restrictions = buildRestrictions(params)
 		}
 		else{
 			throw new Exception('Report Type ' + params.reporttype.caption + ' is not supported.')
@@ -70,7 +74,7 @@ class RPTReportRPAService
 		
 		return [
 			parameters  : p, 
-			reportdata  : taxableclasses + exemptclasses,
+			reportdata  : taxableclasses + exemptclasses + restrictions,
 		]
 	}
 
@@ -131,6 +135,46 @@ class RPTReportRPAService
 			}
 		}
 	}
+
+
+	def buildRestrictions(params){
+		def restrictions = em.getLintRestrictions(params)
+		restrictions.each{ 
+			if (it.totalrestrictionav){
+				it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
+				it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+			}
+			else {
+				it.basictax = numSvc.round(it.totalav * params.basicrate / 100.0)
+				it.seftax = numSvc.round(it.totalav * params.sefrate / 100.0)	
+			}
+			it.basicrate = params.basicrate
+			it.sefrate = params.sefrate
+		}
+		
+		int lineno = 1
+		int charindex = 'a' 
+		def classifications = getClassifications()
+		def firstspecial = classifications.find{ it.special == 1 }
+		classifications.add( classifications.indexOf( firstspecial), [objid:'SPECIAL', name:'SPECIAL', special:0] )
+		
+		classifications.each{ item ->
+			def restriction = restrictions.find{ it.classid == item.objid }
+			if( restriction ) {
+				item.putAll( restriction )
+			}
+			item.taxability = it.restrictiontype
+			if( item.special == 0 ) {
+				item.classname = lineno + '. ' + item.name 
+				lineno += 1
+			}
+			else {
+				item.classname = '   ' + ((char)charindex) + '. ' + item.name 
+				charindex += 1;
+			}
+		}
+	}
+
 
 	def buildExemptClasses(exempts, params){
 		int lineno = 1

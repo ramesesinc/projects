@@ -52,8 +52,6 @@ public class MiscItemInfoModel implements SubPage
     def handle = { o-> 
         selectedMiscItem.expr = _expr;
         miscItemListHandler.refreshEditedCell()
-        if ( ! selectedMiscItem.isnew)
-            service.saveMiscItemValue( selectedMiscItem );
     };
     
     def getLookupEditor() {
@@ -99,17 +97,24 @@ public class MiscItemInfoModel implements SubPage
         ]},
             
         getColumns : { return [
-            new Column(caption:'Code', type:'lookup', handler:lookupMiscItem, editable:true, expression:'#{item.miscitem.code}',  maxWidth:80),
+            new Column(name:'miscitem', caption:'Code', type:'lookup', handler:'miscitem:lookup', editable:true, expression:'#{item.miscitem.code}',  maxWidth:80, required:true),
             new Column(name:'miscitem.name', caption:'Name'),
-            new Column(name:"expr", editable:true, caption:"Computation Expression", typeHandler: new OpenerColumnHandler( handler: "lookupEditor" ) )
+            new Column(name:"expr", editable:true, caption:"Computation Expression", typeHandler: new OpenerColumnHandler( handler: "lookupEditor" ), required:true )
         ]},
                 
         validate : { li -> 
             def miv = li.item
-            RPTUtil.required( miv.miscitem, 'Code')
-            RPTUtil.required( miv.expr, 'Computation Expression')
             checkDuplicate(miv)
             service.saveMiscItemValue( miv )
+        },
+        
+        onRemoveItem :{item -> 
+            if (MsgBox.confirm('Delete item?')){
+                service.deleteMiscItemValue(item);
+                miscItemValues.remove(item);
+                return true;
+            }
+            return false;
         },
                 
                                 

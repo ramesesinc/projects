@@ -101,12 +101,12 @@ public class FAASModel
         updateTaskInfo()
         loadRpuOpener();
         clearCacheImageFlag()
+        loadExemption()
         mode = MODE_READ;
     }
     
     void open(){
         getEntity().putAll(service.openFaas(getEntity()));
-        loadExemption()
         doOpen();
     }
     

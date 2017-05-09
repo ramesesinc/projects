@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Modify superseded information update
 	- Support Recalculate on Subdivision etc
 	- Cancelled FAAS : support cancelled by tdnos/pins
 	- Report: QRRPA (LIFT Format) 

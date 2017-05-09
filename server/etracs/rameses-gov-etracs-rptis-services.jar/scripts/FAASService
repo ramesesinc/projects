@@ -211,24 +211,7 @@ class FAASService
 		//handle old data 
 		if (!faas.previousfaases) 
 			faas.previousfaases = []
-
-		if (faas.prevtdno && (! faas.previousfaases.find{it.prevtdno == faas.prevtdno})){
-			def pf = [:]
-			pf.objid = 'PF' + new java.rmi.server.UID()
-			pf.faasid = faas.objid 
-			pf.prevfaasid = null 
-			pf.prevrpuid = null 
-			pf.prevtdno = faas.prevtdno 
-			pf.prevpin = faas.prevpin
-			pf.prevowner = faas.prevowner
-			pf.prevadministrator = faas.prevadministrator
-			pf.prevav = faas.prevav
-			pf.prevmv = faas.prevmv
-			pf.prevareasqm = faas.prevareasqm
-			pf.prevareaha = faas.prevareaha
-			pf.preveffectivity = faas.preveffectivity
-			faas.previousfaases << pf 
-		}
+			
 		faas.previousfaases.each{
 			em_faas_previous.save(it)
 		}			

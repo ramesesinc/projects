@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Subdivision: Support cancelled by tdnos/pins info
 	- Modify superseded information update
 	- Support Recalculate on Subdivision etc
 	- Cancelled FAAS : support cancelled by tdnos/pins

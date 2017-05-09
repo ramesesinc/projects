@@ -723,13 +723,17 @@ class SubdivisionService
     @ProxyMethod
     public void approveCancelledImprovement(subdivision, cancelledimprovement) {
         def faas = faasSvc.openFaas([objid:cancelledimprovement.faasid])
+        def cancelledbytdnos = 'Subdivision # ' + subdivision.txnno 
+        if (cancelledimprovement.cancelledbytdnos){
+            cancelledbytdnos = cancelledimprovement.cancelledbytdnos
+        }
         def params = [
             objid               : faas.objid,
             rpuid               : faas.rpuid, 
             txntype             : faas.txntype,
             cancelreason        : subdivision.txntype.objid,
             canceldate          : dtSvc.serverDate,
-            cancelledbytdnos    : 'Subdivision # ' + subdivision.txnno ,
+            cancelledbytdnos    : cancelledbytdnos,
         ]
         faasSvc.cancelFaas(params)
     }

@@ -85,3 +85,11 @@ alter table cancelledfaas add cancelledbytdnos varchar(500)
 go 
 alter table cancelledfaas add cancelledbypins varchar(500)
 go 
+
+
+
+alter table subdivision_cancelledimprovement add cancelledbytdnos varchar(500)
+go 
+alter table subdivision_cancelledimprovement add cancelledbypins varchar(500)
+go 
+

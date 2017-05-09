@@ -68,3 +68,9 @@ and fr.rpumaster_objid is null;
 alter table cancelledfaas add cancelledbytdnos varchar(500);
 alter table cancelledfaas add cancelledbypins varchar(500);
 
+
+alter table subdivision_cancelledimprovement add cancelledbytdnos varchar(500);
+alter table subdivision_cancelledimprovement add cancelledbypins varchar(500);
+
+
+

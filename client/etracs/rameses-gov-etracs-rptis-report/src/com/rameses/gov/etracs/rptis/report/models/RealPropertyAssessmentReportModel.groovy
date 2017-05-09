@@ -50,6 +50,7 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
         [type:'standard', caption:'STANDARD', reportname:'reportonrpa.jasper'],
         [type:'lift', caption:'LIFT', reportname:'reportonrpa_lift.jasper'],
         [type:'lift_restriction', caption:'LIFT - RESTRICTION', reportname:'reportonrpa_lift_restriction.jasper'],
+        [type:'lift_idleland', caption:'LIFT - IDLE LAND', reportname:'reportonrpa_lift_idleland.jasper'],
     ]
 
     def getQuarters() {

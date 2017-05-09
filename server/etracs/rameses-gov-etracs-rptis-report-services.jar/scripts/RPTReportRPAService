@@ -55,6 +55,10 @@ class RPTReportRPAService
 		else if (params.reporttype.type == 'lift_restriction'){
 			restrictions = buildRestrictions(params)
 		}
+		else if (params.reporttype.type == 'lift_idleland'){
+			taxableclasses = buildTaxableClasses(em.getLintIdleLandTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getLintIdleLandExempts(params), params)	
+		}
 		else{
 			throw new Exception('Report Type ' + params.reporttype.caption + ' is not supported.')
 		}
@@ -162,6 +166,7 @@ class RPTReportRPAService
 			}
 		}
 	}
+
 
 
 	def buildExemptClasses(exempts, params){

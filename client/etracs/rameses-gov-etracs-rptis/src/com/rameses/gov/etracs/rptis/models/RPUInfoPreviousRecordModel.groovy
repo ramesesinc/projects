@@ -47,6 +47,7 @@ class RPUInfoPreviousRecordModel extends SubPageModel
         
         onAddItem : {item -> 
             entity.previousfaases << item;
+            updatePrevTdno();
         },
         
         onRemoveItem : {item ->
@@ -55,6 +56,7 @@ class RPUInfoPreviousRecordModel extends SubPageModel
                 if (!entity._previousfaases) 
                     entity._previousfaases = [];
                 entity._previousfaases << item;
+                updatePrevTdno();
                 return true;
             }
             return false;
@@ -74,6 +76,13 @@ class RPUInfoPreviousRecordModel extends SubPageModel
         
     ] as EditorListModel
     
+    
+    void updatePrevTdno(){
+        entity.prevtdno = null;
+        if (entity.previousfaases){
+            entity.prevtdno = entity.previousfaases.prevtdno.join(', ')
+        }
+    }
     
     def format(pattern, val){
         try{

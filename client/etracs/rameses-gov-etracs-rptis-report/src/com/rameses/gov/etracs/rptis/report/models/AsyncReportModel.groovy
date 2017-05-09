@@ -260,5 +260,22 @@ abstract class AsyncReportModel
         return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
     
+    String getImagePath( def imagename ) {
+        def appEnv = clientContext.appEnv; 
+        def customfolder = appEnv['report.custom'];
+        if (!customfolder) customfolder = appEnv['app.custom'];
+        
+        def path = 'images/' + imagename 
+        if( customfolder ) { 
+            def cpath = 'images/' + customfolder + '/' + imagename  
+            if( clientContext.getResource(cpath) )  path = cpath 
+        } 
+
+        return path 
+    }    
     
+    InputStream getInputStream( def imagename) {
+        return clientContext.classLoader.getResourceAsStream( getImagePath( imagename ) );
+    }
+        
 }

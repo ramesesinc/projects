@@ -209,8 +209,7 @@ FROM faas_restriction fr
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE r.taxable = 1 
-  AND (
+WHERE (
 		(f.dtapproved <= $P{enddate} AND f.state = 'CURRENT' ) OR 
 		(f.canceldate > $P{enddate} AND f.state = 'CANCELLED' )
   )

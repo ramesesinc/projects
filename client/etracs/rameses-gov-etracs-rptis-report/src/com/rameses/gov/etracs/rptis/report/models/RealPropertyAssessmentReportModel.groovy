@@ -25,6 +25,7 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
             
     def initReport(){
         showRate = true;
+        entity.classifications = getClassifications()
         entity.basicrate = 1.0
         entity.sefrate = 1.0 
         return 'default';
@@ -38,24 +39,6 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
         svc.generateReportOnRPA(entity, asyncHandler); 
     }
     
-    def formControl = [
-        getFormControls: {
-            return [
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
-                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21', emptyText:'ALL']),
-                new FormControl( "combo", [caption:'Report Format', name:'entity.reporttype', items:'reporttypes', expression:'#{item.caption}', required:true, allowNull:false]),
-                new FormControl( "combo", [caption:'Period Type', name:'entity.periodtype', items:'periodtypes', expression:'#{item.caption}', required:true, allowNull:false]),
-                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', depends:'entity.periodtype', visibleWhen:"#{entity.periodtype.type != 'asofdate'}"]),
-                new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, preferredSize:'100,19',depends:'entity.periodtype', visibleWhen:"#{entity.periodtype.type == 'quarterly'}", dynamic:true, allowNull:false]),
-                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', depends:'entity.periodtype', visibleWhen:"#{entity.periodtype.type == 'monthly'}", dynamic:true, allowNull:false]),
-                new FormControl( "date", [caption:'As of Date', name:'entity.asofdate', preferredSize:'100,19', depends:'entity.periodtype', visibleWhen:"#{entity.periodtype.type == 'asofdate'}", required:true]),
-                new FormControl( "separator", [preferredSize:'0,21']),
-                new FormControl( "decimal", [caption:'Basic Rate', name:'entity.basicrate', required:true]),
-                new FormControl( "decimal", [caption:'SEF Rate', name:'entity.sefrate', required:true]),
-            ]
-        },
-   ] as FormPanelModel;
-   
    def periodtypes = [
         [type:'quarterly', caption:'QUARTERLY'],
         [type:'monthly', caption:'MONTHLY'],
@@ -81,5 +64,20 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
         return [];
     }
     
+    def listHandler = [
+        getRows  : { entity.classifications.size()},
+        fetchList : {entity.classifications},
+    ] as EditorListModel
+    
+    def getClassifications(){
+        def q = [_schemaname:'propertyclassification']
+        q.select = 'objid, name'
+        q.where = ["state = 'APPROVED'"]
+        q.orderBy = 'orderno'
+        return querySvc.getList(q).each{
+            it.basicrate = 1.0
+            it.sefrate = 1.0 
+        }
+    }
 
 }

@@ -5,6 +5,8 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Support Recalculate on Subdivision etc
+	- Cancelled FAAS : support cancelled by tdnos/pins
 	- Report: QRRPA (LIFT Format) 
 	- Report: update on ROA
 	- Report: land specific listing: filter by revision year

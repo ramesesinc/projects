@@ -251,11 +251,16 @@ class CancelledFAASService
 
         def faas = entity.faas 
 
+        def cancelledbytdnos = 'Cancellation No. ' + entity.txnno
+        if (entity.cancelledbytdnos){
+            cancelledbytdnos = entity.cancelledbytdnos
+        }
+
         def cancelinfo = [
             objid : faas.objid,
             state  : 'CANCELLED',
             cancelreason : entity.reason.code,
-            cancelledbytdnos : 'Cancellation No. ' + entity.txnno,
+            cancelledbytdnos : cancelledbytdnos,
             canceldate   : pdate.date, 
             cancelledyear : pdate.year, 
             cancelledqtr  : pdate.qtr,

@@ -581,7 +581,7 @@ class FAASService
 	}
 
 	void loadRestriction(faas){
-		faas.restriction = em_restriction.find([parent_objid:faas.objid,state:'ACTIVE']).first()
+		faas.restriction = em_restriction.find([rpumaster_objid:faas.rpu.rpumasterid,state:'ACTIVE']).first()
 	}
 
 	void loadMessageList(faas){

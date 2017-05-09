@@ -64,3 +64,7 @@ where fr.parent_objid = f.objid
 and f.rpuid = r.objid 
 and fr.rpumaster_objid is null;
 
+
+alter table cancelledfaas add cancelledbytdnos varchar(500);
+alter table cancelledfaas add cancelledbypins varchar(500);
+

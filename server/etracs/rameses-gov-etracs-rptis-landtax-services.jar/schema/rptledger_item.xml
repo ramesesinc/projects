@@ -8,8 +8,6 @@
         <field name="actualuse_objid" />
         <field name="remarks" />
         <field name="year" type="integer" required="true"/>
-        <field name="fromqtr" type="integer" required="true"/>
-        <field name="toqtr" type="integer" required="true"/>
         <field name="basicav" required="true" type="decimal" />
         <field name="sefav" required="true" type="decimal" />
         <field name="av" required="true" type="decimal" />

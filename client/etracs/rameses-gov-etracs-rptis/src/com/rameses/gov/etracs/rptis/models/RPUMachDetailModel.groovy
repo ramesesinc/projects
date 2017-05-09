@@ -72,7 +72,9 @@ public class RPUMachDetailModel
     
     void initInfo(){
         loading = true;
-        machine             = machdetail.machine
+        if(!machine){
+            machine             = machdetail.machine
+        }
         yearacquired        = machdetail.yearacquired
         yearinstalled       = machdetail.yearinstalled
         operationyear       = machdetail.operationyear

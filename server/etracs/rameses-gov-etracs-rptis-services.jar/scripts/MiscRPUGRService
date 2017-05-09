@@ -3,7 +3,7 @@ import com.rameses.util.*
 
 class MiscRPUGRService
 {
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @Service('MiscRYSettingLookupService')

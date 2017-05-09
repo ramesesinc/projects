@@ -4,9 +4,6 @@ import com.rameses.util.*
 
 class RPTLedgerLookupService
 {
-    @PersistenceContext('rpt') 
-    def em
-
     @Service('RPTUtil')
     def util
 

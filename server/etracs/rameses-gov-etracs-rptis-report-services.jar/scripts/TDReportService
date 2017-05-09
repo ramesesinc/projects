@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class TDReportService
 {
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @ActiveDB('tdreport')

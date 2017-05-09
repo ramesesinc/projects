@@ -3,7 +3,7 @@ import com.rameses.util.*
 
 class PlantTreeRPUGRService
 {
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @Service('PlantTreeRYSettingLookupService')

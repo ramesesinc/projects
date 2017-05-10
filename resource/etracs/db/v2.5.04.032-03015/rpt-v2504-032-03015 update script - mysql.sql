@@ -30,20 +30,20 @@ CREATE TABLE `rptledger_forprocess` (
 
 
 alter table rptledgeritem
-	drop column basicintpaid,
-	drop column basicdisctaken,
-	drop column basicidledisctaken,
-	drop column basicidleintpaid,
-	drop column sefintpaid,
-	drop column sefdisctaken;
+	modify column basicintpaid decimal(16,2) null,
+	modify column basicdisctaken decimal(16,2) null,
+	modify column basicidledisctaken decimal(16,2) null,
+	modify column basicidleintpaid decimal(16,2) null,
+	modify column sefintpaid decimal(16,2) null,
+	modify column sefdisctaken decimal(16,2) null;
 
 alter table rptledgeritem_qtrly
-	drop column basicintpaid,
-	drop column basicdisctaken,
-	drop column basicidledisctaken,
-	drop column basicidleintpaid,
-	drop column sefintpaid,
-	drop column sefdisctaken;
+	modify column basicintpaid decimal(16,2) null,
+	modify column basicdisctaken decimal(16,2) null,
+	modify column basicidledisctaken decimal(16,2) null,
+	modify column basicidleintpaid decimal(16,2) null,
+	modify column sefintpaid decimal(16,2) null,
+	modify column sefdisctaken decimal(16,2) null;
 
 
 

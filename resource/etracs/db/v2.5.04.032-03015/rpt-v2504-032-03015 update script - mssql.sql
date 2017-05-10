@@ -32,32 +32,32 @@ CREATE TABLE rptledger_forprocess (
 go 
 
 
-alter table rptledgeritem drop column basicintpaid
+alter table rptledgeritem alter column basicintpaid decimal(16,2) null
 go 
-alter table rptledgeritem drop column basicdisctaken
+alter table rptledgeritem alter column basicdisctaken decimal(16,2) null
 go 
-alter table rptledgeritem drop column basicidledisctaken
+alter table rptledgeritem alter column basicidledisctaken decimal(16,2) null
 go 
-alter table rptledgeritem drop column basicidleintpaid
+alter table rptledgeritem alter column basicidleintpaid decimal(16,2) null
 go 
-alter table rptledgeritem drop column sefintpaid
+alter table rptledgeritem alter column sefintpaid decimal(16,2) null
 go 
-alter table rptledgeritem drop column sefdisctaken
+alter table rptledgeritem alter column sefdisctaken decimal(16,2) null
 go 
 
 
 
-alter table rptledgeritem_qtrly drop column basicintpaid
+alter table rptledgeritem_qtrly alter column basicintpaid decimal(16,2) null
 go 
-alter table rptledgeritem_qtrly drop column basicdisctaken
+alter table rptledgeritem_qtrly alter column basicdisctaken decimal(16,2) null
 go 
-alter table rptledgeritem_qtrly drop column basicidledisctaken
+alter table rptledgeritem_qtrly alter column basicidledisctaken decimal(16,2) null
 go 
-alter table rptledgeritem_qtrly drop column basicidleintpaid
+alter table rptledgeritem_qtrly alter column basicidleintpaid decimal(16,2) null
 go 
-alter table rptledgeritem_qtrly drop column sefintpaid
+alter table rptledgeritem_qtrly alter column sefintpaid decimal(16,2) null
 go 
-alter table rptledgeritem_qtrly drop column sefdisctaken
+alter table rptledgeritem_qtrly alter column sefdisctaken decimal(16,2) null
 go 
 
 

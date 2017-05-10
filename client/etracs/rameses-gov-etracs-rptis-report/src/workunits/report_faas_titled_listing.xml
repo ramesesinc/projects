@@ -21,7 +21,7 @@ class TitledFaasListingController extends com.rameses.gov.etracs.rpt.report.Asyn
     def svc 
     
     String title = 'List of Titled Properties'
-    String path = 'com/rameses/gov/etracs/rptis/report/';
+    String path = 'com/rameses/gov/etracs/rptis/reports/';
     
     String getReportName(){
         if (entity.taxpayer)

@@ -20,8 +20,11 @@ FROM faas f
 	INNER JOIN realproperty rp ON rp.objid = f.realpropertyid
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid
-WHERE ${filter}
-  AND f.state = 'CURRENT'
+WHERE (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+)
+${filter}
 GROUP BY b.pin, b.indexno, b.name 
 ORDER BY b.pin 
 

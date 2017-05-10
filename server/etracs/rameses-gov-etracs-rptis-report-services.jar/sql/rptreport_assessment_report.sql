@@ -37,8 +37,8 @@ from faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.lguid = $P{lguid}
 and (
-	(f.dtapproved >= $P{startdate} and f.dtapproved <= $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.dtapproved >= $P{startdate} and f.dtapproved <= $P{enddate} AND f.canceldate > $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
 )
 group by b.objid, b.name, b.pin 
 order by b.pin 
@@ -61,7 +61,7 @@ from faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.lguid = $P{lguid}
 and f.state = 'CANCELLED'
-and f.canceldate >= $P{startdate} AND  f.canceldate <= $P{enddate}
+and f.canceldate >= $P{startdate} AND  f.canceldate < $P{enddate}
 group by b.objid, b.name, b.pin 
 order by b.pin 
 
@@ -82,8 +82,8 @@ from faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.lguid = $P{lguid}
 and (
-	(f.dtapproved <= $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.canceldate > $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
 )
 group by b.objid, b.name, b.pin 
 order by b.pin 
@@ -145,8 +145,8 @@ from faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.lguid = $P{lguid}
 and (
-	(f.dtapproved >= $P{startdate} and f.dtapproved <= $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.dtapproved >= $P{startdate} and f.dtapproved <= $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
 )
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  
@@ -177,7 +177,7 @@ from faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.lguid = $P{lguid}
 and f.state = 'CANCELLED'
-and f.canceldate >= $P{startdate} AND  f.canceldate <= $P{enddate}
+and f.canceldate >= $P{startdate} AND  f.canceldate < $P{enddate}
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  
 
@@ -206,8 +206,8 @@ from faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 where f.lguid = $P{lguid}
 and (
-	(f.dtapproved <= $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.canceldate > $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
 )
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  

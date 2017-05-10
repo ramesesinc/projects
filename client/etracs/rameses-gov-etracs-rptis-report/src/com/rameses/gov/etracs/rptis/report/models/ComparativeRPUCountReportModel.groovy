@@ -1,38 +1,26 @@
-<workunit extends="rpt_wtemplates/ReportController.xml" >
-    <invokers>
-        <invoker folderid="/explorer/report/rpt" 
-                 action="init" 
-                 caption="Accomplishment on Real Property Assessment" 
-                 target="window" 
-                role="ASSESSOR_REPORT,REPORT" />
-    </invokers>
-    <code>
-
-<![CDATA[
-
+package com.rameses.gov.etracs.rptis.report.models;
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class AccomplishmentOnRPAReportController extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+class ComparativeRPUCountReportModel extends AsyncReportModel
 {
-    @Service('RPTReportAccomplishmentRPAService') 
+    @Service('RPTReportComparativeRPUCountService') 
     def svc 
     
-    String title = 'Accomplishment on Real Property Assessment'
+    String title = 'Comparative Data on Number of RPU Report'
     
-    String reportName = 'com/rameses/gov/etracs/rpt/report/accomplishmentrpa.jasper';
+    String reportName = 'com/rameses/gov/etracs/rptis/reports/comparativerpucount.jasper';
+    
         
     void buildReportData(entity, asyncHandler){
-        svc.generateAccomplishmentRPA(entity, asyncHandler)
+        svc.generateComparativeRpuCount(entity, asyncHandler)
     }
-    
     
     Map getParameters(){
         return data.parameters;
     }
-    
     
    def formControl = [
         getFormControls: {
@@ -42,11 +30,7 @@ class AccomplishmentOnRPAReportController extends com.rameses.gov.etracs.rpt.rep
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
                 new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'100,19']),
                 new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.caption}', dynamic:true, preferredSize:'100,19']),
-            ]
+            ]    
         },
    ] as FormPanelModel;
 }
-]]>        
-        
-    </code>
-</workunit>

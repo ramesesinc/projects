@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="comparativerpucount"
+		 name="ComparativeAV"
 
 		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
@@ -42,42 +42,42 @@
 
 	<field name="taxability" class="java.lang.String"/>
 	<field name="classname" class="java.lang.String"/>
-	<field name="preceedinglandcount" class="java.math.BigDecimal"/>
-	<field name="preceedingimpcount" class="java.math.BigDecimal"/>
+	<field name="preceedinglandav" class="java.math.BigDecimal"/>
+	<field name="preceedingimpav" class="java.math.BigDecimal"/>
 	<field name="preceedingtotal" class="java.math.BigDecimal"/>
-	<field name="newdiscoverytotal" class="java.math.BigDecimal"/>
-	<field name="newdiscoveryimpcount" class="java.math.BigDecimal"/>
-	<field name="newdiscoverylandcount" class="java.math.BigDecimal"/>
-	<field name="cancelledlandcount" class="java.math.BigDecimal"/>
-	<field name="cancelledimpcount" class="java.math.BigDecimal"/>
+	<field name="currenttotal" class="java.math.BigDecimal"/>
+	<field name="currentimpav" class="java.math.BigDecimal"/>
+	<field name="currentlandav" class="java.math.BigDecimal"/>
+	<field name="cancelledlandav" class="java.math.BigDecimal"/>
+	<field name="cancelledimpav" class="java.math.BigDecimal"/>
 	<field name="cancelledtotal" class="java.math.BigDecimal"/>
 	<field name="endingtotal" class="java.math.BigDecimal"/>
-	<field name="endingimpcount" class="java.math.BigDecimal"/>
-	<field name="endinglandcount" class="java.math.BigDecimal"/>
+	<field name="endingimpav" class="java.math.BigDecimal"/>
+	<field name="endinglandav" class="java.math.BigDecimal"/>
 
-	<variable name="TPRECEEDINGLANDCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{preceedinglandcount}]]></variableExpression>
+	<variable name="TPRECEEDINGLANDAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedinglandav}]]></variableExpression>
 	</variable>
-	<variable name="TPRECEEDINGIMPCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{preceedingimpcount}]]></variableExpression>
+	<variable name="TPRECEEDINGIMPAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedingimpav}]]></variableExpression>
 	</variable>
 	<variable name="TPRECEEDINGTOTAL" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{preceedingtotal}]]></variableExpression>
 	</variable>
-	<variable name="TNEWDISCOVERYTOTAL" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{newdiscoverytotal}]]></variableExpression>
+	<variable name="TCURRENTTOTAL" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{currenttotal}]]></variableExpression>
 	</variable>
-	<variable name="TNEWDISCOVERYIMPCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{newdiscoveryimpcount}]]></variableExpression>
+	<variable name="TCURRENTIMPAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{currentimpav}]]></variableExpression>
 	</variable>
-	<variable name="TNEWDISCOVERYLANDCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{newdiscoverylandcount}]]></variableExpression>
+	<variable name="TCURRENTLANDAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{currentlandav}]]></variableExpression>
 	</variable>
-	<variable name="TCANCELLEDLANDCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{cancelledlandcount}]]></variableExpression>
+	<variable name="TCANCELLEDLANDAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledlandav}]]></variableExpression>
 	</variable>
-	<variable name="TCANCELLEDIMPCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{cancelledimpcount}]]></variableExpression>
+	<variable name="TCANCELLEDIMPAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledimpav}]]></variableExpression>
 	</variable>
 	<variable name="TCANCELLEDTOTAL" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{cancelledtotal}]]></variableExpression>
@@ -85,17 +85,17 @@
 	<variable name="TENDINGTOTAL" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{endingtotal}]]></variableExpression>
 	</variable>
-	<variable name="TENDINGIMPCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{endingimpcount}]]></variableExpression>
+	<variable name="TENDINGIMPAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingimpav}]]></variableExpression>
 	</variable>
-	<variable name="TENDINGLANDCOUNT" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
-		<variableExpression><![CDATA[$F{endinglandcount}]]></variableExpression>
+	<variable name="TENDINGLANDAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{endinglandav}]]></variableExpression>
 	</variable>
-	<variable name="TTENDINGLANDCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{endinglandcount}]]></variableExpression>
+	<variable name="TTENDINGLANDAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{endinglandav}]]></variableExpression>
 	</variable>
-	<variable name="TTENDINGIMPCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{endingimpcount}]]></variableExpression>
+	<variable name="TTENDINGIMPAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingimpav}]]></variableExpression>
 	</variable>
 	<variable name="TTENDINGTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{endingtotal}]]></variableExpression>
@@ -103,29 +103,29 @@
 	<variable name="TTCANCELLEDTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{cancelledtotal}]]></variableExpression>
 	</variable>
-	<variable name="TTCANCELLEDIMPCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{cancelledimpcount}]]></variableExpression>
+	<variable name="TTCANCELLEDIMPAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledimpav}]]></variableExpression>
 	</variable>
-	<variable name="TTCANCELLEDLANDCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{cancelledlandcount}]]></variableExpression>
+	<variable name="TTCANCELLEDLANDAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledlandav}]]></variableExpression>
 	</variable>
-	<variable name="TTNEWDISCOVERYLANDCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{newdiscoverylandcount}]]></variableExpression>
+	<variable name="TTCURRENTLANDAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currentlandav}]]></variableExpression>
 	</variable>
-	<variable name="TTNEWDISCOVERYIMPCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{newdiscoveryimpcount}]]></variableExpression>
+	<variable name="TTCURRENTIMPAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currentimpav}]]></variableExpression>
 	</variable>
-	<variable name="TTNEWDISCOVERYTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{newdiscoverytotal}]]></variableExpression>
+	<variable name="TTCURRENTTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currenttotal}]]></variableExpression>
 	</variable>
 	<variable name="TTPRECEEDINGTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{preceedingtotal}]]></variableExpression>
 	</variable>
-	<variable name="TTPRECEEDINGIMPCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{preceedingimpcount}]]></variableExpression>
+	<variable name="TTPRECEEDINGIMPAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedingimpav}]]></variableExpression>
 	</variable>
-	<variable name="TTPRECEEDINGLANDCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{preceedinglandcount}]]></variableExpression>
+	<variable name="TTPRECEEDINGLANDAV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedinglandav}]]></variableExpression>
 	</variable>
 
 		<group  name="TAXABILITY" >
@@ -168,7 +168,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TPRECEEDINGLANDCOUNT}+$V{TCANCELLEDLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TPRECEEDINGLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -185,7 +185,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TPRECEEDINGIMPCOUNT}+$V{TCANCELLEDIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TPRECEEDINGIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -202,7 +202,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TPRECEEDINGTOTAL}+$V{TCANCELLEDTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TPRECEEDINGTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -219,7 +219,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TNEWDISCOVERYLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCURRENTLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -236,7 +236,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TNEWDISCOVERYIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCURRENTIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -253,7 +253,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TNEWDISCOVERYTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCURRENTTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -270,7 +270,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCANCELLEDLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCANCELLEDLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -287,7 +287,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCANCELLEDIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCANCELLEDIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -321,7 +321,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TENDINGLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TENDINGLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -338,7 +338,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TENDINGIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TENDINGIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -825,7 +825,7 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="3"
+						x="0"
 						y="101"
 						width="35"
 						height="13"
@@ -838,7 +838,7 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="38"
+						x="35"
 						y="101"
 						width="287"
 						height="13"
@@ -893,7 +893,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedinglandcount}+$F{cancelledlandcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedinglandav} ]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -910,7 +910,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingimpcount}+$F{cancelledimpcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingimpav} ]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -927,7 +927,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtotal}+$F{cancelledtotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtotal}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -944,7 +944,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{newdiscoverylandcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{currentlandav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -961,7 +961,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{newdiscoveryimpcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{currentimpav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -978,7 +978,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{newdiscoverytotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{currenttotal}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -995,7 +995,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledlandcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledlandav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1012,7 +1012,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledimpcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cancelledimpav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1046,7 +1046,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endinglandcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endinglandav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1063,7 +1063,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endingimpcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{endingimpav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1265,7 +1265,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTPRECEEDINGLANDCOUNT}+$V{TTCANCELLEDLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTPRECEEDINGLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1282,7 +1282,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTPRECEEDINGIMPCOUNT}+$V{TTCANCELLEDIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTPRECEEDINGIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1299,7 +1299,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTPRECEEDINGTOTAL}+$V{TTCANCELLEDTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTPRECEEDINGTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1316,7 +1316,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTNEWDISCOVERYLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCURRENTLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1333,7 +1333,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTNEWDISCOVERYIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCURRENTIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1350,7 +1350,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTNEWDISCOVERYTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCURRENTTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1367,7 +1367,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCANCELLEDLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCANCELLEDLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1384,7 +1384,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCANCELLEDIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTCANCELLEDIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1418,7 +1418,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTENDINGLANDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTENDINGLANDAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1435,7 +1435,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTENDINGIMPCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTENDINGIMPAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

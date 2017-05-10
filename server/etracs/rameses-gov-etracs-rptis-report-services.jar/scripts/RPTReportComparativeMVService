@@ -26,19 +26,26 @@ class RPTReportComparativeMVService
     @Async
     @ProxyMethod
 	public Map generateComparativeMV(params) {
-		params.lguid = params.lgu?.objid
-		params.barangayid = params.barangay?.objid
+		params.filter = ''
+
+		if (params.lgu){
+			params.lguid = params.lgu.objid 
+			params.filter = ' AND f.lguid =  $P{lguid} ' 
+		}
+
+		if (params.barangay){
+			params.barangayid = params.barangay.objid 
+			params.filter += ' AND rp.barangayid = $P{barangayid} '
+		}
+
 
 		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON MARKET VALUE OF REAL PROPERTY ASSESSMENT', params)
+		util.buildStartEndDateFilter(params)
 
-		util.buildPreceedingPeriodFilter(params)
 		def starttaxables 	= em.getStartComparativeMV(params)
 		def startexempts 	= em.getStartComparativeMVExempt(params)
-
-		util.buildEndingPeriodFilter(params)
 		def endtaxables		= em.getEndComparativeMV(params)
 		def endexempts		= em.getEndComparativeMVExempt(params)
-		
 
 		def loadMVSumaryInfo = { data, list ->
 			def info = list.find{ it.classid == data.classid }

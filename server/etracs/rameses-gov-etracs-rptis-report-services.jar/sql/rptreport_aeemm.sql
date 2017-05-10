@@ -2,7 +2,7 @@
 SELECT 
 	'TAXABLE' as taxability,
 	pc.objid AS classid,
-	SUM( case when rp.claimno is null then  1  else 0 end ) AS rpucount,
+	SUM( 1) AS rpucount,
 	SUM( case when rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -10,10 +10,13 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT' 
+WHERE r.rputype = 'land' 
   AND r.taxable = 1 
-  AND r.rputype = 'land' 
+  and (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+ )
+  ${filter}
 GROUP BY pc.objid, pc.orderno
 ORDER BY pc.orderno  
 
@@ -22,7 +25,7 @@ ORDER BY pc.orderno
 SELECT 
 	'EXEMPT' as taxability,
 	e.objid AS classid,
-	COUNT(  case when rp.claimno is null then  1  else 0 end  ) AS rpucount,
+	COUNT(1) AS rpucount,
 	SUM( case when rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -30,10 +33,12 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT' 
+WHERE r.rputype = 'land' 
   AND r.taxable = 0
-  AND r.rputype = 'land' 
+  and (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+ )
 GROUP BY e.objid, e.orderno
 ORDER BY e.orderno  
 
@@ -56,7 +61,7 @@ from
 			when r.rputype = 'mach' then 3
 			else 4
 		end as idx, 
-		SUM( case when rp.claimno is null then 1 else 0 end ) AS rpucount,
+		SUM(1 ) AS rpucount,
 		SUM( case when r.taxable = 1 then r.totalmv else 0 end) as totalmvtaxable,
 		SUM( case when r.taxable = 0 then r.totalmv else 0 end) as totalmvexempt,
 		SUM( case when r.taxable = 1 then r.totalav else 0 end) as totalavtaxable,
@@ -65,8 +70,11 @@ from
 		INNER JOIN rpu r ON f.rpuid = r.objid 
 		INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 		INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-	WHERE ${filter}
-	  AND f.state = 'CURRENT' 
+	WHERE (
+		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+	 )
+	 ${filter}
 	GROUP BY r.rputype 
 )x
 order by x.idx
@@ -75,7 +83,7 @@ order by x.idx
 [getTaxmappings]
 SELECT 
 	b.name as barangay, 
-	sum( case when rp.claimno is null then 1 else 0 end ) AS rpucount,
+	sum( 1 ) AS rpucount,
 	SUM( case when rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -83,7 +91,9 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b on rp.barangayid = b.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT' 
+WHERE (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+ )
 GROUP BY b.name 
 ORDER BY b.pin 

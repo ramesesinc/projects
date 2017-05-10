@@ -25,20 +25,24 @@ class RPTReportAccomplishmentRPAService
 	@Async
 	@ProxyMethod
 	public Map generateAccomplishmentRPA(params) {
-		params.lguid = params.lgu?.objid
-		params.barangayid = params.barangay?.objid
+		params.filter = ''
 
-		util.buildReportFormalTitlePeriod('ACCOMPLISHMENT REPORT ON REAL PROPERTY ASSESSMENTS', params)
+		if (params.lgu){
+			params.lguid = params.lgu.objid 
+			params.filter = ' AND f.lguid =  $P{lguid} ' 
+		}
 
-		util.buildPreceedingPeriodFilter(params)
-		def preceedingassessments = em.getPreceedingRPAAccomplishment(params)
+		if (params.barangay){
+			params.barangayid = params.barangay.objid 
+			params.filter += ' AND rp.barangayid = $P{barangayid} '
+		}
 		
-		util.buildCurrentPeriodFilter(params)
-		def currentassessments = em.getCurrentRPAAccomplishment(params)
-		util.buildCurrentCancelledPeriodFilter(params)
-		def cancelledassessments = em.getCancelledRPAAccomplishment(params)
+		util.buildReportFormalTitlePeriod('ACCOMPLISHMENT REPORT ON REAL PROPERTY ASSESSMENTS', params)
+		util.buildStartEndDateFilter(params)
 
-		util.buildEndingPeriodFilter(params)
+		def preceedingassessments = em.getPreceedingRPAAccomplishment(params)
+		def currentassessments = em.getCurrentRPAAccomplishment(params)
+		def cancelledassessments = em.getCancelledRPAAccomplishment(params)
 		def endingassessments = em.getEndingRPAAccomplishment(params)
 		
 		def updateBrgyAccomplishment = { lgu, list ->

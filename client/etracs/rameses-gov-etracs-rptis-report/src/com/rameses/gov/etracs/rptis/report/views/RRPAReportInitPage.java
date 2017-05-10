@@ -91,7 +91,7 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
         xComboBox3.setCaption("Month");
         xComboBox3.setDepends(new String[] {"entity.periodtype"});
         xComboBox3.setDynamic(true);
-        xComboBox3.setExpression("#{item.name}");
+        xComboBox3.setExpression("#{item.caption}");
         xComboBox3.setItems("months");
         xComboBox3.setName("entity.month"); // NOI18N
         xComboBox3.setPreferredSize(new java.awt.Dimension(200, 20));

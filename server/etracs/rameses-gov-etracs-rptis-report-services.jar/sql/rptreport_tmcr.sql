@@ -20,6 +20,7 @@ WHERE rp.ry = $P{ry}
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section = $P{section} 
   ${txntypefilter}
+  ${rputypefilter}
 ORDER BY f.tdno 
 
 
@@ -56,6 +57,7 @@ WHERE rp.ry = $P{ry}
   AND rp.barangayid = $P{barangayid} 
   AND f.state = 'CURRENT'
   AND rp.section = $P{section} 
+  ${rputypefilter}
 ORDER BY f.tdno 
 
 
@@ -70,6 +72,7 @@ FROM faas_previous pf
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE pf.faasid = $P{faasid}
   and f.state = 'CANCELLED'
+  ${rputypefilter}
 ORDER BY f.tdno DESC   
 
 
@@ -124,6 +127,7 @@ where rp.ry = $P{ry}
   and f.state in ('CURRENT', 'CANCELLED')
   and rp.section = $P{section} 
   ${txntypefilter}
+  ${rputypefilter}
 order by f.tdno 
 
 

@@ -449,7 +449,8 @@ class RPTLedgerService
             actualuse       : params.actualuse,
             remarks         : (params.av != ledgerfaas.assessedvalue ? 'Staggered AV' : 'Annual Receivable'),
             year            : yr, 
-            qtr             : 0,
+            fromqtr             : 1,
+            toqtr             : 4,
             basic           : 0.0,
             basicpaid       : 0.0,
             basicint        : 0.0,
@@ -510,14 +511,8 @@ class RPTLedgerService
         qtritem.sefav = (qtr == 4 ? qtrlyvalue.sefav4thqtr : qtrlyvalue.sefavqtrly)
         qtritem.fullypaid = 0
         qtritem.basicpaid = 0.0
-        qtritem.basicintpaid = 0.0
-        qtritem.basicdisctaken = 0.0
         qtritem.basicidlepaid = 0.0
-        qtritem.basicidledisctaken = 0.0
-        qtritem.basicidleintpaid = 0.0
         qtritem.sefpaid = 0.0
-        qtritem.sefintpaid = 0.0
-        qtritem.sefdisctaken = 0.0
         qtritem.firecodepaid = 0.0
         em.save(qtritem, SCHEMA_ITEM_QTRLY)
     }
@@ -700,8 +695,7 @@ class RPTLedgerService
         def p = em.findPartialPayment(ledger)
         if (!p) 
             p = [
-                basicpaid:0.0, basicdisctaken:0.0, basicintpaid:0.0,
-                sefpaid:0.0, sefdisctaken:0.0, sefintpaid:0.0
+                basicpaid:0.0, sefpaid:0.0, basicidlepaid:0.0,
             ]
         return p
     }

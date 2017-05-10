@@ -37,16 +37,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="formPanel1" min="-2" max="-2" attributes="0"/>
+              <Component id="formPanel1" min="-2" pref="331" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel11" min="-2" pref="132" max="-2" attributes="0"/>
+              <Component id="xFormPanel11" min="-2" pref="137" max="-2" attributes="0"/>
               <EmptySpace pref="22" max="32767" attributes="0"/>
           </Group>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="382" max="-2" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="435" max="32767" attributes="0"/>
                   <Component id="xPanel2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -194,12 +194,58 @@
               <Insets value="[5, 0, 0, 0]"/>
             </Property>
             <Property name="name" type="java.lang.String" value="params.autoapprove" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 23]"/>
+            </Property>
             <Property name="showCaption" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="Automatically approve FAAS?"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xCheckBox1ActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Re-initialize Item for Revision"/>
+            <Property name="captionWidth" type="int" value="140"/>
+            <Property name="name" type="java.lang.String" value="params.inititems" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="showCaption" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Initialize Items for Revision?"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xCheckBox2ActionPerformed"/>
+          </Events>
+        </Component>
+        <Container class="com.rameses.rcp.control.XSeparator" name="xSeparator2">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="575" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+        </Container>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Interval / FAAS (millisec)"/>
+            <Property name="captionWidth" type="int" value="140"/>
+            <Property name="name" type="java.lang.String" value="params.interval" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

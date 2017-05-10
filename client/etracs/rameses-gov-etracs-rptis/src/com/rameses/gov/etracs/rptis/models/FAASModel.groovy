@@ -101,6 +101,7 @@ public class FAASModel
         updateTaskInfo()
         loadRpuOpener();
         clearCacheImageFlag()
+        loadExemption()
         mode = MODE_READ;
     }
     
@@ -294,8 +295,12 @@ public class FAASModel
          return '_close'
      }
      
+    def _exemptions
+     
     def getExemptions(){
-        return service.getExemptionTypes();
+        if (!_exemptions)
+            _exemptions = service.getExemptionTypes();
+        return _exemptions;
     }
     
     def getFaasType(){
@@ -363,6 +368,10 @@ public class FAASModel
             }
         }
         return new java.text.SimpleDateFormat('yyyy-MM-dd').format(dt);
+    }
+    
+    void loadExemption(){
+        entity.rpu.exemptiontype = exemptions.find{it.objid == entity.rpu.exemptiontype?.objid}
     }
 
 }

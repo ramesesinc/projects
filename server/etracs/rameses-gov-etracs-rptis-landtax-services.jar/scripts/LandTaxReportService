@@ -3,7 +3,7 @@ import com.rameses.common.*;
 
 class LandTaxReportService
 {
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @ActiveDB('landtaxreport_collection')

@@ -94,7 +94,7 @@ public class CancelledFAASController extends PageFlowController
             onempty :{
                 entity.faas = null;
                 entity.lasttaxyear = null;
-                binding.refresh('entity.lasttaxyear');
+                binding?.refresh('entity.lasttaxyear');
             }
         ])
     }
@@ -106,7 +106,7 @@ public class CancelledFAASController extends PageFlowController
         ledger = querySvc.findFirst(param)
         if(ledger){
             entity.lasttaxyear = ledger.lastyearpaid
-            binding.refresh('entity.lasttaxyear');
+            binding?.refresh('entity.lasttaxyear');
         }
     }
     

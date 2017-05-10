@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class TDReportService
 {
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @ActiveDB('tdreport')
@@ -117,7 +117,7 @@ class TDReportService
 
 	def getPreviousInfo(list, fieldname){
 		def info = ''
-		list[fieldname].each{
+		list[fieldname].unique().each{
 			if (it){
 				if (info) info += ' / '
 				info += it 
@@ -136,6 +136,7 @@ class TDReportService
 		faas.prevmv = getPreviousInfo(list, 'prevmv')
 		faas.prevareasqm = getPreviousInfo(list, 'prevareasqm')
 		faas.prevareaha = getPreviousInfo(list, 'prevareaha')
+		faas.preveffectivity = getPreviousInfo(list, 'preveffectivity')
 	}
 
 	void buildAdjustmentFactor(td){

@@ -18,6 +18,7 @@ class RPTCertificationMultipleService
 		em.insertMultipleItems(cert)
 		cert.items = getMultipleItems(cert)
 		certSvc.buildFootNotes(cert)
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 

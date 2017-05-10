@@ -39,6 +39,9 @@ public class FAASGRBatchModel
             taxmapper   : [:],
             recommender : [:],
             approver    : [:],
+            inititems   : true,
+            autoapprove : false,
+            interval    : 100,
         ]
         lgus = lguSvc.getLgus();
     }         
@@ -165,8 +168,12 @@ public class BatchGRTask implements Runnable{
     def onrevise;
 
     public void run(){
-        svc.buildItemsForRevision(params);
+        println 'params.inititems -> ' + params.inititems
+        if (params.inititems == true){
+            svc.buildItemsForRevision(params);
+        }
         
+        if (params.interval == null) params.interval = 10;
         params.count = 25;
         items = svc.getFaasesForRevision(params)
         
@@ -178,6 +185,7 @@ public class BatchGRTask implements Runnable{
                     params.datacapture = true;
                     def retval = svc.reviseFaas(params);
                     onrevise(retval);
+                    sleep(params.interval);
                 }
                 catch(err){
                     err.printStackTrace();

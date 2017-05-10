@@ -137,50 +137,6 @@ WHERE rl.objid = $P{rptledgerid}
   and ba.billid = $P{billid}
 
 
-
-[deletePartialledItems]
-delete from rptledgeritem_qtrly_partial where rptledgerid = $P{rptledgerid}
-
-
-[insertPartialledItems]
-insert into rptledgeritem_qtrly_partial(
-    objid,
-    rptledgerid,
-    year,
-    qtr,
-    basicpaid,
-    basicintpaid,
-    basicdisctaken,
-    basicidlepaid,
-    basicidleintpaid,
-    basicidledisctaken,
-    sefpaid,
-    sefintpaid,
-    sefdisctaken,
-    firecodepaid
-)
-select
-    bi.objid,
-    bi.rptledgerid,
-    bi.year,
-    bi.qtr,
-    bi.basic as basicpaid,
-    bi.basicint as basicintpaid,
-    bi.basicdisc as basicdisctaken,
-    bi.basicidle as basicidlepaid,
-    bi.basicidleint as basicidleintpaid,
-    bi.basicidledisc as basicidledisctaken,
-    bi.sef as sefpaid,
-    bi.sefint as sefintpaid,
-    bi.sefdisc as sefdisctaken,
-    bi.firecode as firecodepaid
-FROM rptledger rl
-        INNER JOIN rptbill_ledger_item bi ON rl.objid = bi.rptledgerid
-        INNER JOIN rptledgeritem rli on bi.rptledgeritemid = rli.objid 
-WHERE rl.objid = $P{rptledgerid}
-    and bi.billid = $P{billid}
-    and bi.partialled = 1 
-
 [deletePaidOnlineItems]  
 DELETE FROM rptbill_ledger_item 
 WHERE rptledgerid = $P{rptledgerid}
@@ -211,14 +167,14 @@ WHERE objid = $P{rptledgerid}
 [updateLedgerItemQrtrlyPayment]
 update rliq set
 	rliq.basicpaid = rliq.basicpaid + cro.basic,
-	rliq.basicintpaid = rliq.basicintpaid + cro.basicint,
-	rliq.basicdisctaken = rliq.basicdisctaken + cro.basicdisc,
+	rliq.basicint = rliq.basicint - cro.basicint,
+	rliq.basicdisc = rliq.basicdisc - cro.basicdisc,
 	rliq.basicidlepaid = rliq.basicidlepaid + cro.basicidle,
-	rliq.basicidledisctaken = rliq.basicidledisctaken + cro.basicidledisc,
-	rliq.basicidleintpaid = rliq.basicidleintpaid + cro.basicidleint,
+	rliq.basicidledisc = rliq.basicidledisc - cro.basicidledisc,
+	rliq.basicidleint = rliq.basicidleint - cro.basicidleint,
 	rliq.sefpaid = rliq.sefpaid + cro.sef,
-	rliq.sefintpaid = rliq.sefintpaid + cro.sefint,
-	rliq.sefdisctaken = rliq.sefdisctaken + cro.sefdisc,
+	rliq.sefint = rliq.sefint - cro.sefint,
+	rliq.sefdisc = rliq.sefdisc - cro.sefdisc,
 	rliq.firecodepaid = rliq.firecodepaid + cro.firecode,
 	rliq.partialled = cro.partialled 
 from rptledgeritem_qtrly rliq, cashreceiptitem_rpt_online cro 

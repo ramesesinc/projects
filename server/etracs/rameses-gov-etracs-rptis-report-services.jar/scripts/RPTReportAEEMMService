@@ -33,9 +33,11 @@ class RPTReportAEEMMService
 	@ProxyMethod
 	public Map buildReport( params ) {
 		params.lguid = params.lgu?.objid 
+		params.filter = ''
+
 		def title = 'AEEMM Form No. 2 Report'
 		util.buildReportTitlePeriod(title, params)
-		util.buildEndingPeriodFilter(params)
+		util.buildStartEndDateFilter(params)
 
 		if (params.barangay){
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 

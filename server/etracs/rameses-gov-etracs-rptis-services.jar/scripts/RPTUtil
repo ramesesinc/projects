@@ -10,7 +10,7 @@ class RPTUtil
     @Env 
     def env 
     
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @Service('DateService')

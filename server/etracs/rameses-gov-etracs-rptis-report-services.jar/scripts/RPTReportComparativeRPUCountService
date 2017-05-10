@@ -26,26 +26,28 @@ class RPTReportComparativeRPUCountService
     @Async
 	@ProxyMethod
 	public Map generateComparativeRpuCount(params) {
-		params.lguid = params.lgu?.objid 
-		if (params.barangay){
-			params.barangayid = params.barangay.objid
+		params.filter = ''
+
+		if (params.lgu){
+			params.lguid = params.lgu.objid 
+			params.filter = ' AND f.lguid =  $P{lguid} ' 
 		}
 
-		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON NUMBER OF RPUs', params)
+		if (params.barangay){
+			params.barangayid = params.barangay.objid 
+			params.filter += ' AND rp.barangayid = $P{barangayid} '
+		}
 
-		util.buildPreceedingPeriodFilter(params)
+
+		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON NUMBER OF RPUs', params)
+		util.buildStartEndDateFilter(params)
+
 		def taxablepreceedings 	= em.getPreceedingComparativeRpuCount(params)
 		def exemptpreceedings 	= em.getPreceedingComparativeRpuCountExempt(params)
-
-		util.buildCurrentPeriodFilter(params)
 		def taxablecurrents 	= em.getNewDiscoveryComparativeRpuCount(params)
 		def exemptcurrents 	= em.getNewDiscoveryComparativeRpuCountExempt(params)
-		
-		util.buildCurrentCancelledPeriodFilter(params)
 		def taxablecancelleds 	= em.getCancelledComparativeRpuCount(params)
 		def exemptcancelleds 	= em.getCancelledComparativeRpuCountExempt(params)
-		
-		util.buildEndingPeriodFilter(params)
 		def taxableendings 		= em.getEndingComparativeRpuCount(params)
 		def exemptendings 		= em.getEndingComparativeRpuCountExempt(params)
 		

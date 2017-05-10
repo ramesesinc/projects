@@ -46,7 +46,7 @@ class AEEMMReportModel extends com.rameses.gov.etracs.rpt.report.AsyncReportCont
             return [
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL']),
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
-                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.name}', dynamic:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.caption}', dynamic:true, preferredSize:'100,19']),
             ]
         },
    ] as FormPanelModel;

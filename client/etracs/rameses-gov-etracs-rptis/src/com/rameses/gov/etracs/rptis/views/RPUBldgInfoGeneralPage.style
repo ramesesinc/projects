@@ -23,10 +23,6 @@
     enabled:false;
 }
 
-"entity.rpu.*|classification"  [entity.datacapture == 0 && entity.txntype.objid.matches('SD|CS|')] {
-    enabled:false;
-}
-
 "entity.*"  [entity._resolve == true] {
     enabled:true;
 }

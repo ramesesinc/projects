@@ -7,5 +7,5 @@
             target="window" index="1001"
             domain="LANDTAX" role="REPORT" permission="unrestricted-property.generate"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.rptis.report.model.UnrestrictedPropertyModel"/>
+    <code class="com.rameses.gov.etracs.rptis.report.models.UnrestrictedPropertyModel"/>
 </workunit>

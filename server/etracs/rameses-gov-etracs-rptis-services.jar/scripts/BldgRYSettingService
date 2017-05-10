@@ -264,8 +264,8 @@ public class BldgRYSettingService
 
     
     @ProxyMethod
-    public List getDepreciations( bldgtypeid ) {
-        return em_depreciation.find([bldgtypeid:bldgtypeid]).orderBy('agefrom').list()
+    public List getDepreciations( bldgtype ) {
+        return em_depreciation.find([bldgtypeid:bldgtype.objid]).orderBy('agefrom').list()
     }
 
 

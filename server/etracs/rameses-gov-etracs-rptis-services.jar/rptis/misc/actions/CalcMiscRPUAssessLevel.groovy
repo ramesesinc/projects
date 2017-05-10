@@ -8,6 +8,7 @@ import rptis.misc.facts.*;
 public class CalcMiscRPUAssessLevel implements RuleActionHandler {
 	def request
 	def em
+	def NS 
 
 	public void execute(def params, def drools) {
 		def miscrpu = params.miscrpu
@@ -23,7 +24,7 @@ public class CalcMiscRPUAssessLevel implements RuleActionHandler {
 		        if( range ) 
 		        	miscrpu.assesslevel = range.rate 
 		        else
-		        	throw new Exception('Market Value of P' + NS.format('#,##0.00', miscitem.marketvalue) + ' has no equivalent assess level rate defined.')
+		        	throw new Exception('Market Value of P' + NS.format('#,##0.00', miscrpu.marketvalue) + ' has no equivalent assess level rate defined.')
 	        }
 		}
 	}

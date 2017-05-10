@@ -6,8 +6,8 @@
     enabled:false;
 }
 
-"addMachine"[allowEdit == false]{
-    visible:false;
+"addMachine"[mode=='read']{
+    enabled:false;
 }
 
 "editMachine|openMachine" [ selectedItem == null] {
@@ -22,7 +22,7 @@
     visible:true;
 }
 
-"addMachine"[allowEdit == true]{
-    visible:true;
+"addMachine"[mode!='read']{
+    enabled:true;
 }
 

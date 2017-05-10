@@ -27,12 +27,13 @@ from faas f
 where f.lguid like $P{lguid}
   and f.state = 'CURRENT'
   and lspc.objid = $P{landspecificclassid}
+  and rp.ry = $P{ry}
   and rp.barangayid like $P{barangayid}
-  and spc.classification_objid like $P{classificationid}
   and rp.section like $P{section}
+  and spc.classification_objid like $P{classificationid}
 group by 
 	o.name, b.name, 
-	f.tdno, f.fullpin, f.owner_name, f.owner_address, f.administrator_name,
-	rp.cadastrallotno, rp.blockno, rp.surveyno,
+	f.tdno, f.fullpin, f.titleno, f.owner_name, f.owner_address, f.administrator_name,
+	rp.cadastrallotno, rp.blockno, rp.surveyno, rp.pin, r.suffix, 
 	lspc.name, spc.areatype
 order by o.name, b.name, rp.pin, r.suffix 

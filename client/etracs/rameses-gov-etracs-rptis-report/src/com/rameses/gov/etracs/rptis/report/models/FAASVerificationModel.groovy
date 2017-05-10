@@ -1,4 +1,4 @@
-package com.rameses.gov.etracs.rptis.report.model;
+package com.rameses.gov.etracs.rptis.report.models;
 
 
 import com.rameses.rcp.annotations.*

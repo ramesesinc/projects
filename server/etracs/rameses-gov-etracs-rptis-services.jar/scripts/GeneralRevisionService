@@ -9,7 +9,7 @@ class GeneralRevisionService
 	@ActiveDB('generalrevision')
 	def grdb 
 
-	@PersistenceContext('rpt')
+	@PersistenceContext('main')
 	def em
     
 	@Env

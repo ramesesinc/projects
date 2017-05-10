@@ -45,9 +45,6 @@ public class RPTBillingService
 	@DataContext('faas_restriction')
 	def em_faas_restriction;
 
-	@DataContext('rptledger_item_qtrly_partial')
-	def em_partial;
-
 	@Service()
 	def self 
 
@@ -98,7 +95,6 @@ public class RPTBillingService
 	        def endyear = ( bill.billtoyear < cy ? cy : bill.billtoyear)
 	        ledgerSvc.postLedgerItemsUptoYear(bill.rptledger, endyear)
         	bill.incentives = em.getIncentivesByLedgerId(bill)
-        	updatePartialledItems(bill)
         	calculateTaxDues(bill)
         	calculatePenaltyDiscount(bill)
         	updateNextBillDate(bill)
@@ -286,6 +282,7 @@ public class RPTBillingService
 	============================================================*/
 	@ProxyMethod
 	public void doCalculateTaxDues(bill){
+		bill.calctype = 'tax'
 		def facts = createFacts(bill)
 		def actions = buildActions(bill, facts)
 
@@ -307,8 +304,12 @@ public class RPTBillingService
 		doCalculateTaxDues(bill)		
 
 		if (bill._commit == null || bill._commit == true){
-			bill.calctype = 'tax'
-			updateLedgerItemData(bill)
+			bill.items.each{
+				it.calctype = bill.calctype
+				em.updateLedgerItemTaxData(it)
+				distributeLedgerItemQtrlyData(it)
+			}
+			updateLedgerItemFromAggregatedQtrlyData(bill)
 		}
 		return bill 
 	}
@@ -316,6 +317,7 @@ public class RPTBillingService
 
 	@ProxyMethod
 	public void doCalculatePenaltyDiscount( bill ) {
+		bill.calctype = 'penaltydisc'
 		def facts = createFacts(bill)
 		def actions = buildActions(bill, facts)
 
@@ -350,26 +352,20 @@ public class RPTBillingService
 		doCalculatePenaltyDiscount(bill)
 
 		if (bill._commit == null || bill._commit == true){
-			bill.calctype = 'penaltydisc'
-			updateLedgerItemData(bill)
+			bill.items.each{
+				it.calctype = bill.calctype
+				em.updateLedgerItemPenaltyDiscData(it)
+				if (it.qtrlycomputed == 0 && it.haspayment==0){
+					em.updateLedgerItemPenaltyDiscData(it)
+					distributeLedgerItemQtrlyData(it)
+				}
+				else {
+					em.updateLedgerItemQtrlyPenaltyDiscData(it)
+				}
+				updateLedgerItemFromAggregatedQtrlyData(bill)
+			}
 		}
 		return bill 
-	}
-
-
-	void updateLedgerItemData(bill){
-		//update rptledgeritem and rptledgeritemqtrly dues
-		bill.items.each{
-			it.calctype = bill.calctype
-			if (it.qtrlycomputed == 0){
-				em.updateLedgerItemData(it)
-				distributeLedgerItemQtrlyData(it)
-			}
-			else {
-				em.updateLedgerItemQtrlyData(it)
-			}
-		}
-		updateLedgerItemFromAggregatedQtrlyData(bill)
 	}
 
 	@ProxyMethod
@@ -387,13 +383,25 @@ public class RPTBillingService
 		return 0.0
 	}
 
-	def computeQtrlyValues(totalav, qtrlyitems, avfield, value){
+	def computeQtrlyValues(totalav, qtrlyitems, avfield, value, startqtr){
 		def qtrly = []
 		qtrly[0] = [value:0.0]
-		qtrly[1] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 1) / totalav * value)]
-		qtrly[2] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 2) / totalav * value)]
-		qtrly[3] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, 3) / totalav * value)]
-		qtrly[4] = [value:value - qtrly.value.sum()]
+		qtrly[1] = [value:0.0]
+		qtrly[2] = [value:0.0]
+		qtrly[3] = [value:0.0]
+		qtrly[4] = [value:0.0]
+		if (totalav > 0){
+			startqtr.upto(4){qtr -> 
+				if (qtr == 4){
+					qtrly[4] = [value:value - qtrly.value.sum()]
+				}
+				else {
+					qtrly[qtr] = [value:numSvc.round(value / (5 - startqtr))]
+					//qtrly[qtr] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, qtr) / totalav * value)]
+				}
+			}
+		}
+
 		return qtrly 
 	}
 
@@ -408,28 +416,33 @@ public class RPTBillingService
 			qitem.putAll(item)
 			qitem.objid = id 
 
-			def basic = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basic)
-			def basicint = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicint)
-			def basicdisc = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicdisc)
-			def basicidle = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicidle)
-			def basicidleint = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicidleint)
-			def basicidledisc = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicidledisc)
-			def sef = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sef)
-			def sefint = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sefint)
-			def sefdisc = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sefdisc)
-			def firecode = computeQtrlyValues(item.av, qtrlyitems, 'av', item.firecode)
+			def basic = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basic, startqtr)
+			def basicint = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicint, startqtr)
+			def basicdisc = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicdisc, startqtr)
+			def basicidle = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicidle, startqtr)
+			def basicidleint = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicidleint, startqtr)
+			def basicidledisc = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicidledisc, startqtr)
+			def sef = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sef, startqtr)
+			def sefint = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sefint, startqtr)
+			def sefdisc = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sefdisc, startqtr)
+			def firecode = computeQtrlyValues(item.av, qtrlyitems, 'av', item.firecode, startqtr)
 
-			qitem.basic = basic[qtr].value 
-			qitem.basicint = basicint[qtr].value
-			qitem.basicdisc = basicdisc[qtr].value
-			qitem.basicidle = basicidle[qtr].value
-			qitem.basicidledisc = basicidledisc[qtr].value
-			qitem.basicidleint = basicidleint[qtr].value
-			qitem.sef = sef[qtr].value
-			qitem.sefint = sefint[qtr].value
-			qitem.sefdisc = sefdisc[qtr].value
-			qitem.firecode = firecode[qtr].value
-			em.updateLedgerItemQtrlyData(qitem)
+			if (item.calctype == 'tax'){
+				qitem.basic = basic[qtr].value 
+				qitem.basicidle = basicidle[qtr].value
+				qitem.sef = sef[qtr].value
+				qitem.firecode = firecode[qtr].value
+				em.updateLedgerItemQtrlyTaxData(qitem)
+			}
+			else {
+				qitem.basicint = basicint[qtr].value
+				qitem.basicdisc = basicdisc[qtr].value
+				qitem.basicidledisc = basicidledisc[qtr].value
+				qitem.basicidleint = basicidleint[qtr].value
+				qitem.sefint = sefint[qtr].value
+				qitem.sefdisc = sefdisc[qtr].value
+				em.updateLedgerItemQtrlyPenaltyDiscData(qitem)
+			}
 		}
 	}
 
@@ -768,6 +781,7 @@ public class RPTBillingService
 				bill.forcerecalcbill = 1
 			}
 		}
+		bill.billyear = dtSvc.getYear(bill.billdate)
 
 		util.required('Bill To Year', bill.billtoyear)
 		util.required('Bill To Qtr', bill.billtoqtr)
@@ -1092,29 +1106,4 @@ public class RPTBillingService
 		}
 	}
 
-	void updatePartialledItems(bill){
-		if (bill.advancebill &&  dtSvc.getYear(bill.billdate) > bill.curryear){
-			println 'reset'
-			em.resetLedgerItemDiscTaken(bill)
-			em.resetLedgerItemQtrlyDiscTaken(bill)
-		}
-		else{
-			def partial = em_partial.find([rptledgerid:bill.rptledgerid]).first();
-			if (partial){
-				def qtrlyitem = ledgerSvc.findLedgerItemQtrlyByYearQtr(partial)
-				qtrlyitem.basicpaid = partial.basicpaid
-				qtrlyitem.basicintpaid = partial.basicintpaid
-				qtrlyitem.basicdisctaken = partial.basicdisctaken
-				qtrlyitem.basicidlepaid = partial.basicidlepaid
-				qtrlyitem.basicidledisctaken = partial.basicidledisctaken
-				qtrlyitem.basicidleintpaid = partial.basicidleintpaid
-				qtrlyitem.sefpaid = partial.sefpaid
-				qtrlyitem.sefintpaid = partial.sefintpaid
-				qtrlyitem.sefdisctaken = partial.sefdisctaken
-				qtrlyitem.firecodepaid = partial.firecodepaid
-				qtrlyitem.total = 
-				ledgerSvc.updateLedgerItemQtrly(qtrlyitem)
-			}
-		}
-	}
 }

@@ -23,7 +23,7 @@ class AgriLandActualUseSummaryController extends com.rameses.gov.etracs.rpt.repo
     
     String title = 'Agricultural Land Area by Actual Use Summary';
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
     String reportName = reportPath + 'agriland_actualuse_summary.jasper';
     
     

@@ -18,6 +18,9 @@ class FAASRestrictionService
 	@DataContext('rptledger')
 	def em_ledger
 
+	@DataContext('rpu')
+	def em_rpu 
+
 
 	@ProxyMethod
 	public def approve( entity ) {
@@ -28,6 +31,7 @@ class FAASRestrictionService
 			throw new Exception('Record has already been unrestricted.')
 		entity.state = 'ACTIVE'
 		entity.ledger = em_ledger.find([faasid:entity.parent.objid]).first() 
+		entity.rpumaster = em_rpu.find([objid:entity.parent.rpuid]).first()
 		return em.update(entity)
 	}
 

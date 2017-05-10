@@ -17,8 +17,9 @@
 		<field name="createdby_objid" />
 		<field name="createdby_name" />
 		<field name="dtcreated" type="timestamp" />
+		<field name="rpumaster_objid" />
 		<complex name="parent" ref="faas" jointype="many-to-one" required="true"
-			includefields="tdno,fullpin,owner_name">
+			includefields="tdno,fullpin,owner_name,rpuid">
 			<key field="parent_objid" target="objid" />
 		</complex>
 		<complex name="restrictiontype" ref="faas_restriction_type" jointype="many-to-one" required="true">

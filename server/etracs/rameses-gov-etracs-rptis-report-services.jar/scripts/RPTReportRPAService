@@ -38,15 +38,62 @@ class RPTReportRPAService
     @Async
 	@ProxyMethod
 	public Map generateReportOnRPA( params ) {
+		buildFilter(params)
+
+		def taxableclasses = []
+		def exemptclasses = []
+		def restrictions = []
+
+		if (params.reporttype.type == 'standard'){
+			taxableclasses = buildTaxableClasses(em.getTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getExempts(params), params)	
+		}
+		else if (params.reporttype.type == 'lift'){
+			taxableclasses = buildTaxableClasses(em.getLintTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getLintExempts(params), params)	
+		}
+		else if (params.reporttype.type == 'lift_restriction'){
+			restrictions = buildRestrictions(params)
+		}
+		else if (params.reporttype.type == 'lift_idleland'){
+			taxableclasses = buildTaxableClasses(em.getLintIdleLandTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getLintIdleLandExempts(params), params)	
+		}
+		else{
+			throw new Exception('Report Type ' + params.reporttype.caption + ' is not supported.')
+		}
+
+
+		def p = [
+			PERIOD 		: params.period,
+			PERIODTYPE 	: params.periodtype,
+			TITLE 		: params.title,
+			FORLGUNAME  : (params.lgu ? params.lgu.name : (env.ORGCLASS + ' OF ' + env.ORGNAME)),
+			LGUTYPE     : (params.lgu ? params.lgu.lgutype : env.ORGCLASS), 
+			BRGYCOUNT   : getBarangays(params).size(),
+			BARANGAY    : params.barangay?.name,
+			BASICRATE   : params.basicrate, 
+			SEFRATE     : params.sefrate, 
+		]
+		
+		return [
+			parameters  : p, 
+			reportdata  : taxableclasses + exemptclasses + restrictions,
+		]
+	}
+
+	void buildFilter(params){
+		params.filter = ''
+		params.title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
+
 		params.lguid = params.lgu?.objid 
-		def title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
-		if ('period'.equalsIgnoreCase(params.reporttype.type)){
-			util.buildReportTitlePeriod(title, params)
-			util.buildEndingPeriodFilter(params)
+
+		if (params.periodtype.type.matches('monthly|quarterly')){
+			util.buildReportTitlePeriod(params.title, params)
+			util.buildStartEndDateFilter(params)
 		}
 		else {
-			params.filter = ' f.dtapproved <= $P{asofdate} '
-			params.title = title 
+			params.enddate = params.asofdate
 			params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.parse('yyyy-MM-dd', params.asofdate))
 		}
 
@@ -54,18 +101,24 @@ class RPTReportRPAService
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
 			params.barangayid = params.barangay.objid 
 		}
+	}
 
-		if (params.classification){
-			params.filter += ' AND r.classification_objid = $P{classid} '
-			params.classid = params.classification.objid 
-		}
+	def buildTaxableClasses(taxables, params){
+		taxables.each{ item ->
+			if (params.reporttype.type == 'standard'){
+				item.basicrate = params.basicrate
+				item.sefrate = params.sefrate
+				item.basictax = numSvc.round((item.totalav - item.totalrestrictionav) * item.basicrate )
+				item.seftax = numSvc.round((item.totalav - item.totalrestrictionav) * item.sefrate )
+			}
+			else {
+				def cls =params.classifications.find{it.objid == item.classid}
+				item.basicrate = (cls?.basicrate == null ? 0 : cls.basicrate / 100.0)
+				item.sefrate = (cls?.sefrate == null ? 0 : cls.sefrate / 100.0)
 
-		params.lguid = params.lgu?.objid 
-
-		def taxables = em.getReportOnRPATaxable(params).each{ 
-			it.rpucount = util.toInteger2( it.rpucount, 0)
-			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
-			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+				item.basictax = numSvc.round(item.totalav * item.basicrate)
+				item.seftax = numSvc.round(item.totalav * item.sefrate)	
+			}
 		}
 		
 		int lineno = 1
@@ -89,14 +142,40 @@ class RPTReportRPAService
 				charindex += 1;
 			}
 		}
-		
-		def exempts  = em.getReportOnRPAExempt(params).each{ 
-			it.rpucount = util.toInteger2( it.rpucount, 0)
-			it.basictax = numSvc.round((it.totalav - it.totalrestrictionav) * params.basicrate / 100.0)
-			it.seftax = numSvc.round((it.totalav - it.totalrestrictionav) * params.sefrate / 100.0)
+	}
+
+
+	def buildRestrictions(params){
+		def restrictions = em.getLintRestrictions(params)
+		restrictions.each{ item -> 
+			if (params.reporttype.type == 'standard'){
+				item.basicrate = params.basicrate/100.0
+				item.sefrate = params.sefrate/100.0
+				item.basictax = numSvc.round((item.totalav - item.totalrestrictionav) * item.basicrate)
+				item.seftax = numSvc.round((item.totalav - item.totalrestrictionav) * item.sefrate)
+				
+			}
+			else {
+				def cls =params.classifications.find{it.objid == item.classid}
+				item.basicrate = (cls?.basicrate == null ? 0 : cls.basicrate / 100.0)
+				item.sefrate = (cls?.sefrate == null ? 0 : cls.sefrate / 100.0)
+
+				item.basictax = numSvc.round(item.totalav * item.basicrate )
+				item.seftax = numSvc.round(item.totalav * item.sefrate)	
+				
+			}
+		}
+	}
+
+
+
+	def buildExemptClasses(exempts, params){
+		int lineno = 1
+		exempts.each{ 
+			it.basictax = 0.0
+			it.seftax = 0.0
 		}
 		
-		lineno = 1 
 		def exemptclasses  = getExemptionTypes();
 		exemptclasses.each { item -> 
 			def exempt = exempts.find{ it.classid == item.objid }
@@ -107,23 +186,6 @@ class RPTReportRPAService
 			item.taxability = 'EXEMPT'
 			lineno += 1
 		}
-
-		def p = [
-			PERIOD 		: params.period,
-			PERIODTYPE 	: params.periodtype,
-			TITLE 		: params.title,
-			FORLGUNAME  : (params.lgu ? params.lgu.name : (env.ORGCLASS + ' OF ' + env.ORGNAME)),
-			LGUTYPE     : (params.lgu ? params.lgu.lgutype : env.ORGCLASS), 
-			BRGYCOUNT   : getBarangays(params).size(),
-			BARANGAY    : params.barangay?.name,
-			BASICRATE   : params.basicrate, 
-			SEFRATE     : params.sefrate, 
-		]
-		
-		return [
-			parameters  : p, 
-			reportdata  : taxableclasses + exemptclasses,
-		]
 	}
 
 
@@ -141,4 +203,6 @@ class RPTReportRPAService
     public def getBarangays(params){
     	return lguSvc.lookupBarangaysByRootId(params.lguid)	
     }
+
+
 }

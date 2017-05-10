@@ -36,10 +36,12 @@ class TMCRDetailedController extends com.rameses.gov.etracs.rpt.report.AsyncRepo
     def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
-                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
-                new FormControl( "integer", [caption:'Year', name:'entity.ry', required:true, preferredSize:'50,21']),            
-                new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19', required:true]),
+                new FormControl( "combo", [captionWidth:110, caption:'LGU', name:'entity.lgu', required:true, allowNull:false, items:'lgus', expression:'#{item.name}']),
+                new FormControl( "combo", [captionWidth:110,caption:'Barangay', name:'entity.barangay', required:true, allowNull:false, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
+                new FormControl( "integer", [captionWidth:110,caption:'Revision Year', name:'entity.ry', required:true, preferredSize:'50,21']),            
+                new FormControl( "text", [captionWidth:110,caption:'Section', name:'entity.section', preferredSize:'50,19', required:true]),
+                new FormControl( "separator", [showCaption:false, preferredSize:'0,19']),
+                new FormControl( "checkbox", [captionWidth:130, caption:'Exclude Improvements?', name:'entity.excludeimprov', preferredSize:'0,19', required:true, cellPadding:'20,0,0,0']),
             ]    
         },
    ] as FormPanelModel;

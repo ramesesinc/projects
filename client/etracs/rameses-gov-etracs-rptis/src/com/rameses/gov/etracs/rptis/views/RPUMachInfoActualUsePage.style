@@ -6,20 +6,6 @@
     readonly:false;
 }
 
-
-
-
-"entity.rpu.*" [ allowEdit == false || (entity.datacapture ==0 && entity.txntype.objid.matches('TR|SD|CS')) ] {
-    enabled:false;
-}
-
-"selectedItem" [ allowEdit == false || (entity.datacapture ==0 && entity.txntype.objid.matches('TR|SD|CS')) ] {
-    readonly:true;
-}
-
-
-
-
 "entity.rpu.*" [ allowEdit == false ] {
     enabled:false;
 }

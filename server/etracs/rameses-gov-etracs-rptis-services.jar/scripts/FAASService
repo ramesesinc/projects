@@ -211,24 +211,7 @@ class FAASService
 		//handle old data 
 		if (!faas.previousfaases) 
 			faas.previousfaases = []
-
-		if (faas.prevtdno && (! faas.previousfaases.find{it.prevtdno == faas.prevtdno})){
-			def pf = [:]
-			pf.objid = 'PF' + new java.rmi.server.UID()
-			pf.faasid = faas.objid 
-			pf.prevfaasid = null 
-			pf.prevrpuid = null 
-			pf.prevtdno = faas.prevtdno 
-			pf.prevpin = faas.prevpin
-			pf.prevowner = faas.prevowner
-			pf.prevadministrator = faas.prevadministrator
-			pf.prevav = faas.prevav
-			pf.prevmv = faas.prevmv
-			pf.prevareasqm = faas.prevareasqm
-			pf.prevareaha = faas.prevareaha
-			pf.preveffectivity = faas.preveffectivity
-			faas.previousfaases << pf 
-		}
+			
 		faas.previousfaases.each{
 			em_faas_previous.save(it)
 		}			
@@ -517,19 +500,19 @@ class FAASService
 	}	
 
 
+
 	@ProxyMethod
 	public def generateUniqueTdNo(faas){
 		if (faas.tdno) {
 			faas.utdno = faas.tdno
 		}
 		else {
-			if (env.ORGCODE)
-				faas.utdno = env.ORGCODE.replaceAll('-','') + seqSvc.getNextFormattedSeries(UTDNO_KEY)
-			else 
-				faas.utdno = seqSvc.getNextFormattedSeries(UTDNO_KEY)
+			def key = UTDNO_KEY + '-' + faas.rp.barangayid 
+			faas.utdno = faas.rp.barangayid + '-' + seqSvc.getNextFormattedSeries(key)
 		}
 		return faas.utdno 
 	}
+
 
 
 	@ProxyMethod
@@ -581,7 +564,7 @@ class FAASService
 	}
 
 	void loadRestriction(faas){
-		faas.restriction = em_restriction.find([parent_objid:faas.objid,state:'ACTIVE']).first()
+		faas.restriction = em_restriction.find([rpumaster_objid:faas.rpu.rpumasterid,state:'ACTIVE']).first()
 	}
 
 	void loadMessageList(faas){

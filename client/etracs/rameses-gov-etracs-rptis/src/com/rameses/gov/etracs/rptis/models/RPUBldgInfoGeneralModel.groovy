@@ -25,6 +25,11 @@ class RPUBldgInfoGeneralModel extends SubPageModel
         },
     ]    
 
+        
+    void init(){
+        entity.rpu.classification = classifications.find{it.objid == entity.rpu.classification?.objid}
+    }
+    
     def getClassifications(){
         return rpuSvc.getClassifications();
     }    

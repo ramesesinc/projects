@@ -43,7 +43,7 @@ class RPTReportLandSpecificClassService
 		}
 			
 		def p = [
-			TITLE : 'LIST OF ' + params.specificclass.name + ' PROPERTIES'
+			TITLE : 'LIST OF ' + params.specificclass.name + ' PROPERTIES ( Revision Year ' + params.ry + ')'
 		]
 
 		return [

@@ -89,7 +89,7 @@ FROM (
 	WHERE barangayid LIKE $P{barangayid} 
 	AND NOT EXISTS(select * from faas_restriction where ledger_objid = r.rptledgerid and state='ACTIVE')
 	${filter} 
-	GROUP BY rptledgerid, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
+	GROUP BY rptledgerid, year, case when year = $P{year} then 'A. CURRENT' else 'B. PREVIOUS' end
 )x 
 	INNER JOIN rptledger rl ON x.rptledgerid = rl.objid 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
@@ -130,6 +130,7 @@ from (
 	 and rd.year >= rlf.fromyear 
 	 and (rd.year <= rlf.toyear or rlf.toyear = 0 )
 	 and rlf.state = 'APPROVED' 
+	 and rl.classification_objid like $P{classificationid}
 	 ${filter} 
 	group by 
 		rd.dtgenerated,
@@ -167,7 +168,7 @@ FROM (
 	WHERE NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
 	GROUP BY barangayid, year  
 )x 
-WHERE year < $P{year} 
+WHERE 1=1 ${filter} 
 GROUP BY dtgenerated, barangayid, barangay_name, barangay_pin 
 ORDER BY barangay_pin  
 
@@ -193,7 +194,7 @@ FROM (
 		inner join propertyclassification pc on rl.classification_objid = pc.objid 
 	where NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
 )x 
-WHERE year < $P{year} 
+WHERE 1=1 ${filter} 
 GROUP BY dtgenerated, barangayid, barangay_name, classification, idx 
 ORDER BY barangay_name, idx 
 
@@ -217,3 +218,40 @@ from (
 	and refdate < $P{dtgenerated}
 )x
 order by x.receiptdate desc 
+
+
+
+[getCertifiedList]
+select 
+	dtgenerated, classid, classname, 
+	case when special=0 then classname else concat('SPECIAL CLASS - ',classname) end as classification,  
+	special, classindexno, barangayid, barangayname, barangayindexno, 
+	sum(landav) as landav, sum(machav) as machav, sum(impav) as impav, sum(annualtax) as annualtax, 
+	sum(basic) as basic, sum(basicint) as basicint, sum(basictotal) as basictotal, 
+	sum(sef) as sef, sum(sefint) as sefint, sum(seftotal) as seftotal, sum(grandtotal) as grandtotal 
+from ( 
+	select 
+		xx.dtgenerated, rl.classification_objid as classid, pc.name as classname, pc.orderno as classindexno, pc.special, 
+		xx.barangayid, brgy.name as barangayname, brgy.indexno as barangayindexno, 
+		xx.annualtax, xx.basic, xx.basicint, xx.basictotal, xx.sef, xx.sefint, xx.seftotal, xx.grandtotal, 
+		(case when rl.rputype='land' then rl.totalav else 0.0 end) as landav, 
+		(case when rl.rputype='mach' then rl.totalav else 0.0 end) as machav, 
+		(case when rl.rputype in ('bldg','misc','planttree') then rl.totalav else 0.0 end) as impav 
+	from ( 
+		select 
+			rpt.dtgenerated, rpt.barangayid, rpt.rptledgerid, sum(rpt.basic - rpt.basicdisc + rpt.sef - rpt.sefdisc) as annualtax, 
+			sum(rpt.basic - rpt.basicdisc) as basic, sum(rpt.basicint) as basicint, sum(rpt.basic - rpt.basicdisc + rpt.basicint) as basictotal,
+			sum(rpt.sef - rpt.sefdisc) as sef, sum(rpt.sefint) as sefint, sum(rpt.sef - rpt.sefdisc + rpt.sefint) as seftotal,  
+			sum(rpt.basic - rpt.basicdisc + rpt.basicint + rpt.sef - rpt.sefdisc + rpt.sefint) as grandtotal 
+		from report_rptdelinquency rpt 
+		where 1=1 ${filter} 
+		group by rpt.dtgenerated, rpt.barangayid, rpt.rptledgerid 
+	)xx 
+		inner join rptledger rl on xx.rptledgerid=rl.objid 
+		inner join barangay brgy on xx.barangayid=brgy.objid 
+		inner join faas on rl.faasid=faas.objid 
+		inner join propertyclassification pc on rl.classification_objid=pc.objid 
+	where rl.state='APPROVED' and faas.state='CURRENT' 
+)xx 
+group by dtgenerated, classid, classname, special, classindexno, barangayid, barangayname, barangayindexno 
+order by special, classindexno, classname, barangayindexno 

@@ -136,52 +136,6 @@ WHERE rl.objid = $P{rptledgerid}
   and ba.billid = $P{billid}
 
 
-[deletePartialledItems]
-delete from rptledgeritem_qtrly_partial where rptledgerid = $P{rptledgerid}
-
-
-[insertPartialledItems]
-insert into rptledgeritem_qtrly_partial(
-    objid,
-    rptledgerid,
-    year,
-    qtr,
-    basicpaid,
-    basicintpaid,
-    basicdisctaken,
-    basicidlepaid,
-    basicidleintpaid,
-    basicidledisctaken,
-    sefpaid,
-    sefintpaid,
-    sefdisctaken,
-    firecodepaid
-)
-select
-    bi.objid,
-    bi.rptledgerid,
-    bi.year,
-    bi.qtr,
-    bi.basic as basicpaid,
-    bi.basicint as basicintpaid,
-    bi.basicdisc as basicdisctaken,
-    bi.basicidle as basicidlepaid,
-    bi.basicidleint as basicidleintpaid,
-    bi.basicidledisc as basicidledisctaken,
-    bi.sef as sefpaid,
-    bi.sefint as sefintpaid,
-    bi.sefdisc as sefdisctaken,
-    bi.firecode as firecodepaid
-FROM rptledger rl
-        INNER JOIN rptbill_ledger_item bi ON rl.objid = bi.rptledgerid
-        INNER JOIN rptledgeritem rli on bi.rptledgeritemid = rli.objid 
-WHERE rl.objid = $P{rptledgerid}
-    and bi.billid = $P{billid}
-    and bi.partialled = 1 
-      
-
-
-
 [deletePaidOnlineItems]  
 DELETE FROM rptbill_ledger_item 
 WHERE rptledgerid = $P{rptledgerid}
@@ -212,14 +166,14 @@ WHERE objid = $P{rptledgerid}
 [updateLedgerItemQrtrlyPayment]
 update rptledgeritem_qtrly rliq, cashreceiptitem_rpt_online cro set
 	rliq.basicpaid = rliq.basicpaid + cro.basic,
-	rliq.basicintpaid = rliq.basicintpaid + cro.basicint,
-	rliq.basicdisctaken = rliq.basicdisctaken + cro.basicdisc,
+	rliq.basicint = rliq.basicint - cro.basicint,
+	rliq.basicdisc = rliq.basicdisc - cro.basicdisc,
 	rliq.basicidlepaid = rliq.basicidlepaid + cro.basicidle,
-	rliq.basicidledisctaken = rliq.basicidledisctaken + cro.basicidledisc,
-	rliq.basicidleintpaid = rliq.basicidleintpaid + cro.basicidleint,
+	rliq.basicidledisc = rliq.basicidledisc - cro.basicidledisc,
+	rliq.basicidleint = rliq.basicidleint - cro.basicidleint,
 	rliq.sefpaid = rliq.sefpaid + cro.sef,
-	rliq.sefintpaid = rliq.sefintpaid + cro.sefint,
-	rliq.sefdisctaken = rliq.sefdisctaken + cro.sefdisc,
+	rliq.sefint = rliq.sefint - cro.sefint,
+	rliq.sefdisc = rliq.sefdisc - cro.sefdisc,
 	rliq.firecodepaid = rliq.firecodepaid + cro.firecode,
 	rliq.partialled = cro.partialled 
 where cro.rptreceiptid = $P{rptreceiptid}
@@ -233,14 +187,14 @@ update rptledgeritem rli,
 	(	select 
 			parentid as rptledgeritemid, 
 			sum(basicpaid) as basicpaid,
-			sum(basicintpaid) as basicintpaid,
-			sum(basicdisctaken) as basicdisctaken,
+			sum(basicint) as basicint,
+			sum(basicdisc) as basicdisc,
 			sum(basicidlepaid) as basicidlepaid,
-			sum(basicidledisctaken) as basicidledisctaken,
-			sum(basicidleintpaid) as basicidleintpaid,
+			sum(basicidledisc) as basicidledisc,
+			sum(basicidleint) as basicidleint,
 			sum(sefpaid) as sefpaid,
-			sum(sefintpaid) as sefintpaid,
-			sum(sefdisctaken) as sefdisctaken,
+			sum(sefint) as sefint,
+			sum(sefdisc) as sefdisc,
 			sum(firecodepaid) as firecodepaid
 		from rptledgeritem_qtrly
 		where rptledgerid = $P{rptledgerid}
@@ -249,14 +203,14 @@ update rptledgeritem rli,
 	)x 
 set
 	rli.basicpaid = x.basicpaid,
-	rli.basicintpaid = x.basicintpaid,
-	rli.basicdisctaken = x.basicdisctaken,
+	rli.basicint = x.basicint,
+	rli.basicdisc = x.basicdisc,
 	rli.basicidlepaid = x.basicidlepaid,
-	rli.basicidledisctaken = x.basicidledisctaken,
-	rli.basicidleintpaid = x.basicidleintpaid,
+	rli.basicidledisc = x.basicidledisc,
+	rli.basicidleint = x.basicidleint,
 	rli.sefpaid = x.sefpaid,
-	rli.sefintpaid = x.sefintpaid,
-	rli.sefdisctaken = x.sefdisctaken,
+	rli.sefint = x.sefint,
+	rli.sefdisc = x.sefdisc,
 	rli.firecodepaid = x.firecodepaid
 where rli.rptledgerid = $P{rptledgerid}
   and rli.year >= $P{fromyear} and rli.year <= $P{toyear}
@@ -269,14 +223,8 @@ update rptledgeritem_qtrly rliq, cashreceiptitem_rpt_online cro set
 		when rliq.partialled = 1 then 0 
 		when 
 			rliq.basic <= rliq.basicpaid and 
-			rliq.basicint <= rliq.basicintpaid and 
-			rliq.basicdisc <= rliq.basicdisctaken and 
 			rliq.basicidle <= rliq.basicidlepaid and 
-			rliq.basicidledisc <= rliq.basicidledisctaken and 
-			rliq.basicidleint <= rliq.basicidleintpaid and 
 			rliq.sef <= rliq.sefpaid and 
-			rliq.sefint <= rliq.sefintpaid and 
-			rliq.sefdisc <= rliq.sefdisctaken and 
 			rliq.firecode <=  rliq.firecodepaid 
 		then 1 
 		else 0
@@ -743,14 +691,14 @@ group by rptledgerid
 [revertLedgerItemQtrlyPayment]
 update rptledgeritem_qtrly rliq, cashreceiptitem_rpt_online cro set
 	rliq.basicpaid = rliq.basicpaid - cro.basic,
-	rliq.basicintpaid = rliq.basicintpaid - cro.basicint,
-	rliq.basicdisctaken = rliq.basicdisctaken - cro.basicdisc,
+	rliq.basicint = rliq.basicint + cro.basicint,
+	rliq.basicdisc = rliq.basicdisc + cro.basicdisc,
 	rliq.basicidlepaid = rliq.basicidlepaid - cro.basicidle,
-	rliq.basicidledisctaken = rliq.basicidledisctaken - cro.basicidledisc,
-	rliq.basicidleintpaid = rliq.basicidleintpaid - cro.basicidleint,
+	rliq.basicidledisc = rliq.basicidledisc + cro.basicidledisc,
+	rliq.basicidleint = rliq.basicidleint + cro.basicidleint,
 	rliq.sefpaid = rliq.sefpaid - cro.sef,
-	rliq.sefintpaid = rliq.sefintpaid - cro.sefint,
-	rliq.sefdisctaken = rliq.sefdisctaken - cro.sefdisc,
+	rliq.sefint = rliq.sefint + cro.sefint,
+	rliq.sefdisc = rliq.sefdisc + cro.sefdisc,
 	rliq.firecodepaid = rliq.firecodepaid - cro.firecode,
 	rliq.partialled = case when rliq.basicpaid - cro.basic = 0 then 0 else 1 end,
 	rliq.fullypaid = 0

@@ -275,7 +275,7 @@ class SubdivisionSupportService
             entitySvc.save(it.taxpayer)
             it.taxpayer.address = it.taxpayer.address?.text
             it._checkTxnRef = false;
-            if (existFaas(it))
+            if (faasSvc.faasExist(it))
                 faasSvc.updateFaas(it)
             else
                 faasSvc.createFaas(it)

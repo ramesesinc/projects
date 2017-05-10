@@ -28,6 +28,9 @@ public class CancelledImprovementInfoPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
@@ -35,6 +38,7 @@ public class CancelledImprovementInfoPage extends javax.swing.JPanel {
         xButton2 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
         xTitledBorder1.setTitle("Cancellation Information");
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(90);
@@ -48,12 +52,34 @@ public class CancelledImprovementInfoPage extends javax.swing.JPanel {
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
 
+        xLabel3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xLabel3.setExpression("#{'Cancelled By:'}");
+        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel3.setShowCaption(false);
+        xFormPanel1.add(xLabel3);
+
+        xTextField2.setCaption("TD No.");
+        xTextField2.setCaptionWidth(70);
+        xTextField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xTextField2.setName("improvement.cancelledbytdnos"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xTextField2);
+
+        xTextField3.setCaption("PIN No.");
+        xTextField3.setCaptionWidth(70);
+        xTextField3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xTextField3.setName("improvement.cancelledbypins"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xTextField3);
+
         xIntegerField1.setCaption("Last Tax Year");
+        xIntegerField1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xIntegerField1.setName("improvement.lasttaxyear"); // NOI18N
         xFormPanel1.add(xIntegerField1);
 
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 150));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 120));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
@@ -94,12 +120,12 @@ public class CancelledImprovementInfoPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -109,6 +135,9 @@ public class CancelledImprovementInfoPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     // End of variables declaration//GEN-END:variables
 }

@@ -16,6 +16,9 @@ class RPUService
     @DataContext('propertyclassification')
     def propertyclassification
 
+    @DataContext('rpumaster')
+    def em_rpumaster
+
     @DataContext('exemptiontype')
     def exemptiontype
 
@@ -278,7 +281,7 @@ class RPUService
                 rpu.rpumasterid = master.objid
             else 
                 master.objid = rpu.rpumasterid
-            em.createRpuMaster(master)
+            em_rpumaster.save(master)
         }
         catch(e){
             //ignore possible duplicate when there are multiple assessments

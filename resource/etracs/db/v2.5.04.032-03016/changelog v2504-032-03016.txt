@@ -1,0 +1,12 @@
+/* v2.5.04.032-03016 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Cancel FAAS: Support editing of txndate (manual cancellation)
+	- Report AEEMM update on parcel computation
+
+- LANDTAX
+	- 

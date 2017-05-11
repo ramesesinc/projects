@@ -1,5 +1,4 @@
 [getList]
-
 select 
 	x.*,
 	case when x.rputype = 'land' then x.totalav else null end as landav,
@@ -19,8 +18,8 @@ from (
 		(select max(assessedvalue) from rptledgerfaas 
 		 where rptledgerid = rl.objid 
 			 and $P{year} >= fromyear 
-			 and ($P{year} <= toyear or toyear = 0
-			and state = 'APPROVED' )
+			 and ($P{year} <= toyear or toyear = 0)
+			and state = 'APPROVED' 
 		 ) as totalav
 	from rptledger rl 
 		inner join entity e on rl.taxpayer_objid = e.objid 

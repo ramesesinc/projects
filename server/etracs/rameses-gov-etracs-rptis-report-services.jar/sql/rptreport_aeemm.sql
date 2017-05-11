@@ -2,7 +2,7 @@
 SELECT 
 	'TAXABLE' as taxability,
 	pc.objid AS classid,
-	SUM( 1) AS rpucount,
+	SUM( case when rp.claimno is null then 1 else 0 end ) as rpucount,
 	SUM( case when rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -25,7 +25,7 @@ ORDER BY pc.orderno
 SELECT 
 	'EXEMPT' as taxability,
 	e.objid AS classid,
-	COUNT(1) AS rpucount,
+	SUM( case when rp.claimno is null then 1 else 0 end ) as rpucount,
 	SUM( case when rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
@@ -84,7 +84,7 @@ order by x.idx
 SELECT 
 	b.name as barangay, 
 	sum( 1 ) AS rpucount,
-	SUM( case when rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
+	SUM( case when r.rputype = 'land' and rp.claimno is null then r.totalareasqm else 0 end ) as totalareasqm,
 	SUM( r.totalmv) as totalmv,
 	SUM( r.totalav) as totalav
 FROM faas f

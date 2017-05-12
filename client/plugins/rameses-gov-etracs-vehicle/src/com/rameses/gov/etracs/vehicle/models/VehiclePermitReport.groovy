@@ -10,8 +10,13 @@ public class VehiclePermitReport extends CrudReportModel {
 
     @Service('VehiclePermitService') 
     def permitSvc; 
-
+    
     def permit;
+    def vehicletype;
+    
+    public String getReportName() {
+        return "com/rameses/gov/etracs/vehicle/"+ vehicletype +"/reports/permit.jasper"; 
+    }
     
     def openPermit() {
         permit = permitSvc.open([ objid: entity.permit?.objid ]);

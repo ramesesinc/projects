@@ -88,7 +88,14 @@ class VehicleCashReceiptInterceptor {
 		def pmt = pmtEm.find( [refid: r.objid] ).first();
 		pmtSvc.postVoid( [objid: pmt.objid]); 
 
-		appEm.find([objid: pmt.appid]).update([state:'PAYMENT']);
+		def app = appEm.find([ objid: pmt.appid ]).first(); 
+
+		def pp = [:];
+		pp.processname = "vehicle_application";
+		pp.refid = 	pmt.appid;
+		pp.action = 'voidpayment';
+		pp.taskid = app.taskid; 
+		taskSvc.signal( pp );
 	}
 
 }

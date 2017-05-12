@@ -2,10 +2,18 @@ import com.rameses.annotations.*;
 
 class OboAuxiliaryPermitInterceptor { 
 
+	@DataContext("obo_application")
+	def app;
 
 	@DataContext("obo_auxiliary_permit")
 	def auxPermit;
 
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'obo_auxiliary_permit' }") 
+	public void afterRead( def evt ) {
+		def o = evt.result;
+		//load the application
+		o.app = app.find( [objid: o.appid ] ).first();
+	} 
 
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'obo_auxiliary_permit' }") 
 	public void beforeRemovePermit( def evt ) {

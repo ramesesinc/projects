@@ -35,8 +35,7 @@ class OboApplicationInterceptor {
 		taskSvc.start(p);		
 	} 
 
-	@After(pattern="WorkflowTaskService.(start|signal)", 
-	  eval="#{ args[0].processname=='obo_application' }", index=100)
+	@After(pattern="WorkflowTaskService.(start|signal)", eval="#{ args[0].processname=='obo_application' }", index=100)
 	public void afterWorkflowStartAndSignal( def evt ) {
 		def p = evt.args[0];
 		def task = evt.result;
@@ -47,7 +46,6 @@ class OboApplicationInterceptor {
 	public void afterRead( def evt ) {
 		def entity = evt.result; 
 		if(faasEm!=null && entity.rptinfo?.objid!=null) {
-			faasEm.debug = true;
 			entity.rptinfo = faasEm.select("objid,fullpin,tdno").find([objid: entity.rptinfo.objid]).first();
 		}
 	}

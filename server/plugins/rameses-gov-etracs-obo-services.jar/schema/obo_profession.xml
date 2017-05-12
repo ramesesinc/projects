@@ -1,0 +1,13 @@
+<schema adapter="obodb">
+	<element tablename="obo_profession">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true" defaultValue="ACTIVE"/>
+		<field name="entity_objid" required="true"/>
+		<field name="entity_name" required="true" searchable="true"/>
+		<field name="profession"  required="true"/>
+		<field name="ptrno"  required="true" searchable="true"/>
+		<field name="prcno"  required="true" searchable="true"/>
+		<field name="validitydate"  required="true"/>
+	</element>
+</schema>
+

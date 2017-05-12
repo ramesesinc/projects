@@ -1,0 +1,22 @@
+import com.rameses.annotations.*;
+
+class SampleTest {
+	
+
+	@Context
+	def mainCtx;
+
+	@Resource('ScriptService')
+	def scriptSvc; 
+
+	@Schedule
+	public void load(tsk) {
+		def sinfo = scriptSvc.findScriptInfo( "remote/OboBillingService" );
+		def meta =  sinfo.getMetaInfo(mainCtx);
+		println "meta is " + meta.serviceName;
+		meta.methods.each {
+			println it;
+		}
+	}
+
+}

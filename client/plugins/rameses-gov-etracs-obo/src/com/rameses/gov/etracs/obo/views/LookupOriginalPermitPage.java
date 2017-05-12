@@ -11,13 +11,13 @@ import com.rameses.rcp.ui.annotations.Template;
  *
  * @author dell
  */
-@Template( FormPage.class )
-public class SelectPropertyPage extends javax.swing.JPanel {
+@Template(FormPage.class)
+public class LookupOriginalPermitPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form SelectPropertyPage
+     * Creates new form LookupOriginalPermitPage
      */
-    public SelectPropertyPage() {
+    public LookupOriginalPermitPage() {
         initComponents();
     }
 
@@ -34,11 +34,11 @@ public class SelectPropertyPage extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 636, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 385, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,0 +1,49 @@
+import com.rameses.annotations.*;
+
+class PoliceClearanceApplicationPersistenceInterceptor {
+	
+	@DataContext('mayorclearance') 
+	def mcdb;
+
+	@DataContext('policeclearance') 
+	def pcdb;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service('EntityService')
+	def entitySvc; 
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'policeclearance_application'}")
+	public void beforeCreate( evt ) {
+		def v  = evt.args[0];
+		def appno = seqSvc.getNextControlNo( "P[ORG][yyyyMM]%05d", []); 
+		if ( appno ) v.appno = appno.replaceAll("-",""); 
+
+		v.appdate = dateSvc.getBasicServerDate();
+		v.state = 'PAYMENT';
+	}
+
+	@After(pattern="PersistenceService.(create|read)", eval="#{args[0]._schemaname == 'policeclearance_application'}")
+	public void loadDefaultInfo( evt ) {
+		def r = evt.result;
+		r.barcode = '51011:'+ r.appno;
+	}
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'policeclearance_application'}")
+	public void afterOpen( evt ) {
+		def result = evt.result;
+
+		def applicant = entitySvc.open([ objid: result.applicant?.objid ]); 
+		if ( applicant ) result.applicant = applicant; 
+
+		def mc = mcdb.find([ objid: result.clearanceid ]).first(); 		
+		result.mayorclearance = mc; 		
+
+		def pc = pcdb.find([ objid: result.pcid ]).first(); 		
+		result.policeclearance = pc; 
+	} 
+}

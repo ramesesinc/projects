@@ -1,0 +1,39 @@
+<workunit schemaName="policeclearance_application">
+    <invokers>
+        <invoker type="cashreceipt_policeclearance_pending:open" caption="Police Clearance" action="create"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearanceNewApplicationModel" />   
+    
+    <pageflow>
+        <start>
+            <transition to="initial" action="init"/>
+        </start>
+        <page name="initial" title="New Police Clearance">
+            <transition to="photo" caption="Next" action="validateInit"/> 
+        </page>
+        <page name="photo" title="New Police Clearance: Photo ">
+            <transition to="initial" caption="Back"/>
+            <transition to="fingerprint" caption="Next" action="validatePhoto"/> 
+        </page> 
+        <page name="fingerprint" title="New Police Clearance: FingerPrint">
+            <transition to="photo" caption="Back"/>
+            <transition to="confirm" caption="Next" action="validateFingerPrint"/>
+        </page>
+        <page name="confirm" title="New Police Clearance: Confirmation">
+            <transition to="fingerprint" caption="Back"/>
+            <transition to="finish" caption="Submit" action="saveCreate"/>
+        </page>
+        <page name="finish" title="New Police Clearance"> 
+            <transition to="end" caption="Close"/> 
+        </page>
+        <end/>
+    </pageflow>    
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationInitialPage" />
+        <page name="photo" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationPhotoPage" />
+        <page name="fingerprint" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationFingerPrintPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationPage" />
+        <page name="finish" template="com.rameses.gov.etracs.police.views.PoliceClearanceApplicationPage" />
+    </pages>
+</workunit>

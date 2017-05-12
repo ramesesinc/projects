@@ -111,9 +111,11 @@ public class EntityLookup extends XComponentPanel {
     private void initComponents() {
 
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         btnView = new com.rameses.rcp.control.XButton();
         btnAdd = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
 
         setOpaque(false);
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
@@ -121,15 +123,16 @@ public class EntityLookup extends XComponentPanel {
         xLookupField1.setExpression("#{entity.name} - #{entity.entityno} ");
         xLookupField1.setHandler("lookupEntity");
         xLookupField1.setName("entity"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(100, 19));
         add(xLookupField1);
+
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
         jPanel4.setOpaque(false);
-        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
-        xLayout1.setSpacing(0);
-        jPanel4.setLayout(xLayout1);
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
 
+        btnView.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 3));
         btnView.setBorderPainted(false);
         btnView.setContentAreaFilled(false);
         btnView.setDisableWhen("#{allowOpen != true}");
@@ -139,6 +142,7 @@ public class EntityLookup extends XComponentPanel {
         btnView.setToolTipText("View Record");
         jPanel4.add(btnView);
 
+        btnAdd.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         btnAdd.setBorderPainted(false);
         btnAdd.setCaption("");
         btnAdd.setContentAreaFilled(false);
@@ -147,14 +151,18 @@ public class EntityLookup extends XComponentPanel {
         btnAdd.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnAdd.setName("addEntity"); // NOI18N
         btnAdd.setToolTipText("Add New Record");
-        btnAdd.setVisibleWhen("#{allowCreate == true}");
         jPanel4.add(btnAdd);
 
-        add(jPanel4);
+        jPanel1.add(jPanel4);
+        jPanel1.add(filler1);
+
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton btnAdd;
     private com.rameses.rcp.control.XButton btnView;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables

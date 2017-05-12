@@ -1,0 +1,20 @@
+import com.rameses.annotations.*; 
+
+class OboApplicationAttachmentInterceptor { 
+
+	@Service("PersistenceService")
+	def pSvc;
+
+	@After(pattern="FileUploadService.upload", 
+		eval="#{args[0].info._schemaname == 'obo_application_attachment' }") 
+	public void afterAttachment( def evt ) {
+		def r = evt.result;
+		def p = evt.args[0];
+		def m = [:];
+		p.info.fileid = r.objid;
+		p.info.indexno  = 0;
+		p.info.title = p.title;
+		pSvc.create( p.info );
+	} 
+
+} 

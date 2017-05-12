@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.obo.components;
 
+import com.rameses.common.ExpressionResolver;
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.common.*;
 
@@ -112,10 +113,13 @@ public class OboVariableInfoItemList extends XComponentPanel {
     private com.rameses.rcp.control.XDataTable xDataTable1;
     // End of variables declaration//GEN-END:variables
 
-    
     public void afterLoad() {
         ComponentBean cb = (ComponentBean)super.getComponentBean();
-        cb.setProperty("section", section);
+        String s = section;
+        if(s!=null && s.startsWith("#{")) {
+            s = ExpressionResolver.getInstance().evalString(section,  getBean()); 
+        }
+        cb.setProperty("section", s);
     }
     
     public String getSection() {

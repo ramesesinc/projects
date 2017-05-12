@@ -71,4 +71,33 @@ class OboApplicationModel extends WorkflowTaskModel {
         listModel.reload();
     }
     
+    
+    void addAttachment()  {
+        def p = [:];
+        p.appid = entity.objid;
+        p._schemaname = 'obo_application_attachment';
+        
+        def h = { o->
+            attachmentListModel.reload();
+        }
+        Modal.show( "obo_application_attachment:create", [info:p, handler: h] );
+    }
+
+    def attachmentListModel = [
+        fetchList: { o->
+            def m = [_schemaname: 'obo_application_attachment'];
+            m.findBy = [appid: entity.objid];
+            return queryService.getList( m );
+        },
+        onOpenItem: { o,colName->
+            def opener = Inv.lookupOpener("sys_file:open", [entity: [objid: o.fileid]] );
+            opener.target = 'popup'; 
+            return opener; 
+        }
+    ] as BasicListModel;
+    
+    void afterOpen() {
+        entity.infos = [];
+    }
+    
 }

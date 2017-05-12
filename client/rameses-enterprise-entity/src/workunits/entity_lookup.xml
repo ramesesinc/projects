@@ -15,7 +15,9 @@
        
        class EntityLookup extends CrudLookupModel {
               
-            boolean allowSelectEntityType = false;
+            boolean allowSelectEntityType = true;
+            boolean lookupSelectedItem = false;
+            
             def entityTypeMatch;
                                     
             def entityTypes = ['INDIVIDUAL','JURIDICAL','MULTIPLE']; 
@@ -33,7 +35,17 @@
                     whereStatement = [ "type=:t", [t: selectedType] ];
                     reload();
                 }
-            ]
+            ];
+            
+            def lookupSelectedValue( def o ) {
+                //load the actual record after....
+                if(lookupSelectedItem) {
+                    def m = [_schemaname: 'entity' + o.type.toLowerCase() ];
+                    m.objid = o.objid;
+                    return persistenceService.read( m );
+                }
+                return o;
+            }
             
        } 
        ]]>

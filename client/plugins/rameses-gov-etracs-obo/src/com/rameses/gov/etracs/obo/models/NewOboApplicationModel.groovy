@@ -14,18 +14,39 @@ class NewOboApplicationModel extends CrudPageFlowModel {
     
     def ruleExecutor;
     def appTypes = LOV.OBO_APP_TYPE;
+    def orgType;
     
     void afterCreate() {
         entity.apptype = 'NEW';
     }
     
+    @PropertyChangeListener
+    def listener = [
+        "entity.supervisor" : { o->
+            entity.supervisor = o;
+            entity.supervisor.objid = o.entity.objid;
+            entity.supervisor.name = o.entity.name;
+        },
+        "entity.designer" : { o->
+            entity.designer = o;
+            entity.designer.objid = o.entity.objid;
+            entity.designer.name = o.entity.name;
+        },
+        "entity.lotowner": { o->
+            binding.refresh();
+        }
+    ];
+    
     public def getLookupRpu() {
         def h = { o->
             entity.rptinfo = o;
-            binding.refresh("entity.rptinfo.*");
+            entity.lotowner = o.taxpayer;
+            entity.lotowned = ( entity.lotowner?.objid == entity.owner.objid ); 
+            binding.refresh();
         }
-        return Inv.lookupOpener("faas:lookup", [onselect: h, rputype: 'land']);
+        return Inv.lookupOpener("faas:lookup", [onselect: h, rputype: 'land' ]);
     }
+    
     
     /*
     void save() {
@@ -79,7 +100,6 @@ class NewOboApplicationModel extends CrudPageFlowModel {
         }
     ] as BasicListModel;
     */
-
 
     void viewTrackingno() {
         Modal.show( "show_trackingno", [trackingno: "51010:" + entity.appno ]);

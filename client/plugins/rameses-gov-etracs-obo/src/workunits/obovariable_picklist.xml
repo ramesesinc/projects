@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="obovariable" multiSelect="true" 
-          orderBy="sortorder" cols="caption" hiddenCols="objid,name,category,datatype">
+          cols="caption" hiddenCols="objid,name,category,datatype">
     <invokers>
          <invoker type="obovariable_electrical:picklist" caption="Electrical Pick List" action="init" 
                  customFilter="section = 'ELECTRICAL' "/>

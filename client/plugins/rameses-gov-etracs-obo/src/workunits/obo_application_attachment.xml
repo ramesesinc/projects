@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+	<invoker type="obo_application_attachment:create" caption="Attach Files"/>
+    </invokers>	
+    <code class="com.rameses.filemgmt.models.FileNewModel"/>
+    <pages>
+	<page template="com.rameses.gov.etracs.obo.views.OboAttachmentPage"/>
+    </pages>		
+</workunit>

@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
-    schemaName="obo_auxiliary_permit" allowCreate="false">
+    schemaName="obo_auxiliary_permit" allowCreate="false"
+    cols="app.*">
     <invokers>
         <invoker folderid="home/obo" caption="Electrical" action="init" index="20"  permitType="electrical"/>
         <invoker folderid="home/obo" caption="Mechanical" action="init" index="21" permitType="mechanical"/>

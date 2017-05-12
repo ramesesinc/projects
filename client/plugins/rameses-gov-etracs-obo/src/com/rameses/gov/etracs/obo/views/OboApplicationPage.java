@@ -5,13 +5,13 @@
 package com.rameses.gov.etracs.obo.views;
 
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
+import com.rameses.seti2.views.WorkflowTaskFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(CrudFormPage.class)
+@Template(WorkflowTaskFormPage.class)
 public class OboApplicationPage extends javax.swing.JPanel {
 
     /**
@@ -33,24 +33,34 @@ public class OboApplicationPage extends javax.swing.JPanel {
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        lOVList1 = new com.rameses.enterprise.components.LOVList();
-        orgTypeList1 = new com.rameses.entity.components.OrgTypeList();
-        entityLookup1 = new com.rameses.entity.components.EntityLookup();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        localAddress1 = new com.rameses.etracs.components.LocalAddress();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        oboAddress1 = new com.rameses.gov.etracs.obo.components.OboAddress();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
+        xLabel14 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
+        jPanel6 = new javax.swing.JPanel();
+        oboVariableInfoItemList5 = new com.rameses.gov.etracs.obo.components.OboVariableInfoItemList();
+        jPanel5 = new javax.swing.JPanel();
+        xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xButton3 = new com.rameses.rcp.control.XButton();
         jPanel2 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
+        xButton4 = new com.rameses.rcp.control.XButton();
         jPanel3 = new javax.swing.JPanel();
 
         xTabbedPane1.setDynamic(true);
@@ -58,63 +68,58 @@ public class OboApplicationPage extends javax.swing.JPanel {
 
         jPanel1.setName("sections"); // NOI18N
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(20, 10, 10, 10));
+        xTitledBorder1.setTitle("Project Information");
+        xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(120);
 
-        lOVList1.setCaption("Work Type");
-        lOVList1.setListName("OBO_BUILDING_WORK_TYPE");
-        lOVList1.setName("entity.worktype"); // NOI18N
-        lOVList1.setPreferredSize(new java.awt.Dimension(0, 22));
-        lOVList1.setRequired(true);
-        xFormPanel1.add(lOVList1);
+        xLabel4.setCaption("Owner");
+        xLabel4.setExpression("#{entity.owner.name}");
+        xLabel4.setName("entity.rptinfo.text"); // NOI18N
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel4);
 
-        orgTypeList1.setCaption("Ownership Type");
-        orgTypeList1.setName("entity.orgtype"); // NOI18N
-        orgTypeList1.setPreferredSize(new java.awt.Dimension(0, 22));
-        xFormPanel1.add(orgTypeList1);
+        xLabel6.setCaption("Work Type");
+        xLabel6.setExpression("#{entity.worktype}");
+        xLabel6.setName("entity.rptinfo.text"); // NOI18N
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel6);
 
-        entityLookup1.setCaption("Owner");
-        entityLookup1.setName("entity.owner"); // NOI18N
-        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel1.add(entityLookup1);
+        xLabel7.setCaption("Project Description");
+        xLabel7.setExpression("#{entity.description}");
+        xLabel7.setName("entity.rptinfo.text"); // NOI18N
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel7);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
-
-        xTextArea1.setCaption("Project Description");
-        xTextArea1.setName("entity.description"); // NOI18N
-        jScrollPane1.setViewportView(xTextArea1);
-
-        xFormPanel1.add(jScrollPane1);
-
-        xLookupField2.setCaption("Building Use");
-        xLookupField2.setExpression("#{entity.buildingkind.name}");
-        xLookupField2.setHandler("obo_building_kind:lookup");
-        xLookupField2.setName("entity.buildingkind"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField2.setRequired(true);
-        xFormPanel1.add(xLookupField2);
+        xLabel8.setCaption("Building Use");
+        xLabel8.setExpression("#{entity.buildingkind.name}");
+        xLabel8.setName("entity.rptinfo.text"); // NOI18N
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel8);
 
         xLabel2.setCaption("Bldg Use Type");
-        xLabel2.setDepends(new String[] {"entity.buildingkind"});
         xLabel2.setExpression("#{entity.buildingkind.use.objid}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
-        xDecimalField1.setCaption("Project Cost");
-        xDecimalField1.setName("entity.projectcost"); // NOI18N
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel1.add(xDecimalField1);
+        xLabel9.setCaption("Project Cost");
+        xLabel9.setExpression("#{entity.projectcost}");
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel9);
 
-        localAddress1.setName("entity.location"); // NOI18N
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setPadding(new java.awt.Insets(20, 10, 10, 10));
+        xTitledBorder2.setTitle("Location");
+        oboAddress1.setBorder(xTitledBorder2);
+        oboAddress1.setName("entity.location"); // NOI18N
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setPadding(new java.awt.Insets(20, 10, 10, 10));
+        xTitledBorder3.setTitle("Real Property");
+        xFormPanel2.setBorder(xTitledBorder3);
         xFormPanel2.setCaption("");
         xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 100));
-
-        xLookupField1.setCaption("TCT / OCT");
-        xLookupField1.setExpression("#{entity.rptinfo.tdno}");
-        xLookupField1.setHandler("lookupRpu");
-        xLookupField1.setName("entity.rptinfo"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLookupField1);
 
         xLabel1.setCaption("PIN");
         xLabel1.setExpression("#{entity.rptinfo.fullpin}");
@@ -122,21 +127,59 @@ public class OboApplicationPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel2.add(xLabel1);
 
-        xLabel3.setCaption("Class");
-        xLabel3.setExpression("#{entity.rptinfo.classname}");
+        xLabel3.setCaption("Title No");
+        xLabel3.setExpression("#{entity.rptinfo.titleno}");
         xLabel3.setName("entity.rptinfo.text"); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
         xFormPanel2.add(xLabel3);
 
-        xLabel5.setCaption("RPU Name");
-        xLabel5.setExpression("#{entity.rptinfo.name}");
-        xLabel5.setName("entity.rptinfo.text"); // NOI18N
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
-        xFormPanel2.add(xLabel5);
+        xLabel10.setCaption("Lot Owner");
+        xLabel10.setExpression("#{entity.lotowner.name}");
+        xLabel10.setName("entity.rptinfo.text"); // NOI18N
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel10);
+
+        xLabel11.setCaption("TD No");
+        xLabel11.setExpression("#{entity.rptinfo.tdno}");
+        xLabel11.setName("entity.rptinfo.text"); // NOI18N
+        xLabel11.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel2.add(xLabel11);
 
         xCheckBox1.setCaption("");
         xCheckBox1.setName("entity.lotowned"); // NOI18N
         xCheckBox1.setText("Lot Owned");
+        xFormPanel2.add(xCheckBox1);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder4.setPadding(new java.awt.Insets(20, 10, 10, 10));
+        xTitledBorder4.setTitle("Application");
+        xFormPanel3.setBorder(xTitledBorder4);
+        xFormPanel3.setCaption("");
+        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 100));
+
+        xLabel5.setCaption("App No");
+        xLabel5.setExpression("#{entity.appno}");
+        xLabel5.setName("entity.rptinfo.text"); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel3.add(xLabel5);
+
+        xLabel12.setCaption("App Date");
+        xLabel12.setExpression("#{entity.appdate}");
+        xLabel12.setName("entity.rptinfo.text"); // NOI18N
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel3.add(xLabel12);
+
+        xLabel14.setCaption("App Type");
+        xLabel14.setExpression("#{entity.apptype}");
+        xLabel14.setName("entity.rptinfo.text"); // NOI18N
+        xLabel14.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel3.add(xLabel14);
+
+        xLabel13.setCaption("Status");
+        xLabel13.setExpression("#{entity.task.state}");
+        xLabel13.setName("entity.rptinfo.text"); // NOI18N
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 16));
+        xFormPanel3.add(xLabel13);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -144,35 +187,105 @@ public class OboApplicationPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(oboAddress1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(localAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21))))
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(localAddress1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(113, Short.MAX_VALUE))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                    .addComponent(oboAddress1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
+
+        oboVariableInfoItemList5.setName("entity.infos"); // NOI18N
+        oboVariableInfoItemList5.setSection("building");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(oboVariableInfoItemList5, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(378, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(oboVariableInfoItemList5, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        xTabbedPane1.addTab("Structural Info", jPanel6);
+
+        xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "title"}
+                , new Object[]{"caption", "Title"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable2.setHandler("attachmentListModel");
+        xDataTable2.setName("selectedAttachment"); // NOI18N
+
+        xButton2.setText("Remove Attachment");
+
+        xButton3.setName("addAttachment"); // NOI18N
+        xButton3.setText("Add Attachment");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(485, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        xTabbedPane1.addTab("Attachments", jPanel5);
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -204,6 +317,66 @@ public class OboApplicationPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "dtcreated"}
+                , new Object[]{"caption", "Date Created"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "startdate"}
+                , new Object[]{"caption", "Date Started"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "enddate"}
+                , new Object[]{"caption", "Date Finished"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "remarks"}
+                , new Object[]{"caption", "Remarks"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
         xDataTable1.setHandler("listModel");
@@ -212,6 +385,9 @@ public class OboApplicationPage extends javax.swing.JPanel {
         xButton1.setName("removeItem"); // NOI18N
         xButton1.setText("Remove");
 
+        xButton4.setName("addAuxiliaryPermit"); // NOI18N
+        xButton4.setText("Add Permit");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -219,18 +395,24 @@ public class OboApplicationPage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(477, Short.MAX_VALUE))
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 691, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(171, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("Auxiliary Permits", jPanel2);
@@ -243,7 +425,7 @@ public class OboApplicationPage extends javax.swing.JPanel {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 447, Short.MAX_VALUE)
+            .addGap(0, 450, Short.MAX_VALUE)
         );
 
         xTabbedPane1.addTab("Assessment", jPanel3);
@@ -261,32 +443,42 @@ public class OboApplicationPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.enterprise.components.LOVList lOVList1;
-    private com.rameses.etracs.components.LocalAddress localAddress1;
-    private com.rameses.entity.components.OrgTypeList orgTypeList1;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private com.rameses.gov.etracs.obo.components.OboAddress oboAddress1;
+    private com.rameses.gov.etracs.obo.components.OboVariableInfoItemList oboVariableInfoItemList5;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel10;
+    private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
+    private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
 }

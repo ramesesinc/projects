@@ -14,15 +14,14 @@ public class AuxiliaryPermitListModel extends CrudListModel {
     def permitType;
     
     void afterInit() {
-        permitType = invoker?.properties?.permitType;
+        permitType = invoker?.properties?.permitType?.toLowerCase();
     }
     
     public def getCustomFilter() {
-        return [ "permittype = :type", [type: permitType ]  ];
+        return [ "type = :type", [type: permitType ]  ];
     }
     
     public def open() {
-        MsgBox.alert(schemaName + "_" + permitType + ":open" );
         return Inv.lookupOpener(schemaName + "_" + permitType + ":open", [entity:selectedItem] );
     }
     

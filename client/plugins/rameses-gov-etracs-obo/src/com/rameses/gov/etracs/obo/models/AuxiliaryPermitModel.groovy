@@ -14,15 +14,15 @@ class AuxiliaryPermitModel extends CrudFormModel {
     
     String permitType;
     String title;
+    String section;
+    def infos = [];
     
     def open() {
         title = invoker.properties.caption;
         permitType = invoker.properties.permitType;
+        section = permitType;
         return super.open();
     }
     
-    void loadInfo() {
-        MsgBox.alert( 'load info ' + permitType );
-    }
     
 }

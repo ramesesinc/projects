@@ -11,7 +11,7 @@ public class FAASVerificationModel extends com.rameses.gov.etracs.rpt.report.cer
     @Service('RPTCertificationFAASVerificationService')
     def svc;
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/'
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/'
     
     @PropertyChangeListener
     def listener = [

@@ -11,7 +11,7 @@ public class UnrestrictedPropertyModel extends com.rameses.gov.etracs.rpt.report
     def svc 
     
     String title = 'List of Unrestricted Properties'
-    String reportName = 'com/rameses/gov/etracs/rptis/report/unrestricted_properties.jasper';
+    String reportName = 'com/rameses/gov/etracs/rptis/reports/unrestricted_properties.jasper';
     
     void buildReportData(entity, asyncHandler){
         svc.getUnrestrictedProperties(entity, asyncHandler)

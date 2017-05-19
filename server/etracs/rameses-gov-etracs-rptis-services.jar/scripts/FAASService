@@ -1107,6 +1107,7 @@ class FAASService
 		newfaas.memoranda		= null
 		newfaas.lgutype 		= (newfaas.lgutype ? newfaas.lgutype : var.lgu_type)
 		newfaas.originlguid 	= env.ORGID
+		newfaas.restrictions = []
 		clearSignatoryInfo(newfaas)
 	}
 

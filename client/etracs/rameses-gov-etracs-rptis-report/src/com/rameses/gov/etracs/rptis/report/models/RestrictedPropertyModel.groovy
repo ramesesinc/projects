@@ -11,7 +11,7 @@ public class RestrictedPropertyModel extends com.rameses.gov.etracs.rpt.report.A
     def svc 
     
     String title = 'List of Restricted Properties'
-    String reportName = 'com/rameses/gov/etracs/rptis/report/restricted_properties.jasper';
+    String reportName = 'com/rameses/gov/etracs/rptis/reports/restricted_properties.jasper';
     
     void buildReportData(entity, asyncHandler){
         svc.getRestrictedProperties(entity, asyncHandler)

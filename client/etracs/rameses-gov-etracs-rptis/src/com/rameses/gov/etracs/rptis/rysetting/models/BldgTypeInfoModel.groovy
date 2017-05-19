@@ -105,8 +105,8 @@ public class BldgTypeInfoModel implements SubPage
     def allowDepreciationColumnEdit = { item ->
         if( ! selectedBldgType ) return false
         if( ! selectedBldgType.objid ) return false 
+        if( item.isnew ) return true
         if( isFirstItem( depreciations ) ) return true
-        if( isNewEntry( item.agefrom ) ) return true
         return isLastItem( depreciations, item )
     } as Map
 
@@ -211,7 +211,22 @@ public class BldgTypeInfoModel implements SubPage
             objid           : RPTUtil.generateId('BD'),
             bldgtypeid      : selectedBldgType?.objid,
             bldgrysettingid : entity.objid,
+            isnew           : true,
         ]
     }
-    
+ 
+        
+    def isFirstItem( list ) {
+        return list.size() == 0
+    }    
+        
+    def isLastItem( list, item ) {
+        def index = list.indexOf( item )
+        if( index < 0 ) 
+            index = list.size()
+        else
+            index += 1 
+        return list.size() == index 
+    }
+       
 }

@@ -7,10 +7,10 @@
 }
 
 
-"entity.*|editExpression"[mode=='edit']{
+"entity.*|editExpression"[mode!='read']{
     enabled:true;
 }
 
-"selectedItem"[mode=='edit']{
+"selectedItem"[mode!='read']{
     readonly:false;
 }

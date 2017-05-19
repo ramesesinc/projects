@@ -287,8 +287,7 @@
 					<textElement isStyledText="true">
 						<font fontName="Tahoma" size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["                   <style isBold=\"true\">THIS IS TO CERTIFY</style> that as per record of this office, as of this date, the following " + ($F{items}.source.size() > 1 ? "properties are" : "property is" ) + " <style isBold=\"true\">existing</style>  and <style isBold=\"true\">current</style>."
-]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["                   <style isBold=\"true\">THIS IS TO CERTIFY</style> that as per record of this office, as of this date, the following " + ($F{items}.source.size() > 1 ? "properties are" : "property is" ) + " <style isBold=\"true\">existing</style>  and <style isBold=\"true\">current</style>."]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>

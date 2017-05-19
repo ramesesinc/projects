@@ -42,7 +42,6 @@ values(
 	$P{objid},
 	$P{tin},
 	$P{dtregistered},
-	$P{placeregistered},
 	$P{orgtype},
 	$P{nature},
 	$P{administrator_name},

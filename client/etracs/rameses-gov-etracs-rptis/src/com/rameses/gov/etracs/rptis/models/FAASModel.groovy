@@ -232,24 +232,28 @@ public class FAASModel
      *
      *===============================================*/
         
+    boolean getAllowEdit(){
+        if ( getEntity().state == 'CURRENT' ) return false;
+        if ( getEntity().state == 'CANCELLED' ) return false;
+        if (getEntity().originlguid != getOrgid()) return false;
+        if ( mode == MODE_READ) return false;
+        return true;
+    }
+
     public boolean getAllowEditOwner() {
+        if (!getAllowEdit()) return false;
         return RPTUtil.toBoolean(getEntity().txntype.allowEditOwner, false);
     }
     
-    boolean getAllowEdit(){
-        if ( mode == MODE_READ) return false;
-        if ( getEntity().state == 'CURRENT' ) return false;
-        if ( getEntity().state == 'CANCELLED' ) return false;
-        return true;
-    }
-    
     boolean getAllowEditPinInfo(){
+        if (!getAllowEdit()) return false;
         if ( mode == MODE_READ) return false;
         if( rpu.rputype != 'land' ) return false;
         return getAllowEditPin()
     }
     
     def getAllowAssignNewTdNo(){
+        if (!getAllowEdit()) return false;
         if (entity.state != 'CURRENT') return false;
         if (entity.taskstate != 'record') return false;
         if (entity.assignee && entity.assignee.objid != OsirisContext.env.USERID) return false;
@@ -257,6 +261,7 @@ public class FAASModel
     }
     
     boolean getAllowEditPrevInfo(){
+        if (!getAllowEdit()) return false;
         if ( mode == MODE_READ) return false;
         if( getEntity().state == 'CURRENT' ) return false
         if( getEntity().state == 'CANCELLED' ) return false
@@ -269,9 +274,10 @@ public class FAASModel
     }
     
     boolean getShowActions(){
-        if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
-        if (getEntity().taskstate && !getEntity().taskstate.matches('examiner|receiver|appraiser|appraiser_chief|provappraiser|taxmapper|taxmapper_chief|provtaxmapper|recommender')) return false;
         if (getEntity().state.matches('CURRENT|CANCELLED')) return false;
+        if (getEntity().originlguid != getOrgid()) return false;
+        if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
+        if (getEntity().taskstate && !getEntity().taskstate.matches('receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
         if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;
         if (mode != MODE_READ) return false;
         return true;

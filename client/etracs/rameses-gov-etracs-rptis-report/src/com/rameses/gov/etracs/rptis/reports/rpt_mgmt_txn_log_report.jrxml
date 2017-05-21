@@ -74,7 +74,8 @@
 						y="0"
 						width="30"
 						height="20"
-						key="staticText-37"/>
+						key="staticText-37"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -93,7 +94,8 @@ Type]]></text>
 						y="0"
 						width="80"
 						height="20"
-						key="staticText-37"/>
+						key="staticText-37"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -111,7 +113,8 @@ Type]]></text>
 						y="0"
 						width="110"
 						height="20"
-						key="staticText-37"/>
+						key="staticText-37"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -129,7 +132,8 @@ Type]]></text>
 						y="0"
 						width="110"
 						height="20"
-						key="staticText-37"/>
+						key="staticText-37"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -147,7 +151,8 @@ Type]]></text>
 						y="0"
 						width="48"
 						height="20"
-						key="staticText-37"/>
+						key="staticText-37"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -179,7 +184,8 @@ Received]]></text>
 						y="0"
 						width="30"
 						height="16"
-						key="textField"/>
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -207,7 +213,8 @@ Received]]></text>
 						y="0"
 						width="48"
 						height="16"
-						key="textField-40"/>
+						key="textField-40"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -235,7 +242,8 @@ Received]]></text>
 						y="0"
 						width="80"
 						height="16"
-						key="textField-40"/>
+						key="textField-40"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -263,7 +271,8 @@ Received]]></text>
 						y="0"
 						width="110"
 						height="16"
-						key="textField-40"/>
+						key="textField-40"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -291,7 +300,8 @@ Received]]></text>
 						y="0"
 						width="110"
 						height="16"
-						key="textField-40"/>
+						key="textField-40"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -348,7 +358,8 @@ Received]]></text>
 						y="0"
 						width="50"
 						height="16"
-						key="textField"/>
+						key="textField"
+						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>

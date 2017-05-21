@@ -227,7 +227,7 @@ from (
 		f.tdno,
 		sn.idx, 
 		f.txntype_objid, 
-		(select startdate from faas_task where refid = f.objid and state = 'receiver' order by startdate) as dtreceived, 
+		(select startdate from faas_task where refid = f.objid and state = 'receiver' order by startdate limit 1) as dtreceived, 
 		(select assignee_name from faas_task where refid = f.objid and state = 'appraiser' order by startdate desc limit 1) as appraiser, 
 		(select assignee_name from faas_task where refid = f.objid and state = 'taxmapper' order by startdate desc limit 1) as taxmapper, 
 		ft.state, 

@@ -5,7 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
-	- 
+	- ROA report update
 	- Management log report update
 	- QRRPA (LIFT) and AEEMM format update
 	- Cancel FAAS: Support editing of txndate (manual cancellation)

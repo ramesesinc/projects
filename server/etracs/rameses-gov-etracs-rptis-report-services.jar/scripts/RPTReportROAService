@@ -112,7 +112,7 @@ class RPTReportROAService
         }
 
         if (params.section){
-            params.filter = ' and rp.section = $P{section} '
+            params.filter += ' and rp.section = $P{section} '
         }
 
         params.barangayname  = params.barangay ? params.barangay.name : 'ALL'

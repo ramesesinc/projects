@@ -140,9 +140,9 @@ SELECT
 
 
 	SUM( CASE WHEN r.rputype = 'land' THEN r.totalmv ELSE 0.0 END ) AS landmv,
-	SUM( CASE WHEN pc.name='RESIDENTIAL' and r.rputype = 'bldg' AND r.totalmv <= 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmv175less,
-	SUM( CASE WHEN pc.name='RESIDENTIAL' and r.rputype = 'bldg' AND r.totalmv > 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmvover175,
-	SUM( CASE WHEN  pc.name <> 'RESIDENTIAL' and r.rputype = 'bldg' THEN r.totalmv ELSE 0.0 END ) AS bldgmv,
+	SUM( 0 ) AS bldgmv175less,
+	SUM( 0 ) AS bldgmvover175,
+	SUM( case when r.rputype = 'bldg' THEN r.totalmv ELSE 0.0 END ) AS bldgmv,
 	SUM( CASE WHEN r.rputype = 'mach' THEN r.totalmv ELSE 0.0 END ) AS machmv,
 	SUM( CASE WHEN rputype NOT IN( 'land', 'bldg', 'mach') THEN r.totalmv ELSE 0.0 END ) AS othermv, 
 	SUM( r.totalmv ) AS totalmv,
@@ -226,9 +226,9 @@ SELECT
 
 
 	SUM( CASE WHEN r.rputype = 'land' THEN r.totalmv ELSE 0.0 END ) AS landmv,
-	SUM( CASE WHEN pc.name='RESIDENTIAL' and r.rputype = 'bldg' AND r.totalmv <= 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmv175less,
-	SUM( CASE WHEN pc.name='RESIDENTIAL' and r.rputype = 'bldg' AND r.totalmv > 175000 THEN r.totalmv ELSE 0.0 END ) AS bldgmvover175,
-	SUM( CASE WHEN  pc.name <> 'RESIDENTIAL' and r.rputype = 'bldg' THEN r.totalmv ELSE 0.0 END ) AS bldgmv,
+	SUM( 0 ) AS bldgmv175less,
+	SUM( 0) AS bldgmvover175,
+	SUM( CASE WHEN  r.rputype = 'bldg' THEN r.totalmv ELSE 0.0 END ) AS bldgmv,
 	SUM( CASE WHEN r.rputype = 'mach' THEN r.totalmv ELSE 0.0 END ) AS machmv,
 	SUM( CASE WHEN rputype NOT IN( 'land', 'bldg', 'mach') THEN r.totalmv ELSE 0.0 END ) AS othermv, 
 	SUM( r.totalmv ) AS totalmv,

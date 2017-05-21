@@ -87,10 +87,10 @@
 	<variable name="LANDMV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{landmv}]]></variableExpression>
 	</variable>
-	<variable name="BLDGMV150LESS" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+	<variable name="BLDGMV175LESS" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{bldgmv175less}]]></variableExpression>
 	</variable>
-	<variable name="BLDGMV150OVER" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+	<variable name="BLDGMV175OVER" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
 		<variableExpression><![CDATA[$F{bldgmvover175}]]></variableExpression>
 	</variable>
 	<variable name="MACHMV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
@@ -159,10 +159,10 @@
 	<variable name="TMACHMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{machmv}]]></variableExpression>
 	</variable>
-	<variable name="TBLDGMV150OVER" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TBLDGMV175OVER" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{bldgmvover175}]]></variableExpression>
 	</variable>
-	<variable name="TBLDGMV150LESS" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TBLDGMV175LESS" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{bldgmv175less}]]></variableExpression>
 	</variable>
 	<variable name="TLANDMV" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
@@ -227,6 +227,9 @@
 	</variable>
 	<variable name="TCOUNTOTHER" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{countother}]]></variableExpression>
+	</variable>
+	<variable name="MACHAV" class="java.math.BigDecimal" resetType="Group" resetGroup="TAXABILITY" calculation="Sum">
+		<variableExpression><![CDATA[$F{machav}]]></variableExpression>
 	</variable>
 
 		<group  name="TAXABILITY" >
@@ -337,7 +340,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGMV150LESS}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGMV175LESS}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -354,7 +357,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGMV150OVER}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{BLDGMV175OVER}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -457,7 +460,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{COUNTLAND}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{MACHAV}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1781,8 +1784,7 @@ LAND]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basicrate}
-]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basicrate}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00%" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2156,7 +2158,7 @@ LAND]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGMV150LESS}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGMV175LESS}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2173,7 +2175,7 @@ LAND]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGMV150OVER}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TBLDGMV175OVER}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

@@ -32,12 +32,15 @@ class RPTReportAEEMMService
     @Async
 	@ProxyMethod
 	public Map buildReport( params ) {
-		params.lguid = params.lgu?.objid 
-		params.filter = ''
-
 		def title = 'AEEMM Form No. 2 Report'
 		util.buildReportTitlePeriod(title, params)
 		util.buildStartEndDateFilter(params)
+
+		params.filter = ''
+		if (params.lgu){
+			params.filter += ' AND f.lguid = $P{lguid} ' 
+			params.lguid = params.lgu.objid 
+		}
 
 		if (params.barangay){
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 

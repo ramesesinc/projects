@@ -86,8 +86,6 @@ class RPTReportRPAService
 		params.filter = ''
 		params.title = 'REPORT ON REAL PROPERTY ASSESSMENTS'
 
-		params.lguid = params.lgu?.objid 
-
 		if (params.periodtype.type.matches('monthly|quarterly')){
 			util.buildReportTitlePeriod(params.title, params)
 			util.buildStartEndDateFilter(params)
@@ -95,6 +93,11 @@ class RPTReportRPAService
 		else {
 			params.enddate = params.asofdate
 			params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.parse('yyyy-MM-dd', params.asofdate))
+		}
+
+		if (params.lgu){
+			params.filter += ' AND f.lguid = $P{lguid} ' 
+			params.lguid = params.lgu.objid 
 		}
 
 		if (params.barangay){

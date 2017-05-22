@@ -5,158 +5,184 @@
             caption="Manual Capture"  action="start" target="window" 
             role="BUSINESSINFO,ADMIN" index="56" permission="business.capture"/>
           
-        <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
-        <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
-            visibleWhen="#{lob.selectedItem!=null}"/>
+        <invoker type="lobActions" caption="Add" action="lob.add" mnemonic="A" immediate="true"/>
+        <invoker type="lobActions" caption="Remove" action="lob.remove" mnemonic="R" immediate="true" 
+                 visibleWhen="#{lob.selectedItem!=null}"/>
         <invoker type="lobActions" caption="Map Line of Business" action="lob.reclassify" 
-            immediate="true" visibleWhen="#{lob.selectedItem!=null}"/>
+                 visibleWhen="#{lob.selectedItem!=null}" mnemonic="M" immediate="true" />
    </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.util.*;
-        import java.rmi.server.*;
-        
-        /****************************************************
-        * capture types:
-        *   info - basic capture info only for current year
-        *   unpaid - business has remaining balance
-        *   processing - application still unfinished
-        *   delinquent - has delinquent
-        *   datasource - use datasource
-        *****************************************************/
-        class BusinessCapture extends PageFlowController {
-        
-            @Service("DateService")
-            def dateSvc;
-            
-            @Service("BusinessCaptureService")
-            def service;
-            
-            @Script("BusinessApplicationUtil")
-            def application;
-            
-            @Script("BusinessVerificationUtil")
-            def verifyList;
-            
-            @Script("BusinessOwnerUtil")
-            def owner;
-            
-            @Script("BusinessLobUtil")
-            def lob;
-        
-            @Script("BusinessAddressUtil")
-            def address;
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import com.rameses.util.*;
+import java.rmi.server.*;
 
-            @Script("BusinessCaptureUtil")
-            def capture;
-            
-            @Script("BusinessInfoUtil")
-            def appinfo;
-                
-            @FormTitle
-            def title = "Capture Business";
-            
-            @Service("BusinessUserRoleService")
-            def userRoleSvc;
-            
-            def entity;
-            
-            def start() {
-                return super.start();
-            }
-            
-            void init() {
-                capture.validateTxnType(); 
-                application.init([ txnmode:'CAPTURE']);
-                                        
-                switch( capture.type ) {
-                    case 'current':
-                        entity.apptype = capture.current_apptype;
-                        entity.appyear = dateSvc.getServerYear();
-                        entity.state = 'ACTIVE';
-                        break;
-                    case 'processing':     
-                        entity.apptype = capture.processing_apptype;
-                        entity.dtfiled = capture.processing_dateapplied;
-                        entity.appyear = dateSvc.getServerYear();
-                        entity.state = 'PROCESSING';
-                        break;
-                    case 'delinquent_renew':     
-                        entity.apptype = 'RENEW';
-                        entity.appyear = capture.delinquent_renew_year;
-                        entity.activeyear = entity.appyear;
-                        entity.yearstarted = null;
-                        entity.state = 'ACTIVE';
-                        if(entity.appyear < 2000 )
-                            throw new Exception("Last year renewed must be greater than 2000");
-                        if( entity.appyear >= dateSvc.getServerYear() )
-                            throw new Exception("Please choose a year before the current year");
-                        break;
-                    case 'delinquent_new':     
-                        entity.apptype = 'NEW';
-                        entity.appyear = capture.delinquent_new_year;
-                        entity.activeyear = entity.appyear;
-                        entity.yearstarted = null;
-                        if(entity.appyear < 2000 )
-                            throw new Exception("Last year renewed must be greater than 2000");
-                        entity.state = 'ACTIVE';
-                        if( entity.appyear > dateSvc.getServerYear() )
-                            throw new Exception("Please choose a year before the current year");
-                        break;
-                }    
-                lob.reset();
-                lob.lobAssessmentType = entity.apptype;
-            }
+/****************************************************
+* capture types:
+*   info - basic capture info only for current year
+*   unpaid - business has remaining balance
+*   processing - application still unfinished
+*   delinquent - has delinquent
+*   datasource - use datasource
+*****************************************************/
+class BusinessCapture extends PageFlowController {
 
-            void openEntry() {
-                capture.openEntry();
-                lob.reset();
-                lob.lobAssessmentType = entity.apptype;
-                entity.txnmode = 'CAPTURE';
-            }
-            
-            void initAddressType() {
-                if( application.copyOwnerAddress ) {
-                    owner.reload();
-                    entity.business.address = entity.business.owner.address;
-                    address.addressType = entity.business.address.type;
-                }
-                else {
-                    address.addressType = application.addressType;
-                }
-            }
-                        
-            void save() {
-                lob.verify(); 
+    @Service("DateService")
+    def dateSvc;
 
-                boolean test = false;
-                appinfo.handler = {
-                    test = true;
-                }
-                Modal.show(appinfo.update());
-                if(!test) throw new BreakException();
-                
-                appinfo.verify();
-                
-                if( !MsgBox.confirm("You are about to save this record. Proceed?") ) {
-                    throw new BreakException();
-                }
-                
-                //entity.payments = [];
-                //entity.taxfees = [];
-                application.save();
-            }
-            
-            void addAnother() {
-                entity = [:];
-            }
+    @Service("BusinessCaptureService")
+    def service;
+
+    @Script("BusinessApplicationUtil")
+    def application;
+
+    @Script("BusinessVerificationUtil")
+    def verifyList;
+
+    @Script("BusinessOwnerUtil")
+    def owner;
+
+    @Script("BusinessLobUtil")
+    def lob;
+
+    @Script("BusinessAddressUtil")
+    def address;
+
+    @Script("BusinessCaptureUtil")
+    def capture;
+
+    @Script("BusinessInfoUtil")
+    def appinfo;
+
+    @FormTitle
+    def title = "Capture Business";
+
+    @Service("BusinessUserRoleService")
+    def userRoleSvc;
+
+    def entity;
+
+    def start() {
+        return super.start();
+    }
+
+    void init() {
+        capture.validateTxnType(); 
+        application.init([ txnmode:'CAPTURE' ]);
+
+        def currentYear = dateSvc.getServerYear();
+        switch( capture.type ) {
+            case 'current':
+                entity.apptype = capture.current_apptype;
+                entity.appyear = currentYear;
+                entity.state = 'ACTIVE';
+                break;
+            case 'processing':     
+                entity.apptype = capture.processing_apptype;
+                entity.dtfiled = capture.processing_dateapplied;
+                entity.appyear = currentYear;
+                entity.state = 'PROCESSING';
+                break;
+            case 'delinquent_renew':     
+                entity.apptype = 'RENEW';
+                entity.appyear = capture.delinquent_renew_year;
+                entity.activeyear = entity.appyear;
+                entity.yearstarted = null;
+                entity.state = 'ACTIVE';
+                if(entity.appyear < 2000 )
+                    throw new Exception("Last year renewed must be greater than 2000");
+                if( entity.appyear >= currentYear )
+                    throw new Exception("Please choose a year before the current year");
+                break;
+            case 'delinquent_new':     
+                entity.apptype = 'NEW';
+                entity.appyear = capture.delinquent_new_year;
+                entity.activeyear = entity.appyear;
+                entity.yearstarted = entity.appyear;
+                if(entity.appyear < 2000 )
+                    throw new Exception("Last year renewed must be greater than 2000");
+                entity.state = 'ACTIVE';
+                if( entity.appyear > currentYear )
+                    throw new Exception("Please choose a year before the current year");
+                break;
+        }    
+        lob.reset();
+        lob.lobAssessmentType = entity.apptype;
+    }
+    
+    void afterEditName() {
+        def yearfiled = Integer.parseInt( entity.dtfiled.toString().split('-')[0]); 
+        if ( yearfiled != entity.activeyear ) {
+            throw new Exception('Date Applied must be within the application year'); 
+        } 
+        if ( entity.apptype == 'NEW' ) {
+            if ( entity.yearstarted != entity.activeyear ) 
+                throw new Exception('Year started must be equal to the application year'); 
+        } 
+        else if ( entity.apptype == 'RENEW' ) {
+            if ( entity.yearstarted >= entity.activeyear ) 
+                throw new Exception('Year started must be less than the application year'); 
+        } 
+        verifyList.check(); 
+    } 
+    
+    void doVerifyName() { 
+        def yearfiled = Integer.parseInt( entity.dtfiled.toString().split('-')[0]); 
+        def currentYear = dateSvc.getServerYear();
+        if ( yearfiled != currentYear ) {
+            throw new Exception('Date Applied must be within the application year'); 
+        } 
+        verifyList.verify();         
+    } 
+
+    void openEntry() {
+        capture.openEntry();
+        lob.reset();
+        lob.lobAssessmentType = entity.apptype;
+        entity.txnmode = 'CAPTURE';
+    }
+
+    void initAddressType() {
+        if( application.copyOwnerAddress ) {
+            owner.reload();
+            entity.business.address = entity.business.owner.address;
+            address.addressType = entity.business.address.type;
         }
-        ]]>
+        else {
+            address.addressType = application.addressType;
+        }
+    }
+
+    void save() {
+        lob.verify(); 
+
+        boolean test = false;
+        appinfo.handler = {
+            test = true;
+        }
+        Modal.show(appinfo.update());
+        if(!test) throw new BreakException();
+
+        appinfo.verify();
+
+        if( !MsgBox.confirm("You are about to save this record. Proceed?") ) {
+            throw new BreakException();
+        }
+
+        //entity.payments = [];
+        //entity.taxfees = [];
+        application.save();
+    }
+
+    void addAnother() {
+        entity = [:];
+    }
+}
+    ]]>
     </code>
     
     <pageflow>
@@ -165,43 +191,44 @@
         </start>
 
         <page name="selecttype" title="Select type of capture">
-            <transition to="end" caption="Close" />
-            <transition to="edit-name" caption="Next"  immediate="false" action="init"/>
+            <transition to="end" caption="Close" mnemonic="C"/>
+            <transition to="edit-name" caption="Next" immediate="false" action="init" mnemonic="N"/>
         </page>
         
         <page name="search" title="Search Business @ #{capture.query.source}">
-            <transition to="selecttype" caption="Back" />
-            <transition to="edit-name" caption="Next" name="next"  action="openEntry"/>
+            <transition to="selecttype" caption="Back" mnemonic="B"/>
+            <transition to="edit-name" caption="Next" name="next"  action="openEntry" mnemonic="N"/>
         </page>
         
         <page name="edit-name" title="Edit Business Name">
             <transition to="#{capture.type=='datasource'?'search':'selecttype'}" caption="Back" name="back" 
-                            confirm="This will reset everything you typed. Proceed?"/>
-            <transition to="#{verifyList.pass==false?'verify-name':'edit-owner'}" caption="Next" name="next"  action="verifyList.check" immediate="false" />
+                            confirm="This will reset everything you typed. Proceed?" mnemonic="B"/>
+            <transition to="#{verifyList.pass==false?'verify-name':'edit-owner'}" caption="Next" name="next" 
+                        action="afterEditName" immediate="false" mnemonic="N"/>
         </page>
         
         <page name="verify-name" title="Verify Business Name">
             <transition to="edit-name" caption="Back" mnemonic="B"/>
-            <transition to="edit-owner" caption="Next" name="next" mnemonic="N" action="verifyList.verify"/>
-        </page>        
+            <transition to="edit-owner" caption="Next" name="next" mnemonic="N" action="doVerifyName"/>
+        </page> 
         
         <page name="edit-owner" title="Edit Business Owner">
-            <transition to="edit-name" caption="Back" />
-            <transition to="edit-address" caption="Next" action="owner.verify" />
+            <transition to="edit-name" caption="Back" mnemonic="B"/>
+            <transition to="edit-address" caption="Next" action="owner.verify" mnemonic="N"/>
         </page>
         
         <page name="edit-address" title="Edit Business Address" action="initAddressType">
-            <transition to="edit-owner" caption="Back" />
-            <transition to="edit-lob" caption="Next"  action="address.verify"/>
+            <transition to="edit-owner" caption="Back" mnemonic="B"/>
+            <transition to="edit-lob" caption="Next"  action="address.verify" mnemonic="N"/>
         </page>
 
         <page name="edit-lob" title="Edit Line of Business">
-            <transition to="edit-address" caption="Back" />
-            <transition to="success" caption="Submit" action="save"/>
+            <transition to="edit-address" caption="Back" mnemonic="B"/>
+            <transition to="success" caption="Submit" action="save" mnemonic="S"/>
         </page>
 
         <page name="success" title="Business Registered">
-            <transition to="selecttype" caption="Add Another" action="addAnother"/>
+            <transition to="selecttype" caption="Add Another" action="addAnother" mnemonic="A"/>
         </page>
 
         <end/>

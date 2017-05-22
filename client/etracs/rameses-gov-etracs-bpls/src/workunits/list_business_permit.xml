@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ExplorerViewController.xml" serviceName="BusinessPermitListService" 
      allowOpen="true" allowCreate="false" autoSelect="true" defaultFileType="business_permit">
     <invokers>
-        <invoker folderid="/explorer/txn/bpls" caption="Business Permit List"  index="4" role="LICENSING" />
+        <invoker folderid="/explorer/txn/bpls" caption="Business Permit List" role="LICENSING" />
         <invoker folderid="/home/business" caption="Business Permit List"  role="LICENSING" index="50"/>
     </invokers>
     <pages>

@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="business_lessor_rental">
     <invokers>
         <invoker folderid="/explorer/master/bpls" caption="Business Lessor List (Rental)"  
-                 action="init" role="MASTER" permission="businesslessor.view" index="4" 
+                 action="init" role="MASTER" permission="businesslessor.view" 
                  customFilter="government = 0" /> 
     </invokers>
     

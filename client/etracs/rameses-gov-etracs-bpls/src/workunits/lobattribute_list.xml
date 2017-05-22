@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="lobattribute">
     <invokers>
         <invoker folderid="/explorer/master/bpls" caption="LOB Attribute" action="init"
-                cols="name,description"
-                 target="window" index="10" role="MASTER" permission="lobattribute.view"/>
+                 target="window" role="MASTER" permission="lobattribute.view" 
+                 cols="name,description"/>
     </invokers>
 </workunit>

@@ -3,7 +3,7 @@
           entityName="businessvariable">
     <invokers>
         <invoker folderid="/explorer/master/bpls" caption="Business Variables" 
-                 target="window" index="12" role="MASTER" permission="businessvariable.view"/>
+                 target="window" role="MASTER" permission="businessvariable.view"/>
     </invokers>
     
     <code>

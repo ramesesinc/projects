@@ -43,6 +43,8 @@ public class MemorandaTemplatePage extends javax.swing.JPanel {
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 200));
 
+        xTextArea1.setLineWrap(true);
+        xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Template");
         xTextArea1.setName("entity.template"); // NOI18N
         xTextArea1.setRequired(true);

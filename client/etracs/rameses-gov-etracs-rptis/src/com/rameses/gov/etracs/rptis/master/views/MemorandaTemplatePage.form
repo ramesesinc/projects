@@ -67,6 +67,8 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XTextArea" name="xTextArea1">
               <Properties>
+                <Property name="lineWrap" type="boolean" value="true"/>
+                <Property name="wrapStyleWord" type="boolean" value="true"/>
                 <Property name="caption" type="java.lang.String" value="Template"/>
                 <Property name="name" type="java.lang.String" value="entity.template" noResource="true"/>
                 <Property name="required" type="boolean" value="true"/>

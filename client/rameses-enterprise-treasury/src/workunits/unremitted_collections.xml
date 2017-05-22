@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Unremitted Collections" index="10" role="COLLECTOR,SUBCOLLECTOR"  action="init"/>
+        <invoker folderid="/explorer/txn/treasury" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR"  action="init"/>
         <invoker folderid="home/remittance" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR"  index="-10" target="window" action="init"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>

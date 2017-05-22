@@ -5,7 +5,7 @@
     
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Cash Receipts Query" 
-                 role="SHARED" permission="cashreceipt.query" index="11"/>
+                 role="SHARED" permission="cashreceipt.query" />
         
         <invoker type="formActions" caption="Revert Void" action="revertVoid" 
                  role="ADMIN" permission="cashreceiptvoid.revert" 

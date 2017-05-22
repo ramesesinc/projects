@@ -3,7 +3,7 @@
           entityName="subcollector_remittance">
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Subcollector Remittances" 
-                 role="SUBCOLLECTOR,SHARED" permission="remittance.view" index="30">
+                 role="SUBCOLLECTOR,SHARED" permission="remittance.view">
             <action name="doInit" role="SHARED" tag="all"/> 
             <action name="doInit" role="SUBCOLLECTOR" /> 
         </invoker>

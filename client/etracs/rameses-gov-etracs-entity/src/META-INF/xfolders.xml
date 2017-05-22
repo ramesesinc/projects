@@ -3,8 +3,8 @@
         <folder id="master">
             <folder id="entity" caption="Entities"/>     
         </folder>        
-        <folder id="report" caption="Reports" index="3">
-            <folder id="entity" caption="Entity" index="0" />
+        <folder id="report" caption="Reports">
+            <folder id="entity" caption="Entity"/>
         </folder>
     </folder> 
 </folders>

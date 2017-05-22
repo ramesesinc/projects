@@ -1,7 +1,7 @@
 <folders>
     <folder id="explorer">
         <folder id="master">
-            <folder id="lgu" caption="LGU" index="5"/>
+            <folder id="lgu" caption="LGU"/>
         </folder>
     </folder>
 </folders>

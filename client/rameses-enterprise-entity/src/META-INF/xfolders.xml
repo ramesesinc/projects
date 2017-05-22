@@ -1,10 +1,10 @@
 <folders>
      <folder id="explorer">
         <folder id="master" caption="Master">
-            <folder id="entity" caption="Entities"/>     
-        </folder>        
+            <folder id="entity" caption="Entities"/> 
+        </folder> 
      </folder> 
      <folder id="home">
-        <folder id="entity" caption="Taxpayer Entities" index="20" icon="home/icons/entity.png"/>
+        <folder id="entity" caption="Taxpayer Entities" icon="home/icons/entity.png"/>
     </folder>  
 </folders>

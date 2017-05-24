@@ -11,13 +11,18 @@ class RPULandAppraisalModel extends SubPageModel
     @Service('Var')
     def varSvc;
     
+    @Service('LandRYSettingLookupService')
+    def settingSvc
+    
     def entity;
     def rpuSvc;
     
     def classifications;
+    def loaded = false;
     
     void init(){
         loadComboItems();
+        loaded = true;
     }
     
     void loadComboItems(){
@@ -25,6 +30,30 @@ class RPULandAppraisalModel extends SubPageModel
         entity.rpu.classification = classifications.find{it.objid == entity.rpu.classification?.objid}
     }
     
+    @PropertyChangeListener()
+    def listener = [
+        'entity.rpu.distanceawr' : {
+            def sdawr = entity.rpu.landadjustments.find{it.adjustmenttype.code == 'SDAWR'}
+            updateDistance(sdawr, entity.rpu.distanceawr);
+            if (loaded)
+                calculateAssessment()
+        },
+        'entity.rpu.distanceltc' : {
+            def sdltc = entity.rpu.landadjustments.find{it.adjustmenttype.code == 'SDLTC'}
+            updateDistance(sdltc, entity.rpu.distanceawr);
+            if (loaded)
+                calculateAssessment()
+        },
+        'entity.rpu.classification' : {
+            calculateAssessment()
+        }
+    ]
+    
+        
+    void calculateAssessment(){
+        loadStandardAgriAdjustments()
+        super.calculateAssessment();
+    }    
     
     
     /*---------------------------------------------------------------
@@ -180,7 +209,77 @@ class RPULandAppraisalModel extends SubPageModel
         return InvokerUtil.lookupOpener('landactualuseadjustment:open', [ lguid:entity.lguid, barangayid:entity.rp.barangayid, rpu:entity.rpu, landdetail:selectedLand, onupdate:onupdateLandAdjustment  ])
     }
     
+    void loadStandardAgriAdjustments(){
+        def autoadj = varSvc.get('faas_land_auto_agricultural_adjustment');
+        if (!autoadj || autoadj.matches('0|n|no|f|false')) {
+            return ;
+        }
+            
+        if (! entity.rpu.landadjustments)
+                entity.rpu.landadjustments = []
+                
+        if ('AGRICULTURAL'.equalsIgnoreCase(entity.rpu.classification?.name)){
+            def params = [:]
+            params.ry = entity.rpu.ry
+            params.lguid = entity.lguid 
+            params.barangayid = entity.rp.barangayid
+            params.classificationid = entity.rpu.classification.objid 
+            def adjustments = settingSvc.lookupAdjustmentTypes(params)
+            
+            def sdawr = entity.rpu.landadjustments.find{it.adjustmenttype.code == 'SDAWR'}
+            if (!sdawr){
+                def awr = adjustments.find{it.code == 'SDAWR'}
+                if (awr)
+                    entity.rpu.landadjustments << buildAdjustment(awr, entity.rpu.distanceawr)
+            }
+            else{
+                updateDistance(sdawr, entity.rpu.distanceawr);
+            }
+            
+            def sdltc = entity.rpu.landadjustments.find{it.adjustmenttype.code == 'SDLTC'}
+            if (!sdltc){
+                def dlt = adjustments.find{it.code == 'SDLTC'}
+                if (dlt)
+                    entity.rpu.landadjustments << buildAdjustment(dlt, entity.rpu.distanceltc)
+            }
+            else{
+                updateDistance(sdltc, entity.rpu.distanceltc);
+            }
+        }
+        else {
+            if (!entity.rpu._landadjustments ) entity.rpu._landadjustments = []
+            entity.rpu._landadjustments = entity.rpu.landadjustments.collect{[objid:it.objid]}
+            entity.rpu.landadjustments.clear();
+        }
+    }
     
+    void updateDistance(adj, distance){
+        def p = adj.params.find{it.param.objid == 'DISTANCE_KM'}
+        if (p) p.value = distance
+    }
+    
+    def buildAdjustment(adjtype, distance){
+        def adj = [:]
+        adj.objid = 'LA' + new java.rmi.server.UID()
+        adj.landrpuid = entity.objid 
+        adj.landdetailid = null 
+        adj.adjustmenttype = adjtype
+        adj.expr = adjtype.expr
+        adj.adjustment = 0.0
+        adj.basemarketvalue = 0.0 
+        adj.marketvalue= 0.0 
+        adj.type = 'LV'
+        
+        adj.params = []
+        adj.params << [
+            objid : 'LAP' +  new java.rmi.server.UID(),
+            landadjustmentid : adj.objid,
+            landrpuid : entity.objid, 
+            param : [objid:'DISTANCE_KM', name:'DISTANCE_KM', paramtype:'decimal'],
+            value : distance
+        ]
+        return adj
+    }
    
 }    
     

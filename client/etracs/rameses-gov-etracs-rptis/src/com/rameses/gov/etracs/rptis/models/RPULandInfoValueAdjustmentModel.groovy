@@ -12,6 +12,7 @@ class RPULandInfoValueAdjustmentModel extends SubPageModel
     def selectedItem 
     
     void init(){
+        calculateAssessment();
     }
     
     void calculateAssessment() {
@@ -100,6 +101,7 @@ class RPULandInfoValueAdjustmentModel extends SubPageModel
             if (item.value == null)
                 throw new Exception('Value is required.');
             checkRange(item);
+            updateDistance(item);
             calculateAssessment();
         }
     ] as EditorListModel    
@@ -118,6 +120,13 @@ class RPULandInfoValueAdjustmentModel extends SubPageModel
             }
         }
     }    
+    
+    void updateDistance(param){
+        if(selectedItem.adjustmenttype.code == 'SDAWR')
+            entity.rpu.distanceawr = param.value
+        else if(selectedItem.adjustmenttype.code == 'SDLTC')
+            entity.rpu.distanceltc = param.value
+    }
     
     
     def getTotalAdjustment(){

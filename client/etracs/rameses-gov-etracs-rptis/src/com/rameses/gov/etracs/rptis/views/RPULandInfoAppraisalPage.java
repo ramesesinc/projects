@@ -29,6 +29,8 @@ public class RPULandInfoAppraisalPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
+        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
         jPanel11 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
@@ -46,11 +48,13 @@ public class RPULandInfoAppraisalPage extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(2, 2, 2, 2));
 
         xComboBox6.setAllowNull(false);
         xComboBox6.setCaption("Classification");
         xComboBox6.setCaptionWidth(100);
+        xComboBox6.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
         xComboBox6.setEnabled(false);
         xComboBox6.setExpression("#{item.name} ");
         xComboBox6.setImmediate(true);
@@ -60,6 +64,23 @@ public class RPULandInfoAppraisalPage extends javax.swing.JPanel {
         xComboBox6.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox6.setRequired(true);
         xFormPanel1.add(xComboBox6);
+
+        xDecimalField1.setCaption("Distance to All Weather Road ");
+        xDecimalField1.setCaptionWidth(170);
+        xDecimalField1.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
+        xDecimalField1.setDepends(new String[] {"entity.rpu.classification"});
+        xDecimalField1.setEnabled(false);
+        xDecimalField1.setName("entity.rpu.distanceawr"); // NOI18N
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(50, 20));
+        xFormPanel1.add(xDecimalField1);
+
+        xDecimalField3.setCaption("Local Trading ");
+        xDecimalField3.setCaptionWidth(90);
+        xDecimalField3.setDepends(new String[] {"entity.rpu.classification"});
+        xDecimalField3.setEnabled(false);
+        xDecimalField3.setName("entity.rpu.distanceltc"); // NOI18N
+        xDecimalField3.setPreferredSize(new java.awt.Dimension(50, 20));
+        xFormPanel1.add(xDecimalField3);
 
         jPanel1.add(xFormPanel1, java.awt.BorderLayout.PAGE_START);
 
@@ -162,21 +183,17 @@ public class RPULandInfoAppraisalPage extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 507, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -192,10 +209,12 @@ public class RPULandInfoAppraisalPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDataTable xDataTable3;
+    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField14;
     private com.rameses.rcp.control.XDecimalField xDecimalField16;
     private com.rameses.rcp.control.XDecimalField xDecimalField17;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }

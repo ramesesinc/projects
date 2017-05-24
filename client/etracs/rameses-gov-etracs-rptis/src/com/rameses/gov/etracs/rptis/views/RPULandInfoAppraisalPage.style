@@ -6,6 +6,11 @@
     readonly:false;
 }
 
+"entity.rpu.distance.*"  [allowEdit == true] {
+    enabled:true;
+    visible:true;
+    required:true;
+}
 
 
 "openActualUseAdjustment" [selectedLand == null || selectedLand.subclassid == null] {
@@ -46,4 +51,9 @@
 
 "selectedLand"  [entity._resolve == true] {
     readonly:false;
+}
+
+"entity.rpu.distance.*"  [entity.rpu.classification?.name != 'AGRICULTURAL'] {
+    visible:false;
+    required:false;
 }

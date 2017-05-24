@@ -180,7 +180,7 @@ public class LandRYSettingService
     -----------------------------------------------------------*/
     @ProxyMethod
     public List getAdjustmentTypes( setting )  {
-    	return em_adjustmenttype.find([landrysettingid:setting.objid]).orderBy('idx').list()
+    	return em_adjustmenttype.find([landrysettingid:setting.objid]).orderBy('idx,code').list()
     }
 
 

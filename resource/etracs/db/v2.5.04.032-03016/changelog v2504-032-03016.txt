@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Auto agriland distance adjustment
 	- ROA report update
 	- Management log report update
 	- QRRPA (LIFT) and AEEMM format update

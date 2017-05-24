@@ -6,7 +6,7 @@
     enabled:false;
 }
 
-"addMachine"[mode=='read']{
+"addMachine"[allowEdit == false]{
     enabled:false;
 }
 
@@ -22,7 +22,7 @@
     visible:true;
 }
 
-"addMachine"[mode!='read']{
+"addMachine"[allowEdit == true]{
     enabled:true;
 }
 

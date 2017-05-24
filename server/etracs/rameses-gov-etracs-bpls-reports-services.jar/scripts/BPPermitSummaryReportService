@@ -14,6 +14,7 @@ class BPPermitSummaryReportService {
 		if ( !params.permittype?.objid ) throw new Exception('permittype parameter is required'); 
 		if ( !params.year ) throw new Exception('year parameter is required');
 
+		if ( !params.filter ) params.filter = '';
 		params.permittypeid = params.permittype.objid; 
 
 		def list = null; 

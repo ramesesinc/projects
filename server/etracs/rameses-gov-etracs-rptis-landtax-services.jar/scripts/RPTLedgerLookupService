@@ -45,7 +45,7 @@ class RPTLedgerLookupService
     def getLookupColumns(){
         return '''
             rl.objid, rl.state, rl.faasid, rl.tdno, rl.prevtdno, rl.titleno,
-            rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
+            rl.owner_name, rl.taxpayer_objid, e.name AS taxpayer_name, rl.administrator_name,
             rl.fullpin, rl.cadastrallotno, rl.totalareaha, rl.classcode, rl.rputype,  
             rl.totalmv, rl.totalav, rl.lastyearpaid, rl.lastqtrpaid,
             CASE WHEN rl.faasid IS NULL THEN 'M' ELSE '' END AS type,

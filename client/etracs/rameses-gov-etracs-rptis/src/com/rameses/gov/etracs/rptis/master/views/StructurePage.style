@@ -1,7 +1,7 @@
-"entity.*" [mode == 'read'] {
+"entity.*|selectedItem" [mode == 'read'] {
     readonly:true;
 }
 
-"entity.*" [mode != 'read'] {
+"entity.*|selectedItem" [mode != 'read'] {
     readonly:false;
 }

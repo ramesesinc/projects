@@ -36,14 +36,9 @@ class StructureModel extends MasterModel
             item.material_objid = item.material.objid 
             item.material_code = item.material.code
             item.material_name = item.material.name 
-        
-            if (item.isnew == null || item.isnew == false)
-                update(item);
         },
         onAddItem    : { item -> 
-            update(item);
             entity.materials.add( item );
-            item.isnew = false;
         },
         onRemoveItem : { item -> 
             if( MsgBox.confirm("Delete selected item?") ) {
@@ -63,13 +58,7 @@ class StructureModel extends MasterModel
             throw new Exception(msg)
         }
     }
-        
-    void update(item){
-        if (mode != 'create'){
-            svc.updateMaterial(item)
-        }
-    }
-    
+   
     void removeItem(item){
         def st = [_schemaname:'structurematerial']
         st.putAll(item);

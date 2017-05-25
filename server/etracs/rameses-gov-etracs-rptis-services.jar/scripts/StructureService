@@ -8,13 +8,6 @@ class StructureService
 	@ActiveDB('structurematerial')
 	def em
 
-	@ProxyMethod 
-	public void updateMaterial(item){
-		item.structureid = item.structure.objid 
-		item.materialid = item.material.objid 
-		em.updateMaterial(item)
-	}
-
 	@ProxyMethod
 	public def getMaterials( params ) {
 		if (!params.searchtext) params.searchtext = ''

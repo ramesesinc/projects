@@ -13,6 +13,7 @@ class MasterModel extends CrudFormModel
     def allowDisapprove = true;
     def showOrderno = false;
     def showSpecial = false;
+    boolean showConfirm = false;
     
     public void afterCreate(){
         entity.state = 'DRAFT';

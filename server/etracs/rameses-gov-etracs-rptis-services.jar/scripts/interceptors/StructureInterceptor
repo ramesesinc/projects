@@ -18,11 +18,18 @@ class StructureInterceptor
 	}
 
 
-	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname=='structure'}") 
+	@After(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname=='structure'}") 
 	public void insertMaterials( evt ) {
 		def structure = evt.result 
 		structure.materials?.each{
-			structurematerial.create(it)
+			if(it.isnew){
+				structurematerial.create(it)
+			}
+			else {
+				it.structureid = it.structure.objid 
+				it.materialid = it.material.objid 
+				em.updateMaterial(it)
+			}
 		}
 	}
 

@@ -53,14 +53,16 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
                 [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
 
                 [type:'checkbox', caption:'App Type', text:'NEW', name:'entity.type_new', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'RENEW', name:'entity.type_renew',immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'RETIRE', name:'entity.type_retire', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'RENEW', name:'entity.type_renew',immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'RETIRE', name:'entity.type_retire', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'ADDITIONAL', name:'entity.type_additional', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'RETIRE-LOB', name:'entity.type_retirelob', immediate:true, preferredSize:'0,20', captionWidth:100 ],
 
-                [type:'checkbox', caption:'State', text:'INFO', name:'entity.state_info', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'ASSESSMENT', name:'entity.state_assessment', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'PAYMENT', name:'entity.state_payment', immediate:true, preferredSize:'0,20', captionWidth:100 ],                                                
-                [type:'checkbox', caption:'',  text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                        
+                [type:'checkbox', caption:'App Status', text:'INFO', name:'entity.state_info', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',           text:'ASSESSMENT', name:'entity.state_assessment', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',           text:'PAYMENT', name:'entity.state_payment', immediate:true, preferredSize:'0,20', captionWidth:100 ],                                                
+                [type:'checkbox', caption:'',           text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',           text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                        
 
                 [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
@@ -81,6 +83,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         entity.state_completed = true; 
         entity.period = periodUtil.types[0]; 
         entity.withgross = entity.withcapital = true; 
+        entity.type_new = entity.type_renew = entity.type_retire = true; 
+        entity.type_additional = entity.type_retirelob = true; 
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         lobClassifications = businessReportUtil.getLOBClassifications();    
@@ -113,7 +117,9 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         def apptypes = [
             (entity.type_new? 'NEW' : null), 
             (entity.type_renew? 'RENEW' : null), 
-            (entity.type_retire? 'RETIRE' : null)  
+            (entity.type_retire? 'RETIRE' : null),  
+            (entity.type_retirelob? 'RETIRE-LOB' : null), 
+            (entity.type_additional? 'ADDITIONAL' : null)   
         ].findAll{( it != null )} 
 
         def appstates = [

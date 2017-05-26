@@ -140,6 +140,8 @@ public class RenewBusinessApplicationInterceptor {
 		infoSvc.addAppInfos( b );
 		reqSvc.addRequirements( b );	
 
+		lobSvc.updateActiveLOBHistory([ businessid: o.business.objid, appyear: o.appyear ]);  
+
 		bizSvc.updateApplicationId([businessid: o.business.objid, applicationid: o.objid]);
 		o.business.currentapplicationid = o.objid;
 
@@ -236,6 +238,8 @@ public class RenewBusinessApplicationInterceptor {
 		lobSvc.addActiveLobs( bb ); 
 		infoSvc.addActiveAppInfos( bb ); 
 		infoSvc.addActiveAssessmentInfos( bb ); 
+
+		lobSvc.updateActiveLOBHistory([ businessid: b.objid, appyear: app.appyear ]);  
 	}
 
 

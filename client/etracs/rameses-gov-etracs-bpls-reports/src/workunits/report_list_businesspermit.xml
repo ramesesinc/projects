@@ -12,8 +12,10 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-public class BusinessPermitListingReportController extends ReportController  
-{
+public class BusinessPermitListingReportController extends ReportController {
+    
+    @Script('ReportPeriod') 
+    def periodUtil; 
     
     @Service('BPPermitReportService')
     def svc;
@@ -25,39 +27,106 @@ public class BusinessPermitListingReportController extends ReportController
     def permitTypeSvc;        
     
     String title = "Business Permit Listing";
-    String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
-    String reportName = reportpath + 'BPPermitListing.jasper'
+    String reportpath = 'com/rameses/gov/etracs/bpls/reports/';
     
     def formControl = [ 
         getControlList: { 
             return [
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes',  expression:'#{item.title}'],
-                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
-                [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100] 
+                [type:'combo', caption:'Template', name:'entity.template', required:true, items:'templateTypes',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:100], 
+
+                [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
+                [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ],
+                [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
+                [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
+                [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
+                
+                [type:'combo', caption:'Org. Type', name:'entity.orgtype', items:'orgTypes', expression:'#{item.title}', preferredSize:'0,20', captionWidth:100], 
+                [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100], 
+                [type:'combo', caption:'Sort By', name:'entity.sortfield', items:'sortFields', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100] 
             ]; 
         } 
     ] as FormPanelModel; 
 
     def permitTypes;
+    def templateTypes = [
+        [objid: 'A', title: 'TEMPLATE - A', name: 'BPPermitListing.jasper'],
+        [objid: 'B', title: 'TEMPLATE - B', name: 'BPPermitListing_TemplateB.jasper']
+    ];
+    def sortFields = [
+        [objid: 'owner_name', name: 'Owner Name'],
+        [objid: 'tradename', name: 'Trade Name']
+    ]; 
+    def orgTypes = [ 
+        [objid: 'SING', title: 'SINGLE PROPRIETORSHIP'], 
+        [objid: 'CORP', title: 'CORPORATION'], 
+        [objid: 'COOP', title: 'COOPERATIVE'], 
+        [objid: 'ASSO', title: 'ASSOCIATION'], 
+        [objid: 'REL',  title: 'RELIGIOUS'], 
+        [objid: 'FOUND', title: 'FOUNDATION'], 
+        [objid: 'PART', title: 'PARTNERSHIP'], 
+        [objid: 'GOV', title: 'GOVERNMENT'], 
+        [objid: 'SCH', title: 'SCHOOL'] 
+    ]; 
 
     def initReport() {
         def outcome = super.initReport(); 
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
+        entity.period = periodUtil.types[0]; 
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
+        entity.template = templateTypes[0];
+        entity.sortfield = sortFields[0]; 
         return outcome; 
     }     
+    
+    String getReportName() { 
+        return (reportpath + entity.template.name);  
+    } 
         
-    def getReportData(){
+    def getReportData(){ 
+        def startdate = null; 
+        def enddate = null; 
+        if ( entity.period.type == 'yearly' ) {
+            startdate = periodUtil.format( periodUtil.getYearStartDate( entity.year ), 'yyyy-MM-dd' );
+            enddate   = periodUtil.format( periodUtil.getYearEndDate( entity.year ), 'yyyy-MM-dd' );
+        } else if ( entity.period.type == 'quarterly' ) {
+            startdate = periodUtil.format( periodUtil.getQtrStartDate( entity.year, entity.qtr ), 'yyyy-MM-dd' );
+            enddate   = periodUtil.format( periodUtil.getQtrEndDate( entity.year, entity.qtr ), 'yyyy-MM-dd' );
+        } else if ( entity.period.type == 'monthly' ) { 
+            startdate = periodUtil.format( periodUtil.getMonthStartDate( entity.year, entity.month.index ), 'yyyy-MM-dd' );
+            enddate   = periodUtil.format( periodUtil.getMonthEndDate( entity.year, entity.month.index ), 'yyyy-MM-dd' );
+        } else if ( entity.period.type == 'daily' ) { 
+            startdate = ''+ periodUtil.parse( entity.date ); 
+            enddate   = startdate; 
+        } 
+
+        entity.startdate = startdate;
+        entity.enddate = enddate;     
         return svc.getReport( entity ); 
     }
     
     Map getParameters(){
-        return [
-            YEAR:entity.year,
-            BARANGAY : ( entity.barangay  ? entity.barangay.name : 'ALL')
+        def m = [
+            YEAR: entity.year, ORG_TYPES: [:], 
+            ORG_TYPE : ( entity.orgtype ? entity.orgtype.title : '( ALL )'),
+            BARANGAY : ( entity.barangay  ? entity.barangay.name : '( ALL )') 
         ]; 
-    }
+        orgTypes.each{ m.ORG_TYPES.put( it.objid, it.title ) } 
+        
+        def periodtitle = null; 
+        if ( entity.period.type == 'yearly' ) {
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year ]);
+        } else if ( entity.period.type == 'quarterly' ) { 
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, qtr: entity.qtr ]);
+        } else if ( entity.period.type == 'monthly' ) {
+            periodtitle = periodUtil.getPeriodTitle([ year: entity.year, month: entity.month.index ]);
+        } else if ( entity.period.type == 'daily' ) {
+            periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
+        } 
+        m.PERIOD_TITLE = periodtitle; 
+        return m; 
+    } 
     
     List getBarangaylist() {
         return brgySvc.getList([:]);

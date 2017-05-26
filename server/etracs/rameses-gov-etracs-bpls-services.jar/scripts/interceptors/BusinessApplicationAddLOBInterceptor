@@ -3,7 +3,7 @@ import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.services.extended.*;
 
-public class RetireLobApplicationInterceptor {
+public class AdditionalBusinessApplicationInterceptor {
 
 	@Env
 	def env;
@@ -42,12 +42,12 @@ public class RetireLobApplicationInterceptor {
 	* if application is already due for renewal, you cannot add line anymore. compare current year!= business.activeyear
 	* get current date qtr, and check if parent application does not have balance for the qtr  
 	*/
-	@After(pattern="BusinessApplicationService.initNew", eval="#{args[0].apptype=='RETIRELOB' && args[0].txnmode == 'ONLINE'}")
+	@After(pattern="BusinessApplicationService.initNew", eval="#{args[0].apptype=='ADDITIONAL' && args[0].txnmode == 'ONLINE'}")
 	public void initNew(def evt) { 
 		def app = evt.result;
 		if ( !app.business?.objid ) throw new Exception("Please specify a business");
 
-		app.objid = 'BARLOB'+new UID();
+		app.objid = 'BAADD'+new UID();
 
 		def openlist = business_application.getOpenApplications( [businessid: app.business.objid, filter: '' ] );
 		if ( openlist ) throw new Exception("An application for this business is currently being processed");
@@ -57,7 +57,7 @@ public class RetireLobApplicationInterceptor {
 		def currentYear = dateSvc.getServerYear();
 		def activeYear = b.activeyear;
 		if ( activeYear != currentYear )
-			throw new Exception("Retire Line of business is only applicable for the current year. This business must be renewed first");
+			throw new Exception("Additional for business is only applicable for the current year. This business must be renewed first");
 
 		if ( b.state == 'CANCELLED' ) throw new Exception("Business already cancelled"); 
 		if ( b.state == 'RETIRED' ) throw new Exception("Business already retired"); 
@@ -90,7 +90,7 @@ public class RetireLobApplicationInterceptor {
 	* for line of business to be retired, ensure there is no balance for the particular line.
 	* make sure to save the parentapplicationid.
 	*/
-	@Before(pattern="BusinessApplicationService.create", eval="#{args[0].apptype=='RETIRELOB' && args[0].txnmode == 'ONLINE'}")
+	@Before(pattern="BusinessApplicationService.create", eval="#{args[0].apptype=='ADDITIONAL' && args[0].txnmode == 'ONLINE'}")
 	public void beforeCreate( evt ) { 
 		def app = evt.args[0];
 		def b = bizSvc.open( app.business );
@@ -98,19 +98,12 @@ public class RetireLobApplicationInterceptor {
 			throw new Exception('There are still unpaid balances in the ledger. Please settle account.'); 
 		}
 
-		app.lobs.each {
-			if( it.assessmenttype == 'RETIRE') {
-				if ( !paySvc.hasFullyPaidQtr([ applicationid: b.currentapplicationid, lobid: it.lobid ]) ) {
-					throw new Exception("Retire for line " + it.name + " not allowed becuase there is still unpaid dues"); 
-				}	
-			}
-		} 
 		b.appcount += 1;
-		app.appno = b.bin +  "-" + b.appcount + "RL";
+		app.appno = b.bin +  "-" + b.appcount + "A";
 		app.business.appcount = b.appcount; 
 	}
 
-	@After(pattern="BusinessApplicationService.create", eval="#{args[0].apptype=='RETIRELOB' && args[0].txnmode == 'ONLINE' }")
+	@After(pattern="BusinessApplicationService.create", eval="#{args[0].apptype=='ADDITIONAL' && args[0].txnmode == 'ONLINE' }")
 	public void afterCreate( evt ) { 
 		def o = evt.result;
 
@@ -123,18 +116,20 @@ public class RetireLobApplicationInterceptor {
 		
 		lobSvc.addAppLobs( b );
 		infoSvc.addAppInfos( b );
+
+		lobSvc.updateActiveLOBHistory([ businessid: o.business.objid, appyear: o.appyear ]);  
 		
 		//start the workflow
 		workflowSvc.start([refid: o.objid, data: o]);				
 	}
 
-	@After(pattern="BusinessApplicationService.cancel", eval="#{args[0].apptype=='RETIRELOB' && args[0].txnmode == 'ONLINE' }")
-	public void afterCancel( evt ) { 
+	@After(pattern="BusinessApplicationService.cancel", eval="#{args[0].apptype=='ADDITIONAL' && args[0].txnmode == 'ONLINE' }")
+	public void afterCancel(def evt) { 
 		def app = evt.result;
 		workflowSvc.deleteTasks([applicationid: app.objid]);
 	}
 
-	@After(pattern="BusinessApplicationService.checkReleaseStatus", eval="#{args[0].apptype=='RETIRELOB' }")
+	@After(pattern="BusinessApplicationService.checkReleaseStatus", eval="#{args[0].apptype=='ADDITIONAL' }")
 	public void checkReleaseStatus(def evt) { 
 		def o = evt.args[0];
 		def result = evt.result;
@@ -149,7 +144,7 @@ public class RetireLobApplicationInterceptor {
 		}
 	}
 
-	@Before(pattern="BusinessApplicationService.release", eval="#{args[0].apptype=='RETIRELOB' && args[0].state=='RELEASE' && args[0].txnmode == 'ONLINE'}")
+	@Before(pattern="BusinessApplicationService.release", eval="#{args[0].apptype=='ADDITIONAL' && args[0].state=='RELEASE' && args[0].txnmode == 'ONLINE'}")
 	public void beforeRelease( evt ) { 	
 		def param = evt.args[0]; 
 		def xinfo = business_application.findInfoByAppid([applicationid: param.objid]);
@@ -158,7 +153,7 @@ public class RetireLobApplicationInterceptor {
 			throw new Exception('The application status has already changed. Please reload the information.'); 
 	} 
 
-	@After(pattern="BusinessApplicationService.release", eval="#{args[0].apptype=='RETIRELOB' && args[0].state=='COMPLETED' && args[0].txnmode == 'ONLINE'}")
+	@After(pattern="BusinessApplicationService.release", eval="#{args[0].apptype=='ADDITIONAL' && args[0].state=='COMPLETED' && args[0].txnmode == 'ONLINE'}")
 	public void afterRelease(def evt) { 
 		def app = evt.result;
 		if ( !app.assessmentinfos ) {
@@ -174,6 +169,8 @@ public class RetireLobApplicationInterceptor {
 		lobSvc.addActiveLobs( bb );
 		infoSvc.addActiveAppInfos( bb );
 		infoSvc.addActiveAssessmentInfos( bb );
+		
+		lobSvc.updateActiveLOBHistory([ businessid: b.objid, appyear: app.appyear ]);  
 	}
 
 }

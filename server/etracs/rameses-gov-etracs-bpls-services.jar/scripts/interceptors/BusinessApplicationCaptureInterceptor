@@ -126,6 +126,8 @@ public class CaptureBusinessApplicationInterceptor {
 			}
 			paymentSvc.create(it);	
 		}
+
+		lobSvc.updateActiveLOBHistory([ businessid: o.business.objid, appyear: o.appyear ]);  
 	} 
 
 	@After(pattern="BusinessApplicationService.updateInfos")

@@ -79,6 +79,7 @@ class BusinessCapture extends PageFlowController {
             case 'current':
                 entity.apptype = capture.current_apptype;
                 entity.appyear = currentYear;
+                entity.activeyear = currentYear;
                 entity.state = 'ACTIVE';
                 break;
             case 'processing':     
@@ -114,28 +115,31 @@ class BusinessCapture extends PageFlowController {
         lob.lobAssessmentType = entity.apptype;
     }
     
-    void afterEditName() {
+    void verifyTxnDates() {
         def yearfiled = Integer.parseInt( entity.dtfiled.toString().split('-')[0]); 
         if ( yearfiled != entity.activeyear ) {
             throw new Exception('Date Applied must be within the application year'); 
         } 
-        if ( entity.apptype == 'NEW' ) {
-            if ( entity.yearstarted != entity.activeyear ) 
+        if ( entity.apptype == 'NEW' ) { 
+            if ( capture.type == 'current' ) {
+                // do nothing 
+            } else if ( entity.yearstarted != entity.activeyear ) { 
                 throw new Exception('Year started must be equal to the application year'); 
+            } 
         } 
         else if ( entity.apptype == 'RENEW' ) {
             if ( entity.yearstarted >= entity.activeyear ) 
                 throw new Exception('Year started must be less than the application year'); 
-        } 
+        }     
+    } 
+    
+    void afterEditName() {
+        verifyTxnDates(); 
         verifyList.check(); 
     } 
     
     void doVerifyName() { 
-        def yearfiled = Integer.parseInt( entity.dtfiled.toString().split('-')[0]); 
-        def currentYear = dateSvc.getServerYear();
-        if ( yearfiled != currentYear ) {
-            throw new Exception('Date Applied must be within the application year'); 
-        } 
+        verifyTxnDates(); 
         verifyList.verify();         
     } 
 

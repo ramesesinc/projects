@@ -1,7 +1,6 @@
 import com.rameses.annotations.*;
 import com.rameses.services.extended.*;
-import java.rmi.server.*;
-
+import java.rmi.server.UID;
 
 class BusinessPermitService  {
 
@@ -10,6 +9,15 @@ class BusinessPermitService  {
 
 	@ActiveDB("business_permit")
 	def em;
+
+	@DataContext('business_permit') 
+	def permit_db; 
+
+	@DataContext('business_permit_lob') 
+	def permitlob_db; 
+
+	@DataContext('business_application') 
+	def app_db; 
 
 	@ActiveDB("business_billing")
 	def billEm;
@@ -120,6 +128,7 @@ class BusinessPermitService  {
 	public def open(def o ) {
 		if(!o.applicationid) throw new Exception("applicationid is required");		
 		def r = em.findPermitByApplication( o );
+		r.barcode = '51005:'+r.bin;
 		r.payments.each {
 			it.refdate = dateSvc.parse( 'yyyy-MM-dd', it.refdate);
 			it.amount = new BigDecimal(it.amount);
@@ -128,13 +137,15 @@ class BusinessPermitService  {
 		if(r.lobs) {
 			r.lobnames = r.lobs*.name.join(",");
 		}
-		r.barcode = '51005:'+r.bin;
 		return r;
 	}
 
 	@ProxyMethod
 	public def getReport( o ) {
 		if ( !o.applicationid ) throw new Exception("applicationid is required");
+
+		def app = app_db.find([ objid: o.applicationid ]).first(); 
+		if ( !app ) throw new Exception('Application record does not exist'); 
 
 		def varvalue = sysvar.getProperty( 'businesspermit_split_printing', null );  
 		boolean splitPrinting = ( "true" == varvalue.toString() ); 
@@ -151,22 +162,17 @@ class BusinessPermitService  {
 			perm = em.findPermitForReport( o ); 
 		}
 		
-		def applobs = em.getApplicationLOBs( o ); 
+		def lobs = em.getApplicationLOBs( o ); 
 		if ( splitPrinting ) { 
-			applobs = applobs.findAll{ it.applicationid==o.applicationid } 
+			lobs = lobSvc.getAppLobs( o ); 
+			lobs = lobs.findAll{( it.assessmenttype.toString().toUpperCase() != 'RETIRE' )} 
+		} else {
+			lobs = permitlob_db.find([ parentid: perm.objid ]).orderBy(' txndate ').list(); 
 		} 
 
-		perm.lobs = []; 
-		applobs.each{ x-> 
-			if ( x.assessmenttype.toString().equalsIgnoreCase('RETIRE') ) {
-				def retirelobs = perm.lobs.findAll{ it.lobid==x.lobid } 
-				if (retirelobs) perm.lobs.removeAll( retirelobs );
-			} else { 
-				perm.lobs << x; 
-			}
-		} 
+		if ( !lobs ) throw new Exception('No available active LOB'); 
 
-		if ( !perm.lobs ) throw new Exception('No available active LOB'); 
+		perm.lobs = lobs; 
  
 		def addr = em.findBusinessAddress([ objid: perm.address?.objid ]);
 		if ( addr ) { 
@@ -196,7 +202,7 @@ class BusinessPermitService  {
 
 		perm.apptype = (perm.parentapptype? perm.parentapptype: perm.apptype); 
 		perm.lobnames = perm.lobs*.name.join(","); 
-		perm.payments = em.getApplicationPayments(o);
+		perm.payments = em.getPayments(o);
 		if ( splitPrinting ) { 
 			perm.payments = perm.payments.findAll{ it.applicationid==o.applicationid } 
 		} 
@@ -273,5 +279,32 @@ class BusinessPermitService  {
 		if ( !params.objid ) throw new Exception('objid parameter is required'); 
 
 		em.updateRemarks( params ); 
+	}
+
+	@ProxyMethod 
+	public def buildPermitLOB( params ) { 
+		def perm = permit_db.find([ objid: params.permitid ]).first(); 
+		if ( !perm ) return null; 
+
+		def lobs = []; 
+		em.getAppLOBs([ permitid: perm.objid ]).each{ o-> 
+			if ( o.apptype.toString().toUpperCase().matches('RETIRE|RETIRELOB')) {
+				def x = lobs.find{ it.lobid==o.lobid } 
+				if ( x ) lobs.remove( x ); 
+
+			} else { 
+				lobs << o; 
+			} 
+		} 
+
+		permitlob_db.find([ parentid: perm.objid ]).delete(); 
+		lobs.each{ o-> 
+			o.objid = 'PLOB' + new UID(); 
+			o.parentid = perm.objid; 
+			permitlob_db.create( o );  
+		} 
+
+		def xdb = permitlob_db.find([ parentid: perm.objid ]); 
+		return xdb.orderBy(' txndate ').list(); 
 	}
 } 

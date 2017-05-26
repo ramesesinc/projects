@@ -25,83 +25,43 @@ SELECT classification_objid, name FROM lob
 ORDER BY classification_objid, name
 
 [getTaxpayerMasterList]
-select 
-	b.objid, tmp2.activeyear, tmp2.apptype, b.orgtype, b.tradename, 
-	baddr.barangay_name, b.address_text as businessaddress, 
-	b.owner_name, b.owner_address_text as owner_address, 
-	tmp2.declaredcapital, tmp2.declaredgross, tmp2.capital, tmp2.gross, 
+select xx.*, 
 	(
-		select top 1 permitno from business_permit 
-		where businessid=b.objid and activeyear=tmp2.activeyear 
-		order by version desc 
+		select max(permitno) from business_permit 
+		where businessid=xx.objid and activeyear=xx.activeyear and version=xx.permitver 
 	) as permitno 
 from ( 
 	select 
-		businessid, activeyear, apptype, 
-		isnull(sum(declaredcapital), 0) as declaredcapital, 
-		isnull(sum(declaredgross), 0) as declaredgross, 
-		isnull(sum(capital), 0) as capital, 
-		isnull(sum(gross), 0) as gross  
-	from ( 
-		select 
-			ba.business_objid as businessid, ba.appyear as activeyear, ba.apptype, 
-			(select sum(decimalvalue) from business_application_info where applicationid=ba.objid and attribute_objid='DECLARED_CAPITAL') as declaredcapital, 
-			(select sum(decimalvalue) from business_application_info where applicationid=ba.objid and attribute_objid='DECLARED_GROSS') as declaredgross,  
-			(select sum(decimalvalue) from business_application_info where applicationid=ba.objid and attribute_objid='CAPITAL') as capital, 
-			(select sum(decimalvalue) from business_application_info where applicationid=ba.objid and attribute_objid='GROSS') as gross 
-		from business_application ba 
-			inner join business b on ba.business_objid=b.objid 
-		where ba.appyear = $P{year}   
-			and ba.apptype in ( ${apptypefilter} ) 
-			and ba.state in ( ${appstatefilter} ) 
-			and b.permittype = $P{permittypeid} 
-	)tmp1 
-	group by businessid, activeyear, apptype 
-)tmp2 
-	inner join business b on b.objid=tmp2.businessid 
-	left join business_address baddr on b.address_objid=baddr.objid 
-order by b.tradename 
-
-
-[getPermitListByYear]
-SELECT 
-	bp.*, b.owner_name, b.owner_address_text as owner_address, 
-	b.tradename, b.address_text as businessaddress, 
-	b.objid as business_objid, idtin.idno as tin, 
-	(
-		select sum( bai.intvalue ) from business_application_info bai 
-			inner join business_application ba on bai.applicationid=ba.objid 
-		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
-			and bai.attribute_objid='NUM_EMPLOYEE' 
-			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
-	) as numemployee, 
-	(
-		select sum( bai.intvalue ) from business_application_info bai 
-			inner join business_application ba on bai.applicationid=ba.objid 
-		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
-			and bai.attribute_objid='NUM_EMPLOYEE_MALE' 
-			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
-	) as nummale, 
-	(
-		select sum( bai.intvalue ) from business_application_info bai 
-			inner join business_application ba on bai.applicationid=ba.objid 
-		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
-			and bai.attribute_objid='NUM_EMPLOYEE_FEMALE' 
-			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
-	) as numfemale 
-FROM ( 
-	SELECT businessid, activeyear, MAX(version) AS version 
-	FROM business_permit 
-	WHERE activeyear=$P{year} and state='ACTIVE'  
-	GROUP BY businessid, activeyear 
-)xx  
-	INNER JOIN business_permit bp ON xx.businessid=bp.businessid 
-	INNER JOIN business b ON bp.businessid=b.objid 
-	LEFT JOIN entityid idtin on (b.owner_objid=idtin.entityid AND idtin.idtype='TIN') 	
-	LEFT JOIN business_address addr ON b.address_objid=addr.objid  
-WHERE bp.activeyear=xx.activeyear and bp.version=xx.version  
-	${filter} 
-ORDER BY b.owner_name 
+		b.objid, 
+		(case when ba.apptype is null then b.apptype else ba.apptype end) as apptype, 
+		b.activeyear, b.orgtype, b.tradename, baddr.barangay_name, b.address_text as businessaddress, 
+		b.owner_name, b.owner_address_text as owner_address, 
+		(
+			select sum(decimalvalue) from business_application_info 
+			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='DECLARED_CAPITAL'
+		) AS declaredcapital, 
+		(
+			select sum(decimalvalue) from business_application_info 
+			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='DECLARED_GROSS'
+		) AS declaredgross, 
+		(
+			select sum(decimalvalue) from business_application_info 
+			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='CAPITAL'
+		) AS capital, 
+		(
+			select sum(decimalvalue) from business_application_info 
+			where businessid=b.objid and activeyear=b.activeyear and attribute_objid='GROSS'
+		) AS gross, 
+		(
+			select max(version) from business_permit 
+			where businessid=b.objid and activeyear=b.activeyear and state='ACTIVE' 
+		) as permitver 
+	from business_application ba 
+		inner join business b on ba.business_objid=b.objid 
+		left join business_address baddr on b.address_objid=baddr.objid 
+	where ba.appyear=$P{year} ${filter} 
+)xx 
+order by xx.tradename 
 
 
 [getLOBCountList]

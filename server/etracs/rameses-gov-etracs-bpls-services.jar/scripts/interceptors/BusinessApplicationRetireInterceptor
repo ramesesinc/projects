@@ -95,6 +95,8 @@ public class BusinessApplicationRetireInterceptor {
 		def b = [businessid: o.business.objid, activeyear: o.appyear, applicationid: o.objid];
 		b.lobs = o.lobs;
 		lobSvc.addAppLobs( b );
+		
+		lobSvc.updateActiveLOBHistory([ businessid: o.business.objid, appyear: o.appyear ]);  
 
 		//start the workflow
 		workflowSvc.start([refid: o.objid, data: o]);	
@@ -143,5 +145,7 @@ public class BusinessApplicationRetireInterceptor {
 		b.state = 'RETIRED';
 		b.activeyear = app.appyear;
 		bizSvc.updateOnRelease( b );
+
+		lobSvc.updateActiveLOBHistory([ businessid: b.objid, appyear: app.appyear ]);  
 	} 
 }

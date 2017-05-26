@@ -42,7 +42,7 @@ public class NewBusinessApplicationInterceptor {
 	def business_application;
 
 	@ActiveDB('business_receivable') 
-	def business_receivable;	
+	def business_receivable; 
 
 
 	@After(pattern="BusinessApplicationService.initNew", eval="#{args[0].apptype=='NEW' && args[0].txnmode == 'ONLINE' }")
@@ -82,9 +82,11 @@ public class NewBusinessApplicationInterceptor {
 		b.appinfos = o.appinfos;
 		b.requirements = o.requirements;
 
-		lobSvc.addAppLobs( b );
-		infoSvc.addAppInfos( b );
-		reqSvc.addRequirements( b );	
+		lobSvc.addAppLobs( b ); 
+		infoSvc.addAppInfos( b ); 
+		reqSvc.addRequirements( b ); 
+
+		lobSvc.updateActiveLOBHistory([ businessid: o.business.objid, appyear: o.appyear ]);  
 
 		//update applicationid
 		def bu = o.business;
@@ -144,5 +146,7 @@ public class NewBusinessApplicationInterceptor {
 		lobSvc.addActiveLobs( bb );
 		infoSvc.addActiveAppInfos( bb );
 		infoSvc.addActiveAssessmentInfos( bb );
+
+		lobSvc.updateActiveLOBHistory([ businessid: b.objid, appyear: app.appyear ]);  
 	}
 }

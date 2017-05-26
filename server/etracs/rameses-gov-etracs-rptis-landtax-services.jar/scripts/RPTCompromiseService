@@ -74,13 +74,8 @@ class RPTCompromiseService {
             [name:'enddate', caption:'End Date'],
             [name:'tdno', caption:'TD No.'],
             [name:'fullpin', caption:'PIN'],
-            [name:'secondpartyname', caption:'Taxpayer Name'],
-            [name:'term', caption:'Term', type:'integer' ],
-            [name:'numofinstallment', caption:'Installments', type:'integer', format:'##'],
-            [name:'downpayment', caption:'Downpayment', type:'decimal'],
+            [name:'taxpayer.name', caption:'Taxpayer Name'],
             [name:'amount', caption:'Amount', type:'decimal' ],
-            [name:'amtpaid', caption:'Amount Paid', type:'decimal'],
-            [name:'enddate', caption:'End Date', maxWidth:80],
         ]
 	}
 

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Accomplishment report updates
 	- Auto agriland distance adjustment
 	- ROA report update
 	- Management log report update

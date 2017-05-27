@@ -20,7 +20,7 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
     boolean showClassification = true;
     boolean showRate = false;
     
-    String path = 'com/rameses/gov/etracs/rpt/report/';
+    String path = 'com/rameses/gov/etracs/rptis/reports/';
     
             
     def initReport(){
@@ -42,7 +42,6 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
    def periodtypes = [
         [type:'quarterly', caption:'QUARTERLY'],
         [type:'monthly', caption:'MONTHLY'],
-        [type:'asofdate', caption:'AS OF DATE'],
    ]
  
     

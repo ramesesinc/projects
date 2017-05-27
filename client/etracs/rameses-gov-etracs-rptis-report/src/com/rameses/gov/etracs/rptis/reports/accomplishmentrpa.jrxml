@@ -58,6 +58,54 @@
 	<field name="endingexemptcount" class="java.math.BigDecimal"/>
 	<field name="endingexemptav" class="java.math.BigDecimal"/>
 
+	<variable name="preceedingtaxablecount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedingtaxablecount}]]></variableExpression>
+	</variable>
+	<variable name="preceedingtaxableav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedingtaxableav}]]></variableExpression>
+	</variable>
+	<variable name="preceedingexemptcount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedingexemptcount}]]></variableExpression>
+	</variable>
+	<variable name="preceedingexemptav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{preceedingexemptav}]]></variableExpression>
+	</variable>
+	<variable name="currenttaxablecount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currenttaxablecount}]]></variableExpression>
+	</variable>
+	<variable name="currenttaxableav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currenttaxableav}]]></variableExpression>
+	</variable>
+	<variable name="currentexemptcount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currentexemptcount}]]></variableExpression>
+	</variable>
+	<variable name="currentexemptav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{currentexemptav}]]></variableExpression>
+	</variable>
+	<variable name="cancelledtaxablecount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledtaxablecount}]]></variableExpression>
+	</variable>
+	<variable name="cancelledtaxableav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledtaxableav}]]></variableExpression>
+	</variable>
+	<variable name="cancelledexemptcount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledexemptcount}]]></variableExpression>
+	</variable>
+	<variable name="cancelledexemptav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{cancelledexemptav}]]></variableExpression>
+	</variable>
+	<variable name="endingtaxablecount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingtaxablecount}]]></variableExpression>
+	</variable>
+	<variable name="endingtaxableav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingtaxableav}]]></variableExpression>
+	</variable>
+	<variable name="endingexemptcount" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingexemptcount}]]></variableExpression>
+	</variable>
+	<variable name="endingexemptav" class="java.lang.Number" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{endingexemptav}]]></variableExpression>
+	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -756,7 +804,7 @@ RPU]]></text>
 						width="90"
 						height="14"
 						key="textField-34"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -781,7 +829,7 @@ RPU]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxablecount} + $F{cancelledtaxablecount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxablecount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -798,7 +846,7 @@ RPU]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxableav} + $F{cancelledtaxableav}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingtaxableav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -815,7 +863,7 @@ RPU]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingexemptcount} + $F{cancelledexemptcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingexemptcount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -832,7 +880,7 @@ RPU]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingexemptav}+ $F{cancelledexemptav}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{preceedingexemptav}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1206,6 +1254,295 @@ RPU]]></text>
 				<text><![CDATA[Certified Correct By:
 ]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="90"
+						height="14"
+						key="textField-52"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["TOTAL"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="90"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-53"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{preceedingtaxablecount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="114"
+						y="0"
+						width="62"
+						height="14"
+						key="textField-54"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{preceedingtaxableav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="176"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-55"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{preceedingexemptcount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="200"
+						y="0"
+						width="63"
+						height="14"
+						key="textField-56"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{preceedingexemptav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="263"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-57"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currenttaxablecount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="287"
+						y="0"
+						width="62"
+						height="14"
+						key="textField-58"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currenttaxableav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="349"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-59"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currentexemptcount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="373"
+						y="0"
+						width="63"
+						height="14"
+						key="textField-60"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{currentexemptav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="436"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-61"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledtaxablecount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="460"
+						y="0"
+						width="62"
+						height="14"
+						key="textField-62"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledtaxableav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="522"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-63"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledexemptcount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="546"
+						y="0"
+						width="63"
+						height="14"
+						key="textField-64"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{cancelledexemptav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="609"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-65"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endingtaxablecount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="633"
+						y="0"
+						width="62"
+						height="14"
+						key="textField-66"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endingtaxableav}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="695"
+						y="0"
+						width="24"
+						height="14"
+						key="textField-67"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endingexemptcount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="719"
+						y="0"
+						width="63"
+						height="14"
+						key="textField-68"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{endingexemptav}]]></textFieldExpression>
+				</textField>
 			</band>
 		</summary>
 </jasperReport>

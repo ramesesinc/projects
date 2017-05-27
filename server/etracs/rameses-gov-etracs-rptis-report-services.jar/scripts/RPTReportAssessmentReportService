@@ -70,7 +70,7 @@ class RPTReportAssessmentReportService
 
 
 	def buildStandardFormat(params){
-		def brgys = getBarangays(params)
+		def brgys = getBarangays(params).each{it.barangay = it.name}
 		updateBrgyInfo(brgys, em.getPreceedingList(params))
 		updateBrgyInfo(brgys, em.getCurrentList(params))
 		updateBrgyInfo(brgys, em.getCancelledList(params))

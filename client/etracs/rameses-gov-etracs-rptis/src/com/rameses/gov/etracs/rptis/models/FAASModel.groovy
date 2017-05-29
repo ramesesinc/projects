@@ -275,7 +275,6 @@ public class FAASModel
     
     boolean getShowActions(){
         if (getEntity().state.matches('CURRENT|CANCELLED')) return false;
-        if (getEntity().originlguid != getOrgid()) return false;
         if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
         if (getEntity().taskstate && !getEntity().taskstate.matches('receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
         if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;

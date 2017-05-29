@@ -42,7 +42,7 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE (
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
 AND r.taxable = 1 
 ${filter}
@@ -133,7 +133,7 @@ FROM faas f
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid   
 WHERE (
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
 AND r.taxable = 0 
 ${filter}

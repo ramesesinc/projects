@@ -41,7 +41,7 @@ FROM faas f
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE (
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
 ${filter}
 GROUP BY b.objid, b.name , b.indexno 	 

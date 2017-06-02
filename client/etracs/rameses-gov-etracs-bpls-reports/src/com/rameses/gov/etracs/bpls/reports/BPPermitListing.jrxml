@@ -43,7 +43,6 @@
 	<parameter name="YEARTO" isForPrompting="false" class="java.lang.Integer"/>
 	<parameter name="MAYORNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="MAYORTITLE" isForPrompting="false" class="java.lang.String"/>
-	<parameter name="YEAR" isForPrompting="false" class="java.lang.Integer"/>
 	<parameter name="BARANGAY" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="PARENTLGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="ORG_TYPE" isForPrompting="false" class="java.lang.Object"/>

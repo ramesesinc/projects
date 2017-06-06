@@ -184,8 +184,10 @@ class BldgRPUService
         rpu.structuraltypes.each{st ->
             st.bldguses.each{bu ->
                 bu.floors.each{f ->
-                    if (f.floorno > rpu.floorcount){
-                        rpu.floorcount = util.toInteger(f.floorno+'')
+                	if (!f.floorno) f.floorno = 0
+                	def floorno = util.toInteger(f.floorno.toString())
+                    if (floorno > rpu.floorcount){
+                        rpu.floorcount = floorno
                     }
                 }
             }

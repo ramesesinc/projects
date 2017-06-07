@@ -232,7 +232,7 @@
             
             def depositslippath = "com/rameses/enterprise/treasury/bankdeposit/"
             
-            void printCashDepositSlip() {
+            def printCashDepositSlip() {
                 if( selectedDeposit.totalcash == 0.0 ) throw new Exception('There is no cash for deposit.')
             
                 def reportname = depositslippath + "cash.jasper" 
@@ -275,11 +275,20 @@
                     getReportData : { return reportdata; }, 
                     getParameters : { return stdparams; }
                 ] as ReportModel
-                report.viewReport()
-                ReportUtil.print( report.report, true )
+
+                report.viewReport(); 
+                if ( ReportUtil.isDeveloperMode()) { 
+                    return Inv.lookupOpener('report:preview', [ 
+                        report: report, 
+                        title : ''+ entity.txnno +': Cash Deposit Slip' 
+                    ]);
+                } 
+
+                ReportUtil.print( report.report, true ); 
+                return null; 
             }
             
-            void printCashBreakdown() {
+            def printCashBreakdown() {
                 if( selectedDeposit.totalcash == 0.0 ) throw new Exception('There is no cash for deposit.')
             
                def reportname = depositslippath + "cashbreakdownitem.jasper"; 
@@ -294,8 +303,18 @@
                     getReportData : { return selectedDeposit.cashbreakdown; }, 
                     getParameters : { return stdparams; }
                 ] as ReportModel
-                report.viewReport()
-                ReportUtil.print( report.report, true )
+                
+                report.viewReport(); 
+                
+                if ( ReportUtil.isDeveloperMode()) { 
+                    return Inv.lookupOpener('report:preview', [ 
+                        report: report, 
+                        title : ''+ entity.txnno +': Cash Breakdown' 
+                    ]);
+                } 
+                
+                ReportUtil.print( report.report, true );
+                return null; 
             }
             
             def printCheckDepositSlip() {

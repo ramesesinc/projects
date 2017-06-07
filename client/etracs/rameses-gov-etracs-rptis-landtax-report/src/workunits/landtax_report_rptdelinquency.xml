@@ -1,7 +1,7 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/landtax" action="init" 
-                 caption="Realty Tax Delinquency Listing" target="window" index="101" 
+                 caption="Realty Tax Delinquency Listing" target="window"
                  role="REPORT"/>
     </invokers>
     <code>

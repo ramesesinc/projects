@@ -3,7 +3,7 @@
         <invoker folderid="/explorer/report/landtax" 
             action="init" 
             caption="Certified List of Real Property Tax Collectibles" 
-            target="window" index="101" 
+            target="window" 
             role="LANDTAX_REPORT,REPORT"/>
     </invokers>
     <code>

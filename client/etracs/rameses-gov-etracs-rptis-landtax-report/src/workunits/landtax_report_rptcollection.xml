@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/landtax" action="init" 
             caption="Real Property Tax Collection" target="window" 
-            index="1" role="REPORT"/>
+            role="REPORT"/>
     </invokers>
     
     <code>

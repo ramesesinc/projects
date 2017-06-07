@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/explorer/report/landtax" action="init" caption="Abstract of Real Property Tax Collection" 
-                 target="window" index="101" role="REPORT"/>
+                 target="window" role="REPORT"/>
         <invoker type="formActions"     action="_close" caption="Cancel" mnemonic="c"  icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"  icon="images/doc-view.png" visibleWhen="#{mode=='init'}"/>
@@ -10,7 +10,7 @@
         <invoker type="formActions"     action="back" caption="Back" mnemonic="c"  icon="images/toolbars/back.png" immediate="true" visibleWhen="#{mode=='view'}"/>   
     </invokers>
     
-    <code class="com.rameses.gov.etracs.landtax.models.AbstractRPTCollectionReportModel"/>
+    <code class="com.rameses.gov.etracs.landtax.report.models.AbstractRPTCollectionReportModel"/>
     
     <pages>
         <page template="com.rameses.gov.etracs.landtax.report.abstractofcollection.AbstractRPTCollectionPage"/>

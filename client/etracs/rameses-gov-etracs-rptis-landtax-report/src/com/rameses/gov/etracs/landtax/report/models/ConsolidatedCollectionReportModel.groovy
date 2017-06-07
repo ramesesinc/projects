@@ -1,11 +1,12 @@
-package com.rameses.gov.etracs.landtax.models;
+package com.rameses.gov.etracs.landtax.report.models;
 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
+import com.rameses.gov.etracs.rptis.report.models.*;
 
-class ConsolidatedCollectionReportModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+class ConsolidatedCollectionReportModel extends AsyncReportModel
 {
     @Service('LandTaxReportConsolidatedCollectionService') 
     def svc

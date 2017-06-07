@@ -5,5 +5,5 @@
                  target="window" 
                  role="REPORT"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.landtax.models.ConsolidatedCollectionReportModel"/>
+    <code class="com.rameses.gov.etracs.landtax.report.models.ConsolidatedCollectionReportModel"/>
 </workunit>

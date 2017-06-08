@@ -510,10 +510,10 @@ class RPTLedgerService
         qtritem.basicav = (qtr == 4 ? qtrlyvalue.basicav4thqtr : qtrlyvalue.basicavqtrly)
         qtritem.sefav = (qtr == 4 ? qtrlyvalue.sefav4thqtr : qtrlyvalue.sefavqtrly)
         qtritem.fullypaid = 0
-        qtritem.basicpaid = 0.0
-        qtritem.basicidlepaid = 0.0
-        qtritem.sefpaid = 0.0
-        qtritem.firecodepaid = 0.0
+        //qtritem.basicpaid = 0.0
+        //qtritem.basicidlepaid = 0.0
+        //qtritem.sefpaid = 0.0
+        //qtritem.firecodepaid = 0.0
         em.save(qtritem, SCHEMA_ITEM_QTRLY)
     }
 

@@ -84,6 +84,9 @@ class RPTCertificationService
 		cert.givenday = util.formalizeDate(cert.txndate, 'd' )
 		cert.givenmonth = util.formalizeDate(cert.txndate, 'MMMMM' )
 		cert.givenyear = util.formalizeDate(cert.txndate, 'yyyy' )
+		if (cert.ordate){
+			cert.ordate = dtSvc.parse('yyyy-MM-dd', cert.ordate)
+		}
 		makeHtmlSafe(cert)
 		return cert 
 	}

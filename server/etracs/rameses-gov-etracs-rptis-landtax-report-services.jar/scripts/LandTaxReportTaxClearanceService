@@ -108,6 +108,11 @@ class LandTaxReportTaxClearanceService
                 qtr : cert.qtr,
             ]
             item.payments = em.getPaymentInfo(p).findAll{it.rptledgerid == item.rptledgerid}
+            item.payments.each{
+                if (it.ordate){
+                    it.ordate = dtSvc.parse('yyyy-MM-dd', it.ordate)
+                }
+            }
         }
     }
 

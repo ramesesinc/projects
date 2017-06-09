@@ -46,7 +46,7 @@ class TransmittalSubdivisionModel extends TransmittalModel
     
         
     List getTransmittalTypes(){
-        return ['FORAPPROVAL']
+        return ['SYNC', 'FORAPPROVAL']
     }
     
     void doValidateItems(items){
@@ -54,8 +54,11 @@ class TransmittalSubdivisionModel extends TransmittalModel
             if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && subdivision.lguid != entity.tolgu.objid )
             throw new Exception('Subdivision ' + subdivision.txnno + 'is invalid. Only subdivision from ' + entity.tolgu.name + ' is accepted.');
             
-            if (! subdivision.state.matches('FORAPPROVAL'))
-                throw new Exception('Subdivision ' + subdivision.txnno + ' state is invalid. Only FORAPPROVAL state is allowed.')
+            if (entity.type == 'FORAPPROVAL' && ! subdivision.state.matches('FORAPPROVAL'))
+                throw new Exception('Subdivision ' + subdivision.txnno + ' state is invalid. Only For Approval state is allowed.')
+                
+            if (entity.type == 'SYNC' && ! subdivision.state.matches('APPROVED'))
+                throw new Exception('Subdivision ' + subdivision.txnno + ' state is invalid. Only Approved state is allowed.')
 
             def exist = entity.items.find{it.refid == subdivision.objid}
             if (exist) throw new Exception('Subdivision ' + subdivision.txnno + ' has already been added.');

@@ -83,6 +83,8 @@ class RPTLedgerService
 
     @ProxyMethod
     public def createLedger( ledger ) {
+        def exist = ledgerDb.find([objid:ledger.objid]).first()
+        if(exist) return openLedger(ledger)
         ledger.advancebill = false;
         ledger.updateflag = 'UF' + new java.rmi.server.UID();
         em.create(ledger)
@@ -334,7 +336,7 @@ class RPTLedgerService
     public def approveLedger( ledger) {
         ledger = openLedger(ledger)
         if (ledger.state == STATE_APPROVED )
-            throw new Exception('Ledger has already been approved.')
+            return ledger 
         if (ledger.state == STATE_CANCELLED)
             throw new Exception('Ledger has already been cancelled.')
 

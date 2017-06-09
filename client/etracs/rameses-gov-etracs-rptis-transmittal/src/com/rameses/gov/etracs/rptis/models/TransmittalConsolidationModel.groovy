@@ -46,7 +46,7 @@ class TransmittalConsolidationModel extends TransmittalModel
     
         
     List getTransmittalTypes(){
-        return ['FORAPPROVAL']
+        return ['SYNC', 'FORAPPROVAL']
     }
     
     void doValidateItems(items){
@@ -54,8 +54,11 @@ class TransmittalConsolidationModel extends TransmittalModel
             if ('municipality'.equalsIgnoreCase(entity.tolgu.lgutype) && consolidation.lguid != entity.tolgu.objid )
             throw new Exception('Consolidation ' + consolidation.txnno + ' is invalid. Only Consolidation from ' + entity.tolgu.name + ' is accepted.');
             
-            if (! consolidation.state.matches('FORAPPROVAL'))
-                throw new Exception('Consolidation ' + consolidation.txnno + ' state is invalid. Only FORAPPROVAL state is allowed.')
+            if (entity.type == 'FORAPPROVAL' && ! consolidation.state.matches('FORAPPROVAL'))
+                throw new Exception('Consolidation ' + consolidation.txnno + ' state is invalid. Only For Approval state is allowed.')
+                
+            if (entity.type == 'SYNC' && ! consolidation.state.matches('APPROVED'))
+                throw new Exception('Consolidation ' + consolidation.txnno + ' state is invalid. Only Approved state is allowed.')
 
             def exist = entity.items.find{it.refid == consolidation.objid}
             if (exist) throw new Exception('Consolidation ' + consolidation.txnno + ' has already been added.');

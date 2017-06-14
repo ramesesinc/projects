@@ -88,6 +88,7 @@ public class CaptureBusinessPage extends javax.swing.JPanel {
         xFormPanel2.add(xLabel1);
 
         xIntegerField2.setCaption("Year Started");
+        xIntegerField2.setDisableWhen("#{entity.apptype == 'NEW'}");
         xIntegerField2.setName("entity.yearstarted"); // NOI18N
         xIntegerField2.setPreferredSize(new java.awt.Dimension(100, 22));
         xIntegerField2.setRequired(true);

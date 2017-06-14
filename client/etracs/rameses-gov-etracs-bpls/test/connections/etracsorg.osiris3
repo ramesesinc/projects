@@ -1,5 +1,0 @@
-provider=script
-app.host=www.etracs.org
-app.context=etracsorg
-app.cluster=osiris3
-readTimeout=30000

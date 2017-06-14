@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import market.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+public class PoliceClearanceCashReceiptService  {
+
+	@DataContext("policeclearance_application")
+	def appEm;
+
+	@DataContext("policeclearance_application_fee")
+	def feeEm;
+
+	@Service("PoliceClearanceBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	private final String BARCODE_KEY = "51011"; 
+
+	@ProxyMethod
+	public def getInfo( o ) { 
+		if ( !o.id ) throw new Exception('id parameter is required');  
+
+		def appno = o.id; 
+		if ( appno.startsWith(BARCODE_KEY + ':')) {
+			int idx = appno.indexOf(':');  
+			appno = appno.substring( idx+1 );  
+		}
+
+		def a = appEm.find([ appno: appno ]).first(); 
+		if ( !a ) throw new Exception("Application not found!"); 
+
+		def pendingfee = feeEm.find([ parentid: a.objid ]).where(' amount <> amtpaid ').first(); 
+		if ( !pendingfee ) throw new Exception('No available pending balances in the ledger'); 
+
+		def acctLookup = new ItemAccountUtil();
+
+		def z = [:];
+		z.appid = a.objid;
+		z.appno = a.appno;
+		z.particulars = "Application No. " + a.appno + " " + a.apptype.title;
+		z.payer = a.applicant;
+		z.paidby = a.applicant.name;
+		z.paidbyaddress = a.applicant.address.text;
+
+		z.items = feeEm.find([parentid: a.objid]).select("refid:{objid},amount,item.objid").list();
+		z.items.each {
+			it.item = acctLookup.lookup( it.item.objid );
+		}
+		z.amount = NumberUtil.round( z.items.sum{it.amount} );
+		return z;
+	}
+	
+
+}

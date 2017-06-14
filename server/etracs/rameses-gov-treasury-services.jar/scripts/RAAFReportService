@@ -5,16 +5,19 @@ import com.rameses.util.*
 class RAAFReportService  
 { 
 	@ActiveDB('raaf_report')
-	def adb 
+	def adb; 
  
 	@Service('DateService')
-	def dtSvc
+	def dtSvc;
 
 	@Service('ReportParameterService')
-	def reportSvc
+	def reportSvc;
+
+	@Service('Var') 
+	def varSvc; 
 
 	@Env
-	def env 
+	def env; 
 
 	@ProxyMethod
 	public def getReportData( params ) {
@@ -113,22 +116,40 @@ class RAAFReportService
 			if ( it.serieslength > 0 ) it.pattern = '0'*it.serieslength; 
 		}
 
-		def list2 = list.findAll{( it.qtyissued > 0 )} 
-		if ( list2 ) list.removeAll( list2 ); 
+		boolean splitAF = varSvc.getProperty('rcd_split_unissued_accountable_form', 0).toString().equals("1");  
+
+		def targetlist = list.findAll{( it.qtyissued > 0 )} 
+		if ( targetlist ) list.removeAll( targetlist ); 
 
 		def startindex = 0; 
-		def forms = list.collect{[ formno: it.formno, formtype: it.formtype ]}.unique().sort{ it.formno }
-		forms.findAll{( it.formtype=='serial' )}.each{ o-> 
-			suppressSerialForms( list2, list, o.formno, startindex );  
-			startindex += 1000; 
-		} 
-		forms.findAll{( it.formtype != 'serial' )}.each{ o-> 
-			suppressNonSerialForms( list2, list, o.formno, startindex );  
-			startindex += 1000; 
-		} 
+		def forms = list.collect{[ formno: it.formno, formtype: it.formtype ]}.unique().sort{ it.formno } 
+		if ( splitAF ) { 
+			def list2 = list.findAll{( it.formno=='serial' )}
+			list2.sort{ a,b-> a.formno<=>b.formno ?: a.sortseries<=>b.sortseries }
+			list2.each{
+				targetlist << it; 
+			}
+
+			list2 = list.findAll{( it.formno != 'serial' )}
+			list2.sort{ a,b-> a.formno<=>b.formno ?: a.sortseries<=>b.sortseries }
+			list2.each{
+				targetlist << it; 
+			}
+
+		} else { 
+			forms.findAll{( it.formtype=='serial' )}.each{ o-> 
+				suppressSerialForms( targetlist, list, o.formno, startindex );  
+				startindex += 1000; 
+			} 
+			forms.findAll{( it.formtype != 'serial' )}.each{ o-> 
+				suppressNonSerialForms( targetlist, list, o.formno, startindex );  
+				startindex += 1000; 
+			} 			
+		}
+
 		list.clear(); 
-		list.addAll( list2 ); 
-		list2.clear(); 
+		list.addAll( targetlist ); 
+		targetlist.clear(); 
 	}
 
 	private void suppressSerialForms( targetlist, sourcelist, afid, startindex ) { 
@@ -178,15 +199,35 @@ class RAAFReportService
 	}
 
 	private void suppressNonSerialForms( targetlist, sourcelist, afid, startindex ) { 
-		def list = sourcelist.findAll{( !it.qtyissued && it.qtyreceived && it.formno==afid )} 
-		if ( list ) {
-			def o = list.first(); 
-			o.qtyreceived = list.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
-			o.qtyending = o.qtyreceived; 
-			o.receivedamt = o.qtyreceived * o.denomination; 
-			o.endingamt = o.receivedamt; 
-			targetlist << o; 
-			list.clear(); 
+		def list = sourcelist.findAll{( it.formno==afid )} 
+		if ( !list ) return; 
+
+		def qtyreceived = 0;
+		def qtybegin = 0;
+		def qtyissued = 0;
+		def qtyending = 0;
+		list.each{
+			qtyreceived += ( it.qtyreceived ? it.qtyreceived : 0 );
+			qtybegin += ( it.qtybegin ? it.qtybegin : 0 );
+			qtyissued += ( it.qtyissued ? it.qtyissued : 0 );
+			qtyending += ( it.qtyending ? it.qtyending : 0 );
 		}
+
+		qtyreceived = ( qtyreceived ? qtyreceived : null ); 
+		qtybegin = ( qtybegin ? qtybegin : null ); 
+		qtyissued = ( qtyissued ? qtyissued : null ); 
+		qtyending = ( qtyending ? qtyending : null ); 
+
+		def o = list.first(); 
+		o.qtyreceived = qtyreceived; 
+		o.qtybegin = qtybegin;
+		o.qtyissued = qtyissued; 
+		o.qtyending = qtyending; 
+		o.receivedamt = ( qtyreceived ? qtyreceived * o.denomination : null ); 
+		o.beginamt = ( qtybegin ? qtybegin * o.denomination : null ); 
+		o.issuedamt = ( qtyissued ? qtyissued * o.denomination : null ); 
+		o.endingamt = ( qtyending ? qtyending * o.denomination : null ); 
+		targetlist << o; 
+		list.clear(); 
 	} 
 }

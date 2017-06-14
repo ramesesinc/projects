@@ -2,9 +2,11 @@ package treasury.utils;
 
 import treasury.facts.*;
 import enterprise.facts.*;
+import enterprise.utils.*;
 
 public class FactBuilder {
 	
+	VariableInfoProvider variableInfoProvider;
 	String infoSchemaName = "variableinfo";
 	def facts = [];	
 	

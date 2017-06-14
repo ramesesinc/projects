@@ -1,0 +1,27 @@
+<schema  adapter="market">
+
+	<element tablename="market_rental_payment_item">
+		<field name="objid" primary="true" prefix="MKTPMTITM"/>
+		<field name="parentid" />
+		<complex name="parent" ref="market_rental_payment" jointype="many-to-one" includefields="reftype,refno,refid" required="false">
+			<key field="parentid" target="objid"/>
+		</complex>	
+		
+		<field name="month" type="integer" required="true"/>	
+		<field name="year" type="integer"  required="true"/>
+		<field name="fromday" type="integer"  required="true"/>
+		<field name="today" type="integer"  required="true"/>
+		<field name="fromdate" type="date"  required="true"/>
+		<field name="todate" type="date"  required="true"/>
+		<field name="days" type="integer"  required="true"/>
+
+		<field name="rate" type="decimal"  required="true"/>
+		<field name="extrate" type="decimal"  required="true"/>
+		<field name="surcharge" type="decimal"  required="true"/>
+		<field name="interest" type="decimal"  required="true"/>
+
+		<field name="monthname" expr="MONTH_ARRAY(month)"/>
+		<field name="linetotal" expr="rate+extrate+surcharge+interest"/>
+	</element>
+</schema>
+

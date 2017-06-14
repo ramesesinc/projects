@@ -16,25 +16,19 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="590" max="32767" attributes="0"/>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" min="-2" pref="520" max="-2" attributes="1"/>
-                  <EmptySpace pref="60" max="32767" attributes="0"/>
-              </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="520" max="-2" attributes="1"/>
+              <EmptySpace pref="78" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="472" max="32767" attributes="0"/>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" pref="450" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="270" max="-2" attributes="0"/>
+              <EmptySpace pref="191" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -56,108 +50,41 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+        <Component class="com.rameses.entity.components.EntityAddressLookup" name="entityAddressLookup1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Acct Name"/>
-            <Property name="name" type="java.lang.String" value="entity.acctname" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Address"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="entity.owner"/>
+              </StringArray>
+            </Property>
+            <Property name="name" type="java.lang.String" value="entity.owner.address" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 53]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Market Cluster"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.cluster.name} - #{entity.cluster.market.name}"/>
+            <Property name="handler" type="java.lang.String" value="market_cluster:lookup"/>
+            <Property name="name" type="java.lang.String" value="entity.cluster" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
           </Properties>
         </Component>
-        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-          <Properties>
-            <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
-            <Property name="verticalScrollBarPolicy" type="int" value="21"/>
-            <Property name="name" type="java.lang.String" value="entity.name" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 60]"/>
-            </Property>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-          </AuxValues>
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-          <SubComponents>
-            <Component class="com.rameses.rcp.control.XTextArea" name="xTextArea1">
-              <Properties>
-                <Property name="caption" type="java.lang.String" value="Owner Address"/>
-                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-                  <StringArray count="1">
-                    <StringItem index="0" value="entity.owner"/>
-                  </StringArray>
-                </Property>
-                <Property name="name" type="java.lang.String" value="entity.owner.address.text" noResource="true"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Unit"/>
-            <Property name="expression" type="java.lang.String" value="#{entity.unit.code}"/>
-            <Property name="handler" type="java.lang.String" value="market_rentalunit:lookup"/>
-            <Property name="name" type="java.lang.String" value="entity.unit" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox3">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Section"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.unit"/>
-              </StringArray>
-            </Property>
-            <Property name="expression" type="java.lang.String" value="#{entity.unit?.section?.name} "/>
+            <Property name="expression" type="java.lang.String" value="#{item.name}"/>
+            <Property name="items" type="java.lang.String" value="listTypes.section"/>
+            <Property name="name" type="java.lang.String" value="entity.section" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
+              <Dimension value="[220, 22]"/>
             </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Unit Type"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.unit"/>
-              </StringArray>
-            </Property>
-            <Property name="expression" type="java.lang.String" value="#{entity.unit?.unittype} "/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Market Name"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.unit"/>
-              </StringArray>
-            </Property>
-            <Property name="expression" type="java.lang.String" value="#{entity.unit.market.name}"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Rate Type"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.unit"/>
-              </StringArray>
-            </Property>
-            <Property name="expression" type="java.lang.String" value="#{entity.unit.rate} - #{entity.unit.payfrequency}"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
+            <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">

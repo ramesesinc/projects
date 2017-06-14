@@ -1,0 +1,21 @@
+<folders>
+    <folder id="home">
+        <folder id="vehicle" caption="Vehicle" icon="home/icons/vehicle.png">
+            <folder id="pedicab" caption="Pedicab" icon="home/icons/pedicab.png" index="1"/>
+        </folder>    
+    </folder>
+    <folder id="explorer">
+        <folder id="master" caption="Master">
+            <folder id="vehicle" caption="Vehicle Registration">
+                <folder id="pedicab" caption="Pedicab"/>
+            </folder>        
+        </folder>   
+    </folder>
+    <folder id="menu">
+        <folder id="master" caption="Master">
+            <folder id="vehicle" caption="Vehicle Registration">
+                <folder id="pedicab" caption="Pedicab"/>
+            </folder>        
+        </folder>            
+    </folder>
+</folders>    

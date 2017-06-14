@@ -20,13 +20,15 @@ class QueueCounter {
     def mode = "create";
     def handler;
     
-    void init() {
-        if(!entity.code) {
-            mode = "create";
-        }
-        else {
-            mode = "edit";
-        }
+    void init() { 
+        def o = svc.getCounter(); 
+        if ( o ) { 
+            entity = o; 
+            mode = 'edit'; 
+        } else { 
+            entity = [objid: user.env.TERMINALID, sections:[]];
+            mode = 'create';
+        } 
     }
     
     def itemListModel = [
@@ -41,7 +43,10 @@ class QueueCounter {
         } else {
             svc.update( entity );
         }
-        handler(entity); 
+        if ( handler ) { 
+            handler(entity); 
+        }        
+        AbstractUserQueueHandler.fireNotify( 'counter-data-changed', entity );        
         return "_close";
     }
     
@@ -60,7 +65,8 @@ class QueueCounter {
                 def resp = svc.addSection([ sectionid: o.objid ]);
                 if ( resp ) entity.sections.add( resp );
             } 
-            itemListModel.reload();
+            itemListModel.reload(); 
+            AbstractUserQueueHandler.fireNotify( 'add-section', entity );
         } 
         return Inv.lookupOpener( "queue_section:lookup", [onselect:h]);
     }
@@ -75,6 +81,8 @@ class QueueCounter {
         if ( o ) entity.sections.remove( o ); 
         
         itemListModel.reload();
+        
+        AbstractUserQueueHandler.fireNotify( 'remove-section', entity );
     }
     
     void updateName() {
@@ -83,6 +91,8 @@ class QueueCounter {
         
         svc.update([ objid:entity.objid, code:x ]); 
         entity.code = x;
+        
+        AbstractUserQueueHandler.fireNotify( 'change-counter-code', entity );
     }
     
 }

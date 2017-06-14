@@ -1,10 +1,10 @@
 <folders>
     <folder id="explorer">
-        <folder id="admin" caption="Administration" index="2"/> 
-        <folder id="org" caption="Organization" index="3"/> 
+        <folder id="admin" caption="Administration" index="-100"/> 
+        <folder id="org" caption="Organization" index="-100"/> 
     </folder>    
     
     <folder id="home">
-        <folder id="admin" caption="Administration" icon="home/icons/admin.png"/> 
+        <folder id="admin" caption="Administration" icon="home/icons/admin.png" index="-100"/> 
     </folder>
 </folders>

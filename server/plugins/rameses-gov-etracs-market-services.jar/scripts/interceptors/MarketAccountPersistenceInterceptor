@@ -31,12 +31,13 @@ public class MarketAccountPersistenceInterceptor {
 	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'market_account'}")
 	public void beforeCreate( evt ) {
 		def o = evt.args[0];
-		if( o.lastdatepaid == null ) {
-			o.lastdatepaid = dformat.parse(o.startdate);
-		}
-		if( o.lastdatepaid == null ) throw new Exception("Please specify startdate or last payment date");
 
-		def dd = dateSvc.parseDate( o.lastdatepaid , null );
+		if( o.todate == null ) {
+			o.todate = dformat.parse(o.startdate);
+		}
+		if( o.todate == null ) throw new Exception("Please specify startdate or last payment date");
+
+		def dd = dateSvc.parseDate( o.todate , null );
 		o.lastmonthpaid = dd.month;
 		o.lastyearpaid = dd.year;
 		if(!o.acctno) {
@@ -48,7 +49,7 @@ public class MarketAccountPersistenceInterceptor {
 			def mnth = dateSvc.getServerMonth();
 			def smon = ( mnth < 10 ) ? "0"+mnth : mnth+"";
 			def prefix = "M"+lgucode+yr+smon;
-			o.acctno = prefix+seqSvc.getNextFormattedSeries(prefix);
+			o.acctno = prefix+seqSvc.getNextFormattedSeriesA(prefix, 4);
 		}
 		o.dtcreated = dateSvc.getServerDate();
 		o.createdby = [objid:env.USERID, name: env.USERNAME];

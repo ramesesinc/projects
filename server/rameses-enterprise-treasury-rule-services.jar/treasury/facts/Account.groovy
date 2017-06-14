@@ -17,4 +17,12 @@ class Account {
 		return m;
 	}
 
+	public int hashCode() {
+		return objid.hashCode();
+	}
+
+	public boolean equals( def o ) {
+		return hashCode() == o.hashCode();
+	}
+
 }

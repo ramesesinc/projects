@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import police.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+public class PoliceClearanceBillingService  {
+
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getBilling(o) {
+		def svrDate = dateSvc.getServerDate();
+
+		def fb = new FactBuilder();
+		fb.facts << new PoliceClearance( apptype: o.apptype);
+		fb.facts << new treasury.facts.SystemDate(svrDate);
+		//fb.facts << new treasury.facts.BillDate( (o.billdate) ?o.billdate: svrDate );
+		
+		def m = [items: []];	
+		def resultHandler = [
+			getFactKeyValue : { v->
+				if(v instanceof BillItem) {
+					m.items << v.toMap();
+				}	
+				return null;
+			}
+		] as ResultHandler;
+
+		assmtSvc.execute( "policeclearance", [:], fb, resultHandler );
+
+		m.items = m.items.sort{ it.sortorder };
+		m.amount = m.items.sum{ it.amount };
+		return m;
+	}
+
+	
+
+
+}

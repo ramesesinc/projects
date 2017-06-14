@@ -1,12 +1,12 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_payment">
 		<field name="objid" primary="true" prefix="VPMT"/>
-		<field name="appid" required="true" />
+		<field name="appid"  />
 		<field name="franchiseid" required="true" />
 		<field name="txndate" required="true" />
 		<field name="amount" required="true" />
 		<field name="voided" required="true" />
-		<field name="refid" required="true" />
+		<field name="refid" />
 		<field name="reftype" required="true" />
 		<field name="refno" required="true" />
 		<field name="refdate" required="true" />

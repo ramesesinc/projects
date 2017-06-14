@@ -39,6 +39,7 @@ public class AccountModel extends CrudFormModel {
         def h = {o->
             stuboutid = o.objid;
             pass = true;
+            return null; 
         }
         Modal.show("waterworks_stubout:lookup", [onselect: h, sector: entity.sector] );
         if( !pass) return;
@@ -49,6 +50,7 @@ public class AccountModel extends CrudFormModel {
             entity.stuboutnode = o;
             entity.stubout = o.stubout;
             pass = true;
+            return null; 
         }
         Modal.show("waterworks_stubout_node_unassigned_account:lookup", [onselect: h, stuboutid: stuboutid] );
         //binding.refresh();

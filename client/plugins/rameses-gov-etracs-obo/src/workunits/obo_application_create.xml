@@ -5,23 +5,34 @@
         
         <invoker type="obo_application:create" caption="New Application"
                 action="start" index="1"/>
-        
-        <!-- FORM ACTIONS -->
-        <invoker type="formAction" caption="Submit" action="save" />
-        
     </invokers>
     <code class="com.rameses.gov.etracs.obo.models.NewOboApplicationModel" />
     <pageflow>
         <start>
             <transition to="initial" />
         </start>
-        <page name="initial" title="Initial">
-            <transition to="end" caption="Submit" action="saveCreate" 
-                    confirm="You are about to submit this entry. Proceed?"/>
+        <page name="initial" title="OBO Application Initial">
+            <transition to="specify-property" caption="Next" immediate="false"/>
+        </page> 
+        <page name="specify-property" title="Property Information">
+            <transition to="initial" caption="Back" />
+            <transition to="specify-professional" caption="Next" immediate="false"/>
+        </page> 
+        <page name="specify-professional" title="Architect/Civil Engineer">
+            <transition to="specify-property" caption="Back" />
+            <transition to="confirm" caption="Next" immediate="false"/>
+        </page> 
+        <page name="confirm" title="OBO Application Confirm">
+            <transition to="specify-professional" caption="Back" />
+            <transition to="end" caption="Submit" action="saveCreate" immediate="false"
+                 confirm="You are about to submit this entry. Proceed?"/>
         </page> 
         <end/>
     </pageflow>
     <pages>
-        <page name="initial" template="com.rameses.gov.etracs.obo.views.NewOboApplicationPage" />
+        <page name="initial" template="com.rameses.gov.etracs.obo.views.ApplicationInitialPage" />
+        <page name="specify-property" template="com.rameses.gov.etracs.obo.views.ApplicationPropertyPage" />
+        <page name="specify-professional" template="com.rameses.gov.etracs.obo.views.ApplicationSpecifyProfessionalPage" />
+        <page name="confirm" template="com.rameses.gov.etracs.obo.views.NewApplicationPage" />
     </pages>
 </workunit>

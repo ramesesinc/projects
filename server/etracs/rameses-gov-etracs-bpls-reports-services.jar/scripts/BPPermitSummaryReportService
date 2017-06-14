@@ -1,8 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
-class BPPermitSummaryReportService
-{
+class BPPermitSummaryReportService {
 	
 	@ActiveDB("bpreport")
 	def em
@@ -15,10 +14,16 @@ class BPPermitSummaryReportService
 		if ( !params.permittype?.objid ) throw new Exception('permittype parameter is required'); 
 		if ( !params.year ) throw new Exception('year parameter is required');
 
+		if ( !params.filter ) params.filter = '';
 		params.permittypeid = params.permittype.objid; 
-		params.filter = ''' AND b.permittype=$P{permittypeid} '''; 	
 
-		def list = em.getBusinessPermitSummary( params );
+		def list = null; 
+		def template = params.template?.objid; 
+		if ( template == 'B' ) {
+			list = em.getBusinessPermitSummaryB( params );
+		} else {
+			list = em.getBusinessPermitSummary( params ); 	
+		} 		
 		if( ! list ) throw new Exception('No records found.');
 
 		list.each { x-> 

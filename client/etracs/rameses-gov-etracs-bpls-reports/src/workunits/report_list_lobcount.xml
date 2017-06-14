@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml">
     <invokers>
         <invoker folderid="/explorer/report/bpls" caption="Line of Business Count Listing" 
-            action="init" role="REPORT" target="window" index="-100"/>
+            action="init" role="REPORT" target="window"/>
     </invokers>
     
     <code>
@@ -17,9 +17,6 @@ public class LobCountListingReportController extends ReportController {
     @Service('BPLobCountReportService')
     def svc;
 
-    @Service('LobClassificationService') 
-    def lobClassficationSvc;
-
     @Service('BarangayLookupService') 
     def brgySvc;
     
@@ -28,6 +25,9 @@ public class LobCountListingReportController extends ReportController {
     
     @Script('ReportPeriod') 
     def periodUtil; 
+    
+    @Script('BusinessReportUtil') 
+    def businessReportUtil;
 
     String title = "Line of Business Count Listing";
     String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
@@ -57,6 +57,7 @@ public class LobCountListingReportController extends ReportController {
     ] as FormPanelModel; 
     
     def permitTypes;
+    def lobClassifications;
 
     def initReport() {
         def outcome = super.initReport(); 
@@ -65,6 +66,7 @@ public class LobCountListingReportController extends ReportController {
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
+        lobClassifications = businessReportUtil.getLOBClassifications();
         return outcome; 
     } 
     
@@ -122,7 +124,7 @@ public class LobCountListingReportController extends ReportController {
         return brgySvc.getList([:]); 
     } 
     List getClassificationlist() { 
-        return lobClassficationSvc.getList([:]); 
+        return lobClassifications; 
     } 
 }
     ]]>

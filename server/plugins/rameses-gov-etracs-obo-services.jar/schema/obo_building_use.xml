@@ -1,0 +1,10 @@
+<schema adapter="obodb">
+	<element tablename="obo_building_use">
+		<field name="objid" primary="true" caption="Code" visible="true" searchable="true"/>
+		<field name="groupid" required="true" caption="Group" width="50"/>
+		<field name="division" required="true" caption="Division" width="50"/>
+		<field name="description" required="true" caption="Description"/>
+		<field name="classificationid" required="true" caption="Classification"/>
+	</element>
+</schema>
+		

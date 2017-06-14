@@ -1,0 +1,23 @@
+<schema  adapter="market">
+	
+	<element tablename="market_otherfee_payment">
+		<field name="objid" primary="true" prefix="MKTOFEEPMT"/>
+		<field name="acctid" required="true" />
+		<field name="txndate" required="true" />
+		<field name="amount" required="true" />
+		<field name="voided" required="true" />
+		<field name="refid" required="true" />
+		<field name="reftype" required="true" />
+		<field name="refno" required="true" />
+		<field name="refdate" required="true" />
+		<field name="txnmode" required="true" />
+
+		<complex name="items" ref="market_otherfee_payment_item" jointype="one-to-many" orderBy="year,month">
+			<key field="objid" target="parentid"/> 	 
+		</complex>	
+	</element>
+
+
+</schema>
+
+

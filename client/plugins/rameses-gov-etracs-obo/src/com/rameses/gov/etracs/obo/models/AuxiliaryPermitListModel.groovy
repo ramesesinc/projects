@@ -14,7 +14,7 @@ public class AuxiliaryPermitListModel extends CrudListModel {
     def permitType;
     
     void afterInit() {
-        permitType = invoker?.properties?.permitType;
+        permitType = invoker?.properties?.permitType?.toLowerCase();
     }
     
     public def getCustomFilter() {

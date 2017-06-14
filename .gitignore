@@ -185,3 +185,6 @@ android/*/Thumbs.db
 /client/plugins/rameses-gov-etracs-obo/build/
 /client/plugins/rameses-gov-etracs-obo/dist/
 /client/plugins/rameses-gov-skill-registry/nbproject/private/
+/client/plugins/rameses-gov-etracs-vehicle-pedicab/nbproject/private/
+/client/plugins/rameses-gov-etracs-vehicle-pedicab/build/
+/client/plugins/rameses-gov-etracs-vehicle-pedicab/dist/

@@ -91,12 +91,21 @@
                     reportdata.noncash = reportdata.noncashpayments.amount.sum()     
                     MsgBox.alert("Insert check deposit slip.\n Printing page $i of ${reportdata.pagecount}. " )
                     reportdata.pagenumber = i;
-                    report.viewReport() 
-                    ReportUtil.print( report.report, true )
+                    report.viewReport(); 
                     
-                    list.removeAll( reportdata.noncashpayments )
-                    p++ 
+                    if ( ReportUtil.isDeveloperMode()) { 
+                        return Inv.lookupOpener('report:preview', [ 
+                            report: report, 
+                            title : 'Check Deposit Slip' 
+                        ]);
+                    } 
+                    
+                    ReportUtil.print( report.report, true );
+                    
+                    list.removeAll( reportdata.noncashpayments );
+                    p++;
                 }
+                return null; 
             }
             
             def doCancel() { return "_close"}

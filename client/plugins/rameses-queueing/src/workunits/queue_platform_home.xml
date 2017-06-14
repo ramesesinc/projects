@@ -1,4 +1,4 @@
-<workunit extends="workunits/queue_toolbar.xml">
+<workunit extends="wtemplates/queue/home.xml">
     <invokers>
         <invoker type="queue-home" caption="Queue" action="init" /> 
     </invokers>

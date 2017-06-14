@@ -1,15 +1,15 @@
 <folders>
     <folder id="explorer">
         <folder id="master">
-            <folder id="treasury" caption="Treasury" index="5">
+            <folder id="treasury" caption="Treasury">
                 <folder id="sre" caption="SRE"/>
             </folder>  
         </folder>
         <folder id="txn">
-            <folder id="treasury" caption="Treasury" index="5"/>
+            <folder id="treasury" caption="Treasury"/>
         </folder>
         <folder id="report">
-            <folder id="treasury" caption="Treasury" index="5">
+            <folder id="treasury" caption="Treasury">
                 <folder id="sre" caption="SRE"/>
             </folder>  
         </folder>

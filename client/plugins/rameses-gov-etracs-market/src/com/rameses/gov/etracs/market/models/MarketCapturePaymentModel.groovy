@@ -16,7 +16,7 @@ class MarketCapturePaymentModel extends CrudFormModel {
     
     public void afterCreate() {
         entity.items = [];
-        entity.acctid = caller.entity.objid;
+        entity.acctid = caller.masterEntity.objid;
     }
     
     def buildItems() {

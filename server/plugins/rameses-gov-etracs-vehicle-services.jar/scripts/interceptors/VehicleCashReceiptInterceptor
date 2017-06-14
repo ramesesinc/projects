@@ -9,17 +9,16 @@ class VehicleCashReceiptInterceptor {
 	@DataContext(dynamic=true)
 	def em;
 
-	@DataContext("vehicle_fee")
-	def vFee;
-
-	@DataContext("revenueitem")
-	def revItem;
-
-	@Service("WorkflowTaskService")	
-	def wfService;
+	
 
 	@DataContext("vehicle_payment")
 	def pmtEm;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
 
 	@Env
 	def env;
@@ -38,13 +37,16 @@ class VehicleCashReceiptInterceptor {
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'vehicle'}")
 	public void postPayment(def evt) {
+
 		def r = evt.args[0];
 		def t = evt.result;
+		if(!r.info.appid)
+			throw new Exception("Error Vehicle CashReceiptService.post. appid is not found");
 
 		def m = [:];
 		m.appid = r.info.appid;
-		m.franchiseid = r.info.franchiseid;
 
+		m.franchiseid = r.info.franchiseid;
 		m.refno = r.receiptno;		
 		m.refid = r.objid;		
 		m.reftype = "cashreceipt";		
@@ -67,29 +69,14 @@ class VehicleCashReceiptInterceptor {
 			}
 			m.items << it;
 		}
-		pmtSvc.postPayment( m );
-		/*******************************************************************
-		* signal after
-		*******************************************************************/
-		if(m.appid) {
-			String pName = "vehicle_application_" + r.info.vehicletype;
+		pmtSvc.post( m );
 
-			def vapp = em.lookup(  pName + "_task" ).find( [refid: m.appid] ).first();
-			if( vapp.taskid ==null ) {
-				return;
-			}
-
-			//check balance first before signalling
-			def total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [controlid: r.info.franchiseid ] ).val();
-			if(total == 0) {
-				def wfParam = [
-					processname: pName, 
-					refid: m.appid,
-					action: 'post',
-					actor: [objid:env.USERID, name:env.FULLNAME]
-				];	
-				wfService.signal( wfParam );
-			}	
+		if(r.info.appid ) {
+			def pp = [:];
+			pp.processname = "vehicle_application";
+			pp.refid = 	r.info.appid;
+			pp.taskstate = 'payment';
+			taskSvc.signal( pp );
 		}
 	}
 
@@ -101,17 +88,14 @@ class VehicleCashReceiptInterceptor {
 		def pmt = pmtEm.find( [refid: r.objid] ).first();
 		pmtSvc.postVoid( [objid: pmt.objid]); 
 
-		def app = appEm.find( [objid:pmt.appid ] ).first();
+		def app = appEm.find([ objid: pmt.appid ]).first(); 
 
-		//check the state is not currently payment then error. 
-		//Test if you can move the record 
-		def wfParam = [
-			processname: 'vehicle_application_' + app.vehicletype, 
-			refid: app.objid,
-			action: 'return_payment',
-			actor: [objid:env.USERID, name:env.FULLNAME]
-		];	
-		wfService.signal( wfParam );
+		def pp = [:];
+		pp.processname = "vehicle_application";
+		pp.refid = 	pmt.appid;
+		pp.action = 'voidpayment';
+		pp.taskid = app.taskid; 
+		taskSvc.signal( pp );
 	}
 
 }

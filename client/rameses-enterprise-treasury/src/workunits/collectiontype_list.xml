@@ -2,9 +2,8 @@
     <!-- extends="wtemplates/ListController.xml" -->
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Collection Types" 
-                 role="MASTER" 
-                 cols="name,title,formno,handler,barcodekey,org.name,fund.title"
-                 index="1" permission="collectiontype.view" action="init"/>
+                 action="init" role="MASTER" permission="collectiontype.view" 
+                 cols="name,title,formno,handler,barcodekey,org.name,fund.title"/>
     </invokers>
     
     <code class="com.rameses.enterprise.treasury.models.CollectionTypeListModel" />

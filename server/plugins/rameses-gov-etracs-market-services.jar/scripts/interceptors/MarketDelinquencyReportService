@@ -36,7 +36,7 @@ class MarketDelinquencyReportService {
 	* 1. check if there is an ongoing report being processed
 	* 2. 
 	* 3. find first the due date based on a billdate
-	* 2. filter all where market account lastdatepaid before duedate
+	* 2. filter all where market account todate before duedate
 	************************************************************************************/
 	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'market_delinquency' }")
 	public void getData( def evt ) {

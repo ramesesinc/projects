@@ -9,6 +9,9 @@ class CollectionGroupService extends ActiveCrudListService {
 	@ActiveDB("collectiongroup")
 	def em;
 
+	@Env 
+	def env; 
+
 	@ProxyMethod
 	public def getColumns( def o ) {
 		return [
@@ -35,9 +38,25 @@ class CollectionGroupService extends ActiveCrudListService {
 		} 
 	} 
 
+	void afterList( params, list ) {
+		def flist = []; 
+		if ( env?.CLIENTCODE ) {
+			flist = list.findAll{ it.org?.objid == env.ORGID } 
+		} else {
+			flist = list.findAll{( it.org?.objid == null )} 
+		} 
+
+		list.clear(); 
+		if ( flist ) { 
+			list.addAll( flist ); 
+		} 
+		flist.clear(); 
+	}
+
 	protected void beforeCreate(def entity){
 		em.deleteRevenueItems( entity )
 	}
+
 
 	protected void afterCreate(def entity){
 		entity.revenueitems.each {

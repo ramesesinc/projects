@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="ctc_individual_view">
+    <invokers>
+        <invoker type="ctc_individual:lookup" caption="Lookup CTC" action="init" 
+            cols="receiptno,receiptdate,receiptyear,payer.name"/>
+    </invokers>
+    <code>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        
+        class CTCLookup extends com.rameses.seti2.models.CrudLookupModel {
+            def entity;
+            
+            def getCustomFilter() {
+                return [ "payer.objid = :pid", [pid: entity.objid] ];
+            }
+        }
+    </code>    
+</workunit>

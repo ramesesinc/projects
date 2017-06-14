@@ -30,12 +30,19 @@ class CashReceiptQueryService extends AbstractListService {
 
 	public def getList(params) { 
 		if ( !params.searchtext || params.searchtext=='%' ) return [];
-		params._pagingKeys = 'c.objid'
-		params.searchtext = (params.searchtext ? params.searchtext : '') +'%'
+
+		params._pagingKeys = 'c.objid';
+		params.searchtext = (params.searchtext ? params.searchtext : '') +'%';
+		params.orderBy = ' c.formno, c.receiptno ';
+		if ( params.sortfield ) {
+			def sorttype = (params.sorttype ? params.sorttype : ' '); 
+			params.orderBy = ' c.'+ params.sortfield +' '+ sorttype +' ';  
+		} 
+
 		def list = em.getList(params);
-		if(! list ) list = em.getListByPaidBy(params) 
-		if(! list ) list = em.getListByPayer(params) 
-		return list
+		if(! list ) list = em.getListByPaidBy(params);
+		if(! list ) list = em.getListByPayer(params); 
+		return list; 
 	}	
 
 		

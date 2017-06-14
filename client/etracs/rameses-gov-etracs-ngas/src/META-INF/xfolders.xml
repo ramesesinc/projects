@@ -1,13 +1,13 @@
 <folders>
     <folder id="explorer">
         <folder id="master">
-            <folder id="accounting" caption="Accounting" index="5"/>
+            <folder id="accounting" caption="Accounting"/>
         </folder>
         <folder id="txn">
-            <folder id="accounting" caption="Accounting" index="5"/>
+            <folder id="accounting" caption="Accounting"/>
         </folder>
         <folder id="report">
-            <folder id="accounting" caption="Accounting" index="5"/>
+            <folder id="accounting" caption="Accounting"/>
         </folder>
     </folder>
     <folder id="menu">

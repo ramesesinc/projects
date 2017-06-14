@@ -84,13 +84,13 @@
                     entity.lessor = [objid:o.objid, name: o.name, address: o.address ];
                     binding.refresh( "entity.lessor.*" );
                 }
-                String stype = (entity.lessor.orgtype == 'SING') ?'individualentity':'juridicalentity';
+                String stype = (entity.lessor.orgtype == 'SING') ? 'entityindividual': 'entityjuridical';
                 return Inv.lookupOpener( stype + ":create", [ onselect:h ] );
             }
             
             def showLessor() {
                 if(!entity.lessor) throw new Exception("Please select a lessor first");
-                String stype = (entity.lessor.orgtype == 'SING') ?'individualentity':'juridicalentity';
+                String stype = (entity.lessor.orgtype == 'SING') ? 'entityindividual' : 'entityjuridical';
                 return InvokerUtil.lookupOpener( stype + ":open", [entity: entity.lessor] ); 
             }
             

@@ -1,0 +1,8 @@
+<schema adapter="obodb">
+
+	<element tablename="obo_building_use_classification">
+		<field name="objid" primary="true"/>
+		<field name="name" required="true" style="code"/>
+	</element>
+
+</schema>

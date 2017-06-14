@@ -22,7 +22,8 @@
              }
              
              public List fetchList(Map params) { 
-                 return colGroupSvc.getList(params);
+                params.put("_tag", "lookup");
+                return colGroupSvc.getList(params);
              }
              
              public Object doSelect() {

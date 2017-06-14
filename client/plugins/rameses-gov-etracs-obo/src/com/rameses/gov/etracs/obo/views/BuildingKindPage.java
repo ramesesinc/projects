@@ -42,10 +42,11 @@ public class BuildingKindPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField1);
 
         xLookupField2.setCaption("Type");
-        xLookupField2.setExpression("#{entity.classification.objid}");
-        xLookupField2.setHandler("occupancy_classification:lookup");
-        xLookupField2.setName("entity.classification"); // NOI18N
+        xLookupField2.setExpression("#{entity.use.objid}");
+        xLookupField2.setHandler("obo_building_use:lookup");
+        xLookupField2.setName("entity.use"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -61,8 +62,8 @@ public class BuildingKindPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(115, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

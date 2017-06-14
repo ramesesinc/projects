@@ -36,6 +36,7 @@
             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
           </Border>
         </Property>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
         <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[5, 5, 5, 5]"/>

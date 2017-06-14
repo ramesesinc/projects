@@ -1,0 +1,13 @@
+<workunit schemaName="market_rental_payment">
+    <invokers>
+        <invoker type="market_rental_payment:create" 
+            caption="Capture Payment" index="-10" 
+            target="popup"
+            visibleWhen="#{mode=='read'}"
+            action="create"/> 
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketCapturePaymentModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketCapturePaymentPage" />
+    </pages>
+</workunit>

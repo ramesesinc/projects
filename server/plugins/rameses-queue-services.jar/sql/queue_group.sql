@@ -15,3 +15,8 @@ from queue_section s
 	inner join queue_counter_section cs on s.objid=cs.sectionid 
 	inner join queue_counter c on cs.counterid=c.objid 
 where s.objid=$P{sectionid} 
+
+[resetTickets]
+delete from queue_number 
+where groupid=$P{groupid}   
+	and objid not in ( select objid from queue_number_counter where objid=queue_number.objid ) 

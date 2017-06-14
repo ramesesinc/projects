@@ -1,12 +1,12 @@
 <folders>
     <folder id="explorer">
         <folder id="master">
-            <folder id="inventory" caption="Inventory" index="5"/>
+            <folder id="inventory" caption="Inventory"/>
         </folder>
     </folder>
     <folder id="explorer">
         <folder id="txn">
-            <folder id="inventory" caption="Inventory" index="5"/>
+            <folder id="inventory" caption="Inventory"/>
         </folder>
     </folder>
 </folders>

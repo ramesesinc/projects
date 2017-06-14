@@ -138,21 +138,21 @@ order by xxc.formno, xxc.respcenterlevel, xxc.groupindex, xxc.startseries
 [getReportDataByRef]
 select * from ( 
   select 
-    'A' as idx, '' as type, xx.controlid, af.formtype, afi.afid as formno, af.denomination, af.serieslength, 
+    'A' as idx, '' as type, t2.controlid, af.formtype, afi.afid as formno, af.denomination, af.serieslength, 
     afi.respcenter_objid as ownerid, afi.respcenter_name as name, afi.respcenter_type as respcentertype, 
     (case when afi.respcenter_type='AFO' then 0 else 1 end) as categoryindex, afi.startstub, afi.endstub, 
-    xx.prevendingstartseries, xx.prevendingendseries, 
-    xx.receivedstartseries, xx.receivedendseries, 
-    (case when xx.beginstartseries>0 and xx.prevendingstartseries>0 then xx.prevendingstartseries else xx.beginstartseries end) as beginstartseries, 
-    (case when xx.beginendseries>0 and xx.prevendingendseries>0 then xx.prevendingendseries else xx.beginendseries end) as beginendseries, 
-    xx.issuedstartseries, xx.issuedendseries, xx.issuednextseries, 
-    (case when xx.issuednextseries>xx.endingendseries then null else xx.endingstartseries end) as endingstartseries, 
-    (case when xx.issuednextseries>xx.endingendseries then null else xx.endingendseries end) as endingendseries, 
+    t2.prevendingstartseries, t2.prevendingendseries, 
+    t2.receivedstartseries, t2.receivedendseries, 
+    (case when t2.beginstartseries>0 and t2.prevendingstartseries>0 then t2.prevendingstartseries else t2.beginstartseries end) as beginstartseries, 
+    (case when t2.beginendseries>0 and t2.prevendingendseries>0 then t2.prevendingendseries else t2.beginendseries end) as beginendseries, 
+    t2.issuedstartseries, t2.issuedendseries, t2.issuednextseries, 
+    (case when t2.issuednextseries>t2.endingendseries then null else t2.endingstartseries end) as endingstartseries, 
+    (case when t2.issuednextseries>t2.endingendseries then null else t2.endingendseries end) as endingendseries, 
     case 
-      when xx.beginstartseries > 0 then xx.beginstartseries 
-      when xx.issuedstartseries > 0 then xx.issuedstartseries 
-      when xx.receivedstartseries > 0 then xx.receivedstartseries 
-      else xx.endingstartseries 
+      when t2.beginstartseries > 0 then t2.beginstartseries 
+      when t2.issuedstartseries > 0 then t2.issuedstartseries 
+      when t2.receivedstartseries > 0 then t2.receivedstartseries 
+      else t2.endingstartseries 
     end as sortseries, 
     afi.afid 
   from ( 
@@ -179,7 +179,7 @@ select * from (
         max(afd.endingendseries) as endingendseries 
       from remittance_af raf 
         inner join af_inventory_detail afd on raf.objid=afd.objid 
-      where raf.remittanceid = $P{refid}  
+      where raf.remittanceid = $P{refid} 
       group by afd.controlid 
       union 
       select 
@@ -196,11 +196,12 @@ select * from (
       from liquidation_remittance lr 
         inner join remittance_af raf on lr.objid = raf.remittanceid 
         inner join af_inventory_detail afd on raf.objid=afd.objid 
-      where lr.liquidationid = $P{refid}  
+      where lr.liquidationid = $P{refid}     
       group by afd.controlid 
-    )t1 
-  )xx inner join af_inventory afi on xx.controlid=afi.objid 
-      inner join af on afi.afid = af.objid 
-)xx 
-where xx.formno like $P{formno} 
-order by xx.formno, xx.sortseries  
+    )t1  
+  )t2 
+    inner join af_inventory afi on t2.controlid=afi.objid 
+    inner join af on afi.afid = af.objid 
+)t3 
+where t3.formno like $P{formno}   
+order by t3.formno, t3.sortseries 

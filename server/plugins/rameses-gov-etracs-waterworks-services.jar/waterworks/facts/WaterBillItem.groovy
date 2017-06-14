@@ -9,14 +9,12 @@ public class WaterBillItem extends BillItem {
 	int month;
 	int year;
 	int priority;
-	def ledgertype;
 
 	def toItem() {
-		def m = super.toItem();
+		def m = super.toMap();
 		m.year = year;
 		m.month = month; 
 		m.priority = priority;
-		m.ledgertype = ledgertype;
 		return m;		
 	}	
 

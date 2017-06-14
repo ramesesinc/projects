@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
-    schemaName="obo_building_type_group">
-    <invokers>
-        <invoker type="obo_building_type_group:lookup" 
-                 caption="Lookup Building Type"
-                 target="popup"
-                action="init" />
-    </invokers>
-</workunit>

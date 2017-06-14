@@ -37,7 +37,10 @@ public class OboVariablePage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        lOVList1 = new com.rameses.enterprise.components.LOVList();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xList1 = new com.rameses.rcp.control.XList();
 
         formPanel1.setCaptionWidth(100);
         formPanel1.setPadding(new java.awt.Insets(5, 5, 5, 0));
@@ -52,11 +55,13 @@ public class OboVariablePage extends javax.swing.JPanel {
         xTextField2.setName("entity.caption"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField2.setRequired(true);
+        xTextField2.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField2);
 
         xTextField3.setCaption("Description");
         xTextField3.setName("entity.description"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField3.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField3);
 
         xComboBox1.setCaption("Data Type");
@@ -77,35 +82,47 @@ public class OboVariablePage extends javax.swing.JPanel {
         xTextField5.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField5);
 
-        xComboBox2.setCaption("Section");
-        xComboBox2.setItems("sections");
-        xComboBox2.setName("entity.section"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(170, 22));
-        xComboBox2.setRequired(true);
-        formPanel1.add(xComboBox2);
+        lOVList1.setCaption("Section");
+        lOVList1.setListName("OBO_SECTION");
+        lOVList1.setName("entity.section"); // NOI18N
+        formPanel1.add(lOVList1);
+
+        xLookupField1.setCaption("Classification");
+        xLookupField1.setExpression("#{entity.classification.title}");
+        xLookupField1.setHandler("lookupClassifcations");
+        xLookupField1.setName("entity.classification"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLookupField1);
+
+        jScrollPane1.setViewportView(xList1);
+
+        formPanel1.add(jScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(formPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(123, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.enterprise.components.LOVList lOVList1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XList xList1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;

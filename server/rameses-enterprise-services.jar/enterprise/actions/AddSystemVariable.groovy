@@ -1,4 +1,4 @@
-package rules.enterprise.actions;
+package enterprise.actions;
 
 import com.rameses.rules.common.*;
 import com.rameses.util.*;

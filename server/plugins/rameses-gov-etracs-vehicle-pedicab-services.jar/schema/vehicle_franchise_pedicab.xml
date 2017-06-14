@@ -1,0 +1,8 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_franchise_pedicab" extends="vehicle_franchise">
+		<field name="objid" primary="true" prefix="MPED"/>
+		<field name="plateno" caption="Plate No" indexed="true"/>
+		<field name="bodyno" caption="Body No" indexed="true"/>
+		<field name="color" />
+	</element>
+</schema>

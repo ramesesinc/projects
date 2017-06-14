@@ -1,0 +1,4 @@
+"listHandler:item.pendingcount" [ item?.pendingcount > 0 ] {
+    font-weight: bold; 
+    font-size: 12;
+}

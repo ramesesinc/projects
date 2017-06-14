@@ -29,7 +29,12 @@ public class AssessmentRuleService {
 		if(data==null) {
 			data = [:];	//dummy data just in case it is null
 		}	
-		def variableInfoUtil = new VariableInfoUtil(factBuilder.infoSchemaName);
+
+		def variableInfoUtil = new VariableInfoUtil();
+		if(factBuilder?.variableInfoProvider) {
+			variableInfoUtil.provider = factBuilder.variableInfoProvider;
+		}		
+
 		def acctUtil = new ItemAccountUtil();
 
 		//********************************************************************
@@ -40,23 +45,18 @@ public class AssessmentRuleService {
 		if(!factBuilder.facts) throw new Exception("Please implement getFacts in FactBuilder")
 		facts.addAll( factBuilder.facts );
 
-		if( data.infos  ) {
+		if( data.infos ) {
 			data.infos.each { info ->
-				def vinfo = variableInfoUtil.lookupInfo(info) ;
-				facts <<  factBuilder.getInfoFact( vinfo ); 
+				facts <<  variableInfoUtil.createFact(info) ;
 			}
 		};
 
 		if( data.billitems ) {
 			data.billitems.each { bi ->
 				def ac = [:];
+				ac.putAll( bi );
 				ac.account = acctUtil.createAccountFact(bi.item); 
 				ac.refid = bi.objid; 
-				ac.ledgertype = bi.ledgertype;
-				ac.amount = bi.amount;
-				if( bi.principal ) ac.principal = bi.principal;
-				if( bi.amtpaid ) ac.amtpaid = bi.amtpaid;
-				ac.remarks = bi.remarks;
 				def bbi = factBuilder.getBillItemFact( ac );
 				if( !facts.find{ (it instanceof AbstractBillItem) && (it.hashCode()==bbi.hashCode())  } ) {
 					facts << bbi;
@@ -92,6 +92,7 @@ public class AssessmentRuleService {
 			if( ctx.result.askinfos ) return false;
 			return true;
 		};
+
 
 		def res = ruleSvc.execute( ruleName, facts, null, hdlr );
 

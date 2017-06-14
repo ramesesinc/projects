@@ -95,7 +95,7 @@ public class AskVariableInfoModel {
     
     def buildFormInfos() {
         formInfos.clear();
-        infos = infos.sort{ [it.category, it.sortorder] }
+        infos = infos.sort{ it.sortorder }
         infos.each {x->
             x.value = getDefaultValue( x );
             def i = [

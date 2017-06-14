@@ -1,0 +1,9 @@
+<workunit extends="wtemplates/SimpleReportController.xml" >
+    <invokers>
+       <invoker type="police_clearance:print" index="50" action="printReport"/>    
+       <invoker type="police_clearance:open" index="50" action="openReport" target="window"/>         
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearancePrintModel"/>
+    
+</workunit>    

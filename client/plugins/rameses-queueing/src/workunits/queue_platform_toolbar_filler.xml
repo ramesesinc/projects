@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="queue-toolbar" caption=" " tooltip="" /> 
+    </invokers>
+    <code>
+    class QueueToolbarFiller {
+        
+    } 
+    </code>
+    <pages>
+        <page template="queueing.view.PlatformToolbarFillerPage"/> 
+    </pages>
+</workunit>

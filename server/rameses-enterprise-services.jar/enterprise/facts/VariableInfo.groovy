@@ -1,11 +1,15 @@
 package enterprise.facts;
+
 import java.util.*;
 
 public class VariableInfo {
 	
+	String objid;
 	String name;
+	String state;
+	String description;
 	String caption;
-	List arrayvalues;
+	def arrayvalues;
 	String category;
 	int sortorder;
 
@@ -15,6 +19,15 @@ public class VariableInfo {
 	String stringvalue;
 	Date datevalue;
 	String datatype;
+
+	
+
+	//just add so that it will match database. if 1=yes 0=no
+	int system;
+
+	public String getExcludeFields(){
+		return "";
+	};
 
 	public int hashCode() {
 		return name.hashCode();
@@ -34,7 +47,7 @@ public class VariableInfo {
 		m.category = category;
 		m.name = name;
 		m.value = null;
-		if(m.datatype == 'decimal') m.value  = decimalvalue
+		if(m.datatype == 'decimal') m.value  = decimalvalue;
 		else if(m.datatype=="integer") m.value = intvalue;
 		else if(m.datatype=="boolean") m.value = booleanvalue;
 		else if(m.datatype == "date" ) m.value = datevalue;
@@ -42,6 +55,18 @@ public class VariableInfo {
 		m.arrayvalues = arrayvalues;
 		m.sortorder = sortorder;
 		return m;
+	}
+
+	public void copy( def o ) {
+		println "fields to unmatch ->" + 	"class|metaClass"+excludeFields;
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass"+excludeFields)) {
+				//add only if there is a setter
+				if( k.setter && o.containsKey(k.name)) {
+					this[(k.name)] = o.get( k.name );	
+				}
+			}
+		}
 	}
 
 }

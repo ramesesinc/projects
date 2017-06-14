@@ -12,7 +12,7 @@ class VehicleFranchiseListInterceptor {
 		result << [ title: 'All', id:'all'];
 		result << [ title: 'Unassigned', id:'unassigned' ];
 		result << [ title: 'Active', id:'active'];
-		result << [ title: 'Pending', id:'pending'];
+		result << [ title: 'Processing', id:'processing'];
 		result << [ title: 'For Renewal', id:'forrenewal'];
 		result << [ title: 'Delinquent', id:'delinquent'];
 	}
@@ -37,13 +37,13 @@ class VehicleFranchiseListInterceptor {
 				str = " state='ACTIVE' AND activeyear = :year ";
 				break;
 
-			case 'pending':
-				str = " state='PENDING' ";
+			case 'processing':
+				str = " state='PROCESSING' ";
 				break;
 
 			case 'forrenewal':
-				m.year = dateSvc.getServerYear() - 1;
-				str = " activeyear = :year";
+				m.duedate = dateSvc.getServerDate();
+				str = " billexpirydate < :duedate";
 				break;
 
 			case 'delinquent':

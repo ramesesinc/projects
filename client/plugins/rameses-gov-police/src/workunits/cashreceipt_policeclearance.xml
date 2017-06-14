@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Police Clearance" 
+                 name="policeclearance" formtype="serial" formno="51" index="100" />
+        
+        <invoker type="cashreceipt:policeclearance" action="init" />
+        
+        <invoker type="formActions" action="_close" caption="Back" immediate="true" 
+                 visibleWhen="#{!completed}" icon="images/toolbars/arrow_left.png" mnemonic="c"/>
+        <invoker type="formActions" action="post" caption="Save" 
+                 visibleWhen="#{!completed}" icon="images/toolbars/save.png" mnemonic="s" />
+
+        <invoker type="formActions" action="_close:_close" caption="Quit" visibleWhen="#{completed}" mnemonic="n"/>
+        <invoker type="formActions" action="_close" caption="New" visibleWhen="#{completed}" mnemonic="n"/>
+        <invoker type="formActions" action="reprint" caption="Reprint" mnemonic="p" visibleWhen="#{completed}"/>
+        <invoker type="formActions" action="doVoid" caption="Void" visibleWhen="#{completed}"/>         
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearanceCashReceiptModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.police.views.CashReceiptPage"/>
+        <page name="completed" template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+    </pages>    
+</workunit>

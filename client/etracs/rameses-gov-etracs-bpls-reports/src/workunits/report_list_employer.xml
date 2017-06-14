@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
-            caption="Employer Listing" target="window" index="-90"/>
+            caption="Employer Listing" target="window"/>
     </invokers>
     
     <code>
@@ -29,10 +29,16 @@ public class EmployerListReportController extends ReportController
         getControlList: { 
             return [
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, preferredSize:'0,20', captionWidth:100, items:'permitTypes', expression:'#{item.title}'], 
-                [type:'integer', caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
+                [type:'integer', caption:'App Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100 ], 
                 
-                [type:'checkbox', caption:'Status', text:'ACTIVE', name:'entity.state_active', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'PROCESSING', name:'entity.state_processing',immediate:true, preferredSize:'0,20', captionWidth:100 ]            
+                [type:'checkbox', caption:'App Type', text:'NEW', name:'entity.type_new', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'RENEW', name:'entity.type_renew',immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'RETIRE', name:'entity.type_retire', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'ADDITIONAL', name:'entity.type_additional', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',         text:'RETIRE-LOB', name:'entity.type_retirelob', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                
+                [type:'checkbox', caption:'App Status', text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],
+                [type:'checkbox', caption:'',           text:'FOR-RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ] 
             ]; 
         }     
     ] as FormPanelModel; 
@@ -45,7 +51,8 @@ public class EmployerListReportController extends ReportController
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
-        entity.state_active = true; 
+        entity.type_new = entity.type_renew = entity.type_additional = true; 
+        entity.state_completed = true; 
         return outcome; 
     } 
 

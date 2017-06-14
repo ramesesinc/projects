@@ -18,6 +18,8 @@ public class OVSViolationTicketModel extends CrudFormModel{
 
         def m = [violationid: item.violation.objid, violatorid: entity.violator.objid ];
         def z = violationSvc.getViolationInfo( m );
+        if(!z)
+            throw new Exception("Error no value returned in assessing violation");
         item.putAll( z ); 
     }
     

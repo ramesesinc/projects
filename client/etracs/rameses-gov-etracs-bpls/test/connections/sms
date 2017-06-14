@@ -1,3 +1,0 @@
-provider=websocket
-ws.host=www.etracs.org:8060
-ws.protocol=rsms

@@ -103,6 +103,9 @@ public class UserModel  {
         }
     ] as BasicListModel;
     
-    
+ 
+    def resetPassword() {
+        return Inv.lookupOpener('user:resetpassword', [entity: entity]); 
+    } 
 }
         

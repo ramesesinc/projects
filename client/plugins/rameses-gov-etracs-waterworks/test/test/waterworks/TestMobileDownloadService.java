@@ -31,6 +31,8 @@ public class TestMobileDownloadService extends AbstractTestCase {
         userid = "USR-56b200c1:153d499966d:-7fe9"; 
     }
 
+    public String getAppHost() { return "localhost:8570"; } 
+    
     public void xtestMain() throws Exception { 
         System.out.println("** getSectoryByUser ");
         Map params = new HashMap(); 

@@ -32,7 +32,7 @@ class MarketDelinquencyGeneratorService {
 		if( !o.period ) throw new Exception("Period is required");
 		if(!o.objid) throw new Exception("objid is required");
 
-		int cnt = acctEm.select("c:{COUNT(objid)}").where( "IFNULL( lastdatepaid, startdate) < :period", [period: o.period] ).val();
+		int cnt = acctEm.select("c:{COUNT(objid)}").where( "IFNULL( todate, startdate) < :period", [period: o.period] ).val();
 		if(cnt <=0 ) return;
 
 		delHeader.create( [objid: o.objid, state:'PROCESSING', period: o.period, totalcount: cnt, recordsprocessed: 0 ] );

@@ -53,7 +53,8 @@ public class BusinessLobUtil {
                 listModel.reload();
                 lobUpdated = true;
                 if(handler) handler();
-                updated = true;    
+                updated = true; 
+                return null; 
             }
         ]);
     }

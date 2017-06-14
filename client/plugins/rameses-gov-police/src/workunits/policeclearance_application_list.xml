@@ -1,0 +1,20 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="policeclearance_application" 
+          allowCreate="false" allowDelete="false">
+    
+    <invokers>
+        <invoker folderid="home/police" caption="Application List" action="init"
+                 cols="appno,applicant.name,apptype.title,appdate,createdby.name" 
+                 target="window"/> 
+    </invokers> 
+</workunit>
+
+<!--
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="policeclearance_application" allowCreate="false">
+    <invokers>
+        <invoker folderid="home/police" caption="Police Clearance Application List" target="window"
+            action="init" cols="appno,applicant.name,apptype.title,appdate,createdby.name" />
+    </invokers>
+</workunit>
+-->

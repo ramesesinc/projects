@@ -1,90 +1,107 @@
 import com.rameses.annotations.*;
-import java.rmi.server.UID;
-import enterprise.facts.*;
-import enterprise.utils.*;
+import com.rameses.util.*;
 
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
 class VehicleApplicationWorkflowInterceptor {
 	
-	@DataContext('sys_user') 
-	def sysuser_db; 
+	@DataContext("vehicle_application_fee")
+	def vFee;
+
+	@DataContext("vehicle_application")
+	def appEm;
 
 	@DataContext("vehicle_franchise")
 	def franchiseEm;
 
-	@DataContext(dynamic=true)
-	def em;
+	@Service("VehiclePermitService")
+	def permitSvc;
 
-	@DataContext("vehicle_application_fee")
-	def appFeeEm;
+	@Service("DateService")
+	def dateSvc;
 
-	@DataContext("vehicle_application_info")
-	def appInfoEm;
+	/************************************************************************************************
+	* before running the payment get the necessary info for evaluation, in this case the amtdue 
+	************************************************************************************************/
+	@Before(pattern="WorkflowTaskService.signal", 
+		eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'payment' }")
+	public void beforePayment( def evt ) {
+		def p = evt.args[0];
+		def	total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [appid: p.refid ] ).val();
+		p.info = [amtdue: total];	
+	}
 
-	@DataContext("vehicle_payment")
-	def appPaymentEm;
-
-	@DataContext('entityindividual') 
-	def individualEntityEm; 
-
-	@DataContext('vehicle_permit') 
-	def vpermit_db;
-
-	@Service("VehicleFranchiseService")
-	def franchiseSvc;
-
-	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }" )
-	public void afterOpen(def evt) {
-		def entity = evt.result;
-
-        //LOAD INFOS
-        def vi = new VariableInfoUtil();
-        entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
-        entity.infos.each {
-        	vi.convertData( it );
-        };
-
-		//LOAD FEES
-		entity.fees = appFeeEm.find([appid: entity.objid]).list();
-		entity.amount = 0;
-        if(entity.fees) {
-            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
-        };
-
-        //LOAD PAYMENTS
-		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();
-
-		//LOAD COMPLETE USER INFO
-		def userinfo = sysuser_db.find([ objid: entity.filedby?.objid ]).first();
-		if ( userinfo )  {
-			def fullname = [userinfo.firstname, userinfo.middlename, userinfo.lastname].findAll{( it )}.join(' '); 
-			entity.filedby = [ objid: userinfo.objid, name: fullname, jobtitle: userinfo.jobtitle ]; 
+	/***************************************************************************
+	* after execution statements. Update the taskid of the application 
+	***************************************************************************/
+	@After(pattern="WorkflowTaskService.(start|signal)", 
+	  eval="#{ args[0].processname=='vehicle_application' }", index=100)
+	public void afterWorkflowStartAndSignal( def evt ) {
+		def p = evt.args[0];
+		def task = evt.result;
+		if ( task.state != 'end') {
+			appEm.find([objid: p.refid]).update([taskid: task.taskid]);
+		} else {
+			appEm.find([objid: p.refid]).update([taskid: null]);
 		}
+	}
 
-		//LOAD PERMITS IF ANY
-		entity.permit = vpermit_db.find([ appid: entity.objid ]).first();
-
-		//LOAD COMPLETE ENTITY INFO
-		def g = individualEntityEm.find( [objid: entity.owner.objid ] ).first();
-		if( g ) {
-			g.each { k,v->
-				if( !entity.owner.containsKey(k) ) entity.owner.put(k,v);
-			}
-		}
-
-	}	
+	@After(pattern="WorkflowTaskService.start", 
+	  eval="#{ args[0].processname=='vehicle_application' }", index=1)
+	public void afterWorkflowStart( def evt ) {
+		def p = evt.args[0];
+		def controlid = appEm.select("controlid").find([objid: p.refid]).val();	
+		franchiseEm.find([objid: controlid]).update([state:'PROCESSING']);
+	}
 
 
+	/************************************************************************ 
+	* Approve will update the appid of the franchise 
+	**************************************************************************/
 	@After(pattern="WorkflowTaskService.signal", 
-		eval="#{args[0].processname.startsWith('vehicle_application_') && args[0].action == 'release' }" )
-	public void beforeRelease(def evt) {
-		def o = evt.args[0];
-		def appEm = em.lookup(o.processname);
-		def app = appEm.find([objid: o.refid]).first();
-		if(!app) {
-			throw new Exception("Cannot Release. Application not found with refid " + o.refid);
-		}
-		franchiseSvc.updateFranchiseInfo( app, 'ACTIVE');
-	}	
-	
+	  eval="#{ args[0].processname=='vehicle_application' && args[0].action=='approve' }", index=1)
+	public void afterApprove( def evt ) {
+		def p = evt.args[0];
+		def task = evt.result;
+		def m = appEm.select("controlid,appyear,apptype,appdate,franchise.startdate,franchise.expirydate").find( [objid: p.refid] ).first();
+		def u = [:];
+		u.appid = p.refid;
+		u.activeyear = m.appyear;
+
+		def expiryYrs = '3y';
+		if( m.apptype == 'NEW') {
+			u.startdate = m.appdate;
+			u.expirydate = DateUtil.add( u.startdate, expiryYrs );
+		};	
+		else if( m.apptype == 'RENEW' && m.franchise?.expirydate ) {
+			if( dateSvc.serverDate.after(m.franchise?.expirydate) ) {
+				u.expirydate = DateUtil.add( m.franchise.expirydate, expiryYrs );	
+			}		
+		}	
+		franchiseEm.find([objid: m.controlid]).update(u);
+	}
+
+	/************************************************************************ 
+	* Issue Permit will create a new permit 
+	**************************************************************************/
+	@After(pattern="WorkflowTaskService.signal", 
+	  eval="#{ args[0].processname=='vehicle_application' && args[0].action=='issue-permit' }")
+	public void afterIssuePermit( def evt ) {
+		def p = evt.args[0];
+		permitSvc.create( [appid: p.refid] );
+	}
+
+
+	/************************************************************************ 
+	* After permit 
+	**************************************************************************/
+	@After(pattern="WorkflowTaskService.signal", 
+	  eval="#{ args[0].processname=='vehicle_application' && args[0].action=='release' }")
+	public void afterRelease( def evt ) {
+		def p = evt.args[0];
+		franchiseEm.find([appid: p.refid]).update([state:'ACTIVE']);
+	}
 
 }

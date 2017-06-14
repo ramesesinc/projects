@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
-            caption="Application Listing" target="window" index="-90"/>
+            caption="Application Listing" target="window"/>
     </invokers>
     
     <code>
@@ -14,8 +14,11 @@ import com.rameses.osiris2.reports.*;
 
 public class ApplicationListingReportController extends com.rameses.etracs.shared.AsyncReportController {
 
-    @Service('LobClassificationService') 
-    def lobClassficationSvc;
+    @Script('BusinessReportUtil') 
+    def businessReportUtil;
+    
+    @Script('ReportPeriod') 
+    def periodUtil; 
 
     @Service('BarangayLookupService') 
     def brgySvc;
@@ -37,13 +40,12 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         } 
     ];  
 
-    @Script('ReportPeriod') 
-    def periodUtil; 
 
     def formControl = [
         getControlList: { 
             return [
                 [type:'combo', caption:'Permit Type', name:'entity.permittype', required:true, items:'permitTypes',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:100],
+                [type:'combo', caption:'Permit Option', name:'entity.permitoption', required:true, items:'permitOptions',  expression:'#{item.title}', preferredSize:'0,20', captionWidth:100],
             
                 [type:'combo', caption:'Period', name:'entity.period', required:true, items:'periodUtil.types',  expression:'#{item.title}', preferredSize:'100,20', captionWidth:100],
                 [type:'integer', caption:'Year', name:'entity.year', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type.matches("yearly|quarterly|monthly")==true }', preferredSize:'100,20', captionWidth:100 ],
@@ -51,16 +53,9 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
                 [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
                 [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
 
-                [type:'checkbox', caption:'App Type', text:'NEW', name:'entity.type_new', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'RENEW', name:'entity.type_renew',immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'RETIRE', name:'entity.type_retire', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-
-                [type:'checkbox', caption:'State', text:'INFO', name:'entity.state_info', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'ASSESSMENT', name:'entity.state_assessment', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'PAYMENT', name:'entity.state_payment', immediate:true, preferredSize:'0,20', captionWidth:100 ],                                                
-                [type:'checkbox', caption:'',  text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                        
-
+                [type:'checklist', caption:'App Type', name:'entity.apptypes', immediate:true, preferredSize:'0,20', items:'appTypeList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
+                [type:'checklist', caption:'App Status', name:'entity.appstates', immediate:true, preferredSize:'0,20', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
+                
                 [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'lookup', caption:'Line of Business', name:'entity.lob', handler:'lookupLOB', expression:'#{item.name}', depends:'entity.classification', preferredSize:'0,20', captionWidth:100],
@@ -72,15 +67,40 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         } 
     ] as FormPanelModel; 
 
+    def permitOptions = [
+        [objid:'any', title:'Any'],
+        [objid:'withpermit', title:'With Permit Only'],
+        [objid:'withoutpermit', title:'Without Permit Only'],
+    ]; 
+    
+    def appTypeList = [
+        [objid: 'NEW', title:'NEW'],
+        [objid: 'RENEW', title:'RENEW'],
+        [objid: 'RETIRE', title:'RETIRE'],
+        [objid: 'RETIRELOB', title:'RETIRE-LOB'],
+        [objid: 'ADDITIONAL', title:'ADDITIONAL'] 
+    ];
+    def appStatusList = [
+        [objid: 'INFO', title: 'INFO'],
+        [objid: 'ASSESSMENT', title: 'ASSESSMENT'],
+        [objid: 'PAYMENT', title: 'FOR-PAYMENT'],
+        [objid: 'RELEASE', title: 'FOR-RELEASE'],
+        [objid: 'COMPLETED', title: 'COMPLETED'] 
+    ]; 
+
     def permitTypes;
+    def lobClassifications; 
 
     def initReport() {
         def outcome = super.initReport(); 
         entity.state_completed = true; 
         entity.period = periodUtil.types[0]; 
         entity.withgross = entity.withcapital = true; 
+        entity.apptypes = appTypes; 
         permitTypes = permitTypeSvc.getList(); 
-        entity.permittype = (permitTypes? permitTypes[0] : null);         
+        entity.permittype = (permitTypes? permitTypes[0] : null); 
+        entity.permitoption = permitOptions[0];
+        lobClassifications = businessReportUtil.getLOBClassifications();    
         return outcome; 
     } 
     
@@ -100,27 +120,24 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
             startdate = ''+ periodUtil.parse( entity.date ) +' 00:00:00'; 
             enddate   = ''+ periodUtil.parse( entity.date ) +' 23:59:59'; 
         } 
-
+        
         entity.startdate = startdate;
         entity.enddate = enddate; 
         svc.getReport( entity, asyncHandler );
     }
+    
+    void buildResult( data ) { 
+        def opt = entity.permitoption?.objid; 
+        if ( opt == 'withpermit' ) {
+            data.reportdata = data.reportdata.findAll{( it.dtissued )}
+        } else if ( opt == 'withoutpermit' ) { 
+            data.reportdata = data.reportdata.findAll{( it.dtissued == null )}
+        } 
+        
+        if ( !data.reportdata ) throw new Exception('No available record(s) that matches your criteria.');
+    }    
 
     Map getParameters(){
-        def apptypes = [
-            (entity.type_new? 'NEW' : null), 
-            (entity.type_renew? 'RENEW' : null), 
-            (entity.type_retire? 'RETIRE' : null)  
-        ].findAll{( it != null )} 
-
-        def appstates = [
-            (entity.state_info? 'INFO' : null),
-            (entity.state_assessment? 'ASSESSMENT' : null),
-            (entity.state_payment? 'PAYMENT' : null),
-            (entity.state_release? 'RELEASE' : null),
-            (entity.state_completed? 'COMPLETED' : null) 
-        ].findAll{( it != null )} 
-        
         def periodtitle = null; 
         if ( entity.period.type == 'yearly' ) {
             periodtitle = periodUtil.getPeriodTitle([ year: entity.year ]);
@@ -132,16 +149,30 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
             periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
         } 
 
-        return [
+        def m = [
             PERIOD         : periodtitle, 
-            APPTYPE        : ( apptypes? apptypes.join(', ') : '(ALL)' ), 
-            STATE          : ( appstates? appstates.join(', ') : '(ALL)' ), 
             BARANGAYNAME   : ( entity.barangay? entity.barangay.name : '(ALL)' ),
             CLASSIFICATION : ( entity.classification? entity.classification.name : '(ALL)' ),
             LOB            : ( entity.lob? entity.lob.name : '(ALL)' ),
             WITH_CAPITAL   : ( entity.withcapital ? 1 : 0 ),
-            WITH_GROSS     : ( entity.withgross ? 1 : 0 )
+            WITH_GROSS     : ( entity.withgross ? 1 : 0 ) 
         ]; 
+        
+        m.APPTYPE = '( ALL )';
+        if ( entity.apptypes ) {
+            m.APPTYPE = entity.apptypes.collect{ it.objid }.join(', '); 
+        } 
+        
+        m.STATE = '( ALL )';
+        if ( entity.appstates ) {
+            m.STATE = entity.appstates.collect{ it.objid }.join(', ');
+        } 
+        
+        m.PERMIT_OPTION = entity.permitoption;
+        if ( entity.permitoption?.objid == 'any' ) {
+            m.PERMIT_OPTION = null; 
+        }
+        return m;         
     }
 
     List getBarangaylist() {
@@ -149,7 +180,7 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     }
 
     List getClassificationlist() {
-        return lobClassficationSvc.getList([:]);
+        return lobClassifications; 
     }
 
     def getLookupLOB() {

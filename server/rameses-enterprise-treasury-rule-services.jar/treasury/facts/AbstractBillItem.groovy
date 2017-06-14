@@ -7,7 +7,6 @@ public abstract class AbstractBillItem {
 	Account account;
 	double amount;
 	double amtpaid;
-	
 	double principal;	//original amount 
 
 	int sortorder = 0;
@@ -16,7 +15,15 @@ public abstract class AbstractBillItem {
 	String remarks;
 
 	public int hashCode() {
-		return (account?.objid+"_"+txntype).hashCode();			
+		if( account?.objid ) {
+			return account.objid.hashCode();
+		}
+		else if(txntype) {
+			return txntype.hashCode();
+		}
+		else {
+			return this.hashCode();
+		}
 	}
 
 	public boolean equals( def o ) {
@@ -34,4 +41,30 @@ public abstract class AbstractBillItem {
 		m.remarks = remarks;
 		return m;
 	}
+
+	def createClone() {
+		return this.class.newInstance();
+  	}  
+
+	public final def clone() {
+		def p = createClone();
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass")) {
+				p[(k.name)] = this.getProperty( k.name );
+			}
+		}
+		return p;
+	}
+
+	public void copy( def o ) {
+		this.metaClass.properties.each { k ->
+			if( !k.name.matches("class|metaClass")) {
+				//add only if there is a setter
+				if( k.setter && o.containsKey(k.name)) {
+					this[(k.name)] = o.get( k.name );	
+				}
+			}
+		}
+	}
+
 }

@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
+    schemaName="obo_profession" cols="entity.entityno,entity.name,profession"
+        hiddenCols="entity.objid,ptrno,prcno,validitydate">
+    <invokers>
+        <invoker type="obo_profession_architect:lookup" 
+                 caption="Lookup Architect"
+                 target="popup" customFilter="profession='ARCHITECT'"
+                action="init" />
+
+        <invoker type="obo_profession_civil_engineer:lookup" 
+                 caption="Lookup Civil Engineer"
+                 target="popup" customFilter="profession='CIVIL_ENGINEER'"
+                action="init" />
+        
+        <invoker type="obo_profession:lookup" 
+                 caption="Lookup Supervisor"
+                 target="popup" customFilter="(profession='CIVIL_ENGINEER' OR profession='ARCHITECT')"
+                action="init" />
+
+    </invokers>
+</workunit>

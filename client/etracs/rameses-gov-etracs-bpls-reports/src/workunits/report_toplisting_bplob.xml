@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
-            caption="Top Business Listing (Capital/Gross)" target="window" index="-25"/>
+            caption="Top Business Listing (Capital/Gross)" target="window"/>
     </invokers>
 
     <code>
@@ -14,8 +14,8 @@ import com.rameses.osiris2.reports.*;
 
 public class LobTopListingReportController extends ReportController  
 {
-    @Service('LobClassificationService') 
-    def lobClassficationSvc;
+    @Script('BusinessReportUtil') 
+    def businessReportUtil;
 
     @Service('BPLobTopListingReportService')
     def svc;
@@ -43,6 +43,7 @@ public class LobTopListingReportController extends ReportController
     def data;
 
     def permitTypes;
+    def lobClassifications;
 
     def initReport() {
         def outcome = super.initReport(); 
@@ -50,7 +51,9 @@ public class LobTopListingReportController extends ReportController
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
         entity.txntype = APP_TYPES[0]; 
-        entity.topsize = 10;         
+        entity.topsize = 10;   
+        
+        lobClassifications = businessReportUtil.getLOBClassifications();
         return outcome; 
     } 
 
@@ -77,7 +80,7 @@ public class LobTopListingReportController extends ReportController
     }
 
     List getClassificationlist() {
-        return lobClassficationSvc.getList([:]);
+        return lobClassifications;
     }
 }
     ]]>

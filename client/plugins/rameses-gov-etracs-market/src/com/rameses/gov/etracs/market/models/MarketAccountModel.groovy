@@ -13,11 +13,6 @@ public class MarketAccountModel extends CrudFormModel {
 
     @PropertyChangeListener
     def listener = [
-        'entity.unit' : { o->
-            entity.rate = o.rate;
-            entity.payfrequency = o.payfrequency;
-            binding.refresh("entity.(rate|payfrequency)");
-        },
         'entity.owner': { o->
             if(entity.acctname==null) {
                 entity.acctname = o.name;
@@ -26,16 +21,19 @@ public class MarketAccountModel extends CrudFormModel {
         }
     ];        
     
-    void changeLastPaymentDate() {
+    void updateLedger() {
         def h = { o->
             def m = [_schemaname: 'market_account'];
             m.objid = entity.objid;
-            m.lastdatepaid = o;
+            m.startdate = o.startdate;
+            m.partialbalance = o.partialbalance;
+            m.partialextbalance = o.partialextbalance;
             getPersistenceService().update(m);
-            entity.lastdatepaid = o;
             binding.refresh();
         };
-        Modal.show( "date:prompt", [handler: h] );
+        def e = [:];
+        Modal.show( "update_market_ledger", [handler: h, entity: entity] );
     }
+    
     
 }

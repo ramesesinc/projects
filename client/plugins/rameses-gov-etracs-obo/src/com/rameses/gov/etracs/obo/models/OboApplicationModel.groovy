@@ -12,8 +12,6 @@ import com.rameses.enterprise.models.*;
 
 class OboApplicationModel extends WorkflowTaskModel {
     
-    def vehicletype;
-    def vehicleTypeHandler;
     def ruleExecutor;
     
     InvokerFilter sectionFilter = { inv->
@@ -21,15 +19,6 @@ class OboApplicationModel extends WorkflowTaskModel {
         if( !entity.permits ) return false;
         return entity.permits.find{ it.type.equalsIgnoreCase(inv.properties.section) }!=null;
     } as InvokerFilter;
-    
-    public def open() {
-        def retval = super.open();
-        //vehicletype = workunit.info.workunit_properties.vehicletype;
-        //vehicleTypeHandler = Inv.lookupOpener("vehicle_type_handler:"+vehicletype, [entity:entity]); 
-        //ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
-        return retval;
-    }
-    
     
     String getFormName() {
         return getSchemaName() + ":form";
@@ -80,6 +69,35 @@ class OboApplicationModel extends WorkflowTaskModel {
         entity.permits.remove(selectedItem);
         binding.refresh();
         listModel.reload();
+    }
+    
+    
+    void addAttachment()  {
+        def p = [:];
+        p.appid = entity.objid;
+        p._schemaname = 'obo_application_attachment';
+        
+        def h = { o->
+            attachmentListModel.reload();
+        }
+        Modal.show( "obo_application_attachment:create", [info:p, handler: h] );
+    }
+
+    def attachmentListModel = [
+        fetchList: { o->
+            def m = [_schemaname: 'obo_application_attachment'];
+            m.findBy = [appid: entity.objid];
+            return queryService.getList( m );
+        },
+        onOpenItem: { o,colName->
+            def opener = Inv.lookupOpener("sys_file:open", [entity: [objid: o.fileid]] );
+            opener.target = 'popup'; 
+            return opener; 
+        }
+    ] as BasicListModel;
+    
+    void afterOpen() {
+        entity.infos = [];
     }
     
 }

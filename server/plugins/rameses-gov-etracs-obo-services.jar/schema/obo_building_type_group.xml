@@ -1,8 +1,0 @@
-<schema adapter="obodb">
-	<element tablename="obo_building_type_group">
-		<field name="objid" primary="true" caption="Group" visible="true" searchable="true"/>
-		<field name="description" required="true" caption="Description"/>
-		<field name="classification_objid" required="true" caption="Classification"/>
-	</element>
-</schema>
-		

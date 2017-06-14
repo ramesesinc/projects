@@ -1,0 +1,22 @@
+<schema adapter="market">
+
+	<element tablename="market_application_task">
+		<field name="taskid" primary="true"  prefix="MKTTSK"/>
+		<complex name="app" ref="market_application" jointype="many-to-one" required="false"
+			includefields="objid,appno,owner.name,dtfiled,unit.code,unit.unittype,unit.sector.name,unit.market.name"> 
+			<key field="refid" target="objid"/>
+		</complex>
+		<field name="parentprocessid" />
+		<field name="state" required="true" caption="State"/>
+		<field name="dtcreated" required="true"/>
+		<field name="startdate" caption="Start Date"/>
+		<field name="enddate" caption="End Date"/>
+		<field name="assignee_objid" />
+		<field name="assignee_name"  caption="Assignee Name"/>
+		<field name="actor_objid" />
+		<field name="actor_name" caption="Performed By"/>
+		<field name="message" caption="Message"/>	
+		<field name="prevtaskid" />	
+	</element>
+
+</schema>

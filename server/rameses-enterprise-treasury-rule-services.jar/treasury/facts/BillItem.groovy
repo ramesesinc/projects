@@ -8,6 +8,12 @@ class BillItem extends AbstractBillItem {
 	String refid;
 	String ledgertype;
 
+	/*
+	public BillItem(def o) {
+		copy(o);
+	}
+	*/
+	
 	//pay priority is only used during apply payment and will not be used anywhere else. This is defined by the extending class.
 	int paypriority = 0;
 	
@@ -19,12 +25,21 @@ class BillItem extends AbstractBillItem {
 
 	public double getTotal() {
 		if(items.size()>0) {
-			return  NumberUtil.round(amount) +   NumberUtil.round( items.sum{ it.amount } );		
+			return  NumberUtil.round( amount + items.sum{ it.amount } );		
 		}
 		else {
-			return amount;
+			return NumberUtil.round( amount );
 		}
 	};
+
+	public int hashCode() {
+		if( refid ) {
+			return refid.hashCode();
+		} 
+		else {
+			return super.hashCode();
+		}
+	}
 
 	public def toMap() {
 		def m = super.toMap();
@@ -40,5 +55,6 @@ class BillItem extends AbstractBillItem {
 
 	//call this after apply payment
 	void recalc() {;}
+
 
 }

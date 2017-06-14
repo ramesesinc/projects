@@ -32,6 +32,6 @@
     </folder>
     
     <folder id="home">
-            <folder id="ovs" caption="Ordinance Violation"/>
+            <folder id="ovs" caption="Ordinance Violation" icon="home/icons/ovs.png"/>
     </folder>
 </folders>

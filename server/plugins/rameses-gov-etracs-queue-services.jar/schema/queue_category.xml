@@ -1,8 +1,0 @@
-<schema adapter="queue">
-	<element tablename="queue_category">
-		<field name="objid" primary="true"/>
-		<field name="name" required="true"/>
-		<field name="prefix" required="true"/>
-		<field name="sortorder" required="true"/>
-	</element>
-</schema>

@@ -14,24 +14,22 @@
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,cluster.name,term,rate,section.name,market.name,market.address.*">
+			includefields="code,unittype,cluster.name,cluster.objid,term,section.objid,section.name,cluster.market.name,cluster.market.objid,ratetype,rate">
 		    <key field="unit_objid" target="objid"/>
 		</complex>
-		<field name="startdate" required="true"/>
 		<field name="dateclosed" type="date" />
 
 
 		<field name="payfrequency" required="true" caption="Pay Frequency"/>
-		<field name="rate" required="true" caption="Rate"/>
-		<field name="extrate" required="true" caption="Ext. Rate"/>
-		
+		<field name="extrate" required="true" caption="Ext. Rate" defaultValue="0"/>
+		<field name="rate" expr="unit.rate" caption="Rate"/>		
 
 		<!-- store the partial balances -->
+		<field name="startdate" required="true"/>
 		<field name="partialbalance" type="decimal" defaultValue="0"/>
 		<field name="partialextbalance" type="decimal" defaultValue="0"/>
 
-		<!-- link to market_payment -->
-		<field name="lastpaymentid" />
+		<!-- link to market_rental_payment -->
 		<field name="remarks" />
 	</element>
 </schema>

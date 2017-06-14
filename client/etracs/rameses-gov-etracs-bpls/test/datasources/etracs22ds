@@ -1,5 +1,0 @@
-dialect=mysql
-driverClass=com.mysql.jdbc.Driver
-url=jdbc:mysql://localhost/etracs22_kapalong
-user=root
-pwd=1234

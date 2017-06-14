@@ -1,10 +1,17 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="market_rentalunit">
     <invokers>
         <invoker type="market_rentalunit:lookup" 
-                cols="objid,code,unittype,section.name,market.name,rate,payfrequency"
+                cols="objid,code,unittype,section.name,cluster.market.name,rate,payfrequency"
                  caption="Lookup Rental Unit" 
                  target="popup" 
                  customFilter="currentacctid IS NULL"
                  action="init"/> 
     </invokers> 
+    <invokers>
+        <invoker type="market_rentalunit_all:lookup" 
+                cols="objid,code,unittype,section.name,cluster.market.name,rate,payfrequency"
+                 caption="Lookup Rental Unit" 
+                 target="popup" 
+                 action="init"/> 
+    </invokers>
 </workunit> 

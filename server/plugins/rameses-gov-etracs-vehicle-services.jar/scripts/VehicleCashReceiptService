@@ -16,8 +16,11 @@ class VehicleCashReceiptService {
 	@DataContext("vehicle_application")
 	def appEm;
 
-	@DataContext("vehicle_fee")
-	def feeEm;
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_franchise_fee")
+	def franFeeEm;
 
 	@DataContext("vehicle_franchise")
 	def franchiseEm;
@@ -27,6 +30,8 @@ class VehicleCashReceiptService {
 
 	@Service("DateService")
 	def dateSvc;
+
+	
 
 	@ProxyMethod
 	public def getInfo( def o ) {
@@ -43,20 +48,34 @@ class VehicleCashReceiptService {
 			if( app ) fran = franchiseEm.find( [objid: app.controlid] ).first();
 		}
 		else {
-			app = appEm.find( [objid: fran.appid ] ).first();
+			app = appEm.find( [controlid: fran.objid] ).where(" task.state='payment' ").first();
 		}
 
-		if( fran==null && app==null ) {
+		def fees = null;
+		def ledgertype = null;
+		if( app?.objid!=null ) {
+			//check first if this is on payment mode...
+			fees = appFeeEm.find( [appid: app.objid]  ).where("amount - amtpaid > 0").list();
+			if( !fees )
+				throw new Exception("There are no unpaid items");
+			ledgertype = "application";	
+		}
+		else if(fran!=null) {
+			//check first if this is on payment mode...
+			fees = franFeeEm.find( [parentid: controlid]  ).where("amount - amtpaid > 0").list();
+			if( !fees )
+				throw new Exception("There are no unpaid items");
+			ledgertype = "franchise";	
+		}
+		else {
 			throw new Exception("No vehicle record found for " + o.id);
-		};
-
-		//check first if this is on payment mode...
-		
-		def fees = feeEm.find( [controlid: app.controlid]  ).where("amount - amtpaid > 0").list();
-		if( !fees )
-			throw new Exception("There are no unpaid items");
-
+		}
+			
+		controlid = fran?.objid;
+		if( !controlid ) controlid = app.controlid;
 		fees.each { 
+			it.ledgertype = ledgertype;
+			it.refid = it.objid;
 			it.principal = it.amount;
 			it.amount = (it.amount - it.amtpaid);
 		}	

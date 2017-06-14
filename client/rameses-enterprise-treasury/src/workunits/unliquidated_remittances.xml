@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" index="10" role="LIQUIDATING_OFFICER"  action="init"/>
+        <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER"  action="init"/>
         <invoker folderid="home/liquidation" caption="Unliquidated Remittances" index="10" role="LIQUIDATING_OFFICER"  target="window" action="init"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
@@ -41,6 +41,11 @@
             def listHandler = [
                 fetchList: { o ->
                     entity = svc.getList(selectedNode);
+                    entity.remittances.each{ 
+                        def totalcash = (it.totalcash ? it.totalcash : 0.0);
+                        def totalnoncash = (it.totalnoncash ? it.totalnoncash : 0.0);
+                        it.totalamount = totalcash + totalnoncash;  
+                    } 
                     binding.refresh("entity.*");
                     return entity.remittances;
                 },
@@ -94,7 +99,12 @@
                 liqSvc.submitForLiquidation( [objid:selectedItem.objid ] );
                 listHandler.reload();
             }
-                        
+            
+            def getTotal() {
+                def totalcash = (entity.totalcash ? entity.totalcash : 0.0);
+                def totalnoncash = (entity.totalnoncash ? entity.totalnoncash : 0.0);
+                return totalcash + totalnoncash;
+            } 
         }
     ]]>    
     </code>

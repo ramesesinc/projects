@@ -1,0 +1,43 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.text.*;
+import com.rameses.functions.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+
+/**********************************************************
+* This routine is hooked in the CashReceiptService and 
+* CashReceiptVoidService services. It will update each
+* receivable based on amount paid. It will update billing.
+* Billing is the key to determine if license can be
+* released.     
+**********************************************************/
+public class MarketOtherFeeCashReceiptInterceptor {
+
+	@Service("MarketOtherFeePaymentService")
+	def pmtSvc;
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'marketotherfee'}")
+	public void postMarketOtherFeePayment(def evt) {
+		def r = evt.args[0];
+		def m = [:];
+		m.txndate = r.txndate;
+		m.acctid = r.acctid;
+		m.reftype = "cashreceipt";
+		m.refid = r.objid;					//the cash receipt objid
+		m.refno = r.receiptno;		
+		m.refdate = r.receiptdate;
+		m.amount = r.amount;
+		m.txnmode = 'ONLINE';
+		m.voided = 0;
+		m.items = r.items; 
+		pmtSvc.postCreate( m );
+	} 
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler == 'marketotherfee'}")
+	public void voidTxn(def evt) {
+		def r = evt.args[0].receipt;
+		
+	}
+}

@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="BankDepositListService" entityName="bankdeposit">
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Bank Deposits" role="SHARED,CASHIER" index="50">
+        <invoker folderid="/explorer/txn/treasury" caption="Bank Deposits" role="SHARED,CASHIER" >
             <action name="doInit" role="SHARED" tag="all" permission="bankdeposit.view"/> 
             <action name="doInit" role="CASHIER" tag="bycashier"/>             
         </invoker>

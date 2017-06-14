@@ -1,0 +1,10 @@
+<schema adapter="obodb">
+	<element tablename="obo_application_attachment">
+		<field name="objid" primary="true"/>
+		<field name="appid" required="true"/>
+		<field name="section" />
+		<field name="title"  required="true"/>
+		<field name="fileid"  required="true"/>
+		<field name="indexno" />
+	</element>
+</schema>

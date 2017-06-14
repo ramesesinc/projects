@@ -1,9 +1,0 @@
-<workunit schemaName="policeclearance">
-    <invokers>
-        <invoker type="home.action" caption="Police Clearance" action="create" />
-    </invokers>
-    <code class="com.rameses.gov.etracs.models.PoliceClearanceModel" />
-    <pages>
-        <page template="com.rameses.gov.etracs.views.PoliceClearancePage" />
-    </pages>
-</workunit>

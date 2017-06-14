@@ -1,0 +1,4446 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="nbc_form_B01"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="612"
+		 pageHeight="936"
+		 columnWidth="572"
+		 columnSpacing="0"
+		 leftMargin="20"
+		 rightMargin="20"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="true">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+
+	<field name="appno" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="896"  isSplitAllowed="true" >
+				<rectangle>
+					<reportElement
+						x="461"
+						y="126"
+						width="110"
+						height="334"
+						key="rectangle-59"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="1"
+						y="115"
+						width="457"
+						height="345"
+						key="rectangle-147"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="0"
+						y="694"
+						width="572"
+						height="198"
+						key="rectangle-72"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="0"
+						y="584"
+						width="572"
+						height="95"
+						key="rectangle-58"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="0"
+						y="476"
+						width="572"
+						height="93"
+						key="rectangle-57"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="2"
+						y="1"
+						width="113"
+						height="10"
+						key="staticText-1"/>
+					<box></box>
+					<textElement>
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[NBC FORM NO. B-01]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="-7"
+						width="572"
+						height="42"
+						key="staticText-2"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="10"/>
+					</textElement>
+				<text><![CDATA[Republic of the Philippines
+City/Municipality of Cebu
+Province of Cebu]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="29"
+						width="572"
+						height="13"
+						key="staticText-3"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[OFFICE OF THE BUILDING OFFICIAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="39"
+						width="572"
+						height="15"
+						key="staticText-4"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[APPLICATION FOR BUILDING PERMIT]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="146"
+						y="57"
+						width="12"
+						height="9"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="161"
+						y="54"
+						width="40"
+						height="14"
+						key="staticText-9"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[NEW]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="258"
+						y="54"
+						width="76"
+						height="14"
+						key="staticText-10"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[RENEWAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="385"
+						y="54"
+						width="76"
+						height="14"
+						key="staticText-11"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[AMENDATORY]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="244"
+						y="57"
+						width="12"
+						height="9"
+						key="rectangle-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="371"
+						y="57"
+						width="12"
+						height="9"
+						key="rectangle-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="2"
+						y="68"
+						width="113"
+						height="16"
+						key="staticText-12"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[APPLICATION NO.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="393"
+						y="68"
+						width="104"
+						height="16"
+						key="staticText-13"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[AREA NO.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="99"
+						width="324"
+						height="16"
+						key="staticText-14"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 1 (TO BE ACCOMPLISHED IN PRINT BY THE APPLICANT)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="118"
+						width="112"
+						height="16"
+						key="staticText-15"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[OWNER/APPLICANT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="126"
+						y="118"
+						width="75"
+						height="16"
+						key="staticText-16"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[LAST NAME]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="223"
+						y="118"
+						width="75"
+						height="16"
+						key="staticText-17"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[FIRST NAME]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="333"
+						y="118"
+						width="22"
+						height="16"
+						key="staticText-18"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[M.I]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="373"
+						y="118"
+						width="22"
+						height="16"
+						key="staticText-19"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TIN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="144"
+						width="148"
+						height="23"
+						key="staticText-20"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[FOR CONSTRUCTION OWNED
+BY AN ENTERPRISE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="186"
+						y="144"
+						width="112"
+						height="16"
+						key="staticText-21"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[FORM OF OWNERSHIP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="172"
+						width="369"
+						height="16"
+						key="staticText-22"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ADDRESS:     NO.,      STREET,        BARANGAY,       CITY/MUNICIPALITY            ZIP CODE ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="382"
+						y="172"
+						width="79"
+						height="16"
+						key="staticText-23"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TELEPHONE NO.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="201"
+						width="110"
+						height="16"
+						key="staticText-24"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[LOCATION OF CONSTRUCTION:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="217"
+						width="43"
+						height="16"
+						key="staticText-25"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[STREET]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="130"
+						y="217"
+						width="65"
+						height="16"
+						key="staticText-26"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[BARANGAY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="117"
+						y="201"
+						width="43"
+						height="16"
+						key="staticText-27"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[LOT NO. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="186"
+						y="201"
+						width="51"
+						height="16"
+						key="staticText-28"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[BLK NO.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="253"
+						y="201"
+						width="43"
+						height="16"
+						key="staticText-29"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TCT NO. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="297"
+						y="217"
+						width="117"
+						height="16"
+						key="staticText-30"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[CITY/MUNICIPALITY OF]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="321"
+						y="200"
+						width="69"
+						height="16"
+						key="staticText-31"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TAX DEC NO. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="234"
+						width="91"
+						height="16"
+						key="staticText-32"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SCOPE OF WORK]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="248"
+						width="112"
+						height="16"
+						key="staticText-33"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[NEW CONSTRUCTION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="263"
+						width="112"
+						height="16"
+						key="staticText-34"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ERECTION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="278"
+						width="112"
+						height="16"
+						key="staticText-35"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ADDITION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="293"
+						width="112"
+						height="16"
+						key="staticText-36"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ALTERATION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="168"
+						y="293"
+						width="64"
+						height="16"
+						key="staticText-37"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[MOVING]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="168"
+						y="278"
+						width="64"
+						height="16"
+						key="staticText-38"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[REPAIR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="168"
+						y="263"
+						width="64"
+						height="16"
+						key="staticText-39"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[CONVERSION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="248"
+						width="64"
+						height="16"
+						key="staticText-40"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[RAISING]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="168"
+						y="248"
+						width="64"
+						height="16"
+						key="staticText-41"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[RENEWAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="263"
+						width="164"
+						height="16"
+						key="staticText-42"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ACCESSORY BUILDING/STRUCTURE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="278"
+						width="64"
+						height="16"
+						key="staticText-43"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[OTHERS]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="266"
+						width="10"
+						height="10"
+						key="rectangle-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="251"
+						width="10"
+						height="10"
+						key="rectangle-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="281"
+						width="10"
+						height="10"
+						key="rectangle-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="296"
+						width="10"
+						height="10"
+						key="rectangle-7"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="155"
+						y="296"
+						width="10"
+						height="10"
+						key="rectangle-8"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="155"
+						y="281"
+						width="10"
+						height="10"
+						key="rectangle-9"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="155"
+						y="266"
+						width="10"
+						height="10"
+						key="rectangle-10"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="155"
+						y="251"
+						width="10"
+						height="10"
+						key="rectangle-11"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="269"
+						y="266"
+						width="10"
+						height="10"
+						key="rectangle-12"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="269"
+						y="251"
+						width="10"
+						height="10"
+						key="rectangle-13"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="269"
+						y="281"
+						width="10"
+						height="10"
+						key="rectangle-14"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="5"
+						y="310"
+						width="212"
+						height="16"
+						key="staticText-44"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[USE OR CHARACTER OF OCCUPANCY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="326"
+						width="146"
+						height="16"
+						key="staticText-45"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP A: RESIDENTIAL, DWELLINGS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="212"
+						y="326"
+						width="105"
+						height="16"
+						key="staticText-46"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP F: INDUSTRIAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="334"
+						y="325"
+						width="64"
+						height="16"
+						key="staticText-47"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[OTHERS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="342"
+						width="180"
+						height="16"
+						key="staticText-48"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP B: RESIDENTIAL HOTEL, APARTMENT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="212"
+						y="342"
+						width="245"
+						height="16"
+						key="staticText-49"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP G: INDUSTRIAL STORAGE AND HAZARDOUS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="212"
+						y="358"
+						width="245"
+						height="15"
+						key="staticText-50"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" lineSpacing="Single">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP H: RECREATION, ASSEMBLY OCCUPANT LOAD LESS THAN 1000]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="358"
+						width="180"
+						height="16"
+						key="staticText-51"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP C: EDUCATIONAL, RECREATIONAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="212"
+						y="373"
+						width="245"
+						height="15"
+						key="staticText-52"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP I: RECREATION, ASSEMBLY OCCUPANT LOAD 1000 or MORE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="373"
+						width="180"
+						height="16"
+						key="staticText-53"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP D: INSTITUTIONAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="212"
+						y="387"
+						width="244"
+						height="15"
+						key="staticText-54"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP J: AGRICULTURAL, ACCESSORY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="385"
+						width="180"
+						height="16"
+						key="staticText-55"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[GROUP E: BUSINESS AND MERCHANTILE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="408"
+						width="122"
+						height="16"
+						key="staticText-56"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[OCCUPANCY CLASSIFIED]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="423"
+						width="122"
+						height="16"
+						key="staticText-57"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[NUMBER OF UNITS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="438"
+						width="122"
+						height="16"
+						key="staticText-58"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TOTAL FLOOR AREA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="231"
+						y="439"
+						width="140"
+						height="16"
+						key="staticText-59"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[EXPECTED DATE OF COMPLETION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="231"
+						y="423"
+						width="153"
+						height="16"
+						key="staticText-60"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[PROPOSED DATE OF CONSTRUCTION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="231"
+						y="408"
+						width="94"
+						height="16"
+						key="staticText-61"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TOTAL ESTIMATED COST P]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="479"
+						width="425"
+						height="12"
+						key="staticText-62"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[FULL-TIME INSPECTOR AND SUPERVISOR OF CONSTRUCTION WORKS (REPRESENTING THE OWNER)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="22"
+						y="524"
+						width="212"
+						height="11"
+						key="staticText-63"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ARCHITECH OR CIVIL ENGINEER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="39"
+						y="535"
+						width="181"
+						height="11"
+						key="staticText-64"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[(Signed and Sealed Over Printed Name)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="494"
+						width="168"
+						height="16"
+						key="staticText-65"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Address]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="521"
+						width="66"
+						height="16"
+						key="staticText-66"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[PRC No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="537"
+						width="66"
+						height="16"
+						key="staticText-67"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[PTR No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="553"
+						width="66"
+						height="16"
+						key="staticText-68"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Issued at]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="416"
+						y="553"
+						width="66"
+						height="16"
+						key="staticText-69"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[TIN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="416"
+						y="537"
+						width="66"
+						height="16"
+						key="staticText-70"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date Issued]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="416"
+						y="521"
+						width="66"
+						height="16"
+						key="staticText-71"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Validity]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="570"
+						width="212"
+						height="11"
+						key="staticText-72"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 3]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="588"
+						width="91"
+						height="16"
+						key="staticText-73"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[APPLICANT:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="71"
+						y="547"
+						width="27"
+						height="14"
+						key="staticText-75"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="277"
+						y="588"
+						width="87"
+						height="16"
+						key="staticText-76"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[WITH MY CONSENT:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="365"
+						y="588"
+						width="91"
+						height="16"
+						key="staticText-77"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[LOT OWNER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="643"
+						width="72"
+						height="16"
+						key="staticText-80"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Address]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="662"
+						width="43"
+						height="16"
+						key="staticText-82"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[CTC No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="84"
+						y="662"
+						width="65"
+						height="16"
+						key="staticText-83"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date Issued]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="175"
+						y="662"
+						width="65"
+						height="16"
+						key="staticText-84"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Place Issued]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="281"
+						y="570"
+						width="212"
+						height="10"
+						key="staticText-88"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 4]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="460"
+						width="212"
+						height="16"
+						key="staticText-89"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 2]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="22"
+						y="522"
+						width="215"
+						height="0"
+						key="line-17"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="2"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-26"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-27"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="20"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-28"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="29"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-29"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="65"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-30"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="56"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-31"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="47"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-32"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="38"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-33"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="83"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-34"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="74"
+						y="83"
+						width="9"
+						height="14"
+						key="rectangle-35"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="394"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-36"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="403"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-37"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="412"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-38"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="421"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-39"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="457"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-40"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="448"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-41"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="439"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-42"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="430"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-43"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="475"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-44"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="466"
+						y="84"
+						width="9"
+						height="14"
+						key="rectangle-45"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="329"
+						width="10"
+						height="10"
+						key="rectangle-47"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="345"
+						width="10"
+						height="10"
+						key="rectangle-48"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="375"
+						width="10"
+						height="10"
+						key="rectangle-49"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="361"
+						width="10"
+						height="10"
+						key="rectangle-50"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="5"
+						y="389"
+						width="10"
+						height="10"
+						key="rectangle-51"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="199"
+						y="329"
+						width="10"
+						height="10"
+						key="rectangle-52"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="199"
+						y="345"
+						width="10"
+						height="10"
+						key="rectangle-53"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="199"
+						y="361"
+						width="10"
+						height="10"
+						key="rectangle-54"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="199"
+						y="375"
+						width="10"
+						height="10"
+						key="rectangle-55"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="199"
+						y="389"
+						width="10"
+						height="10"
+						key="rectangle-56"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="362"
+						y="117"
+						width="0"
+						height="27"
+						key="line-21"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="177"
+						y="144"
+						width="0"
+						height="28"
+						key="line-22"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="146"
+						y="212"
+						width="38"
+						height="0"
+						key="line-25"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="214"
+						y="212"
+						width="38"
+						height="0"
+						key="line-26"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="283"
+						y="212"
+						width="38"
+						height="0"
+						key="line-27"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="34"
+						y="228"
+						width="91"
+						height="0"
+						key="line-29"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="169"
+						y="228"
+						width="126"
+						height="0"
+						key="line-30"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="492"
+						width="572"
+						height="0"
+						key="line-34"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="270"
+						y="492"
+						width="0"
+						height="77"
+						key="line-35"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="270"
+						y="520"
+						width="302"
+						height="0"
+						key="line-36"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="270"
+						y="537"
+						width="302"
+						height="0"
+						key="line-37"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="270"
+						y="552"
+						width="302"
+						height="0"
+						key="line-38"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="410"
+						y="521"
+						width="0"
+						height="49"
+						key="line-39"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="89"
+						y="556"
+						width="126"
+						height="0"
+						key="line-40"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="3"
+						y="625"
+						width="166"
+						height="11"
+						key="staticText-90"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[(Signed and Sealed Over Printed Name)]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="8"
+						y="622"
+						width="162"
+						height="0"
+						key="line-41"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="172"
+						y="613"
+						width="27"
+						height="14"
+						key="staticText-91"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="188"
+						y="622"
+						width="72"
+						height="0"
+						key="line-42"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="291"
+						y="626"
+						width="166"
+						height="11"
+						key="staticText-92"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[(Signed and Sealed Over Printed Name)]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="296"
+						y="623"
+						width="162"
+						height="0"
+						key="line-43"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="460"
+						y="614"
+						width="27"
+						height="14"
+						key="staticText-93"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="476"
+						y="623"
+						width="72"
+						height="0"
+						key="line-44"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="270"
+						y="585"
+						width="0"
+						height="93"
+						key="line-45"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="642"
+						width="572"
+						height="0"
+						key="line-46"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="660"
+						width="572"
+						height="0"
+						key="line-47"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="80"
+						y="661"
+						width="0"
+						height="18"
+						key="line-48"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="170"
+						y="661"
+						width="0"
+						height="18"
+						key="line-49"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="279"
+						y="662"
+						width="43"
+						height="16"
+						key="staticText-94"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[CTC No.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="356"
+						y="661"
+						width="0"
+						height="18"
+						key="line-50"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="361"
+						y="662"
+						width="65"
+						height="16"
+						key="staticText-95"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date Issued]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="452"
+						y="661"
+						width="0"
+						height="18"
+						key="line-51"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="456"
+						y="662"
+						width="65"
+						height="16"
+						key="staticText-96"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Place Issued]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="279"
+						y="643"
+						width="72"
+						height="16"
+						key="staticText-97"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Address]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="19"
+						y="779"
+						width="174"
+						height="0"
+						key="line-52"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="5"
+						y="697"
+						width="302"
+						height="25"
+						key="staticText-99"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[REPUBLIC OF THE PHILIPPINES                                          )S.S
+CITY/MUNICIPALITY OF                                                      )]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="721"
+						width="567"
+						height="25"
+						key="staticText-100"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[    BEFORE ME, at the City/Municipality of                                                                                , on                                                              personally appeared
+the following:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="317"
+						y="871"
+						width="226"
+						height="14"
+						key="staticText-101"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[NOTARY PUBLIC(Until December                            )]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="317"
+						y="866"
+						width="224"
+						height="0"
+						key="line-53"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="216"
+						y="755"
+						width="74"
+						height="14"
+						key="staticText-102"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[C.T.C. No.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="202"
+						y="756"
+						width="117"
+						height="0"
+						key="line-54"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="339"
+						y="755"
+						width="74"
+						height="14"
+						key="staticText-103"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date Issed]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="325"
+						y="756"
+						width="117"
+						height="0"
+						key="line-55"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="466"
+						y="755"
+						width="74"
+						height="14"
+						key="staticText-104"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Place Issued]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="452"
+						y="756"
+						width="117"
+						height="0"
+						key="line-56"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="9"
+						y="782"
+						width="197"
+						height="14"
+						key="staticText-105"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[LICENSED ARCHITECT OR CIVIL ENGINEER]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="22"
+						y="755"
+						width="170"
+						height="0"
+						key="line-57"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="6"
+						y="792"
+						width="204"
+						height="14"
+						key="staticText-109"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="7"/>
+					</textElement>
+				<text><![CDATA[(Full-Time Inspector and Supervisor of Construction Works)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="804"
+						width="550"
+						height="21"
+						key="staticText-110"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[whose signatures appear herein above, known to me to be the same persons who executed this standard prescribe form and acknowledged to me that the same is their dree and voluntary act and deed.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="39"
+						y="826"
+						width="325"
+						height="13"
+						key="staticText-111"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[WITNESS MY HAND AND SEAL on the date and place above written]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="14"
+						y="834"
+						width="74"
+						height="14"
+						key="staticText-112"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Doc. No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="14"
+						y="847"
+						width="74"
+						height="14"
+						key="staticText-113"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Page No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="14"
+						y="860"
+						width="74"
+						height="14"
+						key="staticText-114"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Book No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="14"
+						y="873"
+						width="74"
+						height="14"
+						key="staticText-115"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Series of]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="679"
+						width="212"
+						height="16"
+						key="staticText-116"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 5]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="63"
+						y="755"
+						width="74"
+						height="14"
+						key="staticText-117"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[APPLICANT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="217"
+						y="780"
+						width="74"
+						height="14"
+						key="staticText-118"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[C.T.C. No.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="203"
+						y="779"
+						width="117"
+						height="0"
+						key="line-58"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="340"
+						y="780"
+						width="74"
+						height="14"
+						key="staticText-119"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Date Issed]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="326"
+						y="779"
+						width="117"
+						height="0"
+						key="line-59"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="467"
+						y="780"
+						width="74"
+						height="14"
+						key="staticText-120"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[Place Issued]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="453"
+						y="779"
+						width="117"
+						height="0"
+						key="line-60"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="362"
+						y="172"
+						width="0"
+						height="28"
+						key="line-61"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="71"
+						y="845"
+						width="75"
+						height="0"
+						key="line-62"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="71"
+						y="857"
+						width="75"
+						height="0"
+						key="line-63"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="71"
+						y="870"
+						width="75"
+						height="0"
+						key="line-64"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="71"
+						y="882"
+						width="75"
+						height="0"
+						key="line-65"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="87"
+						y="715"
+						width="90"
+						height="0"
+						key="line-66"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="146"
+						y="729"
+						width="134"
+						height="0"
+						key="line-67"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="307"
+						y="729"
+						width="97"
+						height="0"
+						key="line-68"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="91"
+						y="419"
+						width="129"
+						height="0"
+						key="line-69"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="73"
+						y="434"
+						width="148"
+						height="0"
+						key="line-70"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="156"
+						y="438"
+						width="67"
+						height="16"
+						key="staticText-121"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[SQUQRE METERS]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="478"
+						y="126"
+						width="0"
+						height="335"
+						key="line-76"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="496"
+						y="126"
+						width="0"
+						height="335"
+						key="line-77"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="515"
+						y="126"
+						width="0"
+						height="335"
+						key="line-78"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="534"
+						y="126"
+						width="0"
+						height="335"
+						key="line-79"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="466"
+						y="116"
+						width="99"
+						height="9"
+						key="staticText-122"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" size="6"/>
+					</textElement>
+				<text><![CDATA[DO NOT FILL-UP (NSO USE ONLY)]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="151"
+						width="17"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-79"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="462"
+						y="149"
+						width="110"
+						height="0"
+						key="line-128"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="173"
+						width="110"
+						height="0"
+						key="line-129"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="221"
+						width="110"
+						height="0"
+						key="line-130"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="462"
+						y="197"
+						width="110"
+						height="0"
+						key="line-131"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="316"
+						width="110"
+						height="0"
+						key="line-132"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="292"
+						width="110"
+						height="0"
+						key="line-133"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="270"
+						width="110"
+						height="0"
+						key="line-134"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="246"
+						width="110"
+						height="0"
+						key="line-135"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="412"
+						width="110"
+						height="0"
+						key="line-137"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="388"
+						width="110"
+						height="0"
+						key="line-138"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="364"
+						width="110"
+						height="0"
+						key="line-139"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="340"
+						width="110"
+						height="0"
+						key="line-140"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="175"
+						width="104"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-136"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="199"
+						width="17"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-137"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="248"
+						width="17"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-138"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="294"
+						width="104"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-139"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="318"
+						width="36"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-140"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="515"
+						y="318"
+						width="36"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-141"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="342"
+						width="104"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-142"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="366"
+						width="17"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-143"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="390"
+						width="104"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-144"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="414"
+						width="54"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-145"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="461"
+						y="438"
+						width="73"
+						height="20"
+						backcolor="#999999"
+						key="rectangle-146"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="436"
+						width="110"
+						height="0"
+						key="line-141"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="364"
+						y="212"
+						width="92"
+						height="0"
+						key="line-142"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="374"
+						y="228"
+						width="79"
+						height="0"
+						key="line-143"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="144"
+						width="457"
+						height="0"
+						key="line-144"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="172"
+						width="457"
+						height="0"
+						key="line-145"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="201"
+						width="457"
+						height="0"
+						key="line-146"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="235"
+						width="457"
+						height="0"
+						key="line-147"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="73"
+						y="448"
+						width="90"
+						height="0"
+						key="line-148"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="321"
+						y="420"
+						width="136"
+						height="0"
+						key="line-149"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="355"
+						y="434"
+						width="101"
+						height="0"
+						key="line-150"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="346"
+						y="449"
+						width="110"
+						height="0"
+						key="line-151"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="362"
+						y="336"
+						width="92"
+						height="0"
+						key="line-152"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="457"
+						y="879"
+						width="49"
+						height="0"
+						key="line-153"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="461"
+						y="149"
+						width="110"
+						height="0"
+						key="line-154"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="310"
+						width="457"
+						height="0"
+						key="line-155"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="404"
+						width="457"
+						height="0"
+						key="line-156"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="553"
+						y="126"
+						width="0"
+						height="335"
+						key="line-157"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="106"
+						y="81"
+						width="100"
+						height="20"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{appno}]]></textFieldExpression>
+				</textField>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="896"  isSplitAllowed="true" >
+				<rectangle>
+					<reportElement
+						x="0"
+						y="361"
+						width="572"
+						height="533"
+						key="rectangle-135"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="9"
+						y="5"
+						width="366"
+						height="16"
+						key="staticText-123"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 6 (TO BE ACCOMPLISHED BY THE PROCESSING AND EVALUATION DIVISION)]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="1"
+						y="22"
+						width="571"
+						height="317"
+						key="rectangle-81"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="198"
+						y="23"
+						width="0"
+						height="292"
+						key="line-96"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="267"
+						y="22"
+						width="0"
+						height="317"
+						key="line-97"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="341"
+						y="22"
+						width="0"
+						height="317"
+						key="line-98"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="411"
+						y="23"
+						width="0"
+						height="317"
+						key="line-99"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="497"
+						y="22"
+						width="0"
+						height="317"
+						key="line-100"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="27"
+						y="52"
+						width="64"
+						height="16"
+						key="staticText-124"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[FILING FEE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="71"
+						width="113"
+						height="16"
+						key="staticText-125"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[PROCESSING FEE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="109"
+						width="132"
+						height="16"
+						key="staticText-126"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[LINE AND GRADE (Geodetic)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="90"
+						width="140"
+						height="16"
+						key="staticText-127"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[LOCATION/ZONING OF LAND USE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="185"
+						width="113"
+						height="16"
+						key="staticText-128"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ELECTRICAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="166"
+						width="97"
+						height="16"
+						key="staticText-129"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[CIVIL/STRUCTURAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="147"
+						width="106"
+						height="16"
+						key="staticText-130"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ARCHITECTURAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="128"
+						width="64"
+						height="16"
+						key="staticText-131"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[FENCING]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="261"
+						width="64"
+						height="16"
+						key="staticText-132"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ELECTRONICS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="242"
+						width="64"
+						height="16"
+						key="staticText-133"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[PLUMBING]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="223"
+						width="106"
+						height="16"
+						key="staticText-134"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[SANITARY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="204"
+						width="106"
+						height="16"
+						key="staticText-135"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[MECHANICAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="299"
+						width="159"
+						height="16"
+						key="staticText-136"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[ONE HALF (1/2) OF FIRE SERVICE FUND(FSP)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="280"
+						width="64"
+						height="16"
+						key="staticText-137"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="8"/>
+					</textElement>
+				<text><![CDATA[INTERIOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="18"
+						y="29"
+						width="155"
+						height="16"
+						key="staticText-138"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ASSESSED FEES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="202"
+						y="28"
+						width="63"
+						height="16"
+						key="staticText-139"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ASSESSED BY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="271"
+						y="28"
+						width="68"
+						height="16"
+						key="staticText-140"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[AMOUNT DUE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="345"
+						y="28"
+						width="60"
+						height="16"
+						key="staticText-141"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[DATE PAID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="418"
+						y="28"
+						width="71"
+						height="16"
+						key="staticText-142"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[O.R NUMBER]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="509"
+						y="28"
+						width="53"
+						height="16"
+						key="staticText-143"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[NSO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="201"
+						y="319"
+						width="58"
+						height="16"
+						key="staticText-144"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Calibri" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="9"
+						y="342"
+						width="296"
+						height="16"
+						key="staticText-145"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BOX 7 (TO BE ACCOMPLISHED BY THE BUILDING OFFICIAL)]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="50"
+						width="571"
+						height="0"
+						key="line-101"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="69"
+						width="571"
+						height="0"
+						key="line-102"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="107"
+						width="571"
+						height="0"
+						key="line-103"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="88"
+						width="571"
+						height="0"
+						key="line-104"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="164"
+						width="571"
+						height="0"
+						key="line-105"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="145"
+						width="571"
+						height="0"
+						key="line-106"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="126"
+						width="571"
+						height="0"
+						key="line-107"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="278"
+						width="571"
+						height="0"
+						key="line-108"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="259"
+						width="571"
+						height="0"
+						key="line-109"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="240"
+						width="571"
+						height="0"
+						key="line-110"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="221"
+						width="571"
+						height="0"
+						key="line-111"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="202"
+						width="571"
+						height="0"
+						key="line-112"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="183"
+						width="571"
+						height="0"
+						key="line-113"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="316"
+						width="571"
+						height="0"
+						key="line-114"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="297"
+						width="571"
+						height="0"
+						key="line-115"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="55"
+						width="10"
+						height="10"
+						key="rectangle-82"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="74"
+						width="10"
+						height="10"
+						key="rectangle-83"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="112"
+						width="10"
+						height="10"
+						key="rectangle-84"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="93"
+						width="10"
+						height="10"
+						key="rectangle-85"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="188"
+						width="10"
+						height="10"
+						key="rectangle-86"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="169"
+						width="10"
+						height="10"
+						key="rectangle-87"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="150"
+						width="10"
+						height="10"
+						key="rectangle-88"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="131"
+						width="10"
+						height="10"
+						key="rectangle-89"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="301"
+						width="10"
+						height="10"
+						key="rectangle-91"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="282"
+						width="10"
+						height="10"
+						key="rectangle-92"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="263"
+						width="10"
+						height="10"
+						key="rectangle-93"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="244"
+						width="10"
+						height="10"
+						key="rectangle-94"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="225"
+						width="10"
+						height="10"
+						key="rectangle-95"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="206"
+						width="10"
+						height="10"
+						key="rectangle-96"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="0"
+						y="363"
+						width="572"
+						height="15"
+						key="staticText-146"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BUILDING PERMIT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="11"
+						y="377"
+						width="113"
+						height="16"
+						key="staticText-147"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[BUILDING PERMIT NO.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="402"
+						y="377"
+						width="104"
+						height="16"
+						key="staticText-148"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[OFFICIAL RECEIPT NO.]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-97"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="20"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-98"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="29"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-99"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="38"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-100"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="74"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-101"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="65"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-102"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="56"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-103"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="47"
+						y="392"
+						width="9"
+						height="14"
+						key="rectangle-104"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="403"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-107"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="412"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-108"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="421"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-109"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="430"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-110"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="466"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-111"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="457"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-112"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="448"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-113"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="439"
+						y="393"
+						width="9"
+						height="14"
+						key="rectangle-114"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="11"
+						y="407"
+						width="113"
+						height="16"
+						key="staticText-149"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[DATE ISSUED]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="402"
+						y="407"
+						width="104"
+						height="16"
+						key="staticText-150"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[DATE PAID]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="11"
+						y="422"
+						width="9"
+						height="14"
+						key="rectangle-117"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="20"
+						y="422"
+						width="9"
+						height="14"
+						key="rectangle-118"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="29"
+						y="422"
+						width="9"
+						height="14"
+						key="rectangle-119"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="38"
+						y="422"
+						width="9"
+						height="14"
+						key="rectangle-120"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="56"
+						y="422"
+						width="9"
+						height="14"
+						key="rectangle-123"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="47"
+						y="422"
+						width="9"
+						height="14"
+						key="rectangle-124"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="403"
+						y="423"
+						width="9"
+						height="14"
+						key="rectangle-127"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="412"
+						y="423"
+						width="9"
+						height="14"
+						key="rectangle-128"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="421"
+						y="423"
+						width="9"
+						height="14"
+						key="rectangle-129"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="430"
+						y="423"
+						width="9"
+						height="14"
+						key="rectangle-130"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="439"
+						y="423"
+						width="9"
+						height="14"
+						key="rectangle-134"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="12"
+						y="447"
+						width="138"
+						height="16"
+						key="staticText-151"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[             Permit is issued to]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="143"
+						y="457"
+						width="145"
+						height="0"
+						key="line-116"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="375"
+						y="457"
+						width="186"
+						height="0"
+						key="line-117"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="42"
+						y="473"
+						width="87"
+						height="0"
+						key="line-118"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="182"
+						y="473"
+						width="62"
+						height="0"
+						key="line-119"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="340"
+						y="474"
+						width="22"
+						height="0"
+						key="line-120"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="409"
+						y="473"
+						width="30"
+						height="0"
+						key="line-121"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="510"
+						y="474"
+						width="55"
+						height="0"
+						key="line-122"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="18"
+						y="488"
+						width="143"
+						height="0"
+						key="line-123"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="248"
+						y="489"
+						width="85"
+						height="0"
+						key="line-124"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="441"
+						y="488"
+						width="89"
+						height="1"
+						key="line-125"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="291"
+						y="447"
+						width="89"
+						height="16"
+						key="staticText-153"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[for the proposed]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="14"
+						y="463"
+						width="40"
+						height="16"
+						key="staticText-154"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[under]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="132"
+						y="463"
+						width="60"
+						height="16"
+						key="staticText-155"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[, of Group]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="246"
+						y="464"
+						width="98"
+						height="16"
+						key="staticText-156"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[, located at Lot No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="363"
+						y="463"
+						width="48"
+						height="16"
+						key="staticText-157"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[Block No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="445"
+						y="463"
+						width="69"
+						height="16"
+						key="staticText-158"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[OCT/TCT No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="164"
+						y="478"
+						width="94"
+						height="16"
+						key="staticText-159"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[Street, Barangay]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="336"
+						y="477"
+						width="112"
+						height="16"
+						key="staticText-160"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[, City/Municipality of]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="519"
+						y="477"
+						width="48"
+						height="16"
+						key="staticText-161"/>
+					<box></box>
+					<textElement textAlignment="Right" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[subject]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="15"
+						y="492"
+						width="112"
+						height="16"
+						key="staticText-162"/>
+					<box></box>
+					<textElement textAlignment="Justified" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[to the following:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="508"
+						width="510"
+						height="75"
+						key="staticText-163"/>
+					<box></box>
+					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None">
+						<font size="7" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[That under Article 1723 of the Civil Code of the Philippines, the engineer or architect who drew up the plans and specifications for a building/structure is liable for damages if within fifteen (15) years from the completion of the building/structure, the same should collapse due to defect in the plans or specifications or defects in the ground. The engineer or architect who supervises the construction shall be solidarily liable with the contractor should the edifice collapse due to defect in the construction or the use of inferior materials.
+This permit shall be accompanied by the various applicable ancillary and accessory permits, plans and specifications signed and sealed by the corresponding design professionals who shall be responsible for the comprehensive and correctness of the plans in compliance to the Code and its IRR and to all applicable referral codes and professional regulatory laws.
+That the proposed construction/erection/addition/alteration/renovation/conversion/repair/moving/demolition, etc. shall be in conformity with the provisions of the National Building Code, and its IRR.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="6"
+						y="816"
+						width="121"
+						height="20"
+						key="staticText-164"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[PERMIT ISSUED BY:]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="186"
+						y="834"
+						width="179"
+						height="0"
+						key="line-126"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="198"
+						y="836"
+						width="154"
+						height="16"
+						key="staticText-165"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BUILDING OFFICIAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="508"
+						width="10"
+						height="9"
+						key="staticText-166"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[1.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="540"
+						width="10"
+						height="9"
+						key="staticText-167"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[2.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="563"
+						width="10"
+						height="9"
+						key="staticText-168"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[3.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="19"
+						y="726"
+						width="501"
+						height="92"
+						key="staticText-169"/>
+					<box></box>
+					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None">
+						<font size="7" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[That no building/structure shall be used until the Building Official has issued a Certificate of Occupancy therefor as provided in the Code. However, a partial Certificate of Occupancy may be issued for the Use/Occupancy of a portion or portions of a building/structure prior to the completion of the entire building/structure.
+That this permit shall not serve as an exemption from securing written clearances from various government authorities exercising regulatory function affecting buildings/structures.
+When the construction is undertaken by contract, the work shall be done by a duly licensed and registered contractor pursuant to the provisions of the Contractor’s License Law (RA 4566).
+The Owner/Permittee shall submit a duly accomplished prescribed “Notice of Construction” to the Office of the Building Official prior to any construction activity.
+The Owner/Permittee shall put a Building Permit sign which complies with the prescribed dimensions and information, which shall remain posted on the construction
+site for the duration of the construction.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="37"
+						y="584"
+						width="492"
+						height="140"
+						key="staticText-170"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None">
+						<font size="7" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[That prior to commencement of the proposed projects and construction an actual relocation survey shall be conducted by a duly licensed Geodetic Engineer.
+That before commencing the excavation the person making or causing the excavation to be made shall notify in writing the owner of adjoining property not less than ten (10) days before such excavation is to be made and show how the adjoining property should be protected.
+That no person shall use or occupy a street, alley or public sidewalk for the performance of work covered by a building permit.
+That no person shall perform any work on any building or structure adjacent to a public way in general use for pedestrian travel, unless the pedestrians are protected.
+That the supervising Architect/Civil Engineer shall keep at the jobsite at all times a logbook of daily construction activities wherein the actual daily progress of construction including tests conducted, weather condition and other pertinent data are to be recorded, same shall be made available for scrutiny and comments by the OBO representative during the conduct of his/her inspection pursuant to Section 207 of the National Building Code.
+That upon completion of the construction, the said licensed supervising Architect/Civil Engineer shall submit to the Building Official duly signed and sealed logbook, as-built plans and other documents and shall also prepare and submit a Certificate of Completion of the project stating that the construction of the building/structure conform to the provision of the Code, its IRR as well as the plans and specifications.
+All such changes, modifications and alterations shall likewise be submitted to the Building Official and the subsequent amendatory permit therefor issued before any work on said changes, modifications and alterations shall be started. The as-built plans and specifications maybe just an orderly and comprehensive compilation of all documents which include the originally submitted plans and specifications of all amendments thereto as actually built or they may be an entirely new set of plans and specifications accurately describing and/or reflecting therein the building as actually built.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="585"
+						width="10"
+						height="9"
+						key="staticText-171"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[a.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="600"
+						width="10"
+						height="9"
+						key="staticText-172"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[b.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="618"
+						width="10"
+						height="9"
+						key="staticText-173"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[c.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="626"
+						width="10"
+						height="9"
+						key="staticText-174"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[d.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="640"
+						width="10"
+						height="9"
+						key="staticText-175"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[e.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="668"
+						width="10"
+						height="9"
+						key="staticText-176"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[f.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="694"
+						width="10"
+						height="9"
+						key="staticText-177"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[g.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="727"
+						width="10"
+						height="9"
+						key="staticText-178"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[4.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="750"
+						width="10"
+						height="9"
+						key="staticText-179"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[5.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="766"
+						width="10"
+						height="9"
+						key="staticText-180"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[6.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="781"
+						width="10"
+						height="9"
+						key="staticText-181"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[7.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="7"
+						y="797"
+						width="10"
+						height="9"
+						key="staticText-182"/>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[8.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="190"
+						y="851"
+						width="167"
+						height="16"
+						key="staticText-183"/>
+					<box></box>
+					<textElement textAlignment="Center" lineSpacing="Single">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[(Signature Over Printed Name)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="203"
+						y="867"
+						width="27"
+						height="14"
+						key="staticText-184"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Date]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="221"
+						y="876"
+						width="126"
+						height="0"
+						key="line-127"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="0"
+						y="878"
+						width="572"
+						height="15"
+						key="staticText-185"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[NOTE: THIS PERMIT MAY BE CANCELLED OR REVOKED PURSUANT TO SECTIONS 305 AND 306 OF THE "NATIONAL BUILDING CODE"]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="175"
+						y="456"
+						width="73"
+						height="12"
+						key="staticText-186"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font size="6"/>
+					</textElement>
+				<text><![CDATA[(Owner/Applicant)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="416"
+						y="455"
+						width="73"
+						height="12"
+						key="staticText-187"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font size="6"/>
+					</textElement>
+				<text><![CDATA[(Type of Project)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="41"
+						y="474"
+						width="93"
+						height="10"
+						key="staticText-188"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" lineSpacing="Single">
+						<font size="6"/>
+					</textElement>
+				<text><![CDATA[(Use or Character of Occupancy)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="12"
+						y="436"
+						width="55"
+						height="11"
+						key="staticText-189"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[M M  D D  Y Y]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="404"
+						y="438"
+						width="55"
+						height="11"
+						key="staticText-190"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+				<text><![CDATA[M M  D D  Y Y]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="448"
+						y="423"
+						width="9"
+						height="14"
+						key="rectangle-148"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+			</band>
+		</summary>
+</jasperReport>

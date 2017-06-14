@@ -2,7 +2,6 @@
 	<element tablename="market_rentalunit">
 		<field name="objid" primary="true" prefix="MKTUNT"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
-		<field name="locationid" />
 		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES" caption="Type"/>
 		<field name="code" required="true" searchable="true"  caption="Unit Code"/>
 		<field name="description" />
@@ -10,10 +9,10 @@
 			<key field="sectionid" target="objid" />
 		</complex>
 		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" 
-			includefields="objid,name,description">
+			includefields="objid,name,description,market.name,market.objid">
 			<key field="clusterid" target="objid" />
 		</complex>
-		<field name="payfrequency" required="true" lov="MARKET_PAY_FREQUENCY" defaultValue="DAILY" caption="Frequency"/>
+		<field name="ratetype" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Rate Type"/>
 		<field name="rate" required="true" type="decimal" caption="Rate"/>
 
 		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 

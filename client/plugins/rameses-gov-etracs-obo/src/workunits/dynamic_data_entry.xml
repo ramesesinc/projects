@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker type="dynamic_data_entry" caption="Edit Entry" action="init" target="popup" />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        import com.rameses.enterprise.models.*;
+
+        class DynamicDataEntry {
+            String title;
+            def infos;
+            def handler;
+            def formControls = [];
+            
+            void init() {
+                formControls =  VariableFormBuilder.build(infos);
+            }
+            
+            def formPanel = [
+                updateBean: {name,value,item->
+                    item.bean.value = value;
+                },
+                getCategoryX: { id->
+                    return id;
+                },
+                getControlList: {
+                    return formControls;
+                }
+            ] as FormPanelModel;
+            
+            def doOk() {
+                if(handler) handler(infos);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+        }
+        ]]>
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.DynamicDataEntryPage" />
+    </pages>    
+</workunit>

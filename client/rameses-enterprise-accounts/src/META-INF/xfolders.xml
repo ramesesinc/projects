@@ -1,10 +1,10 @@
 <folders>
     <folder id="explorer">
         <folder id="master">
-            <folder id="account" caption="Account" index="5"/>
+            <folder id="account" caption="Account"/>
         </folder>
         <folder id="txn">
-            <folder id="account" caption="Account" index="5"/>
+            <folder id="account" caption="Account"/>
         </folder>
     </folder>
 </folders>

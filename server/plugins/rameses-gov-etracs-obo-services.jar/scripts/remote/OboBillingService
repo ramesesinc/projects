@@ -1,0 +1,11 @@
+import com.rameses.annotations.*;
+
+class OboBillingService {
+	
+
+	@ProxyMethod
+	public def getBilling(tsk) {
+		return [code:'my name'];
+	}
+
+}

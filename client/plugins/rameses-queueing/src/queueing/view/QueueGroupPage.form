@@ -97,6 +97,12 @@
     </Component>
     <Component class="com.rameses.rcp.control.XButton" name="xButton1">
       <Properties>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="selectedSection"/>
+          </StringArray>
+        </Property>
+        <Property name="disableWhen" type="java.lang.String" value="#{allowSwap != true}"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial" size="11" style="0"/>
         </Property>
@@ -115,6 +121,12 @@
     </Component>
     <Component class="com.rameses.rcp.control.XButton" name="xButton3">
       <Properties>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="selectedSection"/>
+          </StringArray>
+        </Property>
+        <Property name="disableWhen" type="java.lang.String" value="#{allowSwap != true}"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial" size="11" style="0"/>
         </Property>

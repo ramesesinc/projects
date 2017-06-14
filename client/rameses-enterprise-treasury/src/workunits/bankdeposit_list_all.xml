@@ -1,5 +1,5 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="BankDepositListService" entityName="bankdeposit" tag="all" allowCreate="false">
     <invokers>
-        <xinvoker folderid="/explorer/txn/treasury" caption="Bank Deposits (All)" index="50"  role="SHARED" permission="bankdeposit.view" />
+        <xinvoker folderid="/explorer/txn/treasury" caption="Bank Deposits (All)" role="SHARED" permission="bankdeposit.view" />
     </invokers>
 </workunit>

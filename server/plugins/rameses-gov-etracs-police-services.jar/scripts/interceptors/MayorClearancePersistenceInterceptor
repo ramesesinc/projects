@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+
+class MayorClearancePersistenceInterceptor {
+	
+	@DataContext("policeclearance_payment")
+	def pmtdb;
+
+	@Service('PersistenceService') 
+	def persistenceSvc; 
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'mayorclearance'}")
+	public void afterOpen( evt ) {
+		def mc = evt.result;
+		if ( mc == null ) return; 
+
+		if ( mc.appid ) { 
+			def map = [ _schemaname: 'policeclearance_application' ]; 
+			map.findBy = [ objid: mc.appid ];  
+			mc.app = persistenceSvc.read( map ); 
+			if ( mc.app ) { 
+				mc.applicant = mc.app.remove('applicant');
+				mc.policeclearance = mc.app.remove('policeclearance'); 
+				mc.app.remove('mayorclearance'); 
+				mc.purpose = mc.app.purpose; 
+				if ( mc.policeclearance ) {
+					mc.ctc = mc.policeclearance.ctc; 
+					mc.withcase = mc.policeclearance.withcase;
+					mc.remarks = mc.policeclearance.remarks;
+				}
+			} 
+
+			def payments = pmtdb.find([ appid: mc.appid ]).where(' voided = 0 ').orderBy(' refno ').list(); 
+			if ( payments ) {
+				mc.payment = [:]; 
+				mc.payment.refno = payments.collect{ it.refno }.findAll{( it )}.unique().join(', '); 
+				mc.payment.refdate = payments.collect{ it.refdate }.findAll{( it )}.unique().join(', '); 
+				mc.payment.amount = payments.sum{( it.amount? it.amount : 0.0 )} 
+			}
+		}
+	} 	
+}

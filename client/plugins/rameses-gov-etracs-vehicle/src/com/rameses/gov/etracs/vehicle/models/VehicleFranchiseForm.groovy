@@ -80,5 +80,24 @@ public class VehicleFranchiseForm extends CrudFormModel {
         }
     ] as BasicListModel;
 
+    void changeDate() {
+        def h = { o->
+            persistenceService.update(o);
+            reload();
+        }
+        def info = [:];
+        info._schemaname = "vehicle_franchise";
+        info.objid = entity.objid;
+        Modal.show( "vehicle_franchise_changedate", [handler:h, info: info ] );
+    }
+    
+     void capturePayment() {
+        def h = { o->
+            feeListModel.reload();
+            reload();
+        }
+        def ref = [objid: entity.objid];
+        Modal.show( "vehicle_franchise_capturepayment", [handler:h, ref: ref ] );
+    }
     
 }

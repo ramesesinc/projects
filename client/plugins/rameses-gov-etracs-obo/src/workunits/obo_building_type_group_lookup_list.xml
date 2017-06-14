@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"
-    schemaName="obo_building_type_group">
-    <invokers>
-        <invoker folderid="explorer/master/obo"
-                 caption="Lookup Building Type"
-                 target="popup"
-                action="init" />
-    </invokers>
-</workunit>

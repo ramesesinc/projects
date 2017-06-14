@@ -1,0 +1,12 @@
+<schema adapter="obodb">
+
+	<element tablename="obovariable_attribute_entry">
+		<field name="objid" primary="true"/>
+		<field name="parentid"/>
+		<complex name="attribute" ref="obovariable_attribute" jointype="many-to-one" required="true">
+			<key field="attributeid" target="objid" />
+		</complex>	
+	</element>
+
+</schema>
+		

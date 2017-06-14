@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/bpls" action="init" role="REPORT" 
-            caption="Quarterly Paid Business Listing" target="window" index="-80"/>
+            caption="Quarterly Paid Business Listing" target="window" />
         
     </invokers>
     

@@ -45,16 +45,12 @@ class WaterworksBillingCycleService  {
 			if ( billCycleRec ) return billCycleRec; 
 		}
 
-
 		def facts = [];
 		facts << new CurrentDate(currDate);
-		facts << new BillDate( billdate );
+		facts << new treasury.facts.BillDate( billdate );
 		facts << new Stubout( sector: sector );
 		
-		//do this so it will immediately break after initial rulegroup.
-		def h = { r-> return false };
-
-		def res = ruleSvc.execute( "waterworksbillingcycle", facts, null, h );
+		def res = ruleSvc.execute( "waterworksbillingcycle", facts, null, null );
 		def period = res.period;
 		if(!period) throw new Exception("No billing cycle rules executed")
 
@@ -83,6 +79,7 @@ class WaterworksBillingCycleService  {
 			try { 
 				def p = [ sector: params.sectorid, test: true ]; 
 				p.billdate = ''+ params.year +'-'+ month.toString().padLeft(2,'0') +'-01';  
+
 				def period = getBillingDates( p ); 
 				if( period._existing ) break;
 				if ( period.year > params.year ) break;
@@ -90,7 +87,7 @@ class WaterworksBillingCycleService  {
 					billingcycle.create( period ); 
 				} 
 			} catch(Throwable t) { 
-				t.printStackTrace();
+				t.printStackTrace(); 
 			} 
 		}
 	}

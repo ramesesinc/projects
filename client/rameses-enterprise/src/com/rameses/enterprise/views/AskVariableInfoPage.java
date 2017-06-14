@@ -33,7 +33,7 @@ public class AskVariableInfoPage extends javax.swing.JPanel {
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
 
         xFormPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xFormPanel5.setCaptionWidth(220);
+        xFormPanel5.setCaptionWidth(250);
         xFormPanel5.setDynamic(true);
         xFormPanel5.setName("formPanel"); // NOI18N
         xFormPanel5.setShowCategory(true);

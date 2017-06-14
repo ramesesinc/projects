@@ -1,0 +1,3 @@
+"entity.(payer.*|paidby.*)"[ 1==1 ] {
+    enabled: false;
+}

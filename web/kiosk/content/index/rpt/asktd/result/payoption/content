@@ -14,7 +14,7 @@ def years = [];
     <div id="content">
       	<div class="container">
 	      	<div class="bg-white">
-	      		<form method="get" action="/index/rptbill/result">
+	      		<form method="get" action="/index/rpt/asktd/result">
 		 			<div class="bill-main-panel">
 		 				<div class="bill-second-panel">
 			      			<div class="row">

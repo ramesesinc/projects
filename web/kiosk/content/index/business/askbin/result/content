@@ -1,4 +1,6 @@
 <% 
+System.out.println('>> '+ PARAMS );
+
 def service = SERVICE.lookup("KioskBusinessBillingService", "etracs");
 def billing = service.getBilling( PARAMS );
 def payer = billing?.payer;
@@ -56,7 +58,7 @@ PARAMS.minqtr = minqtr;
     	var elem = \$('#payform');
     	elem.html(
     		'<input type="hidden" name="billid" value="${billid}"/>'+ 
-    		'<input type="hidden" name="billurl" value="/index/bpbill"/>' 
+    		'<input type="hidden" name="billurl" value="/index/bplsbill"/>' 
     	);
     	elem.submit();
     }

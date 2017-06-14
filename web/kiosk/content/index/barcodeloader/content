@@ -20,7 +20,7 @@
   this.onload = function() {
     window.console.log(result);
     if (result) {
-      window.location.href = '/index/' + result.handler + '?code=' + result.code;
+      window.location.href = '/index/' + result.handler + 'bill/result?code=' + result.code;
 
     }
   }
@@ -32,4 +32,3 @@
 });
 
 </script>
-${result}

@@ -1,5 +1,5 @@
 <div class="col-md-2">
-	<form method="get" action="/index/bpbill/payoption">
+	<form method="get" action="/index/business/askbin/result/payoption">
 		<input type="hidden" name="code" value="${PARAMS.code}"/>
 		<input type="hidden" name="startqtr" value="${PARAMS.minqtr}"/>
 		<button class="thumbnail" type="submit">Payment Option</button>
@@ -10,7 +10,7 @@
 	 <button r:context="bill" r:name="post" class="thumbnail">Pay</button>
 </div>
 <div class="col-md-2">
-	 <form method="post" action="/index/bpbill">
+	 <form method="post" action="/index/bplsbill">
 	 	<input type="submit" class="thumbnail" value="Try Another"/> 
 	 </form>
 </div>

@@ -2,7 +2,7 @@
     def business = [];
     business << [ links:'',  name:'Apply New'];
     business << [ links:'',  name:'Renew'];
-    business << [ links:'bpbill',  name:'Billing']; 
+    business << [ links:'askbin',  name:'Billing']; 
 
 %>
 
@@ -18,13 +18,10 @@
             <div class="row">
               <% business.each{k->%>
               <div class="col-sm-4">
-              <form method="get" action="/index/${k.links}">
-                  <button type="submit" class="thumbnail">${k.name}</button>
-              </form>
+                <form method="get" action="/index/business/${k.links}">
+                    <button type="submit" class="thumbnail">${k.name}</button>
+                </form>
               </div>
-                <!--<div class="col-sm-4">
-                       <button r:context="kiosk" r:name="goToPage" r:param_link="${k.links}" r:visibleWhen="#{_controller.currentPage == 'default' }" class="thumbnail">${k.name}</button>
-                </div>-->
               <%}%>
             </div>
           </div>

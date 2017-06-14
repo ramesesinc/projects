@@ -329,7 +329,6 @@ button:focus {outline:0;}
   margin:0;
 }
 .label-valid{
-  width: 190px;
   font-size:24px;
   margin:0;
 }
@@ -395,4 +394,18 @@ hr {
 }
 .table {
   margin-bottom: 0;
+}
+.qrcode{
+ background: transparent;
+ border: none;
+}
+.qrcode:focus{
+  outline: none;
+}
+.qrcode-guide-box{
+  position: absolute;
+  background: #fff;
+  padding: 5px;
+  width: 570px;
+  height: 400px;
 }

@@ -8,4 +8,4 @@
 	- Restriction report updates
 
 - LANDTAX
-	- 
+	- Display bill date and computed date on billing report

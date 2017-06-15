@@ -13,7 +13,9 @@ class RealtyTaxCollectiblesModel extends AsyncReportModel
     def svc
     
     String title = 'Real Property Tax Collectibles';
-    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/realty_tax_collectibles.jasper'
+    String getReportName(){
+        return 'com/rameses/gov/etracs/rpt/report/landtax/realty_tax_collectibles.jasper'
+    } 
     
     void buildReportData(entity, asyncHandler){
         svc.buildReport(entity, asyncHandler);

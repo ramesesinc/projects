@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Inspection Report: display complete location of property
 	- Restriction report updates
 
 - LANDTAX

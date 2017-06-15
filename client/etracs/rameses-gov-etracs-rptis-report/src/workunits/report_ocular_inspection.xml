@@ -27,7 +27,7 @@ class OcularInspectionController extends com.rameses.gov.etracs.rpt.report.Repor
     boolean showBack = false;
     
     def getReportData(){
-        return svc.buildOcularInspectionReport(entity);
+        return svc.buildReport(entity);
     }
     
      Map getParameters(){

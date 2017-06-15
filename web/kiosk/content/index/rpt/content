@@ -1,6 +1,8 @@
 <% 
     def rpt = [];
-    rpt << [ links:'rptbill',  name:'Billing']; 
+    rpt << [ links:'',  name:'Apply New'];
+    rpt << [ links:'',  name:'Renew'];
+    rpt << [ links:'asktd',  name:'Billing']; 
 
 %>
 
@@ -16,15 +18,10 @@
             <div class="row">
               <% rpt.each{k->%>
                 <div class="col-sm-4">
-              <form method="get" action="/index/${k.links}">
+              <form method="get" action="/index/rpt/${k.links}">
                   <button type="submit" class="thumbnail">${k.name}</button>
               </form>
               </div>
-                <!--<div class="col-sm-4">
-                  <div>
-                      <button r:context="kiosk" r:name="goToPage" r:param_link="${k.links}" class="thumbnail">${k.name}</button>
-                  </div>
-                </div>-->
               <%}%>
             </div>
           </div>

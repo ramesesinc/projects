@@ -49,7 +49,7 @@ qtrs.findAll{( it.qtr < startqtr )}.each{
                     <%}%>
                     </div>
 
-                    <form method="post" action="/index/bpbill/result" id="submit"></form>
+                    <form method="post" action="/index/business/askbin/result" id="submit"></form>
                 </div>
             </div>
         </div>

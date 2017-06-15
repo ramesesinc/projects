@@ -16,49 +16,12 @@
     @css("bootstrap.min")
     @css("style")
 
-
-
-</head>
-
-<body>
-    <!-- 
-    <nav class="navbar-default">
-        <div class="container">
-              
-            <a class="navbar-brand" href="#"><img src="/res/kiosk-logo.png"></a>
-
-           
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle bin-btn" data-toggle="dropdown">Language<b class="caret"></b></a>
-                      <ul class="dropdown-menu">
-                        <li><a href="#">Tagalog</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">English</a></li>
-                      </ul>
-                    </li>
-                </ul>
-            </div>
-        
-        </div>
-        
-    </nav> -->
-
 <script>
-<% 
-    def sidebar = [];
-    sidebar << [ links:'queue',  name:'Queue'];
-    sidebar << [ links:'business',  name:'Business'];
-    sidebar << [ links:'real',  name:'Real Property']; 
-    sidebar << [ links:'clearances',  name:'Clearances'];  
-    sidebar << [ links:'market',  name:'Market Rental'];  
-    sidebar << [ links:'water' ,  name:'Water Works'];
-    sidebar << [ links:'personal' ,  name:'Personal']; 
+<%  
    
 
     void loadChildrenPg( i ) { 
-        ANUBIS.getFolder( i.path )?.children.each{ o-> 
+        ANUBIS.getFolder( i.path )?.children.each{ o->
             def pginfo = ANUBIS.getFile((o.href ? o.href : o.path) +'.pg'); 
             
             //System.out.println('--> ' + pginfo);
@@ -106,40 +69,21 @@
         this.goToPage = function() {
             return self.link;
         }
-       },
-       {
-        "default"     : "/index",
-        "queue"       : "/index/queue",
-        "business"    : "/index/business",
-        "real"        : "/index/real"
        }
     ); 
 
 </script>
 
-<br>
-<div r:controller="kiosk">
-</div>
+</head>
 
+<body>
     <div id="container">
             <div id="content">
-                <div r:context="kiosk">
-              
-                </div>
+                ${_content}
             </div>
         </div>
     </div>
-    <!--<div class="col-md-3">
-         <input type="text" style="width:200px;height:200px;margin-bottom:100px;"/>
-    </div>
-  <div id="footer">
 
-    <button r:context="kiosk" r:name="_default" r:visibleWhen="#{_controller.currentPage != 'default' }" class="back">Main Menu</button>     
-    <div class="logo">
-        <a href="/index"><img src="/res/logo.png"></a>
-    </div>
-
-  </div>-->
 
 
 <script src="/res/js/queueing-system.js"></script>

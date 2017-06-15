@@ -1,0 +1,29 @@
+  <script>
+    function handle(e) {
+      if (e.keyCode == 13) {
+        //window.console.log("enter pressed");
+        var data = \$("#qr").val();
+        //window.console.log("val " + msg);
+        var loc = "/index/qrcodeloader?data=" + data.trim();
+        window.location.href = loc;
+      }
+    } 
+  </script>
+
+  <div id="wrapper"> 
+    <header>
+      <h1>Please follow the guide</h1>
+    </header>
+      <div id="content">
+        <div class="container">
+          <div class="container-content">
+            <div class="row">
+              <div class="qrcode-guide-box">
+
+              </div>
+              <input type="text" id="qr" class="qrcode"  onkeypress="handle(event)" autofocus disablevirtualkeyboard />
+            </div>
+          </div>
+        </div>
+      </div>  
+  </div>

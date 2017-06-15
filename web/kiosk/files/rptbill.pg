@@ -1,8 +1,0 @@
-{
-	title  : 'RPT BILLING',
-	fragment	: true,	
-	title		: 'Queue Number', 
-	context		: 'queuenumber', 
- 	target		: 'popup',
- 	options		: {headless:true, width:600}
-}

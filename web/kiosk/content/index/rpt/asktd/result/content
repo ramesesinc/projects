@@ -27,7 +27,7 @@ def taxpayer = bill.taxpayer;
         sef: '${bill.sef}',
         sefdiscount: '${bill.sefdisc}',
         sefpenalty: '${bill.sefint}',
-        billamount: '${bill.billamount}',
+        billamount: '${bill.amount}',
         billvalid: '${bill.validuntil}',
         barcode: '${bill.barcode}',
         title : 'Real Tax Bill'
@@ -165,7 +165,7 @@ def taxpayer = bill.taxpayer;
 		      	</div>
 	    	</div> 
 	    	<div class="col-md-2">
-			 	<form method="post" action="/index/rptbill/payoption">
+			 	<form method="post" action="/index/rpt/asktd/result/payoption">
 			 		<input type="hidden" name="tdno" value="${bill.tdno}"/>
 			 		<input type="hidden" name="lastyearpaid" value="${bill.lastyearpaid}"/>
 			 		<input type="hidden" name="lastqtrpaid" value="${bill.lastqtrpaid}"/>

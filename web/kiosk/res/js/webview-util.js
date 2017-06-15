@@ -12,6 +12,7 @@ var WebViewUtil = new function() {
 	this.onPageLoad = function( params ) {
 		window.console.log(params);
 		if (window.handler) {
+			window.console.log("activatebarcode "+params.activatebarcode)
 			if (params.activatebarcode) {
 				window.handler.setAllowBarcodeScanning(params.activatebarcode);
 			}

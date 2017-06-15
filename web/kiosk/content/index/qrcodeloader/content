@@ -1,0 +1,55 @@
+<%  
+    def req = SESSION.request;
+    def xdata = req.getParameter("data");
+    xdata = xdata.substring(1, xdata.length() - 1);
+    String[] keyValuePairs = xdata.split(",");
+
+    Map data = new HashMap();
+    for (String keyVal : keyValuePairs) {
+    	String[] q = keyVal.split("=");
+    	data.put(q[0].trim(), q[1].trim());
+    }
+
+%>
+<table style="color:white;">
+	<tr>
+		<td>Last Name</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.lastname}</td>
+	</tr>
+	<tr>
+		<td>First Name</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.firstname}</td>
+	</tr>
+	<tr>
+		<td>Middle Name</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.middlename}</td>
+	</tr>
+	<tr>
+		<td>Birthdate</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.birthdate}</td>
+	</tr>
+	<tr>
+		<td>Citizenship</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.citizenship}</td>
+	</tr>
+	<tr>
+		<td>Gender</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.gender}</td>
+	</tr>
+	<tr>
+		<td>Civil Status</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.civilstatus}</td>
+	</tr>
+	<tr>
+		<td>Address</td>
+		<td>&nbsp; : &nbsp</td>
+		<td>${data.address}</td>
+	</tr>
+</table>

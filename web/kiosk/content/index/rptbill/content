@@ -1,0 +1,17 @@
+
+<div id="wrapper"> 
+  <header>
+    <h1>Enter TD No. to Bill:</h1>
+  </header>
+    <div id="content">
+      <div class="container">
+        <div class="container-content">
+          <form method="get" action="/index/rptbill/result">
+            <input type="text" name="tdno"  class="write" autofocus/>
+            <button type="submit" class="btn-submit">Submit</button>
+          </form>
+        </div>
+
+      </div>
+    </div> 
+</div>

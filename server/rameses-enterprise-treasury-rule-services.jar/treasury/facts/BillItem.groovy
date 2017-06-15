@@ -8,10 +8,12 @@ class BillItem extends AbstractBillItem {
 	String refid;
 	String ledgertype;
 
+	/*
 	public BillItem(def o) {
 		copy(o);
 	}
-
+	*/
+	
 	//pay priority is only used during apply payment and will not be used anywhere else. This is defined by the extending class.
 	int paypriority = 0;
 	

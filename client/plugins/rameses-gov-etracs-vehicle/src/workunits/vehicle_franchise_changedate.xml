@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle_franchise_changedate" caption="Change Date" />
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        class VehicleFranchiseDate {
+        
+            def info = [:];
+            def handler;
+            
+            def doOk() {
+                if(handler) handler( info );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+        }
+        
+        ]]>
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.ChangeFranchiseStartDatePage"/>
+    </pages>
+</workunit>

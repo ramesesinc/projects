@@ -9,38 +9,62 @@ class BPEmployerListReportService {
 
 	@ProxyMethod
 	public def getReport(params) { 
-		if ( !params.year ) throw new Exception('year parameter is required'); 
+		if ( !params.year ) 
+			throw new Exception('year parameter is required'); 
+		if ( !params.permittype?.objid ) 
+			throw new Exception('permit type parameter is required'); 		
 
-		params.filter = '';
+		params.permittypeid = params.permittype.objid;  
 
-		def buffer = []; 
-		if ( params.state_active ) { 
-			params.state_active = 'ACTIVE'; 
-			buffer << '''$P{state_active}''';
-		} 
-		if ( params.state_processing ) { 
-			params.state_processing = 'PROCESSING'; 
-			buffer << '''$P{state_processing}''';
-		} 
-		if ( params.state_retired ) { 
-			params.state_retired = 'RETIRED'; 
-			buffer << '''$P{state_retired}'''; 
-		} 
-		if ( buffer ) { 
-			params.filter += " AND b.state IN (" + buffer.join(',') + ")"; 
+		def apptypes = []; 
+		if ( params.type_new ) {
+			params.apptype_new = 'NEW'; 
+			apptypes << '''$P{apptype_new}''';
+		}
+		if ( params.type_renew ) {
+			params.apptype_renew = 'RENEW'; 
+			apptypes << '''$P{apptype_renew}''';
+		}
+		if ( params.type_retire ) {
+			params.apptype_retire = 'RETIRE'; 
+			apptypes << '''$P{apptype_retire}''';
+		}
+		if ( params.type_additional ) {
+			params.apptype_additional = 'ADDITIONAL'; 
+			apptypes << '''$P{apptype_additional}''';
+		}
+		if ( params.type_retirelob ) {
+			params.apptype_retirelob = 'RETIRELOB'; 
+			apptypes << '''$P{apptype_retirelob}''';
+		}
+
+		def appstates = []; 
+		if ( params.state_completed ) {
+			params.appstate_completed = 'COMPLETED'; 
+			appstates << '''$P{appstate_completed}''';
+		}
+		if ( params.state_release ) {
+			params.appstate_release = 'RELEASE'; 
+			appstates << '''$P{appstate_release}''';
+		}
+		
+		params.apptypefilter = '';
+		if ( apptypes ) { 
+			params.apptypefilter = apptypes.join(','); 
 		} else { 
-			throw new Exception('Please select at least one status'); 
-		} 
+			params.apptypefilter = "''";	
+		}
 
-		if ( params.permittype?.objid ) { 
-			params.permittypeid = params.permittype.objid; 
-			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		params.appstatefilter = ''; 
+		if ( appstates ) { 
+			params.appstatefilter = appstates.join(','); 
+		} else { 
+			params.appstatefilter = "''"; 
 		} 
 
 		def list = em.getEmployerList( params );
-		if ( !list ) throw new Exception('No records found.');
+		if ( !list ) throw new Exception('No record(s) found that matches your criteria.');
 
 		return list;
-	}
-
+	} 
 }

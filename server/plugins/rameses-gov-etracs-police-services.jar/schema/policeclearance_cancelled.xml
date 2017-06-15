@@ -1,0 +1,10 @@
+<schema adapter="police">
+	<element tablename="policeclearance_cancelled" >
+		<field name="objid" required="true" prefix="PISCAN"/>
+		<field name="refid" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true"/>
+		<field name="remarks" required="true"/>
+	</element>
+</schema>

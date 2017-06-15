@@ -1,0 +1,29 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+
+class KioskRPTElectronicReceiptInterceptor{
+
+    @Service('RPTReceiptService')
+    def receiptSvc; 
+
+    @Env 
+    def env;     
+
+    @After( pattern="ElectronicReceiptService.postReceipt", eval="#{result?.collectiontype?.handler=='rpt'}" ) 
+    public void afterPostReceipt( evt ) {
+        def receipt = evt.result;  
+        def crpeor = evt.args[0]; 
+        def pmo = crpeor.paymentorder; 
+
+        receipt.txntype = 'eor';
+        receipt.billid = pmo.refid;
+        receipt.rptitems = env.bill?.rptitems
+        println '** bill'
+        env.bill.each{
+            println '>> '+ it; 
+        }
+   
+        receiptSvc.createReceipt( receipt ); 
+    } 
+}
+

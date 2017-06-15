@@ -1,0 +1,73 @@
+<%
+def svc = SERVICE.lookup("PaymentMethodService", "etracs");
+def list = svc.getPaymentMethods([ billid: PARAMS.billid ]); 
+%>
+
+<script>
+\$put("payment", new function(){
+
+    this.paymenttype;
+
+    this.print = function( pmo ) { 
+        var params = {
+            header : "${PROJECT['lgu.name']}", 
+            title  : pmo.txntype.collectiontype.title, 
+            txnid  : pmo.txnid,
+            txndate : pmo.txndate,
+            paidby :  pmo.paidby,
+            amount : 'Php'+ pmo.amount,
+            expirydate : pmo.expirydate,
+            queueno : pmo.queueno 
+        };
+        WebViewUtil.print(params, "pmo");
+    }
+
+    this.post = function() { 
+        var svc =  Service.lookup("ElectronicPaymentOrderService", "etracs"); 
+        var m = { billid: '${PARAMS.billid}', paymenttype: this.paymenttype }; 
+        var pmo = svc.create( m ); 
+
+        if ( this.paymenttype == 'CASHIER' ) { 
+            this.print( pmo ); 
+
+        } else { 
+            \$('#form_'+ this.paymenttype).submit(); 
+        } 
+    }
+
+}); 
+</script> 
+
+<div id="wrapper"> 
+    <header>
+      <h1>Payment Methods</h1>
+    </header>
+    <div id="content">
+        <div class="container">
+            <div class="container-paycontent">
+                <div class="row">
+                    <% list.each{ o-> %>
+
+                    <div class="col-sm-12">
+                        <form action="${o.actionurl}" method="post" showtoolbar="true" id="form_${o.objid}">  
+                            <% o.params.each{ k,v-> %>
+                                <input type="hidden" name="${k}" value="${v}"/>
+                            <%}%>
+                        </form>
+                        <button r:context="payment" r:name="post" class="thumbnail" r:param_paymenttype="${o.objid}" showbackbutton >${o.caption}</button>
+                    </div>
+
+                    <%}%>
+
+                    <% if ( PARAMS.billurl ){%> 
+                    <div class="col-sm-12">
+                        <form method="POST" action="${PARAMS.billurl}"> 
+                            <input type="submit" value="Bill Another" class="thumbnail" /> 
+                        </form>  
+                    </div> 
+                    <%}%>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div> 

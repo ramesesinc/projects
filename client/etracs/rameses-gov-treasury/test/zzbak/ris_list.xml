@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="RISService" entityName="ris">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="AF Requisitions" role="AFO"/>
+        <invoker folderid="/explorer/txn/treasury" caption="AF Requisitions" role="COLLECTOR"/>
+    </invokers>
+</workunit>

@@ -11,21 +11,8 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationForm extends WorkflowTaskModel {
     
-    @Service("VehicleAssessmentService")
-    def assessmentService;
-    
-    @Service("VehicleFranchiseService")
-    def franSvc;
-    
-    def vehicletype;
-    def ruleExecutor;
-    
-    public def open() {
-        def retval = super.open();
-        vehicletype = workunit.info.workunit_properties.vehicletype;
-        ruleExecutor = new RuleProcessor(  { p-> return assessmentService.assess(p) } );
-        return retval;
-    }
+
+    boolean viewReportAllowed = false; 
     
     String getFormName() {
         return getSchemaName() + ":form";
@@ -36,7 +23,10 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
     }
     
     public String getTitle() {
-        return entity.appno + " - " + task?.title;
+        String state = task?.title;
+        if( !state ) state = "";
+        else state = " [" + task?.title + "]";
+        return entity.appno + state ;
     }
     
     public String getWindowTitle() {
@@ -68,50 +58,20 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
         }
     ] as BasicListModel;
     
-    void assess() {
-        def p = [:];
-        p.putAll( entity );
-        p.vehicletype = vehicletype;
-        p.defaultinfos = p.remove("infos");
-        
-        def r = ruleExecutor.execute(p);
-        if( !r) {
-            throw new BreakException();
-        }
-        entity.billexpirydate = r.duedate;
-        if( r.items ) {
-            entity.fees = r.items;
-            entity.amount = entity.fees.sum{ it.amount };
-        }
-        if( r.infos ) {
-            entity.infos = r.infos;
-        }
-        else {
-            entity.infos = [];
-        }
-        feeListModel.reload();
-        infoListModel.reload();
-    }
-    
+
     void viewTrackingno() {
         Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
  
-    boolean isCanIssuePermit() {
-        try { 
-            def sname = ['vehicle_application', vehicletype].findAll{( it )}.join('_'); 
-            Inv.lookupOpener(sname+':permit:create', [entity: entity]); 
-            return true; 
-        } catch(Throwable t) {
-            return false; 
+    def printPermit() { 
+        String vehicletype = getSchemaName().toString();
+        int idx = vehicletype.lastIndexOf('_'); 
+        if ( idx > 0 ) { 
+            vehicletype = vehicletype.substring(idx+1);
         }
+        
+        def opener = Inv.lookupOpener('vehicle_application_permit:print', [vehicletype: vehicletype, entity: entity]);
+        opener.target = 'self'; 
+        return opener;
     }
-    def createPermit() { 
-        def sname = ['vehicle_application', vehicletype].findAll{( it )}.join('_'); 
-        return Inv.lookupOpener(sname+':permit:create', [entity: entity]); 
-    }
-    def openPermit() {
-        def sname = ['vehicle_application', vehicletype].findAll{( it )}.join('_'); 
-        return Inv.lookupOpener(sname+':permit:open', [entity: entity]); 
-    }    
 }

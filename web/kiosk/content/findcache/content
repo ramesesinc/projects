@@ -1,0 +1,43 @@
+<%
+def cacheSvc = SERVICE.lookup("CacheService", "etracs"); 
+def result = cacheSvc.get([ key: PARAMS.key ]); 
+
+def handlers = [:]; 
+handlers.printlist = { k, v, level-> 
+	def spaces = '&nbsp;&nbsp;&nbsp;'*level;
+	v.eachWithIndex{ vi,idx-> 
+		println "<br/>${spaces} "+ k +"_"+ idx + " = {"; 
+		vi.each{ mk,mv-> 
+			handlers.printmap( mk, mv, level+1 );  
+		} 
+		println "<br/>${spaces} }";
+	}
+}
+handlers.printmap = { k,v,idx-> 
+	def spaces = '&nbsp;&nbsp;&nbsp;'*idx; 
+	if ( v instanceof List ) { 
+		handlers.printlist( k, v, idx ); 
+	} else {
+		println "<br/>${spaces} "+ k +" = "+ v;  
+	}
+}
+
+println '<div id="data-content">';
+if ( !result ) {
+	println 'NOT IN CACHE <br/><br/>'
+}
+
+println '{'; 
+result.each{ k,v-> 
+	handlers.printmap( k, v, 1 ); 
+}
+println '<br/>}'
+println ' <div>';
+
+%>
+
+<style>
+#data-content {
+	background-color: white;
+}
+</style>

@@ -15,56 +15,59 @@ class BPApplicationListingReportService {
 	@Service("LOVService")
     def LOV;
 
+    @Service('DateService') 
+    def dateSvc; 
+
     @Async
 	@ProxyMethod
 	public def getReport( params ) { 
+		if ( !params.permittype?.objid ) 
+			throw new Exception('permit type parameter is required'); 
+
+		def startdate = resolveDate( params.startdate ); 
+		if ( !startdate ) throw new Exception('startdate parameter is required'); 
+
+		def enddate = resolveDate( params.enddate );  
+		if ( !enddate ) throw new Exception('enddate parameter is required'); 
+
+		params.startdate = startdate; 
+		params.enddate = resolveDate( dateSvc.add( enddate, '1d' )); 
+		params.permittypeid = params.permittype.objid;  
+		params.year = Integer.parseInt( startdate.toString().split('-')[0]); 
+
+		def apptypes = [ 
+			( params.type_new ? 'NEW' : null ),
+			( params.type_renew ? 'RENEW' : null ),
+			( params.type_retire ? 'RETIRE' : null ),
+			( params.type_retirelob ? 'RETIRELOB' : null ),
+			( params.type_additional ? 'ADDITIONAL' : null ) 
+		].findAll{( it )}.collect{ "'"+ it +"'" }  
+
+		def appstates = [
+			( params.state_info ? 'INFO' : null ),
+			( params.state_assessment ? 'ASSESSMENT' : null ),
+			( params.state_payment ? 'PAYMENT' : null ),
+			( params.state_release ? 'RELEASE' : null ),
+			( params.state_completed ? 'COMPLETED' : null ) 
+		].findAll{( it )}.collect{ "'"+ it +"'" }  
+
+		if ( apptypes ) {
+			params.apptypefilter = apptypes.join(','); 
+		} else {
+			params.apptypefilter = "''"; 
+		} 
+
+		if ( appstates ) {
+			params.appstatefilter = appstates.join(','); 
+		} else {
+			params.appstatefilter = "''"; 
+		} 
+
 		params.filter = ''; 
-
-		def buffer = []; 
-		if ( params.state_info ) { 
-			params.state_info = 'INFO'; 
-			buffer << '''$P{state_info}''';
-		} 
-		if ( params.state_assessment ) { 
-			params.state_assessment = 'ASSESSMENT'; 
-			buffer << '''$P{state_assessment}''';
-		} 
-		if ( params.state_payment ) { 
-			params.state_payment = 'PAYMENT'; 
-			buffer << '''$P{state_payment}''';
-		} 
-		if ( params.state_release ) { 
-			params.state_release = 'RELEASE'; 
-			buffer << '''$P{state_release}''';
-		} 
-		if ( params.state_completed ) { 
-			params.state_completed = 'COMPLETED'; 
-			buffer << '''$P{state_completed}''';
-		} 
-		if ( buffer ) {
-			params.filter += " AND a.state IN (" + buffer.join(',') + ")"; 
-		} 
-
-		buffer.clear();
-		if ( params.type_new ) {
-			params.type_new = 'NEW';
-			buffer << '''$P{type_new}''';
-		} 
-		if ( params.type_renew ) {
-			params.type_renew = 'RENEW';
-			buffer << '''$P{type_renew}''';
-		} 	
-		if ( params.type_retire ) {
-			params.type_retire = 'RETIRE';
-			buffer << '''$P{type_retire}''';
-		} 				
-		if ( buffer ) {  
-			params.filter += " AND alob.assessmenttype IN (" + buffer.join(',') + ")";
-		} 
 
 		if( params.barangay?.objid ) {
 			params.barangayid = params.barangay.objid;
-			params.filter = ''' AND ba.barangay_objid = $P{barangayid} ''';
+			params.filter = ''' AND addr.barangay_objid = $P{barangayid} ''';
 		}
 		if( params.classification?.objid ) {
 			params.classificationid =  params.classification.objid;
@@ -74,15 +77,11 @@ class BPApplicationListingReportService {
 			params.lobid = params.lob.objid;
 			params.filter += ''' AND lob.objid = $P{lobid} ''';
 		}
-		if ( params.permittype?.objid ) { 
-			params.permittypeid = params.permittype.objid; 
-			params.filter += ''' AND b.permittype = $P{permittypeid} '''; 	
-		} 
 
 		def zlist = bpapplication_report.getList( params );
-		if ( !zlist ) throw new Exception('No records found.');
+		if ( !zlist ) throw new Exception('No record(s) found that matches your criteria.');
 
-		return zlist;	
+		return zlist; 
 	} 
 
 	@ProxyMethod
@@ -90,4 +89,21 @@ class BPApplicationListingReportService {
 		return LOV.BUSINESS_APPLICATION_STATES*.key
 	}
 
+	private def resolveDate( value ) { 
+		if ( !value ) return null; 
+		if ( value instanceof java.util.Date ) { 
+			return new java.sql.Date( value.time ); 
+		} 
+
+		try { 
+			def dt = java.sql.Timestamp.valueOf( value.toString() ); 
+			return new java.sql.Date( dt.time );  
+		} catch(Throwable t) {;} 
+
+		try { 
+			return java.sql.Date.valueOf( value.toString() ); 
+		} catch(Throwable t) { 
+			return null; 
+		} 
+	}
 }

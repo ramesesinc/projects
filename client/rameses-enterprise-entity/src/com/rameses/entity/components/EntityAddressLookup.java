@@ -78,33 +78,39 @@ public class EntityAddressLookup extends XComponentPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtArea = new com.rameses.rcp.control.XTextArea();
+        jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         btnEdit = new com.rameses.rcp.control.XButton();
         btnViewAddress = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
 
         setOpaque(false);
-        setLayout(new java.awt.BorderLayout());
-
-        jPanel2.setOpaque(false);
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         txtArea.setName("address.text"); // NOI18N
         jScrollPane1.setViewportView(txtArea);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 2, 5, 0));
-        jPanel1.setOpaque(false);
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        add(jScrollPane1);
 
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.PAGE_AXIS));
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
+
+        btnEdit.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 3));
         btnEdit.setBorderPainted(false);
         btnEdit.setContentAreaFilled(false);
         btnEdit.setIconResource("images/toolbars/edit.png");
         btnEdit.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnEdit.setName("editAddress"); // NOI18N
         btnEdit.setToolTipText("Edit Address");
-        jPanel1.add(btnEdit, java.awt.BorderLayout.WEST);
+        jPanel1.add(btnEdit);
 
+        btnViewAddress.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         btnViewAddress.setBorderPainted(false);
         btnViewAddress.setCaption("");
         btnViewAddress.setContentAreaFilled(false);
@@ -112,30 +118,17 @@ public class EntityAddressLookup extends XComponentPanel {
         btnViewAddress.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnViewAddress.setName("viewAddress"); // NOI18N
         btnViewAddress.setToolTipText("View Address");
-        jPanel1.add(btnViewAddress, java.awt.BorderLayout.EAST);
+        jPanel1.add(btnViewAddress);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        jPanel2.add(jPanel1);
+        jPanel2.add(filler1);
 
-        add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel2);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton btnEdit;
     private com.rameses.rcp.control.XButton btnViewAddress;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

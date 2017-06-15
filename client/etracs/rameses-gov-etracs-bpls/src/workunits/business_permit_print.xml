@@ -21,7 +21,7 @@
         class  BusinessPermitReportController extends ReportController {
         
             @Service("BusinessPermitService") 
-            def permitSvc
+            def permitSvc;
             
             def entity;
             def data = [:];

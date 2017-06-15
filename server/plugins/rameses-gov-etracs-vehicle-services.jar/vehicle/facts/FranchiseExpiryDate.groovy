@@ -5,17 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import com.rameses.rules.common.*;
 
-public class FranchiseExpiryDate extends DateFact {
+public class FranchiseDate extends DateFact {
     
-    public FranchiseExpiryDate() {
+    public FranchiseDate() {
         super();
     }
 
-    public FranchiseExpiryDate(String s) {
+    public FranchiseDate(String s) {
         super(s);
     }
 
-    public FranchiseExpiryDate(Date d) {
+    public FranchiseDate(Date d) {
         super(d);
     }
     

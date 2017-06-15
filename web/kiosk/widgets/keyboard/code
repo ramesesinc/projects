@@ -1,0 +1,46 @@
+
+
+<div id="keyboard-container" style="margin-left:20px">
+    <ul id="keyboard">
+        <li class="symbol"><button>1</button></li>
+        <li class="symbol"><button>2</button></li>
+        <li class="symbol"><button>3</button></li>
+        <li class="symbol"><button>4</button></li>
+        <li class="symbol"><button>5</button></li>
+        <li class="symbol"><button>6</button></li>
+        <li class="symbol"><button>7</button></li>
+        <li class="symbol"><button>8</button></li>
+        <li class="symbol"><button>9</button></li>
+        <li class="symbol"><button>0</button></li>
+        <li class="symbol"><button>-</button></li>
+        <li class="letter-break q"><button>Q</li>
+        <li class="letter"><button>W</button></li>
+        <li class="letter"><button>E</button></li>
+        <li class="letter"><button>R</button></li>
+        <li class="letter"><button>T</button></li>
+        <li class="letter"><button>Y</button></li>
+        <li class="letter"><button>U</button></li>
+        <li class="letter"><button>I</button></li>
+        <li class="letter"><button>O</button></li>
+        <li class="letter"><button>P</button></li>
+        <li class="letter-break"><button>A</button></li>
+        <li class="letter"><button>S</button></li>
+        <li class="letter"><button>D</button></li>
+        <li class="letter"><button>F</button></li>
+        <li class="letter"><button>G</button></li>
+        <li class="letter"><button>H</button></li>
+        <li class="letter"><button>J</button></li>
+        <li class="letter"><button>K</button></li>
+        <li class="letter"><button>L</button></li>
+        <li class="letter-break z"><button>Z</button></li>
+        <li class="letter"><button>X</button></li>
+        <li class="letter"><button>C</button></li>
+        <li class="letter"><button>V</button></li>
+        <li class="letter"><button>B</button></li>
+        <li class="letter"><button>N</button></li>
+        <li class="letter"><button>M</button></li>
+        <li class="lastitem"><button class="delete">DEL</button></li>
+        <li><button class="space">space</button></li>
+        <li class="lastitem"><button class="clear">clear</li>
+    </ul>
+</div>

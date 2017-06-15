@@ -50,8 +50,7 @@
     </folder>
     <folder id="home">
         <folder id="rpt" caption="Assessor">
-            <folder id="master" caption="Master Files" index="-100" icon="home/icons/list.png"/>
-            <folder id="txn" caption="Transactions" index="-1" icon="home/icons/list.png" />
+            <folder id="txn" caption="Transactions" index="-1"/>
         </folder>
     </folder>
 </folders>

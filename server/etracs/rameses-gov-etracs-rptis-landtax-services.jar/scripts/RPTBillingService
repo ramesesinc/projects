@@ -266,7 +266,7 @@ public class RPTBillingService
 
 
 	def generateBarcode(){
-		def cy = dtSvc.serverYear
+		def cy = dtSvc.serverYear.toString()[-2..-1]
 		def lguid = '000'
 		if (env){
 			if (env.ORGID){
@@ -1072,5 +1072,15 @@ public class RPTBillingService
 		if (restriction)
 			throw new Exception('Unable to generate billing statement.\nThe Ledger is currently under restrictions.')
 		*/
+	}
+
+	@ProxyMethod
+	public void deletePendingPaymentOrderBills(ledger){
+		em.getPaidLedgerBills(ledger).each{bill ->
+			em.deleteRptBillLedgerAccount(bill)
+			em.deleteRptBillLedgerItem(bill)
+			em.deleteRptBillLedger(bill)
+			em.deleteRptBill(bill)
+		}
 	}
 }

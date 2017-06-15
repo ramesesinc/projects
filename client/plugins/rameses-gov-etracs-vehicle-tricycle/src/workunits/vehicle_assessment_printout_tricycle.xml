@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleReport.xml">
+    <invokers>
+        <invoker type="vehicle_application_tricycle:form:formActions" 
+                 caption="Print Assessment" 
+                 target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/assessment.jasper" />
+
+        <invoker type="vehicle_assessment_tricycle:print" 
+                 caption="Print Assessment" 
+                 target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/assessment.jasper" />
+    </invokers> 
+</workunit>

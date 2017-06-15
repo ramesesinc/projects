@@ -3,7 +3,7 @@
           entityName="businessrequirementtype">
     <invokers>
         <invoker folderid="/explorer/master/bpls" caption="Business Requirement Types" 
-                 index="4" role="MASTER" permission="businessrequirementtype.view"/>
+                 role="MASTER" permission="businessrequirementtype.view"/>
     </invokers>
     
     <code>

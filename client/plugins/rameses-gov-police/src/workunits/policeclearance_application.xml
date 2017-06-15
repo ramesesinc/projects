@@ -1,10 +1,15 @@
-<workunit schemaName="policeclearance_application">
+<workunit schemaName="policeclearance_application"> 
     <invokers>
         <invoker type="policeclearance_application:open" caption="Police Clearance" action="open"/>
-        <invoker type="formActions" caption="Show Tracking No" action="showTrackingno"/>
-        
-        <invoker type="formActions" caption="Print Clearance" action="printClearance" 
-                 depends="entity" visibleWhen="#{canPrintClearance == true}"/>
+        <invoker type="formActions" caption="Show Tracking Number" action="showTrackingno"/>
+
+        <invoker type="formActions" caption="Issue Clearance" action="issueClearance" 
+                 depends="entity" visibleWhen="#{canIssueClearance == true}"/>      
+          
+        <invoker type="formActions" caption="Print Police Clearance" action="printPoliceClearance" 
+                 depends="entity" visibleWhen="#{canPrintPoliceClearance == true}"/>
+        <!--invoker type="formActions" caption="Print Mayors Clearance" action="printMayorClearance" 
+                 depends="entity" visibleWhen="#{canPrintMayorClearance == true}"/-->
     </invokers>
     <code class="com.rameses.gov.etracs.police.models.PoliceClearanceApplicationModel" />
     <pages>

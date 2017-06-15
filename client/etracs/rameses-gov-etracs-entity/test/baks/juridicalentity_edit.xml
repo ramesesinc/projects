@@ -1,0 +1,87 @@
+<workunit>
+    <invokers>
+        <invoker type="juridicalentity:edit"  caption="Juridical Entity (Edit)" action="edit" role="MASTER" permission="juridicalentity.edit"/>
+
+        <invoker type="formActions" caption="Close" action="_close" immediate="true" mnemonic="c" />
+        <invoker type="formActions" caption="Save" action="save" mnemonic="s" shortcut="ctrl S" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class JuridicalEntityController  {
+        
+            @Service("JuridicalEntityService")
+            def service;
+            
+            def saveHandler;
+            def mode;
+            def entity;
+            def initial;
+            
+            def orgTypes = LOV.ORG_TYPES.findAll{ it.key != 'SING' };
+            def addressHandler;
+            
+            def positionModel = [
+                fetchList: { o->
+                    return service.getPositionList(o);
+                }
+            ] as SuggestModel;
+            
+            void create() {
+                mode = "create";
+                entity = [objid:"JURI"+new UID(),  address:[:], administrator:[:]];
+                if( !entity.address) entity.address = [:];
+                if( !entity.administrator) entity.administrator = [:];
+                entity.type = 'JURIDICAL';
+                addressHandler = Inv.lookupOpener('address:component', [
+                    entity: entity.address
+                ]); 
+            }
+            
+            void edit() {
+                mode = "edit";
+                entity = service.open( [objid: entity.objid, type: 'JURIDICAL'] );
+                if(!entity.administrator) entity.administrator = [:];
+                if(!entity.address) entity.address = [:];
+                addressHandler = Inv.lookupOpener('address:component', [
+                    entity: entity.address
+                ]);   
+            }
+            
+            def save() {
+                if(mode=='create'){
+                    if( MsgBox.confirm("You are about to save this record. Proceed?")) {
+                        service.create( entity );
+                         if(saveHandler) {
+                            def r = saveHandler(entity);
+                            if( r == '_close' ) return r;
+                         }   
+                        def opener = Inv.lookupOpener( "juridicalentity:open", [entity: entity, initiator:'create'] );
+                        opener.target = 'self';
+                        return opener;
+                    }
+                }
+                else {
+                    service.update( entity );
+                    if(saveHandler) {
+                        def r = saveHandler(entity);
+                        if( r == '_close' ) return r;
+                    }    
+                    return "_close";
+                }
+            }
+            
+        }        
+        ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.JuridicalEntityEditPage"/>
+   </pages>   
+</workunit>

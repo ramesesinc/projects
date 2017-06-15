@@ -39,9 +39,6 @@ public class MasterFileActivity extends SettingsMenuActivity {
 		loadListData();
 		ApplicationUtil.changeTitle(this, "Master Files");
 		activity = this;
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2f84c9")));
 	}
 	
 	protected void afterBackPressed() {
@@ -54,14 +51,14 @@ public class MasterFileActivity extends SettingsMenuActivity {
 	
 	void loadListData(){
 		data = new ArrayList<HomeListItem>();
-		data.add(new HomeListItem(R.drawable.masterfile,"Property Classifications"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Kind of Buildings"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Materials"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Structures"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Machines"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Plants and Trees"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Miscellaneous Items"));
-		data.add(new HomeListItem(R.drawable.masterfile,"Parameters"));
+		data.add(new HomeListItem(R.drawable.file,"Property Classifications"));
+		data.add(new HomeListItem(R.drawable.file,"Kind of Buildings"));
+		data.add(new HomeListItem(R.drawable.file,"Materials"));
+		data.add(new HomeListItem(R.drawable.file,"Structures"));
+		data.add(new HomeListItem(R.drawable.file,"Machines"));
+		data.add(new HomeListItem(R.drawable.file,"Plants and Trees"));
+		data.add(new HomeListItem(R.drawable.file,"Miscellaneous Items"));
+		data.add(new HomeListItem(R.drawable.file,"Parameters"));
 		
 		list = (ListView) findViewById(R.id.list_home);
 		list.setAdapter(new HomeMenuAdapter(this,data));

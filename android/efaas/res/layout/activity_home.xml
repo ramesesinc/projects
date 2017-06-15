@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|top"
+    android:background="@android:color/white" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:gravity="center|top" >
+        
+        <!-- FIRST ROW -->
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center"
+	        android:layout_marginBottom="50dp" >
+	        
+            <LinearLayout
+                android:id="@+id/home_masterfile"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/masterfile" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Master Files"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+	    	
+            
+            <LinearLayout
+                android:id="@+id/home_revisionsetting"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/revisionsetting" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Revision Settings"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+	    	
+            
+            <LinearLayout
+                android:id="@+id/home_faas"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/faas" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FAAS"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+        
+    	</LinearLayout>
+    	
+        
+         <!-- SECOND ROW -->
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center"
+	        android:layout_marginBottom="50dp" >
+	        
+            <LinearLayout
+                android:id="@+id/home_download"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/download" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Download"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+	    	
+            
+            <LinearLayout
+                android:id="@+id/home_upload"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/upload" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+	    	
+            
+            <LinearLayout
+                android:id="@+id/home_password"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/password" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change Password"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+        
+    	</LinearLayout>
+    	
+        <!-- 3RD ROW -->
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center"
+	        android:layout_marginBottom="50dp" >
+	        
+            <LinearLayout
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+	        
+	    	</LinearLayout>
+	    	
+            
+            <LinearLayout
+                android:id="@+id/home_logout"
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/logout" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Logout"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+	        
+	    	</LinearLayout>
+	    	
+            
+            <LinearLayout
+		        android:layout_width="200dp"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:gravity="center" >
+
+	    	</LinearLayout>
+        
+    	</LinearLayout>
+        
+    </LinearLayout>
+
+</RelativeLayout>

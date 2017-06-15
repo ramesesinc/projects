@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.rameses.android.ApplicationUtil;
 import com.rameses.android.ControlActivity;
 import com.rameses.android.R;
 import com.rameses.android.db.ExaminationDB;
@@ -29,7 +31,6 @@ import com.rameses.android.efaas.adapter.ImageItemAdapter;
 import com.rameses.android.efaas.bean.ImageItem;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
-import com.rameses.android.efaas.util.InputMethodSwitcher;
 import com.rameses.client.android.Platform;
 import com.rameses.client.android.SessionContext;
 
@@ -43,18 +44,22 @@ public class ExaminationActivity  extends ControlActivity{
 	private static Activity activity;
 	private int ctxMenuId;
 	private String STATE = "CREATE";
+	private String type;
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		activity = this; 
 		objid = getIntent().getExtras().getString("objid");
 		faasid = getIntent().getExtras().getString("faasid");
+		type = getIntent().getExtras().getString("type");
 		if(objid == null){
-			objid = UUID.randomUUID().toString();
+			objid = "EXM" + UUID.randomUUID().toString();
 		}else{
 			STATE = "UPDATE";
 		}
 
+		ApplicationUtil.changeTitle(activity,"Examination");
+		
 		setContentView(R.layout.activity_examination);
 		
 		findings = (EditText) findViewById(R.id.examination_findings);
@@ -109,7 +114,12 @@ public class ExaminationActivity  extends ControlActivity{
             		return;
             	}
             	disposeMe();
-            	LandFaasActivity.initData();
+            	if(type.equals("land")){
+            		FaasLandExaminationActivity.loadExaminationData();
+            	}
+            	if(type.equals("bldg")){
+            		FaasBuildingActivity.loadExaminationData();
+            	}
             }
         });
 		if(STATE.equals("CREATE")) examination_save.setText("SAVE");

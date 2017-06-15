@@ -1,6 +1,6 @@
 <schema>
 	
-	<element name="business_application" tablename="business_application">
+	<element tablename="business_application">
 		<field name="objid" primary="true"/>
 		<field name="business_objid" required="true"/>
 		<field name="appno" required="true"/>

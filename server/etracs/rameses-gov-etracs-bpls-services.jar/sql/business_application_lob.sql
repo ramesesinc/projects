@@ -13,4 +13,13 @@ WHERE bl.applicationid = $P{applicationid}
 DELETE FROM business_application_lob WHERE applicationid=$P{applicationid}
 
 
-
+[getBusinessLOB]
+select 
+	b.objid, b.businessid, a.appyear as activeyear, 
+	a.apptype, b.lobid, b.name, a.txndate, a.dtfiled 
+from business_application_lob b 
+	inner join business_application a on b.applicationid=a.objid 
+where b.businessid = $P{businessid} 
+	and a.appyear = $P{appyear} 
+	and a.state = 'COMPLETED' 
+order by a.txndate 

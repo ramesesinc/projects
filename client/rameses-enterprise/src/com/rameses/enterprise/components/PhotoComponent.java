@@ -51,6 +51,10 @@ public class PhotoComponent extends XComponentPanel {
         changePhoto = new com.rameses.rcp.control.XButton();
         xPhoto1 = new com.rameses.rcp.control.XPhoto();
 
+        setOpaque(false);
+
+        jPanel1.setOpaque(false);
+
         addFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clip.png"))); // NOI18N
         addFile.setCaptionFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
         addFile.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N

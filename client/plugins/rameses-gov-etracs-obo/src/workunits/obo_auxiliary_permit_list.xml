@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="obo_auxiliary_permit" allowCreate="false"
+    cols="app.*">
+    <invokers>
+        <invoker folderid="home/obo" caption="Electrical" action="init" index="20"  permitType="electrical"/>
+        <invoker folderid="home/obo" caption="Mechanical" action="init" index="21" permitType="mechanical"/>
+        <invoker folderid="home/obo" caption="Plumbing" action="init" index="22" permitType="plumbing"/>
+        <invoker folderid="home/obo" caption="Electronic" action="init" index="23" permitType="electronic"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.obo.models.AuxiliaryPermitListModel" />
+</workunit>

@@ -12,6 +12,9 @@ class EntityService
 	@Service('PersistenceService')
 	def persistenceSvc;	
 
+	@Service 
+	def self; 
+
 	@ProxyMethod
 	public def open( o ) { 
 		def type = em.select('type').find([ objid: o.objid ]).val(); 
@@ -27,12 +30,34 @@ class EntityService
 	} 
 
 	@ProxyMethod 
+	public def getTypes() {
+		return []; 
+	}
+
+	@ProxyMethod 
 	public def getPhoto( o ) {
 		return [:]; 
 	}
 
-	@ProxyMethod 
-	public def getTypes() {
-		return []; 
-	}
+	@ProxyMethod(local=true) 
+	public def getMedia( params ) {
+		def result = self.getPhoto( params );  
+		def o = result.photo; 
+		if ( o instanceof String ) {
+			def base64 = new Base64Cipher(); 
+            if ( base64.isEncoded( o )) {
+                o = base64.decode( o ); 
+            }
+		}
+
+		if ( o ) {
+			def mf = new MediaFile(); 
+			mf.setContentType('image/jpeg');  
+			mf.setContent( o );  
+			return mf; 
+			
+		} else {
+			return null; 
+		} 
+	} 
 }

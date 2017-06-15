@@ -273,6 +273,21 @@
         )
     </sql>
     
+    <sql>
+        CREATE TABLE bldgadditionalitem
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	code TEXT,
+        	name TEXT,
+        	unit REAL,
+        	expr TEXT,
+        	previd TEXT, 
+        	type TEXT,
+        	addareatobldgtotalarea INTEGER
+        )
+    </sql>
+    
     <!-- =========================================================== -->
     <!-- FAAS -->
     <!-- =========================================================== -->
@@ -312,6 +327,10 @@
 			rp_west TEXT
         )
     </sql>
+    
+    <!-- =========================================================== -->
+    <!-- FAAS LAND  -->
+    <!-- =========================================================== -->
     
     <sql>
         CREATE TABLE landdetail
@@ -353,6 +372,150 @@
         	objid TEXT NOT NULL PRIMARY KEY,
 			landrpuid TEXT,
 			adjustment_objid TEXT
+        )
+    </sql>
+    
+    <!-- =========================================================== -->
+    <!-- FAAS BLDG  -->
+    <!-- =========================================================== -->
+    
+    <sql>
+        CREATE TABLE bldgrpu
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	landrpuid TEXT,
+        	houseno TEXT,
+        	psic TEXT,
+        	permitno TEXT,
+        	permitdate TEXT,
+        	permitissuedby TEXT,
+        	bldgtype_objid TEXT,
+        	bldgkindbucc_objid TEXT,
+        	basevalue REAL,
+        	dtcompleted TEXT,
+        	dtoccupied TEXT,
+        	floorcount NUMERIC,
+        	depreciation REAL,
+        	depreciationvalue REAL,
+        	totaladjustment REAL,
+        	additionalinfo TEXT,
+        	bldgage NUMERIC,
+        	percentcompleted NUMERIC,
+        	bldgassesslevel_objid TEXT,
+        	assesslevel REAL,
+        	condominium NUMERIC,
+        	bldgclass TEXT,
+        	predominant NUMERIC,
+        	effectiveage NUMERIC,
+        	condocerttitle TEXT,
+        	dtcertcompletion TEXT,
+        	dtcertoccupancy TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgstructure
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrpuid TEXT,
+        	structure_objid TEXT,
+        	material_objid TEXT,
+        	floor NUMERIC
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgrpu_structuraltype
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrpuid TEXT,
+        	bldgtype_objid TEXT,
+        	bldgkindbucc_objid TEXT,
+        	floorcount NUMERIC,
+        	basefloorarea REAL,
+        	totalfloorarea REAL,
+        	basevalue REAL,
+        	unitvalue REAL,
+        	classification_objid TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldguse
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrpuid TEXT,
+        	structuraltype_objid TEXT,
+        	actualuse_objid TEXT,
+        	basevalue REAL,
+        	area REAL,
+        	basemarketvalue REAL,
+        	depreciationvalue REAL,
+        	adjustment REAL,
+        	marketvalue REAL,
+        	assesslevel REAL,
+        	assessedvalue REAL,
+        	addlinfo TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgfloor
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldguseid TEXT,
+        	bldgrpuid TEXT,
+        	floorno TEXT,
+        	area REAL,
+        	storeyrate REAL,
+        	basevalue REAL,
+        	unitvalue REAL,
+        	basemarketvalue REAL,
+        	adjustment REAL,
+        	marketvalue REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgflooradditional
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgfloorid TEXT,
+        	bldgrpuid TEXT,
+        	additionalitem_objid TEXT,
+        	amount REAL,
+        	expr TEXT
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgflooradditionalparam
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgflooradditionalid TEXT,
+        	bldgrpuid TEXT,
+        	param_objid TEXT,
+        	intvalue NUMERIC,
+        	decimalvalue REAL
+        )
+    </sql>
+    
+    <sql>
+        CREATE TABLE bldgkindbucc
+        (
+        	objid TEXT NOT NULL PRIMARY KEY,
+        	bldgrysettingid TEXT,
+        	bldgtypeid TEXT,
+        	bldgkind_objid TEXT,
+        	basevaluetype TEXT,
+        	basevalue REAL,
+        	minbasevalue REAL,
+        	maxbasevalue REAL,
+        	gapvalue INTEGER,
+        	minarea REAL,
+        	maxarea REAL,
+        	bldgclass TEXT,
+        	previd TEXT
         )
     </sql>
     

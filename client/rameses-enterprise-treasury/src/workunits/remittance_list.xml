@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="RemittanceListService" entityName="remittance">
 
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Remittances" role="SHARED,COLLECTOR" index="42">
+        <invoker folderid="/explorer/txn/treasury" caption="Remittances" role="SHARED,COLLECTOR" >
             <action name="doInit" role="SHARED" tag="all" permission="remittance.view"/> 
             <action name="doInit" role="COLLECTOR" tag="bycollector"/> 
         </invoker>

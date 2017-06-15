@@ -27,6 +27,7 @@ import com.rameses.android.db.*;
 import com.rameses.android.efaas.dialog.LandAppraisalInfo;
 import com.rameses.android.efaas.dialog.ErrorDialog;
 import com.rameses.android.efaas.dialog.InfoDialog;
+import com.rameses.android.efaas.dialog.StructuralMaterialInfo;
 import com.rameses.android.efaas.adapter.AppraisalMenuAdapter;
 import com.rameses.android.efaas.adapter.ExaminationMenuAdapter;
 import com.rameses.android.efaas.bean.*;
@@ -36,7 +37,7 @@ public class BuildingFaasActivity extends ControlActivity{
 	public boolean isCloseable() { return false; }
 	
 	private static TextView tdno, pin, owner, address;
-	private static Button material_add, examination_add;
+	private static Button material_add, appraisal_add, examination_add;
 	private static ListView material_list, examination_list;
 	
 	public static Activity activity;
@@ -76,7 +77,16 @@ public class BuildingFaasActivity extends ControlActivity{
 		material_add = (Button) findViewById(R.id.material_add);
 		material_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	
+            	//StructuralMaterialInfo material = new StructuralMaterialInfo(activity,null,rpuid);
+            	//material.show();
+            }
+        });
+		
+		appraisal_add = (Button) findViewById(R.id.appraisal_add);
+		appraisal_add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Intent myIntent = new Intent(activity, BuildingAppraisalActivity.class);
+  			  	startActivity(myIntent);
             }
         });
 		
@@ -277,6 +287,7 @@ public class BuildingFaasActivity extends ControlActivity{
 					Intent myIntent = new Intent(activity, ExaminationActivity.class);
 					myIntent.putExtra("objid", item.getObjid());
 	  			  	myIntent.putExtra("faasid", faasid);
+	  			  	myIntent.putExtra("type", "bldg");
 	  			  	activity.startActivity(myIntent);
 				}	
 			});

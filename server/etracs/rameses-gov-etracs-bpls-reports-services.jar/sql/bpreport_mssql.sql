@@ -64,46 +64,6 @@ from (
 order by xx.tradename 
 
 
-[getPermitListByYear]
-SELECT 
-	bp.*, b.owner_name, b.owner_address_text as owner_address, 
-	b.tradename, b.objid as business_objid, idtin.idno as tin, 
-	(
-		select sum( bai.intvalue ) from business_application_info bai 
-			inner join business_application ba on bai.applicationid=ba.objid 
-		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
-			and bai.attribute_objid='NUM_EMPLOYEE' 
-			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
-	) as numemployee, 
-	(
-		select sum( bai.intvalue ) from business_application_info bai 
-			inner join business_application ba on bai.applicationid=ba.objid 
-		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
-			and bai.attribute_objid='NUM_EMPLOYEE_MALE' 
-			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
-	) as nummale, 
-	(
-		select sum( bai.intvalue ) from business_application_info bai 
-			inner join business_application ba on bai.applicationid=ba.objid 
-		where bai.businessid=xx.businessid and bai.activeyear=xx.activeyear 
-			and bai.attribute_objid='NUM_EMPLOYEE_FEMALE' 
-			and ba.state IN ('COMPLETED') and ba.apptype in ('NEW','RENEW') 
-	) as numfemale 
-FROM ( 
-	SELECT businessid, activeyear, MAX(version) AS version 
-	FROM business_permit 
-	WHERE activeyear=$P{year} and state='ACTIVE'  
-	GROUP BY businessid, activeyear 
-)xx  
-	INNER JOIN business_permit bp ON xx.businessid=bp.businessid 
-	INNER JOIN business b ON bp.businessid=b.objid 
-	LEFT JOIN entityid idtin on (b.owner_objid=idtin.entityid AND idtin.idtype='TIN') 	
-	LEFT JOIN business_address addr ON b.address_objid=addr.objid  
-WHERE bp.activeyear=xx.activeyear and bp.version=xx.version  
-	${filter} 
-ORDER BY b.owner_name 
-
-
 [getLOBCountList]
 select 
 	a.appyear, lob.name, 
@@ -327,49 +287,48 @@ order by xx.bin
 
 
 [getEmployerList]
-select xx.*, (xx.numfemale + xx.nummale) as numemployee
+select 
+	b.objid, b.bin, b.tradename, b.address_text as businessaddress, b.owner_name, b.owner_objid, 
+	tmp2.numfemale, tmp2.nummale, tmp2.numresident, tmp2.numemployee, 
+	(case when ei.gender='M' then 1 else 0 end) as malecount,
+	(case when ei.gender='F' then 1 else 0 end) as femalecount,  
+	case 
+		when b.orgtype='SING' then (select tin from entityindividual WHERE objid=b.owner_objid) 
+		else (select tin FROM entityjuridical WHERE objid=b.owner_objid) 
+	end as tin, '' as sss, 
+	case 
+		when b.state='ACTIVE' then (
+			select top 1 permitno from business_permit 
+			where businessid=b.objid and activeyear=tmp2.appyear and state='ACTIVE' 
+			order by version desc 
+		) 
+		else null 
+	end as permitno 
 from ( 
 	select 
-		b.objid, b.bin, b.tradename, b.address_text as businessaddress, b.owner_name, 
-		ba.objid as appid, ba.apptype, ba.appno, ba.state as appstate, b.owner_objid, 
-		(select sum(intvalue) from business_active_info where businessid=b.objid and attribute_objid='NUM_EMPLOYEE_FEMALE') AS numfemale,
-		(select sum(intvalue) from business_active_info where businessid=b.objid and attribute_objid='NUM_EMPLOYEE_MALE') AS nummale,
-		(select sum(intvalue) from business_active_info where businessid=b.objid and attribute_objid='NUM_EMPLOYEE_RESIDENT') AS numresident,
-		(select count(objid) from entityindividual where objid=b.owner_objid and gender='M') as malecount, 
-		(select count(objid) from entityindividual where objid=b.owner_objid and gender='F') as femalecount, 		
-		case 
-			when b.orgtype='SING' then (select tin from entityindividual WHERE objid=b.owner_objid) 
-			else (select tin FROM entityjuridical WHERE objid=b.owner_objid) 
-		end as tin, '' as sss, 
-		case 
-			when b.state='ACTIVE' then (
-				select top 1 permitno from business_permit 
-				where businessid=b.objid and activeyear=ba.appyear and state='ACTIVE' 
-				order by version desc 
-			) 
-			else null 
-		end as permitno 
-	from business b 
-		left join business_application ba on b.currentapplicationid=ba.objid 
-	where b.activeyear=$P{year} and b.state='ACTIVE' ${filter} 
-	union all 
-	select 
-		b.objid, b.bin, b.tradename, b.address_text AS businessaddress, b.owner_name, 
-		ba.objid AS appid, ba.apptype, ba.appno, ba.state as appstate, b.owner_objid, 
-		(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_FEMALE') AS numfemale,
-		(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_MALE') AS nummale,
-		(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_RESIDENT') AS numresident,
-		(select count(objid) from entityindividual where objid=b.owner_objid and gender='M') as malecount, 
-		(select count(objid) from entityindividual where objid=b.owner_objid and gender='F') as femalecount, 		
-		case 
-			when b.orgtype='SING' then (select tin from entityindividual WHERE objid=b.owner_objid) 
-			else (select tin FROM entityjuridical WHERE objid=b.owner_objid) 
-		end as tin, '' as sss, null as permitno  
-	from business b 
-		left join business_application ba on b.currentapplicationid=ba.objid 
-	where b.activeyear=$P{year} and b.state='PROCESSING' ${filter} 
-)xx 
-order by xx.tradename 
+		businessid, appyear, 
+		isnull(sum(nummale),0) as nummale, 
+		isnull(sum(numfemale),0) as numfemale, 
+		isnull(sum(numresident),0) as numresident,  
+		(isnull(sum(nummale),0) + isnull(sum(numfemale),0)) as numemployee 
+	from ( 
+		select 
+			ba.business_objid as businessid, ba.appyear, 
+			(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_MALE') as nummale, 
+			(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_FEMALE') as numfemale, 
+			(select sum(intvalue) from business_application_info where applicationid=ba.objid and attribute_objid='NUM_EMPLOYEE_RESIDENT') as numresident 
+		from business_application ba 
+			inner join business b on ba.business_objid=b.objid 
+		where ba.appyear = $P{year} 
+			and ba.apptype in ( ${apptypefilter} ) 
+			and ba.state in ( ${appstatefilter} ) 
+			and b.permittype = $P{permittypeid} 
+	)tmp1 
+	group by businessid, appyear 
+)tmp2 
+	inner join business b on b.objid=tmp2.businessid 
+	left join entityindividual ei on b.owner_objid=ei.objid 
+order by tradename 
 
 
 [getBusinessesByBarangay]
@@ -461,7 +420,7 @@ from (
 		(case when br.taxfeetype='REGFEE' then br.amount else 0.0 end) as regfee,
 		(case when br.taxfeetype='OTHERCHARGE' then br.amount else 0.0 end) as othercharge 
 	from business_application ba  
-		inner join business b on ba.business_objid=a.objid 
+		inner join business b on ba.business_objid=b.objid 
 		inner join business_receivable br on br.applicationid=ba.objid 
 	where ba.appyear=$P{year} and ba.state in ('RELEASE','COMPLETED')  
 		and br.iyear=ba.appyear ${filter} 

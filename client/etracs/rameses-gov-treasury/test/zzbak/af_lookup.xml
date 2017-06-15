@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="AFLookupService">
+    <invokers>
+        <invoker type="af:lookup" caption="AF Lookup" target="popup"/>
+    </invokers>
+</workunit>

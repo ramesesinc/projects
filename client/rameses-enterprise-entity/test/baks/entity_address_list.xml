@@ -1,0 +1,59 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="entity_address">
+    <invokers>
+        <invoker type="entityindividual:section" caption="Addresses" index="1"
+                cols="text,primary" action="init" visibleWhen="#{mode=='read'}"/>
+        
+        <invoker type="listActions" caption="Set As Default" action="setAsDefault"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        
+        class AddressListModel extends CrudSubListModel {
+            def getListFilter() {
+                return [parentid: masterEntity.objid];
+            }
+        
+            void setAsDefault() {
+                if(!selectedItem) throw new Exception("Please select an item");
+                def m = [_schemaname: 'entity'];
+                m.objid = masterEntity.objid;
+                m.address = [objid: selectedItem.objid, text: selectedItem.text]; 
+                persistenceService.update(m);
+                reload();
+            }
+        
+            def create() {
+                def h = { o->
+                    o._schemaname = "entity_address";
+                    o.parentid = masterEntity.objid;
+                    persistenceService.create( o );
+                    reload();
+                }
+                return Inv.lookupOpener( "address:editor", [handler:h, entity:[:]] );
+            }
+            
+            def open() {
+                if(!selectedItem) throw new Exception("Please select an item");
+                def h = { o->
+                    o._schemaname = "entity_address";
+                    persistenceService.update( o );
+                    reload();
+                }
+                def m = persistenceService.read( [_schemaname:'entity_address', objid:selectedItem.objid] );
+                return Inv.lookupOpener( "address:editor", [handler:h, entity:m] );
+            }
+            
+            void removeEntity() {
+                 if(!selectedItem) throw new Exception("Please select an item");
+                 super.removeEntity();
+            }
+        }
+        ]]>
+    </code>    
+</workunit>

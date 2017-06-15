@@ -1,12 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
-          processName="vehicle_application_tricycle" 
+          processName="vehicle_application"
+          schemaName="vehicle_application_tricycle" 
           allowDelete="false" allowNotify="true">
-    
     <invokers>
         <invoker folderid="/home/vehicle/tricycle" action="init" index="-1"
-            cols="app.franchise.controlno,app.appno,app.apptype,app.appdate,app.owner.name,app.plateno,app.engineno,app.bodyno" 
+            cols="franchise.controlno,appno,apptype,appdate,owner.name,plateno,engineno,bodyno,task.state,task.startdate,task.assignee.name" 
             caption="MTOP Application List" 
             role="INFO,SHARED"/>
     </invokers>
-    
 </workunit>

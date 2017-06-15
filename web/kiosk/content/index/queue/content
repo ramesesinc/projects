@@ -1,0 +1,89 @@
+<%
+def dateSvc = SERVICE.lookup('DateService', 'main');
+def serverDate = dateSvc.format('MMMMM dd, yyyy', dateSvc.getServerDate());
+
+def gSvc = SERVICE.lookup('QueueGroupService', 'main'); 
+def groups = gSvc.getGroupsWithSections(); 
+%>
+
+<div id="wrapper"> 
+  <header>
+    <h1>Please Select Transaction</h1>
+  </header>
+    <div id="content">
+      <div class="container">
+        <div class="container-content">
+          <div class="row">
+            <%groups.each { g-> %>
+            
+              <div class="row">
+                    <h3 class="page-header">${g.title}</h3>
+                </div>
+              <div class="row"> <!-- open row -->
+                <div class="spliter"> <!-- opens pliter -->
+                  <%g.sections.each { s->%>
+                  
+                    <div class="col-sm-4">       
+                      <button class="thumbnail" r:context="queue" r:name="fetchNextNumber" r:param_sectionid="${s.objid}" > 
+                       ${s.title}
+                      </button>
+                    </div> 
+                  
+                  <%}%>
+                </div> <!-- close spliter -->
+              </div> <!-- close row -->
+            
+            <%}%>
+          </div>
+        </div>
+      </div>
+    </div>  
+</div>
+
+<script>
+\$put("queue", new function(){
+
+  var self = this;
+  var svc = Service.lookup('QueueService', 'main');
+
+  this.sectionid = null; 
+  this.seriesno;
+
+  this.fetchNextNumber = function() {
+    if ( !this.sectionid ) {
+      alert('No sectionid specified'); 
+      return; 
+    }
+
+    self.seriesno = svc.fetchNextNumber({ sectionid: this.sectionid }); 
+    var params = {
+      header : "${PROJECT['lgu.name']}", 
+      seriesno  : self.seriesno, 
+      serverdate : '${serverDate}',
+      barcode : self.seriesno,
+      title : 'billing'
+    };
+    WebViewUtil.print(params, "queue");
+
+    //self.print('rqueue');
+
+    //return new PopupOpener(qnpage.id, { seriesno: seriesno, serverDate: '${serverDate}' }); 
+  }
+
+  this.print = function( printhandler ){
+    var params = {
+    header : "${PROJECT['lgu.name']}", 
+    seriesno  : self.seriesno, 
+    serverdate : '${serverDate}',
+    barcode : self.seriesno,
+    title : 'billing',
+    printhandler: printhandler
+    };
+    //window.console.log(params);
+    window.handler.print(params);
+  }
+}); 
+</script> 
+
+
+        

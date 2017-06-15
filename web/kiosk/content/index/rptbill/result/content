@@ -1,0 +1,205 @@
+<%
+def service = SERVICE.lookup("KioskRPTBillingService", "etracs");
+def bill = service.generateBill(PARAMS);
+def billid = bill.objid 
+def numsvc = SERVICE.lookup("NumberService", "etracs")
+def taxpayer = bill.taxpayer;
+%>
+
+<script>
+\$put("rptbill", new function(){
+
+    this.print = function (){
+      var params = {
+        header : "${PROJECT['lgu.name']}", 
+        billdate  : "${bill.dtposted}", 
+        billperiod : "${bill.billperiod}",
+        owner : "${taxpayer.name}",
+        address : "${taxpayer.address.replaceAll('\\s{1,}', ' ')}",
+        tdno: "${bill.tdno}",
+        brgy:'${bill.barangay}',
+        kind: '${bill.rputype}',
+        classcode: "${bill.classcode}",
+        lastpaid: "${bill.lastqtrpaid}Q, ${bill.lastyearpaid}",
+        basic : "${bill.basic}",
+        basicdiscount: "${bill.basicdisc}",
+        basicpenalty: '${bill.basicint}',
+        sef: '${bill.sef}',
+        sefdiscount: '${bill.sefdisc}',
+        sefpenalty: '${bill.sefint}',
+        billamount: '${bill.billamount}',
+        billvalid: '${bill.validuntil}',
+        barcode: '${bill.barcode}',
+        title : 'Real Tax Bill'
+      };
+      window.console.log(params);
+      WebViewUtil.print(params, "rpt");
+
+    }
+
+    this.post = function(){
+    	var elem = \$('#payform');
+    	elem.html(
+    		'<input type="hidden" name="billid" value="${billid}"/>' + 
+    		'<input type="hidden" name="billurl" value="/index/rptbill"/>' 
+    	);
+    	elem.submit();
+    }
+
+}); 
+</script> 
+<div id="wrapper" > 
+    <div id="content">
+      	<div class="container">
+	      	<div class="bg-white">
+	      		<div class="bill-main-panel">
+		      		<div class="row">
+				      	<div class="col-md-12"> 
+					      	<div class="l-name">
+				      			<p class="label-name">${taxpayer.name}</p>
+				      			<p class="label-address">${taxpayer.address}</p>
+				      		</div>    
+				      	</div>
+			      		<div class="bill-second-panel">
+			      			<div class="row">
+			      				<div class="col-md-12">
+			      					<div class="label-top">
+						      			<p class="label-title">PIN</p>
+						      			<p>: ${bill.fullpin}</p>
+						      		</div>
+				      				<div class="label-top">
+						      			<p class="label-title">TD no.</p>
+						      			<p>: ${bill.tdno}</p>
+						      		</div> 
+						      		<div class="label-top">
+						      			<p class="label-title">Location</p>
+						      			<p>: ${bill.barangay}</p>
+						      		</div> 
+						      		<div class="label-top">
+					      				<p class="label-title">Last Year Paid</p>
+					      				<p>: ${bill.lastyearpaid}</p>
+					      			</div>
+					      			<div class="label-top">
+					      				<p class="label-title">Last QtrPaid</p>
+					      				<p>: ${bill.lastqtrpaid}</p>
+					      			</div>
+							      
+						      		<div class="label-top">
+						      			<p class="label-title">Kind</p>
+						      			<p>: ${bill.rputype}</p>
+						      		</div> 
+						      		<div class="label-top">
+						      			<p class="label-title">Lot No.</p>
+						      			<p>: ${bill.cadastrallotno}</p>
+						      		</div>
+						      		<div class="label-top">
+						      			<p class="label-title">Class</p>
+						      			<p>: ${bill.classcode}</p>
+						      		</div>
+						      	</div>	
+			      			</div>
+		      				<hr>
+	  						<div class="row">
+				  				<table class="table rpt-tax-table">
+				  					<thead>
+				  						<tr>
+				  							<td colspan="2" class="border-right"><b>BASIC</b></td>
+				  							<td colspan="2"><b>SEF</b></td>
+				  						</tr>
+				  					</thead>	
+							    	<tbody>
+								    	<tr>
+								    		<td>Tax</td>
+								    		<td class="border-right" align="right">${numsvc.format('#,##0.00',bill.basic)}</td>
+								    		<td>Tax</td>
+								    		<td align="right">${numsvc.format('#,##0.00',bill.sef)}</td>
+								    	</tr>
+								    	<tr>
+								    		<td>Discount</td>
+								    		<td class="border-right" align="right">${numsvc.format('#,##0.00',bill.basicdisc)}</td>
+								    		<td>Discount</td>
+								    		<td align="right">${numsvc.format('#,##0.00',bill.sefdisc)}</td>
+								    	</tr>
+								    	<tr>
+											<td>Penalty</td>
+											<td class="border-right" align="right">${numsvc.format('#,##0.00',bill.basicint)}</td>
+								    		<td>Penalty</td>
+								    		<td align="right">${numsvc.format('#,##0.00',bill.sefint)}</td>
+								    	</tr>
+								    	<thead class="rpt-tax-total">
+								    		<tr>
+								    			<td>BASIC TOTAL</td>
+								    			<td class="border-right" align="right">${numsvc.format('#,##0.00',bill.basicnet)}</td>
+								    			<td>SEF TOTAL</td>
+								    			<td align="right">${numsvc.format('#,##0.00',bill.sefnet)}</td>
+								    		</tr>
+								    	</thead>
+								    </tbody>
+
+							    </table>
+	      					</div>
+		      				
+					      	<div class="bill-total-panel">
+						      	<table class="table">
+						      		<tbody>
+								    	<tr>
+								    		<td><b class="bill-total">TOTAL BILL AMOUNT</b></td>
+								    		<td align="right"><b class="bill-total">Php ${numsvc.format('#,##0.00',bill.amount)}</b></td>
+								    	</tr>
+								    </tbody>
+						      	</table>
+					      	</div>
+					      	<hr>
+					      	<div class="col-md-12">
+							      		<div class="label-total">
+							      			<p class="label-long">BILL PERIOD</p>
+							      			<p class="label-valid">:<b> ${bill.billperiod}</b></p>
+							      		</div>
+							      		<div class="label-top">
+							      			<p class="label-long">BILL IS VALID UNTIL</p>
+							      			<p class="label-info">: <b>${bill.validuntil}</b></p>
+							      		</div>
+							      	</div>
+		  				</div> 
+		      		</div>
+		      	</div>
+	    	</div> 
+	    	<div class="col-md-2">
+			 	<form method="post" action="/index/rptbill/payoption">
+			 		<input type="hidden" name="tdno" value="${bill.tdno}"/>
+			 		<input type="hidden" name="lastyearpaid" value="${bill.lastyearpaid}"/>
+			 		<input type="hidden" name="lastqtrpaid" value="${bill.lastqtrpaid}"/>
+			     	<button type="submit" class="thumbnail">Payment Options</button>
+			  	</form>
+			</div>
+		   	<div class="col-md-2">
+				    <button type="submit" class="thumbnail" r:context="rptbill" r:name="print">Print Bill</button>
+			</div>
+			<div class="col-md-2">
+				 <form method="post" action="/index/pay" id="payform"></form>
+
+				 <button r:context="rptbill" r:name="post" class="thumbnail">Pay</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+var qnpage = @register('/rptbill')
+
+\$put("pay", 
+   new function() {
+	this.message;
+	var self = this;
+	this.payoption = function() {
+		var handler = function(x) {
+			self.message = "this value is called from the opener:" + x;
+			self._controller.refresh();
+		}
+		return new PopupOpener(qnpage.id); 
+	}
+
+   }
+);   
+</script>

@@ -1,18 +1,18 @@
 <folders>
     <folder id="explorer">
         <folder id="master" caption="Master">
-            <folder id="enterprise" caption="Enterprise" index="5">
-                <folder id="util" caption="Utility" index="500"/>
+            <folder id="enterprise" caption="Enterprise" >
+                <folder id="util" caption="Utility" />
             </folder>
         </folder>
         <folder id="txn" caption="Transaction">
-            <folder id="enterprise" caption="Enterprise" index="5"/>
+            <folder id="enterprise" caption="Enterprise" />
         </folder>
         <folder id="report" caption="Report">
-            <folder id="enterprise" caption="Enterprise" index="5"/>
+            <folder id="enterprise" caption="Enterprise" />
         </folder>
         <folder id="rulemgmt" caption="Rule Management">
-            <folder id="enterprise" caption="Enterprise" index="6"/>
+            <folder id="enterprise" caption="Enterprise" />
         </folder>
     </folder>
     <folder id="menu">

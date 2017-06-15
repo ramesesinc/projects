@@ -8,26 +8,17 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 	@ActiveDB("business_application_task")
 	def taskDB;
 
-	@ActiveDB("business_application_workitem")
-	def workitemDB;
-
 	@ActiveDB("business_application")
 	def ba;
 
 	@Service("BusinessApplicationService")
 	def appSvc;
 
-	@Service("BusinessBillingService")
-	def billService;
-
 	@Service("BusinessUserRoleService")
 	def roleSvc;
 
 	@Service("BusinessReceivableService")
 	def receivableSvc;
-
-	@Service("BusinessPermitService")
-	def permitSvc;
 
 	@Service("BusinessRedflagService")
 	def redflagSvc;

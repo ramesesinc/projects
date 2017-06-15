@@ -1,0 +1,27 @@
+<% 
+    def sidebar = [];
+    sidebar << [links:"", icon:"fa-briefcase", title:"queue",  name:'Queue'];
+    sidebar << [links:"", icon:"fa-comments", title:"business",  name:'Business'];
+
+%>
+
+        <div id="sidebar" class="sidebar-fixed">
+            <div id="sidebar-content">
+
+                <ul id="nav">
+                    <%sidebar.each{k ->%>
+                    <li>
+                      <a href="#index-${k.title}" class="thumbnail">
+                        <i class="fa ${k.icon}"></i>
+                        <span> ${k.name} </span>
+                      </a>
+                    </li>
+                  <%}%>
+                   <button onclick="handler.print()" class="btn btn-warning">Print</button>  
+                </ul> 
+
+            </div>
+
+        </div>
+
+

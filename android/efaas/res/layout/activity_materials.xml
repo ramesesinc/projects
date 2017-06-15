@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="@android:color/white">
     
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp" >
+            android:padding="5dp"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textView24.1"
@@ -35,7 +37,6 @@
 			    android:id="@+id/material_floorno"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
-			    android:focusable="false" 
 			    android:inputType="number|numberDecimal"/>
 
         </LinearLayout>
@@ -43,7 +44,8 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textView20.1"
@@ -75,7 +77,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp" >
+            android:padding="5dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textView21.1"

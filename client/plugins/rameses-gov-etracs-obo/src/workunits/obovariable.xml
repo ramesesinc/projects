@@ -1,0 +1,12 @@
+<workunit schemaName="obovariable">
+    <invokers>
+        <invoker type="obovariable:create" caption="Obo Variable"
+                action="create" index="1" target="popup"/>
+        <invoker type="obovariable:open" caption="Obo Variable"
+                action="open" index="1" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.obo.models.OboVariableModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.OboVariablePage" />
+    </pages>
+</workunit>

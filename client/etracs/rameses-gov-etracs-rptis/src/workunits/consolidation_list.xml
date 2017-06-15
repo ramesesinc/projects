@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="consolidation" autoSelect="true">
     <invokers>
         <invoker folderid="/explorer/txn/rpt/list" caption="Consolidations"  target="window" index="111" role="ASSESSOR_SHARED,SHARED" />
-        <invoker folderid="/home/rpt" caption="Consolidations"  target="window" index="111" role="ASSESSOR_SHARED,SHARED" />
+        <invoker folderid="/home/rpt" caption="Consolidations"  target="window" index="111" role="ASSESSOR_SHARED,SHARED" icon="home/icons/consolidations.png"/>
         <invoker type="quick_launcher" code="CS00" caption="Consolidations" role="ASSESSOR_SHARED,SHARED" />
         <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" depends="listHandler.selectedEntity" index="1"/>        
     </invokers>

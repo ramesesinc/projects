@@ -1,0 +1,10 @@
+<workunit schemaName="obo_application"  processName="obo_application">
+    <invokers>
+        <invoker type="obo_application:open" caption="New Application"
+                action="open" index="1"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.obo.models.OboApplicationModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.OboApplicationPage" />
+    </pages>
+</workunit>

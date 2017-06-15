@@ -1,0 +1,75 @@
+<schema adapter="obodb">
+	<element tablename="obo_application">
+		<field name="objid" primary="true" prefix="OBOAPP"/>
+		<field name="appno" caption="App No"/>
+		<field name="appdate" caption="App Date"/>
+		<field name="apptype" caption="App Type" required="true"/>
+		<field name="worktype" caption="Work Type" required="true"/>
+		<field name="worktypedetail" caption="Work Detail"/>
+		<field name="description" caption="Description"/>
+
+		<field name="dtcreated" caption="Date Created" type="timestamp"/>
+		<field name="createdby_name" caption="Created By"/>
+		<field name="createdby_objid" visible="hidden" />
+
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_objid" visible="false"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="owner_ctc_objid" />
+		<field name="owner_ctc_receiptno" />
+		<field name="owner_ctc_dateissued" />
+		<field name="owner_ctc_placeissued" />
+
+		<field name="lotowned" />
+		<field name="lotowner_name" caption="Lot Owner Name"/>
+		<field name="lotowner_objid" visible="false"/>
+		<field name="lotowner_ctc_objid" />
+		<field name="lotowner_ctc_receiptno" />
+		<field name="lotowner_ctc_dateissued" />
+		<field name="lotowner_ctc_placeissued" />
+
+		<field name="location_lotno" />
+		<field name="location_blockno" />
+		<field name="location_bldgno" />
+		<field name="location_street" />
+		<field name="location_subdivision" />
+		<field name="location_barangay_objid" required="true"/>
+		<field name="location_barangay_name"  required="true"/>
+
+		<field name="supervisor_name" caption="Supervisor Name"/>
+		<field name="supervisor_objid" visible="false"/>
+		<field name="supervisor_ctc_objid" />
+		<field name="supervisor_ctc_receiptno" />
+		<field name="supervisor_ctc_dateissued" />
+		<field name="supervisor_ctc_placeissued" />
+		
+		<field name="designer_name" caption="Supervisor Name"/>
+		<field name="designer_objid" visible="false"/>
+		<field name="designer_ctc_objid" />
+		<field name="designer_ctc_receiptno" />
+		<field name="designer_ctc_dateissued" />
+		<field name="designer_ctc_placeissued" />
+
+		<complex name="task" ref="obo_application_task" jointype="many-to-one" 
+				includefields=".*" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>
+
+		<field name="rptinfo_tdno" />
+		<field name="rptinfo_objid" />
+		<field name="rptinfo_titleno" />
+
+		<complex name="buildingkind" ref="obo_building_kind" jointype="many-to-one" 
+			includefields="name,use.*">
+			<key field="bldgkindid" target="objid"/>	
+		</complex>	
+
+		<field name="projectcost" caption="Project Cost" type="decimal"/>
+		<field name="estimatedcost" caption="Est. Cost"  type="decimal"/>
+
+		<complex name="permits" ref="obo_auxiliary_permit" jointype="one-to-many" required="false">
+			<key field="objid" target="appid"/>	
+		</complex>	
+
+	</element>
+</schema>

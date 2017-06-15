@@ -5,15 +5,23 @@
     android:gravity="center_horizontal"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:layout_margin="10dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@android:color/white" >
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download FAAS by Tax Declaration Number"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_margin="20dp" />
 
   	<EditText
         android:id="@+id/download_text"
-        android:layout_width="match_parent"
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:ems="10"
         android:background="@drawable/edittext_default"
         android:padding="10dp" 
@@ -23,7 +31,7 @@
         android:id="@+id/download_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:minEms="7"
         android:padding="10dp"
         android:textStyle="bold"

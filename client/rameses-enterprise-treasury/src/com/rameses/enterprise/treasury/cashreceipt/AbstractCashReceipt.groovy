@@ -73,10 +73,11 @@ public abstract class AbstractCashReceipt {
         
         entity.cashchange = 0; entity.balancedue = 0; entity.totalcredit = 0;
         def amt = getTotalAmount();
+        entity.amount = amt; 
         
         entity.totalnoncash = 0;
         if( entity.paymentitems ) {
-            entity.totalnoncash = entity.paymentitems.sum{ it.amount };
+            entity.totalnoncash = entity.paymentitems.sum{( it.amount ? it.amount : 0.0)};
         }
 
         if( entity.totalnoncash > 0 && entity.totalnoncash > amt ) {
@@ -114,25 +115,40 @@ public abstract class AbstractCashReceipt {
     public void afterCheckPayment() {}
     
     
-    def doCashPayment() {
+    void doCashPayment() { 
+        def success = false; 
         def handler = { o->
             entity.totalcash = o.cash;
             entity.cashchange = o.change;
             afterCashPayment(); 
-            updateBalances(); 
+            updateBalances();
+            success = true; 
         }
-        return InvokerUtil.lookupOpener( "cashreceipt:payment-cash",
-            [entity: entity, saveHandler: handler ] );
+        Modal.show( "cashreceipt:payment-cash", [entity: entity, saveHandler: handler ]); 
+        if ( success ) {
+            def outcome = post(); 
+            if ( outcome ) binding.fireNavigation( outcome );  
+        }
     }
     
-    def doCheckPayment() {
-        def handler = { o->
-            entity.paymentitems << o;
+    void doCheckPayment() { 
+        def success = false; 
+        def handler = { o-> 
+            if ( o.totalcash > 0 ) { 
+                entity.totalcash = o.totalcash; 
+            }            
+            entity.paymentitems = o.checks; 
+            entity.totalcredit = 0.0;
             afterCheckPayment(); 
             updateBalances();
+            paymentListModel.reload(); 
+            success = true; 
         }
-        return InvokerUtil.lookupOpener( "cashreceipt:payment-check",
-            [entity: entity, saveHandler: handler ] );
+        Modal.show( "cashreceipt:payment-check2", [entity: entity, saveHandler: handler ] ); 
+        if ( success ) {
+            def outcome = post(); 
+            if ( outcome ) binding.fireNavigation( outcome );  
+        }
     }
     
     def doCreditMemo() {
@@ -217,7 +233,7 @@ public abstract class AbstractCashReceipt {
             throw new Exception("Please ensure that there is no balance unpaid");
 
         validateBeforePost();
-
+        
         if(MsgBox.confirm("You are about to post this payment. Please ensure entries are correct")) {
             try { 
                 beforePost();
@@ -229,7 +245,7 @@ public abstract class AbstractCashReceipt {
             }
             
             try {
-                if(entity.txnmode.equalsIgnoreCase("ONLINE")) {
+                if(entity.txnmode.equalsIgnoreCase("ONLINE")) { 
                     print();
                 }    
             }
@@ -267,11 +283,17 @@ public abstract class AbstractCashReceipt {
             handle = opt.handle; 
             handle.viewReport(); 
         } 
-        ReportUtil.print(handle.report,true);
+        
+        def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
+        ReportUtil.print(handle.report, canShowPrinterDialog);
     }
     
     void reprint() {
-        if( verifyReprint() ){
+        if ( entity._options ) { 
+            entity._options.canShowPrinterDialog = true; 
+        }
+        
+        if( verifyReprint() ){            
             print();
         } else {
             MsgBox.alert('Invalid security code'); 

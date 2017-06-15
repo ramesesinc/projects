@@ -1,0 +1,188 @@
+<workunit>
+    
+    <!--
+   <invokers>
+         <invoker folderid="home/collection" caption="Offline Cash Receipt" action="init" index="-4" role="COLLECTOR,SUBCOLLECTOR" target="window"/>
+   </invokers>
+   -->
+   
+    <code>
+    <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        
+        class CashReceiptOfflineController  {
+        
+            @Binding
+            def binding;
+            
+            def clientContext = com.rameses.rcp.framework.ClientContext.currentContext;
+            def session = OsirisContext.getSession();
+        
+            @Service("CashReceiptService")
+            def cashReceiptSvc;
+        
+            @Service("CollectionTypeService")
+            def collectionTypeSvc;
+            
+            String title = "Cash Receipts (Offline)";
+            
+            def formTypes;
+            def formType;
+            def formTitle;
+            def homeicon;
+            
+            void back() {
+                formType = null;
+                formTitle = "Select accountable form (Offline)";
+                binding.refresh();
+            }
+            
+            void init() {
+                formType = null;
+                formTitle = "Select accountable form (Offline)";
+                def appEnv = clientContext.appEnv; 
+                def customfolder = appEnv['app.custom']; 
+                homeicon = 'images/' + customfolder + '/home-icon.png';  
+                def custom_homeicon = clientContext.getResource(homeicon); 
+                if (!custom_homeicon) homeicon = 'home/icons/folder.png';        
+            } 
+            
+            def model = [
+                fetchList: {o-> 
+                    def xlist = [];
+                    if( formType == null ) { 
+                        def list = collectionTypeSvc.getFormTypes();
+                        list.collect{ 
+                            xlist << [caption: it.objid , icon: homeicon, formType: it.objid, title: it.title ]
+                        }
+                    }
+                    else {
+                        def p = [formtype: formType];        
+                        def list = collectionTypeSvc.getOfflineCollectionTypes(p).each{
+                            it.caption = it.title;
+                            it.icon = homeicon;
+                            xlist << it;
+                        }
+                    }
+                    return xlist;
+                }, 
+                onOpenItem: {o-> 
+                    if(o.formType) {
+                        formType = o.formType;
+                        formTitle = o.caption + " " + o.title;
+                        binding.refresh();
+                        return null;
+                    }
+                    else if (o.opener) {
+                        try { 
+                            def result = o.opener.handle.init(); 
+                            if (result == null) throw new BreakException();
+                            return result; 
+                        } catch(BreakException be) {
+                            return null; 
+                        } 
+                    }
+                    else {
+                        def entity = [
+                            txnmode         : 'OFFLINE', 
+                            formno          : o.formno, 
+                            formtype        : o.formtype, 
+                            collectiontype  : o 
+                        ]; 
+                        return findOpener( entity ); 
+                    }
+                }
+            ] as TileViewModel
+            
+            /*
+            def model = [
+                fetchList: {o-> 
+                    def p = [formtype: formType];        
+                    def xlist = [];
+                    xlist.addAll( items );
+                    def list = collectionTypeSvc.getOfflineCollectionTypes(p).each{
+                        it.caption = it.title;
+                        it.icon = homeicon;
+                        xlist << it;
+                    }
+                    return xlist;
+                }, 
+
+                onOpenItem: {o-> 
+                    if (o.opener) {
+                        try { 
+                            def result = o.opener.handle.init(); 
+                            if (result == null) throw new BreakException();
+
+                            return result; 
+                        } catch(BreakException be) {
+                            return null; 
+                        } 
+                    }
+                
+                    def params = [
+                        txnmode         : 'OFFLINE', 
+                        formno          : o.formno, 
+                        formtype        : o.formtype, 
+                        collectiontype  : o 
+                    ]; 
+                    return findOpener( params ); 
+                }
+            ] as TileViewModel
+            */
+            
+            def findOpener( o ) {
+                try { 
+                    def info = cashReceiptSvc.init( o ); 
+                    info.receiptdate = o.receiptdate;
+                                  
+                    def openerParams = [entity: info]; 
+                    openerParams.createHandler = {
+                        o.receiptdate = info.receiptdate; 
+                        
+                        def op = findOpener( o ); 
+                        if ( !op ) return; 
+                        
+                        binding.fireNavigation( op ); 
+                    } 
+                    
+                    def opener = Inv.lookupOpener("cashreceipt:" + o.collectiontype.handler, openerParams);  
+                    if (opener) {
+                        boolean pass = false;
+                        Modal.show( "cashreceipt:specifydate", [ 
+                            entity  : [receiptdate: info.receiptdate], 
+                            handler : {v-> 
+                                info.receiptdate = v.receiptdate; 
+                                pass = true;
+                            }
+                        ]);
+                        if ( !pass ) throw new BreakException(); 
+                        opener.target = 'self'; 
+                        return opener;
+                        
+                    } else {
+                        throw new Exception('No available handler found');
+                    } 
+                } 
+
+                catch(BreakException be) { 
+                    return null;
+
+                } catch(Warning w) { 
+                    String invtype = "cashreceipt:" + w.message;
+                    return InvokerUtil.lookupOpener(invtype, [entity: o]);
+                }
+            } 
+        }      
+    ]]>
+    </code>
+   
+    <pages>
+       <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSelectionPage" />
+    </pages>
+   
+</workunit>

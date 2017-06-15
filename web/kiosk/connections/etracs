@@ -1,0 +1,7 @@
+{
+	'app.cluster'	: 'osiris3',
+	'app.host'		: 'localhost:8570',
+	'app.context'	: 'etracs25',
+	readTimeout 	: 60000,
+	handler			: 'script'
+}

@@ -1,0 +1,6 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+       <invoker type="stockrequest:itemclass" caption="AF" itemclass="AF" />
+    </invokers>
+</workunit>

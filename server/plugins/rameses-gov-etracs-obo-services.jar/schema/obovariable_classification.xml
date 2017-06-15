@@ -1,0 +1,10 @@
+<schema adapter="obodb">
+
+	<element tablename="obovariable_classification">
+		<field name="objid" primary="true" prefix="OVC"/>
+		<field name="title" required="true" caption="Title" searchable="true"/>
+		<field name="section" required="true" caption="Section"/>
+	</element>
+
+</schema>
+		

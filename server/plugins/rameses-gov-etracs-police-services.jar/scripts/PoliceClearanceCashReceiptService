@@ -18,14 +18,26 @@ public class PoliceClearanceCashReceiptService  {
 	@Service("PoliceClearanceBillingService")
 	def billingSvc;
 
-
 	@Service("DateService")
 	def dateSvc;
 
+	private final String BARCODE_KEY = "51011"; 
+
 	@ProxyMethod
-	public def getInfo(o) {
-		def a = appEm.find([appno: o.id] ).first();
-		if(!a) throw new Exception("Application not found!");
+	public def getInfo( o ) { 
+		if ( !o.id ) throw new Exception('id parameter is required');  
+
+		def appno = o.id; 
+		if ( appno.startsWith(BARCODE_KEY + ':')) {
+			int idx = appno.indexOf(':');  
+			appno = appno.substring( idx+1 );  
+		}
+
+		def a = appEm.find([ appno: appno ]).first(); 
+		if ( !a ) throw new Exception("Application not found!"); 
+
+		def pendingfee = feeEm.find([ parentid: a.objid ]).where(' amount <> amtpaid ').first(); 
+		if ( !pendingfee ) throw new Exception('No available pending balances in the ledger'); 
 
 		def acctLookup = new ItemAccountUtil();
 

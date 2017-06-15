@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/white">
     
 <ScrollView
     android:layout_width="match_parent"
@@ -16,17 +17,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    
-    <TextView
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:text="EXAMINATION"
-         android:minEms="6"
-         android:padding="5dp"
-         android:textStyle="bold"
-         android:background="#2f84c9"
-         android:textColor="#FFFFFF"
-         android:textAppearance="?android:attr/textAppearanceMedium" />
         
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +34,7 @@
             <EditText
 			    android:id="@+id/examination_findings"
 			    android:layout_width="fill_parent"
-			    android:layout_height="120dp"
+			    android:layout_height="80dp"
 			    android:gravity="left|top"
 			    android:inputType="text|textMultiLine"/>
             
@@ -59,7 +49,7 @@
             <EditText
 			    android:id="@+id/examination_recommendations"
 			    android:layout_width="fill_parent"
-			    android:layout_height="120dp"
+			    android:layout_height="80dp"
 			    android:gravity="left|top"
 			    android:inputType="text|textMultiLine" />
             

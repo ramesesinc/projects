@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="mayors-clearance"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="595"
@@ -17,12 +18,28 @@
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
-	<property name="ireport.scriptlethandling" value="2" />
+	<property name="ireport.scriptlethandling" value="0" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
+
+	<field name="applicant.name" class="java.lang.String"/>
+	<field name="applicant.age" class="java.lang.Number"/>
+	<field name="applicant.civilstatus" class="java.lang.String"/>
+	<field name="applicant.citizenship" class="java.lang.String"/>
+	<field name="applicant.address.text" class="java.lang.String"/>
+	<field name="dtissued" class="java.util.Date"/>
+	<field name="purpose" class="java.lang.String"/>
+	<field name="payment.refno" class="java.lang.String"/>
+	<field name="payment.refdate" class="java.lang.String"/>
+	<field name="payment.amount" class="java.lang.Number"/>
+	<field name="ctc.refno" class="java.lang.String"/>
+	<field name="ctc.issuedat" class="java.lang.String"/>
+	<field name="ctc.issuedon" class="java.util.Date"/>
+	<field name="applicant.objid" class="java.lang.String"/>
+	<field name="jsonurlpath" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -69,7 +86,7 @@
 					</textElement>
 				<text><![CDATA[City of Legazpi]]></text>
 				</staticText>
-				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="31"
 						y="21"
@@ -78,7 +95,7 @@
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
 				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -328,7 +345,7 @@
 				<staticText>
 					<reportElement
 						x="31"
-						y="632"
+						y="639"
 						width="232"
 						height="15"
 						key="staticText-22"/>
@@ -341,7 +358,7 @@
 				<staticText>
 					<reportElement
 						x="275"
-						y="535"
+						y="534"
 						width="144"
 						height="14"
 						key="staticText-23"/>
@@ -354,7 +371,7 @@
 				<staticText>
 					<reportElement
 						x="275"
-						y="554"
+						y="552"
 						width="144"
 						height="14"
 						key="staticText-24"/>
@@ -367,7 +384,7 @@
 				<staticText>
 					<reportElement
 						x="275"
-						y="573"
+						y="570"
 						width="144"
 						height="14"
 						key="staticText-25"/>
@@ -380,7 +397,7 @@
 				<staticText>
 					<reportElement
 						x="275"
-						y="653"
+						y="650"
 						width="144"
 						height="14"
 						key="staticText-26"/>
@@ -393,7 +410,7 @@
 				<staticText>
 					<reportElement
 						x="275"
-						y="634"
+						y="632"
 						width="144"
 						height="14"
 						key="staticText-27"/>
@@ -482,7 +499,7 @@
 				<line direction="TopDown">
 					<reportElement
 						x="31"
-						y="629"
+						y="636"
 						width="233"
 						height="0"
 						key="line-8"/>
@@ -665,6 +682,216 @@
 						key="line-21"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="181"
+						y="168"
+						width="245"
+						height="16"
+						key="textField-1"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{applicant.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="441"
+						y="168"
+						width="61"
+						height="16"
+						key="textField-2"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{applicant.age}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="80"
+						y="202"
+						width="91"
+						height="16"
+						key="textField-3"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{applicant.civilstatus}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="180"
+						y="202"
+						width="173"
+						height="16"
+						key="textField-4"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{applicant.citizenship}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="30"
+						y="233"
+						width="366"
+						height="16"
+						key="textField-5"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{applicant.address.text}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="dd" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="115"
+						y="361"
+						width="72"
+						height="16"
+						key="textField-6"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtissued}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="MMMMM" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="222"
+						y="361"
+						width="90"
+						height="16"
+						key="textField-7"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtissued}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="327"
+						y="361"
+						width="45"
+						height="16"
+						key="textField-8"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtissued}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="31"
+						y="404"
+						width="235"
+						height="16"
+						key="textField-9"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{purpose}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="345"
+						y="614"
+						width="161"
+						height="15"
+						key="textField-10"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{payment.refno}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="345"
+						y="630"
+						width="161"
+						height="15"
+						key="textField-11"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{payment.refdate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="345"
+						y="649"
+						width="161"
+						height="15"
+						key="textField-12"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{payment.amount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="406"
+						y="532"
+						width="103"
+						height="15"
+						key="textField-13"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ctc.refno}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="327"
+						y="550"
+						width="182"
+						height="15"
+						key="textField-14"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ctc.issuedat}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="326"
+						y="569"
+						width="182"
+						height="15"
+						key="textField-15"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{ctc.issuedon}]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="RetainShape" vAlign="Bottom" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="31"
+						y="578"
+						width="233"
+						height="55"
+						key="image-3"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[""+ $F{jsonurlpath} +"/etracs25/EntityFingerPrintService.getMedia?type=right_thumb&entityid="+ $F{applicant.objid}]]></imageExpression>
+				</image>
 			</band>
 		</title>
 		<pageHeader>

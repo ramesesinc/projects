@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml" schemaName="obo_application">
+    <invokers>
+        <invoker type="obo_application:form:formActions" caption="Print Form B01"
+                action="view" reportName="com/rameses/gov/etracs/obo/reports/nbc_form_B01.jasper"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,12 @@
+<schema adapter="obodb">
+
+	<element tablename="obo_building_kind">
+		<field name="objid" primary="true" prefix="OBK"/>
+		<field name="name" required="true" caption="Name" searchable="true"/>
+		<complex name="use" ref="obo_building_use" jointype="many-to-one" includefields="objid,groupid,division,classificationid">
+			<key field="useid" target="objid" />
+		</complex>
+	</element>
+
+</schema>
+		

@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="multipleentity:option" caption="General" />
+        <invoker type="formActions" caption="Edit" action="edit" role="MASTER" permission="multipleentity.edit"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class MultipleEntityGeneralController  {
+            
+            @Binding
+            def binding;
+        
+            @Caller
+            def caller;
+            
+            def entity;
+            
+            void edit() {
+                def sh = { o->
+                    entity.putAll(o);
+                    binding.refresh();
+                    caller.refresh();
+                }
+                def opener = Inv.lookupOpener( "multipleentity:edit", [entity:entity, saveHandler: sh] );
+                caller.binding.fireNavigation( opener );
+            }
+            
+            def listHandler = [
+                fetchList:{o-> 
+                    if (!entity) return null; 
+                    if (!entity.members) entity.members = [];
+                    return entity.members; 
+                },
+                
+            ] as BasicListModel;             
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.MultipleEntityPage"/>
+   </pages>  
+   
+</workunit>

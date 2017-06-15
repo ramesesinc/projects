@@ -146,18 +146,6 @@ where ba.state in ('RELEASE','COMPLETED')
 order by ba.txndate 
 
 
-[getApplicationPayments]
-select p.* from ( 
-	select business_objid, appyear 
-	from business_application 
-	where objid=$P{applicationid} 
-)xx  
-	inner join business_application ba on (xx.business_objid=ba.business_objid and ba.appyear=xx.appyear) 
-	inner join business_payment p on ba.objid=p.applicationid  
-where p.voided=0 and ba.state in ('RELEASE','COMPLETED') 
-order by p.refdate, p.refno 
-
-
 [updatePlateno]
 UPDATE business_permit SET plateno=$P{plateno} WHERE objid=$P{objid}
 
@@ -174,3 +162,41 @@ where businessid=$P{businessid} and applicationid=$P{applicationid}
 
 [updateRemarks]
 update business_permit set remarks=$P{remarks} where objid=$P{objid} 
+
+
+[getAppLOBs]
+select 
+	alob.objid, alob.businessid, alob.applicationid, a.appyear, 
+	a.apptype, a.txndate, a.dtfiled, alob.lobid, alob.name  
+from business_permit p 
+	inner join business_application pa on p.applicationid=pa.objid 
+	inner join business_application a on (a.business_objid=p.businessid and a.appyear=pa.appyear)
+	inner join business_application_lob alob on alob.applicationid=a.objid 
+where p.objid = $P{permitid}  
+	and a.state = 'COMPLETED' 
+	and a.txndate <= pa.txndate 
+
+
+[getPermits]
+select p.*  
+from business_permit p 
+	inner join business_application pa on pa.objid=p.applicationid 
+where p.businessid = $P{businessid} 
+	and p.state = 'ACTIVE' 
+order by pa.appyear, pa.txndate 
+
+
+[getPayments]
+select p.* from ( 
+
+	select ba.objid as applicationid 
+	from business_application a 
+		inner join business_application ba on (ba.business_objid=a.business_objid and ba.appyear=a.appyear) 	
+	where a.objid = $P{applicationid} 
+		and ba.state='COMPLETED' 
+		and ba.txndate <= a.txndate 
+
+)tmp1, business_payment p 	
+where p.applicationid=tmp1.applicationid 
+	and p.voided = 0 
+order by p.refdate, p.refno 

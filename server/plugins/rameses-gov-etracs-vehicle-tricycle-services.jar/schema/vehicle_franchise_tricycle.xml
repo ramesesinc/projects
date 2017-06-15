@@ -1,15 +1,33 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_franchise_tricycle" extends="vehicle_franchise">
-		<field name="objid" primary="true" prefix="MTRI"/>
-		<field name="plateno" caption="Plate No" indexed="true"/>
-		<field name="engineno" caption="Engine No" indexed="true"/>
-		<field name="bodyno" caption="Body No" indexed="true"/>
-		<field name="chassisno" caption="Chassis No" indexed="true"/>
-		<field name="sidecarno" />
-		<field name="make"  indexed="true"/>
-		<field name="model"  indexed="true"/>
+	<element tablename="vehicle_franchise_tricycle">
+		<field name="objid" primary="true"/>
+		<field name="state" />
+		<field name="clusterid" />
+		<field name="controlno" />
+		<field name="vehicletype" />
+		<field name="expirydate" />
+		<field name="appid" />
+		<field name="activeyear" />
+		<field name="startdate" />
+		<field name="expirydate" />
+		<field name="plateno" />
+		<field name="engineno" />
+		<field name="chassisno" />
+		<field name="make" />
+		<field name="model" />
 		<field name="color" />
+		<field name="sidecarno" />
+		<field name="bodyno" />
 		<field name="sidecarcolor" />
 		<field name="crname" />
+		<field name="owner_objid" />
+		<field name="owner_name" />
+		<field name="owner_address_objid" />
+		<field name="owner_address_text" />
+		<field name="barangay_objid" />
+		<field name="barangay_name" />
 	</element>
 </schema>
+
+
+

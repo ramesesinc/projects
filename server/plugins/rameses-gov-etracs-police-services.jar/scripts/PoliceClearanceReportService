@@ -1,0 +1,149 @@
+import com.rameses.annotations.*; 
+import com.rameses.util.*;
+
+class PoliceClearanceReportService {
+	
+	@DataContext('policeclearance') 
+	def pcdb; 
+
+	@DataContext('mayorclearance') 
+	def mcdb; 	
+
+	@DataContext('entity_fingerprint')
+	def fingerprintdb;
+
+	@DataContext('policeclearance_application') 
+	def appdb; 
+
+	@Service('PersistenceService') 
+	def persistenceSvc; 
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@Service("SequenceService")
+	def sequenceSvc;
+
+	@Env 
+	def env; 
+
+
+	@ProxyMethod 
+	public def createClearance( params ) { 
+		if ( !params.appid ) throw new Exception('appid parameter is required'); 
+
+		def appdata = appdb.find([ objid: params.appid ]).first(); 
+		def mc = mcdb.find([ objid: appdata.certificationid ]).select('objid').first();
+		if ( mc ) { 
+			throw new Exception('Mayors Clearance has already been issued to this application');  
+		}
+
+		def pc = pcdb.find([ objid: appdata.pcid ]).first();
+		if ( pc ) throw new Exception('Police Clearance has already been issued to this application'); 
+
+		//check fingerprint data 
+		def fingerprints = fingerprintdb.select('objid')
+									    .find([ entityid: appdata.applicant?.objid ])
+					 					.where(" fingertype IN ('right_thumb','left_thumb') ")
+					 					.list(); 
+
+		// block if there are no finger prints 
+		//if ( !fingerprints ) throw new Exception("Requires a finger print of the applicant. Please check.");
+
+		def rundate = dateSvc.getServerDate(); 
+		def serveryear = dateSvc.getServerYear();
+		def orgcode = env.ORGCODE;
+		if ( orgcode ) orgcode = orgcode.replace('-','').replace('_','');
+		if ( !orgcode ) orgcode = '';
+
+		def seqkey = 'PC-'+ orgcode + serveryear; 
+		def seqno = sequenceSvc.getNextSeries( seqkey ); 
+		def controlno = seqkey + String.format("%05d", seqno); 
+
+		pc = [ _schemaname: 'policeclearance' ]; 
+		pc.objid = 'PISC' + new java.rmi.server.UID(); 
+		pc.state = 'ACTIVE';
+		pc.dtfiled = rundate; 
+		pc.controlno = controlno;
+		pc.appid = appdata.objid;
+		pc.txnyear = serveryear; 		
+		pc.dtissued = new java.sql.Date( rundate.getTime()); 
+		pc.issuedby = [ objid: env.USERID, name: env.FULLNAME ];
+		pc.dtexpiry = DateUtil.add( pc.dtissued, '6M' ); 
+		pc.withcase = ( params.withcase ? 1 : 0 ) ; 
+		pc.remarks = params.remarks; 
+		pc.ctc = params.ctc; 
+		pc = persistenceSvc.create( pc ); 
+
+		seqkey = 'MC-'+ orgcode + serveryear; 
+		seqno = sequenceSvc.getNextSeries( seqkey ); 
+		controlno = seqkey + String.format("%05d", seqno); 
+
+		mc = [ _schemaname: 'mayorclearance' ]; 
+		mc.objid = 'PISMC' + new java.rmi.server.UID(); 
+		mc.state = 'ACTIVE';
+		mc.dtfiled = pc.dtfiled;
+		mc.txnyear = serveryear; 
+		mc.txnno =  controlno;
+		mc.appid = pc.appid;
+		mc.dtissued = pc.dtissued;
+		mc.issuedby = pc.issuedby;
+		mc = persistenceSvc.create( mc ); 
+
+		appdb.find([ objid: params.appid ]).update([ clearanceid: mc.objid, pcid: pc.objid ]); 
+		return [ mayorclearance: mc, policeclearance: pc  ];  
+	} 
+
+	@ProxyMethod
+	public def getMayorClearance( params ) { 
+		if ( !params.clearanceid ) throw new Exception('clearanceid parameter is required'); 
+
+		def mc = mcdb.find([ objid: params.clearanceid ]).select('objid,state').first(); 
+		if ( mc == null ) return null; 
+		if ( mc.state.toString().toUpperCase() != 'ACTIVE' ) 
+			throw new Exception("Mayor's Clearance record is no longer ACTIVE."); 
+
+		def rundate = dateSvc.getBasicServerDate(); 
+		mc = persistenceSvc.read([ _schemaname: 'mayorclearance', findBy: [ objid: mc.objid ]]); 
+		if ( mc.dtexpiry==null ) { 
+			mc.expired = true; 
+		} else { 
+			mc.expired = ( rundate.after( mc.dtexpiry )); 
+		} 
+		return mc; 
+	} 
+
+
+	@ProxyMethod
+	public def getPoliceClearance( params ) {
+		if ( !params.clearanceid ) throw new Exception('clearanceid parameter is required'); 
+
+		def pc = pcdb.find([ objid: params.clearanceid ]).first();
+		if ( !pc ) return null; 
+
+		def appdata = appdb.find([ objid: pc.appid ]).first(); 
+		if ( !appdata ) throw new Exception('Application record does not exist'); 
+
+		def mc = mcdb.find([ objid: appdata.clearanceid ]).first();
+		if ( !mc ) throw new Exception("Requires an issuance of Mayor's Clearance first"); 
+
+		def o = persistenceSvc.read([ 
+			_schemaname : 'policeclearance', 
+			findBy      : [ objid: pc.objid ] 
+		]); 
+
+		if ( o.cancelled ) 
+			throw new Exception('Police Clerance has already been cancelled'); 
+
+		def rundate = dateSvc.getBasicServerDate(); 
+		if ( o.dtexpiry==null ) {
+			o.expired = true; 
+		} else {
+			o.expired = ( rundate.after( o.dtexpiry )); 
+		} 
+		o.mc = mc; 
+		o.app = appdata; 
+		o.applicant = appdata.remove('applicant'); 
+		return o; 
+	} 
+} 

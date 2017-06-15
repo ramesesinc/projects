@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="obo_profession" >
+    <invokers>
+        <invoker folderid="explorer/master/obo" caption="Profession List" action="init" 
+                 cols="entity.name,profession,prcno,ptr,validity"/>
+    </invokers>
+</workunit>

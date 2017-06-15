@@ -1,0 +1,24 @@
+DROP VIEW IF EXISTS vehicle_franchise_tricycle;
+CREATE VIEW vehicle_franchise_tricycle AS 
+SELECT 
+	vf.*,
+	vat.plateno,
+	vat.engineno,
+	vat.chassisno,
+	vat.make,
+	vat.model,
+	vat.color,
+	vat.sidecarno,
+	vat.bodyno,
+	vat.sidecarcolor,
+	vat.crname,
+	va.owner_objid,
+	va.owner_name,
+	va.owner_address_objid,
+	va.owner_address_text,
+	va.barangay_objid,
+	va.barangay_name,
+	va.billexpirydate
+FROM vehicle_franchise vf 
+LEFT JOIN  vehicle_application_tricycle vat ON vf.appid=vat.objid
+LEFT JOIN vehicle_application va ON vat.objid=va.objid

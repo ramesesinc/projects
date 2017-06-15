@@ -8,14 +8,25 @@ import treasury.facts.*;
 public class PoliceClearanceCashReceiptInterceptor  {
 
 	@DataContext("policeclearance_payment")
-	def pmt;
+	def pmtdb;
+
+	@DataContext("policeclearance_payment_item")
+	def payitemdb;
 
 	@DataContext("policeclearance_application")
-	def app;
+	def appdb;
+
+	@DataContext("policeclearance_application_fee")
+	def appfeedb;
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'policeclearance'}")
 	public void postPayment(def evt) {
 		def r = evt.result;
+
+		// check the ledger if has balances 
+		def pendingfee = appfeedb.find([ parentid: r.appid ]).where(' amount <> amtpaid ').first();  
+		if ( !pendingfee ) throw new Exception('No available pending balances in the ledger'); 
+
 		def p = [:];
 		p.refno = r.receiptno;
 		p.refdate = r.receiptdate;
@@ -25,25 +36,60 @@ public class PoliceClearanceCashReceiptInterceptor  {
 		p.amount = r.amount;
 		p.txndate = r.txndate;
 		p.voided = 0;
-		p = pmt.create(p);
+		p = pmtdb.create(p);
 
+		r.items.each{ 
+			def pitem = [:]; 
+			pitem.parentid = p.objid; 
+			pitem.refid = it.refid;
+			pitem.item = it.item; 
+			pitem.amount = it.amount;
+			pitem.surcharge = (it.surcharge ? it.surcharge : 0.0);
+			pitem.interest = (it.interest ? it.interest : 0.0);
+			pitem.discount = (it.discount ? it.discount : 0.0);
+			payitemdb.create( pitem );  
+		} 
+
+		r.items.findAll{( it.refid )}.groupBy{ it.refid }.each{ k,v-> 
+			def amtpaid = v.sum{( it.amount? it.amount: 0.0 )} 
+			appfeedb.find([ objid: k ]).update([ amtpaid: amtpaid ]); 
+		} 
+
+		def appdata = appdb.find([ objid: r.appid ]).first();
+		def appstate = appdata.state.toString().toUpperCase();		
 		def u = [:];
-		u.state = 'PROCESSING';
 		u.payment = [objid: p.objid, refno:p.refno, refdate:p.refdate];
-		app.find([objid: r.appid]).update(u);
+		u.state = (appstate=='PAYMENT' ? 'PROCESSING' : appstate); 
+		appdb.find([ objid: r.appid ]).update( u );  
 	} 
 
 	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='policeclearance'}")
-	public void voidPayment(def evt) {
+	public void voidPayment( evt ) {
 		def r = evt.args[0].receipt;
-		def p = pmt.find( [refid: r.objid] ).first();
-		pmt.find( [objid: p.objid] ).update( [voided: 1] );
+
+		def p = pmtdb.find([ refid: r.objid ]).first(); 
+		pmtdb.find([ objid: p.objid ]).update([ voided: 1 ]); 
+
+		def payitems = payitemdb.find([ parentid: p.objid ]).where(' refid IS NOT NULL ').list(); 
+		payitems.groupBy{ it.refid }.each{ k,v-> 
+			def feedata = appfeedb.find([ objid: k ]).first(); 
+			if ( feedata.amtpaid==null || feedata.amtpaid==0.0 ) return; 
+
+			def oldamtpaid = feedata.amtpaid;
+			def amtpaid = v.sum{( it.amount? it.amount: 0.0 )} 
+			appfeedb.find([ objid: k ]).update([ amtpaid: oldamtpaid-amtpaid ]); 
+		} 
+
+		def p2 = pmtdb.find([ appid: p.appid ]).where(' voided = 0 ').orderBy(' txndate desc ').first(); 
+
 		def u = [:];
 		u.state = 'PAYMENT';
-		u.payment = [:];
-		app.find([objid: p.appid]).update(u);
-	}
-	
-
-
+		u.payment = [objid: null, refno: null, refdate: null]; 
+		if ( p2 ) {
+			u.payment.objid = p2.objid; 
+			u.payment.refno = p2.refno; 
+			u.payment.refdate = p2.refdate; 
+		} 
+		appdb.find([ objid: p.appid ]).update( u ); 
+	} 
 }

@@ -1,0 +1,404 @@
+/* Phone */
+@media (min-width: 320px){
+  .header{
+    padding: 0 !important;
+  } 
+  .header li{
+    padding: 0 !important;
+    margin:0;
+  }
+  .header li img.queue-logo{
+    width: 80px;
+    padding: 0;
+  }
+  .header li img.lgu-logo{
+    width: 40px;
+    padding: 0;
+  }
+  .header li img.rameses-logo{
+    width: 100px;
+    padding: 0;
+  }
+  .headertv li{
+    padding: 0 !important;
+    margin:0;
+  }
+  .headertv li img.queue-logo{
+    width: 70px;
+    padding: 0;
+  }
+  .headertv li img.lgu-logo{
+    width: 30px;
+    padding: 0;
+  }
+  .headertv li img.rameses-logo{
+    width: 80px;
+    padding: 0;
+    margin-bottom: 0
+  }
+  .headertv {
+    padding-left:0px !important;
+    padding-right: 0 !important;
+    margin:0px !important;
+  }
+  .date p{
+    font-size:9px;
+    padding:0;
+    margin: 0;
+  }
+  .deskclock{
+    display: none;
+  }
+  .page-header {
+    font-size: 20px;
+  }
+  .container {
+    width: 320px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .container-fluid{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+  }
+  .resize6 {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .rui-dialog{
+    top: 15%;
+    margin-left: 3%;
+    margin-right:50%; 
+    width: 300px;
+  }
+  .video{
+    display: none;
+  }
+  li.lead{
+    display: none;
+  }
+  .dep-name{
+  font-size: 30px;
+  }
+  .serving h2{
+    font-size: 40px;
+    margin: 0;
+    line-height: 1;
+  }
+  .serving{
+    width: 100%;
+  }
+  .announcement{
+    display: none;
+  }
+  #footer{
+   z-index: -1;
+  }
+
+}
+
+/* Tablet */
+@media (min-width: 380px){
+
+  .header{
+    padding: 0 !important;
+  } 
+  .header li{
+    padding: 0 !important;
+  }
+  .headertv li{
+    padding: 0 !important;
+    margin:0;
+  }
+  .headertv li img.queue-logo{
+    width: 70px;
+    padding: 0;
+  }
+  .headertv li img.lgu-logo{
+    width: 30px;
+    padding: 0;
+  }
+  .headertv li img.rameses-logo{
+    width: 100px;
+    padding: 0;
+  }
+  .date p{
+    font-size:12px;
+  }
+
+  .page-header {
+    font-size: 35px;
+  }
+  .container {
+    width: 480px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .container-fluid{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+  }
+  .resize6 {
+    width: 33.333%;
+    margin-top: 20px;
+  }
+  .rui-dialog{
+    top: 25%;
+    margin-left: 25%;
+    margin-right:50%; 
+    width: 300px;
+  }
+  .video{
+    display:none;
+  }
+  li.lead{
+    width: 40%;
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+  }
+  .dep-name{
+  font-size: 20px;
+  }
+  .serving h2{
+    font-size: 45px;
+    margin: 0;
+    line-height: 1;
+  }
+  .serving{
+    width: 50%;
+  }
+  .announcement{
+    display: none;
+  }
+  #footer{
+   z-index: -1;
+  }
+}
+
+/*pc monitor*/
+@media (min-width: 768px) {
+  .header li img.queue-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header li img.lgu-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header li img.rameses-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header{
+    padding: 0 !important;
+  } 
+  .header li{
+    padding: 0 !important;
+  }
+  .date p{
+    font-size:12px;
+  }
+  .resdate{
+    font-size:12px;
+    display: none;
+  }
+  .deskclock{
+    display: block;
+  }
+  .page-header {
+    font-size: 35px;
+  }
+  .container {
+    width: 768px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .container-fluid{
+    margin: 0 !important;
+  }
+  .resize6 {
+    width: 33.333%;
+    margin-top: 20px;
+  }
+  .rui-dialog{
+    top: 25%;
+    margin-left: 40%;
+    margin-right:50%; 
+    width: 300px;
+  }
+  .video{
+    display:block;
+  }
+    li.lead{
+    width: 50%;
+    display: inline-block;
+    font-size: 30px;
+    text-align: center;
+  }
+  .serving{
+    width: 100%;
+  }
+  .serving h2{
+    font-size: 60px;
+    margin: 0;
+    line-height: 1;
+  }
+  .dep-name{
+  font-size: 10px;
+  }
+
+}
+
+/*pc monitor */
+@media (min-width: 992px) {
+  .header li img.queue-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header li img.lgu-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header li img.rameses-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .date p{
+    font-size:12px;
+  }
+  .resdate{
+    font-size:12px;
+    display: none;
+  }
+  .deskclock{
+    display: block;
+  }
+  .container {
+  width: 970px;
+  }
+  .screen3 {
+  width: 25%;
+  }
+  .rui-dialog{
+    top: 25%;
+    margin-left: 40%;
+    margin-right:50%; 
+    width: 300px;
+  }
+  .video{
+    display:block;
+  }
+    li.lead{
+    width: 50%;
+    display: inline-block;
+    font-size: 30px;
+    text-align: center;
+  }
+  .serving{
+    width: 50%;
+  }
+  .serving h2{
+    font-size: 50px;
+  }
+  .dep-name{
+  font-size: 20px;
+  }
+
+}
+
+/*pc monitor */
+@media (min-device-width: 1200px){ 
+
+  .header li img.queue-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header li img.lgu-logo{
+    width: 100%;
+    padding: 0;
+  }
+  .header li img.rameses-logo{
+    width: 60%;
+    padding: 0;
+  }
+  .headertv li{
+    padding: 0 !important;
+    margin:0;
+  }
+  .headertv li img.queue-logo{
+    width: 100px;
+    padding: 0;
+  }
+  .headertv li img.lgu-logo{
+    width: 60px;
+    padding: 0;
+  }
+  .headertv li img.rameses-logo{
+    width: 100px;
+    padding: 0;
+  }
+  .resdate{
+    font-size:12px;
+    display: none;
+  }
+  .deskclock{
+    display: block;
+  }
+  .col-lg-12 {
+    float: left;
+  }
+  .col-lg-12 {
+    width: 100%;
+  }
+  .screen3 {
+    width: 25%;
+  }
+  .video{
+    display:block;
+  }
+  li.lead{
+    width: 50%;
+    display: inline-block;
+    font-size: 30px;
+    text-align: center;
+  }
+  .rui-dialog{
+    top: 25%;
+    margin-left: 40%;
+    margin-right:50%; 
+    width: 300px;
+  }
+  .dep-name{
+  font-size: 2em;
+
+ }
+  .queue-number-button{
+    display: block !important;
+  }
+  .announcement{
+    display: inline-block !important;
+  }
+  #footer{
+    z-index: 1;
+  }
+
+.floating-box {
+    display: inline-block !important;
+  }
+}
+
+@media print {
+    .header{display: none !important}
+    .k-button{display: none !important}
+    .page-header{display: none !important}
+    input.queue-button{display: none !important}
+    .rui-dialog{margin-left: 0 !important;top: 0 !important; width: 300px !important}
+    .ui-widget-content{border: none !important;background: #ffffff !important;}
+    .queue-number-series{padding: 0 !important}
+    span{display: none !important}
+    .rui-dialog{top:0 ! important;}
+    input.pop-close{display: none !important;}
+

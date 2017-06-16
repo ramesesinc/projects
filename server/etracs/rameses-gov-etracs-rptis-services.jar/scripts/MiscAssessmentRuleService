@@ -96,7 +96,7 @@ public class MiscAssessmentRuleService
 
 		actions.addCommand( "calc-rpu-bmv", new CalcMiscRPUBaseMarketValue( request:request));
 		actions.addCommand( "calc-rpu-mv", new CalcMiscRPUMarketValue( request:request));
-		actions.addCommand( "calc-rpu-al", new CalcMiscRPUAssessLevel( request:request, em:em));
+		actions.addCommand( "calc-rpu-al", new CalcMiscRPUAssessLevel( request:request, em:em, NS:numSvc ));
 		actions.addCommand( "calc-rpu-av", new CalcMiscRPUAssessValue( request:request));
 
 		actions.addCommand( "add-derive-var", new AddDeriveVariable( request:request));

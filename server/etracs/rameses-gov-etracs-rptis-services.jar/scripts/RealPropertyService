@@ -4,12 +4,6 @@ import com.rameses.services.extended.*
 
 class RealPropertyService 
 {
-	@ActiveDB('realproperty')
-	def em
-
-	@Service('LGUService')
-	def lguSvc
-
 	@Service('RPTUtil')
 	def util
 
@@ -17,12 +11,16 @@ class RealPropertyService
 	def var 
 
 	@DataContext('realproperty')
-	def realpropertyDb 	
+	def em_realproperty 	
 
-	def STATE_INTERIM       = 'INTERIM'
-    def STATE_FORAPPROVAL   = 'FORAPPROVAL'
-    def STATE_CURRENT       = 'CURRENT'
-    def STATE_CANCELLED     = 'CANCELLED'
+	@DataContext('rysetting_land')
+	def em_landsetting 	
+
+	@DataContext('barangay')
+	def em_barangay	
+
+	@DataContext('faas')
+	def em_faas
 
     def SECTION_NEW_MAX  	= 3
 	def PARCEL_NEW_MAX  	= 2
@@ -48,10 +46,13 @@ class RealPropertyService
 
 	@ProxyMethod
 	public def init(  ) {
+		def setting = em_landsetting.where('1=1').orderBy('ry desc').first()
+		if (!setting) throw new Exception('Land Revision Setting does not exist.')
+
 		return [
 			objid		: 'RP' + new java.rmi.server.UID(),
 			state 		: 'INTERIM',
-			ry 			: var.current_ry,
+			ry 			: setting.ry,
 			autonumber	: false,
 			isnew   	: true,
 			pintype 	: var.pin_type,
@@ -61,32 +62,28 @@ class RealPropertyService
 	@ProxyMethod
 	public def create( entity ) {
 		if (!entity.state)
-			entity.state = STATE_INTERIM
+			entity.state = 'INTERIM'
 		validate(entity)
-		em.create(entity)	
-		return entity;
+		return em_realproperty.create(entity)	
 	}
 
 	@ProxyMethod
 	public def update( entity ) {
 		validate(entity)
-		em.update(entity)	
-		return entity;
+		return em_realproperty.update(entity)	
 	}
 
 	@ProxyMethod
 	public def save( entity ) {
 		validate(entity)
-		em.save(entity)	
-		return entity;
+		return em_realproperty.save(entity)	
 	}
 
 	@ProxyMethod
 	public def open( entity ) {
-		entity = em.read(entity)	
+		entity = em_realproperty.read(entity)	
 		if (!entity)
 			throw new Exception('Real Property does not exist or has been deleted.')
-		entity.barangay = lguSvc.lookupBarangayById(entity.barangayid)
 		entity.isection = null
 		entity.iparcel = null
 		if (entity.section)
@@ -98,34 +95,37 @@ class RealPropertyService
 
 	@ProxyMethod
 	public void delete( entity ) {
-		em.delete(entity)	
+		em_realproperty.delete(entity)	
 	}
 
 
 	@ProxyMethod
 	public def approve( entity ) {
-		entity.state = STATE_CURRENT
-		entity.barangay = lguSvc.lookupBarangayById(entity.barangayid)
-		em.cancelPreviousRealProperty(entity)
-		em.approve(entity)	
-		return entity
+		entity.state = 'CURRENT'
+		entity.barangay = em_barangay.read([objid:entity.barangayid])
+		em_realproperty.find([objid:entity.previd]).update([state:'CANCELLED'])
+		return em_realproperty.save(entity)
 	}
 
 
 	@ProxyMethod
     public def getRyList(  ) {
-        return em.getLandRevisionYears().ry;
+    	return em_landsetting.where('1=1').list().ry 
     }
 
 
     @ProxyMethod
     public def validateRealPropertyForFaas(rp, faasid){
-    	if (rp.state == STATE_CANCELLED)
+    	if (rp.state == 'CANCELLED')
     		throw new Exception('Real Property has already been cancelled.')
 
-    	def faas = em.findFaasByRealPropertyId([realpropertyid:rp.objid, faasid:faasid])
-    	if (faas)
+    	//check existing faas 
+    	def filter = 'realpropertyid = :realpropertyid and objid <> :faasid and state = :state'
+    	def params = [realpropertyid:rp.objid, faasid:faasid, state:'CANCELLED']
+    	def faas = em_faas.select('objid, tdno').where(filter, params).first()
+    	if (faas){
     		throw new Exception('Real Property is currently referenced by TD No. ' + faas.tdno + '.')
+    	}
     }
 
 
@@ -174,15 +174,18 @@ class RealPropertyService
 
 	@ProxyMethod
     public def checkDuplicatePin(params) {
-    	if (params.txntype?.newrealproperty==1 || params.txntype?.newrealproperty==true)
-    		return;
-    	params.claimfilter = ''
-    	if (params.claimno)
-    		params.claimfilter = ' AND claimno = $P{claimno}'
+    	if (params.txntype?.newrealproperty==1 || params.txntype?.newrealproperty==true){
+    		return
+    	}
 
-    	def rp = em.findDuplicatePin(params)
-    	if (rp)
-    		throw new Exception('PIN No. ' + params.pin + ' already exist.')
+    	def rp = em_realproperty.find([pin:params.pin, ry:params.ry]).first()
+    	if (!rp) {
+    		return
+    	}
+    	if (params.claimno && rp.claimno != params.claimno){
+    		return
+    	}
+    	throw new Exception('PIN No. ' + params.pin + ' already exist.')
     }
 
 
@@ -214,13 +217,18 @@ class RealPropertyService
 
 	@ProxyMethod
 	public void updateBoundaries( entity ) {
-		em.updateBoundaries(entity)
+		def params = [:]
+		params.north = entity.north
+		params.east = entity.east
+		params.west = entity.west
+		params.south = entity.south
+		em_realproperty.find([objid:entity.objid]).update(params)
 	}
 
 	@ProxyMethod 
 	public void checkDuplicateStewardPin(info){
 		def params = [pin:info.fullpin, ry:info.ry]
-		def rp = realpropertyDb.select('objid, state').find(params).first();
+		def rp = em_realproperty.select('objid, state').find(params).first();
 		if(rp && !'CANCELLED'.equalsIgnoreCase(rp.state))
 			throw new Exception('PIN ' + info.fullpin + ' already exist.')
 	}

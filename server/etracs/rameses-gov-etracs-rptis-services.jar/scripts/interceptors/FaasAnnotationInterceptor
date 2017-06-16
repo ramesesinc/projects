@@ -8,7 +8,7 @@ class FaasAnnotationInterceptor
     def annotationSvc 
 
 
-	@After(pattern="FAASService.openFaas") 
+	@After(pattern="FAASService.open") 
 	public void afterOpen( evt ) {
 		def faas = evt.result 
 		def annotations = annotationSvc.getAnnotationsByFaasId(faas.objid)

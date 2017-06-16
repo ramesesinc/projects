@@ -241,13 +241,13 @@
 			</band>
 		</pageHeader>
 		<columnHeader>
-			<band height="30"  isSplitAllowed="true" >
+			<band height="39"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="120"
-						height="30"
+						height="39"
 						key="staticText-29"/>
 					<box leftPadding="2">					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -265,7 +265,7 @@
 						x="424"
 						y="0"
 						width="73"
-						height="30"
+						height="39"
 						key="staticText-30"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -301,7 +301,7 @@
 						x="795"
 						y="0"
 						width="69"
-						height="30"
+						height="39"
 						key="staticText-33"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -320,7 +320,7 @@ TOTAL]]></text>
 						x="497"
 						y="0"
 						width="28"
-						height="30"
+						height="39"
 						key="staticText-38"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -338,7 +338,7 @@ TOTAL]]></text>
 						x="258"
 						y="0"
 						width="166"
-						height="30"
+						height="39"
 						key="staticText-39"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -356,7 +356,7 @@ TOTAL]]></text>
 						x="120"
 						y="0"
 						width="78"
-						height="30"
+						height="39"
 						key="staticText-40"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -375,7 +375,7 @@ ARP No.]]></text>
 						x="198"
 						y="0"
 						width="60"
-						height="30"
+						height="39"
 						key="staticText-41"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -393,7 +393,7 @@ ARP No.]]></text>
 						x="525"
 						y="15"
 						width="46"
-						height="15"
+						height="24"
 						key="staticText-42"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -411,7 +411,7 @@ ARP No.]]></text>
 						x="571"
 						y="15"
 						width="46"
-						height="15"
+						height="24"
 						key="staticText-43"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -429,7 +429,7 @@ ARP No.]]></text>
 						x="617"
 						y="15"
 						width="46"
-						height="15"
+						height="24"
 						key="staticText-44"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -465,7 +465,7 @@ ARP No.]]></text>
 						x="663"
 						y="15"
 						width="66"
-						height="15"
+						height="24"
 						key="textField-50"
 						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -477,14 +477,14 @@ ARP No.]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["BASIC (" + $P{basicrate} + "%)"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["BASIC\n(" + $P{basicrate} + "%)"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="729"
 						y="15"
 						width="66"
-						height="15"
+						height="24"
 						key="textField-51"
 						stretchType="RelativeToBandHeight"/>
 					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
@@ -496,7 +496,7 @@ ARP No.]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["SEF (" + $P{sefrate} + "%)"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["SEF\n(" + $P{sefrate} + "%)"]]></textFieldExpression>
 				</textField>
 			</band>
 		</columnHeader>

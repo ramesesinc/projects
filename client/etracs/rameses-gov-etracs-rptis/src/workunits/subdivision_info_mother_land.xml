@@ -2,8 +2,8 @@
 <workunit>
     <invokers>
         <invoker type="subdivision:info" action="init" caption="Mother Lands" index="14"/>
-        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions &amp;&amp; mode=='read'}" role="TAXMAPPER"/>
-        <invoker type="formActions" action="update" caption="Update" mnemonic="u" visibleWhen="#{showActions &amp;&amp; mode=='edit'}" role="TAXMAPPER"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions &amp;&amp; mode=='read'}" role="TAXMAPPER,RECEIVER"/>
+        <invoker type="formActions" action="update" caption="Update" mnemonic="u" visibleWhen="#{showActions &amp;&amp; mode=='edit'}" role="TAXMAPPER,RECEIVER"/>
    </invokers>
    <code>
 

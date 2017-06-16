@@ -3,7 +3,7 @@ import com.rameses.common.*
 
 public class MiscRYSettingLookupService
 {
-	@PersistenceContext('rpt')
+	@PersistenceContext('main')
 	def em
     
 

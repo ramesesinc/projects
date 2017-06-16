@@ -66,6 +66,7 @@ class RPTDelinquencyListingController extends com.rameses.gov.etracs.rpt.report.
     
     Map getParameters(){
         def map = [TITLE : 'Realty Tax Delinquency Listing'];
+        map.SUBTITLE = (entity.classification ? ' (' + entity.classification.name + ')' : '');
         map.BARANGAYNAME = (entity.barangay?.objid? entity.barangay.name: 'ALL'); 
         map.PERIODCODE = entity.period?.code; 
         

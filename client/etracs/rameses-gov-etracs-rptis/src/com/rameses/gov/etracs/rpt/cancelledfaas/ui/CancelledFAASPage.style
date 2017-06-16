@@ -3,14 +3,14 @@
 }
 
 
-"entity.*" [mode == 'edit'] {
+"entity.*" [mode != 'read'] {
     enabled:true;
 }
 
-"entity.faas"[entity.online==1 || entity.online==true]{
+"entity.(faas|txnno|txndate)"[entity.online==1 || entity.online==true]{
     enabled:false;
 }
 
-"entity.(txnno|txndate)"[1 == 1]{
+"entity.lasttaxyear"[ledger != null]{
     enabled:false;
 }

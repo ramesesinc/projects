@@ -108,7 +108,7 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator5);
 
-        xLookupField1.setCaption("Owner");
+        xLookupField1.setCaption("Declared Owner");
         xLookupField1.setExpression("#{item.name}");
         xLookupField1.setHandler("entity:lookup");
         xLookupField1.setName("entity.taxpayer"); // NOI18N

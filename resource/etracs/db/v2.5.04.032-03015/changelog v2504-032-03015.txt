@@ -1,0 +1,22 @@
+/* v2.5.04.032-03015 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Monthly Assessment Report (LIFT Format)
+	- Subdivision: Support cancelled by tdnos/pins info
+	- Modify superseded information update
+	- Support Recalculate on Subdivision etc
+	- Cancelled FAAS : support cancelled by tdnos/pins
+	- Report: QRRPA (LIFT Format) 
+	- Report: update on ROA
+	- Report: land specific listing: filter by revision year
+	- FAAS : fix incorrect display of classification
+	- Batch GR Update 
+
+- LANDTAX
+	- Top N Delinquent Taxpayer : fix mssql statement error 
+	- Delinquency Listing : add classification option for format3
+	- Certified LIst of Real Property Tax Delinquencies (NEW)

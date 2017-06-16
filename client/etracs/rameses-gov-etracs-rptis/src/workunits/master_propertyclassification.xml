@@ -1,6 +1,20 @@
-<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
-    schemaName="propertyclassification"
-    formTitle="Classification"
-    allowEdit="#{entity.state != 'APPROVED'}" 
-    allowDelete="#{entity.state != 'APPROVED'}">
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="propertyclassification">
+    
+    <invokers>
+        <invoker type="propertyclassification:create" 
+                 caption="Property Classification" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="propertyclassification.create" />
+        
+        <invoker type="propertyclassification:open" 
+                 caption="Property Classification" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="propertyclassification.read"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.PropertyClassificationModel"/>
 </workunit>

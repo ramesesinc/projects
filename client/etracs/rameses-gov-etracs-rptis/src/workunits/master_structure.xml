@@ -1,93 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
-    <invokers>
-        <invoker type="quick_launcher" code="ST01" action="init" caption="Structure" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="structure:create" action="init" caption="Structure" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="structure:open" action="open" caption="Structure" role="ASSESSOR_DATAMGMT,MASTER" />
-    </invokers>
-        
-    <code lang="groovy">
-<![CDATA[ 
-        
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class StructureController  extends CRUDController 
-        {
-            String serviceName = 'StructureService'
-            String entityName  = 'structure'
-            String prefixId    = 'ST'
-            
-            def selectedItem
-            
-            Map createEntity(){
-                return [showinfaas:false, materials : [] ]
-            }
-            
-            def lookupMaterial = InvokerUtil.lookupOpener("material:lookup",[:]);
-            
-            def listHandler = [
-                getRows    : { return 150 },
-                getColumns : { 
-                    return [
-                        new Column(name:"material", caption:"Code*", minWidth:50, editable:true, type:"lookup", handler:lookupMaterial, expression:'#{item.material.code}'),
-                        new Column(name:"material.name", caption:"Material", minWidth:200 ),
-                        new Column(name:"display", caption:"Show In FAAS?", type:"checkbox", checkValue:1, uncheckValue:0, editable:true),
-                        new Column(name:"idx", caption:"Order", type:"integer", editable:true),
-                    ];
-                },
-                fetchList    : { return entity.materials },
-                createItem   : { return  [ structure_objid:entity.objid, display:0, isnew:true, idx:0] },
-                validate     : { li -> 
-                    def item = li.item 
-                    validateItem( item ) 
-        
-                    item.structure_objid = entity.objid
-                    item.material_objid = item.material.objid 
-                    item.material_code = item.material.code
-                    item.material_name = item.material.name 
-        
-                    if (item.isnew == null || item.isnew == false)
-                        update();
-                },
-                onAddItem    : { item -> 
-                    entity.materials.add( item ) 
-                    update();
-                    item.isnew = false;
-                },
-                onRemoveItem : { item -> 
-                    if( MsgBox.confirm("Delete selected item?") ) {
-                        entity.materials.remove( item );
-                        update();
-                        return true;
-                    }
-                    return false;
-                },
-            ] as EditorListModel;
-            
-            
-            void validateItem( item ){
-                if( item.isnew && entity.materials.find{it.material_objid == item.material.objid} ){
-                    def msg = 'Duplicate Material is not allowed.'
-                    MsgBox.err(msg)
-                    throw new Exception(msg)
-                }
-            }
-        
-            void update(){
-                if (mode != 'create')
-                    service.update(entity);
-            }
-            
-        }
-        
-]]>        
-
-    </code>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="structure">
     
+    <invokers>
+        <invoker type="structure:create" 
+                 caption="Structure" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="structure.create" />
+        
+        <invoker type="structure:open" 
+                 caption="Structure" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="structure.read"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.StructureModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.StructurePage" />
+        <page template="com.rameses.gov.etracs.rptis.master.views.StructurePage"/>
     </pages>
 </workunit>

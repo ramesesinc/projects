@@ -10,7 +10,7 @@ class RPTUtil
     @Env 
     def env 
     
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @Service('DateService')
@@ -30,6 +30,9 @@ class RPTUtil
 
     @Service('Var')
     def varSvc
+
+    @DataContext('org')
+    def em_org 
 
 
     @ProxyMethod
@@ -534,6 +537,14 @@ class RPTUtil
 
     @ProxyMethod
     public String getParentCode(){
+        if ('MUNICIPALITY'.equalsIgnoreCase(env.ORGCLASS)){
+            def muni = em_org.find([objid:env.ORGID]).first()
+            if (muni){
+                def prov = em_org.find([objid:muni.parent.objid]).first()
+                if(prov) 
+                    return prov.code.replaceAll('-','')
+            }
+        }
         return env.ORGCODE.replaceAll('-.*','')
     }
 
@@ -698,14 +709,18 @@ class RPTUtil
             params.startdate = dtSvc.parse('yyyy-MM-dd', sdt)
             params.enddate = params.startdate + 1
         }
-        else if (params.month){
+        else if (params.month != null){
             def sdt = params.year + '-' + params.month.index.toString().padLeft(2,'0') + '-01'
             params.startdate = dtSvc.parse('yyyy-MM-dd', sdt)
             params.enddate = dtSvc.getMonthEndDate(params.startdate) + 1
         }
-        else {
+        else if (params.qtr != null){
             params.startdate = dtSvc.getBeginningQtrDate(params.qtr, params.year, 0)
             params.enddate = dtSvc.getQtrEndDate(params.qtr, params.year) + 1   
+        }
+        else {
+            params.startdate = dtSvc.getBeginningQtrDate(1, params.year, 0)
+            params.enddate = dtSvc.getQtrEndDate(4, params.year) + 1      
         }
     }
 

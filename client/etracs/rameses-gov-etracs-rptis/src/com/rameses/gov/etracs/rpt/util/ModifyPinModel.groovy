@@ -3,7 +3,7 @@ package com.rameses.gov.etracs.rpt.util;
 import com.rameses.rcp.common.*
 import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 
 public class ModifyPINUtilityController 
 {

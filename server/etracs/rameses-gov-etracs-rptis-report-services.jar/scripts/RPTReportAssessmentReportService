@@ -13,8 +13,11 @@ class RPTReportAssessmentReportService
 	@Service('NumberService')
 	def numSvc 
 
-	@Service('LGUService')
-	def lguSvc 
+	@DataContext('barangay')
+	def em_barangay
+
+	@Service('RPTUtil')
+	def util 
 
 
 	@Async
@@ -22,6 +25,9 @@ class RPTReportAssessmentReportService
 	public def buildReport(params){
 		params.monthid = params.month?.index
 		params.lguid = params.lgu.objid
+
+		util.buildStartEndDateFilter(params)
+
 		if ('MV'.equalsIgnoreCase(params.valuetype)){
 			params.valuefield = 'r.totalmv'
 			params.valuecaption = 'MARKET VALUE'
@@ -31,38 +37,16 @@ class RPTReportAssessmentReportService
 			params.valuecaption = 'ASSESSED VALUE'
 		}
 
-		def brgys = lguSvc.getBarangaysByParentId(params.lguid).collect{[objid:it.objid, barangay:it.name]}
-
-		em.getPreceedingList(params).each{v ->
-			def brgy = brgys.find{it.objid == v.objid }
-			if (brgy){
-				brgy.putAll(v)
-			}
+		def brgys = []
+		if (params.reportformat.type == 'standard'){
+			brgys = buildStandardFormat(params)
 		}
-
-		em.getCurrentList(params).each{v ->
-			def brgy = brgys.find{it.objid == v.objid }
-			if (brgy){
-				brgy.putAll(v)
-			}
+		else if (params.reportformat.type == 'lift'){
+			brgys = buildLintFormat(params)	
 		}
-
-		em.getCancelledList(params).each{v ->
-			def brgy = brgys.find{it.objid == v.objid }
-			if (brgy){
-				brgy.putAll(v)
-				addToPreceeding(brgy, v)
-			}
+		else {
+			throw new Exception('Format ' + params.reportformat.caption + ' is not yet supported.')
 		}
-
-		em.getEndingList(params).each{v ->
-			def brgy = brgys.find{it.objid == v.objid }
-			if (brgy){
-				brgy.putAll(v)
-			}
-		}
-
-		setZeroValuesToNull(brgys)
 		
 		params.TITLE = 'MONTHLY ASSESSMENT REPORT'
 		params.PERIOD = 'MONTH OF ' + params.month.caption + ', ' + params.year 
@@ -74,16 +58,52 @@ class RPTReportAssessmentReportService
 		return [reportdata:brgys, parameters:params]
 	}
 
-	void addToPreceeding(brgy, v){
-		if (brgy.pretaxcnt == null ) brgy.pretaxcnt = 0.0
-		if (brgy.pretaxvalue == null ) brgy.pretaxvalue = 0.0
-		if (brgy.preexemptcnt == null ) brgy.preexemptcnt = 0.0
-		if (brgy.preexemptvalue == null ) brgy.preexemptvalue = 0.0
 
-		brgy.pretaxcnt += v.cancelledtaxcnt
-		brgy.pretaxvalue += v.cancelledtaxvalue
-		brgy.preexemptcnt += v.cancelledexemptcnt
-		brgy.preexemptvalue += v.cancelledexemptvalue
+	void updateBrgyInfo(brgys, list){
+		list.each{v ->
+			def brgy = brgys.find{it.objid == v.objid }
+			if (brgy){
+				brgy.putAll(v)
+			}
+		}
+	}
+
+
+	def buildStandardFormat(params){
+		def brgys = getBarangays(params).each{it.barangay = it.name}
+		updateBrgyInfo(brgys, em.getPreceedingList(params))
+		updateBrgyInfo(brgys, em.getCurrentList(params))
+		updateBrgyInfo(brgys, em.getCancelledList(params))
+		updateBrgyInfo(brgys, em.getEndingList(params))
+		setZeroValuesToNull(brgys)
+		return brgys 
+	}
+
+
+	void updateLintBrgyInfo(result, list){
+		list.each{v ->
+			def res = result.find{it.objid == v.objid && it.rputypeidx == v.rputypeidx}
+			if (res){
+				res.putAll(v)
+			}
+		}
+	}	
+
+	def buildLintFormat(params){
+		def result = []
+		getBarangays(params).each{
+			result << [objid:it.objid, barangay: it.name, rputypeidx:1, rputype:'land']
+			result << [objid:it.objid, barangay: it.name, rputypeidx:2, rputype:'bldg']
+			result << [objid:it.objid, barangay: it.name, rputypeidx:3, rputype:'mach']
+			result << [objid:it.objid, barangay: it.name, rputypeidx:4, rputype:'other']
+		}
+		
+		updateLintBrgyInfo(result, em.getPreceedingLintList(params))
+		updateLintBrgyInfo(result, em.getCurrentLintList(params))
+		updateLintBrgyInfo(result, em.getCancelledLintList(params))
+		updateLintBrgyInfo(result, em.getEndingLintList(params))
+		setZeroValuesToNull(result)
+		return result 
 	}
 
 
@@ -93,6 +113,13 @@ class RPTReportAssessmentReportService
 				if (v == 0.0) brgy[k] = null 
 			}
 		}
+	}
+
+	def getBarangays(params){
+		if ('city'.equalsIgnoreCase(env.ORGCLASS)){
+			return em_barangay.select('objid,index,pin,name').where('1=1').orderBy('pin').list()
+		}
+		return em_barangay.select('objid,index,pin,name').find([parentid:params.lguid]).orderBy('pin').list()
 	}
 
 }

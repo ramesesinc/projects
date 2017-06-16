@@ -1,0 +1,9 @@
+"selectedLand"  [allowEdit == true] {
+    readonly:false;
+}
+
+
+"selectedLand"  [allowEdit != true] {
+    readonly:true;
+}
+

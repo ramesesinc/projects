@@ -1,0 +1,22 @@
+/* v2.5.04.032-03014a */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- FAAS Restriction updates
+	- Approved FAAS Listing: add section option 
+	- Titled FAAS Listing: add section and by taxpayer option 
+	- SpecificClass report: add section option 
+	- Agriland Summary: add section option 
+	- ROA: add section option 
+	- Display PIN in subdivision summary report
+	- Cancel ledger appropriately for manual cancellation of faas 
+
+- LANDTAX
+	- Report on Real Property Collection Advance (support yearly)
+	- Consolidated Report on Undated Real Properties (NEW!!!)
+	- Billing Updates
+
+	

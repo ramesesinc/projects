@@ -16,8 +16,8 @@ class RPTReceiptNoLedgerAddController
     @Service('RPTReceiptNoLedgerService')
     def svc;
             
-    @Service('PropertyClassificationService')
-    def propSvc;
+    @Service('QueryService')
+    def querySvc 
     
     @Service('LGUService')
     def lguSvc;
@@ -128,7 +128,8 @@ class RPTReceiptNoLedgerAddController
     
     
     def getClassifications(){
-        return propSvc.getList([:])
+        def q = [_schemaname:'propertyclassification', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
     }
     
     

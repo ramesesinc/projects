@@ -9,7 +9,7 @@ public class FAASListService extends ActiveCrudListService {
     def env 
 
     @ActiveDB("faas")
-    def em;
+    def em;    
 
     @ActiveDB('faas_list')
     def faasListEm;
@@ -20,11 +20,16 @@ public class FAASListService extends ActiveCrudListService {
     @Service('NumberService')
     def numSvc
 
-    @Service('PropertyClassificationService')
-    def propSvc 
-
     @Service('FAASService')
     def faasSvc
+
+    @Service('RPUService')
+    def rpuSvc 
+
+    @DataContext('propertyclassification')
+    def em_classification
+
+
 
     @ProxyMethod
     public def getColumns(params) {
@@ -228,13 +233,17 @@ public class FAASListService extends ActiveCrudListService {
 
     @ProxyMethod
     public def getClassifications(  ) {
-        return propSvc.getList([:]) 
+        return em_classification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
     @ProxyMethod
     public def getTxnTypes(){
         return faasSvc.getTxnTypes();
-            
+    }
+
+    @ProxyMethod
+    public def getRpuTypes(){
+        return rpuSvc.getRpuTypes()
     }
 
 }

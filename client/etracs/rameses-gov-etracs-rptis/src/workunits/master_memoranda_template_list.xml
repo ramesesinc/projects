@@ -1,29 +1,24 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="rptis_memoranda_template" 
-          allowDelete="true">
+          windowTitle="Memoranda Templates"
+          cols="code,template"    
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Memoranda Templates"  index="15" 
+        <invoker folderid="/explorer/master/rpt" caption="Memoranda Templates"  index="12" 
                  action="init" 
                  role="MASTER" 
-                 cols="code,template" 
-                 orderBy="code" />
+                 permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Memoranda Templates"  index="15" 
+        <invoker folderid="/home/rpt/master" caption="Memoranda Templates"  index="12" 
                  action="init" 
                  role="MASTER" 
-                 cols="code,template" 
-                 orderBy="code" 
-                 icon="home/icons/list.png"/>
+                 permission="master.viewlist"
+                 icon="home/icons/template.png" />
         
         <invoker type="quick_launcher" code="MEM00" caption="Memoranda Templates"  
                 action="init" 
                  role="MASTER" 
-                 cols="code,template" 
-                 orderBy="code" />
-        
-        <invoker type="listActions" 
-                 action="export" caption="Export" 
-                 role="MASTER" />        
+                 permission="master.viewlist" />
     </invokers>
-    <code class="com.rameses.gov.etracs.rptis.master.models.MasterModel"/>
 </workunit>
+

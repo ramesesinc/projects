@@ -22,19 +22,10 @@ public class KioskBusinessBillingService  {
 	def numSvc;
 
 	private def getPaymentOption(def o) {
-		def r = [:] 
-        if ( o.payoption == null || o.payoption.equalsIgnoreCase('FULLYEAR') ) {
+		def r = [:]
+        if(o.payoption == null || o.payoption.equalsIgnoreCase('FULLYEAR') ) {
 			r.option = 'FULLYEAR';
         }
-        else if ( o.payoption.equalsIgnoreCase('SPECIFY-AMOUNT')) {
-        	r.option = 'SPECIFY-AMOUNT'; 
-        	r.amount = o.payamount;
-        	if ( o.payamount instanceof Number ) {
-        		//do nothing 
-        	} else { 
-        		r.amount = new java.math.BigDecimal( o.payamount ); 
-        	} 
-        } 
         else {
 			r.option = 'FULLQTR';
 			if( o.payoption.equalsIgnoreCase( "q1") ) r.qtr = 1;
@@ -57,13 +48,13 @@ public class KioskBusinessBillingService  {
 		def z = svc.getBillingForPayment( r ); 
 		b.putAll(z);
         b.amount = b.totals.total;
-        b.payoption = r.payment;
 		return b;
 	}
 
 	@ProxyMethod
 	public def getBilling( def o ) { 
-		def z = generateBilling(o); 
+		def z = generateBilling(o);
+		z.remove("items");
 		z.objid = z.applicationid;
 		z.particulars = 'Business Collection';
 		z.controlno = numSvc.generateControlNo();
@@ -72,7 +63,7 @@ public class KioskBusinessBillingService  {
 		z.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 );
 		z.refid = z.objid;
 		z.refno = z.appno;
-		z.info = [payoption: z.payoption];
+		z.info = [payoption:[ option:'FULLQTR', qtr: 2]];
         cacheSvc.put([key: z.objid, value: z ]);
 		return z;
 	}
@@ -90,5 +81,7 @@ public class KioskBusinessBillingService  {
 		m.info = [ payoption: getPaymentOption(o) ];
 		m.txntype = 'bpls';
 		return pmoSvc.create(m);
-	} 
+	}
+
+
 }

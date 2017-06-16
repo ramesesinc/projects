@@ -15,65 +15,41 @@ class RPTReportROAService
     @Service('RPTUtil')
     def util
 
+
     @Async
     @ProxyMethod
     public def getROA(params){
         params.title = 'RECORD OF ASSESSMENTS'
-        if ('period'.equalsIgnoreCase(params.reporttype.type)){
-            util.buildReportTitlePeriod(params.title, params)
-            if (params.periodtype.equalsIgnoreCase('quarter'))
-                params.period = 'PERIOD: ' + params.period
-            else if (params.periodtype.equalsIgnoreCase('month'))
-                params.period = 'FOR THE MONTH OF ' + params.period
-            
-            util.buildCurrentPeriodFilter(params)    
-        }
-        else{
-            params.filter = ' f.dtapproved <= $P{asofdate} '
-            params.period = 'As of ' + dtsvc.format('MMMMM dd, yyyy', dtsvc.parse('yyyy-MM-dd', params.asofdate))
-        }
-
-        def barangay = params.barangay ? params.barangay.name : 'ALL'
-        def classification = params.classification ? params.classification.name : 'ALL';
-        params.lguid = params.lgu?.objid 
+        buildFilter(params)
         
-        def barangayname = params.barangay?.name 
-        params.barangay = params.barangay ? params.barangay.objid : '%';
-        params.classification = params.classification ? params.classification.objid : '%';
-        params.ry = dtsvc? dtsvc.getServerYear() : '';
         def roalist = [];
         def currentlist = em.getCurrentFaasRecord(params);
         currentlist.each{obj ->
             def previousfaases = em.getPreviousFaases(obj)
             if (previousfaases){
                 previousfaases.each{pf ->
-                    if (roalist.find{it.objid == pf.prevfaasid} == null){
-                        roalist.add(obj)
-                        roalist.add(em.findCancelledFaasRecord(pf))
-                    }
-                    else{
-                        roalist.add(roalist.size() - 1, obj)
+                    def ppf = em.findCancelledFaasRecord(pf)
+                    if (ppf){
+                        roalist << ppf 
                     }
                 }
+
             }
-            else{
-                //datacapture has no previous record
-                roalist.add(obj)
-            }
+            roalist << obj 
         }
 
         if (!roalist)
             throw new Exception('Record(s) not found.')
 
         roalist.each{
-            it.barangay = barangay;
-            it.classification = classification;
+            it.barangay = params.barangayname;
+            it.classification = params.classname;
         };
         def p = [
             PERIOD      : params.period,
             PERIODTYPE  : params.periodtype,
             TITLE       : params.title,
-            BARANGAY    : barangayname,
+            BARANGAY    : params.barangayname,
         ]
 
         if (params.lgu)
@@ -102,4 +78,44 @@ class RPTReportROAService
       params.index = params.lgu? params.lgu.objid:'';
       return em.getBarangay(params);
     }
+
+    void buildFilter(params){
+        util.buildStartEndDateFilter(params)
+        params.ry = dtsvc? dtsvc.getServerYear() : '';
+        params.filter = ''
+
+        if ('period'.equalsIgnoreCase(params.periodtype.type)){
+            util.buildReportTitlePeriod(params.title, params)
+            if (params.periodtype.equalsIgnoreCase('quarter'))
+                params.period = 'PERIOD: ' + params.period
+            else if (params.periodtype.equalsIgnoreCase('month'))
+                params.period = 'FOR THE MONTH OF ' + params.period
+        }
+        else{
+            params.enddate = params.asofdate 
+            params.period = 'As of ' + dtsvc.format('MMMMM dd, yyyy', dtsvc.parse('yyyy-MM-dd', params.asofdate))
+        }
+
+        if(params.lgu){
+            params.lguid = params.lgu.objid 
+            params.filter += ' and f.lguid = $P{lguid} '
+        }
+
+        if(params.barangay){
+            params.barangayid = params.barangay.objid 
+            params.filter += ' and rp.barangayid = $P{barangayid} '
+        }
+
+        if (params.classification){
+            params.classid = params.classification.objid 
+            params.filter += ' and r.classification_objid = $P{classid} '
+        }
+
+        if (params.section){
+            params.filter += ' and rp.section = $P{section} '
+        }
+
+        params.barangayname  = params.barangay ? params.barangay.name : 'ALL'
+        params.classname = params.classification ? params.classification.name : 'ALL';
+    }    
 }

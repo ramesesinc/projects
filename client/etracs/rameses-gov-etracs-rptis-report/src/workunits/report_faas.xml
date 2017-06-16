@@ -1,9 +1,9 @@
 <workunit>
     <invokers>
-        <invoker type="faas:formActions" action="initPreview" caption="Faas Report" visibleWhen="#{mode=='read'}"/>
-        <invoker type="faaslist:formActions" action="initPreview" caption="Faas Report" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="30" icon="images/toolbars/preview.png"/>
-        <invoker type="faas:list:formActions" action="initPreview" caption="Faas Report" visibleWhen="#{selectedEntity != null}"/>
-        <invoker type="faas:report" action="initPreview" caption="Faas" />
+        <invoker type="faas:formActions" action="initPreview" caption="FAAS Report" visibleWhen="#{mode=='read'}"/>
+        <invoker type="faaslist:formActions" action="initPreview" caption="FAAS Report" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="30" icon="images/toolbars/preview.png"/>
+        <invoker type="faas:list:formActions" action="initPreview" caption="FAAS Report" visibleWhen="#{selectedEntity != null}"/>
+        <invoker type="faas:report" action="initPreview" caption="FAAS" />
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" />
     </invokers>
     <code >
@@ -12,7 +12,7 @@
         import com.rameses.rcp.annotations.*;
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.reports.*;
-        import com.rameses.gov.etracs.rpt.util.*;
+        import com.rameses.gov.etracs.rptis.util.*;
         
         public class FAASReportController 
         {

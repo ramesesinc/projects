@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="List of Restricted Properties" 
+            target="window" 
+            role="REPORT" permission="restricted-property.generate"/>
+        <invoker folderid="/explorer/report/landtax" action="init" caption="List of Restricted Properties" 
+            target="window" 
+            domain="LANDTAX" role="REPORT" permission="restricted-property.generate"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.RestrictedPropertyModel"/>
+</workunit>

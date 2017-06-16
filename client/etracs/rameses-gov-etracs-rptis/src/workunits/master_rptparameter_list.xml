@@ -1,6 +1,23 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="RPTParameterService" entityName="rptparameter" formName="rptparameter:list">
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="rptparameter" 
+          windowTitle="Parameters"
+          cols="name,caption,paramtype,state" 
+          orderBy="name" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" caption="Parameters"  role="ASSESSOR_DATAMGMT,MASTER" target="window" index="10" />
-        <invoker type="quick_launcher" code="RPAR00" caption="Parameters"  role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker folderid="/explorer/master/rpt" caption="Parameters"  index="11" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Parameters"  index="11" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/parameters.png"/>
+        
+        <invoker type="quick_launcher" code="PARAM00" caption="Parameters"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

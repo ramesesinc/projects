@@ -5,7 +5,7 @@
         <invoker type="formActions" action="export" caption="Save" mnemonic="s" visibleWhen="#{processing==false}"/> 
    </invokers>
     <pages> 
-        <page template="com.rameses.gov.etracs.rptis.view.TransmittalExportPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.TransmittalExportPage"/>
     </pages>
 </workunit>
 

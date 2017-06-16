@@ -1,0 +1,49 @@
+".*" [allowEdit == true] {
+    enabled:true;
+}
+
+"freightcost|installationcost|insurancecost|brokeragecost|arrastrecost|othercost"[ newlyinstalled == true || newlyinstalled == 1 ] {
+    enabled:true;
+}
+
+"freightcost|installationcost|insurancecost|brokeragecost|arrastrecost|othercost"[ newlyinstalled == false || newlyinstalled == 0 ] {
+    enabled:false;
+}
+
+
+"machdetail.swornamount"[machdetail.useswornamount == true || machdetail.useswornamount == 1 ] {
+    enabled:true;
+}
+
+"machdetail.swornamount"[machdetail.useswornamount == false || machdetail.useswornamount == 0 ] {
+    enabled:false;
+}
+
+"depreciation"[ machdetail.autodepreciate == 1 || autodepreciate == true ] {
+    enabled:false;
+}
+
+"depreciation"[ machdetail.autodepreciate == 0 || autodepreciate == false] {
+    enabled:true;
+}
+
+
+".*"[entity.txntype?.objid.matches('TR')] {
+    enabled:false;
+}
+
+".*"[allowEdit == false] {
+    enabled:false;
+}
+
+"machdetail.yearsused|machdetail.ferac|machdetail.forex|machdetail.acquisitioncost|machdetail.replacementcost|machdetail.depreciationvalue" [true == true] {
+    enabled:false;
+}
+
+".*"[entity && entity._resolve != null && entity._resolve == true] {
+    enabled:true;
+}
+
+"formActions"[true]{
+    enabled:true;
+}

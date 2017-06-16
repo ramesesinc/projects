@@ -41,6 +41,7 @@ class RPTCertificationLandHoldingBirService
 			em.createItem([objid:cert.objid, refid:it.objid])
 		}
 		cert.items = getLandHoldingItems(cert)
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 

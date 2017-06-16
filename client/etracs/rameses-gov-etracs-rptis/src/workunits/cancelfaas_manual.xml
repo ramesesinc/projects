@@ -6,7 +6,10 @@
         
         <invoker type="cancelledfaas:open" action="open" caption="Cancelled FAAS (Manual)" target="window"  />
             
-        <invoker folderid="/explorer/txn/rpt/manual" action="init"  caption="Cancel FAAS" index="22" 
+        <invoker folderid="/explorer/txn/rpt/manual" action="init"  caption="Cancel FAAS" index="5" 
+            role="RECORD,APPRAISER" permission="cancelfaas.create"/>
+        
+        <invoker folderid="/home/rpt/manualtxn" action="init"  caption="Cancel FAAS" index="5" 
             role="RECORD,APPRAISER" permission="cancelfaas.create"/>
         
    </invokers>
@@ -25,6 +28,9 @@ public class CancelledFAASController extends PageFlowController
     @Binding
     def binding;
     
+    @Service('QueryService')
+    def querySvc 
+    
     @Service('CancelledFAASService')
     def svc 
     
@@ -42,6 +48,7 @@ public class CancelledFAASController extends PageFlowController
     
     def mode;
     def entity;
+    def ledger;
     
     @FormId
     def formId;
@@ -73,12 +80,34 @@ public class CancelledFAASController extends PageFlowController
         entity.reason = cancelReasons.find{it.objid == entity.reason.objid}
         formId = entity.faas.tdno 
         formTitle = 'Cancelled FAAS: ' + formId
+        updateLastTaxYear();
         mode = MODE_READ;
         return super.signal('open');
     }
     
     def getLookupFaas() {
-        return InvokerUtil.lookupOpener('faas:lookup', [:])
+        return InvokerUtil.lookupOpener('faas:lookup', [
+            onselect :{
+                entity.faas = it; 
+                updateLastTaxYear()
+            },
+            onempty :{
+                entity.faas = null;
+                entity.lasttaxyear = null;
+                binding?.refresh('entity.lasttaxyear');
+            }
+        ])
+    }
+    
+    void updateLastTaxYear(){
+        def param = [_schemaname:'rptledger']
+        param.select = 'lastyearpaid'
+        param.findBy = [faasid:entity.faas.objid]
+        ledger = querySvc.findFirst(param)
+        if(ledger){
+            entity.lasttaxyear = ledger.lastyearpaid
+            binding?.refresh('entity.lasttaxyear');
+        }
     }
     
     

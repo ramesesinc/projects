@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="landspecificclass"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="landspecificclass:lookup" 
+                 caption="Land Specific Class Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

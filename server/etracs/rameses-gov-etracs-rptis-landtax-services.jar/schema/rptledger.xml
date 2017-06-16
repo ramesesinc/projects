@@ -26,6 +26,9 @@
         <field name="titleno"/>
         <field name="updateflag"/>
         <field name="forcerecalcbill"/>
+        <complex name="restrictions" ref="faas_restriction" jointype="one-to-many" required="false">
+            <key field="objid" target="ledger_objid" />
+        </complex>
     </element>
 
     <element name="subledger" tablename="rptledger_subledger">
@@ -70,21 +73,15 @@
         <field name="basic" type="decimal" required="true" />
         <field name="basicpaid" type="decimal" required="true" />
         <field name="basicint" type="decimal" required="true" />
-        <field name="basicintpaid" type="decimal" required="true" />
         <field name="basicdisc" type="decimal" required="true" />
-        <field name="basicdisctaken" type="decimal" required="true" />
         <field name="basicidle" type="decimal" required="true" />
         <field name="basicidlepaid" type="decimal" required="true" />
         <field name="basicidledisc" type="decimal" required="true" />
-        <field name="basicidledisctaken" type="decimal" required="true" />
         <field name="basicidleint" type="decimal" required="true" />
-        <field name="basicidleintpaid" type="decimal" required="true" />
         <field name="sef" type="decimal" required="true" />
         <field name="sefpaid" type="decimal" required="true" />
         <field name="sefint" type="decimal" required="true" />
-        <field name="sefintpaid" type="decimal" required="true" />
         <field name="sefdisc" type="decimal" required="true" />
-        <field name="sefdisctaken" type="decimal" required="true" />
         <field name="firecode" type="decimal" required="true" />
         <field name="firecodepaid" type="decimal" required="true" />
         <field name="revperiod" />
@@ -104,21 +101,15 @@
         <field name="basic" type="decimal" required="true" />
         <field name="basicpaid" type="decimal" required="true" />
         <field name="basicint" type="decimal" required="true" />
-        <field name="basicintpaid" type="decimal" required="true" />
         <field name="basicdisc" type="decimal" required="true" />
-        <field name="basicdisctaken" type="decimal" required="true" />
         <field name="basicidle" type="decimal" required="true" />
         <field name="basicidlepaid" type="decimal" required="true" />
         <field name="basicidledisc" type="decimal" required="true" />
-        <field name="basicidledisctaken" type="decimal" required="true" />
         <field name="basicidleint" type="decimal" required="true" />
-        <field name="basicidleintpaid" type="decimal" required="true" />
         <field name="sef" type="decimal" required="true" />
         <field name="sefpaid" type="decimal" required="true" />
         <field name="sefint" type="decimal" required="true" />
-        <field name="sefintpaid" type="decimal" required="true" />
         <field name="sefdisc" type="decimal" required="true" />
-        <field name="sefdisctaken" type="decimal" required="true" />
         <field name="firecode" type="decimal" required="true" />
         <field name="firecodepaid" type="decimal" required="true" />
         <field name="revperiod" />

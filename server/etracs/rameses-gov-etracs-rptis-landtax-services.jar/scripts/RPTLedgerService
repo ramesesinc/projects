@@ -24,8 +24,8 @@ class RPTLedgerService
     @Service('FAASService')
     def faasSvc 
 
-    @Service('PropertyClassificationService')
-    def pcSvc 
+    @DataContext('propertyclassification')
+    def propertyclassification
 
     @Service('RPTBillingService')
     def billingSvc
@@ -39,14 +39,17 @@ class RPTLedgerService
     @Service('RPUService')
     def rpuSvc 
 
-    @DataContext('rptledger_restriction')
-    def rptledger_restrictionDb
-
     @DataContext('rptledger') 
     def ledgerDb
 
     @DataContext('faas')
     def faasDb
+
+    @DataContext('faas_previous')
+    def em_faas_previous
+
+    @DataContext('faas_restriction')
+    def em_faas_restriction 
 
 
     def SCHEMA_LEDGER   = 'rptledger'
@@ -86,7 +89,7 @@ class RPTLedgerService
         ledger.faases.each{ ledgerfaas ->
             saveLedgerFaas(ledgerfaas)
         }
-        postRestriction(ledger)
+        em_faas_restriction.find([parent_objid:ledger.faasid]).update([ledger_objid:ledger.objid])
         return ledger 
     }
 
@@ -157,7 +160,7 @@ class RPTLedgerService
         ledger._ledgerItems   = getLedgerItems(ledger.objid)
         ledger._credits = getLedgerCredits(ledger.objid)
         ledger._subledgers = em.getSubLedgers(ledger)
-        ledger.restrictions = rptledger_restrictionDb.find([parentid:ledger.objid]).orderBy('restrictionid').list()
+        ledger._restrictions = em_faas_restriction.find([ledger_objid:ledger.objid]).orderBy('txndate desc').list()
         return ledger
     }
     
@@ -443,7 +446,8 @@ class RPTLedgerService
             actualuse       : params.actualuse,
             remarks         : (params.av != ledgerfaas.assessedvalue ? 'Staggered AV' : 'Annual Receivable'),
             year            : yr, 
-            qtr             : 0,
+            fromqtr             : 1,
+            toqtr             : 4,
             basic           : 0.0,
             basicpaid       : 0.0,
             basicint        : 0.0,
@@ -504,14 +508,8 @@ class RPTLedgerService
         qtritem.sefav = (qtr == 4 ? qtrlyvalue.sefav4thqtr : qtrlyvalue.sefavqtrly)
         qtritem.fullypaid = 0
         qtritem.basicpaid = 0.0
-        qtritem.basicintpaid = 0.0
-        qtritem.basicdisctaken = 0.0
         qtritem.basicidlepaid = 0.0
-        qtritem.basicidledisctaken = 0.0
-        qtritem.basicidleintpaid = 0.0
         qtritem.sefpaid = 0.0
-        qtritem.sefintpaid = 0.0
-        qtritem.sefdisctaken = 0.0
         qtritem.firecodepaid = 0.0
         em.save(qtritem, SCHEMA_ITEM_QTRLY)
     }
@@ -536,10 +534,11 @@ class RPTLedgerService
             throw new Exception('Ledger does not exist or has already been deleted.')
 
         def pdate = dtSvc.parseCurrentDate();
-            
         if (util.isTrue(ledger.taxable)) {
             if ( ledger.lastyearpaid < pdate.year || (ledger.lastyearpaid == pdate.year && ledger.lastqtrpaid < pdate.qtr))
                 throw new Exception('Ledger has not yet been fully paid.')
+            if (util.isTrue(ledger.undercompromise))
+                throw new Exception('Ledger is still under compromised.')
         }
         else {
             em.updateLastYearQtrPaid([toyear:dtSvc.serverYear, toqtr:4, rptledgerid:ledger.objid])
@@ -607,7 +606,7 @@ class RPTLedgerService
 
     @ProxyMethod
     public def getClassifications(){
-        return pcSvc.getClassifications([:])
+        return propertyclassification.find([state:'APPROVED']).orderBy('orderno').list()
     }
 
 
@@ -693,8 +692,7 @@ class RPTLedgerService
         def p = em.findPartialPayment(ledger)
         if (!p) 
             p = [
-                basicpaid:0.0, basicdisctaken:0.0, basicintpaid:0.0,
-                sefpaid:0.0, sefdisctaken:0.0, sefintpaid:0.0
+                basicpaid:0.0, sefpaid:0.0, basicidlepaid:0.0,
             ]
         return p
     }
@@ -716,10 +714,6 @@ class RPTLedgerService
         em.fixLedgerDeleteBillLedgerItems(info)
         em.fixLedgerDeleteQtrlyItems(info)
         em.fixLedgerDeleteLedgerItems(info)
-        em.resetQtrlyItemFullyPaidFlagByYear(info)
-        em.resetItemFullyPaidFlagByYear(info)
-        em.fixLedgerSetQtrlyItemFullyPaid(info)
-        em.fixLedgerSetItemFullyPaid(info)
         generateLedgerBill(info.rptledgerid)
         em.fixLedgerSetQtrlyItemFullyPaid(info)
         em.fixLedgerSetItemFullyPaid(info)
@@ -734,6 +728,8 @@ class RPTLedgerService
                 em.updatePartialledQtrlyItem(info)
                 em.addPartialToLedgerItemPayment(info)
             }
+            em.clearNextBillDateByLedger(info)
+            generateLedgerBill(info.rptledgerid)
         }
         info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 
         return info 
@@ -757,7 +753,7 @@ class RPTLedgerService
     @ProxyMethod
     public void postLedgerFaasData(faas){
         if (!faas.previousfaases) return
-    	def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
+        def ledger = getLedgerByFaasId(faas.previousfaases[0].prevfaasid)
         ledger.faasid = faas.objid 
         updateLedger(ledger)
         def ledgerfaas = createLedgerFaas(ledger, faas)
@@ -883,19 +879,20 @@ class RPTLedgerService
         return rpuSvc.getRpuTypes();
     }
 
-    @ProxyMethod
-    public def getRestrictions(  ) {
-        return em.getRestrictions()
-    }
-
+    
     @ProxyMethod
     public void reconcileManualLedger(faas, manualledger){
-        if (util.isTrue(faas.datacapture)){
+        faas.putAll(faasSvc.openFaas(faas))
+        def ledgerfaas = em.findLedgerFaasByTdno(faas)
+        if (manualledger.previousfaases){
+            faas.previousfaases = manualledger.previousfaases
+            updateLedgerFaasInfo(faas, manualledger)
+            postLedgerFaasData(faas);
+        }
+        else if (util.isTrue(faas.datacapture)){
             updateLedgerFaasInfo(faas, manualledger)
         }
         else{
-            faas.putAll(faasSvc.openFaas(faas))
-            def ledgerfaas = em.findLedgerFaasByTdno(faas)
             if (!ledgerfaas){
                 postLedgerFaasData(faas);
             }
@@ -1005,7 +1002,7 @@ class RPTLedgerService
 
         //check if currentledger is a child of the subledger's parent ledger
         //get current ledger previous faas 
-        def prevfaases = em.getPreviousFaas(currentledger)
+        def prevfaases = em_faas_previous.find([faasid:currentledger.faasid]).list()
         if (prevfaases && prevfaas[0].prevfaasid != ledger.subledger.parent.objid)
             throw new Exception("Current ledger is invalid. The previous ledger does not match subledger's parent ledger.")
     }
@@ -1079,55 +1076,38 @@ class RPTLedgerService
     /* RESTRICTION SUPPORT */
 
     @ProxyMethod
-    public def addRestriction( restriction ) {
-        rptledger_restrictionDb.create(restriction)  
-        addFaasRestriction(restriction)      
+    public def getRestrictions(ledger) {
+        return em_faas_restriction.find([ledger_objid:ledger.objid]).orderBy('txndate desc').list()
     }
 
+    @ProxyMethod
+    public def saveRestriction( restriction ) {
+        if (!restriction.dtcreated){
+            restriction.createdby = [objid:env.USERID, name:env.NAME]
+            restriction.dtcreated = dtSvc.serverDate 
+        }
+        return em_faas_restriction.save(restriction)    
+    }
 
     @ProxyMethod
     public void removeRestriction( restriction ) {
-        rptledger_restrictionDb.delete(restriction);
-        removeFaasRestriction(restriction)
+        em_faas_restriction.delete(restriction);
     }
-
-
-    void addFaasRestriction(restriction){
-        def ledger = ledgerDb.select('objid, faasid').find([objid:restriction.parentid]).first()
-        if(ledger && ledger.faasid){
-            faasDb.update([objid:ledger.faasid, restrictionid:restriction.restrictionid])
-        }
-    }
-
-
-    void removeFaasRestriction(restriction){
-        def ledger = ledgerDb.select('objid, faasid').find([objid:restriction.parentid]).first()
-        if(ledger && ledger.faasid){
-            def restrictionid = null;
-            def restrictions = rptledger_restrictionDb.find([parentid:restriction.parentid]).list();
-            if(restrictions){
-                restrictionid = restrictions.first().restrictionid 
-            }
-            faasDb.update([objid:ledger.faasid, restrictionid:restrictionid])
-        }
-    }
-
 
     @ProxyMethod
     public void cancelLedger( ledger ) {
         em.updateState([objid:ledger.objid, state:'CANCELLED'])    
     }
 
-    void postRestriction(ledger){
-        if (ledger.restrictionid){
-            def restriction = [:]
-            restriction.objid = 'RLR' + new java.rmi.server.UID()
-            restriction.parentid = ledger.objid 
-            restriction.restrictionid = ledger.restrictionid 
-            rptledger_restrictionDb.create(restriction)
-        }
+    @ProxyMethod
+    public def findLedgerItemQtrlyByYearQtr(params) {
+        return em.findLedgerItemQtrlyByYearQtr(params)
     }
 
+    @ProxyMethod
+    public void updateLedgerItemQtrly(item) {
+        em.update(item, 'ledgeritemqtrly')
+    }
 }
 
 

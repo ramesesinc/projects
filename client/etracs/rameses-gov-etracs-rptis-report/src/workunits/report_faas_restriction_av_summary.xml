@@ -22,7 +22,7 @@ class FAASRestrictionAVSummaryController extends com.rameses.gov.etracs.rpt.repo
     
     String title = 'Assessed Value of Properties with Restrictions'
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
     String reportName = reportPath + 'faas_restriction_av_summary.jasper';
     
     void buildReportData(entity, asyncHandler){

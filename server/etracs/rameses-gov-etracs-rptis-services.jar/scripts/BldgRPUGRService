@@ -107,7 +107,7 @@ class BldgRPUGRService
 				floor.basevalue = st.basevalue
 				floor.unitvalue = st.basevalue 
 				floor.additionals.each{  addl ->
-					addl.additionalitem = lookupSvc.lookupAdditionalItemByPrevId(addl.objid)
+					addl.additionalitem = lookupSvc.lookupAdditionalItemByPrevId(addl.additionalitem.objid)
 					if (addl.additionalitem) {
 						addl.expr = addl.additionalitem.expr 
 					}

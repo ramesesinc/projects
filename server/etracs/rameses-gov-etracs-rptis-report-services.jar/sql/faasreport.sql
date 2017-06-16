@@ -36,14 +36,6 @@ SELECT
 	f.restrictionid,
 	f.backtaxyrs,
 	f.prevtdno,
-	f.prevpin,
-	f.prevowner,
-	f.prevav,
-	f.prevmv,
-	f.prevareaha,
-	f.prevareasqm,
-	f.preveffectivity,
-	f.prevadministrator,
 	f.ryordinanceno,
 	f.ryordinancedate,
 	t.trackingno 
@@ -155,7 +147,7 @@ select
 	f.fullpin,
 	f.effectivityyear,
 	f.effectivityqtr
-from previousfaas pf 
+from faas_previous pf 
 	inner join faas f on pf.faasid = f.objid 
 where pf.prevfaasid = $P{objid}
 

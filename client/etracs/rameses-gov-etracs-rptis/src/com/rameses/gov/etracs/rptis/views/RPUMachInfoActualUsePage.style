@@ -1,0 +1,20 @@
+"entity.rpu.*" [ allowEdit == true ] {
+    enabled:true;
+}
+
+"selectedItem" [ allowEdit == true] {
+    readonly:false;
+}
+
+"entity.rpu.*" [ allowEdit == false ] {
+    enabled:false;
+}
+
+"selectedItem" [ allowEdit == false] {
+    readonly:true;
+}
+
+
+"selectedItem"  [entity._resolve == true] {
+    readonly:false;
+}

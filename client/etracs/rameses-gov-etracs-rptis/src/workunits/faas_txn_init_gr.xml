@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit extends="rpt_wtemplates/FAASTxnInitController.xml">>
+<workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
     <invokers>       
         <invoker type="quick_launcher" code="GR01" action="init" caption="General Revision" 
             txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
@@ -13,42 +13,8 @@
             txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
             
     </invokers>
-    <code>
-        
-
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-
-
-class FaasOnlineGRInitController extends com.rameses.gov.etracs.rpt.faas.ui.FaasTxnInitController
-{
-    @Service('GeneralRevisionService')
-    def grSvc;
-    
-    boolean generalRevision = true;
-    
-    
-    def getRevisionyears(){
-        return grSvc.getRyList(entity.faas?.lguid, entity.faas?.ry, entity.faas?.rputype );
-    }
-    
-    void afterLookupFaas(){
-        binding.refresh('entity.newrysetting');
-    }
-        
-    def process(){
-        def faas = grSvc.initOnlineGeneralRevision( entity );
-        return InvokerUtil.lookupOpener('faas:open', [entity:faas]);
-    }
-    
-}
-
+    <code class="com.rameses.gov.etracs.rptis.models.FAASInitGeneralRevisionModel">
     </code>
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasTxnInitPage"/>
-    </pages>    
 </workunit>
 
 

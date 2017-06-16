@@ -1,0 +1,34 @@
+<workunit extends="rpt_wtemplates/ImportModel.xml">
+    <invokers>
+        <invoker type="landrysetting:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Land Revision Schedule"
+                 serviceName="LandRYSettingService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="bldgrysetting:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Building Revision Schedule"
+                 serviceName="BldgRYSettingService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="machrysetting:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Machine Revision Schedule"
+                 serviceName="MachRYSettingService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="planttreerysetting:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Plant/Tree Revision Schedule"
+                 serviceName="PlantTreeRYSettingService"
+                 role="MASTER" target="popup" index="502"/>
+        
+        <invoker type="miscrysetting:list:formActions" 
+                 action="init" caption="Import" 
+                 title ="Import Miscellaneous Revision Schedule"
+                 serviceName="MiscRYSettingService"
+                 role="MASTER" target="popup" index="502"/>
+    </invokers>
+</workunit>
+

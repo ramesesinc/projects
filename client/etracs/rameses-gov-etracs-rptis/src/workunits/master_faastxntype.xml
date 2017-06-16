@@ -1,94 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="faastxntype">
     
     <invokers>
-        <invoker type="faastxntype:create" action="init" caption="FAAS Transaction Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="faastxntype:open" action="open" caption="FAAS Transaction Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="formActions" action="addAttribute" caption="Add New Attribute" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="faastxntype:open" 
+                 caption="Transaction Type" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="faastxntype.read"/>
     </invokers>
-        
-    <code lang="groovy">
-<![CDATA[
-
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class FAASTxnTypeController  extends CRUDController
-        {
-            String serviceName = "FAASTxnTypeService"
-            String entityName  = 'faastxntype'
-            String prefixId    = 'FT'
-            boolean allowApprove = false;
-            boolean allowCreate  = false;
-            boolean allowDelete = false;
-            
-            def selectedItem;
-        
-        
-            def getLookupAttributeType(){
-                return Inv.lookupOpener('faastxnattributetype:lookup', [
-                    onselect : { attr ->
-                        def dup = entity.attributes.find{it.attribute == attr.attribute}
-                        if (dup) throw new Exception('Duplicate attribute is not allowed');
-                        
-                        selectedItem.attr  = attr;
-                        selectedItem.attribute = attr.attribute;
-                    },
-                    
-                    onempty : {
-                        selectedItem.attr = null;
-                        selectedItem.attribute = null;
-                    }
-                ])
-            }
-        
-            def listHandler = [
-                fetchList : { return entity.attributes },
-                
-                createItem : { return [
-                    txntype_objid  : entity.objid,
-                    objid    : entity.objid,
-                    idx      : (entity.attributes ? entity.attributes.idx.max() + 1 : 1),
-                ]},
-                
-                onAddItem : {item ->
-                    entity.attributes << item;
-                },
-                
-                onRemoveItem : {item ->
-                    if (MsgBox.confirm('Delete selected item?')){
-                        entity.attributes.remove(item);
-                        return true;
-                    }
-                    return false;
-                },
-                
-                validate  : {li ->
-                    def item = li.item;
-                    if (!item.attribute) throw new Exception('Attribute is required.')
-                    if (item.idx == null) throw new Exception('Order is required.')
-                },
-                
-            ] as EditorListModel
-            
-            
-            
-            void addAttribute(){
-                def attr = MsgBox.prompt('New Attribute');
-                if (!attr)
-                    return;
-                service.createAttributeType(attr);
-            }
-        }
-        
-        
-        
-]]>        
-    </code>
-    
+    <code class="com.rameses.gov.etracs.rptis.master.models.TxnTypeModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.FAASTxnTypePage" />
+        <page template="com.rameses.gov.etracs.rptis.master.views.TxnTypePage"/>
     </pages>
 </workunit>

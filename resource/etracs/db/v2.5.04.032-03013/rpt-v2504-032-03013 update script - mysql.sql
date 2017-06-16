@@ -8,8 +8,6 @@ create table memoranda_template
 );
 
 
-
 alter table rpu_assessment modify column classification_objid varchar(50)  null;
 alter table rpu_assessment modify column actualuse_objid varchar(50)  null;
-
 

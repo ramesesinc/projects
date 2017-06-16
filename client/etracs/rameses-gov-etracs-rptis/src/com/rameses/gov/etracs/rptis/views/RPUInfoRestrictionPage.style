@@ -1,0 +1,7 @@
+"selectedItem"  [true] {
+    readonly:false;
+}
+
+"selectedItem"  [allowEdit == false] {
+    readonly:true;
+}

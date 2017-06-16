@@ -22,7 +22,7 @@ class ReportOtherClaimantsModel extends com.rameses.gov.etracs.rpt.report.AsyncR
     
     String title = 'List of Other Claimants'
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
     
     void buildReportData(entity, asyncHandler){
         svc.buildReport(entity, asyncHandler)

@@ -23,7 +23,7 @@ class FAASValuationAndRestrictionController extends com.rameses.gov.etracs.rpt.r
     
     String title = 'FAAS Valuation and Restriction Summary'
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
     String reportName = reportPath + 'faas_valuation_restriction_summary.jasper';
     
     def initReport(){

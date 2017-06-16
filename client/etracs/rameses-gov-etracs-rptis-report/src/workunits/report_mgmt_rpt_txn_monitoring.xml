@@ -22,7 +22,7 @@ class RPTTxnMonitoringModel extends com.rameses.gov.etracs.rpt.report.AsyncRepor
     
     String title = 'Transaction Monitoring'
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
     
     void buildReportData(entity, asyncHandler){
         svc.buildReport(entity, asyncHandler)

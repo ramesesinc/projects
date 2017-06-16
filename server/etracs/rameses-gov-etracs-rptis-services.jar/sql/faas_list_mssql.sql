@@ -103,6 +103,7 @@ where f.objid = $P{objid}
 
 [updateFaasList]
 update fl set 
+	fl.realpropertyid = f.realpropertyid,
 	fl.state = f.state,
 	fl.datacapture = f.datacapture,
 	fl.tdno = f.tdno,

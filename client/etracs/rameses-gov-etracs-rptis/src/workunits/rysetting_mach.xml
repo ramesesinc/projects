@@ -1,13 +1,21 @@
-<workunit extends="rpt_wtemplates/RYSetting.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/RYSettingModel.xml">
     <invokers>
-        <invoker type="machrysetting:create" action="create" caption="Create Machine Revision Settting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="machrysetting:open" action="open" caption="Edit Machine Revision Settting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="machrysetting:copy" action="copy" caption="Copy Machine Revision Settting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="machrysetting:create" 
+                 action="create" 
+                 caption="Land Revision Setting" 
+                 target="window" 
+                 entityName="machrysetting" 
+                 serviceName="MachRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
+        <invoker type="machrysetting:open" 
+                 action="open" 
+                 caption="Edit Machinery Revision Setting" 
+                 target="window" 
+                 entityName="machrysetting" 
+                 serviceName="MachRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
     </invokers>
-    
-    <code class="com.rameses.gov.etracs.rpt.rysetting.machrysetting.ui.MachRYSettingController"/>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.rysetting.machrysetting.ui.MachRYSettingPage"/>
-    </pages>
 </workunit>

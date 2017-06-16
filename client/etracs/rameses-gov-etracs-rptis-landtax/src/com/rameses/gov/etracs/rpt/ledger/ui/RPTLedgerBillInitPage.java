@@ -5,6 +5,7 @@
 package com.rameses.gov.etracs.rpt.ledger.ui;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -12,6 +13,7 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Toshiba
  */
 @Template(FormPage.class)
+@StyleSheet
 public class RPTLedgerBillInitPage extends javax.swing.JPanel {
 
     /**
@@ -33,6 +35,9 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 5, 5));
@@ -52,6 +57,38 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 344, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        xFormPanel1.add(xSeparator1);
+
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCaptionWidth(20);
+        xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setName("advancebill"); // NOI18N
+        xCheckBox1.setText("Is Advance Billing?");
+        xFormPanel1.add(xCheckBox1);
+
+        xDateField1.setCaption("Advance Billing Date");
+        xDateField1.setCaptionWidth(120);
+        xDateField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xDateField1.setDepends(new String[] {"advancebill"});
+        xDateField1.setName("billdate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        xFormPanel1.add(xDateField1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -70,8 +107,11 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
 }

@@ -3,6 +3,7 @@
 SELECT *
 FROM (
 	SELECT
+		f.objid as faasid, 
 		brgy.name AS barangay,
 		rp.section,
 		r.rputype, 
@@ -12,7 +13,6 @@ FROM (
 		f.owner_name,
 		f.owner_address,
 		f.tdno,
-		f.prevowner,
 		r.totalareaha,
 		r.totalareasqm,
 		null as dtoccupied,
@@ -29,6 +29,7 @@ FROM (
 	UNION ALL 
 
 	SELECT
+		f.objid as faasid, 
 		brgy.name AS barangay,
 		rp.section,
 		r.rputype, 
@@ -38,7 +39,6 @@ FROM (
 		f.owner_name,
 		f.owner_address,
 		f.tdno,
-		f.prevowner,
 		r.totalareaha,
 		r.totalareasqm,
 		b.dtoccupied,

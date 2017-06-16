@@ -3,9 +3,6 @@ import com.rameses.common.*;
 
 class BrgyShareListService
 {
-	@PersistenceContext('rpt')
-	def em 
-
 	@Service('RPTUtil')
     def util 
 

@@ -1,12 +1,8 @@
 CREATE TABLE `payment_partner` (
   `objid` varchar(50) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `code` varchar(25) DEFAULT NULL,
-  `info` text,
-  `actionurl` varchar(255) DEFAULT NULL,
-  `caption` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`objid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+); 
 
 CREATE TABLE `cashreceiptpayment_eor` (
   `objid` varchar(50) NOT NULL,
@@ -34,5 +30,3 @@ INSERT INTO payment_partner SELECT 'LBP', 'LAND BANK OF THE PHILIPPINES';
 
  INSERT INTO af ( objid, title, usetype, serieslength,  system,  denomination,  formtype)
  VALUES ('EOR', 'EOR', 'collection', 12,  1, 0.00,  'serial' );
-
-

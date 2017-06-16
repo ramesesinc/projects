@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker type="formActions" 
+                 action="copy" caption="Copy" 
+                 mnemonic="c" 
+                 visibleWhen="#{selectedEntity != null }" 
+                 role="ADMIN" permission="rysetting.copy"/>
+        
+        <invoker type="formActions" 
+                 action="revise" caption="Revise" 
+                 mnemonic="v" 
+                 visibleWhen="#{selectedEntity != null }" 
+                 role="ADMIN" permission="rysetting.revise"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.RYSettingListModel"/>
+    <pages>
+        <page name="revisepage" template="com.rameses.gov.etracs.rptis.rysetting.views.RYSettingRevisePage"/>
+    </pages>
+</workunit>

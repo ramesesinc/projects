@@ -1,0 +1,31 @@
+<workunit  allowDelete="#{entity?.state != 'APPROVED'}">
+    <invokers>
+        <invoker type="listActions" 
+            caption="Import"
+            action="importFile" 
+            role="MASTER"
+            permission="master.import" 
+            visibleWhen="#{allowImport}"/>
+        
+        <invoker type="listActions" 
+            caption="Export"
+            action="exportFile" 
+            role="MASTER"
+            permission="master.export" 
+            visibleWhen="#{allowExport}"/>
+        
+        <invoker type="listActions" 
+            caption="Sync Data"
+            action="syncData" 
+            role="MASTER"
+            permission="master.sync" 
+            visibleWhen="#{allowSync}"/>
+        
+        
+    </invokers>
+
+    <code class="com.rameses.gov.etracs.rptis.master.models.MasterListModel"/>
+    <pages>
+        <page template="com.rameses.seti2.views.CrudListPage"/>
+    </pages>
+</workunit>

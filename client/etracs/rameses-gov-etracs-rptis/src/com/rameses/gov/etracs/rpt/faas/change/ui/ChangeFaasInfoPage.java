@@ -33,7 +33,6 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xTextField17 = new com.rameses.rcp.control.XTextField();
         xTextField18 = new com.rameses.rcp.control.XTextField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField5 = new com.rameses.rcp.control.XIntegerField();
         xComboBox12 = new com.rameses.rcp.control.XComboBox();
@@ -81,14 +80,6 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xDateField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xDateField2.setStretchWidth(20);
         formPanel5.add(xDateField2);
-
-        xComboBox2.setCaption("Restriction");
-        xComboBox2.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
-        xComboBox2.setItems("restrictions");
-        xComboBox2.setName("changeinfo.newinfo.restrictionid"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox2.setStretchWidth(100);
-        formPanel5.add(xComboBox2);
 
         xFormPanel2.setCaptionWidth(120);
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
@@ -152,7 +143,6 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
         xCheckBox5.setCaptionWidth(120);
         xCheckBox5.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xCheckBox5.setName("changeinfo.newinfo.taxable"); // NOI18N
-        xCheckBox5.setOpaque(false);
         xCheckBox5.setText("Taxable? ");
         formPanel5.add(xCheckBox5);
 
@@ -210,7 +200,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(formPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -359,7 +349,7 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -378,7 +368,6 @@ public class ChangeFaasInfoPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox11;
     private com.rameses.rcp.control.XComboBox xComboBox12;
     private com.rameses.rcp.control.XComboBox xComboBox14;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;

@@ -56,9 +56,10 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         jPanel1 = new javax.swing.JPanel();
-        xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xButton8 = new com.rameses.rcp.control.XButton();
         xButton9 = new com.rameses.rcp.control.XButton();
+        xDataTable3 = new com.rameses.rcp.control.XDataTable();
+        xButton10 = new com.rameses.rcp.control.XButton();
         jPanel3 = new javax.swing.JPanel();
         formPanel6 = new com.rameses.rcp.util.FormPanel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
@@ -305,11 +306,11 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         xDataTable4.setImmediate(true);
         xDataTable4.setName("selectedItem"); // NOI18N
 
-        xButton6.setMnemonic('r');
+        xButton6.setMnemonic('d');
         xButton6.setDepends(new String[] {"selectedItem"});
         xButton6.setName("removeFaas"); // NOI18N
         xButton6.setPreferredSize(new java.awt.Dimension(71, 25));
-        xButton6.setText("Remove");
+        xButton6.setText("Delete");
 
         xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xActionBar1.setDepends(new String[] {"selectedItem"});
@@ -1192,49 +1193,121 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         jTabbedPane2.addTab("Sub-Ledgers", jPanel2);
 
-        xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
+        xButton8.setMnemonic('a');
+        xButton8.setDepends(new String[] {"selectedRestriction"});
+        xButton8.setName("addRestriction"); // NOI18N
+        xButton8.setText("Add");
+
+        xButton9.setMnemonic('m');
+        xButton9.setDepends(new String[] {"selectedRestriction"});
+        xButton9.setName("deleteRestriction"); // NOI18N
+        xButton9.setText("Delete");
+
+        xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "restrictionid"}
+                new Object[]{"name", "state"}
+                , new Object[]{"caption", "State"}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", true}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("states", null, null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "txndate"}
+                , new Object[]{"caption", "Txn Date"}
+                , new Object[]{"width", 110}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", true}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler("yyyy-MM-dd", "yyyy-MM-dd", null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "restrictiontype"}
                 , new Object[]{"caption", "Restriction"}
                 , new Object[]{"width", 150}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", true}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("restrictiontypes", null, "#{item.name ? item.name : item.restrictiontype.name}")}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "remarks"}
+                , new Object[]{"caption", "Remarks"}
+                , new Object[]{"width", 250}
+                , new Object[]{"minWidth", 250}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "remarks"}
-                , new Object[]{"caption", "Remarks"}
-                , new Object[]{"width", 250}
+                new Object[]{"name", "receipt.receiptno"}
+                , new Object[]{"caption", "Receipt No."}
+                , new Object[]{"width", 110}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.state == 'UNRESTRICTED'}"}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "receipt.receiptdate"}
+                , new Object[]{"caption", "Receipt Date"}
+                , new Object[]{"width", 110}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.state == 'UNRESTRICTED'}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             })
         });
-        xDataTable2.setHandler("restrictionListHandler");
-        xDataTable2.setName("selectedRestriction"); // NOI18N
+        xDataTable3.setHandler("restrictionListHandler");
+        xDataTable3.setName("selectedRestriction"); // NOI18N
 
-        xButton8.setMnemonic('a');
-        xButton8.setName("addRestriction"); // NOI18N
-        xButton8.setText("Add");
-
-        xButton9.setMnemonic('m');
-        xButton9.setDepends(new String[] {"selectedRestriction"});
-        xButton9.setName("removeRestriction"); // NOI18N
-        xButton9.setText("Remove");
+        xButton10.setCaption("Open");
+        xButton10.setDepends(new String[] {"selectedRestriction"});
+        xButton10.setName("openRestriction"); // NOI18N
+        xButton10.setText("Open");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1243,23 +1316,26 @@ public class RPTLedgerPage extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xDataTable2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 463, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xDataTable3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 753, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(xButton8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xButton10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(xButton9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(413, Short.MAX_VALUE))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 193, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xDataTable3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 214, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xButton9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                    .add(xButton9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Restrictions", jPanel1);
@@ -1269,10 +1345,10 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("General Information");
         formPanel6.setBorder(xTitledBorder1);
+        formPanel6.setCaptionWidth(100);
 
         xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel10.setCaption("Taxpayer");
-        xLabel10.setCaptionWidth(80);
+        xLabel10.setCaption("Declared Owner");
         xLabel10.setExpression("#{entity.taxpayer.name}");
         xLabel10.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1280,7 +1356,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setCaption("Address");
-        xLabel11.setCaptionWidth(80);
         xLabel11.setExpression("#{entity.taxpayer.address}");
         xLabel11.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1288,7 +1363,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel26.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel26.setCaption("Administrator");
-        xLabel26.setCaptionWidth(80);
         xLabel26.setExpression("#{entity.administrator.name}");
         xLabel26.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel26.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1296,7 +1370,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel21.setCaption("TD No.");
-        xLabel21.setCaptionWidth(80);
         xLabel21.setExpression("#{entity.tdno}");
         xLabel21.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1304,7 +1377,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel27.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel27.setCaption("Prev. TD No.");
-        xLabel27.setCaptionWidth(80);
         xLabel27.setExpression("#{entity.prevtdno}");
         xLabel27.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel27.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1312,7 +1384,6 @@ public class RPTLedgerPage extends javax.swing.JPanel {
 
         xLabel31.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel31.setCaption("PIN ");
-        xLabel31.setCaptionWidth(80);
         xLabel31.setExpression("#{entity.fullpin}");
         xLabel31.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel31.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -1543,6 +1614,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XActionBar xActionBar2;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton10;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
@@ -1554,7 +1626,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
-    private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XDataTable xDataTable5;
     private com.rameses.rcp.control.XDataTable xDataTable7;

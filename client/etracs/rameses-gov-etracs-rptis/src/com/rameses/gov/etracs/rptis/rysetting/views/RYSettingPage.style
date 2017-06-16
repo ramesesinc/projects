@@ -1,0 +1,12 @@
+"entity.*" [mode=='read']{
+    enabled:false;
+}
+
+"entity.*" [mode != 'read']{
+    enabled:true;
+}
+
+"entity.(ry|appliedto)" [true == true]{
+    enabled:false;
+}
+

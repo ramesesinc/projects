@@ -1,9 +1,23 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="exemptiontype" 
-          cols="state,code,name,orderno" orderBy="orderno"
-          allowDelete="#{entity.state!='APPROVED'}"
-          caption="Exemption Type">
+          windowTitle="Exemption Types"
+          cols="code,name,state,orderno" 
+          orderBy="orderno" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" action="init" caption="Exemption Types" index="2" role="ASSESSOR_DATAMGMT,MASTER"/>
+        <invoker folderid="/explorer/master/rpt" caption="Exemption Types"  index="2" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Exemption Types"  index="2" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/exemptiontypes.png"/>
+        
+        <invoker type="quick_launcher" code="ET00" caption="Exemption Types"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

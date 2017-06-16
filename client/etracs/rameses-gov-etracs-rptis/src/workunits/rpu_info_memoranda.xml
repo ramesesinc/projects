@@ -8,34 +8,10 @@
         <invoker type="rpumisc:info" caption="Memoranda" index="1000" mnemonic="M" />
     </invokers>
     
-    <code>
-<![CDATA[        
-        
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.* 
-import com.rameses.osiris2.common.* 
-
-class MemorandaController extends com.rameses.gov.etracs.rpt.workflow.BasicInfoController
-{
-    @Binding
-    def binding;
-    
-    def getLookupTemplate(){
-        return Inv.lookupOpener('memorandatemplate:lookup', [
-            
-            onselect : { 
-                entity.memoranda = it.template;
-                binding.refresh('entity.memoranda');
-            },
-        ])
-    }
-}    
-    
-]]>        
+    <code class="com.rameses.gov.etracs.rptis.models.RPUInfoMemorandaModel" >
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasInfoMemorandaPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.RPUInfoMemorandaPage"/>
     </pages>
 </workunit>

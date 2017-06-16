@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="faas:info" action="init" caption="Stewardships" visibleWhen="#{entity.stewardships?.size() != 0}" index="2"/>
+        <invoker type="faas:info" action="init" caption="Stewardships" visibleWhen="#{entity.stewardships &amp;&amp; entity.stewardships.size() != 0}" index="2"/>
     </invokers>
     <code >
     <![CDATA[

@@ -5,10 +5,19 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Updated Master file to SETI
+	- With Improvement Certification updates
+	- Plant/Tree revision setting listing adjustment
+	- Agricultural Land Summary update
+	- Allow Examination findings for Current FAAS
+	- Update misc rpu suffix on Modify PIN 
 	- TMCR : add ry filter support 
 	- With Improvement Certification updates
 
 - LANDTAX
+	- Disallow transaction for compromised ledger
+	- Post ledger FAAS history for previous record reconciliation
+	- Advance bill support for Batch Billing
 	- Billing of current zero av with arrears
 	- Support province specific land tax client and services
 	- Add posting type option on all collection reports

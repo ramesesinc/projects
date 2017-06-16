@@ -23,9 +23,14 @@ class AgriLandActualUseSummaryController extends com.rameses.gov.etracs.rpt.repo
     
     String title = 'Agricultural Land Area by Actual Use Summary';
     
-    String reportPath = 'com/rameses/gov/etracs/rptis/report/';
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
     String reportName = reportPath + 'agriland_actualuse_summary.jasper';
     
+    
+    def initReport(){
+        entity.summarytype = summarytypes[0];
+        return 'default'
+    }
     
     void buildReportData(entity, asyncHandler){
         svc.getActualUseSummaryByArea(entity, asyncHandler);
@@ -39,11 +44,22 @@ class AgriLandActualUseSummaryController extends com.rameses.gov.etracs.rpt.repo
         return ['TAXABLE', 'EXEMPT'];
     }
     
+    def getSummarytypes(){
+        return [
+            [type:'lgu', name:'LGU'],
+            [type:'brgy', name:'Barangay'],
+        ]
+    }
+    
     def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false, required:true]),
-                new FormControl( "combo", [caption:'Taxability', name:'entity.taxability', items:'taxabilities', required:true, preferredSize:'120,19', allowNull:false]),
+                new FormControl( "combo", [caption:'Summary Type', captionWidth:120, name:'entity.summarytype', items:'summarytypes', expression:'#{item.name}', allowNull:false, required:true]),
+                new FormControl( "combo", [caption:'LGU', captionWidth:120 , name:'entity.lgu', items:'lgus', expression:'#{item.name}', emptyText:'ALL', visibleWhen:"#{entity.summarytype.type=='lgu'}", depends:'entity.summarytype']),
+                new FormControl( "combo", [caption:'LGU', captionWidth:120 , name:'entity.lgu', items:'lgus', expression:'#{item.name}', visibleWhen:"#{entity.summarytype.type=='brgy'}", allowNull:false, required:true, depends:'entity.summarytype']),
+                new FormControl( "combo", [caption:'Barangay', captionWidth:120, name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.(summarytype|lgu)', dynamic:true, emptyText:'ALL', visibleWhen:"#{entity.summarytype?.type=='brgy'}"]),
+                new FormControl( "combo", [caption:'Taxability', captionWidth:120, name:'entity.taxability', items:'taxabilities', required:true, preferredSize:'120,19', allowNull:false]),
+                new FormControl( "text", [caption:'Section', captionWidth:120, name:'entity.section', depends:'entity.barangay', preferredSize:'120,19', visibleWhen:'#{entity.barangay != null}']),
             ]
         },
    ] as FormPanelModel;

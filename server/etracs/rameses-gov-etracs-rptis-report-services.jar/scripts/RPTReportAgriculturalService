@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 
 class RPTReportAgriculturalService
 {
+    @Env 
+    def env 
+
     @ActiveDB('rptreport_agricultural')
     def em;
 
@@ -20,14 +23,24 @@ class RPTReportAgriculturalService
         if ('EXEMPT'.equalsIgnoreCase(params.taxability)){
             params.taxable = 0
         }
-        params.lguid = params.lgu.objid 
+        params.lguid = (params.lgu ? params.lgu.objid : '%')
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
+        params.section = (params.section ? params.section : '%')
+
         params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.serverDate)
         
-        def list = em.getActualUseSummaryByArea(params)
+        def list = []
+        if (params.summarytype.type == 'lgu')
+            list = em.getItemsByLgu(params)
+        else 
+            list = em.getItemsByBarangay(params)
         if (!list) throw new Exception('Records not found.')
 
         def p = [:]
-        p.FORLGUNAME= params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+        p.FORLGUNAME = env.ORGCLASS + ' OF ' + env.ORGNAME 
+        if (params.lgu){
+            p.FORLGUNAME= params.lgu.lgutype.toUpperCase() + ' OF ' + params.lgu.name
+        }
         p.PERIOD = params.period 
         p.TAXABILITY = params.taxability
 

@@ -65,7 +65,7 @@ public class RPTCompromiseModel
             throw new Exception('Ledger has an active compromised agreement.')
         }
         def parseddate = dateSvc.parseCurrentDate()
-        if( xledger.lastyearpaid + 1 == parseddate.year ) {
+        if( xledger.lastyearpaid == parseddate.year ) {
             throw new Exception('Ledger has no arrears.')
         }
         ledger                  = xledger 
@@ -305,7 +305,7 @@ public class RPTCompromiseModel
         validate  : { li -> 
             required( 'Name', li.item.name )
         },
-    ] as SubListModel
+    ] as EditorListModel
     
     boolean existsWitness( witness ) {
         return entity.signatories.find{ it.name == witness.name } != null 

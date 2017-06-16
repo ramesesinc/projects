@@ -22,7 +22,7 @@ class StatementOfValuationModel extends com.rameses.gov.etracs.rpt.report.AsyncR
     
     String title = 'Statement of Valuation Report'
     
-    String reportName = 'com/rameses/gov/etracs/rptis/report/statement_of_valuation.jasper';
+    String reportName = 'com/rameses/gov/etracs/rptis/reports/statement_of_valuation.jasper';
     
     void buildReportData(entity, asyncHandler){
         svc.buildReport(entity, asyncHandler);

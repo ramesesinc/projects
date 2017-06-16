@@ -25,10 +25,11 @@ class RPTReportLandSpecificClassService
 
     @Async
     @ProxyMethod
-	public Map generateReport(params) {
+	public Map buildReport(params) {
 		params.lguid = (params.lgu ? params.lgu.objid : '%')
 		params.barangayid = (params.barangay ? params.barangay.objid : '%')
 		params.classificationid = (params.classification ? params.classification.objid : '%')
+		params.section = (params.section ? params.section : '%')
 		params.landspecificclassid = params.specificclass.objid 
 
 		def list = em.getLandSpecificClasses(params)
@@ -42,7 +43,7 @@ class RPTReportLandSpecificClassService
 		}
 			
 		def p = [
-			TITLE : 'LIST OF ' + params.specificclass.name + ' PROPERTIES'
+			TITLE : 'LIST OF ' + params.specificclass.name + ' PROPERTIES ( Revision Year ' + params.ry + ')'
 		]
 
 		return [

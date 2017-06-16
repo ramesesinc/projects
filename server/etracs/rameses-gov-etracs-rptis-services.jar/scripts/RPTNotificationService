@@ -25,6 +25,9 @@ class RPTNotificationService
     @Context
     def appContext 
 
+    @Service('RPTUtil')
+    def util 
+
     @ProxyMethod
     public def createAsyncMessage(asyncreq){
         return [
@@ -35,7 +38,7 @@ class RPTNotificationService
             filetype : null,
             groupid  : 'async',
             channel  : (appContext.conf.cloud_channel ? appContext.conf.cloud_channel : 'etracs'),
-            channelgroup : getParentCode(),
+            channelgroup : util.getParentCode(),
         ]
     }   
 
@@ -126,10 +129,6 @@ class RPTNotificationService
             println 'closeUserNotification Error ==============================================='
             println e.printStackTrace
         }
-    }
-
-    String getParentCode(){
-        return env.ORGCODE.replaceAll('-.*','')
     }
 
 }

@@ -2,7 +2,7 @@
 <workunit>
     <invokers>
         <invoker type="faas:capture:create" action="initEdit" caption="FAAS" role="ENCODER" />
-        <invoker type="faas:capture:gr" action="create" caption="FAAS" role="ENCODER" />
+        <invoker type="faas:capture:gr" action="initEdit" caption="FAAS" role="ENCODER" />
         <invoker type="faas:capture:newdiscovery" action="create" caption="FAAS" width="1024" height="600" target="popup" />
         <invoker type="faas:capture:newdiscovery:open" action="open" caption="FAAS" width="1024" height="600" target="popup" />
         <invoker type="faas:capture:open" action="open" caption="FAAS" target="window"/>
@@ -14,65 +14,17 @@
         <invoker type="formActions" caption="Save"   action="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
         <invoker type="formActions" caption="Delete" action="delete" confirm="Delete record?"    mnemonic="d" icon="images/toolbars/trash.png"  visibleWhen="#{mode == 'read' &amp;&amp; entity.state.matches('INTERIM|FORAPPROVAL')}" role="APPRAISER,ENCODER" permission="faas.delete"/>
         <invoker type="formActions" caption="Submit" action="submitFaasForApproval"  visibleWhen="#{mode == 'read' &amp;&amp; entity.state.matches('INTERIM')}" confirm="Submit FAAS for approval?" role="APPRAISER,ENCODER" />
-        <invoker type="formActions" caption="Disapprove" action="disapproveFaas" visibleWhen="#{mode == 'read' &amp;&amp; entity.state.matches('FORAPPROVAL')}" confirm="Disapprove FAAS?" role="APPROVER,ASSESSOR,ENCODING_APPROVER"/>
-        <invoker type="formActions" caption="Approve" action="approveFaas" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read' &amp;&amp; entity.state.matches('FORAPPROVAL')}" confirm="Approve FAAS?" role="APPROVER,ASSESSOR,ENCODING_APPROVER" />
+        <invoker type="formActions" caption="Disapprove" action="disapproveFaas" visibleWhen="#{mode == 'read' &amp;&amp; entity.state.matches('FORAPPROVAL')}" confirm="Disapprove FAAS?" role="APPROVER,ASSESSOR,ENCODING_APPROVER,ENCODER_APPROVER"/>
+        <invoker type="formActions" caption="Approve" action="approveFaas" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read' &amp;&amp; entity.state.matches('FORAPPROVAL')}" confirm="Approve FAAS?" role="APPROVER,ASSESSOR,ENCODING_APPROVER,ENCODER_APPROVER" />
         <invoker type="formActions" caption="Recalculate"   action="recalc"  name="recalc" visibleWhen="#{mode=='edit' &amp;&amp; entity.state.matches('INTERIM|FORAPPROVAL')}" role="APPRAISER,ENCODER" index="2000"/>
         
         <invoker type="formActions" caption="Modify" name="popupChangeInfo" visibleWhen="#{entity.state=='CURRENT'}" category="faas:changeinfo" index="100000" role="ADMIN"/>
         
     </invokers>
-    <code>
-<![CDATA[
-
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import com.rameses.gov.etracs.rpt.util.*;
-
-public class FaasCaptureController extends com.rameses.gov.etracs.rpt.faas.ui.FaasController
-{
-
-    def STATE_INTERIM           = 'INTERIM';
-    def STATE_FORAPPROVAL       = 'FORAPPROVAL';
-    def STATE_CURRENT           = 'CURRENT';
-    def STATE_CANCELLED         = 'CANCELLED';
-    
-    
-    String getTxntitle(){
-        return invoker.caption + ' Transaction'
-    }
-    
-    void submitFaasForApproval(){
-        if (MsgBox.confirm('Submit FAAS for Approval?')){
-            entity.putAll(service.submitForApproval( entity ));
-        }
-    }
-    
-    
-    void approveFaas() {
-        if (MsgBox.confirm('Approve FAAS?')){
-            entity.putAll(service.approveFaas( entity ));
-        }
-    }
-
-
-    void disapproveFaas() {
-        if (MsgBox.confirm('Disapprove FAAS?')){
-            entity.putAll(service.disapproveFaas( entity ));
-        }
-    }
-            
-}
-
-
-
-    
-]]>    
-            
+    <code class="com.rameses.gov.etracs.rptis.models.FAASCaptureModel">
     </code>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASPage"/>
     </pages>
     
 </workunit>

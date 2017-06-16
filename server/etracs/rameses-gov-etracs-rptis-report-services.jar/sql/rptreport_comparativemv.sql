@@ -18,9 +18,12 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT'   
-  AND r.taxable = 1  
+WHERE (
+	(f.dtapproved < $P{startdate} AND f.state = 'CURRENT' ) OR 
+	(f.dtapproved < $P{startdate} and f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
+	)
+AND r.taxable = 1  
+${filter}
 GROUP BY pc.objid, pc.name, pc.special  , pc.orderno  
 ORDER BY pc.orderno  
 
@@ -38,9 +41,12 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE ${filter}
-  AND f.state = 'CURRENT'   
-  AND r.taxable = 1  
+WHERE (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+)
+AND r.taxable = 1  
+${filter}
 GROUP BY pc.objid, pc.name, pc.special , pc.orderno  
 ORDER BY pc.orderno  
 
@@ -58,9 +64,12 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid    
-WHERE ${filter}
-  AND f.state = 'CURRENT'   
-  AND r.taxable = 0   
+WHERE (
+	(f.dtapproved < $P{startdate} AND f.state = 'CURRENT' ) OR 
+	(f.dtapproved < $P{startdate} and f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
+)
+AND r.taxable = 0   
+${filter}
 GROUP BY e.objid, e.name, e.orderno  
 ORDER BY e.orderno  
 
@@ -78,9 +87,12 @@ FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp on f.realpropertyid = rp.objid 
 	INNER JOIN exemptiontype e ON r.exemptiontype_objid = e.objid    
-WHERE ${filter}
-  AND f.state = 'CURRENT'   
-  AND r.taxable = 0   
+WHERE (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+)
+AND r.taxable = 0   
+${filter}
 GROUP BY e.objid, e.name, e.orderno  
 ORDER BY e.orderno  
 

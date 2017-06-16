@@ -5,8 +5,8 @@ SELECT
 	rpu.ry AS prevfaas_ry,
 	rpu.fullpin AS prevfaas_pin,
 	rp.claimno AS prevfaas_claimno,
-	f.taxpayer_name AS prevfaas_taxpayer_name,
-	f.taxpayer_address AS prevfaas_taxpayer_address,
+	e.name  AS prevfaas_taxpayer_name,
+	e.address_text AS prevfaas_taxpayer_address,
 	rp.cadastrallotno AS prevfaas_cadastrallotno,
 	rp.surveyno AS prevfaas_surveyno,
 	nf.tdno AS newfaas_tdno
@@ -15,6 +15,7 @@ FROM mcsettlement m
 	INNER JOIN rpu rpu ON f.rpuid = rpu.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	LEFT JOIN faas nf ON m.newfaas_objid = nf.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE (f.tdno LIKE $P{searchtext} OR rp.pin LIKE $P{searchtext})
 
 
@@ -27,8 +28,8 @@ SELECT
 	rpu.ry AS prevfaas_ry,
 	rpu.fullpin AS prevfaas_pin,
 	rp.claimno AS prevfaas_claimno,
-	f.taxpayer_name AS prevfaas_taxpayer_name,
-	f.taxpayer_address AS prevfaas_taxpayer_address,
+	e.name  AS prevfaas_taxpayer_name,
+	e.address_text AS prevfaas_taxpayer_address,
 	rp.objid AS prevfaas_realpropertyid,
 	rp.cadastrallotno AS prevfaas_cadastrallotno,
 	rp.surveyno AS prevfaas_surveyno,
@@ -38,6 +39,7 @@ FROM mcsettlement m
 	INNER JOIN rpu rpu ON f.rpuid = rpu.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	LEFT JOIN faas nf ON m.newfaas_objid = nf.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE m.objid = $P{objid}
 
 

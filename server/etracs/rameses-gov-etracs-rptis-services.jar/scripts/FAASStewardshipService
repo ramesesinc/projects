@@ -184,14 +184,6 @@ class FAASStewardshipService
         faas.taxpayer = null
         faas.owner = null 
         faas.prevtdno       = null
-        faas.prevpin        = null
-        faas.prevowner      = null
-        faas.prevadministrator = null
-        faas.prevav         =  null
-        faas.prevmv         = null
-        faas.prevareasqm    = null
-        faas.prevareaha     = null
-        faas.preveffectivity = null
         faas.previousfaases = []
 
         faas.rp.previd = null;

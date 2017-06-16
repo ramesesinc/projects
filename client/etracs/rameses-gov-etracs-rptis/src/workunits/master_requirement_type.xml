@@ -1,53 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="rpt_requirement_type">
     
     <invokers>
-        <invoker type="quick_launcher" code="REQ01" action="init" caption="Requirement Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="rptrequirementtype:create" action="init" caption="Requirement Type" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="rptrequirementtype:open" action="open" caption="Requirement Type" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="rpt_requirement_type:create" 
+                 caption="Requirement Type" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="rpt_requirement_type.create" />
+        
+        <invoker type="rpt_requirement_type:open" 
+                 caption="Requirement Type" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="rpt_requirement_type.read"/>
     </invokers>
-        
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*
-        
-        public class RPTRequirementTypeController  extends CRUDController
-        {
-            String serviceName = "RPTRequirementTypeService"
-            String entityName  = 'rptrequirementtype'
-            String prefixId    = 'RT'
-            
-            boolean allowApprove = false;
-            
-            def handler;
-            def handlers;
-            
-            void afterOpen(data){
-                handler = getHandlers().find{it.properties.name == data.handler }
-            }
-            
-            void afterCreate(data){
-                handler = null;
-            }
-            
-            def getHandlers(){
-                if (!handlers)
-                    handlers = InvokerUtil.lookupOpeners('rptrequirementtype:handler', [:]);
-                return handlers;
-            }
-            
-            void setHandler(handler){
-                this.handler = handler;
-                entity.handler = handler.properties.name;
-            }
-        }
-        
-    </code>
-    
+    <code class="com.rameses.gov.etracs.rptis.master.models.RequirementTypeModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.RPTRequirementTypePage" />
+        <page template="com.rameses.gov.etracs.rptis.master.views.RequirementTypePage"/>
     </pages>
 </workunit>
-

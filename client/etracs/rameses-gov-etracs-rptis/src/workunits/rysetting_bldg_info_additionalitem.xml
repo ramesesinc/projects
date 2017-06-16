@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="bldgrysetting:info" 
+                 action="init" caption="Additional Items and Adjustments" 
+                 mnemonic="t" index="15"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.BldgAdditionalItemInfoModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.BldgAdditionalItemInfoPage"/>
+    </pages>
+</workunit>

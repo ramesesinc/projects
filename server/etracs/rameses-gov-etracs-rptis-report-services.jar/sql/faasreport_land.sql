@@ -1,5 +1,7 @@
 [getLandAppraisals]
 SELECT
+	dpc.code as dominantclasscode,
+	dpc.name as dominantclassname,
 	pc.code AS classcode,
 	pc.name  AS classname,
 	lspc.code AS specificcode,
@@ -15,14 +17,16 @@ SELECT
 	ld.unitvalue,
 	ld.basemarketvalue,
 	ld.areatype
-FROM landdetail ld 
+FROM rpu r 
+	inner join landdetail ld on r.objid = ld.landrpuid  
+	inner join propertyclassification dpc on r.classification_objid = dpc.objid 
 	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
 	INNER JOIN landspecificclass lspc ON ld.landspecificclass_objid = lspc.objid 
 	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid 
 	INNER JOIN landassesslevel al ON ld.actualuse_objid = al.objid 
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 	LEFT JOIN lcuvstripping st on ld.stripping_objid = st.objid 
-WHERE ld.landrpuid = $P{objid}	
+WHERE r.objid = $P{objid}	
 ORDER BY st.striplevel, ld.objid DESC 
 
 
@@ -157,6 +161,8 @@ order by ptd.objid DESC
 
 [getLandPropertyAssessments]
 SELECT 
+	x.dominantclasscode,
+	x.dominantclassname,
 	x.classcode,
 	x.classname,
 	x.actualuse,
@@ -168,6 +174,8 @@ SELECT
 	sum(x.assessedvalue) as assessedvalue
 FROM (
 	SELECT 
+		dpc.code as dominantclasscode,
+		dpc.name as dominantclassname, 
 		pc.code as classcode,
 		pc.name as classname, 
 		lal.code AS actualuse,
@@ -178,6 +186,8 @@ FROM (
 		ra.assessedvalue AS assessedvalue,
 		ra.taxable 
 	FROM rpu_assessment ra 
+		inner join rpu r on ra.rpuid = r.objid 
+		inner join propertyclassification dpc on r.classification_objid = dpc.objid 
 		INNER JOIN landassesslevel lal ON ra.actualuse_objid = lal.objid 
 		inner join propertyclassification pc on lal.classification_objid = pc.objid 
 	WHERE ra.rpuid = $P{objid}	
@@ -185,6 +195,8 @@ FROM (
 	UNION ALL 
 
 	SELECT 
+		dpc.code as dominantclasscode,
+		dpc.name as dominantclassname, 
 		pc.code as classcode,
 		pc.name as classname,
 		lal.code AS actualuse,
@@ -195,11 +207,15 @@ FROM (
 		ra.assessedvalue AS assessedvalue,
 		ra.taxable
 	FROM rpu_assessment ra 
+		inner join rpu r on ra.rpuid = r.objid 
+		inner join propertyclassification dpc on r.classification_objid = dpc.objid 
 		INNER JOIN planttreeassesslevel lal ON ra.actualuse_objid = lal.objid 
 		INNER JOIN propertyclassification pc on lal.classification_objid = pc.objid 
 	WHERE ra.rpuid = $P{objid}	
 ) x 
 group by 
+	x.dominantclasscode,
+	x.dominantclassname,
 	x.classcode,
 	x.classname,
 	x.actualuse,

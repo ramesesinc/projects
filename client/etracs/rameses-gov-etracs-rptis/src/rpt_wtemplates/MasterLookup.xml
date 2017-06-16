@@ -1,0 +1,7 @@
+<workunit allowCreate="false">
+    
+    <code class="com.rameses.gov.etracs.rptis.master.models.MasterLookupModel"/>    
+    <pages>
+        <page template="com.rameses.seti2.views.CrudLookupPage"/>
+    </pages>
+</workunit> 

@@ -4,24 +4,24 @@
                 tag="waterworksapplication"
                 caption="Waterworks Application Rules" 
                 action="init" 
-                 index="1" srole="RULE_AUTHOR"/>
+                 index="1" role="RULE_AUTHOR"/>
         
         <invoker folderid="/explorer/rulemgmt/waterworks" 
                 tag="waterworksbilling"
                 caption="Waterworks Billing Rules" 
                  action="init" 
-                index="2" srole="RULE_AUTHOR"/>
+                index="2" role="RULE_AUTHOR"/>
 
         <invoker folderid="/explorer/rulemgmt/waterworks" 
                 tag="waterworksbillingcycle"
                 caption="Waterworks Billing Cycle Rules" 
                  action="init" 
-                index="1" srole="RULE_AUTHOR"/>   
+                index="1" role="RULE_AUTHOR"/>   
 
         <invoker folderid="/explorer/rulemgmt/waterworks" 
                 tag="waterworkscomputation"
                 caption="Waterworks Computation Rules" 
                  action="init" 
-                index="1" srole="RULE_AUTHOR"/>             
+                index="1" role="RULE_AUTHOR"/>             
     </invokers>
 </workunit>

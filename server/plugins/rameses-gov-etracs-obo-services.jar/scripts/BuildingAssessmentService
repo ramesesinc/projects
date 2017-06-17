@@ -1,0 +1,72 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+
+public class BuildingAssessmentService  {
+
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def assess(o) {
+
+		def data = [:];
+		if(o.infos) {
+			data.infos = o.infos;
+		}
+
+		def svrDate = dateSvc.getServerDate();
+		def fb = new FactBuilder();
+
+		fb.variableInfoProvider = new VariableInfoProvider(
+			schemaName: "obovariable",
+			createDecimalFact: { return new OboDecimalInfo() },
+			createIntegerFact: { return new OboIntegerInfo() },
+			createBooleanFact: { return new OboBooleanInfo() }
+		);
+		
+		fb.facts << new BuildingUse( o.buildinguse );
+		fb.facts << new OboApplication(  o.application);
+		fb.facts << new treasury.facts.SystemDate(svrDate);
+		fb.facts << new treasury.facts.BillDate( (o.billdate) ?o.billdate: svrDate );
+		o.permits?.each { p->
+			fb.facts << new AuxiliaryPermit( permittype:p.permittype );
+		}		
+
+		def m = [items: [], infos:[]];	
+		def resultHandler = [
+			getFactKeyValue : { v->
+				if(v instanceof BillItem) {
+					m.items << v.toMap();
+				}	
+				else if(v instanceof OboApplication) {
+					m.constructioncost = v.constructioncost;
+				}
+				else if( v instanceof OboVariableInfo ) {
+					if( v.amount > 0 ) {
+						m.infos << v.toMap();
+					}
+				}
+				return null;
+			}
+		] as ResultHandler;
+
+		assmtSvc.execute( "oboassessment", data, fb, resultHandler );
+
+		m.fees = m.items.sort{ it.sortorder };
+		m.amount = m.items.sum{ it.amount };
+		return m;
+	}
+
+	
+
+
+}

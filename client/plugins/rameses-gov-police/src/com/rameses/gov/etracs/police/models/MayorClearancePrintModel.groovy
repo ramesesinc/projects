@@ -8,6 +8,11 @@ import com.rameses.osiris2.reports.*;
 
 class MayorClearancePrintModel extends ReportController {
 
+    @Service('PoliceClearanceReportService') 
+    def reportSvc; 
+    
+    def ctx = com.rameses.rcp.framework.ClientContext.currentContext; 
+    
     def entity;
     def data = [:];
     def title = "Mayor's Clearance"
@@ -16,23 +21,27 @@ class MayorClearancePrintModel extends ReportController {
     String reportName = reportpath + "mayors-clearance.jasper";
 
     @FormTitle
-    def formTitle
+    def getFormTitle() {
+        return data.txnno; 
+    }
 
     def applicationid;
 
-    def getReportData(){
+    def getReportData(){ 
+        if ( data ) {
+            def appenv = ctx.appEnv; 
+            data.jsonurlpath = "http://"+ appenv['app.host']+'/'+appenv['app.cluster']+'/json';             
+        }
         return data;
     }
 
-    def printReport() {
-        applicationid = entity.objid;
+    def printReport() { 
+        data = entity;
         return preview(); 
     } 
 
     def openReport() {
-        formTitle = entity.txnno;
-        applicationid = entity.applicationid;
-        preview(); 
-        return null; 
+        data = reportSvc.getMayorClearance([ clearanceid: entity.objid ]); 
+        return preview(); 
     } 
 }   

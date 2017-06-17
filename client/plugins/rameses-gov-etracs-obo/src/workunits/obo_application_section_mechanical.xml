@@ -1,0 +1,5 @@
+<workunit>
+    <invokers>
+        <invoker type="obo_application:section" caption="Mechanical" section="mechanical" index="2"/>
+    </invokers>
+</workunit>

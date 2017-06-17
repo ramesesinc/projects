@@ -1,0 +1,35 @@
+<script>
+<%  
+    def req = SESSION.request;
+    def barcode = req.getParameter("barcode");
+    def service = SERVICE.lookup("KioskBarcodeService", "etracs");
+    def result = service.load([barcode: barcode]);
+    //def result = [barcode:"51005:B0750120170100004-1N", handler:"bpls", code:"B0750120170100004-1N"]
+
+    println "var result = {}";
+    //def page = service.getPage([barcode: barcode]);
+    if (result) println "result = {handler: '" + result.handler + "', code: '" + result.code + "'}";
+
+%>
+
+
+\$put("barcode", new function() {
+
+  var self = this;
+
+  this.onload = function() {
+    window.console.log(result);
+    if (result) {
+      window.location.href = '/index/' + result.handler + '?code=' + result.code;
+
+    }
+  }
+
+  this.onpageload = function( pagename ) {
+    window.console.log(result.handler);
+  }
+
+});
+
+</script>
+${result}

@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker type="individualentity:option" caption="General" />
+        <invoker type="formActions" caption="Edit" action="edit" role="MASTER" permission="individualentity.edit" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class IndividualEntityGeneralController  {
+            
+            @Binding
+            def binding;
+        
+            @Caller
+            def caller;
+            
+            def entity;
+            
+            def entityName = "individualentity_general";
+            
+            void edit() {
+                def sh = { o->
+                    entity.putAll(o);
+                    binding.refresh();
+                    caller.refresh();
+                }
+                def opener = Inv.lookupOpener( "individualentity:edit", [entity:entity, saveHandler: sh] );
+                caller.binding.fireNavigation( opener );
+            }
+            
+            void refresh() {
+                binding.refresh();
+            }
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.IndividualEntityInfoPage"/>
+   </pages>   
+</workunit>

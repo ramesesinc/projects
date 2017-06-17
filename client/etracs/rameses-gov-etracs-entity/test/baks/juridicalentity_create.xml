@@ -1,0 +1,161 @@
+<workunit>
+    <invokers>
+        <invoker type="juridicalentity:create" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="juridicalentity.create"/>
+        <invoker type="quick_launcher" code="TP02" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="juridicalentity.create"/>
+               
+       <invoker type="formActions" caption="Cancel" action="_exit" visibleWhen="#{initiator == 'create'}" immediate="true" mnemonic="c" />
+        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{initiator != 'create'}" immediate="true" mnemonic="c"/>
+        
+        <!-- used to check if we can allow dupplicate -->
+        <invoker type="juridicalentity:approveduplicate" role="APPROVER" permission="juridicalentity.approveduplicate" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class JuridicalEntityCreateController extends PageFlowController {
+            
+            @Service("JuridicalEntityService")
+            def service;
+            
+            @Service("JuridicalEntityNameMatchService")
+            def matchService;
+            
+            def onselect;
+            def entity;
+            def step;
+            boolean hasMatch;
+            def matchList;
+            def selectedItem;
+            def initiator = "edit";
+            
+            def orgTypes = LOV.ORG_TYPES.findAll{ it.key != 'SING' };
+            
+            def mode = "create";
+            def addressHandler;
+           
+            def create() {
+                doCreate();
+                return super.start();
+            }
+            
+            void doCreate(){
+                step = "initial";
+                if(!entity) {
+                    entity = [ address: [:] ];
+                    if( !entity.objid) entity.objid = 'JUR'+new UID();
+                }  
+                if(!entity.address) entity.address = [:];
+                if(!entity.administrator) entity.administrator = [:];
+                entity.type = 'JURIDICAL';
+                addressHandler = Inv.lookupOpener('address:component', [
+                    entity: entity.address
+                ]); 
+            }
+            
+            void checkHasMatch() {
+                hasMatch = false;
+                matchList =  matchService.getMatches(entity);
+                if(matchList.size()>0){
+                    hasMatch = true;
+                    selectedItem = matchList[0];
+                }    
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    return matchList;
+                }
+            ] as BasicListModel;
+            
+            def selectMatchedEntity() {
+                if(!selectedItem) return;
+                onselect( selectedItem );
+                return "_close";
+            }
+            
+            def getInfo() {
+                return entity;
+            }
+            
+            
+            void validateAdd() {
+                if( matchList.find{ it.match == 100.0 } ) {
+                    boolean allowed = false;
+                    try {
+                        def test = Inv.lookupOpener( "juridicalentity:approveduplicate", [:] );
+                        if(test) allowed = true;
+                    }
+                    catch(e) {;}
+                    if( !allowed )  {
+                        throw new Exception("There is an exact match for the record. You do not have enough rights to override.");                    
+                    }    
+                }    
+            }
+            
+            def saveNew() {
+                entity = service.create( entity );
+                if( onselect ) {
+                    onselect(entity);
+                }    
+                loadOptions();
+            }
+            
+            def optionList;
+            def selectedOption;
+            void loadOptions(){
+                optionList = Inv.lookupOpeners( "juridicalentity:option", [entity: entity] );
+                if(optionList.size() > 0 ) {
+                    selectedOption = optionList[0];
+                }
+            }
+            
+            void initNew(){
+                initiator = 'create';
+                entity = null;
+                addressHandler = null;
+                doCreate();
+            }
+            
+            
+        }        
+   ]]>
+   </code>
+   <pageflow>
+       <start>
+           <transition to="#{step}"/>
+       </start>
+       <page name="initial" title="New Juridical Entity (Initial)">
+           <transition to="check-has-match" caption="Next" immediate="false" mnemonic="n" />
+       </page>
+       <process name="check-has-match" action="checkHasMatch">
+           <transition to="match" cond="#{hasMatch == true}"/> 
+           <transition to="add" cond="#{hasMatch == false}"/> 
+       </process>
+       <page name="match" title="New Juridical Entity (Possible Duplicate Match)">
+           <transition to="initial" caption="Back" name="back" mnemonic="b" />
+           <transition to="add" name="add" caption="Add as new Entity" action="validateAdd" mnemonic="a" />
+       </page>
+       <page name="add" title="New Juridical Entity">
+           <transition to="initial" caption="Back" name="back" mnemonic="b" />
+           <transition to="main" caption="Save" name="save" action="saveNew" mnemonic="s" shortcut="ctrl S"/>
+           <transition to="end" name="close" caption="Close" mnemomic="c" />
+       </page>
+       <page name="main" title="Juridical Entity">
+           <transition to="end" name="close" caption="Close" mnemonic="c"/>
+           <transition to="initial" name="new" caption="New" action="initNew" mnemonic="n" shortcut="ctrl N"/>
+       </page>
+       <end/>
+   </pageflow>
+   <pages>
+       <page name="initial" template="com.rameses.entity.ui.JuridicalEntityNewInitialPage"/>
+       <page name="match" template="com.rameses.entity.ui.JuridicalMatchNameListPage"/>
+       <page name="add"  template="com.rameses.entity.ui.JuridicalEntityEditPage"/>
+       <page name="main" template="com.rameses.entity.ui.EntityMainPage"/>
+   </pages>   
+</workunit>

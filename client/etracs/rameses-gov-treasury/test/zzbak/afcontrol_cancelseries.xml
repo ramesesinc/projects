@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker type="afcontrol:formActions" caption="Cancel Series" target="popup" action="init"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AFControlCancelController { 
+        
+            @Caller
+            def caller;
+        
+            def entity;
+            
+            @Service("AFControlService")
+            def service;
+            
+            void init() {
+                if(1==1)
+                    throw new Exception("This function is not yet supported");
+                    
+                if(caller.selectedEntity==null)
+                    throw new Exception("Please select an item ");
+                entity = [objid:caller.selectedEntity.objid ];    
+            }
+            
+            def doOk() {
+                def m = [objid:entity.objid, mode: entity.mode];
+                service.changeMode(m);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.afcontrol.AFControlCancelSeries"/>
+    </pages>
+</workunit>

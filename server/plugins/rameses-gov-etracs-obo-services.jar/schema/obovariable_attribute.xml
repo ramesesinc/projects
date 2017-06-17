@@ -1,0 +1,9 @@
+<schema adapter="obodb">
+
+	<element tablename="obovariable_attribute">
+		<field name="objid" primary="true"/>
+		<field name="name" required="true" caption="Name" searchable="true"/>
+	</element>
+
+</schema>
+		

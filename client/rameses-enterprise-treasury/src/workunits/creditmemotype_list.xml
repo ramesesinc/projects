@@ -1,8 +1,8 @@
 <workunit extends="wtemplates/ListController.xml">
     
     <invokers>
-        <invoker folderid="/explorer/master/treasury" caption="Credit Memo Types" role="MASTER"
-                    index="1" permission="creditmemotype.view" />
+        <invoker folderid="/explorer/master/treasury" caption="Credit Memo Types" 
+                 role="MASTER" permission="creditmemotype.view" />
     </invokers>
     
     <code>

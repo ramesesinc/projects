@@ -1,0 +1,112 @@
+<%
+    def pmo = null; 
+    def receipt = null; 
+    def paymentitem0 = null;
+    def txnid = PARAMS.referenceCode; 
+    try { 
+        def service = SERVICE.lookup("ElectronicReceiptService", "etracs"); 
+        
+        pmo = service.findCache([ key: txnid ]); 
+        if ( !pmo ) throw new Exception(''+ txnid +' payment order does not exist'); 
+
+        System.out.println('** pmo is ')
+        System.out.println( pmo ); 
+
+        def bill = service.findCache([ key: pmo.refid ]);
+        pmo.items = bill?.items; 
+
+        def eor = [:];
+        eor.objid = PARAMS.retrievalReferenceCode;
+        eor.txnrefid = txnid;
+        eor.txnreftype = 'pmo';
+        eor.txntype = pmo.txntype.objid;
+        eor.refno = PARAMS.retrievalReferenceCode;
+        eor.refdate = PARAMS.refdate;
+        eor.amount = PARAMS.amount;
+        eor.particulars = pmo.particulars;
+        eor.partner = [objid : 'dbp'];
+
+        service.createPayment( eor ); 
+        receipt = service.post( pmo, eor );
+        paymentitem0 = receipt?.paymentitems?.first(); 
+        throw new 
+    } catch(Throwable t) {
+        t.printStackTrace(); 
+    }
+%>
+
+DBP Success Page: <br/> 
+<script>
+\$put("receipt", new function(){
+
+    this.print = function (){ 
+        var params = { 
+            header : "${PROJECT['lgu.name']}", 
+            paymenttype : "${paymentitem0?.particulars}", 
+            receiptno : "${receipt?.receiptno}", 
+            receiptdate : "${receipt?.receiptdate}", 
+            txnno : "${paymentitem0?.refno}", 
+            paidby : "${receipt?.paidby}", 
+            amount : "Php${receipt?.amount}", 
+            particulars : "${pmo?.particulars}" 
+        }; 
+
+        window.console.log(params);
+        WebViewUtil.print(params, "receipt");
+    } 
+}); 
+</script> 
+
+<div id="wrapper" > 
+    <div id="content">
+        <div class="container">
+          <div class="bg-white">
+            <div class="bill-main-panel">
+              <div class="row">
+                <div class="col-md-12"> 
+                  <div class="l-name">
+                    <p class="label-name">Payment Successful</p>
+                    <p class="label-address">Your payment has been processed. Here are the details of this transaction for your reference</p>
+                  </div>    
+                </div>
+                <div class="bill-second-panel">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="label-top">
+                        <p class="label-title">Receipt No.</p>
+                        <p>: ${receipt?.receiptno}</p>
+                      </div>
+                      <div class="label-top">
+                        <p class="label-title">Receipt Date</p>
+                        <p>: ${receipt?.receiptdate}</p>
+                      </div> 
+                      <div class="label-top">
+                        <p class="label-title">Paid By</p>
+                        <p>: ${receipt?.paidby}</p>
+                      </div> 
+                      <div class="label-top">
+                        <p class="label-title">Txn No.</p>
+                        <p>: ${paymentitem0?.refno}</p>
+                      </div>
+                      <div class="label-top">
+                        <p class="label-title">Particulars:</p>
+                        <p> ${pmo?.particulars}</p>
+                      </div>
+                    </div>  
+                  </div>
+              </div> 
+              </div>
+            </div>
+        </div> 
+      <div class="col-md-3">
+        <form method="post" action="/index">
+          <input type="submit" class="thumbnail" value="New Transaction"/>
+        </form>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="thumbnail" r:context="receipt" r:name="print">Print Receipt</button>
+      </div>
+    </div>
+  </div>
+</div>
+

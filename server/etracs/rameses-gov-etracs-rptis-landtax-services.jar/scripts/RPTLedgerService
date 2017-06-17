@@ -401,38 +401,35 @@ class RPTLedgerService
             }
 
         ledgerfaases.each{ledgerfaas->
-            if (ledgerfaas.assessedvalue > 0.0){
-                
-                def params = [
-                    ledger      : ledger, 
-                    ledgerfaas  : ledgerfaas, 
-                    yr          : yr, 
-                    av          : ledgerfaas.assessedvalue, 
-                    basicav     : ledgerfaas.assessedvalue, 
-                    sefav       : ledgerfaas.assessedvalue, 
-                    classification   : ledgerfaas.classification,
-                    actualuse   : (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification),
-                    qtrly       : 0,
-                ]
+            def params = [
+                ledger      : ledger, 
+                ledgerfaas  : ledgerfaas, 
+                yr          : yr, 
+                av          : ledgerfaas.assessedvalue, 
+                basicav     : ledgerfaas.assessedvalue, 
+                sefav       : ledgerfaas.assessedvalue, 
+                classification   : ledgerfaas.classification,
+                actualuse   : (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification),
+                qtrly       : 0,
+            ]
 
-                def olditem = em.findLedgerItemByYears([objid:ledger.objid, year:yr, actualuseid:params.actualuse.objid])
-                def qtrlyinfo = em.findQtrlyItemCount(olditem)
-                if (!olditem || qtrlyinfo.count < 4){
-                    self.calcLedgerItemAssessedValue(params)
-                    if (!olditem){
-                        item = createLedgerItemData(ledger, ledgerfaas, params, yr)    
-                        createLedgerItemQtrlyData(item, qtr)
-                    }
-                    else{
-                        olditem.partialled = 0
-                        olditem.av      = params.av
-                        olditem.basicav = params.basicav
-                        olditem.sefav   = params.sefav
-                        olditem.classification  = ledgerfaas.classification
-                        olditem.actualuse  = (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification)
-                        createLedgerItemQtrlyData(olditem, qtr)   
-                        em.updateLedgerItemAvByQtrly(olditem)
-                    }
+            def olditem = em.findLedgerItemByYears([objid:ledger.objid, year:yr, actualuseid:params.actualuse.objid])
+            def qtrlyinfo = em.findQtrlyItemCount(olditem)
+            if (!olditem || qtrlyinfo.count < 4){
+                self.calcLedgerItemAssessedValue(params)
+                if (!olditem){
+                    item = createLedgerItemData(ledger, ledgerfaas, params, yr)    
+                    createLedgerItemQtrlyData(item, qtr)
+                }
+                else{
+                    olditem.partialled = 0
+                    olditem.av      = params.av
+                    olditem.basicav = params.basicav
+                    olditem.sefav   = params.sefav
+                    olditem.classification  = ledgerfaas.classification
+                    olditem.actualuse  = (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification)
+                    createLedgerItemQtrlyData(olditem, qtr)   
+                    em.updateLedgerItemAvByQtrly(olditem)
                 }
             }
         }        

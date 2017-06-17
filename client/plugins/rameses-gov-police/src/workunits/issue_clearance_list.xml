@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="cashreceipt_policeclearance_pending" 
+          allowCreate="false" allowDelete="false">
+    
+    <invokers>
+        <invoker folderid="home/police" caption="Issue Clearance" action="init"
+                 cols="receipt.receiptno,receipt.receiptdate,receipt.paidby,receipt.amount,receipt.txntype"/> 
+    </invokers>    
+</workunit>
+

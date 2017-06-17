@@ -5,7 +5,7 @@
     android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -38,6 +38,7 @@
         
         <activity
             android:name="com.rameses.android.SplashActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
             <intent-filter>
@@ -61,10 +62,20 @@
         <activity android:name="com.rameses.android.efaas.RevisionSettingDetailActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.FaasListActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.DownloadActivity"  android:screenOrientation="portrait"/>
-        <activity android:name="com.rameses.android.efaas.LandFaasActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasLandActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.TabFaasLandActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasLandGeneralActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasLandAppraisalActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasLandExaminationActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.TabFaasBuildingActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasBuildingGeneralActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasBuildingMaterialActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasBuildingAppraisalActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.ImageCaptureActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.ExaminationActivity"  android:screenOrientation="portrait"/>
         <activity android:name="com.rameses.android.efaas.UploadActivity"  android:screenOrientation="portrait"/>
-        <activity android:name="com.rameses.android.efaas.BuildingFaasActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.FaasBuildingActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.BuildingAppraisalActivity"  android:screenOrientation="portrait"/>
+        <activity android:name="com.rameses.android.efaas.BuildingAppraisalActualuseActivity"  android:screenOrientation="portrait"/>
     </application>
 </manifest>

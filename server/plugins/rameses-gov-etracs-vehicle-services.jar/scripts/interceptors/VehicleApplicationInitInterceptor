@@ -38,7 +38,7 @@ class VehicleApplicationInitInterceptor {
 			throw new Exception("Cannot process. Franchise " + franchiseno + " is not in ACTIVE state. Please check and release pending application");
 
 		f.each { k,v->
-			if(!k.matches( "objid|state|cluster|controlno|expirydate|appid|dtregistered" )) {
+			if(!k.matches( "objid|state|cluster|controlno|expirydate|appid|startdate" )) {
 				entity.put(k, v);
 			}
 		}

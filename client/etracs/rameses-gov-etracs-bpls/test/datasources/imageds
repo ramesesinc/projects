@@ -1,5 +1,0 @@
-dialect=mssql
-driverClass=com.microsoft.sqlserver.jdbc.SQLServerDriver
-url=jdbc:sqlserver://127.0.0.1;DatabaseName=etracsiligan251_image
-user=sa
-pwd=1234

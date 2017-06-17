@@ -1,13 +1,12 @@
 <schema adapter="main">
 	
 	<element tablename="entity_fingerprint">
-		<field name="objid" primary="true"/>
-		<field name="entityid"  />
-		<field name="dtfiled" />
-		<field name="leftthumb_image" />
-		<field name="leftthumb_fmd" />
-		<field name="rightthumb_image" />
-		<field name="rightthumb_fmd" />
+		<field name="objid" primary="true" prefix="EFP"/>
+		<field name="entityid" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="fingertype" required="true"/>
+		<field name="data" required="true"/>
+		<field name="image" required="true"/>
 	</element>
 
 </schema>

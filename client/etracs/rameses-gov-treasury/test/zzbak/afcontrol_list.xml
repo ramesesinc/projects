@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml"  serviceName="AFControlMgmtService"
+    entityName="afcontrol" formName="afcontrol" allowCreate="false" allowOpen="false">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="AF Issuances" index="5" role="AFO"/>
+        <invoker folderid="/explorer/txn/treasury" caption="AF Issuances" index="5" role="COLLECTOR"/>
+    </invokers>
+</workunit>

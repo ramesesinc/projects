@@ -1,8 +1,8 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
+        <invoker folderid="/explorer/report/treasury" action="init" caption="Credit Memo Summary" 
+                 role="REPORT" permission="creditmemo.viewreport" target="window" />
         <invoker type="creditmemo:report" action="init" caption="Credit Memo" target="window" />
-        <invoker folderid="/explorer/report/treasury" action="init" caption="Credit Memo Summary" target="window" index="100" 
-            role="REPORT" permission="creditmemo.viewreport"/>
     </invokers>
     
     <code>

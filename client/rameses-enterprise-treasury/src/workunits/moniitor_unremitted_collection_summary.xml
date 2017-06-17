@@ -7,7 +7,7 @@
     <invokers>
         <invoker folderid="/explorer/txn/treasury/monitoring" 
                  caption="Unremitted Collection Summary Monitoring" 
-                 role="ADMIN,SHARED" index="-98"/>
+                 role="ADMIN,SHARED"/>
         
         <invoker type="formActions" caption="Details" action="showItems"
                  visibleWhen="#{selectedEntity != null}" 

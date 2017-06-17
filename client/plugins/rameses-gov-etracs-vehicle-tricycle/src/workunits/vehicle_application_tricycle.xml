@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleApplication.xml" 
         schemaName="vehicle_application_tricycle" 
-        vehicletype="tricycle">
+        processName="vehicle_application">
     <invokers>
         <invoker type="vehicle_application_tricycle:open" caption="Vehicle Application" action="open" />
         <invoker type="global:barcode:51010" caption="Vehicle Application" 

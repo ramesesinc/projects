@@ -1,0 +1,33 @@
+<folders>
+    <folder id="explorer">
+            <folder id="txn" caption="Transaction">
+                <folder id="qrgenerator" caption="QR Generator" index="2000"/>
+            </folder>
+            
+            <folder id="master" caption="Master">
+                <folder id="qrgenerator" caption="QR Generator" index="2000"/>
+            </folder>
+            
+            <folder id="rulemgmt" caption="Rule Management">
+                <folder id="qrgenerator" caption="QR Generator" index="5"/>
+            </folder>
+    </folder>
+    
+    <folder id="menu">
+            <folder id="master">
+                <folder id="qrgenerator" caption="QR Generator" index="2000"/>
+            </folder>
+
+            <folder id="txn">
+                <folder id="qrgenerator" caption="QR Generator" index="2000"/>
+            </folder>
+
+            <folder id="report">
+                <folder id="qrgenerator" caption="QR Generator" index="2000"/>
+            </folder>
+    </folder>
+    
+    <folder id="home">
+            <folder id="qrgenerator" caption="QR Generator"/>
+    </folder>
+</folders>

@@ -1,0 +1,7 @@
+{ 
+	fragment	: true,	
+	title		: 'Queue Number', 
+	context		: 'queuenumber', 
+ 	target		: 'popup',
+ 	options		: {headless:true, width:400}
+} 

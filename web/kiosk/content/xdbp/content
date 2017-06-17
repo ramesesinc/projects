@@ -1,0 +1,22 @@
+<!-- NOTES: 
+
+Terminal_ID    : 56
+Transaction_Key: 5f16150a98195379b69b525626cf41c41d79b33d
+
+Security Token Formula (SHA-1 digest): Terminal_ID + referenceCode + { Transaction_Key + }  
+
+
+DBP Success Page: 
+["serviceType":"TEST_PAYMENT", "amount":"0000000100.00", "totalText":"PHP102.00", "interceptor":"verify", "message":"Successful approval/completion.", "retrievalReferenceCode":"704617014115", "merchantName":"LGU TAGBILARAN - IPG", "securityToken":"2ef699eb8cc6d9d959879a99c296f67eee22984f", "total":"102.0", "serviceChargeFee":"2.00", "serviceChargeFeeText":"PHP2.00", "referenceCode":"TEST201700003", "disableEmailClient":"true", "serviceFeeLabel":"Service Fee"]
+
+--> 
+
+<form action="https://testipg.apollo.com.ph:8443/transaction/verify" method="POST"> 
+	<input type="hidden" name="terminalID" value="56"/> 
+	<input type="hidden" name="referenceCode" value="TEST201700003"/> 
+	<input type="hidden" name="amount" value="0000000100.00"/> 
+	<input type="hidden" name="serviceType" value="TEST_PAYMENT"/> 
+	<input type="hidden" name="securityToken" value="6d1a191f1c6543e4204784dae1dc9a9a27f39d54"/> 
+	<input type="submit" value="Post to DBP"/> 
+</form>
+

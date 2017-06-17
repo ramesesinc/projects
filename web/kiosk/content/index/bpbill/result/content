@@ -1,0 +1,142 @@
+<% 
+def service = SERVICE.lookup("KioskBusinessBillingService", "etracs");
+def billing = service.getBilling( PARAMS );
+def payer = billing?.payer;
+def billid = billing?.objid;
+def taxfees = billing?.taxfees; 
+
+def decformatter = new java.text.DecimalFormat('#,##0.00');  
+def billamount = (billing?.amount ? decformatter.format(billing.amount) : '0.00'); 
+taxfees.each{ 
+	def balance = (it?.amount ? it.amount : 0.0)-(it?.amtpaid ? it.amtpaid : 0.0); 
+	it.strbalance = decformatter.format( balance );
+	it.strdiscount = decformatter.format( it?.discount ? it.discount : 0.0 );
+	it.strsurcharge = decformatter.format( it?.surcharge ? it.surcharge : 0.0 );
+	it.strinterest = decformatter.format( it?.interest ? it.interest : 0.0 );
+	it.strtotal = decformatter.format( it?.total ? it.total : 0.0 );
+}
+
+def expirydate = billing?.expirydate; 
+if ( expirydate instanceof Date ) {
+	expirydate = new java.text.SimpleDateFormat('MMMMM dd, yyyy').format( expirydate );  
+} 
+
+def qtramounts = [];
+if ( billing?.totals ) {
+	qtramounts << [ qtr:1, amount: billing.totals.q1 ];
+	qtramounts << [ qtr:2, amount: billing.totals.q2 ];
+	qtramounts << [ qtr:3, amount: billing.totals.q3 ];
+	qtramounts << [ qtr:4, amount: billing.totals.q4 ];
+}
+def billqtrs = qtramounts.findAll{( it.amount > 0 )}
+def minqtr = billqtrs.min{ it.qtr }?.qtr; 
+def maxqtr = billqtrs.max{ it.qtr }?.qtr; 
+
+def payoption = billing?.payoption; 
+if ( payoption == null ) payoption = [:];
+if ( payoption.option == 'FULLQTR' ) { 
+	if ( payoption.qtr ) { 
+		maxqtr = new Integer( payoption.qtr.toString() ); 
+	} 
+} 
+
+def billperiod = null;
+def strqtr = [ minqtr, maxqtr ].findAll{( it )}.unique().collect{ 'Q'+it }.join(' - '); 
+if ( strqtr ) { 
+	billperiod = strqtr +', '+ billing?.appyear; 
+} 
+
+PARAMS.minqtr = minqtr; 
+%>
+
+<script>
+\$put("bill", new function(){
+    
+    this.post = function(){
+    	var elem = \$('#payform');
+    	elem.html(
+    		'<input type="hidden" name="billid" value="${billid}"/>'+ 
+    		'<input type="hidden" name="billurl" value="/index/bpbill"/>' 
+    	);
+    	elem.submit();
+    }
+
+}); 
+</script>
+
+<div id="wrapper" > 
+    <div id="content">
+      	<div class="container">
+      		<div class="bg-white">
+      			<div class="bill-main-panel">
+      				
+	      				<div class="col-md-12">
+	      					<p class="label-name">${payer?.name}</p>
+				      		<p class="label-address">${billing?.paidbyaddress}</p>
+	      				</div>
+	      				<hr>
+		      			<div class="bill-second-panel">
+		      				<div class="row">
+						      	<div class="col-md-6">
+						      		<p class="label-bpls">BIN : ${billing?.bin}</p>
+						      		<p class="label-bpls">Tradename : ${billing?.paidby}</p>
+						      		<p class="label-bpls">Bus.Address : ${billing?.paidbyaddress}</p>
+						      	</div>
+						      	 <div class="col-md-6">
+						      		
+
+						      		<p class="label-bpls">Application No. : ${billing?.appno}</p>
+						      		<p class="label-bpls">Application Type : ${billing?.apptype}</p>
+						      		<p class="label-bpls">Date : ${billing?.dtfiled}</p>
+						      	</div>
+					      	</div>
+				      	</div>
+				    <table class="table">
+				    	<thead>
+					    	<tr>
+					    		<th align="left">Line of Business</th>
+					    		<th align="left">Tax/Fee</th>
+					    		<th align="right">Amount</th>
+					    		<th align="right">Discount</th>
+					    		<th align="right">Surcharge</th>
+					    		<th align="right">Interest</th>
+					    		<th align="right">Total</th>
+					    	</tr>
+				    	</thead>
+				    	<tbody>
+				    		<% taxfees?.each{k->%>
+					    	<tr>
+					    		<td>${k.lob?.name ? k.lob.name : ''}</td>
+					    		<td>${k.account?.title}</td>
+					    		<td align="right">${k?.strbalance}</td>
+					    		<td align="right">${k?.strdiscount}</td>
+					    		<td align="right">${k?.strsurcharge}</td>
+					    		<td align="right">${k?.strinterest}</td>
+					    		<td align="right">${k?.strtotal}</td>
+					    	</tr>
+					    	<%}%>
+					    	<tr>
+					    		<td align="right" colspan="7"><b></b></td>
+					    	</tr>
+					    </tbody>
+				    	<thead>
+					    	<tr>
+					    		<th align="left" colspan="3">THIS BILL IS VALID UNTIL ${expirydate}</th>
+					    		<th align="right" colspan="2">BILL AMOUNT :</th>
+					    		<th align="right"> P</th>
+					    		<th align="right">${billamount}</th>
+					    	</tr>
+					    	<% if ( billperiod ){%>
+					    	<tr>
+					    		<th align="left" colspan="7">BILL PERIOD : ${billperiod}</th> 
+					    	</tr> 
+					    	<%}%>
+				    	</thead>
+				    </table>
+					<br>
+				</div>
+	  		</div>
+			${_footer}
+      	</div>
+    </div>  
+</div>

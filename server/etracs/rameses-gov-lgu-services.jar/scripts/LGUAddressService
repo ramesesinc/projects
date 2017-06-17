@@ -43,7 +43,6 @@ class LGUAddressService  {
 				m.province  = lgu.name ; 
 				break;	
 		}
-		println m;
 		return m;
 	}
 

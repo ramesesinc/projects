@@ -1,0 +1,72 @@
+<%
+def findCause( Throwable error ) { 
+    if ( error == null ) return null; 
+
+    def msg = error.message; 
+    if ( msg ) return error; 
+    return findCause( error.getCause() ); 
+} 
+
+def result = [:]; 
+try { 
+    def service = SERVICE.lookup("ElectronicPaymentOrderService", "etracs"); 
+    def txnid = PARAMS.referenceCode; 
+    def pmo = service.findCache( txnid ); 
+    if ( !pmo ) throw new Exception(''+ txnid +' payment order does not exist'); 
+
+    def map = [ info: PARAMS ]; 
+    map.objid = PARAMS.referenceCode; 
+    map.refno = PARAMS.retrievalReferenceCode; 
+    map.txnrefid = PARAMS.referenceCode; 
+    map.refdate = PARAMS.refdate; 
+    map.amount = PARAMS.amount; 
+    map.txnreftype = 'pmo'; 
+    map.particulars = pmo.particulars; 
+    map.txntype = pmo.txntype.objid; 
+    map.partner = [ objid : 'dbp' ]; 
+    service.logForPosting( map ); 
+    result.status = 'SUCCESS'; 
+    result.txnid = map.objid; 
+
+} catch(Throwable e) { 
+    result.status = 'ERROR'; 
+    Throwable t = findCause( e ); 
+    if ( t == null ) t = e; 
+
+    result.message = (t ? t.message : null); 
+    e.printStackTrace(); 
+} 
+%>
+
+<%if (result.status == 'SUCCESS'){%>
+    <script> 
+        \$( document ).ready(function(){ 
+            window.location.href = "/receipt?txnid=${result.txnid}";
+        }); 
+    </script> 
+<%} else {%>
+
+<script> 
+\$put("partner", new function(){
+
+});     
+</script> 
+<div id="wrapper" > 
+    <div id="content">
+        <div class="container">
+            <div class="bg-white">
+                <div class="bill-main-panel">
+                    <div class="row">
+                        <div class="col-md-12"> 
+                            <div class="l-name">
+                                <p class="label-name">ERROR</p>
+                            </div>    
+                        </div>
+                    </div> 
+                </div> 
+                ${result.message} 
+            </div>
+        </div> 
+    </div>
+</div>
+<%}%> 

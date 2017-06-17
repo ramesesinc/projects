@@ -39,6 +39,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField3 = new com.rameses.rcp.control.XDateField();
+        xDateField4 = new com.rameses.rcp.control.XDateField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
@@ -76,12 +77,18 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         xLabel1.setVisibleWhen("#{ franchiseControlEditable == false }");
         xFormPanel3.add(xLabel1);
 
-        xDateField3.setCaption("Franchise Date");
-        xDateField3.setName("entity.franchisedate"); // NOI18N
+        xDateField3.setCaption("Franchise Start Date");
+        xDateField3.setName("entity.startdate"); // NOI18N
         xDateField3.setPreferredSize(new java.awt.Dimension(150, 20));
         xDateField3.setRequired(true);
         xDateField3.setVisibleWhen("#{ entity.txnmode == 'CAPTURE' }");
         xFormPanel3.add(xDateField3);
+
+        xDateField4.setCaption("Franchise Expiry Date");
+        xDateField4.setName("entity.expirydate"); // NOI18N
+        xDateField4.setPreferredSize(new java.awt.Dimension(150, 20));
+        xDateField4.setVisibleWhen("#{ entity.txnmode == 'CAPTURE' }");
+        xFormPanel3.add(xDateField4);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("App Type");
@@ -169,7 +176,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
             .add(layout.createSequentialGroup()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -187,6 +194,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField3;
+    private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;

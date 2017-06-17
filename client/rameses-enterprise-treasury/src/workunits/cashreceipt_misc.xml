@@ -5,7 +5,7 @@
     </invokers>
     
     <code>
-        <![CDATA[    
+    <![CDATA[    
         import com.rameses.rcp.annotations.*
         import com.rameses.rcp.common.*
         import com.rameses.osiris2.client.*
@@ -17,8 +17,7 @@
             String entityName = "misc_cashreceipt"
             
         }
-        ]]>
-        
+    ]]>
     </code>
     
     <pages>

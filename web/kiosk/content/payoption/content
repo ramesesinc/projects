@@ -1,0 +1,20 @@
+<div id="wrapper" > 
+    <div id="content">
+        <div class="container">
+          <div class="bg-white pad">
+            <div class="bill-main-panel">
+              <form metho="get" action="/index/bpls" class="payoption">
+                  <div class="qtr-panel">
+                    <input type="hidden" name="code" value="${PARAMS.code}"/>
+                    <input type="submit" name="payoption" value="q1" class="btn btn-primary btn-pay">
+                    <input type="submit" name="payoption" value="q2" class="btn btn-primary btn-pay">
+                    <input type="submit" name="payoption" value="q3" class="btn btn-primary btn-pay">
+                    <input type="submit" name="payoption" value="q4" class="btn btn-primary btn-pay">
+                  </div>
+              </form>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+

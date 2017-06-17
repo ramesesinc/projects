@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/enterprise/treasury/templates/CapturePayment.xml">
+    <invokers>
+        <invoker type="vehicle_franchise_capturepayment" caption="Capture Payment" action="init" />
+    </invokers>
+    <code>
+        import com.rameses.enterprise.treasury.models.*;
+        import com.rameses.rcp.annotations.*;
+        
+        class SampleModel extends AbstractCapturePaymentModel {
+        
+            @Service("VehiclePaymentService")
+            def service;
+        
+        }
+        
+    </code>    
+</workunit>

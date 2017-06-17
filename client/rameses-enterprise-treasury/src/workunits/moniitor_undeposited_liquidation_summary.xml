@@ -6,7 +6,7 @@
     
     <invokers>
         <invoker folderid="/explorer/txn/treasury/monitoring" caption="Undeposited Liquidation Summary Monitoring" 
-                 role="ADMIN" index="-99"/>
+                 role="ADMIN"/>
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.UndepositedLiquidationMonitorModel"/>

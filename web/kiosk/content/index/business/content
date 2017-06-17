@@ -1,0 +1,34 @@
+<% 
+    def business = [];
+    business << [ links:'',  name:'Apply New'];
+    business << [ links:'',  name:'Renew'];
+    business << [ links:'bpbill',  name:'Billing']; 
+
+%>
+
+
+
+  <div id="wrapper"> 
+    <header>
+      <h1>Please Select Transaction</h1>
+    </header>
+      <div id="content">
+        <div class="container">
+          <div class="container-content">
+            <div class="row">
+              <% business.each{k->%>
+              <div class="col-sm-4">
+              <form method="get" action="/index/${k.links}">
+                  <button type="submit" class="thumbnail">${k.name}</button>
+              </form>
+              </div>
+                <!--<div class="col-sm-4">
+                       <button r:context="kiosk" r:name="goToPage" r:param_link="${k.links}" r:visibleWhen="#{_controller.currentPage == 'default' }" class="thumbnail">${k.name}</button>
+                </div>-->
+              <%}%>
+            </div>
+          </div>
+        </div>
+      </div>  
+  </div>
+

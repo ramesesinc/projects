@@ -1,0 +1,16 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="obovariable">
+    <invokers>
+        <invoker type="obovariable:lookup" caption="Variable Lookup" action="init"
+            cols="caption" hiddenCols="datatype,name" />
+        
+        <invoker type="obovariable_decimal:lookup" caption="Decimal Variable Lookup" action="init"
+            cols="caption" hiddenCols="datatype,name" customFilter="datatype='decimal'"/>
+        
+        <invoker type="obovariable_integer:lookup" caption="Integer Variable Lookup" action="init"
+            cols="caption" hiddenCols="datatype,name" customFilter="datatype='integer'"/>
+
+        <invoker type="obovariable_boolean:lookup" caption="Boolean Variable Lookup" action="init"
+            cols="caption" hiddenCols="datatype,name" customFilter="datatype='boolean'" />
+        
+    </invokers>
+</workunit>

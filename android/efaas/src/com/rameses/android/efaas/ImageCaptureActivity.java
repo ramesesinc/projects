@@ -7,19 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-
-import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,10 +32,7 @@ import com.rameses.android.efaas.util.DbBitmapUtility;
 public class ImageCaptureActivity extends ControlActivity {
 	
 	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
     public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-    private static final String IMAGE_DIRECTORY_NAME = "ETRACS";
     private Uri fileUri;
     		
 	private ImageView image;
@@ -48,17 +41,49 @@ public class ImageCaptureActivity extends ControlActivity {
 	private String objid, examinationid;
 	private Bitmap bitmap = null;
 	private String data_title;
+	private Activity activity;
 	
 	public boolean isCloseable() { return false; }
 	
 	@Override
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		ApplicationUtil.changeTitle(this, "Capture Image");
-		setContentView(R.layout.activity_image);
+		activity = this;
 		
 		objid = getIntent().getExtras().getString("objid");
 		examinationid = getIntent().getExtras().getString("examinationid");
 		
+		if(objid == null) setContentView(R.layout.activity_image_empty);
+		if(objid != null) setContentView(R.layout.activity_image);
+		
+		initComponents();
+	}
+	
+	protected void afterBackPressed() {
+		disposeMe(); 
+	} 
+	
+	protected void onStartProcess() {
+		super.onStartProcess();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    if (fileUri != null) {
+	        outState.putString("cameraImageUri", fileUri.toString());
+	    }
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	    super.onRestoreInstanceState(savedInstanceState);
+	    if (savedInstanceState.containsKey("cameraImageUri")) {
+	        fileUri = Uri.parse(savedInstanceState.getString("cameraImageUri"));
+	    }
+	}
+	
+	private void initComponents(){
 		image = (ImageView) findViewById(R.id.image_view);
 		title = (EditText) findViewById(R.id.image_title);
 		save = (Button) findViewById(R.id.image_save);
@@ -99,17 +124,6 @@ public class ImageCaptureActivity extends ControlActivity {
             	}
             }
         });
-		
-		ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
-	}
-	
-	protected void afterBackPressed() {
-		disposeMe(); 
-	} 
-	
-	protected void onStartProcess() {
-		super.onStartProcess();
 	}
 	
 	/**
@@ -120,10 +134,15 @@ public class ImageCaptureActivity extends ControlActivity {
 	    // if the result is capturing Image
 	    if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
 	        if (resultCode == RESULT_OK) {
+	        	setContentView(R.layout.activity_image);
+	        	initComponents();
 	            previewCapturedImage();
 	        } else if (resultCode == RESULT_CANCELED) {
-	           
+	        	setContentView(R.layout.activity_image_empty);
+	        	initComponents();
 	        } else {
+	        	setContentView(R.layout.activity_image_empty);
+	        	initComponents();
 	            Toast.makeText(getApplicationContext(),"Sorry! Failed to capture image", Toast.LENGTH_SHORT).show();
 	        }
 	    }
@@ -151,7 +170,6 @@ public class ImageCaptureActivity extends ControlActivity {
 	    // Create the storage directory if it does not exist
 	    if (! mediaStorageDir.exists()){
 	        if (! mediaStorageDir.mkdirs()){
-	            Log.d("ETRACS", "failed to create directory");
 	            return null;
 	        }
 	    }
@@ -162,9 +180,6 @@ public class ImageCaptureActivity extends ControlActivity {
 	    if (type == MEDIA_TYPE_IMAGE){
 	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
 	        "IMG_"+ timeStamp + ".jpg");
-	    } else if(type == MEDIA_TYPE_VIDEO) {
-	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	        "VID_"+ timeStamp + ".mp4");
 	    } else {
 	        return null;
 	    }
@@ -179,6 +194,7 @@ public class ImageCaptureActivity extends ControlActivity {
             bitmap = BitmapFactory.decodeFile(fileUri.getPath(),options);
             image.setImageBitmap(bitmap);
         } catch (Throwable e) {
+        	e.printStackTrace();
         	new ErrorDialog(this,e).show();
         }
     }

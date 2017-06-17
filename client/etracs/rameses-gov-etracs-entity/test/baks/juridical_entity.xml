@@ -1,0 +1,93 @@
+<workunit>
+    <invokers>
+         <invoker type="juridicalentity:create" caption="Juridical" action="create" target="popup" />
+         <invoker type="quick_launcher" code="TP02" caption="Juridical" action="create" target="popup" />
+         <invoker type="juridicalentity:open" caption="Juridical" action="open" target="popup" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class JuridicalEntityController extends CRUDController {
+        
+            @Service('OrgTypeService') 
+            def orgTypeSvc;
+        
+            String serviceName = 'EntityService'; 
+            String prefixId = 'JURI';   
+            String entityType = 'JURIDICAL';    
+            String title = 'Juridical Entity';
+            String createFocusComponent = 'entity.name';
+            String editFocusComponent = 'entity.name';            
+            boolean allowDelete = false; 
+            boolean allowApprove = false; 
+            boolean showConfirmOnSave = false; 
+            
+            def orgTypes;
+            def initial;
+            def saveHandler;
+            
+            void beforeCreate( entity ) { 
+                entity.type = entityType;
+                if (orgTypes == null) {
+                    orgTypes = orgTypeSvc.getList(); 
+                    orgTypes.remove( orgTypes.find{ it.key == "SING" } );
+                }
+                if( initial ) {
+                    entity.putAll( initial );
+                }
+            }   
+            
+            void afterSave(Object data){
+                if(saveHandler) saveHandler(data);
+            }
+
+            void entityChanged() { 
+                contactListHandler?.reload();  
+            }            
+            
+            void beforeOpen( entity ) { 
+                if (orgTypes == null) orgTypes = orgTypeSvc.getList(); 
+            } 
+                        
+            def selectedContact;
+            def contactTypes = [
+                [key: 'MOBILE', value:'MOBILE NUMBER'], 
+                [key: 'HOME', value:'HOME PHONE NUMBER'], 
+                [key: 'WORK', value:'WORK PH0NE NUMBER'], 
+                [key: 'EMAIL', value:'EMAIL'] 
+            ]; 
+            def contactListHandler = [
+                fetchList: {o-> 
+                    if (!entity) return null; 
+                    if (!entity.contacts) entity.contacts = [];
+                    
+                    return entity.contacts;
+                },
+                
+                onAddItem: {item-> 
+                    item.objid = 'CONT'+new UID();
+                    item.entityid = entity.objid; 
+                    entity.contacts.add(item); 
+                }, 
+                
+                onRemoveItem: {item-> 
+                    if (!MsgBox.confirm('Are you sure you want to remove this item?')) return false;
+                    
+                    entity.contacts.remove(item); 
+                    return true;
+                }                
+            ] as EditorListModel;            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.JuridicalEntityPage"/>
+   </pages>   
+</workunit>

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.rameses.android.AbstractDBMapper;
 import com.rameses.db.android.DBContext;
 
@@ -80,6 +79,25 @@ public class FaasDB extends AbstractDBMapper{
 		//DELETE FAAS
 		FaasDB faasdb = new FaasDB();
 		faasdb.delete(param2);
+	}
+	
+	public List<String> getFaasImageIds(String faasid) throws Exception{
+		List<String> ids = new ArrayList<String>();
+		DBContext ctx = getDBContext();
+		try {
+			List<Map> list = ctx.getList("SELECT i.* FROM images i " +
+					"INNER JOIN examination e ON i.examinationid = e.objid " +
+					"INNER JOIN faas f on e.parent_objid = f.objid " +
+					"WHERE f.objid = ?", new Object[]{faasid});
+			for(Map image : list){
+				ids.add(image.get("objid").toString());
+			}
+		} catch(Exception e) {
+			throw e; 
+		} finally {
+			if (isAutoCloseConnection()) ctx.close();
+		}
+		return ids;
 	}
 
 }

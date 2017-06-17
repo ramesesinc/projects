@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ReportController.xml" >
     <invokers>
-        <invoker xfolderid="/explorer/report/bpls" action="init" caption="BP Collection Report Listing" target="window" index="8" 
+        <invoker xfolderid="/explorer/report/bpls" action="init" caption="BP Collection Report Listing" target="window"  
             role="REPORT"/>
         
     </invokers> 

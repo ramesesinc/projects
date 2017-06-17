@@ -1,0 +1,77 @@
+<workunit>
+   <invokers>
+         <invoker type="entity:lookupfield" />
+   </invokers>
+   <code>
+       <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+        
+        class EntityLookupFieldController {
+        
+            @Binding
+            def binding;
+            boolean hasLookup;
+        
+            def type;
+            def orgtype;
+            def entity;
+            def handler;
+            
+             def getLookupEntity() {
+                if( !type ) {
+                    MsgBox.err("Please select an entity type first.");
+                    return null;
+                }    
+                hasLookup = true;
+                String lookupName = type + "entity:lookup";
+                return InvokerUtil.lookupOpener( lookupName, [
+                    "query.orgtype": orgtype,
+                    onselect: { o->
+                        entity = o;
+                        binding.refresh();
+                        if(handler) handler( entity );
+                    },
+                    onempty: {
+                        entity = null;
+                        binding.refresh();
+                        hasLookup = false;
+                        if(handler) handler(null);
+                    }
+                ]);    
+            }
+
+            void reload( o ) {
+                entity = o;
+                binding.refresh();
+            }
+            
+            //this saves or adds owner
+            def showEntity() {
+                if(!type)
+                    throw new Exception("Please select a type");
+                String action = (entity?.objid) ? ":open" : ":create";
+                if(action == ":create" && !hasLookup )
+                    throw new Exception("Please attempt first a lookup before creating a new record");
+
+                String openerName = type+"entity"+action;
+                def initial = [:];
+                def sh = { o->
+                    entity = [ objid:o.objid, name:o.name, address:o.address ];
+                    binding.refresh("entity.*");
+                };
+                return InvokerUtil.lookupOpener(openerName, [entity: entity, initial:initial, saveHandler:sh] );
+            }
+            
+        }
+        
+        ]]>
+   </code>
+   <pages>
+       <page template="com.rameses.entity.ui.EntityLookupField"/>
+   </pages>
+   
+</workunit>

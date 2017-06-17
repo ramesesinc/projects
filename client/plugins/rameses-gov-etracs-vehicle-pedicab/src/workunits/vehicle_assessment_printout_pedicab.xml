@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleReport.xml">
+    <invokers>
+        <invoker type="vehicle_application_pedicab:form:formActions" 
+                 caption="Print Assessment" 
+                 target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/pedicab/reports/assessment.jasper" />
+
+        <invoker type="vehicle_assessment_pedicab:print" 
+                 caption="Print Assessment" 
+                 target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/pedicab/reports/assessment.jasper" />
+    </invokers> 
+</workunit>

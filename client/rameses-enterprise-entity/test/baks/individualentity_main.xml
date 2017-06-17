@@ -1,0 +1,73 @@
+<workunit>
+    <invokers>
+        <invoker type="individualentity:open" caption="Individual" action="open"  target="popup"  role="MASTER" permission="individualentity.open"/>
+        <invoker type="formActions" caption="Close" action="_exit" visibleWhen="#{initiator == 'create'}"/>
+        <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{initiator != 'create'}"/>
+        <invoker type="formActions" caption="Remove" action="remove" role="ADMIN" permission="individualentity.delete" />
+        <invoker type="formActions" caption="Refresh" action="refresh" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import java.rmi.server.UID;
+
+        public class IndividualEntityController  {
+            
+            @Binding
+            def binding;
+            
+            @FormTitle
+            def title;
+            
+            @Service("IndividualEntityService")
+            def service;
+            
+            def entity;
+            def optionList;
+            def selectedOption;
+            def initiator = 'edit';
+            
+            void initList() {
+                optionList = [];
+                optionList.addAll( Inv.lookupOpeners( "individualentity:option", [entity: entity] ));
+                optionList.addAll( Inv.lookupOpeners( "entity:option", [entity: entity] ));                
+                if(optionList.size() > 0 ) {
+                    selectedOption = optionList[0];
+                }
+            }
+            
+            void refresh() {
+                title = entity.name;
+                optionList.each {
+                    try {
+                        it.handle.refresh();
+                    }
+                    catch(e){;}
+                }
+            }
+            
+            void open() {
+                entity = service.open( [objid: entity.objid, type:'INDIVIDUAL']);
+                refresh();
+                initList();
+            }
+            
+            def remove() {
+                if( MsgBox.confirm("You are about to remove this record. Continue?")) {
+                    service.removeEntity( entity );
+                    return "_close";
+                }
+            }
+            
+        }        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.entity.ui.EntityMainPage"/>
+   </pages>   
+</workunit>

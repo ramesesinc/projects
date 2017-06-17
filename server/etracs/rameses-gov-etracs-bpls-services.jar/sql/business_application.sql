@@ -159,8 +159,12 @@ WHERE business_objid=$P{businessid} AND appyear=$P{appyear} AND apptype=$P{appty
 SELECT * FROM business_application WHERE business_objid=$P{businessid} ORDER BY dtfiled DESC
 
 [updatePermit]
-UPDATE business_application SET state='COMPLETED',
-dtreleased=$P{dtreleased},permit_objid=$P{permitid} WHERE objid=$P{applicationid}
+UPDATE business_application SET 
+    state='COMPLETED', 
+    dtreleased=$P{dtreleased}, 
+    permit_objid=$P{permitid} 
+WHERE 
+    objid=$P{applicationid}
 
 [getOpenApplications]
 SELECT * FROM business_application 

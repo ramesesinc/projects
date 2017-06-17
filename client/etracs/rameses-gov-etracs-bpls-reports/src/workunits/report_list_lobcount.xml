@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml">
     <invokers>
         <invoker folderid="/explorer/report/bpls" caption="Line of Business Count Listing" 
-            action="init" role="REPORT" target="window" index="-100"/>
+            action="init" role="REPORT" target="window"/>
     </invokers>
     
     <code>

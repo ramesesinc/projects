@@ -1,16 +1,16 @@
 <folders>
     <folder id="explorer">
         <folder id="master"  caption="Master">
-            <folder id="market" caption="Market" index="5"/>
+            <folder id="market" caption="Market"/>
         </folder>
         <folder id="txn" caption="Transactions">
-            <folder id="market" caption="Market" index="5"/>
+            <folder id="market" caption="Market"/>
         </folder>
         <folder id="report" caption="Reports">
-            <folder id="market" caption="Market" index="5"/>
+            <folder id="market" caption="Market"/>
         </folder>
         <folder id="rulemgmt" caption="Rule Management">
-            <folder id="market" caption="Market" index="5"/>
+            <folder id="market" caption="Market"/>
         </folder>
     </folder>
     <folder id="menu">
@@ -19,6 +19,6 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="market" caption="Market" icon="home/icons/market.png" index="50"/>
+        <folder id="market" caption="Market" icon="home/icons/market.png"/>
     </folder>
 </folders>

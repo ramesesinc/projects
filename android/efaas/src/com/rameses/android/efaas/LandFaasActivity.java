@@ -40,7 +40,6 @@ public class LandFaasActivity extends ControlActivity{
 	private static TextView street, purok, north, south, west, east;
 	private static Button appraisal_btn, examination_add;
 	private static ListView appraisal_list, examination_list;
-	
 	public static Activity activity;
 	private static Properties faas = null;
 	private static String faasid;
@@ -90,10 +89,6 @@ public class LandFaasActivity extends ControlActivity{
 		appraisal_btn = (Button) findViewById(R.id.appraisal_button);
 		appraisal_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(rpuid == null){
-            		new InfoDialog(activity,rpuid);
-            		return;
-            	}
                 LandAppraisalInfo appraisal = new LandAppraisalInfo(activity,null,rpuid);
                 appraisal.show();
             }

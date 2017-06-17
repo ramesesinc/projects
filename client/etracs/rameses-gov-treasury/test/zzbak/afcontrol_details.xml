@@ -1,0 +1,47 @@
+<workunit>
+    <invokers>
+        <invoker type="afcontrol:formActions" caption="View Details" target="popup" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[    
+
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        
+        class AFControlDetails { 
+        
+            @Caller
+            def caller;
+        
+            def entity;
+            
+            @Service("AFControlService")
+            def service;
+            
+           void init() {
+                entity = caller.selectedEntity;
+                if(entity==null)
+                    throw new Exception("Please select an item ");
+            }
+            
+           def listModel = [
+                fetchList: { o->
+                    return service.getDetailsList( [objid:entity.objid] );
+                }
+           
+           ] as BasicListModel;
+            
+           
+           def doClose() {
+                return "_close";
+           }
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.treasury.afcontrol.AFControlDetailList"/>
+    </pages>
+</workunit>

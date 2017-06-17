@@ -2,7 +2,7 @@
           schemaName="business_lessor_government">
     <invokers>
         <invoker folderid="/explorer/master/bpls" caption="Government Property List"  
-                action="init" role="MASTER" permission="businesslessor.view" index="4" 
+                action="init" role="MASTER" permission="businesslessor.view"  
                 customFilter="government = 1" />
     </invokers>
     

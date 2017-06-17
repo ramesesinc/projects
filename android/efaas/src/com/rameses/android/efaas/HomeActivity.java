@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import com.rameses.android.ControlActivity;
@@ -41,12 +42,12 @@ public class HomeActivity extends SettingsMenuActivity   {
 	protected void onCreateProcess(Bundle savedInstanceState) {
 		super.onCreateProcess(savedInstanceState);
 		
-		setContentView(R.layout.activity_list);
+		setContentView(R.layout.activity_home);
 		
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCancelable(false);
 		
-		loadListData();
+		initData();
 		activity = this;
 		
 		int SDK_INT = android.os.Build.VERSION.SDK_INT;
@@ -56,9 +57,6 @@ public class HomeActivity extends SettingsMenuActivity   {
 	                .permitAll().build();
 	        StrictMode.setThreadPolicy(policy);
 	    }
-	    
-	    ActionBar bar = getActionBar();
-	    //bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#a6e20d")));
 	} 
 	
 	protected void onStartProcess() {
@@ -84,60 +82,67 @@ public class HomeActivity extends SettingsMenuActivity   {
 		startActivity(intent); 
 	}
 	
-	void loadListData(){
-		data = new ArrayList<HomeListItem>();
-		data.add(new HomeListItem(R.drawable.masterfile,"Master Files"));
-		data.add(new HomeListItem(R.drawable.settings,"Revision Settings"));
-		data.add(new HomeListItem(R.drawable.faas,"FAAS"));
-		data.add(new HomeListItem(R.drawable.download,"Download"));
-		data.add(new HomeListItem(R.drawable.upload,"Upload"));
-		data.add(new HomeListItem(R.drawable.changepassword,"Change Password"));
-		data.add(new HomeListItem(R.drawable.logout,"Logout"));
+	void initData(){
+		LinearLayout layout_masterfile = (LinearLayout)findViewById(R.id.home_masterfile);
+		layout_masterfile.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(activity, MasterFileActivity.class);  
+				startActivity(intent); 
+		    }
+		});
 		
-		list_home = (ListView) findViewById(R.id.list_home);
-		//list_home.setDivider(null);
-		//list_home.setDividerHeight(0);
-		list_home.setAdapter(new HomeMenuAdapter(this,data));
-		list_home.setOnItemClickListener(new OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int pos, long arg3) {
-				HomeMenuAdapter a = (HomeMenuAdapter) adapter.getAdapter();
-				String title = a.getListItem(pos).getTitle();
-				
-				if(title.equals("Master Files")){
-					Intent intent = new Intent(activity, MasterFileActivity.class);  
-					startActivity(intent); 
-				}
-				
-				if(title.equals("Revision Settings")){
-					Intent intent = new Intent(activity, RevisionSettingActivity.class);  
-					startActivity(intent); 
-				}
-				
-				if(title.equals("FAAS")){
-					Intent intent = new Intent(activity, FaasListActivity.class);  
-					startActivity(intent); 
-				}
-				
-				if(title.equals("Download")){
-					Intent intent = new Intent(activity, DownloadActivity.class);  
-					startActivity(intent); 
-				}
-				
-				if(title.equals("Upload")){
-					Intent intent = new Intent(activity, UploadActivity.class);  
-					startActivity(intent); 
-				}
-				
-				if(title.equals("Change Password")){
-					doChangePassword();
-				}
-				
-				if(title.equals("Logout")){
-					try { doLogout(); } catch(Exception e){ e.printStackTrace(); }
-				}
-			}	
+		LinearLayout layout_revision = (LinearLayout)findViewById(R.id.home_revisionsetting);
+		layout_revision.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(activity, RevisionSettingActivity.class);  
+				startActivity(intent); 
+		    }
+		});
+		
+		LinearLayout layout_faas = (LinearLayout)findViewById(R.id.home_faas);
+		layout_faas.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(activity, FaasListActivity.class);  
+				startActivity(intent);
+		    }
+		});
+		
+		LinearLayout layout_download = (LinearLayout)findViewById(R.id.home_download);
+		layout_download.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(activity, DownloadActivity.class);  
+				startActivity(intent); 
+		    }
+		});
+		
+		LinearLayout layout_upload = (LinearLayout)findViewById(R.id.home_upload);
+		layout_upload.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(activity, UploadActivity.class);  
+				startActivity(intent); 
+		    }
+		});
+		
+		LinearLayout layout_password = (LinearLayout)findViewById(R.id.home_password);
+		layout_password.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	doChangePassword();
+		    }
+		});
+		
+		LinearLayout layout_logout = (LinearLayout)findViewById(R.id.home_logout);
+		layout_logout.setOnClickListener(new View.OnClickListener() {      
+		    @Override
+		    public void onClick(View v) {
+		    	try { doLogout(); } catch(Exception e){ e.printStackTrace(); }
+		    }
 		});
 	}
-
+	
 }

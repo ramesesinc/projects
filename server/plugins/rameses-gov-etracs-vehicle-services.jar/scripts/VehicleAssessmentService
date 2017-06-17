@@ -39,18 +39,10 @@ class VehicleAssessmentService {
 		def fb = new FactBuilder();
 		fb.variableInfoProvider = new VariableInfoProvider(
 			schemaName:"vehicle_variable",
-			createIntegerFact: { dd->
-				return new VehicleIntegerInfo(dd);
-			},
-			createDecimalFact: {dd->
-				return new VehicleDecimalInfo(dd);
-			},
-			createBooleanFact: {dd->
-				return new VehicleBooleanInfo(dd);
-			},
-			createStringFact: {dd->
-				return new VehicleStringInfo(dd);
-			}
+			createIntegerFact: { return new VehicleIntegerInfo(); },
+			createDecimalFact: { return new VehicleDecimalInfo(); },
+			createBooleanFact: { return new VehicleBooleanInfo(); },
+			createStringFact : { return new VehicleStringInfo(); }
 		);
 
 		fb.facts << new VehicleApplication( o );

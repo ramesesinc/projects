@@ -1,0 +1,25 @@
+<workunit schemaName="obo_auxiliary_permit">
+    <invokers>
+        <invoker type="obo_auxiliary_permit_electrical:open" action="open"
+                 caption="Electrical" index="1" permitType="electrical"/>
+
+        <invoker type="obo_auxiliary_permit_mechanical:open" action="open"
+                 caption="Mechanical" index="1" permitType="mechanical"/>
+        
+        <invoker type="obo_auxiliary_permit_plumbing:open" action="open"
+                 caption="Plumbing" index="1" permitType="plumbing"/>
+
+        <invoker type="obo_auxiliary_permit_electronic:open" action="open"
+                 caption="Electronic" index="1" permitType="electronic"/>
+
+        <invoker type="obo_auxiliary_permit_fencing:open" action="open"
+                 caption="Fencing" index="1" permitType="fencing"/>
+        
+        <!-- toolbar actions -->
+        <invoker type="formActions" action="submit" caption="Submit" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.obo.models.AuxiliaryPermitModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.AuxiliaryPermitPage" />
+    </pages>    
+</workunit>

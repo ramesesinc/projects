@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="obo_profession">
+    <invokers>
+        <invoker type="obo_profession:create" caption="New Profession"  action="create" target="popup"/>
+        <invoker type="obo_profession:open" caption="Profession"  action="open" target="popup"/>
+    </invokers>
+    <code>
+        class ProfessionModel extends com.rameses.seti2.models.CrudFormModel {
+            void afterCreate() {
+                entity.ctc = [:];
+                entity.state = 'ACTIVE';
+            }
+        }
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.obo.views.OboProfessionPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+       <invoker type="policeclearance_info:create" 
+                caption="Police Clearance Information" action="create"
+                target="popup"/> 
+       <invoker type="policeclearance_info:open" 
+                caption="Police Clearance Information" action="open"
+                target="popup"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.police.models.PoliceClearanceAskInfoModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.police.views.PoliceClearanceAskInfoPage"/> 
+    </pages>
+</workunit> 

@@ -1,0 +1,116 @@
+html,
+body{
+    margin:0;
+    padding:0;
+    height:100%;
+    font-family:'Arial Black', sans-serif; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow: hidden;
+
+}
+span{
+    text-align: center !important  ;
+}
+/*video{
+  object-fit: fill !important;
+}*/
+.wrapper {
+    min-height:100%;
+    position:relative;
+}
+.header {
+    background:transparent;
+    padding:10px;
+}
+.headertv li {
+    font-family:'Arial', sans-serif;
+    vertical-align: middle;
+    padding: 10px;
+}
+.servedQueue{
+  margin: 0;
+  padding:0;
+}
+.content {
+    padding-bottom:100px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.wrap {
+    width:100%;
+
+}
+
+#video-panel
+{
+    cursor: none;
+    background-color: black;
+    margin-left: 20px;
+    width: 50vh;
+    height: 70vh;
+}
+@media (min-device-width: 1200px){ 
+  .serving{
+    width: 50%;
+  }
+  .serving h2{
+  font-size: 50px;
+  }
+}
+
+.serving{
+    float:left;
+    padding-top: 0;
+    padding-left:10px;
+    padding-right: 10px;
+    margin-bottom: 10px;
+}
+.serving h2{
+  margin: 0;
+  line-height: 1;
+}
+.dep-name{
+  text-align: center;
+  color: #ffffff;
+  padding: 0px;
+  margin: 0;
+  background: -webkit-linear-gradient(top, rgba(208, 208, 208, 0.41), rgba(140, 140, 140, 0.18));
+  background: linear-gradient(to bottom right, rgba(208, 208, 208, 0.41), rgba(140, 140, 140, 0.18));
+  }
+.counter-container{
+    width: 100%;
+    float: left;
+    text-align: center;
+    margin:2px 0px 2px 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background: #ffffff;
+}
+.counter-container h2 span{
+  color: red;
+}
+.number-consumed {
+    color: #b0b0b0;
+    text-shadow: #707070 1px 1px 0;
+}
+.announcement{
+    font-family:'Arial', sans-serif;
+    font-size: 60px;
+    color: #ffffff;
+    vertical-align: middle;
+    margin:0;
+}
+#footer {
+  display: inline-block;
+    background: -webkit-linear-gradient(top, rgba(208, 208, 208, 0.41), rgba(140, 140, 140, 0.18));
+    background: linear-gradient(to bottom right, rgba(208, 208, 208, 0.41), rgba(140, 140, 140, 0.18));
+    width:100%;
+    position:fixed;
+    bottom:0;
+    left:0; 
+}
+
+

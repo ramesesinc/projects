@@ -1,4 +1,8 @@
 <workunit>
+    <invokers>
+        <invoker type="formActions" caption="Change Dates" action="changeDate" role="ADMIN"/>
+        <invoker type="formActions" caption="Capture Payment" action="capturePayment" role="ADMIN"/>
+    </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleFranchiseForm"/>
     <pages>
         <page template="com.rameses.gov.etracs.vehicle.views.VehicleFranchisePage" />

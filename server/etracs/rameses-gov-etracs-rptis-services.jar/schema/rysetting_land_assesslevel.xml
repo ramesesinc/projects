@@ -8,7 +8,7 @@
 		<field name="fixrate" required="true" type="boolean" caption="Fix?" width="50"/>
 		<field name="rate" required="true" type="decimal" caption="Rate" width="100"/>
 		<field name="previd" />
-		<complex name="classification" ref="propertyclassification" jointype="many-to-one" required="true">
+		<complex name="classification" ref="propertyclassification" jointype="many-to-one" required="false">
 			<key field="classification_objid" target="objid" />
 		</complex>
 	</element>	

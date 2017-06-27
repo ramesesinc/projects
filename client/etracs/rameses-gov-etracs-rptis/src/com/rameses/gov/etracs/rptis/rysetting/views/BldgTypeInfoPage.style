@@ -1,0 +1,18 @@
+"entity.*|selected.*|lgu" [mode == "read"]{
+    readonly:true;
+}
+
+"entity.*|selected.*|lgu" [mode == "edit"]{
+    readonly:false;
+}
+
+
+"baseValueSubform|baseValueType" [ selectedBldgType != null ] {
+    enabled:true;
+}
+
+
+"baseValueSubform|baseValueType" [ mode == 'read' || selectedBldgType == null ] {
+    enabled:false;
+}
+

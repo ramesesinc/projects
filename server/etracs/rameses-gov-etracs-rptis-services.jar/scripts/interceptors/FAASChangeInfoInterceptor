@@ -18,14 +18,20 @@ class FAASChangeInfoInterceptor
 	@Service('FAASSupportService')
 	def supportSvc
 
+	@Service('FAASService')
+	def faasSvc
+
 	@Service('RPTRequirementService')
 	def reqSvc
 
+	@DataContext('faas')
+	def em_faas
+
 	@DataContext('faas_list')
-	def db_faas_list
+	def em_faas_list
 
 	@DataContext('realproperty')
-	def db_realproperty 
+	def em_realproperty 
 
 
 	
@@ -41,7 +47,7 @@ class FAASChangeInfoInterceptor
 		flinfo.blockno = changeinfo.newinfo.blockno
 		flinfo.surveyno = changeinfo.newinfo.surveyno
 		flinfo.cadastrallotno = changeinfo.newinfo.cadastrallotno
-		db_faas_list.update(flinfo)
+		em_faas_list.update(flinfo)
 	}
 	
 	
@@ -74,7 +80,7 @@ class FAASChangeInfoInterceptor
 		flinfo.classification = changeinfo.newinfo.classification
 		flinfo.classcode = changeinfo.newinfo.classification.code
 		flinfo.publicland = changeinfo.newinfo.publicland
-		db_faas_list.update(flinfo)
+		em_faas_list.update(flinfo)
 	}
 
 
@@ -110,19 +116,22 @@ class FAASChangeInfoInterceptor
 		flinfo.taxpayer = changeinfo.newinfo.taxpayer
 		flinfo.owner = changeinfo.newinfo.owner
 		flinfo.administrator = changeinfo.newinfo.administrator
-		db_faas_list.update(flinfo)
+		em_faas_list.update(flinfo)
 	}
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_previous_info'}")
 	public void updatePreviousInfo(evt){
 		def changeinfo = evt.result
-		em.updateFaasPreviousInfo(changeinfo.newinfo);
-
-		//update faas_list info 
-		def flinfo = [:]
-		flinfo.objid = changeinfo.faasid
-		flinfo.prevtdno = changeinfo.newinfo.prevtdno
-		db_faas_list.update(flinfo)
+		faasSvc.savePreviousFaases(changeinfo.newinfo)
+		def prevtdno = null;
+		if (changeinfo.newinfo.previousfaases){
+			prevtdno = changeinfo.newinfo.previousfaases.prevtdno.join(', ')
+		}
+		def finfo = [:]
+		finfo.objid = changeinfo.faasid 
+		finfo.prevtdno = prevtdno 
+		em_faas.update(finfo)
+		em_faas_list.update(finfo)
 	}	
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_appraisal'}")
@@ -140,7 +149,7 @@ class FAASChangeInfoInterceptor
 		flinfo.totalareasqm = changeinfo.newinfo.totalareasqm
 		flinfo.classification = changeinfo.newinfo.classification
 		flinfo.classcode = changeinfo.newinfo.classification.code
-		db_faas_list.update(flinfo)
+		em_faas_list.update(flinfo)
 	}	
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_sketch'}")
@@ -155,7 +164,7 @@ class FAASChangeInfoInterceptor
 		rpinfo.east = changeinfo.newinfo.east
 		rpinfo.west = changeinfo.newinfo.west
 		rpinfo.south = changeinfo.newinfo.south
-		db_realproperty.update(rpinfo)
+		em_realproperty.update(rpinfo)
 	}	
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='add_faas_requirement_document'}")

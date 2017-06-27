@@ -18,6 +18,7 @@ class RPTCertificationLandHoldingService
 		em.insertLandHoldingItems(cert)
 		cert.items = getLandHoldingItems(cert)
 		certSvc.buildFootNotes(cert)
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 
@@ -28,6 +29,7 @@ class RPTCertificationLandHoldingService
 		em.insertLandHoldingWithImprovementItems(cert)
 		cert.items = getLandHoldingItems(cert)
 		certSvc.buildFootNotes(cert)
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 
@@ -38,6 +40,7 @@ class RPTCertificationLandHoldingService
 		em.insertLandHoldingWithNoImprovementItems(cert)
 		cert.items = getLandHoldingItems(cert)
 		certSvc.buildFootNotes(cert)
+		certSvc.makeHtmlSafe(cert)
 		return cert 
 	}
 

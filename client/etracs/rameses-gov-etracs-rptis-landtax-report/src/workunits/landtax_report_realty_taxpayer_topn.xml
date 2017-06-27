@@ -1,0 +1,51 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" action="init" 
+                 caption="Top N Realty Tax Payers" target="window"
+                 role="REPORT"/>
+    </invokers>
+    <code>
+    <![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class TopNRealProperytTaxpayerModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('LandTaxReportTopNRealPropertyTaxpayerService') 
+    def svc
+    
+    String title = 'Top N Realty Tax Payers';
+    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/topn_realproperty_taxpayer.jasper';
+    
+    def task;
+    def msg;
+    
+    def rputypes = ['land', 'bldg', 'mach', 'planttree', 'misc'];
+    
+    def initReport(){
+        entity.topn = 10;
+        return super.initReport();
+    }
+    
+    
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler);
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true]),
+                new FormControl( "integer", [caption:'Top N', name:'entity.topn', required:true]), 
+                new FormControl( "combo", [caption:'Type', name:'entity.rputype', items:'rputypes', emptyText:'All']),
+            ]    
+        } 
+    ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

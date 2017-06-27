@@ -51,6 +51,9 @@ class ConsolidationService
     @Service('FAASAnnotationService')
     def annotationSvc
 
+    @DataContext('faas_previous')
+    def em_faas_previous 
+
     def SCHEMA_CONSOLIDATION 		= 'consolidation'
     def SCHEMA_CONSOLIDATED_LAND 	= 'consolidatedland'
     def SCHEMA_AFFECTED_RPU 		= 'affectedrpu'
@@ -276,39 +279,31 @@ class ConsolidationService
         return arpu 
     }    
 
-
-    def buildPreviousAdministrator(clands){
-        def admins = []
-        clands.each{
-            if (it.faas.administrator && it.faas.administrator.name)
-                admins << [name:it.faas.administrator.name]
-        }
-        if (admins)
-            return admins.name.unique().join(', ')
-        return null
-    }    
-
-
     @ProxyMethod
     public def updateConsolidatedFaasPreviousInfo(consolidation){
         def clands = getConsolidatedLands(consolidation.objid)
         def faas = faasSvc.openFaas([objid:consolidation.newfaasid])
         if (faas){
-            faas.prevtdno = clands.faas.tdno.join(', ')
-            faas.prevpin = clands.rpu.fullpin.join(', ')
-            faas.prevowner = clands.faas.owner.name.unique().join(', ')
-            faas.prevadministrator = buildPreviousAdministrator(clands)
-            faas.prevav = clands.each{it.rpu.totalav = numSvc.format('#,##0.00', it.rpu.totalav)}.rpu.totalav.join(', ')
-            faas.prevmv = clands.each{it.rpu.totalmv = numSvc.format('#,##0.00', it.rpu.totalmv)}.rpu.totalmv.join(', ')
-            faas.prevareaha = clands.each{it.rpu.totalareaha = numSvc.format('#,##0.000000', it.rpu.totalareaha)}.rpu.totalareaha.join(', ')
-            faas.prevareasqm = clands.each{it.rpu.totalareasqm = numSvc.format('#,##0.00', it.rpu.totalareasqm)}.rpu.totalareasqm.join(', ')
-            faasSvc.updateFaasOnly(faas)
-
-            em.deletePreviousFaases([faasid:faas.objid])
-            faas.previousfaases = []
+            def pfs = []
             clands.each{
-                faas.previousfaases << [faasid:faas.objid, prevfaasid:it.landfaasid]
+                def pf = [:]
+                pf.faasid = it.faas.objid 
+                pf.rpuid = it.faas.rpuid 
+                pf.tdno = it.faas.tdno 
+                pf.fullpin = it.faas.fullpin 
+                pf.owner = it.faas.owner 
+                pf.administrator = it.faas.administrator
+                pf.totalav =it.rpu.totalav 
+                pf.totalmv = it.rpu.totalmv 
+                pf.totalareasqm = it.rpu.totalareasqm 
+                pf.totalareaha = it.rpu.totalareaha 
+                pf.effectivityyear = it.effectivityyear 
+                pfs << pf 
             }
+            faas.prevtdno = clands.faas.tdno.join(', ')
+            faas.previousfaases = faasSvc.buildPreviousFaases(faas, pfs)
+            faasSvc.updateFaasOnly(faas)
+            em_faas_previous.find([faasid:faas.objid]).delete()
             faasSvc.savePreviousFaases(faas)
         }
     }
@@ -536,17 +531,22 @@ class ConsolidationService
 
         def pdate = dtSvc.parseCurrentDate()
 
+        def pf = [:]
+        pf.faasid = faas.objid 
+        pf.rpuid = faas.rpuid 
+        pf.tdno = faas.tdno 
+        pf.fullpin = faas.fullpin 
+        pf.owner = faas.owner 
+        pf.administrator = faas.administrator
+        pf.totalav = faas.rpu.totalav 
+        pf.totalmv = faas.rpu.totalmv 
+        pf.totalareasqm = faas.rpu.totalareasqm 
+        pf.totalareaha = faas.rpu.totalareaha 
+        pf.effectivityyear = faas.effectivityyear      
 
         faas.prevtdno = faas.tdno
-        faas.prevpin =  faas.fullpin 
-        faas.prevowner =  faas.owner.name
-        faas.prevav =  faas.rpu.totalav 
-        faas.prevmv =  faas.rpu.totalmv 
-        faas.prevareasqm =  faas.rpu.totalareasqm
-        faas.prevareaha =  faas.rpu.totalareaha
-        faas.preveffectivity =  faas.effectivityyear
-
         faas.objid = 'F' + arpu.objid 
+        faas.previousfaases = faasSvc.buildPreviousFaases(faas, [pf])
         faas.state = STATE_PENDING
         faas.txntype  = faasSvc.getTxnType(TXNTYPE_CS)
         faas.effectivityyear = pdate.year
@@ -559,7 +559,6 @@ class ConsolidationService
         faas.rpu = arpu.rpu 
         faas.rpuid = arpu.rpu.objid 
         faas.realpropertyid = arpu.newrpid 
-        faas.previousfaases = [[faasid:faas.objid, prevfaasid:arpu.prevfaasid]]
         faas.originlguid = consolidation.originlguid
         faasSvc.clearSignatoryInfo(faas)
         return faas 

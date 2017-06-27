@@ -2,7 +2,8 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import com.rameses.common.*
 
-class ElectronicReceiptService  {
+class ElectronicReceiptService  
+{
 
 	@Env 
 	def env 
@@ -13,57 +14,43 @@ class ElectronicReceiptService  {
 	@DataContext("cashreceiptitem")
 	def cashreceiptItem; 
 
-	@DataContext("collectiontype")
-	def collectiontype; 
+	@DataContext("af_control")
+	def afControl; 
 
 	@DataContext("cashreceiptpayment_eor")
 	def eor; 
 
-	@DataContext("af_control")
-	def afControl; 
-
 	@Service("DateService")
-	def dateSvc;
+	def dateService;
 		
 	@Service("NumberService")
 	def numSvc;
 	
 	@Service('PersistenceService')
-	def persistence;
+	def persistence 
 	
 	@Service('CacheService')
-	def cacheSvc; 
+	def cache 
 
 	@Service('OrgService')
-	def orgSvc;
-
-	@Service('PaymentOrderService') 
-	def paymentOrderSvc;
-	
-	@ProxyMethod 
-	public def findCache( params ) {
-		if ( !params.key ) throw new Exception('key parameter is required');  
-
-		return cacheSvc.get([ key: params.key ]);  
-	}
+	def orgSvc 
 	
 	@ProxyMethod
 	public def createPayment( o ) {
-		o.dtposted = dateSvc.getServerDate(); 
+		o.dtposted = dateService.serverDate 
 		if (!o.refdate) o.refdate = o.dtposted 
+		o = eor.create( o );
+		cache.put([key:o.objid, value:o])
+		return o 
+	}
 
-		o = eor.create( o ); 
-		return o; 
-	} 
 
-	@ProxyMethod(local=true)
-	public def createReceipt( def p, def eorp ) { 
+	@ProxyMethod
+	public def post( def p, def eorPayment ) {
 		if( !p.items ) throw new Exception("ElectronicReceiptService must have items"); 
 
-		def svrDate = dateSvc.getServerDate(); 
+		def svrDate = dateService.serverDate;
 		def entity = [:];
-		entity.org = orgSvc.getRoot();
-		entity.collector = getCollector();
 		entity.putAll( getNextEORNumber() );
 		entity.state = 'POSTED';
 		entity.txnmode = 'ONLINE';
@@ -75,58 +62,29 @@ class ElectronicReceiptService  {
 			entity.receiptdate =  svrDate;
 		}	
 		entity.txndate = svrDate;
+		entity.org = orgSvc.getRoot();
+		entity.collector = getCollector()
+		entity.user = [objid: 'EOR', name:'EOR'];
+        entity.totalcash = 0;
+        entity.totalnoncash = entity.amount;
         entity.balancedue = 0;
         entity.cashchange = 0;
         entity.totalcredit = 0;
-        entity.totalcash = 0;
-        entity.totalnoncash = entity.amount;
-		entity.user = [objid: 'EOR', name:'EOR'];
-
-		def txntypeid = null; 
-		if ( p.txntype instanceof Map ) {
-			txntypeid = p.txntype.objid; 
-		} else {
-			txntypeid = p.txntype; 
-		} 
-
-		def paytype = paymentOrderSvc.findPaymentType([ objid: txntypeid ]); 
-		entity.collectiontype = paytype?.collectiontype;
-
-        cashreceipt.create( entity );
+        entity.collectiontype = p.txntype.collectiontype;
+        cashreceipt.create(entity);
         p.items.each { m->
-        	m.receiptid = entity.objid; 
-        	cashreceiptItem.create( m ); 
-        } 
+        	m.receiptid = entity.objid;
+        	cashreceiptItem.create(m);
+        };
 
         //update the eor payment.
-		eor.find([ objid: eorp.objid ]).update([ receiptid: entity.objid ]);
-		entity.paymentitems = [ eorp ]; 
-		deletePaymentOrder(p);
-		formatReport(entity); 
-		return entity;
-	} 
+		eor.find( [ objid: eorPayment.objid ] ).update([receiptid: entity.objid] );
 
-	@ProxyMethod(local=true)
-	public def openReceipt( params ) { 
-		def o = cashreceipt.find([ objid: params.objid ]).first(); 
-		if ( o ) {
-			o.items = cashreceiptItem.find([ receiptid: o.objid ]).list(); 
+		entity.paymentitems = [eorPayment];	
 
-			def colltypeid = o.collectiontype?.objid; 
-			def newcolltype = collectiontype.find([ objid: colltypeid ]).first(); 
-			if ( newcolltype ) o.collectiontype = newcolltype; 
-		} 
-		return o; 
-	}  
-
-
-	@ProxyMethod
-	public def postReceipt( crpeor, receipt, bill ) { 
-		env.bill = bill; 
-		return receipt; 
-	}  
-
-
+		deletePaymentOrder(p)
+		return formatReport(entity);
+	}	
 
 	def getControl( def afControlId ) {
 		def ac = afControl.find( [objid: afControlId ]).first();
@@ -150,7 +108,7 @@ class ElectronicReceiptService  {
 	}
 
 	def getNextEORNumber() {
-		String afControlId = 'EOR'+ dateSvc.getServerYear();
+		String afControlId = 'EOR'+ dateService.getServerYear();
 		def ac = getControl(afControlId);
 		int series = ac.currentseries;
 		afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] );

@@ -1,0 +1,7 @@
+"entity.*|selectedItem" [mode == 'read'] {
+    readonly:true;
+}
+
+"entity.*|selectedItem" [mode != 'read'] {
+    readonly:false;
+}

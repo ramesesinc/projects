@@ -27,7 +27,7 @@ class FAASStewardshipInterceptor
 			
 			util.required('Mother FAAS Memoranda', parentfaas.memoranda)
 
-			def prevareaha = util.toDecimal(parentfaas.prevareaha.replaceAll(',', ''))
+			def prevareaha = util.toDecimal(parentfaas.previousfaases[0].prevareaha.replaceAll(',', ''))
 			
 			if (faas.rpu.totalareaha > prevareaha){
 				throw new Exception('Stewardship FAAS area must be less than or equal to ' + parentfaas.prevareaha + ' ha.')
@@ -40,7 +40,7 @@ class FAASStewardshipInterceptor
 		}
 	}
 
-	@After(pattern='FAASService.openFaas', index=50)
+	@After(pattern='FAASService.open', index=50)
 	public void afterOpenFaas(evt){
 		def faas = evt.result 
 		faas.stewardships = stewardshipSvc.getStewardshipFaases(faas)

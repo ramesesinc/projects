@@ -38,6 +38,7 @@ class RedFlagsInfoController
     def entity;
     def redflags;
     def selectedItem;
+    String formName = 'rptredflag:list';
         
         
     @PropertyChangeListener
@@ -75,11 +76,24 @@ class RedFlagsInfoController
         return Inv.lookupOpener('redflag:resolve', [entity:data, redflag:selectedItem, oncomplete:oncomplete]);
     }
     
-    
     boolean getShowResolve(){
         if (!selectedItem) return false;
         if (selectedItem.state != 'OPEN') return false;
         if (OsirisContext.env.ORGCLASS == 'PROVINCE') return false;
+        return true;
+    }
+    
+    boolean getShowResendToProvince(){
+        if (!selectedItem) return false;
+        if (selectedItem.state != 'RESOLVED') return false;
+        if (OsirisContext.env.ORGCLASS == 'PROVINCE') return false;
+        return true;
+    }
+    
+    boolean getShowResendToMunicipality(){
+        if (!selectedItem) return false;
+        if (selectedItem.state != 'OPEN') return false;
+        if (OsirisContext.env.ORGCLASS != 'PROVINCE') return false;
         return true;
     }
 }

@@ -10,7 +10,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 
-class LandAdjustmentTypeLookupController extends com.rameses.gov.etracs.rpt.util.ExprLookupEditorController
+class LandAdjustmentTypeLookupController extends com.rameses.gov.etracs.rptis.models.ExprLookupEditorModel
 {
     @Service("LandRYSettingLookupService")
     def svc
@@ -19,7 +19,7 @@ class LandAdjustmentTypeLookupController extends com.rameses.gov.etracs.rpt.util
     def barangayid;
     def ry;
     def classificationid;
-    
+        
     Column[] getColumns() {
         return [
             new Column(name:"code", caption:"Code", width:80),
@@ -43,6 +43,6 @@ class LandAdjustmentTypeLookupController extends com.rameses.gov.etracs.rpt.util
 
     </code>
     <pages>
-        <page name="info" template="com.rameses.gov.etracs.rpt.util.VariableInfoPage" />
+        <page name="info" template="com.rameses.gov.etracs.rptis.views.VariableInfoPage" />
     </pages>        
 </workunit>

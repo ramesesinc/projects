@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.util.*;
 import com.rameses.common.*;
-import com.rameses.gov.etracs.rpt.util.RPTUtil;
+import com.rameses.gov.etracs.rptis.util.RPTUtil;
 import com.rameses.util.MapBeanUtils;
 
 
@@ -33,6 +33,13 @@ public class ManualApproveSubdivisionTask implements Runnable{
                 svc.approveAffectedRpuFaasRecord(entity, arpu);
                 showinfo(' .... Done\n');
             }
+            
+            showinfo('Processing Cancelled Improvements\n');
+            svc.getCancelledImprovements(entity.objid).each{ ci ->
+                showinfo('Cancelling Improvement ' + ci.fullpin);
+                svc.approveCancelledImprovement(entity, ci);
+                showinfo(' .... Done\n');
+            }            
             
             showinfo('Subdivision Approval')
             entity.putAll(svc.approveSubdivision(entity));

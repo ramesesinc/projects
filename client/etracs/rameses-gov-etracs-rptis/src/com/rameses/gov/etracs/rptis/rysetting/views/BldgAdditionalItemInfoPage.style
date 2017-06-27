@@ -1,0 +1,16 @@
+
+"createAdditionalItem|openAdditionalItem|removeAdditionalItem" [mode == "read"]{
+    enabled:false;
+}
+
+"createAdditionalItem|openAdditionalItem|removeAdditionalItem" [mode != "read"]{
+    enabled:true;
+}
+
+"openAdditionalItem|removeAdditionalItem" [selectedAdditionalItem == null || selectedAdditionalItem.objid == null]{
+    enabled:false;
+}
+
+"entity.ry" [true == true]{
+    enabled:false;
+}

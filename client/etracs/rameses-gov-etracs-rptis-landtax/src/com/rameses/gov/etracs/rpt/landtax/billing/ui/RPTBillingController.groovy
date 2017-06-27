@@ -36,12 +36,23 @@ public class RPTBillingController
     def bill;
     def billto;
     def taxpayer;
+    def rptledgerid;
+    def showBack = true; 
+    def advancebill;
+    def billdate;
     
-    String title = 'Realty Tax Billing'
+    String title = 'Real Property Tax Bill'
+    
+    @PropertyChangeListener
+    def listener = [
+        'bill.taxpayer' : {
+            loadTaxpayerBillingInfo();
+        }
+    ]
     
     void init() {
         mode = 'init'
-        bill = svc.initBill(null)
+        bill = svc.initBill(rptledgerid)
     }
     
     def back() {
@@ -50,27 +61,13 @@ public class RPTBillingController
         return 'default' 
     }
     
-    def getLookupTaxpayer() {
-        return InvokerUtil.lookupOpener('entity:lookup', [
-            onselect : {
-                bill.taxpayer = it;
-                bill.taxpayer.address = it.address.text;
-                billto = bill.taxpayer;
-                bill.billto = billto;
-                clearLoadedProperties();
-                loadProperties();
-            },
-                
-            onempty : {
-                bill.taxpayer = null;
-                bill.billto = null;
-                clearLoadedProperties();
-            }
-        ] )
-    }
-    
     def selectedItems 
     void updateLedgerBillStatement(){
+        if(advancebill){
+            bill.advancebill = advancebill;
+            bill.billdate = billdate;
+        }
+        
         if (items) {
             selectedItems = items.findAll{it.bill == true}
             if (!selectedItems) selectedItems = items;
@@ -116,18 +113,23 @@ public class RPTBillingController
     }
     
     void printBill() {
-        def b = svc.initBill(null)
+        def b = svc.initBill(rptledgerid)
         bill.objid = b.objid 
         bill.barcode = b.barcode 
         buildBillReportInfo()
         ReportUtil.print( report.report, true )
     }
     
+    def print() {
+        buildBillReportInfo()
+        ReportUtil.print( report.report, true );
+        return '_close';
+    }    
+    
     void initBatch(){
         init();
-        bill.taxpayer = taxpayer;
-        loadProperties();
-        previewBill();
+        //bill.taxpayer = taxpayer;
+        printBill();
     }
     
     def previewBill() {
@@ -214,6 +216,22 @@ public class RPTBillingController
         items.each{
             it.bill = false;
             listHandler.reload();
+        }
+    }
+    
+    
+    void loadTaxpayerBillingInfo(){
+        if (bill.taxpayer){
+            bill.taxpayer.address = bill.taxpayer.address.text;
+            billto = bill.taxpayer;
+            bill.billto = billto;
+            clearLoadedProperties();
+            loadProperties();
+        }
+        else{
+            billto = null;
+            bill.billto = null;
+            clearLoadedProperties();
         }
     }
     

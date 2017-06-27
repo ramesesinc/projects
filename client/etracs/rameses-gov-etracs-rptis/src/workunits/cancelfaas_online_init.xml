@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit extends="rpt_wtemplates/FAASTxnInitController.xml">>
+<workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
     <invokers>       
         <invoker type="quick_launcher" code="CF01" action="init" caption="Cancel FAAS" 
             txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
@@ -9,39 +9,13 @@
         
         <invoker folderid="/home/rpt/txn" action="init" caption="Cancel FAAS" 
             txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+        
+        <invoker folderid="/menu/txn/rpt" action="init" caption="Cancel FAAS" 
+            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
             
     </invokers>
-    <code>
-        
-
-import com.rameses.rcp.annotations.* 
-import com.rameses.rcp.common.* 
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-
-
-class CancelFAASOnlineInitController extends com.rameses.gov.etracs.rpt.faas.ui.FaasTxnInitController
-{
-    @Service('CancelledFAASService')
-    def cancelSvc;
-        
-    void afterInit(){
-        entity.objid = 'CTD' + new java.rmi.server.UID();
-        entity.state = 'DRAFT';
-        entity.online = 1;
-    }
-    
-    def process(){
-        def cancelledfaas = cancelSvc.initCancelledFaas( entity );
-        return Inv.lookupOpener('cancelledfaas:online:open', [entity:cancelledfaas]);
-    }
-    
-}
-
+    <code class="com.rameses.gov.etracs.rptis.models.FAASInitCancelModel">
     </code>
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasTxnInitPage"/>
-    </pages>    
 </workunit>
 
 

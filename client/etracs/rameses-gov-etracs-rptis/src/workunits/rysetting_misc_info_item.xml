@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="miscrysetting:info" 
+                 action="init" caption="Miscellaneous Items" 
+                 mnemonic="m" index="10"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.MiscItemInfoModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.MiscItemInfoPage"/>
+    </pages>
+</workunit>

@@ -1,14 +1,21 @@
-<workunit extends="rpt_wtemplates/RYSetting.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/RYSettingModel.xml">
     <invokers>
-        <invoker type="miscrysetting:create" action="create" caption="Create Miscellaneous Revision Settting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="miscrysetting:open" action="open" caption="Edit Miscellaneous Revision Settting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="miscrysetting:copy" action="copy" caption="Copy Miscellaneous Revision Settting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="miscrysetting:create" 
+                 action="create" 
+                 caption="Miscellaneous Revision Setting" 
+                 target="window" 
+                 entityName="miscrysetting" 
+                 serviceName="MiscRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
+        <invoker type="miscrysetting:open" 
+                 action="open" 
+                 caption="Edit Miscellaneous Revision Setting" 
+                 target="window" 
+                 entityName="miscrysetting" 
+                 serviceName="MiscRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
     </invokers>
-    
-    <code class="com.rameses.gov.etracs.rpt.rysetting.miscrysetting.ui.MiscRYSettingController">
-    </code>
-    
-    <pages> 
-        <page template="com.rameses.gov.etracs.rpt.rysetting.miscrysetting.ui.MiscRYSettingPage"/>
-    </pages>
 </workunit>

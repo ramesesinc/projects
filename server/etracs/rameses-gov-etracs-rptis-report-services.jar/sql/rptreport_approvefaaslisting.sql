@@ -1,13 +1,12 @@
 [getApproveFaasListing]
 SELECT 
+	f.objid, 
 	f.state,
 	f.tdno,
 	f.owner_name,
 	f.administrator_name, 
 	f.titleno,
 	f.prevtdno,
-	f.prevowner,
-	f.prevadministrator, 
 	f.effectivityyear,
 	cancelledbytdnos,
 	canceldate,
@@ -27,6 +26,7 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 WHERE ${filter}
 	AND f.state IN ('CURRENT', 'CANCELLED')
+	AND rp.section like $P{section}
 	${txntypefilter}
 ORDER BY f.tdno  	
 

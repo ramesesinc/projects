@@ -4,8 +4,11 @@ import com.rameses.common.*;
 
 class ProvinceLandSettingSyncHandler
 {   
-	@ActiveDB('landrysetting')
-	def em 
+	@DataContext('rysetting_land')
+	def em_land 
+
+	@DataContext('rysetting_lgu')
+	def em_setting_lgu
 
 
 	@Env
@@ -48,8 +51,11 @@ class ProvinceLandSettingSyncHandler
 		}
 		
 
-		//get landrysetting by lguid
-		def settings = em.getSettingsByLguIdRy([lguid:org.objid, ry:params.ry])
+		def settings = []
+		def lgusettings = em_setting_lgu.find([lguid:org.objid, settingtype:'land']).list()
+		lgusettings.each{
+			settings << em_land.find([objid:it.rysettingid, ry:params.ry]).first()
+		}
 		if (!settings){
 			queue.push([msgtype:'_ERROR_', msg:'Requested revision setting does not exist.'])
 			queue.push( new AsyncToken(closed:true) )
@@ -60,22 +66,22 @@ class ProvinceLandSettingSyncHandler
 			setting = landSvc.open(setting)
 			queue.push([msgtype:'landrysetting', data:setting])
 
-			def data = landSvc.getAssessLevels(setting.objid).each{ lvl ->
-							lvl.ranges = landSvc.getRanges(lvl.objid)
+			def data = landSvc.getAssessLevels(setting).each{ lvl ->
+							lvl.ranges = landSvc.getRanges(lvl)
 						}
 
 			queue.push([msgtype:'landassesslevels', data:data])
 
-			data = landSvc.getSpecificClasses(setting.objid, '%').each{ spc ->
-						spc.subclasses = landSvc.getSubClasses(spc.objid)
+			data = landSvc.getSpecificClasses(setting, null).each{ spc ->
+						spc.subclasses = landSvc.getSubClasses(spc)
 					}
 
 			queue.push([msgtype:'specificclasses', data:data])
 
-			data = landSvc.getStrippings(setting.objid, '%')
+			data = landSvc.getStrippings(setting, null)
 			queue.push([msgtype:'strippings', data:data])
 
-			data = landSvc.getLandAdjustmentTypes(setting.objid).each{
+			data = landSvc.getAdjustmentTypes(setting).each{
 				it.classifications = landSvc.getAdjustmentClassifications(it)
 			}
 			queue.push([msgtype:'adjustmenttypes', data:data])

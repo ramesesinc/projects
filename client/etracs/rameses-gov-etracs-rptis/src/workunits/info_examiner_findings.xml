@@ -10,10 +10,11 @@
         <invoker type="cancelledfaas:info" action="init" caption="Examination Findings" index="10" />
         
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
-        <invoker type="formActions" action="addFinding" caption="New" mnemonic="n" visibleWhen="#{showActions == true}" role="EXAMINER" depends="selectedFinding" icon="images/toolbars/create.png"/>
-        <invoker type="formActions" action="viewFinding" caption="Open" mnemonic="o" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null}" />
-        <invoker type="formActions" action="removeFinding" caption="Remove" mnemonic="r" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null  &amp;&amp; allowEdit==true}" icon="images/toolbars/cancel.png"/>
-        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" visibleWhen="#{selectedFinding != null}" />        
+        
+        <invoker type="formActions" action="create" caption="New" mnemonic="n" visibleWhen="#{showActions == true}" role="EXAMINER" />
+        <invoker type="formActions" action="viewFinding" caption="Open" mnemonic="o" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null}" depends="selectedFinding"/>
+        <invoker type="formActions" action="delete" caption="Delete" mnemonic="r" role="EXAMINER" visibleWhen="#{showActions == true &amp;&amp; selectedFinding != null  &amp;&amp; allowEdit==true}" depends="selectedFinding"/>
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" visibleWhen="#{selectedFinding != null}" depends="selectedFinding"/>        
    </invokers>
    <code>
 
@@ -70,7 +71,7 @@ class ExaminationFindingsInfoController
     }
        
        
-    def addFinding(){
+    def create(){
         return InvokerUtil.lookupOpener('examinerfinding:create', [
             entity : entity,
             
@@ -93,7 +94,7 @@ class ExaminationFindingsInfoController
         ])
     }
        
-    def removeFinding(){
+    def delete(){
         if ( !selectedFinding ) 
             return;
             
@@ -115,9 +116,10 @@ class ExaminationFindingsInfoController
     
     
     boolean getShowActions(){
+        if (entity.state.matches('CURRENT')) return true;
+        if (entity.state.matches('CANCELLED')) return false;
         if (entity.taskstate && entity.taskstate.matches('assign.*')) return false;
         if (entity.taskstate && !entity.taskstate.matches('examiner')) return false;
-        if (entity.state.matches('CURRENT|CANCELLED')) return false;
         if (OsirisContext.env.USERID != entity.assignee.objid) return false;
         return true;
     }    

@@ -1,44 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit>
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="rptparameter">
     
     <invokers>
-        <invoker type="quick_launcher" code="RPAR01" action="init" caption="Parameter" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="rptparameter:create" action="init" caption="Parameter" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="rptparameter:open" action="open" caption="Parameter" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="rptparameter:create" 
+                 caption="Parameter" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="rptparameter.create" />
+        
+        <invoker type="rptparameter:open" 
+                 caption="Parameter" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="rptparameter.read"/>
     </invokers>
-        
-    <code lang="groovy">
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        
-        public class RPTParameterController  extends CRUDController
-        {
-            String serviceName = "RPTParameterService"
-            String entityName  = 'rptparameter'
-            String prefixId    = 'RP'
-            
-            String getCreateFocusComponent() { return "entity.name"; }
-            String getEditFocusComponent() { return "entity.name"; }
-            
-            def getDataTypes(){
-                return ['decimal', 'integer', 'range_decimal', 'range_integer'];
-            }
-            
-            
-            Map createEntity(){
-                return [
-                    paramtype   : 'decimal',
-                    minvalue    : 0,
-                    maxvalue    : 0
-                ];
-            }
-        }
-
-    </code>
-    
+    <code class="com.rameses.gov.etracs.rptis.master.models.RPTParameterModel"/>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.RPTParameterPage" />
+        <page template="com.rameses.gov.etracs.rptis.master.views.RPTParameterPage"/>
     </pages>
 </workunit>

@@ -1,0 +1,10 @@
+<schema>
+    <element tablename="bldgtype_depreciation">
+    	<field name="objid" primary="true"/>
+    	<field name="bldgtypeid" required="true"/>
+    	<field name="bldgrysettingid" required="true"/>
+        <field name="agefrom" required="true"  type="integer" />
+        <field name="ageto" required="true"  type="integer" />
+		<field name="rate" required="true"  type="decimal" />
+    </element>
+</schema>

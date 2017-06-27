@@ -1,0 +1,36 @@
+
+<workunit extends="wtemplates/LookupController.xml">
+    <invokers>
+        <invoker type="structurematerial:lookup" action="init" caption="Struture Material Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.common.*
+import com.rameses.osiris2.client.*
+
+class LookupStructureMaterialController extends LookupController
+{
+    @Service("StructureService")
+    def svc
+    
+    def structureid
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"code", caption:"Code", width:70),
+            new Column(name:"name", caption:"Material", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.structure_objid = structureid
+        return svc.getMaterials(params)
+    }
+}  
+
+
+    </code>
+</workunit>

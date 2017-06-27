@@ -1,0 +1,9 @@
+"changeinfo.newinfo.exemptiontype" [changeinfo.newinfo.taxable == true]{
+    enabled:false;
+    required:false;
+}
+
+"changeinfo.newinfo.exemptiontype" [changeinfo.newinfo.taxable == false]{
+    enabled:true;
+    required:true;
+}

@@ -94,7 +94,7 @@ select objid from machdetail where objid = $P{objid}
 
 [getLandRpuAssessments]
 select distinct 
-	min(ld.objid) as objid, 
+	min(concat(ld.landrpuid,'-',lal.code)) as objid, 
 	ld.landrpuid as rpuid, 
 	lal.classification_objid, 
 	ld.actualuse_objid, 
@@ -102,6 +102,7 @@ select distinct
 	sum(ld.areaha) as areaha, 
 	sum(ld.marketvalue) as marketvalue, 
 	ld.assesslevel, 
+	ld.taxable, 
 	sum(ld.assessedvalue) as assessedvalue, 
 	'land' as rputype
 from landdetail ld 	
@@ -111,11 +112,12 @@ group by
 	ld.landrpuid, 
 	lal.classification_objid, 
 	ld.actualuse_objid,
-	ld.assesslevel
+	ld.assesslevel,
+	ld.taxable 
 
 [getPlantTreeDetailAssessments]
 select distinct 
-	min(ld.objid) as objid, 
+	min(concat(ld.landrpuid, 'PT-', lal.code)) as objid, 
 	ld.landrpuid as rpuid, 
 	lal.classification_objid, 
 	ld.actualuse_objid, 
@@ -123,6 +125,7 @@ select distinct
 	sum(0) as areaha, 
 	sum(ld.marketvalue) as marketvalue, 
 	ld.assesslevel, 
+	1 as taxable,
 	sum(ld.assessedvalue) as assessedvalue, 
 	'planttree' as rputype
 from planttreedetail ld 	
@@ -136,8 +139,8 @@ group by
 
 
 [insertLandRpuAssessment]
-INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype) 
-values($P{objid}, $P{rpuid}, $P{classification_objid}, $P{actualuse_objid}, $P{areasqm}, $P{areaha}, $P{marketvalue}, $P{assesslevel}, $P{assessedvalue}, $P{rputype})
+INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype, taxable) 
+values($P{objid}, $P{rpuid}, $P{classification_objid}, $P{actualuse_objid}, $P{areasqm}, $P{areaha}, $P{marketvalue}, $P{assesslevel}, $P{assessedvalue}, $P{rputype}, $P{taxable})
 
 
 [findPropertyClassificationByCode]
@@ -145,9 +148,9 @@ select objid from propertyclassification where code = $P{code}
 
 
 [insertBldgRpuAssessment]
-INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype) 
+INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype, taxable) 
 select
-	min(bu.objid) as objid, 
+	concat(r.objid, au.code) as objid, 
 	bu.bldgrpuid as rpuid, 
 	au.classification_objid, 
 	bu.actualuse_objid as actualuse_objid, 
@@ -156,7 +159,8 @@ select
 	sum(bu.marketvalue) as marketvalue, 
 	bu.assesslevel,
 	sum(bu.assessedvalue) as assessedvalue, 
-	'bldg' as rputype
+	'bldg' as rputype,
+	true 
 from bldgrpu r
 	inner join bldguse bu on r.objid  = bu.bldgrpuid
 	inner join bldgassesslevel au on bu.actualuse_objid = au.objid 
@@ -186,7 +190,7 @@ where bldgrpuid = $P{objid}
 
 
 [insertMachRpuAssessment]
-INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype) 
+INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype, taxable) 
 select
 	min(bu.objid) as objid, 
 	bu.machrpuid as rpuid, 
@@ -197,7 +201,8 @@ select
 	sum(bu.marketvalue) as marketvalue, 
 	bu.assesslevel,
 	sum(bu.assessedvalue) as assessedvalue, 
-	'mach' as rputype
+	'mach' as rputype,
+	1
 from machrpu r
 	inner join machuse bu on r.objid  = bu.machrpuid
 	inner join machassesslevel au on bu.actualuse_objid = au.objid 
@@ -236,6 +241,10 @@ select objid from entitymultiple where objid = $P{objid}
 
 [findLandRySettingByRy]
 select * from landrysetting where ry = $P{ry}
+
+
+[findLatestLandRySetting]
+select * from landrysetting order by ry desc 
 
 [findClassificationById]
 select objid from propertyclassification where objid = $P{objid}
@@ -306,9 +315,6 @@ select objid from bldgassesslevel where objid = $P{objid}
 [findBldgTypeById]
 select objid from bldgtype where objid = $P{objid}
 
-[findBldgTypePrevInfo]
-select * from bldgtype where objid = $P{previd}
-
 
 [findBldgKindBuccById]
 select objid from bldgkindbucc where objid = $P{objid}
@@ -316,11 +322,7 @@ select objid from bldgkindbucc where objid = $P{objid}
 [findBldgAdditionalItemById]
 select * from bldgadditionalitem where objid = $P{objid}
 
-[findBldgAdditionalItemByCode]
-select * from bldgadditionalitem where code = $P{code}
 
-[findBldgAdditionalItemByName]
-select * from bldgadditionalitem where name = $P{name}
 
 
 [findMachSettingByRy]
@@ -337,5 +339,121 @@ insert into faasannotationtype
 values	
 	($P{objid}, $P{type})
 
-[findResidentialClass]
-select * from propertyclassification where name = 'RESIDENTIAL'
+
+
+
+[insertFaasList]
+insert into faas_list(
+	objid,
+	state,
+	datacapture,
+	rpuid,
+	realpropertyid,
+	ry,
+	txntype_objid,
+	tdno,
+	utdno,
+	prevtdno,
+	displaypin,
+	pin,
+	taxpayer_objid,
+	owner_name,
+	owner_address,
+	administrator_name,
+	administrator_address,
+	rputype,
+	barangayid,
+	barangay,
+	classification_objid,
+	classcode,
+	cadastrallotno,
+	blockno,
+	surveyno,
+	titleno,
+	totalareaha,
+	totalareasqm,
+	totalmv,
+	totalav,
+	effectivityyear,
+	effectivityqtr,
+	cancelreason,
+	cancelledbytdnos,
+	lguid,
+	originlguid,
+	yearissued,
+	taskid,
+	taskstate,
+	assignee_objid,
+	trackingno
+)
+select 
+	f.objid,
+	f.state,
+	f.datacapture, 
+	f.rpuid,
+	f.realpropertyid,
+	r.ry,
+	f.txntype_objid,
+	f.tdno,
+	f.utdno,
+	f.prevtdno,
+	f.fullpin as displaypin,
+	case when r.rputype = 'land' then rp.pin else concat(rp.pin, '-', r.suffix) end as pin,
+	f.taxpayer_objid,
+	f.owner_name,
+	f.owner_address,
+	f.administrator_name,
+	f.administrator_address,
+	r.rputype,
+	rp.barangayid,
+	(select name from barangay where objid = rp.barangayid) as barangay,
+	r.classification_objid,
+	pc.code as classcode,
+	rp.cadastrallotno,
+	rp.blockno,
+	rp.surveyno,
+	f.titleno,
+	r.totalareaha,
+	r.totalareasqm,
+	r.totalmv,
+	r.totalav,
+	f.effectivityyear,
+	f.effectivityqtr,
+	f.cancelreason,
+	f.cancelledbytdnos,
+	f.lguid,
+	f.originlguid,
+	f.year as yearissued,
+	(select objid from faas_task where refid = f.objid and enddate is null limit 1) as taskid,
+	(select state from faas_task where refid = f.objid and enddate is null limit 1) as taskstate,
+	(select assignee_objid from faas_task where refid = f.objid and enddate is null limit 1) as assignee_objid,
+	(select trackingno from rpttracking where objid = f.objid) as trackingno
+from faas f 
+	inner join rpu r on f.rpuid = r.objid 
+	inner join realproperty rp on f.realpropertyid = rp.objid 
+	inner join propertyclassification pc on r.classification_objid = pc.objid 
+where f.objid = $P{objid}
+and not exists(select * from faas_list where objid = f.objid)
+
+
+[findStructureByName]
+select * from structure where name = $P{name}
+
+
+[insertLandSpecificClass]
+insert into landspecificclass (
+	objid,
+	state,
+	code,
+	name
+)
+values (
+	$P{objid},
+	$P{state},
+	$P{code},
+	$P{name}
+)
+
+
+[findBarangay]
+select * from barangay where objid = $P{barangayid}

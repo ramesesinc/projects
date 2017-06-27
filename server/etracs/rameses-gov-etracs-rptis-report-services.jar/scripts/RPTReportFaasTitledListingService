@@ -17,9 +17,11 @@ class RPTReportFaasTitledListingService
 
     @Async
     @ProxyMethod
-    public def generateReport(params){
+    public def buildReport(params){
     	params.lguid = (params.lgu ? params.lgu.objid  : '%')
         params.barangayid = (params.barangay ? params.barangay.objid : '%') 
+        params.section = (params.section ? params.section : '%')
+        params.taxpayerid = (params.taxpayer ? params.taxpayer.objid : '%') 
 
         def list = em.getTitledProperties(params)
 		if ( !list ) throw new Exception('There are no records found.')
@@ -44,6 +46,7 @@ class RPTReportFaasTitledListingService
             TITLE      : 'LIST OF TITLED PROPERTIES', 
             FORLGUNAME : forlguname,
             BARANGAY   : (params.barangay ? params.barangay.name : 'ALL'),
+            BYTAXPAYER : params.taxpayer != null, 
         ]
 
 		return [

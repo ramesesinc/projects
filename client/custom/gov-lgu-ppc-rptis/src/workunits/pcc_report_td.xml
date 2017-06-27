@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faaslist:formActions" 
+                 action="initPreview" 
+                 caption="Tax Declaration (Old) Report" 
+                 index="1000" />
+    </invokers>
+    <code class="gov.lgu.ppc.rptis.model.OldTaxDeclarationModel"/>
+    <page>
+        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
+    </page>    
+
+</workunit>

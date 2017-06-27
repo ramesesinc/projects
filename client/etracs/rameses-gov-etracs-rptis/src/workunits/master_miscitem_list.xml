@@ -1,9 +1,23 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="miscitem" 
-          cols="state,code,name" orderBy="code"
-          allowDelete="#{entity.state!='APPROVED'}"
-          caption="Miscellaneous Items">
+          windowTitle="Miscellaneous Items"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" action="init" caption="Miscellaneous Items" index="9" role="ASSESSOR_DATAMGMT,MASTER"/>
+        <invoker folderid="/explorer/master/rpt" caption="Miscellaneous Items"  index="10" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items"  index="10" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/miscitems.png"/>
+        
+        <invoker type="quick_launcher" code="MI00" caption="Miscellaneous Items"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

@@ -76,7 +76,7 @@ GROUP BY
 	rl.totalareaha,
 	pc.code, 
 	b.name
-ORDER BY rl.tdno 
+ORDER BY t.fromyear, t.toyear 
 
 
 [findBillByTaxpayer]

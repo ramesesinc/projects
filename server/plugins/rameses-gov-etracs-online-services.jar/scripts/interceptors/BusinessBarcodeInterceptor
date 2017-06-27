@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import market.facts.*;
+import java.text.*;
+
+public class KioskBusinessBarcodeInterceptor  {
+
+	@DataContext("business")
+	def em;
+
+	@After( pattern="KioskBarcodeService.load", eval="#{result.prefix == '51005' }" )
+	public def load( def evt ) {
+		def m = evt.result
+		m.handler = 'bpls';
+	}
+
+
+}

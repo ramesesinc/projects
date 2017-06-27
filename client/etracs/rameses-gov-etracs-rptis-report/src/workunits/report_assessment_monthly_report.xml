@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="Monthly Assessment Report" 
+            target="window" 
+            role="REPORT,ASSESSOR_REPORT"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.MonthlyAssessmentReportModel">
+    </code>
+</workunit>

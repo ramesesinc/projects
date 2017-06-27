@@ -1,4 +1,20 @@
-<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
-    schemaName="exemptiontype"
-    caption="Exemption Type">
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="exemptiontype">
+    
+    <invokers>
+        <invoker type="exemptiontype:create" 
+                 caption="Exemption Type" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="exemptiontype.create" />
+        
+        <invoker type="exemptiontype:open" 
+                 caption="Exemption Type" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="exemptiontype.read"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.ExemptionTypeModel"/>
 </workunit>

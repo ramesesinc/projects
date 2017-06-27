@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/landtax" action="init" 
             caption="Real Property Tax Collection" target="window" 
-            index="1" role="REPORT"/>
+            role="REPORT"/>
     </invokers>
     
     <code>
@@ -22,6 +22,8 @@ class RPTCollectionStandardReportController extends com.rameses.gov.etracs.rpt.r
     String title = 'Real Property Tax Collection';
     String reportPath = 'com/rameses/gov/etracs/rpt/report/landtax/'
     String reportName = reportPath + 'rptcollection.jasper'
+    
+    def showPostingType = true;
  
     def periods = [
         [code:'monthly', name:'MONTHLY'],     
@@ -35,6 +37,11 @@ class RPTCollectionStandardReportController extends com.rameses.gov.etracs.rpt.r
         [code:3, name:' 3RD'],
         [code:4, name:' 4TH']
     ];
+    
+    def postingtypes = [
+        [code:'byliq', caption:'By Liquidation Date'],
+        [code:'byrem', caption:'By Remittance Date'],
+    ]
     
     def months;
     

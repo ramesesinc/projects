@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/landtax" action="init" 
                  caption="Statement of Share Report - Idle Land" 
-                 target="window" index="202" role="REPORT"/>
+                 target="window" role="REPORT"/>
         <invoker type="formActions"     action="_close" caption="Cancel" mnemonic="c"  icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/toolbars/print.png" visibleWhen="#{mode=='init'}"/>
         <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"  icon="images/doc-view.png" visibleWhen="#{mode=='init'}"/>

@@ -6,5 +6,4 @@ import enterprise.facts.*;
 public class VehicleDecimalInfo extends DecimalInfo {
 	
 	
-	
 }

@@ -1,7 +1,7 @@
 [generateDelinquencyReport]
 SELECT
-	f.taxpayer_name,
-	f.taxpayer_address,
+	e.name as taxpayer_name,
+	e.address_text as taxpayer_address,
 	r.fullpin AS pin,
 	f.tdno,
 	pc.code AS classcode,
@@ -18,6 +18,7 @@ FROM realproperty rp
 	INNER JOIN rpu r ON rp.objid = r.realpropertyid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN faas f ON r.objid = f.rpuid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	INNER JOIN rptledger rl ON f.objid = rl.faasid 	
 WHERE rp.barangayid = $P{barangayid}
   AND rl.state = 'APPROVED' 
@@ -26,8 +27,8 @@ WHERE rp.barangayid = $P{barangayid}
 
 [generateDelinquencyReportOldFormat]
 SELECT
-	f.taxpayer_name,
-	f.taxpayer_address,
+	e.name as taxpayer_name,
+	e.address_text as taxpayer_address,
 	r.fullpin AS pin,
 	f.tdno,
 	pc.code AS classcode,
@@ -51,6 +52,7 @@ FROM realproperty rp
 	INNER JOIN rpu r ON rp.objid = r.realpropertyid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN faas f ON r.objid = f.rpuid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	INNER JOIN rptledger rl ON f.objid = rl.faasid 	
 	LEFT JOIN xreceipt xr ON rl.lastreceiptid = xr.objid 
 WHERE rp.barangayid = $P{barangayid}
@@ -75,7 +77,7 @@ SELECT
 		ELSE 
 			CONCAT(  MIN(CONCAT(ri.qtr, 'Q,', ri.year)), ' - ', MAX(CONCAT(ri.qtr, 'Q,', ri.year)) )
 	END AS period,
-	CASE WHEN v.objid IS NULL THEN f.taxpayer_name ELSE '*** VOIDED ***' END AS taxpayername, 
+	CASE WHEN v.objid IS NULL THEN e.name ELSE '*** VOIDED ***' END AS taxpayername, 
 	CASE WHEN v.objid IS NULL THEN f.tdno ELSE '' END AS tdno, 
 	CASE WHEN v.objid IS NULL THEN b.name ELSE '' END AS barangay, 
 	CASE WHEN v.objid IS NULL THEN pc.code ELSE '' END AS classification, 
@@ -89,12 +91,13 @@ FROM cashreceipt xr
 	INNER JOIN cashreceipt_rpt_item ri ON rr.objid = ri.rptreceiptid 
 	INNER JOIN rptledger rl ON ri.rptledgerid = rl.objid 
 	INNER JOIN faas f ON rl.faasid = f.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
 	LEFT JOIN cashreceipt_void v ON xr.objid = v.receiptid
 ${whereclause}
-GROUP BY xr.receiptno, xr.txndate, f.taxpayer_name, f.tdno, b.name, pc.code 	
+GROUP BY xr.receiptno, xr.txndate, e.name, f.tdno, b.name, pc.code 	
 ORDER BY xr.receiptno;
 
 
@@ -114,7 +117,7 @@ SELECT
 		ELSE 
 			CONCAT(  MIN(CONCAT(ri.qtr, 'Q,', ri.year)), ' - ', MAX(CONCAT(ri.qtr, 'Q,', ri.year)) )
 	END AS period,
-	CASE WHEN v.objid IS NULL THEN f.taxpayer_name ELSE '*** VOIDED ***' END AS taxpayername, 
+	CASE WHEN v.objid IS NULL THEN e.name ELSE '*** VOIDED ***' END AS taxpayername, 
 	CASE WHEN v.objid IS NULL THEN f.tdno ELSE '' END AS tdno, 
 	CASE WHEN v.objid IS NULL THEN b.name ELSE '' END AS barangay, 
 	CASE WHEN v.objid IS NULL THEN pc.code ELSE '' END AS classification, 
@@ -128,12 +131,13 @@ FROM cashreceipt xr
 	INNER JOIN cashreceipt_rpt_item ri ON rr.objid = ri.rptreceiptid 
 	INNER JOIN rptledger rl ON ri.rptledgerid = rl.objid 
 	INNER JOIN faas f ON rl.faasid = f.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
 	LEFT JOIN cashreceipt_void v ON xr.objid = v.receiptid
 ${whereclause}
-GROUP BY xr.receiptno, xr.txndate, f.taxpayer_name, f.tdno, b.name, pc.code 	
+GROUP BY xr.receiptno, xr.txndate, e.name, f.tdno, b.name, pc.code 	
 ORDER BY xr.receiptno;
 
 

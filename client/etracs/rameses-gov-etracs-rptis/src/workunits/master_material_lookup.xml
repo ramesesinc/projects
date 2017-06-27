@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="material"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="material:lookup" 
+                 caption="Material Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

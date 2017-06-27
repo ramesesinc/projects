@@ -10,8 +10,8 @@ import com.rameses.gov.etracs.rpt.faas.change.ui.*;
 
 public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
 {
-    @Service('PropertyClassificationService')
-    def pcSvc;
+    @Service('QueryService')
+    def querySvc 
         
     String title = 'Modify FAAS Information';
     
@@ -28,6 +28,8 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
             txntype         : entity.txntype,
             classification  : classifications.find{it.objid == entity.rpu.classification?.objid},
             rputype         : entity.rpu.rputype,
+            taxable         : entity.rpu.taxable,
+            exemptiontype   : entity.rpu.exemptiontype,
             publicland      : entity.rpu.publicland,
         ]
     }
@@ -40,6 +42,8 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
         entity.effectivityyear	=  newinfo.effectivityyear;
         entity.effectivityqtr 	=  newinfo.effectivityqtr;
         entity.memoranda        =  newinfo.memoranda;
+        entity.rpu.taxable          = newinfo.taxable;
+        entity.rpu.exemptiontype    = newinfo.exemptiontype;
         entity.txntype          = newinfo.txntype;
     }
     
@@ -53,8 +57,24 @@ public class ChangeFAASAndRPUInfoController extends ChangeFaasInfoController
      }
 
      List getClassifications(){
-        return pcSvc.getList([:]);
+        def q = [_schemaname:'propertyclassification', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
      }
+     
+    List getExemptions(){
+        def q = [_schemaname:'exemptiontype', where:['1=1'], orderBy:'orderno']
+        return querySvc.getList(q)
+    }
+    
+    
+    @PropertyChangeListener
+    def listener = [
+        'changeinfo.newinfo.taxable':{
+            if (changeinfo.newinfo.taxable == true){
+                changeinfo.newinfo.exemptiontype = null;
+            }
+        }
+    ]
 
      
 }

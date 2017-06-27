@@ -1,4 +1,19 @@
-<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
-    schemaName="miscitem"
-    caption="Miscellaneous Item">
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="miscitem">
+    
+    <invokers>
+        <invoker type="miscitem:create" 
+                 caption="Miscellaneous Item" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="miscitem.create" />
+        
+        <invoker type="miscitem:open" 
+                 caption="Miscellaneous Item" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="miscitem.read"/>
+    </invokers>
 </workunit>

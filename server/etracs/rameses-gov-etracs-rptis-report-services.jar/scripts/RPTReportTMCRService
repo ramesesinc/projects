@@ -18,13 +18,21 @@ class RPTReportTMCRService
     def dtSvc 
 
 
+    @ProxyMethod
+    public def getCurrentRy(  ) {
+    	def info = em.findCurrentRy()
+    	if (!info) info = [ry:dtSvc.serverYear]
+    	return info.ry 
+    }
+
 	@Async
     @ProxyMethod
 	public def generateTMCRDetailed( params ) {
 		def list = []
 		params.barangayid = params.barangay?.objid
 		params.tmcrfields = getTmcrFields()
-
+		buildRpuTypeFilter(params)
+		
 		def currentlist = em.getCurrentTmcrList(params)
 		if (!currentlist) throw new Exception('Record(s) not found.')
 
@@ -42,6 +50,13 @@ class RPTReportTMCRService
 			list << [section:params.section, barangay:currentfaas.barangay]
 		}
 		return [reportdata:list]
+	}
+
+	void buildRpuTypeFilter(params){
+		params.rputypefilter = ' '
+		if (params.excludeimprov == true){
+			params.rputypefilter = " AND r.rputype = 'land' "
+		}
 	}
 
 	void getCancelledTmcrFaases(cflist,faas, params){
@@ -90,6 +105,8 @@ class RPTReportTMCRService
 		def list;
 		buildTxnTypeFilterAndTitle(params)
 		params.barangayid = params.barangay?.objid
+		buildRpuTypeFilter(params)
+
 		list = em.getTmcrList(params);
 		if( ! list ) throw new Exception('Records not found.')
 		return [reportdata:list, parameters:[TITLE:params.title]]
@@ -103,7 +120,8 @@ class RPTReportTMCRService
 		params.barangayid = params.barangay.objid
 
 		buildTxnTypeFilterAndTitle(params)
-		
+		buildRpuTypeFilter(params)
+
 		def list = em.getTMCRModifiedData(params)
 		if( ! list ) throw new Exception('Records not found.')
 

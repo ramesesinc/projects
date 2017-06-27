@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="municipality_templates/DataSyncModel.xml">
+    <invokers>
+        <invoker type="quick_launcher" code="REMOTE99" 
+            action="init" caption="Province Connectivity"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            serviceName="MunicipalityRemoteTestService"
+            remoteServiceName="ProvinceRemoteTestSyncHandler" />
+        
+    <invoker folderid="/explorer/txn/rpt/util"
+            action="init" caption="Province Connectivity"  
+            role="ASSESSOR_DATAMGMT,MASTER" 
+            serviceName="MunicipalityRemoteTestService"
+            remoteServiceName="ProvinceRemoteTestSyncHandler" />        
+        
+        
+        
+        <invoker type="formActions" action="doClose" caption="Close" immediate="true" />
+        <invoker type="formActions" action="syncData" caption="Ping Remote" visibleWhen="#{processing==false}"/>
+    </invokers>
+        <code class="com.rameses.gov.etracs.rptis.municipality.models.RemoteTestSyncModel">
+    </code>
+</workunit>

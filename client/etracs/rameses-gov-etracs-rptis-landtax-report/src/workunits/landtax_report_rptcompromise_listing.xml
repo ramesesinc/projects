@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/landtax" 
                  action="init" 
-                 caption="List of Compromise Agreements" target="window" index="1002" 
+                 caption="List of Compromise Agreements" target="window" 
                 role="REPORT" />
     </invokers>
     <code>

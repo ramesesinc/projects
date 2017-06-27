@@ -1,4 +1,19 @@
-<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
-    schemaName="planttree"
-    caption="Plant/Tree">
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="planttree">
+    
+    <invokers>
+        <invoker type="planttree:create" 
+                 caption="Plant/Tree" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="planttree.create" />
+        
+        <invoker type="planttree:open" 
+                 caption="Plant/Tree" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="planttree.read"/>
+    </invokers>
 </workunit>

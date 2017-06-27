@@ -58,7 +58,7 @@ class FaasServiceInterceptor
 		def info = evt.args[0]
 		if (info.faas && info.faas.objid){
 			ledgerSvc.checkLedgerApprovedState(info.faas.objid)
-			if (info.txntype.checkbalance == null  || info.txntype.checkbalance == true) {
+			if (info.txntype.checkbalance == null  || util.isTrue(info.txntype.checkbalance)) {
 				if ( util.toBoolean(var.allow_faas_transaction_with_balance, false) == false ){
 					ledgerSvc.checkLedgerBalance(info.faas.objid)
 				}

@@ -1,0 +1,21 @@
+"selectedItem"  [allowEdit == true] {
+    readonly:false;
+}
+
+"selectedItem"  [allowEdit == false] {
+    readonly:true;
+}
+
+
+"viewFaas"[selectedItem == null]{
+    enabled:false;
+}
+
+"viewFaas"[selectedItem != null && selectedItem.prevfaasid != null]{
+    enabled:true;
+}
+
+
+"selectedItem"  [(entity.datacapture == 0 || entity.datacapture == false) && entity.faasid != null] {
+    readonly:true;
+}

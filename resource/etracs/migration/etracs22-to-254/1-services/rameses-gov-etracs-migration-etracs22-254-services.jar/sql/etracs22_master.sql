@@ -157,3 +157,12 @@ SELECT
 	parammin as minvalue,
 	parammax as maxvalue 
 FROM rptparameters
+
+
+[getLandSpecificClasses]
+select 
+	objid,
+	'DRAFT' as state,
+	classcode as code,
+	classname as name
+from lcuvspecificclass

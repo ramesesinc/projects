@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+    <invokers>
+        <invoker type="vehicle_application_tricycle:permit:create" 
+                 caption="Issue Permit" target="self" action="createPermit"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" 
+                 role="LICENSING"/>
+
+        <invoker type="vehicle_application_tricycle:permit:open" 
+                 caption="Print Permit" target="self" action="openPermit"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/permit.jasper" 
+                 role="LICENSING"/>                 
+    </invokers>             
+    <code class="com.rameses.gov.etracs.vehicle.models.VehiclePermitReport" />
+</workunit>

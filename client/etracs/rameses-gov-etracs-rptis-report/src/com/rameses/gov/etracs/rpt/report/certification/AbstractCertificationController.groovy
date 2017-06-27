@@ -5,13 +5,16 @@ import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*;
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 import com.rameses.etracs.shared.*;
 
 public abstract class AbstractCertificationController 
 {
     @Service('ReportParameterService')
     def paramSvc;
+    
+    @Service('Var')
+    def var
 
     @Service('DateService')
     def dtSvc;
@@ -21,6 +24,8 @@ public abstract class AbstractCertificationController
     
     @Invoker
     def inv;
+    
+    def opener;
 
     def MODE_CREATE = 'create';
     def MODE_SELECT = 'select';
@@ -55,7 +60,10 @@ public abstract class AbstractCertificationController
     }
     
     def createEntity(){
-        return [:]
+        def map = [:]
+        def types = certificationTypes
+        map.certtype = (types ? types[0] : null)
+        return map;
     }
     
     void afterInit(){}
@@ -63,10 +71,16 @@ public abstract class AbstractCertificationController
     def init() {
          entity = createEntity();
         entity.objid            = RPTUtil.generateId('RC');
-        entity.opener           = inv.properties.opener ;
-        entity.certifiedby      = paramSvc.getStandardParameter().ASSESSORNAME;
-        entity.certifiedbytitle = paramSvc.getStandardParameter().ASSESSORTITLE;
-        entity.purpose          = "whatever legal purposes it may serve him/her"; 
+        entity.opener           = (inv.properties.opener ? inv.properties.opener : opener);
+        entity.certifiedby      = var.get("ASSESSORCERTIFIEDBY");
+        entity.certifiedbytitle = var.get("ASSESSORCERTIFIEDBYTITLE");
+        entity.byauthority      = var.get("ASSESSORBYAUTHORITY");
+        entity.byauthoritytitle = var.get("ASSESSORBYAUTHORITYTITLE");
+        entity.purpose          = var.get("TDTRUECOPYPURPOSE");
+        if (!entity.purpose){
+            entity.purpose = "whatever legal purposes it may serve him/her"; 
+        }
+            
         entity.asofyear         = dtSvc.getServerYear();
         entity.oramount         = 0.0;
         entity.stampamount      = 0.0;
@@ -88,6 +102,7 @@ public abstract class AbstractCertificationController
     
     def open(){
         entity = service.openCertification(entity.objid);
+        opener = entity.opener;
         mode = MODE_READ;
         return doPreview();
     }
@@ -103,6 +118,8 @@ public abstract class AbstractCertificationController
                 entity.requestedby = it.name;
                 entity.requestedbyaddress = it.address.text;
                 afterLookupTaxpayer();
+                binding.refresh('entity.taxpayer.*');
+                binding.requestFocus('entity.taxpayer');
             },
             onempty  : { 
                 entity.taxpayer = null;

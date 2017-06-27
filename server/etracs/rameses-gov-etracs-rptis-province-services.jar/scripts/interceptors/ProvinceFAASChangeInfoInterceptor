@@ -36,9 +36,16 @@ class ProvinceFAASChangeInfoInterceptor
 		if(!lguid)
 			throw new Exception('FAAS lguid is not set.')
 
-		def asyncreq = svc.createAsyncRequest('FAASChangeInfoService', 'updateInfo', changeinfo)
-		svc.sendAsyncMessage(asyncreq[0], lguid)
-        println 'Submit change FAAS information to municipality.'
+		try{
+			def asyncreq = svc.createAsyncRequest('FAASChangeInfoService', 'updateInfo', changeinfo)
+			svc.sendAsyncMessage(asyncreq[0], lguid)
+	        println 'Submit change FAAS information to municipality.'
+		}
+		catch(e){
+			println '==================================='
+			println e.printStackTrace()
+			println 'Unable to send notification to remote.'
+		}
 	}
 
 }

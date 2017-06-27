@@ -1,9 +1,23 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="propertyclassification" 
-          cols="state,code,name,special,orderno" orderBy="orderno"
-          allowDelete="#{entity.state!='APPROVED'}"
-          caption="Classification">
+          windowTitle="Property Classifications"
+          cols="code,name,special,orderno,state" 
+          orderBy="orderno" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" action="init" caption="Classifications" index="1" role="ASSESSOR_DATAMGMT,MASTER"/>
+        <invoker folderid="/explorer/master/rpt" caption="Property Classifications"  index="1" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Property Classifications"  index="1" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/classifications.png"/>
+        
+        <invoker type="quick_launcher" code="ET00" caption="Property Classifications"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

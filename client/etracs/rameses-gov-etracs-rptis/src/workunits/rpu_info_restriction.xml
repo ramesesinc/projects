@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpuland:info" action="init" caption="Restrictions" index="1100" mnemonic="R" />
+        <invoker type="rpubldg:info" action="init" caption="Restrictions" index="1100" mnemonic="R" />
+        <invoker type="rpumach:info" action="init" caption="Restrictions" index="1100" mnemonic="R" />
+        <invoker type="rpuplanttree:info" action="init" caption="Restrictions" index="1100" mnemonic="R" />
+        <invoker type="rpumisc:info" action="init" caption="Restrictions" index="1100" mnemonic="R" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.models.RPUInfoRestrictionModel" >
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.RPUInfoRestrictionPage"/>
+    </pages>
+</workunit>

@@ -42,6 +42,11 @@ class MunicipalityFAASRemoteCallHandler
 	@ProxyMethod
 	public void postMunicipalFaasApprovedByProvince( faasdata ) {
 		println '[postMunicipalFaasApprovedByProvince] Posting FAAS approval from province.'
+		if (!faasSvc.faasExist(faasdata)){
+			faasdata.state = 'INTERIM'
+			supportSvc.saveFaasData(faasdata)
+		}
+
 		def state = faasSvc.getState( faasdata.objid )
 		if (! state.toLowerCase().matches('current|cancelled')){
 			def faas = faasSvc.openFaas(faasdata)

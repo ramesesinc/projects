@@ -1,0 +1,28 @@
+"entity.rpu.*" [ allowEdit == true ] {
+    enabled:true;
+}
+
+"entity.rpu.*" [ allowEdit == false ] {
+    enabled:false;
+}
+
+"addMachine"[allowEdit == false]{
+    enabled:false;
+}
+
+"editMachine|openMachine" [ selectedItem == null] {
+    visible:false;
+}
+
+"editMachine" [selectedMachine != null && allowEdit == true ] {
+    visible:true;
+}
+
+"openMachine" [selectedMachine != null && allowEdit == false ] {
+    visible:true;
+}
+
+"addMachine"[allowEdit == true]{
+    enabled:true;
+}
+

@@ -1,0 +1,16 @@
+"selectedStructure" [allowEdit==true]{
+    readonly:false;
+}
+
+"selectedStructure" [entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0]{
+    readonly:true;
+}
+
+
+"selectedStructure" [allowEdit!=true]{
+    readonly:true;
+}
+
+"selectedStructure"  [entity._resolve == true] {
+    readonly:false;
+}

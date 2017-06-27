@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="List of Unrestricted Properties" 
+            target="window" 
+            role="REPORT" permission="unrestricted-property.generate"/>
+        <invoker folderid="/explorer/report/landtax" action="init" caption="List of Unrestricted Properties" 
+            target="window" 
+            domain="LANDTAX" role="REPORT" permission="unrestricted-property.generate"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.UnrestrictedPropertyModel"/>
+</workunit>

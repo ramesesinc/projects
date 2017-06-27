@@ -45,7 +45,6 @@ class PaymentMethodInterceptor  {
 
 		def secval = partner.info.merchantcode + bill.controlno + samt.replace('.','');
     	params.Hash = com.rameses.util.Encoder.MD5.encode(secval).toLowerCase();
-    	partner.params = params; 
 	}
 
 }

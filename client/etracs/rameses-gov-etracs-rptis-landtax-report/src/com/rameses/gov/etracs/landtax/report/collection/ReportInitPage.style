@@ -7,7 +7,7 @@
 "entity.(period|year)" [ 1==1 ] {
     visible: true; 
 }
-"entity.(qtr|month)" [ 1==1 ] {
+"entity.(qtr|month|advanceyear)" [ 1==1 ] {
     visible: false; 
 }
 "entity.qtr" [ entity.period?.code=='quarterly' ] {
@@ -16,3 +16,16 @@
 "entity.month" [ entity.period?.code=='monthly' ] {
     visible: true; 
 } 
+
+"entity.postingtype"[1==1]{
+    visible:true;
+}
+
+"entity.postingtype"[showPostingType == null || showPostingType == false]{
+    visible:false;
+}
+
+
+"entity.advanceyear"[isadvance == true]{
+    visible:true;
+}

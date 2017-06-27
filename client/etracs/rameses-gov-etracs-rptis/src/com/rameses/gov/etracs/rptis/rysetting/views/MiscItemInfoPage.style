@@ -1,0 +1,13 @@
+"selected.*|entity.*" [mode == "read"]{
+    readonly:true;
+}
+
+"selected.*|entity.*" [mode != "read"]{
+    readonly:false;
+}
+
+"entity.ry" [true == true]{
+    enabled:false;
+}
+
+

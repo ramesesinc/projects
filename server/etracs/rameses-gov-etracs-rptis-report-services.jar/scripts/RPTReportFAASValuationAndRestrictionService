@@ -18,9 +18,7 @@ class RPTReportFAASValuationAndRestrictionService
     @Async
     @ProxyMethod
     public def generateReport( params ) {
-    	buildPeriodFilter(params)
-    	params.lguid = (params.lgu ? params.lgu.objid :'%')
-		params.barangayid = (params.barangay ? params.barangay.objid : '%')
+    	buildFilter(params)
 		params.imonth = getMonthIndex(params)
 
 		if (params.basicrate == null ) params.basicrate = 1.0
@@ -32,7 +30,7 @@ class RPTReportFAASValuationAndRestrictionService
 		computeDifference(list)
 
 		return [
-			parameters  : [PERIOD:params.period, BASICRATE:params.basicrate, SEFRATE:params.sefrate],
+			parameters  : [PERIOD:params.period.caption, BASICRATE:params.basicrate, SEFRATE:params.sefrate],
 			reportdata 	: list,
 		]
     }
@@ -54,24 +52,17 @@ class RPTReportFAASValuationAndRestrictionService
 		}
     }
 
-    void buildPeriodFilter(params){
-    	params.periodfilter = ''
-    	if (params.period.code == 'AS_OF'){
-    		if (params.month){
-    			params.period = 'As of ' + params.month.name + ', ' + params.year 
-    		}
-    		else{
-    			def qtrs = [1:'MARCH', 2:'JUNE', 3:'SEPTEMBER', 4:'DECEMBER']
-    			params.period = 'As of ' + qtrs[params.qtr] + ', ' + params.year 	
-    		}
-    		params.periodfilter = ' and (f.year < $P{year} or (f.year = $P{year} and f.qtr <= $P{qtr} and f.month <= $P{imonth})) '
-    	}
-    	else {
-    		params.period = util.buildPeriod(params)
-    		if (params.month)
-    			params.periodfilter = ' and f.year = $P{year} and f.qtr = $P{qtr} and f.month = $P{imonth} '
-    		else 
-    			params.periodfilter = ' and f.year = $P{year} and f.qtr = $P{qtr} and f.month <= $P{imonth} '
-    	}
+    void buildFilter(params){
+        params.filter = ''
+        util.buildStartEndDateFilter(params)
+
+        if (params.lgu){
+            params.filter += ' and f.lguid = $P{lguid} '
+            params.lguid = params.lgu.objid 
+        }
+        if (params.barangay){
+            params.filter += ' and rp.barangayid = $P{barangayid} '
+            params.barangayid = params.barangay.objid 
+        }
     }
 }

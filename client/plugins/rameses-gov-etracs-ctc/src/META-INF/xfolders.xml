@@ -14,5 +14,8 @@
         <folder id="report" caption="Reports">
             <folder id="ctc" caption="CTC" />
         </folder>
+        <folder id="report" caption="Reports">
+            <folder id="ctc" caption="CTC" />
+        </folder>
     </folder>
 </folders>

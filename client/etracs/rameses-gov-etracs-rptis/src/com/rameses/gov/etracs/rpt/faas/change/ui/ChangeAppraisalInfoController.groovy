@@ -6,9 +6,10 @@ import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.gov.etracs.rpt.faas.change.ui.*;
+import com.rameses.gov.etracs.rptis.models.*;
 
 
-public class ChangeAppraisalInfoController extends com.rameses.gov.etracs.rpt.faas.ui.FaasController
+public class ChangeAppraisalInfoController extends FAASModel
 {
     String title = 'Modify FAAS Appraisal';
     
@@ -37,12 +38,13 @@ public class ChangeAppraisalInfoController extends com.rameses.gov.etracs.rpt.fa
         ];
     }
     
-    void save(){
+    def save(){
         if (MsgBox.confirm('Save and apply changes?')){
             changeSvc.updateInfo(changeinfo);
+            getEntity()._resolve = false;
             caller.refreshForm();
-            binding.fireNavigation('_close');
         }
+        return '_close';
     }
 }
        

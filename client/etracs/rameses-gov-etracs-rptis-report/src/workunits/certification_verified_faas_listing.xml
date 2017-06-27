@@ -23,11 +23,11 @@
         <invoker type="listActions" action="deselectAll"   caption="Deselect All"     mnemonic="d"  />        
     </invokers>
     
-    <code class="com.rameses.gov.etracs.rptis.report.model.FAASVerificationModel">
+    <code class="com.rameses.gov.etracs.rptis.report.models.FAASVerificationModel">
     </code>
     <pages>
         <page template="com.rameses.gov.etracs.rpt.report.certification.RPTCertificationPage" />
-        <page name="selectpage" template="com.rameses.gov.etracs.rptis.report.view.FAASVerificationSelectPage" />
+        <page name="selectpage" template="com.rameses.gov.etracs.rptis.report.views.FAASVerificationSelectPage" />
         <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
     </pages>
     

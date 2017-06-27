@@ -5,7 +5,7 @@ import com.rameses.common.*
 class TxnRefService
 {
 
-	@PersistenceContext('rpt')	
+	@PersistenceContext('main')	
 	def em 
 
 	@Service('RPTUtil')

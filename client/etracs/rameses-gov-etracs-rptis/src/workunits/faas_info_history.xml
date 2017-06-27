@@ -44,7 +44,7 @@ class FaasListInfoController
    </code>
     
     <pages> 
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasInfoHistoryPage"/>
+        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasInfoListPage"/>
     </pages>
 </workunit>
 

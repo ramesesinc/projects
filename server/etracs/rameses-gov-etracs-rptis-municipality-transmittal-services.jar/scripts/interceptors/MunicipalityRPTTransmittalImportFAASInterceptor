@@ -31,7 +31,7 @@ class MunicipalityRPTTransmittalImportFAASInterceptor
 			else if (util.isTrue(faasdata.datacapture) && faasdata.previousfaasses)
 				svc.postManualApprovedTransaction(faasdata)
 			else 
-				svc.postMunicipalityApprovedFaas(faasdata)
+				svc.approveFaasByProvince(faasdata)
 
 			transmittalitem.status = 'POSTED'
 			importSvc.log(transmittalitem)

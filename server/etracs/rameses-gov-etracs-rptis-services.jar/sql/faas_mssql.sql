@@ -183,6 +183,7 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	LEFT JOIN rpttracking t ON f.objid = t.objid 
 where 1=1  
 ${filters}
@@ -573,45 +574,45 @@ where r.landrpuid = $P{objid}
 [updateBldgRpuLandRpuIdByFaas]
 update r set 
 	r.landrpuid = lm.currentrpuid
-from bldgrpu r, faas f, rpu lr, rpumaster lm
-where r.objid = f.rpuid 
-  and r.landrpuid = lr.objid 
-	and lr.rpumasterid = lm.objid 
+from bldgrpu r
+	inner join faas f on r.objid = f.rpuid 
+	inner join rpu lr on r.landrpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid 
+where f.objid = $P{objid}
   and lr.rputype = 'land'
-  and f.objid = $P{objid}
   
 
 [updateMachRpuLandRpuIdByFaas]
 update r set 
 	r.landrpuid = lm.currentrpuid
-from machrpu r, faas f, rpu lr, rpumaster lm 	
-where r.objid = f.rpuid 
-  and r.landrpuid = lr.objid 
-	and lr.rpumasterid = lm.objid 
+from machrpu r
+	inner join faas f on r.objid = f.rpuid 
+	inner join rpu lr on r.landrpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid 
+where f.objid = $P{objid}
   and lr.rputype = 'land'
-  and f.objid = $P{objid}
   
 
 [updatePlantTreeRpuLandRpuIdByFaas]
 update r set 
 	r.landrpuid = lm.currentrpuid
-from planttreerpu r, faas f, rpu lr, rpumaster lm 
-where r.objid = f.rpuid 
-  and r.landrpuid = lr.objid 
-	and lr.rpumasterid = lm.objid 
+from planttreerpu r
+	inner join faas f on r.objid = f.rpuid 
+	inner join rpu lr on r.landrpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid 
+where f.objid = $P{objid}
   and lr.rputype = 'land'
-  and f.objid = $P{objid}
   
 
 [updateMiscRpuLandRpuIdByFaas]
 update r set 
 	r.landrpuid = lm.currentrpuid
-from miscrpu r, faas f, rpu lr, rpumaster lm 
-where r.objid = f.rpuid 
-  and r.landrpuid = lr.objid 
-	and lr.rpumasterid = lm.objid 
+from miscrpu r
+	inner join faas f on r.objid = f.rpuid 
+	inner join rpu lr on r.landrpuid = lr.objid 
+	inner join rpumaster lm on lr.rpumasterid = lm.objid 
+where f.objid = $P{objid}
   and lr.rputype = 'land'
-  and f.objid = $P{objid}
   
 
 [findOpenTask]  

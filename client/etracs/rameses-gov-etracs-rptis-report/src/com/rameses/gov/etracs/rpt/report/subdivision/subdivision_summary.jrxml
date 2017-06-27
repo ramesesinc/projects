@@ -43,6 +43,8 @@
 
 	<field name="items" class="java.lang.Object"/>
 	<field name="previtems" class="java.lang.Object"/>
+	<field name="barangay" class="java.lang.String"/>
+	<field name="txnno" class="java.lang.String"/>
 
 
 		<group  name="ITEMS" >
@@ -92,7 +94,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="83"  isSplitAllowed="true" >
+			<band height="106"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -200,6 +202,60 @@
 					</textElement>
 				<text><![CDATA[SUBDIVISION SUMMARY REPORT]]></text>
 				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="87"
+						width="87"
+						height="15"
+						key="staticText-3"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[Property Location:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="87"
+						y="87"
+						width="152"
+						height="15"
+						key="textField-11"/>
+					<box>					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{barangay}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="267"
+						y="87"
+						width="79"
+						height="15"
+						key="staticText-4"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+				<text><![CDATA[Transaction No.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="346"
+						y="87"
+						width="86"
+						height="15"
+						key="textField-12"/>
+					<box>					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txnno}]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>

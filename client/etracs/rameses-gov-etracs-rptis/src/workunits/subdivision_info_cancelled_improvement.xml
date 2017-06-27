@@ -14,11 +14,11 @@
                  role="TAXMAPPER"/>
    </invokers>
    
-   <code class="com.rameses.gov.etracs.rptis.model.SubdivisionCancelledImprovementModel" >
+   <code class="com.rameses.gov.etracs.rptis.models.SubdivisionCancelledImprovementModel" >
    </code>
     
     <pages> 
-        <page template="com.rameses.gov.etracs.rptis.view.SubdivisionCancelledImprovementPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.SubdivisionCancelledImprovementPage"/>
     </pages>
 </workunit>
 

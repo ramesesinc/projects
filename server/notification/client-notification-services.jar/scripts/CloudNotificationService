@@ -120,10 +120,10 @@ class CloudNotificationService
 
     @ProxyMethod 
     public void createMessageForDownload( params ) {
-        println ''' 
-Downloading message from ${params.channel}_$P{params.origin}: 
+        println """ 
+Downloading message from ${params.channel}_${params.origin}: 
   Sender= ${params.sender}, Msg= ${params.message}, Objid= ${params.objid}  
-        '''; 
+        """; 
 
         params.origintype='remote'; 
         params.completed=0; 

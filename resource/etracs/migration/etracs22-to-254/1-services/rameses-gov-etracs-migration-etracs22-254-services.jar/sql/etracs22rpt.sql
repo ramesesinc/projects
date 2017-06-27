@@ -37,7 +37,6 @@ where objid in (select objid from etracs25_migrate_faas)
 [getFaasesForMigration]
 SELECT * FROM xfaas  
 WHERE rputype=$P{rputype} 
-order by ry, tdno 
 
 [deleteMigratedXFaas]
 delete from xfaas where objid = $P{objid}
@@ -241,3 +240,7 @@ values
 [deleteXFaasAnnotation]
 delete from xfaas_annotation where objid = $P{objid}
 
+
+
+[deleteMigratedFaas]
+delete from etracs25_migrate_faas where objid = $P{objid}

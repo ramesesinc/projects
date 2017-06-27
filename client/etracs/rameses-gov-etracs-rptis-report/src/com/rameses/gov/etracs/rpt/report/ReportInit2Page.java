@@ -37,6 +37,9 @@ public class ReportInit2Page extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
@@ -113,6 +116,31 @@ public class ReportInit2Page extends javax.swing.JPanel {
         xComboBox6.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel1.add(xComboBox6);
 
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 371, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        xFormPanel1.add(xSeparator1);
+
+        xDecimalField1.setCaption("Basic Rate");
+        xDecimalField1.setName("entity.basicrate"); // NOI18N
+        xDecimalField1.setRequired(true);
+        xFormPanel1.add(xDecimalField1);
+
+        xDecimalField2.setCaption("SEF Rate");
+        xDecimalField2.setName("entity.sefrate"); // NOI18N
+        xDecimalField2.setRequired(true);
+        xFormPanel1.add(xDecimalField2);
+
         xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel2.setVisibleWhen("#{mode == 'processing'}");
         xPanel2.setLayout(new java.awt.BorderLayout());
@@ -144,8 +172,8 @@ public class ReportInit2Page extends javax.swing.JPanel {
                 .addGap(13, 13, 13)
                 .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(179, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(139, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -156,10 +184,13 @@ public class ReportInit2Page extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XPanel xPanel2;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
 }

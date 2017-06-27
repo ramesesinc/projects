@@ -40,5 +40,22 @@ class MunicipalityRPTTransmittalImportConsolidationInterceptor
 		}
 	}
 
+	@After(pattern='RPTTransmittalImportService.importData', eval="#{'consolidation'.equalsIgnoreCase(args[0].filetype) && 'SYNC'.equalsIgnoreCase(args[0].type) && args[0].state=='SUBMITTED'}")
+	public void postProvinceCreatedConsolidation(evt){
+		def transmittalitem = evt.args[1].transmittalitem
+		def consolidationdata = evt.args[1].consolidationdata 
+		
+		try{
+			svc.postApprovedConsolidationFromProvince(consolidationdata)	
+			transmittalitem.status = 'SUCCESS'
+			importSvc.log(transmittalitem)
+		}
+		catch(e){
+			transmittalitem.status = 'ERROR'
+			transmittalitem.remarks = e.message 
+			importSvc.log(transmittalitem)
+		}
+	}
+
 }
 

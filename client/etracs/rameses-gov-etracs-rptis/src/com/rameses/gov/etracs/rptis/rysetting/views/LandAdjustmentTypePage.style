@@ -1,0 +1,16 @@
+"entity.*|editExpression"[1==1]{
+    enabled:false;
+}
+
+"selectedItem"[1==1]{
+    readonly:true;
+}
+
+
+"entity.*|editExpression"[mode!='read']{
+    enabled:true;
+}
+
+"selectedItem"[mode!='read']{
+    readonly:false;
+}

@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class TDReportService
 {
-    @PersistenceContext('rpt')
+    @PersistenceContext('main')
     def em
 
     @ActiveDB('tdreport')
@@ -27,6 +27,10 @@ class TDReportService
 
 	@Service('SignatureService')
 	def sigSvc 
+
+	@DataContext('faas_previous')
+	def em_faas_previous 
+
 
 	@ProxyMethod 
 	public def getFaasIds(params) {
@@ -94,6 +98,8 @@ class TDReportService
 
 		clearRealPropertyInfo(td)
 
+		buildPreviousInfo(td)
+
 		buildRpuAssessment(td)
 
 		buildLandReference( td )
@@ -107,6 +113,30 @@ class TDReportService
 		td.show_interim_watermark = util.toBoolean(var.show_interim_watermark, false)
 		td.esigned = adb.findEsigned(td) != null
 		return td 
+	}
+
+	def getPreviousInfo(list, fieldname){
+		def info = ''
+		list[fieldname].unique().each{
+			if (it){
+				if (info) info += ' / '
+				info += it 
+			}
+		}
+		return info 
+	}
+
+	void buildPreviousInfo(faas){
+		def list = em_faas_previous.find([faasid:faas.faasid]).orderBy('prevtdno').list()
+		faas.prevtdno = getPreviousInfo(list, 'prevtdno')
+		faas.prevpin = getPreviousInfo(list, 'prevpin')
+		faas.prevowner = getPreviousInfo(list, 'prevowner')
+		faas.prevadministrator = getPreviousInfo(list, 'prevadministrator')
+		faas.prevav = getPreviousInfo(list, 'prevav')
+		faas.prevmv = getPreviousInfo(list, 'prevmv')
+		faas.prevareasqm = getPreviousInfo(list, 'prevareasqm')
+		faas.prevareaha = getPreviousInfo(list, 'prevareaha')
+		faas.preveffectivity = getPreviousInfo(list, 'preveffectivity')
 	}
 
 	void buildAdjustmentFactor(td){

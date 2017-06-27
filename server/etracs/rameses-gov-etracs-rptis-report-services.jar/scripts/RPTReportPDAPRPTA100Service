@@ -18,14 +18,17 @@ class RPTReportPDAPRPTA100Service
     @Async
 	@ProxyMethod
 	public def generatePdapRpta100(params){
-		params.lguid = params.lgu?.objid 
+		params.filter = ''
+
+		if (params.lgu){
+			params.lguid = params.lgu.objid 
+			params.filter = ' AND f.lguid =  $P{lguid} ' 
+		}
+
 		def year = dtSvc.serverYear
 
-		if (!params.month || params.month.index <= 0 ) 
-			throw new Exception('Month is required.')
-
 		util.buildReportFormalTitlePeriod('ASSESSMENT AND COLLECTION STATISTICAL SUMMARY', params)
-		util.buildEndingPeriodFilter(params)
+		util.buildStartEndDateFilter(params)
 		
 		def reportdata   = em.getRDAPRPTA100(params)
 								.each{

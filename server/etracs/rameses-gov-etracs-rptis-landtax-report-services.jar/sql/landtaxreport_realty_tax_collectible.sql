@@ -22,10 +22,10 @@ from (
 		left join rpu r on f.rpuid = r.objid 
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
-	and f.state = 'CURRENT'
+	and (f.objid is null or f.state = 'CURRENT')
     and rl.totalav > 0 
     and rl.taxable = 1
-    and not exists(select * from rptledger_restriction where parentid = rl.objid)
+    and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 )x
 order by x.fullpin
 

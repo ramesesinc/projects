@@ -1,0 +1,12 @@
+<schema>
+	<element tablename="vw_batchgr_error">
+		<field name="objid" primary="true" />
+		<field name="newry" caption="Revision Year" indexed="true" width="80" />
+		<field name="tdno" caption="TD No." searchable="true" indexed="true" width="140"  />
+		<field name="fullpin" caption="PIN" width="150"/>
+		<field name="pin" searchable="true" indexed="true" width="140"  />
+		<field name="lguname" caption="LGU" indexed="true" width="200"  />
+		<field name="barangay" caption="Barangay" searchable="true" indexed="true" width="200"  />
+		<field name="msg" width="350"/>
+	</element>
+</schema>

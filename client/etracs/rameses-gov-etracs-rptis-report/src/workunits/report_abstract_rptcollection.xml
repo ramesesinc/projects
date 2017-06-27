@@ -1,7 +1,10 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/menu/report/landtax" action="init" caption="Abstract of Real Property Collection" target="window" index="10" 
-            role="LANDTAX_REPORT"/>
+        <invoker folderid="/menu/report/landtax" 
+                 action="init" 
+                 caption="Abstract of Real Property Collection" 
+                 target="window" 
+                role="LANDTAX_REPORT"/>
     </invokers>
     <code>
 

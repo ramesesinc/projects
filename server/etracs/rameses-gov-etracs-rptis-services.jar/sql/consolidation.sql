@@ -74,11 +74,13 @@ WHERE c.objid = $P{objid}
 
 [getConsolidatedLands]
 SELECT cl.*,
+	f.objid as faas_objid,
+	f.rpuid AS faas_rpuid,
 	f.tdno AS faas_tdno,
+	f.fullpin AS faas_fullpin,
 	f.owner_name AS faas_owner_name, 
 	f.administrator_name AS faas_administrator_name, 
 	r.realpropertyid AS rpu_realpropertyid,
-	r.fullpin AS rpu_fullpin,
 	r.totalmv AS rpu_totalmv,
 	r.totalav AS rpu_totalav,
 	r.totalareaha AS rpu_totalareaha,
@@ -398,8 +400,6 @@ DELETE FROM consolidation_task WHERE refid = $P{objid}
 [updateConsolidationFaasInfo]
 update faas f, consolidation c set 
 	f.taxpayer_objid = c.taxpayer_objid,	
-	f.taxpayer_name = c.taxpayer_name,
-	f.taxpayer_address = c.taxpayer_address,
 	f.owner_name = c.taxpayer_name,
 	f.owner_address = c.taxpayer_address
 where c.objid = $P{objid}

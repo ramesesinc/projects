@@ -7,3 +7,6 @@ ORDER BY dtfiled
 SELECT * FROM sys_notification 
 WHERE recipientid IN (${recipientid}) 
 ORDER BY dtfiled 
+
+[getMessagesByCustomFilter]
+SELECT * FROM sys_notification WHERE ${filter} 

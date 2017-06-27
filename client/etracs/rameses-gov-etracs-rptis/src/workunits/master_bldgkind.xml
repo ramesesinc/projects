@@ -1,4 +1,19 @@
-<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
-    schemaName="bldgkind"
-    caption="Kind of Buildings">
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="bldgkind">
+    
+    <invokers>
+        <invoker type="bldgkind:create" 
+                 caption="Kind of Building" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="bldgkind.create" />
+        
+        <invoker type="bldgkind:open" 
+                 caption="Kind of Building" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="bldgkind.read"/>
+    </invokers>
 </workunit>

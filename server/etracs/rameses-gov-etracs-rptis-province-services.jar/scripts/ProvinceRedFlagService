@@ -62,7 +62,6 @@ class ProvinceRedFlagService
             data 	  : [taskid: currtask.objid],
         ]
         notifySvc.addMessage(msg)
-        println msg.message 
 	}
 
 	def createAsyncMessage(messagetype, asyncreq, redflag){

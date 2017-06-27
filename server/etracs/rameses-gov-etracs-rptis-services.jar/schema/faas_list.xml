@@ -14,6 +14,7 @@
 		<field name="administrator_address" />
 		<field name="pin" />
 		<field name="displaypin" />
+		<field name="ry" />
 		<field name="classification_objid" />
 		<field name="classcode" />
 		<field name="effectivityyear" type="integer" />

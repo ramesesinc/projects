@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptredflag:list:formActions" 
+                 action="resend" 
+                 caption="Resend to Municipality" 
+                 target="process"
+                 visibleWhen="#{showResendToMunicipality==true}" depends="selectedItem" />
+    </invokers>
+    <code>
+<![CDATA[
+        
+import com.rameses.rcp.annotations.*;        
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+
+class ResendFaasRedFlagResolveController
+{
+    @Caller 
+    def caller 
+    
+    @Binding 
+    def binding;
+    
+    @Service('ProvinceRedFlagService')
+    def svc;
+    
+    def entity;
+    
+    void resend(){
+        if (MsgBox.confirm('Resend red flag?')){
+            svc.resendToMunicipality(caller.selectedItem)
+            MsgBox.alert('Red flag has been successfully submitted to municipality.')
+        }
+    }
+}
+
+
+]]>
+
+    </code>
+</workunit>

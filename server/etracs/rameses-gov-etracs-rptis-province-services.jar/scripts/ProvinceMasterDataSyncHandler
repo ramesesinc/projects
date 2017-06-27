@@ -2,14 +2,16 @@ import com.rameses.osiris3.xconnection.*;
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
+
 class ProvinceMasterDataSyncHandler
 {   
 
 	@Env
 	def env 
 
-	@ActiveDB('master_sync_data')
-	def em;
+	@Service("QueryService")
+    def qrySvc;
+
 
 	@Context 
 	def appCtx;
@@ -31,18 +33,9 @@ class ProvinceMasterDataSyncHandler
 	public void doSync( params ) {
 		def xconn = appCtx.getResource( XConnection.class, env.ASYNC.CONNECTION ); 
 		def queue = xconn.register( env.ASYNC.ID ); 
-
-		def list = em.getList(params)
-		if (params.itemname){
-			list.each{
-				def p = [
-					itemname : params.itemname,
-					itemkey  : params.itemkey, 
-					objid    : it.objid
-				]
-				it[params.itemfield] = em.getItems(p)
-			}
-		}
+		params._schemaname = params.schemaname
+		params.where = ['1=1']
+		def list = qrySvc.getList(params)
 		queue.push(list)
 		queue.push( new AsyncToken(closed:true) ); 
 	}

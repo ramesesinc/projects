@@ -67,6 +67,8 @@ WHERE faasid = $P{faasid}
 
 [getStandardLandAssessment]
 SELECT 
+	dpc.code AS dominantclasscode,
+	dpc.name AS dominantclassification,
 	pc.code AS classcode,
 	pc.name AS classification,
 	case when lal.objid is not null then lal.code else ptl.code end AS actualusecode,
@@ -81,13 +83,15 @@ SELECT
 	r.taxable,
 	r.rputype  
 FROM faas f
+	inner join rpu rr on f.rpuid = rr.objid 
+	inner join propertyclassification dpc on rr.classification_objid = dpc.objid 
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	LEFT JOIN landassesslevel lal ON r.actualuse_objid = lal.objid 
 	LEFT JOIN planttreeassesslevel ptl ON r.actualuse_objid = ptl.objid 
 WHERE f.objid = $P{faasid}
 GROUP BY 
-	pc.code, pc.name, 
+	dpc.code, dpc.name, pc.code, pc.name, 
 	case when lal.objid is not null then lal.code else ptl.code end,
 	case when lal.objid is not null then lal.name else ptl.name end,
 	r.assesslevel, r.taxable, r.rputype  
@@ -401,7 +405,7 @@ select
 	f.fullpin,
 	f.effectivityyear,
 	f.effectivityqtr
-from previousfaas pf 
+from faas_previous pf 
 	inner join faas f on pf.faasid = f.objid 
 where pf.prevfaasid = $P{objid}
 

@@ -10,7 +10,7 @@
             caption="Subdivision Transmittal" 
             target="window"  />        
    </invokers>
-   <code class="com.rameses.gov.etracs.rptis.model.TransmittalSubdivisionModel"/>
+   <code class="com.rameses.gov.etracs.rptis.models.TransmittalSubdivisionModel"/>
 </workunit>
 
 

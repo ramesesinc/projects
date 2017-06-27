@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+
+class PoliceCleranceListInterceptor{
+	
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'policeclearance_application'}")
+	public void getNodeList(def evt) {
+		def result = evt.result;
+		result << [ title: 'For Payment', id:'payment'];
+		result << [ title: 'For Processing', id:'processing'];
+		result << [ title: 'Completed', id:'completed'];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'policeclearance_application'}")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		//o.debug = true;
+		if( !o.node?.id ) return;
+
+		def str = "state=:state";
+		def m = [:];
+
+		switch( o.node.id ) {
+			case 'payment':
+				m.state = 'PAYMENT'
+				break;
+			case 'processing':
+				m.state = 'PROCESSING'
+				break;
+
+			case 'completed':
+				m.state = 'CLOSED'
+				break;
+		}
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}
+
+}

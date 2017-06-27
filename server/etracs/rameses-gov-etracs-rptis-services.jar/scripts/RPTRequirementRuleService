@@ -7,11 +7,8 @@ import com.rameses.services.extended.*;
 
 public class RPTRequirementRuleService
 {
-	@ActiveDB('rpt_requirement_type')
-	def em 
-
-	@Service('RPTRequirementTypeService')
-	def reqTypeSvc 
+	@Service('QueryService')
+	def querySvc 
 
 	@ActiveDB("rule")
 	def ruleDB;
@@ -28,7 +25,7 @@ public class RPTRequirementRuleService
 	public def getFaasTxnAttributeTypes( params ) {
 		if (!params.searchtext) params.searchtext = ''
 		params.searchtext += '%'
-		return em.getFaasTxnAttributeTypes(params)
+		return querySvc.getList([_schemaname:'faastxntypeattribute', where:['1=1']])
 	}
 
 
@@ -47,7 +44,7 @@ public class RPTRequirementRuleService
 
 	def buildActions(requirements){
 		def actions = new RuleAction();
-		actions.addCommand('add-requirement', new AddRequirement(reqTypeSvc:reqTypeSvc, requirements:requirements))
+		actions.addCommand('add-requirement', new AddRequirement(querySvc:querySvc, requirements:requirements))
 		return actions 
 	}
 
@@ -76,10 +73,11 @@ public class RPTRequirementRuleService
 
 
 public class AddRequirement implements RuleActionHandler {
-	def reqTypeSvc
+	def querySvc
 	def requirements
 	public void execute(def params, def drools) {
-		def requirement = reqTypeSvc.open([objid:params.requirementtype.key])
+		def q = [_schemaname:'rpt_requirement_type', findBy:[objid:params.requirementtype.key]]
+		def requirement = querySvc.findFirst(q)
 		if (requirement){
 			requirements << requirement 
 		}

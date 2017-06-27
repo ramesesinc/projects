@@ -1,9 +1,23 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="machine" 
-          cols="state,code,name" orderBy="code"
-          allowDelete="#{entity.state!='APPROVED'}"
-          caption="Machineries">
+          windowTitle="Machines"
+          cols="code,name,state" 
+          orderBy="code" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" action="init" caption="Machineries" index="7" role="ASSESSOR_DATAMGMT,MASTER"/>
+        <invoker folderid="/explorer/master/rpt" caption="Machines"  index="8" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Machines"  index="8" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/machines.png"/>
+        
+        <invoker type="quick_launcher" code="MACH00" caption="Machines"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

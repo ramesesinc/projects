@@ -10,7 +10,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 
-class BldgFloorAdditionalLookupController extends com.rameses.gov.etracs.rpt.util.ExprLookupEditorController
+class BldgFloorAdditionalLookupController extends com.rameses.gov.etracs.rptis.models.ExprLookupEditorModel
 {
     @Service("BldgRYSettingLookupService")
     def svc
@@ -44,6 +44,6 @@ class BldgFloorAdditionalLookupController extends com.rameses.gov.etracs.rpt.uti
     
     </code>
     <pages>
-        <page name="info" template="com.rameses.gov.etracs.rpt.util.VariableInfoPage" />
+        <page name="info" template="com.rameses.gov.etracs.rptis.views.VariableInfoPage" />
     </pages>    
 </workunit>

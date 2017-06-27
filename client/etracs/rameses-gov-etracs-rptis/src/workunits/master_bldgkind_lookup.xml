@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="bldgkind"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="bldgkind:lookup" 
+                 caption="Kind of Building Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

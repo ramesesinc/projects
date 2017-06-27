@@ -1,0 +1,13 @@
+"entity.*|memorandatemplate"  [allowEdit == true] {
+    enabled:true;
+}
+
+"entity.*|memorandatemplate"  [allowEdit == false] {
+    enabled:false;
+}
+
+
+
+"entity.*|memorandatemplate"  [entity._resolve == true] {
+    enabled:false;
+}

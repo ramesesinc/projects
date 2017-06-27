@@ -31,11 +31,14 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
     private void initComponents() {
 
         formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xSeparator2 = new com.rameses.rcp.control.XSeparator();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xLabel1 = new com.rameses.rcp.control.XLabel();
@@ -47,27 +50,6 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
 
         formPanel1.setCaptionWidth(120);
         formPanel1.setPadding(new java.awt.Insets(5, 10, 5, 25));
-
-        xIntegerField2.setCaption("No. of Copies");
-        xIntegerField2.setName("params.copies"); // NOI18N
-        xIntegerField2.setPreferredSize(new java.awt.Dimension(50, 20));
-        xIntegerField2.setRequired(true);
-        formPanel1.add(xIntegerField2);
-
-        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 10));
-
-        org.jdesktop.layout.GroupLayout xSeparator2Layout = new org.jdesktop.layout.GroupLayout(xSeparator2);
-        xSeparator2.setLayout(xSeparator2Layout);
-        xSeparator2Layout.setHorizontalGroup(
-            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 371, Short.MAX_VALUE)
-        );
-        xSeparator2Layout.setVerticalGroup(
-            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 10, Short.MAX_VALUE)
-        );
-
-        formPanel1.add(xSeparator2);
 
         xComboBox5.setCaption("LGU");
         xComboBox5.setDepends(new String[] {"params.selectiontype"});
@@ -90,6 +72,10 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
         xComboBox3.setRequired(true);
         formPanel1.add(xComboBox3);
 
+        xTextField1.setCaption("Section");
+        xTextField1.setName("params.section"); // NOI18N
+        formPanel1.add(xTextField1);
+
         xSeparator1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -105,6 +91,46 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
         );
 
         formPanel1.add(xSeparator1);
+
+        xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox3.setCaption("");
+        xCheckBox3.setCaptionWidth(90);
+        xCheckBox3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox3.setName("params.advancebill"); // NOI18N
+        xCheckBox3.setShowCaption(false);
+        xCheckBox3.setText("Is Advance Billing?");
+        formPanel1.add(xCheckBox3);
+
+        xDateField2.setCaption("Advance Billing Date");
+        xDateField2.setCaptionWidth(120);
+        xDateField2.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
+        xDateField2.setDepends(new String[] {"params.advancebill"});
+        xDateField2.setName("params.billdate"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(100, 19));
+        formPanel1.add(xDateField2);
+
+        xSeparator2.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        org.jdesktop.layout.GroupLayout xSeparator2Layout = new org.jdesktop.layout.GroupLayout(xSeparator2);
+        xSeparator2.setLayout(xSeparator2Layout);
+        xSeparator2Layout.setHorizontalGroup(
+            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 371, Short.MAX_VALUE)
+        );
+        xSeparator2Layout.setVerticalGroup(
+            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 20, Short.MAX_VALUE)
+        );
+
+        formPanel1.add(xSeparator2);
+
+        xIntegerField2.setCaption("No. of Copies");
+        xIntegerField2.setName("params.copies"); // NOI18N
+        xIntegerField2.setPreferredSize(new java.awt.Dimension(50, 20));
+        xIntegerField2.setRequired(true);
+        formPanel1.add(xIntegerField2);
 
         xIntegerField1.setCaption("Print Interval (sec)");
         xIntegerField1.setName("params.printinterval"); // NOI18N
@@ -157,7 +183,7 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(xPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 183, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 259, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -168,8 +194,10 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
@@ -178,6 +206,7 @@ public class RPTBillingBatchReportPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

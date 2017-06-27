@@ -9,6 +9,9 @@ class RPTReceiptService
 
 	@ActiveDB('cashreceiptrpt')
 	def em
+
+	@Service()
+	def self 
     
     @Service('DateService')
 	def dtSvc
@@ -25,8 +28,8 @@ class RPTReceiptService
 	@Service('RPTBillingService')
 	def billingSvc
 
-	@DataContext('rptledger_restriction')
-	def rptledger_restrictionDb
+	@DataContext('faas_restriction')
+	def em_faas_restriction
 
 	def SCHEMA_RECEIPT 		= 'cashreceiptrpt'
 	def SCHEMA_ITEM 		= 'cashreceiptrptitem'
@@ -77,6 +80,7 @@ class RPTReceiptService
 		
 		em.create(receipt)
 		postPaidItems(receipt)
+		validateReceiptTotal(receipt)
 		return receipt
 	}
 
@@ -91,6 +95,7 @@ class RPTReceiptService
 
 		receipt.rptitems.each{
 			params.rptledgerid = it.rptledgerid 
+			params.faasid = it.faasid 
 			params.fromyear	   = it.fromyear
 			params.fromqtr 	   = it.fromqtr
 			params.toyear	   = it.toyear
@@ -99,8 +104,7 @@ class RPTReceiptService
 			em.insertPaidOnlineItems(params)
 			em.insertPaidOnlineAccounts(params)
 
-			em.clearFaasRestrictions(params)
-			rptledger_restrictionDb.find([parentid:it.rptledgerid]).delete()
+			self.cancelRestriction(receipt, params)
 
 			em.updateLedgerItemQrtrlyPayment(params)
 			em.updateLedgerItemQrtrlyFullyPaidFlag(params)
@@ -111,12 +115,31 @@ class RPTReceiptService
 			em.deletePaidOnlineAccounts(params)
 		}
 		em.deleteRptBillLedgers(params)
-		em.deleteRptBill(params)
 		receipt.rptitems.each{
 			billingSvc.deletePendingPaymentOrderBills([objid:it.rptledgerid])
 		}
 
 	}
+
+
+	@ProxyMethod
+	public def cancelRestriction(receipt, params){
+		def restrictions = em_faas_restriction.find([ledger_objid:params.rptledgerid, state:'ACTIVE']).list()
+		restrictions.each{
+			it.faasid = params.faasid 
+			it.state = 'UNRESTRICTED'
+			it.receipt = [:]
+			it.receipt.objid =receipt.objid
+			it.receipt.receiptno = receipt.receiptno
+			it.receipt.receiptdate = receipt.receiptdate
+			it.receipt.amount = receipt.amount 
+			it.receipt.lastyearpaid = params.toyear 
+			it.receipt.lastqtrpaid = params.toqtr 
+			em_faas_restriction.update(it)
+		}
+		return restrictions
+	}
+
 
 	void updateLedgerInfo(params){
 		def lastpaiditem = em.findLastPaidLedgerItemQtrly(params)
@@ -200,7 +223,13 @@ class RPTReceiptService
 		return  em.getUnpaidPropertiesForPayment(billingSvc.buildParams(bill))
 	}
 
+	void validateReceiptTotal(receipt){
+		def totalitem = em.findRPTReceiptItemTotal(receipt)
+		def totalacct = em.findRPTReceiptAcctTotal(receipt)
 
+		if (receipt.amount != totalitem.total || receipt.amount != totalacct.total)
+			throw new Exception('A problem was encountered when posting the credits.\nGenerate bills to ledgers paid and verify that the amount dues are correct.')
+	}
 	
 
 }

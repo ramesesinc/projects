@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="rptparameter"
+          customFilter="state='APPROVED'" 
+          orderBy="name">
+    <invokers>
+        <invoker type="rptparameter:lookup" 
+                 caption="Parameter Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

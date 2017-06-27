@@ -1,0 +1,70 @@
+"entity.*" [mode != 'read']{
+    enabled:true;
+}
+
+
+"entity.rpu.exemptiontype" [entity.rpu.taxable == true]{
+    enabled:false;
+    required:false;
+}
+
+"entity.rpu.exemptiontype" [entity.rpu.taxable != true]{
+    enabled:true;
+    required: true;
+}
+
+
+"entity.*" [mode == 'read']{
+    enabled:false;
+}
+
+"entity.fullpin" [true == true]{
+    enabled:false;
+}
+
+"entity.rpu.taxable" [mode != 'read']{
+    enabled:true;
+}
+
+
+"entity.title.*|entity.rp.cadastrallotno|entity.rp.surveyno|entity.rp.blockno" [entity.rpu.rputype != 'land']{
+    visible:false;
+}
+
+
+entity.rp.(surveyno|cadastrallotno|blockno)[(entity.datacapture==0 || entity.datacapture == false) && (entity.txntype.allowEditPinInfo==0 || !entity.taskstate?.matches('taxmapper|provtaxmapper|recommender'))]{
+    enabled:false;
+}
+
+"entity.owner.*|entity.taxpayer.*|entity.title.*"[(entity.datacapture==0 || entity.datacapture == false) && ( entity.txntype.allowEditOwner == 0 || !entity.taskstate?.matches('.*receiver.*|.*appraiser_chief.*|.*appraiser.*|.*taxmapper_chief.*|.*taxmapper.*|recommender'))]{
+    enabled:false;
+}
+
+"entity.administrator.*"[(entity.datacapture==0 || entity.datacapture == false) && ( entity.txntype.objid != 'CA' && !entity.taskstate?.matches('.*receiver.*|.*appraiser_chief.*|.*appraiser.*|.*taxmapper_chief.*|.*taxmapper.*|recommender'))]{
+    enabled:false;
+}
+
+"entity.rpu.*"[entity.txntype.newrpu == 0]{
+    enabled:false;
+}
+
+"entity.annotated" [entity.annotated==true]{
+    visible:true;
+    enabled:true;
+}
+
+"entity.annotated" [entity.annotated!=true]{
+    visible:false;
+}
+
+"entity.cancelnote" [entity.state != 'CANCELLED']{
+    visible:false;
+}
+
+"entity.trackingno" [true==true]{
+    enabled:true;
+}
+
+"entity.rpu.ry" [true == true]{
+    enabled:false;
+}

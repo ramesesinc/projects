@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/landtax" action="init" 
                  caption="Batch Realty Tax Billing Printing" 
-                 target="window" index="602" 
+                 target="window" 
                  role="REPORT" />
     </invokers>
     <code class="com.rameses.gov.etracs.rpt.landtax.billing.ui.RPTBillingBatchController"/>

@@ -10,7 +10,7 @@
             caption="Consolidation Transmittal" 
             target="window"  />        
    </invokers>
-   <code class="com.rameses.gov.etracs.rptis.model.TransmittalConsolidationModel"/>
+   <code class="com.rameses.gov.etracs.rptis.models.TransmittalConsolidationModel"/>
 </workunit>
 
 

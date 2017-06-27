@@ -4,9 +4,6 @@ import com.rameses.common.*;
 
 class RPTReceiptInterceptor
 {
-	@PersistenceContext('rpt')
-	def em
-
 	@Service('RPTReceiptService')
 	def svc 
 

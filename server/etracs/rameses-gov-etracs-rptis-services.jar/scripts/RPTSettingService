@@ -3,7 +3,7 @@ import com.rameses.common.*;
 
 class RPTSettingService
 {
-	@PersistenceContext('rpt')
+	@PersistenceContext('main')
 	def em
 
 	@ProxyMethod

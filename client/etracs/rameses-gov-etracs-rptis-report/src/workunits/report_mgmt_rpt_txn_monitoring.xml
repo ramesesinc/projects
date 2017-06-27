@@ -1,0 +1,62 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt/mgmt" 
+                 action="init" 
+                 caption="Transaction Monitoring" 
+                 target="window" 
+                role="MANAGEMENT" permission="report.txn-monitoring"/>
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RPTTxnMonitoringModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportMgmtTxnMonitoringService') 
+    def svc 
+    
+    String title = 'Transaction Monitoring'
+    
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
+    
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler)
+    }
+    
+            
+    def initReport(){
+        entity.qtr = null;
+        return 'default';
+    }
+    
+    String getReportName(){
+        return reportPath + entity.reporttype.report 
+    }
+    
+    def reporttypes = [
+        [type:'processing_summary', caption:'PROCESSING SUMMARY', report:'rpt_mgmt_txn_processing_summary.jasper'],
+        [type:'txn_monitoring', caption:'MONITORING REPORT', report:'rpt_mgmt_txn_monitoring.jasper'],
+        [type:'log_report', caption:'LOG REPORT', report:'rpt_mgmt_txn_log_report.jasper'],
+    ]
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false, required:true]),
+                new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', items:'reporttypes', expression:'#{item.caption}', allowNull:false]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', depends:'entity.reporttype', required:true]),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.year', expression:'#{item.name}', dynamic:true, preferredSize:'100,19', required:true]),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+}
+]]>        
+        
+    </code>
+</workunit>

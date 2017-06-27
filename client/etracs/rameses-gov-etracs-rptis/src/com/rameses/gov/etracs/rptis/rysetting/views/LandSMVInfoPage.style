@@ -1,0 +1,7 @@
+"selected.*" [mode == "read"]{
+    readonly:true;
+}
+
+"selected.*" [mode == "edit"]{
+    readonly:false;
+}

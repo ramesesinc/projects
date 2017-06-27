@@ -19,13 +19,35 @@ class RPTBillingBatchController extends AbstractBatchReportController
     def reportSvc;
 
     def title='Realty Tax Billing Batch Printing'
+    
+    @PropertyChangeListener
+    def listener = [
+        "params.advancebill" :{
+            if (!params.advancebill){
+                params.billdate = null;
+                binding.refresh('params.billdate');
+            }
+                
+        }
+    ]
+    
+    public void afterInit(params){
+        params.advancebill = false;
+        params.billdate = null;
+    }
+    
             
     public def getItems(params){
-        return svc.getTaxpayerIds(params);
+        return svc.getLedgerIds(params);
     }
             
-    public def getReportData(entity){
-        return [taxpayer:entity.taxpayer];
+    public def getReportData(ledger){
+        def data = [:]
+        data.rptledgerid = ledger.objid;
+        data.taxpayer = ledger.taxpayer;
+        data.advancebill = params.advancebill;
+        data.billdate = params.billdate;
+        return data;
     }
             
     public def getReportInvokerName(){
@@ -35,7 +57,7 @@ class RPTBillingBatchController extends AbstractBatchReportController
     public def continueOnError(){return true}
     
     public def getItemMessage(data, copycount){
-        return "Processing bill of " + data.taxpayer.name + '.'
+        return "Processing bill for TD No. " + data.tdno + '.'
     }
     
 }

@@ -1,0 +1,20 @@
+/* v2.5.04.032-03013 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Update on Plant/Tree Assessment Rule (Add Assessment Info)
+	- Fix missing boxes in FAAS Plant/Tree
+	- NEW! Memoranda Template support
+	- Modify PIN update (naga)
+	- Add the following certification info: blockno, survyeno, titleno, lguname, fullpin and administrator_name
+
+- LANDTAX
+	- Add new fields for tax clearance: blockno, totalreasqm, administrator, etc.
+	- Update on Quarterly Real Property Report
+	- NEW! Consolidated Report on Real Property Tax
+	- Update on Top N Delinquent Taxpayer Report
+	
+

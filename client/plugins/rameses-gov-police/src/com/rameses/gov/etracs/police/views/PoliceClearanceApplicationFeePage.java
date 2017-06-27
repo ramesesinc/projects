@@ -4,14 +4,14 @@
  */
 package com.rameses.gov.etracs.police.views;
 
+import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author dell
  */
-@Template(CrudFormPage.class)
+@Template(FormPage.class)
 public class PoliceClearanceApplicationFeePage extends javax.swing.JPanel {
 
     /**

@@ -28,122 +28,157 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xTextField20 = new com.rameses.rcp.control.XTextField();
-        xFormPanel16 = new com.rameses.rcp.control.XFormPanel();
-        xTextField29 = new com.rameses.rcp.control.XTextField();
-        xTextField22 = new com.rameses.rcp.control.XTextField();
-        xFormPanel20 = new com.rameses.rcp.control.XFormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xFormPanel21 = new com.rameses.rcp.control.XFormPanel();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
-        xTextField26 = new com.rameses.rcp.control.XTextField();
-        xTextField30 = new com.rameses.rcp.control.XTextField();
-        jPanel2 = new javax.swing.JPanel();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xTextField31 = new com.rameses.rcp.control.XTextField();
-        xFormPanel17 = new com.rameses.rcp.control.XFormPanel();
-        xTextField32 = new com.rameses.rcp.control.XTextField();
-        xTextField33 = new com.rameses.rcp.control.XTextField();
-        xFormPanel22 = new com.rameses.rcp.control.XFormPanel();
-        xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
-        xFormPanel23 = new com.rameses.rcp.control.XFormPanel();
-        xTextField7 = new com.rameses.rcp.control.XTextField();
-        xTextField8 = new com.rameses.rcp.control.XTextField();
-        xTextField34 = new com.rameses.rcp.control.XTextField();
-        xTextField35 = new com.rameses.rcp.control.XTextField();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
-        xFormPanel2.setCaptionWidth(120);
-        xFormPanel2.setCellspacing(1);
-        xFormPanel2.setPadding(new java.awt.Insets(0, 5, 6, 5));
-
-        xTextField20.setCaption("Previous TD No.");
-        xTextField20.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField20.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField20.setName("changeinfo.newinfo.prevtdno"); // NOI18N
-        xTextField20.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xTextField20);
-
-        xFormPanel16.setCaptionWidth(120);
-        xFormPanel16.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel16.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel16.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel16.setShowCaption(false);
-
-        xTextField29.setCaption("Prev. Effectivity");
-        xTextField29.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xTextField29.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField29.setName("changeinfo.newinfo.preveffectivity"); // NOI18N
-        xFormPanel16.add(xTextField29);
-
-        xTextField22.setCaption("Prev. PIN");
-        xTextField22.setCaptionWidth(80);
-        xTextField22.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField22.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField22.setName("changeinfo.newinfo.prevpin"); // NOI18N
-        xTextField22.setStretchWidth(100);
-        xFormPanel16.add(xTextField22);
-
-        xFormPanel2.add(xFormPanel16);
-
-        xFormPanel20.setCaptionWidth(120);
-        xFormPanel20.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel20.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel20.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel20.setShowCaption(false);
-
-        xTextField1.setCaption("Previous M.V.");
-        xTextField1.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xTextField1.setName("changeinfo.newinfo.prevmv"); // NOI18N
-        xTextField1.setStretchWidth(50);
-        xFormPanel20.add(xTextField1);
-
-        xTextField2.setCaption("A.V");
-        xTextField2.setCaptionWidth(55);
-        xTextField2.setName("changeinfo.newinfo.prevav"); // NOI18N
-        xTextField2.setStretchWidth(50);
-        xFormPanel20.add(xTextField2);
-
-        xFormPanel2.add(xFormPanel20);
-
-        xFormPanel21.setCaptionWidth(120);
-        xFormPanel21.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel21.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel21.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel21.setShowCaption(false);
-
-        xTextField3.setCaption("Prev. Area (sqm)");
-        xTextField3.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xTextField3.setName("changeinfo.newinfo.prevareasqm"); // NOI18N
-        xTextField3.setStretchWidth(50);
-        xFormPanel21.add(xTextField3);
-
-        xTextField4.setCaption("(ha)");
-        xTextField4.setCaptionWidth(55);
-        xTextField4.setName("changeinfo.newinfo.prevareaha"); // NOI18N
-        xTextField4.setStretchWidth(50);
-        xFormPanel21.add(xTextField4);
-
-        xFormPanel2.add(xFormPanel21);
-
-        xTextField26.setCaption("Previous Owner");
-        xTextField26.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField26.setDepends(new String[] {"entity.owner.*"});
-        xTextField26.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField26.setName("changeinfo.newinfo.prevowner"); // NOI18N
-        xTextField26.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xTextField26);
-
-        xTextField30.setCaption("Previous Admin");
-        xTextField30.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField30.setDepends(new String[] {"entity.administrator.*"});
-        xTextField30.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField30.setName("changeinfo.newinfo.prevadministrator"); // NOI18N
-        xTextField30.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xTextField30);
+        xDataTable1.setAutoResize(false);
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevtdno"}
+                , new Object[]{"caption", "TD No."}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevpin"}
+                , new Object[]{"caption", "PIN"}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevowner"}
+                , new Object[]{"caption", "Owner"}
+                , new Object[]{"width", 180}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevadministrator"}
+                , new Object[]{"caption", "Administrator"}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevmv"}
+                , new Object[]{"caption", "Market Value"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevav"}
+                , new Object[]{"caption", "Assessed Value"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevareasqm"}
+                , new Object[]{"caption", "Area (sq.m.)"}
+                , new Object[]{"width", 70}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "prevareaha"}
+                , new Object[]{"caption", "Area (ha)"}
+                , new Object[]{"width", 70}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "preveffectivity"}
+                , new Object[]{"caption", "Effectivity"}
+                , new Object[]{"width", 70}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", "#{item.prevfaasid == null}"}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -151,135 +186,18 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Modified Information", jPanel1);
-
-        xFormPanel3.setCaptionWidth(120);
-        xFormPanel3.setCellspacing(1);
-        xFormPanel3.setPadding(new java.awt.Insets(0, 5, 6, 5));
-
-        xTextField31.setCaption("Previous TD No.");
-        xTextField31.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField31.setEnabled(false);
-        xTextField31.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField31.setName("changeinfo.previnfo.prevtdno"); // NOI18N
-        xTextField31.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel3.add(xTextField31);
-
-        xFormPanel17.setCaptionWidth(120);
-        xFormPanel17.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel17.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel17.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel17.setShowCaption(false);
-
-        xTextField32.setCaption("Prev. Effectivity");
-        xTextField32.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xTextField32.setEnabled(false);
-        xTextField32.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField32.setName("changeinfo.previnfo.preveffectivity"); // NOI18N
-        xFormPanel17.add(xTextField32);
-
-        xTextField33.setCaption("Prev. PIN");
-        xTextField33.setCaptionWidth(80);
-        xTextField33.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField33.setEnabled(false);
-        xTextField33.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField33.setName("changeinfo.previnfo.prevpin"); // NOI18N
-        xTextField33.setStretchWidth(100);
-        xFormPanel17.add(xTextField33);
-
-        xFormPanel3.add(xFormPanel17);
-
-        xFormPanel22.setCaptionWidth(120);
-        xFormPanel22.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel22.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel22.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel22.setShowCaption(false);
-
-        xTextField5.setCaption("Previous M.V.");
-        xTextField5.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xTextField5.setEnabled(false);
-        xTextField5.setName("changeinfo.previnfo.prevmv"); // NOI18N
-        xTextField5.setStretchWidth(50);
-        xFormPanel22.add(xTextField5);
-
-        xTextField6.setCaption("A.V");
-        xTextField6.setCaptionWidth(55);
-        xTextField6.setEnabled(false);
-        xTextField6.setName("changeinfo.previnfo.prevav"); // NOI18N
-        xTextField6.setStretchWidth(50);
-        xFormPanel22.add(xTextField6);
-
-        xFormPanel3.add(xFormPanel22);
-
-        xFormPanel23.setCaptionWidth(120);
-        xFormPanel23.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel23.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel23.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel23.setShowCaption(false);
-
-        xTextField7.setCaption("Prev. Area (sqm)");
-        xTextField7.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
-        xTextField7.setEnabled(false);
-        xTextField7.setName("changeinfo.previnfo.prevareasqm"); // NOI18N
-        xTextField7.setStretchWidth(50);
-        xFormPanel23.add(xTextField7);
-
-        xTextField8.setCaption("(ha)");
-        xTextField8.setCaptionWidth(55);
-        xTextField8.setEnabled(false);
-        xTextField8.setName("changeinfo.previnfo.prevareaha"); // NOI18N
-        xTextField8.setStretchWidth(50);
-        xFormPanel23.add(xTextField8);
-
-        xFormPanel3.add(xFormPanel23);
-
-        xTextField34.setCaption("Previous Owner");
-        xTextField34.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField34.setDepends(new String[] {"entity.owner.*"});
-        xTextField34.setEnabled(false);
-        xTextField34.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField34.setName("changeinfo.previnfo.prevowner"); // NOI18N
-        xTextField34.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel3.add(xTextField34);
-
-        xTextField35.setCaption("Previous Admin");
-        xTextField35.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
-        xTextField35.setDepends(new String[] {"entity.administrator.*"});
-        xTextField35.setEnabled(false);
-        xTextField35.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        xTextField35.setName("changeinfo.previnfo.prevadministrator"); // NOI18N
-        xTextField35.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel3.add(xTextField35);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Previous Information", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -300,33 +218,7 @@ public class ChangePreviousInfoPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel16;
-    private com.rameses.rcp.control.XFormPanel xFormPanel17;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel20;
-    private com.rameses.rcp.control.XFormPanel xFormPanel21;
-    private com.rameses.rcp.control.XFormPanel xFormPanel22;
-    private com.rameses.rcp.control.XFormPanel xFormPanel23;
-    private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField20;
-    private com.rameses.rcp.control.XTextField xTextField22;
-    private com.rameses.rcp.control.XTextField xTextField26;
-    private com.rameses.rcp.control.XTextField xTextField29;
-    private com.rameses.rcp.control.XTextField xTextField3;
-    private com.rameses.rcp.control.XTextField xTextField30;
-    private com.rameses.rcp.control.XTextField xTextField31;
-    private com.rameses.rcp.control.XTextField xTextField32;
-    private com.rameses.rcp.control.XTextField xTextField33;
-    private com.rameses.rcp.control.XTextField xTextField34;
-    private com.rameses.rcp.control.XTextField xTextField35;
-    private com.rameses.rcp.control.XTextField xTextField4;
-    private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
-    private com.rameses.rcp.control.XTextField xTextField7;
-    private com.rameses.rcp.control.XTextField xTextField8;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     // End of variables declaration//GEN-END:variables
 }

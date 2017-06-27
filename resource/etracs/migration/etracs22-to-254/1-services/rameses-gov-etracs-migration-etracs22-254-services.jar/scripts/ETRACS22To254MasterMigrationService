@@ -215,12 +215,11 @@ class ETRACS22To254MasterMigrationService
 	public void migrateStructures(){
 		em22.getStructures().each{struct -> 
 			struct.indexno = (struct.indexno == null ? 0 : struct.indexno)
+			struct.showinfaas = false
 			structEm.save(struct);
 
 			struct.materials = em22.serializer.read(struct.materials);
 			struct.materials.material.each{mat->
-				println 'structur -> ' + struct 
-				println 'mat -> ' + mat 
 				def sm = [
 					structure : struct,
 					material  : mat,
@@ -231,8 +230,6 @@ class ETRACS22To254MasterMigrationService
 					structEm.save(sm, 'structurematerial')
 				}
 				catch(e){
-					println 'migrateStructures [ERROR]: '
-					e.printStackTrace();
 					//ignore dups
 				}
 			}
@@ -319,5 +316,21 @@ class ETRACS22To254MasterMigrationService
 		println 'Migrated rpt parameters'
 	}	
 
+
+	/*=========================================================================
+	* land specific class 
+	*========================================================================*/
+	@ProxyMethod
+	public void migrateLandSpecificClass(){
+		em22.getLandSpecificClasses().each{
+			try{
+				em254.insertLandSpecificClass(it)
+			}
+			catch(e){
+				e.printStackTrace();
+				//ignore 
+			}
+		}
+	}
 	
 }

@@ -1,11 +1,13 @@
-import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
+import com.rameses.annotations.*
 import com.rameses.common.*;
-import treasury.facts.*;
-import treasury.actions.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+
 
 class PaymentOrderService {
+
+	@Service
+	def self
 	
 	@DataContext("paymentorder") 
 	def pmt; 
@@ -25,6 +27,7 @@ class PaymentOrderService {
 	@Env 
 	def env; 
 
+
 	@ProxyMethod 
 	public def open( params ) { 
 		params._schemaname = 'paymentorder'; 
@@ -35,14 +38,19 @@ class PaymentOrderService {
 
 	@ProxyMethod
 	public def create(def entity){	
+		if(! entity.txntype) throw new Exception("txntype is required. ") 
+		if(! entity.refid) throw new Exception("refid is required. ") 
+		if(! entity.refno) throw new Exception("refno is required. ") 
+		if(! entity.origin) throw new Exception("origin is required. ") 
+
+		self.fetchPaymentInfo(entity)
+
 		if(! entity.payer ) throw new Exception("payer is required. ")
 		if(! entity.amount ) throw new Exception("amount is required. ") 
 		if(! entity.paidby) throw new Exception("paidby is required. ") 
 		if(! entity.paidbyaddress) throw new Exception("paidbyaddress is required. ");
-		if(! entity.txntype) throw new Exception("txntype is required. ") 
 
 		entity.txntype = pmoType.find([objid: entity.txntype ]).first();
-
 		if(!entity.txntype)
 			throw new Exception("Payment Order txntype " + entity.txntype?.objid + " not found!");
 
@@ -59,12 +67,12 @@ class PaymentOrderService {
 		}	
 
 		def m = [:];
-		m.expirydate = dtSvc.findNextDate('1y');
+		m.expirydate = dtSvc.findNextDate('1d');
 		if (entity.expirydate){
 			m.expirydate = entity.expirydate
 		}
-		m.txnid = entity.txnid;
-		m.controlno = entity.controlno;
+		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 )
+		m.origin = entity.origin;
 		m.info = entity.info;
 		m.payer = entity.payer;
 		m.paidby = entity.paidby;
@@ -74,11 +82,18 @@ class PaymentOrderService {
 		m.refno = entity.refno;
 		m.txntype = entity.txntype;
 		m.particulars = entity.particulars;
+		m.items = entity.items;
 
 		if(!entity.txndate) m.txndate = dtSvc.getServerDate();
 		pmt.create(m);
 		return m; 
 	} 
+
+	@ProxyMethod
+	public def fetchPaymentInfo(entity){
+		return entity 
+	}
+
 
 	@ProxyMethod 
 	public def findPaymentType( params ) {

@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+         schemaName="paymentorder_type">
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" 
+                 caption="Payment Order Types" 
+                 role="MASTER" action="init"
+                index="1" permission="paymentordertype.view" />
+    </invokers>
+</workunit>

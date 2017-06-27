@@ -28,6 +28,7 @@
         </folder>
     </folder>
     <folder id="home">
+        <folder id="treasury" caption="Treasury" icon="/home/icons/treasury.png" />
         <folder id="af" caption="Accountable Forms"/>
         <folder id="collection" caption="Collection"/>
         <folder id="remittance" caption="Remittance"/>

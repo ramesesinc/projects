@@ -2,6 +2,6 @@
           schemaName="waterworks_classification">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Classification" 
-                 index="-10" srole="MASTER" action="init"/>
+                 index="-10" role="MASTER" action="init"/>
     </invokers>
 </workunit>

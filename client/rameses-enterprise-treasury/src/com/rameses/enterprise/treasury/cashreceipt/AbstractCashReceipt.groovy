@@ -245,7 +245,7 @@ public abstract class AbstractCashReceipt {
             }
             
             try {
-                if(entity.txnmode.equalsIgnoreCase("ONLINE")) {
+                if(entity.txnmode.equalsIgnoreCase("ONLINE")) { 
                     print();
                 }    
             }
@@ -283,11 +283,17 @@ public abstract class AbstractCashReceipt {
             handle = opt.handle; 
             handle.viewReport(); 
         } 
-        ReportUtil.print(handle.report,true);
+        
+        def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
+        ReportUtil.print(handle.report, canShowPrinterDialog);
     }
     
     void reprint() {
-        if( verifyReprint() ){
+        if ( entity._options ) { 
+            entity._options.canShowPrinterDialog = true; 
+        }
+        
+        if( verifyReprint() ){            
             print();
         } else {
             MsgBox.alert('Invalid security code'); 

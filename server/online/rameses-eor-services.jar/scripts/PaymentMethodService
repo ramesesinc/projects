@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class PaymentMethodService {
+
+	@Service 
+	def self;
+
+	@DataContext('partner_payment_option')
+	def em;
+
+	@ProxyMethod
+	public def getPaymentMethods( params ) {
+		
+		def result = [];
+		def list = em.where('partnerid = :pid', [pid: params.info.id ] ).list();
+		list.each{ 
+			def part = it.paypartner;
+			part.info = it.info;	
+			self.loadPartner( part, params.bill );
+			result << part;
+		}
+		return result; 
+	} 
+
+	@ProxyMethod 
+	public def loadPartner( def o, def bill ) { 
+		return o; 
+	}
+}

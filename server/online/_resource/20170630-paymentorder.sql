@@ -41,3 +41,25 @@ CREATE TABLE `paymentorder_item` (
   CONSTRAINT `FK_paymentorderitem_paymentorder` FOREIGN KEY (`parent_objid`) REFERENCES `paymentorder` (`txnid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+
+CREATE TABLE `cashreceiptpayment_eor` (
+  `objid` varchar(50) NOT NULL,
+  `dtposted` datetime NOT NULL,
+  `receiptid` varchar(50) DEFAULT NULL,
+  `partner_objid` varchar(50) DEFAULT NULL,
+  `txnrefid` varchar(50) DEFAULT NULL,
+  `txnreftype` varchar(50) DEFAULT NULL,
+  `refno` varchar(100) DEFAULT NULL,
+  `refdate` datetime DEFAULT NULL,
+  `amount` decimal(16,2) DEFAULT NULL,
+  `txntype` varchar(50) DEFAULT NULL,
+  `particulars` varchar(255) DEFAULT NULL,
+  `controlno` varchar(25) DEFAULT NULL,
+  PRIMARY KEY (`objid`),
+  KEY `ix_receiptid` (`receiptid`),
+  KEY `ix_account_objid` (`partner_objid`),
+  KEY `ix_refno` (`refno`),
+  KEY `ix_refdate` (`refdate`),
+  CONSTRAINT `fk_payment_partner_eor` FOREIGN KEY (`partner_objid`) REFERENCES `payment_partner` (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

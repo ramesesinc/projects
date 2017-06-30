@@ -11,6 +11,9 @@
 		<field name="expirydate" type="date" required="true" />
 		<field name="refid" required="true"  />
 		<field name="refno" />
+		<field name="controlno" />
+		<field name="locationid" />
+		<field name="receiptid" />
 		<field name="origin" required="true"/>
 		<complex name="info" serializer="default" required="true"/>
 		<complex name="txntype" ref="paymentorder_type" jointype="many-to-one">

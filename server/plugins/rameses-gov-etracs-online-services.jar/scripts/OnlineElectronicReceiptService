@@ -61,7 +61,7 @@ class OnlineElectronicReceiptService
         entity.cashchange = 0
         entity.totalcredit = 0
         entity.collectiontype = collectiontype.find(po.txntype.collectiontype).first()
-        cashreceipt.create(entity)
+        entity = cashreceipt.create(entity)
         po.items.each { m->
             m.receiptid = entity.objid
             cashreceiptItem.create(m)
@@ -114,6 +114,7 @@ class OnlineElectronicReceiptService
         rcpt.amount = eor.amount 
         rcpt.txntype = eor.txntype 
         rcpt.particulars = eor.particulars 
+        rcpt.controlno = eor.controlno 
         cashreceiptpayment_eor.create(rcpt)
     }
 

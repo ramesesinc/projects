@@ -1,0 +1,105 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class ElectronicReceiptService  
+{
+	@Env 
+	def env 
+
+	@Service
+	def self 
+
+	@Service('CacheService')
+	def cacheSvc 
+
+	@Service('GdxPartnerService')
+	def partnerSvc 
+
+	@Service('DateService')
+	def dtSvc 
+
+	@DataContext('eor')
+	def em_eor 
+
+	@DataContext('eor_forrecovery')
+	def em_eor_forrecovery
+
+	@DataContext('eor_forsync')
+	def em_eor_forsync	
+
+
+
+	@ProxyMethod
+	public def create( params) {
+		def eor = [:]
+		eor.dtposted = dtSvc.serverDate 
+		eor.partner = partnerSvc.findPaymentPartner(params.partnerid)
+			
+		//intercepted by partners to update specific info
+		self.updatePartnerEorInfo(eor, params)
+
+		def po = getCachePo(eor)
+		if (po) {
+			return createEor(eor, po)
+		}
+		else{
+			//po is not available from cache
+			//Create an eor_forrecovery record making sure
+			//payment info from partner is save.
+			//a task will then recover the po from the lgu 
+			//and post an equivalent eor.
+			def ep = [:]
+			ep.objid = eor.objid 
+			ep.dtposted = eor.dtposted 
+			ep.paymentinfo = params
+			ep.eor = eor 
+			em_eor_forrecovery.create(ep)
+			return eor 
+		}
+	}
+
+
+	//called by recovery task 
+	@ProxyMethod
+	public def createEor(eor, po){
+		eor.txnpoid = po.txnid
+		eor.locationid = po.locationid 
+		eor.txnrefid = po.refid
+		eor.txnreftype = po.txntype.title
+		eor.txntype = po.txntype.objid
+		eor.particulars =po.particulars
+		eor.payer = po.payer 
+		eor.paidby = po.paidby
+		eor.paidbyaddress = po.paidbyaddress
+		eor = em_eor.create(eor)
+
+		def es = [objid:eor.objid]
+		es.syncdate = eor.dtposted
+		es.synccount = 1
+		em_eor_forsync.create(es)
+		cacheSvc.removeCache([key:po.txnid])
+		cacheSvc.removeCache([key:po.refid])
+		return eor 
+	}
+
+
+
+	// intercepted by payment partners for specific infos 
+	// the following must be updated: eor.refno, eor.refdate 
+	@ProxyMethod
+	public void updatePartnerEorInfo(eor, params){
+	}
+
+
+
+	def getCachePo(eor){
+		try{
+			return cacheSvc.get(eor.txnpoid);
+		}
+		catch(e){
+			//for any failures
+			return null 
+		}
+	}
+}

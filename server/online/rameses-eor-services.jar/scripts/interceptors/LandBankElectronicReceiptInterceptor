@@ -1,0 +1,35 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+
+class LandBankElectronicReceiptInterceptor  {
+
+	@After(pattern="ElectronicReceiptService.updatePartnerEorInfo", eval="'LBP'.equalsIgnoreCase(args[1].partnerid)")
+	public void updateEorInfo( evt ) {
+		def eor = evt.args[0]
+		def params = evt.args[1]
+		
+		eor.refno = params.EppRefNo
+		eor.refdate = params.Datestamp
+		eor.amount = params.Amount
+
+		def particulars = splitParticulars(params)
+		eor.txnpoid = particulars['Tax Reference Number']
+		eor.txnreftype = particulars['Transaction_type']
+		eor.txntype = 'rptcol'
+		eor.particulars = 'Real Property Tax payment for Order No. ' + eor.txnpoid 
+		eor.paidby = particulars['Name']
+	}
+
+
+	def splitParticulars(params){
+		def tokens = params.Particulars.split(';')
+		def data = [:]
+		tokens.each{
+		    def d = it.split('=')
+		    data[d[0]] = d[1]
+		}
+		return data 
+	}
+
+}

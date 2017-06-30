@@ -1,0 +1,19 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+
+class DbpElectronicReceiptInterceptor  {
+
+	@After(pattern="ElectronicReceiptService.updatePartnerEorInfo", eval="'DBP'.equalsIgnoreCase(args[1].partnerid)")
+	public void updateEorInfo( evt ) {
+		def eor = evt.args[0]
+		def params = evt.args[1]
+
+		eor.refno = params.retrievalReferenceCode
+		eor.refdate = params.refdate
+		eor.amount = params.amount
+		eor.txnpoid = params.referenceCode
+		eor.particulars = params.serviceType
+	}
+
+}

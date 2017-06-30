@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+public class PaymentOrderService  {
+
+	@Service(value="PaymentOrderService", connection="local-etracs")
+	def svc;
+
+	@ProxyMethod
+	public def createPaymentOrder( def o ) { 
+		return svc.create(o);
+	}
+
+
+	@ProxyMethod
+	public def getPaymentOrder( po ) {
+		return svc.open(po)
+	}
+
+}

@@ -2,34 +2,18 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import com.rameses.common.*
 
-class PaymentMethodInterceptor  {
+class LandbankPaymentMethodInterceptor  {
 
 	@Env 
 	def env;     
 
 	def formatter = new java.text.DecimalFormat('0.00');
 	
-	@After(pattern="PaymentMethodService.loadPartner", eval="#{args[0].objid.equalsIgnoreCase('DBP')}")
-	public void loadDBPPartner( evt ) {
-		def bill = env.bill;
-		def partner = evt.args[0]; 
-
-		def params = [:];
-		params.terminalID = partner.info.terminalid;
-		params.referenceCode = bill.txnid; 
-		params.amount = formatter.format( bill.amount ); 
-		params.serviceType = bill.particulars; 
-
-		def secval = partner.info.terminalid + bill.txnid + '{' + partner.info.transactionkey + '}'; 
-		params.securityToken = com.rameses.util.Encoder.SHA1.encode(secval);
-		partner.params = params; 
-	}
-
-
 	@After(pattern="PaymentMethodService.loadPartner", eval="#{args[0].objid.equalsIgnoreCase('LBP')}")
 	public void loadLandbankPartner( evt ) {
-		def bill = env.bill;
+		
 		def partner = evt.args[0]; 
+		def bill = evt.args[1];
 
 		def samt = formatter.format( bill.amount );
 
@@ -45,6 +29,7 @@ class PaymentMethodInterceptor  {
 
 		def secval = partner.info.merchantcode + bill.controlno + samt.replace('.','');
     	params.Hash = com.rameses.util.Encoder.MD5.encode(secval).toLowerCase();
+    	partner.params = params; 
 	}
 
 }

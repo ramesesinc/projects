@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+
+class ElectronicReceiptSyncTask 
+{
+	@Service('DateService')
+	def dtSvc
+
+	@Service(dynamic=true)
+	def dynSvc 
+
+	@DataContext('eor') 
+	def em_eor
+
+	@DataContext('eor_forsync') 
+	def em_eor_forsync
+
+	@DataContext('eor_forresolve') 
+	def em_eor_forresolve
+
+	
+	@Schedule( interval=1 ) 
+	public void post( tasks ) {
+		def list = em_eor_forsync.where('syncdate < :svrdate', [svrdate:dtSvc.serverDate])
+						.orderBy('syncdate')
+						.list(0,5)
+		list.each{
+			def eor = it.eor 
+			def svc = dynSvc.lookup(eor.locationid + ':ElectronicReceiptService', 'gdx-script-service')
+			if (svc){
+				try{
+					svc.post(eor)
+					em_eor_forsync.find([objid:it.objid]).delete()
+				}
+				catch(e){
+					e.printStackTrace()
+					// retry posting 3 times and if unsuccessful 
+					// error might be connection related 
+					// then delete forsync and post entry to forresolve
+					if (it.synccount < 3)
+						rescheduleSync(it, e)
+					else 
+						moveToForResolve(it, e)
+				}
+			}
+		}
+	} 
+
+	void rescheduleSync(es, err){
+		es.syncdate = dtSvc.add(dtSvc.serverDate, '5m')
+		es.synccount += 1 
+		es.msg = err.message 
+		em_eor_forsync.update(es)
+	}
+
+	void moveToForResolve(es, err){
+		def d = [objid:es.objid]
+		d.msg = err.message
+		em_eor_forresolve.create(d)
+		em_eor_forsync.find([objid:es.objid]).delete() 
+	}
+}

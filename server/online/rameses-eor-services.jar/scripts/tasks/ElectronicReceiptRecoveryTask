@@ -1,0 +1,58 @@
+import com.rameses.annotations.*;
+
+class ElectronicReceiptRecoveryTask 
+{
+	@Service('DateService')
+	def dtSvc
+
+	@Service(dynamic=true)
+	def dynSvc 
+
+	@Service('ElectronicReceiptService')
+	def eorSvc 
+
+	@DataContext('eor') 
+	def em_eor
+
+	@DataContext('eor_forrecovery') 
+	def em_eor_forrecovery	
+
+	@DataContext('eor_forresolve') 
+	def em_eor_forresolve	
+
+	
+	@Schedule( interval=5) 
+	public void recover( tasks ) {
+		def list = em_eor_forrecovery.orderBy('dtposted').list(0,5)
+		list.each{
+			def eor = it.eor 
+			def eorexist = em_eor.select('objid').find([objid:eor.objid]).first()
+			if (eorexist) {
+				em_eor_forrecovery.find([objid:it.objid]).delete()
+			}
+			else{
+				def svc = dynSvc.lookup(getLocationId(eor.txnpoid) + ':PaymentOrderService', 'gdx-script-service')
+				if (svc){
+					def po = svc.getPaymentOrder([txnid:eor.txnpoid])
+					if (po){
+						eorSvc.createEor(eor, po)	
+						em_eor_forrecovery.find([objid:it.objid]).delete()
+					}
+					else{
+						def d = [objid:eor.objid]
+						d.dtposted = dtSvc.serverDate
+						d.msg = 'Payment Order ' + eor.txnpoid + ' does not exist.'
+						d.eor = eor 
+						d.paymentinfo = it.paymentinfo 
+						em_eor_forresolve.create(d)
+					}
+				}
+			}
+		}
+	} 
+
+	def getLocationId(poid){
+	    def tokens = poid.split(':')
+    	return tokens[1]
+	}
+}

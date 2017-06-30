@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+
+class GdxPartnerService {
+
+    @DataContext("gdx_partner")
+    def partner;		
+
+    @DataContext("gdx_payment_partner")
+    def payment_partner;        
+
+    @ProxyMethod
+    public def getList() {
+		return partner.where("1=1").orderBy("group.name").list();
+    }		
+
+    @ProxyMethod
+    public def getActiveList() {
+		return partner.orderBy("group.name").where(" state='ACTIVE' ").list();
+    }		
+
+    @ProxyMethod
+    public def getInactiveList() {
+		return partner.orderBy("group.name").where(" state='INACTIVE' ").list();
+    }		
+
+ 	@ProxyMethod
+    public def findByGroupAndName(params) {
+		return partner.find( ["group.name": params.groupname, "name": params.name ] ).first();
+    }			
+
+    @ProxyMethod 
+    public def findPaymentPartner(objid){
+        return payment_partner.find([objid:objid]).first()
+    }
+
+}

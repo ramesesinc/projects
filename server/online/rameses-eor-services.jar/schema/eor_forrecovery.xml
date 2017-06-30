@@ -1,0 +1,9 @@
+<schema adapter="eor">
+	<element tablename="eor_forrecovery">
+		<field name="objid" primary="true" prefix="EOR"/>
+		<field name="dtposted" required="true" />
+		<complex name="eor" serializer="default" required="true" /> 
+		<complex name="paymentinfo" serializer="default" required="true" /> 
+	</element>
+</schema>	
+

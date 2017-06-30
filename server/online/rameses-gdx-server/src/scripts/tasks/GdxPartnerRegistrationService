@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+import java.io.*;
+
+class GdxPartnerRegistrationService {
+
+    @XConnection("remote-script-mq")
+    def queueSvc;
+
+    @Service("GdxPartnerService")
+    def partnerSvc;
+
+    @DataContext("gdx_partner_online")
+    def onlineEm;
+
+    @Schedule()
+    public void onStart(def evt) {
+    	println "STARTING GDX REGISTRATION SERVICE";
+        def list = partnerSvc.getList();
+        for(o in list) {
+            if(o.state=='ACTIVE') {
+                queueSvc.addQueue( o.id, "gdx");
+            }
+            else {
+                queueSvc.removeQueue( o.id, "gdx");
+            }
+        }
+        //we also need to notify clients so they can react 
+	   def onlinelist = onlineEm.select("id").where("1=1").list();
+       onlinelist.each {
+	       println "rejoining server " + it.id;
+       	   queueSvc.send( [status:"server-startup"], it.id ); 		
+       }
+    }			
+
+    @Shutdown
+    public void onStop(def evt) {
+       println "STOPPING GDX SERVICES";		
+       def list = onlineEm.select("id").where("1=1").list();
+       list.each {
+       	   queueSvc.send( [status:"server-shutdown"], it.id ); 		
+       }
+    }			
+
+}

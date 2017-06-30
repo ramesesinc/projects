@@ -1,0 +1,204 @@
+@font-face {
+    font-family: filipizen-sans-regular-light;
+    src: url(/res/font/FilipizenSansSmall-Regular.woff);
+}
+@font-face {
+    font-family: RobotoMono-Regular;
+    src: url(/res/font/RobotoMono-Regular.tff);
+}
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+html {
+  font-family: "filipizen-sans-regular-light", Helvetica Neue, Arial, sans-serif;
+  font-weight: normal;
+  font-variant: normal;
+}
+h4, h5, h6 {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+.navbar {
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+.navbar-inverse {
+    background-color: transparent;
+    border-color: none;
+}
+.lgu-logo{
+  width: 100px;
+}
+#holder{
+    width:100%;
+    display:inline-block;
+    -moz-column-count:2;
+    column-count:4;
+    text-align:center;
+    margin: 0 auto;
+}
+.box{
+    width:240px;
+    font-size:45px;
+    line-height: 16px;
+    display:inline-block;
+        border-bottom: solid 1px #eeeeee;
+}
+.box p {
+    font-size: 15px;
+    text-align: left;
+    padding-left: 15px;
+}
+.box p span{
+    font-size:12px;
+    font-weight:bold;
+    padding-left:1px;
+}
+.box h4{
+    text-transform: uppercase;
+    padding: 5px 10px;
+    text-align: left;
+    color: #555555;
+    background: #eee;
+    margin-bottom: 7px;
+}
+.payoption{
+  height: 210px;
+  padding: 10px;
+  margin: 0 auto;
+}
+.btn-pay{
+    margin-bottom: 10px;
+}
+
+/* BOOTSTRAP OVERLAY */
+.panel-default {
+    border-color: transparent;
+}
+.panel-default > .panel-heading {
+    color: #333333;
+    background-color: transparent;
+    border-color: #dddddd;
+}
+.panel-body > p >a {
+    color: #828282;
+}
+.panel {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border-radius: 0;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+.panel-heading {
+    padding: 5px 5px;
+}
+.panel-heading h4{
+    text-align: center;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+.panel-lgu{
+    padding: 5px;
+    overflow: auto;
+}
+.btn{
+    padding: 9px 12px;
+}
+.image-bg-fluid-height {
+    background: grey;
+    padding: 30px 0;
+}
+.img-center {
+  margin: 0 auto;
+}
+.ask-container{
+    width: 600px;
+    margin: 0 auto;
+    padding-top: 50px;
+    text-align: center;
+}
+.ask-container h4{
+    padding-bottom: 20px;
+}
+.submit-container{
+    padding-top: 20px;
+}
+.input-box{
+    text-transform: uppercase;
+    width: 100%;
+    margin: 3px 0 5px;
+    padding: 10px 20px;
+    height: 50px;
+    border: 1px solid #fff;
+    box-shadow: none;
+    border-radius: 6px;
+    -webkit-transition: border-color ease-in-out 225ms;
+    transition: border-color ease-in-out 225ms;
+    font-size: 36px;
+    background-color: #f0f0f0;
+}
+.paytypes-container{
+    width: 800px;
+    margin: 0 auto;
+    padding-top: 50px;
+    text-align: center;
+}
+.thumbnail {
+    min-width: 100%;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    vertical-align: text-bottom; 
+    border: transparent;
+    -webkit-box-shadow: rgba(204, 204, 204, 0.04) 0px 41px 0px inset;
+    -moz-box-shadow: #A5B8DA 0px 21px 0px inset;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    display: inline-block;
+    color: #FFFFFF;
+    background-color: #009cde;
+    border-color: #357ebd;
+}
+.ui-dialog{
+    height: 500px;
+}
+.online_0 .box{
+    display: none;
+}
+.online_0 h2:after{
+    content: "No services";
+    font-size: 50px;
+    position:absolute;
+    color: #e8e8e8; 
+    letter-spacing: 10px;
+    width: 900px;
+}
+.text-right{
+    text-align: right;
+}
+.ui-dialog .ui-dialog-title{
+    float: none;
+}
+.ui-dialog .ui-dialog-titlebar{
+    padding: 10px;
+    font-size: 20px;
+}
+.ui-widget-header{
+    padding: 10px;
+        background: #eee;
+        border: transparent;
+        color: #000;
+        text-align: center;
+}
+.qtr-popUp{
+    text-align: center;
+}
+.btn-radio label{
+    padding-left: 5px;
+}
+
+
+

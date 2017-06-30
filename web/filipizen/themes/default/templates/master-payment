@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/">
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="title" content="${PROJECT.title}" />
+    <meta itemprop="name" content="${PROJECT.title}" />
+    <meta property="og:title" content="${PROJECT.title}" />
+    <meta name="Description" content="${PROJECT.description}" />
+    <meta itemprop="description" content="${PROJECT.description}" />
+    <meta property="og:description" content="${PROJECT.description}" />
+    <meta name="keywords" content="${PROJECT.keywords}"/>
+    <meta name="copyright" content="${PROJECT.copyright}" />
+    <link rel="shortcut icon" type="image/png" href="/res/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="http://www.filipizen.com/res/favicon.png"/>
+
+
+    @css("payment-bootstrap")
+    @css("font-awesome.min")
+    @css("payment")  
+    @page-imports()
+    @stdlib()
+    </head>
+    
+<body>
+
+
+<nav class="main-nav-outer" id="test"><!--main-nav-start-->
+    <div class="container">
+        <ul class="main-nav">
+            <li><a href="#header"></a></li>
+            <li><a href="#service"></a></li>
+            <li><a href="#Portfolio"></a></li>
+            <li class="small-logo"><a href="/index"><img src="/res/logo-filipizen.svg" alt="" width="150px"></a></li>
+            <li><a href="#client"></a></li>
+            <li><a href="#team"></a></li>
+            <li><a href="#contact"></a></li>
+        </ul>
+    </div>
+</nav><!--main-nav-end-->
+
+    ${_content}
+
+
+    
+<script type="text/javascript" src="/js/bootstrap.js"></script>
+
+ 
+</body>
+</html>

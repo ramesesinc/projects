@@ -1,0 +1,14 @@
+String[] arr = PARAMS.name.split("_");
+def group = arr[0];
+def name = arr[1];
+
+def cacheSvc = SERVICE.lookup("CacheService");
+String key = "partner_info:"+PARAMS.name;
+def obj = cacheSvc.get([key:key]);
+if(obj==null) {
+	def svc = SERVICE.lookup("GdxPartnerService")
+	obj = svc.findByGroupAndName( [groupname: group, name: name] ); 
+	cacheSvc.put( [key:key, value:obj] ); 	
+}
+PARAMS.info = obj;
+

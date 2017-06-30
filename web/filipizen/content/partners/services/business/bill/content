@@ -1,0 +1,117 @@
+
+<% 
+	def numsvc = SERVICE.lookup("NumberService", "default")
+	def bill = PARAMS.bill;
+	def taxfees = bill?.taxfees;  
+%>
+
+ <section id="services" class="section">
+         <div class="container">
+             <div class="row">
+               <div class="form-group">
+                 <div class="col-md-12">
+                   <div class="container">
+                   <h2>BIN: ${bill.bin}</h2>
+                       	<div class="row">
+                       		<div class="col-md-6">
+	                           <dl>
+	                               <dt>Owner :</dt>
+	                               <dd>${bill.paidby}</dd>
+	                           </dl>
+	                            <dl>
+	                                <dt>Address :</dt>
+	                                <dd>${bill.paidbyaddress}</dd>
+	                            </dl> 
+                            </div> 
+                            <div class="col-md-4">
+	                             <dl>
+	                                <dt>Application type :</dt>
+	                                <dd>${bill.apptype}</dd>
+	                            </dl>
+	                            <dl>
+	                                <dt>Date Filed :</dt>
+	                                <dd>${bill.dtfiled}</dd>
+	                            </dl>
+                        	</div>
+                          </div>  
+
+						    <table class="table">
+						    	<thead>
+							    	<tr>
+							    		<th align="left">Line of Business</th>
+							    		<th align="left">Tax/Fee</th>
+							    		<th class="text-right">Amount</th>
+							    		<th class="text-right">Discount</th>
+							    		<th class="text-right">Surcharge</th>
+							    		<th class="text-right">Interest</th>
+							    		<th class="text-right">Total</th>
+							    	</tr>
+						    	</thead>
+						    	<tbody>
+						    		<% taxfees?.each{k->%>
+							    	<tr>
+							    		<td>${k.lob.name? k.lob.name : ''}</td>
+							    		<td>${k.account.title}</td>
+							    		<td align="right">${numsvc.format('#,##0.00',k.amtdue)}</td>
+							    		<td align="right">${numsvc.format('#,##0.00',k.discount)}</td>
+							    		<td align="right">${numsvc.format('#,##0.00',k.surcharge)}</td>
+							    		<td align="right">${numsvc.format('#,##0.00',k.interest)}</td>
+							    		<td align="right">${numsvc.format('#,##0.00',k.total)}</td>
+							    	</tr>
+							    	<%}%>
+							    </tbody>
+						    	<thead>
+							    	<tr>
+							    		<th align="left" colspan="3">THIS BILL IS VALID UNTIL ${bill.expirydate}</th>
+							    		<th class="text-right" colspan="3"> BILL AMOUNT :</th>
+							    		<th class="text-right">P ${numsvc.format('#,##0.00',bill.amount)}</th>
+							    	</tr>
+							    	<tr>
+							    		<th align="left" colspan="7">BILL PERIOD : </th> 
+							    	</tr> 
+							    	
+						    	</thead>
+						    </table>
+                      
+                </div>
+                <div class="col-md-2">
+                   <button r:context="bill" r:name="chooseQtr" class="thumbnail btn btn-primary">Pay Quarter</button>
+                </div>
+                <div class="col-md-2"><button r:context="bill" r:name="chooseFullPayment" class="thumbnail btn btn-primary">Pay Full</button></div>
+                <div class="col-md-2">
+                  <a href="/partners/${PARAMS.name}/payoptions?billid=${bill.billid}" class="thumbnail btn btn-primary">Pay</a>
+                </div>
+               </div>
+             </div>
+         </div>
+        </div>
+ </section>
+<hr>
+  <script>
+  	\$register( {id:'popup', page:'/payquarter', context:'payqtr', title:'Select Quarter To Pay' }  );
+    
+    \$put("bill", 
+     new function() {
+     	this.chooseQtr = function() {
+        	var handler = function(x) {
+        		var str = window.location+"";
+        		var idx = str.indexOf("&payoption");
+        		if( idx > 0 ) {
+        			str = str.substr(0, idx);
+        		}
+        		location.href = str + "&payoption=q" + x ;
+        	}
+        	return new PopupOpener( "popup", {callbackHandler: handler} ); 
+     	}
+     
+     	this.chooseFullPayment = function() {
+     		var str = window.location+"";
+    		var idx = str.indexOf("&payoption");
+    		if( idx > 0 ) {
+    			str = str.substr(0, idx);
+    		}
+    		location.href = str ;
+     	}
+     }
+    );   
+  </script>

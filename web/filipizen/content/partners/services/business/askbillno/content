@@ -1,0 +1,26 @@
+
+<%if( PARAMS.error !=null) { %>
+	Error ${PARAMS.error?.message}
+<% } %>
+
+
+<section>
+    <div class="container">
+        <div class="row">
+          <div class="form-group">
+            <div class="col-md-12">
+              <div class="ask-container">
+              <h4>Specify Business Application No.</h4>
+	              <form  method="GET" action="${PARAMS.target}">
+        					<input type="text" name="appno" value="B${PARAMS.info.id}" class="input-box"/>
+        					<div class="submit-container">
+        					 <input type="submit" value="Submit" class="btn btn-submit btn-primary" />
+        					</div>
+      				  </form>
+               </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+

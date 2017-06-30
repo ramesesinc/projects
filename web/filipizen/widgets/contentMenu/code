@@ -1,0 +1,61 @@
+    <section id="services" class="section">
+        <div class="container">
+            <div class="row services">
+                <div class="col-md-4">
+                    <div class="service">
+                        <div class="icon-holder">
+                            <img src="/res/sample/icons/business.png" alt="" class="icon">
+                        </div>
+                        <h4 class="heading"><a href="">Diong Business</a></h4>
+                        <p class="description">Apply and pay clearances and certifications online.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service">
+                        <div class="icon-holder">
+                            <img src="/res/sample/icons/per-lic.png" alt="" class="icon">
+                        </div>
+                        <h4 class="heading"><a href="">Permit & Licensing</a></h4>
+                        <p class="description">Application for other permits and licenses.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service">
+                        <div class="icon-holder">
+                            <img src="/res/sample/icons/property.png" alt="" class="icon">
+                        </div>
+                        <h4 class="heading"><a href="">Real Property</a></h4>
+                        <p class="description">Monitor real property records and assessments.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service">
+                        <div class="icon-holder">
+                            <img src="/res/sample/icons/queuing.png" alt="" class="icon">
+                        </div>
+                        <h4 class="heading"><a href="">Queuing System</a></h4>
+                        <p class="description">A queue management system is used to control queues.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service">
+                        <div class="icon-holder">
+                            <img src="/res/sample/icons/community.png" alt="" class="icon">
+                        </div>
+                        <h4 class="heading"><a href="">Community</a></h4>
+                        <p class="description">Explore and know more about living in your LGU.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service">
+                        <div class="icon-holder">
+                            <img src="/res/sample/icons/forum.png" alt="" class="icon">
+                        </div>
+                        <h4 class="heading"><a href="">Forum</a></h4>
+                        <p class="description">File complaints and discuss issues.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cut cut-bottom"></div>
+    </section>

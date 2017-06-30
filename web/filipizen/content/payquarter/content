@@ -1,0 +1,35 @@
+
+  <script>
+     \$put( "payqtr", new function() {
+         this.qtr;
+         this.callbackHandler;
+         this.select = function() {
+            this.callbackHandler(this.qtr );
+            return "_close";
+         }
+     });
+  </script>
+  <div class="container">
+      <div class="qtr-popUp">
+          <form>
+            <div class="btn-radio">
+              <input type="radio" r:context="payqtr" r:name="qtr" value="1">
+              <label>Quarter 1</label>
+            </div>
+            <div class="btn-radio">
+              <input type="radio" r:context="payqtr" r:name="qtr" value="2">
+              <label>Quarter 2</label>
+            </div>
+            <div class="btn-radio">
+              <input type="radio" r:context="payqtr" r:name="qtr" value="3">
+              <label>Quarter 3</label>
+            </div>
+            <div class="btn-radio">
+              <input type="radio" r:context="payqtr" r:name="qtr" value="4">
+              <label>Quarter 4</label>
+            </div>  
+          </form>           
+      </div>
+  </div>
+
+ <button type="submit" class="thumbnail" r:context="payqtr" r:name="select">Submit</button>

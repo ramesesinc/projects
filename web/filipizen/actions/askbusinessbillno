@@ -1,0 +1,25 @@
+
+if( PARAMS.appno != null  ) {
+	try {
+		def cacheSvc = SERVICE.lookup("CacheService");
+		String key = "business.bill.appno:" + PARAMS.appno;
+		System.out.println(PARAMS);
+		def svc = SERVICE.lookup(PARAMS.info.id + ":BusinessBillingService");
+		def m = [appno: PARAMS.appno ];
+		if( PARAMS.payoption ) m.payoption = PARAMS.payoption;
+		
+		def obj = svc.getBilling( m  );
+		cacheSvc.put( [key:key, value:obj] );
+		
+		obj.billid = key;
+		PARAMS.bill = obj; 
+		return;	
+	}
+	catch(e) {
+		PARAMS.error = e;
+	}			
+} 
+
+def parent = "/partners/"+PARAMS.name+"/services/business/";
+def target = REQUEST.pathInfo;
+PARAMS.redirect = parent + "askbillno?target="+target;

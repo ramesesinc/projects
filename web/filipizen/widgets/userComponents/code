@@ -1,0 +1,29 @@
+
+<!-- General -->
+<script type="text/javascript" src="/js/assets/js/libs/breakpoints.js"></script>
+<script type="text/javascript" src="/js/plugins/flot/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/js/plugins/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="/js/plugins/flot/jquery.flot.time.js"></script>
+<script type="text/javascript" src="/js/plugins/flot/jquery.flot.growraf.js"></script>
+
+    <!-- App -->
+<script type="text/javascript" src="/js/assets/js/app.js"></script>
+<script type="text/javascript" src="/js/assets/js/plugins.js"></script>
+
+
+<script>
+\$(document).ready(function(){
+    "use strict";
+
+    App.init(); // Init layout and core plugins
+    Plugins.init(); // Init all plugins
+});
+</script>
+
+    <!-- Demo JS -->
+<script type="text/javascript" src="/js/assets/js/demo/charts/chart_filled_blue.js"></script>
+   
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    @register1('/userpanel')
+</script>

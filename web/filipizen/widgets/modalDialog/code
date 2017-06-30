@@ -1,0 +1,51 @@
+
+  <!-- Modal dialog -->
+<div class="modal fade" id="myModal1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Upload to filipizen</h4>
+			</div>
+			<div class="modal-body">
+				<div id="dropzone">
+					<form action="/upload" class="dropzone" drop-zone="" id="file-dropzone">
+					    <div class="dz-message needsclick">
+					      Choose files to upload to your filipizen. You can select more than one file at a time. You can also drag and drop files anywhere on this page to start uploading.<br><br>
+					      	<div tabindex="500" class="btn btn-primary btn-file"><span class="hidden-xs">Choose Files</span></div>
+					    </div>
+					</form>
+				</div>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript">
+//DropzoneJS- js
+
+\$.getScript('/res/dropzone/dropzone.js',function(){
+  // instantiate the uploader
+  \$('#file-dropzone').dropzone({ 
+    url: "/upload",
+    maxFilesize: 1000,
+    paramName: "uploadfile",
+    maxThumbnailFilesize: 5,
+    init: function() {
+      
+      this.on('success', function(file, json) {
+      });
+      
+      this.on('addedfile', function(file) {
+        
+      });
+      
+      this.on('drop', function(file) {
+        alert('file');
+      }); 
+    }
+  });
+});
+
+\$(document).ready(function() {});
+</script>

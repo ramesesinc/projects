@@ -1,0 +1,4 @@
+<p class="weather">
+<a href="http://weathertemperature.com/forecast/?q=Cebu,Cebu+City,Philippines" title="Cebu, Cebu City, Philippines Weather Forecast" onclick="this.target='_blank'"><img src="http://widget.addgadgets.com/weather/v1/?q=Cebu,Cebu+City,Philippines&amp;s=1&amp;u=1" alt="Weather temperature in Cebu, Cebu City, Philippines" width="160" height="234" style="border:0">
+</a><br>
+</p>

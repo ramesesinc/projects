@@ -1,0 +1,48 @@
+
+<% 
+    def transact = [];
+    transact << [icon:"business-icon", title:"Business", link:"business"];
+    transact << [icon:"water-icon", title:"Water Works"];
+    transact << [icon:"real-property", title:"Real Property"];
+
+%>
+
+      <div class="container">
+        <!-- Breadcrumbs line -->
+        <div class="crumbs">
+          <ul id="breadcrumbs" class="breadcrumb">
+            <li>
+              <i class="icon-home"></i>
+              <a href="#">Userpanel</a>
+            </li>
+            <li>
+              <a href="#">Transaction</a>
+            </li>
+          </ul>
+          <ul class="crumb-buttons">
+            <li><a href="/userpanel" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
+          </ul>
+
+        </div>
+        <!-- /Breadcrumbs line -->
+        <!--=== Page Content ===-->
+        <div class="row">
+          <div class="col-md-12">
+                <%transact.each{k ->%>
+                  <div class="col-md-2 col-xs-6">
+                      <div class="panel">
+                          <a href="#userpanel-${k.link}">
+                              <img src="/res/panel-icon/${k.icon}.png">
+                              <div class="panel-footer">
+                                  <span class="pull-left">${k.title}</span>
+                              </div> 
+                          </a>
+                      </div>
+                  </div>
+                  <%}%>
+          </div> <!-- /.col-md-12 -->
+        </div> <!-- /.row -->
+
+        <!-- /Page Content -->
+      </div>
+      <!-- /.container -->

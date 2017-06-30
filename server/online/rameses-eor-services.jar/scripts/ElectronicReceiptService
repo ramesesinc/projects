@@ -13,14 +13,14 @@ class ElectronicReceiptService
 	@Service('CacheService')
 	def cacheSvc 
 
-	@Service('GdxPartnerService')
-	def partnerSvc 
-
 	@Service('DateService')
 	def dtSvc 
 
 	@DataContext('eor')
 	def em_eor 
+
+	@DataContext('payment_partner')
+	def em_payment_partner
 
 	@DataContext('eor_forrecovery')
 	def em_eor_forrecovery
@@ -29,12 +29,11 @@ class ElectronicReceiptService
 	def em_eor_forsync	
 
 
-
 	@ProxyMethod
 	public def create( params) {
 		def eor = [:]
 		eor.dtposted = dtSvc.serverDate 
-		eor.partner = partnerSvc.findPaymentPartner(params.partnerid)
+		eor.partner = em_payment_partner.find([objid:params.partnerid]).first()
 			
 		//intercepted by partners to update specific info
 		self.updatePartnerEorInfo(eor, params)
@@ -65,6 +64,7 @@ class ElectronicReceiptService
 	public def createEor(eor, po){
 		eor.txnpoid = po.txnid
 		eor.locationid = po.locationid 
+		eor.controlno = po.controlno 
 		eor.txnrefid = po.refid
 		eor.txnreftype = po.txntype.title
 		eor.txntype = po.txntype.objid

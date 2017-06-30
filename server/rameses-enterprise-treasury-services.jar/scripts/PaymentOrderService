@@ -8,7 +8,7 @@ class PaymentOrderService {
 
 	@Service
 	def self
-	
+
 	@DataContext("paymentorder") 
 	def pmt; 
 	
@@ -24,8 +24,9 @@ class PaymentOrderService {
 	@Service('PersistenceService') 
 	def persistenceSvc; 
 
-	@Env 
-	def env; 
+	@Service('OrgService')
+	def orgSvc 
+
 
 
 	@ProxyMethod 
@@ -71,7 +72,14 @@ class PaymentOrderService {
 		if (entity.expirydate){
 			m.expirydate = entity.expirydate
 		}
-		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 )
+
+		if ('filipizen'.equalsIgnoreCase(entity.origin))
+			m.txnid = KeyGen.generateAlphanumKey( "PMO:" + getLocationId() + ":", 6 )
+		else
+			m.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 )
+
+		m.locationid = entity.locationid 
+		m.controlno = entity.controlno
 		m.origin = entity.origin;
 		m.info = entity.info;
 		m.payer = entity.payer;
@@ -98,5 +106,9 @@ class PaymentOrderService {
 	@ProxyMethod 
 	public def findPaymentType( params ) {
 		return pmoType.find([ objid: params.objid ]).first();
+	}
+
+	def getLocationId(){
+		return orgSvc.getRoot().code.replaceAll('-', '')
 	}
 }

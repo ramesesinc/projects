@@ -51,6 +51,9 @@ class RPTLedgerService
     @DataContext('faas_restriction')
     def em_faas_restriction 
 
+    @DataContext('rptledger_item_qtrly')
+    def em_qtrly_items 
+
 
     def SCHEMA_LEDGER   = 'rptledger'
     def SCHEMA_ITEM   = 'ledgeritem'
@@ -509,11 +512,17 @@ class RPTLedgerService
         qtritem.basicav = (qtr == 4 ? qtrlyvalue.basicav4thqtr : qtrlyvalue.basicavqtrly)
         qtritem.sefav = (qtr == 4 ? qtrlyvalue.sefav4thqtr : qtrlyvalue.sefavqtrly)
         qtritem.fullypaid = 0
-        //qtritem.basicpaid = 0.0
-        //qtritem.basicidlepaid = 0.0
-        //qtritem.sefpaid = 0.0
-        //qtritem.firecodepaid = 0.0
-        em.save(qtritem, SCHEMA_ITEM_QTRLY)
+
+        def existitem = em_qtrly_items.find([objid:qtritem.objid]).first()
+        if (existitem){
+            existitem.av = qtritem.av 
+            existitem.basicav = qtritem.basicav 
+            existitem.sefav = qtritem.sefav 
+        }
+        else{
+            em.save(qtritem, SCHEMA_ITEM_QTRLY)
+        }
+
     }
 
 

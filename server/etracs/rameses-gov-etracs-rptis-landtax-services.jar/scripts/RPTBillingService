@@ -397,7 +397,6 @@ public class RPTBillingService
 				}
 				else {
 					qtrly[qtr] = [value:numSvc.round(value / (5 - startqtr))]
-					//qtrly[qtr] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, qtr) / totalav * value)]
 				}
 			}
 		}
@@ -415,6 +414,7 @@ public class RPTBillingService
 			def qitem = [objid:id]
 			qitem.putAll(item)
 			qitem.objid = id 
+			qitem.qtr = qtr 
 
 			def basic = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basic, startqtr)
 			def basicint = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicint, startqtr)

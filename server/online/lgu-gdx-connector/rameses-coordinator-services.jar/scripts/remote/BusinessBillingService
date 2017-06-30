@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+public class BusinessBillingService  {
+
+	@Service(value="OnlineBusinessBillingService", connection="local-etracs")
+	def svc;
+
+	@ProxyMethod
+	public def getBilling( def o ) { 
+		return svc.getBilling(o);
+	}
+
+}

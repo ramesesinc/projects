@@ -1,0 +1,30 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.common.*
+
+class DbpPaymentMethodInterceptor  {
+
+	@Env 
+	def env;     
+
+	def formatter = new java.text.DecimalFormat('0.00');
+	
+	@After(pattern="PaymentMethodService.loadPartner", eval="#{args[0].objid.equalsIgnoreCase('DBP')}")
+	public void loadDBPPartner( evt ) {
+		def partner = evt.args[0]; 
+		def bill = evt.args[1];
+
+		def params = [:];
+		params.terminalID = partner.info.terminalid;
+		params.referenceCode = bill.txnid; 
+		params.amount = formatter.format( bill.amount ); 
+		params.serviceType = bill.particulars; 
+
+		def secval = partner.info.terminalid + bill.txnid + '{' + partner.info.transactionkey + '}'; 
+		params.securityToken = com.rameses.util.Encoder.SHA1.encode(secval);
+		partner.params = params; 
+	}
+
+
+
+}

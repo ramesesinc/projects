@@ -1,0 +1,24 @@
+
+if( PARAMS.tdno != null  ) {
+	try {
+		def cacheSvc = SERVICE.lookup("CacheService");
+		def svc = SERVICE.lookup(PARAMS.info.id + ":RPTBillingService");
+		def m = [tdno: PARAMS.tdno ];
+		if( PARAMS.payoption ) m.payoption = PARAMS.payoption;
+		
+		def obj = svc.getBilling( m  );
+		String key = obj.billid;
+		cacheSvc.put( [key:key, value:obj] );
+		
+		obj.billid = key;
+		PARAMS.bill = obj; 
+		return;	
+	}
+	catch(e) {
+		PARAMS.error = e;
+	}			
+} 
+
+def parent = "/partners/"+PARAMS.name+"/services/rpt/";
+def target = REQUEST.pathInfo;
+PARAMS.redirect = parent + "asktdno?target="+target;

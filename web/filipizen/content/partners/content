@@ -1,0 +1,52 @@
+
+<% 
+    def partners = [];
+    def xitems = SERVICE.lookup("GdxPartnerService").getList();
+    partners.addAll(xitems);
+
+    def groups = partners.group.unique().sort{}
+%>
+
+<section class="container" style="margin-top: 2%;">
+    <div class="col-md-6 col-md-offset-3">
+        <h1 class="text-center">Select Location</h1>
+    </div>
+</section>
+    <section id="services" class="section">
+        <div class="container">
+            <div class="row">
+                  <div class="con-container">
+                    <h3 class="text-center"></h3>
+                    <hr>
+                      <div class="col-md-12">
+                        <div class="row">
+                             <div id="holder">
+                                                                      
+                                    <%
+                                        groups.each{ k -> 
+                                            def v = partners.findAll{( it.clusterid==k.objid )}.sort{it.objid};
+                                    %>  
+                                        <div class="box">                                              
+                                            <h4>${k.title}</h4>
+                                            <%v.each{o->%>
+
+                                                <p class="online_${o.isonline}">
+                                                    <a href="/partners/${k.name}_${o.name}/services">${o.title}</a> <span class="online_${o.isonline}">${o.online.id ? o.online.id : ''}</span>
+                                                </p>
+                                            <%}%>
+                                        </div>         
+                                    <%}%>   
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+  
+
+
+
+

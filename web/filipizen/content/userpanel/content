@@ -1,0 +1,119 @@
+
+      <div class="container">
+        <div class="crumbs">
+          <ul id="breadcrumbs" class="breadcrumb">
+            <li>
+              <i class="icon-home"></i>
+              <a href="/userpanel">Statistics & Charts</a>
+            </li>
+          </ul>
+          <ul class="crumb-buttons">
+            <li><a href="/userpanel" title=""><i class="fa fa-signal"></i><span>Statistics</span></a></li>
+            <li><a data-toggle="modal" href="#myModal1"><i class="fa fa-upload"></i><span>Upload</span></a></li>
+          </ul>
+          @modalDialog()
+        </div>
+   
+<% 
+    def inbox = [];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business", sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT", sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business", sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"10/23/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"October"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"11/12/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"November"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"RPT", sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+    inbox << [date:"12/02/15", message:"Welcome to FILIPIZEN", content:"Dear jason, Your email", subject:"Business",sender:"filipizen", title:"December"];
+
+
+
+    def msg  = inbox.groupBy{it.title};
+
+%>
+
+      <div class="container">
+        <!-- /Breadcrumbs line -->
+        <!--=== Page Content ===-->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="widget box">
+              <div class="widget-content">
+                <%msg.each{k,v ->%>
+                <div class="panel-heading">${k}</div>
+                <ul class="list-group">
+                  <%v.each{o->%>
+                  <li class="item-message">
+                    <a href="#userpanel-Message">
+                      <div class="col-md-1 col-xs-3"><input type="checkbox"></div>
+                      <div class="col-md-2 col-xs-3">${o.sender}</div>
+                      <div class="col-md-2 col-xs-3">${o.subject}</div>  
+                      <div class="col-md-6 col-xs-3 hidden-xs hidden-sm">${o.message} <span class="msgcontent">${o.content}</span></div> 
+                      <div class="col-md-1 col-xs-3">${o.date}</div>
+                    </a>
+                  </li>
+                  <%}%>
+                </ul>
+                <%}%>
+              </div>
+            </div>
+          </div> <!-- /.col-md-12 -->
+        </div> <!-- /.row -->
+
+        <!-- /Page Content -->
+      </div>
+      <!-- /.container -->
+
+
+
+
+
+        </div> 
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui, shrink-to-fit=no" />
+    <meta name="title" content="${PROJECT.title}" />
+    <meta itemprop="name" content="${PROJECT.title}" />
+    <meta property="og:title" content="${PROJECT.title}" />
+    <meta name="Description" content="${PROJECT.description}" />
+    <meta itemprop="description" content="${PROJECT.description}" />
+    <meta property="og:description" content="${PROJECT.description}" />
+    <meta name="keywords" content="${PROJECT.keywords}"/>
+    <meta name="copyright" content="${PROJECT.copyright}" />
+    <link rel="shortcut icon" type="image/png" href="/res/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="http://www.filipizen.com/res/favicon.png"/>
+    @stdlib()
+    @css("bootstrap")
+    @css("font-awesome.min")
+    @css("style1")   
+    @css("style2")
+    @css("responsive")
+
+  
+</head>
+<body>
+
+
+<header>
+    <div class="container">
+        <div class="containerCentered">
+            <a href="/index" class="filipizen-img-logo"></a>
+            <div id="header-buttons" class="header-buttons">
+                <a href="/userpanel" class="btn-small btn-secondary btn-login btn">Log In</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+${_content}
+
+<div class="footer">
+    <div class="global-footer">
+        <div class="container">
+            <ul class="footer-main secondaryLink">
+                <li><a href="#">Help & Contact</a></li>
+                <li><a href="#">Fees</a></li>
+                <li><a href="#">Security</a></li>
+                <li><a href="#">Apps</a></li>
+            </ul>
+            <ul class="footer-secondary secondaryLink">
+                <li><a href="#">About</a></li>                       
+                <li><a href="#">Blog</a></li>                                           
+                <li><a href="#">Sitemap</a></li>                      
+                <li><a href="#">Developers</a></li>                      
+                <li><a href="#">Partners</a></li>
+            </ul>
+            <ul class="footer-tertiary copyright-section secondaryLink">
+                <li id="footer-copyright" class="footer-copyright">&copy; 2004&ndash;2017 </li>
+                <li id="footer-privacy"><a href="#">Privacy</a></li>
+                <li class="footer-legal"><a href="#">Legal</a></li>
+                <li id="siteFeedback" class=""><a data-pa-click="footer|SiteFeedback" href="#">Feedback</a></li> 
+            </ul>
+            <p class="footer-notes">www.filipizen.com</p>
+            
+        </div>
+    </div>
+</div>
+
+
+    <script src="/js/bootstrap.min.js"></script>
+   
+</body>
+</html>

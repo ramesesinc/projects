@@ -1,0 +1,39 @@
+<%
+   def payOrderSvc = SERVICE.lookup(PARAMS.info.id + ":OnlinePaymentOrderService")
+   def po = payOrderSvc.createPaymentOrder(PARAMS.bill.billid)
+
+   def cacheSvc = SERVICE.lookup("CacheService");
+   String key = po.txnid 
+   cacheSvc.put([key:key, value:po]);
+   
+   def svc = SERVICE.lookup( "PaymentMethodService" )
+   def options = svc.getPaymentMethods( parm );
+%>
+
+
+<section>
+    <div class="container">
+        <div class="row">
+          <div class="form-group">
+            <div class="col-md-12">
+              <div class="ask-container">
+              <h4>Select a Payment Method</h4>
+
+                <% options.each { m-> %>
+                <div class="col-md-5">
+                  <form method="POST" action="${m.actionurl}">
+                      <input type="submit" value="${m.caption}" class="thumbnail"/>
+                      <%m.params.each { k,v-> %>
+                      <input type="hidden" name="$k" value="$v" class="thumbnail"/>
+                      <%}%>
+                    </form>
+                   </div>
+                <% } %>
+          
+               </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+

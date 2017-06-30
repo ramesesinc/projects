@@ -1,0 +1,33 @@
+
+<% 
+    def sidebar = [];
+    sidebar << [links:"", icon:"icon-briefcase", title:"Transactions"];
+    sidebar << [links:"", icon:"icon-calendar", title:"Payment History"];
+    sidebar << [links:"", icon:"icon-cogs", title:"Settings"];
+    sidebar << [links:"", icon:"icon-comments", title:"Chat"];
+%>
+
+
+<div class="sidebar menu-min" id="sidebar"> 
+  <ul class="nav-list">
+      <li>
+          <a href="/userpanel">
+            <i class="icon-inbox"></i>
+            <span class="menu-text">Inbox</span>
+          </a>
+        </li>
+     <%sidebar.each{k ->%>
+        <li>
+          <a href="#userpanel-${k.title}">
+            <i class="fa ${k.icon}"></i>
+            <span class="menu-text"> ${k.title} </span>
+          </a>
+        </li>
+      <%}%>
+      <li>
+        <div class="sidebar-collapse" id="sidebar-collapse">
+            <i class="icon-hand-right"></i>
+        </div>
+      </li>
+  </ul>   
+</div>

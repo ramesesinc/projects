@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/">
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="title" content="${PROJECT.title}" />
+    <meta itemprop="name" content="${PROJECT.title}" />
+    <meta property="og:title" content="${PROJECT.title}" />
+    <meta name="Description" content="${PROJECT.description}" />
+    <meta itemprop="description" content="${PROJECT.description}" />
+    <meta property="og:description" content="${PROJECT.description}" />
+    <meta name="keywords" content="${PROJECT.keywords}"/>
+    <meta name="copyright" content="${PROJECT.copyright}" />
+    <link rel="shortcut icon" type="image/png" href="/res/favicon.png"/>
+
+
+    @stdlib()
+    @css("font-awesome.min")
+    @css("bootstrap.min")
+    @css("main-dash")
+
+
+
+</head>
+<% 
+    def sidebar = [];
+    sidebar << [links:"inbox", icon:"fa-inbox", title:"Inbox"];
+    sidebar << [links:"transactions", icon:"fa-briefcase", title:"Transactions"];
+    sidebar << [links:"paymenthistory", icon:"fa-money", title:"Payment History"];
+    sidebar << [links:"chat", icon:"fa-comments", title:"Chat"];
+    sidebar << [links:"settings", icon:"fa-cogs", title:"Settings"];
+
+    def notify = [];
+    notify <<[message:"New user registration.", time:"1 mins", icon:"fa-plus", label:"success"];
+    notify <<[message:"High CPU load on cluster #2.", time:"5 mins", icon:"fa-warning", label:"danger"];
+    notify <<[message:"New user registration.", time:"10 mins", icon:"fa-plus", label:"success"];
+    notify <<[message:"New items are in queue.", time:"25 mins", icon:"fa-bullhorn", label:"info"];
+
+    def task = [];
+    task <<[desc:"Preparing new release", percent:"30%", progress_bar:"info"];
+    task <<[desc:"Change management", percent:"80%", progress_bar:"danger"];
+    task <<[desc:"Mobile development", percent:"60%", progress_bar:"success"];
+    task <<[desc:"Database migration", percent:"20%", progress_bar:"warning"];
+
+    def all_notify = [];
+    all_notify << [label:"danger", icon:"fa-warning", message:"Server <strong>#512</strong> crashed.", time:"few seconds ago"];
+    all_notify << [label:"info", icon:"fa-envelope", message:"<strong>Ann</strong> sent you a message", time:"few seconds ago"];
+    all_notify << [label:"success", icon:"fa-plus", message:"<strong>Dino</strong>'s account was created", time:"4 hours ago"];
+%>
+
+
+<body>
+    <header class="header navbar">
+        <!-- Top Navigation Bar -->
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="/index">
+                <img src="/res/logo-filipizen-userpanel.svg" alt="logo" />
+            </a>
+            <!-- /logo -->
+
+            <!-- Top Right Menu -->
+            <ul class="nav navbar-nav navbar-right">
+                <!-- Notifications -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-warning"></i>
+                        <span class="badge">5</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li class="title">
+                            <p>You have 4 new notifications</p>
+                        </li>
+                         <%notify.each{n ->%>
+                        <li>
+                            <a href="#">
+                                <span class="label label-${n.label}"><i class="fa ${n.icon}"></i></span>
+                                <span class="message">${n.message}</span>
+                                <span class="time">${n.time}</span>
+                            </a>
+                        </li>
+                        <%}%>
+                        <li class="footer">
+                            <a href="#">View all notifications</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Tasks -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-tasks"></i>
+                        <span class="badge">7</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li class="title">
+                            <p>You have 4 pending tasks</p>
+                        </li>
+                        <%task.each{t ->%>
+                        <li>
+                            <a href="#">
+                                <span class="task">
+                                    <span class="desc">${t.desc}</span>
+                                    <span class="percent">${t.percent}</span>
+                                </span>
+                                <div class="progress progress-small progress-striped active">
+                                    <div style="width: ${t.percent};" class="progress-bar progress-bar-${t.progress_bar}"></div>
+                                </div>
+                            </a>
+                        </li>
+                        <%}%>
+                        <li class="footer">
+                            <a href="#">View all tasks</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Messages -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-envelope"></i>
+                        <span class="badge">1</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li class="title">
+                            <p>You have 3 new messages</p>
+                        </li>
+                        <%msg.each{m ->%>
+                        <li>
+                            <a href="#">
+                                <span class="photo"><img src="/res/avatar-1.jpg" alt="" /></span>
+                                <span class="subject">
+                                    <span class="from">${m.from}</span>
+                                    <span class="time">${m.time}</span>
+                                </span>
+                                <span class="text">
+                                   ${m.text}
+                                </span>
+                            </a>
+                        </li>
+                        <%}%>
+                        <li class="footer">
+                            <a href="#">View all messages</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- .row .row-bg Toggler -->
+                <li class="hidden-xs hidden-sm">
+                    <a href="#" class="dropdown-toggle row-bg-toggle">
+                        <i class="fa fa-resize-vertical"></i>
+                    </a>
+                </li>
+                <!-- User Login Dropdown -->
+                <li class="dropdown user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="photo"><img src="/res/avatar-1.jpg" alt="" /></span>
+                        <span class="username">Jason Delle</span>
+                        <i class="fa fa-caret-down small"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#userpanel-profile"><i class="fa fa-user"></i> My Profile</a></li>
+                        <li><a href="#"><i class="fa fa-calendar"></i> My Calendar</a></li>
+                        <li><a href="#"><i class="fa fa-tasks"></i> My Tasks</a></li>
+                        <li class="divider"></li>
+                        <li><a href="javascript:\$('#logoutform').submit();"><i class="fa fa-key"></i> Log Out</a></li>
+                    </ul>
+                </li>
+                <!-- /user login dropdown -->
+            </ul>
+            <!-- /Top Right Menu -->
+        </div>
+        <!-- /top navigation bar -->
+
+    </header> 
+
+    <div id="container">
+         <div id="wrapper">
+            <div id="sidebar-wrapper" class="sidebar-fixed">
+                <ul class="sidebar-nav" style="margin-left:0;">
+                    <li class="sidebar-brand">
+                        <a href="#menu-toggle"  id="menu-toggle" style="margin-top:20px;float:right;" > <i class="fa fa-bars " style="font-size:20px !Important;" aria-hidden="true"></i>   
+                        </a>
+                    </li>
+                    <%sidebar.each{k ->%>
+                    <li>
+                        <a href="#userpanel-${k.links}">
+                            <i class="fa ${k.icon} " aria-hidden="true"> </i> 
+                            <span style="margin-left:10px;">${k.title}</span>  
+                        </a>
+                    </li>
+                     <%}%>
+                </ul>
+            </div>
+        </div>
+        <div id="content">
+            ${_content}
+        </div>
+    </div>
+
+    <script>
+        \$("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            \$("#wrapper").toggleClass("toggled");
+        });
+    </script>
+@userComponents()
+</body>
+<form id="logoutform" action="actions/logout" method="post"></form>
+
+</html>

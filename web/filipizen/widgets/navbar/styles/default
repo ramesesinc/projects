@@ -1,0 +1,17 @@
+<%
+   def name = OPTIONS.name ? OPTIONS.name : 'default';
+   def parentPath = OPTIONS.parentPath ? OPTIONS.parentPath : '';
+%>
+
+
+<div class="collapse ${name}-navbar-collapse" id="bs-example-navbar-collapse-1">
+<ul class="${name}-navbar-nav">
+<%  
+    for (o in DATA) {    
+		print "<li>";
+		print "<a href=\"${parentPath}${o.href?o.href:o.path}\">${o.title}</a>"; 
+		print "</li>"	
+	} 
+%> 
+</ul>
+</div>  

@@ -1,0 +1,4 @@
+if( SESSION.sessionid != null ) {
+    RESPONSE.sendRedirect("/userpanel");    
+}
+

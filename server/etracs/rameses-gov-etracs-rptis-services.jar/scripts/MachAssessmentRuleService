@@ -51,7 +51,9 @@ public class MachAssessmentRuleService
 
         rpu.totalbmv = util.sum(rpu.machuses, 'basemarketvalue')
         rpu.totalmv  = util.sum(rpu.assessments, 'marketvalue')
-        rpu.totalav  = util.sum(rpu.assessments, 'assessedvalue')
+        if (rpu.totalav == 0){
+        	rpu.totalav  = util.sum(rpu.assessments, 'assessedvalue')
+        }
 
 		rpu.assessments.each{
 			it.actualuse = em.findActualUseInfo(it.actualuse)
@@ -103,6 +105,8 @@ public class MachAssessmentRuleService
 		actions.addCommand( "calc-machuse-av", new CalcMachUseAV( request:request));
 		actions.addCommand( "add-assessment-info", new AddAssessmentInfo( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpuassessment", new CalcRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "recalc-rpu-totalav", new CalcTotalRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "add-derive-var", new AddDeriveVariable( request:request));
 		return actions;
 	}
 

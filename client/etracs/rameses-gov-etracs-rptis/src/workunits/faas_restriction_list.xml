@@ -8,7 +8,8 @@
     <invokers>
         <invoker folderid="/home/rpt" action="init" 
                  caption="Restrictions" target="window"
-                 role="SHARED,ASSESSOR_SHARED" permission="faasrestriction.list" index="102"/>
+                 role="SHARED,ASSESSOR_SHARED" permission="faasrestriction.list" index="102"
+                 icon="home/icons/restrictions.png"/>
     </invokers>
 </workunit>
 

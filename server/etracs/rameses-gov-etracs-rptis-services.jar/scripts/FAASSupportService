@@ -68,7 +68,9 @@ class FAASSupportService
 		faasdata.affectedrpus = stewardshipSvc.getAffectedRpus(faasdata.objid)
 		faasdata.affectedfaases = []
 		faasdata.affectedrpus.each{
-			faasdata.affectedfaases << getFaasData([objid:it.newfaasid])
+			if (it.newfaasid){
+				faasdata.affectedfaases << getFaasData([objid:it.newfaasid])
+			}
 		}
 
 		if (faasdata.parentfaasid){

@@ -201,8 +201,8 @@ public class RPTBillingService
 
 		em.save(bill)
 		em.save(bill.rptledger, SCHEMA_BILL_LEDGER)
-		insertBillLedgerItems(bill)
-		insertBillLedgerAccounts(bill)
+		// insertBillLedgerItems(bill)
+		// insertBillLedgerAccounts(bill)
 	}
 
 	void insertBillLedgerItems(bill){

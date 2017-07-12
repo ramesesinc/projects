@@ -932,7 +932,7 @@ class FAASService
 	@ProxyMethod
 	public void cancelFaas(params) {
 		util.required('objid', params.objid)
-		util.required('rpuid', params.rpuid)
+		//util.required('rpuid', params.rpuid)
 		util.required('txntype', params.txntype)
 		util.required('cancelreason', params.cancelreason)
 		util.required('canceldate', params.canceldate)

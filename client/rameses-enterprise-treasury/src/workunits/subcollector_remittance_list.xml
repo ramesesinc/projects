@@ -8,7 +8,7 @@
             <action name="doInit" role="SUBCOLLECTOR" /> 
         </invoker>
         
-        <invoker folderid="home/remittance" caption="Subcollector Remittance" 
+        <invoker folderid="home/treasury" caption="Subcollector Remittance" 
                  name="doInit" role="SUBCOLLECTOR" target="window" index="30" />
     </invokers>
     

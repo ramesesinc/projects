@@ -4,7 +4,7 @@
         <invoker type="quick_launcher" code="CRCT" caption="Cash Receipt" 
                  action="init" target="window" role="COLLECTOR,SUBCOLLECTOR"/>       
         
-        <invoker type="home.action" caption="Cash Receipt" icon="home/icons/cashreceipt.png"
+        <invoker type="home.action" caption="Online Cash Receipt" icon="home/icons/cashreceipt.png"
                  action="init" target="window" role="COLLECTOR,SUBCOLLECTOR" index="20"/>
     </invokers>
    

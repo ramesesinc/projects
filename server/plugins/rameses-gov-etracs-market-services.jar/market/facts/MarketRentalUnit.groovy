@@ -8,14 +8,12 @@ class MarketRentalUnit {
 	String payfrequency;	//MARKET_PAY_FREQUENCY
 	String ratetype;		//DAY OR MONTH
 	double rate;
-	double extrate;
-
+	
 	String clusterid;
 	String sectionid;
 	String unitid;
 
 	Date lastdatecovered;
 	double partialbalance;
-	double partialextbalance;
-
+	
 }

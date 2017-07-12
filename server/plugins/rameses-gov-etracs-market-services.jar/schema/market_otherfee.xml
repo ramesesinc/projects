@@ -3,9 +3,8 @@
 		<field name="objid" primary="true" prefix="MKFEE"/>
 		<field name="acctid" required="true"/>
 
-		<complex name="type" ref="market_otherfee_type" jointype="many-to-one" includefields="title">
-			<key field="type_objid" target="objid"/>
-		</complex> 
+		<field name="txntype_objid" required="true" />
+		<field name="txntype_title" required="true" />
 
 		<field name="amount" required="true" type="decimal" caption="Amount" defaultValue="0"/>
 		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid" defaultValue="0"/>

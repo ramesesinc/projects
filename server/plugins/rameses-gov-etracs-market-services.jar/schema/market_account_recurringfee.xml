@@ -1,0 +1,11 @@
+<schema  adapter="market">
+	<element tablename="market_account_recurringfee">
+		<field name="objid" primary="true" prefix="MKRECFEE"/>
+		<field name="acctid" required="true"/>
+
+		<field name="txntype_objid" />
+		<field name="txntype_title" />
+
+		<field name="amount" required="true" type="decimal" caption="Amount" defaultValue="0"/>
+	</element>
+</schema>

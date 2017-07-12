@@ -1,6 +1,0 @@
-<schema  adapter="market">
-	<element tablename="market_otherfee_type">
-		<field name="objid" primary="true" />
-		<field name="title" required="true" caption="Type Title"/>
-	</element>
-</schema>

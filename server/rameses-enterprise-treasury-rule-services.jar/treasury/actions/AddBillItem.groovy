@@ -20,11 +20,6 @@ class AddBillItem extends AbstractAddBillItem {
 		def acct = params.account;
 		def amt = params.amount.decimalValue;
 
-		def remarks = null;
-		if( params.remarks ) {
-			remarks = params.remarks.eval();		
-		}
-
 		def billitem = new BillItem(amount: NumberUtil.round( amt));
 		billitem.remarks = remarks;
 		if( params.txntype?.key ) {

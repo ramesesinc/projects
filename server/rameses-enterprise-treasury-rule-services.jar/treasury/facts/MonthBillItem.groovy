@@ -13,8 +13,7 @@ class MonthBillItem extends BillItem {
 	int year;
 	int month;
 	Date duedate;
-	double partialbalance;
-
+	
 	//this is set assuming you are not starting using the whole month
 	Date fromdate;
 	Date todate;
@@ -69,6 +68,8 @@ class MonthBillItem extends BillItem {
     }
 
     public int getNumdays() {
+    	if( fromdate == null ) return 0;
+    	if(todate == null) return 0;
     	return DateFunc.daysDiff( fromdate, todate ) + 1;
     }
 

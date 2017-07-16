@@ -48,10 +48,12 @@ SELECT
 	0.0 AS sefintpaid,
 	li.firecode,
 	0.0 AS firecodepaid
-FROM rptledger rl 
-	INNER JOIN rptbill_ledger_item li ON rl.objid = li.rptledgerid
+FROM rptbill b 
+	inner join rptbill_ledger bl on b.objid = bl.billid
+	inner join rptledger rl on bl.rptledgerid = rl.objid 
+	INNER JOIN rptledgeritem_qtrly li ON rl.objid = li.rptledgerid
 WHERE rl.objid = $P{rptledgerid}
-  AND li.billid = $P{billid}
+  AND b.objid = $P{billid}
   AND ( li.year < $P{endyear} OR ( li.year = $P{endyear} AND li.qtr <= $P{endqtr} ) )
 ORDER BY li.year, li.qtr   
 
@@ -360,13 +362,6 @@ WHERE objid = $P{rptcompromiseid}
 
 
 
-[getCurrentYearTaxes]
-SELECT ba.*
-FROM rptledger rl
-		INNER JOIN rptbill_ledger_account ba ON rl.objid = ba.rptledgerid
-WHERE rl.objid = $P{rptledgerid}  
-
-
 [fullyPayLedgerItems]
 update rptledgeritem set 
 	fullypaid = 1,
@@ -527,3 +522,56 @@ where objid = 	$P{rptledgerid}
 
 [clearNextBillDate]
 update rptledger set nextbilldate = null where objid = $P{rptledgerid}
+
+
+[findCurrentDueByBill]
+select
+	sum(
+		rliq.basic - rliq.basicpaid - rliq.basicdisc + rliq.basicint +
+		rliq.basicidle - rliq.basicidlepaid - rliq.basicidledisc + rliq.basicidleint +
+		rliq.sef - rliq.sefpaid - rliq.sefdisc + rliq.sefint +
+		rliq.firecode - rliq.firecodepaid 
+	) as amount 
+from rptbill_ledger bl 
+	inner join rptledgeritem_qtrly rliq on bl.rptledgerid = rliq.rptledgerid
+where bl.billid = $P{objid}
+and rliq.fullypaid = 0
+
+
+[getCurrentYearTaxes]
+SELECT
+	rliq.objid, 
+    rl.objid as rptledgerid,
+    rli.rptledgerfaasid,
+	rliq.parentid as rptledgeritemid, 
+	rliq.objid as rptledgeritemqtrlyid, 
+    rliq.year,
+    rliq.qtr,
+    rliq.qtr as fromqtr,
+    rliq.qtr as toqtr,
+    rliq.basic - rliq.basicpaid as basic,
+    rliq.basicint,
+    rliq.basicdisc,
+    rliq.sef - rliq.sefpaid as sef,
+    rliq.sefint,
+    rliq.sefdisc,
+    rliq.firecode - rliq.firecodepaid as firecode,
+    rliq.revperiod,
+    rliq.basic - rliq.basicpaid - rliq.basicdisc + rliq.basicint as basicnet,
+    rliq.sef - rliq.sefpaid - rliq.sefdisc + rliq.sefint as sefnet,
+    ( rliq.basic - rliq.basicpaid - rliq.basicdisc + rliq.basicint + 
+      rliq.basicidle - rliq.basicidlepaid - rliq.basicidledisc + rliq.basicidleint +
+      rliq.sef - rliq.sefpaid - rliq.sefdisc + rliq.sefint +
+      rliq.firecode - rliq.firecodepaid
+     ) as total,
+    0 as partialled,
+    rliq.basicidle - rliq.basicidlepaid as basicidle,
+    rliq.basicidledisc,
+    rliq.basicidleint
+FROM rptledger rl
+    INNER JOIN rptledgeritem rli ON rl.objid = rli.rptledgerid
+    INNER JOIN rptledgeritem_qtrly rliq ON rli.objid = rliq.parentid 
+WHERE rl.objid = $P{rptledgerid}
+  and rl.state = 'APPROVED'
+  and rliq.fullypaid = 0 
+order by rliq.year, rliq.qtr   

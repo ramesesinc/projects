@@ -31,6 +31,34 @@ class RPTReceiptService
 	@DataContext('faas_restriction')
 	def em_faas_restriction
 
+	@DataContext('rptledger')
+	def em_rptledger
+
+	@DataContext('rptledger_item')
+	def em_rptledger_item
+
+	@DataContext('rptledger_item_qtrly')
+	def em_rptledger_item_qtrly
+
+	@DataContext('rptbill')
+	def em_rptbill	
+
+	@DataContext('rptbill_ledger')
+	def em_rptbill_ledger	
+
+	@DataContext('cashreceiptrpt_item_online')
+	def em_cashreceiptrpt_item_online
+
+	@DataContext('cashreceiptrpt_item_account')
+	def em_cashreceiptrpt_item_account
+
+	@DataContext('itemaccount')
+	def em_itemaccount
+
+	@DataContext('cashreceiptitem')
+	def em_cashreceiptitem
+
+
 	def SCHEMA_RECEIPT 		= 'cashreceiptrpt'
 	def SCHEMA_ITEM 		= 'cashreceiptrptitem'
 
@@ -61,14 +89,51 @@ class RPTReceiptService
 	
 	@ProxyMethod
 	public def getItemsForPayment( bill ) {
-		def params = billingSvc.buildParams(bill)
-		if (!bill.rptledgerid)
-			params.rptledgerid = '%'
-		def items =  em.getItemsForPayment(params).each{ it.pay = true }	
+		def items = []
+		def ledgers = em.getItemsForPaymentByBill(bill)
+		ledgers.each{ ledger -> 
+			buildLedgerForPaymentInfo(bill, ledger)
+			items << ledger 
+		}
 		items.removeAll(items.findAll{it.amount == 0.0})
 		if (!items) throw new Exception('There are no more unpaid ledgers for this taxpayer.')
 		return items 
 	}
+
+	@ProxyMethod
+	public def buildPaymentInfoByLedger(rptledger, bill){
+		billingSvc.generateBillByLedgerId3(bill)
+		def xledger = em.findLedgerInfo(rptledger)
+		if (!xledger) throw new Exception('Ledger does not exist or has already been deleted.')
+		buildLedgerForPaymentInfo(bill, xledger)
+		if (xledger.amount <= 0.0) throw new Exception('Ledger is fully paid.')
+		return xledger 
+	}
+
+
+	@ProxyMethod 
+	public def buildLedgerForPaymentInfo(bill, ledger){
+		def params = [billid:bill.objid, rptledgerid:ledger.objid]
+		params.billtoyear = bill.billtoyear
+		params.billtoqtr  = bill.billtoqtr 
+		ledger.items = em.getLedgerForPaymentDetail(params)
+
+		//set ledger for payment info
+		ledger.fromyear = ledger.items.first().year 
+		ledger.fromqtr = ledger.items.first().qtr 
+		ledger.toyear = ledger.items.last().year 
+		ledger.toqtr = ledger.items.last().qtr 
+		ledger.totalbasic = ledger.items.basicnet.sum()
+		ledger.totalsef = ledger.items.sefnet.sum()
+		ledger.totalfirecode = ledger.items.firecode.sum()
+		ledger.totalbasicidle = ledger.items.basicidle.sum()
+		ledger.totalgeneral = ledger.totalbasic + ledger.totalfirecode + ledger.totalbasicidle
+		ledger.amount = ledger.totalgeneral + ledger.totalsef 
+		ledger.partialled = false 
+		ledger.pay = true 
+		return ledger 
+	}
+
 
 	@ProxyMethod
 	public def createReceipt( receipt ) {
@@ -77,48 +142,77 @@ class RPTReceiptService
 		receipt.qtr = pdate.qtr
 		receipt.month = pdate.month
 		receipt.day = pdate.day
-		
 		em.create(receipt)
 		postPaidItems(receipt)
-		validateReceiptTotal(receipt)
+		postShares(receipt)
 		return receipt
 	}
 
 	@ProxyMethod
 	public void postPaidItems(receipt){
-		def params = [
-			objid			: util.generateId('RI'), 
-			rptreceiptid    : receipt.objid,
-			billid 			: receipt.billid, 
-			updateflag      : 'UF' + new java.rmi.server.UID(),
-		]
+		receipt.rptitems.each{ledger ->
+			ledger.items.each{
+				it.objid = 'CRO' + new java.rmi.server.UID()
+				it.rptreceiptid = receipt.objid 
+				em_cashreceiptrpt_item_online.create(it)
+			}
 
-		receipt.rptitems.each{
-			params.rptledgerid = it.rptledgerid 
-			params.faasid = it.faasid 
-			params.fromyear	   = it.fromyear
-			params.fromqtr 	   = it.fromqtr
-			params.toyear	   = it.toyear
-			params.toqtr 	   = it.toqtr
-
-			em.insertPaidOnlineItems(params)
-			em.insertPaidOnlineAccounts(params)
+			def params 		   = [:]
+			params.billid 	   = receipt.billid 
+			params.rptreceiptid = receipt.objid 
+			params.rptledgerid = ledger.rptledgerid 
+			params.faasid 		= ledger.faasid 
+			params.fromyear	   = ledger.fromyear
+			params.fromqtr 	   = ledger.fromqtr
+			params.toyear	   = ledger.toyear
+			params.toqtr 	   = ledger.toqtr
 
 			self.cancelRestriction(receipt, params)
 
 			em.updateLedgerItemQrtrlyPayment(params)
 			em.updateLedgerItemQrtrlyFullyPaidFlag(params)
 			em.updateLedgerItemFullyPaidFlag(params)
+			deletePaidLedgerItems(params)
 			em.updateLedgerItemPayment(params)
 			updateLedgerInfo(params)
-			em.deletePaidOnlineItems(params)
-			em.deletePaidOnlineAccounts(params)
+			em_rptbill_ledger.find([billid:params.billid, rptledgerid:params.rptledgerid]).delete()
 		}
-		em.deleteRptBillLedgers(params)
-		receipt.rptitems.each{
-			billingSvc.deletePendingPaymentOrderBills([objid:it.rptledgerid])
-		}
+	}
 
+	void deletePaidLedgerItems(params){
+		def paiditems = em_rptledger_item.select('objid').where('rptledgerid = :rptledgerid and fullypaid = 1',params).list()
+		paiditems.each{
+			em_rptledger_item_qtrly.find([parentid:it.objid]).delete()
+			em_rptledger_item.find(it).delete()
+		}
+	}
+
+	void postShares(receipt){
+		receipt.items.each{
+			em_cashreceiptrpt_item_account.create(it)
+		}
+	}
+
+	@ProxyMethod
+	public def getSummarizedItems(receipt){
+		receipt.bill = em_rptbill.find([objid:receipt.billid]).first()
+		receipt.bill.billdate = receipt.receiptdate 
+		def shares = billingSvc.buildShares(receipt)
+
+		def totalshare = shares.amount.sum()
+		if (totalshare != receipt.amount)
+			throw new Exception('Sharing problem was encountered.\nTotal share is ' + numSvc.format('#,##0.00', totalshare) + '.' )
+
+		def itemaccounts = [:]
+		shares.each{
+			def acct = itemaccounts[it.item.objid]
+			if(!acct){
+				acct = em_itemaccount.find([objid:it.item.objid]).first()
+				itemaccounts[it.item.objid] = acct 
+			}
+			it.item = acct 
+		}
+		return shares 
 	}
 
 
@@ -142,35 +236,18 @@ class RPTReceiptService
 
 
 	void updateLedgerInfo(params){
-		def lastpaiditem = em.findLastPaidLedgerItemQtrly(params)
-		if (lastpaiditem){
-			params.lastyearpaid = lastpaiditem.year 
-			params.lastqtrpaid  = lastpaiditem.qtr 
-			em.updateLedgerYearQtrPaid(params)
+		def lastpaiditem = em_rptledger_item_qtrly.select('year,qtr')
+									.find([rptledgerid:params.rptledgerid, fullypaid:1])
+									.orderBy('year desc, qtr desc')
+									.first()
+		if (!lastpaiditem){
+			lastpaiditem = [year:params.toyear, qtr:params.toqtr]
 		}
+
+		em_rptledger.find([objid:params.rptledgerid])
+					.update([lastyearpaid:lastpaiditem.year, 
+							 lastqtrpaid:lastpaiditem.qtr ])
 	}
-
-
-	@ProxyMethod
-	public void checkLedgerUpdateFlagModified(receipt){
-		def ledger = em.findModifiedLedgerUpdateFlag([billid:receipt.billid])
-		if (ledger)
-			throw new Exception('Ledger ' + ledger.tdno + ' has been modified.\nCancel this transaction and re-bill the ledger before collecting any payment.')
-	}
-
-	@ProxyMethod
-	public def getSummarizedCashReceiptItems( receipt ) {
-		def ledgerids = receipt.rptitems.collect{ "'" + it.rptledgerid + "'"}.join(',')
-		def params = [
-			billid    : receipt.billid,
-			filter    : ' rl.objid in ( ' + ledgerids +' ) '
-		]
-		return em.getSummarizedCashReceiptItems(params).findAll{it.amount > 0.0}.each{
-			it.objid = 'CI' + new java.rmi.server.UID()
-			it.receiptid = receipt.objid
-		}
-	}
-
 
 
 	@ProxyMethod
@@ -181,25 +258,72 @@ class RPTReceiptService
 			updateflag   : 'UF' + new java.rmi.server.UID()
 		]
 
-		def paidledgers = em.getPaidLedgersByReceipt(params)
+		def paidledgers = em.getPaidLedgersByReceipt([rptreceiptid:receipt.objid])
 		paidledgers.each{
-			params.putAll(it)
-			em.revertLedgerItemQtrlyPayment(params)
-			em.updateLedgerItemFullyPaidFlag(params)
-			em.updateLedgerItemPayment(params)
+			def firstpaiditem = em_cashreceiptrpt_item_online.find([rptreceiptid:receipt.objid, rptledgerid:it.rptledgerid])
+									.orderBy('year, qtr')
+									.first()
 
-			// update ledger lastyearpaid/lastqtrpaid 
-			def item = em.findLastPaidLedgerItemQtrly(params)
-			if (!item)
-				item = em.findFirstLedgerItemQtrly(params)
-			if (item){
-				params.lastyearpaid = item.year 
-				params.lastqtrpaid  = item.qtr 
-			}
-			em.resetVoidedLedgerInfo(params)
+	        //update ledger lastyear and qtrpaid 
+	        def info = [lastyearpaid: firstpaiditem.year, lastqtrpaid:firstpaiditem.qtr, nextbilldate:null]
+	        if (firstpaiditem.qtr == 1){
+	        	info.lastyearpaid -= 1
+	        	info.lastqtrpaid = 4
+	        }else{
+	        	info.lastqtrpaid -= 1 
+	        }
+			em_rptledger.find([objid:it.rptledgerid]).update(info)
+			em_rptledger_item_qtrly.find([rptledgerid:it.rptledgerid]).delete()
+	        em_rptledger_item.find([rptledgerid:it.rptledgerid]).delete()
+	        generateBill(it.rptledgerid)
+	        updatePartialPaymentInfo(firstpaiditem)
 		}
-
 	}
+
+
+	void updatePartialPaymentInfo(firstpaiditem){
+        def qtrlyitem = em_rptledger_item_qtrly.find([rptledgerid:firstpaiditem.rptledgerid, year:firstpaiditem.year, qtr:firstpaiditem.qtr]).first()
+        if (!qtrlyitem) throw new Exception('Quarterly Ledger Item does not exist.')
+
+        if (qtrlyitem.basic == firstpaiditem.basic && qtrlyitem.sef == firstpaiditem.sef) {
+        	//not partial 
+        	return
+        }
+
+        //recalc bill for partial 
+        def info = [lastyearpaid: firstpaiditem.year - 1, lastqtrpaid:4, nextbilldate:null]
+        em_rptledger.find([objid:qtrlyitem.rptledgerid]).update(info)
+		em_rptledger_item_qtrly.find([rptledgerid:qtrlyitem.rptledgerid]).delete()
+        em_rptledger_item.find([rptledgerid:qtrlyitem.rptledgerid]).delete()
+        generateBill(qtrlyitem.rptledgerid)
+
+        def qifilter = [rptledgerid:firstpaiditem.rptledgerid, year:firstpaiditem.year, qtr:firstpaiditem.qtr]
+
+		qtrlyitem = em_rptledger_item_qtrly.find(qifilter).first()
+        qtrlyitem.basicpaid = qtrlyitem.basic - firstpaiditem.basic
+        qtrlyitem.sefpaid = qtrlyitem.sef -  firstpaiditem.sef
+        qtrlyitem.partialled = true 
+        em_rptledger_item_qtrly.update(qtrlyitem)
+
+        // fullypaid  previous qtrs 
+        em.fullyPaidQtrlyItems(qifilter)
+        em.updateLedgerItemPayment(qtrlyitem)
+        em.updateLedgerItemFullyPaidFlag(qtrlyitem)
+
+        // reset billing and recalculate 
+        em_rptledger.find([objid:firstpaiditem.rptledgerid]).update([nextbilldate:null])
+        generateBill(firstpaiditem.rptledgerid)
+    }
+
+	void generateBill(rptledgerid){
+		try{
+			billingSvc.generateBillByLedgerId(rptledgerid)
+		}
+		catch(e){
+			e.printStackTrace()
+		}
+	}
+
 
 
 	@ProxyMethod
@@ -223,13 +347,5 @@ class RPTReceiptService
 		return  em.getUnpaidPropertiesForPayment(billingSvc.buildParams(bill))
 	}
 
-	void validateReceiptTotal(receipt){
-		def totalitem = em.findRPTReceiptItemTotal(receipt)
-		def totalacct = em.findRPTReceiptAcctTotal(receipt)
-
-		if (receipt.amount != totalitem.total || receipt.amount != totalacct.total)
-			throw new Exception('A problem was encountered when posting the credits.\nGenerate bills to ledgers paid and verify that the amount dues are correct.')
-	}
-	
-
 }
+

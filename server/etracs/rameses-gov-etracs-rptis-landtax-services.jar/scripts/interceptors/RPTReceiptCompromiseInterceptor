@@ -5,8 +5,8 @@ import com.rameses.services.extended.*;
 
 class RPTReceiptCompromiseInterceptor
 {
-	@ActiveDB('cashreceiptrpt')
-	def em
+	@DataContext('itemaccount')
+	def em_itemaccount
 
 	@Service('RPTReceiptCompromiseService')
 	def svc 
@@ -62,7 +62,7 @@ class RPTReceiptCompromiseInterceptor
 		return [
 			objid  		: tax.objid,
 			receiptid 	: receipt.objid,
-			item        : em.findRevenueItemById(tax.item),
+			item        : em_itemaccount.select('objid, code, title, fund_objid, fund_code, fund_title').find([objid:tax.item.objid]).first(),
 			amount		: tax.amount,
 			remarks		: null,
 		]

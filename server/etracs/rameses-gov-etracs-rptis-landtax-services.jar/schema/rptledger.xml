@@ -26,6 +26,7 @@
         <field name="titleno"/>
         <field name="updateflag"/>
         <field name="forcerecalcbill"/>
+        <field name="undercompromise" type="boolean"/>
         <complex name="restrictions" ref="faas_restriction" jointype="one-to-many" required="false">
             <key field="objid" target="ledger_objid" />
         </complex>

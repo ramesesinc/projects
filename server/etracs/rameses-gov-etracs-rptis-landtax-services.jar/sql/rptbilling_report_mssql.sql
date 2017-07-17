@@ -65,13 +65,17 @@ from (
       bi.firecode) as total,
     rl.barangayid,
     rli.taxdifference
-  from rptledger rl 
-    inner join rptbill_ledger_item bi on rl.objid = bi.rptledgerid 
-    inner join rptledgerfaas rlf on bi.rptledgerfaasid = rlf.objid
-    inner join rptledgeritem rli on bi.rptledgeritemid = rli.objid 
+  from rptbill b 
+  inner join rptbill_ledger bl on b.objid = bl.billid 
+  inner join rptledger rl on bl.rptledgerid = rl.objid 
+    inner join rptledgeritem_qtrly bi on rl.objid = bi.rptledgerid 
+    inner join rptledgeritem rli on bi.parentid = rli.objid 
+    inner join rptledgerfaas rlf on rli.rptledgerfaasid = rlf.objid
   where rl.objid = $P{rptledgerid}
-    and bi.billid = $P{objid}
     and rli.qtrly = 0
+    and b.objid  = $P{objid}
+    and ( bi.year < b.billtoyear or (bi.year = b.billtoyear and bi.qtr <= b.billtoqtr))
+    and bi.fullypaid = 0 
   group by 
     rlf.objid, 
     rlf.tdno,
@@ -110,12 +114,16 @@ from (
       bi.firecode) as total,
     rl.barangayid,
     rli.taxdifference
-  from rptledger rl 
-    inner join rptbill_ledger_item bi on rl.objid = bi.rptledgerid 
-    inner join rptledgerfaas rlf on bi.rptledgerfaasid = rlf.objid
-    inner join rptledgeritem rli on bi.rptledgeritemid = rli.objid 
+    from rptbill b 
+  inner join rptbill_ledger bl on b.objid = bl.billid 
+  inner join rptledger rl on bl.rptledgerid = rl.objid 
+    inner join rptledgeritem_qtrly bi on rl.objid = bi.rptledgerid 
+    inner join rptledgeritem rli on bi.parentid = rli.objid 
+      inner join rptledgerfaas rlf on rli.rptledgerfaasid = rlf.objid
   where rl.objid = $P{rptledgerid}
-    and bi.billid = $P{objid}
     and rli.qtrly = 1
+    and b.objid  = $P{objid}
+    and ( bi.year < b.billtoyear or (bi.year = b.billtoyear and bi.qtr <= b.billtoqtr))
+    and bi.fullypaid = 0
 ) x
 order by x.period, x.objid 

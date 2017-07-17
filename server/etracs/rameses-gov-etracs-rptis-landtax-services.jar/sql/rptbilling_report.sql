@@ -43,35 +43,39 @@ from (
       else concat(min(bi.qtr), max(bi.qtr))
       end 
     ) as period,
-    sum(bi.basic) as basic,
+    sum(bi.basic - bi.basicpaid) as basic,
     sum(bi.basicint) as basicint,
     sum(bi.basicdisc) as basicdisc,
     sum(bi.basicint - bi.basicdisc) as  basicdp,
-    sum(bi.basic - bi.basicdisc + bi.basicint) as basicnet,
+    sum(bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint) as basicnet,
 
-    sum(bi.basicidle + bi.basicidleint - bi.basicidledisc) as basicidle,
+    sum(bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc) as basicidle,
     
-    sum(bi.sef) as sef, 
+    sum(bi.sef - bi.sefpaid) as sef, 
     sum(bi.sefint) as sefint, 
     sum(bi.sefdisc) as sefdisc, 
     sum(bi.sefint - bi.sefdisc) as  sefdp,
-    sum(bi.sef - bi.sefdisc + bi.sefint) as sefnet,
+    sum(bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint) as sefnet,
     
-    sum(bi.firecode) as firecode,
+    sum(bi.firecode - bi.firecodepaid) as firecode,
     
-    sum( bi.basic - bi.basicdisc + bi.basicint +
-      bi.sef - bi.sefdisc + bi.sefint + 
-      bi.basicidle + bi.basicidleint - bi.basicidledisc +
-      bi.firecode) as total,
+    sum( bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint +
+      bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint + 
+      bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc +
+      bi.firecode - bi.firecodepaid) as total,
     rl.barangayid,
     rli.taxdifference
-  from rptledger rl 
-    inner join rptbill_ledger_item bi on rl.objid = bi.rptledgerid 
-    inner join rptledgerfaas rlf on bi.rptledgerfaasid = rlf.objid
-    inner join rptledgeritem rli on bi.rptledgeritemid = rli.objid 
+  from rptbill b 
+  inner join rptbill_ledger bl on b.objid = bl.billid 
+  inner join rptledger rl on bl.rptledgerid = rl.objid 
+    inner join rptledgeritem_qtrly bi on rl.objid = bi.rptledgerid 
+    inner join rptledgeritem rli on bi.parentid = rli.objid 
+    inner join rptledgerfaas rlf on rli.rptledgerfaasid = rlf.objid
   where rl.objid = $P{rptledgerid}
-    and bi.billid = $P{objid}
     and rli.qtrly = 0
+    and b.objid  = $P{objid}
+    and ( bi.year < b.billtoyear or (bi.year = b.billtoyear and bi.qtr <= b.billtoqtr))
+    and bi.fullypaid = 0 
   group by 
     rlf.tdno,
     rlf.assessedvalue,
@@ -87,34 +91,38 @@ from (
     rlf.assessedvalue as originalav,
     bi.av as assessedvalue,
     concat(bi.year, '-', bi.qtr) as period,
-    bi.basic,
+    bi.basic - bi.basicpaid as basic,
     bi.basicint,
     bi.basicdisc,
     bi.basicint - bi.basicdisc as  basicdp,
-    bi.basic - bi.basicdisc + bi.basicint as basicnet,
+    bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint as basicnet,
 
-    bi.basicidle + bi.basicidleint - bi.basicidledisc as basicidle,
+    bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc as basicidle,
     
-    bi.sef, 
+    bi.sef - bi.sefpaid as sef, 
     bi.sefint, 
     bi.sefdisc, 
     bi.sefint - bi.sefdisc as  sefdp,
-    bi.sef - bi.sefdisc + bi.sefint as sefnet,
+    bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint as sefnet,
     
-    bi.firecode as firecode,
+    bi.firecode - bi.firecodepaid as firecode,
     
-    ( bi.basic - bi.basicdisc + bi.basicint +
-      bi.sef - bi.sefdisc + bi.sefint + 
-      bi.basicidle + bi.basicidleint - bi.basicidledisc +
-      bi.firecode) as total,
+    ( bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint +
+      bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint + 
+      bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc +
+      bi.firecode - bi.firecodepaid) as total,
     rl.barangayid,
     rli.taxdifference
-  from rptledger rl 
-    inner join rptbill_ledger_item bi on rl.objid = bi.rptledgerid 
-    inner join rptledgerfaas rlf on bi.rptledgerfaasid = rlf.objid
-    inner join rptledgeritem rli on bi.rptledgeritemid = rli.objid 
+  from rptbill b 
+  inner join rptbill_ledger bl on b.objid = bl.billid 
+  inner join rptledger rl on bl.rptledgerid = rl.objid 
+    inner join rptledgeritem_qtrly bi on rl.objid = bi.rptledgerid 
+    inner join rptledgeritem rli on bi.parentid = rli.objid 
+      inner join rptledgerfaas rlf on rli.rptledgerfaasid = rlf.objid
   where rl.objid = $P{rptledgerid}
-    and bi.billid = $P{objid}
     and rli.qtrly = 1
+    and b.objid  = $P{objid}
+    and ( bi.year < b.billtoyear or (bi.year = b.billtoyear and bi.qtr <= b.billtoqtr))
+    and bi.fullypaid = 0
 ) x
 order by x.period, x.objid 

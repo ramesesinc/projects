@@ -6,7 +6,7 @@
 		<field name="parent_objid" required="true" />
 		<field name="ledger_objid" />
 		<field name="restrictiontype_objid" required="true" />
-		<field name="txndate" required="true" type="date" caption="Txn Date" indexed="true" />
+		<field name="txndate" caption="Txn Date" indexed="true" />
 		<field name="remarks" />
 		<field name="receipt_objid"  />
 		<field name="receipt_receiptno"  caption="Receipt No." searchable="true" indexed="true" />

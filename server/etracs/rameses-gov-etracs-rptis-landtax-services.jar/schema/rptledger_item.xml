@@ -3,7 +3,7 @@
         <field name="objid" primary="true" />
         <field name="rptledgerid" required="true"/>
         <field name="rptledgerfaasid" required="true"/>
-        <field name="taxdifference" type="integer" required="true" />
+        <field name="taxdifference" type="boolean" required="true" />
         <field name="classification_objid" />
         <field name="actualuse_objid" />
         <field name="remarks" />

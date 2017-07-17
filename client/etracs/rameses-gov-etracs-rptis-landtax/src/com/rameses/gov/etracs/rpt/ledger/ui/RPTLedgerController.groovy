@@ -154,16 +154,29 @@ public class RPTLedgerController
 
     def ledgerItemsHandler = [
         fetchList : { return entity._ledgerItems},
-        onRemoveItem : {item ->
-            if (MsgBox.confirm('Delete item?')){
+        onRemoveItem : {item -> 
+            if (MsgBox.confirm('Delete selected item?')){
                 svc.removeLedgerItem(item);
                 entity._ledgerItems.remove(item);
-                return true;
+                return true; 
             }
             return false;
         }
     ] as EditorListModel
 
+        
+    void deleteLedgerItem(){
+        if (!selectedLedgerItem) return;
+        if (selectedLedgerItem.taxdifference == false){
+            throw new Exception('Only Tax Difference item can be deleted.');
+        }
+        if (MsgBox.confirm('Delete selected item?')){
+            svc.removeLedgerItem(selectedLedgerItem);
+            entity._ledgerItems.remove(selectedLedgerItem);
+            ledgerItemsHandler.reload();
+        }
+    }
+    
 
     /*--------------------------------------------------------------
     *
@@ -241,7 +254,7 @@ public class RPTLedgerController
             onupdate : { open();}
         ] )
     }
-    
+       
     void repostLedgerItems(){
         if (MsgBox.confirm('Repost ledger items?')){
             svc.repostLedgerItems(entity);

@@ -44,7 +44,7 @@ class CompromiseForPaymentController
     void init(){
         compromise = entity.compromise;
         def bill = svc.getCurrentYearDue(compromise.rptledgerid);
-        currentyeardue = bill.taxes.amount.sum(); 
+        currentyeardue = bill.currentyeardue;
         getEntity().bill = bill;
         getEntity().billid = bill.objid;
         bill.remove('taxes');

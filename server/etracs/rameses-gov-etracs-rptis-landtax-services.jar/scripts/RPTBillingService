@@ -45,6 +45,15 @@ public class RPTBillingService
 	@DataContext('faas_restriction')
 	def em_faas_restriction;
 
+	@DataContext('itemaccount')
+	def em_itemaccount;
+
+	@DataContext('rptbill')
+	def em_rptbill;
+
+	@DataContext('rptbill_ledger')
+	def em_rptbill_ledger;
+
 	@Service()
 	def self 
 
@@ -94,14 +103,12 @@ public class RPTBillingService
         	def cy = dtSvc.serverYear 
 	        def endyear = ( bill.billtoyear < cy ? cy : bill.billtoyear)
 	        ledgerSvc.postLedgerItemsUptoYear(bill.rptledger, endyear)
-        	bill.incentives = em.getIncentivesByLedgerId(bill)
+	        bill.incentives = em.getIncentivesByLedgerId(bill)
         	calculateTaxDues(bill)
         	calculatePenaltyDiscount(bill)
         	updateNextBillDate(bill)
         }
-        buildBillLedgerItems(bill)
-    	buildSharesOnly(bill)
-    	saveRptBill(bill)
+    	saveBill(bill)
 		return bill
 	}
 
@@ -136,6 +143,7 @@ public class RPTBillingService
 		return generateBill(bill)
 	}	
 
+	
 	@ProxyMethod
 	public def generateBillItemsByLedger(ledgerid, billdate){
 		def bill = initBill(ledgerid)
@@ -163,7 +171,7 @@ public class RPTBillingService
 
 	@ProxyMethod
 	public def getBillByBarcode(param){
-		def bill= em.findBillByBarcode(param)
+		def bill= em_rptbill.find([barcode:param.barcodeid]).first() 
 		if (!bill) 
 			throw new Exception('Invalid barcode or associated bill has already expired.')
 		if (bill.expirydate <= dtSvc.serverDate) 
@@ -171,7 +179,7 @@ public class RPTBillingService
 		bill.collectiontype = em.findCollectionTypeByBarcodeKey(param)
 		if (!bill.collectiontype) 
 			throw new Exception('Collection Type is not defined for barcode key ' + param.barcodekey + '.')
-		bill.ledgers = em.getBillLedgers(bill)
+		bill.ledgers = em_rptbill_ledger.find([billid:bill.objid]).list() 
 		return bill 
 	}	
 
@@ -181,7 +189,7 @@ public class RPTBillingService
 		return em.getBillLedgerAccounts(bill)
 	}
 
-	void saveRptBill(bill){
+	void saveBill(bill){
 		if (!bill.barcode) 
 			bill.barcode = generateBarcode()
 
@@ -201,31 +209,9 @@ public class RPTBillingService
 
 		em.save(bill)
 		em.save(bill.rptledger, SCHEMA_BILL_LEDGER)
-		insertBillLedgerItems(bill)
-		insertBillLedgerAccounts(bill)
 	}
 
-	void insertBillLedgerItems(bill){
-		em.deleteRptBillLedgerItem(bill)
-		bill.items.each{
-			it.objid = 'BI' + new java.rmi.server.UID();
-			it.billid = bill.objid 
-			it.taxdifference = it.taxdifference == 1
-			it.partialled = util.toInteger(it.partialled)
-			em.create(it, SCHEMA_BILL_ITEM)
-		}
-	}
-
-	void insertBillLedgerAccounts(bill){
-		em.deleteRptBillLedgerAccount(bill)
-		bill.taxes.each{
-			it.rptledgerid = bill.rptledger.objid
-			it.billid = bill.objid 
-			em.create(it, SCHEMA_BILL_ACCT)
-		}
-	}
-
-
+		
 	@ProxyMethod
 	public void saveManualBillItem(bill, billitem) {
 		billitem.taxdifference = billitem.taxdifference == 1
@@ -300,16 +286,12 @@ public class RPTBillingService
 			it._pdate = bill._pdate
 	        it.taxdifference = (it.taxdifference == 1)
 		}
-
-		doCalculateTaxDues(bill)		
-
+		doCalculateTaxDues(bill)	
 		if (bill._commit == null || bill._commit == true){
 			bill.items.each{
-				it.calctype = bill.calctype
 				em.updateLedgerItemTaxData(it)
 				distributeLedgerItemQtrlyData(it)
 			}
-			updateLedgerItemFromAggregatedQtrlyData(bill)
 		}
 		return bill 
 	}
@@ -330,10 +312,6 @@ public class RPTBillingService
 			'AFTER_DISCOUNT',
 			'BEFORE-MISC-COMP',
 			'MISC-COMP',
-			'SUMMARY',
-			'BRGY_SHARE',
-			'LGU_SHARE',
-			'PROV_SHARE',
 		]
 		grps.each{g ->
 			ruleSvc.execute( RULESET, facts, actions, g);
@@ -348,21 +326,17 @@ public class RPTBillingService
 			it._pdate = bill._pdate
 	        it.taxdifference = (it.taxdifference == 1)
 		}
-
 		doCalculatePenaltyDiscount(bill)
 
 		if (bill._commit == null || bill._commit == true){
 			bill.items.each{
-				it.calctype = bill.calctype
-				em.updateLedgerItemPenaltyDiscData(it)
 				if (it.qtrlycomputed == 0 && it.haspayment==0){
-					em.updateLedgerItemPenaltyDiscData(it)
 					distributeLedgerItemQtrlyData(it)
 				}
 				else {
 					em.updateLedgerItemQtrlyPenaltyDiscData(it)
 				}
-				updateLedgerItemFromAggregatedQtrlyData(bill)
+				//updateLedgerItemFromAggregatedQtrlyData(bill)
 			}
 		}
 		return bill 
@@ -397,7 +371,6 @@ public class RPTBillingService
 				}
 				else {
 					qtrly[qtr] = [value:numSvc.round(value / (5 - startqtr))]
-					//qtrly[qtr] = [value:numSvc.round(getFieldAv(qtrlyitems, avfield, qtr) / totalav * value)]
 				}
 			}
 		}
@@ -415,6 +388,7 @@ public class RPTBillingService
 			def qitem = [objid:id]
 			qitem.putAll(item)
 			qitem.objid = id 
+			qitem.qtr = qtr 
 
 			def basic = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basic, startqtr)
 			def basicint = computeQtrlyValues(item.basicav, qtrlyitems, 'basicav', item.basicint, startqtr)
@@ -427,22 +401,17 @@ public class RPTBillingService
 			def sefdisc = computeQtrlyValues(item.sefav, qtrlyitems, 'sefav', item.sefdisc, startqtr)
 			def firecode = computeQtrlyValues(item.av, qtrlyitems, 'av', item.firecode, startqtr)
 
-			if (item.calctype == 'tax'){
-				qitem.basic = basic[qtr].value 
-				qitem.basicidle = basicidle[qtr].value
-				qitem.sef = sef[qtr].value
-				qitem.firecode = firecode[qtr].value
-				em.updateLedgerItemQtrlyTaxData(qitem)
-			}
-			else {
-				qitem.basicint = basicint[qtr].value
-				qitem.basicdisc = basicdisc[qtr].value
-				qitem.basicidledisc = basicidledisc[qtr].value
-				qitem.basicidleint = basicidleint[qtr].value
-				qitem.sefint = sefint[qtr].value
-				qitem.sefdisc = sefdisc[qtr].value
-				em.updateLedgerItemQtrlyPenaltyDiscData(qitem)
-			}
+			qitem.basic = basic[qtr].value 
+			qitem.basicidle = basicidle[qtr].value
+			qitem.sef = sef[qtr].value
+			qitem.firecode = firecode[qtr].value
+			qitem.basicint = basicint[qtr].value
+			qitem.basicdisc = basicdisc[qtr].value
+			qitem.basicidledisc = basicidledisc[qtr].value
+			qitem.basicidleint = basicidleint[qtr].value
+			qitem.sefint = sefint[qtr].value
+			qitem.sefdisc = sefdisc[qtr].value
+			em.updateLedgerItemQtrlyData(qitem)
 		}
 	}
 
@@ -551,8 +520,9 @@ public class RPTBillingService
 				acct = lguacct.basicidlecurrintacct
 		}
 
-		if (acct)
+		if (acct){
 			return [key:acct.objid, value:acct.title]
+		}
 		
 		throw new Exception('Invalid Share Type ' + params.sharetype + '.')
 	}
@@ -598,6 +568,7 @@ public class RPTBillingService
 			amount 		: 0.0,
 			discount    : 0.0,
 			sharetype 	: params.lgutype,
+			rptledgerid : params.taxsummary.rptledger.objid,
 		]
 	}
 
@@ -845,9 +816,9 @@ public class RPTBillingService
 			return qtr_deadline.expirydate;
 		}
 
-		//if bill.items min year > server year (advance payment) 
+		//if billtoyear > server year (advance payment) 
 		// expiry is end of jan next year
-		if (bill.items.year.min() > dt.year){
+		if (bill.billtoyear > dt.year){
 			return dtSvc.parse('yyyy-MM-dd',  (dt.year + 1) + '-01-01')
 		}
 
@@ -870,6 +841,7 @@ public class RPTBillingService
 		} 
 	}
 
+
 	@ProxyMethod
 	public def buildSharesOnly( bill ) {
 		def facts = createFacts(bill)
@@ -879,6 +851,47 @@ public class RPTBillingService
 			ruleSvc.execute( RULESET, facts, actions, g);
 		}
 		return bill 
+	}	
+	
+
+	@ProxyMethod
+	public def buildShares(receipt){
+		def xbill =  receipt.bill 
+		xbill.items = []
+		xbill.taxes = []
+		def facts = []
+
+		def billdate = dtSvc.parse('yyyy-MM-dd', xbill.billdate) 
+    	facts << new CurrentDate(billdate)
+    	facts << new EffectiveDate(billdate)
+
+		def ledgerfacts = [:]
+		def ledgerfact = null
+
+		receipt.rptitems.each{ledger ->
+			xbill.items += ledger.items 
+	    	ledger.items.eachWithIndex{it, idx ->
+	    		ledgerfact = ledgerfacts[ledger.objid]
+	    		if (!ledgerfact){
+	    			ledgerfact = new RPTLedgerFact(ledger)
+	    			facts << ledgerfact 
+	    		}
+				facts << new RPTLedgerItemFact(ledgerfact, it, idx)
+	    	}
+		}
+
+		def actions = buildActions(xbill, facts)
+		def grps = ['SUMMARY', 'BRGY_SHARE', 'LGU_SHARE', 'PROV_SHARE']
+		grps.each{g ->
+			ruleSvc.execute( RULESET, facts, actions, g);
+		}
+		xbill.taxes.findAll{it.amount > 0} 
+		xbill.taxes.each{
+			it.objid = 'CRA' + new java.rmi.server.UID()
+			it.receiptid = receipt.objid 
+			it.rptreceiptid = receipt.objid
+		}
+		return xbill.taxes.findAll{it.amount > 0}
 	}	
 
 
@@ -963,36 +976,57 @@ public class RPTBillingService
 
 
 	@ProxyMethod
-	public def getBillItems( bill ) {
-		return em.getBillItems(bill)
+	public def buildBillFromBarcode(barcode){
+		def xbill = getBillByBarcode(barcode)
+		em_rptbill_ledger.find([billid:xbill.objid]).list().each{
+			xbill.rptledgerid = it.rptledgerid 
+			generateBillByLedgerId3(xbill)
+		}
+		return xbill
 	}
 
 
 	@ProxyMethod
-	public void mergeBillBarcode(bill, newbill){
+	public void mergeBillBarcode(bill, barcode){
+		if (!em_rptbill.find([objid:bill.objid]).first()){
+
+			bill.dtposted = dtSvc.serverDate
+			bill.expirydate = dtSvc.getMonthEndDate(bill.dtposted)
+			bill.postedby = env.FULLNAME
+			bill.postedbytitle = env.JOBTITLE
+			bill.taxpayer.address = bill.taxpayer.address.text
+			em_rptbill.create(bill)
+		}
+
+		def xbill = getBillByBarcode(barcode)
 		em.mergeBillLedger([
 			billid  	: bill.objid,
-			newbillid   : newbill.objid 
+			newbillid   : xbill.objid 
 		])
+
+		em_rptbill_ledger.find([billid:bill.objid]).list().each{
+			bill.rptledgerid = it.rptledgerid 
+			generateBillByLedgerId3(bill)
+		}
 	}
 
 
 	@ProxyMethod
-	public void applyPartialPayment(bill) {
-		util.required('Ledger', bill.rptledgerid)
-		
-		def items = em.getLedgerBillItemsForPartial(bill)
-
-		def partialpmt = bill.partial.amount
+	public def applyPartialPayment(partial, ledger) {
+		def items = ledger.items 
+		def partialpmt = partial.amount
 		def item = null
 		def partialled = false;
 
+		def _items = []
 		int idx = 0
 		for(; idx <items.size(); idx++){
 			item = items[idx]
-
+			
 			if (partialpmt >= item.total){
 				partialpmt -= item.total
+				item.partialled = false 
+				_items << item 
 			}
 			else {
 				partialled = true;
@@ -1033,6 +1067,7 @@ public class RPTBillingService
 					item.sef 		= 0.0
 					item.sefdisc 	= 0.0
 					item.sefint 	= 0.0
+					item.total      = 0.0
 				}
 				else {
 					def netbasic 		= item.basic - item.basicdisc + item.basicint 
@@ -1064,31 +1099,24 @@ public class RPTBillingService
 				item.sefnet 		= item.sef - item.sefdisc + item.sefint
 				item.totalbasicsef 	= item.basicnet + item.sefnet
 				item.total = item.totalbasicsef + item.firecode + (item.basicidle - item.basicidledisc + item.basicidleint)
-				break;
+				item.partialled = true 
+				_items << item 
+				break 
 			}
-		}
-
-		if (partialled)	{
-			em.updateLedgerBillPartialledItemData(item)
-			for (int i=idx+1; i < items.size(); i++){
-				em.deleteUnpartialledItem(items[i])
-			}
-
-			bill.rptledger = em.findOpenLedgerById(bill)
-			buildLedgerBillItems(bill)
-	    	buildSharesOnly(bill)
-	    	saveRptBill(bill)
 		}
 		
-	}
-
-	void buildLedgerBillItems(bill){
-		bill._pdate = dtSvc.parseDate(bill.billdate, null)
-        bill.items = em.getLedgerBillItemsForPartial(bill)
-        bill.items.each{
-        	it._pdate = bill._pdate
-	        it.taxdifference = (it.taxdifference == 1)
-        }
+		ledger.items = _items 
+		ledger.toyear = ledger.items.last().year
+		ledger.toqtr = ledger.items.last().qtr
+		ledger.totalbasic = ledger.items.basicnet.sum()
+		ledger.totalsef = ledger.items.sefnet.sum()
+		ledger.totalfirecode = ledger.items.firecode.sum()
+		ledger.totalbasicidle = ledger.items.basicidle.sum()
+		ledger.totalgeneral = ledger.totalbasic + ledger.totalfirecode + ledger.totalbasicidle
+		ledger.amount = ledger.totalgeneral + ledger.totalsef 
+		ledger.partialled = true
+		ledger.pay = true 
+		return 	ledger 
 	}
 
 	@ProxyMethod
@@ -1099,8 +1127,6 @@ public class RPTBillingService
 	@ProxyMethod
 	public void deletePendingPaymentOrderBills(ledger){
 		em.getPaidLedgerBills(ledger).each{bill ->
-			em.deleteRptBillLedgerAccount(bill)
-			em.deleteRptBillLedgerItem(bill)
 			em.deleteRptBillLedger(bill)
 			em.deleteRptBill(bill)
 		}

@@ -159,6 +159,7 @@ class RPTLedgerService
     @ProxyMethod
     public def loadLedger( ledger ) {
         ledger = openLedger(ledger)
+        updateLedgerItemSummary(ledger)
         ledger._ledgerItems   = getLedgerItems(ledger.objid)
         ledger._credits = getLedgerCredits(ledger.objid)
         ledger._subledgers = em.getSubLedgers(ledger)
@@ -1127,6 +1128,12 @@ class RPTLedgerService
     @ProxyMethod
     public void updateLedgerItemQtrly(item) {
         em.update(item, 'ledgeritemqtrly')
+    }
+
+    void updateLedgerItemSummary(ledger){
+        em.getLedgerItemQtrlyAggregates(ledger).each{
+            em.updateLedgerItemData(it)
+        }
     }
 }
 

@@ -600,3 +600,41 @@ where rptledgerid = $P{rptledgerid}
 and year = $P{year}
 and qtr = $P{qtr}
 and fullypaid = 0 
+
+
+
+[getLedgerItemQtrlyAggregates]
+select 
+	rliq.parentid as objid, 
+	sum(rliq.basic) as basic,
+	sum(rliq.basicint) as basicint,
+	sum(rliq.basicdisc) as basicdisc,
+	sum(rliq.basicidle) as basicidle,
+	sum(rliq.basicidledisc) as basicidledisc,
+	sum(rliq.basicidleint) as basicidleint,
+	sum(rliq.sef) as sef,
+	sum(rliq.sefint) as sefint,
+	sum(rliq.sefdisc) as sefdisc,
+	sum(rliq.firecode) as firecode,
+	rliq.revperiod
+from rptledgeritem rli
+	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
+where rli.rptledgerid = $P{objid}
+ and rli.fullypaid = 0 
+group by rliq.parentid, rliq.revperiod 
+
+
+[updateLedgerItemData]
+update rptledgeritem set 
+		basic = $P{basic}, 
+        basicint = $P{basicint}, 
+        basicdisc = $P{basicdisc}, 
+        basicidle = $P{basicidle}, 
+        basicidledisc = $P{basicidledisc}, 
+        basicidleint = $P{basicidleint}, 
+        sef = $P{sef}, 
+        sefint = $P{sefint}, 
+        sefdisc = $P{sefdisc}, 
+        firecode = $P{firecode}, 
+        revperiod = $P{revperiod}
+where objid = $P{objid}    

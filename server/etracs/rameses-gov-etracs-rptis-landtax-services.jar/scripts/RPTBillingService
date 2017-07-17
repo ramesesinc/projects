@@ -289,6 +289,7 @@ public class RPTBillingService
 		doCalculateTaxDues(bill)	
 		if (bill._commit == null || bill._commit == true){
 			bill.items.each{
+				em.updateLedgerItemTaxData(it)
 				distributeLedgerItemQtrlyData(it)
 			}
 		}

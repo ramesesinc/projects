@@ -121,27 +121,27 @@ and qtr < $P{qtr}
 [updateLedgerItemPayment]
 update rli set
 	rli.basicpaid = x.basicpaid,
-	rli.basicintpaid = x.basicintpaid,
-	rli.basicdisctaken = x.basicdisctaken,
+	rli.basicint = x.basicint,
+	rli.basicdisc = x.basicdisc,
 	rli.basicidlepaid = x.basicidlepaid,
-	rli.basicidledisctaken = x.basicidledisctaken,
-	rli.basicidleintpaid = x.basicidleintpaid,
+	rli.basicidledisc = x.basicidledisc,
+	rli.basicidleint = x.basicidleint,
 	rli.sefpaid = x.sefpaid,
-	rli.sefintpaid = x.sefintpaid,
-	rli.sefdisctaken = x.sefdisctaken,
+	rli.sefint = x.sefint,
+	rli.sefdisc = x.sefdisc,
 	rli.firecodepaid = x.firecodepaid
 from rptledgeritem rli, 
 	(	select 
 			parentid as rptledgeritemid, 
 			sum(basicpaid) as basicpaid,
-			sum(basicintpaid) as basicintpaid,
-			sum(basicdisctaken) as basicdisctaken,
+			sum(basicint) as basicint,
+			sum(basicdisc) as basicdisc,
 			sum(basicidlepaid) as basicidlepaid,
-			sum(basicidledisctaken) as basicidledisctaken,
-			sum(basicidleintpaid) as basicidleintpaid,
+			sum(basicidledisc) as basicidledisc,
+			sum(basicidleint) as basicidleint,
 			sum(sefpaid) as sefpaid,
-			sum(sefintpaid) as sefintpaid,
-			sum(sefdisctaken) as sefdisctaken,
+			sum(sefint) as sefint,
+			sum(sefdisc) as sefdisc,
 			sum(firecodepaid) as firecodepaid
 		from rptledgeritem_qtrly
 		where parentid = $P{parentid}
@@ -155,23 +155,17 @@ update rliq set
 	rliq.fullypaid  = case 
 		when 
 			rliq.basic <= rliq.basicpaid and 
-			rliq.basicint <= rliq.basicintpaid and 
-			rliq.basicdisc <= rliq.basicdisctaken and 
 			rliq.basicidle <= rliq.basicidlepaid and 
-			rliq.basicidledisc <= rliq.basicidledisctaken and 
-			rliq.basicidleint <= rliq.basicidleintpaid and 
 			rliq.sef <= rliq.sefpaid and 
-			rliq.sefint <= rliq.sefintpaid and 
-			rliq.sefdisc <= rliq.sefdisctaken and 
 			rliq.firecode <=  rliq.firecodepaid 
 		then 1 
 		else 0
 		end 
-from rptledgeritem_qtrly rliq, cashreceiptitem_rpt_online cro 
+from rptledgeritem_qtrly rliq
+	inner join cashreceiptitem_rpt_online cro on rliq.objid = cro.rptledgeritemqtrlyid 
 where cro.rptreceiptid = $P{rptreceiptid}
-  and rliq.objid = cro.rptledgeritemqtrlyid 
-  and rliq.rptledgerid = cro.rptledgerid 
   and rliq.rptledgerid = $P{rptledgerid}
+  and rliq.rptledgerid = cro.rptledgerid 
 
 
 

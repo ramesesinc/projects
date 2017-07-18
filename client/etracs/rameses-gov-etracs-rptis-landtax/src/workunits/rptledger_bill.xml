@@ -74,14 +74,14 @@ class RPTLedgerBillController
         
     def preview(){
         def bill = initBill()
-        def inv = InvokerUtil.lookupOpener('rptbill:preview', [bill:bill, caller:this, showBack:false])
+        def inv = InvokerUtil.lookupOpener('rptbill:previewSingleBill', [bill:bill, caller:this, showBack:false])
         inv.target = 'self';
         return inv;
     }
         
     def print(){
         def bill = initBill()
-        return InvokerUtil.lookupOpener('rptbill:printBill', [bill:bill, caller:this, showBack:false])
+        return InvokerUtil.lookupOpener('rptbill:printSingleBill', [bill:bill, caller:this, showBack:false])
     }        
 
 }    

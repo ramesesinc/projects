@@ -137,6 +137,31 @@ public class RPTBillingController
         buildBillReportInfo()
     }    
     
+    
+    void buildSingleBill(){
+        bill.putAll(svc.generateBill(bill));
+        if (billto == null) 
+            billto = bill.taxpayer
+        bill.billto = billto;
+        bill.ledgers = [];
+        bill.ledgers << billReportSvc.getBilledLedger([objid:bill.objid, rptledgerid:bill.rptledgerid])
+        updateBillInfo()
+        if(onbill) onbill();
+        report.viewReport();
+    }
+    
+    def printSingleBill(){
+        buildSingleBill();
+        ReportUtil.print( report.report, true );
+        return '_close';
+    }
+    
+    def previewSingleBill(){
+        buildSingleBill();
+        mode = 'view'
+        return 'preview'
+    }
+    
     void initBatch(){
         init();
         //bill.taxpayer = taxpayer;

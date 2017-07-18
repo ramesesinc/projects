@@ -225,7 +225,7 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
         bill.billdate = entity.receiptdate;
         billSvc.generateBill(bill);
         bill.partial = [amount:0.0]
-        item.putAll(svc.getLedgerForPaymentInfo(bill, item));
+        item.putAll(svc.buildPaymentInfoByLedger(item, bill));
         listHandler.load();
         calcReceiptAmount();
     }

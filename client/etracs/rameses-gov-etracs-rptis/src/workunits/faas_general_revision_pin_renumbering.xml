@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/home/rpt/manualtxn" action="init" caption="Batch GR Renumber PIN" role="ADMIN" index="20"/>
+        <invoker type="quick_launcher" code="GR02" action="init" caption="Batch GR Renumber PIN" role="ADMIN" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode == 'init'}"/>
+        <invoker type="formActions" action="process" caption="Process" mnemonic="p" visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="cancelProcess" caption="Cancel" mnemonic="c" visibleWhen="#{mode == 'processing'}" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rptis.models.FAASGRPinRenumberModel">
+   </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASGRPinRenumberPage"/>
+    </pages>    
+</workunit>
+
+

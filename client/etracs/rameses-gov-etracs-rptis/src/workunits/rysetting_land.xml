@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit extends="rpt_wtemplates/RYSetting.xml">
+<workunit extends="rpt_wtemplates/RYSettingModel.xml">
     <invokers>
-        <invoker type="landrysetting:create" action="create" caption="Land Revision Setting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="landrysetting:open" action="open" caption="Edit Land Revision Setting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
-        <invoker type="landrysetting:copy" action="copy" caption="Edit Land Revision Setting" target="window" role="ASSESSOR_DATAMGMT,MASTER" />
+        <invoker type="landrysetting:create" 
+                 action="create" 
+                 caption="Land Revision Setting" 
+                 target="window" 
+                 entityName="landrysetting" 
+                 serviceName="LandRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
+        <invoker type="landrysetting:open" 
+                 action="open" 
+                 caption="Edit Land Revision Setting" 
+                 target="window" 
+                 entityName="landrysetting" 
+                 serviceName="LandRYSettingService"
+                 role="ASSESSOR_DATAMGMT,MASTER" />
+        
     </invokers>
-    
-    <code class="com.rameses.gov.etracs.rpt.rysetting.landrysetting.ui.LandRySettingController" />
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.rysetting.landrysetting.ui.LandRYSettingPage"/>
-    </pages>
 </workunit>

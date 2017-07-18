@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:info" action="open" caption="FAAS"  index="0" visibleWhen="#{entity.txntype.objid != 'ST' || entity.rpu.rputype!='land'}"/>
-        <invoker type="faas:info" action="open" caption="Stewardship FAAS"  index="0" visibleWhen="#{entity.txntype.objid == 'ST' &amp;&amp; entity.rpu.rputype=='land'}"/>
+        <invoker type="faas:info" action="doOpen" caption="FAAS"  index="0" visibleWhen="#{entity.txntype.objid != 'ST' || entity.rpu.rputype!='land'}"/>
+        <invoker type="faas:info" action="doOpen" caption="Stewardship FAAS"  index="0" visibleWhen="#{entity.txntype.objid == 'ST' &amp;&amp; entity.rpu.rputype=='land'}"/>
         <invoker type="faasdata:open" action="open" caption="FAAS"  index="0" />
         <invoker type="prevfaas:open" action="open" caption="FAAS"  index="0" target="popup"/>
         
-        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions==true}" role="EXAMINER,RECEIVER,APPRAISER,TAXMAPPER"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{showActions==true}" role="RECEIVER,APPRAISER,TAXMAPPER,RECOMMENDER,APPROVER"/>
         <invoker type="formActions" action="cancelEdit" caption="Cancel" mnemonic="c" visibleWhen="#{mode != 'read'}" immediate="true" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode != 'read'}" />
-        <invoker type="formActions" caption="Recalculate"   action="recalc"  name="recalc" visibleWhen="#{mode=='edit' &amp;&amp; entity.state.matches('INTERIM|FORAPPROVAL')}" role="APPRAISER,ENCODER" index="2000"/>
+        <invoker type="formActions" caption="Recalculate"   action="recalc"  name="recalc" visibleWhen="#{mode=='edit'}" role="APPRAISER,ENCODER" index="2000"/>
         <invoker type="formActions" caption="Modify" name="popupChangeInfo" visibleWhen="#{entity.state=='CURRENT'}" category="faas:changeinfo" index="1000" role="ADMIN" />
         <invoker type="formActions" caption="Remote Tools" name="popupChangeInfo"  visibleWhen="#{entity.state == 'CURRENT' || entity.taskstate.matches('provapprover')}" category="faas:info:remotetool" role="ADMIN"/>
    </invokers>
    
-   <code class="com.rameses.gov.etracs.rpt.faas.ui.FaasController">
+   <code class="com.rameses.gov.etracs.rptis.models.FAASModel">
    </code>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASPage"/>
     </pages>    
 </workunit>
 

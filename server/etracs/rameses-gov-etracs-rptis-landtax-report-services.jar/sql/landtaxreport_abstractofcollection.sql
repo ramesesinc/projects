@@ -175,7 +175,7 @@ FROM (
   WHERE ${filter}  
     and cri.year > $P{year} 
     and cr.collector_objid LIKE $P{collectorid}
-  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.tdno, b.name, 
+  GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.tdno, rl.fullpin, b.name, 
             rl.classcode, cv.objid, m.name, c.name, rl.totalav 
    
   UNION ALL  

@@ -17,6 +17,7 @@ FROM assessmentnoticeitem ni
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org o ON f.lguid = o.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE ni.assessmentnoticeid = $P{objid}
 
 [getApprovedFaasList]
@@ -27,6 +28,7 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org o ON f.lguid = o.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE f.taxpayer_objid = $P{taxpayerid}
   AND f.state = 'CURRENT'
 
@@ -39,16 +41,18 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org o ON f.lguid = o.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE f.objid = $P{faasid}
   AND f.state = 'CURRENT'
 
 [getTaxpayerList]  
 select distinct f.taxpayer_objid as objid,
-	 f.taxpayer_name as name, 
-	f.taxpayer_address as address 
+	 e.name as name, 
+	e.address_text as address 
 from faas f 
  inner join rpu r on f.rpuid = r.objid 
  inner join realproperty rp on rp.objid = r.realpropertyid 
+ INNER JOIN entity e on f.taxpayer_objid = e.objid 
 where f.state='CURRENT' 
 	and r.ry=$P{revisionyear}
 	and rp.barangayid like $P{barangayid}

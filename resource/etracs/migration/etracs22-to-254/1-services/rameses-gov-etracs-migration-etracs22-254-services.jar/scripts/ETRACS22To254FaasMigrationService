@@ -33,7 +33,7 @@ class ETRACS22To254FaasMigrationService
 	@Service('ETRACS22To254UtilService')
 	def util 
 
-	def LGUID = '218'
+	def LGUID = '142'
 
 
 	@ActiveDB('propertyclassification')
@@ -44,9 +44,6 @@ class ETRACS22To254FaasMigrationService
 
 	@ActiveDB('faasannotation')
 	def annotationEm
-
-	@Service('NumberService')
-	def numSvc 
 
 
 	@ProxyMethod
@@ -112,10 +109,16 @@ class ETRACS22To254FaasMigrationService
 
 	@ProxyMethod
 	public def migrateFaasByTdNo(tdno) {
-		println 'tdno => ' + tdno 
 		def faas = em22.findFaasByTdno([tdno:tdno])
 		if (!faas)
 			throw new Exception('FAAS does not exist for TD No. ' + tdno + '.')
+		doMigrateFaasByTdNo(faas)
+	}
+
+	@Async
+	@ProxyMethod
+	public void doMigrateFaasByTdNo(faas){
+		em22.deleteMigratedFaas(faas)
 		self.migrateFaas(faas)
 	}
 
@@ -198,7 +201,11 @@ class ETRACS22To254FaasMigrationService
 		if (existRealProperty(faas22.rp))
 			return 
 
+
 		def rp = faas22.rp 
+
+		def barangay = em254.findBarangay([barangayid:rp.barangayid.replace('-','')])
+		
 		def newrp = [
 			objid 			: rp.objid,
 			state 			: faas22.docstate,
@@ -214,7 +221,7 @@ class ETRACS22To254FaasMigrationService
 			cadastrallotno  : rp.cadastrallotno,
 			blockno 		: rp.blockno, 
 			street 			: rp.street, 
-			barangayid 		: rp.barangayid.replace('-',''),
+			barangayid 		: barangay?.objid,
 			north 			: rp.north, 
 			east			: rp.east, 
 			south			: rp.south, 
@@ -246,9 +253,6 @@ class ETRACS22To254FaasMigrationService
 		rpu.objid += ('-' + rpu.ry)
 		faas22.rpuid = rpu.objid 
 
-		if (existRpu(faas22.rpu))
-			return 
-
 		resolveClassification(rpu)
 		resolveExemptionType(rpu)
 
@@ -275,8 +279,9 @@ class ETRACS22To254FaasMigrationService
 			previd 			: rpu.previd,
 			rpumasterid 	: rpu.rpumasterid,
 			reclassed 		: false,
+			publicland 		: false, 
 		]
-		rpuEm.create(newrpu)
+		rpuEm.save(newrpu)
 	}
 
 
@@ -286,39 +291,32 @@ class ETRACS22To254FaasMigrationService
 
 
 	void resolveClassification(rpu){
-		def cls = null
+		def cls = classEm.read([objid:rpu.classid])
+		if (!cls)
+			cls = findClass(rpu, rpu.classcode)
+		if (!cls)
+			cls = findClass(rpu, rpu.classname)
 
-		if (rpu.classid) {
-			cls = classEm.read([objid:rpu.classid])
-			if (!cls)
-				cls = findClass(rpu, rpu.classcode)
-			if (!cls)
-				cls = findClass(rpu, rpu.classname)
-
-			if (!cls){
-				cls = [:]
-				if (rpu.classid){
-					cls = [
-						objid	: rpu.classid, 
-						state   : 'APPROVED',
-						code    : rpu.classcode,
-						name 	: rpu.classname,
-						special : 0,
-						orderno : 100,
-					]
-					try{
-						classEm.create(cls)
-					}
-					catch(e){
-						cls.code += '.'
-						cls.name += '.'
-						classEm.create(cls)
-					}
+		if (!cls){
+			cls = [:]
+			if (rpu.classid){
+				cls = [
+					objid	: rpu.classid, 
+					state   : 'APPROVED',
+					code    : rpu.classcode,
+					name 	: rpu.classname,
+					special : 0,
+					orderno : 100,
+				]
+				try{
+					classEm.create(cls)
+				}
+				catch(e){
+					cls.code += '.'
+					cls.name += '.'
+					classEm.create(cls)
 				}
 			}
-		}
-		else {
-			cls = em254.findResidentialClass()
 		}
 		rpu.classid = cls.objid 
 		rpu.classcode = cls.code 
@@ -357,17 +355,17 @@ class ETRACS22To254FaasMigrationService
 	*
 	*==============================================================*/
 	void doMigrateFaas(faas22)	{
-		if (existFaas(faas22))
-			return 
-		
 		def taxpayer = migrateEntity(faas22)
-		def addr = taxpayer.address 
-		taxpayer.address = addr.text 
 
 		if (faas22.rpu.rputype != 'land')
 			updateFaasRealPropertyInfo(faas22)
 
 		def pdate = dtSvc.parseDate(faas22.info.dtapproved, null)
+
+		if (taxpayer.address instanceof java.util.Map){
+			taxpayer.address = taxpayer.address.text 
+		}
+
 		def newfaas = [
 			objid 			: faas22.objid,
 			state 			: faas22.docstate,
@@ -402,13 +400,13 @@ class ETRACS22To254FaasMigrationService
 			prevareaha 		: faas22.info.prevareaha == null ? 0.0 : faas22.info.prevareaha,
 			preveffectivity : faas22.info.preveffectivity,
 			cancelreason 	: faas22.info.cancelreason,
-			canceldate 		: faas22.info.canceldate,
+			canceldate 		: null,
 			cancelledbytdnos : faas22.info.cancelledbytdnos,
 			lguid 			: (faas22.extended.lguid != null ? faas22.extended.lguid : LGUID),
 			originlguid     : (faas22.extended.lguid != null ? faas22.extended.lguid : LGUID),
 			lgutype 		: faas22.extended.lgutype,
 			txntimestamp 	: faas22.info.txntimestamp,
-			cancelledtimestamp 	: faas22.info.cancelledtimestamp,
+			cancelledtimestamp 	: null,
 			name 			: getNameInfo(faas22),
 			dtapproved 		: faas22.info.dtapproved,
 			ryordinanceno 	: (faas22.info.ryordinanceno == null ? '-' : faas22.info.ryordinanceno),
@@ -419,19 +417,20 @@ class ETRACS22To254FaasMigrationService
 			day 			: pdate.day,
 		]
 
-		newfaas.prevav 		= numSvc.format('#,##0.00', newfaas.prevav)
-		newfaas.prevmv 		= numSvc.format('#,##0.00', newfaas.prevmv)
-		newfaas.prevareasqm = numSvc.format('#,##0.00', newfaas.prevareasqm)
-		newfaas.prevareaha 	= numSvc.format('#,##0.000000', newfaas.prevareaha)
+		if (existFaas(faas22)){
+			faasEm.update(newfaas)
+			return 
+		}
+		
 
 		if (faas22.docstate=='CANCELLED'){
 			if (faas22.info.canceldate && faas22.info.canceldate.trim().length() > 0){
-				def cdate = dtSvc.parseDate(faas22.info.canceldate, null)
+				def cdate = toDate(faas22.info.canceldate)
 				newfaas.cancelledyear = cdate.year
 				newfaas.cancelledqtr = cdate.qtr
 				newfaas.cancelledmonth = cdate.month 
 				newfaas.cancelledday = cdate.day
-				newfaas.canceldate = cdate.date 
+				newfaas.canceldate = cdate.date  
 			}
 		}
 		else{
@@ -439,12 +438,13 @@ class ETRACS22To254FaasMigrationService
 		}
 
 		faasEm.create(newfaas)
+		em254.insertFaasList(newfaas)
 		migrateSignatory(newfaas)
 	}
 
 	def getTxnType(faas22){
-		if (faas22.info.txn)
-			return faas22.info.txn.txntype 
+		if (faas22.info.txntype)
+			return faas22.info.txntype
 		if (faas22.info.txnype)
 			return faas22.info.txnype
 		return 'DC'
@@ -679,6 +679,18 @@ class ETRACS22To254FaasMigrationService
 		if (!annotype){
 			em254.insertAnnotationType(annotationtype)
 		}
+	}
+
+	def toDate(dt){
+		if (dt == null) return null;
+		if (dt instanceof java.util.Date ) return dt;
+		try{
+			return dtSvc.parseDate(dt, null)
+		}
+		catch(e){
+			println 'Invalidate Date -> ' + e.message 
+		}
+
 	}
 	
 }

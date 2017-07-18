@@ -1,3 +1,6 @@
+[findCurrentRy]
+select ry from landrysetting order by ry desc 
+
 [getTmcrList]
 SELECT
 	b.name AS barangay, pc.code AS classcode, 
@@ -12,10 +15,12 @@ FROM faas f
 	inner join faas_txntype ft on f.txntype_objid = ft.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section = $P{section} 
   ${txntypefilter}
+  ${rputypefilter}
 ORDER BY f.tdno 
 
 
@@ -31,7 +36,8 @@ FROM faas f
 	inner join faas_txntype ft on f.txntype_objid = ft.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section LIKE $P{section} 
   ${txntypefilter}
@@ -47,15 +53,17 @@ FROM faas f
 	inner join faas_txntype ft on f.txntype_objid = ft.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid} 
+WHERE rp.ry = $P{ry}
+  AND rp.barangayid = $P{barangayid} 
   AND f.state = 'CURRENT'
   AND rp.section = $P{section} 
+  ${rputypefilter}
 ORDER BY f.tdno 
 
 
 [getCancelledTmcrFaases]
 SELECT ${tmcrfields}
-FROM previousfaas pf 
+FROM faas_previous pf 
 	INNER JOIN faas f on pf.prevfaasid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
@@ -64,6 +72,7 @@ FROM previousfaas pf
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE pf.faasid = $P{faasid}
   and f.state = 'CANCELLED'
+  ${rputypefilter}
 ORDER BY f.tdno DESC   
 
 
@@ -113,10 +122,12 @@ from faas f
 	left join district d on b.parentid = d.objid 
 	left join province p on m.parentid = p.objid 
 	left join city c on d.parentid = c.objid 
-where rp.barangayid = $P{barangayid} 
+where rp.ry = $P{ry}
+  and rp.barangayid = $P{barangayid} 
   and f.state in ('CURRENT', 'CANCELLED')
   and rp.section = $P{section} 
   ${txntypefilter}
+  ${rputypefilter}
 order by f.tdno 
 
 

@@ -1,0 +1,16 @@
+
+"selectedPlantTree"  [allowEdit == true] {
+    readonly:false;
+}
+
+"selectedPlantTree"  [entity.datacapture == 0 && entity.txntype.newrpu == 0] {
+    readonly:true;
+}
+
+"selectedPlantTree"  [allowEdit == false || (entity.datacapture==0 && entity.taskstate && !entity.taskstate.matches('.*appraiser.*|recommender'))] {
+    readonly:true;
+}
+
+"selectedPlantTree"  [entity._resolve == true] {
+    readonly:false;
+}

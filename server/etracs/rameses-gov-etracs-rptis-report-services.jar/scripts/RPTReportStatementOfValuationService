@@ -10,23 +10,8 @@ class RPTReportStatementOfValuationService
     @ActiveDB('rptreport_statement_of_valuation')
     def em
 
-    @Service('Var')
-    def var 
-
-    @Service('PropertyClassificationService')
-    def pcSvc 
-
-    @Service('ExemptionTypeService')
-    def etSvc
-
     @Service('RPTUtil')
     def util
-
-    @Service('ReportParameterService')
-    def paramSvc 
-
-    @Service('DateService')
-    def dtSvc 
 
 
     @Async

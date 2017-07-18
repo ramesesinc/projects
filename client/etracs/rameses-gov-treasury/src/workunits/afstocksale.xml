@@ -2,9 +2,9 @@
 <workunit extends="wtemplates/StockSaleController.xml">
     
     <invokers>
-        <invoker folderid="home/af" caption="AF Sale" action="create" index="1" role="AFO" target="window"/>
+        <invoker folderid="home/treasury/af" caption="Issue AF For Sale" action="create" index="1" role="AFO" target="window"/>
         <invoker type="quick_launcher" code="AFSALE" caption="Accountable Form Sale" action="create" index="1" role="AFO" target="window"/>
-        <invoker folderid="/menu/txn/treasury" caption="Accountable Form Sale" action="create" index="10" role="AFO"/>
+        <invoker folderid="/menu/txn/treasury/af" caption="Issue AF For Sale" action="create" index="10" role="AFO"/>
         
         <invoker type="issueafrequest_SALE:open" caption="Accountable Form Sale" action="open" role="AFO" target="window"/>
         <invoker type="afquery_SALE:open" caption="Accountable Form Sale" action="open" role="AFO" target="window"/>

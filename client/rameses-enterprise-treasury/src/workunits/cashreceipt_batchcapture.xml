@@ -2,7 +2,7 @@
     
     <invokers>
         <invoker type="cashreceipt:batchcapture:create" caption="New Batch Entry" action="init"/>
-        <invoker folderid="home/collection" caption="Batch Cash Receipt" action="init" 
+        <invoker folderid="home/treasury" caption="Batch Cash Receipt" action="init" 
                  role="SUBCOLLECTOR" target="window" index="12" />
     </invokers>
    

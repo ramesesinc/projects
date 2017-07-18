@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="bldgrysetting:info" 
+                 action="init" caption="Building Types" 
+                 mnemonic="t" index="10"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.BldgTypeInfoModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.BldgTypeInfoPage"/>
+    </pages>
+</workunit>

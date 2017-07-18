@@ -1,0 +1,28 @@
+import com.rameses.annotations.*;
+
+class RemoteRegistrationInterceptor {
+
+    @DataContext("gdx_partner_online")
+    def onlineEm;		
+
+    @Service("DateService")
+    def dateSvc;
+
+    @After(pattern="RemoteScriptRegistryService.register.*")
+    public def afterRegister(def evt) {
+		def _name = evt.args[0];
+		def m = [id:_name, dtregistered: dateSvc.getServerDate()];
+		//remove first if any exists
+		onlineEm.delete(m);
+
+		//create the online entry
+		onlineEm.create(m);
+    }		
+
+    @After(pattern="RemoteScriptRegistryService.unregister.*")
+    public def afterUnRegister(def evt) {
+		def _name = evt.args[0];
+		onlineEm.delete([id:_name]);
+    }		
+
+}

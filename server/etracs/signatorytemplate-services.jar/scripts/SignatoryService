@@ -25,21 +25,12 @@ class SignatoryService
 	
 	@ProxyMethod
 	public def create( signatory ) {
-		checkDuplicate( signatory )
 		signatory.state = 'APPROVED'
 		
 		em.validate( SCHEMANAME, signatory )
 		em.create( SCHEMANAME, signatory )
 		
 		return signatory
-	}
-	
-	void checkDuplicate( signatory ) {
-		def data = em.sqlContext.createNamedQuery( 'signatory:checkDuplicate' )
-								.setParameters( signatory )
-								.singleResult
-								
-		if( data ) throw new Exception( 'Duplicate signatory is not allowed.' )
 	}
 	
 	@ProxyMethod

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Notice of Assessment" target="window" index="600" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="Notice of Assessment" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT" />
+        
         <invoker type="assessmentnotice:create" action="init" caption="Notice of Assessment" target="self"/>
         <invoker type="assessmentnotice:open" action="open" caption="Notice of Assessment" target="self"/>
         

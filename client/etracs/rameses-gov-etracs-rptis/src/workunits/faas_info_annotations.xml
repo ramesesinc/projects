@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:info" action="init" caption="Annotations" index="999" />
+        <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
+   </invokers>
+   <code>
+
+        
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+class FaasAnnotationInfoController
+{
+    @Binding
+    def binding;
+    
+    def svc;
+    
+    def entity;
+    def list;
+    
+    String title = 'List of Annotations'
+    
+    void init(){
+        list = svc.getAnnotations(entity.objid);
+        listHandler?.load();
+    }
+    
+    void refresh(){
+        init();
+    }
+    
+    
+    def listHandler = [
+        fetchList : { return list; },
+        getColumns : { svc.getAnnotationColumns() }
+    ] as BasicListModel
+    
+}
+       
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasInfoListPage"/>
+    </pages>
+</workunit>
+
+

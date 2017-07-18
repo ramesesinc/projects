@@ -21,13 +21,19 @@
     </folder>
     <folder id="menu">
         <folder id="txn" caption="Transaction">
-            <folder id="treasury" caption="Treasury"/>
+            <folder id="treasury" caption="Treasury">
+                <folder id="af" caption="Accountable Forms"/>
+            </folder>    
         </folder>
         <folder id="report" caption="Report">
             <folder id="treasury" caption="Treasury"/>
         </folder>
     </folder>
     <folder id="home">
+        <folder id="treasury" caption="Treasury" icon="home/icons/treasury.png">
+            <folder id="af" caption="Accountable Forms"/>
+        </folder>    
+        <!-- for comment -->
         <folder id="af" caption="Accountable Forms"/>
         <folder id="collection" caption="Collection"/>
         <folder id="remittance" caption="Remittance"/>

@@ -1,0 +1,47 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" action="init" 
+                 caption="Top N Delinquent Taxpayers" target="window"
+                 role="REPORT"/>
+    </invokers>
+    <code>
+    <![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class TopNDelinquencyModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('LandTaxReportTopNDelinquentTaxpayerService') 
+    def svc
+    
+    String title = 'Top N Delinquent Taxpayers';
+    String reportName = 'com/rameses/gov/etracs/rpt/report/landtax/topn_rpt_delinquency.jasper';
+    
+    def task;
+    def msg;
+    
+    def initReport(){
+        entity.topn = 10;
+        return super.initReport();
+    }
+    
+    
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler);
+    }
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Top N', name:'entity.topn', required:true]) 
+            ]    
+        } 
+    ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

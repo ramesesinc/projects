@@ -1,5 +1,5 @@
-<schema adapter="main">
-	<element name="rptis_memoranda_template" tablename="memoranda_template">
+<schema>
+	<element tablename="memoranda_template">
 		<field name="objid" primary="true" prefix="MT"/>
 		<field name="code" caption="Code" required="true" 
 			searchable="true"  indexed="true"

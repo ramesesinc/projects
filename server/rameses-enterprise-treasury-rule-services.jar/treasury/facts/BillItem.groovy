@@ -56,5 +56,21 @@ class BillItem extends AbstractBillItem {
 	//call this after apply payment
 	void recalc() {;}
 
+	//call this to distribute payment and return the remainder
+	double applyPayment( double payamt ) {
+		double linetotal = NumberUtil.round(total);
+		if( payamt >= linetotal ) {
+			return payamt - linetotal;
+		}
+
+		//in case for partial payments, distribute evenly first to its subitems. The remainder add to the amount of this bill
+		double _amt = payamt;
+		for(BillSubItem bi: items) {
+			bi.amount = NumberUtil.round((bi.amount / linetotal ) * _amt);
+			_amt -= bi.amount;
+		}
+		amount = NumberUtil.round(_amt);
+		return 0;
+	}
 
 }

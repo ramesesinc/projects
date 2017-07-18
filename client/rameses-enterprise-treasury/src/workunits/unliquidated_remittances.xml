@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER"  action="init"/>
-        <invoker folderid="home/liquidation" caption="Unliquidated Remittances" index="10" role="LIQUIDATING_OFFICER"  target="window" action="init"/>
+        <invoker folderid="home/treasury" caption="Unliquidated Remittances" index="10" role="LIQUIDATING_OFFICER"  target="window" action="init"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
         <invoker type="formActions" action="refresh" caption="Refresh" icon="images/toolbars/refresh.png" mnemonic="r" shortcut="ctrl R"/>

@@ -1,6 +1,9 @@
 <workunit  extends="rpt_wtemplates/BatchReportController.xml">
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Notice of Assessment Batch Printing" target="window" index="605" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="Notice of Assessment Batch Printing" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code >

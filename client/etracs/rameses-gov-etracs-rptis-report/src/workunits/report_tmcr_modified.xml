@@ -1,6 +1,8 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="Tax Mapping Control Roll (Modified)" target="window" index="4" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" caption="Tax Mapping Control Roll (Modified)" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>
@@ -22,6 +24,11 @@ class TMCRModifiedController extends com.rameses.gov.etracs.rpt.report.AsyncRepo
     
     String reportName = 'com/rameses/gov/etracs/rpt/report/tmcr_modified.jasper';
     
+    def initReport(){
+        entity.ry = svc.getCurrentRy();
+        return 'default'
+    }
+    
     void buildReportData(entity, asyncHandler){
         svc.generateTMCRModified(entity, asyncHandler);
     }
@@ -33,10 +40,13 @@ class TMCRModifiedController extends com.rameses.gov.etracs.rpt.report.AsyncRepo
     def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'Report Type', name:'entity.reporttype', emptyText:'ALL', items:'reporttypes', preferredSize:'0,21']),
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
-                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
-                new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19', required:true]),
+                new FormControl( "combo", [captionWidth:110, caption:'Report Type', name:'entity.reporttype', emptyText:'ALL', items:'reporttypes', preferredSize:'0,21']),
+                new FormControl( "combo", [captionWidth:110, caption:'LGU', name:'entity.lgu', required:true, allowNull:false, items:'lgus', expression:'#{item.name}']),
+                new FormControl( "combo", [captionWidth:110, caption:'Barangay', name:'entity.barangay', required:true, allowNull:false, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
+                new FormControl( "integer", [captionWidth:110, caption:'Revision Year', name:'entity.ry', required:true, preferredSize:'50,21']),            
+                new FormControl( "text", [captionWidth:110, caption:'Section', name:'entity.section', preferredSize:'50,19', required:true]),
+                new FormControl( "separator", [showCaption:false, preferredSize:'0,19']),
+                new FormControl( "checkbox", [captionWidth:130, caption:'Exclude Improvements?', name:'entity.excludeimprov', preferredSize:'0,19', required:true, cellPadding:'20,0,0,0']),                
             ]    
         },
    ] as FormPanelModel;

@@ -84,15 +84,20 @@ class RPTCertificationService
 		cert.givenday = util.formalizeDate(cert.txndate, 'd' )
 		cert.givenmonth = util.formalizeDate(cert.txndate, 'MMMMM' )
 		cert.givenyear = util.formalizeDate(cert.txndate, 'yyyy' )
-		replaceAmpersand(cert)
+		if (cert.ordate){
+			cert.ordate = dtSvc.parse('yyyy-MM-dd', cert.ordate)
+		}
+		makeHtmlSafe(cert)
 		return cert 
 	}
 
-	void replaceAmpersand(cert){
-		cert.owner?.name = cert.owner?.name?.replaceAll('&', 'AND')
-		cert.taxpayer?.name = cert.taxpayer?.name?.replaceAll('&', 'AND')
-		cert.requestedby = cert.requestedby?.replaceAll('&', 'AND')
-		cert.purpose = cert.purpose?.replaceAll('&', 'AND')
+	@ProxyMethod
+	public void makeHtmlSafe(cert){
+		cert.owner?.name = cert.owner?.name?.replaceAll('&', '&amp;')
+		cert.taxpayer?.name = cert.taxpayer?.name?.replaceAll('&', '&amp;')
+		cert.requestedby = cert.requestedby?.replaceAll('&', '&amp;')
+		cert.purpose = cert.purpose?.replaceAll('&', '&amp;')
+		cert.addlinfo = cert.addlinfo?.replaceAll('&', '&amp;')
 	}
 
 	@ProxyMethod

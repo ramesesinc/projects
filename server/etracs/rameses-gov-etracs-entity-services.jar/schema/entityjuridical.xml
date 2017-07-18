@@ -11,6 +11,4 @@
 		<field name="administrator_address" /> 
 		<field name="administrator_position" /> 
 	</element>
-	
-
 </schema>

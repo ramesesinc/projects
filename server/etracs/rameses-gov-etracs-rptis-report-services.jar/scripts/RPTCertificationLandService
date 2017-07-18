@@ -70,6 +70,7 @@ class RPTCertificationLandService
 			if (!cert.items)
 				cert.items = []
 		}
+		certSvc.makeHtmlSafe(cert)
 	}
 
 	def getLandItems(cert){

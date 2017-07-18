@@ -1,0 +1,37 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.servics.extended.*;
+
+class LandTaxUtilService
+{
+	@ActiveDB('rptledger_forprocess')
+	def em 
+
+	@DataContext('rptledger_forprocess')
+	def em_forprocess 
+
+	
+	@ProxyMethod
+	public void insertItemsForProcess(params) {
+		if (params.lastyearpaid == null) throw new Exception('lastyearpaid is required.')
+		if (params.lastqtrpaid == null) throw new Exception('lastqtrpaid is required.')
+		em.insertItemsForProcess(params)
+	}
+
+
+	@ProxyMethod
+	public def getItemsToProcess(limit) {
+		return em_forprocess.where('1=1').limit(limit).list() 
+	}
+
+	@ProxyMethod
+	public void deletePaidItems(params) {
+		if (!params.objid) throw new Exception('objid is required.')
+		if (params.toyear == null) throw new Exception('toyear is required.')
+		em.deleteLedgerQtrlyItems(params)
+		em.deleteLedgerItems(params)
+		em_forprocess.delete(params)
+		println 'Delete item ' + params.objid + '.'
+	}
+
+}	

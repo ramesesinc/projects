@@ -1,9 +1,23 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
           schemaName="planttree" 
-          cols="state,code,name" orderBy="code"
-          allowDelete="#{entity.state!='APPROVED'}"
-          caption="Plants and Trees">
+          windowTitle="Plants/Trees"
+          orderBy="code"
+          cols="code,name,state" >
     <invokers>
-        <invoker folderid="/explorer/master/rpt" action="init" caption="Plants and Trees" index="8" role="ASSESSOR_DATAMGMT,MASTER"/>
+        <invoker folderid="/explorer/master/rpt" caption="Plants/Trees"  index="9" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"/>
+        
+        <invoker folderid="/home/rpt/master" caption="Plants/Trees"  index="9" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/planttrees.png"/>
+        
+        <invoker type="quick_launcher" code="PT00" caption="Plants/Trees"  
+                action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
     </invokers>
 </workunit>

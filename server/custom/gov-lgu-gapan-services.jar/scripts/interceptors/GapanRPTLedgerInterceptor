@@ -1,0 +1,51 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class GapanRPTLedgerInterceptor 
+{
+    @After(pattern="RPTLedgerService.calcLedgerItemAssessedValue.*")
+    public void postFaasToRPTLedger(evt){
+        /* params: ledger, ledgerfaas, yr, av, classification, actualuse*/
+        def params = evt.result
+        if (params.yr >= 2002 && params.yr <= 2005 && params.ledger.rputype == 'land' ){
+            def av1996 = getLedgerFaasAV(params, 1997)
+            def av2001 = getLedgerFaasAV(params, 2002)
+            if (av2001 != null && av1996 != null && av2001 > av1996){
+                def rate = getRate(params)
+                params.av = av1996 + (av2001 - av1996) * 0.20
+                params.basicav = av1996 + (av2001 - av1996) * rate / 100.0
+                params.sefav = av1996 + (av2001 - av1996) * 0.20
+            }
+        }
+        else if (params.yr >= 2009){
+            def av2002 = getLedgerFaasAV(params, 2002)
+            def av2009 = getLedgerFaasAV(params, 2009)
+            if (av2002){
+                if (params.yr == 2009) params.av = av2002 * 1.10 
+                if (params.yr == 2010) params.av = av2002 * 1.25 
+                if (params.yr == 2011) params.av = av2002 * 1.50
+                if (params.yr == 2012) params.av = av2002 * 1.75
+                if (params.yr >= 2013) params.av = av2002 * 2.00
+            }
+            if (params.av > av2009 && av2009 > 0.0)
+                params.av = av2009
+        }
+    }
+
+    def  getRate(params){
+        if (params.classification.objid == 'AGR') return 25.0
+        if (params.classification.objid == 'COM') return 30.0
+        if (params.classification.objid == 'IND') return 35.0
+        return 20.0
+
+    }
+
+    def getLedgerFaasAV(params, prevyr){
+        def lf = params.ledger.faases.find{ it.classification.objid == params.ledgerfaas.classification.objid && it.state == 'APPROVED' &&  prevyr >= it.fromyear && (prevyr <= it.toyear || it.toyear == 0)}
+        if (lf)
+            return lf.assessedvalue
+        return 0.0
+    }
+}

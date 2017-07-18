@@ -31,24 +31,9 @@ class ApplyPayment implements RuleActionHandler {
 			* please check the payment priority order. 
 			*******************************************************************************/
 			for( BillItem b: billitems ) {
-				double linetotal = NumberUtil.round(b.total);
-				if(amt > linetotal) {
-					newBillItems << b;
-					amt -= linetotal;
-				}
-				else {
-					def _sum = amt;
-					for(BillSubItem bi: b.items) {
-						bi.amount = NumberUtil.round((bi.amount / linetotal ) * amt);
-						_sum -= bi.amount;
-					}
-					b.amount = NumberUtil.round(_sum);	
-					b.recalc();
-					newBillItems << b;
-					amt = 0;
-					break;
-				}
-				if(amt<=0) break;
+				amt = b.applyPayment( amt );
+				newBillItems << b;
+				if( amt == 0 ) break;
 			}
 
 			//remove all billitems in facts

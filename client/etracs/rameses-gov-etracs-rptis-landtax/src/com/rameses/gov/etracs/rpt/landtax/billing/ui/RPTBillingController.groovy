@@ -31,17 +31,31 @@ public class RPTBillingController
     @Service('LGUService')
     def lguSvc 
     
+    def selectedItem;
+    def msg;
+    def processing = false;
     def mode;
     def parsedate;
     def bill;
     def billto;
     def taxpayer;
+    def rptledgerid;
+    def showBack = true; 
+    def advancebill;
+    def billdate;
     
-    String title = 'Realty Tax Billing'
+    String title = 'Real Property Tax Bill'
+    
+    @PropertyChangeListener
+    def listener = [
+        'bill.taxpayer' : {
+            loadTaxpayerBillingInfo();
+        }
+    ]
     
     void init() {
         mode = 'init'
-        bill = svc.initBill(null)
+        bill = svc.initBill(rptledgerid)
     }
     
     def back() {
@@ -50,27 +64,14 @@ public class RPTBillingController
         return 'default' 
     }
     
-    def getLookupTaxpayer() {
-        return InvokerUtil.lookupOpener('entity:lookup', [
-            onselect : {
-                bill.taxpayer = it;
-                bill.taxpayer.address = it.address.text;
-                billto = bill.taxpayer;
-                bill.billto = billto;
-                clearLoadedProperties();
-                loadProperties();
-            },
-                
-            onempty : {
-                bill.taxpayer = null;
-                bill.billto = null;
-                clearLoadedProperties();
-            }
-        ] )
-    }
-    
+    /*
     def selectedItems 
     void updateLedgerBillStatement(){
+        if(advancebill){
+            bill.advancebill = advancebill;
+            bill.billdate = billdate;
+        }
+        
         if (items) {
             selectedItems = items.findAll{it.bill == true}
             if (!selectedItems) selectedItems = items;
@@ -85,55 +86,103 @@ public class RPTBillingController
         }
         
     }
+    */
+    
+    def billtask ;
+    
+    void doCancel(){
+        billtask?.cancelled = true;
+    }
     
     void buildBillReportInfo(){
-        updateLedgerBillStatement();
-        if (billto == null) 
+        // updateLedgerBillStatement();
+        if (!forprinting){
+            processing = true;
+        }
+        
+        if(advancebill){
+            bill.advancebill = advancebill;
+            bill.billdate = billdate;
+        }
+        if (billto == null) {
             billto = bill.taxpayer
+        }
         bill.billto = billto;
-        bill.ledgers = [];
-        if (items) {
-            selectedItems = items.findAll{it.bill == true}
-            if (!selectedItems) selectedItems = items;
-            selectedItems.each{
-                try{
-                    bill.rptledgerid = it.objid 
-                    bill.ledgers << billReportSvc.getBilledLedger([objid:bill.objid, rptledgerid:bill.rptledgerid])
-                }
-                catch(e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        else {
-            bill.ledgers << billReportSvc.getBilledLedger([objid:bill.objid, rptledgerid:bill.rptledgerid])
-        }
         
-        updateBillInfo()
-        
-        if(onbill) onbill();
-        report.viewReport()
+        billtask = new BillTask(bill:bill, items:items, report:report)
+        billtask.oncomplete = oncomplete;
+        billtask.oncancel = oncancel;
+        billtask.showmsg = showmsg;
+        billtask.svc = svc;
+        billtask.billReportSvc = billReportSvc;
+        Thread t = new Thread(billtask);
+        t.start();
+        binding?.refresh();
     }
     
+    def forprinting = false;
     void printBill() {
-        def b = svc.initBill(null)
+        def b = svc.initBill(rptledgerid)
         bill.objid = b.objid 
         bill.barcode = b.barcode 
+        forprinting = true;
         buildBillReportInfo()
-        ReportUtil.print( report.report, true )
+        // ReportUtil.print( report.report, true )
     }
+
+    def closeform = false;
+    void print() {
+        forprinting = true;
+        closeform = true 
+        buildBillReportInfo()
+    }    
     
     void initBatch(){
         init();
-        bill.taxpayer = taxpayer;
-        loadProperties();
-        previewBill();
+        //bill.taxpayer = taxpayer;
+        printBill();
     }
     
+    def showmsg = {
+        msg = it;
+        binding?.refresh('msg');
+    }
+    
+    def oncancel = {msg->
+        mode = 'init';
+        processing = false;
+        binding?.refresh();
+        if (msg) {
+            MsgBox.alert(msg);
+        }
+    }
+    
+    def oncomplete = {
+        processing = false;
+        updateBillInfo();
+        if(onbill) onbill();
+        report.viewReport()
+        if (forprinting){
+            ReportUtil.print( report.report, true );
+        }
+        else if(closeform){
+            binding?.fireNavigation('_close');
+        }
+        else{
+            mode = 'view';
+            binding?.fireNavigation('preview');
+        }
+    }
+    
+    
+    def hideitems = false;
     def previewBill() {
+        hideitems = true;
         buildBillReportInfo()
-        mode = 'view'
-        return 'preview'
+    }
+    
+    def preview() {
+        buildBillReportInfo()
     }
 
     void updateBillInfo(){
@@ -217,6 +266,22 @@ public class RPTBillingController
         }
     }
     
+    
+    void loadTaxpayerBillingInfo(){
+        if (bill.taxpayer){
+            bill.taxpayer.address = bill.taxpayer.address.text;
+            billto = bill.taxpayer;
+            bill.billto = billto;
+            clearLoadedProperties();
+            loadProperties();
+        }
+        else{
+            billto = null;
+            bill.billto = null;
+            clearLoadedProperties();
+        }
+    }
+    
     void loadProperties(){
         if (!bill.taxpayer) {
             throw new Exception('Taxpayer is required.')
@@ -235,5 +300,70 @@ public class RPTBillingController
         return items?.size();
     }
     
+    
+}
+
+class BillTask implements Runnable 
+{
+    def showmsg;
+    def oncomplete;
+    def oncancel;
+    def bill;
+    def items;
+    def svc; 
+    def billReportSvc;
+    def selectedItems;
+    def cancelled;
+    def report;
+    
+    
+    public void run(){
+        cancelled = false;
+        bill.ledgers = [] 
+        showmsg('Initializing...');
+        if (items) {
+            selectedItems = items.findAll{it.bill == true}
+            if (!selectedItems) selectedItems = items;
+            for( int idx = 0; idx < selectedItems.size(); idx++){
+                if (cancelled) break;
+                def item = selectedItems[idx]
+                showmsg('Computing tax for TD No. ' + item.tdno + '   #' + (idx+1))
+                
+                try{
+                    bill.rptledgerid = item.objid;
+                    bill.putAll(svc.generateBill(bill));
+                    bill.ledgers << billReportSvc.getBilledLedger(bill);
+                }
+                catch(e){
+                    //
+                }
+                
+            }
+        }
+        else {
+            // if no items, this is invoke from outside 
+            bill.putAll(svc.generateBill(bill));
+            bill.ledgers << billReportSvc.getBilledLedger(bill);
+        }
+        if (cancelled){
+            showmsg('');
+            oncancel();
+        }
+        else{
+            try{
+                // showmsg('Loading billing statement. Please wait.');
+                // bill.ledgers  = billReportSvc.getBilling(bill)
+                showmsg('Building report. Please wait.');
+                oncomplete()
+                showmsg('');
+            }
+            catch(e){
+                e.printStackTrace();
+                oncancel(e.message)
+            }
+        }
+            
+        
+    }
     
 }

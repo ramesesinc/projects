@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.municipality.models.DataSyncModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.municipality.views.SyncStatusPage"/>
+    </pages>
+</workunit>

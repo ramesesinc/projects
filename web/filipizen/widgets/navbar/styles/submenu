@@ -1,0 +1,12 @@
+<%
+   def name = OPTIONS.name ? OPTIONS.name : 'default';
+   def parentPath = OPTIONS.parentPath ? OPTIONS.parentPath : '';
+%>
+
+<div class="${name}">
+<%  
+    for (o in DATA) {    
+		print "<a class=\"${name}-item\" href=\"${parentPath}${o.href?o.href:o.path}\">${o.title}</a>"; 
+	} 
+%> 
+</div>

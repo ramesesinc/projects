@@ -99,7 +99,7 @@
         </Container>
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Owner"/>
+            <Property name="caption" type="java.lang.String" value="Declared Owner"/>
             <Property name="expression" type="java.lang.String" value="#{item.name}"/>
             <Property name="handler" type="java.lang.String" value="entity:lookup"/>
             <Property name="name" type="java.lang.String" value="entity.taxpayer" noResource="true"/>

@@ -1,0 +1,5 @@
+{
+	title  : 'Apply New Business',
+	menu: 'Apply New',
+	sortorder: 1
+}

@@ -1,0 +1,32 @@
+/* v2.5.04.032-03012 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Support processing of transaction in dc mode
+	- Add support to allow/disallow FAAS Transaction with annotation
+	- Updated Property Examination and Audit Report 
+	- NEW! Transaction Monitoring Report (Puerto)
+	- NEW! FAAS Transaction Log Report (Puerto)
+	- NEW! Statement of Valuation (Puerto)
+	- Update on Excerpt from Real Property assessment report
+	- Update on FAAS Valuation and Restriction report 
+	- Exclude multiple claims in rpu count (AEEMM2) report
+	- NEW! List of Other Claimants
+	- Fix Building FAAS structure material report
+	- NEW! Transaction Monitoring 
+	- NEW! Monthly Assessment Report (Puerto)
+	- Update on PDAP-RPTA 100 Report
+	- Add support for land specific classification (Aklan)
+	- Update land improvement editing
+	- Update on Bldg General Revision script
+
+- LANDTAX
+	- NEW! Billing by ledger with option to specify bill to year and qtr 
+	- NEW! Realty Tax Delinquencies By Faas History Listing
+	- NEW! Real Property Tax Collectibles (Guimaras)
+	- NEW! Certified List of Real Property Tax Collectibles (Guimaras)
+	
+

@@ -1,7 +1,7 @@
 <workunit>
     
    <invokers>
-         <!--invoker folderid="home/liquidation" caption="Liquidate" action="init" target="window" role="LIQUIDATING_OFFICER" index="41" /-->   
+         <!--invoker folderid="home/treasury" caption="Liquidate" action="init" target="window" role="LIQUIDATING_OFFICER" index="41" /-->   
          <invoker type="liquidation:create" caption="Liquidation" action="init" target="window"/>
          
          <invoker type="liquidation:liquidate" caption="Liquidation" action="liquidate" target="popup"/>

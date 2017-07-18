@@ -5,7 +5,7 @@ import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.util.MapBeanUtils;
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 
 public class FAASAnnotationController extends PageFlowController
 {

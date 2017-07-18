@@ -1,10 +1,10 @@
 <workunit>
     <invokers>
         <invoker type="rptledger:formActions" action="init" caption="Change Ledger State" 
-                 role="ADMIN" visibleWhen="#{entity.state=='APPROVED'}" target="popup" index="50000" />        
+                 role="ADMIN" visibleWhen="#{entity.state.matches('APPROVED|CANCELLED')}" target="popup" index="50000" />        
         
         <invoker type="rptledgermanual:formActions" action="init" caption="Change Ledger State" 
-                 role="ADMIN" visibleWhen="#{entity.state=='APPROVED'}" target="popup" index="105" />        
+                 role="ADMIN" visibleWhen="#{entity.state.matches('APPROVED|CANCELLED')}" target="popup" index="105" />        
     </invokers>
     
     <code lang="groovy">

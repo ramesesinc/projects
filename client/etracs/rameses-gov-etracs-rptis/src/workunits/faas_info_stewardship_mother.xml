@@ -10,10 +10,10 @@
         <invoker type="formActions" caption="Modify" name="popupChangeInfo" visibleWhen="#{entity.state=='CURRENT'}" category="faas:changeinfo" index="1000" role="ADMIN" />
    </invokers>
    
-   <code class="com.rameses.gov.etracs.rpt.faas.ui.FaasStewardshipParentController">
+   <code class="com.rameses.gov.etracs.rptis.models.FAASStewardshipParentModel">
    </code>
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.faas.ui.FaasPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.FAASPage"/>
     </pages>    
 </workunit>
 

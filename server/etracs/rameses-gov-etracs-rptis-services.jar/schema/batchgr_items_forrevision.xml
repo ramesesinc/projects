@@ -1,0 +1,16 @@
+<schema>
+	<element tablename="batchgr_items_forrevision">
+		<field name="objid" primary="true"/>
+		<field name="rpuid" />
+		<field name="realpropertyid" />
+		<field name="barangayid" />
+		<field name="rputype" />
+		<field name="tdno" />
+		<field name="fullpin" />
+		<field name="pin" />
+		<field name="suffix" type="integer" />
+		<complex name="barangay" ref="barangay" jointype="many-to-one" includefields="name">
+			<key field="barangayid" target="objid" /> 
+		</complex>
+	</element>
+</schema>

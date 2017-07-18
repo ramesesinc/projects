@@ -183,6 +183,7 @@ FROM faas f
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 	LEFT JOIN rpttracking t ON f.objid = t.objid 
 where 1=1  
 ${filters}
@@ -356,9 +357,6 @@ and ft.enddate = x.assignee_dtsigned
 
 
 
-[deleteTasks]
-DELETE FROM faas_task WHERE refid = $P{objid}
-
 [insertTask]
 INSERT INTO faas_task 
 	(	objid, refid, state, startdate, enddate, 
@@ -493,9 +491,6 @@ where objid = $P{objid}
 [updateDataCaptureFlag]
 update faas set datacapture = $P{datacapture} where objid = $P{objid}
 
-[deleteFaasUpdate]
-delete from faasupdate where faasid = $P{objid}
-
 	
 [getAffectedRpus]	
 select 
@@ -607,14 +602,6 @@ where r.objid = f.rpuid
   
 [findOpenTask]  
 select * from faas_task where refid = $P{objid} and enddate is null 
-
-[deleteAffectedRpus]
-delete from faas_affectedrpu where faasid = $P{objid}
-
-[deleteFaasStewardship]	
-delete from faas_stewardship where stewardrpumasterid = $P{rpumasterid}
-	
-
 
 [updateFaasTdNo]
 update faas set tdno = $P{tdno} where objid = $P{objid} 

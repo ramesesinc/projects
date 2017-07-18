@@ -1,0 +1,24 @@
+"entity.datacapture|sep2"[true == true]{
+    visible:false;
+}
+"entity.claimno" [multipleClaim == null || multipleClaim == false] {
+    visible:false;
+}
+
+"entity.claimno" [multipleClaim != null && multipleClaim == true] {
+    visible:true;
+    required:true;
+}
+
+"entity.newry" [generalRevision == null || generalRevision == false] {
+    visible:false;
+}
+
+"entity.newry" [generalRevision != null && generalRevision == true] {
+    visible:true;
+    required:true;
+}
+
+"entity.datacapture|sep2"[showCapture]{
+    visible:true;
+}

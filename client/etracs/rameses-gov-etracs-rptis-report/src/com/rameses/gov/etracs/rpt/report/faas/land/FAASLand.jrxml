@@ -231,7 +231,7 @@
 					<reportElement
 						x="48"
 						y="123"
-						width="226"
+						width="248"
 						height="19"
 						key="textField-1"/>
 					<box>					<pen lineWidth="0.0" lineColor="#009900"/>
@@ -249,7 +249,7 @@
 					<reportElement
 						x="48"
 						y="142"
-						width="122"
+						width="145"
 						height="19"
 						key="textField-2"/>
 					<box>					<pen lineWidth="0.0" lineColor="#009900"/>
@@ -265,7 +265,7 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="170"
+						x="194"
 						y="142"
 						width="44"
 						height="19"
@@ -284,7 +284,7 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="MM/dd/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="214"
+						x="238"
 						y="142"
 						width="59"
 						height="19"
@@ -304,7 +304,7 @@
 					<reportElement
 						x="60"
 						y="161"
-						width="213"
+						width="236"
 						height="19"
 						key="textField-4"/>
 					<box>					<pen lineWidth="0.0" lineColor="#009900"/>
@@ -320,7 +320,7 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="273"
+						x="297"
 						y="123"
 						width="33"
 						height="19"
@@ -339,9 +339,9 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="306"
+						x="330"
 						y="123"
-						width="246"
+						width="222"
 						height="19"
 						key="textField-9"/>
 					<box>					<pen lineWidth="0.0" lineColor="#009900"/>
@@ -357,7 +357,7 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="273"
+						x="297"
 						y="142"
 						width="43"
 						height="19"
@@ -376,9 +376,9 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="316"
+						x="340"
 						y="142"
-						width="236"
+						width="212"
 						height="19"
 						key="textField-10"/>
 					<box>					<pen lineWidth="0.0" lineColor="#009900"/>
@@ -394,7 +394,7 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="273"
+						x="297"
 						y="161"
 						width="43"
 						height="19"
@@ -413,9 +413,9 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="316"
+						x="340"
 						y="161"
-						width="236"
+						width="212"
 						height="19"
 						key="textField-11"/>
 					<box>					<pen lineWidth="0.0" lineColor="#009900"/>

@@ -1,0 +1,14 @@
+
+"entity.receipt.*"[entity.state == 'UNRESTRICTED' && mode!='read']{
+    enabled:true;
+    required:true;
+}
+
+"entity.receipt.*"[entity.state != 'UNRESTRICTED']{
+    enabled:false;
+    required:false;
+}
+
+"entity.parent"[ledger != null]{
+    enabled:false;
+}

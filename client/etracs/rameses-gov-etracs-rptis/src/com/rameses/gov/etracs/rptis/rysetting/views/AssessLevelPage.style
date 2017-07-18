@@ -1,0 +1,11 @@
+"selected.*" [mode=='read']{
+    readonly:true;
+}
+
+"selectedLevel" [mode != 'read']{
+    readonly:false;
+}
+
+"selectedRange" [mode != 'read' && selectedLevel != null]{
+    readonly:false;
+}

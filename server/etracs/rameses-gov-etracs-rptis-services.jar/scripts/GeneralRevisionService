@@ -9,7 +9,7 @@ class GeneralRevisionService
 	@ActiveDB('generalrevision')
 	def grdb 
 
-	@PersistenceContext('rpt')
+	@PersistenceContext('main')
 	def em
     
 	@Env
@@ -33,6 +33,9 @@ class GeneralRevisionService
 	@Service('RPTUtil')	
 	def utilSvc
 
+	@DataContext('batchgr_error')
+	def em_error 
+
 
 
 	@ProxyMethod
@@ -47,7 +50,7 @@ class GeneralRevisionService
 	@ProxyMethod
 	public def initGeneralRevision( info ) {
 		utilSvc.required('Property to process', info.faas)
-		utilSvc.required('New Revision Year', info.ry)
+		utilSvc.required('New Revision Year', info.newry)
 		info.txntype = faasSvc.getTxnType('GR');
 		def faas = faasSvc.initTransaction(info)
 		
@@ -55,32 +58,24 @@ class GeneralRevisionService
 			faas.rpu.realpropertyid = faas.rp.objid
 		}
 		else {
-			def landrpu = grdb.findCurrentRevisedLandRpu([objid:faas.rpu.landrpuid, ry:info.ry])
+			def landrpu = grdb.findCurrentRevisedLandRpu([objid:faas.rpu.landrpuid, ry:info.newry])
 			if (!landrpu)
-				landrpu = grdb.findCurrentRevisedLandRpuByPin([pin:faas.rp.pin, ry:info.ry])
+				landrpu = grdb.findCurrentRevisedLandRpuByPin([pin:faas.rp.pin, ry:info.newry])
 			if (!landrpu)
-				landrpu = grdb.findRevisedLandRpu([previd:faas.rpu.landrpuid, ry:info.ry])
+				landrpu = grdb.findRevisedLandRpu([previd:faas.rpu.landrpuid, ry:info.newry])
 			if (!landrpu) 
-				landrpu = grdb.findRevisedLandByRealPropertyId([realpropertyid:faas.rpu.realpropertyid, ry:info.ry])
+				landrpu = grdb.findRevisedLandByRealPropertyId([realpropertyid:faas.rpu.realpropertyid, ry:info.newry])
 			if (!landrpu) 
-				throw new Exception('Land RPU is not yet revised for Revision Year ' + info.ry + '.')
+				throw new Exception('Land RPU is not yet revised for Revision Year ' + info.newry + '.')
 			faas.rp = rpSvc.open([objid:landrpu.realpropertyid])
 			faas.realpropertyid = faas.rp.objid
 			faas.rpu.realpropertyid = faas.rp.objid 
 			faas.rpu.landrpuid = landrpu.objid 
 		}
-		//faas.rpu.rysettingid 	= info.newrysetting.objid 
-		faas.rpu.ry 			= info.ry
-		faas.rp.ry 			= info.ry 
-
+		faas.rpu.ry = info.newry
+		faas.rp.ry = info.newry 
 		faas.rpu.rp = faas.rp
-
-		faas.memoranda = var.gr_default_memoranda
-		faas.taxmapper = [name:var.gr_default_taxmapper_name, title:var.gr_default_taxmapper_title, dtsigned:var.gr_default_dtsigned]
-		faas.appraiser = [name:var.gr_default_appraiser_name, title:var.gr_default_appraiser_title, dtsigned:var.gr_default_dtsigned]
-		faas.recommender = [name:var.gr_default_recommender_name, title:var.gr_default_recommender_title, dtsigned:var.gr_default_dtsigned]
-		faas.approver = [name:var.gr_default_approver_name, title:var.gr_default_approver_title, dtsigned:var.gr_default_approver_dtsigned]
-		faas.rpu.preveffectivity = faas.preveffectivity
+		faas.restrictions.each{ it.objid = 'FR' + new java.rmi.server.UID()}
 		rpuSvc.reviseRpu(faas.rpu)
 		return faas 
 	}
@@ -88,7 +83,8 @@ class GeneralRevisionService
 	@ProxyMethod
 	public def createDataCaptureGeneralRevision( info ) {
 		def faas = initGeneralRevision( info )
-		return faas 
+		em_error.find([objid:info.faas.objid]).delete()
+		return faasSvc.createFaas(faas)
 	}	
 
 

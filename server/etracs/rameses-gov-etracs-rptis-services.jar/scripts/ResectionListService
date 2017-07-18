@@ -3,7 +3,7 @@ import com.rameses.annotations.*
 
 class ResectionListService 
 {
-	@PersistenceContext('rpt')
+	@PersistenceContext('main')
 	def em 
 	
 	@Service('RPTUtil')

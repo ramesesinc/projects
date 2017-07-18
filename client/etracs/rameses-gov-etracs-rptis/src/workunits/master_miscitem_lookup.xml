@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/MasterLookup.xml" 
+          schemaName="miscitem"
+          customFilter="state='APPROVED'" 
+          orderBy="code">
+    <invokers>
+        <invoker type="miscitem:lookup" 
+                 caption="Miscellaneous Item Lookup" 
+                 action="init"
+                 height="500" width="700" />
+    </invokers>
+</workunit>

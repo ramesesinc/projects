@@ -23,9 +23,6 @@ create table etracs25_migrate_rptledger_log
 	primary key(objid)
 )
 
-[deleteLedgerLog]
-delete from etracs25_migrate_rptledger_log
-
 
 [logMigratedLedger]
 insert into etracs25_migrate_rptledger
@@ -47,90 +44,75 @@ delete from xrptledger where objid = $P{objid}
 
 
 [insertLedgers]
-insert into xrptledger (objid)
+insert into xrptledger
 select objid 
 from rptledger rl 
 where not exists(select * from etracs25_migrate_rptledger where objid = rl.objid)
   and not exists(select * from etracs25_migrate_rptledger_log where objid = rl.objid)
-  and rl.docstate <> 'cancelled'
 
 [findLedgerForMigrationCount]
 select count(*) as count from xrptledger 
-
-[findLedgerPaymentForMigrationCount]
-select count(*) as count from xrptledgerpayment
 
 
 [getLedgersForMigration]
 select * from xrptledger
 
 
-
-[getLedgerPaymentsForMigration]
-select * from xrptledgerpayment
-
 [findLedgerById]
 select 
-  rl.objid,
-  rl.docstate as state,
-  rl.faasid,
-  null as nextbilldate,
-  rl.lastyearpaid,
-  rl.lastqtrpaid,
-  rl.barangay, 
-  null as barangayid,
-  rl.taxpayerid as taxpayer_objid,
-  rl.taxpayername as owner_name,
-  rl.administratorname as administrator_name,
-  rl.fullpin,
-  rl.tdno,
-  rl.cadastrallotno,
-  rl.rputype,
-  rl.txntype as txntype_objid,
-  rl.classid as classification_objid,
-  rl.classcode,
-  rl.assessedvalue as totalav,
-  0 as totalmv,
-  0 as totalareaha,
-  rl.taxable,
-  rl.prevtdno,
-  null as titleno,
-  1 as updateflag,
-  1 as forcerecalcbill
+  rl.objid, 
+  rl.docstate as state, 
+  rl.faasid, 
+  null as nextbilldate, 
+  rl.lastyearpaid, 
+  rl.lastqtrpaid, 
+  rl.firstqtrpaidontime, 
+  0 as qtrlypaymentavailed, 
+  rl.quarterlyinstallmentpaidontime as qtrlypaymentpaidontime, 
+  0 as lastitemyear, 
+  0 as lastreceiptid, 
+  0 as advancebill, 
+  0 as lastbilledyear, 
+  0 as lastbilledqtr, 
+  rl.partialbasic, 
+  rl.partialbasicint, 
+  0 as partialbasicdisc, 
+  rl.partialsef, 
+  rl.partialsefint, 
+  0 as partialsefdisc, 
+  0 as partialledyear, 
+  0 as partialledqtr, 
+  0 as undercompromise
 from rptledger rl 
 where objid = $P{objid}
   
 [findLedgerByTdno]
-select
-  rl.objid,
-  rl.docstate as state,
-  rl.faasid,
-  null as nextbilldate,
-  rl.lastyearpaid,
-  rl.lastqtrpaid,
-  rl.barangay, 
-  null as barangayid,
-  rl.taxpayerid as taxpayer_objid,
-  rl.taxpayername as owner_name,
-  rl.administratorname as administrator_name,
-  rl.fullpin,
-  rl.tdno,
-  rl.cadastrallotno,
-  rl.rputype,
-  rl.txntype as txntype_objid,
-  rl.classid as classification_objid,
-  rl.classcode,
-  rl.assessedvalue as totalav,
-  0 as totalmv,
-  0 as totalareaha,
-  rl.taxable,
-  rl.prevtdno,
-  null as titleno,
-  1 as updateflag,
-  1 as forcerecalcbill
+select 
+  rl.objid, 
+  rl.docstate as state, 
+  rl.faasid, 
+  null as nextbilldate, 
+  rl.lastyearpaid, 
+  rl.lastqtrpaid, 
+  rl.firstqtrpaidontime, 
+  0 as qtrlypaymentavailed, 
+  rl.quarterlyinstallmentpaidontime as qtrlypaymentpaidontime, 
+  0 as lastitemyear, 
+  0 as lastreceiptid, 
+  0 as advancebill, 
+  0 as lastbilledyear, 
+  0 as lastbilledqtr, 
+  rl.partialbasic, 
+  rl.partialbasicint, 
+  0 as partialbasicdisc, 
+  rl.partialsef, 
+  rl.partialsefint, 
+  0 as partialsefdisc, 
+  0 as partialledyear, 
+  0 as partialledqtr, 
+  0 as undercompromise
 from rptledger rl 
-where rl.tdno = $P{tdno}
-
+where tdno = $P{tdno}
 
 [findFaasById]
 select 
@@ -213,111 +195,3 @@ from rptpayment p
 where p.rptledgerid = $P{objid}
 
 
-
-
-[findEntityById]
-select 
-  objid,
-  entityno,
-  entityname as name,
-  entityaddress as address_text,
-  entitytype as type,
-  substring(entityname, 1, 30) as entityname,
-  objid as address_objid,
-  info 
-from entity e 
-where objid = $P{objid}
-
-
-
-
-
-[dropXLedgerPaymentTable]
-drop table xrptledgerpayment
-
-
-[createXLedgerPaymentTable]
-create table xrptledgerpayment(
-  objid varchar(50),
-  primary key(objid)
-)
-
-[createLedgerPaymentMigrateTable]
-create table etracs25_migrate_rptledgerpayment
-(
-  objid varchar(50),
-  primary key(objid)
-)
-
-[createLedgerPaymentMigrateLogTable]
-create table etracs25_migrate_rptledgerpayment_log
-(
-  objid varchar(50),
-  log text, 
-  primary key(objid)
-)
-
-[deleteLedgerPaymentLog]
-delete from etracs25_migrate_rptledgerpayment_log
-
-
-[logMigratedLedgerPayment]
-insert into etracs25_migrate_rptledgerpayment
-  (objid)
-values 
-  ($P{objid})
-
-
-[logPaymentMigrateError]
-insert into etracs25_migrate_rptledgerpayment_log
-  (objid, log)
-values
-  ($P{objid}, $P{log})
-
-[deleteXLedgerPayment]
-delete from xrptledgerpayment where objid = $P{objid}
-
-
-
-
-[insertLedgerPayments]
-insert into xrptledgerpayment (objid)
-select p.objid
-from rptpayment p 
-inner join rptledger rl on p.rptledgerid = rl.objid 
-where p.mode = 'capture'
-  and not exists(select * from etracs25_migrate_rptledgerpayment where objid = rl.objid)
-  and not exists(select * from etracs25_migrate_rptledgerpayment_log where objid = rl.objid)
-
-[findLedgerPayment]
-select
-  p.objid,
-  p.rptledgerid,
-  'capture' as type,
-  p.receiptno as refno,
-  p.receiptdate as refdate,
-  null as payorid,
-  rl.taxpayername as paidby_name,
-  rl.taxpayeraddress as  paidby_address,
-  p.collectorname as collector,
-  p.capturedby as postedby,
-  '-' as postedbytitle,
-  p.dtposted,
-  p.fromyear,
-  p.fromqtr,
-  p.toyear,
-  p.toqtr,
-  p.basic,
-  p.basicint,
-  p.basicdisc,
-  0 as basicidle,
-  p.sef,
-  p.sefint,
-  p.sefdisc,
-  0 as firecode,
-  (p.basic + p.basicint - p.basicdisc + p.sef + p.sefint - p.sefdisc) as amount,
-  P.collectingagency
-from rptpayment p 
-  inner join rptledger rl on p.rptledgerid = rl.objid 
-where p.objid = $P{objid}
-and p.mode = 'capture'

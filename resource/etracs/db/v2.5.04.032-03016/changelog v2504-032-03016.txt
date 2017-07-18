@@ -1,0 +1,17 @@
+/* v2.5.04.032-03016 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Accomplishment report updates
+	- Auto agriland distance adjustment
+	- ROA report update
+	- Management log report update
+	- QRRPA (LIFT) and AEEMM format update
+	- Cancel FAAS: Support editing of txndate (manual cancellation)
+	- Report AEEMM update on parcel computation
+
+- LANDTAX
+	- 

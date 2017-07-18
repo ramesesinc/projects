@@ -1,0 +1,14 @@
+"addLgu" [mode=='read']{
+    enabled:false;
+}
+"selectedLgu" [mode=='read']{
+    readonly:true;
+}
+
+
+"addLgu" [mode!='read']{
+    enabled:true;
+}
+"selectedLgu" [mode!='read']{
+    readonly:false;
+}

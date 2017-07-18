@@ -1,7 +1,6 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
-import java.util.concurrent.*
-import java.rmi.server.UID
+import com.rameses.services.extended.*;
 
 class RPTReportDelinquencyService
 {
@@ -19,6 +18,9 @@ class RPTReportDelinquencyService
 
 	@Service('NumberService')
 	def numSvc 
+
+	@DataContext('propertyclassification')
+	def em_classification
 
 	@ProxyMethod
 	public def getBarangayList(  ) {
@@ -94,6 +96,8 @@ class RPTReportDelinquencyService
 			params.year = currentyear; 
 		} 
 
+		params.classificationid = (params.classification ? params.classification.objid : '%')
+
 		params.barangayid = params.barangay?.objid; 
 		if ( !params.barangayid ) params.barangayid='%'; 
 
@@ -108,7 +112,10 @@ class RPTReportDelinquencyService
 		if ( params.reporttype == 'summary' ) {
 			list = em.getDelinquentLedgersSummary( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
-
+		} 
+		else if ( params.reporttype == 'certifiedlist' ) {
+			list = em.getCertifiedList( params ); 
+			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 		} 
 		else if ( params.reporttype == 'byclassification' ) {
 			list = buildDelinquentLedgersByClassification(params)
@@ -176,6 +183,11 @@ class RPTReportDelinquencyService
 		def list = em.getDelinquentLedgersByClassification( params ); 
 		if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 		return list;
+	}
+
+	@ProxyMethod
+	public def getClassifications(  ) {
+		return em_classification.where("state = 'APPROVED'").orderBy('orderno').list()
 	}
 
 

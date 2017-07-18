@@ -1,0 +1,121 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+
+class OnlineElectronicReceiptService  
+{
+
+    @Env 
+    def env 
+
+    @Service("DateService")
+    def dateService
+        
+    @Service("NumberService")
+    def numSvc  
+
+    @DataContext("paymentorder")
+    def paymentorder 
+    
+    @DataContext("cashreceipt")
+    def cashreceipt 
+
+    @DataContext("cashreceiptitem")
+    def cashreceiptItem 
+
+    @DataContext("cashreceiptpayment_eor")
+    def cashreceiptpayment_eor 
+
+    @DataContext("af_control")
+    def afControl 
+
+    @DataContext("collectiontype")
+    def collectiontype 
+
+    @Service('OrgService')
+    def orgSvc 
+    
+
+    @ProxyMethod
+    public def post( eor) {
+        def po = paymentorder.find([txnid:eor.txnpoid]).first()
+        if (!po) throw new Exception('Payment Order No. ' + eor.txnpoid + ' does not exist or has already been deleted.')
+
+        def svrDate = dateService.serverDate
+        def entity = [objid:eor.objid]
+        entity.putAll( getNextEORNumber() )
+        entity.state = 'POSTED'
+        entity.txnmode = 'ONLINE'
+        entity.payer = po.payer
+        entity.paidby = po.paidby
+        entity.paidbyaddress = po.paidbyaddress
+        entity.amount = numSvc.round( po.amount )
+        entity.receiptdate = eor.refdate
+        entity.txndate = eor.dtposted
+        entity.org = orgSvc.getRoot()
+        entity.collector = getCollector()
+        entity.user = [objid: 'EOR', name:'EOR']
+        entity.totalcash = 0
+        entity.totalnoncash = entity.amount
+        entity.balancedue = 0
+        entity.cashchange = 0
+        entity.totalcredit = 0
+        entity.collectiontype = collectiontype.find(po.txntype.collectiontype).first()
+        entity = cashreceipt.create(entity)
+        po.items.each { m->
+            m.receiptid = entity.objid
+            cashreceiptItem.create(m)
+        }
+
+        createCashReceiptPaymentEor(entity,eor)
+        paymentorder.find([txnid:po.txnid]).update([receiptid: entity.objid])
+        entity.po = po 
+        return entity 
+    }   
+
+    def getControl( def afControlId ) {
+        def ac = afControl.find( [objid: afControlId ]).first()
+        if(!ac) {
+            ac = [objid:afControlId]
+            ac.afid = 'EOR'
+            ac.startseries = 1
+            ac.endseries = 999999999
+            ac.currentseries = 1
+            ac.stubno = 1
+            ac.active = 1
+            ac.owner =  getCollector()
+            ac.assignee = ac.owner
+            afControl.create(ac)
+        }
+        return ac
+    }
+
+    def getCollector(){
+        return [objid: 'EOR', name:'EOR', title:'EOR']
+    }
+
+    def getNextEORNumber() {
+        String afControlId = 'EOR'+ dateService.getServerYear()
+        def ac = getControl(afControlId)
+        int series = ac.currentseries
+        afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] )
+        return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'serial', controlid: afControlId, stub: 1 ] 
+    }
+
+    void createCashReceiptPaymentEor(entity, eor){
+        def rcpt = [objid:entity.objid]
+        rcpt.dtposted = entity.txndate 
+        rcpt.receiptid = entity.objid 
+        rcpt.partner = eor.partner 
+        rcpt.txnrefid = eor.txnrefid 
+        rcpt.txnreftype = eor.txnreftype 
+        rcpt.refno = eor.refno 
+        rcpt.refdate = eor.refdate 
+        rcpt.amount = eor.amount 
+        rcpt.txntype = eor.txntype 
+        rcpt.particulars = eor.particulars 
+        rcpt.controlno = eor.controlno 
+        cashreceiptpayment_eor.create(rcpt)
+    }
+
+}

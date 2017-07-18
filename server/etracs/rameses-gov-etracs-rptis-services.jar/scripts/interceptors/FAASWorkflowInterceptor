@@ -37,6 +37,9 @@ class FAASWorkflowInterceptor
 	@Service('DateService')
 	def dtSvc 
 
+	@DataContext('faas_previous')
+	def em_faas_previous 
+
 	@After(pattern="GeneralRevisionService.initOnlineGeneralRevision") 
 	public void handleGRStartWorkflow( evt ) {
 		handleCreate(evt)
@@ -118,7 +121,13 @@ class FAASWorkflowInterceptor
 		def faas = evt.args[0].data
 		util.required('Owner', faas.taxpayer.objid)
 		util.required('Declared Owner', faas.owner.name)
-		if(faas.owner.name.equalsIgnoreCase(faas.prevowner)){
+
+		def prevowner = null;
+		def prevlist = em_faas_previous.find([faasid:faas.objid]).list();
+		if (prevlist){
+			prevowner = prevlist.prevowner.join('/')
+		}
+		if(faas.owner.name.equalsIgnoreCase(prevowner)){
 			throw new Exception('Current Owner must not be equal to previous owner.')
 		}
 	}

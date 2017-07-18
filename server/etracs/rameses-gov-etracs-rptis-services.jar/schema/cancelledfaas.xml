@@ -11,6 +11,8 @@
 		<field name="lguid" />
 		<field name="originlguid" />
 		<field name="lasttaxyear" type="integer" />
+		<field name="cancelledbytdnos" />
+		<field name="cancelledbypins" />
 	</element>
 
 	<element name="signatory" tablename="cancelledfaas_signatory">

@@ -9,7 +9,7 @@
         import com.rameses.rcp.annotations.*
         import com.rameses.osiris2.client.*
         import com.rameses.osiris2.common.*
-        import com.rameses.gov.etracs.rpt.util.*;
+        import com.rameses.gov.etracs.rptis.util.*;
         
         class RPTLedgerListController extends ListController
         {
@@ -26,7 +26,7 @@
             void init(){
             }
         
-            int getRows() { return 25 }
+            int getRows() { return 20 }
             
             Column[] getColumns(){
                 return [
@@ -35,6 +35,7 @@
                     new Column(name:"taxpayer.name", caption:"Owner Name", width:250),
                     new Column(name:"administrator.name", caption:"Administrator", width:250),
                     new Column(name:"fullpin", caption:"PIN", width:150),
+                    new Column(name:"titleno", caption:"Title No.", width:100),
                     new Column(name:"cadastrallotno", caption:"Lot No.", width:100),
                     new Column(name:"blockno", caption:"Block No.", width:100),
                     new Column(name:"totalareaha", caption:"Area (ha)", width:100, type:'decimal', format:'#,##0.0000'),

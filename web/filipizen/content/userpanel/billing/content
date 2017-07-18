@@ -1,0 +1,69 @@
+
+<% 
+    def display = [];
+    display << [num:1, tname:"Inday Sari-sari Store", address:"Buaya, Lapu-Lapu City"];
+    display << [num:2, tname:"JD Vulcanizing Shop", address:"Tipolo, Mandaue City"];
+    display << [num:3, tname:"Jorge Pasalubong", address:"M.J Cuenco, Cebu City"];
+    display << [num:4, tname:"Ann's Beauty Salon", address:"Pusok, lapu-lapu City"];
+%>
+
+
+    <div class="container">
+      <!-- Breadcrumbs line -->
+      <div class="crumbs">
+        <ul id="breadcrumbs" class="breadcrumb">
+          <li>
+            <i class="icon-home"></i>
+            <a href="#">Userpanel</a>
+          </li>
+          <li>
+            <a href="#">Transaction</a>
+          </li>
+        </ul>
+          <ul class="crumb-buttons">
+            <li><a href="#" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
+            <li><a data-toggle="modal" href="#myModal1"><i class="icon-upload"></i><span>Upload</span></a></li>
+          </ul>
+          @modalDialog()
+      </div>
+      <!-- /Breadcrumbs line -->
+      <!--=== Page Content ===-->
+        <div class="col-md-12">
+            <div class="widget box">
+              <div class="widget-header">
+                <h4><i class="icon-reorder"></i>Billing</h4>
+                <div class="toolbar no-padding">
+                  <div class="btn-group">
+                    <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="widget-content">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Trade Name</th>
+                      <th>Address</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <%display.each{k ->%>
+                    <tr>
+                      <td>${k.num}</td>
+                      <td><a href="">${k.tname}</a></td>
+                      <td>Buaya, Lapu-Lapu City</td>
+                      <td><span class="label label-warning">Pending</span></td>
+                    </tr>
+                    <%}%>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /Simple Table -->
+          </div>
+
+      <!-- /Page Content -->
+    </div>
+

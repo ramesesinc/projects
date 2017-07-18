@@ -1,6 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="FAAS MasterList" target="window" index="1" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="FAAS MasterList" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>
@@ -43,6 +46,7 @@ class MasterListingController extends com.rameses.gov.etracs.rpt.report.AsyncRep
                 new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21', emptyText:'ALL']),
                 new FormControl( "combo", [captionWidth:100, caption:'Classification', name:'entity.classification', items:'classifications', required:true, immediate:true, expression:'#{item.name}']),
                 new FormControl( "combo", [captionWidth:100, caption:'Order By', name:'entity.orderby', items:'orderbyColumns', expression:'#{item.caption}']),
+                new FormControl( "text", [captionWidth:100, caption:'Section', name:'entity.section', depends:'entity.barangay', visibleWhen:'#{entity.barangay != null}']),
             ]    
         },
    ] as FormPanelModel;

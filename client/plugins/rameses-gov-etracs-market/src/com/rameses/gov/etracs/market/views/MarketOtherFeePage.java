@@ -42,9 +42,9 @@ public class MarketOtherFeePage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(100);
 
         xLookupField1.setCaption("Txn Type");
-        xLookupField1.setExpression("#{entity.type.title}");
-        xLookupField1.setHandler("market_otherfee_type:lookup");
-        xLookupField1.setName("entity.type"); // NOI18N
+        xLookupField1.setExpression("#{entity.txntype.title}");
+        xLookupField1.setHandler("billitem_txntype:lookup");
+        xLookupField1.setName("entity.txntype"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);

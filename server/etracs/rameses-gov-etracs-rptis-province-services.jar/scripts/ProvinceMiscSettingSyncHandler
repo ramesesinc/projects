@@ -4,8 +4,11 @@ import com.rameses.common.*;
 
 class ProvinceMiscSettingSyncHandler
 {   
-	@ActiveDB('miscrysetting')
-	def em 
+	@DataContext('rysetting_misc')
+	def em_misc 
+
+	@DataContext('rysetting_lgu')
+	def em_setting_lgu
 
 
 	@Env
@@ -49,7 +52,11 @@ class ProvinceMiscSettingSyncHandler
 		
 
 		//get rysetting by lguid
-		def settings = em.getSettingsByLguIdRy([lguid:org.objid, ry:params.ry])
+				def settings = []
+		def lgusettings = em_setting_lgu.find([lguid:org.objid, settingtype:'misc']).list()
+		lgusettings.each{
+			settings << em_misc.find([objid:it.rysettingid, ry:params.ry]).first()
+		}
 		if (!settings){
 			queue.push([msgtype:'_ERROR_', msg:'Requested revision setting does not exist.'])
 			queue.push( new AsyncToken(closed:true) )
@@ -60,12 +67,12 @@ class ProvinceMiscSettingSyncHandler
 			setting = svc.open(setting)
 			queue.push([msgtype:'miscrysetting', data:setting])
 
-			def assesslevels = svc.getAssessLevels(setting.objid).each{lvl ->
-				lvl.ranges = svc.getRanges(lvl.objid)
+			def assesslevels = svc.getAssessLevels(setting).each{lvl ->
+				lvl.ranges = svc.getRanges(lvl)
 			}
 			queue.push([msgtype:'assesslevels', data:assesslevels])
 
-			def items = svc.getMiscItemValues(setting.objid)
+			def items = svc.getMiscItemValues(setting)
 			queue.push([msgtype:'itemvalues', data:items])
 
 		}

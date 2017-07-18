@@ -47,14 +47,14 @@ order by min(t.orderno)
 
 [getAdvanceReport]
 select 
-	t.classname,  min(t.special) as special , 
+	t.year, t.classname,  min(t.special) as special , 
 	sum( basic)  as basic, sum( basicdisc ) as basicdisc, 
 	sum( sef)  as sef, sum( sefdisc ) as sefdisc, 
 	sum(basicnet) as basicnet, sum(sefnet ) as sefnet,
 	sum( netgrandtotal ) as netgrandtotal, sum(idle) as idle 
 from ( 
 	select 
-		pc.name as classname, pc.orderno, pc.special,  
+		ri.year, pc.name as classname, pc.orderno, pc.special,  
 		ri.basic, ri.basicdisc, ( ri.basic - ri.basicdisc ) as basicnet,
 		ri.sef, ri.sefdisc, (ri.sef - ri.sefdisc ) as sefnet,
 		( ri.basic - ri.basicdisc + ri.sef - ri.sefdisc + ri.basicidle ) as netgrandtotal , ri.basicidle as idle 
@@ -69,9 +69,10 @@ from (
 	where ${filter}  
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 		and ri.revperiod = 'advance'
+		and ri.year = $P{advanceyear}
 )t 	
-group by t.classname 
-order by min(t.orderno)  
+group by t.year, t.classname 
+order by t.year, min(t.orderno)  
 
 
 [findStandardDispositionReport]
@@ -128,3 +129,24 @@ from (
 		and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid)
 		and ri.revperiod = 'advance' 
 )t 
+
+
+
+[findAdvanceDispositionReport2]
+select 
+	sum(ri.basic) as basic,
+	sum(ri.basicdisc) as basicdisc,
+	sum(ri.basicidle) as basicidle,
+	sum(ri.basicidledisc) as basicidledisc,
+	sum(ri.sef) as sef,
+	sum(ri.sefdisc) as sefdisc
+from remittance rem 
+	inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+	inner join liquidation liq on liqr.liquidationid = liq.objid
+	inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
+	inner join cashreceipt cr on remc.objid = cr.objid 
+	inner join cashreceiptitem_rpt_online ri ON cr.objid = ri.rptreceiptid 
+where ${filter}  
+	and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid)
+	and ri.revperiod = 'advance' 
+	and ri.year = $P{advanceyear}

@@ -18,7 +18,7 @@ class RPTReportOcularInspectionService
 
 
 	@ProxyMethod
-	public def buildOcularInspectionReport(finding){
+	public def buildReport(finding){
 		def reportdata = em.findOcularInspectionInfo(finding)
 		if (!reportdata) throw new Exception('Record does not exist or has already been deleted.')
 		if(reportdata.inspectors && reportdata.inspectors != 'null')
@@ -39,13 +39,15 @@ class RPTReportOcularInspectionService
 		reportdata.location = '';
 
 		if (reportdata.purok)
-			reportdata.location = reportdata.purok;
+			reportdata.location += reportdata.purok;
 
-		if (reportdata.location && reportdata.street)
-			reportdata.location += ', ' + reportdata.street 
-		else if (reportdata.street)
-			reportdata.location = reportdata.street 
+		if (reportdata.street){
+			if (reportdata.location) reportdata.location += ', '	
+			reportdata.location +=  reportdata.street 
+		}
 
+		if (reportdata.location) reportdata.location += ', '	
+		reportdata.location += reportdata.barangay.name + ', ' 
 		reportdata.location += ( muni ? muni.name + ', ' : '') + ( prov ? prov.name : city?.name )
 	}
 }

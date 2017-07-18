@@ -3,7 +3,7 @@ import com.rameses.annotations.*
 
 class MCSettlementListService 
 {
-	@PersistenceContext('rpt')
+	@PersistenceContext('main')
 	def em 
 	
 	@Service('RPTUtil')

@@ -2,16 +2,16 @@ import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class FaasCaptureInterceptor
+class FAASCaptureInterceptor
 {
-	@ActiveDB('faas')
-	def em 
+	@DataContext('faas_task')
+	def em_faas_task 
 
 	@Service('RPTUtil')
 	def util
 
 
-	@After(pattern="FAASService.openFaas", eval="#{args[0].datacapture==1 || args[0].datacapture==true}") 
+	@After(pattern="FAASService.open", eval="#{args[0].datacapture==1 || args[0].datacapture==true}") 
 	public void openCapture( evt ) {
 		def faas = evt.args[0]
 		faas.taskstate = '';
@@ -42,9 +42,9 @@ class FaasCaptureInterceptor
 
 
 	@After(pattern="FAASService.(createFaas|updateFaas)", eval="#{result.datacapture==1 || result.datacapture==true}") 
-	public void doInsertDefaultTasks( evt ) {
+	public void doDeleteDefaultTasks( evt ) {
 		def faas = evt.result 
-		em.deleteTasks(faas)
+		em_faas_task.find([refid:faas.objid]).delete()
 	}
 
 }

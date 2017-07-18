@@ -15,7 +15,7 @@ class RPTTrackingInterceptor
 			svc.assignTrackingNo(faas, 'faas', 'Document is currently reviewed.')
 	}
 
-	@After(pattern='FAASService.openFaas|TDReportService.buildTaxDec')
+	@After(pattern='FAASService.open|TDReportService.buildTaxDec')
 	public void afterOpenFaas(evt){
 		def faas = evt.result 
 		def tracking = svc.findById(faas.objid)

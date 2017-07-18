@@ -11,6 +11,8 @@
 		<field name="totalplanttreemv" required="true" type="decimal" />
 		<field name="totalplanttreeav" required="true" type="decimal" />
 		<field name="landvalueadjustment" required="true" type="decimal" />
+		<field name="distanceawr" type="decimal" />
+		<field name="distanceltc" type="decimal" />
 	</element>
 
 

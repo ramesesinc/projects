@@ -6,7 +6,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 
 
 public class RPTLedgerController 
@@ -20,6 +20,9 @@ public class RPTLedgerController
     
     @Service("RPTLedgerService")
     def svc;
+    
+    @Service("FAASRestrictionService")
+    def restrictionSvc;
     
     @Service('RPTBillingService')
     def billSvc;
@@ -151,16 +154,29 @@ public class RPTLedgerController
 
     def ledgerItemsHandler = [
         fetchList : { return entity._ledgerItems},
-        onRemoveItem : {item ->
-            if (MsgBox.confirm('Delete item?')){
+        onRemoveItem : {item -> 
+            if (MsgBox.confirm('Delete selected item?')){
                 svc.removeLedgerItem(item);
                 entity._ledgerItems.remove(item);
-                return true;
+                return true; 
             }
             return false;
         }
     ] as EditorListModel
 
+        
+    void deleteLedgerItem(){
+        if (!selectedLedgerItem) return;
+        if (selectedLedgerItem.taxdifference == false){
+            throw new Exception('Only Tax Difference item can be deleted.');
+        }
+        if (MsgBox.confirm('Delete selected item?')){
+            svc.removeLedgerItem(selectedLedgerItem);
+            entity._ledgerItems.remove(selectedLedgerItem);
+            ledgerItemsHandler.reload();
+        }
+    }
+    
 
     /*--------------------------------------------------------------
     *
@@ -238,7 +254,7 @@ public class RPTLedgerController
             onupdate : { open();}
         ] )
     }
-    
+       
     void repostLedgerItems(){
         if (MsgBox.confirm('Repost ledger items?')){
             svc.repostLedgerItems(entity);
@@ -324,13 +340,6 @@ public class RPTLedgerController
         binding?.refresh('totalSubledger.*|subledgerCount');
     }
     
-    def getSubledgerinfo(){
-        if (entity.subledger)
-            return 'Sub-Ledger of PIN ' + entity.subledger.parent.fullpin + '.';
-        return ''
-    } 
-    
-    
     def viewTaxDeclaration(){
         def inv = Inv.lookupOpener('td:report', [entity:[objid:selectedItem.faasid]])
         if (inv){
@@ -348,47 +357,70 @@ public class RPTLedgerController
     *
     --------------------------------------------------------------*/    
     def selectedRestriction;
-    def restriction; 
+    def _restrictions;
+    
+    def getRestrictions(){
+        if (_restrictions == null){
+            _restrictions = svc.getRestrictions([objid:entity.objid])
+        }
+        return _restrictions
+    }
     
     def restrictionListHandler = [
-        fetchList : { return entity.restrictions }        
+        fetchList : { return restrictions }        
     ] as BasicListModel;
     
+    def oncreate = {
+        restrictions << it 
+        restrictionListHandler.reload()
+    }    
+    def onupdate = {
+        selectedRestriction.putAll(it)
+        restrictionListHandler.refresh()
+    }
     
-    
+    def getRestrictionParam(){
+        def p = [oncreate:oncreate, onupdate:onupdate]
+        p.parent = [objid:entity.faasid, tdno:entity.tdno, fullpin:entity.fullpin, owner:entity.taxpayer]
+        p.ledger = [objid:entity.objid]
+        return p
+    }
     def addRestriction(){
-        restriction = [:]
-        restriction.objid = 'RLR' + new java.rmi.server.UID();
-        restriction.parentid = entity.objid 
-        return new PopupOpener(outcome:'restriction');
+        return Inv.lookupOpener('faas_restriction:create', restrictionParam)
     }
     
-    def doAddRestriction(){
-        svc.addRestriction(restriction);
-        entity.restrictions << restriction;
-        restrictionListHandler.reload();
-        binding.refresh('restrictioninfo'); //TODO: not functioning
-        return '_close';
-    }
+    def openRestriction(){
+        def p = restrictionParam
+        p.entity = selectedRestriction
+        return Inv.lookupOpener('faas_restriction:open', p)
+    }    
     
-    void removeRestriction(){
+    void deleteRestriction(){
         if (!selectedRestriction) return;
-        if (MsgBox.confirm('Remove restriction?')){
-            svc.removeRestriction(selectedRestriction);
-            entity.restrictions.remove(selectedRestriction);
+        if (MsgBox.confirm('Delete selected restriction?')){
+            restrictionSvc.removeRestriction(selectedRestriction);
+            restrictions.remove(selectedRestriction);
             restrictionListHandler.reload();
         }
     }
-    
-    List getRestrictions(){
-         return LOV.RPT_FAAS_RESTRICTIONS*.key
-     }
-     
-    def getRestrictioninfo(){
-        def info = '';
-        if (entity.restrictions)
-           info = 'Ledger is currently under restriction.';
-        return info;
-    }     
+
+    def getMessagelist(){
+        def queryinfo = [];
+        if (entity.restrictions){
+            queryinfo << 'Ledger is currently under restriction';
+        }
+        
+        if (entity.subledger){
+            queryinfo << 'Sub-Ledger of PIN ' + entity.subledger.parent.fullpin + '.';
+        }
+        
+        if (RPTUtil.isTrue(entity.undercompromise)){
+            queryinfo << 'Ledger is under compromise agreement.'
+        }
+            
+        if (queryinfo)
+            return queryinfo;
+        return null;
+    }
 }
 

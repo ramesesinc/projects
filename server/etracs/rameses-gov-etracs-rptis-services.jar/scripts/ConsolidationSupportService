@@ -39,6 +39,9 @@ class ConsolidationSupportService
     @Service('TxnRefService')
     def txnRef
 
+    @DataContext('faas')
+    def em_faas 
+
     
 
     @ProxyMethod
@@ -229,7 +232,7 @@ class ConsolidationSupportService
     }
 
     boolean existFaas(faas){
-        return faasSvc.findFaasById(faas.objid) != null
+        return em_faas.find([objid:faas.objid]).first() != null 
     }
 
     def getFaasInfo(faas){

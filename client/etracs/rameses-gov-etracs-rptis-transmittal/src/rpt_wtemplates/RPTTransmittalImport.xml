@@ -6,10 +6,10 @@
         <invoker type="formActions" action="doNext" caption="Next" mnemonic="n" visibleWhen="#{mode=='init'}" />
         <invoker type="formActions" action="doImport" caption="Import" mnemonic="i" visibleWhen="#{mode=='read'}" />
    </invokers>
-   <code class="com.rameses.gov.etracs.rptis.model.TransmittalImportModel" />
+   <code class="com.rameses.gov.etracs.rptis.models.TransmittalImportModel" />
     <pages> 
-        <page name="init" template="com.rameses.gov.etracs.rptis.view.TransmittaImportInitPage"/>
-        <page template="com.rameses.gov.etracs.rptis.view.TransmittalPage"/>
+        <page name="init" template="com.rameses.gov.etracs.rptis.views.TransmittaImportInitPage"/>
+        <page template="com.rameses.gov.etracs.rptis.views.TransmittalPage"/>
     </pages>
 </workunit>
 

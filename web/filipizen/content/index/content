@@ -1,0 +1,22 @@
+<%
+    if( SESSION.sessionid != null ) {
+        RESPONSE.sendRedirect("/userpanel");    
+    }
+%>
+
+
+    <section class="container">
+                <div class="parallax-bg hidden-xs"><img src="/res/sliders/filipizen-map-philippines.png"></div>
+                <div class="container">
+                    <div class="col-sm-6  editorial-container">
+                        <div class="editorial-cell ">
+                            <h1 class="x-large">Experience ease of doing business with the government</h1>
+                            <p class="contentPara">Over <b>50 local government units</b> participating all over the Philippines.</p>
+                            <a class="btn-login col-sm-8 "   href="/partners" >Start here</a>    
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+
+

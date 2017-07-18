@@ -1,4 +1,12 @@
 <folders>
+    <folder id="menu">
+        <folder id="txn" caption="Transaction">
+            <folder id="rpt" caption="Assessor"/>
+        </folder>
+        <folder id="report" caption="Report">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+    </folder>   
     <folder id="explorer">
         <folder id="master">
             <folder id="rpt" caption="Assessor" index="1" />
@@ -9,7 +17,7 @@
             <folder id="rpt" caption="Assessor" index="1">
                 <folder id="list" caption="Listings" index="1" />
                 <folder id="online" caption="Online" index="2" />
-                <folder id="manual" caption="Manual Support" index="3" />
+                <folder id="manual" caption="Manual Support" index="3"/>
                 <folder id="cert" caption="Certification" index="4" />
                 <folder id="report" caption="Report" index="5" />
                 <folder id="util" caption="Utilities" index="6" />
@@ -41,8 +49,11 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="rpt" caption="Assessor">
-            <folder id="txn" caption="Transactions" index="-1"/>
+        <folder id="rpt" caption="Assessor" icon="home/icons/assessor.png">
+            <folder id="master" caption="Master Files" index="-100" icon="home/icons/masterfiles.png"/>
+            <folder id="setting" caption="Revision Settings" index="-90" icon="home/icons/masterfiles.png"/>
+            <folder id="txn" caption="Transactions" index="-1" icon="home/icons/transactions.png"/>
+            <folder id="manualtxn" caption="Manual Support" index="1000000" icon="home/icons/manual.png"/>
         </folder>
     </folder>
 </folders>

@@ -1,6 +1,9 @@
 <workunit extends="rpt_wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/rpt" action="init" caption="FAAS Encoding Monitoring" target="window" index="25" 
+        <invoker folderid="/explorer/report/rpt" 
+            action="init" 
+            caption="FAAS Encoding Monitoring" 
+            target="window" 
             role="ASSESSOR_REPORT,REPORT,SHARED" />
     </invokers>
     <code>

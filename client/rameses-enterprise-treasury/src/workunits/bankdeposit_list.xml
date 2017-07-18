@@ -5,7 +5,7 @@
             <action name="doInit" role="CASHIER" tag="bycashier"/>             
         </invoker>
             
-        <invoker folderid="home/deposit" caption="Bank Deposits" role="CASHIER" index="50" target="window">
+        <invoker folderid="home/treasury" caption="Bank Deposits" role="CASHIER" index="50" target="window">
             <action name="doInit" role="SHARED" tag="all" permission="bankdeposit.view"/> 
             <action name="doInit" role="CASHIER" tag="bycashier"/>             
         </invoker>
@@ -31,9 +31,12 @@ class BankDepositListController extends DefaultListController
         this.is_shared_owner = (invo.properties.tag == 'all'); 
     } 
 
+    /*
     boolean isAllowCreate() { 
-        return (is_shared_owner? false: true); 
+        return true;
+        //return (is_shared_owner? false: true); 
     }
+    */
 
     void beforeFetchList( Map params ) { 
         params.admin = is_shared_owner; 

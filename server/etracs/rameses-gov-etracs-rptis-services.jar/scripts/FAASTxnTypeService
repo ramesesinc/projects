@@ -7,41 +7,6 @@ class FAASTxnTypeService
 	@ActiveDB('faastxntype')
 	def em
 
-
-	@ProxyMethod
-	public def getList( params ) {
-		if (params == null) params = [:]
-		params.searchtext = (params.searchtext ? params.searchtext :'')+'%'
-		return em.getList(params)
-	}
-
-
-	@ProxyMethod
-	public def getColumns( params ) {
-		return [
-			[name:"objid", caption:"Key", width:80],
-            [name:"name", caption:"Transaction", width:250],
-            [name:"displaycode", caption:"Display Code", width:100],
-		]	
-	}
-
-
-	@ProxyMethod
-	public def open( entity ) {
-		entity.attributes = em.getAttributes(entity)
-		return entity 
-	}
-
-	@ProxyMethod
-	public def update( entity ) {
-		em.updateData(entity)
-		em.deleteAttributes(entity)
-		entity.attributes.each{
-			em.insertAttribute(it)
-		}
-		return entity 
-	}
-
 	@ProxyMethod
 	public void createAttributeType(attribute) {
 		def attr = [attribute:attribute.toUpperCase()]
@@ -51,24 +16,4 @@ class FAASTxnTypeService
 		em.insertAttributeType(attr)
 	}
 
-
-	@Async
-	@ProxyMethod
-	public def exportData(params) {
-		return [
-			filetype: 'faastxntype',
-			faastxntypes: getList([:])
-		] 
-	}
-
-
-	@Async
-	@ProxyMethod
-	public def importData( data ) {
-		if (data.filetype != 'faastxntype')
-			throw new Exception('Invalid data.')
-		data.faastxntypes.each{
-			update(it)
-		}
-	}
 }

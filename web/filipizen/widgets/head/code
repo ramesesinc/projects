@@ -1,0 +1,18 @@
+ <%    
+    def maintitle  = "${PARAMS.orgtype} of ${PARAMS.orgname}";
+ %> 
+<header class="image-bg-fluid-height" style="background:url(/res/lgu/bg.jpg)">
+
+    <div class="headline"> 
+        <div class="row padding-margin-zero">
+            <div class="col-md-5 padding-margin-zero">
+                 <img class="img-responsive img-right" src="/res/lgu/${PARAMS.orgname}/logo.png" alt="">
+            </div>
+            <div class="col-md-7 padding-margin-zero">
+                <h2>Welcome to</h2>
+                <h1>${maintitle}</h1>
+            </div>
+        </div>
+    </div>
+    
+</header>

@@ -33,19 +33,33 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
 
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
+        xFormPanel1.setCaptionWidth(100);
+
+        xComboBox5.setAllowNull(false);
+        xComboBox5.setCaption("Format");
+        xComboBox5.setExpression("#{item.title}");
+        xComboBox5.setItems("formats");
+        xComboBox5.setName("entity.format"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox5.setRequired(true);
+        xFormPanel1.add(xComboBox5);
+
         xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Period");
+        xComboBox3.setDepends(new String[] {"entity.format"});
         xComboBox3.setExpression("#{item.name}");
         xComboBox3.setItems("periods");
         xComboBox3.setName("entity.period"); // NOI18N
@@ -91,6 +105,15 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel1.add(xComboBox2);
 
+        xComboBox6.setCaption("Classification");
+        xComboBox6.setDepends(new String[] {"entity.lgu", "entity.format"});
+        xComboBox6.setDynamic(true);
+        xComboBox6.setExpression("#{item.name}");
+        xComboBox6.setItems("classifications");
+        xComboBox6.setName("entity.classification"); // NOI18N
+        xComboBox6.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel1.add(xComboBox6);
+
         xComboBox4.setCaption("Sort By");
         xComboBox4.setExpression("#{item.name}");
         xComboBox4.setItemKey("code");
@@ -106,6 +129,8 @@ public class RPTDeliquencyReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;

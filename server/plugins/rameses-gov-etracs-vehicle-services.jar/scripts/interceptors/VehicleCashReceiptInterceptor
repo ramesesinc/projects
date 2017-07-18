@@ -9,7 +9,6 @@ class VehicleCashReceiptInterceptor {
 	@DataContext(dynamic=true)
 	def em;
 
-	
 
 	@DataContext("vehicle_payment")
 	def pmtEm;

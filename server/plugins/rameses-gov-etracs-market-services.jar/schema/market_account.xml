@@ -31,5 +31,10 @@
 
 		<!-- link to market_rental_payment -->
 		<field name="remarks" />
+
+		<!-- link to recurring fees -->
+		<complex name="recurringfees" ref="market_account_recurringfee" jointype="one-to-many">
+			<key field="objid" target="acctid"/>
+		</complex>	
 	</element>
 </schema>

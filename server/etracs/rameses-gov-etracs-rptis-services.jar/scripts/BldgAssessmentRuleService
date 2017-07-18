@@ -79,7 +79,9 @@ public class BldgAssessmentRuleService
 			rpu.totalbmv += util.sum(it.bldguses, 'basemarketvalue')
 		}
         rpu.totalmv  = util.sum(rpu.assessments, 'marketvalue')
-        rpu.totalav  = util.sum(rpu.assessments, 'assessedvalue')
+        if (rpu.totalav == 0){
+        	rpu.totalav  = util.sum(rpu.assessments, 'assessedvalue')
+        }
 
 		return rpu;
 	}
@@ -104,6 +106,8 @@ public class BldgAssessmentRuleService
 		-------------------------------------*/
 		def rpufact = new BldgRPU(rpu)
 		facts << rpufact
+
+		facts << new RPU(rpu)
 
 		rpu.structuraltypes.each{bs ->
 			def bsfact = new BldgStructure(rpufact, bs)
@@ -155,6 +159,7 @@ public class BldgAssessmentRuleService
 		actions.addCommand( "add-assessment-info", new AddAssessmentInfo( request:request, NS:numSvc));
 		actions.addCommand( "calc-assess-level", new CalcAssessLevel( request:request, bldgSettingSvc:bldgSettingSvc));
 		actions.addCommand( "calc-assess-value", new CalcAssessValue( request:request));
+		actions.addCommand( "recalc-rpu-totalav", new CalcTotalRPUAssessValue( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpuassessment", new CalcRPUAssessValue( request:request, NS:numSvc));
 		return actions;
 	}

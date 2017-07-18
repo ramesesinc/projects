@@ -40,6 +40,7 @@
 	<field name="sefnet" class="java.math.BigDecimal"/>
 	<field name="netgrandtotal" class="java.math.BigDecimal"/>
 	<field name="idle" class="java.math.BigDecimal"/>
+	<field name="year" class="java.lang.Number"/>
 
 	<variable name="TBASIC" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{basic}]]></variableExpression>
@@ -71,6 +72,19 @@
 		</background>
 		<title>
 			<band height="58"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="88"
+						y="14"
+						width="157"
+						height="12"
+						key="textField-83"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["BASIC REAL PROPERTY TAX  CY "  + $F{year}]]></textFieldExpression>
+				</textField>
 				<staticText>
 					<reportElement
 						x="0"
@@ -88,23 +102,6 @@
 					</textElement>
 				<text><![CDATA[PROPERTY
 CLASSIFICATION]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="88"
-						y="14"
-						width="157"
-						height="12"
-						key="staticText-32"/>
-					<box leftPadding="5" rightPadding="5">					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
-					</textElement>
-				<text><![CDATA[BASIC REAL PROPERTY TAX ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement

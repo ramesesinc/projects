@@ -25,8 +25,9 @@ class MunicipalityFAASWorkflowInterceptor
 	public void submitDataCaptureToProvince( evt ) {
 		def faas = evt.result;
         def methodname = 'postDataCapturedFaas'
-        if (faas.previousfaases)
+        if (faas.previousfaases && faas.previousfaases.findAll{it.prevfaasid != null} ){
             methodname = 'postManualApprovedTransaction'
+        }
             
 		def asyncreq    = svc.createAsyncRequest('ProvinceFAASRemoteService', methodname, supportSvc.getFaasData(faas), svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])

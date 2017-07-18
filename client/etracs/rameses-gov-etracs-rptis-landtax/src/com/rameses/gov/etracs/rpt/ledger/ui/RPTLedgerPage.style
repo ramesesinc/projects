@@ -15,7 +15,7 @@
     enabled:false;
 }
 
-"editFaas|removeFaas" [selectedItem.systemcreated == true] {
+"editFaas|removeFaas" [selectedItem && (selectedItem.systemcreated == 1 || selectedItem.systemcreated == true )] {
     enabled:false;
 }
 
@@ -43,7 +43,7 @@
     enabled:true;
 }
 
-"deleteSubLedger" [selectedSubLedger.state != 'PENDING']{
+"deleteSubLedger" [selectedSubLedger && selectedSubLedger.state != 'PENDING']{
     visible:false;
 }
 
@@ -61,16 +61,15 @@
 }
 
 
-"addRestriction|removeRestriction" [1==1] {
-    enabled:true;
+"(add|open|delete).*Restriction" [1==1] {
+    visible:true;
 }
 
-"removeRestriction" [selectedRestriction == null ]{
-    enabled:false;
+"(open|delete).*Restriction" [selectedRestriction == null ]{
+    visible:false;
 }
 
 
-
-"addRestriction|removeRestriction" [entity.state != 'APPROVED']{
-    enabled:false;
+"(add|open|delete).*Restriction" [entity.state != 'APPROVED']{
+    visible:false;
 }

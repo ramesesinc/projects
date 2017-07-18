@@ -34,7 +34,13 @@ class RPTReceiptCompromiseService
 	def lguSvc 
 
 	@Service('RPTReceiptService')
-	def receiptSvc 
+	def receiptSvc
+
+	@DataContext('rptledger')
+	def em_rptledger
+
+	@DataContext('rptcompromise')
+	def em_compromise
 
 	
 	def RULESET 			= 'rptbilling'
@@ -69,8 +75,10 @@ class RPTReceiptCompromiseService
 	@ProxyMethod
 	public def getCurrentYearDue( ledgerid ) {
 		def bill = billingSvc.generateBillByLedgerId(ledgerid)	
+		def due = em.findCurrentDueByBill(bill)
+		if (!due) throw new Exception('Current Due is not computed property. Verify ledger data.')
+		bill.currentyeardue = due.amount 
 		return bill 
-		// return bill.taxes.amount.sum(); 
 	}
 
 	@ProxyMethod
@@ -90,6 +98,7 @@ class RPTReceiptCompromiseService
 			postPaidItems(receipt)
 			postTaxes(receipt)
 			em.updateCompromiseAmountPaid(compromiseparam)
+			updateLedgerCompromiseInfo(compromiseparam)
 		}
 		else if (receipt.requiredpayment.type == 'downpayment'){
 			receipt.remarks = (receipt.remarks ? receipt.remarks : 'Downpayment')
@@ -108,6 +117,13 @@ class RPTReceiptCompromiseService
 			receiptSvc.postPaidItems(receipt)
 		}
 		em.clearNextBillDate(compromiseparam)
+	}
+
+	void updateLedgerCompromiseInfo(param){
+		def comp = em_compromise.select('state').find([objid:param.objid]).first()
+		if(comp && 'CLOSED'.equalsIgnoreCase(comp.state)){
+			em_rptledger.find([objid:param.rptledgerid]).update([undercompromise:0])
+		}
 	}
 
 	void postTaxes(receipt){
@@ -253,10 +269,6 @@ class RPTReceiptCompromiseService
 		}
 	}
 
-	@ProxyMethod
-	public def getCurrentYearTaxes(receipt) {
-		return billingSvc.getBillLedgerAccounts(receipt.bill)
-	}
 
 	void updateTotals(item){
 		item.amtdue = item.basic + item.basicint + item.basicidle + item.basicidleint + item.sef + item.sefint + item.firecode 
@@ -459,6 +471,18 @@ class RPTReceiptCompromiseService
 		em.create(credit, 'rptcompromise_credit')
 	}
 
+
+	@ProxyMethod
+	public def getCurrentYearTaxes(receipt) {
+		def bill = billingSvc.initBill(receipt.compromise.rptledgerid)
+		bill.rptledger = em.findLedgerById([objid:bill.rptledgerid])
+		bill.billdate =  dtSvc.parse('yyyy-MM-dd', receipt.receiptdate )
+		bill.items = em.getCurrentYearTaxes([rptledgerid:receipt.compromise.rptledgerid]).each{
+			it._pdate = bill.billdate 
+		}
+		billingSvc.buildSharesOnly(bill)
+		return bill.taxes 
+	}
 
 	void buildShares( receipt ) {
 		def bill = billingSvc.initBill(receipt.compromise.rptledgerid)

@@ -1,5 +1,5 @@
-<schema adapter="main">
-	<element name="realproperty" tablename="realproperty">
+<schema>
+	<element tablename="realproperty">
 		<field name="objid" primary="true" />
 		<field name="state" required="true" />
 		<field name="autonumber" required="true" />
@@ -23,5 +23,9 @@
 		<field name="lguid" />
 		<field name="previd" />
 		<field name="stewardshipno" />
+		<complex name="barangay" ref="barangay" 
+			jointype="many-to-one" required="true" includefields="objid,state,indexno,pin,name">
+			<key field="barangayid" target="objid" />
+		</complex>
 	</element>
 </schema>

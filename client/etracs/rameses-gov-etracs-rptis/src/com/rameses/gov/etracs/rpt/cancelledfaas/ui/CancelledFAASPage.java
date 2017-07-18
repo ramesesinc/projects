@@ -36,6 +36,9 @@ public class CancelledFAASPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
@@ -100,12 +103,34 @@ public class CancelledFAASPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 22));
         formPanel2.add(xComboBox1);
 
+        xLabel3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xLabel3.setExpression("#{'Cancelled By:'}");
+        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel3.setShowCaption(false);
+        formPanel2.add(xLabel3);
+
+        xTextField2.setCaption("TD No.");
+        xTextField2.setCaptionWidth(80);
+        xTextField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xTextField2.setName("entity.cancelledbytdnos"); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel2.add(xTextField2);
+
+        xTextField3.setCaption("PIN No.");
+        xTextField3.setCaptionWidth(80);
+        xTextField3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xTextField3.setName("entity.cancelledbypins"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel2.add(xTextField3);
+
         xIntegerField1.setCaption("Last Tax Year");
+        xIntegerField1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xIntegerField1.setName("entity.lasttaxyear"); // NOI18N
         formPanel2.add(xIntegerField1);
 
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 150));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 120));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
@@ -134,7 +159,7 @@ public class CancelledFAASPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 122, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -149,10 +174,13 @@ public class CancelledFAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -61,8 +61,8 @@ class ETRACS22To254BldgMigrationInterceptor
 				depreciationvalue : rpu.info.depreciationvalue,
 				totaladjustment : rpu.info.totaladjustment,
 				additionalinfo  : rpu.info.additionalinfo,
-				bldgage 		: util.toInteger(rpu.info.bldgage),
-				effectiveage 	: util.toInteger(rpu.info.bldgage),
+				bldgage 		: rpu.info.bldgage,
+				effectiveage 	: rpu.info.bldgage,
 				percentcompleted : 100,
 				bldgassesslevel : [objid:rpu.info.assesslevelid],
 				assesslevel 	: rpu.info.assesslevel,
@@ -153,6 +153,8 @@ class ETRACS22To254BldgMigrationInterceptor
 					marketvalue 		: bu.marketvalue,
 					assesslevel 		: bu.assesslevel,
 					assessedvalue 		: bu.assessedvalue,
+					adjfordepreciation  : 0.0,
+					taxable 			: true, 
 				]
 				rpuEm.create(newbu, 'bldguse')
 			}
@@ -205,6 +207,7 @@ class ETRACS22To254BldgMigrationInterceptor
 					additionalitem  : [objid:item.addlitemid],
 					amount 			: item.amount,
 					expr			: item.expr,
+					depreciate 		: true, 
 				]
 				rpuEm.create(newitem, 'additional')
 			}
@@ -269,13 +272,22 @@ class ETRACS22To254BldgMigrationInterceptor
 
 	void resolveStructure(bs){
 		def st = structEm.read([objid:bs.structureid])
-		if (!st){
+
+		if (!st) 
+			st = em254.findStructureByName([name:bs.structurename])
+
+		if (st){
+			bs.structureid = st.objid 
+		}
+		else {
 			st = [
 				objid	: bs.structureid,
 				state   : 'APPROVED',
 				code 	: bs.structurecode,
 				name 	: bs.structurename,
 				idx 	: 0,
+				indexno : 0,
+				showinfaas : false 
 			]
 			structEm.create(st)
 		}
@@ -413,12 +425,7 @@ class ETRACS22To254BldgMigrationInterceptor
 	void resolveBldgAdditionalItem(rpu, item){
 		def addlinfo = item.addlitem
 		def setting = findBldgSetting(rpu)
-
 		def addl = em254.findBldgAdditionalItemById([objid:addlinfo.addlitemid])
-		if(!addl)
-			addl = em254.findBldgAdditionalItemByCode([code:addlinfo.addlitemcode])
-		if(!addl)
-			addl = em254.findBldgAdditionalItemByName([name:addlinfo.addlitemname])
 		if (!addl){
 			addl = [
 				objid 	: addlinfo.addlitemid,
@@ -430,16 +437,12 @@ class ETRACS22To254BldgMigrationInterceptor
 				expr 	: addlinfo.expr,
 				previd  : addlinfo.previd, 
 			]
-			try{
-				bldgsettingEm.save(addl, 'bldgadditionalitem')
-			}
-			catch(e){
-				//ignore if duplicate 
-			}
 		}
-		else{
-			item.addlitemid = addl.objid 
-			item.addlitem.addlitemid = addl.objid 
+		try{
+			bldgsettingEm.save(addl, 'bldgadditionalitem')
+		}
+		catch(e){
+			//ignore if duplicate 
 		}
 	}
 

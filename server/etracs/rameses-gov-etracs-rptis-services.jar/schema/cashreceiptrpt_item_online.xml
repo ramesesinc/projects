@@ -1,0 +1,29 @@
+<schema>
+	<element tablename="cashreceiptitem_rpt_online">
+		<field name="objid" primary="true" />
+		<field name="rptledgerid" />
+		<field name="rptledgerfaasid" />
+		<field name="year" required="true" />
+		<field name="qtr" required="true" />
+		<field name="fromqtr" required="true" />
+		<field name="toqtr" required="true" />
+		<field name="basic" required="true" type="decimal" />
+		<field name="basicint" required="true" type="decimal" />
+		<field name="basicdisc" required="true" type="decimal" />
+		<field name="basicidle" required="true" type="decimal" />
+		<field name="basicidledisc" required="true" type="decimal" />
+		<field name="basicidleint" required="true" type="decimal" />
+		<field name="sef" required="true" type="decimal" />
+		<field name="sefint" required="true" type="decimal" />
+		<field name="sefdisc" required="true" type="decimal" />
+		<field name="firecode" required="true" type="decimal" />
+		<field name="basicnet" required="true" type="decimal" />
+		<field name="sefnet" required="true" type="decimal" />
+		<field name="total" required="true" type="decimal" />
+		<field name="revperiod" required="true" />
+		<field name="rptreceiptid" required="true" />
+		<field name="partialled" required="true" />
+		<field name="rptledgeritemid"  />
+		<field name="rptledgeritemqtrlyid"  />
+	</element>
+</schema>

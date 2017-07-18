@@ -33,6 +33,9 @@
         <invoker type="ledgerItemActions" action="editLedgerItem" 
             caption="Edit" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' &amp;&amp; selectedLedgerItem != null}"  
             role="ADMIN" mnemonic="e" depends="selectedLedgerItem" />
+        <invoker type="ledgerItemActions" action="deleteLedgerItem" 
+            caption="Delete" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' &amp;&amp; selectedLedgerItem != null &amp;&amp; selectedLedgerItem.taxdifference == true}"  
+            role="ADMIN" mnemonic="d" depends="selectedLedgerItem" />
         
         
     </invokers>

@@ -1,50 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit extends="wtemplates/ListController.xml" formName="landrysetting:list">
+<workunit extends="rpt_wtemplates/RYSettingListModel.xml" formName="landrysetting:list">
     <invokers>
-        <invoker folderid="/explorer/setting/rpt" caption="Land Revision Settings" target="window" role="ASSESSOR_DATAMGMT,MASTER" index="11"/>
-        <invoker type="quick_launcher" code="GRS01" target="window" caption="Land Revision Settings" />
+        <invoker folderid="/explorer/setting/rpt" 
+                 caption="Land Revision Settings" 
+                 target="window" 
+                 role="ASSESSOR_DATAMGMT,MASTER" 
+                 entityName="landrysetting"
+                 serviceName="LandRYSettingService"
+                 index="1"/>
         
-        <invoker type="formActions" action="copy" shortcut="ctrl C" visibleWhen="#{selectedEntity != null }" immediate="true" caption="Copy" mnemonic="c" icon="images/doc-new.png" />
+        <invoker folderid="/home/rpt/setting"
+                 caption="Land" 
+                 target="window" 
+                 role="ASSESSOR_DATAMGMT,MASTER" 
+                 entityName="landrysetting"
+                 serviceName="LandRYSettingService"
+                 icon="home/icons/settingland.png"
+                 index="1"/>
     </invokers>
-
-    <code lang="groovy">
-<![CDATA[
-        
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import javax.swing.JFileChooser;
-import com.rameses.io.*;
-import com.rameses.util.Base64Cipher;
-
-
-public class LandRYSettingListController extends ListController
-{
-    @Service('LandRYSettingService')
-    def svc;
-    
-    String serviceName = 'LandRYSettingListService'
-    String entityName  = 'landrysetting'
-    
-    
-    def copy() {
-        if( MsgBox.confirm('Copy revision year ' + selectedEntity.ry + '?' ) ) {
-            return InvokerUtil.lookupOpener('landrysetting:copy', [entity:selectedEntity])
-        }
-        return null
-    }
-    
-    Column[] getColumns(){ 
-        return [
-            new Column(name:'ry', caption:'Revision Year', alignment:'left', format:'0000', width:120),
-            new Column(name:'appliedto', caption:'Applied To', width:250),
-        ]
-    }
-
-}
-
-]]>
-
-    </code>    
 </workunit>

@@ -2,39 +2,11 @@ import com.rameses.annotations.*;
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
-class RPTParameterService extends ActiveCrudListService
+class RPTParameterService 
 {
-	@ActiveDB('rptparameter')
-	def em
+	@DataContext('rptparameter')
+	def rptparameter
 
-    def TYPE_RANGE_DECIMAL = 'range_decimal'
-    def TYPE_RANGE_INTEGER = 'range_integer'
-	
-
-	void beforeList(params){
-		if (params == null) params = [:]
-		params.searchtext = (params.searchtext ? params.searchtext :'')+'%'
-	}
-
-	@ProxyMethod
-	public def getColumns( params ) {
-		return [
-            [name:"name", caption:"Name", width:200],
-            [name:"caption", caption:"Caption", width:300],
-            [name:"paramtype", caption:"Data Type", width:120],
-            [name:"state", caption:"State", width:100],
-        ]
-	}
-
-	void beforeCreate(entity){
-		fixEntityName( entity )
-		validateRange(entity)
-	}
-
-	void beforeUpdate(entity){
-		fixEntityName( entity )
-		validateRange(entity)
-	}
 
 	@ProxyMethod
     public List getFieldList() {
@@ -50,48 +22,15 @@ class RPTParameterService extends ActiveCrudListService
 
     @ProxyMethod
     public List getVariableList() {
-        return getFieldList() + getList([:])
+        return getFieldList() + rptparameter.orderBy('name').list()
     }
-
 
 	@ProxyMethod
 	public def getRPTParameters( params ) {
-        beforeList(params)
-		return em.getRPTParameters(params)
+        if (!params.searchtext) params.searchtext = ''
+        params.searchtext += '%'
+        def list = rptparameter.where('name like :searchtext', params).list()
+        list.each{it.type = it.paramtype}
+        return list 
 	}
-
-
-
-	/* replace whitespace and special chars with '_' */
-	void fixEntityName( entity ){
-        if ( entity.name ){
-            entity.name = entity.name.replaceAll("\\W", "_")
-        }
-    }
-
-    void validateRange(entity){
-    	if (entity.paramtype == TYPE_RANGE_DECIMAL || entity.paramtype == TYPE_RANGE_INTEGER){
-    		if (entity.minvalue >= entity.maxvalue)
-    			throw new Exception('Mininum Value must be less than Maximum Value.')
-    	}
-    }
-
-    @Async
-    @ProxyMethod
-    public def exportData(params) {
-        return [
-            filetype: 'rptparameter',
-            rptparameters: getRPTParameters([:])
-        ] 
-    }
-
-    @Async
-    @ProxyMethod
-    public def importData( data ) {
-        if (data.filetype != 'rptparameter')
-            throw new Exception('Invalid data.')
-        data.rptparameters.each{
-            save(it)
-        }
-    }    
 }

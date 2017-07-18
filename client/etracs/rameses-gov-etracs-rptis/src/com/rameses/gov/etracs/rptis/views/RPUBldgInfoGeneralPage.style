@@ -1,0 +1,33 @@
+"entity.rpu.*|classification"  [allowEdit == true] {
+    enabled:true;
+}
+
+
+"entity.rpu.swornamount|entity.rpu.useswornamount" [ entity.rpu.hasswornamount == true ] {
+    enabled:true;
+}
+
+"entity.rpu.swornamount|entity.rpu.useswornamount" [ entity.rpu.hasswornamount != true ] {
+    enabled:false;
+}
+
+"entity.rpu.depreciation" [ autoDepreciate == false ] {
+    enabled:true;
+}
+
+"entity.rpu.depreciation" [ autoDepreciate == true ] {
+    enabled:false;
+}
+
+"entity.rpu.*|classification"  [allowEdit == false || (entity.datacapture == 0 && entity.txntype.allowEditAppraisal==0)] {
+    enabled:false;
+}
+
+"entity.*"  [entity._resolve == true] {
+    enabled:true;
+}
+
+"entity.rpu.depreciationvalue|entity.rpu.bldgage|entity.rpu.floorcount|entity.rpu.depreciationvalue" [true == true]{
+    enabled:false;
+}
+

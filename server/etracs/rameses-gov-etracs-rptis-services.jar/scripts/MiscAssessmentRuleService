@@ -71,6 +71,7 @@ public class MiscAssessmentRuleService
 		facts << new CurrentDate(currDate);
 
 		rpu.useswornamount = util.toBoolean(rpu.useswornamount, false)
+		facts << new RPU(rpu)
 		facts << new MiscRPU(rpu)
 
 		rpu.items.each{
@@ -80,8 +81,10 @@ public class MiscAssessmentRuleService
 		rpu.totalmv = rpu.assessments.marketvalue.sum()
 		if (rpu.totalmv == null) rpu.totalmv = 0.0 
 
-		rpu.totalav = rpu.assessments.assessedvalue.sum()
-		if (rpu.totalav == null) rpu.totalav = 0.0 
+		if (rpu.totalav == 0){
+			rpu.totalav = rpu.assessments.assessedvalue.sum()
+			if (rpu.totalav == null) rpu.totalav = 0.0 
+		}
 
 		return facts
 	}
@@ -96,13 +99,15 @@ public class MiscAssessmentRuleService
 
 		actions.addCommand( "calc-rpu-bmv", new CalcMiscRPUBaseMarketValue( request:request));
 		actions.addCommand( "calc-rpu-mv", new CalcMiscRPUMarketValue( request:request));
-		actions.addCommand( "calc-rpu-al", new CalcMiscRPUAssessLevel( request:request, em:em));
+		actions.addCommand( "calc-rpu-al", new CalcMiscRPUAssessLevel( request:request, em:em, NS:numSvc ));
 		actions.addCommand( "calc-rpu-av", new CalcMiscRPUAssessValue( request:request));
 
 		actions.addCommand( "add-derive-var", new AddDeriveVariable( request:request));
 
 		actions.addCommand( "add-assessment-info", new AddAssessmentInfo( request:request));
 		actions.addCommand( "recalc-rpuassessment", new CalcRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "recalc-rpu-totalav", new CalcTotalRPUAssessValue( request:request, NS:numSvc));
+		actions.addCommand( "add-derive-var", new AddDeriveVariable( request:request));
 		return actions;
 	}
 }

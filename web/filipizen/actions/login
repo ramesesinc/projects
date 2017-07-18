@@ -1,0 +1,12 @@
+println PARAMS;
+
+
+if (PARAMS.username!='jason'){
+	return '/'
+}
+else {
+	SESSION.createSession(null);
+	SESSION.username = PARAMS.username;
+	return '/userpanel';
+
+}

@@ -28,6 +28,9 @@ abstract class AbstractBatchReportController
     def states;
     boolean interrupt;
             
+    public void afterInit(params){
+    }
+    
     public void init() {
         params = [:]
         params.revisionyear = var.get('current_ry');
@@ -38,6 +41,7 @@ abstract class AbstractBatchReportController
         params.printinterval = 1;
         params.copies = 1;
         params.showprinterdialog = false;
+        afterInit(params)
         mode='init';
     }
             
@@ -66,6 +70,9 @@ abstract class AbstractBatchReportController
     }
 
     public void print() {
+        if (params.copies <= 0) 
+            throw new Exception('No. of Copies must be equal or greater than 1.');
+            
         mode = 'processing';
         Thread t = new Thread( batchTask)
         t.start();
@@ -118,7 +125,7 @@ abstract class AbstractBatchReportController
     }
     
     public def getReportData(entity){
-        return [entity:reportdata]
+        return [entity:entity]
     }
         
     
@@ -144,7 +151,6 @@ abstract class AbstractBatchReportController
 
             while(!interrupt && data) {
                 def reportdata = getReportData(data);
-
                 def p = getReportParameters();
                 if(!p) p = [:];
                 reportparams += p;
@@ -155,11 +161,13 @@ abstract class AbstractBatchReportController
                     
                     def reportInvoker = Inv.lookupOpener(getReportInvokerName(), reportdata )
                     def report = reportInvoker.handle.report.report
-
-                    1.upto(params.copies){copycnt -> 
-                        ReportUtil.print( report, params.showprinterdialog) ;
-                        updateMessage(getItemMessage(data, copycnt));
-                        Thread.sleep(params.printinterval * 1000)
+                    
+                    if (params.copies >= 1){
+                        1.upto(params.copies){copycnt -> 
+                            ReportUtil.print( report, params.showprinterdialog) ;
+                            updateMessage(getItemMessage(data, copycnt));
+                            Thread.sleep(params.printinterval * 1000)
+                        }
                     }
                 } catch(e) {
                     e.printStackTrace();

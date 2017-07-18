@@ -33,13 +33,13 @@ public class ChangeLedgerFaasController
     def entity;
     def newfaas;
     
-    
     void init(){
     }
     
     def changeReference(){
         if (MsgBox.confirm('Post new Ledger FAAS reference?')){
             svc.updateFaasReference(entity, newfaas)
+            caller.open();
             return '_close';
         } 
         return null;

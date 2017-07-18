@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <pageflow>
+        <start>
+            <transition name="new" to="newpage" />
+            <transition name="main" to="default" />
+        </start>
+        
+        <page name="newpage" title="New #{settingTitle}">
+            <transition caption="Cancel" to="end" icon="images/toolbars/cancel.png" mnemonic="c" />
+            <transition caption="Save" to="create-new-setting" icon="images/toolbars/save.png" mnemonic="s" shortcut="ctrl S"/>
+        </page>
+        
+        <process name="create-new-setting">
+            <transition to="default" action="createSetting"/>
+        </process>
+        
+        <process name="copy-setting">
+            <transition to="default" action="copySetting"/>
+        </process>
+        
+        
+        <page name="default" title="#{settingTitle}">
+            <transition caption="Close" to="end" visibleWhen="#{mode == 'read'}" icon="images/toolbars/cancel.png" mnemonic="c" />
+            <transition caption="Cancel" to="cancel-edit" visibleWhen="#{mode == 'edit'}" icon="images/toolbars/cancel.png" mnemonic="c"/>
+            <transition caption="Edit" to="edit" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}" icon="images/toolbars/edit.png" mnemonic="e" shortcut="ctrl E"/>
+            <transition caption="Save" to="saveCreate" visibleWhen="#{mode == 'create'}" icon="images/toolbars/save.png" mnemonic="s" shortcut="ctrl S"/>
+            <transition caption="Save" to="saveUpdate" visibleWhen="#{mode == 'edit'}" icon="images/toolbars/save.png" mnemonic="s" shortcut="ctrl S"/>            
+            <transition caption="Delete" to="delete" confirm="Delete setting?" visibleWhen="#{mode == 'read'}" icon="images/toolbars/trash.png" mnemonic="d" role="ADMIN"/>
+        </page>
+        
+        <process name="edit">
+            <transition to="default" action="edit"/>
+        </process>
+        
+        <process name="saveCreate">
+            <transition to="default" action="saveCreate"/>
+        </process>
+        
+        <process name="saveUpdate">
+            <transition to="default" action="saveUpdate"/>
+        </process>
+        
+        <process name="cancel-edit">
+            <transition to="default" action="cancelEdit"/>
+        </process>
+        
+        <process name="approve">
+            <transition to="default" action="approve"/>
+        </process>
+        
+        <process name="delete">
+            <transition to="end" action="delete"/>
+        </process>
+        
+        <end />
+    </pageflow>
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.RYSettingModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.RYSettingPage"/>
+        <page name="newpage" template="com.rameses.gov.etracs.rptis.rysetting.views.RYSettingNewPage"/>
+    </pages>
+</workunit>

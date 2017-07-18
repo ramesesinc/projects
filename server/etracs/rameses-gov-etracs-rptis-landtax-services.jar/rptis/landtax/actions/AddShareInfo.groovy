@@ -23,7 +23,8 @@ public class AddShareInfo implements RuleActionHandler {
 		def share = facts.find{
 			try {
 				return it.lgutype == params.lgutype && 
-				       it.revperiod == params.taxsummary.revperiod
+				       it.revperiod == params.taxsummary.revperiod &&
+				       it.rptledger.objid == params.taxsummary.rptledger.objid 
 			}
 			catch(e){
 				// ignore mismatch fact

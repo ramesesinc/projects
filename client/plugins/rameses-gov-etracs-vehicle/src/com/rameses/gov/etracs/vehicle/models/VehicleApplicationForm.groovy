@@ -11,6 +11,7 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationForm extends WorkflowTaskModel {
     
+
     boolean viewReportAllowed = false; 
     
     String getFormName() {
@@ -57,6 +58,7 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
         }
     ] as BasicListModel;
     
+
     void viewTrackingno() {
         Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }

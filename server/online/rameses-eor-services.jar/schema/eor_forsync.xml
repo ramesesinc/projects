@@ -1,0 +1,12 @@
+<schema adapter="eor">
+	<element tablename="eor_forsync">
+		<field name="objid" primary="true" />
+		<field name="syncdate" required="true"/>
+		<field name="synccount" required="true" type="integer" />
+		<field name="msg" />
+		<complex name="eor" ref="eor" jointype="many-to-one" required="false" > 
+			<key field="objid" target="objid"/>	
+		</complex>
+	</element>
+</schema>	
+

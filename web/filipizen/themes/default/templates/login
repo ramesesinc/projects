@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> ${MODULE.title? MODULE.title: PROJECT.title} - ${PAGE.title} </title>   
+    <meta name="title" content="index">
+    <meta name="author" content="Rameses Systems Inc.">
+    <meta name="keywords" content="${PROJECT.keywords} ${MODULE.keywords? MODULE.keywords:''}"/>
+    <meta name="description" content="${PROJECT.description}"/> 
+    <meta name="keywords" content="${PROJECT.keywords}"/>
+    <meta name="copyright" content="${PROJECT.copyright}" />
+    <link rel="shortcut icon" type="image/png" href="/res/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="http://www.filipizen.com/res/favicon.png"/>
+    @stdlib()
+    @css("font-awesome.min")
+    @css("bootstrap.min")
+    @css("main-dash")
+    @css("login")
+    @css("responsive")
+    @page-imports()
+ 	
+</head>
+
+
+<body class="login">
+
+    ${_content}
+
+</body>
+    <script src="js/bootstrap.min.js"></script>
+</html>

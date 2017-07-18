@@ -7,23 +7,23 @@ class GeneralRevisionPinRenumberService
 	@ActiveDB('generalrevision')
 	def em
 
-	@DataContext('landrysetting')
-	def landrysettingDb
+	@DataContext('rysetting_land')
+	def em_setting_land
 
 	@DataContext('realproperty')
-	def realpropertyDb
+	def em_realproperty
 
 	@DataContext('rpu')
-	def rpuDb
+	def em_rpu
 
 	@DataContext('faas')
-	def faasDb
+	def em_faas
 
 	@DataContext('faas_list')
-	def faasListDb
+	def em_faas_list
 
 	@DataContext('rptledger')
-	def rptledgerDb
+	def em_ledger
 
 	@Service('FAASService')
 	def faasSvc 
@@ -32,7 +32,7 @@ class GeneralRevisionPinRenumberService
 
 	@ProxyMethod
 	public def getCurrentRevisionYear( ) {
-		return landrysettingDb.where('1=1 and ry < 2999').orderBy('ry DESC').first().ry 
+		return em_setting_land.where('1=1 and ry < 2999').orderBy('ry DESC').first().ry 
 	}
 
 
@@ -58,7 +58,7 @@ class GeneralRevisionPinRenumberService
 		def barangaypin = faas.barangay.pin
 
 		//build new parcel from idx and update new pin 
-		def newrp = realpropertyDb.find([objid:faas.realpropertyid]).first()
+		def newrp = em_realproperty.find([objid:faas.realpropertyid]).first()
 		if (!newrp) throw new Exception('Real Property does not exist or has already been deleted.')
 		def oldpin = newrp.pin 
 
@@ -66,11 +66,11 @@ class GeneralRevisionPinRenumberService
 		newrp.parcel = faas.idx.toString().padLeft(2, '0')
 		newrp.pin = barangaypin + '-' + newrp.section + '-' + newrp.parcel 
 
-		realpropertyDb.find([objid:newrp.objid]).update([pin:newrp.pin, parcel:newrp.parcel])
-		rpuDb.find([objid:faas.rpuid]).update([fullpin:newrp.pin])
-		faasDb.find([objid:faas.objid]).update([fullpin:newrp.pin])
-		faasListDb.find([objid:faas.objid]).update([pin:newrp.pin, displaypin:newrp.pin])
-		rptledgerDb.find([faasid:faas.objid]).update([fullpin:newrp.pin])
+		em_realproperty.find([objid:newrp.objid]).update([pin:newrp.pin, parcel:newrp.parcel])
+		em_rpu.find([objid:faas.rpuid]).update([fullpin:newrp.pin])
+		em_faas.find([objid:faas.objid]).update([fullpin:newrp.pin])
+		em_faas_list.find([objid:faas.objid]).update([pin:newrp.pin, displaypin:newrp.pin])
+		em_ledger.find([faasid:faas.objid]).update([fullpin:newrp.pin])
 
 
 		//update improvements pin 
@@ -90,10 +90,10 @@ class GeneralRevisionPinRenumberService
 				fullpin = newrp.barangaypin + '-' + newrp.section + '-(' + newrp.parcel + ')-' + suffix 
 			}
 
-			rpuDb.find([objid:faas.rpuid]).update([fullpin:fullpin, suffix:suffix])
-			faasDb.find([objid:faas.objid]).update([fullpin:fullpin])
-			faasListDb.find([objid:faas.objid]).update([pin:fullpin, displaypin:displaypin])
-			rptledgerDb.find([faasid:faas.objid]).update([fullpin:fullpin])
+			em_rpu.find([objid:faas.rpuid]).update([fullpin:fullpin, suffix:suffix])
+			em_faas.find([objid:faas.objid]).update([fullpin:fullpin])
+			em_faas_list.find([objid:faas.objid]).update([pin:fullpin, displaypin:displaypin])
+			em_ledger.find([faasid:faas.objid]).update([fullpin:fullpin])
 		}
 	}
 

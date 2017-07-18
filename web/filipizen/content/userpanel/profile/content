@@ -1,0 +1,272 @@
+      <div class="container">
+        <!-- Breadcrumbs line -->
+        <div class="crumbs">
+          <ul id="breadcrumbs" class="breadcrumb">
+            <li>
+              <i class="icon-home"></i>
+              <a href="#">Userpanel</a>
+            </li>
+            <li>Inbox</li>
+          </ul>
+          <ul class="crumb-buttons">
+            <li><a href="/userpanel" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
+          </ul>
+        </div>
+        <!-- /Breadcrumbs line -->
+				<!--=== Page Header ===-->
+				<div class="page-header">
+					<div class="page-title">
+						<h3>User Profile</h3>
+					</div>
+					<!-- Page Stats -->
+					<ul class="page-stats">
+						<li>
+							<div class="summary">
+								<span>New orders</span>
+								<h3>17,561</h3>
+							</div>
+						</li>
+						<li>
+							<div class="summary">
+								<span>My balance</span>
+								<h3>21,561.21</h3>
+							</div>
+						</li>
+					</ul>
+					<!-- /Page Stats -->
+				</div>
+				<!-- /Page Header -->
+
+				<!--=== Page Content ===-->
+				<!--=== Inline Tabs ===-->
+				<div class="row">
+					<div class="col-md-12">
+						<!-- Tabs-->
+						<div class="tabbable tabbable-custom tabbable-full-width">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#tab_overview" data-toggle="tab">Overview</a></li>
+								<li><a href="#tab_edit_account" data-toggle="tab">Edit Account</a></li>
+							</ul>
+							<div class="tab-content row">
+								<!--=== Overview ===-->
+								<div class="tab-pane active" id="tab_overview">
+									<div class="col-md-3">
+										<div class="list-group">
+											<li class="list-group-item no-padding">
+												<img src="/res/avatar-large.jpg" alt="">
+											</li>
+											<a href="javascript:void(0);" class="list-group-item">Messages<span class="badge">5</span></a>
+											<a href="javascript:void(0);" class="list-group-item"><span class="badge">3</span>Transactions</a>
+											<a href="javascript:void(0);" class="list-group-item">Settings</a>
+										</div>
+									</div>
+
+									<div class="col-md-9">
+										<div class="row profile-info">
+											<div class="col-md-6">
+												<div class="alert alert-info">You will receive all future updates for free!</div>
+
+												<dl class="dl-horizontal">
+													<dt>Entity No :</dt>
+													<dd>05701-0029123</dd>
+													<dt>First Name :</dt>
+													<dd>Jason Delle</dd>
+													<dt>Last Name :</dt>
+													<dd>Canonoy</dd>
+													<dt>Middle Name :</dt>
+													<dd>Candole</dd>
+													<dt>Birth Date :</dt>
+													<dd>03 - 04 - 1991</dd>
+													<dt>Address :</dt>
+													<dd>Lapu-lapu City, Cebu</dd>
+													<br>
+													<br>
+													<dt>Birth Place :</dt>
+													<dd>Maasin City</dd>
+													<dt>Citizenship :</dt>
+													<dd>Filipino</dd>
+													<dt>Gender :</dt>
+													<dd>Male</dd>
+													<dt>Civil Status :</dt>
+													<dd>Single</dd>
+													<dt>Religion :</dt>
+													<dd>Roman Catholic</dd>
+													<dt>Profession:</dt>
+													<dd>Web Designer</dd>
+													<dt>Tin :</dt>
+													<dd>2509 - 12120 - 1212</dd>
+													<dt>SSS :</dt>
+													<dd>23123 - 321423 - 323 </dd>
+
+												</dl>
+
+												<p></p>
+											</div>			
+											<div class="col-md-6">
+												<dl class="dl-horizontal">
+													<dt>Mobile No:</dt>
+													<dd>0926 2571 880</dd>
+													<dt>Phone No:</dt>
+													<dd>570 - 2101</dd>
+													<dt>Email :</dt>
+													<dd>jasondellecanonoy@yahoo.com.ph</dd>
+
+												</dl>
+
+												<p></p>
+											</div>
+										</div> <!-- /.row -->
+									</div> <!-- /.col-md-9 -->
+
+								</div>
+								<!-- /Overview -->
+
+								<!--=== Edit Account ===-->
+								<div class="tab-pane" id="tab_edit_account">
+									<form class="form-horizontal" action="#">
+										<div class="col-md-12">
+											<div class="widget">
+												<div class="widget-header">
+													<h4>General Information</h4>
+												</div>
+												<div class="widget-content">
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">First name:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="jason Delle"></div>
+															</div>
+
+															<div class="form-group">
+																<label class="col-md-4 control-label">Last name:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="Canonoy"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Birth Date:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="03 - 04 - 1991"></div>
+															</div>
+
+															<div class="form-group">
+																<label class="col-md-4 control-label">Address:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="Lapu-Lapu City, Cebu"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Mobile No:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="0926 2571 880"></div>
+															</div>
+
+															<div class="form-group">
+																<label class="col-md-4 control-label">Phone No:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="570 - 2101"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Email Address:</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control" value="jasondellecanonoy@yahoo.com.ph"></div>
+															</div>
+														</div>
+
+														<div class="col-md-6">
+															<div class="form-group">
+																<label class="col-md-4 control-label">Birth Place :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="Maasin City"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Citizenship :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="Filipino"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Gender:</label>
+																<div class="col-md-8">
+																	<select class="form-control">
+																		<option value="male" selected="selected">Male</option>
+																		<option value="female">Female</option>
+																	</select>
+																</div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Civil Status :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="Single"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Religion :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="Roman Catholic"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Profession :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="Web Designer"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">Tin :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="2509 - 12120 - 1212"></div>
+															</div>
+															<div class="form-group">
+																<label class="col-md-4 control-label">SSS :</label>
+																<div class="col-md-8"><input type="text" name="regular" class="form-control input-width-small" value="23123 - 321423 - 323"></div>
+															</div>
+														</div>
+													</div> <!-- /.row -->
+												</div> <!-- /.widget-content -->
+											</div> <!-- /.widget -->
+										</div> <!-- /.col-md-12 -->
+
+										<div class="col-md-12 form-vertical no-margin">
+											<div class="widget">
+												<div class="widget-header">
+													<h4>Settings</h4>
+												</div>
+												<div class="widget-content">
+													<div class="row">
+														<div class="col-md-4 col-lg-2">
+															<strong class="subtitle padding-top-10px">Jason Delle</strong>
+															<p class="text-muted">Disabled</p>
+														</div>
+
+														<div class="col-md-8 col-lg-10">
+															<div class="form-group">
+																<label class="control-label padding-top-10px">Username:</label>
+																<input type="text" name="username" class="form-control" value="john.doe" disabled="disabled">
+															</div>
+														</div>
+													</div> <!-- /.row -->
+													<div class="row">
+														<div class="col-md-4 col-lg-2">
+															<strong class="subtitle">Change password</strong>
+															<p class="text-muted">A strong password Is at least eight characters long and significantly different from previous passwords.</p>
+														</div>
+
+														<div class="col-md-8 col-lg-10">
+															<div class="form-group">
+																<label class="control-label">Old password:</label>
+																<input type="password" name="old_password" class="form-control" placeholder="Leave empty for no password-change">
+															</div>
+
+															<div class="form-group">
+																<label class="control-label">New password:</label>
+																<input type="password" name="new_password" class="form-control" placeholder="Leave empty for no password-change">
+															</div>
+
+															<div class="form-group">
+																<label class="control-label">Repeat new password:</label>
+																<input type="password" name="new_password_repeat" class="form-control" placeholder="Leave empty for no password-change">
+															</div>
+														</div>
+													</div> <!-- /.row -->
+												</div> <!-- /.widget-content -->
+											</div> <!-- /.widget -->
+
+											<div class="form-actions">
+												<input type="submit" value="Update Account" class="btn btn-primary pull-right">
+											</div>
+										</div> <!-- /.col-md-12 -->
+									</form>
+								</div>
+								<!-- /Edit Account -->
+							</div> <!-- /.tab-content -->
+						</div>
+						<!--END TABS-->
+					</div>
+				</div> <!-- /.row -->
+				<!-- /Page Content -->
+      </div>
+      <!-- /.container -->
+

@@ -12,7 +12,7 @@ from (
 		FROM report_rptdelinquency rr 
 			inner join rptledger rl on rr.rptledgerid = rl.objid 
 		WHERE rr.year <= $P{year} 
-			AND NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
+			AND NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
 		GROUP BY rl.taxpayer_objid
 	)x 
 	GROUP BY taxpayer_objid
@@ -36,7 +36,7 @@ FROM (
 		inner join rptledger rl on rr.rptledgerid = rl.objid 
 		inner join entity e on rl.taxpayer_objid = e.objid 
 	WHERE rr.year <= $P{year}
-  and NOT EXISTS(select * from rptledger_restriction where parentid = rr.rptledgerid )
+  and NOT EXISTS(select * from faas_restriction where ledger_objid = rr.rptledgerid and state='ACTIVE')
 	GROUP BY rl.taxpayer_objid, e.name
 )x 
 where amount = $P{amount}

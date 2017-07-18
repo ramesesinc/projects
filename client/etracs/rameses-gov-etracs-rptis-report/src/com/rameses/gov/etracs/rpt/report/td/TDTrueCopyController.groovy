@@ -20,6 +20,29 @@ public class TDTrueCopyController extends com.rameses.gov.etracs.rpt.report.cert
         return svc;
     }
     
+    def getLookupFaas(){
+        return InvokerUtil.lookupOpener('faas:lookup',[
+            onselect : { 
+                if (it.state != 'CURRENT' && it.state != 'CANCELLED'){
+                    throw new Exception('FAAS is not current or cancelled.')
+                }
+                entity.faasid = it.objid;
+                entity.tdno= it.tdno;
+                entity.taxpayer = it.taxpayer;
+                entity.requestedby = it.taxpayer.name;
+                entity.requestedbyaddress = it.taxpayer.address;
+            },
+            onempty  : { 
+                entity.faasid = null;
+                entity.tdno= null;
+                entity.taxpayer = null;
+                entity.requestedby = null;
+                entity.requestedbyaddress = null;
+            },
+        ])
+    }
+          
+    
     def getReportData(){
         def e = tdSvc.buildTaxDec(entity.faasid);
         e.putAll(entity)
@@ -32,6 +55,7 @@ public class TDTrueCopyController extends com.rameses.gov.etracs.rpt.report.cert
     SubReport[] getSubReports() {
         return [
             new SubReport( 'TDReportLand',  reportPath + 'tdreportland.jasper'),
+            new SubReport( 'TDReportLandESig',  reportPath + 'tdreportlandesigned.jasper'),
             new SubReport( 'TDReportBldg',  reportPath + 'tdreportbldg.jasper'),
             new SubReport( 'TDReportMach',  reportPath + 'tdreportimprovement.jasper'),
             new SubReport( 'TDReportPlant', reportPath + 'tdreportimprovement.jasper'),

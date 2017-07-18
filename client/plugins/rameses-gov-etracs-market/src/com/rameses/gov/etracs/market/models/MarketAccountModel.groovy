@@ -35,5 +35,22 @@ public class MarketAccountModel extends CrudFormModel {
         Modal.show( "update_market_ledger", [handler: h, entity: entity] );
     }
     
+    void afterOpen() {
+        itemHandler.reload();
+    }
+    
+    def itemHandler = [
+        fetchList: {
+            return entity.recurringfees;
+        },
+        onAddItem: { o->
+            addItem("recurringfees", o);
+        },
+        onRemoveItem: { o->
+            if( mode == 'read' ) return false;
+            removeItem("recurringfees", o);
+            itemHandler.reload();
+        }
+    ] as EditorListModel;
     
 }

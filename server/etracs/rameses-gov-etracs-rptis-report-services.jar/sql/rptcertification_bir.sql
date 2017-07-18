@@ -7,7 +7,7 @@ from faas f
 where f.taxpayer_objid = $P{taxpayerid}
   and f.state in ('CURRENT', 'CANCELLED')
   and f.year <= $P{asofyear}
-  and r.ry = $P{ry}
+  and r.ry <= $P{ry}
 order by f.tdno   
 
 
@@ -21,7 +21,7 @@ WHERE f.taxpayer_objid	= $P{taxpayerid}
   AND r.rputype = 'land'
   and f.state in ('CURRENT', 'CANCELLED')
   and f.year <= $P{asofyear}
-  and r.ry = $P{ry}
+  and r.ry <= $P{ry}
 order by f.tdno 
 
 
@@ -39,7 +39,7 @@ WHERE f.taxpayer_objid	= $P{taxpayerid}
   AND r.rputype = 'land'
   and f.state in ('CURRENT', 'CANCELLED')
   and f.year <= $P{asofyear}
-  and r.ry = $P{ry}
+  and r.ry <= $P{ry}
   AND EXISTS( SELECT * 
   			  FROM faas fx 
   			  	INNER JOIN rpu rx ON fx.rpuid = rx.objid 
@@ -47,7 +47,7 @@ WHERE f.taxpayer_objid	= $P{taxpayerid}
   			    AND fx.state in ('CURRENT', 'CANCELLED')
   			    AND rx.rputype <> 'land'
   			    and fx.year <= $P{asofyear}
-  				and rx.ry = $P{ry}
+  				and rx.ry <= $P{ry}
   			)
 order by f.tdno   
 
@@ -65,7 +65,7 @@ WHERE f.taxpayer_objid	= $P{taxpayerid}
   AND r.rputype = 'land'
   and f.state in ('CURRENT', 'CANCELLED')
   and f.year <= $P{asofyear}
-  and r.ry = $P{ry}
+  and r.ry <= $P{ry}
   AND NOT EXISTS( 
   				SELECT * 
 				FROM faas fx 
@@ -73,8 +73,8 @@ WHERE f.taxpayer_objid	= $P{taxpayerid}
   			  WHERE rx.realpropertyid = f.realpropertyid 
   			    AND fx.state in ('CURRENT', 'CANCELLED')
   			    AND rx.rputype <> 'land'
-  			    and fx.year = $P{asofyear}
-  			  	and rx.ry = $P{ry}
+  			    and fx.year <= $P{asofyear}
+  			  	and rx.ry <= $P{ry}
   			)
 
 
@@ -97,7 +97,7 @@ values ($P{objid}, $P{refid})
 [getItems]
 SELECT 
 	f.tdno,
-	f.taxpayer_name, 
+	e.name as taxpayer_name, 
 	f.owner_name, 
 	f.titleno,	
 	f.rpuid, 
@@ -121,6 +121,7 @@ FROM rptcertificationitem rci
 	INNER JOIN sys_org b ON rp.barangayid = b.objid 
 	INNER JOIN sys_org op ON b.parent_objid = op.objid 
 	INNER JOIN sys_org ogp ON op.parent_objid = ogp.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 WHERE rci.rptcertificationid = $P{objid}  
 ORDER BY r.fullpin
 

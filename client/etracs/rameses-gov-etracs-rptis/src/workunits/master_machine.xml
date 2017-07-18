@@ -1,4 +1,19 @@
-<workunit extends="com/rameses/seti2/templates/DynamicCrudForm.xml"
-    schemaName="machine"
-    caption="Machine">
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="machine">
+    
+    <invokers>
+        <invoker type="machine:create" 
+                 caption="Machine" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="machine.create" />
+        
+        <invoker type="machine:open" 
+                 caption="Machine" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="machine.read"/>
+    </invokers>
 </workunit>

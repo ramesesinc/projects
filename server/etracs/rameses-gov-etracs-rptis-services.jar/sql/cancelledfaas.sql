@@ -41,7 +41,6 @@ where 1=1 ${filters}
 		union 
 		select f.objid from faas f, realproperty rp where f.realpropertyid = rp.objid and rp.pin like $P{searchtext}
 	)
-ORDER BY txndate DESC 
 
 [findById]
 SELECT 

@@ -30,8 +30,8 @@ FROM rptledger rl
 	(
 		SELECT 
 			x.*,
-			(SELECT MIN(qtr) FROM rptbill_ledger_item WHERE rptledgerid = x.objid AND year = x.fromyear) AS fromqtr,
-			(SELECT MAX(qtr) FROM rptbill_ledger_item WHERE rptledgerid = x.objid AND year = x.fromyear) AS toqtr
+			(SELECT MIN(qtr) FROM rptledgeritem_qtrly WHERE rptledgerid = x.objid AND year = x.fromyear) AS fromqtr,
+			(SELECT MAX(qtr) FROM rptledgeritem_qtrly WHERE rptledgerid = x.objid AND year = x.fromyear) AS toqtr
 		FROM (
 			SELECT
 				rl.objid,
@@ -49,11 +49,14 @@ FROM rptledger rl
 				SUM(bi.sefint) as sefint, 
 				SUM(bi.firecode) as firecode, 
 				SUM(bi.basic + bi.basicint - bi.basicdisc + bi.sef + bi.sefint - bi.sefdisc + bi.firecode + bi.basicidle - bi.basicidledisc + bi.basicidleint ) AS amtdue
-			FROM rptledger rl
-				INNER JOIN rptbill_ledger_item bi ON rl.objid = bi.rptledgerid
-				INNER JOIN rptledgerfaas rlf ON bi.rptledgerfaasid = rlf.objid 
+			FROM rptbill b 
+				inner join rptbill_ledger bl on b.objid = bl.billid
+				inner join rptledger rl on bl.rptledgerid = rl.objid 
+				INNER JOIN rptledgeritem rli ON rl.objid = rli.rptledgerid
+				INNER JOIN rptledgeritem_qtrly bi ON rli.objid = bi.parentid 
+				INNER JOIN rptledgerfaas rlf ON rli.rptledgerfaasid = rlf.objid 
 		WHERE ${filters}
-			  AND bi.billid = $P{billid}
+			  AND b.objid = $P{billid}
 			  AND rl.state = 'APPROVED'
 			  AND bi.year <= $P{cy}
 			GROUP BY rl.objid, rlf.assessedvalue
@@ -76,7 +79,7 @@ GROUP BY
 	rl.totalareaha,
 	pc.code, 
 	b.name
-ORDER BY rl.tdno 
+ORDER BY t.fromyear, t.toyear 
 
 
 [findBillByTaxpayer]

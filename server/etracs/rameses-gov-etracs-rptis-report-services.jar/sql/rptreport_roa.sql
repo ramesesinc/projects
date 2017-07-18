@@ -6,7 +6,7 @@ f.tdno,
 f.fullpin,
 r.taxable,
 r.rputype,
-f.state,
+'CURRENT' as state,
 null as parentlguindex,
 null as lguindex,
 CASE WHEN r.taxable=1  and r.rputype = 'land' THEN r.totalareasqm ELSE null END AS totalareasqm,
@@ -37,15 +37,16 @@ INNER JOIN rpu r ON f.rpuid = r.objid
 INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 INNER JOIN barangay b ON rp.barangayid = b.objid
 INNER JOIN faas_txntype as ft on f.txntype_objid = ft.objid 
-WHERE ${filter}
- AND f.state = 'CURRENT'
-AND b.objid LIKE $P{barangay}
-AND r.classification_objid LIKE $P{classification}
+WHERE (
+	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
+	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+)
+${filter}
 ORDER BY f.tdno
 
 
 [getPreviousFaases]
-select prevfaasid from previousfaas where faasid = $P{objid}
+select prevfaasid from faas_previous where faasid = $P{objid}
 
 
 [findCancelledFaasRecord]

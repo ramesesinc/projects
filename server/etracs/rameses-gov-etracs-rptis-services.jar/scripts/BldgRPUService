@@ -13,8 +13,8 @@ class BldgRPUService
 	@Service('BldgRYSettingLookupService')
 	def bldgSettingSvc 
 
-	@Service('StructureService')
-	def structSvc
+	@DataContext('structure')
+	def em_structure
 	
 	@Service('RPTUtil')
 	def util
@@ -59,7 +59,7 @@ class BldgRPUService
 
 
 	List loadStructures(rpu){
-		return structSvc.getList([:]).collect{
+		return em_structure.where('1=1').orderBy('indexno').list().collect{
 			[floor:1, objid:util.generateId('ST'), bldgrpuid:rpu.objid, structure:it]
 		}
 	}
@@ -184,8 +184,10 @@ class BldgRPUService
         rpu.structuraltypes.each{st ->
             st.bldguses.each{bu ->
                 bu.floors.each{f ->
-                    if (f.floorno > rpu.floorcount){
-                        rpu.floorcount = util.toInteger(f.floorno+'')
+                	if (!f.floorno) f.floorno = 0
+                	def floorno = util.toInteger(f.floorno.toString())
+                    if (floorno > rpu.floorcount){
+                        rpu.floorcount = floorno
                     }
                 }
             }

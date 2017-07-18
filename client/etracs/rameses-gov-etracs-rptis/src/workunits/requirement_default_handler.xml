@@ -15,7 +15,7 @@
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.master.ui.RequirementTypeDefaultHandlerPage" />
+        <page template="com.rameses.gov.etracs.rptis.master.views.RequirementTypeDefaultHandlerPage" />
     </pages>
 </workunit>
 

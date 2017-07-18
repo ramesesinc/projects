@@ -49,6 +49,11 @@ public class BusinessAssessmentInfoUtil {
                 if (!result.taxfees) throw new Exception('No tax fees found ');
                 entity.taxfees = result.taxfees;
                 entity.totals =  result.totals;
+
+                println '** tax fees '
+                entity.taxfees.each{ 
+                    println '>> '+ it; 
+                }
                 if(handler) handler();
 
                 refresh();

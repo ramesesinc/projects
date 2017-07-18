@@ -1,0 +1,106 @@
+/* Phone */
+@media (min-width: 320px){
+
+	.x-large{
+	padding: 5px;
+	font-size: 20px;
+	background-color: #fff;
+	}
+	.contentPara{
+		background-color: #fff;
+	}
+	.parallax-bg img{
+	position: absolute;
+	}
+
+	/* LOGIN */
+	.input-icon > i {
+    font-size: 86px;
+	}
+	.input-icon > input {
+	    padding-left: 90px !important;
+	}
+	input {
+	    font-size: 53px !important;
+	}
+	label{
+	  font-size: 20px !important;
+	}
+	button{
+	  font-size: 45px !important;
+	}
+	h3{
+	  font-size:35px;
+	}
+	.login .box .input-icon input {
+    height: 100px;
+	}
+	.login .box {
+	  width: 950px;
+	  height: 500px;
+	}
+
+
+}
+/* Tablet */
+@media (min-width: 380px){
+
+	.x-large{
+	padding: 5px;
+	font-size: 20px;
+	}
+	.contentPara{
+		background-color: #fff;
+	}
+	.parallax-bg img{
+		position: absolute;
+	}
+
+}
+
+/*pc monitor*/
+@media (min-width: 768px) {
+	.parallax-bg img{
+		position: absolute;
+	}
+
+}
+
+/*pc monitor */
+@media (min-width: 992px) {
+
+	.parallax-bg img{
+		position: relative;
+	}
+
+}
+
+/*pc monitor */
+@media (min-device-width: 1200px){ 
+
+	.x-large{
+	font-size: 40px;
+	}
+	.parallax-bg img{
+	position: relative;
+	}
+		/* LOGIN */
+	.input-icon > i {
+    font-size: 16px;
+	}
+	.input-icon > input {
+	    padding-left: 30px !important;
+	}
+	input, label, button, h3 {
+	    font-size: 13px !important;
+	}
+	.login .box .input-icon input {
+	    height: 30px;
+	}
+	.login .box {
+	  background-color: #fff;
+	  width: 350px;
+	  height: 300px;
+	}
+}
+

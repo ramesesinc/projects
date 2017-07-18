@@ -1,0 +1,52 @@
+<%
+	PARAMS.partnerid = 'DBP';
+  def eorSvc = SERVICE.lookup("ElectronicReceiptService");
+	def eor = eorSvc.create(PARAMS);
+%>
+
+<div id="wrapper" > 
+	<div id="content">
+        <div class="container">
+          <div class="bg-white">
+            <div class="bill-main-panel">
+              <div class="row">
+                <div class="col-md-12"> 
+                  <div class="l-name">
+                    <p><h2>Payment Successful</h2></p>
+                    <p class="label-address">Your payment has been sucessfully processed. Here are the details of this transaction for your reference.</p>
+                  </div>    
+                </div>
+                <div class="bill-second-panel">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="label-top">
+                        <p class="label-title">Paid To : ${eor.partner.caption}</p>
+                      </div>
+                      <div class="label-top">
+                        <p class="label-title">EOR No.: ${eor.refno}</p>
+                      </div>
+                      <div class="label-top">
+                        <p class="label-title">EOR Date: ${eor.refdate}</p>
+                      </div> 
+                      <div class="label-top">
+                        <p class="label-title">Paid By: ${eor.paidby}</p>
+                      </div> 
+                      <div class="label-top">
+                        <p class="label-title">Particulars: ${eor.particulars}</p>
+                      </div>
+                      <div class="label-top">
+                        <p class="label-title">Amount: ${eor.amount}</p>
+                      </div>
+                    </div>  
+                  </div>
+                </div> 
+              </div>
+            </div>
+        </div> 
+      
+    </div>
+  </div>
+</div>
+
+
+

@@ -88,14 +88,17 @@ public class LandAssessmentRuleService
 		}
 
 		if (rpu.landdetails){
-			rpu.totallandbmv = rpu.landdetails.basemarketvalue.sum()
-			rpu.totallandmv = rpu.landdetails.marketvalue.sum()
+			rpu.totallandbmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}?.basemarketvalue.sum()
+			if (rpu.totallandbmv == null) rpu.totallandbmv = 0.0 
+			rpu.totallandmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}?.marketvalue.sum()
+			if (rpu.totallandmv == null)  rpu.totallandmv = 0.0
 			rpu.totalareaha = numSvc.roundA(rpu.landdetails.areaha.sum(), 6)
 			rpu.totalareasqm = numSvc.round(rpu.landdetails.areasqm.sum())
 		}
 		rpu.totalbmv = rpu.totallandbmv + rpu.totalplanttreebmv
 
-		rpu.totalmv = rpu.assessments.marketvalue.sum()
+		rpu.totalmv = rpu.assessments.findAll{util.isTrue(it.taxable)}?.marketvalue.sum()
+		if (rpu.totalmv == null) rpu.totalbmv = 0.0
 		if (rpu.totalmv == null) rpu.totalmv = 0.0 
 
 		if (rpu.totalav == 0) {
@@ -104,12 +107,11 @@ public class LandAssessmentRuleService
 		}
 
 		rpu.assessments.each{
-			if (it.rputype == 'land'){
-				it.actualuse = em.findLandActualUseInfo(it.actualuse)
+			def actualuse = em.findLandActualUseInfo(it.actualuse)
+			if (!actualuse){
+				actualuse = em.findPlantTreeActualUseInfo(it.actualuse)
 			}
-			else {
-				it.actualuse = em.findPlantTreeActualUseInfo(it.actualuse)
-			}
+			it.actualuse = actualuse
 			it.classification = em.findClassification(it.classification)
 		}
 

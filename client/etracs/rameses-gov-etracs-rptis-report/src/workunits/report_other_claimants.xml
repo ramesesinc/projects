@@ -1,0 +1,54 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt" 
+                 action="init" 
+                 caption="List of Other Claimants" 
+                 target="window" 
+                role="REPORT" permission="report.otherclaimantlist"/>
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class ReportOtherClaimantsModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportOtherClaimantService') 
+    def svc 
+    
+    String title = 'List of Other Claimants'
+    
+    String reportPath = 'com/rameses/gov/etracs/rptis/reports/';
+    
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler)
+    }
+    
+    String getReportName(){
+        return reportPath + entity.reporttype?.reportname;
+    }
+    
+    def reporttypes = [
+        [type:'list', caption:'LISTING', reportname:'rpt_other_claimant_list.jasper'],
+        [type:'summary', caption:'SUMMARY', reportname:'rpt_other_claimant_summary.jasper'],
+    ]
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}', allowNull:false]),
+                new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, emptyText:'ALL']),
+                new FormControl( "combo", [caption:'Type', name:'entity.reporttype', items:'reporttypes', required:true, allowNull:false, expression:'#{item.caption}']),
+            ]    
+        },
+   ] as FormPanelModel;
+   
+}
+]]>        
+        
+    </code>
+</workunit>

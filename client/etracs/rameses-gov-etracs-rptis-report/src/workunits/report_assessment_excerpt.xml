@@ -1,0 +1,57 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/rpt/prov" 
+                 action="init" 
+                 caption="Excerpt from Real Property Assessment" 
+                 target="window" 
+                role="ASSESSOR_REPORT,REPORT" />
+    </invokers>
+    <code>
+
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class ExcerptOfAssessmentReportModel extends com.rameses.gov.etracs.rpt.report.AsyncReportController
+{
+    @Service('RPTReportAssessmentExcerptService') 
+    def svc 
+    
+    String title = 'Excerpt from Real Property Assessment Report'
+    
+    String reportName = 'com/rameses/gov/etracs/rpt/report/assessment_excerpt_report.jasper';
+    
+        
+    void buildReportData(entity, asyncHandler){
+        svc.buildReport(entity, asyncHandler)
+    }
+    
+    Map getParameters(){
+        return data.parameters;
+    }
+    
+    def valuationtypes = [
+        [type:'av', caption:'Assessed Value'],
+        [type:'mv', caption:'Market Value'],
+    ]
+    
+    
+   def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Valuation', name:'entity.valuationtype', items:'valuationtypes', expression:'#{item.caption}', allowNull:false]),
+                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', allowNull:false]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'100,19']),
+            ]    
+        },
+   ] as FormPanelModel;
+}
+]]>        
+        
+    </code>
+</workunit>

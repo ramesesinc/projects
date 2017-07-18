@@ -37,10 +37,11 @@ class ConsolidationWorkflowInterceptor
 	@Service('RPTLedgerService')
 	def ledgerSvc 
 
-
-
 	@Service('NotificationService')
 	def notificationService
+
+	@DataContext('rpu_assessment')
+	def em_rpu_assessment
 
 
 	@After(pattern='ConsolidationService.createConsolidation')
@@ -126,6 +127,10 @@ class ConsolidationWorkflowInterceptor
 	public void validateAppraisalInfo( evt ) {
 		def consolidation = evt.args[0].data
 		consolidation = consolidationSvc.openConsolidation(consolidation.objid)
+
+		//check existing assessment 
+		def assessment = em_rpu_assessment.find([rpuid:consolidation.newrpuid]).first()
+		if (!assessment) throw new Exception('Consolidated FAAS is not yet appraised.')
 	}
 
 

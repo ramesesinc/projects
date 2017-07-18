@@ -228,19 +228,6 @@ WHERE objid = $P{rptledgerid}
 UPDATE rptledger SET state = $P{state} WHERE objid = $P{objid}
 
 
-
-[fixLedgerInfo]
-UPDATE rptledger SET 
-	taxpayer_objid = $P{taxpayerid},
-	owner_name = $P{taxpayername},
-	tdno = $P{tdno},
-	lastyearpaid = $P{lastyearpaid}, 
-	lastqtrpaid = $P{lastqtrpaid},
-	taxable = $P{taxable},
-	nextbilldate = null
-WHERE objid = $P{rptledgerid}
-
-
 [setLedgerItemFullyPaidFlag]
 update rptledgeritem set 
 	fullypaid = 1
@@ -260,100 +247,6 @@ where rptledgerid = $P{rptledgerid}
   		(year = $P{lastyearpaid} and qtr <= $P{lastqtrpaid})
   	)
 
-
-
-[resetLedgerItemFullyPaidFlag]
-update rptledgeritem set 
-	fullypaid = 0,
-	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
-	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
-	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
-	firecodepaid = 0.0
-where rptledgerid = $P{rptledgerid}
-  and (
-  		year > $P{lastyearpaid} or 
-  		(year = $P{lastyearpaid} and $P{lastqtrpaid} <> 4)
-  	)
-
-[resetQtrlyItemFullyPaidFlag]
-update rptledgeritem_qtrly set 
-	fullypaid = 0,
-	partialled = 0,
-	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
-	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
-	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
-	firecodepaid = 0.0
-where rptledgerid = $P{rptledgerid}
-  and ( 
-  		year > $P{lastyearpaid} or 
-  		(year = $P{lastyearpaid} and qtr > $P{lastqtrpaid})
-  	)
-
-
-
-[getLedgerItemQtrlyAggregates]
-select 
- 	rli.objid, 
- 	rli.basic,
-	sum(rliq.basic) as basicpaid,
- 	rli.basicint as basicint,
-	sum(rliq.basicint) as basicintpaid,
- 	rli.basicdisc as basicdisc,
-	sum(rliq.basicdisc) as basicdisctaken,
- 	rli.basicidle as basicidle,
-	sum(rliq.basicidle) as basicidlepaid,
- 	rli.basicidledisc as basicidledisc,
-	sum(rliq.basicidledisc) as basicidledisctaken,
- 	rli.basicidleint as basicidleint,
-	sum(rliq.basicidleint) as basicidleintpaid,
- 	rli.sef,
-	sum(rliq.sef) as sefpaid,
- 	rli.sefint as sefint,
-	sum(rliq.sefint) as sefintpaid,
- 	rli.sefdisc as sefdisc,
-	sum(rliq.sefdisc) as sefdisctaken,
- 	rli.firecode as firecode,
-	sum(rliq.firecode) as firecodepaid,
-	rliq.revperiod
- from rptledgeritem rli
- 	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
- where rli.rptledgerid = $P{rptledgerid}
-and rliq.fullypaid = 1
-and rli.qtrly = 0
- group by rli.objid, rliq.revperiod, 
- 	rli.basic, rli.basicint, rli.basicdisc, 
- 	rli.basicidle, rli.basicidleint, rli.basicidledisc, 
- 	rli.sef, rli.sefint, rli.sefdisc, 
- 	rli.firecode
-
-
-
-[closeFullyPaidQtrlyItems]
-update rptledgeritem_qtrly set 
-	basicpaid = basic,
-	basicintpaid = basicint,
-	basicdisctaken = basicdisc,
-	basicidlepaid = basicidle,
-	basicidledisctaken = basicidledisc,
-	basicidleintpaid = basicidleint,
-	sefpaid = sef,
-	sefintpaid = sefint,
-	sefdisctaken = sefdisc,
-	firecodepaid = firecode
-where rptledgerid = $P{rptledgerid}	
-and fullypaid = 1
 
 
 [resetLastBilledInfo]
@@ -418,7 +311,7 @@ WHERE sl.objid = $P{objid}
 
 [getPreviousFaas]
 SELECT prevfaasid 
-FROM previousfaas pf
+FROM faas_previous pf
 WHERE faasid = $P{faasid}
 
 
@@ -469,35 +362,23 @@ where rptledgerid = $P{rptledgerid}
   and year >= ${effectivityyear}
   and fullypaid = 0
 
-[deleteBillLedgerItems]
-delete from rptbill_ledger_item 
-where rptledgeritemid in (
-	select objid from rptledgeritem 
-	where rptledgerid = $P{rptledgerid}	
-		and year >= ${effectivityyear}
-		and fullypaid = 0
-)  
-
 
 [getLedgerItems]
-select x.*, x.total- x.amtpaid as amtdue
-from (
-	select rli.*,
-		pc.code AS classification_code,
-		au.code AS actualuse_code,
-		(rli.basic + rli.basicint - rli.basicdisc + 
-		rli.basicidle - rli.basicidledisc + rli.basicidleint + 
-		rli.sef + rli.sefint - rli.sefdisc + rli.firecode 
-		) as total,
-		(rli.basicpaid + rli.basicintpaid - rli.basicdisctaken + 
-		rli.basicidlepaid + rli.basicidleintpaid - rli.basicidledisctaken + 
-		rli.sefpaid + rli.sefintpaid - rli.sefdisctaken + rli.firecodepaid) as amtpaid
-	from rptledgeritem rli
-		inner join propertyclassification pc on rli.classification_objid = pc.objid
-		left join propertyclassification au on rli.actualuse_objid = au.objid 
-	where rptledgerid = $P{rptledgerid}
-) x
+select rli.*,
+	pc.code AS classification_code,
+	au.code AS actualuse_code,
+	(rli.basic + rli.basicint - rli.basicdisc + 
+	rli.basicidle - rli.basicidledisc + rli.basicidleint + 
+	rli.sef + rli.sefint - rli.sefdisc + rli.firecode 
+	) as total,
+	(rli.basicpaid + rli.basicidlepaid + rli.sefpaid + rli.firecodepaid) as amtpaid
+from rptledgeritem rli
+	inner join propertyclassification pc on rli.classification_objid = pc.objid
+	left join propertyclassification au on rli.actualuse_objid = au.objid 
+where rptledgerid = $P{rptledgerid}
+and rli.fullypaid = 0 
 order by year desc 
+
 
 
 
@@ -547,11 +428,6 @@ order by sl.subacctno
 DELETE FROM rptledgerfaas WHERE rptledgerid =$P{objid}
 
 
-[deleteRptBillLedgerItems]
-delete from rptbill_ledger_item 
-where rptledgerid =$P{objid}
-
-
 [deleteRptLedgerItems]
 delete from rptledgeritem 
 where rptledgerid = $P{objid}
@@ -585,12 +461,6 @@ where objid = $P{objid}
 
 [deleteRptBillLedger]
 delete from rptbill_ledger where rptledgerid = $P{objid}
-
-[deleteRptBillLedgerItem]
-delete from rptbill_ledger_item where rptledgerid = $P{objid}
-
-[deleteRptBillLedgerAccount]
-delete from rptbill_ledger_account where rptledgerid = $P{objid}
 
 [deleteRptLedgerItem]
 delete from rptledgeritem where rptledgerid = $P{objid}
@@ -652,11 +522,12 @@ where rli.rptledgerfaasid = $P{objid}
 
 [findPartialPayment]
 select 
-	basicpaid, basicdisctaken, basicintpaid,
-	sefpaid, sefdisctaken, sefintpaid
+	basicpaid, basicdisc, basicint,
+	sefpaid, sefdisc, sefint, firecodepaid
 from rptledgeritem_qtrly
 where rptledgerid = $P{objid}	
 and partialled = 1
+
 
 
 [findPartialledItem]
@@ -666,30 +537,6 @@ where rptledgerid = $P{objid}
 and year = $P{partialledyear}
 and qtr = $P{partialledqtr}
 and fullypaid = 0
-
-[updatePartialledQtrlyItem]
-update rptledgeritem_qtrly set 
-	basicpaid = $P{basicpaid},
-	basicintpaid = $P{basicintpaid},
-	basicdisctaken = $P{basicdisctaken},
-	sefpaid = $P{sefpaid},
-	sefintpaid = $P{sefintpaid},
-	sefdisctaken = $P{sefdisctaken},
-	partialled = 1
-where rptledgerid = $P{objid}	
-and year = $P{partialledyear}
-and qtr = $P{partialledqtr}
-and fullypaid = 0
-
-[addPartialToLedgerItemPayment]
-update rptledgeritem set 
-	basicpaid = basicpaid + $P{basicpaid},
-	basicintpaid = basicintpaid + $P{basicintpaid},
-	basicdisctaken = basicdisctaken + $P{basicdisctaken},
-	sefpaid = sefpaid + $P{sefpaid},
-	sefintpaid = sefintpaid + $P{sefintpaid},
-	sefdisctaken = sefdisctaken + $P{sefdisctaken}
-where objid = $P{rptledgeritemid}
 
 
 [setQtrlyItemFullyPaidFlagByYear]
@@ -702,38 +549,25 @@ where rptledgerid = $P{rptledgerid}
 
 
 [resetQtrlyItemFullyPaidFlagByYear]
-update rliq set 
+update rptledgeritem_qtrly rliq, rptledgeritem rli set 
 	rliq.fullypaid = 0,
 	rliq.partialled = 0,
 	rliq.basicpaid = 0.0,
-	rliq.basicintpaid = 0.0,
-	rliq.basicdisctaken = 0.0,
 	rliq.basicidlepaid = 0.0,
-	rliq.basicidledisctaken = 0.0,
-	rliq.basicidleintpaid = 0.0,
 	rliq.sefpaid = 0.0,
-	rliq.sefintpaid = 0.0,
-	rliq.sefdisctaken = 0.0,
 	rliq.firecodepaid = 0.0
-from rptledgeritem_qtrly rliq 
-	inner join rptledgeritem rli on rliq.parentid = rli.objid 
-where rliq.rptledgerid = $P{rptledgerid}
-  and rliq.year = $P{lastyearpaid}
-  and rli.taxdifference like $P{taxdifference}
+where rliq.parentid = rli.objid 
+  and rliq.rptledgerid = $P{rptledgerid}
+  and rliq.year > $P{lastyearpaid}
+  and rli.taxdifference  like $P{taxdifference}
   	
 
 [resetItemFullyPaidFlagByYear]
 update rptledgeritem  set 
 	fullypaid = 0,
 	basicpaid = 0.0,
-	basicintpaid = 0.0,
-	basicdisctaken = 0.0,
 	basicidlepaid = 0.0,
-	basicidledisctaken = 0.0,
-	basicidleintpaid = 0.0,
 	sefpaid = 0.0,
-	sefintpaid = 0.0,
-	sefdisctaken = 0.0,
 	firecodepaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and year > $P{lastyearpaid}  
@@ -748,140 +582,6 @@ select count(*) as count from rptledgeritem_qtrly where parentid = $P{objid}
 select objid from subdividedland where newfaasid = $P{objid}
 
 
-
-
-[fixLedgerDeleteBillLedgerItems]
-delete from rptbill_ledger_item 
-where rptledgerid = $P{rptledgerid}
-
-
-[fixLedgerDeleteQtrlyItems]  
-delete from rptledgeritem_qtrly 
-where rptledgerid = $P{rptledgerid}
-and  year > $P{lastyearpaid}
-and exists(select * from rptledgeritem where objid = rptledgeritem_qtrly.parentid and taxdifference = 0)
-
-
-[fixLedgerDeleteLedgerItems]
-delete from rptledgeritem  
-where rptledgerid = $P{rptledgerid}
-and year > $P{lastyearpaid} 
-and taxdifference = 0 
-
-
-[fixLedgerSetQtrlyItemFullyPaid]
-update rliq set 
-	rliq.fullypaid = 1,
-	rliq.basicpaid = rliq.basic,
-	rliq.basicintpaid = rliq.basicint,
-	rliq.basicdisctaken = rliq.basicdisc,
-	rliq.basicidlepaid = rliq.basicidle,
-	rliq.basicidledisctaken = rliq.basicidledisc,
-	rliq.basicidleintpaid = rliq.basicidleint,
-	rliq.sefpaid = rliq.sef,
-	rliq.sefintpaid = rliq.sefint,
-	rliq.sefdisctaken = rliq.sefdisc,
-	rliq.firecodepaid = rliq.firecode,
-	rliq.partialled = 0 
-from rptledgeritem_qtrly rliq 
-	inner join rptledgeritem rli on rliq.parentid = rli.objid 
-where rliq.rptledgerid = $P{rptledgerid}
-  and ( rliq.year < $P{lastyearpaid} or ( rliq.year = $P{lastyearpaid} and rliq.qtr <= $P{lastqtrpaid}))
-  and rli.taxdifference like $P{taxdifference}
-
-
-[fixLedgerSetItemFullyPaid]
-update rli set 
-	rli.fullypaid = case when rliq.paidqtr = 4 then 1 else 0 end,
-	rli.basicpaid = rliq.basicpaid,
-	rli.basicintpaid = rliq.basicintpaid,
-	rli.basicdisctaken = rliq.basicdisctaken,
-	rli.basicidlepaid = rliq.basicidlepaid,
-	rli.basicidledisctaken = rliq.basicidledisctaken,
-	rli.basicidleintpaid = rliq.basicidleintpaid,
-	rli.sefpaid = rliq.sefpaid,
-	rli.sefintpaid = rliq.sefintpaid,
-	rli.sefdisctaken = rliq.sefdisctaken,
-	rli.firecodepaid = rliq.firecodepaid
-from ( 
-		select 
-			parentid, 
-			sum(basicpaid) as basicpaid, 
-			sum(basicintpaid) as basicintpaid, 
-			sum(basicdisctaken) as basicdisctaken, 
-			sum(basicidlepaid) as basicidlepaid, 
-			sum(basicidledisctaken) as basicidledisctaken, 
-			sum(basicidleintpaid) as basicidleintpaid, 
-			sum(sefpaid) as sefpaid, 
-			sum(sefintpaid) as sefintpaid, 
-			sum(sefdisctaken) as sefdisctaken, 
-			sum(firecodepaid) as firecodepaid,
-			max(qtr) as paidqtr 
-		from rptledgeritem_qtrly 
-		where rptledgerid = $P{rptledgerid}
-  		and year <= $P{lastyearpaid} 
-  		and fullypaid = 1 
-  		group by parentid 
-	) rliq, 
-	rptledgeritem rli 	
-where rliq.parentid = rli.objid 
-and rli.taxdifference like $P{taxdifference}
-
-
-[updateLedgerItemAvByQtrly]
-update rli set 
-	rli.av = rliq.av,
-	rli.basicav = rliq.basicav,
-	rli.sefav = rliq.sefav
-from rptledgeritem rli, 
-	( 
-		select 
-			parentid, 
-			sum(av) as av, 
-			sum(basicav) as basicav, 
-			sum(sefav) as sefav 
-		from rptledgeritem_qtrly 
-		where parentid = $P{objid}
-  		group by parentid 
-	) rliq 
-where rli.objid = $P{objid}
-  and rli.objid = rliq.parentid 
-
-
-[updateLedgerItemFromQtrlyAggregates]
-update rli set
-	rli.basic = x.basic,
-	rli.basicint = x.basicint,
-	rli.basicdisc = x.basicdisc,
-	rli.basicidle = x.basicidle,
-	rli.basicidledisc = x.basicidledisc,
-	rli.basicidleint = x.basicidleint,
-	rli.sef = x.sef,
-	rli.sefint = x.sefint,
-	rli.sefdisc = x.sefdisc,
-	rli.firecode = x.firecode
-from rptledgeritem rli, 
-	(	select 
-			parentid as rptledgeritemid, 
-			sum(basic) as basic,
-			sum(basicint) as basicint,
-			sum(basicdisc) as basicdisc,
-			sum(basicidle) as basicidle,
-			sum(basicidledisc) as basicidledisc,
-			sum(basicidleint) as basicidleint,
-			sum(sef) as sef,
-			sum(sefint) as sefint,
-			sum(sefdisc) as sefdisc,
-			sum(firecode) as firecode
-		from rptledgeritem_qtrly
-		where rptledgerid = $P{objid}
-		and year = $P{lastyearpaid}
-		group by parentid 
-	)x 
-where rli.rptledgerid = $P{rptledgerid}
-  and rli.objid = x.rptledgeritemid 
-
-
 [findLedgerFaasById]
 select objid from rptledgerfaas where objid = $P{objid}
 
@@ -891,3 +591,50 @@ select objid from rptledgerfaas where tdno = $P{tdno}
 
 [getRestrictions]
 select * from faas_restriction_type order by idx
+
+
+
+[findLedgerItemQtrlyByYearQtr]
+select * from rptledgeritem_qtrly 
+where rptledgerid = $P{rptledgerid}
+and year = $P{year}
+and qtr = $P{qtr}
+and fullypaid = 0 
+
+
+
+[getLedgerItemQtrlyAggregates]
+select 
+	rliq.parentid as objid, 
+	sum(rliq.basic) as basic,
+	sum(rliq.basicint) as basicint,
+	sum(rliq.basicdisc) as basicdisc,
+	sum(rliq.basicidle) as basicidle,
+	sum(rliq.basicidledisc) as basicidledisc,
+	sum(rliq.basicidleint) as basicidleint,
+	sum(rliq.sef) as sef,
+	sum(rliq.sefint) as sefint,
+	sum(rliq.sefdisc) as sefdisc,
+	sum(rliq.firecode) as firecode,
+	rliq.revperiod
+from rptledgeritem rli
+	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
+where rli.rptledgerid = $P{objid}
+ and rli.fullypaid = 0 
+group by rliq.parentid, rliq.revperiod 
+
+
+[updateLedgerItemData]
+update rptledgeritem set 
+		basic = $P{basic}, 
+        basicint = $P{basicint}, 
+        basicdisc = $P{basicdisc}, 
+        basicidle = $P{basicidle}, 
+        basicidledisc = $P{basicidledisc}, 
+        basicidleint = $P{basicidleint}, 
+        sef = $P{sef}, 
+        sefint = $P{sefint}, 
+        sefdisc = $P{sefdisc}, 
+        firecode = $P{firecode}, 
+        revperiod = $P{revperiod}
+where objid = $P{objid}    

@@ -46,7 +46,7 @@
                      signature.image = sig.imageData;
                      signature.sigstring = sig.sigString;
                      signature.numstrokes = sig.numberOfStrokes;
-                     binding.refresh('signature.image');
+                     binding?.refresh('signature.image');
                  },
 
                  getPenWidth: {

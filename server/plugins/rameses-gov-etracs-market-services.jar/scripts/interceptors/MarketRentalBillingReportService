@@ -31,25 +31,18 @@ class MarketRentalBillingReportService {
 		if( p.parameters.billdate ) {
 			pp.payoption = [todate: p.parameters.billdate ];
 		}
-
 		def m = billingSvc.getBilling( pp );
+		if( !m.items )
+			throw new Exception("No billitems found!");
 
-		acct.items = m.billitems.sort{ it.sortorder };
-		acct.grandtotal = acct.items.sum{ it.linetotal };
+		acct.items = m.items;
+		acct.fromdate = m.fromdate;
+		acct.todate = m.todate;
+		acct.duedate = m.duedate;
+		acct.grandtotal = acct.items.sum{ it.amount };
 		acct.billdate = dateSvc.getServerDate();
 		
-		/*
-		acct.fromdate = billing.fromdate;
-		acct.todate = billing.todate;
-		acct.totalrate = billing.totalrate;
-		acct.totalextrate = billing.totalextrate;
-		acct.totalamount = billing.totalamount;
-		acct.totalsurcharge = billing.totalsurcharge;
-		acct.totalinterest = billing.totalinterest;
-		acct.grandtotal = billing.grandtotal;
-		*/
 		acct.hasitems = (acct.items) ? true : false;
-
 		result.data = acct;
 	}
 

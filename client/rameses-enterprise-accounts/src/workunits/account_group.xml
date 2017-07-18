@@ -1,12 +1,12 @@
 <workunit>
         
     <invokers>
-         <invoker type="account-group:open" caption="Account Group" action="open"/>
-         <invoker type="account-group:create" caption="Account Group" action="create"/>
-   </invokers>
+        <invoker type="account-group:open" caption="Account Group" action="open"/>
+        <invoker type="account-group:create" caption="Account Group" action="create"/>
+    </invokers>
    
-   <code>
-       <![CDATA[
+    <code>
+    <![CDATA[
         import com.rameses.osiris2.common.*;
         import com.rameses.rcp.common.*;
         import com.rameses.rcp.annotations.*;

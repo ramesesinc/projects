@@ -5,7 +5,7 @@
         <invoker type="examinerfinding:open" action="open" caption="Examination Findings" target="popup"/>
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" visibleWhen="#{mode=='read'}"/>
-        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" visibleWhen="#{mode=='create'}"/>
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" visibleWhen="#{mode=='create'}" immediate="true" />
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='read' &amp;&amp; allowEdit==true &amp;&amp; showActions==true}"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode=='create'}"/>
         <invoker type="formActions" action="update" caption="Update" mnemonic="u" shortcut="ctrl S" visibleWhen="#{mode=='edit'}"/>
@@ -19,7 +19,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.* 
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
-import com.rameses.gov.etracs.rpt.util.*;
+import com.rameses.gov.etracs.rptis.util.*;
 
 class ExaminationFindingController
 {

@@ -9,4 +9,4 @@ UPDATE rpt_requirement_type SET state = 'APPROVED' WHERE objid = $P{objid}
 
 
 [getFaasTxnAttributeTypes]
-select * from faas_txntype_attribute_type where attribute like $P{searchtext}
+select * from faas_txntype_attribute_type wh

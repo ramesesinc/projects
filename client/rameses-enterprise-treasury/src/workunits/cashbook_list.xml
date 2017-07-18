@@ -4,7 +4,7 @@
         <invoker folderid="/explorer/master/treasury" caption="Cash Books" action="doInit"  
                  role="ADMIN,MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.view"/>
         
-        <invoker folderid="home/cashmgmt" caption="Cash Books" action="doInit" index="50" 
+        <invoker folderid="home/treasury" caption="Cash Books" action="doInit" index="50" 
                  role="ADMIN,MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.view" 
                  target="window"/>
             

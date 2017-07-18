@@ -31,9 +31,8 @@ class RPTReceiptManualController extends com.rameses.gov.etracs.rpt.collection.u
     }    
     
     
-    def billitems = []
     def itemListHandler = [
-        fetchList : { return getBillItems() },
+        fetchList : { return selectedItem?.items },
         
         onColumnUpdate : { item, colname ->
             if (colname.matches('basic.*')){
@@ -50,27 +49,19 @@ class RPTReceiptManualController extends com.rameses.gov.etracs.rpt.collection.u
         
         validate : {li -> 
             def item = li.item;
-            billSvc.saveManualBillItem(bill, item);
-            def items = svc.getItemsForPayment(bill);
-            if (items){
-                selectedItem.putAll(items[0]);
-            }
+            updateLedgerInfo(item);
             calcReceiptAmount();
         },
     ] as EditorListModel
     
-    def getBillItems(){
-        billitems = [];
-        if (selectedItem){
-            bill.rptledgerid = selectedItem.rptledgerid;
-            billitems = billSvc.getBillItems(bill);
-        }
-        return billitems;
-    }
-    
-    void updateItemDue(item){
-        super.updateItemDue(item);
-        itemListHandler.load();
+    void updateLedgerInfo(item){
+        selectedItem.totalbasic = selectedItem.items.basicnet.sum();
+		selectedItem.totalsef = selectedItem.items.sefnet.sum();
+		selectedItem.totalfirecode = selectedItem.items.firecode.sum();
+		selectedItem.totalbasicidle = selectedItem.items.basicidle.sum();
+		selectedItem.totalgeneral = selectedItem.totalbasic + selectedItem.totalfirecode + selectedItem.totalbasicidle;
+		selectedItem.amount = selectedItem.totalgeneral + selectedItem.totalsef ;
+        binding.refresh('selectedItem');
     }
         
 }

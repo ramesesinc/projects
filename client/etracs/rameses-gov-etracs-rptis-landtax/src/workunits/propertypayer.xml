@@ -78,6 +78,7 @@ class PropertyPayerController
                 if (it.state != 'APPROVED')
                         throw new Exception('Ledger is invalid. Only approved ledger is allowed.')
                 selectedItem.rptledger = it;
+                selectedItem.owner = it.owner
             },
 
             onempty :{

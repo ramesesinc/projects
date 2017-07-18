@@ -2,10 +2,10 @@
 <workunit>
     <invokers>
         <invoker type="rptledger:nod" action="previewNotice" caption="Notice of Delinquency" target="popup" />        
-        <invoker folderid="/explorer/txn/landtax" action="init" caption="Notice of Delinquency" index="150" 
+        <invoker folderid="/explorer/txn/landtax" action="init" caption="Notice of Delinquency" 
             role="LANDTAX" target="window" />
         
-        <invoker type="quick_launcher" code="NOD01" action="init" caption="Notice of Delinquency" index="150" 
+        <invoker type="quick_launcher" code="NOD01" action="init" caption="Notice of Delinquency" 
             role="LANDTAX" target="window" />
         
         <invoker type="rptledger:formActions" action="initPreview" caption="Notice of Delinquency" target="popup" index="110" visibleWhen="#{entity.state == 'APPROVED'}" />        

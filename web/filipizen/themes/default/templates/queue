@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title> ${MODULE.title? MODULE.title: PROJECT.title} - ${PAGE.title} </title>	
+	<meta name="keywords" content="${PROJECT.keywords} ${MODULE.keywords? MODULE.keywords:''}"/>
+	<meta name="description" content="${PROJECT.description}"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script src="/res/js/keyboard.js"></script>
+
+    
+	@stdlib()
+	@css("bootstrap.min")
+	@css("queue")
+	@css("style")
+    @css("keyboard")
+	@css("animate")
+
+</head>
+
+<script>
+<% 
+    def sidebar = [];
+    sidebar << [ links:'queue',  name:'Queue'];
+    sidebar << [ links:'business',  name:'Business'];
+    sidebar << [ links:'real',  name:'Real Property']; 
+    sidebar << [ links:'clearances',  name:'Clearances'];  
+    sidebar << [ links:'market',  name:'Market Rental'];  
+    sidebar << [ links:'water' ,  name:'Water Works'];
+    sidebar << [ links:'personal' ,  name:'Personal']; 
+   
+
+    void loadChildrenPg( i ) { 
+        ANUBIS.getFolder( i.path )?.children.each{ o-> 
+            def pginfo = ANUBIS.getFile((o.href ? o.href : o.path) +'.pg'); 
+            
+            //System.out.println('--> ' + pginfo);
+            if ( pginfo.activatebarcode ) {
+                println 'pgfiles.'+ pginfo.pagename +' = { activatebarcode: true }; ';
+            }
+            loadChildrenPg( pginfo );   
+        } 
+    }
+
+    println 'var pgfiles={}; ';
+    //System.out.println('-'*50);
+    ANUBIS.getFolder( PAGE.parentPath )?.children.each{ o-> 
+        def pginfo = ANUBIS.getFile((o.href ? o.href : o.path) +'.pg'); 
+        if ( pginfo.activatebarcode ) {
+            println 'pgfiles.'+ pginfo.pagename +' = { activatebarcode: true }; ';
+        }
+        loadChildrenPg(pginfo);
+    } 
+%>
+
+    \$put("kiosk", 
+       new function() {
+
+        var self = this;
+
+        this.onload = function() {
+            var pagename = '${PAGE.pagename}'; 
+            if ( pagename == 'default' ) pagename='index'; 
+
+            window.console.log(pgfiles);
+            window.console.log(pagename);
+            window.console.log('${PAGE}');
+            var o = pgfiles[pagename]; 
+            var activate = false;
+            if ( o) {
+                activate = true;
+            }
+            //ActivateBarcodeScanner(activate);
+            //WebViewUtil.activateBarcodeScanner(activate);
+            WebViewUtil.onPageLoad({pagename: pagename, activatebarcode: activate});
+        } 
+       }
+    ); 
+</script>
+
+<body>
+    <!-- Navigation -->
+    <!--<nav class="navbar-default">
+        <div class="container">
+              
+            <a class="navbar-brand" href="#"><img src="/res/kiosk-logo.png"></a>
+
+     
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle bin-btn" data-toggle="dropdown">Language<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Tagalog</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">English</a></li>
+                      </ul>
+                    </li>
+                </ul>
+            </div>
+  
+        </div>
+ 
+    </nav> -->
+    <div id="container">
+        <div id="content" class="rui-controller">
+			${_content} 
+        </div>
+    </div>
+ <!---<div id="footer">
+    <div>
+        <form method="get" action="/index">
+          <button type="submit" class="back">Main Menu</button>
+        </form> 
+    </div>   
+    <div class="logo">
+        <a href="/index"><img src="/res/logo.png"></a>
+    </div>
+  </div>-->
+</body>
+
+<script src="/res/js/queueing-system.js"></script>
+<script src="/res/js/CODE128.js"></script>
+<script src="/res/js/JsBarcode.js"></script>
+<script src="/res/js/webview-util.js"></script>
+
+
+</html>

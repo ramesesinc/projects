@@ -1,0 +1,52 @@
+<% 
+    def btnbusiness = [];
+    btnbusiness << [icon:"file-text", title:"New", link:"new", label:"danger"];
+    btnbusiness << [icon:"file", title:"Renewal", link:"renewal",label:"success"];
+    btnbusiness << [icon:"credit-card", title:"Billing", link:"billing",label:"warning"];
+    btnbusiness << [icon:"list-alt", title:"Report", link:"displaylist",label:"primary"];
+
+%>
+
+      <div class="container">
+        <!-- Breadcrumbs line -->
+        <div class="crumbs">
+          <ul id="breadcrumbs" class="breadcrumb">
+            <li>
+              <i class="icon-home"></i>
+              <a href="#">Userpanel</a>
+            </li>
+            <li>
+              <a href="#">Transaction</a>
+            </li>
+          </ul>
+          <ul class="crumb-buttons">
+            <li><a href="/userpanel" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
+            <li><a data-toggle="modal" href="#myModal1"><i class="icon-upload"></i><span>Upload</span></a></li>
+          </ul>
+          @modalDialog()
+        </div>
+        <!-- /Breadcrumbs line -->
+          <!--=== Page Content ===-->
+          <div class="col-md-12">
+            <div class="widget">
+              <div class="widget-content">
+                <div class="row">
+
+                  <%btnbusiness.each{k ->%>
+                  <div class="col-md-3">
+                    <a href="#userpanel-${k.link}" class="btn btn-icon input-block-level">
+                      <i class="icon-${k.icon} bigger-40"></i>
+                      <div>${k.title} </div>
+                      <span class="label label-${k.label}">2</span>
+                    </a>
+                  </div>
+                  <%}%>  
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.Page Content -->
+
+      </div>
+      <!-- /.container -->

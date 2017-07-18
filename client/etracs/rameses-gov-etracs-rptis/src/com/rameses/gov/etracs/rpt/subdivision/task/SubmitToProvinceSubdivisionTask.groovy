@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.util.*;
 import com.rameses.common.*;
-import com.rameses.gov.etracs.rpt.util.RPTUtil;
+import com.rameses.gov.etracs.rptis.util.RPTUtil;
 import com.rameses.util.MapBeanUtils;
 
 

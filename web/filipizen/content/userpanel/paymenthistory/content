@@ -1,0 +1,28 @@
+
+      <div class="container">
+        <!-- Breadcrumbs line -->
+        <div class="crumbs">
+          <ul id="breadcrumbs" class="breadcrumb">
+            <li>
+              <i class="icon-home"></i>
+              <a href="#">Userpanel</a>
+            </li>
+            <li>
+              <a href="#">Payment History</a>
+            </li>
+          </ul>
+          <ul class="crumb-buttons">
+            <li><a href="/userpanel" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
+          </ul>
+        </div>
+        <!-- /Breadcrumbs line -->
+        <!--=== Page Content ===-->
+        <div class="row">
+          <div class="col-md-12">
+
+          </div> <!-- /.col-md-12 -->
+        </div> <!-- /.row -->
+
+        <!-- /Page Content -->
+      </div>
+      <!-- /.container -->

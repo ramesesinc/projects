@@ -9,6 +9,9 @@
         <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Annotation" index="21" 
             role="RECORD" permission="annotation.create"/>
         
+        <invoker folderid="/menu/txn/rpt" action="init"  caption="Annotation" index="21" 
+            role="RECORD" permission="annotation.create"/>
+        
         <invoker folderid="/home/rpt/txn" action="init"  caption="Annotation" index="21" 
             role="RECORD" permission="annotation.create"/>
         
@@ -66,7 +69,7 @@
             <transition caption="Cancel" to="back-to-forapproval" action="cancelEdit" name="cancel"  mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode != 'read'}"/>
             <transition caption="Save"   to="back-to-forapproval" action="save" name="save" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"  visibleWhen="#{mode != 'read'}" />
             <transition caption="Disapprove" to="default" action="disapproveAnnotation" mnemonic="d" visibleWhen="#{mode == 'read'}" confirm="Disapprove Annotation?" role="APPROVER"/>
-            <transition caption="Approve" to="approved" action="approveAnnotation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve Annotation?" role="APPROVER"/>
+            <transition caption="Approve" to="approved" action="approveAnnotation" mnemonic="v" icon="images/toolbars/approve.png" visibleWhen="#{mode == 'read'}" confirm="Approve Annotation?" role="APPROVER,RECORD_APPROVER"/>
         </page>
         
         <process name="back-to-forapproval">

@@ -4,7 +4,7 @@
         <invoker type="rpttransmittal:formActions" action="init" caption="Export" target="self"  
             visibleWhen="#{showExport &amp;&amp; entity.filetype=='faas'}" index="10" role="RECORD" />
    </invokers>
-   <code class="com.rameses.gov.etracs.rptis.model.TransmittalExportFAASModel" />       
+   <code class="com.rameses.gov.etracs.rptis.models.TransmittalExportFAASModel" />       
 </workunit>
 
 

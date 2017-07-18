@@ -55,3 +55,40 @@ SET firstname=$P{firstname},
 lastname=$P{lastname}, 
 middlename=$P{middlename} 
 WHERE objid=$P{objid}
+
+
+[insertIndividual]
+insert into entityindividual (
+	objid,
+	lastname,
+	firstname,
+	middlename,
+	birthdate,
+	birthplace,
+	citizenship,
+	gender,
+	civilstatus,
+	religion,
+	profession,
+	photo,
+	thumbnail,
+	tin,
+	sss
+)
+values(
+	$P{objid},
+	$P{lastname},
+	$P{firstname},
+	$P{middlename},
+	$P{birthdate},
+	$P{birthplace},
+	$P{citizenship},
+	$P{gender},
+	$P{civilstatus},
+	$P{religion},
+	$P{profession},
+	$P{photo},
+	$P{thumbnail},
+	$P{tin},
+	$P{sss}
+)

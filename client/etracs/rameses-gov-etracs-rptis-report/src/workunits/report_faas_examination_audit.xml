@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/explorer/report/rpt" action="init" 
                 caption="Property Examination and Audit Report" 
-                target="window" index="14" 
+                target="window" 
                 role="ASSESSOR_REPORT,REPORT" />
     </invokers>
     <code>
@@ -25,7 +25,7 @@ class ExaminationAuditReportController extends com.rameses.gov.etracs.rpt.report
     String title = 'Property Examination and Audit Report'
     boolean showClassification = false;
     
-    String reportName = 'com/rameses/gov/etracs/rpt/report/report_examination_audit.jasper';
+    String reportName = 'com/rameses/gov/etracs/rpt/report/property_examination_audit.jasper';
     
     void buildReportData(entity, asyncHandler){
         svc.generateReport(entity, asyncHandler); 
@@ -39,13 +39,19 @@ class ExaminationAuditReportController extends com.rameses.gov.etracs.rpt.report
     def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),
                 new FormControl( "combo", [caption:'Quarter', name:'entity.qtr', items:'quarters', required:true, immediate:true, preferredSize:'100,19']),
-                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'100,19']),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'100,19', allowNull:false, required:true]),
+                new FormControl( "combo", [caption:'Day', name:'entity.day', items:'days', dynamic:true, depends:['entity.month'] as String[], immediate:true, preferredSize:'100,19', emptyText:'ALL']),
+                new FormControl( "combo", [caption:'User', name:'entity.user', items:'users', dynamic:true, expression:'#{item.name}', preferredSize:'250,19']),
             ]    
         },
    ] as FormPanelModel;
+   
+   
+   def getUsers(){
+        return svc.getUsers();
+   }
    
 }
 ]]>        

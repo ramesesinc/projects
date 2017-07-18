@@ -6,7 +6,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.util.*;
         
-public class CashReceiptBarcode {
+public class BarcodeLoader {
         
     @Service("CashReceiptBarcodeService")
     def barcodeSvc;

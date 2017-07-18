@@ -4,9 +4,6 @@ import com.rameses.common.*;
 
 class RPTReceiptInterceptor
 {
-	@PersistenceContext('rpt')
-	def em
-
 	@Service('RPTReceiptService')
 	def svc 
 
@@ -36,8 +33,7 @@ class RPTReceiptInterceptor
 	@Before(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 
 	public void interceptBeforePostReceipt( evt ) {
 		def receipt = evt.args[0]
-		svc.checkLedgerUpdateFlagModified(receipt)
-		receipt.items = svc.getSummarizedCashReceiptItems(receipt); 
+		receipt.items = svc.getSummarizedItems(receipt); 
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 

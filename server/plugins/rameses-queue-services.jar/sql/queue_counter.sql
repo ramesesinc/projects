@@ -6,8 +6,9 @@ WHERE b.counterid = $P{counterid}
 
 [findCurrentNumber]
 SELECT 
-	qg.title AS groupname, qs.title, qs.prefix,qn.seriesno 
-FROM queue_number_counter qnc
+	qg.title AS groupname, qs.title, qs.prefix, qn.seriesno, 
+	qn.sectionid, qn.ticketno, qn.objid as numberid 
+FROM queue_number_counter qnc 
 	INNER JOIN queue_number qn ON qnc.objid=qn.objid
 	INNER JOIN queue_group qg ON qn.groupid=qg.objid
 	INNER JOIN queue_section qs ON qn.sectionid=qs.objid

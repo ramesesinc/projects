@@ -71,7 +71,11 @@ class RemittanceInterceptor {
 				def afdata = remittance_db.findRemittedReceiptSummary([ controlid: m.controlid ]); 
 				if ( afdata?.amount ) {
 					def qty = (int) ( afdata.amount / g.denomination ); 
-					m.currentseries = afdetail.beginstartseries + qty; 
+					def startseries = afdetail.beginstartseries; 
+					if ( startseries==null ) startseries = afdetail.receivedstartseries; 
+					if ( startseries==null ) startseries = 1;
+
+					m.currentseries = startseries + qty; 
 				}
 			}
 			afSerialSvc.postIssue( m );
@@ -84,7 +88,7 @@ class RemittanceInterceptor {
 
 		remittanceAf.updateRemittanceAF( [collectorid:o.collector.objid, remittanceid: o.objid] );
 		def list = remittanceAf.getRemittanceForBalanceForward([remittanceid: o.objid]);
-		list.each {
+		list.each { 
 			def m = [:];
 			m.startseries = it.startseries;
 			m.endseries = it.endseries;

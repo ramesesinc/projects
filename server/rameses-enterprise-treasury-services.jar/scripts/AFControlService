@@ -5,7 +5,7 @@ import com.rameses.services.extended.*;
 
 class AFControlService  {
 
-	@ActiveDB("af_control")
+	@DataContext("af_control")
 	def em;
 
 	@Env
@@ -127,21 +127,32 @@ class AFControlService  {
 
 	@ProxyMethod
 	public void updateNextSeries( p ) {
-		if(!p.qtyissued) p.qtyissued = 1;
+		if (!p.qtyissued) p.qtyissued = 1;
 
 		//open and check if the end series is not valid
-		def o = em.read( p );
+		def o = em.find([ objid: p.objid ]).first(); 
 		if( p.qtyissued >  (o.endseries - o.currentseries + 1)  ) {
 			throw new Exception("There is not enough accountable forms for this batch");
-		}
-		//check that currentseries must not be greater than endseries + 1;
-		em.updateNextSeries(p);
+		} 
+
+		def nextseries = o.currentseries + p.qtyissued; 
+		em.find([ objid: p.objid ]).update([ currentseries: nextseries ]); 		
 	}
 
 	@ProxyMethod
-	public void changeMode(def p) {
-		em.changeMode(p);
-	}
+	public void changeMode( p ) { 
+		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
+
+		def o = em.find([ objid: p.objid ]).first(); 
+		if ( !o ) return; 
+
+		if ( o.active == 1 ) {
+			em.debug = true;
+			def sqlparam = [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode];
+			def list = em.where('owner.objid= :ownerid and afid= :afid and txnmode= :txnmode and active=1', sqlparam).list(0,2);
+			if ( list.size() > 1 ) em.find([ objid: p.objid ]).update([ active: 0]); 
+		}
+	} 
 
 	@ProxyMethod
 	public void assignToSubcollector(def p) {

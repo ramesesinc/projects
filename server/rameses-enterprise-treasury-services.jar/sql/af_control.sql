@@ -7,7 +7,9 @@ select a.* from (
     case when af.formtype = 'serial' then ac.endseries else null end as endseries,
     ac.active, ac.org_objid, ac.org_name, ac.fund_objid, ac.fund_title, ac.stubno, ac.owner_objid,
     ac.owner_name, ac.prefix, ac.suffix, (ac.currentseries-ac.startseries) as qtyissued, 
-    ((ac.endseries-ac.currentseries) + 1) as qtybalance 
+    ((ac.endseries-ac.currentseries) + 1) as qtybalance, 
+    case when af.formtype = 'serial' then ac.startseries else ac.stubno end as sortseries, 
+    case when af.formtype = 'serial' then 0 else 1 end as sortgroupindex 
   from ( 
     select objid from af_control 
     where owner_objid=$P{userid} 
@@ -21,7 +23,7 @@ select a.* from (
     inner join af on ac.afid=af.objid 
   where 1=1 ${filter} 
 )a 
-order by startseries 
+order by sortgroupindex, afid, sortseries 
 
 
 [getAssigneeOpenList]

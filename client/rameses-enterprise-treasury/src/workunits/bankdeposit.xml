@@ -1,366 +1,365 @@
 <workunit>
     
-   <invokers>
-         <invoker type="bankdeposit:create" caption="New Bank Deposit" action="init" target="window"/>
-         <invoker folderid="home/treasury" caption="New Bank Deposit" action="init" target="window" role="CASHIER" index="51"/>
-         <invoker folderid="/menu/txn/treasury" caption="New Bank Deposit" action="init" target="window" role="CASHIER" />
-         <invoker type="quick_launcher" code="BNKD" caption="Bank Deposits" action="init" target="window" role="CASHIER"/>
-         <invoker type="bankdeposit:open" caption="Bank Deposit (Open)" action="open" target="window"/>
-         
-         <invoker type="formActions" caption="Close" name="_close"  icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
-         <invoker type="formActions" caption="Next" name="start" visibleWhen="#{state == 'initial'}" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/arrow_right.png"/>
-         <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{state == 'processing'}" icon="images/toolbars/save.png" mnemonic="s" shortcut="ctrl S"/>
-         
-         <invoker type="formActions" caption="Validate" name="validateDeposit" visibleWhen="#{state == 'OPEN'}" />
-         
-         <invoker type="formActions" caption="Reports" name="popupReports"   
-            visibleWhen="#{mode == 'read' }" category="bankdeposit:reports" mnemonic="r"/>
-     </invokers>
-   
-   <code>
-       <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import java.rmi.server.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        import com.rameses.osiris2.reports.*;
-        
-        class BankDepositController {
-        
-            @Binding
-            def binding;
-        
-            def state = "initial";
-            
-            @Service("BankDepositService")
-            def service;
-        
-            @Service("NumberService")
-            def numSvc; 
+    <invokers>
+        <invoker type="bankdeposit:create" caption="Bank Deposit" action="init" target="window"/>
+        <invoker folderid="home/deposit" caption="Bank Deposit" action="init" target="window" role="CASHIER" index="51"/>
+        <invoker folderid="/menu/txn/treasury" caption="Bank Deposit" action="init" target="window" role="CASHIER" />
+        <invoker type="quick_launcher" code="BNKD" caption="Bank Deposits" action="init" target="window" role="CASHIER"/>
+        <invoker type="bankdeposit:open" caption="Bank Deposit (Open)" action="open" target="window"/>
 
-            @Service("ReportParameterService")
-            def reportParamSvc; 
-            
-            def YMD = new java.text.SimpleDateFormat("yyyy-MM-dd");
-            
-            String title = "New Bank Deposit (Initial)";
-            def entity;
-            
-            def mode = 'create';
-            
-            boolean showSelected;
-            
-            def selectedFund;
-            def selectedDeposit;
-            
-            def getExtActions() {
-                return InvokerUtil.lookupActions( "bankdeposit:formActions", [entity:entity] );
+        <invoker type="formActions" caption="Close" name="_close"  icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
+        <invoker type="formActions" caption="Next" name="start" visibleWhen="#{state == 'initial'}" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/arrow_right.png"/>
+        <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{state == 'processing'}" icon="images/toolbars/save.png" mnemonic="s" shortcut="ctrl S"/>
+
+        <invoker type="formActions" caption="Validate" name="validateDeposit" visibleWhen="#{state == 'OPEN'}" />
+
+        <invoker type="formActions" caption="Reports" name="popupReports"   
+           visibleWhen="#{mode == 'read' }" category="bankdeposit:reports" mnemonic="r"/>
+    </invokers>
+   
+    <code>
+    <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import java.rmi.server.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+import com.rameses.osiris2.reports.*;
+
+class BankDepositController {
+
+    @Binding
+    def binding;
+
+    def state = "initial";
+
+    @Service("BankDepositService")
+    def service;
+
+    @Service("NumberService")
+    def numSvc; 
+
+    @Service("ReportParameterService")
+    def reportParamSvc; 
+
+    def YMD = new java.text.SimpleDateFormat("yyyy-MM-dd");
+
+    String title = "New Bank Deposit (Initial)";
+    def entity;
+
+    def mode = 'create';
+
+    boolean showSelected;
+
+    def selectedFund;
+    def selectedDeposit;
+
+    def getExtActions() {
+        return InvokerUtil.lookupActions( "bankdeposit:formActions", [entity:entity] );
+    }
+
+    def popupReports(def inv) {
+        def popupMenu = new PopupMenuOpener();
+        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }
+
+    def init() {
+        state = "initial";
+        entity = service.init();        
+        entity.depositamt = entity.liquidations.amount.sum();  
+        return "initial";
+    }
+
+    def selectAll() {
+        if( entity.liquidations ) { 
+            liquidationListModel.selectAll();
+            updateTotalAmount(); 
+         }
+    }
+
+    def deselectAll() { 
+        liquidationListModel.deselectAll();
+        entity.depositamt = 0.0;
+        binding.refresh();
+    }
+
+    def start() {
+        def liquidations = liquidationListModel.getSelectedValue(); 
+        if( !liquidations ) throw new Exception("Please select a liquidation.  "); 
+
+        state = "processing"; 
+        entity.liquidations = liquidations;         
+        def info = service.process( [liquidationids: "'" + entity.liquidations.objid.join("','") + "'" ] ) 
+        if(! info ) throw new Exception("Selected liquidation does not exists.   ")
+        entity.fundsummaries = info.fundsummaries;
+        entity.undepositedChecks = info.undepositedChecks
+        return "default";
+    }
+
+    def open(){
+        state = 'open'
+        mode = "read";
+        title = 'Bank Deposit Summary'
+        entity = service.open(entity);
+        return 'view'
+    }
+    
+    void updateTotalAmount() { 
+        entity.depositamt = liquidationListModel.getSelectedValue().amount.sum();
+        binding.refresh('entity.depositamt'); 
+    } 
+
+    def liquidationListModel = [ 
+        isMultiSelect: { return true; }, 
+        fetchList: { return entity.liquidations; }, 
+        afterSelectionChange: { updateTotalAmount(); }, 
+        afterLoad: { 
+            liquidationListModel.selectAll(); 
+        } 
+    ] as BasicListModel;
+
+    def fundSummaryModel = [
+        fetchList: { o->return entity.fundsummaries; }
+    ] as BasicListModel;
+
+    def depositModel = [
+        fetchList: { o->
+            if(showSelected) {
+                return entity.deposits.findAll{ it.fund?.objid == selectedFund?.fund?.objid };
             }
+            return entity.deposits; 
+        },
+        onCommitItem : { o ->
+            if(! MsgBox.confirm("Please make sure the validation info are correct. Continue? ")) return;
+
+            service.addDepositValidation(entity, o ); 
+        }
+    ] as EditorListModel;
+
+
+    def validateDeposit() {
+        MsgBox.alert('validate deposit');
+    }
+
+    def addDeposit() {
+        if(!selectedFund || selectedFund.balance <= 0 ) 
+            throw new Exception("Please select a fund with a reminaing balance nto zero"); 
             
-            def popupReports(def inv) {
-                def popupMenu = new PopupMenuOpener();
-                def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
-                list.each{
-                    popupMenu.add( it );
-                }
-                return popupMenu;
-            }
-            
-            def init() {
-                state = "initial";
-                entity = service.init();
-                entity.depositamt = entity.liquidations.amount.sum();
-                return "initial";
-            }
-            
-            def selectAll() {
-                if( entity.liquidations ){
-                    entity.liquidations.each{it.selected = true} 
-                    liquidationListModel.load();
-                    entity.depositamt = entity.liquidations.amount.sum()   
-                    binding.refresh()
-                 }
-            }
-            
-            def deselectAll() {
-                entity.liquidations.each{it.selected = false} 
-                liquidationListModel.load();
-                entity.depositamt = 0.0
-                binding.refresh()
-            }
-            
-            def start() {
-                state = "processing";
-                entity.liquidations = entity.liquidations.findAll{it.selected == true}
-                if( ! entity.liquidations) throw new Exception("Please select a liquidation.  ")
-                def info = service.process( [liquidationids: "'" + entity.liquidations.objid.join("','") + "'" ] ) 
-                if(! info ) throw new Exception("Selected liquidation does not exists.   ")
-                entity.fundsummaries = info.fundsummaries;
-                entity.undepositedChecks = info.undepositedChecks
-                return "default";
-            }
-            
-            def open(){
-                state = 'open'
-                mode = "read";
-                title = 'Bank Deposit Summary'
-                entity = service.open(entity);
-                return 'view'
-            }
-            
-            def liquidationListModel = [
-                fetchList: { o->return entity.liquidations; },
-                 onColumnUpdate: {item, colname-> 
-                    if (colname == 'selected'){
-                        if( item.selected == true) {
-                            entity.depositamt += item.amount
-                        } else {
-                            entity.depositamt -= item.amount
-                        }
-                        binding.refresh("entity.depositamt")
-                    }
-                        
-                }
-            ] as EditorListModel;
-            
-            def fundSummaryModel = [
-                fetchList: { o->return entity.fundsummaries; }
-            ] as BasicListModel;
-            
-            def depositModel = [
-                fetchList: { o->
-                    if(showSelected) {
-                        return entity.deposits.findAll{ it.fund?.objid == selectedFund?.fund?.objid };
-                    }
-                    return entity.deposits; 
-                },
-                onCommitItem : { o ->
-                    if(! MsgBox.confirm("Please make sure the validation info are correct. Continue? ")) return;
-                
-                    service.addDepositValidation(entity, o ); 
-                }
-            ] as EditorListModel;
-            
-            
-            def validateDeposit() {
-                MsgBox.alert('validate deposit');
-            }
-            
-            def addDeposit() {
-                if(!selectedFund || selectedFund.balance <= 0 ) 
-                    throw new Exception("Please select a fund with a reminaing balance nto zero"); 
-                return InvokerUtil.lookupOpener( "bankdeposit:entry", [
-                    undepositedChecks: entity.undepositedChecks,
-                    selectedFund: selectedFund,
-                    handler: { o->
-                        if( entity.deposits.find{ it.bankaccount.objid == o.bankaccount.objid } ) {
-                            throw new Exception("Bank account already selected. Please choose another bank account");
-                        }    
-                        entity.deposits << o;
-                        selectedFund.allocated += o.amount;
-                        selectedFund.balance = selectedFund.amount - selectedFund.allocated;
-                        fundSummaryModel.reload();    
-                        depositModel.reload();
-                    }
-                ]);
-            }
-            
-            
-            def addDepositByBankAccount() {
-                return InvokerUtil.lookupOpener( "bankdeposit:entrybybankacct", [
-                    undepositedChecks: entity.undepositedChecks,
-                    
-                    fundSummaries    : entity.fundsummaries.findAll{it.balance != 0.0},
-                    
-                    handler: { o->
-                        entity.deposits << o;
-                        o.bankaccount.fundsummaries.each{ dfs -> 
-                            def fs = entity.fundsummaries.find{it.fund.objid == dfs.fund.objid }
-                            if (fs ){
-                                fs.allocated = fs.balance;
-                                fs.balance = 0;
-                            }
-                        }
-                        fundSummaryModel.reload();    
-                        depositModel.reload();
-                    }
-                ]);
-            }
-            
-            
-            def removeDeposit() {
-                if(!selectedDeposit) return;
-                //remove all checks also
-                entity.deposits.remove( selectedDeposit );
-                
-                if (selectedDeposit.bankaccount ){
-                    selectedDeposit.bankaccount.fundsummaries.each{ fs ->
-                        def f= entity.fundsummaries.find{ it.fund.objid == fs.fund.objid };
-                        f.allocated = 0.0 ;
-                        f.balance = f.amount;
-                    }
-                }
-                else{
-                    def fund = entity.fundsummaries.find{ it.fund.objid == selectedDeposit.fund.objid };
-                    fund.allocated -= selectedDeposit.amount;
-                    fund.balance = fund.amount - fund.allocated;
-                }
-                
-                selectedDeposit.checks.each {
-                    entity.undepositedChecks.add( it );    
-                }
-                fundSummaryModel.reload();   
+        return InvokerUtil.lookupOpener( "bankdeposit:entry", [
+            undepositedChecks: entity.undepositedChecks,
+            selectedFund: selectedFund,
+            handler: { o->
+                if( entity.deposits.find{ it.bankaccount.objid == o.bankaccount.objid } ) {
+                    throw new Exception("Bank account already selected. Please choose another bank account");
+                }    
+                entity.deposits << o;
+                selectedFund.allocated += o.amount;
+                selectedFund.balance = selectedFund.amount - selectedFund.allocated;
+                fundSummaryModel.reload();    
                 depositModel.reload();
             }
-            
-            
-            def submit() {
-                if( entity.fundsummaries.find{ it.balance > 0 } )
-                    throw new Exception("There should be no undeposited balance");
-            
-                if( MsgBox.confirm("You are about to submit this deposit. Please ensure the entries are correct")) {
-                    entity = service.post( entity );
-                    state = "completed";
-                    mode = "read";
-                    MsgBox.alert("Posting successful");
-                    return 'view';
-                }
-                return null;
-            }
-            
-            def depositslippath = "com/rameses/enterprise/treasury/bankdeposit/"
-            
-            def printCashDepositSlip() {
-                if( selectedDeposit.totalcash == 0.0 ) throw new Exception('There is no cash for deposit.')
-            
-                def reportname = depositslippath + "cash.jasper" 
-                if( selectedDeposit.cashreport ) {
-                    def file = depositslippath + selectedDeposit.cashreport + ".jasper"
-                    if (ReportUtil.hasReport( file )) reportname = file; 
-                }
-                
-                def reportdata = [
-                    txndate: entity.dtposted, 
-                    bankacctname: selectedDeposit.bankaccount.title, 
-                    bankacctno: selectedDeposit.bankaccount.code, 
-                    branchname :selectedDeposit.branchname,
-                    depositedbyname: entity.cashier.name,
-                    cash : selectedDeposit.totalcash,
-                    denominations: selectedDeposit.cashbreakdown,
-                    accttype : selectedDeposit.accttype,
-                    amountinwords: numSvc.doubleToWords( selectedDeposit.totalcash ).toUpperCase()
-                ]
-                                                
-                if ( reportdata.txndate instanceof String) { 
-                    def txndate = YMD.parse( reportdata.txndate );
-                    reportdata.txndate = txndate; 
-                } 
-                
-                selectedDeposit.cashbreakdown.each {
-                    def dqty = 'dqty' + it.caption.toString().replace('.00','')
-                    def damt = 'damt' + it.caption.toString().replace('.00','')
-                    reportdata."$dqty" = null
-                    reportdata."$damt" = null
-                    if( it.amount > 0 ) {
-                        reportdata."$dqty" = it.qty
-                        reportdata."$damt" = it.amount
-                    }            
-                }
-                
-                def stdparams = reportParamSvc.getStandardParameter(); 
-                def report = [
-                    getReportName : { return reportname; },
-                    getReportData : { return reportdata; }, 
-                    getParameters : { return stdparams; }
-                ] as ReportModel
+        ]);
+    }
 
-                report.viewReport(); 
-                if ( ReportUtil.isDeveloperMode()) { 
-                    return Inv.lookupOpener('report:preview', [ 
-                        report: report, 
-                        title : ''+ entity.txnno +': Cash Deposit Slip' 
-                    ]);
-                } 
 
-                ReportUtil.print( report.report, true ); 
-                return null; 
-            }
-            
-            def printCashBreakdown() {
-                if( selectedDeposit.totalcash == 0.0 ) throw new Exception('There is no cash for deposit.')
-            
-               def reportname = depositslippath + "cashbreakdownitem.jasper"; 
-               if( selectedDeposit.cashbreakdownreport ) {
-                    def file = depositslippath + selectedDeposit.cashbreakdownreport + ".jasper"; 
-                    if (ReportUtil.hasReport( file )) reportname = file; 
-                }
-                
-                def stdparams = reportParamSvc.getStandardParameter(); 
-                def report = [
-                    getReportName : { return reportname   },
-                    getReportData : { return selectedDeposit.cashbreakdown; }, 
-                    getParameters : { return stdparams; }
-                ] as ReportModel
-                
-                report.viewReport(); 
-                
-                if ( ReportUtil.isDeveloperMode()) { 
-                    return Inv.lookupOpener('report:preview', [ 
-                        report: report, 
-                        title : ''+ entity.txnno +': Cash Breakdown' 
-                    ]);
-                } 
-                
-                ReportUtil.print( report.report, true );
-                return null; 
-            }
-            
-            def printCheckDepositSlip() {
-                if(! selectedDeposit.checks ) throw new Exception("There are no checks for deposit.")
-                
-               def reportname = depositslippath + "check.jasper"
-               if( selectedDeposit.checkreport ) {
-                    def file = depositslippath + selectedDeposit.checkreport + ".jasper";
-                    if (ReportUtil.hasReport( file )) reportname = file; 
-                }
-                
-                def subreportname = depositslippath + "checkbreakdownitem.jasper"
-                if(  selectedDeposit.checkbreakdownreport ) {
-                   def file = depositslippath + selectedDeposit.checkbreakdownreport + ".jasper"; 
-                   if (ReportUtil.hasReport( file )) subreportname = file; 
-                }
-                
-                def reportdata = [
-                    txndate: entity.dtposted, 
-                    bankacctname: selectedDeposit.bankaccount.title, 
-                    bankacctno: selectedDeposit.bankaccount.code, 
-                    branchname :selectedDeposit.branchname,
-                    depositedbyname: entity.cashier.name,
-                    noncash : selectedDeposit.totalnoncash,
-                    checks : [],
-                    checktype : selectedDeposit.accttype,
-                    amountinwords: numSvc.doubleToWords( selectedDeposit.totalnoncash ).toUpperCase()
-                ]; 
+    def addDepositByBankAccount() {
+        return InvokerUtil.lookupOpener( "bankdeposit:entrybybankacct", [
+            undepositedChecks: entity.undepositedChecks,
 
-                return InvokerUtil.lookupOpener( "bankdeposit:printcheck" , [ 
-                    stdparams : reportParamSvc.getStandardParameter(),            
-                    checks:selectedDeposit.checks, 
-                    reportdata: reportdata, 
-                    reportname: reportname, 
-                    subreportname:subreportname, 
-                    depositslippath:depositslippath 
-                ] )                
+            fundSummaries    : entity.fundsummaries.findAll{it.balance != 0.0},
+
+            handler: { o->
+                entity.deposits << o;
+                o.bankaccount.fundsummaries.each{ dfs -> 
+                    def fs = entity.fundsummaries.find{it.fund.objid == dfs.fund.objid }
+                    if (fs ){
+                        fs.allocated = fs.balance;
+                        fs.balance = 0;
+                    }
+                }
+                fundSummaryModel.reload();    
+                depositModel.reload();
             }
-        }      
-       ]]>
-   </code>
+        ]);
+    }
+
+
+    def removeDeposit() {
+        if(!selectedDeposit) return;
+        
+        //remove all checks also
+        entity.deposits.remove( selectedDeposit );
+
+        if ( selectedDeposit.bankaccount?.fundsummaries ){
+            selectedDeposit.bankaccount.fundsummaries.each{ fs ->
+                def f = entity.fundsummaries.find{ it.fund.objid == fs.fund.objid } 
+                f.allocated = 0.0 ;
+                f.balance = f.amount;
+            }
+        }
+        else{
+            def fund = entity.fundsummaries.find{ it.fund.objid == selectedDeposit.fund.objid } 
+            fund.allocated -= selectedDeposit.amount;
+            fund.balance = fund.amount - fund.allocated;
+        }
+
+        selectedDeposit.checks.each {
+            entity.undepositedChecks.add( it );    
+        }
+        fundSummaryModel.reload();   
+        depositModel.reload();
+    }
+
+
+    def submit() {
+        if( entity.fundsummaries.find{ it.balance > 0 } )
+            throw new Exception("There should be no undeposited balance");
+
+        if( MsgBox.confirm("You are about to submit this deposit. Please ensure the entries are correct")) {
+            entity = service.post( entity );
+            state = "completed";
+            mode = "read";
+            MsgBox.alert("Posting successful");
+            return 'view';
+        }
+        return null;
+    }
+
+    def depositslippath = "com/rameses/enterprise/treasury/bankdeposit/"
+
+    def printCashDepositSlip() {
+        if( selectedDeposit.totalcash == 0.0 ) throw new Exception('There is no cash for deposit.')
+
+        def reportname = depositslippath + "cash.jasper" 
+        if( selectedDeposit.cashreport ) {
+            def file = depositslippath + selectedDeposit.cashreport + ".jasper"
+            if (ReportUtil.hasReport( file )) reportname = file; 
+        }
+
+        def reportdata = [
+            txndate: entity.dtposted, 
+            bankacctname: selectedDeposit.bankaccount.title, 
+            bankacctno: selectedDeposit.bankaccount.code, 
+            branchname :selectedDeposit.branchname,
+            depositedbyname: entity.cashier.name,
+            cash : selectedDeposit.totalcash,
+            denominations: selectedDeposit.cashbreakdown,
+            accttype : selectedDeposit.accttype,
+            amountinwords: numSvc.doubleToWords( selectedDeposit.totalcash ).toUpperCase()
+        ]
+
+        if ( reportdata.txndate instanceof String) { 
+            def txndate = YMD.parse( reportdata.txndate );
+            reportdata.txndate = txndate; 
+        } 
+
+        selectedDeposit.cashbreakdown.each {
+            def dqty = 'dqty' + it.caption.toString().replace('.00','')
+            def damt = 'damt' + it.caption.toString().replace('.00','')
+            reportdata."$dqty" = null
+            reportdata."$damt" = null
+            if( it.amount > 0 ) {
+                reportdata."$dqty" = it.qty
+                reportdata."$damt" = it.amount
+            }            
+        }
+
+        def stdparams = reportParamSvc.getStandardParameter(); 
+        def report = [
+            getReportName : { return reportname; },
+            getReportData : { return reportdata; }, 
+            getParameters : { return stdparams; }
+        ] as ReportModel
+
+        report.viewReport(); 
+        if ( ReportUtil.isDeveloperMode()) { 
+            return Inv.lookupOpener('report:preview', [ 
+                report: report, 
+                title : ''+ entity.txnno +': Cash Deposit Slip' 
+            ]);
+        } 
+
+        ReportUtil.print( report.report, true ); 
+        return null; 
+    }
+
+    def printCashBreakdown() {
+        if( selectedDeposit.totalcash == 0.0 ) throw new Exception('There is no cash for deposit.')
+
+       def reportname = depositslippath + "cashbreakdownitem.jasper"; 
+       if( selectedDeposit.cashbreakdownreport ) {
+            def file = depositslippath + selectedDeposit.cashbreakdownreport + ".jasper"; 
+            if (ReportUtil.hasReport( file )) reportname = file; 
+        }
+
+        def stdparams = reportParamSvc.getStandardParameter(); 
+        def report = [
+            getReportName : { return reportname   },
+            getReportData : { return selectedDeposit.cashbreakdown; }, 
+            getParameters : { return stdparams; }
+        ] as ReportModel
+
+        report.viewReport(); 
+
+        if ( ReportUtil.isDeveloperMode()) { 
+            return Inv.lookupOpener('report:preview', [ 
+                report: report, 
+                title : ''+ entity.txnno +': Cash Breakdown' 
+            ]);
+        } 
+
+        ReportUtil.print( report.report, true );
+        return null; 
+    }
+
+    def printCheckDepositSlip() {
+        if(! selectedDeposit.checks ) throw new Exception("There are no checks for deposit.")
+
+       def reportname = depositslippath + "check.jasper"
+       if( selectedDeposit.checkreport ) {
+            def file = depositslippath + selectedDeposit.checkreport + ".jasper";
+            if (ReportUtil.hasReport( file )) reportname = file; 
+        }
+
+        def subreportname = depositslippath + "checkbreakdownitem.jasper"
+        if(  selectedDeposit.checkbreakdownreport ) {
+           def file = depositslippath + selectedDeposit.checkbreakdownreport + ".jasper"; 
+           if (ReportUtil.hasReport( file )) subreportname = file; 
+        }
+
+        def reportdata = [
+            txndate: entity.dtposted, 
+            bankacctname: selectedDeposit.bankaccount.title, 
+            bankacctno: selectedDeposit.bankaccount.code, 
+            branchname :selectedDeposit.branchname,
+            depositedbyname: entity.cashier.name,
+            noncash : selectedDeposit.totalnoncash,
+            checks : [],
+            checktype : selectedDeposit.accttype,
+            amountinwords: numSvc.doubleToWords( selectedDeposit.totalnoncash ).toUpperCase()
+        ]; 
+
+        return InvokerUtil.lookupOpener( "bankdeposit:printcheck" , [ 
+            stdparams : reportParamSvc.getStandardParameter(),            
+            checks:selectedDeposit.checks, 
+            reportdata: reportdata, 
+            reportname: reportname, 
+            subreportname:subreportname, 
+            depositslippath:depositslippath 
+        ] )                
+    }
+}      
+    ]]>
+    </code>
    
-   <pages>
-       <page name="initial" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositInitPage" />
-       <page name="default" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositProcessPage" />
-       <page name="view" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositViewPage" />
-   </pages>
-   
+    <pages>
+        <page name="initial" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositInitPage" />
+        <page name="default" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositProcessPage" />
+        <page name="view" template="com.rameses.enterprise.treasury.bankdeposit.BankDepositViewPage" />
+    </pages>   
 </workunit>

@@ -93,12 +93,25 @@ class LiquidationReportService  {
 
 		liquidation.otherpayments = liquidation.checks;
 		liquidation.amountinwords = numSvc.doubleToWords( liquidation.amount )
-		liquidation.cashbreakdown.each { it.qty = it.qty.toString() }
 		def cashiers = liqreport.getLiquidationCashierList( params );
 		liquidation.cashier = [
 			name: cashiers.name.join("/"),
 			title: cashiers.jobtitle.join("/")
-		] 
+		]; 
+
+		def cashbreakdown = liquidation.cashbreakdown;
+		cashbreakdown.each { it.qty = it.qty.toString() }
+		def cashcount = [ 
+			d1000: cashbreakdown.find{ it.denomination==1000 }, 
+			d500: cashbreakdown.find{ it.denomination==500 }, 
+			d200: cashbreakdown.find{ it.denomination==200 }, 
+			d100: cashbreakdown.find{ it.denomination==100 }, 
+			d50: cashbreakdown.find{ it.denomination==50 }, 
+			d20: cashbreakdown.find{ it.denomination==20 }, 
+			d10: cashbreakdown.find{ it.denomination==10 }, 
+			d1: cashbreakdown.find{ it.denomination==1 }  
+		]; 
+		liquidation.cashcount = cashcount; 
 		return liquidation;
 	}
 

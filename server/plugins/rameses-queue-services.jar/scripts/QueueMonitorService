@@ -7,9 +7,27 @@ class QueueMonitorService {
 	@DataContext(value='queue_counter', adapter='queue') 
 	def qm;
 
+	@XConnection("queue_poll")
+	def queue_poll;
+
+	@Service 
+	def self; 
+
 	@ProxyMethod 
 	public def getCounters( groupid ) {
 		return qm.getCounters([ groupid: groupid ]); 
 	} 	
 
+	@ProxyMethod 
+	public def refresh( params ) { 
+		self.notifyHttp([ type:'RELOAD_MONITOR', groupid: params.groupid ]); 
+	}
+
+	@Async 
+	@ProxyMethod(local=true) 
+	public void notifyHttp( data ) { 
+		if ( data?.type ) { 
+			queue_poll.send( data ); 
+		} 
+	} 
 } 

@@ -38,25 +38,27 @@ class CollectionGroupService extends ActiveCrudListService {
 		} 
 	} 
 
-	void afterList( params, list ) {
-		def flist = []; 
-		if ( env?.CLIENTCODE ) {
-			flist = list.findAll{ it.org?.objid == env.ORGID } 
-		} else {
-			flist = list.findAll{( it.org?.objid == null )} 
-		} 
+	void afterList( params, list ) { 
+		if ( params._tag == 'lookup' ) { 
+			
+			def flist = []; 
+			if ( env.CLIENTCODE ) {
+				flist = list.findAll{ it.org?.objid == env.ORGID } 
+			} else {
+				flist = list.findAll{( it.org?.objid == null )} 
+			} 
 
-		list.clear(); 
-		if ( flist ) { 
-			list.addAll( flist ); 
-		} 
-		flist.clear(); 
+			list.clear(); 
+			if ( flist ) { 
+				list.addAll( flist ); 
+			} 
+			flist.clear(); 
+		}
 	}
 
 	protected void beforeCreate(def entity){
 		em.deleteRevenueItems( entity )
 	}
-
 
 	protected void afterCreate(def entity){
 		entity.revenueitems.each {

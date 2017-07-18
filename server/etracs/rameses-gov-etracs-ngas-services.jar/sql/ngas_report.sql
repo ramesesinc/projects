@@ -1,6 +1,6 @@
 [getAcctGroups]
-select ia.type as acctgroup 
-from itemaccount ia 
+SELECT ia.type AS acctgroup 
+FROM itemaccount ia 
 group by ia.type 
 
 [getUnmappedAccts]
@@ -43,8 +43,8 @@ from (
 		inner join liquidation_remittance lrem on liq.objid=lrem.liquidationid 
 		inner join remittance rem on lrem.objid=rem.objid 
 		inner join income_summary inc on rem.objid=inc.refid 
-	where inc.refdate >= $P{startdate} 
-		and inc.refdate < $P{enddate} 
+	where liq.dtposted >= $P{startdate} 
+		and liq.dtposted < $P{enddate} 
 		and inc.fundid in (
 			select objid from fund where objid like $P{fundid} 
 			union 
@@ -128,8 +128,8 @@ from (
 					inner join remittance rem on lrem.objid=rem.objid 
 					inner join income_summary inc on rem.objid=inc.refid 
 					inner join (select @rownum:=0) rn on 1=1   
-				where inc.refdate >= $P{startdate} 
-					and inc.refdate < $P{enddate} 
+				where liq.dtposted >= $P{startdate} 
+					and liq.dtposted < $P{enddate} 
 					and inc.fundid in ( 
 						select objid from fund where objid like $P{fundid} 
 						union 
@@ -276,3 +276,31 @@ from (
 )xx inner join itemaccount ia on xx.acctid = ia.objid 
 	inner join fund f on ia.fund_objid = f.objid 
 order by ia.code, ia.title 
+
+[getIncomeSummaryByLiquidationDate]
+select 
+	a.objid, a.type, a.code as account_code, a.title as account_title, 
+	(case when a.parentid is null then 'ROOT' else a.parentid end) as parentid, 
+	xxb.amount 
+from ngasaccount a, ( 
+		select objid, sum(amount) as amount 
+		from ( 
+			select objid, 0.0 as amount from ngasaccount 
+			union all 
+			select a.objid, sum(inc.amount) as amount  
+			from liquidation liq 
+				inner join liquidation_remittance lrem on liq.objid=lrem.liquidationid 
+				inner join remittance rem on lrem.objid=rem.objid 
+				inner join income_summary inc on rem.objid=inc.refid 
+				inner join ngas_revenue_mapping rm on inc.acctid=rm.revenueitemid
+				inner join itemaccount ia on rm.revenueitemid=ia.objid 
+				inner join ngasaccount a on rm.acctid=a.objid 
+			where liq.dtposted >= $P{startdate} 
+				and liq.dtposted < $P{enddate} 
+				${filter} 
+			group by a.objid 
+		)xxa 
+		group by objid 
+	)xxb 
+where a.objid=xxb.objid 
+order by a.parentid, a.code 

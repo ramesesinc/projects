@@ -26,4 +26,8 @@ class UnremittedCollectionService {
 		return params; 
 	} 
 
+	@ProxyMethod 
+	public def getSummary( params ) {
+		return null; 
+	}
 }

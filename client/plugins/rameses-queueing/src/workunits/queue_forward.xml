@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="queue:forward" caption="Forward Queue Number" action="init"/>
+    </invokers> 
+    
+    <code class="queueing.model.UserQueueForwardModel"/>
+    
+    <pages>
+        <page template="queueing.view.UserQueueForwardPage"/>
+    </pages>
+</workunit>    

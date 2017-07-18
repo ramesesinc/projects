@@ -127,12 +127,13 @@ WHERE oldlob_objid=$P{lobid}
 [getReceivables]
 select 
    xx.assessmenttype, b.objid AS businessid,  
-   CASE ia.systype  
-     WHEN 'CHARGE' THEN 'OTHERCHARGE' 
-     WHEN 'REG_FEE' THEN 'REGFEE' 
-     WHEN 'OTHER_FEE' THEN 'OTHERCHARGE' 
-     WHEN 'BUSINESS_TAX' THEN 'TAX' 
-     WHEN 'TAX' THEN 'TAX' 
+   CASE 
+     WHEN ia.systype IS NULL THEN 'OTHERCHARGE'
+     WHEN ia.systype='CHARGE' THEN 'OTHERCHARGE' 
+     WHEN ia.systype='REG_FEE' THEN 'REGFEE' 
+     WHEN ia.systype='OTHER_FEE' THEN 'OTHERCHARGE' 
+     WHEN ia.systype='BUSINESS_TAX' THEN 'TAX' 
+     WHEN ia.systype='TAX' THEN 'TAX' 
    END AS taxfeetype,
    xx.iyear as yearapplied, 
    lob.objid AS oldlob_objid, lob.name AS oldlob_name,

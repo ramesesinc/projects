@@ -58,7 +58,10 @@ class AFCheckAvailabilityInterceptor {
 				if(i.endseries ) m.endseries = m.startseries + m.qtyissued - 1;
 				m.startstub = i.startstub;
 				m.endstub = m.startstub + counter - 1; 
-				m.cost =  ( counter * i.cost )
+				if ( i.cost ) {
+					m.cost = ( counter * i.cost )	
+				}
+				
 				buffer << m;
 				if(qty==0)break;
 			}

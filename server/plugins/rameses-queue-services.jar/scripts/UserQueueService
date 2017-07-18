@@ -62,9 +62,9 @@ class UserQueueService {
 		m.sections = qcs.getCounterSections([ counterid: m.objid ]); 
 
 		def c = qc.findCurrentNumber([ counterid: env.TERMINALID ]);
-		if ( c ) {
-			m.current = c;
-			m.current.currentno = queueSvc.formatSeriesNumber(c);
+		if ( c ) { 
+			m.current = c; 
+			m.current.currentno = (c.ticketno ? c.ticketno : queueSvc.formatSeriesNumber(c));
 		} 
 		return m;  
 	} 
@@ -176,6 +176,23 @@ class UserQueueService {
 		]); 
 	} 
 
+	@ProxyMethod 
+	public void forward( o ) {
+		if ( !o.counterid ) throw new Exception('counterid parameter is required'); 
+		if ( !o.sectionid ) throw new Exception('sectionid parameter is required'); 
+		if ( !o.ticketno ) throw new Exception('ticketno parameter is required'); 
+
+		def rundate = dateSvc.getServerDate();
+		def sect = qs.find([ objid: o.sectionid ]).first(); 
+		if ( !sect ) throw new Exception('The specified queue section does not exist'); 
+
+		def qndata = qn.create([ 
+			groupid: sect.groupid, sectionid: sect.objid, seriesno: 0, 
+			txndate: rundate, state: 'PENDING', ticketno: o.ticketno 
+		]); 
+
+		consumeNumber( o );  
+	} 
 
 	@ProxyMethod 
 	public def getQueueSections() {

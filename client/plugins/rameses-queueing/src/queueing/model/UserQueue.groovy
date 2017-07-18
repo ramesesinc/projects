@@ -71,7 +71,8 @@ class UserQueue extends AbstractUserQueueHandler {
             m.title = z.current.title; 
             m.groupid = z.current.groupid;
             m.groupname = z.current.groupname; 
-            m.ticketno = z.current.currentno;            
+            m.ticketno = z.current.currentno; 
+            m.sectionid = z.current.sectionid;
             return showServingTicket( m ); 
             
         } else {
@@ -133,8 +134,22 @@ class UserQueue extends AbstractUserQueueHandler {
         return "default";
     }
     
-    def forward() {
-        return null; 
+    def forward() { 
+        def ticketno = serveditem.ticketno;
+        def sections = userQueueSvc.getQueueSections().findAll{( it.objid != serveditem.sectionid )} 
+        sections.each{ 
+            it.caption = ''+ it.group?.title +' - '+ it.title; 
+        } 
+        
+        def params = [ sections: sections ]; 
+        params.handler = { o-> 
+            userQueueSvc.forward([ counterid: counterid, ticketno: ticketno, sectionid: o.objid ]); 
+            binding.fireNavigation('default'); 
+        } 
+        
+        def opener = Inv.lookupOpener('queue:forward', params);
+        opener.target = 'popup';
+        return opener; 
     }    
     
     public void notify( String action, def data ) { 

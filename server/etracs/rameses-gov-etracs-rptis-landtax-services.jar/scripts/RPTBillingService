@@ -312,6 +312,7 @@ public class RPTBillingService
 			'AFTER_DISCOUNT',
 			'BEFORE-MISC-COMP',
 			'MISC-COMP',
+			'SUMMARY',
 		]
 		grps.each{g ->
 			ruleSvc.execute( RULESET, facts, actions, g);

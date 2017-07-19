@@ -208,7 +208,6 @@ class ETRACS22To254BldgMigrationInterceptor
 					additionalitem  : [objid:item.addlitemid],
 					amount 			: item.amount,
 					expr			: item.expr,
-					depreciate      : true, 
 				]
 				rpuEm.create(newitem, 'additional')
 			}

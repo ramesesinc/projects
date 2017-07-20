@@ -24,7 +24,9 @@ class FAASNewDiscoveryService
 
     @ProxyMethod
     public def createBackTaxFaas(ndfaas, lastry) {
-    	def faas = faasSvc.openFaas(ndfaas)
+        ndfaas = faasSvc.openFaas(ndfaas)
+    	def faas = [:]
+        faas.putAll(ndfaas)
     	def prevry = getPreviousRevision(faas, lastry)
 
     	initLand(faas, prevry)
@@ -36,13 +38,19 @@ class FAASNewDiscoveryService
     	
     	faas.rpu.ry = prevry 
     	faas.rpu.state = 'INTERIM'
+        if (ndfaas.rpu.ry == prevry){
+            faas.effectivityyear = ndfaas.effectivityyear - 1 
+        }
+        else{
+            faas.effectivityyear = prevry + 1
+        }
 
     	rpuSvc.generateNewIds(faas.rpu)
 
     	faas.rpuid = faas.rpu.objid 
     	faas.realpropertyid = faas.rp.objid 
     	faas.rpu.realpropertyid = faas.rp.objid 
-    	
+
     	return faas 
     }
 
@@ -100,6 +108,7 @@ class FAASNewDiscoveryService
     		if (!rys) 
 	    		throw new Exception('There is no revision setting before year ' + lastry + '.')
             def xrys = rys.findAll{it.ry <= lastry}
+            if (!xrys) throw new Exception('Revision year before ' + lastry + ' is not defined.' )
 	    	def ry = xrys.ry.max()
             return ry 
     	}

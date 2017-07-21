@@ -365,13 +365,17 @@ public class RPTBillingService
 		qtrly[2] = [value:0.0]
 		qtrly[3] = [value:0.0]
 		qtrly[4] = [value:0.0]
+
+		def av13 = numSvc.round(value / 4)
+		def av4 = value - (av13 * 3)
+
 		if (totalav > 0){
 			startqtr.upto(4){qtr -> 
 				if (qtr == 4){
-					qtrly[4] = [value:value - qtrly.value.sum()]
+					qtrly[4] = [value:av4]
 				}
 				else {
-					qtrly[qtr] = [value:numSvc.round(value / (5 - startqtr))]
+					qtrly[qtr] = [value:av13]
 				}
 			}
 		}

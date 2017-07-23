@@ -13,14 +13,14 @@ public class MarketAccountPersistenceInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("market_rentalunit")
-	def rentalunit;
-
 	@Service("OrgService")
 	def orgSvc;
 
 	@Env
 	def env;
+
+	@DataContext("market_rentalunit")
+	def mruEm;
 
 	def dformat = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
@@ -58,8 +58,8 @@ public class MarketAccountPersistenceInterceptor {
 	@After( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_account'}")
 	public void afterSave( evt ) {
 		def o = evt.args[0];
-		if( o.unit?.objid ) {
-			rentalunit.find([objid: o.unit.objid]).update([currentacctid: o.objid] );
+		o.units.each {
+			mruEm.find( [objid: it.unit.objid] ).update(  [usage: "{usage + :usage}"], [usage:it.usage]  );
 		}
 	}
 

@@ -28,6 +28,8 @@ class MonthBillItem extends BillItem {
 		m.month = month;
 		m.monthname = monthname;
 		m.sortorder = getSortorder();
+		m.fromdate = fromdate;
+		m.todate = todate;
 		return m;
 	}
 
@@ -72,5 +74,7 @@ class MonthBillItem extends BillItem {
     	if(todate == null) return 0;
     	return DateFunc.daysDiff( fromdate, todate ) + 1;
     }
+
+    
 
 }

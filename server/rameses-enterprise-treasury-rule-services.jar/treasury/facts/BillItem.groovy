@@ -46,10 +46,11 @@ class BillItem extends AbstractBillItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.refid = refid;
+		m.ledgerid = refid;	//add this because this is new style 
 		m.ledgertype = ledgertype;
 		items.each {
 			if(it.amount == null) it.amount = 0;
-			m.put(it.txntype, NumberUtil.round(it.amount));
+			m.put(it.txntype?.toLowerCase(), NumberUtil.round(it.amount));
 		};
 		m.total = total;
 		return m;
@@ -92,5 +93,6 @@ class BillItem extends AbstractBillItem {
 		//we must return 0 to indicate that all payment is consumed.
 		return 0;
 	}
+
 
 }

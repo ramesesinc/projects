@@ -4,7 +4,10 @@
 		<field name="state" required="true" defaultValue="ACTIVE"/>
 		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES" caption="Type"/>
 		<field name="code" required="true" searchable="true"  caption="Unit Code"/>
-		<field name="description" />
+
+		<field name="indexno" required="true" type="integer" caption="Index No" defaultValue="0"/>
+		<field name="areasqm" required="true" type="decimal" caption="Area (sqm)" />
+
 		<complex name="section" ref="market_section" jointype="many-to-one" required="false" includefields="objid,name">
 			<key field="sectionid" target="objid" />
 		</complex>
@@ -14,11 +17,7 @@
 		</complex>
 		<field name="ratetype" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Rate Type"/>
 		<field name="rate" required="true" type="decimal" caption="Rate"/>
-
-		<complex name="account" ref="market_account" jointype="many-to-one" required="false" 
-			includefields="objid,acctname,startdate,dateclosed">
-			<key field="currentacctid" target="objid" />
-		</complex>
-
+		<field name="usage" required="true" type="integer" caption="Usage" defaultValue="0"/>
+		
 	</element>
 </schema>

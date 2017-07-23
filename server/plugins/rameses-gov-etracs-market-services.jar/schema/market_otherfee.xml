@@ -4,7 +4,7 @@
 		<field name="acctid" required="true"/>
 
 		<field name="txntype_objid" required="true" />
-		<field name="txntype_title" required="true" />
+		<field name="txntype_title" required="true" indexed="true"/>
 
 		<field name="amount" required="true" type="decimal" caption="Amount" defaultValue="0"/>
 		<field name="amtpaid" required="true" type="decimal" caption="Amt Paid" defaultValue="0"/>

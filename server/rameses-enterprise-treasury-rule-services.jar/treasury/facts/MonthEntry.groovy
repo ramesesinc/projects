@@ -10,8 +10,7 @@ class MonthEntry {
    int fromday;
    int today;
    int index;  //this is base 1. indicates position if first or last entry
-   int maxdays;
-
+   
    def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
    int _qtr = 0;
@@ -34,7 +33,12 @@ class MonthEntry {
 
    public String getMonthname() {
         return monthNames[ month - 1 ]; 
-    }
+   }
 
-  
+   public int getMaxdays() {
+      def cal = Calendar.instance;
+      cal.setTime( fromdate );
+      return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+    } 
+
 }

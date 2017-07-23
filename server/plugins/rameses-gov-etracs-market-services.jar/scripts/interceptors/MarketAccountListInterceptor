@@ -29,8 +29,7 @@ class MarketAccountListInterceptor{
 			case 'pastdue':
 				status = 'pastdue'
 				m.state = 'ACTIVE'
-				m.duedate = o.node.duedate;
-				str += ' AND startdate < :duedate'; 
+				str += ' AND lastdatecovered < NOW()'; 
 				break;
 
 			case 'for-closure':

@@ -34,15 +34,16 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        jPanel2 = new javax.swing.JPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
 
         xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -54,11 +55,10 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xTextField1.setSpaceChar('_');
         xFormPanel1.add(xTextField1);
 
-        xTextField2.setCaption("Description");
-        xTextField2.setName("entity.description"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField2.setRequired(true);
-        xFormPanel1.add(xTextField2);
+        xIntegerField1.setCaption("Index No");
+        xIntegerField1.setName("entity.indexno"); // NOI18N
+        xIntegerField1.setRequired(true);
+        xFormPanel1.add(xIntegerField1);
 
         xLookupField1.setCaption("Market Cluster");
         xLookupField1.setExpression("#{entity.cluster.name} - #{entity.cluster.market.name}");
@@ -74,6 +74,10 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(220, 22));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
+
+        xDecimalField2.setCaption("Area (sqm)");
+        xDecimalField2.setName("entity.areasqm"); // NOI18N
+        xFormPanel1.add(xDecimalField2);
 
         xComboBox1.setCaption("Unit Type");
         xComboBox1.setExpression("#{item.name}");
@@ -103,12 +107,9 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xFormPanel2);
 
-        xLabel2.setCaption("Current Owner");
-        xLabel2.setDepends(new String[] {"entity.account"});
-        xLabel2.setExpression("#{entity.account.acctname}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel2.setVisibleWhen("#{ entity.account?.objid !=null }");
-        xFormPanel1.add(xLabel2);
+        xLabel1.setCaption("Usage");
+        xLabel1.setExpression("#{entity.usage}");
+        xFormPanel1.add(xLabel1);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -123,15 +124,18 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 158, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(164, Short.MAX_VALUE))
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 212, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(110, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General", jPanel1);
 
+        xPanel1.setCaption("History");
+        xPanel1.setVisibleWhen("#{ mode == 'read' }");
+
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "acctname"}
+                new Object[]{"name", "account.acctname"}
                 , new Object[]{"caption", "Owner Name"}
                 , new Object[]{"width", 200}
                 , new Object[]{"minWidth", 200}
@@ -146,7 +150,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "startdate"}
+                new Object[]{"name", "account.startdate"}
                 , new Object[]{"caption", "Date Started"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -161,7 +165,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "dateclosed"}
+                new Object[]{"name", "account.dateclosed"}
                 , new Object[]{"caption", "Date Closed"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -174,28 +178,43 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "usage"}
+                , new Object[]{"caption", "Usage"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
         xDataTable2.setHandler("historyListModel");
 
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout xPanel1Layout = new org.jdesktop.layout.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        xTabbedPane1.addTab("History", jPanel2);
+        xTabbedPane1.addTab("History", xPanel1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -218,20 +237,21 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
     
 }

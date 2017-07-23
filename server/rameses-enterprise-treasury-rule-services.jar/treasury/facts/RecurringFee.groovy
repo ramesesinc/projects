@@ -7,5 +7,5 @@ public class RecurringFee {
 	String txntype;
 	double amount;
 	String frequency;	//DAY MONTH
-
+	double partialbalance;
 }

@@ -1,4 +1,4 @@
-<workunit  schemaName="market_cluster">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_cluster">
     <invokers>
         <invoker type="market_cluster:create"
                  formTitle="Market Cluster" 
@@ -12,7 +12,9 @@
                  action="open" />
         
     </invokers>
+    <!--
     <code class="com.rameses.gov.etracs.market.models.MarketClusterModel" />
+    -->
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketClusterPage"/>
     </pages>

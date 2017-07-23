@@ -13,28 +13,48 @@
 		<field name="owner_objid" />
 		<field name="owner_name"  />
 		<field name="owner_address_text" />
-		<complex name="unit" ref="market_rentalunit" jointype="many-to-one"
-			includefields="code,unittype,cluster.name,cluster.objid,term,section.objid,section.name,cluster.market.name,cluster.market.objid,ratetype,rate">
-		    <key field="unit_objid" target="objid"/>
-		</complex>
+		
 		<field name="dateclosed" type="date" />
 
-
 		<field name="payfrequency" required="true" caption="Pay Frequency"/>
-		<field name="extrate" required="true" caption="Ext. Rate" defaultValue="0"/>
-		<field name="rate" expr="unit.rate" caption="Rate"/>		
+		<field name="areasqm" required="true" type="decimal" caption="Area (sqm)" />
+	
+		<field name="unitno" caption="Unit No" required="true" searchable="true" indexed="true"/>
+		<field name="rate" type="decimal" caption="Rate" required="true"/>
+		<field name="ratetype" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Rate Type"/>
+
+		<field name="extrate" type="decimal" caption="Ext Rate" required="true" defaultValue="0"/>
+		<field name="extarea" type="decimal" caption="Ext Area" required="true" defaultValue="0"/>
+
+		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" 
+			includefields="objid,name,description,market.name,market.objid">
+			<key field="clusterid" target="objid" />
+		</complex>
 
 		<!-- store the partial balances -->
 		<field name="startdate" required="true"/>
+
+		<!-- this will be updated everytime a payment is posted -->
+		<field name="lastdatecovered"/>
 		<field name="partialbalance" type="decimal" defaultValue="0"/>
-		<field name="partialextbalance" type="decimal" defaultValue="0"/>
+		
 
 		<!-- link to market_rental_payment -->
 		<field name="remarks" />
+
+		
+		<!-- link to business -->
+		<field name="business_objid" />
+		<field name="business_bin" />
+		<field name="business_tradename" />
+		<field name="business_owner_name" />
 
 		<!-- link to recurring fees -->
 		<complex name="recurringfees" ref="market_account_recurringfee" jointype="one-to-many">
 			<key field="objid" target="acctid"/>
 		</complex>	
+		<complex name="units" ref="market_account_unit" jointype="one-to-many">
+			<key field="objid" target="acctid"/>
+		</complex>
 	</element>
 </schema>

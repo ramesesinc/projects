@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="billitem_txntype">
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" caption="Bill Item TxnType"  
+                action="init" domain="TREASURY" role="MASTER" index="100" 
+                />
+    </invokers>
+</workunit>

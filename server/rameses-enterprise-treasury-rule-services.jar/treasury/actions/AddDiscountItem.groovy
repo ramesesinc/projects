@@ -15,7 +15,7 @@ import com.rameses.osiris3.common.*;
 class AddDiscountItem extends AddBillSubItem {
 
 	public def createSubItemFact( def billitem, def amt, def txntype ) {
-		return new DiscountItem(parent: billitem, amount: NumberUtil.round((amt * -1)));
+		return new DiscountItem(parent: billitem, amount: NumberUtil.round((amt * -1)), txntype:"DISCOUNT");
 	}
 
 }

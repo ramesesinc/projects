@@ -10,9 +10,6 @@ class LandTaxUtilService
 	@DataContext('rptledger_forprocess')
 	def em_forprocess 
 
-	@DataContext('rptbill_ledger_item')
-	def em_rptbill_ledger_item 
-
 	
 	@ProxyMethod
 	public void insertItemsForProcess(params) {
@@ -31,7 +28,6 @@ class LandTaxUtilService
 	public void deletePaidItems(params) {
 		if (!params.objid) throw new Exception('objid is required.')
 		if (params.toyear == null) throw new Exception('toyear is required.')
-		em_rptbill_ledger_item.where('rptledgerid = :objid and year <= :toyear', params).delete() 
 		em.deleteLedgerQtrlyItems(params)
 		em.deleteLedgerItems(params)
 		em_forprocess.delete(params)

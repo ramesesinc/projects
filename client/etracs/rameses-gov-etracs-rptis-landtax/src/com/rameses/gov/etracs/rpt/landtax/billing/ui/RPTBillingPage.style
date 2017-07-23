@@ -1,3 +1,11 @@
+"bill.*|loadProperties|selectAll|deselectAll|selectedItem" [processing == false]{
+    enabled:true;
+}
+
+"msg" [processing == false]{
+    visible:false
+}
+
 "bill.billdate" [ bill.advancebill == true ] {
     enabled:true;
 }
@@ -6,3 +14,10 @@
     enabled:false;
 }
 
+"bill.*|loadProperties|selectAll|deselectAll|selectedItem" [processing == true]{
+    enabled:false;
+}
+
+"bill.rputype|bill.barangay|loadProperties"[hideitems == true]{
+    visible:false;
+}

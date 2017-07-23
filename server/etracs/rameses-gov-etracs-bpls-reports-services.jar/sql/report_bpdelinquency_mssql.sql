@@ -19,7 +19,7 @@ from (
 	having sum(amount-amtpaid) > 0 
 )tmpa 
 	inner join business_application ba on ba.objid=tmpa.applicationid 
-where ba.state in ('RELEASE','COMPLETED') 
+where ba.state in ('PAYMENT','RELEASE','COMPLETED') 
 
 
 [updateHeader]
@@ -43,7 +43,7 @@ from (
 		left join business_address addr on b.address_objid=addr.objid 
 	where rpt.parentid=$P{reportid} 
 		and rptp.state=$P{state} 
-		and ba.state in ('RELEASE','COMPLETED') 
+		and ba.state in ('PAYMENT','RELEASE','COMPLETED') 
 		and ba.apptype in ('NEW','RENEW') 
 		and b.state in ('ACTIVE','PROCESSING') 
 		and rpt.total is null 

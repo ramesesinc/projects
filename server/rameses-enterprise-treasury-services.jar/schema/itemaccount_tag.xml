@@ -1,8 +1,9 @@
 <schema>
 
 	<element tablename="itemaccount_tag">
-		<field name="acctid" primary="true"/>	
-		<field name="tag" primary="true"/>	
+		<field name="objid" primary="true" prefix="ITMTAG"/>	
+		<field name="acctid" />	
+		<field name="tag" />	
 	</element>
 
 </schema>

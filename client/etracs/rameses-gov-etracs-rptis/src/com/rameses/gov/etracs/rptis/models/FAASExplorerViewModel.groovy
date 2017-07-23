@@ -25,7 +25,7 @@ class FAASExplorerViewModel extends ExplorerViewController
     def txntypes;
             
     boolean allowSearch = false;
-    boolean allowOpen = false;
+    boolean allowOpen = true;
     boolean allowCreate = false;
             
     String formTarget = 'window'
@@ -50,6 +50,12 @@ class FAASExplorerViewModel extends ExplorerViewController
     List getTxntypes(){
         return svc.getTxnTypes();
     }
+    
+    public Object openItem( Map item ) {  
+        def opener = doOpen();
+        opener.target = 'window';
+        return opener;
+    }     
             
     def doOpen(){
         if (!selectedEntity) return;

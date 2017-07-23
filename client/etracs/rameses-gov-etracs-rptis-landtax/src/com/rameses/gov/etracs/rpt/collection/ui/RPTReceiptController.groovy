@@ -162,40 +162,25 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
     def initBillFromBarcode(){
         def bid = barcodeid.startsWith(BARCODE_KEY) ? barcodeid : BARCODE_KEY+':'+barcodeid
         def param = [barcodekey:BARCODE_KEY , barcodeid:bid]; 
-        bill = billSvc.getBillByBarcode(param);
+        bill = billSvc.buildBillFromBarcode(param);
         entity.billid = bill.objid 
         entity.payer = bill.taxpayer;
         entity.collectiontype = bill.collectiontype;
-        bill.ledgers.each{bl ->
-            if (!itemsforpayment.find{it.rptledgerid == bl.rptledgerid}){
-                bill.rptledgerid = bl.rptledgerid
-                billSvc.generateBillByLedgerId3(bill)
-            }
-        }
         loadItems();     
         return bill;
-    }
-          
+    }     
     
     /* add ledgers for the scanned bill */
     void processBarcode(){
         if (!barcode) return;
         def param = [barcodekey:BARCODE_KEY , barcodeid:barcode]; 
-        def b = billSvc.getBillByBarcode(param);
-        billSvc.mergeBillBarcode(bill, b)
-        b.ledgers.each{bl ->
-            if (!itemsforpayment.find{it.rptledgerid == bl.rptledgerid}){
-                bill.rptledgerid = bl.rptledgerid;
-                billSvc.generateBillByLedgerId3(bill);
-            }
-        }
+        billSvc.mergeBillBarcode(bill, param)
         loadItems();     
         barcode = null;
         binding.refresh('barcode|selectedItem');
         binding.focus('barcode');
     }
     
- 
     def initBarcode(){
         entity = [formtype: "serial", formno:"56", txnmode: 'ONLINE', txntype:'rptonline', amount:0.0];
         itemsforpayment = [];
@@ -222,13 +207,12 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
         listHandler.load();
         calcReceiptAmount();
     }
-        
+       
             
     void loadItemByLedger(rptledger){
         if ( ! itemsforpayment.find{it.rptledgerid == rptledger.objid}){
             buildBillParams([objid:rptledger.objid])
-            billSvc.generateBillByLedgerId3(bill)
-            itemsforpayment += svc.getItemsForPayment(bill);
+            itemsforpayment << svc.buildPaymentInfoByLedger(rptledger, bill);
             listHandler.load();
             calcReceiptAmount();
         }
@@ -241,10 +225,7 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
         bill.billdate = entity.receiptdate;
         billSvc.generateBill(bill);
         bill.partial = [amount:0.0]
-        def items = svc.getItemsForPayment(bill);
-        if (items){
-            item.putAll(items[0]);
-        }
+        item.putAll(svc.buildPaymentInfoByLedger(item, bill));
         listHandler.load();
         calcReceiptAmount();
     }
@@ -321,13 +302,7 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
             amount : selectedItem.amount,
                 
             onpartial : { partial ->
-                bill.rptledgerid = selectedItem.rptledgerid;
-                bill.partial = [amount:partial];
-                bill.billdate = entity.receiptdate;
-                billSvc.applyPartialPayment(bill);
-                bill.partial = null;
-                def items = svc.getItemsForPayment(bill);
-                if (items) selectedItem.putAll(items[0]);
+                selectedItem.putAll(billSvc.applyPartialPayment([amount:partial], selectedItem));
                 listHandler.load();
                 calcReceiptAmount();
                 binding.refresh('fullPayment|partialPayment')

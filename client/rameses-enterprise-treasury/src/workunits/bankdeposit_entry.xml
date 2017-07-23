@@ -1,165 +1,162 @@
 <workunit>
-    
-   <invokers>
-         <invoker type="bankdeposit:entry" caption="Bank Deposit" action="init" target="popup"/>
-     </invokers>
-   
-   <code>
-       <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import java.rmi.server.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        
-        class BankDepositEntryController {
-        
-            @Binding 
-            def binding;
-        
-            def entity;
-            def selectedFund;
-            
-            def undepositedChecks;
-            
-            def handler;
-            
-            def cashBreakdown;
-            def selectedCheck;
-            def total = 0;
-            def breakdown = 0;
-            def remaining = 0.0 
-            
-            @Service("BankDepositService")
-            def svc
-            
-            @PropertyChangeListener
-            def listener = [
-                "entity.amount" : { o-> 
-                    entity.totalcash = o;
-                    remaining = entity.totalcash 
-                    binding.refresh('entity.totalcash')
+    <invokers>
+        <invoker type="bankdeposit:entry" caption="Bank Deposit" action="init" target="popup"/>
+    </invokers>
+
+    <code>
+    <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import java.rmi.server.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+
+class BankDepositEntryController {
+
+    @Binding 
+    def binding;
+
+    def entity;
+    def selectedFund;
+
+    def undepositedChecks;
+
+    def handler;
+
+    def cashBreakdown;
+    def selectedCheck;
+    def total = 0;
+    def breakdown = 0;
+    def remaining = 0.0 
+
+    @Service("BankDepositService")
+    def svc
+
+    @PropertyChangeListener
+    def listener = [
+        "entity.amount" : { o-> 
+            entity.totalcash = o;
+            remaining = entity.totalcash 
+            binding.refresh('entity.totalcash')
+        }
+    ]
+
+    void init() { 
+        selectedFund.amount = roundoff( selectedFund.amount );
+        selectedFund.balance = roundoff( selectedFund.balance );
+        entity = [ totalcash:0.0, totalnoncash:0.0, amount:0.0 ];
+        entity.checks = [];
+        entity.cashbreakdown = [];
+        entity.fund = selectedFund.fund;
+        entity.amount = selectedFund.balance;
+        entity.totalcash = entity.amount;  
+        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [ 
+            entries: entity.cashbreakdown,
+            onupdate: { o->
+                breakdown = o; 
+                total = breakdown+entity.totalnoncash;
+                remaining = entity.totalcash - breakdown;
+                binding.refresh("breakdown|total|remaining"); 
+            }
+        ]);
+    }
+
+    def getLookupBankAccount() {
+        return InvokerUtil.lookupOpener( "bankaccount:lookup", 
+            ["query.fundid": entity.fund.objid]
+       );
+    }
+
+    def addCheck() {
+        return InvokerUtil.lookupOpener( "undepositedcheck:lookup", 
+            [
+                undepositedChecks: undepositedChecks,
+                onselect: { arr->
+                    if (arr) {
+                        arr.each {
+                            entity.checks << it;
+                            undepositedChecks.remove(it);
+                        }
+                        entity.totalnoncash = entity.checks.amount.sum();
+                        entity.totalcash =  entity.amount - entity.totalnoncash
+                        total = entity.totalcash+entity.totalnoncash;
+                        remaining = entity.totalcash 
+                        checkModel.reload();
+                        binding.refresh("entity.totalnoncash|total|entity.totalcash");
+                    }
                 }
             ]
-            
-            void init() { 
-                selectedFund.amount = roundoff( selectedFund.amount );
-                selectedFund.balance = roundoff( selectedFund.balance );
-                entity = [ totalcash:0.0, totalnoncash:0.0, amount:0.0 ];
-                entity.checks = [];
-                entity.cashbreakdown = [];
-                entity.fund = selectedFund.fund;
-                entity.amount = selectedFund.balance;
-                entity.totalcash = entity.amount;  
-                cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [ 
-                    entries: entity.cashbreakdown,
-                    onupdate: { o->
-                        breakdown = o; 
-                        total = breakdown+entity.totalnoncash;
-                        remaining = entity.totalcash - breakdown;
-                        binding.refresh("breakdown|total|remaining"); 
-                    }
-                ]);
-            }
-            
-            def getLookupBankAccount() {
-                return InvokerUtil.lookupOpener( "bankaccount:lookup", 
-                    ["query.fundid": entity.fund.objid]
-               );
-            }
-            
-            def addCheck() {
-                return InvokerUtil.lookupOpener( "undepositedcheck:lookup", 
-                    [
-                        undepositedChecks: undepositedChecks,
-                        onselect: { arr->
-                            if (arr) {
-                                arr.each {
-                                    entity.checks << it;
-                                    undepositedChecks.remove(it);
-                                }
-                                entity.totalnoncash = entity.checks.amount.sum();
-                                entity.totalcash =  entity.amount - entity.totalnoncash
-                                total = entity.totalcash+entity.totalnoncash;
-                                remaining = entity.totalcash 
-                                checkModel.reload();
-                                binding.refresh("entity.totalnoncash|total|entity.totalcash");
-                            }
-                        }
-                    ]
-               );
-            }
-            
-            void removeCheck() {
-                if(!selectedCheck) return;
-                entity.checks.remove( selectedCheck );
-                selectedCheck.selected = false
-                undepositedChecks << selectedCheck;
-                
-                if( entity.checks ) {
-                    entity.totalnoncash = entity.checks.sum{it.amount};
-                }
-                else {
-                    entity.totalnoncash = 0;
-                }
-                total = entity.totalcash+entity.totalnoncash;
-                checkModel.reload();
-                binding.refresh("entity.totalnoncash|total");
-            }
-            
-            def formatter = new java.text.DecimalFormat("0.00"); 
+       );
+    }
 
-            def roundoff( Number amount ) { 
-                def str = formatter.format( amount ); 
-                return new java.math.BigDecimal( str ); 
-            } 
-            
-            def doOk() { 
-                if ( !entity.bankaccount ) 
-                    throw new Exception('Bank Account is required.');
+    void removeCheck() {
+        if(!selectedCheck) return;
+        entity.checks.remove( selectedCheck );
+        selectedCheck.selected = false
+        undepositedChecks << selectedCheck;
 
-                def amount  = roundoff( entity.amount );
-                def balance = roundoff( selectedFund.balance );
-                if ( amount > balance ) 
-                    throw new Exception("Amount to deposit should not exceed balance");
+        if( entity.checks ) {
+            entity.totalnoncash = entity.checks.sum{it.amount};
+        }
+        else {
+            entity.totalnoncash = 0;
+        }
+        total = entity.totalcash+entity.totalnoncash;
+        checkModel.reload();
+        binding.refresh("entity.totalnoncash|total");
+    }
 
-                def breakdownamt = roundoff( breakdown );
-                def totalcashamt = roundoff( entity.totalcash );
-                if ( breakdownamt != totalcashamt )
-                    throw new Exception("Cash breakdown must be equal to total cash.");
+    def formatter = new java.text.DecimalFormat("0.00"); 
 
-                def totalamt = roundoff( total );
-                if ( amount != totalamt )
-                    throw new Exception("Total cash and non cash must equal amount to deposit");
+    def roundoff( Number amount ) { 
+        def str = formatter.format( amount ); 
+        return new java.math.BigDecimal( str ); 
+    } 
 
-                if ( handler ) {
-                    handler( entity );
-                }    
-                return "_close";
-            }
-            
-            def doCancel() {
-                if( entity.checks ) {
-                    undepositedChecks.addAll( entity.checks )
-                    entity.checks = []
-                }
-                
-                return "_close";
-            }
-            
-            def checkModel = [
-                fetchList : { o->
-                    return entity.checks;
-                }
-            ] as BasicListModel;
-            
-        }      
-       ]]>
-   </code>
+    def doOk() { 
+        if ( !entity.bankaccount ) 
+            throw new Exception('Bank Account is required.');
+
+        def amount  = roundoff( entity.amount );
+        def balance = roundoff( selectedFund.balance );
+        if ( amount > balance ) 
+            throw new Exception("Amount to deposit should not exceed balance");
+
+        def breakdownamt = roundoff( breakdown );
+        def totalcashamt = roundoff( entity.totalcash );
+        if ( breakdownamt != totalcashamt )
+            throw new Exception("Cash breakdown must be equal to total cash.");
+
+        def totalamt = roundoff( total );
+        if ( amount != totalamt )
+            throw new Exception("Total cash and non cash must equal amount to deposit");
+
+        if ( handler ) {
+            handler( entity );
+        }    
+        return "_close";
+    }
+
+    def doCancel() {
+        if( entity.checks ) {
+            undepositedChecks.addAll( entity.checks )
+            entity.checks = []
+        }
+
+        return "_close";
+    }
+
+    def checkModel = [
+        fetchList : { o->
+            return entity.checks;
+        }
+    ] as BasicListModel;
+}      
+    ]]>
+    </code>
    
-   <pages>
-       <page template="com.rameses.enterprise.treasury.bankdeposit.BankDepositEntryPage" />
-   </pages>
-   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.bankdeposit.BankDepositEntryPage" />
+    </pages>   
 </workunit>

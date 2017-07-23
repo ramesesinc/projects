@@ -46,14 +46,7 @@ class RPTLedgerInterceptor
     @DataContext('rptbill_ledger')
     def em_bill_ledger
 
-    @DataContext('rptbill_ledger_item')
-    def em_bill_ledger_item 
-
-    @DataContext('rptbill_ledger_account')
-    def em_bill_ledger_account
-
-
-	def STATE_PENDING   = 'PENDING'
+    def STATE_PENDING   = 'PENDING'
 	def STATE_APPROVED  = 'APPROVED'
 
 
@@ -134,8 +127,6 @@ class RPTLedgerInterceptor
 
         //reset ledger billing 
         em_ledger.update([objid:orig.rptledgerid, nextbilldate:null])
-        em_bill_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
-        em_bill_ledger_account.find([rptledgerid:orig.rptledgerid]).delete()
         em_bill_ledger.find([rptledgerid:orig.rptledgerid]).delete()
         em_ledger_item_qtrly.find([rptledgerid:orig.rptledgerid]).delete()
         em_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()

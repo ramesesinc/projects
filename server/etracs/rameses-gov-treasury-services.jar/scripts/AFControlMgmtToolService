@@ -32,7 +32,6 @@ class AFControlMgmtToolService {
 		def afc = mgmt_em.findAFControl( params ); 
 		if ( !afc ) throw new Exception('AF Control record does not exist'); 
 
-		println 'afc -> ' + afc; 
 		cashReceiptSvc.removeCashReceipts( params );  
 		return [:]; 
 	} 	

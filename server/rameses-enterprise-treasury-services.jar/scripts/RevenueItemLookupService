@@ -30,8 +30,8 @@ class RevenueItemLookupService  {
 	@ProxyMethod
 	public def getList( Map m ) { 
 		if(m.searchtext == null ) m.searchtext = "";
-		m.code = m.searchtext.trim() + "%";
-		m.title = m.searchtext.trim() + "%";
+		m.code  = "%"+ m.searchtext.trim() +"%";
+		m.title = "%"+ m.searchtext.trim() +"%";
 		m._pagingKeys = "r.objid";
 		m._limit = 50;
 

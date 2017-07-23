@@ -279,6 +279,7 @@ from rptledgeritem rli
 	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
 where rli.rptledgerid = $P{rptledgerid}
  and rli.qtrly = 1 
+ and rli.fullypaid = 0 
 group by rliq.parentid, rliq.revperiod 
 
 
@@ -501,18 +502,6 @@ and not exists(select * from faas_restriction where ledger_objid = rl.objid and 
 ORDER BY rl.tdno  
 
 
-[deleteRptBillLedgerItem]
-DELETE FROM rptbill_ledger_item 
-WHERE rptledgerid = $P{rptledgerid}
- AND billid = $P{objid}
-
-
-[deleteRptBillLedgerAccount]
-DELETE FROM rptbill_ledger_account 
-WHERE rptledgerid = $P{rptledgerid}
-AND billid = $P{objid}
-
-
 [deleteRptBillLedger]
 DELETE FROM rptbill_ledger 
 WHERE billid = $P{objid}
@@ -522,41 +511,6 @@ and rptledgerid = $P{rptledgerid}
 DELETE FROM rptbill 
 WHERE objid = $P{objid}
 and not exists(select * from rptbill_ledger where billid = rptbill.objid )
-
-
-
-[findBillByBarcode]
-SELECT * FROM rptbill  WHERE barcode = $P{barcodeid}
-
-[getBillLedgers]  
-SELECT * FROM rptbill_ledger rbl 
-WHERE billid = $P{objid}
-and not exists(select * from faas_restriction where ledger_objid = rbl.rptledgerid and state='ACTIVE')
-
-
-[getBillLedgerAccounts]
-SELECT * FROM rptbill_ledger_account 
-WHERE rptledgerid = $P{rptledgerid}
-AND billid = $P{objid}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -642,57 +596,12 @@ from (
 
 
 
-
-
-[deleteUnpartialledItem]  
-delete from rptbill_ledger_item
-where objid = $P{objid}
-	
-
-
-[getLedgerBillItemsForPartial]
-select * from rptbill_ledger_item
-where billid = $P{objid}
-and rptledgerid = $P{rptledgerid}
-order by year, rptledgeritemid, qtr
-
-	
-[updateLedgerBillPartialledItemData]
-update rptbill_ledger_item set 
-        basic = $P{basic}, 
-        basicint = $P{basicint}, 
-        basicdisc = $P{basicdisc}, 
-        basicidle = $P{basicidle}, 
-        basicidledisc = $P{basicidledisc}, 
-        basicidleint = $P{basicidleint}, 
-        sef = $P{sef}, 
-        sefint = $P{sefint}, 
-        sefdisc = $P{sefdisc}, 
-        firecode = $P{firecode}, 
-        basicnet = $P{basicnet},
-        sefnet = $P{sefnet},
-        total = $P{total},
-        revperiod = $P{revperiod},
-        partialled = 1
-where objid = $P{objid}      
-
-
 [updateLedgerItemQtrlyFlag]
 update rptledgeritem set qtrly = $P{qtrly} where objid = $P{objid}
 
 [resetLedgerItemQtrlyFlagByLedger]	
 update rptledgeritem set qtrly =  0
 where rptledgerid = $P{rptledgerid} and fullypaid = 0 
-
-
-
-[getBillItems]
-select * 
-from rptbill_ledger_item 
-where billid = $P{objid}
- and rptledgerid = $P{rptledgerid}
-order by year, qtr  
-
 
 
 

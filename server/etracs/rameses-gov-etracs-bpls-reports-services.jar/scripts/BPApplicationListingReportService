@@ -35,30 +35,14 @@ class BPApplicationListingReportService {
 		params.permittypeid = params.permittype.objid;  
 		params.year = Integer.parseInt( startdate.toString().split('-')[0]); 
 
-		def apptypes = [ 
-			( params.type_new ? 'NEW' : null ),
-			( params.type_renew ? 'RENEW' : null ),
-			( params.type_retire ? 'RETIRE' : null ),
-			( params.type_retirelob ? 'RETIRELOB' : null ),
-			( params.type_additional ? 'ADDITIONAL' : null ) 
-		].findAll{( it )}.collect{ "'"+ it +"'" }  
-
-		def appstates = [
-			( params.state_info ? 'INFO' : null ),
-			( params.state_assessment ? 'ASSESSMENT' : null ),
-			( params.state_payment ? 'PAYMENT' : null ),
-			( params.state_release ? 'RELEASE' : null ),
-			( params.state_completed ? 'COMPLETED' : null ) 
-		].findAll{( it )}.collect{ "'"+ it +"'" }  
-
-		if ( apptypes ) {
-			params.apptypefilter = apptypes.join(','); 
+		if ( params.apptypes ) {
+			params.apptypefilter = params.apptypes.collect{"'"+it.objid+"'"}.join(','); 
 		} else {
 			params.apptypefilter = "''"; 
-		} 
+		}
 
-		if ( appstates ) {
-			params.appstatefilter = appstates.join(','); 
+		if ( params.appstates ) {
+			params.appstatefilter = params.appstates.collect{"'"+it.objid+"'"}.join(','); 
 		} else {
 			params.appstatefilter = "''"; 
 		} 

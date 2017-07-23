@@ -11,16 +11,19 @@
             role="LANDTAX" permission="rptbilling.create" />
             
         <invoker type="rptbill:print" action="previewBill"  caption="Real Property Tax Bill" target="popup" />
-        <invoker type="rptbill:printBill" action="print"  caption="Real Property Tax Bill"/>
-        <invoker type="rptbill:preview" action="previewBill"  caption="Real Property Tax Bill" target="popup" />
+        <invoker type="rptbill:printSingleBill" action="printSingleBill"  caption="Real Property Tax Bill" target="process"/>
+        <invoker type="rptbill:previewSingleBill" action="previewSingleBill"  caption="Real Property Tax Bill" target="popup" />
         
         
         <invoker type="rptbill:batch" caption="Batch Real Property Tax Bill" action="initBatch" />
         
         
-        <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init'}"/>
-        <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" icon="images/toolbars/print.ping" visibleWhen="#{mode=='init'}"/>
-        <invoker type="formActions" action="previewBill" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{mode=='init'}"/>
+        <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
+        <!-- 
+        <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" icon="images/toolbars/print.ping" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
+        -->
+        <invoker type="formActions" action="preview" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
+        <invoker type="formActions" action="doCancel" caption="Cancel" immediate="true" visibleWhen="#{processing==true}"/>
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='view'}"/>
         <invoker type="formActions" action="back" caption="Back" shortcut="ctrl b" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{mode=='view' &amp;&amp; showBack==true}"/>

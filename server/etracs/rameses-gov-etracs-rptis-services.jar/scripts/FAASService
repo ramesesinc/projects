@@ -453,9 +453,11 @@ class FAASService
 
 	void approveAffectedRpus(faas){
 		em.getAffectedRpus(faas).each{
-			def afaas = openFaas([objid:it.newfaasid])
-			if(afaas){
-				self.approveFaas(afaas)
+			if (it.newfaasid){
+				def afaas = openFaas([objid:it.newfaasid])
+				if(afaas){
+					self.approveFaas(afaas)
+				}
 			}
 		}
 	}
@@ -905,9 +907,13 @@ class FAASService
 	void cancelBackTaxes(faas){
 		for(int i=0; i<faas.backtaxes.size() - 1; i++){
 			def bt = faas.backtaxes[i]
-			def btf = openFaasOnly(bt)
+			//def btf = openFaasOnly(bt)
+			def btf = em_faas.select('objid,tdno').find([objid:bt.objid]).first()
 			if (btf){
-				def cf = openFaasOnly(faas.backtaxes[i+1])
+				//def cf = openFaasOnly(faas.backtaxes[i+1])
+				def cf = em_faas.select('objid,state,rpuid')
+								.find([objid:bt.objid])
+								.first()
 				if (cf && cf.state != 'CANCELLED'){
 					def params = [
 						objid  				: cf.objid,
@@ -926,7 +932,7 @@ class FAASService
 	@ProxyMethod
 	public void cancelFaas(params) {
 		util.required('objid', params.objid)
-		util.required('rpuid', params.rpuid)
+		//util.required('rpuid', params.rpuid)
 		util.required('txntype', params.txntype)
 		util.required('cancelreason', params.cancelreason)
 		util.required('canceldate', params.canceldate)

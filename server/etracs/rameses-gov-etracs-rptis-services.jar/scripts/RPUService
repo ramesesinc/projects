@@ -28,6 +28,9 @@ class RPUService
     @Service('Var')
     def var
 
+    @DataContext('faas')
+    def em_faas 
+
     
     def RPUTYPE_LAND       = 'land' 
     def RPUTYPE_BLDG       = 'bldg'
@@ -251,9 +254,14 @@ class RPUService
             
             if (!landrpu) 
                 throw new Exception('Land RPU does not exist.')
+
+            def faas = em_faas.find([rpuid:landrpu.objid]).first()
+
+            if (!faas) 
+                    throw new Exception('Land FAAS does not exist.')
             
-            if (landrpu.state == STATE_INTERIM)
-                throw new Exception('Land RPU is not yet current.')
+            if (faas.state == STATE_INTERIM)
+                throw new Exception('Land FAAS is not yet current.')
         }
     }
 

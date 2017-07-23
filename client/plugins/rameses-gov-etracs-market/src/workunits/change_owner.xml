@@ -1,7 +1,7 @@
 <workunit schemaName="market_account">
     <invokers>
         <invoker type="market_account:form:editActions" 
-            caption="Edit Market Ledger" index="1" 
+            caption="Change Owner Info" index="0" 
             target="popup" action="init"
             visibleWhen="#{mode=='read'}"/> 
         
@@ -17,33 +17,31 @@
         import com.rameses.osiris2.common.*
         import com.rameses.seti2.models.*;
         
-        class EditMarketLedger extends CrudFormModel {
+        class EditOwner extends CrudFormModel {
         
             void afterInit() {
                 edit();
             }
-            
-            def itemHandler = [
-                fetchList: {
-                    return entity.recurringfees;
-                },
-                onAddItem: { o->
-                    addItem("recurringfees", o );
-                },
-                onRemoveItem: { o->
-                    removeItem("recurringfees", o);
-                }
-            ] as EditorListModel;
             
             def updateChange() {
                 save();
                 if(caller) caller.reload();
                 return "_close";
             }
+            
+            @PropertyChangeListener
+            def listener = [
+                'entity.owner': { o->
+                    if(entity.acctname==null) {
+                        entity.acctname = o.name;
+                        binding.refresh("entity.acctname");
+                    }
+                }
+            ]; 
         }
         ]]>
     </code>    
     <pages>
-        <page template="com.rameses.gov.etracs.market.views.ChangeLedgerInfoPage" />
+        <page template="com.rameses.gov.etracs.market.views.ChangeOwnerPage" />
     </pages>
 </workunit>

@@ -1,7 +1,7 @@
 <workunit schemaName="market_account">
     <invokers>
         <invoker type="market_account:form:editActions" 
-            caption="Edit Market Ledger" index="1" 
+            caption="Edit Business Info" index="4" 
             target="popup" action="init"
             visibleWhen="#{mode=='read'}"/> 
         
@@ -17,33 +17,30 @@
         import com.rameses.osiris2.common.*
         import com.rameses.seti2.models.*;
         
-        class EditMarketLedger extends CrudFormModel {
+        class EditBusinessInfo extends CrudFormModel {
         
             void afterInit() {
                 edit();
             }
-            
-            def itemHandler = [
-                fetchList: {
-                    return entity.recurringfees;
-                },
-                onAddItem: { o->
-                    addItem("recurringfees", o );
-                },
-                onRemoveItem: { o->
-                    removeItem("recurringfees", o);
-                }
-            ] as EditorListModel;
             
             def updateChange() {
                 save();
                 if(caller) caller.reload();
                 return "_close";
             }
+            
+                    
+            void selectBusiness() {
+                def r = { o->
+                    entity.business = o;
+                    return null;
+                }
+                Modal.show("market_business_unassigned:lookup", [onselect:r] );
+            }
         }
         ]]>
     </code>    
     <pages>
-        <page template="com.rameses.gov.etracs.market.views.ChangeLedgerInfoPage" />
+        <page template="com.rameses.gov.etracs.market.views.ChangeBusinessInfoPage" />
     </pages>
 </workunit>

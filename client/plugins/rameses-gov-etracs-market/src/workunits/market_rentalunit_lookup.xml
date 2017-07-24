@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="market_rentalunit:lookup" 
                 cols="objid,code,unittype,section.name,rate,payfrequency,usage"
-                hiddenCols = "indexno,areasqm,ratetype"
+                hiddenCols = "indexno,areasqm,ratetype,sectionid"
                 caption="Lookup Rental Unit" 
                  target="popup" 
                  action="init"/>
@@ -24,12 +24,11 @@
             
             def getCustomFilter() {
                 def sb = new StringBuilder();
-                if( clusterid ) {
-                    sb.append('clusterid = :clusterid AND usage < 100');
-                    m.clusterid = clusterid;
-                }    
+                sb.append('clusterid = :clusterid AND usage < 100');
+                m.clusterid = clusterid;
+
                 if( sectionid ) {
-                    sb.append('sectionid = :sectionid');
+                    sb.append(' AND sectionid = :sectionid');
                     m.sectionid = sectionid;
                 }
                 if( min > 0 ) {
@@ -37,6 +36,7 @@
                     m.min = min-1;
                     m.max = max+1;
                 } 
+
                 if( !m ) return null; 
                 return [ sb.toString(), m ];
             }

@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+
+class MarketAccountService {
+	
+	@DataContext('market_account') 
+	def acct_em;
+
+	@DataContext('market_account_unit') 
+	def acctunit_em;
+
+	@DataContext('market_rentalunit') 
+	def rentalunit_em;
+
+	@ProxyMethod 
+	public def closeAccount( params ) {
+		def units = acctunit_em.find([ acctid: params.objid ]).list(); 
+		units.each{ 
+			def usage = 100 - it.usage; 
+			rentalunit_em.find([ objid: it.unit.objid ]).update([ usage: usage ]); 
+		}
+		acct_em.find([ objid: params.objid ]).update([ state: 'CLOSED' ]); 
+		return [ state: 'CLOSED' ];  
+	} 	
+
+	@ProxyMethod 
+	public def blockAccount( params ) {
+		acct_em.find([ objid: params.objid ]).update([ state: 'BLOCKED' ]); 
+		return [ state: 'BLOCKED' ];
+	} 	
+
+	@ProxyMethod 
+	public def unblockAccount( params ) {
+		acct_em.find([ objid: params.objid ]).update([ state: 'ACTIVE' ]); 
+		return [ state: 'ACTIVE' ];
+	} 
+}

@@ -8,6 +8,9 @@ import com.rameses.seti2.models.*;
 
 public class MarketAccountModel extends CrudFormModel {
     
+    @Service('MarketAccountService') 
+    def svc; 
+    
     void afterOpen() {
         itemHandler.reload();
         //unitListModel.reload();
@@ -29,5 +32,16 @@ public class MarketAccountModel extends CrudFormModel {
         return showDropdownMenu("editActions");
     }
                     
-    
+    void closeAccount() {
+        def s = svc.closeAccount([ objid: entity.objid ]);
+        entity.state = s.state; 
+    }
+    void blockAccount() {
+        def s = svc.blockAccount([ objid: entity.objid ]); 
+        entity.state = s.state; 
+    }
+    void unblockAccount() {
+        def s = svc.unblockAccount([ objid: entity.objid ]); 
+        entity.state = s.state; 
+    }
 }

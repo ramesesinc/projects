@@ -96,7 +96,7 @@ public class MarketAccountNewModel extends CrudPageFlowModel {
      void addUnit() {
         if( !entity.cluster?.objid )
             throw new Exception("Please select first a cluster");
-        def s = { o->
+        def s = { o-> 
               entity.units << [unit:o, rate:o.rate, areasqm:o.areasqm, ratetype:o.ratetype, usage: 100-o.usage];
               updateSummary();
               binding.refresh();
@@ -107,7 +107,7 @@ public class MarketAccountNewModel extends CrudPageFlowModel {
         if(  entity.units ) {
             min = entity.units.min{ it.unit.indexno }.unit.indexno;
             max = entity.units.max{ it.unit.indexno }.unit.indexno;
-            sid = entity.units.first().sectionid;
+            sid = entity.units.first().unit.section.objid;
         }
         
         Modal.show("market_rentalunit:lookup", [onselect:s, clusterid:entity.cluster.objid, sectionid:sid, min:min, max:max] );

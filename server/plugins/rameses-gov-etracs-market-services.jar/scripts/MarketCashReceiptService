@@ -23,7 +23,8 @@ public class MarketCashReceiptService  {
 	
 	@ProxyMethod
 	public def getInfo(o) {
-		def a = acctEm.find([acctno: o.id] ).first();
+		def a = acctEm.find([objid: o.id] ).first();
+		if(!a) a = acctEm.where("acctno =:acctno",[acctno: o.id]).first();
 		if(!a) a = acctEm.where("unitno =:code",[code: o.id]).first();
 		if(!a) throw new Exception("Market account not found!");
 
@@ -59,7 +60,7 @@ public class MarketCashReceiptService  {
 
 		z.fromdate = df.parse(df.format(m.fromdate));
 		z.todate = df.parse(df.format(m.todate));
-		z.remarks = a.unitno + " "  + a.section.name + " (" + a.cluster?.market?.name + ") From " +df.format(z.fromdate) + " to " + df.format( z.todate ) ;
+		z.remarks = a.unitno + " (" + a.cluster?.market?.name + ") From " +df.format(z.fromdate) + " to " + df.format( z.todate ) ;
 		z.amount = m.amount;
 		z.items = m.items;
 		/*

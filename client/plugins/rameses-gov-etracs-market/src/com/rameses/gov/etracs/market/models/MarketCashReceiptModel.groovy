@@ -45,6 +45,18 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
          throw new Exception("Not yet supported");
          //loadInfo([id:txnid, action:'payoption']);
      }
+
+    void init() {
+        def selection;
+        def s = { o->
+            selection = o;
+            return null;
+        };
+        Modal.show( "market_account:lookup" , [onselect:s] );
+        if(!selection) throw new BreakException();
+        txnid = selection.objid;
+        loadInfo([id:txnid, action:'open']);
+    }
     
 }
 

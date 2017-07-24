@@ -16,6 +16,7 @@
             def dateoption = "specify-date";
             def todate;
             int numdays;
+            def month;
             def handler;
             def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
         
@@ -26,8 +27,13 @@
                 if( dateoption == "specify-date") {
                     x = todate;
                 }
-                else if( dateoption == "specify-month" ) {
-                    
+                else if( dateoption == "month" ) {
+                    MsgBox.alert("month " + month);
+                    def cal = Calendar.instance;
+                    cal.setTime(fromdate);
+                    MsgBox.alert("year " + cal.get(Calendar.YEAR));
+                    MsgBox.alert("month " + cal.get(Calendar.MONTH)+1);
+                    throw new Exception("stop");
                 }
                 else {
                     if( numdays <= 0 ) throw new Exception("Numdays is required");

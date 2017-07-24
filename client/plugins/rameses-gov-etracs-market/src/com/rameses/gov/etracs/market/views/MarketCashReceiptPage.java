@@ -44,7 +44,10 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
         xButton3 = new com.rameses.rcp.control.XButton();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
         xButton1 = new com.rameses.rcp.control.XButton();
 
         setPreferredSize(new java.awt.Dimension(869, 287));
@@ -241,6 +244,8 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
             .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        xFormPanel1.setCaptionWidth(100);
+
         xLabel4.setCaption("Rental rate");
         xLabel4.setCaptionWidth(100);
         xLabel4.setExpression("#{entity.rate} - #{entity.payfrequency}");
@@ -248,12 +253,28 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 17));
         xFormPanel1.add(xLabel4);
 
-        xLabel5.setCaption("Pay Period");
-        xLabel5.setCaptionWidth(100);
-        xLabel5.setExpression("#{entity.fromdate} - #{entity.todate}");
-        xLabel5.setFontStyle("font-size:12;font-weight:bold;");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 17));
-        xFormPanel1.add(xLabel5);
+        xFormPanel4.setCaption("Pay Period");
+        xFormPanel4.setCaptionWidth(100);
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 5, 5));
+
+        xDateField1.setEnabled(false);
+        xDateField1.setName("entity.fromdate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(80, 20));
+        xDateField1.setShowCaption(false);
+        xFormPanel4.add(xDateField1);
+
+        xLabel1.setShowCaption(false);
+        xLabel1.setText("To");
+        xFormPanel4.add(xLabel1);
+
+        xDateField2.setEnabled(false);
+        xDateField2.setName("entity.todate"); // NOI18N
+        xDateField2.setPreferredSize(new java.awt.Dimension(80, 20));
+        xDateField2.setShowCaption(false);
+        xFormPanel4.add(xDateField2);
+
+        xFormPanel1.add(xFormPanel4);
 
         xButton1.setCaption("");
         xButton1.setCaptionWidth(100);
@@ -321,12 +342,15 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     // End of variables declaration//GEN-END:variables

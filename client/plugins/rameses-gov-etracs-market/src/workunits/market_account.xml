@@ -1,10 +1,8 @@
 <workunit schemaName="market_account" allowCreate="false" allowEdit="false">
     <invokers>
-        <!--
-        <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER"/>
-        -->
         <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"
             formTitle="#{entity.unitno} - #{entity.owner.name}" formId="#{entity.objid}"/>
+        
         
         <invoker type="formActions" caption="Edit" action="showEditMenu" 
                  visibleWhen="#{mode=='read'}" role="ADMIN"/>

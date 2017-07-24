@@ -8,26 +8,10 @@ import com.rameses.seti2.models.*;
 
 public class MarketAccountModel extends CrudFormModel {
     
-    void afterOpen() {
-        itemHandler.reload();
-        //unitListModel.reload();
-    }
-    
-    def itemHandler = [
-        fetchList: {
-            return entity.recurringfees;
-        }
-    ] as BasicListModel;
-    
-    def unitListModel = [
-        fetchList: {
-            return entity.units;
-        }
-    ] as BasicListModel;
     
     def showEditMenu() {
         return showDropdownMenu("editActions");
     }
-                    
     
+
 }

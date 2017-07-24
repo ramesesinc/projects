@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:rptbatch" action="init" target="popup" 
+                width="800" height="500"/>
+        
+        <invoker type="formActions" action="save" caption="Save" 
+                 mnemonic="s" shortcut="ctrl S"
+                 visibleWhen="#{mode=='payment'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTReceiptBatchModel" >
+    </code>
+    <pageflow>
+        <start>
+            <transition name="init" to="init"/>
+        </start>
+        
+        <page name="init" title="Real Property Tax Collection: Initial Information">
+            <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
+            <transition caption="Next"  to="select" action="initItems" mnemonic="n"  />
+        </page>
+        
+        <page name="select" title="Real Property Tax Collection: Setup Payable">
+            <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
+            <transition caption="Back" to="init" mnemonic="b" />
+            <transition caption="Next"  to="payment" action="initPayment" mnemonic="n"  />
+        </page>
+        
+        <page name="payment" title="Real Property Tax Collection: Payment">
+            <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
+            <transition caption="Back" to="select" action="backToSelect" mnemonic="b" />           
+            <transition name="done" to="completed" visibleWhen="#{false}" />           
+        </page>
+        
+        <page name="completed" title="Real Property Tax Collection: Completed">
+            <transition caption="Close" to="end" />
+        </page>
+        
+        
+        <end />
+    
+    </pageflow>
+    <pages>
+        <page name="init" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionInitPage" />
+        <page name="select" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionSelectPage" />
+        <page name="payment" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionPaymentPage" />
+        <page name="completed" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionCompletedPage" />
+    </pages>
+    
+</workunit>

@@ -1,0 +1,45 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class RPTBillCleanupTask 
+{
+
+	@DataContext('rptbill')
+	def em_rptbill
+
+	@DataContext('rptbill_ledger')
+	def em_rptbill_ledger
+
+	@Service('DateService')
+	def dtSvc 
+
+	@ActiveDB('rptbill')
+	def em; 
+
+	
+	// @Schedule(interval=1800)
+	@Schedule(interval=120)
+	public def cleanupRptBill(task) {
+		removeExpiredBills()
+		removeEmptyBills()
+	}	
+
+	void removeExpiredBills(){
+		def currdate = dtSvc.add(dtSvc.serverDate, '1d');
+		def expiredbills = em_rptbill.select('objid')
+								.where('expirydate < :currdate', [currdate:currdate])
+								.limit(25)
+								.list()
+		expiredbills.each{
+			em_rptbill_ledger.find([billid:it.objid]).delete()
+			em_rptbill.find([objid:it.objid]).delete()
+		}
+	}
+
+	void removeEmptyBills(){
+		em.deleteEmptyBills()
+	}
+
+}
+

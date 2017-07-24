@@ -18,7 +18,7 @@ class ProvinceUnpostedLedgerService
 	public def createLedger( faas ) {
         faas = faasSvc.getFaasByTdNo(faas.tdno);
         if (!faas)
-            throw new Exception('TD No. ' + request.tdno + ' is invalid or FAAS does not exist.');
+            throw new Exception('TD No. ' + faas.tdno + ' is invalid or FAAS does not exist.');
             
         def ledger = null;
         try{
@@ -28,7 +28,7 @@ class ProvinceUnpostedLedgerService
             //
         }
         if (ledger)
-            throw new Exception('Ledger for FAAS ' + request.tdno + ' has already been created.');
+            throw new Exception('Ledger for FAAS ' + faas.tdno + ' has already been created.');
             
         return ledgerSvc.postNewLedger(faas);
 	}

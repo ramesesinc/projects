@@ -433,23 +433,28 @@ class FAASService
     }
 
 	void updateImprovementLandRpuIds(faas){
-        if ('land'.equalsIgnoreCase(faas.rpu.rputype)){
-        	def prevrpu = em.findPreviousLandRpu(faas)
-        	if (prevrpu){
-		        em.updateBldgRpuLandRpuId(prevrpu)
-		        em.updateMachRpuLandRpuId(prevrpu)
-		        em.updatePlantTreeRpuLandRpuId(prevrpu)
-		        em.updateMiscRpuLandRpuId(prevrpu)
-        	}
-        }
-        else if ('bldg'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updateBldgRpuLandRpuIdByFaas(faas)
-        else if ('mach'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updateMachRpuLandRpuIdByFaas(faas)
-        else if ('planttree'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updatePlantTreeRpuLandRpuIdByFaas(faas)
-        else if ('misc'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updateMiscRpuLandRpuIdByFaas(faas)
+		try{
+	        if ('land'.equalsIgnoreCase(faas.rpu.rputype)){
+	        	def prevrpu = em.findPreviousLandRpu(faas)
+	        	if (prevrpu){
+			        em.updateBldgRpuLandRpuId(prevrpu)
+			        em.updateMachRpuLandRpuId(prevrpu)
+			        em.updatePlantTreeRpuLandRpuId(prevrpu)
+			        em.updateMiscRpuLandRpuId(prevrpu)
+	        	}
+	        }
+	        else if ('bldg'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updateBldgRpuLandRpuIdByFaas(faas)
+	        else if ('mach'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updateMachRpuLandRpuIdByFaas(faas)
+	        else if ('planttree'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updatePlantTreeRpuLandRpuIdByFaas(faas)
+	        else if ('misc'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updateMiscRpuLandRpuIdByFaas(faas)
+		}
+		catch(e){
+			//ignore invalid reference 
+		}
     }
 
 

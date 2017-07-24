@@ -179,7 +179,7 @@ public class RPTBillingService
 		bill.collectiontype = em.findCollectionTypeByBarcodeKey(param)
 		if (!bill.collectiontype) 
 			throw new Exception('Collection Type is not defined for barcode key ' + param.barcodekey + '.')
-		bill.ledgers = em_rptbill_ledger.find([billid:bill.objid]).list() 
+		bill.ledgers = em_rptbill_ledger.find([billid:bill.objid]).list().each{ it.objid = it.rptledgerid }
 		return bill 
 	}	
 

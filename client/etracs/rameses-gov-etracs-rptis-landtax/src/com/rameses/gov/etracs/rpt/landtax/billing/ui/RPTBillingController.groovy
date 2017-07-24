@@ -164,8 +164,8 @@ public class RPTBillingController
     
     void initBatch(){
         init();
-        //bill.taxpayer = taxpayer;
-        printBill();
+        bill.taxpayer = taxpayer;
+        buildSingleBill();
     }
     
     def showmsg = {

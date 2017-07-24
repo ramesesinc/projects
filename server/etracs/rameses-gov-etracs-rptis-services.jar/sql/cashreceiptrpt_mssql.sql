@@ -40,6 +40,8 @@ from rptbill b
 	left join municipality m on brgy.parentid = m.objid 
 	left join district d  on brgy.parentid = d.objid 
 where b.objid = $P{objid}	
+and (rl.lastyearpaid < $P{billtoyear}  or (rl.lastyearpaid = $P{billtoyear} and rl.lastqtrpaid < $P{billtoqtr}))
+order by rl.tdno 
 
 
 [getLedgerForPaymentDetail]

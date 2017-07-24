@@ -212,6 +212,7 @@ class LandRPUService
 	void saveLandDetails(rpu){
 		rpu.landdetails.each{ ld ->
 			ld.taxable = util.toBoolean(ld.taxable,true)
+			if (!ld.landspecificclass) ld.landspecificclass = ld.specificclass
 			em.save(ld, SCHEMA_LANDDETAIL)
 
 			ld.landadjustments.each{ lda ->

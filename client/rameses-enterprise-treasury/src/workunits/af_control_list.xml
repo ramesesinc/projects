@@ -5,7 +5,7 @@
             <action name="init" role="COLLECTOR" /> 
             <action name="init" role="SUBCOLLECTOR" /> 
         </invoker>
-        <invoker folderid="home/treasury" caption="AF Controls" role="COLLECTOR" index="1">
+        <invoker folderid="home/treasury" caption="AF Controls" role="COLLECTOR">
             <action name="init" role="COLLECTOR" /> 
             <action name="init" role="SUBCOLLECTOR" /> 
         </invoker> 

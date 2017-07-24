@@ -7,6 +7,10 @@
         <invoker type="formActions" caption="Edit" action="showEditMenu" 
                  visibleWhen="#{mode=='read'}" role="ADMIN"/>
         
+        <invoker type="formActions" caption="Close Account" action="closeAccount" role="ADMIN" visibleWhen="#{entity.state != 'CLOSED'}"/>
+        
+        <invoker type="formActions" caption="Block Account" action="blockAccount" role="ADMIN" visibleWhen="#{entity.state=='ACTIVE'}"/>
+        <invoker type="formActions" caption="UnBlock Account" action="unblockAccount" role="ADMIN" visibleWhen="#{entity.state=='BLOCKED'}"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketAccountModel" />
     <pages>

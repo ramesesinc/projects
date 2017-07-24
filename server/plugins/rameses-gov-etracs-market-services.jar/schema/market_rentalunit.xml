@@ -5,7 +5,7 @@
 		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES" caption="Type"/>
 		<field name="code" required="true" searchable="true"  caption="Unit Code"/>
 
-		<field name="indexno" required="true" type="integer" caption="Index No" defaultValue="0"/>
+		<field name="indexno" required="true" type="integer" caption="Index No" defaultValue="0" indexed="true"/>
 		<field name="areasqm" required="true" type="decimal" caption="Area (sqm)" />
 
 		<complex name="section" ref="market_section" jointype="many-to-one" required="false" includefields="objid,name">

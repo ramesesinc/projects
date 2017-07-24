@@ -173,7 +173,7 @@
                     <Component class="com.rameses.rcp.control.XLabel" name="xLabel11">
                       <Properties>
                         <Property name="caption" type="java.lang.String" value="Extension Rate"/>
-                        <Property name="expression" type="java.lang.String" value="#{entity.extarea}"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.extrate}"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 18]"/>
                         </Property>

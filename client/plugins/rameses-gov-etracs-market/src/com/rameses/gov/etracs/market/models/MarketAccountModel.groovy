@@ -8,10 +8,40 @@ import com.rameses.seti2.models.*;
 
 public class MarketAccountModel extends CrudFormModel {
     
+    @Service('MarketAccountService') 
+    def svc; 
+    
+    void afterOpen() {
+        itemHandler.reload();
+        //unitListModel.reload();
+    }
+    
+    def itemHandler = [
+        fetchList: {
+            return entity.recurringfees;
+        }
+    ] as BasicListModel;
+    
+    def unitListModel = [
+        fetchList: {
+            return entity.units;
+        }
+    ] as BasicListModel;
     
     def showEditMenu() {
         return showDropdownMenu("editActions");
     }
-    
-
+                    
+    void closeAccount() {
+        def s = svc.closeAccount([ objid: entity.objid ]);
+        entity.state = s.state; 
+    }
+    void blockAccount() {
+        def s = svc.blockAccount([ objid: entity.objid ]); 
+        entity.state = s.state; 
+    }
+    void unblockAccount() {
+        def s = svc.unblockAccount([ objid: entity.objid ]); 
+        entity.state = s.state; 
+    }
 }

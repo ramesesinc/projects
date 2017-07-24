@@ -89,7 +89,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xFormPanel2.add(xLabel10);
 
         xLabel11.setCaption("Extension Rate");
-        xLabel11.setExpression("#{entity.extarea}");
+        xLabel11.setExpression("#{entity.extrate}");
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel2.add(xLabel11);
 

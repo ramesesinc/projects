@@ -28,6 +28,7 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      def changeTodate() {
         def h = { o->
             loadInfo([id:txnid, billdate: o, action:'payoption']);
+            binding.refresh();
         }
         return Inv.lookupOpener("market_specify_billdate", [handler: h, fromdate: entity.fromdate, todate: entity.todate ] );
      }

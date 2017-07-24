@@ -20,20 +20,26 @@
             def handler;
             def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
         
-            
-        
             def doOk() {
                 def x = fromdate; 
                 if( dateoption == "specify-date") {
                     x = todate;
                 }
                 else if( dateoption == "month" ) {
-                    MsgBox.alert("month " + month);
+                    int newMon = month;
                     def cal = Calendar.instance;
                     cal.setTime(fromdate);
-                    MsgBox.alert("year " + cal.get(Calendar.YEAR));
-                    MsgBox.alert("month " + cal.get(Calendar.MONTH)+1);
-                    throw new Exception("stop");
+                    int yr = cal.get(Calendar.YEAR);
+                    int mon = cal.get(Calendar.MONTH)+1;
+                    
+                    //check if month is less than from month then add 1 year;
+                    int xy = (mon >= newMon) ? yr + 1: yr;
+                    int xm = newMon;
+                    
+                    def ds = ((xm+1)>12? xy+1: xy)+ "-" + ((xm + 1)>12? 1: xm+1)+ "-01";
+                    def xdate =df.parse( ds );
+                    x = DateFunc.getDayAdd( xdate, -1 );
+                    x = df.format(x);
                 }
                 else {
                     if( numdays <= 0 ) throw new Exception("Numdays is required");

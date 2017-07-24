@@ -63,7 +63,7 @@ public class SpecifyBillDate extends javax.swing.JPanel {
         monthList1.setCaption("Month");
         monthList1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         monthList1.setDepends(new String[] {"dateoption"});
-        monthList1.setName("entity.month"); // NOI18N
+        monthList1.setName("month"); // NOI18N
         monthList1.setVisibleWhen("#{ dateoption == 'month' }");
         xFormPanel1.add(monthList1);
 

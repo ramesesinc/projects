@@ -260,6 +260,7 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
 
         xDateField1.setEnabled(false);
         xDateField1.setName("entity.fromdate"); // NOI18N
+        xDateField1.setOutputFormat("MMM dd yyyy");
         xDateField1.setPreferredSize(new java.awt.Dimension(80, 20));
         xDateField1.setShowCaption(false);
         xFormPanel4.add(xDateField1);
@@ -270,6 +271,7 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
 
         xDateField2.setEnabled(false);
         xDateField2.setName("entity.todate"); // NOI18N
+        xDateField2.setOutputFormat("MMM dd yyyy");
         xDateField2.setPreferredSize(new java.awt.Dimension(80, 20));
         xDateField2.setShowCaption(false);
         xFormPanel4.add(xDateField2);

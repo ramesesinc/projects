@@ -190,7 +190,6 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
         xDecimalField2.setName("entity.amount"); // NOI18N
         xFormPanel3.add(xDecimalField2);
 
-        xButton3.setEnabled(false);
         xButton3.setName("payPartial"); // NOI18N
         xButton3.setText("Partial Payment");
 

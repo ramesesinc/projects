@@ -1,16 +1,25 @@
 import com.rameses.annotations.*;
+import com.rameses.util.*;
 
 class MarketPostPaymentInterceptor{
 	
 	@DataContext("market_account")
 	def acctEm;
 
+
 	@After(pattern="PostPaymentService.post", eval="#{args[0]._schemaname == 'market_payment'}")
 	public void postMarketPayment(def evt) {
 		def res = evt.result;
-		
-		acctEm.find( [objid: res.acctid ] ).update( [lastdatecovered: res.todate] );
+		def partialbalance = res.items.find{ it.txntype=='MARKETRENTAL' && it.partialunpaid > 0 }?.partialunpaid;  
+		def ratetype = acctEm.find([ objid: res.acctid ]).select('ratetype').first()?.ratetype; 
+		def lastdatecovered = null; 
+		if ( ratetype == 'MONTH' ) {
+			lastdatecovered = DateUtil.add( res.todate, '-1M' ); 
+		} else {
+			lastdatecovered = DateUtil.add( res.todate, '-1d' ); 			
+		}
 
+		acctEm.find([ objid: res.acctid ]).update([ lastdatecovered: lastdatecovered, partialbalance: partialbalance  ]);
 		res.items.each {
 			println it.txntype + " = " + it.amount;
 		}

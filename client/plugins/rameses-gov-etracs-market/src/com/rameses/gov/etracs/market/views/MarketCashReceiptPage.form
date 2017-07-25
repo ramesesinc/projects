@@ -208,7 +208,6 @@
             </Container>
             <Component class="com.rameses.rcp.control.XButton" name="xButton3">
               <Properties>
-                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="payPartial" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Partial Payment"/>
               </Properties>

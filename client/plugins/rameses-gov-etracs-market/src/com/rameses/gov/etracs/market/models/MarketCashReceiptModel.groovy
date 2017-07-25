@@ -75,7 +75,9 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
         
         txnid = selection.objid;
         def rundate = dateSvc.getServerDate();
-        if ( selection.lastdatecovered.after(rundate) ) { 
+        def datecovered = selection.lastdatecovered;
+        if ( !datecovered ) datecovered = selection.startdate;         
+        if ( datecovered.after(rundate) ) { 
             def sdate = null; 
             Modal.show('date:prompt', [
                date: selection.lastdatecovered, 

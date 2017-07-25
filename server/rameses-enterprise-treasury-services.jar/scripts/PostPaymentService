@@ -26,6 +26,21 @@ class PostPaymentService {
 		return o;
 	}	
 
+	@ProxyMethod
+	public def postVoid(def o) {
+		if(!o._schemaname) throw new Exception("_schemaname is required");
+		
+		def pmtEm = em.lookup( o._schemaname );
+		def pmt = pmtEm.find([ refid: o.objid ]).first(1);
 
+		//load each item
+		if(o.items) {
+			o.items.findAll{ it.ledgertype!=null && it.ledgerid!=null }.each {
+				def ledgerEm = em.lookup( it.ledgertype );
+				ledgerEm.find( [objid: it.ledgerid ] ).update( [amtpaid:'{amtpaid - :apaid}'], [apaid: it.amount] );	
+			}
+		}
+		return o;
+	}	
 
 }

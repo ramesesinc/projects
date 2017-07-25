@@ -5,19 +5,37 @@ class MarketUtilityPersistenceInterceptor{
 	@DataContext("market_account")
 	def acctEm;
 
-	@After(pattern="PersistenceService.(create|update)", eval="#{ args[0]._schemaname == 'market_electricity' }")
-	public void createUpdateElectricity(def evt) {
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'market_electricity' }")
+	public void createElectricity(def evt) {
 		def e = evt.args[0];
-		println e;	
+
+		def z = acctEm.find( [objid: e.acctid ] ).select("electricityreading").first(); 
+		if( z.electricityreading != e.prevreading )
+			throw new Exception("Prev reading must match the existing reading in the account")
+		acctEm.find( [objid: e.acctid ] ).update( [electricityreading: e.reading] ); 	
+	}
+
+	@After(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'market_electricity' }")
+	public void updateElectricity(def evt) {
+		def e = evt.args[0];
 
 		def z = acctEm.find( [objid: e.acctid ] ).select("electricityreading").first(); 
 		if( z.electricityreading != e._reading )
 			throw new Exception("Prev reading must match the existing reading in the account")
 		acctEm.find( [objid: e.acctid ] ).update( [electricityreading: e.reading] ); 	
+	}	
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'market_water' }")
+	public void createWater(def evt) {
+		def e = evt.args[0];
+		def z = acctEm.find( [objid: e.acctid ] ).select("waterreading").first(); 
+		if( z.waterreading != e.prevreading )
+			throw new Exception("Prev reading must match the existing reading in the account")
+		acctEm.find( [objid: e.acctid ] ).update( [waterreading: e.reading] ); 	
 	}
 
-	@After(pattern="PersistenceService.(create|update)", eval="#{ args[0]._schemaname == 'market_water' }")
-	public void createUpdateWater(def evt) {
+	@After(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'market_water' }")
+	public void updateWater(def evt) {
 		def e = evt.args[0];
 		def z = acctEm.find( [objid: e.acctid ] ).select("waterreading").first(); 
 		if( z.waterreading != e._reading )

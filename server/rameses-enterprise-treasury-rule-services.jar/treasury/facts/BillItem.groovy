@@ -53,6 +53,7 @@ class BillItem extends AbstractBillItem {
 			m.put(it.txntype?.toLowerCase(), NumberUtil.round(it.amount));
 		};
 		m.total = total;
+		m.partialunpaid = partialunpaid;
 		return m;
 	}
 
@@ -76,9 +77,9 @@ class BillItem extends AbstractBillItem {
 		println "value of amount ->" + NumberUtil.round( NumberUtil.round( amount / linetotal ) * payamt);
 		println "----------------------------------------------------------------"
 		*/
-		for(BillSubItem bi: items) {
-		    def result = NumberUtil.round( NumberUtil.round(bi.amount / linetotal ) * payamt );
-			//println "    " + bi.txntype + ": % " +  NumberUtil.round(bi.amount / linetotal ) + " of amount " + bi.amount + " is " + result;
+		for(BillSubItem bi: items) { 
+			def xxx = ( bi.amount / linetotal ) * payamt; 
+			def result = NumberUtil.round( xxx );
 			bi.amount = result;
 			_amt -= bi.amount;
 		}
@@ -87,6 +88,7 @@ class BillItem extends AbstractBillItem {
 		//println "% amouint calculated " + NumberUtil.round(amount);
 		//_amt -= amount;
 		
+		partialunpaid = amount - _amt;
 		amount = _amt;
 		//println "------- end -----------";
 

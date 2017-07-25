@@ -42,6 +42,8 @@
 		<!-- link to market_rental_payment -->
 		<field name="remarks" />
 
+		<field name="electricityreading" type="integer" defaultValue="0"/>
+		<field name="waterreading"  type="integer" defaultValue="0"/>
 		
 		<!-- link to business -->
 		<field name="business_objid" />

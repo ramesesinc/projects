@@ -25,6 +25,11 @@ class MarketBillingService {
 	@DataContext("market_otherfee")
 	def otherFeeEm;
 
+	@DataContext("market_electricity")
+	def electricityEm;
+
+	@DataContext("market_water")
+	def waterEm;
 
 	/***************************************************************************************************
 	* STEPS: 
@@ -63,11 +68,33 @@ class MarketBillingService {
 			};
 		}
 		
+
+		//PREPARE THE GENERIC FILTERS
+		int ym = ( billDateFact.year*12)+billDateFact.month;
+		String ff = " amount-amtpaid > 0 AND ((year*12)+month) <= :ym ";
+		def fp = [ym: ym];
+
+		if( !o.filter || o.filter.objid == 'ELECTRICITY' ) {
+			electricityEm.find( [acctid: o.acctid ]).where( ff, fp ).list().each {
+				def mf = new MonthBillItem( refid:it.objid, ledgertype:'market_electricity',
+					 year: it.year, month: it.month, txntype: 'ELECTRICITY', 
+					amount:it.balance, remarks: it.remarks );
+				fb.facts << mf;
+			};
+		}	
+
+		//WATER
+		if( !o.filter || o.filter.objid == 'WATER' ) {
+			waterEm.find( [acctid: o.acctid ]).where( ff, fp ).list().each {
+				def mf = new MonthBillItem( refid:it.objid, ledgertype:'market_water',
+					 year: it.year, month: it.month, txntype: 'WATER', 
+					amount:it.balance, remarks: it.remarks );
+				fb.facts << mf;
+			};
+		}
+
 		//OTHER FEE RELATED FACTS
 		if(!o.filter || o.filter.txntype!=null ) {
-			int ym = ( billDateFact.year*12)+billDateFact.month;
-			String ff = " amount-amtpaid > 0 AND ((year*12)+month) <= :ym ";
-			def fp = [ym: ym];
 			if( o.filter?.txntype ) {
 				ff+= " AND txntype.objid = :ttype";
 				fp.ttype = o.filter.txntype; 

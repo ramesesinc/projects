@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+
+class MarketUtilityService {
+	
+	@ProxyMethod 
+	public def calculate( params ) {
+		if(!params.txntype) throw new Exception("Transaction Type is required");
+		if(!params.usage) throw new Exception("Usage is required");
+		def m = [:];
+		if(params.txntype == 'ELECTRICITY') {
+			m.rate = 9;
+		}
+		else if( params.txntype == 'WATER' ) {
+			m.rate = 49;
+		}
+		m.amount = params.usage * m.rate;
+		return m;
+	} 	
+
+}

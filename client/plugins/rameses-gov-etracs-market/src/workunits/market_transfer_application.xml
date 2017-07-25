@@ -1,0 +1,10 @@
+<workunit schemaName="market_transfer_application">
+    <invokers>
+        <invoker type="home.action" 
+            caption="New Transfer Application" index="10" 
+            action="start"/> 
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.ChangeElectricityReadingPage" />
+    </pages>
+</workunit>

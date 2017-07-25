@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="market_account"
+          schemaName="market_account" allowDelete="false"
           cols="acctno,acctname,address.text,unitno,section.name,rate,payfrequency"
            filterField="cluster.market.objid" >
     <invokers>

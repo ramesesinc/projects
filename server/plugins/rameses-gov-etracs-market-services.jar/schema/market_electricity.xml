@@ -1,0 +1,21 @@
+<schema  adapter="market">
+	<element tablename="market_electricity">
+		<field name="objid" primary="true" prefix="MKTACCTELEC"/>
+		<field name="acctid" required="true"/>
+		<field name="year" required="true" />
+		<field name="month" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="readingdate" required="true" />
+		<field name="prevreading" required="true" type="integer" defaultValue="0"/>
+		<field name="reading" required="true" type="integer" defaultValue="0"/>
+		<field name="rate" required="true" />
+		<field name="amount" required="true" type="decimal" defaultValue="0" />
+		<field name="amtpaid" required="true" type="decimal" defaultValue="0"/>
+
+		<field name="usage" expr="reading-prevreading" caption="Usage(kwh)" type="integer" defaultValue="0"/>
+		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance" />
+		<field name="monthname" expr="MONTH_ARRAY(month)" />
+	</element>
+</schema>

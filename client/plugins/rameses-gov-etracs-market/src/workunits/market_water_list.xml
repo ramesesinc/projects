@@ -1,0 +1,40 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
+          schemaName="market_water"
+          cols="year,monthname,readingdate,prevreading,reading,amount,amtpaid,balance,createdby.name,dtcreated"
+          orderBy="dtcreated">
+    <invokers>
+        <invoker type="market_account:section" 
+                 caption="Water" action="init" visibleWhen="#{mode!='create'}" index="4"
+                 parentid="acctid"/>
+        
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+
+        class MarketWaterList extends com.rameses.seti2.models.CrudSubListModel {
+        
+            boolean showunpaid = true;
+        
+            @PropertyChangeListener
+            def listener = [
+                "showunpaid" : { o->
+                    reload();
+                }
+            ];
+        
+            def getCustomFilter() {
+                if( showunpaid == false ) return null;
+                return [ "amount-amtpaid > 0 " ];
+            }
+        
+        } 
+        ]]>
+    </code>
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.market.views.MarketOtherFeeQueryPanel" />
+    </pages>
+</workunit>

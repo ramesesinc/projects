@@ -33,15 +33,21 @@ public class MarketAccountModel extends CrudFormModel {
     }
                     
     void closeAccount() {
-        def s = svc.closeAccount([ objid: entity.objid ]);
-        entity.state = s.state; 
+        if( MsgBox.confirm("Close account will release the rented units and deactivate this account. Proceed?")) {
+            def s = svc.closeAccount([ objid: entity.objid ]);
+            entity.state = s.state; 
+        }
     }
     void blockAccount() {
-        def s = svc.blockAccount([ objid: entity.objid ]); 
-        entity.state = s.state; 
+        if( MsgBox.confirm("You are about to block this account. Proceed?")) {
+            def s = svc.blockAccount([ objid: entity.objid ]); 
+            entity.state = s.state; 
+        }    
     }
     void unblockAccount() {
-        def s = svc.unblockAccount([ objid: entity.objid ]); 
-        entity.state = s.state; 
+        if( MsgBox.confirm("You are about to unblock this account. Proceed?")) {
+            def s = svc.unblockAccount([ objid: entity.objid ]); 
+            entity.state = s.state; 
+        }    
     }
 }

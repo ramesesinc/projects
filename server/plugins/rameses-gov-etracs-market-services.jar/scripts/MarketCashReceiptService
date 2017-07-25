@@ -23,7 +23,8 @@ public class MarketCashReceiptService  {
 	
 	@ProxyMethod
 	public def getInfo(o) {
-		def a = acctEm.find([acctno: o.id] ).first();
+		def a = acctEm.find([objid: o.id] ).first();
+		if(!a) a = acctEm.where("acctno =:acctno",[acctno: o.id]).first();
 		if(!a) a = acctEm.where("unitno =:code",[code: o.id]).first();
 		if(!a) throw new Exception("Market account not found!");
 
@@ -41,12 +42,12 @@ public class MarketCashReceiptService  {
 
 		//the billitems is used for updating payment ledger
 		def r = [acctid: a.objid];
+		if( o.filters ) r.filters = o.filters;
 		if( o.billdate ) r.billdate = df.parse(o.billdate);
 		if( o.partial ) r.partial = o.partial;
 
 		def m = billingSvc.getBilling( r );
 		
-
 		//posting information
 		z.postpayment = [
 			_schemaname: "market_payment",
@@ -59,17 +60,8 @@ public class MarketCashReceiptService  {
 
 		z.fromdate = df.parse(df.format(m.fromdate));
 		z.todate = df.parse(df.format(m.todate));
-		z.remarks = a.unitno + " "  + a.section.name + " (" + a.cluster?.market?.name + ") From " +df.format(z.fromdate) + " to " + df.format( z.todate ) ;
 		z.amount = m.amount;
 		z.items = m.items;
-		/*
-		z.ledgerstatus = m.ledgerstatus;
-		z.billitems = m.billitems;
-		z.days = m.billitems.sum{ it.days };
-		z.months = m.billitems.size();
-		+ "  - " + z.days + " days"
-		z.particulars = z.remarks;
-		*/
 		return z;
 	}
 

@@ -15,19 +15,21 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      //we specify this so print detail will appear.
      String entityName = "misc_cashreceipt";
      String title = "Market Rental";
+     def acctFilter;
      
      public String getContextName() {
          return "market";
      }
      
      public def getPaymentInfo( def app ) {
+         if( acctFilter !=null ) app.filters = acctFilter;
          return cashReceiptSvc.getInfo( app );
      }
     
-     
      def changeTodate() {
         def h = { o->
             loadInfo([id:txnid, billdate: o, action:'payoption']);
+            binding.refresh();
         }
         return Inv.lookupOpener("market_specify_billdate", [handler: h, fromdate: entity.fromdate, todate: entity.todate ] );
      }
@@ -41,10 +43,35 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
         }
      }   
 
+     
      void filterAccounts() {
-         throw new Exception("Not yet supported");
-         //loadInfo([id:txnid, action:'payoption']);
+        def selection;
+        def s = { o->
+            selection = o;
+            return null;
+        };
+        Modal.show( "market_collection_txntype:lookup" , [onselect:s] );
+        if(!selection) throw new BreakException();
+        acctFilter = selection;
+        loadInfo([id:txnid, action:'open']);
      }
+
+    void resetFilter() {
+        acctFilter = null;
+        loadInfo([id:txnid, action:'open']);
+     }
+    
+    void init() {
+        def selection;
+        def s = { o->
+            selection = o;
+            return null;
+        };
+        Modal.show( "market_account:lookup" , [onselect:s] );
+        if(!selection) throw new BreakException();
+        txnid = selection.objid;
+        loadInfo([id:txnid, action:'open']);
+    }
     
 }
 

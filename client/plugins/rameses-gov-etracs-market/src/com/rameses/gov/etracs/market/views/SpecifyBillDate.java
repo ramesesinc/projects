@@ -34,6 +34,7 @@ public class SpecifyBillDate extends javax.swing.JPanel {
         xRadio1 = new com.rameses.rcp.control.XRadio();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xRadio2 = new com.rameses.rcp.control.XRadio();
+        monthList1 = new com.rameses.enterprise.components.MonthList();
         xRadio3 = new com.rameses.rcp.control.XRadio();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
@@ -54,9 +55,17 @@ public class SpecifyBillDate extends javax.swing.JPanel {
         xFormPanel1.add(xDateField1);
 
         xRadio2.setName("dateoption"); // NOI18N
+        xRadio2.setOptionValue("month");
         xRadio2.setShowCaption(false);
         xRadio2.setText("Specify Month");
         xFormPanel1.add(xRadio2);
+
+        monthList1.setCaption("Month");
+        monthList1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        monthList1.setDepends(new String[] {"dateoption"});
+        monthList1.setName("month"); // NOI18N
+        monthList1.setVisibleWhen("#{ dateoption == 'month' }");
+        xFormPanel1.add(monthList1);
 
         xRadio3.setName("dateoption"); // NOI18N
         xRadio3.setOptionValue("numdays");
@@ -90,6 +99,7 @@ public class SpecifyBillDate extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

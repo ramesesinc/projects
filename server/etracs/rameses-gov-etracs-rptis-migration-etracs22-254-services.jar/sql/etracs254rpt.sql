@@ -127,7 +127,7 @@ select objid from propertyclassification where code = $P{code}
 
 
 [insertBldgRpuAssessment]
-INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype, taxable) 
+INSERT INTO rpu_assessment (objid, rpuid, classification_objid, actualuse_objid, areasqm, areaha, marketvalue, assesslevel, assessedvalue, rputype) 
 select
 	min(bu.objid) as objid, 
 	bu.bldgrpuid as rpuid, 
@@ -138,8 +138,7 @@ select
 	sum(bu.marketvalue) as marketvalue, 
 	bu.assesslevel,
 	sum(bu.assessedvalue) as assessedvalue, 
-	'bldg' as rputype,
-	1 as taxable 
+	'bldg' as rputype
 from bldgrpu r
 	inner join bldguse bu on r.objid  = bu.bldgrpuid
 	inner join bldgassesslevel au on bu.actualuse_objid = au.objid 

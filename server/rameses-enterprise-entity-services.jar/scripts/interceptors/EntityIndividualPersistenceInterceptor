@@ -79,6 +79,7 @@ class EntityIndividualPersistenceInterceptor  {
         }
 		o.type = 'INDIVIDUAL';
 		//create the address first
+		o.parentid = null;
 		def addr = addressEm.create( o.address );
 		o.address.objid = addr.objid; 
 	}

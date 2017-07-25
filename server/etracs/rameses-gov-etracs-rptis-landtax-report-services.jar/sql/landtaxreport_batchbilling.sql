@@ -1,7 +1,8 @@
 [getLedgerIdsByBrgy]
 select 
-	rl.objid, rl.tdno, rl.taxpayer_objid
+	rl.objid, rl.tdno, rl.taxpayer_objid, e.name as taxpayer_name, e.address_text as taxpayer_address
 from rptledger rl
+	inner join entity e on rl.taxpayer_objid = e.objid 
 where rl.barangayid = $P{barangayid}
 	and rl.state = 'APPROVED'
 	and (rl.lastyearpaid < $P{billtoyear} or 
@@ -12,8 +13,9 @@ order by rl.tdno
 
 [getLedgerIdsBySection]
 select 
-	rl.objid, rl.tdno, rl.taxpayer_objid
+	rl.objid, rl.tdno, rl.taxpayer_objid, e.name as taxpayer_name, e.address_text as taxpayer_address
 from rptledger rl
+	inner join entity e on rl.taxpayer_objid = e.objid 
 	inner join faas f on rl.faasid = f.objid 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 where rl.barangayid = $P{barangayid}

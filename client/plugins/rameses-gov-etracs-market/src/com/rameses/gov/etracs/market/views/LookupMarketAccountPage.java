@@ -19,6 +19,7 @@ public class LookupMarketAccountPage extends javax.swing.JPanel {
      */
     public LookupMarketAccountPage() {
         initComponents();
+        
        
     }
 

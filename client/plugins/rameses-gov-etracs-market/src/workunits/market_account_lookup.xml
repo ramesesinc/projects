@@ -3,6 +3,8 @@
           cols="acctno,acctname,owner.name,unitno,section.name"
           customFilter="state = 'ACTIVE'" >
     <invokers>
-        <invoker type="market_account:lookup" caption="Search Market Account" action="init"/>
+        <invoker type="market_account:lookup" caption="Search Market Account" 
+                width="1024"
+                 action="init"/>
     </invokers>
 </workunit>

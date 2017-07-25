@@ -44,33 +44,41 @@ class MarketBillingService {
 		def billDateFact = new treasury.facts.BillDate( o.billdate );
 
 		def fb = new FactBuilder();
-		fb.facts << new MarketRentalUnit( o.marketunit );
-		fb.facts << new MarketBillingPeriod( [fromdate: o.fromdate, todate: todate ] ) ;
 		fb.facts << new treasury.facts.SystemDate(svrDate);
 		fb.facts << billDateFact;
-
 		if( o.partial ) {
 			fb.facts << new treasury.facts.Payment( amount: o.partial );
 		}
-		
 
-		MonthEntryBuilder.buildMonthEntries( o.fromdate, todate ).each {
-			fb.facts << it;
-		};
-
-		//add the recurring and other fees
-		recurFeeEm.find( [acctid: o.acctid ]).list().each {
-			fb.facts << new RecurringFee( txntype: it.txntype.objid, amount: it.amount )
-		};
+		//RENTAL RELATED FACTS
+		if( !o.filter || o.filter.objid == 'MARKETRENTAL' ) {
+			fb.facts << new MarketRentalUnit( o.marketunit );
+			fb.facts << new MarketBillingPeriod( [fromdate: o.fromdate, todate: todate ] );
+			MonthEntryBuilder.buildMonthEntries( o.fromdate, todate ).each {
+				fb.facts << it;
+			};
+			//add the recurring and other fees
+			recurFeeEm.find( [acctid: o.acctid ]).list().each {
+				fb.facts << new RecurringFee( txntype: it.txntype.objid, amount: it.amount )
+			};
+		}
 		
-		//println "Other Fees*****************************"
-		int ym = ( billDateFact.year*12)+billDateFact.month;
-		otherFeeEm.find( [acctid: o.acctid ]).where( " amount-amtpaid > 0 AND ((year*12)+month) <= :ym ", [ym: ym] ).list().each {
-			def mf = new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee',
-				 year: it.year, month: it.month, txntype: it.txntype?.objid, 
-				amount:it.balance, remarks: it.remarks );
-			fb.facts << mf;
-		};
+		//OTHER FEE RELATED FACTS
+		if(!o.filter || o.filter.txntype!=null ) {
+			int ym = ( billDateFact.year*12)+billDateFact.month;
+			String ff = " amount-amtpaid > 0 AND ((year*12)+month) <= :ym ";
+			def fp = [ym: ym];
+			if( o.filter?.txntype ) {
+				ff+= " AND txntype.objid = :ttype";
+				fp.ttype = o.filter.txntype; 
+			}	
+			otherFeeEm.find( [acctid: o.acctid ]).where( ff, fp ).list().each {
+				def mf = new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee',
+					 year: it.year, month: it.month, txntype: it.txntype?.objid, 
+					amount:it.balance, remarks: it.remarks );
+				fb.facts << mf;
+			};
+		}
 		return assmtSvc.execute( "marketbilling", [:], fb, resultHandler );
 	}
 
@@ -97,6 +105,7 @@ class MarketBillingService {
 
 		req.fromdate = (acct.lastdatecovered) ? DateFunc.getDayAdd( acct.lastdatecovered , 1) : acct.startdate;
 		req.billdate = (o.billdate!=null)? o.billdate: svrDate;
+		if(o.filters) req.filter = o.filters;
 
 		//if partial payment was specified
 		if( o.partial ) req.partial = o.partial;
@@ -142,8 +151,11 @@ class MarketBillingService {
 		if(!m.items) 
 			throw new Exception("No billitems found");
 		m.fromdate = req.fromdate;
-		m.todate = req.todate;	
-		m.months = DateFunc.monthsDiff( m.fromdate, m.todate );
+		m.todate = req.todate;
+		m.months = 1;	
+		if( m.fromdate && m.todate ) {
+			m.months = DateFunc.monthsDiff( m.fromdate, m.todate );
+		}
 		m.items = m.items.sort{  ((it.year*12)+it.month) };
 		m.billitems = m.billitems.sort{  ((it.year*12)+it.month) };
 		m.amount = NumberUtil.round(m.items.sum{ it.amount });

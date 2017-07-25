@@ -1,0 +1,8 @@
+<schema  adapter="market">
+	<element tablename="market_collection_txntype">
+		<field name="objid" primary="true" />	
+		<field name="caption" required="true" />	
+		<field name="txntype" required="true" />
+		<field name="sortorder" type="integer" />
+	</element>
+</schema>

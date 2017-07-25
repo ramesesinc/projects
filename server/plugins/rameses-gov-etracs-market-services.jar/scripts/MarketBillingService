@@ -40,7 +40,8 @@ class MarketBillingService {
 
 		def amtPaid = 0.0;
 		def svrDate = dateSvc.getBasicServerDate();
-		def todate = o.billdate;
+		def todate = o.billdate; 
+
 		def billDateFact = new treasury.facts.BillDate( o.billdate );
 
 		def fb = new FactBuilder();
@@ -105,6 +106,10 @@ class MarketBillingService {
 
 		req.fromdate = (acct.lastdatecovered) ? DateFunc.getDayAdd( acct.lastdatecovered , 1) : acct.startdate;
 		req.billdate = (o.billdate!=null)? o.billdate: svrDate;
+		if ( req.fromdate.after(req.billdate)) {
+			throw new Exception('billdate is less than last date covered'); 
+		}
+
 		if(o.filters) req.filter = o.filters;
 
 		//if partial payment was specified

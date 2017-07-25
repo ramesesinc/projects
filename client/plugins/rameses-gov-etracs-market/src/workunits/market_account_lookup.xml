@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
           schemaName="market_account" target="popup"
-          cols="acctno,acctname,owner.name,unitno,section.name"
+          cols="acctno,acctname,owner.name,unitno,section.name,lastdatecovered"
           customFilter="state = 'ACTIVE'" >
     <invokers>
         <invoker type="market_account:lookup" caption="Search Market Account" 

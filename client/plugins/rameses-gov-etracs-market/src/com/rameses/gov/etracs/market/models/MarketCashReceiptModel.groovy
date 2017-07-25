@@ -12,6 +12,9 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      @Service("MarketCashReceiptService")
      def cashReceiptSvc;
     
+     @Service('DateService') 
+     def dateSvc; 
+        
      //we specify this so print detail will appear.
      String entityName = "misc_cashreceipt";
      String title = "Market Rental";
@@ -23,7 +26,7 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      
      public def getPaymentInfo( def app ) {
          if( acctFilter !=null ) app.filters = acctFilter;
-         return cashReceiptSvc.getInfo( app );
+         return cashReceiptSvc.getInfo( app ); 
      }
     
      def changeTodate() {
@@ -69,8 +72,23 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
         };
         Modal.show( "market_account:lookup" , [onselect:s] );
         if(!selection) throw new BreakException();
+        
         txnid = selection.objid;
-        loadInfo([id:txnid, action:'open']);
+        def rundate = dateSvc.getServerDate();
+        if ( selection.lastdatecovered.after(rundate) ) { 
+            def sdate = null; 
+            Modal.show('date:prompt', [
+               date: selection.lastdatecovered, 
+               title: 'Enter Advance Date', 
+               handler: { o-> 
+                   sdate = o; 
+               }
+            ]);
+            if ( !sdate ) throw new BreakException(); 
+            loadInfo([id:txnid, billdate: sdate, action:'open']);
+        } else {
+            loadInfo([id:txnid, action:'open']);
+        }
     }
     
 }

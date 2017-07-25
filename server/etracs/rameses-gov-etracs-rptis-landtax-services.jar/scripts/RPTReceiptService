@@ -347,5 +347,10 @@ class RPTReceiptService
 		return  em.getUnpaidPropertiesForPayment(billingSvc.buildParams(bill))
 	}
 
+	@ProxyMethod
+	public void updateBill(bill){
+		em_rptbill.update(bill)
+	}
+
 }
 

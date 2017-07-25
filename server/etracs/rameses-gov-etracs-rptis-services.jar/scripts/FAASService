@@ -410,7 +410,7 @@ class FAASService
 		faas.backtaxes.each{
 			if (!it.tdno){
 				it.tdno = faas.tdno + '-' + it.ry 
-				em.save(it, SCHEMA_BACKTAX)
+				em_faas_backtax.save(it)
 				em.updateFaasTdNo(it)
 				em.updateFaasListTdNo(it)
 			}
@@ -420,6 +420,8 @@ class FAASService
 				em_faaslist.update([objid:pf.faasid, prevtdno:it.tdno])
 			}
 		}
+
+		cancelBackTaxes(faas)
 
 	}
 
@@ -431,23 +433,28 @@ class FAASService
     }
 
 	void updateImprovementLandRpuIds(faas){
-        if ('land'.equalsIgnoreCase(faas.rpu.rputype)){
-        	def prevrpu = em.findPreviousLandRpu(faas)
-        	if (prevrpu){
-		        em.updateBldgRpuLandRpuId(prevrpu)
-		        em.updateMachRpuLandRpuId(prevrpu)
-		        em.updatePlantTreeRpuLandRpuId(prevrpu)
-		        em.updateMiscRpuLandRpuId(prevrpu)
-        	}
-        }
-        else if ('bldg'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updateBldgRpuLandRpuIdByFaas(faas)
-        else if ('mach'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updateMachRpuLandRpuIdByFaas(faas)
-        else if ('planttree'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updatePlantTreeRpuLandRpuIdByFaas(faas)
-        else if ('misc'.equalsIgnoreCase(faas.rpu.rputype))
-        	em.updateMiscRpuLandRpuIdByFaas(faas)
+		try{
+	        if ('land'.equalsIgnoreCase(faas.rpu.rputype)){
+	        	def prevrpu = em.findPreviousLandRpu(faas)
+	        	if (prevrpu){
+			        em.updateBldgRpuLandRpuId(prevrpu)
+			        em.updateMachRpuLandRpuId(prevrpu)
+			        em.updatePlantTreeRpuLandRpuId(prevrpu)
+			        em.updateMiscRpuLandRpuId(prevrpu)
+	        	}
+	        }
+	        else if ('bldg'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updateBldgRpuLandRpuIdByFaas(faas)
+	        else if ('mach'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updateMachRpuLandRpuIdByFaas(faas)
+	        else if ('planttree'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updatePlantTreeRpuLandRpuIdByFaas(faas)
+	        else if ('misc'.equalsIgnoreCase(faas.rpu.rputype))
+	        	em.updateMiscRpuLandRpuIdByFaas(faas)
+		}
+		catch(e){
+			//ignore invalid reference 
+		}
     }
 
 
@@ -905,7 +912,7 @@ class FAASService
 	}
 
 	void cancelBackTaxes(faas){
-		for(int i=0; i<faas.backtaxes.size() - 1; i++){
+		for(int i=0; i<faas.backtaxes.size(); i++){
 			def bt = faas.backtaxes[i]
 			//def btf = openFaasOnly(bt)
 			def btf = em_faas.select('objid,tdno').find([objid:bt.objid]).first()

@@ -48,10 +48,10 @@ class EntityJuridicalPersistenceInterceptor  {
                 o.entityno = ''+ stype + seqno; 
             } 
         } 
-		o.type = 'JURIDICAL';
+		//o.type = 'JURIDICAL';
 		//create the address first
-		def addr = addressEm.create( o.address );
-		o.address.objid = addr.objid;	
+		//def addr = addressEm.create( o.address );
+		//o.address.objid = addr.objid;	
 	}
 
 	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityjuridical'}")
@@ -64,7 +64,7 @@ class EntityJuridicalPersistenceInterceptor  {
 	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'entityjuridical'}")
 	public void afterOpen(def evt) {
 		def o = evt.result;
-		if( o.orgtype ) {
+		if( o?.orgtype ) {
 			o.orgtypename = LOV.ORG_TYPES[o.orgtype];
 		}
 	}

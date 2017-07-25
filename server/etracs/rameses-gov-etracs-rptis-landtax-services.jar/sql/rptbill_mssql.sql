@@ -667,3 +667,8 @@ from rptbill b
 inner join rptbill_ledger bl on b.objid = bl.billid 
 where bl.rptledgerid = $P{objid}
 
+
+[deleteEmptyBills]
+delete from rptbill where not exists(select * from rptbill_ledger where billid = rptbill.objid)
+
+	

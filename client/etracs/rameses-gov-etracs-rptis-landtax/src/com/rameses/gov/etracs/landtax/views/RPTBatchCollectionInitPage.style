@@ -1,0 +1,11 @@
+"entity.*"[true]{
+    enabled:true;
+}
+
+"entity.taxpayer" [entity.payoption =='barcode']{
+    enabled:false;
+}
+
+"entity.barcodeid" [entity.payoption == 'taxpayer']{
+    enabled:false;
+}

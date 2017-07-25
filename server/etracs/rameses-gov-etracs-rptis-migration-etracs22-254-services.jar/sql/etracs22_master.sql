@@ -154,6 +154,6 @@ SELECT
 	paramcaption as caption,
 	paramdesc as description,
 	paramtype as paramtype,
-	parammin as `minvalue`,
-	parammax as `maxvalue` 
+	parammin as minvalue,
+	parammax as maxvalue 
 FROM rptparameters

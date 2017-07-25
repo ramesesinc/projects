@@ -30,7 +30,9 @@ class CashReceiptService  {
 	@Service('PersistenceService')
 	def persistence 
 	
-   
+   	@Service("PostPaymentService")
+   	def postPmtSvc;
+
 	/**
 	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
 	* it is gotten during getNextReceiptInfo
@@ -108,7 +110,24 @@ class CashReceiptService  {
 			x.receiptid = p.objid;
 			em.create("cashreceipt:paymentitem-noncash", x);
 		} 
-		if (p._paymentorderid) deletePaymentOrder(p)
+		if (p._paymentorderid) deletePaymentOrder(p);
+
+
+		//add this method here so it will not be forgotten. This method is to automate 
+		//posting of payments if there is a postpayment object attached.
+		if( p.postpayment?._schemaname!=null ) {
+			def pmt = p.remove("postpayment");
+			pmt.reftype = "cashreceipt";
+			pmt.refno = p.receiptno;
+			pmt.refid = p.objid;
+			pmt.refdate = p.receiptdate;
+			pmt.txndate = p.txndate;
+			pmt.voided = 0;
+			pmt.txnmode = p.txnmode;
+			pmt.amount = p.amount;
+			postPmtSvc.post( pmt );
+		}
+
 		return formatReport(p);
 	}	
 		

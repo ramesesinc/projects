@@ -1,0 +1,27 @@
+<schema  adapter="market">
+	<element tablename="market_installment">
+		<field name="objid" primary="true"  prefix="MKTINT"/>
+		<field name="state"  visible="false" defaultValue="ACTIVE"/>
+
+		<field name="acctid"/>
+		
+		<field name="controlno" required="true" indexed="true"  caption="Control No"/>
+		<field name="doctype" required="false" indexed="true" caption="Doc Type" defaultValue="MAT"/>
+		<field name="dtfiled" required="false" indexed="true" type="date" caption="Date Filed"/>
+
+		<field name="particulars" required="true" caption="Particulars"/>
+		
+		<field name="term" required="true" type="integer" caption="Term" defaultValue="1"/>
+		<field name="downpayment" required="true" type="decimal" caption="Downpayment"  defaultValue="0"/>
+
+		<field name="amount" type="decimal" required="true" defaultValue="0"/> 
+		<field name="amtpaid" type="decimal" required="true" defaultValue="0"/> 
+		<field name="installmentamount" required="true" type="decimal" caption="Installment Amount"  defaultValue="0"/>
+		<field name="startyear" required="true"/>
+		<field name="startmonth" required="true"/>		
+
+		<field name="txntype_objid" required="true"/>
+		<field name="txntype_title" required="true"/>
+	</element>
+</schema>
+

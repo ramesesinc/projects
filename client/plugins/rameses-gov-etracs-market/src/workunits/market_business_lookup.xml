@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="business" 
+    cols="objid,bin,tradename,owner.name">
+    <invokers>
+        <invoker type="market_business_unassigned:lookup" caption="Lookup Business" 
+                 action="init" customFilter=" state='ACTIVE' "/>
+    </invokers>
+</workunit>

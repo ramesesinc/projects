@@ -2,7 +2,7 @@
 	<element tablename="market_cluster">
 		<field name="objid" primary="true" prefix="MKTCLU"/>
 		<field name="market_objid" visible="false"/>
-		<field name="market_name" />
+		<field name="market_name" searchable="true" indexed="true"/>
 		<field name="market_barangay_objid" />
 		<field name="market_barangay_name" />
 

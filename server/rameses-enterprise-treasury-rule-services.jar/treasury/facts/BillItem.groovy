@@ -8,6 +8,8 @@ class BillItem extends AbstractBillItem {
 	String refid;
 	String ledgertype;
 
+	//amount that is left unpaid from the full amount
+	double partialunpaid;
 	/*
 	public BillItem(def o) {
 		copy(o);
@@ -44,10 +46,11 @@ class BillItem extends AbstractBillItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.refid = refid;
+		m.ledgerid = refid;	//add this because this is new style 
 		m.ledgertype = ledgertype;
 		items.each {
 			if(it.amount == null) it.amount = 0;
-			m.put(it.txntype, NumberUtil.round(it.amount));
+			m.put(it.txntype?.toLowerCase(), NumberUtil.round(it.amount));
 		};
 		m.total = total;
 		return m;
@@ -65,12 +68,31 @@ class BillItem extends AbstractBillItem {
 
 		//in case for partial payments, distribute evenly first to its subitems. The remainder add to the amount of this bill
 		double _amt = payamt;
+		/*
+		println "*****************************************************"
+		println "line total is " + linetotal + " while payamt is " + payamt;
+		println "% amount of main " + NumberUtil.round( amount / linetotal );
+		println "original amount is " + amount;
+		println "value of amount ->" + NumberUtil.round( NumberUtil.round( amount / linetotal ) * payamt);
+		println "----------------------------------------------------------------"
+		*/
 		for(BillSubItem bi: items) {
-			bi.amount = NumberUtil.round((bi.amount / linetotal ) * _amt);
+		    def result = NumberUtil.round( NumberUtil.round(bi.amount / linetotal ) * payamt );
+			//println "    " + bi.txntype + ": % " +  NumberUtil.round(bi.amount / linetotal ) + " of amount " + bi.amount + " is " + result;
+			bi.amount = result;
 			_amt -= bi.amount;
 		}
-		amount = NumberUtil.round(_amt);
+		//println "remainder amount " + NumberUtil.round(_amt);
+		//amount =  NumberUtil.round( NumberUtil.round( amount / linetotal ) * payamt ) ;
+		//println "% amouint calculated " + NumberUtil.round(amount);
+		//_amt -= amount;
+		
+		amount = _amt;
+		//println "------- end -----------";
+
+		//we must return 0 to indicate that all payment is consumed.
 		return 0;
 	}
+
 
 }

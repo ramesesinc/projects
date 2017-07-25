@@ -4,7 +4,15 @@ import java.util.*;
 
 class SurchargeItem extends BillSubItem {
 
-	String txntype = "surcharge";
 	int sortorder = 400;
 
+	public def toMap() {
+		def m = super.toMap();
+		m.txntype = getTxntype();
+		return m;
+	}
+
+	public String getTxntype() {
+		return "surcharge";
+	}
 }

@@ -20,6 +20,7 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
     
     public MarketCashReceiptPage() {
         initComponents();
+        
     }
     
     /** This method is called from within the constructor to
@@ -32,39 +33,28 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
 
         jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        jPanel2 = new javax.swing.JPanel();
-        btnReloadBill = new com.rameses.rcp.control.XButton();
-        btnApplyPayment = new com.rameses.rcp.control.XButton();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jPanel2 = new javax.swing.JPanel();
+        xButton2 = new com.rameses.rcp.control.XButton();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xButton3 = new com.rameses.rcp.control.XButton();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
         setPreferredSize(new java.awt.Dimension(869, 287));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  Payment Details   ");
         jPanel3.setBorder(xTitledBorder1);
-
-        xLabel4.setCaption("Rental rate");
-        xLabel4.setCaptionWidth(90);
-        xLabel4.setExpression("#{entity.rate} - #{entity.payfrequency}");
-        xLabel4.setFontStyle("font-size:12;font-weight:bold;");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 17));
-        xFormPanel1.add(xLabel4);
-
-        xLabel5.setCaption("Pay Period");
-        xLabel5.setCaptionWidth(90);
-        xLabel5.setExpression("from #{entity.fromdate} to #{entity.todate}");
-        xLabel5.setFontStyle("font-size:12;font-weight:bold;");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 17));
-        xFormPanel1.add(xLabel5);
 
         xLabel6.setCaption("Acct No");
         xLabel6.setCaptionWidth(90);
@@ -80,41 +70,81 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 17));
         xFormPanel2.add(xLabel7);
 
-        xLabel8.setCaption("Pay Option");
-        xLabel8.setCaptionWidth(90);
-        xLabel8.setExpression("#{payOption.type}");
-        xLabel8.setFontStyle("font-size:12;font-weight:bold;");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 17));
-        xFormPanel2.add(xLabel8);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
-
-        jPanel2.setPreferredSize(new java.awt.Dimension(482, 25));
-
-        btnReloadBill.setName("reload"); // NOI18N
-        btnReloadBill.setText("Reload");
-        jPanel2.add(btnReloadBill);
-
-        btnApplyPayment.setName("applyPayment"); // NOI18N
-        btnApplyPayment.setText("Apply Payment");
-        jPanel2.add(btnApplyPayment);
 
         xDataTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "year"}
+                , new Object[]{"caption", "Year"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 60}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "monthname"}
+                , new Object[]{"caption", "Month"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 60}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "fromdate"}
+                , new Object[]{"caption", "From Day"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 80}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "MMM dd", null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "todate"}
+                , new Object[]{"caption", "To Day"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 80}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "MMM dd", null)}
+            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.code"}
                 , new Object[]{"caption", "Acct Code"}
@@ -177,15 +207,82 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable1.setHandler("listModel");
+        xDataTable1.setHandler("itemListModel");
         xDataTable1.setIndex(10);
         xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setVarStatus("status");
+
+        xButton2.setName("filterAccounts"); // NOI18N
+        xButton2.setText("Filter Accounts");
 
         xDecimalField2.setCaption("T O T A L");
         xDecimalField2.setEnabled(false);
         xDecimalField2.setName("entity.amount"); // NOI18N
         xFormPanel3.add(xDecimalField2);
+
+        xButton3.setName("payPartial"); // NOI18N
+        xButton3.setText("Partial Payment");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        xFormPanel1.setCaptionWidth(100);
+
+        xLabel4.setCaption("Rental rate");
+        xLabel4.setCaptionWidth(100);
+        xLabel4.setExpression("#{entity.rate} - #{entity.payfrequency}");
+        xLabel4.setFontStyle("font-size:12;font-weight:bold;");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 17));
+        xFormPanel1.add(xLabel4);
+
+        xFormPanel4.setCaption("Pay Period");
+        xFormPanel4.setCaptionWidth(100);
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 5, 5));
+
+        xDateField1.setEnabled(false);
+        xDateField1.setName("entity.fromdate"); // NOI18N
+        xDateField1.setOutputFormat("MMM dd yyyy");
+        xDateField1.setPreferredSize(new java.awt.Dimension(80, 20));
+        xDateField1.setShowCaption(false);
+        xFormPanel4.add(xDateField1);
+
+        xLabel1.setShowCaption(false);
+        xLabel1.setText("To");
+        xFormPanel4.add(xLabel1);
+
+        xDateField2.setEnabled(false);
+        xDateField2.setName("entity.todate"); // NOI18N
+        xDateField2.setOutputFormat("MMM dd yyyy");
+        xDateField2.setPreferredSize(new java.awt.Dimension(80, 20));
+        xDateField2.setShowCaption(false);
+        xFormPanel4.add(xDateField2);
+
+        xFormPanel1.add(xFormPanel4);
+
+        xButton1.setCaption("");
+        xButton1.setCaptionWidth(100);
+        xButton1.setName("changeTodate"); // NOI18N
+        xButton1.setText("Change Bill To Date");
+        xFormPanel1.add(xButton1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -194,11 +291,11 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -209,17 +306,17 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(99, 99, 99)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-                    .addGap(48, 48, 48)))
+                    .addGap(92, 92, 92)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                    .addGap(40, 40, 40)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -240,21 +337,24 @@ public class MarketCashReceiptPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton btnApplyPayment;
-    private com.rameses.rcp.control.XButton btnReloadBill;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLabel xLabel8;
     // End of variables declaration//GEN-END:variables
     
 }

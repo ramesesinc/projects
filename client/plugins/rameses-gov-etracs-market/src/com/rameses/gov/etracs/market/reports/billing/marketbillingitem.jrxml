@@ -32,6 +32,41 @@
 	<field name="amount" class="java.lang.Number"/>
 	<field name="remarks" class="java.lang.String"/>
 
+
+		<group  name="monthyear" >
+			<groupExpression><![CDATA[($F{year}*12)+$F{month}]]></groupExpression>
+			<groupHeader>
+			<band height="10"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="9"
+						width="524"
+						height="0"
+						forecolor="#999999"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="13"
+						y="0"
+						width="13"
+						height="10"
+						key="staticText-5"/>
+					<box></box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[ss]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -88,19 +123,19 @@
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="13"
+						y="0"
 						width="524"
 						height="0"
-						key="line-1"/>
+						key="line-2"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="0"
+						y="13"
 						width="524"
 						height="0"
-						key="line-2"/>
+						key="line-4"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 			</band>

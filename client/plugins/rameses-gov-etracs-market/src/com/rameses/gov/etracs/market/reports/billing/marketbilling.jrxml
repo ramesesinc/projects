@@ -40,14 +40,14 @@
 	<field name="acctname" class="java.lang.String"/>
 	<field name="items" class="java.lang.Object"/>
 	<field name="grandtotal" class="java.lang.Number"/>
-	<field name="unit.code" class="java.lang.String"/>
-	<field name="unit.unittype" class="java.lang.String"/>
+	<field name="unitno" class="java.lang.String"/>
+	<field name="unittype" class="java.lang.String"/>
 	<field name="payfrequency" class="java.lang.String"/>
 	<field name="rate" class="java.lang.Number"/>
-	<field name="unit.section.name" class="java.lang.String"/>
-	<field name="unit.market.name" class="java.lang.String"/>
-	<field name="unit.market.address.text" class="java.lang.String"/>
-	<field name="unit.cluster.name" class="java.lang.String"/>
+	<field name="section.name" class="java.lang.String"/>
+	<field name="market.name" class="java.lang.String"/>
+	<field name="market.address.text" class="java.lang.String"/>
+	<field name="cluster.name" class="java.lang.String"/>
 	<field name="acctno" class="java.lang.String"/>
 	<field name="lastpmtdate" class="java.util.Date"/>
 	<field name="fromdate" class="java.util.Date"/>
@@ -178,7 +178,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{unit.code}+ "-" + $F{unit.cluster.name} + " " + $F{unit.section.name}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{unitno}+ "-" + $F{cluster.name} + " " + $F{section.name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -338,7 +338,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{unit.market.name}==null)?"":$F{unit.market.name}) + " " + (($F{unit.market.address.text}==null)?"":$F{unit.market.address.text})]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{market.name}==null)?"":$F{market.name}) + " " + (($F{market.address.text}==null)?"":$F{market.address.text})]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

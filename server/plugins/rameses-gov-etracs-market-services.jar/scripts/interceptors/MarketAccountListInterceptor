@@ -7,7 +7,7 @@ class MarketAccountListInterceptor{
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
 		result << [ title: 'Past due', id:'pastdue'];
-		result << [ title: 'For closure', id:'for-closure'];
+		result << [ title: 'Blocked', id:'blocked'];
 		result << [ title: 'Closed', id:'closed'];
 	}
 
@@ -29,13 +29,12 @@ class MarketAccountListInterceptor{
 			case 'pastdue':
 				status = 'pastdue'
 				m.state = 'ACTIVE'
-				m.duedate = o.node.duedate;
-				str += ' AND startdate < :duedate'; 
+				str += ' AND lastdatecovered < NOW()'; 
 				break;
 
-			case 'for-closure':
-				status = 'for-closure'
-				m.state = 'FOR-CLOSURE'
+			case 'blocked':
+				status = 'blocked'
+				m.state = 'BLOCKED'
 				break;
 
 			case 'closed':

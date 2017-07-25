@@ -1,0 +1,64 @@
+<workunit>
+    <invokers>
+        <invoker type="market_specify_billdate" caption="Bill Date" target="popup" />
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.functions.*;
+        
+        class SpecifyBillDate {
+        
+            def fromdate;
+            def dateoption = "specify-date";
+            def todate;
+            int numdays;
+            def month;
+            def handler;
+            def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        
+            def doOk() {
+                def x = fromdate; 
+                if( dateoption == "specify-date") {
+                    x = todate;
+                }
+                else if( dateoption == "month" ) {
+                    int newMon = month;
+                    def cal = Calendar.instance;
+                    cal.setTime(fromdate);
+                    int yr = cal.get(Calendar.YEAR);
+                    int mon = cal.get(Calendar.MONTH)+1;
+                    
+                    //check if month is less than from month then add 1 year;
+                    int xy = (mon >= newMon) ? yr + 1: yr;
+                    int xm = newMon;
+                    
+                    def ds = ((xm+1)>12? xy+1: xy)+ "-" + ((xm + 1)>12? 1: xm+1)+ "-01";
+                    def xdate =df.parse( ds );
+                    x = DateFunc.getDayAdd( xdate, -1 );
+                    x = df.format(x);
+                }
+                else {
+                    if( numdays <= 0 ) throw new Exception("Numdays is required");
+                    def d  = DateFunc.getDayAdd( fromdate, numdays );
+                    x = df.format(d);
+                }
+                //calculate the bill date
+                handler( x );
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+        
+        }
+        ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.SpecifyBillDate"/>
+    </pages>    
+</workunit>

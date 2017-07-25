@@ -1,0 +1,19 @@
+<schema  adapter="market">
+	<element tablename="market_account_unit">
+		<field name="objid" primary="true" prefix="MKTACCTUNT"/>
+		<field name="acctid" required="true"/>
+
+		<complex name="account" ref="market_account" jointype="many-to-one" required="false" includefields="objid,acctname,startdate,dateclosed,usage">
+			<key field="acctid" target="objid" />
+		</complex>
+
+		<complex name="unit" ref="market_rentalunit" jointype="many-to-one" required="false" includefields="objid,code">
+			<key field="unit_objid" target="objid" />
+		</complex>
+			
+		<field name="rate" required="true"/>
+		<field name="ratetype" required="true"/>	
+		<field name="usage" caption="Usage" required="true" defaultValue="100" type="integer"/>
+		<field name="areasqm" />
+	</element>
+</schema>

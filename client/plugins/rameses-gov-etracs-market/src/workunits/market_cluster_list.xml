@@ -1,27 +1,13 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="market_cluster">
+          schemaName="market_cluster"
+          cols="name,description,market.name,market.barangay.name"
+          filterField="market.objid">
     <invokers>
-        <invoker type="government_property:section" caption="Clusters" index="2" 
-                 action="init"  cols="name,description" />
-        
-        <!--
-        <invoker folderid="/explorer/master/market" caption="Market Cluster" 
-                 index="-10" srole="MASTER" action="init"/>
-        -->         
+        <invoker folderid="/explorer/master/market" caption="Market Cluster" action="init" index="-1"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.seti2.models.*;
-        
-        class MarketClusterListModel extends CrudSubListModel {
-            def getListFilter() {
-                return ['market.objid': masterEntity.objid];
-            }
-        }
-        ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.market.models.MarketListFilter" />
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.market.views.MarketLocationQueryForm" /> 
+    </pages>
+    
 </workunit>

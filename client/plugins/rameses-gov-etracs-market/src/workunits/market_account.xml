@@ -1,11 +1,16 @@
-<workunit schemaName="market_account">
+<workunit schemaName="market_account" allowCreate="false" allowEdit="false">
     <invokers>
-        <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER"/>
         <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"
-            formTitle="#{entity.unit.code} - #{entity.owner.name}" formId="#{entity.objid}"/>
+            formTitle="#{entity.unitno} - #{entity.owner.name}" formId="#{entity.objid}"/>
         
-        <invoker type="formActions" caption="Update Ledger" action="updateLedger" 
+        
+        <invoker type="formActions" caption="Edit" action="showEditMenu" 
                  visibleWhen="#{mode=='read'}" role="ADMIN"/>
+        
+        <invoker type="formActions" caption="Close Account" action="closeAccount" role="ADMIN" visibleWhen="#{entity.state != 'CLOSED'}"/>
+        
+        <invoker type="formActions" caption="Block Account" action="blockAccount" role="ADMIN" visibleWhen="#{entity.state=='ACTIVE'}"/>
+        <invoker type="formActions" caption="UnBlock Account" action="unblockAccount" role="ADMIN" visibleWhen="#{entity.state=='BLOCKED'}"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketAccountModel" />
     <pages>

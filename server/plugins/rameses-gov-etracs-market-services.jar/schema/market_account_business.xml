@@ -1,0 +1,13 @@
+<schema  adapter="market">
+	<element tablename="market_account_business">
+		<!-- THIS SHOULD BE THE OBJID OF THE BUSINESS -->
+		<field name="objid" primary="true" prefix="MKTACCTBIZ"/>
+		
+		<!-- link to market_account -->
+		<field name="acctid" />
+		<field name="tradename" />
+		<field name="bin" />
+		<field name="ownername" />
+
+	</element>
+</schema>

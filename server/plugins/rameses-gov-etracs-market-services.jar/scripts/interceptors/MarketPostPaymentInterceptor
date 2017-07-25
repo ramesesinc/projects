@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+
+class MarketPostPaymentInterceptor{
+	
+	@DataContext("market_account")
+	def acctEm;
+
+	@After(pattern="PostPaymentService.post", eval="#{args[0]._schemaname == 'market_payment'}")
+	public void postMarketPayment(def evt) {
+		def res = evt.result;
+		
+		acctEm.find( [objid: res.acctid ] ).update( [lastdatecovered: res.todate] );
+
+		res.items.each {
+			println it.txntype + " = " + it.amount;
+		}
+	}
+
+
+}

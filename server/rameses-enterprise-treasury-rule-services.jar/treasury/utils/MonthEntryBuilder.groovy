@@ -21,7 +21,6 @@ public class MonthEntryBuilder {
                 me.fromdate = it;
                 me.fromday = day;     
                 me.year = year;   
-                me.maxdays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);   
                 stack.push( me );         
             }
             stack.peek().numdays++;

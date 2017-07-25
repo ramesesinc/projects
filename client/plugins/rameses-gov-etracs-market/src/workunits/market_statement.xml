@@ -19,10 +19,8 @@
                 query.acctid = caller.entityContext?.objid;
                 return super.preview();
             };
+        }
         
-            
-            
-        };
     </code>
     <!--
     <pages>

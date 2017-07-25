@@ -1,0 +1,9 @@
+<schema adapter="market">
+	<element tablename="market_property">
+		<field name="objid" primary="true"/>
+		<field name="name" />
+		<field name="street"/>
+		<field name="barangay_objid" required="true"/>
+		<field name="barangay_name" required="true"/>
+	</element>
+</schema>

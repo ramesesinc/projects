@@ -1,10 +1,11 @@
 <workunit>
     
     <invokers>
-        <invoker type="bankdeposit:create" caption="Bank Deposit" action="init" target="window"/>
-        <invoker folderid="home/deposit" caption="Bank Deposit" action="init" target="window" role="CASHIER" index="51"/>
         <invoker folderid="/menu/txn/treasury" caption="Bank Deposit" action="init" target="window" role="CASHIER" />
         <invoker type="quick_launcher" code="BNKD" caption="Bank Deposits" action="init" target="window" role="CASHIER"/>
+        <invoker type="home.action" caption="Bank Deposit" action="init" target="window" role="CASHIER"/>
+
+        <invoker type="bankdeposit:create" caption="Bank Deposit" action="init" target="window"/>
         <invoker type="bankdeposit:open" caption="Bank Deposit (Open)" action="open" target="window"/>
 
         <invoker type="formActions" caption="Close" name="_close"  icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
@@ -14,7 +15,7 @@
         <invoker type="formActions" caption="Validate" name="validateDeposit" visibleWhen="#{state == 'OPEN'}" />
 
         <invoker type="formActions" caption="Reports" name="popupReports"   
-           visibleWhen="#{mode == 'read' }" category="bankdeposit:reports" mnemonic="r"/>
+                 visibleWhen="#{mode == 'read' }" category="bankdeposit:reports" mnemonic="r"/>
     </invokers>
    
     <code>

@@ -34,7 +34,7 @@ public class MarketClusterPage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -61,11 +61,12 @@ public class MarketClusterPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setPadding(new java.awt.Insets(20, 20, 20, 20));
 
-        xLabel1.setCaption("Market Name");
-        xLabel1.setDepends(new String[] {"entity.market"});
-        xLabel1.setExpression("#{entity.market.name}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel1);
+        xLookupField1.setCaption("Market ");
+        xLookupField1.setExpression("#{entity.market.name}");
+        xLookupField1.setHandler("market_property:lookup");
+        xLookupField1.setName("entity.market"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLookupField1);
 
         xLabel3.setCaption("Barangay");
         xLabel3.setDepends(new String[] {"entity.market"});
@@ -108,13 +109,13 @@ public class MarketClusterPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(81, 81, 81)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(21, 21, 21))
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(93, Short.MAX_VALUE))
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(layout.createSequentialGroup()
                     .add(21, 21, 21)
                     .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 56, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(158, Short.MAX_VALUE)))
+                    .addContainerGap(230, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -123,8 +124,8 @@ public class MarketClusterPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables

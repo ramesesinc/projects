@@ -32,8 +32,8 @@ public class UpdateMarketLedgerPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
 
         xFormPanel1.setCaptionWidth(120);
 
@@ -42,14 +42,15 @@ public class UpdateMarketLedgerPage extends javax.swing.JPanel {
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xDateField2.setCaption("Last Date Covered");
+        xDateField2.setName("entity.lastdatecovered"); // NOI18N
+        xDateField2.setRequired(true);
+        xFormPanel1.add(xDateField2);
+
         xDecimalField1.setCaption("Partial Balance");
         xDecimalField1.setName("entity.partialbalance"); // NOI18N
         xDecimalField1.setRequired(true);
         xFormPanel1.add(xDecimalField1);
-
-        xDecimalField2.setCaption("Parial Ext Balance");
-        xDecimalField2.setName("entity.partialextbalance"); // NOI18N
-        xFormPanel1.add(xDecimalField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -70,8 +71,8 @@ public class UpdateMarketLedgerPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }

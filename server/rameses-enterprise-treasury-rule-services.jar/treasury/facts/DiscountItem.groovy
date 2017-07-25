@@ -4,7 +4,13 @@ import java.util.*;
 
 class DiscountItem extends BillSubItem {
 
-	String txntype = "discount";
+	String txntype = "DISCOUNT";
 	int sortorder = 300;
 
+
+	public def toMap() {
+		def m = super.toMap();
+		m.txntype = "DISCOUNT";
+		return m;
+	}
 }

@@ -6,7 +6,7 @@
             <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
         </invoker> 
         
-        <invoker folderid="home/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" index="40" target="window"> 
+        <invoker folderid="home/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
             <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
             <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
         </invoker>

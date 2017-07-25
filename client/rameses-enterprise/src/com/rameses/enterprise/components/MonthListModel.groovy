@@ -24,7 +24,8 @@ class MonthListModel extends ComponentBean {
     ];
     
     public int getMonth() {
-        return getValue(); 
+        def val = getValue(); 
+        return (val ? val : 0); 
     }
     
     public void setMonth(int s) {

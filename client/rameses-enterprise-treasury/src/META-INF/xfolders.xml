@@ -32,13 +32,12 @@
     <folder id="home">
         <folder id="treasury" caption="Treasury" icon="home/icons/treasury.png">
             <folder id="af" caption="Accountable Forms"/>
+            <folder id="remittance" caption="Remittance"/>
+            <folder id="liquidation" caption="Liquidation"/>
+            <folder id="deposit" caption="Deposit"/>
         </folder>    
         <!-- for comment -->
-        <folder id="af" caption="Accountable Forms"/>
         <folder id="collection" caption="Collection"/>
-        <folder id="remittance" caption="Remittance"/>
-        <folder id="liquidation" caption="Liquidation"/>
-        <folder id="deposit" caption="Deposit"/>
         <folder id="creditmemo" caption="Credit Memo"/>
         <folder id="cashmgmt" caption="Cash Management"/>
     </folder>   

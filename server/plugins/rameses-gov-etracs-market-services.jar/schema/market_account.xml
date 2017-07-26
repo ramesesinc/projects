@@ -17,19 +17,16 @@
 		<field name="dateclosed" type="date" />
 
 		<field name="payfrequency" required="true" caption="Pay Frequency"/>
-		<field name="areasqm" required="true" type="decimal" caption="Area (sqm)" />
 	
-		<field name="unitno" caption="Unit No" required="true" searchable="true" indexed="true"/>
-		<field name="rate" type="decimal" caption="Rate" />
-		<field name="ratetype"  lov="MARKET_PAY_FREQUENCY"  caption="Rate Type"/>
-
+		<field name="unitno"  caption="Unit No" required="true" searchable="true" indexed="true"/>
+		<field name="rate" type="decimal" caption="Rate" required="true" defaultValue="0"/>
+		<field name="ratetype"  caption="Rate Type" required="true" />
 		<field name="extrate" type="decimal" caption="Ext Rate" required="true" defaultValue="0"/>
 		<field name="extarea" type="decimal" caption="Ext Area" required="true" defaultValue="0"/>
 
-		<complex name="cluster" ref="market_cluster" jointype="many-to-one" required="false" 
-			includefields="objid,name,description,market.name,market.objid">
-			<key field="clusterid" target="objid" />
-		</complex>
+		<complex name="unit" ref="market_rentalunit" jointype="many-to-one" required="true" includefields="code,clusterid,sectionid,cluster.*">
+			<key field="unitid" target="objid" />
+		</complex>	
 
 		<!-- store the partial balances -->
 		<field name="startdate" required="true"/>
@@ -55,8 +52,6 @@
 		<complex name="recurringfees" ref="market_account_recurringfee" jointype="one-to-many">
 			<key field="objid" target="acctid"/>
 		</complex>	
-		<complex name="units" ref="market_account_unit" jointype="one-to-many">
-			<key field="objid" target="acctid"/>
-		</complex>
+		
 	</element>
 </schema>

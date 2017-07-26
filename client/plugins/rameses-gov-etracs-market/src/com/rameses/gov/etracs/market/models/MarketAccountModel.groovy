@@ -13,7 +13,6 @@ public class MarketAccountModel extends CrudFormModel {
     
     void afterOpen() {
         itemHandler.reload();
-        //unitListModel.reload();
     }
     
     def itemHandler = [
@@ -22,11 +21,6 @@ public class MarketAccountModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    def unitListModel = [
-        fetchList: {
-            return entity.units;
-        }
-    ] as BasicListModel;
     
     def showEditMenu() {
         return showDropdownMenu("editActions");

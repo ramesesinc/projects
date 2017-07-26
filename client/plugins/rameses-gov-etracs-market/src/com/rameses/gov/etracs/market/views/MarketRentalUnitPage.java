@@ -107,8 +107,8 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xFormPanel2);
 
-        xLabel1.setCaption("Usage");
-        xLabel1.setExpression("#{entity.usage}");
+        xLabel1.setCaption("Current Lessor");
+        xLabel1.setExpression("#{entity.currentaccount.owner.name}");
         xFormPanel1.add(xLabel1);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -135,7 +135,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
 
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
+                new Object[]{"name", "owner.name"}
                 , new Object[]{"caption", "Owner Name"}
                 , new Object[]{"width", 200}
                 , new Object[]{"minWidth", 200}
@@ -150,7 +150,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.startdate"}
+                new Object[]{"name", "startdate"}
                 , new Object[]{"caption", "Date Started"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -165,7 +165,7 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.dateclosed"}
+                new Object[]{"name", "dateclosed"}
                 , new Object[]{"caption", "Date Closed"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -178,21 +178,6 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "usage"}
-                , new Object[]{"caption", "Usage"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
         xDataTable2.setHandler("historyListModel");

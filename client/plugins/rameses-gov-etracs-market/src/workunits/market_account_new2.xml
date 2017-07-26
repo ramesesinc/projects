@@ -1,0 +1,14 @@
+<workunit schemaName="market_account">
+    <invokers>
+        <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.market.models.MarketAccountNewModel" />
+        
+   
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketAccountPage2" />
+    </pages>
+    
+</workunit>

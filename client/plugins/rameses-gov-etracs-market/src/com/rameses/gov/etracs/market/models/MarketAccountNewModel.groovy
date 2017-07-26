@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*
 import java.rmi.server.*;
 import com.rameses.seti2.models.*;
 
-public class MarketAccountNewModel extends CrudPageFlowModel {
+public class MarketAccountNewModel extends CrudFormModel {
 
     @PropertyChangeListener
     def listener = [
@@ -50,8 +50,7 @@ public class MarketAccountNewModel extends CrudPageFlowModel {
         Modal.show("market_business_unassigned:lookup", [onselect:r] );
     }
     
-    void save() {
-        saveCreate();
+    void afterSave() {
         MsgBox.alert('save successful. Account No ' + entity.acctno + ' is created')
     }
 }

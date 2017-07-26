@@ -1,48 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="market_rentalunit">
     <invokers>
-        <invoker type="market_rentalunit:lookup" 
-                cols="objid,code,unittype,section.name,rate,payfrequency,usage"
-                hiddenCols = "indexno,areasqm,ratetype,sectionid"
+        <invoker type="market_rentalunit:open:lookup" 
+                cols="objid,code,unittype,section.name"
+                hiddenCols="rate,ratetype,cluster.*"
                 caption="Lookup Rental Unit" 
                  target="popup" 
+                 customFilter="currentacctid IS NULL"
                  action="init"/>
     </invokers> 
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-
-        class MarketRentalUnitLookup extends com.rameses.seti2.models.CrudLookupModel {
-        
-            String clusterid;
-            String sectionid;
-            int min = 0;
-            int max = 0;
-            def m = [:]
-            
-            def getCustomFilter() {
-                def sb = new StringBuilder();
-                sb.append('clusterid = :clusterid AND usage < 100');
-                m.clusterid = clusterid;
-
-                if( sectionid ) {
-                    sb.append(' AND sectionid = :sectionid');
-                    m.sectionid = sectionid;
-                }
-                if( min > 0 ) {
-                    sb.append(' AND (indexno = :min OR indexno = :max) ');
-                    m.min = min-1;
-                    m.max = max+1;
-                } 
-
-                if( !m ) return null; 
-                return [ sb.toString(), m ];
-            }
-        
-        } 
-        ]]>
-    </code>
-
 </workunit> 

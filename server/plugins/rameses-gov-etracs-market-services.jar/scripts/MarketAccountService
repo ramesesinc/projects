@@ -5,20 +5,18 @@ class MarketAccountService {
 	@DataContext('market_account') 
 	def acct_em;
 
-	@DataContext('market_account_unit') 
-	def acctunit_em;
 
 	@DataContext('market_rentalunit') 
 	def rentalunit_em;
 
+	@Service("DateService")
+	def dateSvc;
+
 	@ProxyMethod 
 	public def closeAccount( params ) {
-		def units = acctunit_em.find([ acctid: params.objid ]).list(); 
-		units.each{ 
-			def usage = 100 - it.usage; 
-			rentalunit_em.find([ objid: it.unit.objid ]).update([ usage: usage ]); 
-		}
-		acct_em.find([ objid: params.objid ]).update([ state: 'CLOSED' ]); 
+		def m = acct_em.find([ objid: params.objid ]).first();
+		rentalunit_em.find( [objid: m.unitid ] ).update( [currentacctid: '{NULL}' ] );
+		acct_em.find([ objid: params.objid ]).update([ state: 'CLOSED', dtclosed: dateSvc.getServerDate() ]); 
 		return [ state: 'CLOSED' ];  
 	} 	
 

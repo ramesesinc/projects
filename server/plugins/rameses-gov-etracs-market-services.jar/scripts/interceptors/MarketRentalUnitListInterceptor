@@ -21,11 +21,11 @@ class MarketRentalUnitListInterceptor{
 				str = ' 1=1 ';
 				break;
 			case 'open':
-				str = ' usage = 0 '; 
+				str = ' currentacctid IS NULL '; 
 				break;
 
 			case 'occupied':
-				str = ' NOT( usage = 0 ) '; 
+				str = ' NOT( currentacctid IS NULL ) '; 
 				break;
 		}
 

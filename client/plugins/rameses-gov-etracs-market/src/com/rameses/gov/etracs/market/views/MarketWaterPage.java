@@ -32,8 +32,8 @@ public class MarketWaterPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         monthList1 = new com.rameses.enterprise.components.MonthList();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
@@ -50,15 +50,15 @@ public class MarketWaterPage extends javax.swing.JPanel {
         monthList1.setRequired(true);
         xFormPanel1.add(monthList1);
 
-        xDateField1.setCaption("Date Reading");
-        xDateField1.setName("entity.readingdate"); // NOI18N
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
-
         xIntegerField1.setCaption("Year");
         xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
+
+        xDateField1.setCaption("Date Reading");
+        xDateField1.setName("entity.readingdate"); // NOI18N
+        xDateField1.setRequired(true);
+        xFormPanel1.add(xDateField1);
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Previous Reading");

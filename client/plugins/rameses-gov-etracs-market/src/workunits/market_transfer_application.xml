@@ -1,10 +1,30 @@
 <workunit schemaName="market_transfer_application">
     <invokers>
-        <invoker xtype="home.action" 
-            caption="New Transfer Application" index="10" 
-            action="start"/> 
+        <invoker folderid="/home/market" caption="Transfer" role="INFO" action="start"/>
     </invokers>
+    
+    <code class="com.rameses.gov.etracs.market.models.MarketTransferApplicationModel" />
+    
+    <pageflow>
+        <start>
+            <transition to="initial" action="init"/>
+        </start>
+        <page name="initial" title="Transfer Application (Initial)">
+            <transition to="confirm" caption="Submit" />
+        </page>
+        <page name="assessment" title="Transfer Application (Assessment)">
+            <transition to="confirm" caption="Submit" />
+        </page>
+        <page name="confirm" title="Market New Application (Confirm)">
+            <transition to="initial" caption="Back" />
+            <transition to="end" caption="Submit" />
+        </page>
+        <end/>
+    </pageflow>  
+    
     <pages>
-        <page template="com.rameses.gov.etracs.market.views.ChangeElectricityReadingPage" />
+        <page name="initial" template="com.rameses.gov.etracs.market.views.MarketTransferApplicationPage" />
+        <page name="assessment" template="com.rameses.gov.etracs.market.views.MarketAssessmentPage" />
+        <page name="requirement" template="com.rameses.gov.etracs.market.views.MarketRequirementPage" />
     </pages>
 </workunit>

@@ -92,16 +92,18 @@ class RPTReceiptBatchModel extends PageFlowController
     
     def oncomplete  = { 
         msg = null;
-        loadItems();
         if (!itemsforpayment){
             msg = 'There are no unpaid ledgers for this taxpayer'
         }
+        listHandler.load();
+        calcAmountDue();
         processing  = false;
-        binding.refresh('msg.*');
+        binding.refresh('.*');
     }
     
     def recalcItems(){
         processing = true;
+        binding.refresh('msg.*');
         new Thread(task).start();
     }
     
@@ -111,7 +113,8 @@ class RPTReceiptBatchModel extends PageFlowController
                 recalcBillingStatement();
             }
             catch(e){
-                //
+                //Task error
+                e.printStackTrace();
             }
             oncomplete();
         }
@@ -219,11 +222,12 @@ class RPTReceiptBatchModel extends PageFlowController
         itemsforpayment = []
         ledgers.eachWithIndex{item, idx ->
             if (processing){
-                msg = 'Recalculating TD No. ' + item.tdno + '  (#' + idx + ')';
+                msg = 'Recalculating TD No. ' + item.tdno + '  (#' + idx + '). Please wait.';
                 binding.refresh('msg');
             }
             buildBillParams(item)
             billSvc.generateBillByLedgerId3(bill)
+            itemsforpayment << svc.getItemsForPayment(bill)[0]
         }
     }
     
@@ -266,12 +270,7 @@ class RPTReceiptBatchModel extends PageFlowController
         itemsforpayment.each{
             it.pay = true;
             it.partialled = false;
-            if (payoption != PAY_OPTION_ALL){
-                updateItemDue(it);
-            }
-        }
-        if (payoption == PAY_OPTION_ALL) {
-            loadItems();
+            it.amount = it._amount;
         }
         calcAmountDue();
     }
@@ -280,6 +279,7 @@ class RPTReceiptBatchModel extends PageFlowController
         itemsforpayment.each{
             it.pay = false;
             it.partialled = false;
+            it._amount = 0.0;
             it.amount = 0.0;
         }
         listHandler.load();
@@ -339,7 +339,7 @@ class RPTReceiptBatchModel extends PageFlowController
     def getChange(){
         entity.cashchange = 0;
         entity.balance = entity.amount - entity.totalnoncash;
-        if (entity.totalcash > entity.balance){
+        if (entity.totalcash >= entity.balance){
             entity.cashchange = entity.totalcash - entity.balance;
         }
         else if(entity.totalcash > 0.0 ){

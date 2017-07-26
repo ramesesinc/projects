@@ -5,9 +5,11 @@
 package com.rameses.gov.etracs.landtax.views;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 @Template(FormPage.class)
+@StyleSheet
 public class RPTBatchCollectionSelectPage extends javax.swing.JPanel {
 
     /**

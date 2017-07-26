@@ -90,6 +90,7 @@ class RPTReceiptService
 	@ProxyMethod
 	public def getItemsForPayment( bill ) {
 		def items = []
+		if (!bill.rptledgerid) bill.rptledgerid = '%'
 		def ledgers = em.getItemsForPaymentByBill(bill)
 		ledgers.each{ ledger -> 
 			buildLedgerForPaymentInfo(bill, ledger)

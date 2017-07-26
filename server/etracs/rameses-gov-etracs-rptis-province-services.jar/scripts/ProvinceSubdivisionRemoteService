@@ -9,21 +9,40 @@ class ProvinceSubdivisionRemoteService
 	@Service('NotificationService')
 	def notificationService
 
-	@Service('SubdivisionSupportService')
+	@Service('SubdivisionSupport2Service')
 	def supportSvc
 
 	@Service('SubdivisionWorkflowService')
 	def workflowSvc
 
+	@DataContext('subdivision_task')
+	def em_subdivision_task
+
 
 	@ProxyMethod
 	public void postSubdivisionForApproval(subdivision){
 		supportSvc.postSubdivisionData(subdivision)
-		if (!subdivision._resubmitted){
+		def currtask = em_subdivision_task.select('objid').where('refid = :objid and enddate is null', subdivision).first()
+		if (!subdivision._resubmitted || !currtask){
 			workflowSvc.start([refid:subdivision.objid, data:subdivision])
 			notifyGroup(subdivision)
 		}
 		println 'Submitted subdivision has been successfully created.'
+	}
+
+	@ProxyMethod
+	public void postExaminations(data) {
+		supportSvc.postExaminations(data)
+	}
+
+	@ProxyMethod
+	public void postRequirements(data) {
+		supportSvc.postRequirements(data)
+	}
+
+	@ProxyMethod
+	public void postFaasData(faas) {
+		supportSvc.postFaasData(faas)	
 	}
 
 

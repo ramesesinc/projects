@@ -306,7 +306,6 @@ class MachRPUService
         }
     }
 
-
     void removeDeletedItems(rpu){
         rpu._machines?.each{m ->
             em.delete(m, SCHEMA_MACHDETAIL)

@@ -14,7 +14,7 @@ class MunicipalitySubdivisionSupportService
 
 
     @ProxyMethod
-    public void submitToProvince( subdivisiondata ) {
+    public void submitToProvince( subdivision ) {
         def asyncreq    = svc.createAsyncRequest('ProvinceSubdivisionRemoteService', 'postSubdivisionForApproval', subdivisiondata, svc.buildEnvMap(env))
         def msg         = svc.createAsyncMessage(asyncreq[0])
         msg.txnid       = subdivisiondata.objid

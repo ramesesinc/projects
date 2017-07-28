@@ -66,6 +66,26 @@ public class MarketCashReceiptService  {
 	}
 
 	
+	@ProxyMethod
+	public def getBillItem( def o ) {
+		if(!o.fromdate)
+			throw new Exception("from date is required");
+		def r = [acctid: o.objid];
+		if( o.filters ) r.filters = o.filters;
+		if( o.todate ) {
+			r.billdate = o.todate;
+			r.todate = o.todate;
+		}	
+		if( o.partial ) r.partial = o.partial;
 
+		
+		def m = billingSvc.getBilling( r );
+		def result = [:];
+		result.acctno = m.acctno;
+		result.billitems = m.billitems;
+		result.amount = m.amount;
+		result.todate = m.todate;
+		return result;
+	}
 
 }

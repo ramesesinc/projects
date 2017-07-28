@@ -10,19 +10,22 @@ class MarketPostPaymentInterceptor{
 	@After(pattern="PostPaymentService.post", eval="#{args[0]._schemaname == 'market_payment'}")
 	public void postMarketPayment(def evt) {
 		def res = evt.result;
-		def partialbalance = res.items.find{ it.txntype=='MARKETRENTAL' && it.partialunpaid > 0 }?.partialunpaid;  
+		def partialinfo = res.items.find{ it.txntype=='MARKETRENTAL' && it.partialunpaid > 0 }  
+		def partialbalance = partialinfo?.partialunpaid; 
 		def ratetype = acctEm.find([ objid: res.acctid ]).select('ratetype').first()?.ratetype; 
-		def lastdatecovered = null; 
-		if ( ratetype == 'MONTH' ) {
-			lastdatecovered = DateUtil.add( res.todate, '-1M' ); 
-		} else {
-			lastdatecovered = DateUtil.add( res.todate, '-1d' ); 			
+		def lastdatecovered = res.todate; 
+
+		if ( ratetype == 'MONTH' &&  partialbalance > 0 ) { 
+			def sdate = String.format("%04d", partialinfo.year )+'-'+String.format("%02d", partialinfo.month) +'-01';
+			def pardate = java.sql.Date.valueOf( sdate );
+			lastdatecovered = DateUtil.add( pardate, '-1d' ); 
+
+		} else if( ratetype == 'DAY' &&  partialbalance > 0) {
+			lastdatecovered = DateUtil.add( res.todate, '-1d' );
 		}
 
 		acctEm.find([ objid: res.acctid ]).update([ lastdatecovered: lastdatecovered, partialbalance: partialbalance  ]);
-		res.items.each {
-			println it.txntype + " = " + it.amount;
-		}
+		
 	}
 
 

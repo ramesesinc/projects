@@ -1,6 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
+import java.util.concurrent.*;
 
 class ProvinceSubdivisionWorkflowInterceptor
 {
@@ -14,7 +15,7 @@ class ProvinceSubdivisionWorkflowInterceptor
 	def subdivisionSvc 
 
 	@Service('SubdivisionSupport2Service')
-	def supportSvc 
+	def supportSvc2 
 
 	@DataContext('subdivision_task')
 	def em_subdivision_task;
@@ -57,6 +58,8 @@ class ProvinceSubdivisionWorkflowInterceptor
 	}
 
 	void notifyMunicipality(subdivision){
+		def queue = new LinkedBlockingQueue();
+
 		//submit faases
 		def approver = getApprover(subdivision)
 		def faases = subdivisionSvc.getSubdividedLands(subdivision.objid)
@@ -64,7 +67,7 @@ class ProvinceSubdivisionWorkflowInterceptor
 		faases.each{
 			it._includetask = false
 			it._includeimage = false
-			def faas = supportSvc.buildFaasData(it)
+			def faas = supportSvc2.buildFaasData(it)
 			faas.approver = approver 
 			def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'approveSubdivisionFaas',  faas)
 			def msg = svc.createAsyncMessage(asyncreq[0], subdivision.lguid)
@@ -73,6 +76,8 @@ class ProvinceSubdivisionWorkflowInterceptor
 			msg.txnno = faas.tdno 
 			svc.sendMessage(msg)
 		}
+
+		queue.poll(1, TimeUnit.SECONDS)
 
 		// approve subdivision
 		subdivision.tasks = em_subdivision_task.find([refid:subdivision.objid]).list();
@@ -86,7 +91,7 @@ class ProvinceSubdivisionWorkflowInterceptor
 	}
 
 	void postSubdivisionToMunicipality(subdivision){
-		def data = supportSvc.buildSubdivisionData(subdivision)
+		def data = supportSvc2.buildSubdivisionData(subdivision)
 		def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'postApprovedSubdivisionFromProvince',  data)
 		def msg = svc.createAsyncMessage(asyncreq[0], subdivision.lguid)
 		msg.filetype = 'subdivision'

@@ -41,6 +41,11 @@ class ProvinceSubdivisionRemoteService
 	}
 
 	@ProxyMethod
+	public void postRequirement(data) {
+		supportSvc.postRequirement(data)
+	}
+
+	@ProxyMethod
 	public void postFaasData(faas) {
 		supportSvc.postFaasData(faas)	
 	}

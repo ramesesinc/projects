@@ -1,5 +1,6 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
+import java.util.concurrent.*;
 
 class MunicipalitySubdivisionSupport2Service
 {
@@ -15,9 +16,12 @@ class MunicipalitySubdivisionSupport2Service
 
     @ProxyMethod
     public void submitToProvince( subdivision ) {
+        def queue = new LinkedBlockingQueue();
         subdivision.putAll(supportSvc.buildSubdivisionData(subdivision))
         sendSubdivisionFaases(subdivision)
+        queue.poll(1, TimeUnit.SECONDS)
         sendSubdivision(subdivision)
+        queue.poll(1, TimeUnit.SECONDS)
         sendExaminations(subdivision)
         sendRequirements(subdivision)
     }
@@ -50,16 +54,19 @@ class MunicipalitySubdivisionSupport2Service
     }
 
     void sendRequirements(subdivision){
-        def data = supportSvc.buildRequirements(subdivision)
-        def asyncreq    = svc.createAsyncRequest('ProvinceSubdivisionRemoteService', 'postRequirements', data, svc.buildEnvMap(env))
-        def msg         = svc.createAsyncMessage(asyncreq[0])
-        msg.txnid       = subdivision.objid
-        msg.txnno       = subdivision.txnno 
-        msg.groupid     = null 
-        msg.filetype    = null 
-        msg.message     = 'Requirements for Subdivision No. ' + subdivision.txnno 
-        msg.messagetype = 'subdivision-requirements'
-        svc.sendAsyncMessage(msg)
+        def requirements = supportSvc.getRequirements(subdivision)
+        requirements.each{
+            def data = supportSvc.buildRequirement(it)
+            def asyncreq    = svc.createAsyncRequest('ProvinceSubdivisionRemoteService', 'postRequirement', data, svc.buildEnvMap(env))
+            def msg         = svc.createAsyncMessage(asyncreq[0])
+            msg.txnid       = subdivision.objid
+            msg.txnno       = subdivision.txnno 
+            msg.groupid     = null 
+            msg.filetype    = null 
+            msg.message     = 'Requirement for Subdivision No. ' + subdivision.txnno 
+            msg.messagetype = 'subdivision-requirement'
+            svc.sendAsyncMessage(msg)
+        }
         println 'Sending subdivision ' + subdivision.txnno + ' requirements to municipality.'
     }
 
@@ -98,5 +105,6 @@ class MunicipalitySubdivisionSupport2Service
     public void resubmitRequirements( subdivision ){
         sendRequirements(subdivision)
     }
+
 }
 

@@ -93,13 +93,15 @@ class SubdivisionSupport2Service
 
 
     @ProxyMethod
-    public def buildRequirements(subdivision){
+    public def getRequirements(subdivision){
+        return reqSvc.getRequirements(subdivision.objid)
+    }
+
+    @ProxyMethod
+    public def buildRequirement(requirement){
         def data = [:]
-        data.requirements = reqSvc.getRequirements(subdivision.objid)
-        data.images = []
-        data.requirements.each{
-            data.images << getImageData(it.objid)
-        }
+        data.requirement = requirement 
+        data.image = getImageData(requirement.objid)
         return data 
     }
 
@@ -185,6 +187,12 @@ class SubdivisionSupport2Service
         data.images.each{
             saveImageData(it)
         }       
+    }
+
+    @ProxyMethod
+    public void postRequirement(data) {
+        reqSvc.save(data.requirement)
+        saveImageData(data.image)
     }
 
 

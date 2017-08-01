@@ -4,7 +4,7 @@
         <invoker folderid="/explorer/txn/rpt/util" 
             action="init" 
             caption="Modify PIN" target="popup" index="500"
-            role="ADMIN,APPRAISER" permission="util.modifypin" />
+            role="ADMIN,APPRAISER,ENCODER" permission="util.modifypin" />
     </invokers>
     
     <code class="com.rameses.gov.etracs.rpt.util.ModifyPinModel">

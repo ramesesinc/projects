@@ -59,7 +59,9 @@ where objid = $P{faasid}
 update faas_list set 
   displaypin=$P{newpin},
   pin=$P{pin},
-  realpropertyid = $P{realpropertyid}
+  realpropertyid = $P{realpropertyid},
+  barangayid = $P{barangayid},
+  barangay = $P{barangayname}
 where objid = $P{faasid}
 
 

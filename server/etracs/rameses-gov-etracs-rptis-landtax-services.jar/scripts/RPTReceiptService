@@ -127,7 +127,7 @@ class RPTReceiptService
 		ledger.totalbasic = ledger.items.basicnet.sum()
 		ledger.totalsef = ledger.items.sefnet.sum()
 		ledger.totalfirecode = ledger.items.firecode.sum()
-		ledger.totalbasicidle = ledger.items.basicidle.sum()
+		ledger.totalbasicidle = ledger.items.basicidle.sum() + ledger.items.basicidleint.sum() - ledger.items.basicidledisc.sum()
 		ledger.totalgeneral = ledger.totalbasic + ledger.totalfirecode + ledger.totalbasicidle
 		ledger.amount = ledger.totalgeneral + ledger.totalsef 
 		ledger.partialled = false 

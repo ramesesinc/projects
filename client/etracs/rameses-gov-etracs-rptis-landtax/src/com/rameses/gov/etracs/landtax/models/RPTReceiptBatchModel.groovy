@@ -6,6 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.util.*;
+import java.util.concurrent.*;
 
 
 class RPTReceiptBatchModel extends PageFlowController
@@ -43,6 +44,7 @@ class RPTReceiptBatchModel extends PageFlowController
     def processing;
     def msg;
     def ledgers;
+    def cancelled;
     
     def BARCODE_KEY = '56001';
     
@@ -217,12 +219,21 @@ class RPTReceiptBatchModel extends PageFlowController
         bill.rptledgerid = ledger.objid;
     }
         
+    void doCancel(){
+        cancelled = true;
+        init();
+    }
     
     void recalcBillingStatement(){
+        def queue = new LinkedBlockingQueue();
+        queue.poll(1, TimeUnit.SECONDS)
+        cancelled = false;
+        
         itemsforpayment = []
-        ledgers.eachWithIndex{item, idx ->
+        for(int idx=0;idx < ledgers.size() && !cancelled; idx++){
+            def item = ledgers[idx];
             if (processing){
-                msg = 'Recalculating TD No. ' + item.tdno + '  (#' + idx + '). Please wait.';
+                msg = 'Recalculating TD No. ' + item.tdno + '  (#' + (idx+1) + '). Please wait.';
                 binding.refresh('msg');
             }
             buildBillParams(item)
@@ -450,6 +461,14 @@ class RPTReceiptBatchModel extends PageFlowController
     def getReceiptcount(){
         return issuedreceipts.size();
     }
+    
+    void fullPayment(){
+        bill.partial = null
+        
+        updateItemDue(selectedItem);
+        selectedItem.partialled = false;
+    }
+    
     
     def partialPayment(){
         return InvokerUtil.lookupOpener('rptpartialpayment:open', [

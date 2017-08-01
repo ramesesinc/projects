@@ -12,18 +12,18 @@
     </code>
     <pageflow>
         <start>
-            <transition name="init" to="init"/>
+            <transition name="init" to="initial"/>
         </start>
         
-        <page name="init" title="Real Property Tax Collection: Initial Information">
+        <page name="initial" title="Real Property Tax Collection: Initial Information">
             <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
             <transition caption="Next"  to="select" action="initItems" mnemonic="n"  />
         </page>
         
         <page name="select" title="Real Property Tax Collection: Setup Payable">
-            <transition caption="Cancel" confirm="Cancel transaction?" to="end" />
-            <transition caption="Back" to="init" mnemonic="b" />
-            <transition caption="Next"  to="payment" action="initPayment" mnemonic="n"  />
+            <transition caption="Cancel" confirm="Cancel transaction?" to="initial" action="doCancel" />
+            <transition caption="Back" to="initial" action="init" mnemonic="b" visibleWhen="#{processing==false}"/>
+            <transition caption="Next"  to="payment" action="initPayment" mnemonic="n"   visibleWhen="#{processing==false}"/>
         </page>
         
         <page name="payment" title="Real Property Tax Collection: Payment">
@@ -41,7 +41,7 @@
     
     </pageflow>
     <pages>
-        <page name="init" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionInitPage" />
+        <page name="initial" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionInitPage" />
         <page name="select" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionSelectPage" />
         <page name="payment" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionPaymentPage" />
         <page name="completed" template="com.rameses.gov.etracs.landtax.views.RPTBatchCollectionCompletedPage" />

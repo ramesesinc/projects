@@ -118,20 +118,22 @@ class RPTReceiptService
 		params.billtoyear = bill.billtoyear
 		params.billtoqtr  = bill.billtoqtr 
 		ledger.items = em.getLedgerForPaymentDetail(params)
-
-		//set ledger for payment info
-		ledger.fromyear = ledger.items.first().year 
-		ledger.fromqtr = ledger.items.first().qtr 
-		ledger.toyear = ledger.items.last().year 
-		ledger.toqtr = ledger.items.last().qtr 
-		ledger.totalbasic = ledger.items.basicnet.sum()
-		ledger.totalsef = ledger.items.sefnet.sum()
-		ledger.totalfirecode = ledger.items.firecode.sum()
-		ledger.totalbasicidle = ledger.items.basicidle.sum() + ledger.items.basicidleint.sum() - ledger.items.basicidledisc.sum()
-		ledger.totalgeneral = ledger.totalbasic + ledger.totalfirecode + ledger.totalbasicidle
-		ledger.amount = ledger.totalgeneral + ledger.totalsef 
-		ledger.partialled = false 
-		ledger.pay = true 
+		ledger.amount = 0.0 
+		if (ledger.items){
+			//set ledger for payment info
+			ledger.fromyear = ledger.items.first().year 
+			ledger.fromqtr = ledger.items.first().qtr 
+			ledger.toyear = ledger.items.last().year 
+			ledger.toqtr = ledger.items.last().qtr 
+			ledger.totalbasic = ledger.items.basicnet.sum()
+			ledger.totalsef = ledger.items.sefnet.sum()
+			ledger.totalfirecode = ledger.items.firecode.sum()
+			ledger.totalbasicidle = ledger.items.basicidle.sum() + ledger.items.basicidleint.sum() - ledger.items.basicidledisc.sum()
+			ledger.totalgeneral = ledger.totalbasic + ledger.totalfirecode + ledger.totalbasicidle
+			ledger.amount = ledger.totalgeneral + ledger.totalsef 
+			ledger.partialled = false 
+			ledger.pay = true 
+		}
 		return ledger 
 	}
 

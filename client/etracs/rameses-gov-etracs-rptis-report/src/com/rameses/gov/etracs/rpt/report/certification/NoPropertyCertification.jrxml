@@ -44,6 +44,8 @@
 	<parameter name="LOGOASSESSOR" isForPrompting="false" class="java.io.InputStream"/>
 	<parameter name="NoPropertyCertificationItem" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PARENTLGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PARENTLGUNAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="LGUTYPE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="taxpayer.name" class="java.lang.String"/>
 	<field name="requestedby" class="java.lang.String"/>
@@ -90,7 +92,7 @@
 					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="1_1_2">
 						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["                 <style isBold=\"true\">THIS IS TO CERTIFY</style> that as per record of this office, as of this date, no real property is declared in the name of <style  isBold=\"true\">" + $F{taxpayer.name}.replaceAll("&","&amp;") + "</style>, within " + $P{LGUADDRESS} + "."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["                 <style isBold=\"true\">THIS IS TO CERTIFY</style> that as per record of this office, as of this date, no real property is declared in the name of <style  isBold=\"true\">" + $F{taxpayer.name}.replaceAll("&","&amp;") + "</style>, within the " +  ($P{LGUTYPE}.equalsIgnoreCase("city") ? $P{LGUFORMALNAME} : ( $P{LGUFORMALNAME} + ", " + $P{PARENTLGUNAME}+ "."))]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>

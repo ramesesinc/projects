@@ -55,6 +55,7 @@ class RPTReceiptBatchModel extends PageFlowController
         entity.billid = bill.objid;
         maxadvanceyear = billSvc.getMaxAdvanceYear();
         mode = MODE_INIT;
+        itemsforpayment = null;
         paymentlist = null;
         ledgers = null;
         return super.signal('init');
@@ -67,7 +68,7 @@ class RPTReceiptBatchModel extends PageFlowController
             throw new Exception('Barcode must be specified');
         
         mode = MODE_SELECT;
-        
+        listHandler.load();
         if (entity.payoption == PAYOPTION_TAXPAYER){
             bill.taxpayer = entity.taxpayer;
             updatePayerInfo(entity);
@@ -105,6 +106,7 @@ class RPTReceiptBatchModel extends PageFlowController
     
     def recalcItems(){
         processing = true;
+        msg = 'Initializing. Please wait.'
         binding.refresh('msg.*');
         new Thread(task).start();
     }
@@ -226,19 +228,27 @@ class RPTReceiptBatchModel extends PageFlowController
     
     void recalcBillingStatement(){
         def queue = new LinkedBlockingQueue();
-        queue.poll(1, TimeUnit.SECONDS)
+        queue.poll(2, TimeUnit.SECONDS)
         cancelled = false;
         
         itemsforpayment = []
-        for(int idx=0;idx < ledgers.size() && !cancelled; idx++){
-            def item = ledgers[idx];
+        def item = null; 
+        if (!ledgers) return;
+        for(int idx=0; !cancelled && idx < ledgers.size(); idx++){
+            item = ledgers[idx];
             if (processing){
-                msg = 'Recalculating TD No. ' + item.tdno + '  (#' + (idx+1) + '). Please wait.';
+                msg = 'Recalculating TD ' + (item.tdno ? item.tdno : '') + '  (#' + (idx+1) + '). Please wait.';
                 binding.refresh('msg');
             }
-            buildBillParams(item)
-            billSvc.generateBillByLedgerId3(bill)
-            itemsforpayment << svc.getItemsForPayment(bill)[0]
+            try{
+                buildBillParams(item)
+                billSvc.generateBillByLedgerId3(bill)
+                itemsforpayment << svc.getItemsForPayment(bill)[0]
+            }
+            catch(e){
+                println 'ERROR -> ' + item.objid 
+                println e.printStackTrace();
+            }
         }
     }
     

@@ -41,7 +41,13 @@ from rptbill b
 	left join district d  on brgy.parentid = d.objid 
 where b.objid = $P{objid}	
 and rl.objid like $P{rptledgerid}
-and (rl.lastyearpaid < $P{billtoyear}  or (rl.lastyearpaid = $P{billtoyear} and rl.lastqtrpaid < $P{billtoqtr}))
+and (
+ 		( rl.lastyearpaid < $P{billtoyear} OR (rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr}))
+ 		or 
+ 		(exists(select * from rptledgeritem where rptledgerid = rl.objid and taxdifference=1 and fullypaid=0))
+
+ 	)
+
 order by rl.tdno 
 
 

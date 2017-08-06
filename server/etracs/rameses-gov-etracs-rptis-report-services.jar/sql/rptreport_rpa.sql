@@ -291,15 +291,16 @@ SELECT
 	SUM( r.totalav ) AS totalav
 FROM faas_restriction fr 
 	inner join faas_restriction_type frt on fr.restrictiontype_objid = frt.objid 
-	inner join rpumaster rm on fr.rpumaster_objid = rm.objid 
-	inner join faas f on rm.currentfaasid = f.objid 
+	inner join faas f on fr.parent_objid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-WHERE (
+WHERE fr.state='ACTIVE'
+  and (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
+
   ${filter}
 GROUP BY frt.name, frt.idx, pc.objid, pc.name, pc.orderno 
 ORDER BY frt.idx, pc.orderno 

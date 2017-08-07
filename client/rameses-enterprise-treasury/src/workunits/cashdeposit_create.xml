@@ -1,0 +1,24 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/treasury" caption="New Cash Deposit" action="start"/> 
+   </invokers>
+   <code class="com.rameses.enterprise.treasury.models.CashDepositModel" />
+   <pageflow>
+       <start>
+           <transition to="initial" action="create"/>
+       </start>
+       <page name="initial" title="Select Fund to Deposit">
+           <transition to="breakdown" caption="Next" action="fetchDetails" />
+       </page>
+       <page name="breakdown" title="Cash and Check Breakdown">
+           <transition to="initial" caption="Back" />
+           <transition to="end" caption="Next" />
+       </page>
+       <end/>
+   </pageflow>
+   
+   <pages>
+       <page name="initial" template="com.rameses.enterprise.treasury.views.CashDepositInitialPage" />
+       <page name="breakdown" template="com.rameses.enterprise.treasury.views.CashDepositNewPage" />
+   </pages>
+</workunit>

@@ -1,0 +1,29 @@
+<schema>
+	<element  tablename="cashdeposit">
+		<field name="objid" primary="true"/>
+		<field name="state" />
+		<field name="controlno" />
+		<field name="dtfiled" />
+		<field name="dtverified" />
+		<field name="cashier_objid" />
+		<field name="cashier_name" />
+		<field name="cashier_title" />
+		<field name="fund_objid" />
+		<field name="fund_title" />
+		<field name="fund_code" />
+		<field name="bankaccount_objid" />
+		<field name="cashbreakdown" />
+		<field name="totalcash" />
+		<field name="totalnoncash" />
+		<field name="amount" />
+
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="">
+			<key field="bankaccount_objid" target="objid" /> 
+		</complex>	
+
+		<complex name="checks" ref="cashreceipt_check" jointype="one-to-many">
+			<key field="objid" target="cashdepositid" />
+		</complex>	
+		
+	</element>
+</schema>

@@ -3,7 +3,7 @@ select
   distinct lcf.fund_objid as objid , lcf.fund_title as title 
 from bankdeposit bd 
   inner join bankdeposit_liquidation bl on bd.objid = bl.bankdepositid 
-  inner join liquidation_cashier_fund lcf on lcf.objid = bl.objid  
+  inner join liquidation_fund lcf on lcf.objid = bl.objid  
 where bd.objid = $P{bankdepositid}
 
 [getBackAccountList]
@@ -20,7 +20,7 @@ select
 from ( 
   select distinct lr.* 
   from bankdeposit_liquidation bdl 
-    inner join liquidation_cashier_fund lcf on bdl.objid=lcf.objid 
+    inner join liquidation_fund lcf on bdl.objid=lcf.objid 
     inner join liquidation liq on lcf.liquidationid=liq.objid 
     inner join liquidation_remittance lr on liq.objid=lr.liquidationid 
   where bdl.bankdepositid=$P{bankdepositid}  
@@ -49,7 +49,7 @@ from(
     distinct lf.liquidationid, lf.fund_objid
   from bankdeposit b 
     inner join bankdeposit_liquidation bl on b.objid = bl.bankdepositid
-    inner join liquidation_cashier_fund lf on lf.objid = bl.objid 
+    inner join liquidation_fund lf on lf.objid = bl.objid 
   where b.objid=$P{bankdepositid} 
   ) a 
   inner join liquidation_remittance lr on lr.liquidationid = a.liquidationid 
@@ -71,7 +71,7 @@ from(
     distinct lf.liquidationid
   from bankdeposit b 
     inner join bankdeposit_liquidation bl on b.objid = bl.bankdepositid
-    inner join liquidation_cashier_fund lf on lf.objid = bl.objid 
+    inner join liquidation_fund lf on lf.objid = bl.objid 
   where b.objid=$P{bankdepositid} 
   ) a 
   inner join liquidation_remittance lr on lr.liquidationid = a.liquidationid 
@@ -92,7 +92,7 @@ select distinct
   l.txnno, lf.amount 
 from bankdeposit b 
   inner join bankdeposit_liquidation bl on b.objid = bl.bankdepositid
-  inner join liquidation_cashier_fund lf on lf.objid = bl.objid 
+  inner join liquidation_fund lf on lf.objid = bl.objid 
   inner join liquidation l on l.objid = lf.liquidationid
 where b.objid=$P{bankdepositid} 
   and lf.fund_objid in ( 
@@ -154,7 +154,7 @@ from(
     distinct lf.liquidationid
   from bankdeposit b 
     inner join bankdeposit_liquidation bl on b.objid = bl.bankdepositid
-    inner join liquidation_cashier_fund lf on lf.objid = bl.objid 
+    inner join liquidation_fund lf on lf.objid = bl.objid 
   where b.objid=$P{bankdepositid} 
 ) a 
 inner join liquidation_remittance lr on lr.liquidationid = a.liquidationid 

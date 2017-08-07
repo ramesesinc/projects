@@ -1,0 +1,19 @@
+<schema>
+	<element tablename="cashreceiptpayment_noncash">
+		<field name="objid" primary="true"/>
+		<field name="receiptid" required="true" />
+		<field name="bankid" />
+		<field name="deposittype" />
+		<field name="bank" required="true"/>
+		<field name="refno" required="true"/>
+		<field name="refdate" required="true"/>
+		<field name="reftype" />
+		<field name="amount" />
+		<field name="particulars" />
+		<field name="account_objid" />
+		<field name="account_fund_name"/>
+		<field name="account_fund_objid" />
+		<field name="account_code" />
+		<field name="account_bank"/>
+	</element>
+</schema>

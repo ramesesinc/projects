@@ -186,7 +186,7 @@
    
    <pages>
        <page template="com.rameses.gov.treasury.liquidation.capture.LiquidationCaptureInitPage" />
-       <page name="main" template="com.rameses.enterprise.treasury.liquidation.LiquidationPage" />
+       <page name="main" template="com.rameses.enterprise.treasury.views.LiquidationViewPage" />
    </pages>
    
 </workunit>

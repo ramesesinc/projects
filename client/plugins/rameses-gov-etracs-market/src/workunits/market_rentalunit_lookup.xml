@@ -7,5 +7,14 @@
                  target="popup" 
                  customFilter="currentacctid IS NULL"
                  action="init"/>
+        
     </invokers> 
+    <code>
+        
+        class MarketAccountLookup extends CrudLookupModel {
+        
+        
+        }
+        
+    </code>    
 </workunit> 

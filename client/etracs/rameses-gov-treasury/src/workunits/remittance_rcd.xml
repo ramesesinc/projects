@@ -1,54 +1,87 @@
 <workunit>
     <invokers>
-       <invoker type="remittance:reports" caption="Report on Collection and Deposits (RCD)" 
-        action="preview"  target="self" index="-1"/>
-        
-        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
-   </invokers>
+        <invoker type="remittance:rcd" caption="Report on Collection and Deposits (RCD)" 
+                action="initReport"  target="self" index="1"/>
+       
+        <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
+    <![CDATA[    
         import com.rameses.rcp.annotations.*;
-        import java.rmi.server.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.common.*;
         import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
         import com.rameses.osiris2.reports.*;
-        
-        class RemittanceRCDReportController extends com.rameses.etracs.shared.ReportController  
-        {
-        
+        import com.rameses.util.*;
+        import java.rmi.server.*;
+
+        class RemittanceRCDController extends com.rameses.etracs.shared.ReportController {
+
             @Service("RemittanceReportService")
             def svc
-            
-            String title = "Remittance RCD";
+
+            String title = "Report on Collection and Deposit";
             String reportpath = "com/rameses/gov/treasury/remittance/report/rcd/" 
-            String reportName = reportpath + 'rcd_main.jasper' 
             
-            def getReportData(){
-               return svc.getRCDReportData( entity )
+
+            boolean allowSelectAF = true;
+
+            def af; 
+            def fund; 
+            def fundlist;
+
+            @PropertyChangeListener
+            def listener = [
+                "fund" : { o->
+                    af = null;
+                    report.viewReport(); 
+                    binding?.refresh()
+                },
+                "af": { o->
+                    report.viewReport(); 
+                    binding?.refresh()
+                }
+            ];
+
+            String getReportName() {
+                if( !fund ) {
+                    return reportpath + 'rcd_main.jasper';
+                }
+                else {
+                    return reportpath + 'rcd_main_fund.jasper' 
+                }
             }
-            
-            SubReport[] getSubReports() {
-                 return [ 
-                        new SubReport("CollectionType", reportpath + "collectiontype.jasper"),
-                        new SubReport("CollectionSummary", reportpath + "collectionsummary.jasper"),
-                        new SubReport("RemittedForms", reportpath + "remittedforms.jasper"),
-                        new SubReport("NonSerialRemittances", reportpath + "nonserialremittances.jasper"),
-                        new SubReport("NonSerialSummary", reportpath + "nonserialsummary.jasper"),
-                        new SubReport("OtherPayments", reportpath + "otherpayments.jasper"),
-                        new SubReport("Denomination", reportpath + "denomination.jasper"),
-                        new SubReport("CancelSeries", reportpath + "cancelseries.jasper"),
-                    ] as SubReport[];    
+
+            def initReport() {
+                fundlist = svc.getFundlist( entity.objid ); 
+                return super.preview();
             }
-            
-        }      
-       ]]>
+
+            def getReportData() {
+                def m = [:];
+                if( !fund ) {
+                    m = svc.getRCDReportData( entity );
+                }  
+                else {
+                    m = svc.getRCDReportDataByFund( entity, fund, af )
+                }
+                return m; 
+            }
+
+            Map getParameters() { 
+                def map = [ FUNDTITLE: fund?.title ];
+                if ( af ) {
+                    map.FORMTITLE = 'Acct. Form : '+ af.formno; 
+                } 
+                return map; 
+            } 
+        } 
+    ]]>
     </code>
     
-   <pages>
-       <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
-   </pages>
+    <pages>
+        <page name="preview" template="com.rameses.gov.treasury.remittance.report.RemittanceReportByFund" />
+    </pages>
    
 </workunit>

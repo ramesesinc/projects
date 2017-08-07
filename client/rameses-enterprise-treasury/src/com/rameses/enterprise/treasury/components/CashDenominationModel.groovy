@@ -33,7 +33,6 @@ class CashDenominationModel extends ComponentBean {
     double d20 = 0.0;
     double d10 = 0.0;
     double d5 = 0.0;
-    double d1 = 0.0;
     def coins = 0.0;
         
     def total = 0.0;
@@ -41,7 +40,7 @@ class CashDenominationModel extends ComponentBean {
     def cashremaining = 0.0;
     
     void calcTotals() {
-        total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+d1+coins);
+        total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+coins);
         cashremaining = NumberUtil.round(amount - total);
         binding.refresh("total|cashremaining");
     };
@@ -64,7 +63,8 @@ class CashDenominationModel extends ComponentBean {
             loadData( 50, 'qty50', 'd50');
             loadData( 20, 'qty20', 'd20');
             loadData( 10, 'qty10', 'd10');
-            loadData( 5, 'qty5', 'd5');            
+            loadData( 5, 'qty5', 'd5'); 
+            coins = model.find{it.denomination == 1}?.amount;
         };
         else {
             model = [];
@@ -72,6 +72,10 @@ class CashDenominationModel extends ComponentBean {
         }
         calcTotals();
     };
+    
+    void reload() {
+        calcTotals();
+    }
     
     void updateEntry(def denomination, def qty,  def amtFld) {
         this[(amtFld)] = qty * denomination;
@@ -86,6 +90,18 @@ class CashDenominationModel extends ComponentBean {
         calcTotals();
     }
     
+    void updateCoinsAmount( def amt ) {
+        def d = model.find{ it.denomination == 1 };
+        if(d) {
+            d.qty = amt;
+            d.amount = amt;
+        }
+        else {
+            model << [caption: 'Coins', denomination:1, qty: amt, amount: amt];
+        }
+        calcTotals();
+    }
+    
     @PropertyChangeListener 
     def listener = [
         "qty1000": {q-> updateEntry(1000, q, 'd1000'); },
@@ -96,8 +112,7 @@ class CashDenominationModel extends ComponentBean {
         "qty20": {q-> updateEntry(20, q, 'd20');},
         "qty10": {q-> updateEntry(10, q, 'd10'); },
         "qty5": {q-> updateEntry(5, q, 'd5');},
-        "qty1": {q->updateEntry(1, q, 'd1');},
-        "coins": {o-> calcTotals(); }
+        "coins": {o-> updateCoinsAmount(o) }
     ];
     
 }

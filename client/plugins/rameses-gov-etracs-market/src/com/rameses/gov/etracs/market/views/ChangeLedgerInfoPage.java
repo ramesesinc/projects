@@ -34,10 +34,13 @@ public class ChangeLedgerInfoPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        xDateField3 = new com.rameses.rcp.control.XDateField();
+        monthList1 = new com.rameses.enterprise.components.MonthList();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
+        xFormPanel5.setCaptionPadding(new java.awt.Insets(0, 0, 0, 5));
         xFormPanel5.setCaptionWidth(120);
 
         xLabel1.setCaption("Rate");
@@ -56,9 +59,21 @@ public class ChangeLedgerInfoPage extends javax.swing.JPanel {
         xDateField2.setRequired(true);
         xFormPanel5.add(xDateField2);
 
-        xDateField3.setCaption("Last Date Covered");
-        xDateField3.setName("entity.lastdatecovered"); // NOI18N
-        xFormPanel5.add(xDateField3);
+        monthList1.setCaption("Month");
+        monthList1.setName("entity.lastmonthpaid"); // NOI18N
+        monthList1.setRequired(true);
+        xFormPanel5.add(monthList1);
+
+        xIntegerField2.setCaption("Year");
+        xIntegerField2.setName("entity.lastyearpaid"); // NOI18N
+        xIntegerField2.setRequired(true);
+        xFormPanel5.add(xIntegerField2);
+
+        xIntegerField3.setCaption("Day");
+        xIntegerField3.setName("entity.lastdaypaid"); // NOI18N
+        xIntegerField3.setRequired(true);
+        xIntegerField3.setVisibleWhen("#{entity.ratetype == 'DAY' }");
+        xFormPanel5.add(xIntegerField3);
 
         xDecimalField1.setCaption("Partial Balance");
         xDecimalField1.setName("entity.partialbalance"); // NOI18N
@@ -110,27 +125,29 @@ public class ChangeLedgerInfoPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE))
-                .addContainerGap(52, Short.MAX_VALUE))
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField2;
-    private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
+    private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables
 }

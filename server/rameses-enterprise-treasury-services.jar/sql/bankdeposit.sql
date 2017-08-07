@@ -15,7 +15,7 @@ FROM (
 	UNION 
 	SELECT DISTINCT bdl.bankdepositid AS objid 
 	FROM liquidation l 
-		INNER JOIN liquidation_cashier_fund lcf ON l.objid=lcf.liquidationid
+		INNER JOIN liquidation_fund lcf ON l.objid=lcf.liquidationid
 		INNER JOIN bankdeposit_liquidation bdl ON lcf.objid=bdl.objid 
 		INNER JOIN bankdeposit bd ON bdl.bankdepositid=bd.objid 
 	WHERE l.txnno LIKE $P{searchtext} 
@@ -28,7 +28,7 @@ ORDER BY l.dtposted desc
 [getListByLiquidationNo]
 SELECT distinct b.* FROM bankdeposit b
 	inner join bankdeposit_liquidation bl on bl.bankdepositid = b.objid 
-	inner join liquidation_cashier_fund lcf on lcf.objid = bl.objid 
+	inner join liquidation_fund lcf on lcf.objid = bl.objid 
 	inner join liquidation l on lcf.liquidationid = l.objid 
 where b.cashier_objid like $P{cashierid} 
 	and l.txnno like $P{searchtext} 
@@ -45,7 +45,7 @@ SELECT
 	min(l.liquidatingofficer_title) as liquidatingofficer_title, 
 	sum(lcf.amount) as amount
 FROM liquidation l
-INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid=l.objid
+INNER JOIN liquidation_fund lcf ON lcf.liquidationid=l.objid
 LEFT JOIN bankdeposit_liquidation bdl ON bdl.objid=lcf.objid
 WHERE lcf.cashier_objid = $P{cashierid}
 	and l.state = 'OPEN' 
@@ -63,7 +63,7 @@ SELECT  lcf.objid,
 	liquidatingofficer_name, 	
 	liquidatingofficer_title, 
 	lcf.amount
-FROM liquidation_cashier_fund lcf
+FROM liquidation_fund lcf
 INNER JOIN liquidation l ON lcf.liquidationid=l.objid
 LEFT JOIN bankdeposit_liquidation bdl ON bdl.objid=lcf.objid
 WHERE l.objid in ( ${liquidationids} )
@@ -78,7 +78,7 @@ SELECT
 	lcf.fund_title,
 	sum(lcf.amount)  as totalamount 
 FROM liquidation l
-INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid=l.objid
+INNER JOIN liquidation_fund lcf ON lcf.liquidationid=l.objid
 LEFT JOIN bankdeposit_liquidation bdl ON bdl.objid=lcf.objid
 WHERE l.state = 'OPEN'
   AND l.objid in ( ${liquidationids} )
@@ -114,7 +114,7 @@ AND cv.objid IS NULL
 [getUndepositedChecksByFund]
 SELECT DISTINCT
 crp.objid, crp.refno, crp.particulars, crp.amount, crp.reftype   
-FROM  liquidation_cashier_fund lcf  
+FROM  liquidation_fund lcf  
 INNER JOIN liquidation_noncashpayment lc ON lc.liquidationfundid=lcf.objid
 inner join liquidation l on l.objid = lcf.liquidationid 
 INNER JOIN cashreceiptpayment_noncash crp ON crp.objid=lc.objid 
@@ -153,7 +153,7 @@ SELECT
 	lcf.fund_title,
 	sum(lcf.amount) as totalamount 
 FROM bankdeposit_liquidation bdl 
-	INNER JOIN liquidation_cashier_fund lcf ON bdl.objid=lcf.objid
+	INNER JOIN liquidation_fund lcf ON bdl.objid=lcf.objid
 	INNER JOIN liquidation l ON lcf.liquidationid=l.objid
 WHERE bdl.bankdepositid = $P{objid} 
 GROUP BY lcf.fund_objid,lcf.fund_title
@@ -172,7 +172,7 @@ SELECT  lcf.objid,
 	l.liquidatingofficer_title, 
 	lcf.amount
 FROM bankdeposit_liquidation bdl 
-INNER join liquidation_cashier_fund lcf on lcf.objid = bdl.objid 
+INNER join liquidation_fund lcf on lcf.objid = bdl.objid 
 INNER JOIN liquidation l ON lcf.liquidationid=l.objid
 WHERE bdl.bankdepositid=$P{objid}
 
@@ -222,7 +222,7 @@ select
 	bd.cashier_objid, bd.cashier_name 
 from bankdeposit bd 
 	inner join bankdeposit_liquidation bdl on bd.objid=bdl.bankdepositid 
-	inner join liquidation_cashier_fund lcf on bdl.objid=lcf.objid 
+	inner join liquidation_fund lcf on bdl.objid=lcf.objid 
 	inner join liquidation l on lcf.liquidationid=l.objid 
 	left join fund on lcf.fund_objid=fund.objid 
 where bd.objid=$P{bankdepositid}  

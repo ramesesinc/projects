@@ -3,74 +3,71 @@
   <invokers>
     <invoker type="liquidation:reports" caption="Liquidation Report By Fund " action="initReport" index="3" target="self"/>
 
-    <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
   </invokers>
 
   <code>
   <![CDATA[
-import com.rameses.osiris2.common.*;
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import java.rmi.server.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.util.*;
-import com.rameses.osiris2.reports.*;
+    import com.rameses.osiris2.common.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import java.rmi.server.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.util.*;
+    import com.rameses.osiris2.reports.*;
 
-class LiquidationReportByFundController extends com.rameses.etracs.shared.ReportController {
+    class LiquidationReportByFundController extends com.rameses.etracs.shared.ReportController {
 
-  @Binding
-  def binding;
+      @Binding
+      def binding;
 
-  @Service("LiquidationReportService")
-  def svc
+      @Service("LiquidationReportService")
+      def svc
 
-  @Service("ReportParameterService")
-  def paramsvc
+      @Service("ReportParameterService")
+      def paramsvc
 
-  String title = "Liquidation Report By Fund";
+      String title = "Liquidation Report By Fund";
 
-  String reportpath = "com/rameses/gov/treasury/liquidation/reports/"
-  String reportName = reportpath + 'reportbyfund.jasper' 
+      String reportpath = "com/rameses/gov/treasury/liquidation/reports/"
+      String reportName = reportpath + 'reportbyfund.jasper' 
 
-  def fundlist 
-  def fund 
+      def fundlist 
+      def fund 
 
-  def initReport() {
-    def opts = svc.getReportOptions([ objid: entity.objid ]); 
-    fundlist = opts.funds; 
-    setFund( fundlist? fundlist[0]: null ); 
-  }
+      @PropertyChangeListener
+      def listener = [
+        "fund" : { o->
+            report.viewReport();
+            binding.refresh();
+        }
+      ];
 
-  void setFund( fund ) { 
-    this.fund = fund 
-    report.viewReport(); 
+      def initReport() {
+        def opts = svc.getReportOptions([ objid: entity.objid ]); 
+        fundlist = opts.funds; 
+        return preview();
+      }
 
-    if( binding ) binding.refresh(); 
-  }
+      def getReportData(){
+         def m = svc.getReportByFund([ liquidationid: entity.objid, fundid: fund?.fundid ]); 
+         m.signature = entity.signature;
+         return m;
+      }
 
-  def getReportData(){
-    return svc.getReportByFund([ liquidationid: entity.objid, fundid: fund?.fundid ]); 
-  }
-
-  SubReport[] getSubReports() {
-    return [ 
-      new SubReport("ReportItem", reportpath + "reportbyfunditem.jasper"),
-    ] as SubReport[];
-  }
-
-  Map getParameters(){
-    def params = [SUBTITLE : 'SUMMARY OF COLLECTION']; 
-    if ( fund ) {
-        params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.fundname + ' FUND ';
-    }
-    return params;
-  }  
-} 
+      Map getParameters(){
+        def params = [SUBTITLE : 'SUMMARY OF COLLECTION']; 
+        if ( fund ) {
+            params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.fundname + ' FUND ';
+        }
+        return params;
+      }  
+    } 
   ]]>
   </code>
 
   <pages>
-    <page template="com.rameses.gov.treasury.liquidation.reports.LiquidationReportByFund" />
+    <page name="preview" template="com.rameses.gov.treasury.liquidation.reports.LiquidationReportByFund" />
   </pages>
 
 </workunit>

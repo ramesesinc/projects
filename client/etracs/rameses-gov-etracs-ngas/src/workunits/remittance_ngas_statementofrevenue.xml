@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="remittance:reports" caption="NGAS Statement of Revenue" action="doPreview" index="100" target="self"/>
 
-        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+        <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
     </invokers>
     
     <code>

@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="daily_collection" entityName="liquidation">
+    <invokers>
+        <invoker folderid="home/accounting" caption="Deposits" index="4"/>
+    </invokers>
+</workunit>

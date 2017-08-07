@@ -29,7 +29,7 @@ class MarketAccountListInterceptor{
 			case 'pastdue':
 				status = 'pastdue'
 				m.state = 'ACTIVE'
-				str += ' AND lastdatecovered < NOW()'; 
+				str += ' ((lastyearpaid*12)+lastmonthpaid)  AND  <  ((YEAR(NOW()) * 12)+MONTH(NOW())) '; 
 				break;
 
 			case 'blocked':

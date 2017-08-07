@@ -1,8 +1,8 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
-import com.rameses.common.*
-import com.rameses.services.extended.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
 
 class RemittanceService  {
 
@@ -27,9 +27,16 @@ class RemittanceService  {
 	@Service("Var")
 	def var;
 
+	@DataContext("remittance")
+	def remEm;
+
 	@ProxyMethod
-	public def init() { 
+	public def init(def param) { 
 		boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
+
+		if( param.todate ) {
+			//throw new Exception("This is capture " + info.fromdate);
+		}
 
 		//check first if there are still remaining collection on the end of the month 
 		def o = [ objid: "REM"+new UID() ]; 
@@ -123,6 +130,15 @@ class RemittanceService  {
 	@ProxyMethod
 	public def open( o ) {
 		o = em.read( o );
+
+		Base64Cipher cipher = new Base64Cipher()
+		if( o.signature !=null ) {
+			o.signature = cipher.decode( o.signature );
+		}
+		if(o.liquidatingofficer?.signature) {
+			o.liquidatingofficer.signature =  cipher.decode(o.liquidatingofficer.signature)
+		}
+
 		o.checks = em.getRemittedChecks(o);
 
 		def td = o.checks.findAll{ it.reftype == 'CHECK' }?.sum{it.amount};
@@ -228,4 +244,11 @@ class RemittanceService  {
     	remittance_tool.removeNonCashPayments( params ); 
     	remittance_tool.removeRemittance( params ); 
     } 
+
+    @ProxyMethod
+    public void approve(def o) {
+    	def m = [state:'APPROVED'];
+    	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
+    	remEm.find( [objid : o.objid] ).update( m );
+    }
 }

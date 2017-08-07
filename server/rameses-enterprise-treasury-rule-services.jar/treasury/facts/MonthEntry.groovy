@@ -37,7 +37,9 @@ class MonthEntry {
 
    public int getMaxdays() {
       def cal = Calendar.instance;
-      cal.setTime( fromdate );
+      cal.set(Calendar.YEAR, year);
+      cal.set(Calendar.MONTH, month - 1 );
+      cal.set(Calendar.DATE, 1 );
       return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     } 
 

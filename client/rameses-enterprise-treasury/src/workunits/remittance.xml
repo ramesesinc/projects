@@ -1,145 +1,45 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="home/treasury/remittance" caption="Remit" action="create" role="COLLECTOR" target="window"/>
+        <invoker folderid="home/treasury" caption="Remit" action="create" role="COLLECTOR" target="window"/>
         <!--invoker folderid="home/remittance" caption="Capture Remittance" action="create" role="COLLECTOR" target="window"/-->
-
         <invoker type="remittance:create" caption="Remittance" action="create" target="window"/>
         <invoker type="quick_launcher" code="REM" caption="Remittance" action="create" target="window" role="COLLECTOR"/>
-        <invoker type="remittance:open" caption="Remittance (Open)" action="open" target="window"/>
+        
+        <!-- OPEN ACTION -->
+        <invoker type="remittance:open" caption="Remittance (Open)" action="open" target="popup"/>
 
-        <invoker type="formActions" caption="Close" name="_close" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
-        <invoker type="formActions" caption="Next" name="start" visibleWhen="#{mode == 'initial'}" mnemonic="n" shortcut="ctrl N" icon="images/toolbars/arrow_right.png"/>
-        <invoker type="formActions" caption="Back" name="back" visibleWhen="#{mode == 'create'}" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
-        <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{mode == 'create' }" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        <invoker folderid="explorer/txn/treasury" caption="Remittance (Capture)" action="capture" target="window"/>
+        
+        
+        <invoker type="formActions" caption="Close" name="_close" immediate="true" index="-5" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        <!-- for initial capture -->
+        <invoker type="formActions" caption="Next" visibleWhen="#{mode == 'capture' }" mnemonic="n" 
+                 shortcut="ctrl N" action="create"/>
+  
+        <!-- for create -->
+        <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{mode == 'create' }" mnemonic="s" 
+                 shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        
+        <!-- approval actions -->
+        <invoker type="formActions" caption="Approve for Liquidation" name="approve" 
+                 mnemonic="e" role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
+        
+        <invoker type="formActions" caption="Disapprove" name="disapprove" mnemonic="e" 
+                 role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
+    
+        <!-- common in read -->
+        <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{mode == 'read' }" />
         <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{mode == 'read' }" category="remittance:reports" />
-        <invoker type="formActions" caption="Export" name="doExport" visibleWhen="#{mode == 'read' }" mnemonic="e" index="100"/>
+        
     </invokers>
    
-    <code>
-    <![CDATA[
-import com.rameses.osiris2.common.*;
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import java.rmi.server.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.util.*;
-import javax.swing.*
-import com.rameses.io.*
-
-class RemittanceController {
-
-    @Binding
-    def binding;
-
-    @Service("RemittanceService")
-    def service;
-
-    @Service("RemittanceImportExportService")
-    def exportSvc;
-
-    String title = "Remittance";
-
-    def entity;
-    def cashBreakdown;
-    def mode = 'create';
-
-    def total = 0.0;
-    def breakdown = 0.0;
-    def remaining = 0.0
-
-    def getExtActions() {
-        return InvokerUtil.lookupActions( "remittance:formActions", [entity:entity] );
-    }
-
-    def popupReports(def inv) {
-        def popupMenu = new PopupMenuOpener();
-        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
-        list.each{
-            popupMenu.add( it );
-        }
-        return popupMenu;
-    }
-
-    def start() {
-        remaining = entity.totalcash      
-        entity.cashbreakdown = [];
-        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [
-            entries: entity.cashbreakdown, 
-            onupdate: { o->
-                breakdown = o; 
-                total = entity.totalnoncash + breakdown;
-                remaining = entity.totalcash - breakdown 
-                binding.refresh("breakdown|total|remaining");
-            }
-        ]);      
-        mode = "create";    
-        return "main"
-    }
-
-    void create() {
-        mode = "initial";
-        entity = service.init();        
-    }
-
-    def back() {
-        mode = "initial"
-        return "default"
-    }
-
-    def open(){
-        mode = "read";
-        entity = service.open(entity);
-        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [entries: entity.cashbreakdown] );    
-        total = entity.totalcash + entity.totalnoncash;
-        remaining = 0.0
-        breakdown = entity.cashbreakdown.sum{it.amount};
-        return "main"
-    }
-
-    def listModel = [
-        fetchList: { o->
-            return entity.items;
-        }
-    ] as BasicListModel;
-
-    def checkModel = [
-        fetchList: {
-            return entity.checks;
-        }
-    ] as BasicListModel;
-
-    void submit() {
-        if( breakdown != entity.totalcash )
-            throw new Exception("Cash breakdown must equal total cash");
-
-        if( MsgBox.confirm("You are about to submit this remittance. Please ensure the entries are correct")) {
-            def o = service.post( entity );
-            entity.txnno = o.txnno;
-            mode = 'read'
-            entity = o;
-            MsgBox.alert("Posting successful");
-        }
-    }
-
-
-    void doExport(){
-        def chooser = new JFileChooser();
-        chooser.setSelectedFile(new File(entity.txnno + '.rem'));
-        int i = chooser.showSaveDialog(null);
-        if(i==0) {
-            FileUtil.writeObject( chooser.selectedFile, exportSvc.exportRemittance(entity.objid) );
-            MsgBox.alert("Remittance has been successfully exported!");
-        }   
-    }
-
-}      
-    ]]>
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />
    
     <pages>
-        <page template="com.rameses.enterprise.treasury.remittance.RemittanceInitPage" />
-        <page name="main" template="com.rameses.enterprise.treasury.remittance.RemittancePage" />
+        <page name="capture" template="com.rameses.enterprise.treasury.views.RemittanceCapturePage" />
+        <page name="create" template="com.rameses.enterprise.treasury.views.RemittanceNewPage" />
+        <page name="view" template="com.rameses.enterprise.treasury.views.RemittanceViewPage" />
     </pages> 
        
 </workunit>

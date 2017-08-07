@@ -2,7 +2,8 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
 import com.rameses.common.*
-import com.rameses.services.extended.*
+import com.rameses.services.extended.*;
+
 
 class LiquidationService  {
 
@@ -24,6 +25,15 @@ class LiquidationService  {
 	@Service("Var")
 	def var 
 	
+	@DataContext("liquidation_remittance")
+	def liqRem;
+
+	@DataContext("liquidation")
+	def liqEm;
+
+	@DataContext("remittance")
+	def remEm;
+
 	@ProxyMethod
 	public def init() {
 		if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
@@ -31,8 +41,9 @@ class LiquidationService  {
 			if(ud ) throw new Exception("There are still undeposited liquidations. ");	
 		} 
 
-		def o = [objid: "LIQ"+new UID(), cashier:[:]];	
-		o.remittances = em.getUnliquidatedRemittances( [liquidatingofficerid: env.USERID]);
+        def str = "objid,remittanceno:{txnno},remittancedate,collector.name,totalcash,totalnoncash,amount" 
+		def o = [objid: "LIQ"+new UID(), cashier:[:]];
+		o.remittances = remEm.where( " state='APPROVED' AND liquidatingofficer.objid = :lqid AND liquidation.liquidationid IS NULL ", [lqid: env.USERID] ).select( str ).list();
 		if(!o.remittances)
 			throw new Exception("No pending remittances to liquidate");
 
@@ -55,9 +66,6 @@ class LiquidationService  {
 
 	@ProxyMethod
 	public def post( o ) {
-		if( o.fundsummary.find{ !it.cashier }   )
-			throw new Exception("There must be a cashier associated");
-
 		o.txnno = formatTxnno(o)
 		
 		em.create( o );
@@ -80,6 +88,18 @@ class LiquidationService  {
 	@ProxyMethod
 	public def open( o ) {
 		o = em.read([ objid:o.objid ]);
+		if( o.signature !=null ) {
+			Base64Cipher cipher = new Base64Cipher()
+			o.signature = cipher.decode( o.signature );
+		}
+		if( o.cashier?.signature !=null ) {
+			Base64Cipher cipher = new Base64Cipher()
+			o.cashier.signature = cipher.decode( o.cashier.signature );
+		}
+
+
+		o.remittances = liqRem.find( [liquidationid: o.objid] ).list()*.remittance;
+
 		o.fundsummary = em.getFundSummaries([ liquidationid: o.objid ]);
 		o.checks = em.getLiquidatedNoncash( o ); 
 
@@ -162,19 +182,12 @@ class LiquidationService  {
     }
 
 
-    @ProxyMethod
-    public void holdRemittance( def o ) {
-    	em.updateRemittanceState([objid:o.objid, state:'HOLD']);	
-    }
-
-    @ProxyMethod
-    public void unholdRemittance( def o ) {
-    	em.updateRemittanceState([objid:o.objid, state:'OPEN']);	
-    }
-
-    @ProxyMethod
-    public void submitForLiquidation( def o ) {
-    	em.updateRemittanceState([objid:o.objid, state:'APPROVED']);	
+    
+	@ProxyMethod
+    public void approve(def o) {
+    	def m = [state:'APPROVED'];
+    	m.approver = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
+    	liqEm.find( [objid : o.objid] ).update( m );
     }
 
 }	

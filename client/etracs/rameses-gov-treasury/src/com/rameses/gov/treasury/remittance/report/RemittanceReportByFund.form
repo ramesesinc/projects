@@ -29,6 +29,25 @@
           <BorderConstraints direction="North"/>
         </Constraint>
       </Constraints>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="formPanel1" min="-2" pref="533" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="66" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
+                  <Component id="formPanel1" min="-2" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
       <SubComponents>
         <Container class="com.rameses.rcp.util.FormPanel" name="formPanel1">
           <Properties>
@@ -43,18 +62,16 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
               <Properties>
-                <Property name="allowNull" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Fund"/>
                 <Property name="captionWidth" type="int" value="55"/>
                 <Property name="dynamic" type="boolean" value="true"/>
-                <Property name="emptyText" type="java.lang.String" value="-- Select Fund --"/>
+                <Property name="emptyText" type="java.lang.String" value="-- All --"/>
                 <Property name="expression" type="java.lang.String" value="#{item.title}"/>
                 <Property name="items" type="java.lang.String" value="fundlist"/>
                 <Property name="name" type="java.lang.String" value="fund" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 20]"/>
                 </Property>
-                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox2">
@@ -83,46 +100,6 @@
           </SubComponents>
         </Container>
       </SubComponents>
-      <LayoutCode>
-        <CodeStatement>
-          <CodeExpression id="1_jPanel1">
-            <CodeVariable name="jPanel1" type="8194" declaredType="javax.swing.JPanel"/>
-            <ExpressionOrigin>
-              <ExpressionProvider type="ComponentRef">
-                <ComponentRef name="jPanel1"/>
-              </ExpressionProvider>
-            </ExpressionOrigin>
-          </CodeExpression>
-          <StatementProvider type="CodeMethod">
-            <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
-          </StatementProvider>
-          <Parameters>
-            <CodeExpression id="2">
-              <ExpressionOrigin>
-                <ExpressionProvider type="CodeConstructor">
-                  <CodeConstructor class="com.rameses.rcp.control.layout.XLayout" parameterTypes=""/>
-                </ExpressionProvider>
-              </ExpressionOrigin>
-            </CodeExpression>
-          </Parameters>
-        </CodeStatement>
-        <CodeStatement>
-          <CodeExpression id="1_jPanel1"/>
-          <StatementProvider type="CodeMethod">
-            <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
-          </StatementProvider>
-          <Parameters>
-            <CodeExpression id="3_formPanel1">
-              <CodeVariable name="formPanel1" type="8194" declaredType="com.rameses.rcp.util.FormPanel"/>
-              <ExpressionOrigin>
-                <ExpressionProvider type="ComponentRef">
-                  <ComponentRef name="formPanel1"/>
-                </ExpressionProvider>
-              </ExpressionOrigin>
-            </CodeExpression>
-          </Parameters>
-        </CodeStatement>
-      </LayoutCode>
     </Container>
     <Container class="com.rameses.osiris2.reports.ui.XReportPanel" name="xReportPanel1">
       <Properties>
@@ -147,7 +124,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="337" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="332" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

@@ -19,10 +19,10 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="xDataTable1" max="32767" attributes="0"/>
-                  <Component id="xFormPanel5" pref="436" max="32767" attributes="0"/>
+                  <Component id="xDataTable1" pref="327" max="32767" attributes="0"/>
+                  <Component id="xFormPanel5" pref="327" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="52" max="32767" attributes="0"/>
+              <EmptySpace pref="24" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -31,9 +31,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xFormPanel5" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="xDataTable1" min="-2" pref="160" max="-2" attributes="0"/>
-              <EmptySpace pref="32" max="32767" attributes="0"/>
+              <EmptySpace pref="47" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -41,6 +41,9 @@
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel5">
       <Properties>
+        <Property name="captionPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 0, 0, 5]"/>
+        </Property>
         <Property name="captionWidth" type="int" value="120"/>
       </Properties>
       <SubComponents>
@@ -68,10 +71,26 @@
             <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XDateField" name="xDateField3">
+        <Component class="com.rameses.enterprise.components.MonthList" name="monthList1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Last Date Covered"/>
-            <Property name="name" type="java.lang.String" value="entity.lastdatecovered" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Month"/>
+            <Property name="name" type="java.lang.String" value="entity.lastmonthpaid" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Year"/>
+            <Property name="name" type="java.lang.String" value="entity.lastyearpaid" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Day"/>
+            <Property name="name" type="java.lang.String" value="entity.lastdaypaid" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{entity.ratetype == &apos;DAY&apos; }"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">

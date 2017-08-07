@@ -54,8 +54,10 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
-        xLabel15 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
+        xLabel20 = new com.rameses.rcp.control.XLabel();
+        xLabel21 = new com.rameses.rcp.control.XLabel();
+        xLabel22 = new com.rameses.rcp.control.XLabel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel6 = new javax.swing.JPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
@@ -216,15 +218,25 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel14);
 
-        xLabel15.setCaption("Last Date Covered");
-        xLabel15.setExpression("#{entity.lastdatecovered}");
-        xLabel15.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel5.add(xLabel15);
-
         xLabel16.setCaption("Partial Balance");
         xLabel16.setExpression("#{entity.partialbalance}");
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel16);
+
+        xLabel20.setCaption("Last Year Paid");
+        xLabel20.setExpression("#{entity.lastyearpaid}");
+        xLabel20.setPreferredSize(new java.awt.Dimension(0, 18));
+        xFormPanel5.add(xLabel20);
+
+        xLabel21.setCaption("Last Month Paid");
+        xLabel21.setExpression("#{entity.lastmonthnamepaid}");
+        xLabel21.setPreferredSize(new java.awt.Dimension(0, 18));
+        xFormPanel5.add(xLabel21);
+
+        xLabel22.setCaption("Last Day Paid");
+        xLabel22.setExpression("#{entity.lastdaypaid}");
+        xLabel22.setPreferredSize(new java.awt.Dimension(0, 18));
+        xFormPanel5.add(xLabel22);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder5 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder5.setTitle("Recurring Fees");
@@ -281,9 +293,9 @@ public class MarketAccountPage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 92, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 119, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(33, 33, 33)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 122, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -397,12 +409,14 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
-    private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel18;
     private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel20;
+    private com.rameses.rcp.control.XLabel xLabel21;
+    private com.rameses.rcp.control.XLabel xLabel22;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;

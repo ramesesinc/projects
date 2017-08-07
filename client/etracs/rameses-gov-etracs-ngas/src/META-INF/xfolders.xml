@@ -16,6 +16,6 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="accounting" caption="Accounting"/>
+        <folder id="accounting" caption="Accounting" icon="home/icons/accounting.png"/>
     </folder>
 </folders>

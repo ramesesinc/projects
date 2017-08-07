@@ -2,13 +2,13 @@
 
 	<element tablename="fund">
 		<field name="objid" primary="true"/>	
-		<field name="parentid" />
+		<field name="parentid" caption="Group" searchable="true"/>
 		<field name="state" required="true"/>
-		<field name="code" required="true"/>
-		<field name="title" required="true"/>
+		<field name="code" required="true" caption="Code" searchable="true"/>
+		<field name="title" required="true" caption="Title" searchable="true"/>
 		<field name="type" />
 		<field name="special" type="integer"/>
-		<field name="system" type="integer"/>
+		<field name="system" type="boolean"/>
 	</element>
 
 </schema>

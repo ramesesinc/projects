@@ -234,7 +234,12 @@ public abstract class AbstractCashReceipt {
 
         validateBeforePost();
         
-        if(MsgBox.confirm("You are about to post this payment. Please ensure entries are correct")) {
+        boolean pass = false;
+        def h = {
+            pass = true;
+        }
+        Modal.show("cashreceipt_confirm", [handler:h, receiptno: entity.receiptno] );
+        if(pass) {
             try { 
                 beforePost();
                 entity._paymentorderid = _paymentorderid;

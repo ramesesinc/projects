@@ -1,0 +1,18 @@
+<schema>
+	
+	<element  tablename="liquidation_remittance">
+		<field name="objid" primary="true"/>
+		<field name="liquidationid" required="true"/>
+
+		<complex name="liquidation" ref="liquidation" jointype="many-to-one" required="false" 
+			includefields="objid,txnno,dtposted,liquidatingofficer.name,signature">
+			<key field="liquidationid" target="objid"/>
+		</complex>	
+
+		<complex name="remittance" ref="remittance" jointype="many-to-one" required="false" 
+			includefields="objid,txnno,dtposted,remittancedate,collector.name,totalcash,totalnoncash,amount">
+			<key field="objid" target="objid"/>
+		</complex>	
+	</element>
+
+</schema>	

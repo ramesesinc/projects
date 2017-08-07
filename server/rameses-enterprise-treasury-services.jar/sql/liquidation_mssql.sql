@@ -23,7 +23,7 @@ WHERE lr.objid IS NULL AND state=$P{state} AND liquidatingofficer_objid=$P{useri
 
 [getUndepositedLiquidations]
 select * from liquidation l 
-	inner join liquidation_cashier_fund lcf on lcf.liquidationid = l.objid 
+	inner join liquidation_fund lcf on lcf.liquidationid = l.objid 
 	left join bankdeposit_liquidation bl on bl.objid = lcf.objid
 where l.liquidatingofficer_objid = $P{liquidatingofficerid} 
 	and bl.objid is null 
@@ -110,7 +110,7 @@ FROM (
 
 [getFundSummaries]
 SELECT lcf.*, f.code as fund_code 
-FROM liquidation_cashier_fund lcf
+FROM liquidation_fund lcf
 	inner join fund f on f.objid = lcf.fund_objid 
 WHERE lcf.liquidationid = $P{liquidationid} 
 
@@ -129,7 +129,7 @@ select
   	lcf.fund_objid, lcf.fund_title, fund.code as fund_code, lcf.amount, 
   	l.liquidatingofficer_objid as subacct_objid, 
 	l.liquidatingofficer_name as subacct_name 
-from liquidation_cashier_fund lcf 
+from liquidation_fund lcf 
 	inner join liquidation l on lcf.liquidationid=l.objid 
 	left join fund on lcf.fund_objid=fund.objid 
 where lcf.liquidationid=$P{liquidationid} 

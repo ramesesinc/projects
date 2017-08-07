@@ -8,7 +8,7 @@ select * from (
       when fund_objid='SEF' then 2       
       else 100   
     end as fundsortorder 
-  from liquidation_cashier_fund 
+  from liquidation_fund 
   where liquidationid = $P{liquidationid} 
 )xx 
 order by xx.fundsortorder, xx.fundname 
@@ -20,7 +20,7 @@ select
   lc.fund_title, lc.cashier_name, su.jobtitle as cashier_title, lc.amount, 
   l.cashbreakdown
 from liquidation l  
-  inner join liquidation_cashier_fund lc on lc.liquidationid = l.objid 
+  inner join liquidation_fund lc on lc.liquidationid = l.objid 
   inner join sys_user su on su.objid = lc.cashier_objid  
 where l.objid = $P{liquidationid} 
   and lc.fund_objid = $P{fundid} 
@@ -80,7 +80,7 @@ select * from (
         when fund_objid='TRUST' then 3 
         else 100  
     end as fundsortorder
-  from liquidation_cashier_fund  lcf 
+  from liquidation_fund  lcf 
   where lcf.liquidationid = $P{liquidationid} 
     and lcf.fund_objid in ( 
       select objid from fund where objid like $P{fundid} 
@@ -191,12 +191,12 @@ order by ia.fund_title, cri.item_code, cri.item_title
 
 
 [getFundSummaries]
-SELECT * FROM liquidation_cashier_fund WHERE liquidationid = $P{liquidationid}
+SELECT * FROM liquidation_fund WHERE liquidationid = $P{liquidationid}
 
 [getLiquidationCashierList]
 select 
   distinct f.cashier_name as name, su.jobtitle 
-from liquidation_cashier_fund f 
+from liquidation_fund f 
   inner join sys_user su on su.objid = f.cashier_objid 
 where liquidationid = $P{liquidationid} 
 

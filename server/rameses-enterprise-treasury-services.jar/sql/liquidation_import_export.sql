@@ -2,7 +2,7 @@
 SELECT * FROM liquidation WHERE objid = $P{liquidationid}
 
 [getLiquidationCashierFund]
-SELECT * FROM liquidation_cashier_fund WHERE liquidationid = $P{liquidationid}
+SELECT * FROM liquidation_fund WHERE liquidationid = $P{liquidationid}
 
 [getLiquidationCheckPayment]
 SELECT * FROM liquidation_noncashpayment WHERE liquidationid = $P{liquidationid}
@@ -132,7 +132,7 @@ values (
  )
 
 [insertLiquidationCashierFund]
-insert into liquidation_cashier_fund
+insert into liquidation_fund
   (objid,
    liquidationid,
    fund_objid,

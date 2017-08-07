@@ -47,6 +47,7 @@
 	<field name="txnno" class="java.lang.String"/>
 	<field name="hasbrgyshares" class="java.lang.Boolean"/>
 	<field name="brgyshares" class="java.lang.Object"/>
+	<field name="signature.image" class="java.lang.Object"/>
 
 	<variable name="sum" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
 	</variable>
@@ -377,6 +378,19 @@
 		</pageFooter>
 		<summary>
 			<band height="112"  isSplitAllowed="true" >
+				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="387"
+						y="41"
+						width="137"
+						height="36"
+						key="image-2">
+							<printWhenExpression><![CDATA[$F{signature.image} != null]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{signature.image} )]]></imageExpression>
+				</image>
 				<staticText>
 					<reportElement
 						mode="Transparent"

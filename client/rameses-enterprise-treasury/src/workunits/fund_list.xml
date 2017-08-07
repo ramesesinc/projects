@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="fund">
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" 
+                 caption="Funds" action="init" role="MASTER" permission="fund.view"
+                 cols="code,title,system" orderBy="code"/>
+        <invoker type="quick_launcher" code="FUND00" caption="Funds"  role="MASTER" permission="fund.view"/> 
+   </invokers>
+</workunit>

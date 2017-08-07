@@ -32,7 +32,6 @@
 		<field name="startdate" required="true"/>
 
 		<!-- this will be updated everytime a payment is posted -->
-		<field name="lastdatecovered"/>
 		<field name="partialbalance" type="decimal" defaultValue="0"/>
 		
 
@@ -47,6 +46,12 @@
 		<field name="business_bin" />
 		<field name="business_tradename" />
 		<field name="business_owner_name" />
+
+		<field name="lastyearpaid" type="integer" required="true"/>
+		<field name="lastmonthpaid" type="integer" required="true"/>
+		<field name="lastdaypaid" type="integer" required="true"/>
+
+		<field name="lastmonthnamepaid" expr="MONTH_ARRAY(lastmonthpaid)" />
 
 		<!-- link to recurring fees -->
 		<complex name="recurringfees" ref="market_account_recurringfee" jointype="one-to-many">

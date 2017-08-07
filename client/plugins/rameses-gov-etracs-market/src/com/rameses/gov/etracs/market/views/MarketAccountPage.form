@@ -372,9 +372,9 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xFormPanel5" min="-2" pref="92" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="xDataTable1" min="-2" pref="134" max="-2" attributes="0"/>
+                          <Component id="xFormPanel5" min="-2" pref="119" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                          <Component id="xDataTable1" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -404,19 +404,37 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel15">
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel16">
                       <Properties>
-                        <Property name="caption" type="java.lang.String" value="Last Date Covered"/>
-                        <Property name="expression" type="java.lang.String" value="#{entity.lastdatecovered}"/>
+                        <Property name="caption" type="java.lang.String" value="Partial Balance"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.partialbalance}"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 18]"/>
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel16">
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel20">
                       <Properties>
-                        <Property name="caption" type="java.lang.String" value="Partial Balance"/>
-                        <Property name="expression" type="java.lang.String" value="#{entity.partialbalance}"/>
+                        <Property name="caption" type="java.lang.String" value="Last Year Paid"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.lastyearpaid}"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[0, 18]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel21">
+                      <Properties>
+                        <Property name="caption" type="java.lang.String" value="Last Month Paid"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.lastmonthnamepaid}"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[0, 18]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel22">
+                      <Properties>
+                        <Property name="caption" type="java.lang.String" value="Last Day Paid"/>
+                        <Property name="expression" type="java.lang.String" value="#{entity.lastdaypaid}"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 18]"/>
                         </Property>

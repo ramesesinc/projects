@@ -1,3 +1,24 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation">
+    
+    <invokers>
+        <invoker folderid="home/treasury" caption="Liquidations" target="window" action="init"/> 
+        
+        <!--
+        <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER"> 
+            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
+        </invoker> 
+        
+        <invoker folderid="home/treasury/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
+            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
+        </invoker>
+        -->
+    </invokers>
+    
+    
+</workunit>
+        <!--
 <workunit extends="wtemplates/ListController.xml" serviceName="LiquidationListService" entityName="liquidation">
     
     <invokers>
@@ -45,3 +66,4 @@ class LiquidationListController extends DefaultListController
     </code>
         
 </workunit>
+-->

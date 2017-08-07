@@ -1,7 +1,0 @@
-<workunit extends="wtemplates/ExplorerViewController.xml" serviceName="FundService" defaultFileType="fund" allowSearch="false">
-    <invokers>
-        <invoker folderid="/explorer/master/treasury" caption="Funds" action="init" role="MASTER" permission="fund.view"/>
-        
-        <invoker type="quick_launcher" code="FUND00" caption="Funds"  role="MASTER" permission="fund.view"/> 
-   </invokers>
-</workunit>

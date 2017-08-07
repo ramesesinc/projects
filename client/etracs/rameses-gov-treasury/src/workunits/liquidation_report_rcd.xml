@@ -1,9 +1,9 @@
 <workunit>
     
    <invokers>
-         <invoker type="liquidation:reports" caption="Report on Collection and Deposits (RCD) By Fund" action="initReport" index="1" target="self"/>
+         <invoker type="liquidation:rcd" caption="Report on Collection and Deposits (RCD)" action="initReport" index="1" target="self"/>
          
-        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+         <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
    </invokers>
    
    <code>
@@ -25,48 +25,45 @@
             def svc
             
             
-            String title = "Report on Collection and Deposits (RCD) By Fund" 
+            String title = "Report on Collection and Deposits (RCD) " 
             String reportpath = "com/rameses/gov/treasury/liquidation/report/rcd/"
             String reportName = reportpath + 'main.jasper' 
             
             def fundlist 
-            def fund 
+            def fund; 
+            
+            @PropertyChangeListener
+            def listener = [
+                "fund" : { o->
+                    report.viewReport(); 
+                    if ( binding ) binding.refresh()
+                }
+            ];
             
             def initReport() {
                 fundlist = svc.getFundlist( entity.objid ); 
-                setFund( fundlist[0] );
+                return super.preview();
             }
             
-            void setFund( fund ){
-                this.fund = fund; 
-                report.viewReport(); 
-
-                if ( binding ) binding.refresh()
+            def getReportData() {
+                def m = [:];
+                if( !fund ) {
+                    m = svc.getRCDSummaryData([ liquidationid: entity.objid  ])
+                }  
+                else {
+                    m = svc.getRCDReportData([ liquidationid: entity.objid, fundid: fund.fundid ]);
+                }
+                m.signature = entity.signature;
+                return m; 
             }
             
-            def getReportData(){
-                return svc.getRCDReportData([ liquidationid: entity.objid, fundid: fund.fundid ]); 
-            }
-            
-            
-            SubReport[] getSubReports() {
-               return [ 
-                   new SubReport("remittances", reportpath + "remittances.jasper"),
-                    new SubReport("collectionsummary", reportpath + "collectionsummary.jasper"),
-                    new SubReport("reportaforms", reportpath + "reportaforms.jasper"),
-                    new SubReport("reportnsaforms", reportpath + "reportnsaforms.jasper"),
-                    new SubReport("reportnonserialsummary", reportpath + "reportnonserialsummary.jasper"),
-                    new SubReport("OtherPayments", reportpath + "otherpayments.jasper"),
-                    new SubReport("Denomination", reportpath + "denomination.jasper")
-                ] as SubReport[];       
-            }
             
         }      
        ]]>
    </code>
    
    <pages>
-       <page template="com.rameses.enterprise.treasury.report.PreviewByFundPage" />
+       <page name="preview" template="com.rameses.enterprise.treasury.report.PreviewByFundPage" />
    </pages>
    
 </workunit>

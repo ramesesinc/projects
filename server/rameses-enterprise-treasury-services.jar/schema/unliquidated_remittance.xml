@@ -1,0 +1,29 @@
+<schema>
+	<element  tablename="remittance" >
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="txnno" required="true" caption="Control No" searchable="true"/>
+		<field name="remittancedate" required="true"/>
+		<field name="dtposted" required="true" caption="Date"/>
+		<field name="collector_objid" required="true"/>
+		<field name="collector_name" required="true" caption="Collector" searchable="true"/>
+		<field name="collector_title" required="true"/>
+
+		<field name="liquidatingofficer_objid" />
+		<field name="liquidatingofficer_name"  caption="Liquidating Officer"/>
+
+		<field name="amount" required="true" type="decimal" caption="Amount"/>
+		<field name="totalcash" required="true" type="decimal" caption="Total Cash"/>
+		<field name="totalnoncash" required="true" type="decimal" caption="Total Non Cash"/>
+		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
+		<field name="remarks" />
+
+		<complex name="liquidation" ref="liquidation_remittance" jointype="many-to-one" includefields="liquidationid,liquidation.txnno" required="false">
+			<key field="objid" target="objid" />
+		</complex>	
+
+		<field name="liquidated" expr="CASE WHEN liquidation.liquidationid IS NULL THEN 0 ELSE 1 END" />
+	</element>
+
+	
+</schema>

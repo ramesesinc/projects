@@ -30,6 +30,7 @@ class MonthBillItem extends BillItem {
 		m.sortorder = getSortorder();
 		m.fromdate = fromdate;
 		m.todate = todate;
+		m.duedate = duedate;
 
 		if(!m.fromdate || !m.todate) {
 			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -39,6 +40,9 @@ class MonthBillItem extends BillItem {
 			def tmpDt = DateFunc.getMonthAdd(m.fromdate, 1);
 			m.todate = DateFunc.getDayAdd(tmpDt, -1);
 		}
+		m.fromday = getFromday();
+		m.today = getToday();
+
 		return m;
 	}
 

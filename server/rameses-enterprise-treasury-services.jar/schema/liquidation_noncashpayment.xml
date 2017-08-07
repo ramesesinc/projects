@@ -1,0 +1,12 @@
+
+<schema>
+	<element name="liquidation_noncashpayment" tablename="liquidation_noncashpayment">
+		<field name="objid" primary="true"/>
+		<field name="liquidationid" required="true"/>
+		<field name="liquidationfundid" required="true"/>
+
+		<complex name="check" ref="cashreceiptpayment_noncash" jointype="many-to-one" required="false">
+			<key field="objid" target="objid" />
+		</complex>   
+	</element>
+</schema>

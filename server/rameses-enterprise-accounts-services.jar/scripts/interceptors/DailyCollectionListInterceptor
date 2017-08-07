@@ -1,0 +1,67 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+
+class DailyCollectionInterceptor  {
+
+	@DataContext("daily_collection")
+	def dcEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'daily_collection' }")
+	public def getNodeList(evt) {
+		def result = evt.result;
+		result << [ title: 'Unposted', id:'unposted'];
+
+		//add last 5 years
+		int yr = dateSvc.getServerYear();
+		(0..4).each {
+			def yy = yr - it;
+			result << [title: yy, id: yy ];
+		}
+		result << [title: 'Past', id: 'past' ]
+	}
+
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'daily_collection' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		//o.debug = true;
+		if( !o.node?.id ) return;
+		if( o.node.id == 'all' ) return;
+
+		int yr = dateSvc.getServerYear();
+
+		def str = "";
+		def m = [:];
+
+		switch( o.node.id ) {
+			case 'unposted':
+				str = " posted=0 ";
+				break;
+
+			case 'past':
+				str = " posted=1 AND year < " + (yr-5) ;
+				break;
+
+			default:
+				str = " posted=1 AND year = " + o.node.id ;
+				break;
+
+		}
+				
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}	
+
+}

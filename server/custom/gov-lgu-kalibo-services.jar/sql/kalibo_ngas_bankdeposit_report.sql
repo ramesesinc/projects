@@ -3,7 +3,7 @@ select
   distinct lcf.fund_objid as objid , lcf.fund_title as title 
 from bankdeposit bd 
   inner join bankdeposit_liquidation bl on bd.objid = bl.bankdepositid 
-  inner join liquidation_cashier_fund lcf on lcf.objid = bl.objid  
+  inner join liquidation_fund lcf on lcf.objid = bl.objid  
 where bd.objid = $P{bankdepositid}
 
 [getAccountGroups]
@@ -36,7 +36,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
          WHERE b.objid= $P{bankdepositid} 
           AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -61,7 +61,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
         WHERE b.objid= $P{bankdepositid} 
         AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -86,7 +86,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
         WHERE b.objid= $P{bankdepositid} 
         AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -127,7 +127,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
          WHERE b.objid= $P{bankdepositid} 
           AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -152,7 +152,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
         WHERE b.objid= $P{bankdepositid} 
         AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -192,7 +192,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
          WHERE b.objid= $P{bankdepositid} 
           AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -217,7 +217,7 @@ FROM (
           DISTINCT lf.liquidationid, lf.fund_objid
         FROM bankdeposit b 
           INNER JOIN bankdeposit_liquidation bl ON b.objid = bl.bankdepositid
-          INNER JOIN liquidation_cashier_fund lf ON lf.objid = bl.objid 
+          INNER JOIN liquidation_fund lf ON lf.objid = bl.objid 
         WHERE b.objid= $P{bankdepositid} 
         AND lf.fund_objid = $P{fundid} 
       ) a 
@@ -273,7 +273,7 @@ SELECT a.* FROM
 	ri.fund_title
 FROM bankdeposit bd 
   INNER JOIN bankdeposit_liquidation bl ON bd.objid = bl.bankdepositid
-  INNER JOIN liquidation_cashier_fund lf ON bl.objid = lf.objid 
+  INNER JOIN liquidation_fund lf ON bl.objid = lf.objid 
   INNER JOIN liquidation_remittance lr ON lf.liquidationid = lr.liquidationid
   INNER JOIN remittance rem ON lr.objid = rem.objid 
   INNER JOIN remittance_cashreceipt rc ON rem.objid = rc.remittanceid

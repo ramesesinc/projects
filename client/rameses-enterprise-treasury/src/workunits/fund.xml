@@ -1,16 +1,10 @@
-<workunit>
+<workunit schemaName="fund">
         
     <invokers>
-         <invoker type="fund:open" action="open" caption="Fund (New)" role="MASTER" permission="fund.open"/>
-         <invoker type="fund:create" action="create" caption="Fund (Edit)" role="MASTER" permission="fund.create"/>
+         <invoker type="fund:create" action="create" caption="Fund (Edit)" role="MASTER" permission="fund.create" target="popup"/>
+         <invoker type="fund:open" action="open" caption="Fund (New)" role="MASTER" permission="fund.open" target="popup"/>
          
          <invoker type="quick_launcher" code="FUND01" caption="Fund" role="MASTER" permission="fund.create"/> 
-         
-         <invoker type="formActions" action="_close" caption="Close" immediate="true" visibleWhen="#{mode!='edit'}"/>
-         <invoker type="formActions" action="edit" caption="Edit" immediate="true" visibleWhen="#{mode=='read'}" role="MASTER" permission="fund.edit"/>
-         <invoker type="formActions" action="cancelEdit" caption="Cancel" immediate="true" visibleWhen="#{mode=='edit'}"/>
-         <invoker type="formActions" action="saveCreate" caption="Save" visibleWhen="#{mode=='create'}"/>
-         <invoker type="formActions" action="saveUpdate" caption="Save" visibleWhen="#{mode=='edit'}"/>
    </invokers>
    
    <code>
@@ -19,44 +13,14 @@
         import com.rameses.rcp.common.*;
         import com.rameses.rcp.annotations.*;
         import com.rameses.osiris2.client.*;
-        import java.rmi.server.*;
+        import com.rameses.seti2.models.*;
         
-        class FundController {
-        
-            @Service("FundService")
-            def service;
+        class FundModel extends CrudFormModel {
             
-            def entity;
-            def node;
-            def mode = 'read';
-            
-            void open() {
-                entity = service.open( entity );
-            }
-
-            void create() {
-                mode = 'create';
-                entity = [ objid:'FUND'+new UID(), parentid:node.objid, state:'DRAFT', type:'subfund', special:0 ];
-            }
-            
-            void edit() {
-                mode = 'edit';
-            }
-            
-            void cancelEdit() {
-                mode = 'read';
-            }
-            
-            void saveCreate() {
-                if( MsgBox.confirm("You are about to save this entry. Proceed?")) {
-                    service.create( entity ); 
-                    mode = 'read'
-                }
-            }
-            
-            void saveUpdate() {
-                service.update( entity ); 
-                mode = 'read'
+            void afterCreate() {
+                entity.parentid = caller.selectedNode.objid;
+                entity.system = 0;
+                entity.state = 'DRAFT';
             }
             
         }      
@@ -64,7 +28,7 @@
    </code>
    
    <pages>
-       <page template="com.rameses.enterprise.treasury.fund.FundPage"/>
+       <page template="com.rameses.enterprise.treasury.views.FundPage"/>
    </pages>
    
 </workunit>

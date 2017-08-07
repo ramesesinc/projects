@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+
+class UnliquidatedRemittanceListInterceptor {
+
+	@ActiveDB('cashreceipt') 
+	def cashreceipt;
+
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'unliquidated_remittance' }")
+	public void getNodes( evt ) { 
+		def x = evt.args[0];
+		def result = evt.result; 
+		result << [ id:'pending', title: 'For Approval', state:'OPEN' ];
+		result << [ id:'approved', title: 'Approved For Liquidation', state:'APPROVED' ];
+		result << [ id:'hold', title: 'Returned', state:'HOLD' ];		
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'unliquidated_remittance' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+
+		//o.debug = true;
+		if( !o.node?.id ) return;
+
+		def str = "state = :state AND liquidation.liquidationid IS NULL";
+		def m = [state: o.node.state];
+
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}	
+
+}

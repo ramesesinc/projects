@@ -8,6 +8,7 @@
 		</complex>	
 		
 		<!-- applicable to rental payments -->
+		<field name="acctid" required="true"/>
 		<field name="month" type="integer" required="true"/>	
 		<field name="year" type="integer"  required="true"/>
 		

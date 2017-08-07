@@ -1,0 +1,26 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class CashDepositService {
+
+	
+	@DataContext("liquidation_fund")
+	def liqFundEm;
+
+	@ProxyMethod
+	public def getFundList() {
+		return liqFundEm.where(  "liquidation.state = 'APPROVED' " ).list()*.fund.unique();
+	}
+
+	@ProxyMethod
+	public def getFundItems( def fund ) {
+		return liqFundEm.where(  "liquidation.state = 'APPROVED' AND fund.objid= :fid", [fid: fund.objid ] ).list(); 
+	}
+
+	@ProxyMethod
+	public def getForDepositDetails( def liqids ) {
+		return liqFundEm.where(  "liquidation.state = 'APPROVED' AND fund.objid= :fid", [fid: fund.objid ] ).list(); 
+	}
+
+}

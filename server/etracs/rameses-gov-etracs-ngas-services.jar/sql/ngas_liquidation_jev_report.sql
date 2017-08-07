@@ -1,6 +1,6 @@
 [getFunds]
 select fund_objid as objid, fund_title as title  
-from liquidation_cashier_fund 
+from liquidation_fund 
 where liquidationid = $P{liquidationid} 
 order by fund_title 
 

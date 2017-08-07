@@ -2,7 +2,7 @@
 	<element name="bankaccount" tablename="bankaccount">
 		<field name="objid" primary="true"/>
 		<field name="state" required="true" visible="false" defaultValue="DRAFT"/>
-		<field name="code" required="true" caption="Code"/>
+		<field name="code" required="true" caption="Acct No" searchable="true"/>
 		<field name="title" required="true" caption="Title"/>
 		<field name="accttype" visible="false" lov="BANK_ACCOUNT_TYPES"/>
 		<field name="description" visible="false"/>
@@ -12,11 +12,11 @@
 		</complex>
 
 		<field name="bank_code" required="true" caption="Bank Code"/>
-		<field name="bank_name" required="true"/>
+		<field name="bank_name" required="true" searchable="true"/>
 		
 		<field name="fund_objid" required="true" visible="false"/>
 		<field name="fund_code" required="true" caption="Fund code"/>
-		<field name="fund_title" required="true" caption="Fund Title"/>
+		<field name="fund_title" required="true" caption="Fund Title" searchable="true"/>
 		
 		<field name="currency" required="true" visible="false" lov="CURRENCY_TYPES"/>
 		<field name="cashreport" visible="false"/>

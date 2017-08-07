@@ -38,22 +38,19 @@ public class RemittanceReportByFund extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
-        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         formPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Fund");
         xComboBox1.setCaptionWidth(55);
         xComboBox1.setDynamic(true);
-        xComboBox1.setEmptyText("-- Select Fund --");
+        xComboBox1.setEmptyText("-- All --");
         xComboBox1.setExpression("#{item.title}");
         xComboBox1.setItems("fundlist");
         xComboBox1.setName("fund"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
         xComboBox2.setCaption("AF");
@@ -69,7 +66,20 @@ public class RemittanceReportByFund extends javax.swing.JPanel {
         xComboBox2.setVisibleWhen("#{allowSelectAF==true}");
         formPanel1.add(xComboBox2);
 
-        jPanel1.add(formPanel1);
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 533, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(0, 66, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(5, 5, 5)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        );
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -84,7 +94,7 @@ public class RemittanceReportByFund extends javax.swing.JPanel {
         );
         xReportPanel1Layout.setVerticalGroup(
             xReportPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 337, Short.MAX_VALUE)
+            .add(0, 332, Short.MAX_VALUE)
         );
 
         add(xReportPanel1, java.awt.BorderLayout.CENTER);

@@ -27,6 +27,7 @@ class RemittanceReportService  {
 	@Service('RAAFReportService') 
 	def raafSvc; 
 
+	
 	@Service 
 	def self; 
 

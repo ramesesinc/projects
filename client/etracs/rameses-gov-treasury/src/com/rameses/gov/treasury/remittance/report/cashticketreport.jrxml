@@ -51,7 +51,7 @@
 	<field name="collectiontype" class="java.lang.Object"/>
 	<field name="cashticketsummaries" class="java.lang.Object"/>
 	<field name="amount" class="java.math.BigDecimal"/>
-	<field name="signature.image" class="java.lang.Object"/>
+	<field name="collector.signature.image" class="java.lang.Object"/>
 	<field name="liquidatingofficer.signature.image" class="java.lang.Object"/>
 
 
@@ -2176,11 +2176,11 @@
 						width="137"
 						height="36"
 						key="image-2">
-							<printWhenExpression><![CDATA[$F{signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{collector.signature.image} != null]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{signature.image} )]]></imageExpression>
+					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{collector.signature.image} )]]></imageExpression>
 				</image>
 				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

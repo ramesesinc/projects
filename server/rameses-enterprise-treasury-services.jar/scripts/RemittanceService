@@ -132,8 +132,8 @@ class RemittanceService  {
 		o = em.read( o );
 
 		Base64Cipher cipher = new Base64Cipher()
-		if( o.signature !=null ) {
-			o.signature = cipher.decode( o.signature );
+		if( o.collector?.signature !=null ) {
+			o.signature = cipher.decode( o.collector.signature );
 		}
 		if(o.liquidatingofficer?.signature) {
 			o.liquidatingofficer.signature =  cipher.decode(o.liquidatingofficer.signature)

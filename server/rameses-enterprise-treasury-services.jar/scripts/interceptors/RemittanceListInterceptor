@@ -7,6 +7,7 @@ class RemittanceListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
+		result << [ id:'draft', title: 'Draft', state:'DRAFT' ];
 		result << [ id:'approval', title: 'For Approval', state:'OPEN' ];
 		result << [ id:'approved', title: 'For Liquidation', state:'APPROVED' ];
 		result << [ id:'liquidated', title: 'Liquidated', state:'APPROVED' ];

@@ -12,6 +12,11 @@
 		<complex name="liquidation" ref="liquidation" jointype="many-to-one" required="false" includefields="objid,txnno,dtposted,state">
 			<key field="liquidationid" target="objid" />
 		</complex>	
+
+		<complex name="deposit" ref="cashdeposit_item" jointype="many-to-one" required="false" includefields="objid">
+			<key field="objid" target="liquidationfundid" />
+		</complex>	
+		
 	</element>
 
 </schema>	

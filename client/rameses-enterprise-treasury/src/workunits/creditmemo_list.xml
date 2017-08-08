@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ListController.xml" >
     <invokers>
-        <invoker folderid="home/treasury" caption="Credit Memo List" role="COLLECTOR" />
+        <invoker folderid="home/collection" caption="Credit Memo List" role="COLLECTOR" />
         <invoker type="formActions" action="viewReport" caption="Report" />
     </invokers>
     

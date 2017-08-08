@@ -1,8 +1,18 @@
 <workunit>
     
    <invokers>
-         <invoker type="liquidation:create" caption="Liquidation" action="create" target="window"/>
+         <invoker type="liquidation:create" caption="Liquidation" action="create"
+                icon="home/icons/liquidation.png"
+                  target="window"/>
          
+         <invoker type="unliquidated_remittance:listActions" caption="Liquidate" action="create"
+                role="LIQUIDATING_OFFICER"
+                target="window"/>
+
+                  
+           <invoker folderid="home/collection" caption="Liquidate" action="create"
+                icon="home/icons/liquidation.png" role="LIQUIDATING_OFFICER"
+                  target="window"/>
          <!--
          <invoker type="liquidation:liquidate" caption="Liquidation" action="liquidate" target="popup"/>
          -->
@@ -17,10 +27,13 @@
          <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{mode == 'read' }" category="liquidation:reports" />
          
          <!-- DAILY COLLECTION -->
-         <invoker type="formActions" caption="Post Income Summary" name="postSummary" visibleWhen="#{mode=='read' &amp;&amp; entity.posted != 1}" index="101"/> 
+         <invoker type="formActions" caption="Post Income Summary" name="postSummary" 
+                  visibleWhen="#{mode=='read' &amp;&amp; entity.posted != 1}" index="101"/> 
          
          <!-- CASHIER FUNCTIONS -->
-         <invoker type="formActions" caption="Approve for Deposit" action="approve" role="CASHIER" permission="liquidation.approve" />
+         <invoker type="formActions" caption="Approve for Deposit" action="approve" 
+                    visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'OPEN' }"
+                  role="CASHIER" permission="liquidation.approve" />
 
    </invokers>
 

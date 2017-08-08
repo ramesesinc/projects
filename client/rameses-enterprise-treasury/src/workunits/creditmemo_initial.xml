@@ -3,7 +3,7 @@
    <invokers>
         <invoker type="quick_launcher" code="CR" caption="New Credit Memo" action="init" role="COLLECTOR" target="window"/>
         <invoker folderid="/menu/txn/treasury" caption="New Credit Memo" action="init" role="COLLECTOR"/>
-        <invoker folderid="/home/treasury" caption="New Credit Memo" action="init" role="COLLECTOR"/>
+        <invoker folderid="/home/collection" caption="New Credit Memo" action="init" role="COLLECTOR"/>
         <invoker type="creditmemo:create" caption="New Credit Memo" action="init" role="COLLECTOR"/>
    </invokers>
    

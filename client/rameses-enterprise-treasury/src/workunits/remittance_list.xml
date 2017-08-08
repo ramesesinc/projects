@@ -6,8 +6,9 @@
                  cols="txnno,remittancedate,collector.name,totalcash,totalnoncash,amount,liquidatingofficer.name"
                  hiddenCols="state" orderBy="remittancedate DESC"/>
         
-         <invoker folderid="/home/treasury" caption="Remittances" role="SHARED,COLLECTOR" tag="all" 
+         <invoker folderid="/home/collection" caption="Remittances" role="SHARED,COLLECTOR" tag="all" 
                  permission="remittance.view" action="init" index="11"
+                 icon="home/icons/remittance_list.png"
                   cols="txnno,remittancedate,collector.name,totalcash,totalnoncash,amount,liquidatingofficer.name"
                  hiddenCols="state" orderBy="remittancedate DESC"/>
         <!--
@@ -19,7 +20,7 @@
                  tag="collector" action="init" cols="txnno,remittancedate,totalcash,totalnoncash,amount,liquidatingofficer.name"
                  hiddenCols="state" orderBy="remittancedate DESC"/>
         
-        <invoker folderid="home/treasury/remittance" caption="Remittances (Collector)" role="COLLECTOR" 
+        <invoker folderid="home/collection/remittance" caption="Remittances (Collector)" role="COLLECTOR" 
                  tag="collector" action="init" cols="txnno,remittancedate,totalcash,totalnoncash,amount,liquidatingofficer.name"
                  hiddenCols="state" orderBy="remittancedate DESC"/>
         

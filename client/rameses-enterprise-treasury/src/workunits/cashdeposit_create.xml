@@ -1,8 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/treasury" caption="New Cash Deposit" action="start"/> 
+        <invoker folderid="/home/collection" caption="New Cash Deposit" action="start"  icon="home/icons/deposit.png"/> 
+        <invoker type="cashdeposit:create" caption="New Cash Deposit" action="start"/> 
    </invokers>
-   <code class="com.rameses.enterprise.treasury.models.CashDepositModel" />
+   <code class="com.rameses.enterprise.treasury.models.CashDepositNewModel" />
    <pageflow>
        <start>
            <transition to="initial" action="create"/>
@@ -12,7 +13,7 @@
        </page>
        <page name="breakdown" title="Cash and Check Breakdown">
            <transition to="initial" caption="Back" />
-           <transition to="end" caption="Next" />
+           <transition to="end" caption="Submit" action="submit" />
        </page>
        <end/>
    </pageflow>

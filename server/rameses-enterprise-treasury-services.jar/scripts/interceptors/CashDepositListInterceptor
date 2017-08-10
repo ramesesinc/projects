@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+
+class CashDepositListInterceptor {
+
+
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'cashdeposit' }")
+	public void getNodes( evt ) { 
+		def x = evt.args[0];
+		def result = evt.result; 
+		result << [ id:'pending', title: 'Pending', state:'OPEN' ];
+		result << [ id:'verified', title: 'Verified', state:'CLOSED' ];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashdeposit' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+
+		//o.debug = true;
+		if( !o.node?.id ) return;
+
+		def str = "state = :state";
+		def m = [state: o.node.state];
+
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}	
+
+}

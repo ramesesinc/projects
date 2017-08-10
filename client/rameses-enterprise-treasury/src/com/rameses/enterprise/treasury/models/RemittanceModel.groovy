@@ -109,7 +109,8 @@ class RemittanceModel  {
         try {
             def h = { sig->
                pass = true;
-               entity.signature = sig;
+               if( !entity.collector ) entity.collector = [:];
+               entity.collector.signature = sig;
             }
             def msg = "You are about to submit this remittance.Please ensure the entries are correct";
             Modal.show("verify_submit_with_signature", [handler:h, message: msg] );

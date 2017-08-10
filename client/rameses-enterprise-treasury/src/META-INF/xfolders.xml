@@ -37,7 +37,7 @@
             <folder id="deposit" caption="Deposit"/>
         </folder>    
         <!-- for comment -->
-        <folder id="collection" caption="Collection"/>
+        <folder id="collection" caption="Collection" icon="home/icons/treasury.png"/>
         <folder id="creditmemo" caption="Credit Memo"/>
         <folder id="cashmgmt" caption="Cash Management"/>
     </folder>   

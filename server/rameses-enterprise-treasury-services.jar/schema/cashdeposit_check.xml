@@ -1,0 +1,12 @@
+<schema>
+	<element  tablename="cashdeposit_check">
+		<field name="objid" primary="true" prefix="CSHDEPCHK"/>
+		<field name="cashdepositid" required="true"/>
+		<field name="checkid" required="true"/>
+		<field name="amount" required="true"/>
+
+		<complex name="liquidation" ref="liquidation_noncashpayment" jointype="many-to-one" required="false" includefields="check.*">	
+			<key field="checkid" target="objid"/>
+		</complex>	 
+	</element>
+</schema>

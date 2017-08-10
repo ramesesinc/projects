@@ -43,4 +43,10 @@ public class RemittanceListModel extends CrudListModel {
     def liquidate() {
         return Inv.lookupOpener( "liquidation:create" );
     } 
+    
+    void initForApproval() {
+        super.init();
+        def n = nodeList.find{ it.id == 'approval' };
+        if(n) selectedNode = n;
+    }
 } 

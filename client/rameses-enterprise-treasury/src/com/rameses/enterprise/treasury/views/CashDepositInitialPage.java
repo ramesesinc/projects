@@ -46,7 +46,7 @@ public class CashDepositInitialPage extends javax.swing.JPanel {
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "liquidation.txnno"}
+                new Object[]{"name", "txnno"}
                 , new Object[]{"caption", "Ref No"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}

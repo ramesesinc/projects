@@ -14,6 +14,7 @@
 		<field name="liquidatingofficer_name"  caption="Liquidating Officer"/>
 		<field name="liquidatingofficer_title" />
 		<field name="liquidatingofficer_signature"/>
+		<field name="collector_signature"/>
 
 		<field name="amount" required="true" type="decimal" caption="Amount"/>
 		<field name="totalcash" required="true" type="decimal" caption="Total Cash"/>

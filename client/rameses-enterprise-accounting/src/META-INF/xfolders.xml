@@ -1,0 +1,23 @@
+<folders>
+    <folder id="explorer">
+        <folder id="master">
+            <folder id="accounting" caption="Accounting"/>
+        </folder>
+        <folder id="txn">
+            <folder id="accounting" caption="Accounting"/>
+        </folder>
+        <folder id="report">
+            <folder id="accounting" caption="Accounting"/>
+        </folder>
+    </folder>
+    <folder id="menu">
+        <folder id="txn" caption="Transaction">
+            <folder id="accounting" caption="Accounting"/>
+        </folder>
+    </folder>
+    <folder id="home">
+        <folder id="accounting" caption="Accounting" icon="home/icons/accounting.png">
+            <folder id="reports" caption="Reports"/>
+        </folder>    
+    </folder>
+</folders>

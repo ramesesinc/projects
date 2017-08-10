@@ -1,9 +1,12 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="home/treasury" caption="Remit" action="create" role="COLLECTOR" target="window"/>
+        <invoker folderid="home/collection" caption="Remit" action="create" role="COLLECTOR" target="window" 
+                icon="home/icons/remittance.png"/>
         <!--invoker folderid="home/remittance" caption="Capture Remittance" action="create" role="COLLECTOR" target="window"/-->
-        <invoker type="remittance:create" caption="Remittance" action="create" target="window"/>
+        <invoker type="remittance:create" caption="Remittance" action="create" target="window"
+            />
+        
         <invoker type="quick_launcher" code="REM" caption="Remittance" action="create" target="window" role="COLLECTOR"/>
         
         <!-- OPEN ACTION -->

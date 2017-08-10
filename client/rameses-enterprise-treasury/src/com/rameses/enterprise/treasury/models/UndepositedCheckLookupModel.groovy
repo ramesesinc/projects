@@ -7,8 +7,8 @@ import com.rameses.osiris2.common.*;
 
 class UndepositedCheckLookupModel  { 
 
-    @Service("QueryService")
-    def querySvc;
+    @Service("CashDepositService")
+    def depositSvc;
 
     @Binding
     def binding;
@@ -18,13 +18,12 @@ class UndepositedCheckLookupModel  {
     def onselect;
     def selections;
     def amount = 0;
+    def excludeids;
     
     def checkModel = [
         fetchList: {
             if(!refids) return [];
-            def q = [_schemaname: 'liquidation_noncashpayment' ];
-            q.where = [" liquidationid IN ( '" +  refids.join("','") +  "') "];
-            items = querySvc.getList( q )*.check;
+            items = depositSvc.getUndepositedChecks([refids: refids, excludeids: excludeids]);
             return items;
         },
         isMultiSelect: { return true },

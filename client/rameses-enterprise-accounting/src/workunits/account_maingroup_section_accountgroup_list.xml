@@ -1,0 +1,27 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="account_group">
+        
+    <invokers>
+        <invoker type="account_maingroup:section" caption="Account Groups" action="init" index="2"
+            cols="code,title,group.code,group.title,accttype" orderBy="code"/> 
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.seti2.models.*;
+        
+        class AccountGroupListModel extends CrudSubListModel {
+        
+            def getCustomFilter() {
+                return [ "maingroupid = :mid", [mid: masterEntity.objid] ];
+            }
+        
+        }
+        
+        ]]>
+        
+    </code>
+</workunit>

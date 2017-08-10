@@ -1,4 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation"
+    cols="txnno,dtposted,liquidatingofficer.name,totalcash,totalnoncash,amount,cashier.name" 
+    hiddenCols="state">
     
     <invokers>
         <invoker folderid="home/collection" caption="Liquidations"

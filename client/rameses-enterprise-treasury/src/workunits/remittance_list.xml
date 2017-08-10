@@ -28,11 +28,17 @@
                   spermission="remittance.revert" 
                  /> 
         -->
+         <invoker type="remittance:for_approval" action="initForApproval" caption="Remittances" 
+                cols="txnno,remittancedate,collector.name,totalcash,totalnoncash,amount,liquidatingofficer.name"
+                role="LIQUIDATING_OFFICER" hiddenCols="state" 
+                 orderBy="remittancedate DESC"/>        
                  
+        <!-- ACTIONS --> 
         <invoker type="listActions" caption="Revert" action="revert" 
                  srole="ADMIN" /> 
          <invoker type="listActions" caption="Prepare Liquidation Report" action="liquidate" 
                  role="LIQUIDATING_OFFICER" />
+         
     </invokers> 
     
     <code class="com.rameses.enterprise.treasury.models.RemittanceListModel" /> 

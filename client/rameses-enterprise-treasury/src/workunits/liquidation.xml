@@ -23,12 +23,8 @@
          <!-- liquidate buttons -->
          <invoker type="formActions" caption="Close" name="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
          <invoker type="formActions" caption="Submit" name="submit" visibleWhen="#{mode == 'create'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
-         <invoker type="formActions" caption="Print" name="print"  visibleWhen="#{mode == 'read' }" action="print" />
+         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{mode == 'read' }" action="preview" />
          <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{mode == 'read' }" category="liquidation:reports" />
-         
-         <!-- DAILY COLLECTION -->
-         <invoker type="formActions" caption="Post Income Summary" name="postSummary" 
-                  visibleWhen="#{mode=='read' &amp;&amp; entity.posted != 1}" index="101"/> 
          
          <!-- CASHIER FUNCTIONS -->
          <invoker type="formActions" caption="Approve for Deposit" action="approve" 

@@ -6,8 +6,7 @@ import com.rameses.rcp.annotations.*;
 import java.rmi.server.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.util.*;
-import javax.swing.*;
-import com.rameses.io.*;
+
 
 class LiquidationModel  { 
 
@@ -60,7 +59,7 @@ class LiquidationModel  {
     }
 
      //whats bad about this is that the report is located in etracs treasuty gov.
-    def print() {
+    def preview() {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
@@ -155,14 +154,6 @@ class LiquidationModel  {
         }
     }
     
-    void doExport() {
-        def chooser = new JFileChooser();
-        chooser.setSelectedFile(new File(entity.txnno + '.liq'));
-        int i = chooser.showSaveDialog(null);
-        if(i==0) {
-            FileUtil.writeObject( chooser.selectedFile, exportSvc.exportLiquidation(entity.objid) );
-            MsgBox.alert("Liquidation has been successfully exported!");
-        }   
-    }
+    
     
 } 

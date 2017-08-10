@@ -4,4 +4,6 @@
         <invoker type="account_maingroup:section" caption="Account Mapping" action="init" index="2"
             cols="item.code,item.title,account.code,account.title" orderBy="account.code"/> 
     </invokers>
+    
+    <code class="com.rameses.enterprise.accounting.models.AccountSubListModel"/>   
 </workunit>

@@ -42,7 +42,7 @@ class AccountMappingModel {
         onColumnUpdate: { o, name ->
             def m =[:]
             m.item = selectedItem?.item;
-            m.account = o;
+            m.account = o.account;
             m.maingroup = maingroup;
             acctMapSvc.mapAccount( m );
         }

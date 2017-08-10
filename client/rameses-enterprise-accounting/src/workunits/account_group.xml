@@ -1,11 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="account_group">
     <invokers>
-         <invoker type="account_group:create" caption="New Account Header" action="create"  target="popup"/>
-         <invoker type="account_group:open"  caption="Open Account Header"  action="open"  target="popup"/>
+         <invoker type="account_group:create" caption="New Account Group" action="create"  target="popup"/>
+         <invoker type="account_group:open"  caption="Open Account Group"  action="open"  target="popup"/>
    </invokers>
    
    <code>
-        <![CDATA[
+    <![CDATA[
         
         import com.rameses.osiris2.common.*;
         import com.rameses.rcp.common.*;
@@ -18,11 +18,12 @@
             void afterCreate() {
                 entity.maingroup = caller.masterEntity;
             }    
-                        
+            
+            def getAccountGroupLookup() {
+                return Inv.lookupOpener( "account_group:lookup", [maingroupid: entity.maingroup.objid] );
+            } 
         }
-        
-        
-        ]]>
+    ]]>
     </code>
    
     <pages>

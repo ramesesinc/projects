@@ -16,11 +16,13 @@ class AccountModel extends CrudFormModel {
         return Inv.lookupOpener( "account_group:lookup", [maingroupid: entity.maingroup.objid] );
     }        
 
-    public void afterCreateData(String name, def item){
+    public Map createItem(String name, Map subSchema ) { 
+        def item = super.createItem( name, subSchema ); 
         item.code = caller.masterEntity.code;
         item.maingroup = caller.masterEntity;
         item.acctid = entity.objid;
         item.group = entity.group;
+        return item; 
     }
 }
     

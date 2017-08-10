@@ -73,10 +73,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jLabel29 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
 
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel2.setLayout(null);
 
         xButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/remittance.png"))); // NOI18N
         xButton7.setBorderPainted(false);
@@ -86,16 +84,19 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton7.setName("postDailyCollection"); // NOI18N
         xButton7.setText("<html>Daily Collection</html>");
         xButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel2.add(xButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 40, 90, 100));
+        jPanel2.add(xButton7);
+        xButton7.setBounds(150, 40, 90, 100);
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel14.setText("ACCOUNTING");
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, -1));
+        jPanel2.add(jLabel14);
+        jLabel14.setBounds(0, 0, 220, 14);
 
         jLabel31.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel31.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel31.setText("<html>&#8595;</html>");
-        jPanel2.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 0, 40, 30));
+        jPanel2.add(jLabel31);
+        jLabel31.setBounds(390, 0, 40, 30);
 
         xButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/remittance.png"))); // NOI18N
         xButton17.setBorderPainted(false);
@@ -104,26 +105,28 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton17.setText("<html>Post Deposit</html>");
         xButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel2.add(xButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 40, 90, 100));
+        jPanel2.add(xButton17);
+        xButton17.setBounds(370, 40, 90, 100);
 
         jLabel33.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel33.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel33.setText("<html>&#8595;</html>");
-        jPanel2.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 10, 40, 30));
-
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 370, 470, 170));
+        jPanel2.add(jLabel33);
+        jLabel33.setBounds(170, 10, 40, 30);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel3.setLayout(null);
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel16.setText("CASHIER");
-        jPanel3.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 180, -1));
+        jPanel3.add(jLabel16);
+        jLabel16.setBounds(10, 10, 180, 14);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("<html>&#8594;</html>");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 240, 40, 20));
+        jPanel3.add(jLabel3);
+        jLabel3.setBounds(100, 240, 40, 20);
 
         xButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/deposit.png"))); // NOI18N
         xButton1.setBorderPainted(false);
@@ -133,7 +136,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton1.setName("deposit"); // NOI18N
         xButton1.setText("Deposit");
         xButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel3.add(xButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 90, 70));
+        jPanel3.add(xButton1);
+        xButton1.setBounds(120, 220, 90, 70);
 
         xButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/approve.png"))); // NOI18N
         xButton12.setBorderPainted(false);
@@ -143,7 +147,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton12.setName("acceptLiquidation"); // NOI18N
         xButton12.setText("Accept");
         xButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel3.add(xButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 80, 90));
+        jPanel3.add(xButton12);
+        xButton12.setBounds(30, 210, 80, 90);
 
         xButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/deposit.png"))); // NOI18N
         xButton2.setBorderPainted(false);
@@ -158,22 +163,23 @@ public class CollectionProcessMap extends javax.swing.JPanel {
                 xButton2ActionPerformed(evt);
             }
         });
-        jPanel3.add(xButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 90, 90));
+        jPanel3.add(xButton2);
+        xButton2.setBounds(30, 50, 90, 90);
 
         jLabel19.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel19.setText("<html>&#8594;</html>");
-        jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 40, 20));
+        jPanel3.add(jLabel19);
+        jLabel19.setBounds(10, 240, 40, 20);
 
         jLabel21.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel21.setText("<html>&#8594;</html>");
-        jPanel3.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 40, 20));
-
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 40, 220, 320));
+        jPanel3.add(jLabel21);
+        jLabel21.setBounds(0, 60, 40, 20);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel4.setLayout(null);
 
         xButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/cashreceipt.png"))); // NOI18N
         xButton9.setBorderPainted(false);
@@ -183,16 +189,19 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton9.setName("issueReceipt"); // NOI18N
         xButton9.setText("<html><center>Issue Receipt</center></html>");
         xButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(xButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 210, 70, 80));
+        jPanel4.add(xButton9);
+        xButton9.setBounds(90, 210, 70, 80);
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel18.setText("<html>&#8594;</html>");
-        jPanel4.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 240, 40, 20));
+        jPanel4.add(jLabel18);
+        jLabel18.setBounds(180, 240, 40, 20);
 
         jLabel20.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel20.setText("COLLECTOR");
-        jPanel4.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 220, -1));
+        jPanel4.add(jLabel20);
+        jLabel20.setBounds(10, 10, 220, 14);
 
         xButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/treasury.png"))); // NOI18N
         xButton11.setBorderPainted(false);
@@ -202,12 +211,14 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton11.setName("requestAF"); // NOI18N
         xButton11.setText("<html><center>Request AF</center></html>");
         xButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(xButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 60, 80));
+        jPanel4.add(xButton11);
+        xButton11.setBounds(50, 30, 60, 80);
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("<html>&#8592;</html>");
-        jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 40, 20));
+        jPanel4.add(jLabel13);
+        jLabel13.setBounds(10, 40, 40, 20);
 
         xButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/remittance.png"))); // NOI18N
         xButton5.setBorderPainted(false);
@@ -217,7 +228,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton5.setName("remit"); // NOI18N
         xButton5.setText("Remit");
         xButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(xButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 220, 100, 70));
+        jPanel4.add(xButton5);
+        xButton5.setBounds(210, 220, 100, 70);
 
         xButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/cashreceipt.png"))); // NOI18N
         xButton8.setBorderPainted(false);
@@ -227,12 +239,14 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton8.setName("batchCollection"); // NOI18N
         xButton8.setText("<html><center>Batch Capture</center></html>");
         xButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(xButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 110, 110, -1));
+        jPanel4.add(xButton8);
+        xButton8.setBounds(80, 110, 110, 75);
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("<html>&#8595;</html>");
-        jPanel4.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 180, 40, 40));
+        jPanel4.add(jLabel11);
+        jLabel11.setBounds(240, 180, 40, 40);
 
         xButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/verify.png"))); // NOI18N
         xButton14.setBorderPainted(false);
@@ -242,50 +256,53 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton14.setName("issueReceipt"); // NOI18N
         xButton14.setText("Verify");
         xButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(xButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 110, -1));
+        jPanel4.add(xButton14);
+        xButton14.setBounds(210, 110, 110, 75);
 
         jLabel25.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel25.setText("<html>&#8594;</html>");
-        jPanel4.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 140, 40, 20));
-
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, 330, 320));
+        jPanel4.add(jLabel25);
+        jLabel25.setBounds(180, 140, 40, 20);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel5.setLayout(null);
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel22.setText("ACCOUNTABLE FORM  OFFICER");
-        jPanel5.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 170, -1));
+        jPanel5.add(jLabel22);
+        jLabel22.setBounds(0, 10, 170, 14);
 
         xButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/liquidation.png"))); // NOI18N
         xButton3.setBorderPainted(false);
         xButton3.setCaption("");
         xButton3.setContentAreaFilled(false);
         xButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        xButton3.setName("liquidate"); // NOI18N
+        xButton3.setName("issueAF"); // NOI18N
         xButton3.setText("<html>Issue AF</html>");
         xButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel5.add(xButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 100, 90));
-
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 180, 320));
+        jPanel5.add(xButton3);
+        xButton3.setBounds(50, 20, 100, 90);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel6.setLayout(null);
 
         jLabel23.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel23.setText("LIQUIDATING OFFICER");
-        jPanel6.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 160, -1));
+        jPanel6.add(jLabel23);
+        jLabel23.setBounds(10, 10, 160, 14);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel15.setText("<html>&#8594;</html>");
-        jPanel6.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 40, 20));
+        jPanel6.add(jLabel15);
+        jLabel15.setBounds(110, 240, 40, 20);
 
         jLabel17.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel17.setText("<html>&#8594;</html>");
-        jPanel6.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 40, 20));
+        jPanel6.add(jLabel17);
+        jLabel17.setBounds(10, 240, 40, 20);
 
         xButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/approve.png"))); // NOI18N
         xButton10.setBorderPainted(false);
@@ -295,7 +312,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton10.setName("acceptRemittance"); // NOI18N
         xButton10.setText("Accept");
         xButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel6.add(xButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 80, 90));
+        jPanel6.add(xButton10);
+        xButton10.setBounds(40, 210, 80, 90);
 
         xButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/liquidation_list.png"))); // NOI18N
         xButton13.setBorderPainted(false);
@@ -310,7 +328,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
                 xButton13ActionPerformed(evt);
             }
         });
-        jPanel6.add(xButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, 90, 90));
+        jPanel6.add(xButton13);
+        xButton13.setBounds(140, 40, 90, 90);
 
         xButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/liquidation.png"))); // NOI18N
         xButton6.setBorderPainted(false);
@@ -320,12 +339,11 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton6.setName("liquidate"); // NOI18N
         xButton6.setText("Liquidate");
         xButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel6.add(xButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 100, 70));
-
-        jPanel1.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 40, 240, 320));
+        jPanel6.add(xButton6);
+        xButton6.setBounds(140, 220, 100, 70);
 
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel7.setLayout(null);
 
         xButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/cashreceipt.png"))); // NOI18N
         xButton15.setBorderPainted(false);
@@ -335,7 +353,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton15.setName("issueSubcollectorReceipt"); // NOI18N
         xButton15.setText("<html><center>Issue Receipt (Subcollector)</center><html>");
         xButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel7.add(xButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 120, 100));
+        jPanel7.add(xButton15);
+        xButton15.setBounds(70, 30, 120, 100);
 
         xButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/remittance.png"))); // NOI18N
         xButton16.setBorderPainted(false);
@@ -344,35 +363,73 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton16.setText("<html>Subcollector Remittance</html>");
         xButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel7.add(xButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 110, 100));
+        jPanel7.add(xButton16);
+        xButton16.setBounds(210, 30, 110, 100);
 
         jLabel28.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel28.setText("SUBCOLLECTOR");
-        jPanel7.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, -1));
+        jPanel7.add(jLabel28);
+        jLabel28.setBounds(0, 0, 220, 14);
 
         jLabel29.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel29.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel29.setText("<html>&#8593;</html>");
-        jPanel7.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 10, 40, 20));
+        jPanel7.add(jLabel29);
+        jLabel29.setBounds(240, 10, 40, 20);
 
         jLabel30.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel30.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel30.setText("<html>&#8594;</html>");
-        jPanel7.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, 40, 20));
+        jPanel7.add(jLabel30);
+        jLabel30.setBounds(170, 60, 40, 20);
 
-        jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 370, 330, 170));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(210, 210, 210)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

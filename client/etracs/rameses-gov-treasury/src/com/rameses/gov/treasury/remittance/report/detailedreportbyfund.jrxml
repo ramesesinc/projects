@@ -716,14 +716,14 @@
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="23"
 						y="53"
 						width="137"
 						height="36"
 						key="image-2">
-							<printWhenExpression><![CDATA[$F{collector.signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($F{collector.signature.image} instanceof byte[])]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
@@ -749,7 +749,7 @@
 					</textElement>
 				<text><![CDATA[Collector :]]></text>
 				</staticText>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="262"
@@ -757,7 +757,7 @@
 						width="137"
 						height="36"
 						key="image-3">
-							<printWhenExpression><![CDATA[$F{liquidatingofficer.signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($F{liquidatingofficer.signature.image} instanceof byte[])]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>

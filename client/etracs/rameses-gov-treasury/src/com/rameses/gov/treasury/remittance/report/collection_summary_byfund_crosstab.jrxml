@@ -973,20 +973,20 @@
 						positionType="Float"/>
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 				</line>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="32"
 						y="51"
 						width="137"
 						height="36"
 						key="image-3">
-							<printWhenExpression><![CDATA[$F{collector.signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($F{collector.signature.image} instanceof byte[])]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
 					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{collector.signature.image} )]]></imageExpression>
 				</image>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="481"
@@ -994,7 +994,7 @@
 						width="137"
 						height="36"
 						key="image-4">
-							<printWhenExpression><![CDATA[$F{liquidatingofficer.signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($F{liquidatingofficer.signature.image} instanceof byte[])]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>

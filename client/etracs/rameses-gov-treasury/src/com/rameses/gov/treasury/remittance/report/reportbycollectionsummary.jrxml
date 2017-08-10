@@ -1451,14 +1451,14 @@
 						key="line-5"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="38"
 						y="59"
 						width="137"
 						height="36"
 						key="image-2">
-							<printWhenExpression><![CDATA[$F{collector.signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($F{collector.signature.image} instanceof byte[])]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
@@ -1486,7 +1486,7 @@
 				<textFieldExpression   class="java.lang.String"><![CDATA["           I hereby certify that the foregoing report on collections " 
 + " and deposits and accountability on accountable forms is true and correct "]]></textFieldExpression>
 				</textField>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="482"
@@ -1494,7 +1494,7 @@
 						width="137"
 						height="36"
 						key="image-3">
-							<printWhenExpression><![CDATA[$F{liquidatingofficer.signature.image} != null]]></printWhenExpression>
+							<printWhenExpression><![CDATA[($F{liquidatingofficer.signature.image} instanceof byte[])]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>

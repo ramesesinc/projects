@@ -74,7 +74,7 @@
 	<field name="damt200" class="java.math.BigDecimal"/>
 	<field name="damt500" class="java.math.BigDecimal"/>
 	<field name="damt1000" class="java.math.BigDecimal"/>
-	<field name="signature.image" class="java.lang.Object"/>
+	<field name="collector.signature.image" class="java.lang.Object"/>
 	<field name="liquidatingofficer.signature.image" class="java.lang.Object"/>
 
 
@@ -1189,20 +1189,7 @@
 		</pageFooter>
 		<summary>
 			<band height="122"  isSplitAllowed="true" >
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="37"
-						y="49"
-						width="137"
-						height="36"
-						key="image-2">
-							<printWhenExpression><![CDATA[($F{signature.image} instanceof byte[])]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{signature.image} )]]></imageExpression>
-				</image>
-				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="302"
@@ -1237,6 +1224,19 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["         I hereby certify that the foregoing report on collections has been verified and acknowledged receipt of  <style isBold = \"true\">"+$F{amountinwords}.toLowerCase() +" ONLY (Php "+ new DecimalFormat("#,##0.00").format($F{amount})+" )</style>"]]></textFieldExpression>
 				</textField>
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="37"
+						y="49"
+						width="137"
+						height="36"
+						key="image-2">
+							<printWhenExpression><![CDATA[($F{collector.signature.image} instanceof byte[])]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{collector.signature.image} )]]></imageExpression>
+				</image>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"

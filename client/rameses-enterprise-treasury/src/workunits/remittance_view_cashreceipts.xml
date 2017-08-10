@@ -1,51 +1,36 @@
 <workunit>
     <invokers>
-        <invoker type="remittance:formActions" caption="View Receipts" action="initCreate"
-            visibleWhen="#{mode == 'create' }" index="5" immediate="true"/>
+        <invoker type="remittance:formActions" caption="View Receipts" index="5" immediate="true"/>
 
-        <invoker type="remittance:formActions" caption="View Receipts" action="initView"
-            visibleWhen="#{mode == 'read' }" index="5" immediate="true"/>    
-            
         <invoker type="formActions" caption="Back" action="_close" />
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import java.rmi.server.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        import com.rameses.osiris2.reports.*;
-        
-        class RemittanceCashReceiptCController {
-        
-            @Service("RemittanceService")
-            def service;
-        
-            String title = "Remittance";
-                
-            def entity;
-            boolean remitted = false;
-            
-            void initCreate() {
-            } 
-            
-            def initView() {
-                remitted = true;
-            }
-            
-            def receiptsListModel = [
-                fetchList: {
-                    if( !remitted ) 
-                        return service.getUnremittedReceipts([ collector:entity.collector, txndate: entity._txndate ]);
-                    else 
-                        return service.getRemittedReceipts([ objid:entity.objid ]);
-                } 
-            ] as BasicListModel;
-        }      
-       ]]>
+    <![CDATA[    
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import java.rmi.server.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+import com.rameses.osiris2.reports.*;
+
+class RemittanceCashReceiptCController {
+
+    @Service("RemittanceService")
+    def service;
+
+    String title = "Remittance";
+
+    def entity;
+
+    def receiptsListModel = [
+        fetchList: {
+            return service.getRemittedReceipts([ remittanceid: entity.objid ]);
+        } 
+    ] as BasicListModel;
+} 
+    ]]>
     </code>
     
    <pages>

@@ -39,7 +39,7 @@ class RemittanceReportService  {
 	}
 
 	@ProxyMethod 
-	def getRCDReportData( rem ) {
+	def getRCDReportData( rem ) { 
 		def params = [ remittanceid: rem.objid, fundid:'%', formno:'%' ]; 
 		def remittance = rem.clone();
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypes( params ) ); 
@@ -98,6 +98,7 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def getRCDReportDataByFund( rem, fund, af ) { 
+		println '** getrcdreportdata by fund '
 		def remittance = rem.clone();
 		def params = [ remittanceid: rem.objid, fundid: (fund? fund.objid: '%'), formno: (af? af.formno: '%') ];  
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypesByFund( params ) );

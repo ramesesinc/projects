@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="remittance_cashreceipt">
+		<field name="objid" primary="true"/>
+		<field name="remittanceid" required="true"/> 
+
+		<complex name="cashreceipt" ref="cashreceipt" jointype="many-to-one" includefields="formno,receiptno,receiptdate,amount,paidby,subcollector.name" required="false">
+			<key field="objid" target="objid" />
+		</complex>
+
+		<complex name="cashreceiptvoid" ref="cashreceipt_void" jointype="many-to-one" includefields="objid" required="false">
+			<key field="objid" target="receiptid" />
+		</complex>
+	</element>
+</schema>

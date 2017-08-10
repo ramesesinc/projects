@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="remittance_fund">
+		<field name="objid" primary="true"/>
+		<field name="remittanceid" required="true"/>
+		<field name="fund_objid" required="true"/>
+		<field name="fund_title" required="true"/>
+		<field name="amount" required="true"/>
+	</element>
+</schema>	

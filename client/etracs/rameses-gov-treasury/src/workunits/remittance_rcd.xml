@@ -8,75 +8,75 @@
     
     <code>
     <![CDATA[    
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.reports.*;
-        import com.rameses.util.*;
-        import java.rmi.server.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
 
-        class RemittanceRCDController extends com.rameses.etracs.shared.ReportController {
+class RemittanceRCDController extends com.rameses.etracs.shared.ReportController {
 
-            @Service("RemittanceReportService")
-            def svc
+    @Service("RemittanceReportService")
+    def svc
 
-            String title = "Report on Collection and Deposit";
-            String reportpath = "com/rameses/gov/treasury/remittance/report/rcd/" 
-            
+    String title = "Report on Collection and Deposit";
+    String reportpath = "com/rameses/gov/treasury/remittance/report/rcd/" 
 
-            boolean allowSelectAF = true;
 
-            def af; 
-            def fund; 
-            def fundlist;
+    boolean allowSelectAF = true;
 
-            @PropertyChangeListener
-            def listener = [
-                "fund" : { o->
-                    af = null;
-                    report.viewReport(); 
-                    binding?.refresh()
-                },
-                "af": { o->
-                    report.viewReport(); 
-                    binding?.refresh()
-                }
-            ];
+    def af; 
+    def fund; 
+    def fundlist;
 
-            String getReportName() {
-                if( !fund ) {
-                    return reportpath + 'rcd_main.jasper';
-                }
-                else {
-                    return reportpath + 'rcd_main_fund.jasper' 
-                }
-            }
+    @PropertyChangeListener
+    def listener = [
+        "fund" : { o->
+            af = null;
+            report.viewReport(); 
+            binding?.refresh()
+        },
+        "af": { o->
+            report.viewReport(); 
+            binding?.refresh()
+        }
+    ];
 
-            def initReport() {
-                fundlist = svc.getFundlist( entity.objid ); 
-                return super.preview();
-            }
+    String getReportName() {
+        if( !fund ) {
+            return reportpath + 'rcd_main.jasper';
+        }
+        else {
+            return reportpath + 'rcd_main_fund.jasper' 
+        }
+    }
 
-            def getReportData() {
-                def m = [:];
-                if( !fund ) {
-                    m = svc.getRCDReportData( entity );
-                }  
-                else {
-                    m = svc.getRCDReportDataByFund( entity, fund, af )
-                }
-                return m; 
-            }
+    def initReport() {
+        fundlist = svc.getFundlist( entity.objid ); 
+        return super.preview();
+    }
 
-            Map getParameters() { 
-                def map = [ FUNDTITLE: fund?.title ];
-                if ( af ) {
-                    map.FORMTITLE = 'Acct. Form : '+ af.formno; 
-                } 
-                return map; 
-            } 
+    def getReportData() {
+        def m = [:];
+        if( !fund ) {
+            m = svc.getRCDReportData( entity );
+        }  
+        else {
+            m = svc.getRCDReportDataByFund( entity, fund, af )
+        }
+        return m; 
+    }
+
+    Map getParameters() { 
+        def map = [ FUNDTITLE: fund?.title ];
+        if ( af ) {
+            map.FORMTITLE = 'Acct. Form : '+ af.formno; 
         } 
+        return map; 
+    } 
+} 
     ]]>
     </code>
     

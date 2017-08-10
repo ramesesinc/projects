@@ -30,17 +30,32 @@ public class RemittanceNewPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel10 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        jPanel5 = new javax.swing.JPanel();
         formPanel3 = new com.rameses.rcp.util.FormPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         jPanel3 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jPanel7 = new javax.swing.JPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
+        jPanel8 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         cashDenomination1 = new com.rameses.enterprise.treasury.components.CashDenomination();
+        jPanel9 = new javax.swing.JPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
+
+        jPanel10.setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 5, 0));
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jPanel4.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Summary of Collections");
@@ -111,17 +126,33 @@ public class RemittanceNewPage extends javax.swing.JPanel {
             })
         });
         xDataTable2.setHandler("listModel");
+        jPanel4.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 2));
+        jPanel5.setLayout(new java.awt.BorderLayout());
+
+        formPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel3.setCaptionWidth(150);
+        formPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("TOTAL AMOUNT TO REMIT");
-        xLabel4.setCaptionWidth(200);
-        xLabel4.setExpression("#{entity.amount}");
+        xLabel4.setCaptionWidth(160);
+        xLabel4.setExpression("#{numFormatter.format(entity.amount)}");
         xLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel4.setPreferredSize(new java.awt.Dimension(200, 23));
         formPanel3.add(xLabel4);
+
+        jPanel5.add(formPanel3, java.awt.BorderLayout.EAST);
+
+        jPanel4.add(jPanel5, java.awt.BorderLayout.PAGE_END);
+
+        jPanel2.add(jPanel4, java.awt.BorderLayout.CENTER);
+
+        jPanel10.add(jPanel2, java.awt.BorderLayout.CENTER);
+
+        jPanel6.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Checks and Other Payments");
@@ -205,119 +236,108 @@ public class RemittanceNewPage extends javax.swing.JPanel {
         });
         xDataTable1.setHandler("checkModel");
         xDataTable1.setName("selectedCheck"); // NOI18N
+        jPanel6.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
+        jPanel7.setLayout(new java.awt.BorderLayout());
+
+        xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel4.setCaptionWidth(100);
+        xFormPanel4.setCellpadding(new java.awt.Insets(2, 0, 0, 2));
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 5, 0));
 
-        xDecimalField5.setCaption("Total Noncash");
+        xDecimalField5.setCaption("Total Non-Cash");
         xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField5.setEnabled(false);
         xDecimalField5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xDecimalField5.setName("entity.totalnoncash"); // NOI18N
-        xDecimalField5.setPreferredSize(new java.awt.Dimension(0, 19));
+        xDecimalField5.setPreferredSize(new java.awt.Dimension(150, 23));
         xFormPanel4.add(xDecimalField5);
 
-        xFormPanel3.setCaptionWidth(120);
+        jPanel7.add(xFormPanel4, java.awt.BorderLayout.EAST);
+
+        jPanel6.add(jPanel7, java.awt.BorderLayout.SOUTH);
+
+        jPanel8.setLayout(new java.awt.BorderLayout());
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setTitle("Cash Breakdown");
+        jPanel1.setBorder(xTitledBorder3);
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        cashDenomination1.setAmountField("entity.totalcash");
+        cashDenomination1.setName("entity.cashbreakdown"); // NOI18N
+        jPanel1.add(cashDenomination1, java.awt.BorderLayout.CENTER);
+
+        jPanel8.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel9.setLayout(new java.awt.BorderLayout());
+
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel3.setPadding(new java.awt.Insets(2, 0, 5, 2));
 
         xDecimalField9.setCaption("Total Cash");
         xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField9.setEnabled(false);
         xDecimalField9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xDecimalField9.setName("entity.totalcash"); // NOI18N
-        xDecimalField9.setPreferredSize(new java.awt.Dimension(0, 19));
+        xDecimalField9.setPreferredSize(new java.awt.Dimension(150, 23));
         xFormPanel3.add(xDecimalField9);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Cash Breakdown");
-        jPanel1.setBorder(xTitledBorder3);
+        jPanel9.add(xFormPanel3, java.awt.BorderLayout.EAST);
 
-        cashDenomination1.setAmountField("entity.totalcash");
-        cashDenomination1.setName("entity.cashbreakdown"); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 5, Short.MAX_VALUE)
-                    .addComponent(cashDenomination1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 5, Short.MAX_VALUE)))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 321, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 5, Short.MAX_VALUE)
-                    .addComponent(cashDenomination1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 6, Short.MAX_VALUE)))
-        );
+        jPanel8.add(jPanel9, java.awt.BorderLayout.SOUTH);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(38, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGap(0, 703, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 256, Short.MAX_VALUE)))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                    .addGap(0, 452, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGap(0, 342, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel10.add(jPanel3, java.awt.BorderLayout.SOUTH);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(384, 384, 384)
-                        .addComponent(formPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 703, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(formPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.treasury.components.CashDenomination cashDenomination1;
     private com.rameses.rcp.util.FormPanel formPanel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;

@@ -26,6 +26,8 @@ class RemittanceModel  {
     def mode = 'create';
     def todate;
     boolean captureMode = false;
+
+    final def numFormatter = new java.text.DecimalFormat("#,##0.00"); 
     
     @FormTitle
     public def getTitle() {
@@ -68,13 +70,13 @@ class RemittanceModel  {
         entity = service.init( [todate: todate ] );  
         entity.cashbreakdown = [];
         mode = "create";    
-        return "create"        
+        return "create";
     }
 
     def capture() {
         captureMode = true;
         mode = "capture";    
-        return "capture"        
+        return "capture"; 
     }    
 
     def open(){
@@ -115,10 +117,10 @@ class RemittanceModel  {
         catch(e) {
             pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
         }
-        if( pass == true ) {
-            def o = service.post( entity );
+        if( pass == true ) { 
+            def o = service.post([ remittanceid: entity.objid, cashbreakdown: entity.cashbreakdown ]);
             entity.txnno = o.txnno;
-            mode = 'read'
+            mode = 'read';
             MsgBox.alert("Posting successful. Control No " + entity.txnno);
             return "_close";
         }
@@ -147,6 +149,5 @@ class RemittanceModel  {
             return "_close";
         }
     }
-    
     
 } 

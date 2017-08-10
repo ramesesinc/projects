@@ -1,8 +1,6 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
 import com.rameses.common.*;
-import com.rameses.services.extended.*;
+import com.rameses.util.*;
 
 class RemittanceService  {
 
@@ -14,6 +12,9 @@ class RemittanceService  {
 
 	@Env
 	def env;
+
+	@Service 
+	def self; 
 
 	@Service("SequenceService")
 	def seqSvc;
@@ -28,108 +29,169 @@ class RemittanceService  {
 	def var;
 
 	@DataContext("remittance")
-	def remEm;
+	def remdb;
+
+	@DataContext("remittance_cashreceipt")
+	def remc_db;
+
+	@DataContext("remittance_fund")
+	def remf_db;
+
+	@DataContext("remittance_af")
+	def remaf_db;
+
+	@DataContext("af_control")
+	def afc_db;
 
 	@ProxyMethod
-	public def init(def param) { 
+	public def init( param ) { 
 		boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
 
-		if( param.todate ) {
-			//throw new Exception("This is capture " + info.fromdate);
-		}
+		def temptxnno = com.rameses.util.Encoder.MD5.encode( env.USERID ); 
+		def draftdata = remdb.find([ txnno: temptxnno ]).first(); 
+		if ( draftdata ) throw new Exception("""  
+			You still have a DRAFT remittance that was previously created.  
+		""");
 
-		//check first if there are still remaining collection on the end of the month 
-		def o = [ objid: "REM"+new UID() ]; 
-		def info = [ collectorid: env.USERID ];
+		def rundate = dateSvc.getServerDate(); 
+		def remittanceid = "REM" + new java.rmi.server.UID(); 
+		def o = [ objid: remittanceid, state:'DRAFT', txnno: temptxnno, dtposted: rundate ]; 
+		o.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		o.remittancedate = new java.sql.Date( rundate.time );
+		o.amount = o.totalcash = o.totalnoncash = 0.0; 
+		o.cashbreakdown = [];
+		remdb.create( o );  
+
+		def hasPrevMonthTrxns = false; 
+		def info = [ remittanceid: remittanceid, collectorid: env.USERID ];
 		if ( split_txn ) {
-			info.txndate = getMonthFirstDate( dateSvc.serverDate ); 
-			o.items = em.getUnremittedForCollector( info ); 
-			if ( o.items ) { 
+			info.txndate = getMonthFirstDate( rundate ); 
+			remdb.insertSerialReceipts( info );  
+			remdb.insertCashTickets( info );  
+			def test = remc_db.find([ remittanceid: remittanceid ]).first(); 
+			if ( test ) { 
 				o.endofmonth = true; 
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
 				o._txndate = info.txndate; 
+				hasPrevMonthTrxns = true; 
 			} 
 		} 
-
-		if ( !o.items ) {
+		
+		if ( !hasPrevMonthTrxns ) {
 			info.txndate = dateSvc.serverDate; 
-			o.items = em.getUnremittedForCollector( info ); 
+			remdb.insertSerialReceipts( info ); 
+			remdb.insertCashTickets( info ); 
 			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
 		} 
 
+		o.items = remdb.getBuildReceiptSummary( info );  
 		if ( !o.items ) throw new Exception("No collections to be remitted.   ");
 
-		o.items.each {
-			it.cancelSeriesList = em.getUnremittedCancelSeries([ collectorid:it.collector.objid, controlid: it.controlid ])
+		remdb.insertNonCashPayment( info ); 
+		remdb.getBuildFundSummary( info ).each{ rf-> 
+			rf.objid = 'REMF-'+ new java.rmi.server.UID(); 
+			remf_db.create( rf ); 
+		} 
+
+		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
+			def afc = o.items.find{ it.controlid == k } 
+			afc.cancelSeriesList = v; 
 		}
+
+		o.checks = remdb.getNonCashPayments( info );
+
 		o.amount = 0;
 		o.totalcash = 0;
 		o.totalnoncash = 0;
 		if ( o.items ) { 
-			o.amount = o.items.sum{ it.amount };	
-			o.totalcash = o.items.sum{ it.totalcash };	
-			o.totalnoncash = o.items.sum{ it.totalnoncash };	
+			o.amount = o.items.sum{( it.amount ? it.amount : 0.0 )} 
+			o.totalcash = o.items.sum{( it.totalcash ? it.totalcash : 0.0 )} 
+			o.totalnoncash = o.items.sum{( it.totalnoncash ? it.totalnoncash : 0.0 )} 
 		} 
-		o.checks = em.getUnremittedChecks( info );
-		o.collector = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
 
-		//used for checking
-		o.checksum = em.getUnremittedTotals( info  );
+		remdb.find([ objid: remittanceid ]).update([ 
+			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
+		]); 
+
+		def afcs = afc_db.find([ owner_objid: o.collector.objid ]).where(' currentseries <= endseries ').list(); 
+		afcs.each{ it.controlid=it.objid } 
+
+
+		def rafparam = [ txndate: o.dtposted ]; 
+		rafparam.controls = afcs.collect{ it.objid } 
+		rafparam.controls.addAll( o.items.collect{ it.controlid } ); 
+		rafparam.controls = rafparam.controls.unique().collect{[ controlid: it ]} 
+
+		def rafs = self.getBuildAF( rafparam ); 
+		rafs.each{ a-> 
+			def b = o.items.find{ it.controlid==a.controlid } 
+			if ( !b ) return; 
+
+			if ( b.formtype=='serial' ) {
+				a.qtycancelled = b.cqty;
+				a.qtyissued = b.qty; 
+				a.issuedendseries = b.endseries; 
+				a.issuedstartseries = b.startseries; 
+				a.endingstartseries = a.issuedendseries+1; 
+				a.endingendseries = b.afendseries;
+			} else if ( b.formtype=='cashticket' ) { 
+				def currentseries = b.afstartseries;
+				def qty = (int) ( b.amount / b.denomination ); 
+				def cts = remdb.getRemittedCashTickets([ controlid: a.controlid ]); 
+				cts = cts.findAll{ it.remittanceid != remittanceid } 
+				if ( cts ) {
+					currentseries = ((int) (cts.sum{( it.amount ? it.amount : 0.0 )} / b.denomination)) + b.afstartseries; 
+				} 
+				a.issuedstartseries = currentseries; 
+				a.issuedendseries = (currentseries + qty)-1; 
+				a.qtyissued = qty; 
+				a.endingstartseries = a.issuedendseries+1;
+				a.endingendseries = b.afendseries;
+			}
+
+			if ( a.endingstartseries > b.afendseries ) {
+				a.endingstartseries = a.endingendseries = null; 
+				a.qtyending = 0; 
+			} else {
+				a.qtyending = (a.endingendseries - a.endingstartseries)+1; 
+			} 
+		}
+
+		rafs.each{ 
+			it.objid = 'REMAF-'+ new java.rmi.server.UID(); 
+			it.remittanceid = remittanceid; 
+			remaf_db.create( it ); 
+		} 
 		return o; 
 	} 
 
 	@ProxyMethod 
-	public def post( o ) { 
-		if( o.amount == 0 ) 
-			throw new Exception("There is no amount to remit");
+	public def getBuildAF( afcs ) {
+		return []; 
+	} 
 
-		if(! o.cashbreakdown ) throw new Exception("Cash breakdown has been change during the submission.Please recreate transaction");
+	@ProxyMethod 
+	public def post( param ) { 
+		if ( !param.remittanceid ) throw new Exception("remittanceid parameter is required"); 
+		if ( !param.cashbreakdown ) throw new Exception("Cash breakdown has been change during the submission.Please recreate transaction");
 
-		//compare checksum. deny if changed
-		def p = [remittanceid: o.objid, collectorid: o.collector.objid, txndate : dateSvc.serverDate]
+		def o = remdb.find([ objid: param.remittanceid ]).first(); 
+		if ( o.state != 'DRAFT' ) throw new Exception("Remittance record is no longer in DRAFT mode");
 
-		if(! o.remotetxn ) {
-			if( o.endofmonth ) p.txndate = getMonthFirstDate( p.txndate )
-			def checksum = o.checksum;
-			def checktest = em.getUnremittedTotals( p );
-			if(checksum!=checktest)
-				throw new Exception("Changes have been made prior to remittance. Please redo transaction");
-
-			o.dtposted = dateSvc.serverDate;
-			o.remittancedate = o.endofmonth ? dateSvc.add(dateSvc.parse("yyyy-MM-dd",p.txndate), "-1d") : o.dtposted 
-		
-			o.txnno = formatTxnno(o)
-			o.state = "OPEN";	
-		}
-
-		em.create( o );
-		//insert the cash receipts 
-		if( o.remotetxn  ) {
-			o.cashreceipts.each{
-				def rc = [objid: it, remittanceid: o.objid ]
-				em.create(rc, "remittance_cashreceipt") 
-			}
-
-		} else {
-			em.collectReceipts(p);
-		}
-
-		em.collectNoncash(p); 
-				
-		em.getRemittedFundTotals(p).each { 
-			def n = [:]
-			n.objid = "REMFUND"+new UID();
-			n.remittanceid = o.objid;
-			n.fund = it.fund;
-			n.amount = it.amount;
-			em.create( n, "remittance_fund" );
-		} 
+		o.state = 'OPEN'; 
+		o.txnno = formatTxnno( o ); 
+		remdb.find([ objid: param.remittanceid ]).update([ 
+			cashbreakdown: param.cashbreakdown, 
+			txnno: o.txnno, 
+			state: o.state 
+		]); 
 		return o; 
 	} 
 
 	@ProxyMethod
 	public def open( o ) {
 		o = em.read( o );
+		o.remittanceid = o.objid; 
 
 		Base64Cipher cipher = new Base64Cipher()
 		if( o.signature !=null ) {
@@ -139,7 +201,7 @@ class RemittanceService  {
 			o.liquidatingofficer.signature =  cipher.decode(o.liquidatingofficer.signature)
 		}
 
-		o.checks = em.getRemittedChecks(o);
+		o.checks = em.getRemittedChecks( o ); 
 
 		def td = o.checks.findAll{ it.reftype == 'CHECK' }?.sum{it.amount};
 		if(td==null) td = 0.0;
@@ -153,26 +215,9 @@ class RemittanceService  {
 	}
 
 	@ProxyMethod
-	public def getUnremittedReceipts( o ) { 
-		def m = [ collectorid: o.collector.objid, txndate: o.txndate ];
-		if ( !m.txndate ) {
-			boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
-			if ( split_txn ) { 
-				m.txndate = getMonthFirstDate( dateSvc.serverDate ); 
-				def list =  em.getUnremittedReceipts( m ); 
-				if ( list ) return list; 
-			} 
-
-			m.txndate = dateSvc.serverDate; 
-		} 
-		return em.getUnremittedReceipts( m ); 
+	public def getRemittedReceipts( o ) { 
+		return em.getRemittedReceipts( o );
 	}
-
-	@ProxyMethod
-	public def getRemittedReceipts(o) {
-		return em.getRemittedReceipts(o);
-	}
-
 
 	public def getMonthFirstDate( dt ) {
         Calendar cal = Calendar.getInstance();
@@ -249,6 +294,6 @@ class RemittanceService  {
     public void approve(def o) {
     	def m = [state:'APPROVED'];
     	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
-    	remEm.find( [objid : o.objid] ).update( m );
+    	remdb.find( [objid : o.objid] ).update( m );
     }
 }

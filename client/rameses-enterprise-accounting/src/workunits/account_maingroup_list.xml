@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudTreeList.xml" schemaName="account_maingroup">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="account_maingroup">
         
     <invokers>
         <invoker folderid="home/accounting" caption="Accounts" action="init" index="-1"/> 

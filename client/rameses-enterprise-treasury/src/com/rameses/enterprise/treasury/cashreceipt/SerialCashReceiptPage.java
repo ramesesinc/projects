@@ -319,7 +319,6 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         buttonCheck1.setText("F10 - CHECK ");
 
         buttonCheck2.setAccelerator("F11");
-        buttonCheck2.setEnabled(false);
         buttonCheck2.setFocusable(false);
         buttonCheck2.setImmediate(true);
         buttonCheck2.setIndex(21);

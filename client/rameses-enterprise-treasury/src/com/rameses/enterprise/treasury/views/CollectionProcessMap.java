@@ -56,6 +56,7 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         xButton14 = new com.rameses.rcp.control.XButton();
         jLabel25 = new javax.swing.JLabel();
+        xButton18 = new com.rameses.rcp.control.XButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         xButton3 = new com.rameses.rcp.control.XButton();
@@ -76,13 +77,13 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jPanel2.setLayout(null);
 
-        xButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/remittance.png"))); // NOI18N
+        xButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/postledger.png"))); // NOI18N
         xButton7.setBorderPainted(false);
         xButton7.setCaption("Issue Online");
         xButton7.setContentAreaFilled(false);
         xButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton7.setName("postDailyCollection"); // NOI18N
-        xButton7.setText("<html>Daily Collection</html>");
+        xButton7.setText("<html><center>Daily Collection</center></html>");
         xButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jPanel2.add(xButton7);
         xButton7.setBounds(150, 40, 90, 100);
@@ -98,12 +99,12 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jPanel2.add(jLabel31);
         jLabel31.setBounds(390, 0, 40, 30);
 
-        xButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/remittance.png"))); // NOI18N
+        xButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/postledger.png"))); // NOI18N
         xButton17.setBorderPainted(false);
         xButton17.setCaption("Issue Online");
         xButton17.setContentAreaFilled(false);
         xButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        xButton17.setText("<html>Post Deposit</html>");
+        xButton17.setText("<html><center>Post Deposit</center></html>");
         xButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jPanel2.add(xButton17);
         xButton17.setBounds(370, 40, 90, 100);
@@ -203,7 +204,7 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jPanel4.add(jLabel20);
         jLabel20.setBounds(10, 10, 220, 14);
 
-        xButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/treasury.png"))); // NOI18N
+        xButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/request.png"))); // NOI18N
         xButton11.setBorderPainted(false);
         xButton11.setCaption("");
         xButton11.setContentAreaFilled(false);
@@ -231,7 +232,7 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jPanel4.add(xButton5);
         xButton5.setBounds(210, 220, 100, 70);
 
-        xButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/cashreceipt.png"))); // NOI18N
+        xButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/batchcapture.png"))); // NOI18N
         xButton8.setBorderPainted(false);
         xButton8.setCaption("<html><center>Issue Online</center></html>");
         xButton8.setContentAreaFilled(false);
@@ -265,6 +266,22 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jPanel4.add(jLabel25);
         jLabel25.setBounds(180, 140, 40, 20);
 
+        xButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/liquidation_list.png"))); // NOI18N
+        xButton18.setBorderPainted(false);
+        xButton18.setCaption("Issue Online");
+        xButton18.setContentAreaFilled(false);
+        xButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        xButton18.setName("creditmemo"); // NOI18N
+        xButton18.setText("<html><center>Credit Memo</center></html>");
+        xButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        xButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xButton18ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(xButton18);
+        xButton18.setBounds(220, 10, 90, 90);
+
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jPanel5.setLayout(null);
 
@@ -273,7 +290,7 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         jPanel5.add(jLabel22);
         jLabel22.setBounds(0, 10, 170, 14);
 
-        xButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/liquidation.png"))); // NOI18N
+        xButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home/icons/issueaf.png"))); // NOI18N
         xButton3.setBorderPainted(false);
         xButton3.setCaption("");
         xButton3.setContentAreaFilled(false);
@@ -361,7 +378,7 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton16.setCaption("Issue Online");
         xButton16.setContentAreaFilled(false);
         xButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        xButton16.setText("<html>Subcollector Remittance</html>");
+        xButton16.setText("<html><center>Subcollector Remittance</center></html>");
         xButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jPanel7.add(xButton16);
         xButton16.setBounds(210, 30, 110, 100);
@@ -441,6 +458,10 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_xButton13ActionPerformed
 
+    private void xButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xButton18ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xButton18ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
@@ -477,6 +498,7 @@ public class CollectionProcessMap extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton15;
     private com.rameses.rcp.control.XButton xButton16;
     private com.rameses.rcp.control.XButton xButton17;
+    private com.rameses.rcp.control.XButton xButton18;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton5;

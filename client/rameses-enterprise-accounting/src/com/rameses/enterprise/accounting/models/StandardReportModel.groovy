@@ -24,7 +24,7 @@ class StandardReportModel {
                 [name:'birthdate', caption:'Birth Date', type:'date'],
                 [name:'year', caption:'Year', type:'integer'],
                 [name:'apptype', caption:'App Type', type:'list', list: list],
-                [name:'customer', caption:'Customer', type:'list', schemaname:'entity'],
+                [name:'customer', caption:'Customer', type:'list', schemaname:'entity', lookupkey:"objid", lookupvalue:"name"],
             ]
         },
         

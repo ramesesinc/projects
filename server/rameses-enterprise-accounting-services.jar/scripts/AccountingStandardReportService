@@ -1,9 +1,288 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
 import com.rameses.common.*
-
+import com.rameses.util.*;
 
 class AccountingStandardReportService  {
 
+	@ActiveDB('accountingreport') 
+	def accountingreport_db; 
+
+	@Service('AccountingReportUtil')
+	def reportUtil;
+
+	@Service('DateService')
+	def dtSvc;
+
+	@Service('NumberService')
+	def numSvc;
+
+
+	@ProxyMethod 
+	public def init() {
+		def p = [ fields:[] ];  
+		p.fields << [name:'inc.liquidationdate', caption:'Liquidation Date', type:'date']; 
+		p.fields << [name:'inc.liquidationyear', caption:'Liquidation Year', type:'integer']; 
+		p.fields << [name:'inc.liquidationmonth', caption:'Liquidation Month', type:'integer']; 
+		p.fields << [name:'inc.liquidationqtr', caption:'Liquidation Qtr', type:'integer'];
+		p.fields << [name:'inc.remittancedate', caption:'Remittance Date', type:'date'];  
+		p.fields << [name:'inc.remittanceyear', caption:'Remittance Year', type:'integer'];  
+		p.fields << [name:'inc.remittancemonth', caption:'Remittance Month', type:'integer'];  
+		p.fields << [name:'inc.remittanceqtr', caption:'Remittance Qtr', type:'integer'];  
+		p.fields << [name:'inc.refdate', caption:'Reference Date', type:'date']; 
+		p.fields << [name:'inc.refyear', caption:'Reference Year', type:'integer']; 
+		p.fields << [name:'inc.refmonth', caption:'Reference Month', type:'integer']; 
+		p.fields << [name:'inc.refqtr', caption:'Reference Qtr', type:'integer']; 
+		return p; 
+	}
+
+	@ProxyMethod 
+	public def getReport( params ) { 
+		println '*** ' + reportUtil.buildFilters( params.filters );  
+		buildParams( params ); 
+
+		println '>> params -> ' + params; 
+
+		def acctlist = accountingreport_db.getAccountSummary( params );  
+		if ( !acctlist ) 
+			throw new Exception('No available account summary'); 
+		if ( acctlist.find{ it.amount > 0 } == null )  
+			throw new Exception('No available account summary'); 
+
+		def itemacctlist = []; 
+		if ( params.type == 'details' ) { 
+			itemacctlist = accountingreport_db.getItemAccountSummary( params );  
+		} 
+
+		acctlist.eachWithIndex{ o, idx-> o.itemindex=idx; }
+		acctlist.findAll{ it.parentid==null }.each{ 
+			it.itemindex = -1;
+			it.nodeindex = 1; 
+			setupNode( acctlist, it ); 
+		}
+
+		def maxnodeindex = acctlist.max{ it.nodeindex }?.nodeindex; 
+		if ( maxnodeindex==null ) maxnodeindex=0; 
+
+		for (int idx=maxnodeindex; idx > 0; idx--) { 
+			acctlist.findAll{ it.nodeindex==idx }.each{ o-> 
+				def list = acctlist.findAll{ it.parentid==o.objid } 
+				list.each{
+					it.actual = ( it.amount? it.amount: 0.0 )+( it.itemamount? it.itemamount: 0.0 )
+					calculateAmounts( it ); 
+				}
+
+				def target = o.target; 
+				if ( target==null || target <= 0 ) { 
+					o.target = list.sum{( it.target? it.target: 0.0 )} 
+				} 
+				o.itemamount = list.sum{( it.actual? it.actual: 0.0 )} 
+				o.actual = ( o.amount? o.amount: 0.0 )+( o.itemamount? o.itemamount: 0.0 );
+				calculateAmounts( o );  
+			} 
+		} 
+
+		if ( params.hidenoactualvalue ) {
+			acctlist.removeAll( acctlist.findAll{( !it.actual )}); 	
+		} 
+		if ( params.type == 'standard' ) { 
+			acctlist.removeAll( acctlist.findAll{ it.type=='subaccount' }); 
+		} 
+
+		def items = [];	
+		def totaltarget = 0.0;
+		def totalactual = 0.0;
+		acctlist.findAll{ it.parentid==null }.sort{ it.itemindex }.each{ o-> 
+			o.title = o.accttitle+'*';
+			items << o; 
+
+			totaltarget += (o.target? o.target: 0.0); 
+			totalactual += (o.actual? o.actual: 0.0); 
+			formatNodeAcct( o, acctlist, itemacctlist, items ); 
+		} 
+		acctlist.clear(); 
+
+		if ( !items ) throw new Exception('No records found'); 
+
+		if ( params.opthidenoactual==true ) { 
+			items.removeAll( items.findAll{( !it.actual )}); 
+		} 
+
+		def totals = [target: totaltarget, actual: totalactual]; 
+		calculateAmounts( totals ); 
+
+		def grouptitle = params.maingroup?.title; 
+
+		def p = [:]; 
+		p.TITLE = ''+ (grouptitle? grouptitle: '').toUpperCase() + ' STANDARD REPORT'; 
+		p.PERIOD = params.strperiod; 
+		p.TOTAL_ACTUAL = totalactual; 
+		p.TOTAL_TARGET = totaltarget; 
+		p.TOTAL_EXCESS = totals.excess; 
+		p.TOTAL_PERCENTAGE = totals.percentage;
+		p.TOTAL_PERCENTAGE_VALUE = totals.percentagevalue; 
+		p.HIDEINCOMETARGET = (params.hidetarget ? true : false); 
+		return [ reportdata: items, reportparam: p ]; 
+	} 
+
+	private void setupNode( sourcelist, o ) {
+		sourcelist.findAll{ it.parentid==o.objid }.each{ oo-> 
+			oo.nodeindex = o.nodeindex+1; 
+			setupNode( sourcelist, oo ); 
+		} 
+	}
+
+	private void calculateAmounts( c ) {
+		if ( !c ) return;
+
+		def target0 = (c.target? c.target: 0.0); 
+    	def actual0 = (c.actual? c.actual: 0.0);
+    	def excess0 = actual0 - target0; 
+    	if ( target0 == 0.0 && actual0 == 0.0 ) {
+    		c.target = c.actual = c.excess = null; 
+
+    	} else if ( excess0 == actual0 ) {
+    		c.target = null;
+    		c.excess = excess0; 
+    		c.percentage = 100.0;
+    		c.percentagevalue = c.percentage; 
+    	} else if ( target0 > 0 && actual0 == 0.0 ) {
+    		c.actual = null;
+    		c.excess = excess0; 
+    		c.percentage = -100.0;
+    		c.percentagevalue = c.percentage; 
+    	} else {
+    		c.excess = excess0; 
+    		c.percentage = actual0 / target0; 
+    		c.percentagevalue = c.percentage * 100.0; 
+    	} 
+
+    	target0 = (c.target? c.target: 0.0); 
+    	actual0 = (c.actual? c.actual: 0.0);
+    	c.hasamount = (target0 > 0.0 || actual0 > 0.0); 
+	} 
+
+	private void formatNodeAcct( o, sourcelist, incomeacctlist, targetlist ) { 
+    	incomeacctlist.findAll{( it.parentid==o.objid )}.each{ ia-> 
+    		def stitle = buildAcctTitle( 'itemaccount', ia );
+    		ia.title = "    ".multiply(o.nodeindex) + stitle; 
+    		ia.actual = ia.amount; 
+    		ia.type = 'itemaccount';
+    		targetlist << ia; 
+    	} 
+
+		def children = sourcelist.findAll{ it.parentid==o.objid } 
+		children.sort{ it.itemindex } 
+		children.each{ c-> 
+	    	def stitle = buildAcctTitle( c.type, c ); 
+	    	c.title = (o.nodeindex > 0 ? "    ".multiply(o.nodeindex): "") + stitle;
+	    	targetlist << c; 
+	    	formatNodeAcct( c, sourcelist, incomeacctlist, targetlist ); 
+		} 
+	} 
+
+	private def buildAcctTitle( type, data ) {
+		def stype = type.toString();
+		if ( stype.matches('detail|subaccount|itemaccount') ) {
+    		def buff = new StringBuilder();
+    		if ( stype == 'itemaccount' ) buff.append('* '); 
+    		if ( data.acctcode ) buff.append( data.acctcode + ' ' );
+    		if ( data.accttitle ) buff.append( data.accttitle );
+
+    		return buff.toString(); 
+    	} else { 
+    		return data.accttitle; 
+    	}
+	} 
+
+
+	private void buildParams( params ) {
+		params.filter = '';
+		if ( !params.type ) params.type = 'standard'; 
+
+		def period = new StringBuffer();
+		def rundate = dtSvc.getServerDate(); 
+		if ( params.period == 'quarterly' ) {
+			if ( !params.year ) throw new Exception('year is required');
+			if ( !params.qtr ) throw new Exception('qtr is required');
+
+			def months = dtSvc.getMonthsByQtr( params.qtr );
+			def monthindex = months[0].index;
+			def strmonth = (monthindex > 9? monthindex: '0'+monthindex); 
+			params.startdate = params.year +'-'+ strmonth +'-01'; 
+			params.enddate = dtSvc.getQtrEndDate( params.qtr, params.year ); 
+			period.append( months[0].caption +' - '+ months[-1].caption +' '+ params.year ); 
+
+		} else if ( params.period == 'asofqtr' ) {
+			if ( !params.year ) throw new Exception('year is required');
+			if ( !params.qtr ) throw new Exception('qtr is required');
+
+			def months = dtSvc.getMonths(); 
+			period.append( months[0].caption );
+			params.startdate = params.year +'-01-01'; 
+			params.enddate = dtSvc.getQtrEndDate( params.qtr, params.year ); 
+
+			months = dtSvc.getMonthsByQtr( params.qtr );
+			period.append(' - '+ months[-1].caption +' '+ params.year ); 
+
+		} else if ( params.period == 'monthly' ) {
+			if ( !params.year ) throw new Exception('year is required');
+			if ( !params.month ) throw new Exception('month is required');
+
+			def monthindex = params.month.index; 
+			def strmonth = (monthindex > 9? monthindex: '0'+monthindex); 
+			def dtstart = java.sql.Date.valueOf(''+ params.year +'-'+ strmonth +'-01'); 
+			def dtend = dtSvc.getMonthEndDate( dtstart ); 
+			def months = dtSvc.getMonths(); 
+			params.startdate = dtstart;
+			params.enddate = dtend;
+			period.append( months[monthindex-1].caption +' '+ params.year ); 
+		
+		} else if ( params.period == 'asofmonth' ) {
+			if ( !params.year ) throw new Exception('year is required');
+			if ( !params.month ) throw new Exception('month is required');
+
+			def monthindex = params.month.index; 
+			def strmonth = (monthindex > 9? monthindex: '0'+monthindex); 
+			def dtstart = java.sql.Date.valueOf(''+ params.year +'-01-01'); 
+			def dtend = java.sql.Date.valueOf(''+ params.year +'-'+ strmonth +'-01');
+			dtend = dtSvc.getMonthEndDate( dtend ); 
+
+			def months = dtSvc.getMonths(); 
+			params.startdate = dtstart;
+			params.enddate = dtend;
+			if ( months[0].index != months[monthindex-1].index ) { 
+				period.append( months[0].caption ).append(' - '); 
+			} 
+			period.append( months[monthindex-1].caption ).append(' '+ params.year); 
+		
+		} else {
+			if ( !params.date ) throw new Exception('date is required');
+
+			def syear = params.date.toString().split('-')[0]; 
+			if ( params.period == 'asofday' ) {
+				period.append("As of "); 	
+				params.startdate = syear +'-01-01'; 
+			} else {
+				params.startdate = params.date;
+			}
+
+			params.enddate = params.date; 
+			params.year = syear; 
+
+			def formatter = new java.text.SimpleDateFormat('MMMMM dd, yyyy');
+			if ( params.date instanceof java.util.Date ) {
+				period.append(formatter.format( params.date ));
+			} else {
+				period.append(formatter.format( java.sql.Date.valueOf( params.date ) )); 
+			} 
+		}
+		params.strperiod = period.toString(); 
+		params.fundid = params.fund?.objid; 
+		params.compress = false; 
+
+		if (!(params.enddate instanceof Date)) {
+			params.enddate = java.sql.Date.valueOf( params.enddate ); 
+		} 
+		params.enddate = dtSvc.add( params.enddate, '1d' );
+	} 
 }

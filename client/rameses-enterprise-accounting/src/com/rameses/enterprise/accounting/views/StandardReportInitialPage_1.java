@@ -13,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(FormPage.class)
-public class StandardReportInitialPage extends javax.swing.JPanel {
+public class StandardReportInitialPage_1 extends javax.swing.JPanel {
 
     /**
-     * Creates new form StandardReportInitialPage
+     * Creates new form StandardReportInitialPage_1
      */
-    public StandardReportInitialPage() {
+    public StandardReportInitialPage_1() {
         initComponents();
     }
 

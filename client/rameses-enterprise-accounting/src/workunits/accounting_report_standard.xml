@@ -1,10 +1,13 @@
 <workunit>
     <invokers>
-         <invoker folderid="home/accounting/reports" caption="Standard"/>
-         <invoker type="formActions" caption="Next" />
+         <invoker folderid="home/accounting/reports" caption="Standard" action="init"/>
+         
+         <invoker type="formActions" caption="Preview" action="preview" visibleWhen="#{mode=='init'}"/>
+         <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode=='preview'}"/>
    </invokers>
     <code class="com.rameses.enterprise.accounting.models.StandardReportModel" />
     <pages>
         <page template="com.rameses.enterprise.accounting.views.StandardReportInitialPage" />
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
     </pages>
 </workunit>

@@ -93,14 +93,14 @@
             <Component class="com.rameses.rcp.control.XButton" name="xButton7">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/home/icons/remittance.png"/>
+                  <Image iconType="3" name="/home/icons/postledger.png"/>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Issue Online"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="name" type="java.lang.String" value="postDailyCollection" noResource="true"/>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Daily Collection&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Daily Collection&lt;/center&gt;&lt;/html&gt;"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <Constraints>
@@ -139,13 +139,13 @@
             <Component class="com.rameses.rcp.control.XButton" name="xButton17">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/home/icons/remittance.png"/>
+                  <Image iconType="3" name="/home/icons/postledger.png"/>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="Issue Online"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Post Deposit&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Post Deposit&lt;/center&gt;&lt;/html&gt;"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <Constraints>
@@ -366,7 +366,7 @@
             <Component class="com.rameses.rcp.control.XButton" name="xButton11">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/home/icons/treasury.png"/>
+                  <Image iconType="3" name="/home/icons/request.png"/>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value=""/>
@@ -418,7 +418,7 @@
             <Component class="com.rameses.rcp.control.XButton" name="xButton8">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/home/icons/cashreceipt.png"/>
+                  <Image iconType="3" name="/home/icons/batchcapture.png"/>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Issue Online&lt;/center&gt;&lt;/html&gt;"/>
@@ -481,6 +481,28 @@
                 </Constraint>
               </Constraints>
             </Component>
+            <Component class="com.rameses.rcp.control.XButton" name="xButton18">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/home/icons/liquidation_list.png"/>
+                </Property>
+                <Property name="borderPainted" type="boolean" value="false"/>
+                <Property name="caption" type="java.lang.String" value="Issue Online"/>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="creditmemo" noResource="true"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Credit Memo&lt;/center&gt;&lt;/html&gt;"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xButton18ActionPerformed"/>
+              </Events>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                  <AbsoluteConstraints x="220" y="10" width="90" height="90"/>
+                </Constraint>
+              </Constraints>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel5">
@@ -514,7 +536,7 @@
             <Component class="com.rameses.rcp.control.XButton" name="xButton3">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/home/icons/liquidation.png"/>
+                  <Image iconType="3" name="/home/icons/issueaf.png"/>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="caption" type="java.lang.String" value=""/>
@@ -693,7 +715,7 @@
                 <Property name="caption" type="java.lang.String" value="Issue Online"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Subcollector Remittance&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Subcollector Remittance&lt;/center&gt;&lt;/html&gt;"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
               <Constraints>

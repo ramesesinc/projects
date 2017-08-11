@@ -3,7 +3,7 @@
 	<element tablename="entity">
 		<field name="objid" primary="true"/>
 		<field name="entityno" required="true" caption="EntityNo" indexed="true" searchable="true"/>
-		<field name="name" required="true" caption="Name"  />
+		<field name="name" required="true" caption="Name"  searchable="true"/>
 		<field name="entityname" caption="EntityName" indexed="true" searchable="true"/>
 		<field name="address_objid" required="true" visible="false"/>
 		<field name="address_text" required="true" caption="Address"/>

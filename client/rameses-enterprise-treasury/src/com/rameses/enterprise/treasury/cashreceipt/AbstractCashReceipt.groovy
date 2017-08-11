@@ -152,12 +152,24 @@ public abstract class AbstractCashReceipt {
     }
     
     def doCreditMemo() {
+        def success = false;
         def handler = { o->
+            entity.paymentitems.clear();
             entity.paymentitems << o;
             updateBalances();
+            paymentListModel.reload(); 
+            success = true; 
         }
-        return InvokerUtil.lookupOpener( "cashreceipt:payment-creditmemo",
-            [entity: entity, saveHandler: handler ] );
+        def g = entity.items.groupBy{ it.item.fund };
+        def fb = [];
+        g.each { k,v->
+            fb << [fund:k, amount: v.sum{it.amount}];
+        }
+        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, fundbreakdown:fb ] );
+        if ( success ) {
+            def outcome = post(); 
+            if ( outcome ) binding.fireNavigation( outcome );  
+        }
     }
 
     public def payerChanged( o ) {

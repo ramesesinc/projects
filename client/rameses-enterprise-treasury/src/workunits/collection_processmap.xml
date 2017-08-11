@@ -22,6 +22,7 @@
            } 
            
            def issueAF() { return openAction("issueafrequest:create"); } 
+           def creditmemo() { return openAction("creditmemo:create"); } 
            def requestAF() { return openAction("afreq:type:collection"); }
            def batchCollection() { return openAction("cashreceipt:batchcapture:create");  }
            def issueReceipt() { return openAction("cashreceipt:collector:create"); }

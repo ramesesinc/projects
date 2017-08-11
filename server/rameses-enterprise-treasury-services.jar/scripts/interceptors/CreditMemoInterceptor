@@ -6,24 +6,25 @@ import com.rameses.services.extended.*
 
 class CreditMemoInterceptor { 
 	
-	@ActiveDB('income_summary')
-	def incSumEm
-
-	@Service('RevenueItemAccountService')
-	def revItemSvc
-
-	@ActiveDB("creditmemo")
-	def cr;
-
 	@Env
 	def env
 
-	@Before(pattern="CreditMemoService.create", eval="#{args[0].type.issuereceipt == 0 }", index=0)
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc; 
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
 	public void updateStateForPosting( def evt ) { 
-		def dc = evt.args[0];
-		dc.state = 'POSTED';
+		def o = evt.args[0];
+		o.state = 'OPEN';
+		o.controlno = 'CR' + seqSvc.getNextFormattedSeries('CR');
+		o.issuedby = [objid: env.USERID, name:env.FULLNAME];
+		o.dtissued = dateSvc.getServerDate();		
 	}	
 
+	/*
 	@After(pattern="CreditMemoService.create", eval="#{args[0].type.issuereceipt == 0 }", index=0)
 	public void postIncomeSummary( def evt ) { 
 		def dc = evt.args[0];
@@ -40,7 +41,8 @@ class CreditMemoInterceptor {
 			p.orgid = env.ORGID 
 			incSumEm.create(p)
 		}
-	}	
+	}
+	*/	
 
 }
 

@@ -19,13 +19,14 @@ class RemittanceModel  {
 
     @Service("RemittanceImportExportService")
     def exportSvc;
-
+    
     String title = "Remittance";
 
     def entity;
     def mode = 'create';
     def todate;
     boolean captureMode = false;
+    def selectedFund;
 
     final def numFormatter = new java.text.DecimalFormat("#,##0.00"); 
     
@@ -68,7 +69,6 @@ class RemittanceModel  {
     def create() {
         mode = "initial";
         entity = service.init( [todate: todate ] );  
-        entity.cashbreakdown = [];
         mode = "create";    
         return "create";
     }
@@ -87,24 +87,49 @@ class RemittanceModel  {
 
     def listModel = [
         fetchList: { o->
-            return entity.items;
+            return service.getRemittedReceipts( [remittanceid: entity.objid ] );
         }
     ] as BasicListModel;
 
+    boolean editable = true;
+    
+    def remittanceFundModel = [
+        fetchList: { o->
+            return service.getRemittanceFunds([remittanceid: entity.objid]);
+        },
+        onOpenItem: { item, colName->
+            return openBreakdown(item);
+        }
+    ] as BasicListModel;
+    
     def checkModel = [
-        fetchList: {
-            return entity.checks;
+        fetchList: { o->
+            return service.getRemittanceChecks([remittanceid: entity.objid]);
         }
     ] as BasicListModel;
-
-    def submit() {
-        def breakdown = 0;
-        if( entity.cashbreakdown ) {
-            breakdown = entity.cashbreakdown.sum{ it.amount };
+    
+    def creditMemoModel = [
+        fetchList: { o->
+            return service.getRemittanceCreditMemos([remittanceid: entity.objid]);
         }
-        if( breakdown != entity.totalcash )
-            throw new Exception("Cash breakdown must equal total cash");
-
+    ] as BasicListModel;
+    
+    def openBreakdown(def itm) {
+        boolean ed = (itm.totalcash > 0 && entity.state == 'DRAFT')
+        def h = { bd ->
+            service.updateCashBreakdown( bd );
+            entity.cashbreakdown = service.getCashBreakdown( [objid: entity.objid ] );
+            binding.refresh();
+        }
+        return Inv.lookupOpener( "remittance_cashbreakdown", [entity:itm, editable: ed, handler: h ]);
+    }
+    
+    def openBreakdown() {
+        if(!selectedFund) throw new Exception("Please choose a fund");
+        return openBreakdown( selectedFund );
+    }
+    
+    def submit() {
         boolean pass = false;
         try {
             def h = { sig->
@@ -127,8 +152,6 @@ class RemittanceModel  {
         }
     }
 
-    
-    
     def approve() {
         boolean pass = false;
         try {

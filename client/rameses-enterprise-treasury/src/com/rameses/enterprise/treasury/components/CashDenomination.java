@@ -24,15 +24,19 @@ public class CashDenomination extends XComponentPanel {
      */
     public CashDenomination() {
         initComponents();
-        int10.setHorizontalAlignment(SwingConstants.CENTER);
-        int100.setHorizontalAlignment(SwingConstants.CENTER);
         int1000.setHorizontalAlignment(SwingConstants.CENTER);
-        int20.setHorizontalAlignment(SwingConstants.CENTER);
-        int200.setHorizontalAlignment(SwingConstants.CENTER);
-        int5.setHorizontalAlignment(SwingConstants.CENTER);
-        int50.setHorizontalAlignment(SwingConstants.CENTER);
         int500.setHorizontalAlignment(SwingConstants.CENTER);
-        decCoins.setHorizontalAlignment(SwingConstants.CENTER);
+        int200.setHorizontalAlignment(SwingConstants.CENTER);
+        int100.setHorizontalAlignment(SwingConstants.CENTER);
+        int50.setHorizontalAlignment(SwingConstants.CENTER);
+        int10.setHorizontalAlignment(SwingConstants.CENTER);
+        int20.setHorizontalAlignment(SwingConstants.CENTER);
+        int5.setHorizontalAlignment(SwingConstants.CENTER);
+        int1.setHorizontalAlignment(SwingConstants.CENTER);
+        intc50.setHorizontalAlignment(SwingConstants.CENTER);
+        intc25.setHorizontalAlignment(SwingConstants.CENTER); 
+        intc10.setHorizontalAlignment(SwingConstants.CENTER);
+        intc05.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     /**
@@ -57,7 +61,11 @@ public class CashDenomination extends XComponentPanel {
         int20 = new com.rameses.rcp.control.XIntegerField();
         int10 = new com.rameses.rcp.control.XIntegerField();
         int5 = new com.rameses.rcp.control.XIntegerField();
-        decCoins = new com.rameses.rcp.control.XDecimalField();
+        int1 = new com.rameses.rcp.control.XIntegerField();
+        intc50 = new com.rameses.rcp.control.XIntegerField();
+        intc25 = new com.rameses.rcp.control.XIntegerField();
+        intc10 = new com.rameses.rcp.control.XIntegerField();
+        intc05 = new com.rameses.rcp.control.XIntegerField();
         xFormPanel13 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -67,6 +75,11 @@ public class CashDenomination extends XComponentPanel {
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
+        xLabel14 = new com.rameses.rcp.control.XLabel();
+        xLabel15 = new com.rameses.rcp.control.XLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -81,7 +94,7 @@ public class CashDenomination extends XComponentPanel {
 
         xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel11.setCaption("Cash remaining");
+        xLabel11.setCaption("Cash Remaining");
         xLabel11.setCaptionWidth(100);
         xLabel11.setDepends(new String[] {"qty1"});
         xLabel11.setExpression("#{cashremaining}");
@@ -143,11 +156,35 @@ public class CashDenomination extends XComponentPanel {
         int5.setPreferredSize(new java.awt.Dimension(60, 20));
         xFormPanel12.add(int5);
 
-        decCoins.setCaption("Coins");
-        decCoins.setCaptionWidth(60);
-        decCoins.setName("coins"); // NOI18N
-        decCoins.setPreferredSize(new java.awt.Dimension(60, 20));
-        xFormPanel12.add(decCoins);
+        int1.setCaption("1");
+        int1.setCaptionWidth(60);
+        int1.setName("qty1"); // NOI18N
+        int1.setPreferredSize(new java.awt.Dimension(60, 20));
+        xFormPanel12.add(int1);
+
+        intc50.setCaption("0.50");
+        intc50.setCaptionWidth(60);
+        intc50.setName("qtyc50"); // NOI18N
+        intc50.setPreferredSize(new java.awt.Dimension(60, 20));
+        xFormPanel12.add(intc50);
+
+        intc25.setCaption("0.25");
+        intc25.setCaptionWidth(60);
+        intc25.setName("qtyc25"); // NOI18N
+        intc25.setPreferredSize(new java.awt.Dimension(60, 20));
+        xFormPanel12.add(intc25);
+
+        intc10.setCaption("0.10");
+        intc10.setCaptionWidth(60);
+        intc10.setName("qtyc10"); // NOI18N
+        intc10.setPreferredSize(new java.awt.Dimension(60, 20));
+        xFormPanel12.add(intc10);
+
+        intc05.setCaption("0.05");
+        intc05.setCaptionWidth(60);
+        intc05.setName("qtyc05"); // NOI18N
+        intc05.setPreferredSize(new java.awt.Dimension(60, 20));
+        xFormPanel12.add(intc05);
 
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -213,6 +250,46 @@ public class CashDenomination extends XComponentPanel {
         xLabel8.setShowCaption(false);
         xFormPanel13.add(xLabel8);
 
+        xLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel9.setDepends(new String[] {"qty1"});
+        xLabel9.setExpression("#{d1}");
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel9.setShowCaption(false);
+        xFormPanel13.add(xLabel9);
+
+        xLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel12.setDepends(new String[] {"qtyc50"});
+        xLabel12.setExpression("#{dc50}");
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel12.setShowCaption(false);
+        xFormPanel13.add(xLabel12);
+
+        xLabel13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel13.setDepends(new String[] {"qtyc25"});
+        xLabel13.setExpression("#{dc25}");
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel13.setShowCaption(false);
+        xFormPanel13.add(xLabel13);
+
+        xLabel14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel14.setDepends(new String[] {"qtyc10"});
+        xLabel14.setExpression("#{dc10}");
+        xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel14.setShowCaption(false);
+        xFormPanel13.add(xLabel14);
+
+        xLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel15.setDepends(new String[] {"qtyc05"});
+        xLabel15.setExpression("#{dc05}");
+        xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel15.setShowCaption(false);
+        xFormPanel13.add(xLabel15);
+
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Qty");
@@ -246,8 +323,8 @@ public class CashDenomination extends XComponentPanel {
                     .addComponent(jLabel2))
                 .addGap(8, 8, 8)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(xFormPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -266,7 +343,8 @@ public class CashDenomination extends XComponentPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(xFormPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -275,7 +353,7 @@ public class CashDenomination extends XComponentPanel {
     }//GEN-LAST:event_int20ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XDecimalField decCoins;
+    private com.rameses.rcp.control.XIntegerField int1;
     private com.rameses.rcp.control.XIntegerField int10;
     private com.rameses.rcp.control.XIntegerField int100;
     private com.rameses.rcp.control.XIntegerField int1000;
@@ -284,6 +362,10 @@ public class CashDenomination extends XComponentPanel {
     private com.rameses.rcp.control.XIntegerField int5;
     private com.rameses.rcp.control.XIntegerField int50;
     private com.rameses.rcp.control.XIntegerField int500;
+    private com.rameses.rcp.control.XIntegerField intc05;
+    private com.rameses.rcp.control.XIntegerField intc10;
+    private com.rameses.rcp.control.XIntegerField intc25;
+    private com.rameses.rcp.control.XIntegerField intc50;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -293,6 +375,10 @@ public class CashDenomination extends XComponentPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
+    private com.rameses.rcp.control.XLabel xLabel14;
+    private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -300,6 +386,7 @@ public class CashDenomination extends XComponentPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -340,15 +427,19 @@ public class CashDenomination extends XComponentPanel {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        int10.setEnabled(enabled);
-        int100.setEnabled(enabled);
         int1000.setEnabled(enabled);
-        int20.setEnabled(enabled);
-        int200.setEnabled(enabled);
-        int5.setEnabled(enabled);
-        int50.setEnabled(enabled);
         int500.setEnabled(enabled);
-        decCoins.setEnabled(enabled);
+        int200.setEnabled(enabled);
+        int100.setEnabled(enabled);
+        int50.setEnabled(enabled);
+        int10.setEnabled(enabled);
+        int20.setEnabled(enabled);
+        int5.setEnabled(enabled);
+        int1.setEnabled(enabled);
+        intc50.setEnabled(enabled);
+        intc25.setEnabled(enabled); 
+        intc10.setEnabled(enabled);
+        intc05.setEnabled(enabled);
     }
 
     public String getAmountField() {

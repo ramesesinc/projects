@@ -1,0 +1,7 @@
+"entity.cashbreakdown" [ editable == true ] {
+    enabled: true;
+}
+
+"entity.cashbreakdown" [ editable == false ] {
+    enabled: false;
+}

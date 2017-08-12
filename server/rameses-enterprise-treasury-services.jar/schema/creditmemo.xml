@@ -20,6 +20,7 @@
 
 		<field name="receiptid"  />
 		<field name="receiptno" />
+		<field name="receiptdate"  type="date"/>
 
 		<complex name="bankaccount" ref="bankaccount" includefields="code,title,fund.objid,fund.code,bank.name" jointype="many-to-one">
 			<key field="bankaccount_objid" target="objid"/>

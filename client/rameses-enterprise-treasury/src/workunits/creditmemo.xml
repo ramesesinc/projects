@@ -2,10 +2,17 @@
    <invokers>
         <invoker type="creditmemo:create" caption="New Credit Memo" action="create"/>
         <invoker type="creditmemo:open" caption="Credit Memo" action="open"/>
+        
+        <!-- credit memo actionns -->
+        <invoker type="formActions" caption="Post To Income" action="viewPostToIncome" visibleWhen="#{entity.state=='OPEN' &amp;&amp; page!='income' }"/>
+        <invoker type="formActions" caption="Submit" action="postToIncome" visibleWhen="#{entity.state=='OPEN' &amp;&amp; page=='income' }"/>
+        
+        <invoker type="formActions" caption="View Income" action="viewPostToIncome" visibleWhen="#{entity.state=='CLOSED' &amp;&amp; entity.issuereceipt==0 &amp;&amp; currentPage=='default' }"/>
    </invokers>
    <code class="com.rameses.enterprise.treasury.models.CreditMemoModel" />
    <pages>
         <page template="com.rameses.enterprise.treasury.views.CreditMemoPage"/>
+        <page name="income" template="com.rameses.enterprise.treasury.views.CreditMemoPostToIncomePage"/>
    </pages>
    
 </workunit>

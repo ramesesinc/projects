@@ -40,6 +40,9 @@ class RemittanceService  {
 	@DataContext("remittance_af")
 	def remaf_db;
 
+	@DataContext("remittance_noncashpayment")
+	def rem_noncash;
+
 	@DataContext("af_control")
 	def afc_db;
 
@@ -88,10 +91,7 @@ class RemittanceService  {
 		if ( !o.items ) throw new Exception("No collections to be remitted.   ");
 
 		remdb.insertNonCashPayment( info ); 
-		remdb.getBuildFundSummary( info ).each{ rf-> 
-			rf.objid = 'REMF-'+ new java.rmi.server.UID(); 
-			remf_db.create( rf ); 
-		} 
+		remdb.insertFundSummary( info ); 
 
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
 			def afc = o.items.find{ it.controlid == k } 
@@ -192,32 +192,10 @@ class RemittanceService  {
 	public def open( o ) {
 		o = em.read( o );
 		o.remittanceid = o.objid; 
-
-		Base64Cipher cipher = new Base64Cipher()
-		if( o.collector?.signature !=null ) {
-			o.signature = cipher.decode( o.collector.signature );
-		}
-		if(o.liquidatingofficer?.signature) {
-			o.liquidatingofficer.signature =  cipher.decode(o.liquidatingofficer.signature)
-		}
-
-		o.checks = em.getRemittedChecks( o ); 
-
-		def td = o.checks.findAll{ it.reftype == 'CHECK' }?.sum{it.amount};
-		if(td==null) td = 0.0;
-
-		def tc = o.checks.findAll{ it.reftype == 'CREDITMEMO' }?.sum{it.amount};
-		if(tc==null) tc = 0.0;
-
-		o.totaldeposit = td + o.totalcash;
-		o.totalcreditmemo = tc;
 		return o;
 	}
 
-	@ProxyMethod
-	public def getRemittedReceipts( o ) { 
-		return em.getRemittedReceipts( o );
-	}
+	
 
 	public def getMonthFirstDate( dt ) {
         Calendar cal = Calendar.getInstance();
@@ -296,4 +274,84 @@ class RemittanceService  {
     	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
     	remdb.find( [objid : o.objid] ).update( m );
     }
+
+
+    //LISTS THAT WILL BE RETRIEVED BY REMITTANCE
+	@ProxyMethod
+	public def getRemittedReceipts( o ) { 
+		return em.getRemittedReceipts( o );
+	}
+
+    @ProxyMethod
+    public def getRemittanceFunds( def o ) {
+    	return remf_db.find( [remittanceid: o.remittanceid ] ).list();
+    }
+
+	@ProxyMethod
+    public def getCashBreakdown( def o ) {
+    	def r = remdb.find( [objid: o.objid ] ).select("cashbreakdown").val();
+    	return r;
+    }
+
+	@ProxyMethod
+    public def getFundCashBreakdown( def o ) {
+    	def r = remf_db.find( [objid: o.objid ] ).select("cashbreakdown").val();
+    	return r;
+    }
+
+ 	@ProxyMethod
+    public def getRemittanceChecks( def o ) {
+    	//check if there is fund provided
+    	def cond  = [];
+    	def parm = [:];
+
+		cond << " ref.reftype = 'CHECK' " 
+    	def xem = rem_noncash.find( [remittanceid: o.remittanceid ] );
+    	if( o.fund ) {
+    		cond << "ref.fund.objid = :fundid";
+    		parm.fundid = o.fund.objid;
+    	}
+    	return xem.where(cond.join(" AND "), parm).list()*.ref;
+    }
+
+ 	@ProxyMethod
+    public def getRemittanceCreditMemos( def o ) {
+    	//check if there is fund provided
+    	def cond  = [];
+    	def parm = [:];
+
+		cond << " NOT( ref.reftype = 'CHECK') " 
+    	def xem = rem_noncash.find( [remittanceid: o.remittanceid ] );
+    	if( o.fund ) {
+    		cond << "ref.fund.objid = :fundid";
+    		parm.fundid = o.fund.objid;
+    	}
+    	return xem.where(cond.join(" AND "), parm).list()*.ref;
+    }
+
+    @ProxyMethod
+    public void updateCashBreakdown( def o ) {
+        def m = [cashbreakdown : o.cashbreakdown];
+        remf_db.find([objid: o.objid]).update( m );   
+
+        def rem = remf_db.find([objid: o.objid]).select("remittanceid").first();
+        
+        //update also the head
+        //select all cash breakdowns
+        def arr = [];
+        def cblist = remf_db.find( [remittanceid: rem.remittanceid ] ).select("cashbreakdown").where( "totalcash > 0").list();
+        cblist.each {
+        	arr.addAll( it.cashbreakdown );
+        }
+
+        //summarize cash breakdown
+        def newarr = [];
+        def cbgrp = arr.groupBy{ it.denomination };
+
+        cbgrp.each { k,v->
+        	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
+        }
+        remdb.find( [objid: rem.remittanceid ]).update( [cashbreakdown: newarr] );
+    }
+
 }

@@ -6,9 +6,9 @@ class CreditMemoListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'open', title: 'For Receipt', state:'OPEN' ];
-		result << [ id:'posted-no-receipt', title: 'Posted', state:'POSTED' ];	
-		result << [ id:'posted-with-receipt', title: 'Receipt Issued', state:'POSTED' ];	
+		result << [ id:'open', title: 'Open', state:'OPEN' ];
+		result << [ id:'posted-no-receipt', title: 'Posted To Income', state:'CLOSED' ];	
+		result << [ id:'posted-with-receipt', title: 'Receipt Issued', state:'CLOSED' ];	
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'creditmemo' }")

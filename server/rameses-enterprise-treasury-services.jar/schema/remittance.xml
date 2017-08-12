@@ -29,22 +29,6 @@
 		<field name="liquidated" expr="CASE WHEN liquidation.liquidationid IS NULL THEN 0 ELSE 1 END" />		
 	</element>
 
-	<element name="remittance_cashreceipt" tablename="remittance_cashreceipt">
-		<field name="objid" primary="true"/>
-		<field name="remittanceid" required="true"/>
-	</element>
 
-	<element name="remittance_fund" tablename="remittance_fund">
-		<field name="objid" primary="true"/>
-		<field name="remittanceid" required="true"/>
-		<field name="fund_objid" required="true"/>
-		<field name="fund_title" required="true"/>
-		<field name="amount" required="true"/>
-	</element>
-	
-	<element name="checkpayment" tablename="remittance_noncashpayment">
-		<field name="objid" primary="true"/>
-		<field name="remittanceid" required="true"/>
-	</element>
 	
 </schema>

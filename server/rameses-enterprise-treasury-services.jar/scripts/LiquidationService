@@ -41,6 +41,17 @@ class LiquidationService  {
 			if(ud ) throw new Exception("There are still undeposited liquidations. ");	
 		} 
 
+		def m = [state:'DRAFT'];
+		m.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];
+		m.dtposted = dateSvc.serverDate;
+		m.txnno = Encoder.MD5.encode( env.USERID ); 
+		m.amount = 0.0;
+		m.totalcash = 0.0;
+		m.totalnoncash = 0.0;
+		m.totalcr = 0.0;
+		m = liqEm.create( m );
+
+
         def str = "objid,remittanceno:{txnno},remittancedate,collector.name,totalcash,totalnoncash,amount" 
 		def o = [objid: "LIQ"+new UID(), cashier:[:]];
 		o.remittances = remEm.where( " state='APPROVED' AND liquidatingofficer.objid = :lqid AND liquidation.liquidationid IS NULL ", [lqid: env.USERID] ).select( str ).list();
@@ -58,7 +69,7 @@ class LiquidationService  {
 		//initial values
 		o.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];	
 		o.state = "OPEN";
-		o.dtposted = dateSvc.serverDate;
+		
 
 		return o;
 	}

@@ -24,6 +24,10 @@ class CashDenominationModel extends ComponentBean {
     int qty10 = 0;
     int qty5 = 0;
     int qty1 = 0;
+    int qtyc50 = 0;
+    int qtyc25 = 0;
+    int qtyc10 = 0;
+    int qtyc05 = 0;
     
     double d1000 = 0.0;
     double d500 = 0.0;
@@ -33,14 +37,19 @@ class CashDenominationModel extends ComponentBean {
     double d20 = 0.0;
     double d10 = 0.0;
     double d5 = 0.0;
-    def coins = 0.0;
-        
+    
+    double d1 = 0.0;
+    double dc50 = 0.0;
+    double dc25 = 0.0;
+    double dc10 = 0.0;
+    double dc05 = 0.0;
+    
     def total = 0.0;
     def amount = 0.0;
     def cashremaining = 0.0;
     
     void calcTotals() {
-        total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+coins);
+        total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+d1+dc50+dc25+dc10+dc05);
         cashremaining = NumberUtil.round(amount - total);
         binding.refresh("total|cashremaining");
     };
@@ -64,7 +73,11 @@ class CashDenominationModel extends ComponentBean {
             loadData( 20, 'qty20', 'd20');
             loadData( 10, 'qty10', 'd10');
             loadData( 5, 'qty5', 'd5'); 
-            coins = model.find{it.denomination == 1}?.amount;
+            loadData( 1, 'qty1', 'd1');
+            loadData( 0.50, 'qtyc50', 'dc50');
+            loadData( 0.25, 'qtyc25', 'dc25');
+            loadData( 0.10, 'qtyc10', 'dc10');
+            loadData( 0.05, 'qtyc05', 'dc05');
         };
         else {
             model = [];
@@ -90,18 +103,6 @@ class CashDenominationModel extends ComponentBean {
         calcTotals();
     }
     
-    void updateCoinsAmount( def amt ) {
-        def d = model.find{ it.denomination == 1 };
-        if(d) {
-            d.qty = amt;
-            d.amount = amt;
-        }
-        else {
-            model << [caption: 'Coins', denomination:1, qty: amt, amount: amt];
-        }
-        calcTotals();
-    }
-    
     @PropertyChangeListener 
     def listener = [
         "qty1000": {q-> updateEntry(1000, q, 'd1000'); },
@@ -112,7 +113,11 @@ class CashDenominationModel extends ComponentBean {
         "qty20": {q-> updateEntry(20, q, 'd20');},
         "qty10": {q-> updateEntry(10, q, 'd10'); },
         "qty5": {q-> updateEntry(5, q, 'd5');},
-        "coins": {o-> updateCoinsAmount(o) }
+        "qty1": {q-> updateEntry(1, q, 'd1');},
+        "qtyc50": {q-> updateEntry(0.50, q, 'dc50');},
+        "qtyc25": {q-> updateEntry(0.25, q, 'dc25');},
+        "qtyc10": {q-> updateEntry(0.10, q, 'dc10');},
+        "qtyc05": {q-> updateEntry(0.05, q, 'dc05');},
     ];
     
 }

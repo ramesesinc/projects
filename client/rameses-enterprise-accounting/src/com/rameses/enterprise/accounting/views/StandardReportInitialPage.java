@@ -34,8 +34,9 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox5 = new com.rameses.rcp.control.XCheckBox();
@@ -59,15 +60,6 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xComboBox2.setAllowNull(false);
-        xComboBox2.setCaption("Report Type");
-        xComboBox2.setCaptionWidth(120);
-        xComboBox2.setItems("reportTypes");
-        xComboBox2.setName("query.type"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(200, 20));
-        xComboBox2.setRequired(true);
-        xFormPanel1.add(xComboBox2);
-
         xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Template");
         xComboBox3.setCaptionWidth(120);
@@ -77,6 +69,21 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
+
+        xComboBox2.setAllowNull(false);
+        xComboBox2.setCaption("Report Type");
+        xComboBox2.setCaptionWidth(120);
+        xComboBox2.setItems("reportTypes");
+        xComboBox2.setName("query.type"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(200, 20));
+        xComboBox2.setRequired(true);
+        xFormPanel1.add(xComboBox2);
+
+        xTextField1.setCaption("Report Title");
+        xTextField1.setName("query.reporttitle"); // NOI18N
+        xTextField1.setCaptionWidth(120);
+        xTextField1.setPreferredSize(new java.awt.Dimension(400, 20));
+        xFormPanel1.add(xTextField1);
 
         xFormPanel3.setCaptionWidth(120);
         xFormPanel3.setPadding(new java.awt.Insets(5, 120, 0, 0));
@@ -106,8 +113,8 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,7 +142,7 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(filterCriteria1, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addComponent(filterCriteria1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -171,5 +178,6 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

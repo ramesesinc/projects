@@ -86,7 +86,12 @@ class StandardReportModel {
         report = [
             getReportName: { return reportpath + query.template.name; },
             getReportData: { return resp.reportdata; }, 
-            getParameters: { return resp.reportparam; } 
+            getParameters: { 
+                if ( query.reporttitle ) {
+                    resp.reportparam.TITLE = query.reporttitle; 
+                }
+                return resp.reportparam; 
+            } 
         ] as ReportModel;
         report.viewReport();
         

@@ -20,18 +20,15 @@ class AccountingStandardReportService  {
 	@ProxyMethod 
 	public def init() {
 		def p = [ fields:[] ];  
+		p.fields << [name:'m.acctid', caption:'Account', type:'list', schemaname:'account', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'inc.fundid', caption:'Fund', type:'list', schemaname:'fund', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'inc.acctid', caption:'Item Account', type:'list', schemaname:'itemaccount', lookupkey:'objid', lookupvalue:'title']; 
 		p.fields << [name:'inc.liquidationdate', caption:'Liquidation Date', type:'date']; 
 		p.fields << [name:'inc.liquidationyear', caption:'Liquidation Year', type:'integer']; 
-		p.fields << [name:'inc.liquidationmonth', caption:'Liquidation Month', type:'integer']; 
-		p.fields << [name:'inc.liquidationqtr', caption:'Liquidation Qtr', type:'integer'];
 		p.fields << [name:'inc.remittancedate', caption:'Remittance Date', type:'date'];  
 		p.fields << [name:'inc.remittanceyear', caption:'Remittance Year', type:'integer'];  
-		p.fields << [name:'inc.remittancemonth', caption:'Remittance Month', type:'integer'];  
-		p.fields << [name:'inc.remittanceqtr', caption:'Remittance Qtr', type:'integer'];  
 		p.fields << [name:'inc.refdate', caption:'Reference Date', type:'date']; 
 		p.fields << [name:'inc.refyear', caption:'Reference Year', type:'integer']; 
-		p.fields << [name:'inc.refmonth', caption:'Reference Month', type:'integer']; 
-		p.fields << [name:'inc.refqtr', caption:'Reference Qtr', type:'integer']; 
 		return p; 
 	}
 

@@ -45,11 +45,17 @@ class RAAFReportService
 
 	@ProxyMethod
 	public def getRAAFByRemittance( params ) { 	
+		println '** params '+ params; 
 		if ( !params.remittanceid ) throw new Exception('remittanceid parameter is required');
 		if ( !params.formno ) params.formno = '%';
 
 		def items = adb.getReportDataByRemittance([ remittanceid: params.remittanceid, formno: params.formno ]);  
 		items.eachWithIndex{ o,idx-> o.sortindex = idx; } 
+
+		println '** items size = '+ items.size();
+		items.each{
+			println '> '+ it;
+		}
 
 		def unuseditems = items.findAll{ it.qtyissued==0 } 
 		items.removeAll( unuseditems ); 
@@ -246,6 +252,8 @@ class RAAFReportService
 		def result = []; 
 
 		def groups = afitems.groupBy{ it.formtype } 
+		if ( !groups ) return result;
+
 		groups.serial.groupBy{ it.formno }.each{ k,v-> 
 			v.sort{ it.afstartseries }  
 			def mergeindex = 0; 

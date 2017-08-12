@@ -19,6 +19,8 @@ class AccountingReportUtil  {
 				arr = buildNumberOperator( o, o.decimaloperator, idx ); 
 			} else if ( dtype == 'boolean' ) {
 				arr = buildBooleanOperator( o, o.booleanoperator, idx ); 
+			} else if ( dtype == 'list' ) {
+				arr = buildListOperator( o, o.listoperator, idx ); 
 			} else {
 				arr = buildStringOperator( o, o.stringoperator, idx ); 
 			} 
@@ -69,4 +71,20 @@ class AccountingReportUtil  {
 		def pname1 = '''$P{'''+ name1 +'''}'''; 
 		return [ p.field.name +' '+ opr.key +' '+ pname1, arg ]; 
 	} 
+
+	def buildListOperator( p, opr, idx ) {
+		if ( !p.field ) return null; 
+
+		def arg = [:];
+		def pnames = []; 
+		p.value.eachWithIndex{ o,ii-> 
+			def kname = 'listvalue_'+idx+'_'+ii; 
+			def pname = '''$P{'''+ kname +'''}'''; 
+			pnames << pname; 
+			arg.put( kname, o.key );
+		}
+
+		def fk = p.field.name +' '+ opr.key +' ( '+ pnames.join(', ') +' )'; 
+		return [ fk, arg ];  
+	}
 } 

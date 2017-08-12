@@ -20,8 +20,7 @@ from (
 		select m.acctid, sum(inc.amount) as amount 
 		from account_item_mapping m 
 			inner join income_summary inc on m.itemid=inc.acctid 
-		where m.maingroupid=$P{maingroupid} 
-
+		where m.maingroupid=$P{maingroupid} ${filter} 
 		group by acctid 
 	)inc on inc.acctid=tmp1.objid 
 order by tmp1.parentid, tmp1.acctcode 
@@ -37,6 +36,7 @@ from account_item_mapping m
 	inner join account a on a.objid=m.acctid 
 where m.maingroupid = $P{maingroupid} 
 	and a.maingroupid = m.maingroupid 
+	${filter} 
 group by 
 	m.itemid, a.maingroupid, ia.code, ia.title, m.acctid 
 order by m.acctid, ia.code 

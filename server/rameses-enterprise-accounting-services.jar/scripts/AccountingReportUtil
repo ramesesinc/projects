@@ -33,10 +33,12 @@ class AccountingReportUtil  {
 	} 
 
 	def buildDateOperator( p, opr, idx ) {
-		return buildNumberOperator( p, idx ); 
+		return buildNumberOperator( p, opr, idx ); 
 	} 
 
 	def buildNumberOperator( p, opr, idx ) {
+		if ( !p.field ) return null;
+
 		def arg = [:];
 		def name1 = 'value'+ idx;
 		arg.put( name1, p.value );
@@ -52,11 +54,14 @@ class AccountingReportUtil  {
 		} 
 	} 
 
-	def buildBooleanOperator( p, opr, idx ) {
+	def buildBooleanOperator( p, opr, idx ) { 
+		if ( !p.field ) return null;
 		return [ p.field.name +' '+ opr.key, [:]]; 
 	}
 
 	def buildStringOperator( p, opr, idx ) {
+		if ( !p.field ) return null;
+
 		def arg = [:];
 		def name1 = 'value'+ idx;
 		arg.put( name1, p.value );

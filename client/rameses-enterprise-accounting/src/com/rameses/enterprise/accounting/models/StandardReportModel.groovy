@@ -15,6 +15,7 @@ class StandardReportModel {
     @Service('AccountingStandardReportService') 
     def reportSvc; 
     
+    def title = 'Standard Report';
     def query = [:];
     def fields = [];
     def mode = 'init';
@@ -74,14 +75,13 @@ class StandardReportModel {
     }
     
     def preview() { 
-        if ( !criteriaList ) throw new Exception('Please specify at least one filter'); 
         if ( !query.template?.name ) throw new Exception('Please select a template'); 
+
+        def filter = criteriaList.find{( it.field?.name )}
+        if ( !filter ) throw new Exception('Please specify at least one filter'); 
         
-        query.maingroupid = query.maingroup?.objid; 
         query.filters = criteriaList;
-        query.period = 'monthly'; 
-        query.month = [index:8];
-        query.year = 2017;
+        query.maingroupid = query.maingroup?.objid; 
         def resp = reportSvc.getReport( query ); 
         report = [
             getReportName: { return reportpath + query.template.name; },

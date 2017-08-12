@@ -37,10 +37,11 @@ class AccountingStandardReportService  {
 
 	@ProxyMethod 
 	public def getReport( params ) { 
-		println '*** ' + reportUtil.buildFilters( params.filters );  
-		buildParams( params ); 
+		def arr = reportUtil.buildFilters( params.filters ); 
+		if ( arr != null && arr.size() > 0 ) params.filter = ' AND '+ arr[0]; 
+		if ( arr != null && arr.size() > 1 ) params.putAll( arr[1] ); 
 
-		println '>> params -> ' + params; 
+		if ( !params.filter ) params.filter = '';
 
 		def acctlist = accountingreport_db.getAccountSummary( params );  
 		if ( !acctlist ) 
@@ -196,7 +197,7 @@ class AccountingStandardReportService  {
 
 
 	private void buildParams( params ) {
-		params.filter = '';
+		if ( !params.filter ) params.filter = '';
 		if ( !params.type ) params.type = 'standard'; 
 
 		def period = new StringBuffer();

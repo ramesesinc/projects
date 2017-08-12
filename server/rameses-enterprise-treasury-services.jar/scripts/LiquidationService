@@ -28,31 +28,52 @@ class LiquidationService  {
 	@DataContext("liquidation_remittance")
 	def liqRem;
 
+	@DataContext("liquidation_fund")
+	def liqfund;
+
 	@DataContext("liquidation")
 	def liqEm;
 
 	@DataContext("remittance")
 	def remEm;
 
+
+	@ProxyMethod 
+	public def delete( params ) {
+		liqRem.find([ liquidationid: params.objid ]).delete();
+		liqfund.find([ liquidationid: params.objid ]).delete();
+		liqEm.find([ objid: params.objid ]).delete(); 
+		return null; 
+	}
+
 	@ProxyMethod
 	public def init() {
-		if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
+		/*if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
 			def ud = em.getUndepositedLiquidations([liquidatingofficerid: env.USERID] ) 
 			if(ud ) throw new Exception("There are still undeposited liquidations. ");	
-		} 
+		}*/
 
-		def m = [state:'DRAFT'];
+		def m = [ state: 'DRAFT', cashbreakdown:[] ];
 		m.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];
 		m.dtposted = dateSvc.serverDate;
 		m.txnno = Encoder.MD5.encode( env.USERID ); 
 		m.amount = 0.0;
+		m.totalcr = 0.0;
 		m.totalcash = 0.0;
 		m.totalnoncash = 0.0;
-		m.totalcr = 0.0;
-		m = liqEm.create( m );
+		m = liqEm.create( m ); 
 
+		def liqparam = [ liquidationid: m.objid ]; 
+		liqEm.insertRemittances( liqparam ); 
+		if ( !liqRem.find( liqparam ).first() ) 
+			throw new Exception("No pending remittances to liquidate"); 
 
-        def str = "objid,remittanceno:{txnno},remittancedate,collector.name,totalcash,totalnoncash,amount" 
+		liqEm.insertFunds( liqparam ); 
+
+		m.remittances = liqRem.find( liqparam ).list()*.remittance;
+		return m; 
+
+        /*def str = "objid,remittanceno:{txnno},remittancedate,collector.name,totalcash,totalnoncash,amount" 
 		def o = [objid: "LIQ"+new UID(), cashier:[:]];
 		o.remittances = remEm.where( " state='APPROVED' AND liquidatingofficer.objid = :lqid AND liquidation.liquidationid IS NULL ", [lqid: env.USERID] ).select( str ).list();
 		if(!o.remittances)
@@ -69,31 +90,23 @@ class LiquidationService  {
 		//initial values
 		o.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];	
 		o.state = "OPEN";
-		
+		*/
+	}
 
-		return o;
+	@ProxyMethod 
+	public def getChecks( params ) {
+		return liqEm.getChecks([ liquidationid: params.objid ]); 
 	}
 
 
 	@ProxyMethod
 	public def post( o ) {
-		o.txnno = formatTxnno(o)
-		
-		em.create( o );
-
-		def ids = "'" + o.remittances*.objid.join("','") + "'";
-		def m = [liquidationid:o.objid];
-		m.ids = ids;
-		em.postLiquidateRemittance(m);
-		em.postLiquidateNoncash(m);
-		
-		o.fundsummary.each {
-			it.objid = "LIQFUND"+new UID();
-			it.liquidationid = o.objid;
-			em.create( it, "cashier_fund");
-		} 
-		return o;		
-	}	
+		o.state = 'OPEN'; 
+		o.txnno = formatTxnno( o ); 
+		o.cashbreakdown = (o.cashbreakdown ? o.cashbreakdown : []); 
+		liqEm.find([ objid: o.objid]).update([ state: o.state, txnno: o.txnno, cashbreakdown: o.cashbreakdown ]); 
+		return o; 
+	} 
 
 
 	@ProxyMethod

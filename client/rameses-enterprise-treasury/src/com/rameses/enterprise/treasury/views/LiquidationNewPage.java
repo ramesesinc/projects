@@ -42,7 +42,7 @@ public class LiquidationNewPage extends javax.swing.JPanel {
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "remittanceno"}
+                new Object[]{"name", "txnno"}
                 , new Object[]{"caption", "Remittance No"}
                 , new Object[]{"width", 120}
                 , new Object[]{"minWidth", 0}

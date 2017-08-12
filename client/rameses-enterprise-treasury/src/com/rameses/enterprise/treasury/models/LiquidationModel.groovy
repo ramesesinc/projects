@@ -154,6 +154,12 @@ class LiquidationModel  {
         }
     }
     
-    
+    def delete() {
+        if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
+            service.delete([ objid: entity.objid ]); 
+            return '_close'; 
+        }
+        return null; 
+    }
     
 } 

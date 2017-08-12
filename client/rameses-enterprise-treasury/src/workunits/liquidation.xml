@@ -26,6 +26,8 @@
          <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{mode == 'read' }" action="preview" />
          <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{mode == 'read' }" category="liquidation:reports" />
          
+         <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{ entity.state=='DRAFT' }" />
+         
          <!-- CASHIER FUNCTIONS -->
          <invoker type="formActions" caption="Approve for Deposit" action="approve" 
                     visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'OPEN' }"

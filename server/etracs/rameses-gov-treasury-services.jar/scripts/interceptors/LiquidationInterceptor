@@ -13,7 +13,7 @@ class LiquidationInterceptor {
 	@After(pattern="LiquidationService.post")
 	public void postIncomeSummary( def evt ) { 
 		def entity = evt.result;
-		incomeSvc.post([liquidationid: entity.objid]); 
+		//incomeSvc.post([liquidationid: entity.objid]); 
         entity.posted = 1;   
 	}
 	

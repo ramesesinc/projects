@@ -8,6 +8,7 @@ class LiquidationListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
+		result << [ id:'draft', title: 'Draft', state:'DRAFT' ];
 		result << [ id:'pending', title: 'For Approval', state:'OPEN' ];
 		result << [ id:'approved', title: 'For Deposit', state:'APPROVED' ];
 		result << [ id:'closed', title: 'Deposited', state:'CLOSED' ];

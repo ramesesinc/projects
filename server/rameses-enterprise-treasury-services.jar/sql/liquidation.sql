@@ -1,9 +1,41 @@
 [insertRemittances]
-INSERT INTO liquidation_remittance ( objid, liquidationid ) 
-SELECT r.objid, $P{liquidationid}  
-FROM remittance r 
-WHERE r.state='APPROVED' 
-	AND r.objid NOT IN (SELECT objid FROM liquidation_remittance WHERE objid=r.objid) 
+insert into liquidation_remittance ( objid, liquidationid ) 
+select r.objid, $P{liquidationid}   
+from remittance r 
+where r.objid not in (select objid from liquidation_remittance where objid=r.objid) 
+	and r.state='APPROVED' 
+
+
+[insertFunds]
+insert into liquidation_fund ( 
+	objid, liquidationid, fund_objid, fund_title, 
+	amount, totalcash, totalnoncash, totalcr, cashbreakdown 
+)
+select 
+	concat(lrem.liquidationid, remf.fund_objid) as objid, 
+	lrem.liquidationid, remf.fund_objid, remf.fund_title, 
+	sum(remf.amount) as amount, sum(remf.totalcash) as totalcash, 
+	sum(remf.totalnoncash) as totalnoncash, sum(remf.totalcr) as totalcr, 
+	'[]' as cashbreakdown 
+from liquidation_remittance lrem 
+	inner join remittance rem on rem.objid=lrem.objid 
+	inner join remittance_fund remf on remf.remittanceid=rem.objid 
+where lrem.liquidationid = $P{liquidationid} 
+group by lrem.liquidationid, remf.fund_objid, remf.fund_title 
+
+
+[getChecks]
+select nc.* 
+from liquidation_remittance lrem 
+	inner join remittance rem on rem.objid=lrem.objid 
+	inner join remittance_noncashpayment remnc on remnc.remittanceid=rem.objid 
+	inner join cashreceiptpayment_noncash nc on nc.objid=remnc.objid 
+where lrem.liquidationid = $P{liquidationid} 
+
+
+
+
+
 
 
 [getList]

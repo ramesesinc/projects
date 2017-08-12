@@ -13,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(FormPage.class)
-public class StandardReportInitialPage extends javax.swing.JPanel {
+public class StandardReportInitialPage_1 extends javax.swing.JPanel {
 
     /**
-     * Creates new form StandardReportInitialPage
+     * Creates new form StandardReportInitialPage_1
      */
-    public StandardReportInitialPage() {
+    public StandardReportInitialPage_1() {
         initComponents();
     }
 
@@ -34,6 +34,7 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
@@ -58,6 +59,16 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
+
+        xComboBox4.setAllowNull(false);
+        xComboBox4.setCaption("Posting Type");
+        xComboBox4.setCaptionWidth(120);
+        xComboBox4.setExpression("#{item.caption}");
+        xComboBox4.setItems("postingTypes");
+        xComboBox4.setName("query.postingtype"); // NOI18N
+        xComboBox4.setPreferredSize(new java.awt.Dimension(200, 20));
+        xComboBox4.setRequired(true);
+        xFormPanel1.add(xComboBox4);
 
         xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("Report Type");
@@ -135,7 +146,7 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(filterCriteria1, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addComponent(filterCriteria1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -169,6 +180,7 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     // End of variables declaration//GEN-END:variables

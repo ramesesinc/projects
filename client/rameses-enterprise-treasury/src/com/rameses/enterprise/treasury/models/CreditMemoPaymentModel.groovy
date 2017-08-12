@@ -12,19 +12,19 @@ class CreditMemoPaymentModel  {
     def binding;
     
     def entity;
-    def entry = [:]
+    def entry;
     
-    def fundbreakdown;
+    def funds;
     def saveHandler;
     
     void init() {
-        if(!fundbreakdown) throw new Exception("fundbreakdown is required");
-        entry.funds = fundbreakdown;
+        entry = [:]; 
+        if(!funds) throw new Exception("fundbreakdown is required");
     }
     
     def fundList = [
         fetchList: { o->
-            return entry.funds;
+            return funds;
         }
     ] as BasicListModel;
     
@@ -35,7 +35,7 @@ class CreditMemoPaymentModel  {
             entry.refdate = o.refdate;
             entry.payer = o.payer;
             entry.bankaccount = o.bankaccount;
-            entry.type = 'CREDITMEMO';
+            entry.reftype = 'CREDITMEMO';
             entry.amount = o.amount;
             entry.particulars = o.refno + " " + (!o.particulars?'':o.particulars);
             binding.refresh();
@@ -55,7 +55,17 @@ class CreditMemoPaymentModel  {
             boolean t = MsgBox.confirm(str);
             if(!t) return null;
         }
-        saveHandler( entry );
+        def arr = [];
+        funds.each { f->
+            f.refid = entry.refid;
+            f.refno = entry.refno;
+            f.refdate = entry.refdate; 
+            f.reftype = entry.reftype;
+            f.bank = entry.bankaccount.code + "-" + entry.bankaccount.name;
+            f.particulars = f.fund.title;
+            arr << f;
+        }
+        saveHandler( arr );
         return "_close";
     }
     

@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="remittance_noncashpayment">
+		<field name="objid" primary="true"/>
+		<field name="remittanceid" required="true"/>
+		<complex name="ref" ref="cashreceiptpayment_noncash" jointype="many-to-one">
+			<key field="objid" target="objid" />
+		</complex>	
+	</element>
+</schema>	

@@ -1,3 +1,11 @@
+[insertRemittances]
+INSERT INTO liquidation_remittance ( objid, liquidationid ) 
+SELECT r.objid, $P{liquidationid}  
+FROM remittance r 
+WHERE r.state='APPROVED' 
+	AND r.objid NOT IN (SELECT objid FROM liquidation_remittance WHERE objid=r.objid) 
+
+
 [getList]
 SELECT l.* 
 FROM ( 

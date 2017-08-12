@@ -8,30 +8,34 @@ import com.rameses.seti2.models.*;
 import com.rameses.util.*;
 
 public class CreditMemoModel extends CrudFormModel { 
-
+    def page;
     
-    @PropertyChangeListener
-    def listener = [
-        "entity.bankaccount" : { o->
-            entity.items.clear();
-            reload();
-        }
-    ];
+    public def viewPostToIncome() {
+        entity.items = [];
+        edit();
+        page = "income";
+        return page;
+    }
     
-    void beforeSave(def mode) {
-        if(entity.issuereceipt == 0 ) {
-            if( !entity.items ) 
-            throw new Exception("Please specify at least one item");
-            if( entity.itemtotal != entity.amount )
-                throw new Exception("Amount must be equal to items amount");
-        }
+    public def postToIncome() {
+        if( !entity.items ) 
+        throw new Exception("Please specify at least one item");
+        if( entity.itemtotal != entity.amount )
+            throw new Exception("Amount must be equal to items amount");
+        entity.issuereceipt = 0;
+        save();
+        MsgBox.alert('Successfully Posted');
+        return "_close";
+    }
+    
+    public String getConfirmMessage() {
+        return "You are about to post this to the bank account record. Proceed?";
     }
     
     def getItemAccountLookup() {
         if( !entity.bankaccount?.fund?.objid )
             throw new Exception("Please select a bank account first");
-            //fundid: entity.bankaccount.fund.objid 
-        return Inv.lookupOpener( "itemaccount:lookup", [:] );
+        return Inv.lookupOpener( "itemaccount:lookup", [fundid: entity.bankaccount.fund.objid] );
     }
     
     //def df = new java.text.DecimalFormat("#,##0.00")

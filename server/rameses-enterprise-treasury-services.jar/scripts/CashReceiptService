@@ -33,6 +33,15 @@ class CashReceiptService  {
    	@Service("PostPaymentService")
    	def postPmtSvc;
 
+   	@DataContext("cashreceiptpayment_noncash")
+   	def cashRctPmt;
+
+   	@DataContext("cashreceiptitem")
+   	def cashRctItem;
+
+   	@DataContext("creditmemo")
+   	def creditmemo;
+
 	/**
 	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
 	* it is gotten during getNextReceiptInfo
@@ -103,19 +112,23 @@ class CashReceiptService  {
 		p.items.each { x->
 			if(! x.objid  ) x.objid = "RCTI"+ new UID();
 			x.receiptid = p.objid;
-			em.create("cashreceipt:item", x);
+			cashRctItem.create(x);
 		}
 		p.paymentitems.each { x->
 			x.objid = "CRPMT"+new UID();
 			x.receiptid = p.objid;
-			em.create("cashreceipt:paymentitem-noncash", x);
+			cashRctPmt.create(x);
+			//update status of credit memo if credit memo payment
+			if( x.reftype == 'CREDITMEMO') {
+				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
+				creditmemo.find( [objid: x.refid] ).update(cmp);
+			}
 		} 
 		if (p._paymentorderid) deletePaymentOrder(p);
 
 
 		//add this method here so it will not be forgotten. This method is to automate 
 		//posting of payments if there is a postpayment object attached.
-		println "has post payment ? " + p.postpayment?._schemaname;
 		if( p.postpayment?._schemaname!=null ) {
 			def pmt = p.remove("postpayment");
 			pmt.reftype = "cashreceipt";

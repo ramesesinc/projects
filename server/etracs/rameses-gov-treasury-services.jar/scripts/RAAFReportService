@@ -250,11 +250,10 @@ class RAAFReportService
 
 	def merge( afitems ) { 
 		def result = []; 
+		if(!afitems) return result; 
 
 		def groups = afitems.groupBy{ it.formtype } 
-		if ( !groups ) return result;
-
-		groups.serial.groupBy{ it.formno }.each{ k,v-> 
+		groups.serial?.groupBy{ it.formno }.each{ k,v-> 
 			v.sort{ it.afstartseries }  
 			def mergeindex = 0; 
 			def prevseries = v.first().afstartseries;
@@ -294,7 +293,7 @@ class RAAFReportService
 			} 
 		}
 
-		groups.cashticket.groupBy{ it.formno }.each{ k,v-> 
+		groups.cashticket?.groupBy{ it.formno }.each{ k,v-> 
 			def a = v.first(); 
 			a.qtyreceived = v.sum{( it.qtyreceived ? it.qtyreceived : 0 )}
 			a.qtybegin = v.sum{( it.qtybegin ? it.qtybegin : 0 )}

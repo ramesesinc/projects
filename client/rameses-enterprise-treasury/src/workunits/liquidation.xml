@@ -1,22 +1,6 @@
 <workunit>
     
    <invokers>
-         <invoker type="liquidation:create" caption="Liquidation" action="create"
-                icon="home/icons/liquidation.png"
-                  target="window"/>
-         
-         <invoker type="unliquidated_remittance:listActions" caption="Liquidate" action="create"
-                role="LIQUIDATING_OFFICER"
-                target="window"/>
-
-                  
-           <invoker folderid="home/collection" caption="Liquidate" action="create"
-                icon="home/icons/liquidation.png" role="LIQUIDATING_OFFICER"
-                  target="window"/>
-         <!--
-         <invoker type="liquidation:liquidate" caption="Liquidation" action="liquidate" target="popup"/>
-         -->
-         
          <invoker type="quick_launcher" code="LIQ" caption="Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER"/>
          <invoker type="liquidation:open" caption="Liquidation (Open)" action="open" target="window"/>
          
@@ -38,8 +22,7 @@
    <code class="com.rameses.enterprise.treasury.models.LiquidationModel" />
    
    <pages>
-       <page name="create" template="com.rameses.enterprise.treasury.views.LiquidationNewPage" />
-       <page name="view" template="com.rameses.enterprise.treasury.views.LiquidationViewPage" />
+       <page template="com.rameses.enterprise.treasury.views.LiquidationViewPage" />
    </pages>
    
 </workunit>

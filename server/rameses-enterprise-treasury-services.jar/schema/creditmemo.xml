@@ -4,7 +4,7 @@
 		<field name="objid" primary="true" prefix="CM" />
 		<field name="state" required="true" />
 		<field name="controlno" required="true" />
-		<field name="payer_objid" required="true" />
+		<field name="payer_objid" />
 		<field name="payer_name" required="true" searchable="true"/>
 		<field name="payer_address_text" required="true" />
 		<field name="refdate" required="true" type="date" />
@@ -12,11 +12,10 @@
 		<field name="amount" required="true" type="decimal" />
 		<field name="particulars"  required="true"/>
 		<field name="bankaccount_objid" required="true"/>
-		<field name="type_objid" />
-		<field name="type_title" />
+		<field name="type" />
 		<field name="dtissued" required="true" />
-		<field name="issuedby_objid" required="true" />
-		<field name="issuedby_name" required="true" />
+		<field name="issuedby_objid"  />
+		<field name="issuedby_name"  />
 
 		<field name="receiptid"  />
 		<field name="receiptno" />

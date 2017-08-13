@@ -27,17 +27,13 @@ class LiquidationModel  {
     def mode = 'initial';
     def listModel;
     def selectedItem;
-    def selectedCheck;
+    
     def selectedRemittance;
+    def selectedFund;
     
     @FormTitle
     public def getTitle() {
-        if( mode == "create" ) {
-            return "New Liquidation";
-        }
-        else {
-            return entity.txnno;
-        }
+        return entity.txnno;
     }
 
     @FormId
@@ -63,17 +59,10 @@ class LiquidationModel  {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
-    def create() {
-        entity = service.init();
-        entity.cashbreakdown = [];
-        mode = "create";
-        return "create";
-    }
-    
     def open(){
         mode = "read";
         entity = service.open(entity);
-        return "view";
+        return null;
     }
 
     def remittancesModel = [
@@ -83,13 +72,7 @@ class LiquidationModel  {
         }
     ] as BasicListModel;
 
-    def checkModel = [
-        fetchList: {
-            return entity.checks;
-        }
-    ] as BasicListModel;
-    
-    def fundSummaryModel = [
+    def fundListModel = [
         fetchList: {
             return entity.fundsummary;
         }
@@ -103,14 +86,28 @@ class LiquidationModel  {
         return op;
     }
     
+    def viewBreakdown() {
+        def h = [
+            getCashBreakdown : {
+                return entity.breakdown;   
+            },
+            getChecks: {
+                return  entity.checks;
+            },
+            getCreditMemos: {
+                return entity.creditmemos;
+            }
+        ]   
+        return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
+    }
+    
+    
+    def viewFundBreakdown() {
+        if(!selectedFund) throw new Exception("please select a fund entry");
+        
+    }
+    
     void post() {
-        def breakdown = 0;
-        if( entity.cashbreakdown ) {
-            breakdown = entity.cashbreakdown.sum{ it.amount };
-        }
-        if( breakdown != entity.totalcash )
-            throw new Exception("Cash breakdown must equal total cash"); 
-
         boolean pass = false;
         try {
             def h = { sig->

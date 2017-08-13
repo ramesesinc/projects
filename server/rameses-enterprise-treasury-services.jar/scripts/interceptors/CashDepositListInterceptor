@@ -7,8 +7,8 @@ class CashDepositListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'pending', title: 'Pending', state:'OPEN' ];
-		result << [ id:'verified', title: 'Verified', state:'CLOSED' ];
+		result << [ id:'pending', title: 'Open', state:'OPEN' ];
+		result << [ id:'verified', title: 'Closed', state:'CLOSED' ];
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashdeposit' }")

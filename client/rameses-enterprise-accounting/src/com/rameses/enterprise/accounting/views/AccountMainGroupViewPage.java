@@ -37,6 +37,9 @@ public class AccountMainGroupViewPage extends javax.swing.JPanel {
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         xTabbedPane1.setItems("sections");
 
@@ -62,8 +65,21 @@ public class AccountMainGroupViewPage extends javax.swing.JPanel {
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel4.add(xLabel8);
 
+        xIntegerField1.setCaption("Version");
+        xIntegerField1.setName("entity.version"); // NOI18N
+        xIntegerField1.setRequired(true);
+        formPanel4.add(xIntegerField1);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
+
+        xTextArea1.setCaption("Description");
+        xTextArea1.setPreferredSize(new java.awt.Dimension(0, 61));
+        jScrollPane1.setViewportView(xTextArea1);
+
+        formPanel4.add(jScrollPane1);
+
         jPanel2.add(formPanel4);
-        formPanel4.setBounds(10, 20, 420, 90);
+        formPanel4.setBounds(10, 20, 420, 170);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -105,9 +121,12 @@ public class AccountMainGroupViewPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
 }

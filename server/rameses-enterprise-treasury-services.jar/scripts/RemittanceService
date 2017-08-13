@@ -195,7 +195,7 @@ class RemittanceService  {
 
 	@ProxyMethod
 	public def open( o ) {
-		o = em.read( o );
+		o = remdb.read( o );
 		o.remittanceid = o.objid; 
 		return o;
 	}

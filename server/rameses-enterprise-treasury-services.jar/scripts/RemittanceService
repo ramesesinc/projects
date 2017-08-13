@@ -176,15 +176,20 @@ class RemittanceService  {
 		if ( !param.cashbreakdown ) throw new Exception("Cash breakdown has been change during the submission.Please recreate transaction");
 
 		def o = remdb.find([ objid: param.remittanceid ]).first(); 
+		if ( !o ) throw new Exception('Remittance record does not exist.');
 		if ( o.state != 'DRAFT' ) throw new Exception("Remittance record is no longer in DRAFT mode");
 
 		o.state = 'OPEN'; 
 		o.txnno = formatTxnno( o ); 
+		if ( !o.collector ) o.collector = [:];
+		if ( param.collector?.signature ) o.collector.signature = param.collector.signature; 
+
 		remdb.find([ objid: param.remittanceid ]).update([ 
 			cashbreakdown: param.cashbreakdown, 
-			txnno: o.txnno, 
-			state: o.state 
+			txnno: o.txnno, state: o.state, 
+			collector: o.collector 
 		]); 
+
 		return o; 
 	} 
 
@@ -269,11 +274,11 @@ class RemittanceService  {
     } 
 
     @ProxyMethod
-    public void approve(def o) {
-    	def m = [state:'APPROVED'];
+    public void approve( o ) {
+    	def m = [state: 'APPROVED' ];
     	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
-    	remdb.find( [objid : o.objid] ).update( m );
-    }
+    	remdb.find([ objid : o.objid ]).update( m ); 
+    } 
 
 
     //LISTS THAT WILL BE RETRIEVED BY REMITTANCE

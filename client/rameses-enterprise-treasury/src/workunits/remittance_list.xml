@@ -36,7 +36,7 @@
         <!-- ACTIONS --> 
         <invoker type="listActions" caption="Revert" action="revert" 
                  srole="ADMIN" /> 
-         <invoker type="listActions" caption="Liquidate" action="liquidate" 
+        <invoker type="listActions" caption="Liquidate" action="liquidate" 
                  role="LIQUIDATING_OFFICER" />
          
     </invokers> 

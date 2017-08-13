@@ -25,6 +25,7 @@ class LiquidationModel  {
     String title = "Liquidation";
     def entity;
     def mode = 'initial';
+    def handler;
     def listModel;
     def selectedItem;
     
@@ -114,41 +115,43 @@ class LiquidationModel  {
                pass = true;
                entity.signature = sig;
             }
-            def msg = "You are about to submit this liquidation. Please ensure the entries are correct";
-            Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
-        }
-        catch(e) {
+            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
+                def msg = "You are about to submit this liquidation. Please ensure the entries are correct";
+                Modal.show("verify_submit_with_signature", [handler: h, message: msg ]);
+            }
+        } catch(Throwable t) {
             pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
-        }
+        } 
         
-        if( pass == true) {
+        if( pass ) {
             entity = service.post( entity ); 
             MsgBox.alert("Posting successful"); 
             mode = "read"; 
             if ( handler ) handler(); 
-        }
-    }
+        } 
+    } 
     
     def approve() {
         boolean pass = false;
+        def signature = null;
         try {
             def h = { sig->
                pass = true;
-               service.approve( [signature:sig, objid:entity.objid ] );
+               signature = sig;
                return "_close";
             }
-            def msg = "Please check all entries are correct before approving";
-            Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
-        }
-        catch(e) {
-            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
-            if(pass) {
-                service.approve( [objid:entity.objid ] );          
+            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
+                def msg = "Please check all entries are correct before approving";
+                Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
             }
+        } catch( Throwable t) {
+            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
         }
-        if(pass) {
+        
+        if ( pass ) {
+            service.approve([ objid: entity.objid, signature: signature ]);
             return "_close";
-        }
+        } 
     }
     
     def delete() {

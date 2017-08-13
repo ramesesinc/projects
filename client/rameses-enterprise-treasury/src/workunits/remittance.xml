@@ -23,7 +23,7 @@
                  shortcut="ctrl N" action="create"/>
   
         <!-- for create -->
-        <invoker type="formActions" caption="Submit" name="submit" 
+        <invoker type="formActions" caption="Post" name="submit" 
                  visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="s" 
                  shortcut="ctrl S" icon="images/toolbars/save.png" role="COLLECTOR"/>
         

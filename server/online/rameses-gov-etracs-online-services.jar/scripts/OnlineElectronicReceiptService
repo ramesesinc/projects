@@ -17,11 +17,8 @@ class OnlineElectronicReceiptService
     @DataContext("paymentorder")
     def paymentorder 
     
-    @DataContext("cashreceipt")
-    def cashreceipt 
-
-    @DataContext("cashreceiptitem")
-    def cashreceiptItem 
+    @ActiveDB("cashreceipt")
+    def em; 
 
     @DataContext("cashreceiptpayment_eor")
     def cashreceiptpayment_eor 
@@ -34,6 +31,15 @@ class OnlineElectronicReceiptService
 
     @Service('OrgService')
     def orgSvc 
+
+    @DataContext("paymentpartner")
+    def paymentpartner 
+
+    @DataContext('creditmemo')
+    def creditmemo 
+
+    @ActiveDB('onlinecashreceipt')
+    def em_onlinecashreceipt
     
 
     @ProxyMethod
@@ -61,17 +67,61 @@ class OnlineElectronicReceiptService
         entity.cashchange = 0
         entity.totalcredit = 0
         entity.collectiontype = collectiontype.find(po.txntype.collectiontype).first()
-        entity = cashreceipt.create(entity)
-        po.items.each { m->
-            m.receiptid = entity.objid
-            cashreceiptItem.create(m)
-        }
 
+        postCashReceipt(entity, eor, po)
         createCashReceiptPaymentEor(entity,eor)
         paymentorder.find([txnid:po.txnid]).update([receiptid: entity.objid])
         entity.po = po 
         return entity 
     }   
+
+    void postCashReceipt(entity, eor, po){
+        def cm = createCreditMemo(entity, eor, po)
+        entity = em.create("cashreceipt", entity); 
+        po.items.each { itm->
+            if(! itm.objid  ) itm.objid = "RCI"+ new UID();
+            itm.receiptid = entity.objid
+            em.create("cashreceipt:item", itm);
+        }
+        
+        def fundsummaries = em_onlinecashreceipt.getFundSummaries(entity)
+        fundsummaries.eachWithIndex{fs, idx -> 
+            def p = [:]
+            p.objid = 
+            p.receiptid = entity.objid 
+            p.bankid = cm.bank.objid 
+            p.deposittype = 'EOR'
+            p.bank = cm.bank.name  
+            p.refno = cm.refno 
+            p.refdate = cm.refdate 
+            p.reftype = 'CREDIT_MEMO'
+            p.amount = fs.amount 
+            p.particulars = 'CM # ' + cm.refno + ' (' + (idx+1) + '/' + fundsummaries.size() + ')'
+            p.account = [:]
+            p.account.fund = fs.fund 
+            em.create("cashreceipt:paymentitem-noncash", p);
+        }
+    }
+
+    def createCreditMemo(entity, eor, po){
+        def pp = paymentpartner.find([code:po.]) //todo:
+
+        def cm = [:]
+        cm.objid = 'CME' + new java.rmi.server.UID()
+        cm.state = 'CLOSED'
+        cm.controlno = entity.
+        cm.payername = po.paidby 
+        cm.payeraddress = po.paidbyaddress
+        cm.refdate = po.refdate 
+        cm.refno = po.refno 
+        cm.amount = po.amount 
+        cm.particulars = po.particulars 
+        cm.bankaccount = pp.bankaccount 
+        cm.type = 'EOR'
+        cm.dtissued = entity.receiptdate 
+        creditmemo.create(cm)
+
+    }
 
     def getControl( def afControlId ) {
         def ac = afControl.find( [objid: afControlId ]).first()

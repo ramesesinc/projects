@@ -10,9 +10,10 @@ class RPTPaymentOrderInterceptor
 	@After(pattern="PaymentOrderService.fetchPaymentInfo", eval="#{result.txntype == 'rptcol'}") 
 	public void fetchInfo( evt ) {
 		def entity = evt.result 
-		def bill = [billid:entity.refid, rptitems:[[rptledgerid:entity.info.rptledgerid ]]]
-		entity.rptitems = [[rptledgerid:bill.rptledgerid]]
-        entity.items = receiptSvc.getSummarizedCashReceiptItems(bill)
+		def bill = [billid:entity.refid]
+		bill.receiptdate = entity.dtposted
+		entity.rptitems = [[rptledgerid:entity.info.rptledgerid]]
+        entity.items = receiptSvc.getSummarizedItems(bill)
 	}
 
 }

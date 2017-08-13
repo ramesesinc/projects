@@ -19,6 +19,12 @@ class FAASSupportInterceptor
 	@ActiveDB('planttree')
 	def plantTreeEm	
 
+	@DataContext('machine')
+    def em_machine 
+
+    @Service('SequenceService')
+    def seqSvc 	
+
 	
 	@Before(pattern="FAASSupportService.saveFaasData") 
 	public void resolveMissingData( evt ) {
@@ -43,6 +49,9 @@ class FAASSupportInterceptor
 		else if (faas.rpu.rputype == 'bldg'){
 			resolveLandRpu(faas)
 		}
+		else if (faas.rpu.rputype == 'mach'){
+			resolveMachine(faas)
+		}
 		else if (faas.rpu.rputype == 'planttree'){
 			faas.rpu.planttrees.each{pt ->
 				resolvePlantTree(faas, pt)
@@ -51,6 +60,19 @@ class FAASSupportInterceptor
 		}
 	}
 
+	void resolveMachine(faas){
+		faas.rpu.machuses.each{ mu ->
+            mu.machines.each{md ->
+            	def m = em_machine.find([objid:md.machine.objid]).first()
+		        if(!m){
+		            md.machine.code = seqSvc.getNextSeries('MACHINE')
+		            md.machine.name = md.machine.code
+		            md.machine.state = 'DRAFT'
+		            em_machine.create(md.machine)
+		        }
+            }
+        }
+	}
 
 	void resolveSpecificClass(faas, ld){
 		ld.specificclass.ry = faas.rpu.ry 

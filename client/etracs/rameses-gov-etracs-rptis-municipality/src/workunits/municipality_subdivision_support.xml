@@ -17,7 +17,7 @@ class MunicipalitySubdivisionSupportController
     @Binding 
     def binding;
     
-    @Service('MunicipalitySubdivisionSupportService')
+    @Service('MunicipalitySubdivisionSupport2Service')
     def svc; 
     
     def entity;

@@ -33,6 +33,7 @@ public class RYSettingListModel extends ListController
         return [
             new Column(name:'ry', caption:'Revision Year', alignment:'left', format:'0000', width:120),
             new Column(name:'appliedto', caption:'Applied To', width:250),
+            new Column(name:'remarks', caption:'Remarks', width:250),
         ]
     }
     

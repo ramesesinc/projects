@@ -22,6 +22,15 @@
             
             def entity;
             
+            @PropertyChangeListener
+            def listener = [
+                'entity.barangay' : {
+                    if (entity.province){
+                        entity.municipality = entity.barangay?.municipality;
+                    }
+                }
+            ]
+            
             def getLookupBarangay(){
                 return Inv.lookupOpener('barangay:lookup', [
                     onselect: { brgy -> 

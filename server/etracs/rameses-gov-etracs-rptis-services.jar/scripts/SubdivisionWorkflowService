@@ -32,6 +32,7 @@ class SubdivisionWorkflowService extends ActiveWorkflowService
 
 
 	public void beforeCreateTask(task) {
+		println 'beforeCreateTask ' + task.state 
 		def assignee = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE]
 		if ( env.action?.matches('return.*')){
 			def returnto = findReturnToInfo(task)

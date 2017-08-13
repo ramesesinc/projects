@@ -27,7 +27,7 @@ public class AddPlantTreeAssessmentInfo implements RuleActionHandler {
 		if (!classificationid) classificationid = ptdentity.actualuse?.classification?.objid 
 		def actualuseid = ptdentity.actualuse?.objid
 		def actualusecode = ptdentity.actualuse?.code
-		def rputype = rpuentity.rputype;
+		def rputype = 'planttree'
 
 		def a = request.assessments.find{it.rputype == rputype && it.classificationid == classificationid && it.actualusecode == actualusecode}
 		if ( ! a){

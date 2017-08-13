@@ -35,7 +35,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel1" pref="294" max="32767" attributes="0"/>
+              <Component id="jPanel1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -268,18 +268,6 @@
                     <Property name="mnemonic" type="int" value="100"/>
                     <Property name="name" type="java.lang.String" value="deselectAll" noResource="true"/>
                     <Property name="text" type="java.lang.String" value="Deselect All"/>
-                  </Properties>
-                </Component>
-                <Component class="com.rameses.rcp.control.XButton" name="xButton3">
-                  <Properties>
-                    <Property name="mnemonic" type="int" value="102"/>
-                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-                      <StringArray count="1">
-                        <StringItem index="0" value="selectedItem"/>
-                      </StringArray>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="fullPayment" noResource="true"/>
-                    <Property name="text" type="java.lang.String" value="Full Payment"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XButton" name="xButton4">

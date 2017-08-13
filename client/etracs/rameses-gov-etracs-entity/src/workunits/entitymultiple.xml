@@ -7,7 +7,10 @@
         <invoker type="entitymultiple:create" caption="Multiple Entity" action="create"  
                  role="MASTER" windowTitle="New Multiple Entity" index="-1" 
                  formTitle="New Multiple Entity"/>        
-
+        
+        <invoker  type="quick_launcher" code="TP03" caption="Multiple Entity" action="create"  
+                 role="MASTER" windowTitle="New Multiple Entity" index="-1" 
+                 target="popup" formTitle="New Multiple Entity"/>        
 
         <invoker type="multipleentity:open" caption="Multiple Entity" action="open"  
                  role="MASTER" windowTitle="Entity: #{entity.entityno}" index="-1" 

@@ -1,6 +1,6 @@
 <schema>
 	<element name="bankaccount" tablename="bankaccount">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="=BNKACCT"/>
 		<field name="state" required="true" visible="false" defaultValue="DRAFT"/>
 		<field name="code" required="true" caption="Acct No" searchable="true"/>
 		<field name="title" required="true" caption="Title"/>

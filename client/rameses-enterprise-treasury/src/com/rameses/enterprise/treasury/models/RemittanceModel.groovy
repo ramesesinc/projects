@@ -98,35 +98,48 @@ class RemittanceModel  {
             return service.getRemittanceFunds([remittanceid: entity.objid]);
         },
         onOpenItem: { item, colName->
-            return openBreakdown(item);
+            return openFundBreakdown(item);
         }
     ] as BasicListModel;
     
-    def checkModel = [
-        fetchList: { o->
-            return service.getRemittanceChecks([remittanceid: entity.objid]);
-        }
-    ] as BasicListModel;
-    
-    def creditMemoModel = [
-        fetchList: { o->
-            return service.getRemittanceCreditMemos([remittanceid: entity.objid]);
-        }
-    ] as BasicListModel;
-    
-    def openBreakdown(def itm) {
-        boolean ed = (itm.totalcash > 0 && entity.state == 'DRAFT')
-        def h = { bd ->
-            service.updateCashBreakdown( bd );
-            entity.cashbreakdown = service.getCashBreakdown( [objid: entity.objid ] );
-            binding.refresh();
-        }
-        return Inv.lookupOpener( "remittance_cashbreakdown", [entity:itm, editable: ed, handler: h ]);
+    //MAIN BREAKDOWN
+    def viewBreakdown() {
+        def h = [
+            getCashBreakdown : {
+                return service.getCashBreakdown([objid: entity.objid]);    
+            },
+            getChecks: {
+                return  service.getRemittanceChecks([remittanceid: entity.objid]);
+            },
+            getCreditMemos: {
+                return service.getRemittanceCreditMemos([remittanceid: entity.objid]);   
+            }
+        ]   
+        return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
     }
     
-    def openBreakdown() {
+    def openFundBreakdown(def itm) {
+        boolean ed = (itm.totalcash > 0 && entity.state == 'DRAFT')
+        def h = [
+            getCashBreakdown : {
+                return service.getFundCashBreakdown([objid: itm.objid]);    
+            },
+            getChecks: {
+                return  service.getRemittanceChecks( itm );
+            },
+            getCreditMemos: {
+                return service.getRemittanceCreditMemos( itm );   
+            },
+            update: { bd->
+                service.updateCashBreakdown( bd );
+            }
+        ]        
+        return Inv.lookupOpener( "cashbreakdown", [entity:itm, editable: ed, handler: h ]);
+    }
+    
+    def openFundBreakdown() {
         if(!selectedFund) throw new Exception("Please choose a fund");
-        return openBreakdown( selectedFund );
+        return openFundBreakdown( selectedFund );
     }
     
     def submit() {

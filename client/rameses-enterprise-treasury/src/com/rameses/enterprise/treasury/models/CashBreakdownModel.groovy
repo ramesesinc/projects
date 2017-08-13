@@ -5,7 +5,7 @@ import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
         
-public class RemittanceCashBreakdownModel  {
+public class CashBreakdownModel  {
     
     @Service("RemittanceService")
     def service;
@@ -22,18 +22,19 @@ public class RemittanceCashBreakdownModel  {
         if( entity.totalcash == null || entity.cashbreakdown == null )
             throw new Exception("Total cash is null. Please run migration for remittance fund");
         oldbreakdown = entity.cashbreakdown;
-        entity.cashbreakdown = service.getFundCashBreakdown([objid: entity.objid]);
+        
+        entity.cashbreakdown = handler.getCashBreakdown();
     }
 
     def checkModel = [
         fetchList: { o->
-            return service.getRemittanceChecks( entity );
+            return handler.getChecks();
         }
     ] as BasicListModel;
 
     def creditMemoModel = [
         fetchList: { o->
-            return service.getRemittanceCreditMemos( entity );
+            return handler.getCreditMemos();
         }
     ] as BasicListModel;
     
@@ -48,7 +49,7 @@ public class RemittanceCashBreakdownModel  {
         if( diff < -0.05 )
             throw new Exception("Please review your collection. You have over declared the cash breakdown");
         
-        handler(entity);
+        handler.update(entity);
         return "_close";
     }
     

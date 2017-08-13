@@ -1,6 +1,6 @@
 <schema>
 	<element tablename="bankaccount_entry">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="BNKACCTENT"/>
 		<field name="parentid" required="true"/>
 		<field name="txndate"  required="true"/>
 		<field name="refid"  required="true"/>

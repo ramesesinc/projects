@@ -35,9 +35,9 @@ class CreditMemoPaymentModel  {
             entry.refdate = o.refdate;
             entry.payer = o.payer;
             entry.bankaccount = o.bankaccount;
+            entry.bankaccountid = o.bankaccount.objid;
             entry.reftype = 'CREDITMEMO';
             entry.amount = o.amount;
-            entry.particulars = o.refno + " " + (!o.particulars?'':o.particulars);
             binding.refresh();
         }
         return Inv.lookupOpener("creditmemo:forreceipt:lookup", [onselect:h] );
@@ -56,13 +56,17 @@ class CreditMemoPaymentModel  {
             if(!t) return null;
         }
         def arr = [];
+        int i = 1;
+        int cnt = funds.size();
         funds.each { f->
             f.refid = entry.refid;
             f.refno = entry.refno;
             f.refdate = entry.refdate; 
             f.reftype = entry.reftype;
-            f.bank = entry.bankaccount.code + "-" + entry.bankaccount.name;
-            f.particulars = f.fund.title;
+            f.bank = entry.bankaccount.bank.name;
+            f.bankid = entry.bankaccount.bank.objid;
+            f.bankaccountid = entry.bankaccountid;
+            f.particulars = "CM " + f.refno + " " + f.fund.title + " " + entry.bankaccount.bank.name + ((cnt>1)? " " + (i++) + " of " +cnt : "" );
             arr << f;
         }
         saveHandler( arr );

@@ -1,33 +1,14 @@
 <schema>
 	<element  tablename="cashdeposit">
-		<field name="objid" primary="true" prefix="CSHDEP"/>
-		<field name="state" required="true"/>
-		<field name="controlno" required="true"/>
-		<field name="dtfiled" required="true"/>
-		<field name="dtverified" />
-		<field name="cashier_objid" required="true"/>
-		<field name="cashier_name" required="true"/>
-		<field name="cashier_title" required="true"/>
-		<field name="fund_objid" required="true"/>
-		<field name="fund_title" required="true"/>
-		<field name="fund_code" />
-		<field name="bankaccount_objid" required="true"/>
-		<complex name="cashbreakdown" required="true" serializer="default"/>
-		<field name="totalcash" required="true" type="decimal" />
-		<field name="totalnoncash" required="true" type="decimal"/>
+		<field name="objid" primary="true" />
+		<field name="controlno" required="true" />
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="txndate" required="true" />
+		<field name="cashier_objid" required="true" />
+		<field name="cashier_name" required="true" />
+		<field name="cashier_title" required="true" />
+		<field name="cashier_signature" required="true" />
 		<field name="amount" required="true" type="decimal"/>
-
-		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,bank.*">
-			<key field="bankaccount_objid" target="objid" /> 
-		</complex>	
-
-		<complex name="checks" ref="cashdeposit_check" jointype="one-to-many">
-			<key field="objid" target="cashdepositid" />
-		</complex>	
-
-		<complex name="items" ref="cashdeposit_item" jointype="one-to-many">
-			<key field="objid" target="cashdepositid" />
-		</complex>	
 	</element>
 </schema>
-

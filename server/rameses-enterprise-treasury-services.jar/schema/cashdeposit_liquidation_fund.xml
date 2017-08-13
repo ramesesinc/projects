@@ -1,0 +1,9 @@
+<schema>
+
+	<element  tablename="cashdeposit_liquidation_fund">
+		<field name="objid" required="true"/>
+		<field name="depositid" required="true"/>
+		<field name="liquidationfundid" required="true"/>
+	</element>
+
+</schema>

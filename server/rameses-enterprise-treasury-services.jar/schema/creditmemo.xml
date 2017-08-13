@@ -1,7 +1,7 @@
 <schema>
 
 	<element tablename="creditmemo" >
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="CM" />
 		<field name="state" required="true" />
 		<field name="controlno" required="true" />
 		<field name="payer_objid" required="true" />
@@ -22,7 +22,7 @@
 		<field name="receiptno" />
 		<field name="receiptdate"  type="date"/>
 
-		<complex name="bankaccount" ref="bankaccount" includefields="code,title,fund.objid,fund.code,bank.name" jointype="many-to-one">
+		<complex name="bankaccount" ref="bankaccount" includefields="objid,code,title,fund.objid,fund.code,bank.name" jointype="many-to-one">
 			<key field="bankaccount_objid" target="objid"/>
 		</complex>	
 

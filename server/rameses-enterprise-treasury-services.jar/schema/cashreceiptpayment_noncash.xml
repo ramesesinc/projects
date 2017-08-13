@@ -12,5 +12,6 @@
 		<field name="amount" />
 		<field name="particulars" />
 		<field name="fund_objid" />
+		<field name="bankaccountid" />
 	</element>
 </schema>

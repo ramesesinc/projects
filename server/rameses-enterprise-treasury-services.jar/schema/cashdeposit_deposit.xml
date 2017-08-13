@@ -1,0 +1,15 @@
+<schema>
+
+	<element  tablename="cashdeposit_deposit">
+		<field name="objid" primary="true" />
+		<field name="depositid" required="true" />
+		<field name="state" required="true" />
+		<field name="fund_objid" required="true" />
+		<field name="amount" required="true" type="decimal"/>
+		<field name="totalcash" required="true" type="decimal"/>
+		<field name="totalnoncash" required="true" type="decimal"/>
+		<field name="totalcashdeposited" required="true" type="decimal"/>
+		<field name="totalnoncashdeposited" required="true" type="decimal"/>
+	</element>
+
+</schema>

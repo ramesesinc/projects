@@ -63,7 +63,7 @@ class EntityService
 		else if ('entitymultiple' == o._schemaname){
 			entity = em_multiple.findById(o)
 			if (entity)
-				em_multiple.update(o)
+				em_multiple.updateMultiple(o)
 			else 
 				em_multiple.insertMultiple(o)
 			saveMember(o)
@@ -73,11 +73,16 @@ class EntityService
 
 	void saveMember(o){
 		o.members?.each{
-			def m  = em_member.read(it)
-			if (m)
-				em_member.update(it)
-			else 
-				em_member.create(it)
+			try{
+				def m  = em_member.read(it)
+				if (m)
+					em_member.update(it)
+				else 
+					em_member.create(it)
+			}
+			catch(e){
+				//ignore 
+			}
 		}
 	}
 

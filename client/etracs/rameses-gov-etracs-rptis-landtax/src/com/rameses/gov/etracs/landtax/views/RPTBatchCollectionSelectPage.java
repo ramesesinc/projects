@@ -5,9 +5,11 @@
 package com.rameses.gov.etracs.landtax.views;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 @Template(FormPage.class)
+@StyleSheet
 public class RPTBatchCollectionSelectPage extends javax.swing.JPanel {
 
     /**
@@ -43,7 +45,6 @@ public class RPTBatchCollectionSelectPage extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
-        xButton3 = new com.rameses.rcp.control.XButton();
         xButton4 = new com.rameses.rcp.control.XButton();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -282,12 +283,6 @@ public class RPTBatchCollectionSelectPage extends javax.swing.JPanel {
         xButton2.setText("Deselect All");
         jPanel4.add(xButton2);
 
-        xButton3.setMnemonic('f');
-        xButton3.setDepends(new String[] {"selectedItem"});
-        xButton3.setName("fullPayment"); // NOI18N
-        xButton3.setText("Full Payment");
-        jPanel4.add(xButton3);
-
         xButton4.setMnemonic('f');
         xButton4.setDepends(new String[] {"selectedItem"});
         xButton4.setName("partialPayment"); // NOI18N
@@ -335,7 +330,7 @@ public class RPTBatchCollectionSelectPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -346,7 +341,6 @@ public class RPTBatchCollectionSelectPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;

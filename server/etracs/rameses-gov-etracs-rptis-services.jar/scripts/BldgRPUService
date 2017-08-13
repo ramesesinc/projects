@@ -231,6 +231,10 @@ class BldgRPUService
 
 	void saveBldgUses(bldguses){
 		bldguses.each{bu ->
+			if (bu.adjfordepreciation == null)
+				bu.adjfordepreciation = 0.0
+			if (bu.taxable == null)
+				bu.taxable = true
 			em.save(bu, SCHEMA_BLDGUSE)
 			saveFloors(bu.floors)
 		}

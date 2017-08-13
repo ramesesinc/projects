@@ -1,0 +1,12 @@
+"entity.*|bill.*|selectAll|deselectAll|fullPayment|partialPayment|selectedItem"[processing == false]{
+    enabled:true;
+}
+
+"entity.*|bill.*|selectAll|deselectAll|fullPayment|partialPayment|selectedItem"[processing == true]{
+    enabled:false;
+}
+
+"entity.itemcount|entity.amount"[true]{
+    enabled:false;
+}
+

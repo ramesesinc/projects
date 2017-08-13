@@ -1,3 +1,54 @@
+[insertRemittances]
+insert into liquidation_remittance ( objid, liquidationid ) 
+select r.objid, $P{liquidationid}   
+from remittance r 
+where r.objid not in (select objid from liquidation_remittance where objid=r.objid) 
+	and r.state='APPROVED' 
+
+
+[insertFunds]
+insert into liquidation_fund ( 
+	objid, liquidationid, fund_objid, fund_title, 
+	amount, totalcash, totalnoncash, totalcr 
+)
+select 
+	concat(lrem.liquidationid, remf.fund_objid) as objid, 
+	lrem.liquidationid, remf.fund_objid, remf.fund_title, 
+	sum(remf.amount) as amount, sum(remf.totalcash) as totalcash, 
+	sum(remf.totalnoncash) as totalnoncash, sum(remf.totalcr) as totalcr 
+from liquidation_remittance lrem 
+	inner join remittance rem on rem.objid=lrem.objid 
+	inner join remittance_fund remf on remf.remittanceid=rem.objid 
+where lrem.liquidationid = $P{liquidationid} 
+group by lrem.liquidationid, remf.fund_objid, remf.fund_title 
+
+
+[insertNoncashPayments]
+insert into liquidation_noncashpayment ( objid, liquidationid ) 
+select remnc.objid, lrem.liquidationid  
+from liquidation_remittance lrem 
+	inner join remittance rem on rem.objid=lrem.objid 
+	inner join remittance_noncashpayment remnc on remnc.remittanceid=rem.objid 
+where lrem.liquidationid = $P{liquidationid}
+
+
+[getChecks]
+select lnc.liquidationid, nc.* 
+from liquidation_noncashpayment lnc  
+	inner join cashreceiptpayment_noncash nc on nc.objid=lnc.objid 
+where lnc.liquidationid = $P{liquidationid} 
+
+
+[getRemittanceFundsCashbreakdown] 
+select remf.cashbreakdown 
+from liquidation_remittance lrem 
+	inner join remittance_fund remf on remf.remittanceid=lrem.objid 
+where lrem.liquidationid = $P{liquidationid} 
+
+
+
+
+
 [getList]
 SELECT l.* 
 FROM ( 
@@ -23,7 +74,7 @@ WHERE lr.objid IS NULL AND state=$P{state} AND liquidatingofficer_objid=$P{useri
 
 [getUndepositedLiquidations]
 select * from liquidation l 
-	inner join liquidation_cashier_fund lcf on lcf.liquidationid = l.objid 
+	inner join liquidation_fund lcf on lcf.liquidationid = l.objid 
 	left join bankdeposit_liquidation bl on bl.objid = lcf.objid
 where l.liquidatingofficer_objid = $P{liquidatingofficerid} 
 	and bl.objid is null 
@@ -110,7 +161,7 @@ FROM (
 
 [getFundSummaries]
 SELECT lcf.*, f.code as fund_code 
-FROM liquidation_cashier_fund lcf
+FROM liquidation_fund lcf
 	inner join fund f on f.objid = lcf.fund_objid 
 WHERE lcf.liquidationid = $P{liquidationid} 
 
@@ -129,7 +180,7 @@ select
   	lcf.fund_objid, lcf.fund_title, fund.code as fund_code, lcf.amount, 
   	l.liquidatingofficer_objid as subacct_objid, 
 	l.liquidatingofficer_name as subacct_name 
-from liquidation_cashier_fund lcf 
+from liquidation_fund lcf 
 	inner join liquidation l on lcf.liquidationid=l.objid 
 	left join fund on lcf.fund_objid=fund.objid 
 where lcf.liquidationid=$P{liquidationid} 

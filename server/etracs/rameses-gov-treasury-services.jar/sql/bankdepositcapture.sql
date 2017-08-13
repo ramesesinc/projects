@@ -8,7 +8,7 @@ SELECT  lcf.objid,
 	liquidatingofficer_name, 	
 	liquidatingofficer_title, 
 	lcf.amount
-FROM liquidation_cashier_fund lcf
+FROM liquidation_fund lcf
 INNER JOIN liquidation l ON lcf.liquidationid=l.objid
 LEFT JOIN bankdeposit_liquidation bdl ON bdl.objid=lcf.objid
 WHERE lcf.cashier_objid = $P{cashierid}
@@ -19,7 +19,7 @@ AND bdl.objid IS NULL
 SELECT 
 	distinct lcf.cashier_objid as objid, lcf.cashier_name as name, 
 	su.jobtitle as title 
-FROM liquidation_cashier_fund lcf
+FROM liquidation_fund lcf
 inner join liquidation l on l.objid = lcf.liquidationid 
 LEFT JOIN bankdeposit_liquidation bdl ON bdl.objid=lcf.objid
 left join sys_user su on su.objid = lcf.cashier_objid 
@@ -35,7 +35,7 @@ FROM
 	lcf.fund_objid,
 	lcf.fund_title,
 	lcf.amount
-FROM liquidation_cashier_fund lcf
+FROM liquidation_fund lcf
 INNER JOIN liquidation l ON lcf.liquidationid=l.objid
 LEFT JOIN bankdeposit_liquidation bdl ON bdl.objid=lcf.objid
 WHERE l.state = 'CAPTURE'
@@ -46,7 +46,7 @@ GROUP BY a.fund_objid, a.fund_title
 [getUndepositedChecks]
 SELECT DISTINCT
 crp.objid, crp.refno, crp.particulars, crp.amount  
-FROM  liquidation_cashier_fund lcf
+FROM  liquidation_fund lcf
 INNER JOIN liquidation l ON lcf.liquidationid=l.objid 
 INNER JOIN liquidation_noncashpayment lc ON lc.liquidationid=lcf.liquidationid
 INNER JOIN cashreceiptpayment_noncash crp ON crp.objid=lc.objid

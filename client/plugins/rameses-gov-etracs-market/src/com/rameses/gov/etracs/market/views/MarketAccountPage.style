@@ -1,7 +1,0 @@
-"entity.(acctno|startdate|partialbalance|partialextbalance)"[ mode == 'create' ] {
-    enabled: true;
-}
-
-"entity.(acctno|startdate|partialbalance|partialextbalance)"[ mode != 'create' ] {
-    enabled: false;
-}

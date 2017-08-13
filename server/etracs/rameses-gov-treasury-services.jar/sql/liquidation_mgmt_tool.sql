@@ -9,7 +9,7 @@ select * from liquidation_remittance
 where objid in (${remittanceids}) 
 
 [getLiquidatedFunds]
-select * from liquidation_cashier_fund  
+select * from liquidation_fund  
 where liquidationid in (${liquidationids}) 
 
 [removeNonCashPayments]
@@ -23,7 +23,7 @@ from liquidation_remittance lrem
 where lrem.liquidationid=$P{liquidationid} 
 
 [getFunds]
-select * from liquidation_cashier_fund 
+select * from liquidation_fund 
 where liquidationid=$P{liquidationid} 
 
 [getRebuildFunds]
@@ -40,10 +40,10 @@ from (
 where xx.fund_objid=fund.objid 
 
 [removeFund]
-select * from liquidation_cashier_fund where objid=$P{objid} 
+select * from liquidation_fund where objid=$P{objid} 
 
 [updateFund]
-update liquidation_cashier_fund set 
+update liquidation_fund set 
 	amount = $P{amount}, 
 	fund_objid = $P{fundid}, 
 	fund_title = $P{fundtitle} 
@@ -51,7 +51,7 @@ where
 	objid=$P{objid} 
 
 [insertFund]
-insert into liquidation_cashier_fund ( 
+insert into liquidation_fund ( 
 	objid, liquidationid, fund_objid, fund_title, cashier_objid, cashier_name, amount 
 ) values ( 
 	$P{objid}, $P{liquidationid}, $P{fundid}, $P{fundtitle}, $P{cashierid}, $P{cashiername}, $P{amount}  
@@ -71,7 +71,7 @@ from liquidation liq, (
 			from ( 
 				select 
 					liquidationid, sum(amount) as totalamount, 0.0 as totalnoncash 
-				from liquidation_cashier_fund 
+				from liquidation_fund 
 				where liquidationid=$P{liquidationid}  
 				group by liquidationid 
 				union all 

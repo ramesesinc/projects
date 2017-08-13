@@ -1,0 +1,21 @@
+import com.rameses.annotations.*;
+
+class MarketCashReceiptInterceptor{
+	
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'market'}")
+	public void beforePostItems(def evt) {
+		def e = evt.args[0];
+		
+		def p = [_schemaname: 'market_payment'];
+		p.items = [];
+		e.billitems.each { r->
+			r.billitems.each { x->
+				x.acctid = r.acctid;
+				p.items << x;
+			};
+		}
+		e.postpayment = p;
+	}
+
+	
+}

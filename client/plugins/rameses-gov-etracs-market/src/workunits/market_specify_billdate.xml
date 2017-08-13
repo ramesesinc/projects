@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="market_specify_billdate" caption="Bill Date" target="popup" />
+        <invoker type="market_specify_billdate" caption="Bill Date" target="popup" action="init"/>
     </invokers>
     <code>
         <![CDATA[
@@ -17,8 +17,17 @@
             def todate;
             int numdays;
             def month;
+            int year;
             def handler;
             def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        
+            void init() {
+                if(todate) {
+                    def cal = Calendar.instance;
+                    cal.setTime(todate);
+                    year = cal.get(Calendar.YEAR);
+                }
+            }
         
             def doOk() {
                 def x = fromdate; 
@@ -27,19 +36,9 @@
                 }
                 else if( dateoption == "month" ) {
                     int newMon = month;
-                    def cal = Calendar.instance;
-                    cal.setTime(fromdate);
-                    int yr = cal.get(Calendar.YEAR);
-                    int mon = cal.get(Calendar.MONTH)+1;
-                    
-                    //check if month is less than from month then add 1 year;
-                    int xy = (mon >= newMon) ? yr + 1: yr;
-                    int xm = newMon;
-                    
-                    def ds = ((xm+1)>12? xy+1: xy)+ "-" + ((xm + 1)>12? 1: xm+1)+ "-01";
-                    def xdate =df.parse( ds );
-                    x = DateFunc.getDayAdd( xdate, -1 );
-                    x = df.format(x);
+                    def xdate = df.parse( ((newMon+1)>12? year+1:year) +"-" + ((newMon+1)>12?1:newMon+1) + "-01" );
+                    def xxx = DateFunc.getDayAdd( xdate, -1 );
+                    x = df.format(xxx);
                 }
                 else {
                     if( numdays <= 0 ) throw new Exception("Numdays is required");

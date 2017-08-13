@@ -1,4 +1,4 @@
-<workunit>
+<workunit schemaName="bank">
     
    <invokers>
          <invoker type="quick_launcher" code="BANK01" caption="Bank"  role="MASTER" permission="bank.create"

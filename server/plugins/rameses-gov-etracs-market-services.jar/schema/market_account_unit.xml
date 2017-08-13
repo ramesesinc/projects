@@ -13,7 +13,6 @@
 			
 		<field name="rate" required="true"/>
 		<field name="ratetype" required="true"/>	
-		<field name="usage" caption="Usage" required="true" defaultValue="100" type="integer"/>
 		<field name="areasqm" />
 	</element>
 </schema>

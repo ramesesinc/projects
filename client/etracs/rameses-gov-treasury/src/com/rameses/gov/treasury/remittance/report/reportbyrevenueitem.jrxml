@@ -48,6 +48,8 @@
 	<field name="txnno" class="java.lang.String"/>
 	<field name="hasbrgyshares" class="java.lang.Boolean"/>
 	<field name="brgyshares" class="java.lang.Object"/>
+	<field name="collector.signature.image" class="java.lang.Object"/>
+	<field name="liquidatingofficer.signature.image" class="java.lang.Object"/>
 
 	<variable name="sum" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
 	</variable>
@@ -633,6 +635,33 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{liquidatingofficer.title}]]></textFieldExpression>
 				</textField>
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="67"
+						y="51"
+						width="137"
+						height="36"
+						key="image-2">
+							<printWhenExpression><![CDATA[($F{collector.signature.image} instanceof byte[])]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{collector.signature.image} )]]></imageExpression>
+				</image>
+				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="382"
+						y="51"
+						width="137"
+						height="36"
+						key="image-3">
+							<printWhenExpression><![CDATA[($F{liquidatingofficer.signature.image} instanceof byte[])]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[new java.io.ByteArrayInputStream( (byte[]) $F{liquidatingofficer.signature.image} )]]></imageExpression>
+				</image>
 			</band>
 		</summary>
 </jasperReport>

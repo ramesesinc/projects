@@ -1,9 +1,10 @@
-<workunit extends="wtemplates/LookupController.xml">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="creditmemo">
     
    <invokers>
-         <invoker type="creditmemo:lookup" caption="Credit Memo Lookup" />
-         <invoker type="formActions" caption="Close" action="_close"/>
-         <invoker type="formActions" caption="Next" action="doNext"/>
+         <invoker type="creditmemo:forreceipt:lookup" caption="Credit Memo Lookup" action="init" tag="forreceipt"
+            cols="refno,refdate,payer.name,bankaccount.bank.name,amount,issuedby.name" 
+                hiddenCols="bankaccount.objid,bankaccount.name,bankaccount.code"
+                  target="popup"/>
    </invokers>
    
    <code>
@@ -12,37 +13,19 @@
         import com.rameses.rcp.common.*;
         import com.rameses.rcp.annotations.*;
         import com.rameses.osiris2.client.*;
+        import com.rameses.seti2.models.*;
         
-        class CreditMemoLookupController  {
-        
-            @Service("CreditMemoLookupService")
-            def service;
+        class CreditMemoLookup extends CrudLookupModel  {
             
-            def onselect;
-            def query = [:];
-            def selectedItem;
-            String title = "Credit Memo Lookup";
-
-            def listHandler = [
-                fetchList: { o->
-                    return service.getList( query );
+            def getCustomFilter() {
+                if( tag == "forreceipt" ) {
+                    return [ "issuereceipt = 1 AND receiptid IS NULL " ];
                 }
-            ] as BasicListModel;        
-           
-            void doSearch() {
-                listHandler.reload();
+                return null;
             }
             
-            def doNext() {
-                if(!selectedItem)
-                    throw new Exception("Please select an item");
-                if(onselect) onselect( selectedItem );
-                return "_close";
-            }
         }      
        ]]>
    </code>
-   <pages>
-       <page template="com.rameses.enterprise.treasury.creditmemo.CreditMemoLookup"/>
-   </pages>    
+      
 </workunit>

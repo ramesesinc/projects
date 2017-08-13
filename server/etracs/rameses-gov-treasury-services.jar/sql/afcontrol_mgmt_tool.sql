@@ -49,18 +49,18 @@ from cashreceipt cr
 where cr.controlid=$P{controlid} 
 
 [getLiquidationFunds]
-select * from liquidation_cashier_fund 
+select * from liquidation_fund 
 where liquidationid in (${liquidationids}) 
 
 [getBankDeposits]
 select distinct bd.*  
-from liquidation_cashier_fund lcf 
+from liquidation_fund lcf 
 	inner join bankdeposit_liquidation bdl on lcf.objid=bdl.objid 
 	inner join bankdeposit bd on bdl.bankdepositid=bd.objid 
 where lcf.objid in (${liquidationfundids}) 
 
 [getBankDepositLiquidations]
 select distinct bdl.* 
-from liquidation_cashier_fund lcf 
+from liquidation_fund lcf 
 	inner join bankdeposit_liquidation bdl on lcf.objid=bdl.objid 
 where lcf.objid in (${liquidationfundids}) 

@@ -205,3 +205,21 @@ select * from (
 )t3 
 where t3.formno like $P{formno}   
 order by t3.formno, t3.sortseries 
+
+
+[getReportDataByRemittance]
+select * 
+from ( 
+  select a.*, 
+    (case when a.qtyissued > 0 then 0 else 1 end) as groupindex, 
+    (case when af.formtype='serial' then 0 else 1 end) as formindex, 
+    af.formtype, afc.afid as formno, af.denomination, afc.stubno, 
+    afc.startseries as afstartseries, afc.endseries as afendseries, 
+    afc.endseries+1 as afnextseries 
+  from remittance_af a   
+    inner join af_control afc on afc.objid=a.controlid 
+    inner join af on afc.afid=af.objid 
+  where a.remittanceid = $P{remittanceid} 
+)tmp1 
+where formno like $P{formno} 
+order by groupindex, formindex, formno, afstartseries 

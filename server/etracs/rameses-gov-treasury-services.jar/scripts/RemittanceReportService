@@ -4,6 +4,7 @@ import java.rmi.server.*;
 import com.rameses.common.*
 import com.rameses.services.extended.*
 
+
 class RemittanceReportService  {
 
 	@PersistenceContext("main")
@@ -27,8 +28,12 @@ class RemittanceReportService  {
 	@Service('RAAFReportService') 
 	def raafSvc; 
 
+	
 	@Service 
 	def self; 
+
+	@DataContext("remittance")
+	def remdb;
 
 	def formatSeries( series, serieslength) {
 		if( ! series ) return null ;
@@ -37,10 +42,26 @@ class RemittanceReportService  {
 		return  (series +"").padLeft( serieslength, '0')
 	}
 
+	def getRemittance( def o ) {
+		def remittance =  remdb.read( o );
+		remittance.remittanceid = remittance.objid; 
+
+		Base64Cipher cipher = new Base64Cipher()
+		if( remittance.collector?.signature !=null ) {
+			remittance.signature = cipher.decode( remittance.collector.signature );
+		}
+		if(remittance.liquidatingofficer?.signature) {
+			remittance.liquidatingofficer.signature =  cipher.decode(remittance.liquidatingofficer.signature)
+		}
+		return remittance;
+	}
+
 	@ProxyMethod 
-	def getRCDReportData( rem ) {
+	def getRCDReportData( rem ) { 
 		def params = [ remittanceid: rem.objid, fundid:'%', formno:'%' ]; 
-		def remittance = rem.clone();
+
+		def remittance = getRemittance( rem );
+
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypes( params ) ); 
 		remittance.collectionsummaries = db.getRCDCollectionSummaries( params ); 
 
@@ -97,7 +118,8 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def getRCDReportDataByFund( rem, fund, af ) { 
-		def remittance = rem.clone();
+		println '** getrcdreportdata by fund '
+		def remittance = getRemittance( rem );
 		def params = [ remittanceid: rem.objid, fundid: (fund? fund.objid: '%'), formno: (af? af.formno: '%') ];  
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypesByFund( params ) );
 		remittance.collectionsummaries = db.getRCDCollectionSummaries( params ); 

@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+         <invoker folderid="home/accounting/reports" caption="Crosstab" action="init" index="3"/>
+         
+         <invoker type="formActions" caption="Preview" action="preview" visibleWhen="#{mode=='init'}"/>
+         <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode=='preview'}"/>
+   </invokers>
+    <code class="com.rameses.enterprise.accounting.models.CrosstabReportModel" />
+    <pages>
+        <page template="com.rameses.enterprise.accounting.views.CrosstabReportInitialPage" />
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+</workunit>

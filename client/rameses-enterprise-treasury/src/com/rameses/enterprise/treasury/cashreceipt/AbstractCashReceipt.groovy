@@ -151,13 +151,31 @@ public abstract class AbstractCashReceipt {
         }
     }
     
-    def doCreditMemo() {
-        def handler = { o->
-            entity.paymentitems << o;
-            updateBalances();
+    def summarizeByFund() {
+        def g = entity.items.groupBy{ it.item.fund };
+        def fb = [];
+        g.each { k,v->
+            fb << [fund:k, amount: v.sum{it.amount}];
         }
-        return InvokerUtil.lookupOpener( "cashreceipt:payment-creditmemo",
-            [entity: entity, saveHandler: handler ] );
+        return fb;
+    } 
+    
+    def doCreditMemo() {
+        def success = false;
+        def handler = { o->
+            entity.paymentitems.clear();
+            o.each { v->
+                entity.paymentitems << v;
+            }
+            updateBalances();
+            paymentListModel.reload(); 
+            success = true; 
+        }
+        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, funds:summarizeByFund() ] );
+        if ( success ) {
+            def outcome = post(); 
+            if ( outcome ) binding.fireNavigation( outcome );  
+        }
     }
 
     public def payerChanged( o ) {
@@ -234,7 +252,12 @@ public abstract class AbstractCashReceipt {
 
         validateBeforePost();
         
-        if(MsgBox.confirm("You are about to post this payment. Please ensure entries are correct")) {
+        boolean pass = false;
+        def h = {
+            pass = true;
+        }
+        Modal.show("cashreceipt_confirm", [handler:h, receiptno: entity.receiptno] );
+        if(pass) {
             try { 
                 beforePost();
                 entity._paymentorderid = _paymentorderid;

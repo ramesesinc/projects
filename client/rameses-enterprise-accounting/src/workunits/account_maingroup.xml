@@ -1,0 +1,10 @@
+<workunit schemaName="account_maingroup" formName="account_maingroup" allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+         <invoker type="account_maingroup:open" caption="Accounts" action="open" 
+            formTitle="Account #{entity.name}" formId="#{entity.objid}"/>
+   </invokers>
+   <code class="com.rameses.seti2.models.CrudFormModel" />
+    <pages>
+        <page template="com.rameses.enterprise.accounting.views.AccountMainGroupViewPage" />
+    </pages>
+</workunit>

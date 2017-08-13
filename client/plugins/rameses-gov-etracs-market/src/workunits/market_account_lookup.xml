@@ -1,8 +1,36 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="market_account" target="popup"
-          cols="acctno,acctname,owner.name,unitno,section.name"
-          customFilter="state = 'ACTIVE'" >
+          schemaName="market_account" target="popup">
     <invokers>
-        <invoker type="market_account:lookup" caption="Search Market Account" action="init"/>
+        <invoker type="market_account:lookup" caption="Search Market Account" 
+            cols="acctno,acctname,owner.name,unitno,section.name,lastdatecovered"
+            hiddenCols="startdate" 
+            width="1024"
+            action="init"/>
     </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.seti2.models.*;
+
+        class MarketAccountLookup extends CrudLookupModel {
+            def ownerid;
+            public def getCustomFilter() {
+                def p = [:];
+                def sb = new StringBuilder();
+                sb.append(" state = 'ACTIVE' ");
+                if(ownerid) {
+                    sb.append( " AND owner.objid= :oid");
+                    p.oid = ownerid;
+                }
+                return [ sb.toString(), p ];
+            }
+        
+        }
+        
+        ]]>
+    </code>  
 </workunit>

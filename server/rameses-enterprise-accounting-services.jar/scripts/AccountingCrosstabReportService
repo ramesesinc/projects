@@ -1,0 +1,49 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.util.*;
+
+class AccountingCrosstabReportService  {
+
+	@DataContext('account_maingroup') 
+	def acctgroup_db;
+
+	@ActiveDB('accountingreport') 
+	def accountingreport_db; 
+
+	@Service('AccountingReportUtil')
+	def reportUtil;
+
+	@Service('DateService')
+	def dtSvc;
+
+	@Service('NumberService')
+	def numSvc;
+
+
+	@ProxyMethod 
+	public def init() {
+		def p = [ fields:[], rowfields:[], columnfields:[], measurefields:[] ];
+		p.accountgroups = acctgroup_db.where(' 1=1 ').list();  
+
+		p.rowfields << [name:'refdate', caption:'Reference Date', type:'date']; 
+		p.rowfields << [name:'remittancedate', caption:'Remittance Date', type:'date']; 
+		p.rowfields << [name:'liquidationdate', caption:'Liquidation Date', type:'date']; 
+
+		p.columnfields << [name:'fundid' , caption:'Fund'];
+		p.columnfields << [name:'acctcode' , caption:'Account Code'];
+		p.columnfields << [name:'itemcode' , caption:'ItemAccount Code'];
+		
+		p.measurefields << [name:'amount' , caption:'Amount', type:'decimal', pattern:'#,##0.00']; 		
+		return p; 
+	}
+
+	@ProxyMethod 
+	public def getReport( params ) { 
+		def resp = [:]; 
+		resp.reportdata = accountingreport_db.getAccountSummaryForCrosstab( params ); 
+		if ( !resp.reportdata ) throw new Exception('No available records that matches your criteria.'); 
+
+		resp.reportparam = [:]; 
+		return resp; 
+	}
+}

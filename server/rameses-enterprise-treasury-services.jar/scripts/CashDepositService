@@ -1,0 +1,125 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class CashDepositService {
+
+	
+	@DataContext("liquidation_fund")
+	def liqFundEm;
+
+	@DataContext("cashdeposit")
+	def depositEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service('Var')
+	def var
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Env
+	def env;
+
+	@DataContext("liquidation_noncashpayment")
+	def checkEm;
+
+	@ProxyMethod
+	public def getFundList() {
+		return liqFundEm.where(  "liquidation.state = 'APPROVED' AND deposit.objid IS NULL" ).list()*.fund.unique();
+	}
+
+	@ProxyMethod
+	public def getFundItems( def fund ) {
+		def str =  "liquidation.state = 'APPROVED' AND deposit.objid IS NULL AND fund.objid= :fid ";
+		def m = liqFundEm.where( str, [fid: fund.objid ] ).list(); 
+		def list = [];
+		m.each {
+			list << [ amount: it.amount, fund: it.fund, liquidationid: it.liquidation.objid,  
+				liquidationfundid: it.objid, txnno: it.liquidation.txnno ];
+		}
+		return list;
+	}
+
+
+	@ProxyMethod
+	public def getUndepositedChecks( def param ) {
+		def str = " deposit.objid IS NULL AND liquidationid IN ( '" +  param.refids.join("','") +  "') ";
+		if( param._excludeids ) {
+			str += " AND check.objid NOT IN ('" + param.excludeids.join("','") + "') ";
+ 		}
+		def list = checkEm.where( str ).list();
+        return list.collect { it.check.checkid = it.objid; return it.check; }
+	}
+
+	@ProxyMethod
+	public def create( def o ) {
+		o.state = 'OPEN';
+		o.dtfiled = dateSvc.getServerDate();
+		o.cashier = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
+		o.controlno = formatTxnno(o);
+		depositEm.create(o);
+		return o;
+	}
+
+	@ProxyMethod
+	public def verify( def o ) {
+		def m = [:];
+		m.state = 'CLOSED';
+		m.dtverified = dateSvc.getServerDate();
+		depositEm.find([objid:o.objid]).update(m);
+		o.putAll(m);
+		return o;
+	}
+
+	public def formatTxnno( def dep ) {
+    	def format = 'UTFS'
+    	def seqid = null
+    	if(var.bankdeposit_format) format = var.bankdeposit_format;
+    	if(var.bankdeposit_sequenceid_format ) seqid = var.bankdeposit_sequenceid_format;
+    	
+
+        //Formatting Options:
+        // YY - YEAR POSTED
+        // MM - MONTH POSTED 
+        // DD - DATE POSTED 
+        // UT - USER TXNCODE
+        // SQ - SEQUENCE 
+        // FS- FORMATTED SEQUENCE 
+        
+        def dt = dateSvc.parseDate( dep.dtfiled, null)
+        def txncode = "DEP";	
+		if(env.TXNCODE) txncode = "DEP-" + env.TXNCODE ; 		
+
+        def values = [
+        	YY:dt.year+"", 
+        	MM:dt.month.toString().padLeft(2, '0',),
+        	DD:dt.day.toString().padLeft(2, '0'),
+        	UT:txncode 
+        ]
+
+        def txnno  = format 
+        values.keySet().each {
+            txnno = txnno.replace( it, values[it] )
+        }
+
+        def series 
+        if(seqid) {
+        	def seq = seqid;
+        	values.keySet().each {
+            	seq = seq.replace( it, values[it] )
+            }
+            series = seqSvc.getNextSeries( seq); 
+            
+        } else {
+        	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
+        }
+
+        txnno = txnno.replace( 'SQ', series+"" )
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
+        return txnno 
+    }
+
+}

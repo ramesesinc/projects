@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <invoker type="market:billitem:details" caption="Bill Details" target="popup"/>
+    </invokers>
+    <code>
+        class MarketBillDetail {
+            def entity;
+            def doClose() {
+                return  "_close";
+            }
+        }
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketBillDetailsPage"/>
+    </pages>    
+</workunit>

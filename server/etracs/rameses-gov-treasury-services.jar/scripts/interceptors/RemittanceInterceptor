@@ -13,6 +13,9 @@ class RemittanceInterceptor {
 	@ActiveDB("af_inventory")
 	def afinventory_db;
 
+	@DataContext("af_inventory_detail")
+	def afd_db;
+
 	@ActiveDB("remittance")
 	def remittance_db;
 
@@ -25,7 +28,37 @@ class RemittanceInterceptor {
 	@Service('DateService') 
 	def dateSvc; 
 
-	@After(pattern="RemittanceService.post")
+
+	@After(pattern="RemittanceService.getBuildAF")
+	public void afterGetBuildAF( evt ) { 
+		def param = evt.args[0];
+		param.controls?.each {
+			def a = afd_db.find([ controlid: it.controlid ]);
+			a.where(' refdate < :refdate ', [refdate: param.txndate])
+
+			def b = a.orderBy(' refdate desc ').first();
+			if ( !b ) return; 
+
+			def c = [ controlid: it.controlid ]; 
+			c.receivedstartseries = b.receivedstartseries;
+			c.receivedendseries = b.receivedendseries; 
+			c.beginstartseries = b.endingstartseries;
+			c.beginendseries = b.endingendseries;
+			c.endingstartseries = b.endingstartseries;
+			c.endingendseries = b.endingendseries; 
+			c.qtyissued = c.qtycancelled = 0; 
+			c.qtyreceived = b.qtyreceived; 
+			c.qtyending = b.qtyending;
+			c.qtybegin = b.qtyending;
+			if ( c.qtyreceived > 0 ) {
+				c.beginstartseries = c.beginendseries = null;  
+				c.qtybegin = 0; 
+			} 
+			evt.result << c; 
+		} 
+	} 
+
+	/*@After(pattern="RemittanceService.post")
 	public void postAFControl( evt ) { 
 		def o = evt.result;
 		o.items.each {
@@ -104,7 +137,7 @@ class RemittanceInterceptor {
 			m.afid = it.formno;
 			afSerialSvc.postBegin(m);
 		}
-	}
+	}*/
 	
 
 	@ActiveDB('af_inventory_tool') 

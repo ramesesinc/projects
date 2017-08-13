@@ -6,24 +6,56 @@ import com.rameses.services.extended.*
 
 class CreditMemoInterceptor { 
 	
-	@ActiveDB('income_summary')
-	def incSumEm
-
-	@Service('RevenueItemAccountService')
-	def revItemSvc
-
-	@ActiveDB("creditmemo")
-	def cr;
-
 	@Env
 	def env
 
-	@Before(pattern="CreditMemoService.create", eval="#{args[0].type.issuereceipt == 0 }", index=0)
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc; 
+
+	@Service("BankAccountPostService")
+	def bankService;
+
+
+	/*************************************************************************************************
+	* CREATE POST TO BANK
+	*************************************************************************************************/
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
 	public void updateStateForPosting( def evt ) { 
-		def dc = evt.args[0];
-		dc.state = 'POSTED';
+		def o = evt.args[0];
+		o.state = 'OPEN';
+		o.controlno = 'CR' + seqSvc.getNextFormattedSeries('CR');
+		o.issuedby = [objid: env.USERID, name:env.FULLNAME];
+		o.dtissued = dateSvc.getServerDate();	
+		o.issuereceipt = 1;
 	}	
 
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
+	public void postToBank( def evt ) { 
+		def o = evt.args[0];
+		def m = [
+			objid: o.bankaccount.objid,
+			amount: o.amount,
+			refid: o.objid,
+			refno: o.refno,
+			refdate: o.refdate,
+			reftype: 'CREDITMEMO',
+			particulars: o.particulars
+		];
+		bankService.postDR( m );
+	}
+
+	/*************************************************************************************************
+	* UPDATE POST TO INCOME
+	*************************************************************************************************/
+	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
+	public void postToIncome( def evt ) { 
+		throw new Exception("updated credit memo");
+	}
+
+	/*
 	@After(pattern="CreditMemoService.create", eval="#{args[0].type.issuereceipt == 0 }", index=0)
 	public void postIncomeSummary( def evt ) { 
 		def dc = evt.args[0];
@@ -40,7 +72,8 @@ class CreditMemoInterceptor {
 			p.orgid = env.ORGID 
 			incSumEm.create(p)
 		}
-	}	
+	}
+	*/	
 
 }
 

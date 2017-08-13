@@ -56,7 +56,7 @@ FROM (
 			from cashreceipt cr 
 				INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
 				INNER JOIN liquidation_remittance lc on lc.objid = rc.remittanceid 
-				INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid = lc.liquidationid 
+				INNER JOIN liquidation_fund lcf ON lcf.liquidationid = lc.liquidationid 
 				INNER JOIN bankdeposit_liquidation bl ON lcf.objid = bl.objid
 				inner join bankdeposit bd on bd.objid = bl.bankdepositid 
 				LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
@@ -141,7 +141,7 @@ FROM (
 			from cashreceipt cr 
 				INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
 				INNER JOIN liquidation_remittance lc on lc.objid = rc.remittanceid 
-				INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid = lc.liquidationid 
+				INNER JOIN liquidation_fund lcf ON lcf.liquidationid = lc.liquidationid 
 				INNER JOIN bankdeposit_liquidation bl ON lcf.objid = bl.objid
 				inner join bankdeposit bd on bd.objid = bl.bankdepositid 
 				LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
@@ -252,7 +252,7 @@ FROM (
 			from cashreceipt cr 
 				INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
 				INNER JOIN liquidation_remittance lc on lc.objid = rc.remittanceid 
-				INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid = lc.liquidationid 
+				INNER JOIN liquidation_fund lcf ON lcf.liquidationid = lc.liquidationid 
 				INNER JOIN bankdeposit_liquidation bl ON lcf.objid = bl.objid
 				inner join bankdeposit bd on bd.objid = bl.bankdepositid 
 				LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
@@ -353,7 +353,7 @@ FROM (
 			from cashreceipt cr 
 				INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
 				INNER JOIN liquidation_remittance lc on lc.objid = rc.remittanceid 
-				INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid = lc.liquidationid 
+				INNER JOIN liquidation_fund lcf ON lcf.liquidationid = lc.liquidationid 
 				INNER JOIN bankdeposit_liquidation bl ON lcf.objid = bl.objid
 				inner join bankdeposit bd on bd.objid = bl.bankdepositid 
 				LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
@@ -437,7 +437,7 @@ FROM (
 			from cashreceipt cr 
 				INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
 				INNER JOIN liquidation_remittance lc on lc.objid = rc.remittanceid 
-				INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid = lc.liquidationid 
+				INNER JOIN liquidation_fund lcf ON lcf.liquidationid = lc.liquidationid 
 				INNER JOIN bankdeposit_liquidation bl ON lcf.objid = bl.objid
 				inner join bankdeposit bd on bd.objid = bl.bankdepositid 
 				LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
@@ -552,7 +552,7 @@ FROM (
 			from cashreceipt cr 
 				INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
 				INNER JOIN liquidation_remittance lc on lc.objid = rc.remittanceid 
-				INNER JOIN liquidation_cashier_fund lcf ON lcf.liquidationid = lc.liquidationid 
+				INNER JOIN liquidation_fund lcf ON lcf.liquidationid = lc.liquidationid 
 				INNER JOIN bankdeposit_liquidation bl ON lcf.objid = bl.objid
 				inner join bankdeposit bd on bd.objid = bl.bankdepositid 
 				LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  

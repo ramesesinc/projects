@@ -1,37 +1,14 @@
 <workunit schemaName="market_account">
     <invokers>
-        <invoker type="market_account:create" caption="New Market Account" action="start" role="MASTER" />
+        <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER" />
     </invokers>
     
     <code class="com.rameses.gov.etracs.market.models.MarketAccountNewModel" />
         
-    <pageflow>
-        <start>
-            <transition to="specify-owner" action="initNewData"/>
-        </start>
-        <page name="specify-owner" title="Specify Lessor/Owner Info">
-            <transition to="specify-unit"  caption="Next"/>
-        </page>
-        <page name="specify-unit" title="Specify Rental Unit Info">
-            <transition to="specify-owner"  caption="Back" immediate="true"/>
-            <transition to="specify-ledger"  caption="Next" immediate="false"/>
-        </page>
-        <page name="specify-ledger" title="Specify Ledger Info">
-            <transition to="specify-unit"  caption="Back" immediate="true"/>
-            <transition to="specify-business"  caption="Next" immediate="false"/>
-        </page>
-        <page name="specify-business" title="Specify Business Info">
-            <transition to="specify-ledger"  caption="Back" immediate="true"/>
-            <transition to="end"  caption="Finish" action="save" confirm="You are about to post this data. Proceed?"/>
-        </page>
-        <end/>
-    </pageflow>
+   
     
     <pages>
-        <page name="specify-owner" template="com.rameses.gov.etracs.market.views.ChangeOwnerPage" />
-        <page name="specify-unit" template="com.rameses.gov.etracs.market.views.ChangeUnitPage" />
-        <page name="specify-ledger" template="com.rameses.gov.etracs.market.views.ChangeLedgerInfoPage" />
-        <page name="specify-business" template="com.rameses.gov.etracs.market.views.ChangeBusinessInfoPage" />
+        <page template="com.rameses.gov.etracs.market.views.MarketAccountNewPage" />
     </pages>
     
 </workunit>

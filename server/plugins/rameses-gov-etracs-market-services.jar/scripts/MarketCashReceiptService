@@ -22,59 +22,57 @@ public class MarketCashReceiptService  {
 	def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
 	
 	@ProxyMethod
-	public def getInfo(o) {
-		def a = acctEm.find([objid: o.id] ).first();
-		if(!a) a = acctEm.where("acctno =:acctno",[acctno: o.id]).first();
-		if(!a) a = acctEm.where("unitno =:code",[code: o.id]).first();
-		if(!a) throw new Exception("Market account not found!");
+	public def getBillItem( def o ) {
+		if(!o.fromdate)
+			throw new Exception("from date is required");
+		def r = [acctid: o.objid];
+		def a = acctEm.find([objid: o.objid] ).first();
 
-		def z = [:];
-		z.acctid = a.objid;
-		z.acctno = a.acctno;
-		z.acctname = a.acctname;
-		z.rate = a.rate;
-		z.unit = a.unit;
-		z.term = a.term;
-		z.payer = a.owner;
-		z.paidby = a.acctname + " (" + a.acctno + ")"; 
-		z.paidbyaddress = a.unitno;
-		z.payfrequency = a.payfrequency;
-
-		//the billitems is used for updating payment ledger
-		def r = [acctid: a.objid];
-		if( o.billdate ) r.billdate = df.parse(o.billdate);
+		if( o.filters ) r.filters = o.filters;
+		if( o.todate ) {
+			r.billdate = o.todate;
+			r.todate = o.todate;
+		}	
 		if( o.partial ) r.partial = o.partial;
 
-		def m = billingSvc.getBilling( r );
 		
+		def m = billingSvc.getBilling( r );
 
-		//posting information
-		z.postpayment = [
-			_schemaname: "market_payment",
-			acctid: a.objid,
-			fromdate: m.fromdate,
-			todate: m.todate,
-			months: m.months,
-			items: m.billitems
-		];
+		//build the receipt items:
+		def items = [];
+		def itemGrp = m.items.groupBy{ it.item };
+		itemGrp.each { k,v->
+			def minItem = v.min{ (it.year * 12)+it.month };
+			def maxItem = v.max{ (it.year * 12)+it.month };
+			
+			def remarks = "UNIT NO." + a.unitno + " ";
+			if(minItem.year == maxItem.year) {
+				if( minItem.month == maxItem.month) {
+					remarks += maxItem.monthname + " " + maxItem.year;
+				}
+				else {
+					remarks += minItem.monthname + " to " + maxItem.monthname + " " + maxItem.year;
+				}
+			}
+			else {
+				remarks += minItem.monthname + " " + minItem.year + " to " + maxItem.monthname + " " + maxItem.year;
+			};
+			items << [item: k, 
+				amount: v.sum{it.amount}, 
+				remarks:  remarks
+			];
+		}
 
-		z.fromdate = df.parse(df.format(m.fromdate));
-		z.todate = df.parse(df.format(m.todate));
-		z.remarks = a.unitno + " (" + a.cluster?.market?.name + ") From " +df.format(z.fromdate) + " to " + df.format( z.todate ) ;
-		z.amount = m.amount;
-		z.items = m.items;
-		/*
-		z.ledgerstatus = m.ledgerstatus;
-		z.billitems = m.billitems;
-		z.days = m.billitems.sum{ it.days };
-		z.months = m.billitems.size();
-		+ "  - " + z.days + " days"
-		z.particulars = z.remarks;
-		*/
-		return z;
+		def result = [:];
+		result.acctno = a.acctno;
+		result.acctid = a.objid;
+		result.unitno = a.unitno;
+		result.billitems = m.billitems;
+		result.items = items;
+		result.amount = m.amount;
+		result.fromdate = m.fromdate;
+		result.todate = m.todate;
+		return result;
 	}
-
-	
-
 
 }

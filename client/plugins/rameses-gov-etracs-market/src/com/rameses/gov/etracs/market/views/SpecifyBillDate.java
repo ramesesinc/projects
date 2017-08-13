@@ -34,7 +34,9 @@ public class SpecifyBillDate extends javax.swing.JPanel {
         xRadio1 = new com.rameses.rcp.control.XRadio();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xRadio2 = new com.rameses.rcp.control.XRadio();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         monthList1 = new com.rameses.enterprise.components.MonthList();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xRadio3 = new com.rameses.rcp.control.XRadio();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
@@ -60,12 +62,30 @@ public class SpecifyBillDate extends javax.swing.JPanel {
         xRadio2.setText("Specify Month");
         xFormPanel1.add(xRadio2);
 
+        xFormPanel2.setCaption("Month");
+        xFormPanel2.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setCaptionWidth(50);
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setShowCaption(false);
+
         monthList1.setCaption("Month");
         monthList1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         monthList1.setDepends(new String[] {"dateoption"});
         monthList1.setName("month"); // NOI18N
+        monthList1.setShowCaption(false);
         monthList1.setVisibleWhen("#{ dateoption == 'month' }");
-        xFormPanel1.add(monthList1);
+        xFormPanel2.add(monthList1);
+
+        xIntegerField2.setDepends(new String[] {"dateoption"});
+        xIntegerField2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xIntegerField2.setName("year"); // NOI18N
+        xIntegerField2.setPreferredSize(new java.awt.Dimension(50, 20));
+        xIntegerField2.setShowCaption(false);
+        xIntegerField2.setVisibleWhen("#{ dateoption == 'month' }");
+        xFormPanel2.add(xIntegerField2);
+
+        xFormPanel1.add(xFormPanel2);
 
         xRadio3.setName("dateoption"); // NOI18N
         xRadio3.setOptionValue("numdays");
@@ -87,7 +107,7 @@ public class SpecifyBillDate extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -102,7 +122,9 @@ public class SpecifyBillDate extends javax.swing.JPanel {
     private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XRadio xRadio1;
     private com.rameses.rcp.control.XRadio xRadio2;
     private com.rameses.rcp.control.XRadio xRadio3;

@@ -1,3 +1,35 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation"
+    cols="txnno,dtposted,liquidatingofficer.name,totalcash,totalnoncash,amount,cashier.name" 
+    hiddenCols="state">
+    
+    <invokers>
+        <invoker folderid="home/collection" caption="Liquidations"
+                icon="home/icons/liquidation_list.png"
+                 target="window" action="init"/> 
+        
+        <invoker type="liquidation_list:view" caption="Liquidations" action="init" 
+                 role="CASHIER" target="window" /> 
+        
+        <invoker type="listActions" caption="Deposit" action="deposit" 
+                 role="CASHIER" />
+        
+        <!--
+        <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER"> 
+            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
+        </invoker> 
+        
+        <invoker folderid="home/collection/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
+            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
+        </invoker>
+        -->
+    </invokers>
+    
+    <code class="com.rameses.enterprise.treasury.models.LiquidationListModel" /> 
+    
+</workunit>
+        <!--
 <workunit extends="wtemplates/ListController.xml" serviceName="LiquidationListService" entityName="liquidation">
     
     <invokers>
@@ -6,7 +38,7 @@
             <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
         </invoker> 
         
-        <invoker folderid="home/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
+        <invoker folderid="home/collection/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
             <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
             <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
         </invoker>
@@ -45,3 +77,4 @@ class LiquidationListController extends DefaultListController
     </code>
         
 </workunit>
+-->

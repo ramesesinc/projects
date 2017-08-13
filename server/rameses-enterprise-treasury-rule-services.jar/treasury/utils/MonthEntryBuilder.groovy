@@ -5,6 +5,41 @@ import treasury.facts.*;
 public class MonthEntryBuilder {
 	
 
+     public static List buildMonthEntries( int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay ) {
+        def list = [];
+        def cal = Calendar.instance;
+        int idx = 1;
+        int startYearMonth = ((fromYear*12)+fromMonth);
+        int endYearMonth =  ((toYear*12)+toMonth);
+        int sz = (endYearMonth - startYearMonth)+1;
+
+        (startYearMonth..endYearMonth).each {
+            def me = new MonthEntry();
+            list << me;
+            me.month = it % 12;
+            me.year = (int)(it / 12);
+            me.index = idx;
+            me.first = false;
+            me.last = false;
+            
+            me.fromday = 1;
+            if( idx == 1 && fromDay > 0 ) me.fromday = fromDay;
+            if( idx == 1 ) me.first = true;
+            
+            cal.set(Calendar.YEAR, toYear);
+            cal.set(Calendar.MONTH, toMonth - 1 );
+            cal.set(Calendar.DATE, 1 );
+            me.today = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+         
+            if( idx == sz  && toDay > 0 )  me.today = toDay;
+            if( idx == sz ) me.last = true;
+
+             me.numdays = (me.today - me.fromday) + 1;
+            idx++; 
+        }
+        return list;
+     } 
+
 	 public static List buildMonthEntries( Date fromdate, Date todate ) {
         def stack = new Stack();
         def cal = Calendar.instance;

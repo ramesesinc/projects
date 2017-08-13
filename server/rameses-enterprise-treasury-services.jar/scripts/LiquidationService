@@ -77,8 +77,10 @@ class LiquidationService  {
 		m.totalnoncash = 0.0;
 		m = liqEm.create( m ); 
 
-		def liqparam = [ liquidationid: m.objid ]; 
+		def liqparam = [ liquidationid: m.objid, liquidatingofficerid: env.USERID ]; 
 		liqEm.insertRemittances( liqparam ); 
+		liqparam.remove('liquidatingofficerid');
+		
 		if ( !liqRem.find( liqparam ).first() ) 
 			throw new Exception("No pending remittances to liquidate"); 
 
@@ -118,10 +120,6 @@ class LiquidationService  {
 		]);
 
 		def o = open([ objid: m.objid ]); 
-		println '** liq '
-		o.each{
-			println '>> '+ it; 
-		}
 		return o;
 	}
 
@@ -164,7 +162,7 @@ class LiquidationService  {
 
 	@ProxyMethod
 	public def post( o ) { 
-		o.state = 'OPEN'; 
+		o.state = 'POSTED'; 
 		o.txnno = formatTxnno( o ); 
 		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno ]); 
 		return o; 
@@ -245,9 +243,8 @@ class LiquidationService  {
 
 	@ProxyMethod
     public void approve(def o) {
-    	def m = [state: 'APPROVED'];
+    	def m = [ state: 'APPROVED' ];
     	m.cashier = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE, signature: o.signature ]; 
     	liqEm.find( [objid : o.objid] ).update( m );
     }
-
 }	

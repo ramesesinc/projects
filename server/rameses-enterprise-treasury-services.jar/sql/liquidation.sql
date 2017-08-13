@@ -3,6 +3,7 @@ insert into liquidation_remittance ( objid, liquidationid )
 select r.objid, $P{liquidationid}   
 from remittance r 
 where r.objid not in (select objid from liquidation_remittance where objid=r.objid) 
+	and r.liquidatingofficer_objid = $P{liquidatingofficerid} 
 	and r.state='APPROVED' 
 
 

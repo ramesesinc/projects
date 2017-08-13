@@ -1,9 +1,13 @@
 <schema>
 
 	<element  tablename="cashdeposit_liquidation_fund">
-		<field name="objid" required="true"/>
+		<field name="objid" primary="true" prefix="CDLF"/>
 		<field name="depositid" required="true"/>
 		<field name="liquidationfundid" required="true"/>
+
+		<complex name="liquidationfund" ref="liquidation_fund" jointype="many-to-one" required="false" includefields="liquidation.*">
+			<key field="liquidationfundid" target="objid" />
+		</complex>  
 	</element>
 
 </schema>

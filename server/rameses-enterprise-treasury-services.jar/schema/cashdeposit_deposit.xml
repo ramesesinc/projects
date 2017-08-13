@@ -9,7 +9,11 @@
 		<field name="totalcash" required="true" type="decimal"/>
 		<field name="totalnoncash" required="true" type="decimal"/>
 		<field name="totalcashdeposited" required="true" type="decimal"/>
-		<field name="totalnoncashdeposited" required="true" type="decimal"/>
+		<field name="totalnoncashdeposited" required="true" type="decimal"/> 
+
+		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,title">
+			<key field="fund_objid" target="objid" />
+		</complex>  
 	</element>
 
 </schema>

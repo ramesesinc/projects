@@ -1,9 +1,7 @@
 <workunit>
-    <invokers>
-        <invoker folderid="/home/collection" caption="New Cash Deposit" action="start"  icon="home/icons/deposit.png"/> 
-        <invoker type="cashdeposit:create" caption="New Cash Deposit" action="start"/> 
-   </invokers>
+
    <code class="com.rameses.enterprise.treasury.models.CashDepositNewModel" />
+
    <pageflow>
        <start>
            <transition to="initial" action="create"/>

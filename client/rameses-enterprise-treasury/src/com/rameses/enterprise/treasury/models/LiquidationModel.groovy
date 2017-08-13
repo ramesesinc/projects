@@ -28,17 +28,13 @@ class LiquidationModel  {
     def handler;
     def listModel;
     def selectedItem;
-    def selectedCheck;
+    
     def selectedRemittance;
+    def selectedFund;
     
     @FormTitle
     public def getTitle() {
-        if( mode == "create" ) {
-            return "New Liquidation";
-        }
-        else {
-            return entity.txnno;
-        }
+        return entity.txnno;
     }
 
     @FormId
@@ -64,17 +60,10 @@ class LiquidationModel  {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
-    def create() {
-        entity = service.init();
-        entity.cashbreakdown = [];
-        mode = "create";
-        return "create";
-    }
-    
     def open(){
         mode = "read";
         entity = service.open(entity);
-        return "view";
+        return null;
     }
 
     def remittancesModel = [
@@ -84,13 +73,7 @@ class LiquidationModel  {
         }
     ] as BasicListModel;
 
-    def checkModel = [
-        fetchList: {
-            return entity.checks;
-        }
-    ] as BasicListModel;
-    
-    def fundSummaryModel = [
+    def fundListModel = [
         fetchList: {
             return entity.fundsummary;
         }
@@ -102,6 +85,27 @@ class LiquidationModel  {
         def op = Inv.lookupOpener( "remittance:open", [entity:selectedRemittance] );
         op.target = 'popup';
         return op;
+    }
+    
+    def viewBreakdown() {
+        def h = [
+            getCashBreakdown : {
+                return entity.breakdown;   
+            },
+            getChecks: {
+                return  entity.checks;
+            },
+            getCreditMemos: {
+                return entity.creditmemos;
+            }
+        ]   
+        return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
+    }
+    
+    
+    def viewFundBreakdown() {
+        if(!selectedFund) throw new Exception("please select a fund entry");
+        
     }
     
     void post() {

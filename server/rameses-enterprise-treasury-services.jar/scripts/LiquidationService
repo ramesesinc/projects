@@ -53,10 +53,6 @@ class LiquidationService  {
 		liqRem.find([ liquidationid: params.objid ]).delete(); 
 		liqfund.find([ liquidationid: params.objid ]).delete(); 
 		liqEm.find([ objid: params.objid ]).delete(); 
-
-		rems.each{ 
-			remEm.find([ objid: it.objid ]).update([ state:'OPEN' ]); 
-		} 
 	} 
 
 	@ProxyMethod
@@ -84,7 +80,8 @@ class LiquidationService  {
 		if ( !liqRem.find( liqparam ).first() ) 
 			throw new Exception("No pending remittances to liquidate"); 
 
-		liqEm.insertFunds( liqparam ); 		
+		liqEm.insertFunds( liqparam ); 
+		liqEm.insertNoncashPayments( liqparam );		
 
         def cblist = [];
 		def cashbreakdowns = liqEm.getRemittanceFundsCashbreakdown( liqparam ); 

@@ -24,13 +24,20 @@ where lrem.liquidationid = $P{liquidationid}
 group by lrem.liquidationid, remf.fund_objid, remf.fund_title 
 
 
-[getChecks]
-select nc.* 
+[insertNoncashPayments]
+insert into liquidation_noncashpayment ( objid, liquidationid ) 
+select remnc.objid, lrem.liquidationid  
 from liquidation_remittance lrem 
 	inner join remittance rem on rem.objid=lrem.objid 
 	inner join remittance_noncashpayment remnc on remnc.remittanceid=rem.objid 
-	inner join cashreceiptpayment_noncash nc on nc.objid=remnc.objid 
-where lrem.liquidationid = $P{liquidationid} 
+where lrem.liquidationid = $P{liquidationid}
+
+
+[getChecks]
+select lnc.liquidationid, nc.* 
+from liquidation_noncashpayment lnc  
+	inner join cashreceiptpayment_noncash nc on nc.objid=lnc.objid 
+where lnc.liquidationid = $P{liquidationid} 
 
 
 [getRemittanceFundsCashbreakdown] 

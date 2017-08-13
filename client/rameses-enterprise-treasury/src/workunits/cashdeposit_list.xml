@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="cashdeposit">
-    
-    <invokers>
-        <invoker folderid="home/collection" caption="Cash Deposits" target="window" action="init" 
-            cols="controlno,dtfiled,bankaccount.code,bankaccount.bank.name,fund.title,totalcash,totalnoncash,amount,cashier.name" /> 
-    </invokers>
-    
-</workunit>
-       

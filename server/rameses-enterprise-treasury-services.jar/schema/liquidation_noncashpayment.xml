@@ -5,12 +5,12 @@
 		<field name="liquidationid" required="true"/>
 		<field name="liquidationfundid" required="true"/>
 
-		<complex name="check" ref="cashreceiptpayment_noncash" jointype="many-to-one" required="false">
+		<complex name="check" ref="cashreceiptpayment_noncash" jointype="many-to-one" required="false" includefields="refno,refdate,reftype,particulars,amount,fund.objid,fund.title,fund.code,bankid,bank,bankaccountid">
 			<key field="objid" target="objid" />
 		</complex>   
 
-		<complex name="deposit" ref="cashdeposit_check" jointype="many-to-one" required="false" includefields="objid,amount">	
+		<!--complex name="deposit" ref="cashdeposit_check" jointype="many-to-one" required="false" includefields="objid,amount">	
 			<key field="objid" target="checkid"/>
-		</complex>	
+		</complex-->	
 	</element>
 </schema>

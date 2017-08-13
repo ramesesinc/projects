@@ -7,9 +7,12 @@
                 icon="home/icons/liquidation_list.png"
                  target="window" action="init"/> 
         
-        <invoker type="liquidation_list:view" caption="Liquidations"
-                role="CASHIER"
-                 target="window" action="init"/> 
+        <invoker type="liquidation_list:view" caption="Liquidations" action="init" 
+                 role="CASHIER" target="window" /> 
+        
+        <invoker type="listActions" caption="Deposit" action="deposit" 
+                 role="CASHIER" />
+        
         <!--
         <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER"> 
             <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
@@ -23,6 +26,7 @@
         -->
     </invokers>
     
+    <code class="com.rameses.enterprise.treasury.models.LiquidationListModel" /> 
     
 </workunit>
         <!--

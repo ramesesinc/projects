@@ -31,6 +31,9 @@ class LiquidationService  {
 	@DataContext("liquidation_fund")
 	def liqfund;
 
+	@DataContext("liquidation_noncashpayment")
+	def liqnoncash;
+
 	@DataContext("liquidation")
 	def liqEm;
 
@@ -47,14 +50,14 @@ class LiquidationService  {
 
 		def rems = liqRem.find([ liquidationid: params.objid ]).select('objid').list();
 
-		liqRem.find([ liquidationid: params.objid ]).delete();
-		liqfund.find([ liquidationid: params.objid ]).delete();
+		liqRem.find([ liquidationid: params.objid ]).delete(); 
+		liqfund.find([ liquidationid: params.objid ]).delete(); 
 		liqEm.find([ objid: params.objid ]).delete(); 
 
-		rems.each{
+		rems.each{ 
 			remEm.find([ objid: it.objid ]).update([ state:'OPEN' ]); 
 		} 
-	}
+	} 
 
 	@ProxyMethod
 	public def init() {
@@ -95,8 +98,8 @@ class LiquidationService  {
 			]; 
 		}
 
-		def funds = liqfund.find( liqparam ).select('amount,totalcash,totalnoncash,totalcr').list();
 		def amount=0.0; def totalcr=0.0; def totalcash=0.0; def totalnoncash=0.0;
+		def funds = liqfund.find( liqparam ).select('amount,totalcash,totalnoncash,totalcr').list();
 		funds.each{ 
 			amount += ( it.amount ? it.amount : 0.0 ); 
 			totalcr += ( it.totalcr ? it.totalcr : 0.0 ); 
@@ -114,24 +117,13 @@ class LiquidationService  {
 			cashbreakdown: m.cashbreakdown 
 		]);
 
-		m.remittances = liqRem.find( liqparam ).list()*.remittance;
-		return m; 
+		def o = open([ objid: m.objid ]); 
+		println '** liq '
+		o.each{
+			println '>> '+ it; 
+		}
+		return o;
 	}
-
-	@ProxyMethod 
-	public def getChecks( params ) {
-		return liqEm.getChecks([ liquidationid: params.objid ]); 
-	}
-
-
-	@ProxyMethod
-	public def post( o ) { 
-		o.state = 'OPEN'; 
-		o.txnno = formatTxnno( o ); 
-		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno ]); 
-		return o; 
-	} 
-
 
 	@ProxyMethod
 	public def open( o ) {
@@ -145,21 +137,42 @@ class LiquidationService  {
 			o.cashier.signature = cipher.decode( o.cashier.signature );
 		}
 
+		def liqparam = [ liquidationid: o.objid ];
+		o.fundsummary = liqfund.find( liqparam ).list();
+		o.remittances = liqRem.find( liqparam ).list()*.remittance;
+		o.creditmemos = [];
+		o.checks = [];
+		liqnoncash.find( liqparam ).list().each{
+			def a = [ objid: it.objid, liquidationid: o.objid ];
+			if ( it.check ) a.putAll( it.check ); 
+			if ( a.reftype == 'CREDITMEMO' ) o.creditmemos << a; 
+			else o.checks << a; 
+		}
 
-		o.remittances = liqRem.find( [liquidationid: o.objid] ).list()*.remittance;
+		o.totalnoncash = o.checks.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( !o.totalnoncash ) o.totalnoncash = 0.0;
 
-		o.fundsummary = em.getFundSummaries([ liquidationid: o.objid ]);
-		o.checks = em.getLiquidatedNoncash( o ); 
+		o.totalcr = o.creditmemos.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( !o.totalcr ) o.totalcr = 0.0;
 
-		def td = o.checks.findAll{ it.reftype == 'CHECK' }?.sum{it.amount};
-		if(td==null) td = 0.0;
+		o.totalcash = o.amount - ( o.totalnoncash - o.totalcr );
+		if ( !o.totalcash ) o.totalcash = 0.0;
 
-		def tc = o.checks.findAll{ it.reftype == 'CREDITMEMO' }?.sum{it.amount};
-		if(tc==null) tc = 0.0;
+		o.totaldeposit = o.totalcash + o.totalnoncash; 
+		return o; 
+	}
 
-		o.totaldeposit = td + o.totalcash;
-		o.totalcreditmemo = tc;
-		return o;
+	@ProxyMethod
+	public def post( o ) { 
+		o.state = 'OPEN'; 
+		o.txnno = formatTxnno( o ); 
+		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno ]); 
+		return o; 
+	} 
+
+	@ProxyMethod 
+	public def getChecks( params ) {
+		return liqEm.getChecks([ liquidationid: params.objid ]); 
 	}
 
 	@ProxyMethod

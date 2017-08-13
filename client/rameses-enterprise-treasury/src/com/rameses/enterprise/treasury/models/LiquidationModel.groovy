@@ -158,7 +158,8 @@ class LiquidationModel  {
         if ( pass ) {
             service.approve([ objid: entity.objid, signature: signature ]);
             return "_close";
-        } 
+        }
+        return null; 
     }
     
     def delete() {
@@ -168,5 +169,4 @@ class LiquidationModel  {
         }
         return null; 
     }
-    
 } 

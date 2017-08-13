@@ -1,6 +1,6 @@
 <schema>
 	<element  tablename="cashdeposit">
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="CSHDEP" />
 		<field name="controlno" required="true" />
 		<field name="state" required="true" />
 		<field name="dtfiled" required="true" />
@@ -8,7 +8,7 @@
 		<field name="cashier_objid" required="true" />
 		<field name="cashier_name" required="true" />
 		<field name="cashier_title" required="true" />
-		<field name="cashier_signature" required="true" />
+		<field name="cashier_signature" />
 		<field name="amount" required="true" type="decimal"/>
 	</element>
 </schema>

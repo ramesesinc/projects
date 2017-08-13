@@ -22,11 +22,12 @@
          
          <!-- liquidate buttons -->
          <invoker type="formActions" caption="Close" name="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
-         <invoker type="formActions" caption="Post" name="post" visibleWhen="#{mode == 'create'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
-         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{mode == 'read' }" action="preview" />
-         <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{mode == 'read' }" category="liquidation:reports" />
-         
+         <invoker type="formActions" caption="Post" name="post" visibleWhen="#{entity.state=='DRAFT'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
          <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{ entity.state=='DRAFT' }" />
+
+         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{entity.state=='APPROVED'}" action="preview" />
+         <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{entity.state=='APPROVED'}" category="liquidation:reports" />
+         
          
          <!-- CASHIER FUNCTIONS -->
          <invoker type="formActions" caption="Approve for Deposit" action="approve" 

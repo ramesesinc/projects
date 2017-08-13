@@ -144,47 +144,57 @@ class RemittanceModel  {
     
     def submit() {
         boolean pass = false;
+        
         try {
             def h = { sig->
                pass = true;
                if( !entity.collector ) entity.collector = [:];
                entity.collector.signature = sig;
             }
-            def msg = "You are about to submit this remittance.Please ensure the entries are correct";
-            Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
-        }
-        catch(e) {
-            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
-        }
-        if( pass == true ) { 
-            def o = service.post([ remittanceid: entity.objid, cashbreakdown: entity.cashbreakdown ]);
+            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
+                def msg = "You are about to submit this remittance.Please ensure the entries are correct";
+                Modal.show("verify_submit_with_signature", [handler: h, message: msg ]);
+            }
+        } catch( Throwable t ) {
+            pass = MsgBox.confirm("You are about to post this transaction. Proceed?"); 
+        } 
+        
+        if( pass ) { 
+            def o = service.post([ 
+                remittanceid: entity.objid, 
+                collector: entity.collector, 
+                cashbreakdown: entity.cashbreakdown                 
+            ]);
             entity.txnno = o.txnno;
             mode = 'read';
             MsgBox.alert("Posting successful. Control No " + entity.txnno);
             return "_close";
-        }
+        } 
+        return null; 
     }
 
     def approve() {
         boolean pass = false;
+        def signature = null;
         try {
             def h = { sig->
                pass = true;
-               service.approve( [signature:sig, objid:entity.objid ] );
+               signature = sig;
                return "_close";
             }
-            def msg = "Please check all entries are correct before approving";
-            Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
-        }
-        catch(e) {
-            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
-            if(pass) {
-                service.approve( [objid:entity.objid ] );          
+            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
+                def msg = "Please check all entries are correct before approving";
+                Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
             }
+        } catch( Throwable t ) {
+            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
         }
-        if(pass) {
-            return "_close";
-        }
+        
+        if ( pass ) { 
+            service.approve([ objid:entity.objid, signature: signature ]);
+            return "_close"; 
+        } 
+        return null; 
     }
     
 } 

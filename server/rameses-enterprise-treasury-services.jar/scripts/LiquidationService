@@ -230,11 +230,10 @@ class LiquidationService  {
     }
 
 
-    
 	@ProxyMethod
     public void approve(def o) {
-    	def m = [state:'APPROVED'];
-    	m.approver = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
+    	def m = [state: 'APPROVED'];
+    	m.cashier = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE, signature: o.signature ]; 
     	liqEm.find( [objid : o.objid] ).update( m );
     }
 

@@ -9,13 +9,13 @@
 		<field name="liquidatingofficer_objid" required="true"/>
 		<field name="liquidatingofficer_name" required="true" searchable="true"/>
 		<field name="liquidatingofficer_title" required="true"/>
+		<field name="liquidatingofficer_signature" />
 
 		<field name="amount" required="true"/>
 		<field name="totalcash" required="true"/>
 		<field name="totalnoncash" required="true"/>
 		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
 		<field name="posted" />
-		<field name="signature"/>
 
 		<field name="cashier_objid" />
 		<field name="cashier_name" />

@@ -103,7 +103,7 @@ class LiquidationModel  {
         return op;
     }
     
-    void submit() {
+    void post() {
         def breakdown = 0;
         if( entity.cashbreakdown ) {
             breakdown = entity.cashbreakdown.sum{ it.amount };

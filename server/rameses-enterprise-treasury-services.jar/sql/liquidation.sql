@@ -9,14 +9,13 @@ where r.objid not in (select objid from liquidation_remittance where objid=r.obj
 [insertFunds]
 insert into liquidation_fund ( 
 	objid, liquidationid, fund_objid, fund_title, 
-	amount, totalcash, totalnoncash, totalcr, cashbreakdown 
+	amount, totalcash, totalnoncash, totalcr 
 )
 select 
 	concat(lrem.liquidationid, remf.fund_objid) as objid, 
 	lrem.liquidationid, remf.fund_objid, remf.fund_title, 
 	sum(remf.amount) as amount, sum(remf.totalcash) as totalcash, 
-	sum(remf.totalnoncash) as totalnoncash, sum(remf.totalcr) as totalcr, 
-	'[]' as cashbreakdown 
+	sum(remf.totalnoncash) as totalnoncash, sum(remf.totalcr) as totalcr 
 from liquidation_remittance lrem 
 	inner join remittance rem on rem.objid=lrem.objid 
 	inner join remittance_fund remf on remf.remittanceid=rem.objid 
@@ -33,6 +32,11 @@ from liquidation_remittance lrem
 where lrem.liquidationid = $P{liquidationid} 
 
 
+[getRemittanceFundsCashbreakdown] 
+select remf.cashbreakdown 
+from liquidation_remittance lrem 
+	inner join remittance_fund remf on remf.remittanceid=lrem.objid 
+where lrem.liquidationid = $P{liquidationid} 
 
 
 

@@ -4,8 +4,7 @@
     
     <invokers>
         <invoker folderid="home/collection" caption="Liquidations"
-                icon="home/icons/liquidation_list.png"
-                 target="window" action="init"/> 
+                 target="window" action="init" index="90"/> 
         
         <invoker type="liquidation_list:view" caption="Liquidations" action="init" 
                  role="CASHIER" target="window" /> 

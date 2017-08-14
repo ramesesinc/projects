@@ -1,8 +1,8 @@
-<workunit>
+<workunit schemaName="collectiondeposit" allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker type="collectiondeposit:create" caption="New Cash Deposit" action="create"/> 
+        <invoker type="collectiondeposit:open" caption="Collection Deposit" action="open"/> 
         
-        <invoker type="formActions" caption="Close" name="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
         <invoker type="formActions" caption="Post" name="post" visibleWhen="#{entity.state=='DRAFT'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
         <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{ entity.state=='DRAFT' }" />        
    </invokers>

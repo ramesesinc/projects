@@ -16,7 +16,14 @@ class CollectionDepositBankModel extends CrudFormModel {
         dep.totalcash = 200;
         dep.cashbreakdown = [];
         dep.checks = [];
-        return Inv.lookupOpener( "depositslip:create", [entity:dep, handler: h ] );
+        dep.fund = entity.fund;
+        return Inv.lookupOpener( "bankdepositslip:create", [params:dep ] );
     }
+    
+    def listModel = [
+        fetchList: { o->
+            return [];
+        }
+    ] as BasicListModel;
     
 } 

@@ -1,9 +1,9 @@
 import com.rameses.annotations.*;
 
-class CashDepositForFundTransferListInterceptor {
+class CollectionDepositForFundTransferListInterceptor {
 
 
-	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'cashdeposit_fundtransfer' }")
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectiondeposit_fundtransfer' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
@@ -12,7 +12,7 @@ class CashDepositForFundTransferListInterceptor {
 		result << [ id:'validated', title: 'Validated', state:'CLOSED' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashdeposit_fundtransfer' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiondeposit_fundtransfer' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 

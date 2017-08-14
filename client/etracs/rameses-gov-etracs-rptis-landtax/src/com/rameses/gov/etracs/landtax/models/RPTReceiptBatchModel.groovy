@@ -6,6 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.util.*;
+import java.util.concurrent.*;
 
 
 class RPTReceiptBatchModel extends PageFlowController
@@ -43,6 +44,7 @@ class RPTReceiptBatchModel extends PageFlowController
     def processing;
     def msg;
     def ledgers;
+    def cancelled;
     
     def BARCODE_KEY = '56001';
     
@@ -53,6 +55,7 @@ class RPTReceiptBatchModel extends PageFlowController
         entity.billid = bill.objid;
         maxadvanceyear = billSvc.getMaxAdvanceYear();
         mode = MODE_INIT;
+        itemsforpayment = null;
         paymentlist = null;
         ledgers = null;
         return super.signal('init');
@@ -65,7 +68,7 @@ class RPTReceiptBatchModel extends PageFlowController
             throw new Exception('Barcode must be specified');
         
         mode = MODE_SELECT;
-        
+        listHandler.load();
         if (entity.payoption == PAYOPTION_TAXPAYER){
             bill.taxpayer = entity.taxpayer;
             updatePayerInfo(entity);
@@ -92,16 +95,19 @@ class RPTReceiptBatchModel extends PageFlowController
     
     def oncomplete  = { 
         msg = null;
-        loadItems();
         if (!itemsforpayment){
             msg = 'There are no unpaid ledgers for this taxpayer'
         }
+        listHandler.load();
+        calcAmountDue();
         processing  = false;
-        binding.refresh('msg.*');
+        binding.refresh('.*');
     }
     
     def recalcItems(){
         processing = true;
+        msg = 'Initializing. Please wait.'
+        binding.refresh('msg.*');
         new Thread(task).start();
     }
     
@@ -111,7 +117,8 @@ class RPTReceiptBatchModel extends PageFlowController
                 recalcBillingStatement();
             }
             catch(e){
-                //
+                //Task error
+                e.printStackTrace();
             }
             oncomplete();
         }
@@ -214,16 +221,34 @@ class RPTReceiptBatchModel extends PageFlowController
         bill.rptledgerid = ledger.objid;
     }
         
+    void doCancel(){
+        cancelled = true;
+        init();
+    }
     
     void recalcBillingStatement(){
+        def queue = new LinkedBlockingQueue();
+        queue.poll(2, TimeUnit.SECONDS)
+        cancelled = false;
+        
         itemsforpayment = []
-        ledgers.eachWithIndex{item, idx ->
+        def item = null; 
+        if (!ledgers) return;
+        for(int idx=0; !cancelled && idx < ledgers.size(); idx++){
+            item = ledgers[idx];
             if (processing){
-                msg = 'Recalculating TD No. ' + item.tdno + '  (#' + idx + ')';
+                msg = 'Recalculating TD ' + (item.tdno ? item.tdno : '') + '  (#' + (idx+1) + '). Please wait.';
                 binding.refresh('msg');
             }
-            buildBillParams(item)
-            billSvc.generateBillByLedgerId3(bill)
+            try{
+                buildBillParams(item)
+                billSvc.generateBillByLedgerId3(bill)
+                itemsforpayment << svc.getItemsForPayment(bill)[0]
+            }
+            catch(e){
+                println 'ERROR -> ' + item.objid 
+                println e.printStackTrace();
+            }
         }
     }
     
@@ -266,12 +291,7 @@ class RPTReceiptBatchModel extends PageFlowController
         itemsforpayment.each{
             it.pay = true;
             it.partialled = false;
-            if (payoption != PAY_OPTION_ALL){
-                updateItemDue(it);
-            }
-        }
-        if (payoption == PAY_OPTION_ALL) {
-            loadItems();
+            it.amount = it._amount;
         }
         calcAmountDue();
     }
@@ -280,6 +300,7 @@ class RPTReceiptBatchModel extends PageFlowController
         itemsforpayment.each{
             it.pay = false;
             it.partialled = false;
+            it._amount = 0.0;
             it.amount = 0.0;
         }
         listHandler.load();
@@ -339,7 +360,7 @@ class RPTReceiptBatchModel extends PageFlowController
     def getChange(){
         entity.cashchange = 0;
         entity.balance = entity.amount - entity.totalnoncash;
-        if (entity.totalcash > entity.balance){
+        if (entity.totalcash >= entity.balance){
             entity.cashchange = entity.totalcash - entity.balance;
         }
         else if(entity.totalcash > 0.0 ){
@@ -450,6 +471,14 @@ class RPTReceiptBatchModel extends PageFlowController
     def getReceiptcount(){
         return issuedreceipts.size();
     }
+    
+    void fullPayment(){
+        bill.partial = null
+        
+        updateItemDue(selectedItem);
+        selectedItem.partialled = false;
+    }
+    
     
     def partialPayment(){
         return InvokerUtil.lookupOpener('rptpartialpayment:open', [

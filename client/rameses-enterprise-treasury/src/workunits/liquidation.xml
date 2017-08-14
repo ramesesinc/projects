@@ -2,6 +2,8 @@
     
    <invokers>
          <invoker type="quick_launcher" code="LIQ" caption="Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER"/>
+         
+         <invoker type="liquidation:create" caption="New Liquidation" action="create" target="window"/>
          <invoker type="liquidation:open" caption="Liquidation (Open)" action="open" target="window"/>
          
          <!-- liquidate buttons -->

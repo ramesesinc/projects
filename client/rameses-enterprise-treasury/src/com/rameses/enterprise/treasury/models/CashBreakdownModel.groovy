@@ -17,13 +17,17 @@ public class CashBreakdownModel  {
     boolean editable;
     
     def oldbreakdown;
+    boolean showCreditMemos = true;
     
     void init() {
         if( entity.totalcash == null || entity.cashbreakdown == null )
-            throw new Exception("Total cash is null. Please run migration for remittance fund");
+            throw new Exception("Total cash is null. Please run migration for fund");
         oldbreakdown = entity.cashbreakdown;
         
         entity.cashbreakdown = handler.getCashBreakdown();
+        if(entity.getCreditMemos == null ) {
+            showCreditMemos = false;
+        }
     }
 
     def checkModel = [

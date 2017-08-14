@@ -1,9 +1,7 @@
 <workunit>
     
     <invokers>
-        <invoker type="cashreceipt:batchcapture:create" caption="New Batch Entry" action="init"/>
-        <invoker folderid="home/collection" caption="Batch Cash Receipt" action="init" 
-                 role="SUBCOLLECTOR,COLLECTOR" target="window" />
+        <invoker type="cashreceipt:batchcapture:create" caption="New Batch Entry" action="init" role="SUBCOLLECTOR,COLLECTOR" target="window"/>
     </invokers>
    
     <code>

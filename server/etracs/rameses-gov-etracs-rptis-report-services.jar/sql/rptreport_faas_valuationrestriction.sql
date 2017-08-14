@@ -7,8 +7,7 @@ select
 	sum(r.totalmv) as restrictionmv
 FROM faas_restriction fr 
 	inner join faas_restriction_type frt on fr.restrictiontype_objid = frt.objid 
-	inner join rpumaster rm on fr.rpumaster_objid = rm.objid 
-	inner join faas f on rm.currentfaasid = f.objid 
+	inner join faas f on fr.parent_objid = f.objid 
 	inner join sys_org s on f.lguid = s.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid

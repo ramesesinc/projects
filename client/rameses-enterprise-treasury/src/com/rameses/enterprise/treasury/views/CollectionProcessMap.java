@@ -156,8 +156,8 @@ public class CollectionProcessMap extends javax.swing.JPanel {
         xButton2.setCaption("");
         xButton2.setContentAreaFilled(false);
         xButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        xButton2.setName("deposit"); // NOI18N
-        xButton2.setText("<html>Fund Transfer</html>");
+        xButton2.setName("fundtransfer"); // NOI18N
+        xButton2.setText("<html><center>Fund Transfer</center></html>");
         xButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         xButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

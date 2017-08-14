@@ -27,6 +27,9 @@ class LandRPUService
 
 	@Service('LandAssessmentRuleService')
 	def ruleSvc 
+
+	@DataContext('landrpu')
+	def em_landrpu
 	
 	
 	@Env
@@ -252,6 +255,7 @@ class LandRPUService
 
 
     void saveAdjustment(adj) {
+    	adj.landrpuid = em_landrpu.select('objid').find([objid:adj.landrpuid]).first()?.objid 
 		em.save(adj, SCHEMA_LANDADJUSTMENT)
 		adj.params.each{
 			if (!it.objid )

@@ -1,0 +1,10 @@
+<schema adapter="main">
+    <element tablename="rptledger_restriction">
+        <field name="objid" primary="true" />
+		<field name="parentid" />
+		<field name="restrictionid" />
+		<field name="remarks" />
+
+    </element>
+
+</schema>

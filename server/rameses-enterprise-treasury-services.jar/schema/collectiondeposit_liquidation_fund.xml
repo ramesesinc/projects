@@ -1,6 +1,6 @@
 <schema>
 
-	<element  tablename="cashdeposit_liquidation_fund">
+	<element  tablename="collectiondeposit_liquidation_fund">
 		<field name="objid" primary="true" prefix="CDLF"/>
 		<field name="depositid" required="true"/>
 		<field name="liquidationfundid" required="true"/>

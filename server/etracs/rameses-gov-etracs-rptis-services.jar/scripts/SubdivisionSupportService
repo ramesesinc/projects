@@ -45,7 +45,6 @@ class SubdivisionSupportService
     @DataContext('subdivision_cancelledimprovement')
     def cancelledimprovementDb 
 
-
     @ProxyMethod
     public def buildSubdivisionData(subdivision){
         def data = [:]

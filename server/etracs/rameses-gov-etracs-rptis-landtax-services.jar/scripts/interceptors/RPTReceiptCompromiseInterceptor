@@ -14,7 +14,7 @@ class RPTReceiptCompromiseInterceptor
 	@Service('Var') 
 	def var;
 
-	@After(pattern="CashReceiptService.open", eval="#{result.formno=='56'}", index=100) 
+	@After(pattern="CashReceiptService.open", eval="#{result.formno.matches('56|5156')}", index=100) 
 	public void interceptOpenReceipt( evt ) {
 		def receipt = evt.result
 		svc.open(receipt)
@@ -27,7 +27,7 @@ class RPTReceiptCompromiseInterceptor
 		}
 	}
 
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].formno=='56' && args[0].txntype == 'rptcompromise'}") 
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].formno.matches('56|5156') && args[0].txntype == 'rptcompromise'}") 
 	public void interceptBeforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 
@@ -43,7 +43,7 @@ class RPTReceiptCompromiseInterceptor
 	}
 
 
-	@After(pattern="CashReceiptService.post", eval="#{result.formno=='56' && args[0].txntype == 'rptcompromise'}") 
+	@After(pattern="CashReceiptService.post", eval="#{result.formno.matches('56|5156') && args[0].txntype == 'rptcompromise'}") 
 	public void interceptAfterPostReceipt( evt ) {
 		def receipt = evt.result
 		svc.createReceipt(receipt)
@@ -53,7 +53,7 @@ class RPTReceiptCompromiseInterceptor
 		if(receipt.itemcount > 0) addLGUInfo(receipt)
 	}
 
-	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.formno=='56' && args[0].receipt.txntype == 'rptcompromise'}") 
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.formno.matches('56|5156') && args[0].receipt.txntype == 'rptcompromise'}") 
 	public void interceptVoidReceipt( evt ) {
 		svc.voidReceipt(evt.result.receipt)
 	}

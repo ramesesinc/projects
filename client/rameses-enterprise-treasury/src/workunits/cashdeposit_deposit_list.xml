@@ -1,8 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="cashdeposit_deposit">
-    
-    <invokers>
-        <invoker folderid="home/collection" caption="Cash Deposit (For Deposit)" target="window" action="init"/> 
-    </invokers>
-    
-</workunit>
-       

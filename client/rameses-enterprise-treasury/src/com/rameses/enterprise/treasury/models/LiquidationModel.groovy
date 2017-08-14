@@ -60,6 +60,12 @@ class LiquidationModel  {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
+    def create(){
+        mode = "create";
+        entity = service.init();
+        return null;
+    }
+    
     def open(){
         mode = "read";
         entity = service.open(entity);
@@ -98,7 +104,8 @@ class LiquidationModel  {
             getCreditMemos: {
                 return entity.creditmemos;
             }
-        ]   
+        ];
+        
         return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
     }
     

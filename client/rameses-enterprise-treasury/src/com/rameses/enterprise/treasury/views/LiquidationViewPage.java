@@ -290,7 +290,7 @@ public class LiquidationViewPage extends javax.swing.JPanel {
                 , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
-                , new Object[]{"expression", "View"}
+                , new Object[]{"expression", "View "}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.ButtonColumnHandler(null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{

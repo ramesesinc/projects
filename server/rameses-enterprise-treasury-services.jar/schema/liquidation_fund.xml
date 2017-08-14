@@ -21,10 +21,6 @@
 			<key field="fund_objid" target="objid" />
 		</complex>  
 
-		<!--complex name="deposit" ref="cashdeposit_item" jointype="many-to-one" required="false" includefields="objid">
-			<key field="objid" target="liquidationfundid" />
-		</complex-->	
-		
 	</element>
 
 </schema>	

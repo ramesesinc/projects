@@ -1,14 +1,14 @@
 import com.rameses.annotations.*;
 
-class CashDepositInterceptor {
+class CollectionDepositInterceptor {
 
-	@DataContext("cashdeposit_liquidation_fund")
+	@DataContext("collectiondeposit_liquidation_fund")
 	def cashliqFund;
 
 	@DataContext('liquidation') 
 	def liqEm;
 
-	@After(pattern="CashDepositService.post")
+	@After(pattern="CollectionDepositService.post")
 	public void afterPost( evt ) {
 		def result = evt.result; 
 		def liqids = [];

@@ -10,7 +10,7 @@ import com.rameses.seti2.models.*;
 
 public class CollectionDepositModel extends CrudFormModel { 
 
-    @Service("CashDepositService")
+    @Service("CollectionDepositService")
     def depositSvc;
     
     String title = "Cash Deposit";

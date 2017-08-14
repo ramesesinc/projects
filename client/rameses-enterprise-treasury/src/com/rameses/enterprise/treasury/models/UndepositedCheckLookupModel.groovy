@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 
 class UndepositedCheckLookupModel  { 
 
-    @Service("CashDepositService")
+    @Service("CollectionDepositService")
     def depositSvc;
 
     @Binding

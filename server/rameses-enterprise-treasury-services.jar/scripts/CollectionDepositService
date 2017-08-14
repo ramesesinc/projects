@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 import com.rameses.common.*;
 import com.rameses.util.*;
 
-class CashDepositService {
+class CollectionDepositService {
 
 	@DataContext("collectiondeposit")
 	def em;

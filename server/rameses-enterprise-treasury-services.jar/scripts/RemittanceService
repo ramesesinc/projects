@@ -183,6 +183,12 @@ class RemittanceService  {
         cblist.each { 
         	def amt = it.cashbreakdown?.sum{( it.amount ? it.amount: 0.0 )} 
         	if ( !amt ) throw new Exception('Please specify a cashbreakdown for fund '+ it.fund.title ); 
+
+        	def diff = (o.totalcash - amt);
+	        if( diff  > 0.05 )
+	            throw new Exception("Cash to remit is insufficient. Please review your collection for " + it.fund.title);
+	        if( diff < -0.05 )
+	            throw new Exception("Please review your collection. You have over declared the cash breakdown for " + it.fund.title);
         }
 
 		param.cashbreakdown = summarizeFundCashbreakdown( o.objid ); 
@@ -284,7 +290,7 @@ class RemittanceService  {
     @ProxyMethod
     public void approve( o ) {
     	def m = [state: 'APPROVED' ];
-    	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
+    	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
     	remdb.find([ objid : o.objid ]).update( m ); 
     } 
 

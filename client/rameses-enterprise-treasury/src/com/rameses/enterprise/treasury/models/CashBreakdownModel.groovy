@@ -7,8 +7,8 @@ import com.rameses.osiris2.common.*
         
 public class CashBreakdownModel  {
     
-    @Service("RemittanceService")
-    def service;
+    //@Service("RemittanceService")
+    //def service;
     
     def entity;
     def total = 0;
@@ -18,6 +18,10 @@ public class CashBreakdownModel  {
     
     def oldbreakdown;
     boolean showCreditMemos = true;
+    boolean showCashBreakdown = true;
+    
+    def checks;
+    def creditMemos;
     
     void init() {
         if( entity.totalcash == null || entity.cashbreakdown == null )
@@ -25,20 +29,25 @@ public class CashBreakdownModel  {
         oldbreakdown = entity.cashbreakdown;
         
         entity.cashbreakdown = handler.getCashBreakdown();
-        if(entity.getCreditMemos == null ) {
+        checks = handler.getChecks();
+        creditMemos = handler.getCreditMemos();
+        if( !creditMemos ) {
             showCreditMemos = false;
+        }
+        if( entity.totalcash <=0 && !checks  ) {
+            showCashBreakdown = false;
         }
     }
 
     def checkModel = [
         fetchList: { o->
-            return handler.getChecks();
+            return checks;
         }
     ] as BasicListModel;
 
     def creditMemoModel = [
         fetchList: { o->
-            return handler.getCreditMemos();
+            return creditMemos;
         }
     ] as BasicListModel;
     

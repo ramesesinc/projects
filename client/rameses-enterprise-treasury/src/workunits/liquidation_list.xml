@@ -1,12 +1,12 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation"
     cols="txnno,dtposted,liquidatingofficer.name,totalcash,totalnoncash,amount,cashier.name" 
-    hiddenCols="state">
+    hiddenCols="state" allowDelete="false" allowCreate="false">
     
     <invokers>
         <invoker folderid="home/collection" caption="Liquidations"
                  target="window" action="init" index="90"/> 
         
-        <invoker type="liquidation_list:view" caption="Liquidations" action="init" 
+        <invoker type="liquidation_list:fordeposit" caption="Liquidations" action="initForDeposit" 
                  role="CASHIER" target="window" /> 
         
         <invoker type="listActions" caption="Deposit" action="deposit" 

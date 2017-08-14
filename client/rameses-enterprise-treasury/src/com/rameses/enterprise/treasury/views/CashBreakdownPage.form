@@ -77,7 +77,10 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="jPanel2">
+        <Container class="com.rameses.rcp.control.XPanel" name="xPanel2">
+          <Properties>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ showCashBreakdown == true }"/>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Cash and Check">
@@ -89,35 +92,35 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="xDataTable1" min="-2" pref="447" max="-2" attributes="0"/>
-                          <Component id="xFormPanel2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel1" min="-2" pref="251" max="-2" attributes="0"/>
-                          <Component id="xFormPanel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="xDataTable1" min="-2" pref="447" max="-2" attributes="0"/>
+                          <Component id="xFormPanel2" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="28" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="xFormPanel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel1" min="-2" pref="251" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="32" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="xDataTable1" max="32767" attributes="0"/>
+                          <Component id="xDataTable1" pref="417" max="32767" attributes="0"/>
                           <Component id="jPanel1" pref="417" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="xFormPanel2" alignment="0" min="-2" pref="36" max="-2" attributes="0"/>
-                          <Component id="xFormPanel3" alignment="0" min="-2" pref="36" max="-2" attributes="0"/>
-                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="xFormPanel3" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="xFormPanel2" min="-2" pref="36" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="collectiondeposit_fundtransfer"
-        cols="deposit.controlno,fund.title,bankaccount.code,bankaccount.title,amount,amounttransferred"
+        cols="deposit.controlno,fund.title,bankaccount.code,bankaccount.title,amount,tobankaccount.code,tobankaccount.bank.name,validationno,validationdate"
         allowCreate="false" allowDelete="false">
     
     <invokers>

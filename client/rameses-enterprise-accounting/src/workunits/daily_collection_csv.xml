@@ -1,7 +1,8 @@
 <workunit>
     <invokers>
         <invoker type="daily_collection:formActions"  
-                 caption="Export to eNGAS(CSV)" action="initLiquidation"  target="process" visibleWhen="#{mode=='read'}" />
+                 caption="Export to eNGAS(CSV)" action="initLiquidation"  
+                 target="process" visibleWhen="#{entity.state=='CLOSED' &amp;&amp; mode=='read'}" />
     </invokers>
     <code>
         <![CDATA[    

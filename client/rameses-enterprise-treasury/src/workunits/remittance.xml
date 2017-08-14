@@ -20,12 +20,12 @@
                  shortcut="ctrl N" action="create"/>
   
         <!-- for create -->
-        <invoker type="formActions" caption="Post" name="submit" 
+        <invoker type="formActions" caption="Submit" name="submit" 
                  visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="s" 
                  shortcut="ctrl S" icon="images/toolbars/save.png" role="COLLECTOR"/>
         
         <!-- approval actions -->
-        <invoker type="formActions" caption="Approve for Liquidation" name="approve" 
+        <invoker type="formActions" caption="Accept" name="approve" 
                  mnemonic="e" role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
         
         <!--

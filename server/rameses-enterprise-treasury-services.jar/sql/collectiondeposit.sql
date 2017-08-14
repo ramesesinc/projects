@@ -8,7 +8,7 @@ select
 	lf.objid as liquidationfundid 
 from liquidation liq 
 	inner join liquidation_fund lf on lf.liquidationid=liq.objid 
-where liq.cashier_objid = $P{cashierid}
+where liq.cashier_objid is null 
 	and liq.state = 'APPROVED' 
 
 
@@ -27,6 +27,7 @@ from collectiondeposit_liquidation_fund cdf
 	inner join liquidation_fund lf on lf.objid=cdf.liquidationfundid 
 where cdf.depositid = $P{depositid}  
 group by lf.fund_objid, lf.fund_title  
+having sum(lf.totalcash + lf.totalnoncash) > 0
 
 
 [insertFundsForTransfer]

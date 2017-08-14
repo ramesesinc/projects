@@ -139,27 +139,13 @@ class LiquidationModel  {
     } 
     
     def approve() {
-        boolean pass = false;
-        def signature = null;
-        try {
-            def h = { sig->
-               pass = true;
-               signature = sig;
-               return "_close";
-            }
-            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
-                def msg = "Please check all entries are correct before approving";
-                Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
-            }
-        } catch( Throwable t) {
-            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
-        }
-        
+        def pass = MsgBox.confirm("You are about to submit this transaction for deposit. Proceed?");
         if ( pass ) {
-            service.approve([ objid: entity.objid, signature: signature ]);
+            service.approve([ objid: entity.objid ]);
+            MsgBox.alert('successfully sent');
             return "_close";
         }
-        return null; 
+        return null;
     }
     
     def delete() {

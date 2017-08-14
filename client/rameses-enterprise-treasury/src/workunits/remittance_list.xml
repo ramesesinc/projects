@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="remittance">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="remittance" allowDelete="false">
 
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Remittances" role="SHARED,COLLECTOR" tag="all" 
@@ -8,8 +8,7 @@
         
          <invoker folderid="/home/collection" caption="Remittances" role="SHARED,COLLECTOR" tag="all" 
                  permission="remittance.view" action="init" index="11"
-                 icon="home/icons/remittance_list.png"
-                  cols="txnno,remittancedate,collector.name,totalcash,totalnoncash,amount,liquidatingofficer.name"
+                 cols="txnno,remittancedate,collector.name,totalcash,totalnoncash,amount,liquidatingofficer.name"
                  hiddenCols="state" orderBy="remittancedate DESC"/>
         <!--
         <invoker folderid="/explorer/txn/treasury" caption="Remittances (All)" role="SHARED" tag="all" 

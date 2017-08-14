@@ -14,11 +14,8 @@ import com.rameses.rcp.ui.annotations.Template;
 @Template(FormPage.class)
 public class CrosstabReportInitialPage extends javax.swing.JPanel {
 
-    /**
-     * Creates new form CrosstabReportInitialPage
-     */
     public CrosstabReportInitialPage() {
-        initComponents();
+        initComponents();       
     }
 
     /**
@@ -37,15 +34,15 @@ public class CrosstabReportInitialPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
-        xComboBox6 = new com.rameses.rcp.control.XComboBox();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox7 = new com.rameses.rcp.control.XComboBox();
+        xButton2 = new com.rameses.rcp.control.XButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         xList1 = new com.rameses.rcp.control.XList();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xComboBox4 = new com.rameses.rcp.control.XComboBox();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
         jPanel3 = new javax.swing.JPanel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
+        filterCriteria1 = new com.rameses.seti2.components.FilterCriteria();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("  Report Options  ");
@@ -86,7 +83,7 @@ public class CrosstabReportInitialPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -101,88 +98,97 @@ public class CrosstabReportInitialPage extends javax.swing.JPanel {
         jPanel2.setBorder(xTitledBorder2);
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(120);
+
+        xFormPanel3.setCaption("Row Field");
+        xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 100));
+
+        xComboBox7.setCaption("Row Field");
+        xComboBox7.setCaptionWidth(120);
+        xComboBox7.setExpression("#{item.caption}");
+        xComboBox7.setItems("rowFields");
+        xComboBox7.setName("option.rowfield"); // NOI18N
+        xComboBox7.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox7.setShowCaption(false);
+        xFormPanel3.add(xComboBox7);
+
+        xButton2.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        xButton2.setName("addRowField"); // NOI18N
+        xButton2.setShowCaption(false);
+        xButton2.setText("+");
+        xFormPanel3.add(xButton2);
+
+        xFormPanel2.add(xFormPanel3);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 70));
+
+        xList1.setCaption(" ");
+        xList1.setExpression("#{item.caption}");
+        xList1.setHandler("listHandler");
+        xList1.setName("selectedRowField"); // NOI18N
+        jScrollPane1.setViewportView(xList1);
+
+        xFormPanel2.add(jScrollPane1);
 
         xComboBox5.setAllowNull(false);
         xComboBox5.setCaption("Column Field");
-        xComboBox5.setCaptionWidth(110);
+        xComboBox5.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xComboBox5.setExpression("#{item.caption}");
         xComboBox5.setItems("columnFields");
-        xComboBox5.setName("query.columnfield"); // NOI18N
+        xComboBox5.setName("option.columnfield"); // NOI18N
         xComboBox5.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox5.setRequired(true);
         xFormPanel2.add(xComboBox5);
 
         xComboBox6.setAllowNull(false);
         xComboBox6.setCaption("Measure Field");
-        xComboBox6.setCaptionWidth(110);
+        xComboBox6.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xComboBox6.setExpression("#{item.caption}");
         xComboBox6.setItems("measureFields");
-        xComboBox6.setName("query.measurefield"); // NOI18N
+        xComboBox6.setName("option.measurefield"); // NOI18N
         xComboBox6.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox6.setRequired(true);
         xFormPanel2.add(xComboBox6);
-
-        xList1.setExpression("#{item.caption}");
-        xList1.setItems("query.rowfields");
-        xList1.setName("selectedRowField"); // NOI18N
-        jScrollPane1.setViewportView(xList1);
-
-        xLabel1.setFontStyle("font-weight:bold;");
-        xLabel1.setText("Row Fields : ");
-
-        xComboBox4.setAllowNull(false);
-        xComboBox4.setCaption("Row Field");
-        xComboBox4.setCaptionWidth(120);
-        xComboBox4.setExpression("#{item.caption}");
-        xComboBox4.setItems("rowFields");
-        xComboBox4.setName("query.rowfield"); // NOI18N
-        xComboBox4.setPreferredSize(new java.awt.Dimension(200, 22));
-        xComboBox4.setRequired(true);
-
-        xButton1.setMargin(new java.awt.Insets(2, 4, 2, 4));
-        xButton1.setText("+");
-
-        jPanel3.setOpaque(false);
-        jPanel3.setLayout(new com.rameses.rcp.control.layout.YLayout());
-
-        xLabel2.setFontStyle("font-weight:bold;");
-        xLabel2.setText("Row Fields : ");
-        jPanel3.add(xLabel2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(xComboBox4, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(33, 33, 33)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(xComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder3.setTitle("Filters");
+        jPanel3.setBorder(xTitledBorder3);
+
+        filterCriteria1.setHandler("criteriaHandler");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(filterCriteria1, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(filterCriteria1, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -192,42 +198,46 @@ public class CrosstabReportInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(27, Short.MAX_VALUE)))
+                    .addContainerGap(33, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(132, 132, 132)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(360, Short.MAX_VALUE)))
+                    .addContainerGap(385, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.seti2.components.FilterCriteria filterCriteria1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
+    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XList xList1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables

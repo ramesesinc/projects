@@ -55,7 +55,7 @@ from account_item_mapping m
 	inner join income_summary inc on m.itemid=inc.acctid 
 	inner join account a on a.objid=m.acctid 
 	inner join itemaccount ia on ia.objid=m.itemid
-where m.maingroupid = $P{maingroupid}  
+where m.maingroupid = $P{maingroupid} ${filter} 
 group by 
 	inc.refdate, inc.refyear, inc.refmonth, inc.refqtr, 
 	inc.remittancedate, inc.remittanceyear, inc.remittancemonth, inc.remittanceqtr, 

@@ -1,7 +1,7 @@
 <schema>
-	<element  tablename="cashdeposit">
+	<element  tablename="collectiondeposit">
 		<field name="objid" primary="true" prefix="CSHDEP" />
-		<field name="controlno" required="true" />
+		<field name="controlno" required="true" caption="Control No"/>
 		<field name="state" required="true" />
 		<field name="dtfiled" required="true" />
 		<field name="txndate" required="true" />

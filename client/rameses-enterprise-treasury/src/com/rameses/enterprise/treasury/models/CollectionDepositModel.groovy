@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.util.*;
 
-public class CashDepositModel  { 
+public class CollectionDepositModel  { 
 
     @Service("PersistenceService")
     def persistSvc;

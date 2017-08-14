@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="home/collection" caption="Collection Process Map" index="-1"/>
+        <invoker folderid="home/collection" caption="Collection Process Flow" index="-1"/>
     </invokers> 
     
     <code>
@@ -11,9 +11,9 @@
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.common.*;
         
-        class CollectionProcessMap  {
+        class CollectionProcessFlow  {
 
-           String title = "Collection Process Map";
+           String title = "Collection Process Flow";
 
            def openAction( def r ) {
                 def op = Inv.lookupOpener( r );
@@ -31,9 +31,11 @@
            def acceptRemittance() { return openAction("remittance:for_approval"); }
            def liquidate() { return openAction("liquidation:create"); }
            def acceptLiquidation() { return openAction("liquidation_list:view"); }
-           def deposit() { return openAction("cashdeposit:create"); }
+           
+           def fundtransfer() { return openAction("collectiondeposit_fundtransfer:fortransfer"); }
+           def deposit() { return openAction("collectiondeposit_bank:fordeposit"); }
            def postDailyCollection() {return openAction("daily_collection:view") }
-            
+           def postDailyDeposit() {return openAction("daily_deposit:view") } 
         }
         
         ]]>

@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="collectiondeposit_fundtransfer"
+        cols="deposit.controlno,fund.title,bankaccount.code,bankaccount.title,amount,amounttransferred">
+    
+    <invokers>
+        <invoker folderid="home/collection" caption="Fund Transfer List" target="window" action="init" index="101"/> 
+        <invoker type="collectiondeposit_fundtransfer:fortransfer" 
+                 caption="Fund Transfer List" target="window" action="init" index="101"/> 
+    </invokers>
+    
+</workunit>
+       

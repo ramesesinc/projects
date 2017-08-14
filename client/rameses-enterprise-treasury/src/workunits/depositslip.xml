@@ -1,0 +1,30 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:create" caption="Deposit Slip" action="create"/>
+        <invoker type="depositslip:open" caption="Deposit Slip" action="open"/>
+   </invokers>
+
+    <code>
+        import com.rameses.seti2.models.*;
+        
+        class BankDepositSlipModel extends CrudFormModel {
+        
+            void afterCreate() {
+                if( entity.totalcash == null || entity.cashbreakdown == null )
+                   throw new Exception("Total cash is null. Please run migration for fund");
+            }
+       
+            def checkModel = [
+                fetchList: { o->
+                    return entity.checks;
+                }
+            ] as BasicListModel;
+        
+        }
+        
+    </code>
+
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.BankDepositSlipPage" />
+   </pages>
+</workunit>

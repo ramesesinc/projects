@@ -6,18 +6,15 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.util.*;
+import com.rameses.seti2.models.*;
 
-public class CollectionDepositModel  { 
-
-    @Service("PersistenceService")
-    def persistSvc;
+public class CollectionDepositModel extends CrudFormModel { 
 
     @Service("CashDepositService")
     def depositSvc;
     
     String title = "Cash Deposit";
 
-    def entity;
     def handler;
     def mode;
     
@@ -27,13 +24,6 @@ public class CollectionDepositModel  {
         return 'default'; 
     } 
 
-    void open() {
-         entity._schemaname = 'cashdeposit';
-         entity = persistSvc.read( entity );
-         entity.each { k,v->
-            println k+"="+v;
-         }
-    }
     
     void post() {
         boolean pass = false;

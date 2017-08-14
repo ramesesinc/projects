@@ -1,5 +1,5 @@
 <schema>
-	<element tablename="depositslip">
+	<element tablename="bankdepositslip">
 		<field name="objid" primary="true"/>
 		<field name="refid" required="true"/>
 		<field name="issuedby_objid" required="true"/>

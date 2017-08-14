@@ -1,21 +1,17 @@
 import com.rameses.annotations.*;
 
-class LiquidationListInterceptor {
+class CollectionDepositListInterceptor {
 
-	
 
-	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'liquidation' }")
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectiondeposit' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
 		result << [ id:'draft', title: 'Draft', state:'DRAFT' ];
-		result << [ id:'posted', title: 'Posted', state:'POSTED' ];
-		result << [ id:'approved', title: 'For Deposit', state:'APPROVED' ];
-		result << [ id:'closed', title: 'Closed', state:'CLOSED' ];
-		result << [ id:'hold', title: 'On Hold', state:'HOLD' ]; 
+		result << [ id:'posted', title: 'Processed', state:'POSTED' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'liquidation' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiondeposit' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 

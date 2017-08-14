@@ -1,7 +1,9 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="collectiondeposit">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="collectiondeposit">
     
     <invokers>
-        <invoker folderid="home/collection" caption="Collection Deposit" target="window" action="init" index="99"/> 
+        <invoker folderid="home/collection" caption="Collection Deposit" target="window" 
+                 cols="controlno,dtfiled,cashier.name,amount"
+                 action="init" index="99"/> 
     </invokers>
 </workunit>
        

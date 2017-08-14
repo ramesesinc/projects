@@ -15,10 +15,10 @@
          <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{entity.state != 'DRAFT'}" category="liquidation:reports" />
          
          <!-- CASHIER FUNCTIONS -->
-         <invoker type="formActions" caption="Approve for Deposit" action="approve" 
-                  role="CASHIER" permission="liquidation.approve" 
+         <invoker type="formActions" caption="Submit for Deposit" action="approve" 
+                  role="LIQUIDATING_OFFICER"  
                   visibleWhen="#{entity.state == 'POSTED'}" />
-
+         
    </invokers>
 
    <code class="com.rameses.enterprise.treasury.models.LiquidationModel" />

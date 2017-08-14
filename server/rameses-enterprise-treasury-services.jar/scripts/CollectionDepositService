@@ -47,9 +47,9 @@ class CollectionDepositService {
 	public def init() { 
 		def o = [ state:'DRAFT', txndate: dateSvc.getServerDate() ]; 
 		o.cashier = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
-		o.controlno = Encoder.MD5.encode( env.USERID ); 
-		o.dtfiled = o.txndate; 
 		o.amount = 0.0; 
+		o.dtfiled = o.txndate; 
+		o.controlno = formatTxnno( o ); 
 		o = em.create( o ); 
 
 		def depparam = [ depositid: o.objid, cashierid: o.cashier.objid ];
@@ -58,7 +58,13 @@ class CollectionDepositService {
 		em.insertFundsForTransfer( depparam ); 
 
 		def rec = open( o ); 
-		rec.amount = rec.fordeposits.sum{( it.amount ? it.amount : 0.0 )} 
+		def amt1 = rec.fordeposits.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( !amt1 ) amt1 = 0.0;
+
+		def amt2 = rec.fortransfers.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( !amt2 ) amt2 = 0.0;
+		
+		rec.amount = amt1 + amt2;
 		em.find([ objid: rec.objid ]).update([ amount: rec.amount ]); 
 		return rec; 
 	} 
@@ -81,7 +87,6 @@ class CollectionDepositService {
 			throw new Exception('Cash Deposit transaction no longer in DRAFT mode');  
 
 		o.state = 'POSTED'; 
-		o.controlno = formatTxnno( o ); 
 		em.find([ objid: params.objid ]).update([ state: o.state, controlno: o.controlno ]);
 		return o; 
 	} 

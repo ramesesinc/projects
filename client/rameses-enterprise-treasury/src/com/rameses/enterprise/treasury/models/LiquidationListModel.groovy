@@ -23,5 +23,11 @@ public class LiquidationListModel extends CrudListModel {
     def deposit() {
         return Inv.lookupOpener( "collectiondeposit:create" );
     } 
+    
+    void initForDeposit() {
+        super.init();
+        def n = nodeList.find{ it.id == 'approved' };
+        if(n) selectedNode = n;
+    }
 
 } 

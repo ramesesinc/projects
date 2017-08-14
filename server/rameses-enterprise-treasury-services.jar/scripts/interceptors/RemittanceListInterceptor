@@ -10,7 +10,7 @@ class RemittanceListInterceptor {
 		result << [ id:'draft', title: 'Draft', state:'DRAFT' ];
 		result << [ id:'approval', title: 'For Approval', state:'OPEN' ];
 		result << [ id:'approved', title: 'For Liquidation', state:'APPROVED' ];
-		result << [ id:'liquidated', title: 'Liquidated', state:'APPROVED' ];
+		result << [ id:'closed', title: 'Liquidated', state:'CLOSED' ];
 		result << [ id:'hold', title: 'On Hold', state:'HOLD' ];		
 	}
 
@@ -23,13 +23,6 @@ class RemittanceListInterceptor {
 
 		def str = "state = :state";
 		def m = [state: o.node.state];
-
-		if( o.node.id == 'approved' ) {
-			str += ' AND liquidation.liquidationid IS NULL ';
-		}
-		else if(o.node.id == 'liquidated' ) {
-			str += ' AND NOT(liquidation.liquidationid IS NULL) ';
-		}
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

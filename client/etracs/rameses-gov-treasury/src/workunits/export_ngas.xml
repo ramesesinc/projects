@@ -1,7 +1,9 @@
 <workunit>
     <invokers>
+        <!--
         <invoker type="liquidation:formActions"  
                  caption="Export to eNGAS(CSV)" action="initLiquidation"  target="process" visibleWhen="#{mode=='read'}" />
+        -->         
     </invokers>
     <code>
         <![CDATA[    

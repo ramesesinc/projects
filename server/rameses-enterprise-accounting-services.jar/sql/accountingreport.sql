@@ -44,7 +44,9 @@ order by m.acctid, ia.code
 
 [getAccountSummaryForCrosstab]
 select 
-	inc.refdate, inc.remittancedate, inc.liquidationdate, 
+	inc.refdate, inc.refyear, inc.refmonth, inc.refqtr, 
+	inc.remittancedate, inc.remittanceyear, inc.remittancemonth, inc.remittanceqtr, 
+	inc.liquidationdate, inc.liquidationyear, inc.liquidationmonth, inc.liquidationqtr, 
 	a.objid as acctid, a.code as acctcode, a.title as accttitle, 
 	ia.objid as itemid, ia.code as itemcode, ia.title as itemtitle,  
 	ia.fund_objid as fundid, ia.fund_title as fundtitle, 
@@ -55,7 +57,9 @@ from account_item_mapping m
 	inner join itemaccount ia on ia.objid=m.itemid
 where m.maingroupid = $P{maingroupid}  
 group by 
-	inc.refdate, inc.remittancedate, inc.liquidationdate, 
+	inc.refdate, inc.refyear, inc.refmonth, inc.refqtr, 
+	inc.remittancedate, inc.remittanceyear, inc.remittancemonth, inc.remittanceqtr, 
+	inc.liquidationdate, inc.liquidationyear, inc.liquidationmonth, inc.liquidationqtr, 
 	a.objid, a.code, a.title, ia.objid, ia.code, ia.title, 
 	ia.fund_objid, ia.fund_title  
 order by a.code, ia.code 

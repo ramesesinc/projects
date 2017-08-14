@@ -22,9 +22,8 @@ class CrosstabReportModel {
     def mainGroupList;
     
     def report = null;    
-    def reportTemplates = [
-        [caption:'Template-A', name:'accountingreport_crosstab.jasper'] 
-    ];
+    def option = [:]; 
+    def orientationList = ["Landscape", "Portrait"];
 
     void init() {
         query = [:]; 
@@ -56,7 +55,6 @@ class CrosstabReportModel {
     
     def preview() { 
         if ( !reportFields ) throw new Exception('No available report fields'); 
-        if ( !query.template?.name ) throw new Exception('Please select a template'); 
 
         //def filter = criteriaList.find{( it.field?.name )}
         //if ( !filter ) throw new Exception('Please specify at least one filter'); 
@@ -69,12 +67,15 @@ class CrosstabReportModel {
         resp.reportparam.TITLE = getPreferredReportTitle(); 
         
         def tbl = new com.rameses.osiris2.report.CrosstabReport();
+        tbl.orientation = option.orientation;
+        tbl.title = getPreferredReportTitle();
+        
         reportFields.each{ 
             tbl.addColumn(it.caption, it.name, it.clazz); 
         } 
-        tbl.setRowGroup( query.rowfield.name ); 
-        tbl.setColumnGroup( query.columnfield.name ); 
-        tbl.setMeasure( query.measurefield.name ); 
+        tbl.addRowGroup( query.rowfield.name ); 
+        tbl.addColumnGroup( query.columnfield.name ); 
+        tbl.addMeasure( query.measurefield.name ); 
         
         def b = new com.rameses.osiris2.report.CrosstabReportBuilder();
         def jrpt = b.buildReport( tbl );
@@ -91,8 +92,8 @@ class CrosstabReportModel {
     } 
     
     private String getPreferredReportTitle() {
-        if ( query.reporttitle ) {
-            return query.reporttitle; 
+        if ( option.reporttitle ) {
+            return option.reporttitle; 
         } else { 
             return (''+ query.maingroup?.title +' CROSSTAB REPORT'); 
         }
@@ -101,9 +102,9 @@ class CrosstabReportModel {
     private void resolveFieldTypes( fields ) {
         fields.each{
             if (it.type == 'date') it.clazz = java.util.Date.class; 
-            else if (it.type == 'integer') it.clazz = java.lang.Number.class; 
-            else if (it.type == 'double') it.clazz = java.lang.Number.class; 
-            else if (it.type == 'decimal') it.clazz = java.lang.Number.class; 
+            else if (it.type == 'integer') it.clazz = java.lang.Integer.class; 
+            else if (it.type == 'double') it.clazz = java.lang.Double.class; 
+            else if (it.type == 'decimal') it.clazz = java.math.BigDecimal.class; 
             else if (it.type == 'object') it.clazz = java.lang.Object.class; 
             else it.clazz = java.lang.String.class; 
         }

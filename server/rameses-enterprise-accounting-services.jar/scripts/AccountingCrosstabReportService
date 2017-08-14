@@ -26,12 +26,27 @@ class AccountingCrosstabReportService  {
 		p.accountgroups = acctgroup_db.where(' 1=1 ').list();  
 
 		p.rowfields << [name:'refdate', caption:'Reference Date', type:'date']; 
+		p.rowfields << [name:'refyear', caption:'Reference Year', type:'integer']; 
+		p.rowfields << [name:'refmonth', caption:'Reference Month', type:'integer']; 
+		p.rowfields << [name:'refqtr', caption:'Reference Qtr', type:'integer']; 
 		p.rowfields << [name:'remittancedate', caption:'Remittance Date', type:'date']; 
+		p.rowfields << [name:'remittanceyear', caption:'Remittance Year', type:'integer']; 
+		p.rowfields << [name:'remittancemonth', caption:'Remittance Month', type:'integer']; 
+		p.rowfields << [name:'remittanceqtr', caption:'Remittance Qtr', type:'integer']; 
 		p.rowfields << [name:'liquidationdate', caption:'Liquidation Date', type:'date']; 
-
+		p.rowfields << [name:'liquidationyear', caption:'Liquidation Year', type:'integer']; 
+		p.rowfields << [name:'liquidationmonth', caption:'Liquidation Month', type:'integer']; 
+		p.rowfields << [name:'liquidationqtr', caption:'Liquidation Qtr', type:'integer']; 
+		p.rowfields << [name:'fundid' , caption:'Fund'];
+		p.rowfields << [name:'acctcode' , caption:'Account Code'];
+		p.rowfields << [name:'itemcode' , caption:'ItemAccount Code'];
+		
 		p.columnfields << [name:'fundid' , caption:'Fund'];
 		p.columnfields << [name:'acctcode' , caption:'Account Code'];
 		p.columnfields << [name:'itemcode' , caption:'ItemAccount Code'];
+		p.columnfields << [name:'refyear', caption:'Reference Year', type:'integer']; 
+		p.columnfields << [name:'refmonth', caption:'Reference Month', type:'integer']; 
+		p.columnfields << [name:'refqtr', caption:'Reference Qtr', type:'integer']; 
 		
 		p.measurefields << [name:'amount' , caption:'Amount', type:'decimal', pattern:'#,##0.00']; 		
 		return p; 

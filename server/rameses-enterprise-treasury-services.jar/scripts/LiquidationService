@@ -162,6 +162,10 @@ class LiquidationService  {
 		o.state = 'POSTED'; 
 		o.txnno = formatTxnno( o ); 
 		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno ]); 
+		
+		liqRem.find([ liquidationid: o.objid ]).list().each{
+			remEm.find([ objid: it.objid ]).update([ state: 'CLOSED' ]); 
+		} 
 		return o; 
 	} 
 

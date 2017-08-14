@@ -1,5 +1,5 @@
 [insertLiquidationFunds]
-insert into cashdeposit_liquidation_fund ( 
+insert into collectiondeposit_liquidation_fund ( 
 	objid, depositid, liquidationfundid 
 )
 select 
@@ -13,7 +13,7 @@ where liq.cashier_objid = $P{cashierid}
 
 
 [insertFundsForDeposit]
-insert into cashdeposit_deposit ( 
+insert into collectiondeposit_bank ( 
 	objid, depositid, state, fund_objid, amount, 
 	totalcash, totalnoncash, totalcashdeposited, totalnoncashdeposited 
 )
@@ -23,14 +23,14 @@ select
 	sum(lf.totalcash + lf.totalnoncash) as amount, 
 	sum(lf.totalcash) as totalcash, sum(lf.totalnoncash) as totalnoncash, 
 	0.0 as totalcashdeposited, 0.0 as totalnoncashdeposited 
-from cashdeposit_liquidation_fund cdf 
+from collectiondeposit_liquidation_fund cdf 
 	inner join liquidation_fund lf on lf.objid=cdf.liquidationfundid 
 where cdf.depositid = $P{depositid}  
 group by lf.fund_objid, lf.fund_title  
 
 
 [insertFundsForTransfer]
-insert into cashdeposit_fundtransfer ( 
+insert into collectiondeposit_fundtransfer ( 
 	objid, depositid, state, fund_objid, bankaccountid, amount, amounttransferred 
 )
 select 
@@ -39,7 +39,7 @@ select
 	nc.bankaccountid, sum(nc.amount) as amount, 0.0 as amounttransferred
 from ( 
 	select cdf.depositid, lnc.objid as noncashid 
-	from cashdeposit_liquidation_fund cdf 
+	from collectiondeposit_liquidation_fund cdf 
 		inner join liquidation_fund lf on lf.objid=cdf.liquidationfundid 
 		inner join liquidation_noncashpayment lnc on lnc.liquidationid=lf.liquidationid 
 	where cdf.depositid = $P{depositid}  
@@ -54,11 +54,10 @@ group by tmp1.depositid, nc.fund_objid, nc.bankaccountid
 select l.* 
 from ( 
 	select cdf.depositid, lf.liquidationid
-	from cashdeposit_liquidation_fund cdf 
+	from collectiondeposit_liquidation_fund cdf 
 		inner join liquidation_fund lf on lf.objid=cdf.liquidationfundid 
 	where cdf.depositid = $P{depositid}  
 	group by cdf.depositid, lf.liquidationid 
 )tmp1 
 	inner join liquidation l on l.objid=tmp1.liquidationid 
 order by l.dtposted 
-

@@ -4,16 +4,16 @@ import com.rameses.util.*;
 
 class CashDepositService {
 
-	@DataContext("cashdeposit")
+	@DataContext("collectiondeposit")
 	def em;
 
-	@DataContext("cashdeposit_liquidation_fund")
+	@DataContext("collectiondeposit_liquidation_fund")
 	def cashliqFund;
 
-	@DataContext("cashdeposit_deposit")
+	@DataContext("collectiondeposit_bank")
 	def cashDEP;
 
-	@DataContext("cashdeposit_fundtransfer")
+	@DataContext("collectiondeposit_fundtransfer")
 	def cashFT;
 
 	@Service("DateService")

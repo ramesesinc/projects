@@ -5,16 +5,16 @@ class IncomeSummaryService {
 	@ActiveDB("income_summary")
 	def em;
 
-	@ActiveDB("liquidation")
-	def liq;
+	@DataContext("liquidation")
+	def liqEm;
 
 	@ProxyMethod
-	public void post( def o ) {
-		if(!o.liquidationid) 
-			throw new Exception("liquidationid is required");
-		em.postIncomeSummary( o );	
-		liq.updatedPosted( [objid: o.liquidationid ]);
-	}
+	public void post( o ) { 
+		def m = liqEm.find([ objid: o.objid ]).first(); 
+		if ( !m ) return;
 
-
+		println 'post to income..' + m.objid;
+		em.postIncomeSummary([ liquidationid: m.objid ]);	
+		liqEm.find([ objid: m.objid ]).update([ posted: 1 ]); 
+	} 
 }

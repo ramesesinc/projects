@@ -24,8 +24,9 @@ public class CashBreakdownModel  {
     def creditMemos;
     
     void init() {
-        if( entity.totalcash == null || entity.cashbreakdown == null )
-            throw new Exception("Total cash is null. Please run migration for fund");
+        if(entity.totalcash == null) entity.totalcash = 0;
+        if( entity.cashbreakdown == null ) entity.cashbreakdown = [];
+        
         oldbreakdown = entity.cashbreakdown;
         
         entity.cashbreakdown = handler.getCashBreakdown();

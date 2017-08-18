@@ -35,7 +35,7 @@ insert into collectiondeposit_fundtransfer (
 	objid, depositid, state, fund_objid, bankaccountid, amount, amounttransferred 
 )
 select 
-	concat('FT-',tmp1.depositid,'-',nc.fund_objid) as objid, 
+	concat('FT-',tmp1.depositid,'-',nc.fund_objid,'-',nc.bankaccountid) as objid, 
 	tmp1.depositid, 'OPEN' as state, nc.fund_objid, 
 	nc.bankaccountid, sum(nc.amount) as amount, 0.0 as amounttransferred
 from ( 

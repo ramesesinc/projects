@@ -75,6 +75,8 @@ class AccountingCrosstabReportService  {
 		if ( arr != null && arr.size() > 1 ) params.putAll( arr[1] ); 
 		if ( !params.filter ) params.filter = '';
 
+
+
 		def resp = [:]; 
 		resp.reportdata = accountingreport_db.getAccountSummaryForCrosstab( params ); 
 		if ( !resp.reportdata ) throw new Exception('No available records that matches your criteria.'); 

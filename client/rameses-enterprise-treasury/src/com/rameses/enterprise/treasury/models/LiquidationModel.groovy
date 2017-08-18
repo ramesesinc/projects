@@ -112,7 +112,18 @@ class LiquidationModel  {
     
     def viewFundBreakdown() {
         if(!selectedFund) throw new Exception("please select a fund entry");
-        
+        def h = [
+            getCashBreakdown : {
+                return selectedFund.breakdown;   
+            },
+            getChecks: {
+                return  selectedFund.checks;
+            },
+            getCreditMemos: {
+                return selectedFund.creditmemos;
+            }
+        ];
+        return Inv.lookupOpener( "cashbreakdown", [entity:selectedFund, editable: false, handler: h ]);
     }
     
     void post() {

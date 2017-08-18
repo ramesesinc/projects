@@ -22,7 +22,9 @@ public class CreditMemoModel extends CrudFormModel {
         throw new Exception("Please specify at least one item");
         if( entity.itemtotal != entity.amount )
             throw new Exception("Amount must be equal to items amount");
-        entity.issuereceipt = 0;
+            
+        entity._action = 'postToIncome'; 
+        entity.issuereceipt = 0; 
         save();
         MsgBox.alert('Successfully Posted');
         return "_close";

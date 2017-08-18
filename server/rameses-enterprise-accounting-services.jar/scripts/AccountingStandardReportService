@@ -58,6 +58,7 @@ class AccountingStandardReportService  {
 			setupNode( acctlist, it ); 
 		}
 
+
 		def maxnodeindex = acctlist.max{ it.nodeindex }?.nodeindex; 
 		if ( maxnodeindex==null ) maxnodeindex=0; 
 
@@ -85,6 +86,9 @@ class AccountingStandardReportService  {
 		if ( params.type == 'standard' ) { 
 			acctlist.removeAll( acctlist.findAll{ it.type=='subaccount' }); 
 		} 
+
+
+
 
 		def items = [];	
 		def totaltarget = 0.0;

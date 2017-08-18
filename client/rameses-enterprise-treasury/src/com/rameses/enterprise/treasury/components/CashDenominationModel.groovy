@@ -28,6 +28,7 @@ class CashDenominationModel extends ComponentBean {
     int qtyc25 = 0;
     int qtyc10 = 0;
     int qtyc05 = 0;
+    int qtyc01= 0;
     
     double d1000 = 0.0;
     double d500 = 0.0;
@@ -43,13 +44,14 @@ class CashDenominationModel extends ComponentBean {
     double dc25 = 0.0;
     double dc10 = 0.0;
     double dc05 = 0.0;
+    double dc01 = 0.0;
     
     def total = 0.0;
     def amount = 0.0;
     def cashremaining = 0.0;
     
     void calcTotals() {
-        total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+d1+dc50+dc25+dc10+dc05);
+        total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+d1+dc50+dc25+dc10+dc05+dc01);
         cashremaining = NumberUtil.round(amount - total);
         binding.refresh("total|cashremaining");
     };
@@ -78,6 +80,7 @@ class CashDenominationModel extends ComponentBean {
             loadData( 0.25, 'qtyc25', 'dc25');
             loadData( 0.10, 'qtyc10', 'dc10');
             loadData( 0.05, 'qtyc05', 'dc05');
+            loadData( 0.01, 'qtyc01', 'dc01');
         };
         else {
             model = [];
@@ -118,6 +121,7 @@ class CashDenominationModel extends ComponentBean {
         "qtyc25": {q-> updateEntry(0.25, q, 'dc25');},
         "qtyc10": {q-> updateEntry(0.10, q, 'dc10');},
         "qtyc05": {q-> updateEntry(0.05, q, 'dc05');},
+        "qtyc01": {q-> updateEntry(0.01, q, 'dc01');},
     ];
     
 }

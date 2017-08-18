@@ -49,7 +49,8 @@
 
 		<field name="lastyearpaid" type="integer" required="true"/>
 		<field name="lastmonthpaid" type="integer" required="true"/>
-		<field name="lastdaypaid" type="integer" required="true"/>
+		
+		<field name="lastdatecovered" type="date"/>
 
 		<field name="lastmonthnamepaid" expr="MONTH_ARRAY(lastmonthpaid)" />
 

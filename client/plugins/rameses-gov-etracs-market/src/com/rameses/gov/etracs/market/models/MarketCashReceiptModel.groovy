@@ -93,8 +93,16 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
          onColumnUpdate: {i,n->
              if(n=="todate") {
                 i.todate = df.parse( i.todate );
+                i.remove("partial");    //remove partial if any...
                 processBillingItem(i);
                 updateReceipt();
+             }
+             else if( n=="amount") {
+                def m = [objid:i.objid, partial: i.amount, todate: i.todate, fromdate: i.fromdate];
+                processBillingItem( m );
+                i.putAll(m);
+                updateReceipt();
+                itemHandler.reload();   
              }
          }
      ] as EditorListModel;  
@@ -114,11 +122,13 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
             if( itm.todate.before(itm.fromdate) ) {
                 boolean pass = false;
                 def h = { k->
+                    itm.todate = k;
                     pass = true;
                 }
                 Modal.show( "date:prompt", [handler: h ] );
                 if( !pass ) throw new BreakException();
             }
+            //MsgBox.alert("fromdate:" + itm.fromdate + "todate: " + itm.todate )
             processBillingItem(itm);
             entity.billitems << itm;
             updateReceipt();
@@ -138,14 +148,26 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
          return Inv.lookupOpener("market:billitem:details", [entity:selectedItem] );
      }
      
-     void applyPartial() {
-        
-     }
-    
      def viewCashReceipt() {
          if(!entity.billitems)
             throw new Exception("Please select at least one item")
          return Inv.lookupOpener( "cashreceipt:preview", [entity:entity]);
      }
+     
+     
+     def applyPartial() {
+         if(!selectedItem) throw new Exception("Please select an item");
+         def h = { o->
+            def m = [objid:selectedItem.objid, partial: o, todate: selectedItem.todate, fromdate: selectedItem.fromdate];
+            processBillingItem( m );
+            selectedItem.putAll(m);
+            itemHandler.reload();
+            updateReceipt();
+         }
+         return Inv.lookupOpener( "decimal:prompt", [handler:h, title:'Enter Partial amount'])
+     }
+    
+   
+
 }
 

@@ -58,10 +58,8 @@ public class CashBreakdownModel  {
             breakdown = entity.cashbreakdown.sum{ it.amount };
         }
         def diff = (entity.totalcash - breakdown);
-        if( diff  > 0.05 )
-            throw new Exception("Cash to remit is insufficient. Please review your collection");
-        if( diff < -0.05 )
-            throw new Exception("Please review your collection. You have over declared the cash breakdown");
+        if( diff  != 0 )
+            throw new Exception("Cash breakdown must equal total cash");
         
         handler.update(entity);
         return "_close";

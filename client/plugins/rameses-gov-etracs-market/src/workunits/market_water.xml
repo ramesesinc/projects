@@ -3,57 +3,7 @@
         <invoker type="market_water:create" caption="Market Other Fee" action="create" target="popup" />
         <invoker type="market_water:open" caption="Market Other Fee" action="open"  target="popup" />
     </invokers>
-    <code>
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.seti2.models.*;
-        
-        class MarketWaterModel extends CrudFormModel {
-        
-            @Service("MarketUtilityService")
-            def svc;
-        
-            @Caller
-            def caller;
-        
-            void afterCreate() {
-                if(caller?.masterEntity?.objid) {
-                    entity.acctid = caller.masterEntity.objid;       
-                }  
-                entity.prevreading = caller.masterEntity.waterreading; 
-            }
-        
-            void afterOpen() {
-                entity._reading = entity.reading; 
-            }
-        
-            @PropertyChangeListener
-            def listener = [
-                "entity.reading" : { o->
-                    entity.usage = 0;
-                    entity.amount = 0;
-                    entity.amtpaid = 0;
-                    entity.rate = 0;
-                }
-            ];
-        
-            void calcAmount() {
-                if(  entity.prevreading > entity.reading ) {
-                    throw new Exception("Current reading must be greater than previous");
-                }
-                entity.usage = entity.reading - entity.prevreading;
-                def p = [txntype:'WATER'];
-                p.usage = entity.usage;
-                def z = svc.calculate( p ); 
-                entity.rate = z.rate;
-                entity.amount = z.amount;
-                entity.amtpaid = 0;
-            }
-        
-        }
-    </code>
+    <code class="com.rameses.gov.etracs.market.models.MarketWaterModel" />
     <pages>
         <page template="com.rameses.gov.etracs.market.views.MarketWaterPage" />
     </pages>    

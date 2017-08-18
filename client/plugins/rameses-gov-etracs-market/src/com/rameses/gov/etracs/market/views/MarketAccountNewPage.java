@@ -50,10 +50,10 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xDateField2 = new com.rameses.rcp.control.XDateField();
+        xDateField3 = new com.rameses.rcp.control.XDateField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
-        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -182,6 +182,10 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xDateField2.setRequired(true);
         xFormPanel3.add(xDateField2);
 
+        xDateField3.setCaption("Last Date Covered");
+        xDateField3.setName("entity.lastdatecovered"); // NOI18N
+        xFormPanel3.add(xDateField3);
+
         xDecimalField3.setCaption("Partial Balance");
         xDecimalField3.setName("entity.partialbalance"); // NOI18N
         xFormPanel3.add(xDecimalField3);
@@ -195,13 +199,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         monthList1.setName("entity.lastmonthpaid"); // NOI18N
         monthList1.setRequired(true);
         xFormPanel3.add(monthList1);
-
-        xIntegerField3.setCaption("Last Day covered");
-        xIntegerField3.setDepends(new String[] {"entity.unit"});
-        xIntegerField3.setName("entity.lastdaypaid"); // NOI18N
-        xIntegerField3.setRequired(true);
-        xIntegerField3.setVisibleWhen("#{entity.ratetype == 'DAY' }");
-        xFormPanel3.add(xIntegerField3);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder4.setTitle("Recurring Fees");
@@ -300,6 +297,7 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
@@ -307,7 +305,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;

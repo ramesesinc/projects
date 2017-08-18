@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 import com.rameses.util.*;
 
 
-class KioskRPTBilllingService
+class KioskLandTaxBillingService
 {
     @Service('DateService')
     def dtSvc 
@@ -32,8 +32,7 @@ class KioskRPTBilllingService
 
     @ProxyMethod
     public def generateBill(params){
-        params.ledger = validateLedger(params)
-        def bill = buildBilling(initBill(params))
+        def bill = buildBilling(getBill(params))
 
         bill.txnid = KeyGen.generateAlphanumKey( "PMO:", 6 )
         bill.controlno = numSvc.generateControlNo()
@@ -53,7 +52,8 @@ class KioskRPTBilllingService
         return bill 
     }
 
-    def initBill(params){
+    def getBill(params){
+        params.ledger = validateLedger(params)
         def ledger = params.ledger 
         def bill = billSvc.initBill(ledger.objid)
 
@@ -84,6 +84,7 @@ class KioskRPTBilllingService
     @ProxyMethod
     public def buildBilling(bill){
         def billing = [:]
+        billing.ledger = [objid:bill.rptledger.objid, tdno:bill.rptledger.tdno]
         billing.dtposted = bill.dtposted 
         billing.objid = bill.billid 
         billing.billid = bill.billid 
@@ -186,4 +187,3 @@ class KioskRPTBilllingService
         return ledger 
     }
 }
-

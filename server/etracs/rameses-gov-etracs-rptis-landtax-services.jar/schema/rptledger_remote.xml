@@ -1,0 +1,9 @@
+<schema>
+    <element tablename="rptledger_remote">
+        <field name="objid" primary="true" prefix="RR"/>
+        <field name="remote_objid" required="true"/>
+        <field name="createdby_name" />
+        <field name="createdby_title" />
+        <field name="dtcreated" required="true" type="date" />
+    </element>  
+</schema>

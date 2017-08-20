@@ -1,0 +1,10 @@
+RPTLedger Province and Municipal Synchronization
+===========================================
+Add lib
+	- rameses-remote-service-client.jar
+	- rameses-rabbitmq-script-connection.jar
+	- rabbitmq-client.jar
+Add Connections
+	- remote-script-mq
+	- remote-script-service
+	- local-gdx

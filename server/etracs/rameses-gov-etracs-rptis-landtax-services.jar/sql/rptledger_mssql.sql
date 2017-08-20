@@ -88,10 +88,11 @@ WHERE state = 'APPROVED'
 SELECT t.*
 FROM (
 	SELECT 
+		objid, 
 		objid AS rptreceiptid,
 		refno,
 		refdate ,
-		collector as collector_name,
+		collector as collector_name, 
 		paidby_name,
 		fromyear,
 		fromqtr,
@@ -107,7 +108,12 @@ FROM (
 		firecode,
 		amount,
 		type AS txnmode,
-		0 as partialled
+		0 as partialled,
+		type, 
+		'-' as paidby_address, 
+		postedby,
+		postedbytitle,
+		dtposted
 	FROM rptledger_credit rc 
 	WHERE rptledgerid = $P{rptledgerid}
 	and rc.type <> 'COMPROMISE'
@@ -115,6 +121,7 @@ FROM (
 	UNION ALL
 	
 	SELECT 
+		cr.objid,
 		cr.objid AS rptreceiptid, 
 		cr.receiptno AS refno,
 		cr.receiptdate AS refdate,
@@ -135,7 +142,12 @@ FROM (
 		cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
 				cri.sef + cri.sefint - cri.sefdisc + cri.firecode AS amount,
 		crr.txntype AS txnmode,
-		cri.partialled
+		cri.partialled,
+		'online' as type, 
+		cr.paidbyaddress as paidby_address, 
+		'sytem' as postedby,
+		'system' as postedbytitle,
+		cr.receiptdate as dtposted
 	FROM cashreceipt_rpt crr
 		INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
 		INNER JOIN cashreceiptitem_rpt_online cri ON cr.objid = cri.rptreceiptid 	
@@ -147,15 +159,16 @@ FROM (
 	UNION ALL 
 
 	select 				
+		x.objid, 
 			x.rptreceiptid, 
 				x.refno,
 				x.refdate,
 				x.collector_name,
 				x.paidby_name,
 				x.fromyear,
-				(select min(fromqtr) from cashreceiptitem_rpt_online where rptledgerid = $P{rptledgerid} and rptreceiptid = x.rptreceiptid and year = x.fromyear and partialled = 0) as fromqtr,
+				(select min(fromqtr) from cashreceiptitem_rpt_online where rptledgerid =  $P{rptledgerid} and rptreceiptid = x.rptreceiptid and year = x.fromyear and partialled = 0) as fromqtr,
 				x.toyear,
-				(select max(toqtr) from cashreceiptitem_rpt_online where rptledgerid = $P{rptledgerid} and  rptreceiptid = x.rptreceiptid and year = x.toyear and partialled=0) as toqtr, 
+				(select max(toqtr) from cashreceiptitem_rpt_online where rptledgerid =  $P{rptledgerid} and  rptreceiptid = x.rptreceiptid and year = x.toyear and partialled = 0) as toqtr, 
 				x.basic,
 				x.basicint,
 				x.basicdisc,
@@ -166,9 +179,15 @@ FROM (
 				x.firecode,
 				x.amount,
 				x.txnmode,
-				x.partialled
+				x.partialled,
+				x.type,
+				x.paidby_address,
+				x.postedby,
+				x.postedbytitle,
+				x.dtposted
 	from (
 		SELECT 
+			cr.objid, 
 				cr.objid AS rptreceiptid, 
 				cr.receiptno AS refno,
 				cr.receiptdate AS refdate,
@@ -189,12 +208,17 @@ FROM (
 				sum(cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
 						cri.sef + cri.sefint - cri.sefdisc + cri.firecode) AS amount,
 				crr.txntype AS txnmode,
-				cri.partialled
+				cri.partialled,
+				'online' as type, 
+				cr.paidbyaddress as paidby_address, 
+				'sytem' as postedby,
+				'system' as postedbytitle,
+				cr.receiptdate as dtposted
 			FROM cashreceipt_rpt crr
 				INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
 				INNER JOIN cashreceiptitem_rpt_online cri ON cr.objid = cri.rptreceiptid 	
 				LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-			WHERE cri.rptledgerid = $P{rptledgerid}
+			WHERE cri.rptledgerid =  $P{rptledgerid}
 				AND cv.objid IS NULL
 				AND cri.partialled = 0 	
 		group by 
@@ -205,11 +229,13 @@ FROM (
 			cr.paidby,
 			crr.txntype,
 			cri.year, 
-			cri.partialled		
+			cri.partialled,
+			cr.paidbyaddress,
+			cr.receiptdate
 	) x 
 
 ) t
-ORDER BY t.refdate desc, t.fromyear desc, t.fromqtr desc 
+ORDER BY t.fromyear desc, t.fromqtr desc 
 
 
 
@@ -638,3 +664,147 @@ update rptledgeritem set
         firecode = $P{firecode}, 
         revperiod = $P{revperiod}
 where objid = $P{objid}    
+
+[getCreditsByReceipt]
+SELECT t.*
+FROM (
+	SELECT 
+		cr.objid,
+		cr.objid AS rptreceiptid, 
+		cri.rptledgerid, 
+		o.parent_objid as lguid, 
+		rl.barangayid,
+		rl.lastyearpaid,
+		rl.lastqtrpaid,
+		cr.receiptno AS refno,
+		cr.receiptdate AS refdate,
+		cr.collector_name,
+		cr.paidby AS paidby_name,
+		cri.year AS fromyear,
+		case when cri.qtr = 0 then cri.fromqtr else cri.qtr end AS fromqtr,
+		cri.year AS toyear,
+		case when cri.qtr = 0 then cri.toqtr else cri.qtr end AS toqtr,
+		cri.basic AS basic,
+		cri.basicint AS basicint,
+		cri.basicdisc AS basicdisc,
+		cri.basicidle- cri.basicidledisc + cri.basicidleint AS basicidle,
+		cri.sef AS sef,
+		cri.sefint AS sefint,
+		cri.sefdisc AS sefdisc,
+		cri.firecode AS firecode,
+		cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
+				cri.sef + cri.sefint - cri.sefdisc + cri.firecode AS amount,
+		crr.txntype AS txnmode,
+		cri.partialled,
+		'online' as type, 
+		cr.paidbyaddress as paidby_address, 
+		'sytem' as postedby,
+		'system' as postedbytitle,
+		cr.receiptdate as dtposted
+	FROM cashreceipt_rpt crr
+		INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
+		INNER JOIN cashreceiptitem_rpt_online cri ON cr.objid = cri.rptreceiptid 	
+		INNER JOIN rptledger rl on cri.rptledgerid = rl.objid 
+		inner join rptledger_remote rm on rl.objid = rm.objid 
+		inner join sys_org o on rl.barangayid = o.objid 
+		LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
+	WHERE crr.objid = $P{objid}
+		AND cv.objid IS NULL 	
+	  AND cri.partialled = 1 
+
+	UNION ALL 
+
+	select 				
+				x.objid, 
+				x.rptreceiptid, 
+				x.rptledgerid,
+				x.lguid, 
+				x.barangayid,
+				x.lastyearpaid,
+				x.lastqtrpaid,
+				x.refno,
+				x.refdate,
+				x.collector_name,
+				x.paidby_name,
+				x.fromyear,
+				(select min(fromqtr) from cashreceiptitem_rpt_online where rptledgerid =  x.rptledgerid and rptreceiptid = x.rptreceiptid and year = x.fromyear and partialled = 0) as fromqtr,
+				x.toyear,
+				(select max(toqtr) from cashreceiptitem_rpt_online where rptledgerid =  x.rptledgerid and  rptreceiptid = x.rptreceiptid and year = x.toyear and partialled = 0) as toqtr, 
+				x.basic,
+				x.basicint,
+				x.basicdisc,
+				x.basicidle,
+				x.sef,
+				x.sefint,
+				x.sefdisc,
+				x.firecode,
+				x.amount,
+				x.txnmode,
+				x.partialled,
+				x.type,
+				x.paidby_address,
+				x.postedby,
+				x.postedbytitle,
+				x.dtposted
+	from (
+		SELECT 
+			cr.objid, 
+				cr.objid AS rptreceiptid, 
+				cr.receiptno AS refno,
+				cr.receiptdate AS refdate,
+				cr.collector_name,
+				cr.paidby AS paidby_name,
+				min(cri.year) AS fromyear,
+				0 AS fromqtr,
+				max(cri.year) AS toyear,
+				0 as toqtr,
+				sum(cri.basic) AS basic,
+				sum(cri.basicint) AS basicint,
+				sum(cri.basicdisc) AS basicdisc,
+				sum(cri.basicidle- cri.basicidledisc + cri.basicidleint) AS basicidle,
+				sum(cri.sef) AS sef,
+				sum(cri.sefint) AS sefint,
+				sum(cri.sefdisc) AS sefdisc,
+				sum(cri.firecode) AS firecode,
+				sum(cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
+						cri.sef + cri.sefint - cri.sefdisc + cri.firecode) AS amount,
+				crr.txntype AS txnmode,
+			  cri.rptledgerid,
+			  	o.parent_objid as lguid,  
+			  	rl.barangayid,
+			  	rl.lastyearpaid, 
+			  	rl.lastqtrpaid,
+				cri.partialled,
+				'online' as type, 
+				cr.paidbyaddress as paidby_address, 
+				'sytem' as postedby,
+				'system' as postedbytitle,
+				cr.receiptdate as dtposted
+			FROM cashreceipt_rpt crr
+				INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
+				INNER JOIN cashreceiptitem_rpt_online cri ON cr.objid = cri.rptreceiptid 	
+				INNER JOIN rptledger rl on cri.rptledgerid = rl.objid 
+				inner join rptledger_remote rm on rl.objid = rm.objid 
+				inner join sys_org o on rl.barangayid = o.objid 
+				LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
+			WHERE crr.objid = $P{objid} 
+				AND cv.objid IS NULL
+				AND cri.partialled = 0 	
+		group by 
+			cr.objid,	
+			cr.receiptno,
+			cr.receiptdate,
+			cr.collector_name,
+			cr.paidby,
+			crr.txntype,
+			cri.rptledgerid, 
+			o.parent_objid,
+			rl.barangayid,
+			rl.lastyearpaid,
+			rl.lastqtrpaid,
+			cri.year, 
+			cri.partialled,
+			cr.paidbyaddress,
+			cr.receiptdate
+	) x 
+) t

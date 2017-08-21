@@ -11,6 +11,7 @@ public class RPTLedgerFact
     Boolean firstqtrpaidontime
     Boolean qtrlypaymentpaidontime
     Boolean undercompromise
+    Boolean missedpayment
     String lguid
     String barangayid
     String barangay
@@ -34,6 +35,7 @@ public class RPTLedgerFact
         this.barangayid             = ledger.barangayid
         this.barangay               = ledger.barangay
         this.rputype                = ledger.rputype
+        this.missedpayment          = ledger.missedpayment
     }
 
 }

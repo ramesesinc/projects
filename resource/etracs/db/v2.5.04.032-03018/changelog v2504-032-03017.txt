@@ -8,4 +8,5 @@
 	- FAAS Backtax Update
 
 - LANDTAX
+	- Rule: Add quarterly missed payment support
 	

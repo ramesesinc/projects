@@ -1,40 +1,10 @@
-<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="market_electricity"
-          cols="year,monthname,readingdate,prevreading,reading,amount,amtpaid,balance,createdby.name,dtcreated"
+          cols="account.acctno,account.unitno,account.acctname,year,monthname,readingdate,prevreading,reading,udage,amount,amtpaid,balance,createdby.name,dtcreated"
           orderBy="dtcreated">
+    
     <invokers>
-        <invoker type="market_account:section" 
-                 caption="Electricity" action="init" visibleWhen="#{mode!='create'}" index="3"
-                 parentid="acctid"/>
-        
+        <invoker folderid="home/market" caption="Electricity Bill" action="init" index="10"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-
-        class MarketWaterList extends com.rameses.seti2.models.CrudSubListModel {
-        
-            boolean showunpaid = true;
-        
-            @PropertyChangeListener
-            def listener = [
-                "showunpaid" : { o->
-                    reload();
-                }
-            ];
-        
-            def getCustomFilter() {
-                if( showunpaid == false ) return null;
-                return [ "amount-amtpaid > 0 " ];
-            }
-        
-        } 
-        ]]>
-    </code>
-    <pages>
-        <page name="queryForm" template="com.rameses.gov.etracs.market.views.MarketOtherFeeQueryPanel" />
-    </pages>
+    
 </workunit>

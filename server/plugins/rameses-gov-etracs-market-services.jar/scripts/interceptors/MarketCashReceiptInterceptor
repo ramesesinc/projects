@@ -2,19 +2,52 @@ import com.rameses.annotations.*;
 
 class MarketCashReceiptInterceptor{
 	
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'market'}")
+	@DataContext("market_payment")
+	def marketPmt;
+
+	@DataContext("market_account")
+	def marketAcct;
+
+	@DataContext(dynamic=true)
+	def em;
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'market'}")
 	public void beforePostItems(def evt) {
 		def e = evt.args[0];
 		
-		def p = [_schemaname: 'market_payment'];
-		p.items = [];
-		e.billitems.each { r->
-			r.billitems.each { x->
-				x.acctid = r.acctid;
-				p.items << x;
-			};
+		def pmt = [:];
+		pmt.reftype = "cashreceipt";
+		pmt.refno = e.receiptno;
+		pmt.refid = e.objid;
+		pmt.refdate = e.receiptdate;
+		pmt.txndate = e.txndate;
+		pmt.voided = 0;
+		pmt.txnmode = e.txnmode;
+		pmt.amount = e.amount;
+		pmt.items = [];
+
+		e.billitems.each { itm->
+			itm.billitems.each {z->
+				z.acctid = itm.acctid;
+			}
+			pmt.items.addAll(itm.billitems);
 		}
-		e.postpayment = p;
+		marketPmt.create(pmt);
+		e.billitems?.each { itm->
+			itm.billitems.findAll{ it.ledgertype !=null }.each { p->
+				def ledgerEm = em.lookup( p.ledgertype );
+				ledgerEm.find( [objid: p.refid ] ).update( [amtpaid:'{amtpaid + :apaid}'], [apaid: p.amount] );	
+			}
+			def v = itm.billitems.findAll{it.txntype=='MARKETRENTAL'}?.max{ (it.year*12)+it.month }
+			if( v ) {
+				def m = [:];
+				m.lastyearpaid = v.year;
+				m.lastmonthpaid = v.month;
+				m.partialbalance = v.partialunpaid;
+				m.lastdatecovered = v.todate;
+				marketAcct.find( [ objid: itm.acctid]).update(m);
+			}
+		}
 	}
 
 	

@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="account_maingroup">
         
     <invokers>
-        <invoker folderid="home/accounting" caption="Accounts" action="init" index="-1"/> 
+        <invoker folderid="home/accounting" caption="Accounts 2" action="init" index="-1"/> 
     </invokers>
    
 </workunit>

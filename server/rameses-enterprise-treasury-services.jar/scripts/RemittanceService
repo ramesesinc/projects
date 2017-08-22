@@ -173,11 +173,25 @@ class RemittanceService  {
 	@ProxyMethod 
 	public def post( param ) { 
 		if ( !param.remittanceid ) throw new Exception("remittanceid parameter is required"); 
-		if ( !param.cashbreakdown ) throw new Exception("Cash breakdown has been change during the submission.Please recreate transaction");
 
 		def o = remdb.find([ objid: param.remittanceid ]).first(); 
 		if ( !o ) throw new Exception('Remittance record does not exist.');
 		if ( o.state != 'DRAFT' ) throw new Exception("Remittance record is no longer in DRAFT mode");
+
+		// check cashbreakdown per fund 
+        def cblist = remf_db.find([ remittanceid: o.objid ]).select("cashbreakdown,fund.*").where(" totalcash > 0 ").list();
+        cblist.each { 
+        	def amt = it.cashbreakdown?.sum{( it.amount ? it.amount: 0.0 )} 
+        	if ( !amt ) throw new Exception('Please specify a cashbreakdown for fund '+ it.fund.title ); 
+
+        	def diff = (o.totalcash - amt);
+	        if( diff  > 0.05 )
+	            throw new Exception("Cash to remit is insufficient. Please review your collection for " + it.fund.title);
+	        if( diff < -0.05 )
+	            throw new Exception("Please review your collection. You have over declared the cash breakdown for " + it.fund.title);
+        }
+
+		param.cashbreakdown = summarizeFundCashbreakdown( o.objid ); 
 
 		o.state = 'OPEN'; 
 		o.txnno = formatTxnno( o ); 
@@ -195,7 +209,7 @@ class RemittanceService  {
 
 	@ProxyMethod
 	public def open( o ) {
-		o = em.read( o );
+		o = remdb.read( o );
 		o.remittanceid = o.objid; 
 		return o;
 	}
@@ -276,7 +290,7 @@ class RemittanceService  {
     @ProxyMethod
     public void approve( o ) {
     	def m = [state: 'APPROVED' ];
-    	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE, signature: o.signature ]; 
+    	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
     	remdb.find([ objid : o.objid ]).update( m ); 
     } 
 
@@ -335,28 +349,27 @@ class RemittanceService  {
     }
 
     @ProxyMethod
-    public void updateCashBreakdown( def o ) {
-        def m = [cashbreakdown : o.cashbreakdown];
-        remf_db.find([objid: o.objid]).update( m );   
+    public void updateCashBreakdown( o ) { 
+        def m = remf_db.find([ objid: o.objid ]).select('objid,remittanceid').first(); 
+        if ( !m ) return;
 
-        def rem = remf_db.find([objid: o.objid]).select("remittanceid").first();
-        
-        //update also the head
-        //select all cash breakdowns
+        remf_db.find([ objid: m.objid ]).update([ cashbreakdown: o.cashbreakdown ]);  
+
+		def totalcbd = summarizeFundCashbreakdown( m.remittanceid ); 
+		remdb.find([ objid: m.remittanceid ]).update([ cashbreakdown: totalcbd ]);
+    } 
+
+    private def summarizeFundCashbreakdown( remittanceid ) {
         def arr = [];
-        def cblist = remf_db.find( [remittanceid: rem.remittanceid ] ).select("cashbreakdown").where( "totalcash > 0").list();
-        cblist.each {
-        	arr.addAll( it.cashbreakdown );
+        def cblist = remf_db.find([ remittanceid: remittanceid ]).select("cashbreakdown").where(" totalcash > 0 ").list();
+        cblist.each { 
+        	if ( it.cashbreakdown ) arr.addAll( it.cashbreakdown ); 
         }
 
-        //summarize cash breakdown
         def newarr = [];
-        def cbgrp = arr.groupBy{ it.denomination };
-
-        cbgrp.each { k,v->
+        arr.groupBy{ it.denomination }.each { k,v->
         	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
         }
-        remdb.find( [objid: rem.remittanceid ]).update( [cashbreakdown: newarr] );
+        return newarr; 
     }
-
 }

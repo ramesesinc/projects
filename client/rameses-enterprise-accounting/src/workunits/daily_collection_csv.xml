@@ -1,7 +1,8 @@
 <workunit>
     <invokers>
         <invoker type="daily_collection:formActions"  
-                 caption="Export to eNGAS(CSV)" action="initLiquidation"  target="process" visibleWhen="#{mode=='read'}" />
+                 caption="Export to eNGAS(CSV)" action="generate"  
+                 target="process"  />
     </invokers>
     <code>
         <![CDATA[    
@@ -22,14 +23,10 @@
             def param;
             def entity;
             
-            void initLiquidation() {
+            void generate() {
                 param = [:];
                 param.dtposted = entity.dtposted;
                 param.finder = [liquidationid: entity.objid];
-                generateCvs();
-            }
-        
-            void generateCvs() {
                 def data = svc.buildData( param );
                 def chooser = new JFileChooser();
                 def sdf = new java.text.SimpleDateFormat("yyyyMMddHHmmss");

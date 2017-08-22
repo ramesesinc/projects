@@ -31,21 +31,51 @@ public class MarketElectricityPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
         monthList1 = new com.rameses.enterprise.components.MonthList();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
-        xButton1 = new com.rameses.rcp.control.XButton();
 
         xFormPanel1.setCaptionWidth(120);
 
+        xLookupField1.setCaption("Account");
+        xLookupField1.setExpression("#{entity.account.acctno} - #{entity.account.unitno}");
+        xLookupField1.setHandler("market_account:lookup");
+        xLookupField1.setName("entity.account"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setVisibleWhen("#{ oldEntity == null }");
+        xFormPanel1.add(xLookupField1);
+
+        xLabel7.setCaption("Account");
+        xLabel7.setExpression("#{entity.account.acctno}");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel7.setVisibleWhen("#{ oldEntity != null }");
+        xFormPanel1.add(xLabel7);
+
+        xLabel8.setCaption("Unit No");
+        xLabel8.setDepends(new String[] {"entity.account"});
+        xLabel8.setExpression("#{entity.account.unitno}");
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel8.setVisibleWhen("#{ oldEntity != null }");
+        xFormPanel1.add(xLabel8);
+
+        xLabel6.setCaption("Owner");
+        xLabel6.setDepends(new String[] {"entity.account"});
+        xLabel6.setExpression("#{entity.account.owner.name}");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel6);
+
         monthList1.setCaption("Month");
+        monthList1.setEnabled(false);
         monthList1.setName("entity.month"); // NOI18N
         monthList1.setRequired(true);
         xFormPanel1.add(monthList1);
@@ -60,16 +90,18 @@ public class MarketElectricityPage extends javax.swing.JPanel {
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xFormPanel2.setCaptionWidth(120);
+
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Previous Reading");
         xLabel1.setExpression("#{entity.prevreading}");
         xLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel1.add(xLabel1);
+        xFormPanel2.add(xLabel1);
 
         xIntegerField2.setCaption("Current Reading");
         xIntegerField2.setName("entity.reading"); // NOI18N
         xIntegerField2.setRequired(true);
-        xFormPanel1.add(xIntegerField2);
+        xFormPanel2.add(xIntegerField2);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel2.setCaption("kWh Usage");
@@ -77,13 +109,6 @@ public class MarketElectricityPage extends javax.swing.JPanel {
         xLabel2.setExpression("#{entity.usage}");
         xLabel2.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel2.add(xLabel2);
-
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel3.setCaption("Rate");
-        xLabel3.setDepends(new String[] {"entity.reading"});
-        xLabel3.setExpression("#{entity.rate}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel2.add(xLabel3);
 
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("Amount");
@@ -99,10 +124,6 @@ public class MarketElectricityPage extends javax.swing.JPanel {
         xLabel5.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel2.add(xLabel5);
 
-        xButton1.setCaption("");
-        xButton1.setName("calcAmount"); // NOI18N
-        xButton1.setText("Calculate Amount");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -110,27 +131,22 @@ public class MarketElectricityPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(98, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
-    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
@@ -138,8 +154,11 @@ public class MarketElectricityPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
 }

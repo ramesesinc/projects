@@ -7,8 +7,8 @@ import com.rameses.osiris2.common.*
         
 public class CashBreakdownModel  {
     
-    @Service("RemittanceService")
-    def service;
+    //@Service("RemittanceService")
+    //def service;
     
     def entity;
     def total = 0;
@@ -17,24 +17,38 @@ public class CashBreakdownModel  {
     boolean editable;
     
     def oldbreakdown;
+    boolean showCreditMemos = true;
+    boolean showCashBreakdown = true;
+    
+    def checks;
+    def creditMemos;
     
     void init() {
-        if( entity.totalcash == null || entity.cashbreakdown == null )
-            throw new Exception("Total cash is null. Please run migration for remittance fund");
+        if(entity.totalcash == null) entity.totalcash = 0;
+        if( entity.cashbreakdown == null ) entity.cashbreakdown = [];
+        
         oldbreakdown = entity.cashbreakdown;
         
         entity.cashbreakdown = handler.getCashBreakdown();
+        checks = handler.getChecks();
+        creditMemos = handler.getCreditMemos();
+        if( !creditMemos ) {
+            showCreditMemos = false;
+        }
+        if( entity.totalcash <=0 && !checks  ) {
+            showCashBreakdown = false;
+        }
     }
 
     def checkModel = [
         fetchList: { o->
-            return handler.getChecks();
+            return checks;
         }
     ] as BasicListModel;
 
     def creditMemoModel = [
         fetchList: { o->
-            return handler.getCreditMemos();
+            return creditMemos;
         }
     ] as BasicListModel;
     
@@ -44,10 +58,8 @@ public class CashBreakdownModel  {
             breakdown = entity.cashbreakdown.sum{ it.amount };
         }
         def diff = (entity.totalcash - breakdown);
-        if( diff  > 0.05 )
-            throw new Exception("Cash to remit is insufficient. Please review your collection");
-        if( diff < -0.05 )
-            throw new Exception("Please review your collection. You have over declared the cash breakdown");
+        if( diff  != 0 )
+            throw new Exception("Cash breakdown must equal total cash");
         
         handler.update(entity);
         return "_close";

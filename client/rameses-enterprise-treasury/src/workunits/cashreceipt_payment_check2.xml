@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
           <invoker type="cashreceipt:payment-check2" caption="Check Payment" 
-                   action="init" target="popup" width="500" height="300"/>
+                   action="init" target="popup" />
     </invokers>
     <code>
     <![CDATA[
@@ -20,6 +20,9 @@ class CashReceiptCheckPayment2Controller {
 
     def entity = [:];
     def saveHandler;
+    
+    def fundList;
+    def funds;
     
     def checks = [];
     def selectedCheck;
@@ -40,7 +43,10 @@ class CashReceiptCheckPayment2Controller {
         } 
     ] as EditorListModel;
     
+    
+    
     void init() {
+        funds = fundList*.fund;
         entity.paymentitems.each{
             def m = [:]; 
             m.putAll( it ); 
@@ -71,7 +77,8 @@ class CashReceiptCheckPayment2Controller {
                 bank: it.bank.code, 
                 particulars: it.refno + " (" + it.bank.code + ") dated " + it.refdate, 
                 refno: it.refno, 
-                refdate: it.refdate 
+                refdate: it.refdate,
+                fund: it.fund 
             ]; 
         }
     

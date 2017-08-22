@@ -11,7 +11,7 @@
 		<field name="reftype" />
 		<field name="amount" />
 		<field name="particulars" />
-		<field name="fund_objid" />
+		<field name="fund_objid" required="true"/>
 		<field name="bankaccountid" />
 
 		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,title">

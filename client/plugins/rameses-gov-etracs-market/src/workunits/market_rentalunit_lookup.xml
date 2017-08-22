@@ -9,12 +9,5 @@
                  action="init"/>
         
     </invokers> 
-    <code>
         
-        class MarketAccountLookup extends CrudLookupModel {
-        
-        
-        }
-        
-    </code>    
 </workunit> 

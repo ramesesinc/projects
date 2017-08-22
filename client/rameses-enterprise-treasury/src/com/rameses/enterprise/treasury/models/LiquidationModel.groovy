@@ -60,6 +60,12 @@ class LiquidationModel  {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
+    def create(){
+        mode = "create";
+        entity = service.init();
+        return null;
+    }
+    
     def open(){
         mode = "read";
         entity = service.open(entity);
@@ -98,14 +104,26 @@ class LiquidationModel  {
             getCreditMemos: {
                 return entity.creditmemos;
             }
-        ]   
+        ];
+        
         return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
     }
     
     
     def viewFundBreakdown() {
         if(!selectedFund) throw new Exception("please select a fund entry");
-        
+        def h = [
+            getCashBreakdown : {
+                return selectedFund.breakdown;   
+            },
+            getChecks: {
+                return  selectedFund.checks;
+            },
+            getCreditMemos: {
+                return selectedFund.creditmemos;
+            }
+        ];
+        return Inv.lookupOpener( "cashbreakdown", [entity:selectedFund, editable: false, handler: h ]);
     }
     
     void post() {
@@ -132,26 +150,13 @@ class LiquidationModel  {
     } 
     
     def approve() {
-        boolean pass = false;
-        def signature = null;
-        try {
-            def h = { sig->
-               pass = true;
-               signature = sig;
-               return "_close";
-            }
-            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
-                def msg = "Please check all entries are correct before approving";
-                Modal.show("verify_submit_with_signature", [handler:h, message: msg] );
-            }
-        } catch( Throwable t) {
-            pass = MsgBox.confirm("You are about to post this transaction. Proceed?");
-        }
-        
+        def pass = MsgBox.confirm("You are about to submit this transaction for deposit. Proceed?");
         if ( pass ) {
-            service.approve([ objid: entity.objid, signature: signature ]);
+            service.approve([ objid: entity.objid ]);
+            MsgBox.alert('successfully sent');
             return "_close";
-        } 
+        }
+        return null;
     }
     
     def delete() {
@@ -161,5 +166,4 @@ class LiquidationModel  {
         }
         return null; 
     }
-    
 } 

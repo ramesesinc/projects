@@ -2,6 +2,8 @@
     
    <invokers>
          <invoker type="quick_launcher" code="LIQ" caption="Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER"/>
+         
+         <invoker type="liquidation:create" caption="New Liquidation" action="create" target="window"/>
          <invoker type="liquidation:open" caption="Liquidation (Open)" action="open" target="window"/>
          
          <!-- liquidate buttons -->
@@ -9,15 +11,14 @@
          <invoker type="formActions" caption="Post" name="post" visibleWhen="#{entity.state=='DRAFT'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
          <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{ entity.state=='DRAFT' }" />
 
-         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{entity.state=='APPROVED'}" action="preview" />
-         <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{entity.state=='APPROVED'}" category="liquidation:reports" />
-         
+         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{entity.state != 'DRAFT'}" action="preview" />
+         <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{entity.state != 'DRAFT'}" category="liquidation:reports" />
          
          <!-- CASHIER FUNCTIONS -->
-         <invoker type="formActions" caption="Approve for Deposit" action="approve" 
-                    visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'OPEN' }"
-                  role="CASHIER" permission="liquidation.approve" />
-
+         <invoker type="formActions" caption="Submit for Deposit" action="approve" 
+                  role="LIQUIDATING_OFFICER"  
+                  visibleWhen="#{entity.state == 'POSTED'}" />
+         
    </invokers>
 
    <code class="com.rameses.enterprise.treasury.models.LiquidationModel" />

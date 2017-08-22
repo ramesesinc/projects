@@ -1,0 +1,14 @@
+<schema>
+	<element  tablename="collectiondeposit">
+		<field name="objid" primary="true" prefix="CSHDEP" />
+		<field name="controlno" required="true" caption="Control No"/>
+		<field name="state" required="true" />
+		<field name="dtfiled" required="true" />
+		<field name="txndate" required="true" />
+		<field name="cashier_objid" required="true" />
+		<field name="cashier_name" required="true" />
+		<field name="cashier_title" required="true" />
+		<field name="cashier_signature" />
+		<field name="amount" required="true" type="decimal"/>
+	</element>
+</schema>

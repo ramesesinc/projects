@@ -48,8 +48,9 @@ class LiquidationService  {
 			throw new Exception("Transaction no longer in DRAFT mode"); 
 		}
 
-		def rems = liqRem.find([ liquidationid: params.objid ]).select('objid').list();
+		//def rems = liqRem.find([ liquidationid: params.objid ]).select('objid').list();
 
+		liqnoncash.find([ liquidationid: params.objid ]).delete();
 		liqRem.find([ liquidationid: params.objid ]).delete(); 
 		liqfund.find([ liquidationid: params.objid ]).delete(); 
 		liqEm.find([ objid: params.objid ]).delete(); 
@@ -73,8 +74,10 @@ class LiquidationService  {
 		m.totalnoncash = 0.0;
 		m = liqEm.create( m ); 
 
-		def liqparam = [ liquidationid: m.objid ]; 
+		def liqparam = [ liquidationid: m.objid, liquidatingofficerid: env.USERID ]; 
 		liqEm.insertRemittances( liqparam ); 
+		liqparam.remove('liquidatingofficerid');
+		
 		if ( !liqRem.find( liqparam ).first() ) 
 			throw new Exception("No pending remittances to liquidate"); 
 
@@ -114,7 +117,8 @@ class LiquidationService  {
 			cashbreakdown: m.cashbreakdown 
 		]);
 
-		return open([ objid: m.objid ]); 
+		def o = open([ objid: m.objid ]); 
+		return o;
 	}
 
 	@ProxyMethod
@@ -156,9 +160,14 @@ class LiquidationService  {
 
 	@ProxyMethod
 	public def post( o ) { 
-		o.state = 'OPEN'; 
+		o.state = 'POSTED'; 
 		o.txnno = formatTxnno( o ); 
 		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno ]); 
+		liqRem.find([ liquidationid: o.objid ]).list().each{
+			def f = [liquidatingofficer : [signature: o.signature] ];
+			f.state = 'CLOSED'; 
+			remEm.find([ objid: it.objid ]).update( f ); 
+		}		
 		return o; 
 	} 
 
@@ -237,9 +246,7 @@ class LiquidationService  {
 
 	@ProxyMethod
     public void approve(def o) {
-    	def m = [state: 'APPROVED'];
-    	m.cashier = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE, signature: o.signature ]; 
+    	def m = [ state: 'APPROVED' ];
     	liqEm.find( [objid : o.objid] ).update( m );
     }
-
 }	

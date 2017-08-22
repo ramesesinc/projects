@@ -30,115 +30,135 @@ public class MarketWaterPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        monthList2 = new com.rameses.enterprise.components.MonthList();
+        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
+        xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
 
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel3.setCaptionWidth(120);
 
-        monthList1.setCaption("Month");
-        monthList1.setName("entity.month"); // NOI18N
-        monthList1.setRequired(true);
-        xFormPanel1.add(monthList1);
+        xLookupField1.setCaption("Account");
+        xLookupField1.setExpression("#{entity.account.acctno} - #{entity.account.unitno}");
+        xLookupField1.setHandler("market_account:lookup");
+        xLookupField1.setName("entity.account"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setVisibleWhen("#{ oldEntity == null }");
+        xFormPanel3.add(xLookupField1);
 
-        xIntegerField1.setCaption("Year");
-        xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setRequired(true);
-        xFormPanel1.add(xIntegerField1);
+        xLabel7.setCaption("Account");
+        xLabel7.setExpression("#{entity.account.acctno}");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel7.setVisibleWhen("#{ oldEntity != null }");
+        xFormPanel3.add(xLabel7);
 
-        xDateField1.setCaption("Date Reading");
-        xDateField1.setName("entity.readingdate"); // NOI18N
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
+        xLabel8.setCaption("Unit No");
+        xLabel8.setDepends(new String[] {"entity.account"});
+        xLabel8.setExpression("#{entity.account.unitno}");
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel8.setVisibleWhen("#{ oldEntity != null }");
+        xFormPanel3.add(xLabel8);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel1.setCaption("Previous Reading");
-        xLabel1.setExpression("#{entity.prevreading}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel1.add(xLabel1);
+        xLabel6.setCaption("Owner");
+        xLabel6.setDepends(new String[] {"entity.account"});
+        xLabel6.setExpression("#{entity.account.owner.name}");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel6);
 
-        xIntegerField2.setCaption("Current Reading");
-        xIntegerField2.setName("entity.reading"); // NOI18N
-        xIntegerField2.setRequired(true);
-        xFormPanel1.add(xIntegerField2);
+        monthList2.setCaption("Month");
+        monthList2.setEnabled(false);
+        monthList2.setName("entity.month"); // NOI18N
+        monthList2.setRequired(true);
+        xFormPanel3.add(monthList2);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel2.setCaption("Vol (cum)");
-        xLabel2.setDepends(new String[] {"entity.reading"});
-        xLabel2.setExpression("#{entity.usage}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel2.add(xLabel2);
+        xIntegerField3.setCaption("Year");
+        xIntegerField3.setName("entity.year"); // NOI18N
+        xIntegerField3.setRequired(true);
+        xFormPanel3.add(xIntegerField3);
 
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel3.setCaption("Rate");
-        xLabel3.setDepends(new String[] {"entity.reading"});
-        xLabel3.setExpression("#{entity.rate}");
-        xLabel3.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel2.add(xLabel3);
+        xDateField2.setCaption("Date Reading");
+        xDateField2.setName("entity.readingdate"); // NOI18N
+        xDateField2.setRequired(true);
+        xFormPanel3.add(xDateField2);
 
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel4.setCaption("Amount");
-        xLabel4.setDepends(new String[] {"entity.reading"});
-        xLabel4.setExpression("#{entity.amount}");
-        xLabel4.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel2.add(xLabel4);
+        xFormPanel4.setCaptionWidth(120);
 
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel5.setCaption("Amt Paid");
-        xLabel5.setDepends(new String[] {"entity.reading"});
-        xLabel5.setExpression("#{entity.amtpaid}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(100, 20));
-        xFormPanel2.add(xLabel5);
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel12.setCaption("Previous Reading");
+        xLabel12.setExpression("#{entity.prevreading}");
+        xLabel12.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xLabel12);
 
-        xButton1.setCaption("");
-        xButton1.setName("calcAmount"); // NOI18N
-        xButton1.setText("Calculate Amount");
+        xIntegerField4.setCaption("Current Reading");
+        xIntegerField4.setName("entity.reading"); // NOI18N
+        xIntegerField4.setRequired(true);
+        xFormPanel4.add(xIntegerField4);
+
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel9.setCaption("Vol (cum)");
+        xLabel9.setDepends(new String[] {"entity.reading"});
+        xLabel9.setExpression("#{entity.usage}");
+        xLabel9.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xLabel9);
+
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel10.setCaption("Amount");
+        xLabel10.setDepends(new String[] {"entity.reading"});
+        xLabel10.setExpression("#{entity.amount}");
+        xLabel10.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xLabel10);
+
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel11.setCaption("Amt Paid");
+        xLabel11.setDepends(new String[] {"entity.reading"});
+        xLabel11.setExpression("#{entity.amtpaid}");
+        xLabel11.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xLabel11);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(64, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.enterprise.components.MonthList monthList1;
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.enterprise.components.MonthList monthList2;
+    private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XIntegerField xIntegerField3;
+    private com.rameses.rcp.control.XIntegerField xIntegerField4;
+    private com.rameses.rcp.control.XLabel xLabel10;
+    private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
 }

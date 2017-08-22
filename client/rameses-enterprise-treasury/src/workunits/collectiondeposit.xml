@@ -1,0 +1,15 @@
+<workunit schemaName="collectiondeposit" allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker type="collectiondeposit:create" caption="New Cash Deposit" action="create"/> 
+        <invoker type="collectiondeposit:open" caption="Collection Deposit" action="open"/> 
+        
+        <invoker type="formActions" caption="Post" name="post" visibleWhen="#{entity.state=='DRAFT'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{ entity.state=='DRAFT' }" />        
+   </invokers>
+
+   <code class="com.rameses.enterprise.treasury.models.CollectionDepositModel" />
+
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.CollectionDepositViewPage" />
+   </pages>
+</workunit>

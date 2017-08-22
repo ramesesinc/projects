@@ -18,6 +18,13 @@ class CreditMemoInterceptor {
 	@Service("BankAccountPostService")
 	def bankService;
 
+	@DataContext('creditmemo')
+	def creditmemoEm;	
+
+	@DataContext('income_summary')
+	def incEm;
+
+
 
 	/*************************************************************************************************
 	* CREATE POST TO BANK
@@ -54,8 +61,11 @@ class CreditMemoInterceptor {
 	*************************************************************************************************/
 	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
 	public void postToIncome( def evt ) { 
+		def param = evt.args[0]; 
+		println '> ' + param; 
+		println '>> '+ evt.result;
 		throw new Exception("updated credit memo");
-	}
+	} 
 
 	/*
 	@After(pattern="CreditMemoService.create", eval="#{args[0].type.issuereceipt == 0 }", index=0)

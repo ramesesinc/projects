@@ -1,0 +1,182 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.util.*;
+
+class CollectionDepositService {
+
+	@DataContext("collectiondeposit")
+	def em;
+
+	@DataContext("collectiondeposit_liquidation_fund")
+	def cashliqFund;
+
+	@DataContext("collectiondeposit_bank")
+	def cashDEP;
+
+	@DataContext("collectiondeposit_fundtransfer")
+	def cashFT;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service('Var')
+	def var
+
+	@Env
+	def env;
+
+	@ProxyMethod 
+	public void delete( params ) {
+		def o = em.find([ objid: params.objid ]).first(); 
+		if ( !o ) 
+			throw new Exception('Cash Deposit transaction does not exist')
+		if ( !o.state.toString().equalsIgnoreCase("DRAFT")) 
+			throw new Exception('Cash Deposit transaction no longer in DRAFT mode'); 
+
+		def mparam = [ depositid: o.objid ]; 
+		cashFT.find( mparam ).delete();
+		cashDEP.find( mparam ).delete();
+		cashliqFund.find( mparam ).delete();
+		em.find([ objid: o.objid ]).delete();
+	} 
+
+	@ProxyMethod 
+	public def init() { 
+		def o = [ state:'DRAFT', txndate: dateSvc.getServerDate() ]; 
+		o.cashier = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		o.amount = 0.0; 
+		o.dtfiled = o.txndate; 
+		o.controlno = formatTxnno( o ); 
+		o = em.create( o ); 
+
+		def depparam = [ depositid: o.objid, cashierid: o.cashier.objid ];
+		em.insertLiquidationFunds( depparam ); 
+		em.insertFundsForDeposit( depparam ); 
+		em.insertFundsForTransfer( depparam ); 
+
+		def rec = open( o ); 
+		def amt1 = rec.fordeposits.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( !amt1 ) amt1 = 0.0;
+
+		def amt2 = rec.fortransfers.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( !amt2 ) amt2 = 0.0;
+		
+		rec.amount = amt1 + amt2;
+		em.find([ objid: rec.objid ]).update([ amount: rec.amount ]); 
+		return rec; 
+	} 
+
+	@ProxyMethod 
+	public def open( params ) {
+		def o = em.read([ objid: params.objid ]); 
+		def depparam = [ depositid: o.objid ];
+		o.fordeposits = cashDEP.find( depparam ).list();
+		o.fortransfers = cashFT.find( depparam ).list();
+		o.liquidations = em.getLiquidations( depparam );
+		return o; 
+	}
+
+	@ProxyMethod 
+	public def post( params ) {
+		def o = em.find([ objid: params.objid ]).first(); 
+		if ( !o ) throw new Exception('Cash Deposit record does not exist'); 
+		if ( !o.state.toString().equalsIgnoreCase('DRAFT')) 
+			throw new Exception('Cash Deposit transaction no longer in DRAFT mode');  
+
+		o.state = 'POSTED'; 
+		em.find([ objid: params.objid ]).update([ state: o.state, controlno: o.controlno ]);
+		return o; 
+	} 
+
+
+	/*@ProxyMethod
+	public def getFundList() {
+		return liqFundEm.where(  "liquidation.state = 'APPROVED' AND deposit.objid IS NULL" ).list()*.fund.unique();
+	}
+
+	@ProxyMethod
+	public def getFundItems( def fund ) {
+		def str =  "liquidation.state = 'APPROVED' AND deposit.objid IS NULL AND fund.objid= :fid ";
+		def m = liqFundEm.where( str, [fid: fund.objid ] ).list(); 
+		def list = [];
+		m.each {
+			list << [ amount: it.amount, fund: it.fund, liquidationid: it.liquidation.objid,  
+				liquidationfundid: it.objid, txnno: it.liquidation.txnno ];
+		}
+		return list;
+	}
+
+
+	@ProxyMethod
+	public def getUndepositedChecks( def param ) {
+		def str = " deposit.objid IS NULL AND liquidationid IN ( '" +  param.refids.join("','") +  "') ";
+		if( param._excludeids ) {
+			str += " AND check.objid NOT IN ('" + param.excludeids.join("','") + "') ";
+ 		}
+		def list = checkEm.where( str ).list();
+        return list.collect { it.check.checkid = it.objid; return it.check; }
+	}
+	}*/
+
+	@ProxyMethod
+	public def verify( def o ) {
+		def m = [:];
+		m.state = 'CLOSED';
+		m.dtverified = dateSvc.getServerDate();
+		depositEm.find([objid:o.objid]).update(m);
+		o.putAll(m);
+		return o;
+	}
+
+	public def formatTxnno( def dep ) {
+    	def format = 'UTFS'
+    	def seqid = null
+    	if(var.bankdeposit_format) format = var.bankdeposit_format;
+    	if(var.bankdeposit_sequenceid_format ) seqid = var.bankdeposit_sequenceid_format;
+    	
+
+        //Formatting Options:
+        // YY - YEAR POSTED
+        // MM - MONTH POSTED 
+        // DD - DATE POSTED 
+        // UT - USER TXNCODE
+        // SQ - SEQUENCE 
+        // FS- FORMATTED SEQUENCE 
+        
+        def dt = dateSvc.parseDate( dep.dtfiled, null)
+        def txncode = "DEP";	
+		if(env.TXNCODE) txncode = "DEP-" + env.TXNCODE ; 		
+
+        def values = [
+        	YY:dt.year+"", 
+        	MM:dt.month.toString().padLeft(2, '0',),
+        	DD:dt.day.toString().padLeft(2, '0'),
+        	UT:txncode 
+        ]
+
+        def txnno  = format 
+        values.keySet().each {
+            txnno = txnno.replace( it, values[it] )
+        }
+
+        def series 
+        if(seqid) {
+        	def seq = seqid;
+        	values.keySet().each {
+            	seq = seq.replace( it, values[it] )
+            }
+            series = seqSvc.getNextSeries( seq); 
+            
+        } else {
+        	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
+        }
+
+        txnno = txnno.replace( 'SQ', series+"" )
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
+        return txnno 
+    }
+
+}

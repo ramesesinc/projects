@@ -1,0 +1,17 @@
+<schema>
+	<element tablename="bankdepositslip">
+		<field name="objid" primary="true"/>
+		<field name="refid" required="true"/>
+		<field name="issuedby_objid" required="true"/>
+		<field name="issuedby_name" required="true"/>
+		<field name="dtissued" required="true"/>
+		<field name="totalcash" required="true" type="decimal"/>
+		<field name="totalnoncash" required="true" type="decimal"/>
+		<field name="cashbreakdown" required="true"/>
+		<field name="amount" required="true" type="decimal"/>
+		<field name="validationno" required="true"/>
+		<field name="validationdate" required="true"/>
+		<field name="bankaccountid" required="true"/>
+	
+	</element>
+</schema>

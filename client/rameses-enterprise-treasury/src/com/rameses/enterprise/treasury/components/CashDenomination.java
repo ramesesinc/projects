@@ -37,6 +37,7 @@ public class CashDenomination extends XComponentPanel {
         intc25.setHorizontalAlignment(SwingConstants.CENTER); 
         intc10.setHorizontalAlignment(SwingConstants.CENTER);
         intc05.setHorizontalAlignment(SwingConstants.CENTER);
+        intc01.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     /**
@@ -66,6 +67,7 @@ public class CashDenomination extends XComponentPanel {
         intc25 = new com.rameses.rcp.control.XIntegerField();
         intc10 = new com.rameses.rcp.control.XIntegerField();
         intc05 = new com.rameses.rcp.control.XIntegerField();
+        intc01 = new com.rameses.rcp.control.XIntegerField();
         xFormPanel13 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -80,6 +82,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
+        xLabel16 = new com.rameses.rcp.control.XLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -186,6 +189,12 @@ public class CashDenomination extends XComponentPanel {
         intc05.setPreferredSize(new java.awt.Dimension(60, 20));
         xFormPanel12.add(intc05);
 
+        intc01.setCaption("0.01");
+        intc01.setCaptionWidth(60);
+        intc01.setName("qtyc01"); // NOI18N
+        intc01.setPreferredSize(new java.awt.Dimension(60, 20));
+        xFormPanel12.add(intc01);
+
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setDepends(new String[] {"qty1000"});
@@ -290,6 +299,14 @@ public class CashDenomination extends XComponentPanel {
         xLabel15.setShowCaption(false);
         xFormPanel13.add(xLabel15);
 
+        xLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel16.setDepends(new String[] {"qtyc01"});
+        xLabel16.setExpression("#{dc01}");
+        xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel16.setShowCaption(false);
+        xFormPanel13.add(xLabel16);
+
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Qty");
@@ -362,6 +379,7 @@ public class CashDenomination extends XComponentPanel {
     private com.rameses.rcp.control.XIntegerField int5;
     private com.rameses.rcp.control.XIntegerField int50;
     private com.rameses.rcp.control.XIntegerField int500;
+    private com.rameses.rcp.control.XIntegerField intc01;
     private com.rameses.rcp.control.XIntegerField intc05;
     private com.rameses.rcp.control.XIntegerField intc10;
     private com.rameses.rcp.control.XIntegerField intc25;
@@ -379,6 +397,7 @@ public class CashDenomination extends XComponentPanel {
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
+    private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -440,6 +459,7 @@ public class CashDenomination extends XComponentPanel {
         intc25.setEnabled(enabled); 
         intc10.setEnabled(enabled);
         intc05.setEnabled(enabled);
+        intc01.setEnabled(enabled);
     }
 
     public String getAmountField() {

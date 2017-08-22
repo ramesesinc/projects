@@ -48,7 +48,7 @@ class RemittanceReportService  {
 
 		Base64Cipher cipher = new Base64Cipher()
 		if( remittance.collector?.signature !=null ) {
-			remittance.signature = cipher.decode( remittance.collector.signature );
+			remittance.collector.signature = cipher.decode( remittance.collector.signature );
 		}
 		if(remittance.liquidatingofficer?.signature) {
 			remittance.liquidatingofficer.signature =  cipher.decode(remittance.liquidatingofficer.signature)

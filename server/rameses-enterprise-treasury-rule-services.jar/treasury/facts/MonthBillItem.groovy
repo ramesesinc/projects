@@ -40,8 +40,9 @@ class MonthBillItem extends BillItem {
 			def tmpDt = DateFunc.getMonthAdd(m.fromdate, 1);
 			m.todate = DateFunc.getDayAdd(tmpDt, -1);
 		}
-		m.fromday = getFromday();
-		m.today = getToday();
+
+		if(fromdate) m.fromday = getFromday();
+		if(todate) m.today = getToday();
 
 		return m;
 	}

@@ -1,20 +1,28 @@
 import com.rameses.annotations.*;
 
+import treasury.facts.*;
+import com.rameses.rules.common.*;
+import treasury.utils.*;
+
+
 class MarketUtilityService {
 	
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
 	@ProxyMethod 
 	public def calculate( params ) {
-		if(!params.txntype) throw new Exception("Transaction Type is required");
-		if(!params.usage) throw new Exception("Usage is required");
-		def m = [:];
-		if(params.txntype == 'ELECTRICITY') {
-			m.rate = 9;
-		}
-		else if( params.txntype == 'WATER' ) {
-			m.rate = 49;
-		}
-		m.amount = params.usage * m.rate;
-		return m;
+
+		def utilityRate = new UtilityRate( type: params.txntype, usage: params.usage );
+
+		def fb = new FactBuilder();
+		fb.facts << utilityRate;
+
+		assmtSvc.execute( "marketutility", [:], fb, null );
+		if( utilityRate.rate <= 0 )
+			throw new Exception("Utility rate not computed. Please check the rules");		
+
+		return [amount:  utilityRate.rate ];
 	} 	
 
 }

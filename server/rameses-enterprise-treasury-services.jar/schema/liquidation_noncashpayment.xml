@@ -9,8 +9,5 @@
 			<key field="objid" target="objid" />
 		</complex>   
 
-		<!--complex name="deposit" ref="cashdeposit_check" jointype="many-to-one" required="false" includefields="objid,amount">	
-			<key field="objid" target="checkid"/>
-		</complex-->	
 	</element>
 </schema>

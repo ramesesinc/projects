@@ -8,6 +8,7 @@ import com.rameses.rules.common.*;
 import treasury.utils.*;
 import treasury.facts.*;
 
+
 class MarketBillingService {
 	
 	@Service("AssessmentRuleService")
@@ -46,8 +47,6 @@ class MarketBillingService {
 		def amtPaid = 0.0;
 		def svrDate = dateSvc.getBasicServerDate();
 		def todate = o.billdate; 
-
-		println "from date " + o.fromdate + " to date " + todate;
 
 		def billDateFact = new treasury.facts.BillDate( o.billdate );
 
@@ -95,7 +94,11 @@ class MarketBillingService {
 			};
 		}
 
+
 		//OTHER FEE RELATED FACTS
+		o.filter?.remove('ELECTRICITY');
+		o.filter?.remove('WATER');
+
 		if( o.filter ) {
 			ff+= " AND txntype.objid IN ('"  +  o.filter.join( "','" )  + "')" ;
 			otherFeeEm.find( [acctid: o.acctid ]).where( ff, fp ).list().each {
@@ -109,26 +112,15 @@ class MarketBillingService {
 	}
 
 
-	private def buildNextFromDate(  int yr, int month, int day, def type ) {
-		def cal = Calendar.instance;
-		cal.set(Calendar.YEAR, yr );
-		cal.set(Calendar.MONTH, month -1 );
-		cal.set(Calendar.DATE, 1 );	  //we must add this as bangil
-		if( type == "MONTH" ) {
-			cal.add( Calendar.MONTH, 1);
-		}
-		else {
-			cal.set(Calendar.DATE, day );
-			cal.add( Calendar.DATE, 1 );
-		}
-		def df = new SimpleDateFormat("yyyy-MM-dd");
-		return df.parse( df.format(cal.getTime()));
+	private def buildNextFromDate(  def startdate, def lastdatecovered, def type ) {
+		if(!lastdatecovered) return startdate;
+		return DateFunc.getDayAdd(lastdatecovered,1);
 	}
 
 	@ProxyMethod
 	public def getBilling( def o ) {
 		if( !o.acctid ) throw new Exception("acctid is required in MarketBillingService.getBilling");
-		def str = "acctno,startdate,lastyearpaid,lastmonthpaid,lastdaypaid,unittype,payfrequency,ratetype,rate,extrate,unit.clusterid,unit.sectionid,partialbalance";
+		def str = "acctno,startdate,lastyearpaid,lastmonthpaid,lastdatecovered,unittype,payfrequency,ratetype,rate,extrate,unit.clusterid,unit.sectionid,partialbalance";
 		def acct = acctEm.select(str).find([objid:o.acctid]).first();
 		if(!acct) throw new Exception("Account not found");
 
@@ -146,8 +138,14 @@ class MarketBillingService {
 			partialbalance:(acct.partialbalance==null)?0:acct.partialbalance
 		];	
 
-		req.fromdate = buildNextFromDate(  acct.lastyearpaid, acct.lastmonthpaid, acct.lastdaypaid==null?-1:acct.lastdaypaid, acct.ratetype );
+		req.fromdate = buildNextFromDate(  acct.startdate, acct.lastdatecovered, acct.ratetype );
 		req.billdate = (o.billdate!=null)? o.billdate: svrDate;
+
+		if(req.billdate instanceof String ) {
+			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+			req.billdate = df.parse( req.billdate );
+		}
+
 		if ( req.fromdate.after(req.billdate)) {
 			throw new Exception('billdate is less than last date covered'); 
 		}
@@ -201,6 +199,7 @@ class MarketBillingService {
 		m.fromdate = req.fromdate;
 		m.todate = req.todate;
 		m.months = 1;	
+
 		if( m.fromdate && m.todate ) {
 			m.months = DateFunc.monthsDiff( m.fromdate, m.todate );
 		}

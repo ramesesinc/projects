@@ -9,10 +9,10 @@ class LiquidationListInterceptor {
 		def x = evt.args[0];
 		def result = evt.result; 
 		result << [ id:'draft', title: 'Draft', state:'DRAFT' ];
-		result << [ id:'pending', title: 'For Approval', state:'OPEN' ];
+		result << [ id:'posted', title: 'Posted', state:'POSTED' ];
 		result << [ id:'approved', title: 'For Deposit', state:'APPROVED' ];
-		result << [ id:'closed', title: 'Deposited', state:'CLOSED' ];
-		result << [ id:'hold', title: 'On Hold', state:'HOLD' ];		
+		result << [ id:'closed', title: 'Closed', state:'CLOSED' ];
+		result << [ id:'hold', title: 'On Hold', state:'HOLD' ]; 
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'liquidation' }")

@@ -1,3 +1,16 @@
+[getBuildIncomeSummary]
+SELECT 
+	cr.objid, cr.refdate, cr.refno, 'CREDITMEMO' AS reftype, 
+	cri.`item_objid` AS acctid, ia.fund_objid AS fundid, 
+	SUM(cri.amount) AS amount, cr.issuedby_objid AS collectorid, 
+	$P{orgid} AS orgid 
+FROM creditmemo cr 
+	INNER JOIN creditmemoitem cri ON cri.parentid=cr.objid 
+	INNER JOIN itemaccount ia ON cri.`item_objid`=ia.objid 
+WHERE cr.objid = $P{creditmemoid} 
+GROUP BY cr.objid, cr.refdate, cr.refno, cri.item_objid, ia.fund_objid, cr.issuedby_objid 
+
+
 [getList]
 SELECT * FROM creditmemo WHERE refno LIKE $P{searchtext} ORDER BY refdate DESC 
 

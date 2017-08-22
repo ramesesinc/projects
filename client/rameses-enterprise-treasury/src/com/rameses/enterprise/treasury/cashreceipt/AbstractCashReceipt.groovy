@@ -144,7 +144,7 @@ public abstract class AbstractCashReceipt {
             paymentListModel.reload(); 
             success = true; 
         }
-        Modal.show( "cashreceipt:payment-check2", [entity: entity, saveHandler: handler ] ); 
+        Modal.show( "cashreceipt:payment-check2", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 
         if ( success ) {
             def outcome = post(); 
             if ( outcome ) binding.fireNavigation( outcome );  

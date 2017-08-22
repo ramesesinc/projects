@@ -33,6 +33,7 @@ public class MarketCashReceiptService  {
 			r.billdate = o.todate;
 			r.todate = o.todate;
 		}	
+
 		if( o.partial ) r.partial = o.partial;
 
 		
@@ -45,7 +46,7 @@ public class MarketCashReceiptService  {
 			def minItem = v.min{ (it.year * 12)+it.month };
 			def maxItem = v.max{ (it.year * 12)+it.month };
 			
-			def remarks = "UNIT NO." + a.unitno + " ";
+			def remarks = "Unit " + a.unitno + " ";
 			if(minItem.year == maxItem.year) {
 				if( minItem.month == maxItem.month) {
 					remarks += maxItem.monthname + " " + maxItem.year;

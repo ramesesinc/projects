@@ -1,0 +1,37 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="collectiondeposit_bank"
+    cols="deposit.controlno,fund.title,totalcash,totalnoncash,bankaccount.code,bankaccount.bank.name,validationno,validationdate"
+    allowCreate="false" allowDelete="false">
+    
+    <invokers>
+        <invoker folderid="home/collection" caption="Bank Deposit" target="window" action="init" index="100"/> 
+        <invoker type="collectiondeposit_bank:fordeposit" 
+                 caption="Bank Deposit List" target="window" action="init" index="101"/> 
+        
+        <invoker type="collectiondeposit:section" caption="Bank Deposits" action="init" tag="section" />
+    </invokers>
+    
+    <code>
+       <![CDATA[ 
+       import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+       import com.rameses.seti2.models.*;
+       
+       class CollectionDepositBankList extends CrudListModel {
+       
+            def getCustomFilter() {
+                if(  tag == "section" ) {
+                    return ["depositid = :id", [id: caller.entity.objid] ]; 
+                }
+                return null;
+            }
+         
+       } 
+       
+       
+       ]]>
+    </code>
+    
+</workunit>
+       

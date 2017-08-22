@@ -113,6 +113,10 @@ public class AssessmentRuleService {
 			def reqs = res.remove("requirements");
 			result.requirements = regs.collect{ it.toMap() };	
 		}
+		if( res.shareitems ) {
+			def si = res.remove("shareitems");
+			result.shareitems = si.collect{ it.toMap() };	
+		}
 
 		if( resultHandler ) {
 			res.each { k,v->

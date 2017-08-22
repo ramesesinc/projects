@@ -90,7 +90,7 @@ WHERE b.objid = $P{billid}
     and rl.objid = $P{rptledgerid}
   and rl.state = 'APPROVED'
   and rliq.fullypaid = 0 
-  and (rliq.year < b.billtoyear  or (rliq.year = b.billtoyear and rliq.qtr <= b.billtoqtr))
+  and (rliq.year < $P{billtoyear}  or (rliq.year = $P{billtoyear} and rliq.qtr <= $P{billtoqtr}))
 order by rliq.year, rliq.qtr   
 
 

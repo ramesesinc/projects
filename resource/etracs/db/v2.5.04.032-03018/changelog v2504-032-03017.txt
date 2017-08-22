@@ -9,4 +9,5 @@
 
 - LANDTAX
 	- Rule: Add quarterly missed payment support
+	- Update on RPT Billing Report (for MSSQL)
 	

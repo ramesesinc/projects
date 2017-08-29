@@ -37,7 +37,7 @@ class OnlineRPTBilllingService
         bill.txntypename = 'Real Property Tax'
         bill.refid = bill.billid
         bill.refno = bill.barcode 
-        bill.controlno = numSvc.generateControlNo()
+        bill.controlno = numSvc.generateControlNo() + numSvc.generateControlNo()
         bill.payer = bill.taxpayer
         bill.paidby = bill.taxpayer.name 
         bill.paidbyaddress =bill.taxpayer.address 

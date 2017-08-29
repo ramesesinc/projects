@@ -3,7 +3,7 @@ import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
 
-class KioskRPTElectronicReceiptInterceptor
+class KioskLandTaxElectronicReceiptInterceptor
 {
     @Service('RPTReceiptService')
     def receiptSvc 
@@ -12,7 +12,7 @@ class KioskRPTElectronicReceiptInterceptor
     def cashreceiptrpt
 
 
-    @After(pattern="ElectronicReceiptService.post", eval="#{args[0].txntype.objid=='rptcol'}")
+    @After(pattern="XElectronicReceiptService.post", eval="#{args[0].txntype.objid=='rptcol'}")
     public void postItems(evt){
         def rct = evt.result 
         def pmo = evt.args[0]

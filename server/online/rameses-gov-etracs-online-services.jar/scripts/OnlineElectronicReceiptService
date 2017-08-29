@@ -1,6 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.util.*
 import com.rameses.common.*
+import com.rameses.services.extended.*
 
 class OnlineElectronicReceiptService  
 {
@@ -14,18 +15,15 @@ class OnlineElectronicReceiptService
     @Service("NumberService")
     def numSvc  
 
+    @Service('CashReceiptService')
+    def cashreceiptSvc 
+
     @DataContext("paymentorder")
     def paymentorder 
+
+    @DataContext("paymentorder_item")
+    def paymentorder_item 
     
-    @DataContext("cashreceipt")
-    def cashreceipt 
-
-    @DataContext("cashreceiptitem")
-    def cashreceiptItem 
-
-    @DataContext("cashreceiptpayment_eor")
-    def cashreceiptpayment_eor 
-
     @DataContext("af_control")
     def afControl 
 
@@ -34,6 +32,18 @@ class OnlineElectronicReceiptService
 
     @Service('OrgService')
     def orgSvc 
+
+    @DataContext("paymentpartner")
+    def paymentpartner 
+
+    @DataContext('creditmemo')
+    def creditmemo 
+
+    @ActiveDB('onlinecashreceipt')
+    def em_onlinecashreceipt
+
+    @Service('PersistenceService')
+    def persistenceSvc 
     
 
     @ProxyMethod
@@ -46,6 +56,7 @@ class OnlineElectronicReceiptService
         entity.putAll( getNextEORNumber() )
         entity.state = 'POSTED'
         entity.txnmode = 'ONLINE'
+        entity.txntype = 'eor'
         entity.payer = po.payer
         entity.paidby = po.paidby
         entity.paidbyaddress = po.paidbyaddress
@@ -61,17 +72,63 @@ class OnlineElectronicReceiptService
         entity.cashchange = 0
         entity.totalcredit = 0
         entity.collectiontype = collectiontype.find(po.txntype.collectiontype).first()
-        entity = cashreceipt.create(entity)
-        po.items.each { m->
-            m.receiptid = entity.objid
-            cashreceiptItem.create(m)
-        }
+        entity.items = po.items 
 
-        createCashReceiptPaymentEor(entity,eor)
-        paymentorder.find([txnid:po.txnid]).update([receiptid: entity.objid])
+        def cm = postCreditMemo(entity, eor, po)
+        
+        //build paymentitems
+        entity.paymentitems = []
+        def fundsummaries = em_onlinecashreceipt.getFundSummaries(po)
+        fundsummaries.eachWithIndex{fs, idx -> 
+            def p = [:]
+            p.objid = 'PMTE' + new java.rmi.server.UID()
+            p.receiptid = entity.objid 
+            p.bankid = cm.bankaccount.bank.objid 
+            p.deposittype = 'EOR'
+            p.bank = cm.bankaccount.bank.name  
+            p.refid = eor.objid 
+            p.refno = cm.refno 
+            p.refdate = cm.refdate 
+            p.reftype = 'CREDITMEMO'
+            p.bankaccountid = cm.bankaccount.objid
+            p.amount = fs.amount 
+            p.particulars = 'CM # ' + cm.refno + ' (' + (idx+1) + '/' + fundsummaries.size() + ')'
+            p.fund = fs.fund 
+            entity.paymentitems << p 
+        }
         entity.po = po 
+        entity.eor = eor 
+        cashreceiptSvc.post(entity)
+        paymentorder.find([txnid:po.txnid]).update([receiptid: entity.objid])
+        
+        println 'EOR has been successfully posted.'
         return entity 
     }   
+
+    def postCreditMemo(receipt, eor, po){
+        def pp = paymentpartner.find([code:eor.partner.objid]).first()
+
+        def cm = [_schemaname:'creditmemo']
+        cm.objid = 'CME' + new java.rmi.server.UID()
+        cm.state = 'CLOSED'
+        cm.controlno = po.controlno
+        cm.payer = [:]
+        cm.payer.objid = po.payer?.objid  
+        cm.payer.name = po.paidby 
+        cm.payer.address = [text:po.paidbyaddress]
+        cm.refdate = eor.refdate 
+        cm.refno = eor.refno
+        cm.amount = po.amount 
+        cm.particulars = po.particulars 
+        cm.bankaccount = pp.bankaccount 
+        cm.type = 'EOR'
+        cm.dtissued = receipt.receiptdate 
+        cm.receiptid = receipt.objid 
+        cm.receiptno = receipt.receiptno 
+        cm.receiptdate = receipt.receiptdate 
+        persistenceSvc.create(cm)
+        return cm 
+    }
 
     def getControl( def afControlId ) {
         def ac = afControl.find( [objid: afControlId ]).first()
@@ -101,21 +158,4 @@ class OnlineElectronicReceiptService
         afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] )
         return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'serial', controlid: afControlId, stub: 1 ] 
     }
-
-    void createCashReceiptPaymentEor(entity, eor){
-        def rcpt = [objid:entity.objid]
-        rcpt.dtposted = entity.txndate 
-        rcpt.receiptid = entity.objid 
-        rcpt.partner = eor.partner 
-        rcpt.txnrefid = eor.txnrefid 
-        rcpt.txnreftype = eor.txnreftype 
-        rcpt.refno = eor.refno 
-        rcpt.refdate = eor.refdate 
-        rcpt.amount = eor.amount 
-        rcpt.txntype = eor.txntype 
-        rcpt.particulars = eor.particulars 
-        rcpt.controlno = eor.controlno 
-        cashreceiptpayment_eor.create(rcpt)
-    }
-
 }

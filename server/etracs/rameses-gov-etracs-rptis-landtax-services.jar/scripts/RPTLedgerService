@@ -1082,7 +1082,7 @@ class RPTLedgerService
         try{
             def cy = dtSvc.serverYear 
             def bill = billingSvc.initBill(info.objid)
-            if (info.partial > 0 && info.lastyearpaid == cy){
+            if (info.partial > 0 && info.lastyearpaid >= cy){
                 bill.billtoyear = cy + 1 
             }
             billingSvc.generateBillByLedgerId3(bill)

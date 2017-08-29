@@ -235,8 +235,9 @@ public class FAASModel
     boolean getAllowEdit(){
         if ( getEntity().state == 'CURRENT' ) return false;
         if ( getEntity().state == 'CANCELLED' ) return false;
-        if (getEntity().originlguid != getOrgid()) return false;
         if ( mode == MODE_READ) return false;
+        if (getEntity().datacapture == 1 || getEntity().datacapture == true) return true;
+        if (getEntity().originlguid != getOrgid()) return false;
         return true;
     }
 

@@ -1,0 +1,19 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.util.*;
+
+
+class OnlineLandTaxBillingRemoteService
+{
+    @Service('KioskLandTaxBillingService')
+    def billSvc
+
+ 	@ProxyMethod
+    public def generateBill(params){
+    	println 'Generating bill for remote request : ' + params 
+    	return billSvc.generateBill(params)
+    }
+    
+}
+

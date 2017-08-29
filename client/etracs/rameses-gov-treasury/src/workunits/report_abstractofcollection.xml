@@ -1,7 +1,8 @@
-<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+<workunit extends="wtemplates/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury/admin" action="init" caption="Report of Abstract on Collection" target="window" index="7" 
-            role="REPORT" permission="abstractofcollection.viewreport"/>
+        <invoker folderid="/explorer/report/treasury/admin" action="init" 
+                 caption="Abstract Report of Collection" target="window" index="7" 
+                 role="REPORT" permission="abstractofcollection.viewreport" />
     </invokers>
     <code>
 <![CDATA[
@@ -11,50 +12,57 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class AbstractCollectionSummary extends com.rameses.etracs.shared.ReportController
-{
+class AbstractCollectionSummary extends ReportController { 
+
     @Service('TCReportService') 
-    def svc
+    def svc;
     
     @Service('UserRoleService')
-    def userroleSvc
+    def userroleSvc;
     
     @Service('DateService')
-    def dtsvc 
-   
-   
-    String title = 'Report of Abstract on Collection'
-    String reportpath = 'com/rameses/gov/treasury/report/collection/'
-    String reportName = reportpath + 'abstractofcollection.jasper'
+    def dtsvc; 
+      
+    String title = 'Abstract Report of Collection';
+    String reportpath = 'com/rameses/gov/treasury/report/collection/';
+    String reportName = reportpath + 'abstractofcollection.jasper';
     
+    def data; 
+    def funds; 
+    def months; 
+    def postingTypes;
     
-    def data
-        
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "combo", [caption:'Posting Types', name:'entity.postingtype', required:true, items:'postingTypes', expression:'#{item.caption}', preferredSize:'0,20', captionWidth:100, immediate:true]),
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]), 
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, immediate:true]),
+                new FormControl( "combo", [caption:'Day', name:'entity.day', items:'daylist', preferredSize:'100,20', captionWidth:100, depends:'entity.month', dynamic:true]), 
+                new FormControl( "combo", [caption:'Collector', name:'entity.collector', items:'collectors', expression:'#{item.fullname}', preferredSize:'0,20', captionWidth:100 ]),
+                new FormControl( "combo", [caption:'Fund', name:'entity.fund', items:'funds', expression:'#{item.title}', preferredSize:'0,20', captionWidth:100 ]),
+            ]; 
+        }
+    ] as FormPanelModel;
+
+    def initReport() { 
+        def res = svc.initReport(); 
+        funds = ( res.funds ? res.funds : [] );
+        months = ( res.months ? res.months : [] );
+        postingTypes = ( res.postingtypes ? res.postingtypes : [] );
+        entity.day = res.day; 
+        entity.year = res.year; 
+        entity.month = res.month;
+        return super.initReport(); 
+    } 
+                     
     def getReportData(){
         data = svc.getAbstractOfCollection(entity);
         return data.items; 
     }
-   
-    
-    def formControl = [
-        getFormControls: {
-           return [
-               new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
-               new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100, immediate:true]),
-               new FormControl( "combo", [caption:'Day', name:'entity.day', items:'daylist', preferredSize:'100,19', captionWidth:100, depends:'entity.month', dynamic:true]), 
-               new FormControl( "combo", [caption:'Collector', name:'entity.collector', items:'collectors', expression:'#{item.fullname}', preferredSize:'0,19', captionWidth:100 ]),
-               new FormControl( "combo", [caption:'Fund', name:'entity.fund', items:'funds', expression:'#{item.title}', preferredSize:'200,19', captionWidth:100 ]),
-           ]    
-        }
-    ] as FormPanelModel;
-   
-       
-    Map getParameters(){
-        return data.info
-    }
         
-    List getFunds() {
-        return svc.getFunds( )
+    Map getParameters(){
+        return data.info; 
     }
     
     List getCollectors() {
@@ -65,12 +73,8 @@ class AbstractCollectionSummary extends com.rameses.etracs.shared.ReportControll
         ]}
     }
     
-    List getMonths(){
-        return dtsvc.getMonths()
-    }
-    
-    List getDaylist() {
-        return svc.getNumDays(entity.year, (entity.month?.index) - 1 )
+    List getDaylist() { 
+        return svc.getNumDays( entity.year, (entity.month?.index) - 1 ); 
     }
 }
 ]]> 

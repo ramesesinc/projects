@@ -3,7 +3,7 @@
         allowCreate="false" allowDelete="false">
     
     <invokers>
-        <invoker folderid="home/collection" caption="Fund Transfer List" target="window" action="init" index="101"/> 
+        
         <invoker type="collectiondeposit_fundtransfer:fortransfer" 
                  caption="Fund Transfer List" target="window" action="init" index="101"/> 
         

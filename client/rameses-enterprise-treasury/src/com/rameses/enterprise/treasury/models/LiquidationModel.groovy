@@ -6,12 +6,9 @@ import com.rameses.rcp.annotations.*;
 import java.rmi.server.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.util.*;
+import com.rameses.seti2.models.*;
 
-
-class LiquidationModel  { 
-
-    @Binding
-    def binding;
+class LiquidationModel extends CrudFormModel { 
 
     @Service("LiquidationService")
     def service;
@@ -23,28 +20,29 @@ class LiquidationModel  {
     def incomeSvc;
 
     String title = "Liquidation";
-    def entity;
-    def mode = 'initial';
+    String schemaName = "liquidation";
+    
     def handler;
     def listModel;
     def selectedItem;
-    
     def selectedRemittance;
     def selectedFund;
     
     @FormTitle
-    public def getTitle() {
+    public String getTitle() {
         return entity.txnno;
     }
 
     @FormId
-    public def getFormId() {
+    public String getFormId() {
         return entity.objid;
     }
 
+    /*
     def getExtActions() {
         return InvokerUtil.lookupActions( "liquidation:formActions", [entity:entity] );
     }
+    */
 
     def popupReports(def inv) {
         def popupMenu = new PopupMenuOpener();
@@ -66,32 +64,12 @@ class LiquidationModel  {
         return null;
     }
     
-    def open(){
-        mode = "read";
-        entity = service.open(entity);
-        return null;
-    }
-
-    def remittancesModel = [
-        fetchList: { o->return entity.remittances; },
-        onOpenItem: { o, col->
-            return viewRemittance();
-        }
-    ] as BasicListModel;
 
     def fundListModel = [
         fetchList: {
-            return entity.fundsummary;
+            return entity.funds;
         }
     ] as BasicListModel;
-    
-    def viewRemittance() {
-        if( !selectedRemittance ) throw new Exception('Please select an item');
-        //def rem = remittanceSvc.open( [objid:selectedRemittance.objid ] );
-        def op = Inv.lookupOpener( "remittance:open", [entity:selectedRemittance] );
-        op.target = 'popup';
-        return op;
-    }
     
     def viewBreakdown() {
         def h = [
@@ -109,21 +87,8 @@ class LiquidationModel  {
         return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
     }
     
-    
     def viewFundBreakdown() {
-        if(!selectedFund) throw new Exception("please select a fund entry");
-        def h = [
-            getCashBreakdown : {
-                return selectedFund.breakdown;   
-            },
-            getChecks: {
-                return  selectedFund.checks;
-            },
-            getCreditMemos: {
-                return selectedFund.creditmemos;
-            }
-        ];
-        return Inv.lookupOpener( "cashbreakdown", [entity:selectedFund, editable: false, handler: h ]);
+        return Inv.lookupOpener( "liquidation_fund:open", [entity:selectedFund ]);
     }
     
     void post() {

@@ -6,21 +6,32 @@ class CashReceiptListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'batch', title: 'Batch', state:'OPEN' ];
-		result << [ id:'open', title: 'Unremitted', state:'OPEN' ];
-		result << [ id:'posted', title: 'Remitted', state:'REMITTED' ];	
+		result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
+		result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+		result << [ id:'xposted', title: 'Batch', state:'X POSTED' ];
+		result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];
+		result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashreceipt' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 
-		return null;
-		
 		if( !o.node?.id ) return;
 
-		def str = "state = :state ";
-		def m = [state: o.node.state];
+		def str = "";
+		def m = [:];
+
+		if( o.node.id == 'unremitted' ) {
+			str = " remittanceid IS NULL ";
+		}
+		else if( o.node.id == 'remitted' ){
+			str = " NOT(remittanceid IS NULL) ";
+		}
+		else {
+			str = " state = :state ";
+			m.state =  o.node.state;
+		}
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

@@ -119,8 +119,8 @@
                 </Component>
                 <Component class="com.rameses.rcp.control.XActionTextField" name="xActionTextField1">
                   <Properties>
-                    <Property name="actionName" type="java.lang.String" value="refresh"/>
                     <Property name="name" type="java.lang.String" value="params.searchtext" noResource="true"/>
+                    <Property name="actionName" type="java.lang.String" value="refresh"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 22]"/>
                     </Property>

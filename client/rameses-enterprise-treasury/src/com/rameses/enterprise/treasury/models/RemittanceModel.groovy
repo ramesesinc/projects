@@ -8,11 +8,9 @@ import com.rameses.osiris2.client.*;
 import com.rameses.util.*;
 import javax.swing.*;
 import com.rameses.io.*;
+import com.rameses.seti2.models.*;
 
-class RemittanceModel  { 
-
-    @Binding
-    def binding;
+class RemittanceModel  extends CrudFormModel { 
 
     @Service("RemittanceService")
     def service;
@@ -20,18 +18,16 @@ class RemittanceModel  {
     @Service("RemittanceImportExportService")
     def exportSvc;
     
-    String title = "Remittance";
-
-    def entity;
-    def mode = 'create';
     def todate;
     boolean captureMode = false;
     def selectedFund;
 
     final def numFormatter = new java.text.DecimalFormat("#,##0.00"); 
     
+    String schemaName = "remittance";
+    
     @FormTitle
-    public def getTitle() {
+    public String getTitle() {
         if( captureMode ) {
             return "Capture Remittance";
         }
@@ -39,18 +35,20 @@ class RemittanceModel  {
             return "New Remittance";
         }
         else {
-            return entity.txnno;
+            return "Remittance " + entity.txnno;
         }
     }
 
     @FormId
-    public def getFormId() {
+    public String getFormId() {
         return entity.objid;
     }
 
+    /*
     def getExtActions() {
         return InvokerUtil.lookupActions( "remittance:formActions", [entity:entity] );
     }
+    */
 
     //whats bad about this is that the report is located in etracs treasuty gov.
     def print() {
@@ -79,23 +77,10 @@ class RemittanceModel  {
         return "capture"; 
     }    
 
-    def open(){
-        mode = "read";
-        entity = service.open(entity);
-        return "view"
-    }
-
-    def listModel = [
-        fetchList: { o->
-            return service.getRemittedReceipts( [remittanceid: entity.objid ] );
-        }
-    ] as BasicListModel;
-
-    boolean editable = true;
-    
     def remittanceFundModel = [
         fetchList: { o->
-            return service.getRemittanceFunds([remittanceid: entity.objid]);
+            return entity.funds;
+            //return service.getRemittanceFunds([remittanceid: entity.objid]);
         },
         onOpenItem: { item, colName->
             return openFundBreakdown(item);
@@ -105,9 +90,6 @@ class RemittanceModel  {
     //MAIN BREAKDOWN
     def viewBreakdown() {
         def h = [
-            getCashBreakdown : {
-                return service.getCashBreakdown([objid: entity.objid]);    
-            },
             getChecks: {
                 return  service.getRemittanceChecks([remittanceid: entity.objid]);
             },
@@ -118,30 +100,12 @@ class RemittanceModel  {
         return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
     }
     
-    def openFundBreakdown(def itm) {
-        boolean ed = (itm.totalcash > 0 && entity.state == 'DRAFT')
-        def h = [
-            getCashBreakdown : {
-                return service.getFundCashBreakdown([objid: itm.objid]);    
-            },
-            getChecks: {
-                return  service.getRemittanceChecks( itm );
-            },
-            getCreditMemos: {
-                return service.getRemittanceCreditMemos( itm );   
-            },
-            update: { bd->
-                service.updateCashBreakdown( bd );
-            }
-        ]        
-        return Inv.lookupOpener( "cashbreakdown", [entity:itm, editable: ed, handler: h ]);
-    }
-    
+    //called from the menu
     def openFundBreakdown() {
         if(!selectedFund) throw new Exception("Please choose a fund");
-        return openFundBreakdown( selectedFund );
+        return Inv.lookupOpener("remittance_fund:open", [entity: selectedFund] )
     }
-    
+   
     def submit() {
         boolean pass = false;
         
@@ -166,7 +130,6 @@ class RemittanceModel  {
                 cashbreakdown: entity.cashbreakdown                 
             ]);
             entity.txnno = o.txnno;
-            mode = 'read';
             MsgBox.alert("Posting successful. Control No " + entity.txnno);
             return "_close";
         } 

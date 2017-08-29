@@ -3,16 +3,16 @@
  *
  * Created on October 13, 2013, 4:07 PM
  */
-package com.rameses.enterprise.treasury.collection;
+package com.rameses.enterprise.treasury.views;
 
 /**
  *
  * @author  arnel
  */
-public class UnremittedCollectionPage extends javax.swing.JPanel {
+public class RemittanceInitialPage extends javax.swing.JPanel {
     
     /** Creates new form UnremittedCollectionPage */
-    public UnremittedCollectionPage() {
+    public RemittanceInitialPage() {
         initComponents();
     }
     
@@ -62,8 +62,8 @@ public class UnremittedCollectionPage extends javax.swing.JPanel {
 
         jLabel2.setText("Search :");
 
-        xActionTextField1.setActionName("refresh");
         xActionTextField1.setName("params.searchtext"); // NOI18N
+        xActionTextField1.setActionName("refresh");
         xActionTextField1.setPreferredSize(new java.awt.Dimension(100, 22));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);

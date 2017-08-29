@@ -207,15 +207,6 @@ class RemittanceService  {
 		return o; 
 	} 
 
-	@ProxyMethod
-	public def open( o ) {
-		o = remdb.read( o );
-		o.remittanceid = o.objid; 
-		return o;
-	}
-
-	
-
 	public def getMonthFirstDate( dt ) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(dt);
@@ -301,10 +292,7 @@ class RemittanceService  {
 		return em.getRemittedReceipts( o );
 	}
 
-    @ProxyMethod
-    public def getRemittanceFunds( def o ) {
-    	return remf_db.find( [remittanceid: o.remittanceid ] ).list();
-    }
+   
 
 	@ProxyMethod
     public def getCashBreakdown( def o ) {

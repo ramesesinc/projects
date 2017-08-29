@@ -5,6 +5,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
+import com.rameses.enterprise.models.*;
         
 public class BasicCashReceipt extends AbstractCashReceipt {
 
@@ -87,4 +88,33 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     def getTotalAmount() {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
+    
+    def rProcessor = new RuleProcessor( { params-> collectionRuleService.execute(params) } );
+    void fireRules() {
+        boolean pass = false;
+        def params = [:];
+        def h = { o->
+            params.collectiongroup = o;
+            pass = true;
+        }
+        Modal.show("collectiongroup:lookup", [onselect:h]);
+        if( pass ) {
+            def result = rProcessor.execute( params );
+            if(!result.billitems) {
+                 throw new Exception("No results fired");
+            }
+            else {
+                result.billitems.each { itm->
+                    entity.items << [item: itm.item, amount: itm.amount, remarks:itm.remarks];
+                }
+                itemListModel.reload();
+                /*
+                result.shares?.each { sh->
+                    entity.shares << [ refaccount ]
+                }
+                */
+            }
+
+        }
+    }
 }

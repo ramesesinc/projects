@@ -7,9 +7,6 @@ import com.rameses.osiris2.common.*
         
 public class CashBreakdownModel  {
     
-    //@Service("RemittanceService")
-    //def service;
-    
     def entity;
     def total = 0;
     def cashremaining = 0;
@@ -23,13 +20,20 @@ public class CashBreakdownModel  {
     def checks;
     def creditMemos;
     
-    void init() {
+    void copyBreakdown() {
         if(entity.totalcash == null) entity.totalcash = 0;
         if( entity.cashbreakdown == null ) entity.cashbreakdown = [];
-        
-        oldbreakdown = entity.cashbreakdown;
-        
-        entity.cashbreakdown = handler.getCashBreakdown();
+        //make a copy of the brakdown
+        oldbreakdown = [];
+        entity.cashbreakdown.each {
+            def m = [:];
+            m.putAll(it);
+            oldbreakdown << m;
+        }
+    }
+    
+    void init() {
+        copyBreakdown();
         checks = handler.getChecks();
         creditMemos = handler.getCreditMemos();
         if( !creditMemos ) {

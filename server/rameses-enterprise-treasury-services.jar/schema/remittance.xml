@@ -1,5 +1,5 @@
 <schema>
-	<element name="remittance" tablename="remittance" >
+	<element  tablename="remittance" >
 		<field name="objid" primary="true"/>
 		<field name="state" required="true"/>
 		<field name="txnno" required="true" caption="Control No" searchable="true" indexed="true" />
@@ -22,11 +22,20 @@
 		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
 		<field name="remarks" />
 
-		<complex name="liquidation" ref="liquidation_remittance" jointype="many-to-one" includefields="liquidationid,liquidation.txnno" required="false">
-			<key field="objid" target="objid" />
+		<field name="liquidationid"/>
+		
+		<complex name="liquidation" ref="liquidation" jointype="many-to-one" includefields="txnno,dtposted" required="false">
+			<key field="liquidationid" target="objid" />
+		</complex>	
+		
+		<complex name="funds" ref="remittance_fund" jointype="one-to-many" type="list">
+			<key field="objid" target="remittanceid" />
 		</complex>	
 
+
+		<!--
 		<field name="liquidated" expr="CASE WHEN liquidation.liquidationid IS NULL THEN 0 ELSE 1 END" />		
+		-->
 	</element>
 
 

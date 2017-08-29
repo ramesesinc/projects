@@ -2,9 +2,10 @@
     <invokers>
         <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{!completed}" 
             icon="images/toolbars/arrow_left.png" mnemonic="b" shortcut="ctrl B"/>
+        <!--
         <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
             icon="images/toolbars/save.png" shortcut="ctrl S" mnemonic="s" />
-            
+        -->    
         <!--
         <invoker type="formActions" action="cancelSeries" caption="Cancel Series" visibleWhen="#{!completed}"
             shortcut="ctrl C" mnemonic="c" immediate="true"/>     

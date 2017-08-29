@@ -25,55 +25,9 @@
         -->
     </invokers>
     
+    <!--
     <code class="com.rameses.enterprise.treasury.models.LiquidationListModel" /> 
+    -->
     
 </workunit>
-        <!--
-<workunit extends="wtemplates/ListController.xml" serviceName="LiquidationListService" entityName="liquidation">
-    
-    <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER"> 
-            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
-            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
-        </invoker> 
-        
-        <invoker folderid="home/collection/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
-            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
-            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
-        </invoker>
-    </invokers>
-    
-    <code> 
-    <![CDATA[ 
-    
-import com.rameses.rcp.annotations.*;
-import com.rameses.rcp.common.*;
-import com.rameses.osiris2.client.*;
-import com.rameses.osiris2.common.*;
-import com.rameses.rcp.framework.ClientContext;
-
-class LiquidationListController extends DefaultListController 
-{
-    def invo; 
-    boolean is_shared_owner;
-
-    void doInit( invo ) {
-        this.invo = invo;
-        this.is_shared_owner = (invo.properties.tag == 'all'); 
-    } 
-    
-    boolean isAllowCreate() { 
-        return (is_shared_owner? false: true); 
-    }
-
-    void beforeFetchList( Map params ) { 
-        params.admin = is_shared_owner; 
-        params._tag = invo.properties.tag; 
-    }
-} 
-
-    ]]> 
-    </code>
-        
-</workunit>
--->
+       

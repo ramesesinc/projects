@@ -1,0 +1,27 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="remittance_fund" allowDelete="false" allowCreate="false">
+
+    <invokers>
+        
+        <invoker type="remittance:section" caption="Remittance Fund" tag="remittance" action="init" 
+            cols="controlno,fund.title,totalcash,totalnoncash,totalcr,amount"/>
+        
+        <invoker type="liquidation_fund:section" caption="Remittance Fund" tag="liquidation_fund" action="init" 
+            cols="controlno,remittance.collector.name,totalcash,totalnoncash,totalcr,amount"/>
+    </invokers> 
+    <code>
+        <![CDATA[
+        import com.rameses.seti2.models.*;
+        class RemittanceFundList extends CrudSubListModel {
+            public def getCustomFilter() {
+                if( tag == "remittance" ) {
+                    return [ "remittanceid =:id", [id: masterEntity.objid] ];
+                }
+                else {
+                    return [ "liquidationfundid =:id", [id: masterEntity.objid] ];
+                }
+            }
+        }
+        ]]>
+    </code>
+        
+</workunit>

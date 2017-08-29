@@ -42,7 +42,6 @@ public class AssessmentRuleService {
 		//********************************************************************
 		def facts = [];
 
-		if(!factBuilder.facts) throw new Exception("Please implement getFacts in FactBuilder")
 		facts.addAll( factBuilder.facts );
 
 		if( data.infos ) {

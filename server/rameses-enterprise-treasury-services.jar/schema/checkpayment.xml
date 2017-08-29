@@ -1,0 +1,21 @@
+<schema>
+
+	<element  tablename="checkpayment">
+		<field name="objid" primary="true" prefix="CHKPMT"/>	
+
+		<complex name="bank" ref="bank" jointype="many-to-one" required="true">
+			<key field="bankid" target="objid" />
+		</complex>	
+
+		<field name="refno" required="true" />	
+		<field name="refdate" required="true" />
+		<field name="amount" required="true" type="decimal"/>	
+		<field name="receiptid" required="true" />	
+		<field name="bank_name" required="true" />
+
+
+		<!-- amount issued. If this becomes equal to amount then this check is already closed. This starts at 0 --> 
+		<field name="amtused" required="true" type="decimal"/>	
+	</element>
+
+</schema>

@@ -1,0 +1,20 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="cashreceipt"
+          allowCreate="false" allowDelete="false">
+    <invokers>
+        <invoker type="remittance:section" caption="Receipts" index="5" immediate="true" action="init" orderBy="receiptdate"
+                 cols="receiptno,collector.name,receiptdate,txnmode,paidby,amount" />
+
+        <invoker type="formActions" caption="Back" action="_close" />
+    </invokers>
+
+    <code>
+        import com.rameses.seti2.models.*;
+        class ReceiptList extends CrudSubListModel {
+        
+            public def getCustomFilter() {
+                return [ "remittanceid= :id", [id: masterEntity.objid] ];
+            }
+        }
+    </code>
+    
+</workunit>

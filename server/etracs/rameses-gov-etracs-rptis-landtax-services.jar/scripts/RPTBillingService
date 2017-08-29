@@ -272,7 +272,7 @@ public class RPTBillingService
 		def facts = createFacts(bill)
 		def actions = buildActions(bill, facts)
 
-		def grps = ['INIT', 'TAX', 'AFTER_TAX']
+		def grps = ['INIT', 'TAX', 'AFTER_TAX', 'IDLE_LAND', 'AFTER_IDLE_LAND']
 		grps.each{g ->
 			ruleSvc.execute( RULESET, facts, actions, g);
 		}

@@ -18,6 +18,11 @@ insert into entitymultiple(
 values ($P{objid}, $P{fullname})
 
 
+[updateMultiple]
+update entitymultiple set 
+	fullname = $P{fullname}
+where objid = $P{objid}
+
 [findById]
 select * from entitymultiple where objid = $P{objid}
 

@@ -59,7 +59,9 @@ where objid = $P{faasid}
 update faas_list set 
   displaypin=$P{newpin},
   pin=$P{pin},
-  realpropertyid = $P{realpropertyid}
+  realpropertyid = $P{realpropertyid},
+  barangayid = $P{barangayid},
+  barangay = $P{barangayname}
 where objid = $P{faasid}
 
 
@@ -68,10 +70,12 @@ select objid, fullpin, rpuid, realpropertyid, taxpayer_objid from faas where obj
 
 
 [findLandFaas]
-select f.objid, f.realpropertyid, f.rpuid, f.fullpin
+select f.objid, f.realpropertyid, f.rpuid, f.fullpin, 
+	rp.barangayid as barangay_objid, b.name as barangay_name  
 from faas f 
 	inner join realproperty rp on f.realpropertyid = rp.objid 
 	inner join rpu r on f.rpuid = r.objid 
+	inner join barangay b on rp.barangayid = b.objid 
 where f.objid = $P{landfaasid}
 
 

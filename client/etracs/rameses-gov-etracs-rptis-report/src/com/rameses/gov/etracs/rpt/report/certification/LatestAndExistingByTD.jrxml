@@ -127,7 +127,7 @@
 					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="1_1_2">
 						<font fontName="Arial" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["                   <style isBold=\"true\">THIS IS TO CERTIFY</style> that Tax Declaration No. <style isBold=\"true\">   " + $F{tdno} + "   </style> issued in the name of <style isBold=\"true\">   " + $F{taxpayer.name}.replaceAll("&","&amp;") + "   </style> with Market Value of <style isBold=\"true\">   P " + (DecimalFormat.getInstance().format($F{totalav}.doubleValue()))  + "   </style> under PIN <style isBold=\"true\">   " + $F{fullpin} + "   </style> is still existing and considered the latest and still applicable until the Next General Revision of Assessment."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["                   <style isBold=\"true\">THIS IS TO CERTIFY</style> that Tax Declaration No. <style isBold=\"true\">   " + $F{tdno} + "   </style> issued in the name of <style isBold=\"true\">   " + $F{taxpayer.name}.replaceAll("&","&amp;") + "   </style> with Market Value of <style isBold=\"true\">   P " + (new java.text.DecimalFormat("#,##0.00")).format($F{totalmv}.doubleValue())  + "   </style> under PIN <style isBold=\"true\">   " + $F{fullpin} + "   </style> is still existing and considered the latest and still applicable until the Next General Revision of Assessment."]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

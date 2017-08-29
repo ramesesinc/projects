@@ -73,7 +73,9 @@ class RPTUtilityService
 		
 
 		info.realpropertyid = landfaas.realpropertyid
-		info.landrpuid = landfaas.rpuid 
+		info.barangay = landfaas.barangay 
+		info.barangayid = info.barangay.objid
+		info.barangayname = info.barangay.name 
 
 		if('bldg' == info.rputype)
 			em.modifyBldgLandRpu(info)
@@ -101,6 +103,8 @@ class RPTUtilityService
 		rp.parcel = info.sparcel 
 		rpSvc.update( rp )
 		info.realpropertyid = rp.objid 
+		info.barangayid = info.barangay.objid
+		info.barangayname = info.barangay.name 
 		updateCommonInfo(info)
 
 		//update improvements pin 
@@ -118,6 +122,8 @@ class RPTUtilityService
 				rputype : it.rputype, 
 				landrpuid : rpu.objid,
 				taxpayer  : improvfaas.taxpayer, 
+				barangayid   : info.barangayid, 
+				barangayname : info.barangayname, 
 			]
 			updateCommonInfo(param)
 		}

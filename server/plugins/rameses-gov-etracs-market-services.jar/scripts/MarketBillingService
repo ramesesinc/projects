@@ -113,7 +113,7 @@ class MarketBillingService {
 	@ProxyMethod
 	public def getBilling( def o ) {
 		if( !o.acctid ) throw new Exception("acctid is required in MarketBillingService.getBilling");
-		def str = "startdate,lastdatecovered,unittype,payfrequency,ratetype,rate,extrate,unit.clusterid,unit.sectionid,partialbalance";
+		def str = "acctno,startdate,lastdatecovered,unittype,payfrequency,ratetype,rate,extrate,unit.clusterid,unit.sectionid,partialbalance";
 		def acct = acctEm.select(str).find([objid:o.acctid]).first();
 		if(!acct) throw new Exception("Account not found");
 
@@ -182,6 +182,7 @@ class MarketBillingService {
 		process( req, resultHandler);
 		if(!m.items) 
 			throw new Exception("No billitems found");
+		m.acctno = 	acct.acctno;
 		m.fromdate = req.fromdate;
 		m.todate = req.todate;
 		m.months = 1;	

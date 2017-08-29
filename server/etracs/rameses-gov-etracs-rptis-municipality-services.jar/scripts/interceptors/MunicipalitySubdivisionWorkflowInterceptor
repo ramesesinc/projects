@@ -6,17 +6,13 @@ class MunicipalitySubdivisionWorkflowInterceptor
 	@Env
 	def env
 
-    @Service('MunicipalitySubdivisionSupportService')
+    @Service('MunicipalitySubdivisionSupport2Service')
     def svc 
 
-    @Service('SubdivisionSupportService')
-    def supportSvc
-    
-	@After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state=='forprovsubmission' && args[0].action=='completed'}", index=10000) 
+    @After(pattern="SubdivisionWorkflowService.signal", eval="#{args[0].state=='forprovsubmission' && args[0].action=='completed'}", index=10000) 
 	public void submitToProvince( evt ) {
 		def subdivision = evt.args[0].data;
-		def subdivisiondata = supportSvc.buildSubdivisionData(subdivision)
-        svc.submitToProvince(subdivisiondata)
+        svc.submitToProvince(subdivision)
         println 'Submitted subdivision to province.'
 	}
 

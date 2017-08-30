@@ -53,8 +53,14 @@ public class AssessmentRuleService {
 		if( data.billitems ) {
 			data.billitems.each { bi ->
 				def ac = [:];
-				ac.putAll( bi );
-				ac.account = acctUtil.createAccountFact(bi.item); 
+				bi.each { k,v->
+					if(k=="item") {
+						ac.account = acctUtil.createAccountFact(bi.item); 
+					}
+					else {
+						ac.put(k,v);
+					}
+				}
 				ac.refid = bi.objid; 
 				def bbi = factBuilder.getBillItemFact( ac );
 				if( !facts.find{ (it instanceof AbstractBillItem) && (it.hashCode()==bbi.hashCode())  } ) {

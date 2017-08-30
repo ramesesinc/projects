@@ -6,6 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*;
 import com.rameses.osiris2.common.*
 import com.rameses.util.*;
+
         
 public abstract class AbstractCashReceipt {
         
@@ -14,6 +15,9 @@ public abstract class AbstractCashReceipt {
     
     @Service("CashReceiptService")
     def service;
+    
+    @Service("CollectionRuleService")
+    def collectionRuleService;
 
     def entity;
     def info;
@@ -47,17 +51,7 @@ public abstract class AbstractCashReceipt {
         return entity.amount; 
     }
     
-    void clearAllPayments() {
-        entity.totalcash = 0;
-        entity.totalnoncash = 0;
-        entity.balancedue = 0;
-        entity.cashchange = 0;
-        entity.totalcredit = 0;
-        entity.paymentitems = [];
-        
-        entity.amount = getTotalAmount(); 
-        paymentListModel.reload();
-    }
+   
     
     //this is overridable bec. some might not follow this convention.
     public void validateBeforePost() {
@@ -70,7 +64,11 @@ public abstract class AbstractCashReceipt {
     
     public void updateBalances() {
         beforeUpdateBalance();
+        entity.amount = getTotalAmount(); 
+        if(binding) binding.refresh('entity.amount');
+        /*
         
+        beforeUpdateBalance();
         entity.cashchange = 0; entity.balancedue = 0; entity.totalcredit = 0;
         def amt = getTotalAmount();
         entity.amount = amt; 
@@ -95,61 +93,12 @@ public abstract class AbstractCashReceipt {
         }
 
         if(binding) binding.refresh('entity.(amount|totalcash|totalnoncash|totalcredit|balancedue|cashchange)');
+        */
     }
-
-    def paymentListModel = [
-        fetchList: { o->
-            return entity.paymentitems;
-        },
-        onRemoveItem: { o->
-            if(!MsgBox.confirm("You are about to remove this entry. Proceed?")) 
-                return false;
-            entity.paymentitems.remove( o );
-            updateBalances();
-            return true;
-        }
-    ] as EditorListModel;
 
     
     public void afterCashPayment() {}
     public void afterCheckPayment() {}
-    
-    
-    void doCashPayment() { 
-        def success = false; 
-        def handler = { o->
-            entity.totalcash = o.cash;
-            entity.cashchange = o.change;
-            afterCashPayment(); 
-            updateBalances();
-            success = true; 
-        }
-        Modal.show( "cashreceipt:payment-cash", [entity: entity, saveHandler: handler ]); 
-        if ( success ) {
-            def outcome = post(); 
-            if ( outcome ) binding.fireNavigation( outcome );  
-        }
-    }
-    
-    void doCheckPayment() { 
-        def success = false; 
-        def handler = { o-> 
-            if ( o.totalcash > 0 ) { 
-                entity.totalcash = o.totalcash; 
-            }            
-            entity.paymentitems = o.checks; 
-            entity.totalcredit = 0.0;
-            afterCheckPayment(); 
-            updateBalances();
-            paymentListModel.reload(); 
-            success = true; 
-        }
-        Modal.show( "cashreceipt:payment-check2", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 
-        if ( success ) {
-            def outcome = post(); 
-            if ( outcome ) binding.fireNavigation( outcome );  
-        }
-    }
     
     def summarizeByFund() {
         def g = entity.items.groupBy{ it.item.fund };
@@ -160,21 +109,70 @@ public abstract class AbstractCashReceipt {
         return fb;
     } 
     
+     void clearAllPayments() {
+        entity.totalcash = 0;
+        entity.totalnoncash = 0;
+        entity.balancedue = 0;
+        entity.cashchange = 0;
+        entity.totalcredit = 0;
+        if(entity.paymentitems==null) {
+            entity.paymentitems = [];
+        }
+        else {
+            entity.paymentitems.clear();
+        }
+    }
+    
+    void doCashPayment() { 
+        def success = false; 
+        clearAllPayments();
+        def handler = { o->
+            entity.totalcash = o.cash;
+            entity.cashchange = o.change;
+            success = true; 
+        }
+        Modal.show( "cashreceipt:payment-cash", [entity: entity, saveHandler: handler ]); 
+        if ( success ) {
+            def outcome = post(); 
+            binding.fireNavigation( outcome );  
+        }
+    }
+    
+    void doCheckPayment() { 
+        def success = false; 
+        clearAllPayments();
+        def handler = { o-> 
+            entity.totalcash = o.totalcash; 
+            entity.checks = o.checks;
+            entity.paymentitems = o.paymentitems; 
+            entity.totalnoncash = o.paymentitems.sum{it.amount};
+            success = true; 
+        }
+        Modal.show( "cashreceipt:payment-check", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 
+        if ( success ) {
+            def outcome = post(); 
+            binding.fireNavigation( outcome );  
+        }
+    }
+    
+    void doSplitCheck() {
+        clearAllPayments();
+        MsgBox.alert('do split check payment');
+    }
+    
     def doCreditMemo() {
         def success = false;
+        clearAllPayments();
         def handler = { o->
-            entity.paymentitems.clear();
             o.each { v->
                 entity.paymentitems << v;
             }
-            updateBalances();
-            paymentListModel.reload(); 
             success = true; 
         }
         Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, funds:summarizeByFund() ] );
         if ( success ) {
             def outcome = post(); 
-            if ( outcome ) binding.fireNavigation( outcome );  
+            binding.fireNavigation( outcome );  
         }
     }
 
@@ -246,6 +244,8 @@ public abstract class AbstractCashReceipt {
             throw new Exception("Please select at least an item to pay");
         if( entity.totalcash + entity.totalnoncash == 0 )
             throw new Exception("Please make a payment either cash or check");
+        if( (entity.totalcash-entity.cashchange) + entity.totalnoncash != entity.amount )
+            throw new Exception("Total cash and total non cash must equal the amount");    
             
         if(entity.balancedue > 0)
             throw new Exception("Please ensure that there is no balance unpaid");
@@ -352,4 +352,6 @@ public abstract class AbstractCashReceipt {
     def previewReceipt() {
         return Inv.lookupOpener( "cashreceipt:preview", [entity: entity] );
     }    
+    
+    
 }

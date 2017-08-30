@@ -2,6 +2,8 @@
     <invokers>
         <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" />
+        
+       
     </invokers> 
    
     <code>

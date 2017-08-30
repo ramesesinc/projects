@@ -1,62 +1,38 @@
 <workunit>
     <invokers>
-          <invoker type="cashreceipt:payment-check" caption="Check Payment" target="popup"/>
+          <invoker type="cashreceipt:payment-check" caption="Check Payment" action="start" target="popup"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptPaymentCheckModel" />
 
-        class CashReceiptCheckPaymentController {        
-        
-            @Binding 
-            def binding; 
-        
-            @Service("CashReceiptService")
-            def cashReceiptSvc;
+    <pageflow>
+        <start>
+            <transition to="check-details" action="init"/>
+        </start>
+        <page name="check-details" title="Enter Check Details">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" /> 
+            <transition to="determine-flow"  caption="Next" action="addCheck" /> 
+        </page>
+        <process name="determine-flow">
+            <transition to="complete-balance" cond="#{ balance > 0 }"/>
+            <transition to="view-summary" cond="#{ balance == 0 }" action="correctNoncashPayment"/>
+        </process> 
+        <page name="complete-balance" title="Complete Balance Due">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" /> 
+            <transition to="check-details" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}"/> 
+            <transition to="determine-flow" name="add-cash" caption="Add Cash" action="addCash" visibleWhen="#{false}"/> 
             
-            def entity;
-            def check = [amount:0];
-            def saveHandler;
-            
-            def doOk() {
-                if( check.amount <= 0 )
-                    throw new Exception("Amount must be greater than 0"); 
-                cashReceiptSvc.validateCheckDate( check.refdate );
-                check.reftype = "CHECK";
-                check.particulars = check.refno + " (" + check.bank + ") dated " + check.refdate;
-                saveHandler( check );
-                return "_close";
-            }
-            
-            def doCancel() {
-                return "_close";
-            }
-            
-            def getLookupBank(){
-                return InvokerUtil.lookupOpener('bank:lookup', [
-                    onselect : {
-                        check.bankid = it.objid;
-                        check.bank   = it.code;
-                        check.deposittype = it.deposittype;
-                        binding?.refresh(); 
-                    }, 
-                    onempty  : {
-                        check.bankid = null;
-                        check.bank   = null;
-                        check.deposittype = null;
-                        binding?.refresh(); 
-                    } 
-                ])
-            }
-        }
-        ]]>
-    </code>
+        </page>
+        <page name="view-summary" title="Check Payment Summary">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" /> 
+            <transition to="end" caption="Save" action="saveCheck"/> 
+        </page>
+        <end/>
+    </pageflow>    
     
     <pages>
-        <page template="com.rameses.enterprise.treasury.cashreceipt.CheckPaymentPage"/>
+        <page name="check-details" template="com.rameses.enterprise.treasury.views.CheckPaymentDetailPage"/>
+        <page name="complete-balance" template="com.rameses.enterprise.treasury.views.CheckPaymentCompleteBalancePage" />
+        <page name="view-summary" template="com.rameses.enterprise.treasury.views.CheckPaymentSummaryPage" />
     </pages>
     
 </workunit>

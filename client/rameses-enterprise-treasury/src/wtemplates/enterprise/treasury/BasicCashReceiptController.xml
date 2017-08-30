@@ -2,6 +2,8 @@
     <invokers>
         <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{!completed}" 
             icon="images/toolbars/arrow_left.png" mnemonic="b" shortcut="ctrl B"/>
+        
+        
         <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
             icon="images/toolbars/save.png" shortcut="ctrl S" mnemonic="s" />
             

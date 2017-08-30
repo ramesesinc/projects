@@ -22,27 +22,16 @@
 		<field name="cashier_title"/>
 		<field name="cashier_signature"/>
 
+		<complex name="funds" ref="liquidation_fund" jointype="one-to-many" type="list" >
+			<key field="objid" target="liquidationid" />
+		</complex>	
+
+		<complex name="remittances" ref="liquidation_remittance" jointype="one-to-many" type="list">
+			<key field="objid" target="liquidationid" />
+		</complex>	
+
 	</element>
 
-	<element name="remittance" tablename="liquidation_remittance">
-		<field name="objid" primary="true"/>
-		<field name="liquidationid" required="true"/>
-	</element>
-
-	<element name="checkpayment" tablename="liquidation_noncashpayment">
-		<field name="objid" primary="true"/>
-		<field name="liquidationid" required="true"/>
-		<field name="liquidationfundid" required="true"/>
-	</element>
-
-	<element name="cashier_fund" tablename="liquidation_fund">
-		<field name="objid" primary="true"/>
-		<field name="liquidationid" required="true"/>
-		<field name="fund_objid" required="true"/>
-		<field name="fund_title" required="true"/>
-		<field name="cashier_objid" />
-		<field name="cashier_name" />
-		<field name="amount" />
-	</element>
+	
 
 </schema>	

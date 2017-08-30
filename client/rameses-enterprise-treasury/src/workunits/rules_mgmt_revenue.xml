@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="revenue">
-    <invokers>
-        <invoker folderid="/explorer/rulemgmt/treasury" caption="Revenue Rules" action="init" role="RULE_AUTHOR"/>
-    </invokers>
-</workunit>

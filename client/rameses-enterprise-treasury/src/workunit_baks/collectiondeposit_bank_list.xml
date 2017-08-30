@@ -3,7 +3,6 @@
     allowCreate="false" allowDelete="false">
     
     <invokers>
-        <invoker folderid="home/collection" caption="Bank Deposit" target="window" action="init" index="100"/> 
         <invoker type="collectiondeposit_bank:fordeposit" 
                  caption="Bank Deposit List" target="window" action="init" index="101"/> 
         

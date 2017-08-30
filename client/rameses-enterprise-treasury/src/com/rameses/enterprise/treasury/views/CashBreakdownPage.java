@@ -46,6 +46,8 @@ public class CashBreakdownPage extends javax.swing.JPanel {
         xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField10 = new com.rameses.rcp.control.XDecimalField();
 
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 
@@ -103,9 +105,9 @@ public class CashBreakdownPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 80}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", false}
                 , new Object[]{"nullWhenEmpty", true}
@@ -116,26 +118,26 @@ public class CashBreakdownPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "voided"}
-                , new Object[]{"caption", "Void"}
-                , new Object[]{"width", 30}
-                , new Object[]{"minWidth", 30}
-                , new Object[]{"maxWidth", 30}
+                new Object[]{"name", "reftype"}
+                , new Object[]{"caption", "Ref Type"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "reftype"}
-                , new Object[]{"caption", "Ref Type"}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 80}
-                , new Object[]{"maxWidth", 80}
+                new Object[]{"name", "fund.title"}
+                , new Object[]{"caption", "Fund"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -183,13 +185,13 @@ public class CashBreakdownPage extends javax.swing.JPanel {
             .addGroup(xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGap(32, 32, 32))
         );
         xPanel2Layout.setVerticalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,13 +293,26 @@ public class CashBreakdownPage extends javax.swing.JPanel {
         });
         xDataTable2.setHandler("creditMemoModel");
 
+        xDecimalField10.setCaption("Total Credit Memo");
+        xDecimalField10.setCaptionWidth(100);
+        xDecimalField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField10.setEnabled(false);
+        xDecimalField10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xDecimalField10.setName("entity.totalcredit"); // NOI18N
+        xDecimalField10.setPreferredSize(new java.awt.Dimension(150, 23));
+        xFormPanel4.add(xDecimalField10);
+
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
         xPanel1Layout.setHorizontalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
+                .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
@@ -305,7 +320,9 @@ public class CashBreakdownPage extends javax.swing.JPanel {
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("Credit Memos", xPanel1);
@@ -317,9 +334,11 @@ public class CashBreakdownPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 751, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 171, Short.MAX_VALUE))
+                    .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,11 +356,13 @@ public class CashBreakdownPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField10;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;
     private com.rameses.rcp.control.XDecimalField xDecimalField9;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;

@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount">
+   <invokers>
+         <invoker type="payableitem:lookup" caption="Lookup Payable Item Accounts" target="popup" action="init"
+            cols="code,title,fund.code,fund.title,org.name"
+            customFilter="state='APPROVED' AND type='PAYABLE' "/>
+   </invokers>
+</workunit>

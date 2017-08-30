@@ -5,11 +5,20 @@
         <invoker 
            type="cashreceiptinfo:formActions" caption="Void" action="open" 
            role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void" 
-           visibleWhen="#{allowVoid==true}"
+           visibleWhen="#{entity.voided == 0}"
            target="popup"> 
            <action role="ADMIN" tag="admin"/> 
            <action role="COLLECTOR,SUBCOLLECTOR"/> 
         </invoker>
+       
+        <invoker 
+           type="cashreceipt:form:formActions" caption="Void" action="open" 
+           role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void" 
+           visibleWhen="#{entity.voided == 0}"
+           target="popup"> 
+           <action role="ADMIN" tag="admin"/> 
+           <action role="COLLECTOR,SUBCOLLECTOR"/> 
+        </invoker>     
             
         <invoker 
            type="cashreceipt:void" caption="Void" action="create" 

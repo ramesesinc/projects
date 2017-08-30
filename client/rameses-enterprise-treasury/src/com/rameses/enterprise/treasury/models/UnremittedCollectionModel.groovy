@@ -4,50 +4,23 @@ import com.rameses.rcp.common.*
 import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
+import com.rameses.seti2.models.*;
 
-class UnremittedCollectionModel {
+class UnremittedCollectionModel extends CrudListModel {
+
+    @Script("User")
+    def user;
     
-    @Binding
-    def binding
-
-    @Service("UnremittedCollectionService")
-    def svc
-
     def df = new java.text.DecimalFormat("#,##0.00")
 
-    def totalamount = "0.00"
-    def params=[:];
-    def list
-    def selectedItem
-
-    void init() {
-        search();
+    def getCustomFilter() {
+        return [ "collector.objid=:uid", [ uid: user.userid ] ];
     }
-
-    def listHandler = [
-        fetchList: { o ->
-            return list
-        }
-    ] as BasicListModel
-
-    def search() {
-        list = svc.getList(params)
-        totalamount = list ? df.format( list.amount.sum() ): "0.00"
+    
+    def viewSum() {
+        MsgBox.alert('view sum');
     }
-
-    def open() {
-        if(!selectedItem) return;
-
-        def o = InvokerUtil.lookupOpener( "cashreceiptinfo:open",[entity:selectedItem]);
-        o.target =  "popup"
-        return o;
-    }
-
-    def refresh() {
-        search();
-        listHandler.load()
-        binding.refresh("totalamount")
-    }
+    
 
     void fix() {
         if ( MsgBox.confirm('You are about to fix your accountable forms.\nDo you want to continue?') ) {

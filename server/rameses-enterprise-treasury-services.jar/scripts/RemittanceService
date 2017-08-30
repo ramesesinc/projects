@@ -92,6 +92,7 @@ class RemittanceService  {
 
 		remdb.insertNonCashPayment( info ); 
 		remdb.insertFundSummary( info ); 
+		remdb.updateNonCashReceiptPayment( info ); 
 
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
 			def afc = o.items.find{ it.controlid == k } 
@@ -269,6 +270,9 @@ class RemittanceService  {
     	def o = remittance_tool.findRemittance( params ); 
     	if ( o?.liquidated > 0 ) 
     		throw new Exception('This transaction has already been liquidated. Cannot revert remittance'); 
+
+		remittance_tool.revertCashReceiptNonCashPayments( params ); 
+		remittance_tool.revertCashReceipts( params ); 
 
     	remittance_tool.removeFunds( params ); 
     	remittance_tool.removeAFs( params ); 

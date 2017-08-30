@@ -14,14 +14,21 @@ class RemittanceDefaultInterceptor {
 	@DataContext("cashreceipt")
 	def cashreceipt_db;
 
+	@DataContext("cashreceiptpayment_noncash")
+	def cashreceipt_noncash_db;
+
 	@Before( pattern="PersistenceService.removeEntity" )
 	public void beforeDelete( evt ) {
 		def params = evt.args[0]; 
 		def m = [ remittanceid: params.objid ];
+		cashreceipt_db.find( m ).update([ remittanceid: '{NULL}' ]);
+
+		remf_db.find( m ).list().each{
+			cashreceipt_noncash_db.find([ remittancefundid: it.objid ]).update([ remittancefundid: '{NULL}' ]); 
+		}
+		
 		remf_db.find( m ).delete(); 
 		remaf_db.find( m ).delete(); 
 		remnc_db.find( m ).delete(); 
-
-		cashreceipt_db.find( m ).update([ remittanceid: '{NULL}' ]);
 	} 
 }

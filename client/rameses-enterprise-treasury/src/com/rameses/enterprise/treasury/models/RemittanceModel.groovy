@@ -33,25 +33,19 @@ class RemittanceModel  extends CrudFormModel {
     public String getTitle() {
         if( captureMode ) {
             return "Capture Remittance";
-        }
-        else if( mode == "create" ) {
-            return "New Remittance";
-        }
-        else {
+        } 
+        else if( entity?.state.toString().equalsIgnoreCase('DRAFT') ) {
+            return "New Remittance"; 
+        } 
+        else { 
             return "Remittance " + entity.txnno;
-        }
+        } 
     }
 
     @FormId
     public String getFormId() {
         return entity.objid;
     }
-
-    /*
-    def getExtActions() {
-        return InvokerUtil.lookupActions( "remittance:formActions", [entity:entity] );
-    }
-    */
 
     boolean isCanPrintReport() { 
         return ( entity.state != 'DRAFT' ); 
@@ -71,10 +65,9 @@ class RemittanceModel  extends CrudFormModel {
         return popupMenu;
     }
 
-    def create() {
-        entity = service.init( [todate: todate ] );  
-        return "create";
-    }
+    public void afterCreate() { 
+        entity = service.init([ todate: todate ]);  
+    } 
 
     def capture() { 
         captureMode = true; 

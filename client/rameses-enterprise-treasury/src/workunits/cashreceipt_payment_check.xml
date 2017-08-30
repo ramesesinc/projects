@@ -9,22 +9,22 @@
             <transition to="check-details" action="init"/>
         </start>
         <page name="check-details" title="Enter Check Details">
-            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" /> 
-            <transition to="determine-flow"  caption="Next" action="addCheck" /> 
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="determine-flow"  caption="Next" action="addCheck" mnemonic="N"/> 
         </page>
         <process name="determine-flow">
             <transition to="complete-balance" cond="#{ balance > 0 }"/>
             <transition to="view-summary" cond="#{ balance == 0 }" action="correctNoncashPayment"/>
         </process> 
         <page name="complete-balance" title="Complete Balance Due">
-            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" /> 
-            <transition to="check-details" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}"/> 
-            <transition to="determine-flow" name="add-cash" caption="Add Cash" action="addCash" visibleWhen="#{false}"/> 
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="check-details" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}" mnemonic="k"/> 
+            <transition to="determine-flow" name="add-cash" caption="Add Cash" action="addCash" visibleWhen="#{false}" mnemonic="A"/> 
             
         </page>
         <page name="view-summary" title="Check Payment Summary">
-            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" /> 
-            <transition to="end" caption="Save" action="saveCheck"/> 
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="end" caption="Save" action="saveCheck" mnemonic="S"/> 
         </page>
         <end/>
     </pageflow>    

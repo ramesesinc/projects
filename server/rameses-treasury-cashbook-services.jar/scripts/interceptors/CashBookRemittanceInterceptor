@@ -3,11 +3,11 @@ import java.rmi.server.UID;
 
 class CashBookRemittanceInterceptor {
 
-	@ActiveDB('remittance') 
-	def remdb; 
-
 	@ActiveDB('cashbook_tool') 
 	def cashbook_tool; 
+
+	@ActiveDB('cashbook_remittance') 
+	def cashbook_rem; 
 
 	@Service("CashBookPostService")
 	def cashbookPostSvc;	
@@ -15,10 +15,12 @@ class CashBookRemittanceInterceptor {
 	@After( pattern="RemittanceService.post", index=-10 ) 
 	public void postRemittance( evt ) { 
 		def params = evt.args[0]; 
-		remdb.getRemittedFundsForCashBook([ remittanceid: params.objid ]).each{ o-> 
+		def remid = ( params.remittanceid ? params.remittanceid : params.objid ); 
+
+		cashbook_rem.getRemittanceFunds([ remittanceid: remid ]).each{ o-> 
 			o.type = 'COLLECTOR'; 
-			o.particulars = 'REMITTANCE'; 
 			o.reftype = 'remittance'; 
+			o.particulars = 'REMITTANCE'; 
 			cashbookPostSvc.postCR( o ); 
 		} 
 	} 

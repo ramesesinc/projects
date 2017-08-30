@@ -19,11 +19,14 @@
         <invoker type="formActions" caption="Next" visibleWhen="#{mode == 'capture' }" mnemonic="n" 
                  shortcut="ctrl N" action="create"/>
   
-        <!-- for create -->
+        <!-- for draft -->
         <invoker type="formActions" caption="Submit" name="submit" 
                  visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="s" 
-                 shortcut="ctrl S" icon="images/toolbars/save.png" role="COLLECTOR"/>
-        
+                 role="COLLECTOR" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        <invoker type="formActions" caption="Delete" name="delete" 
+                 visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="d" 
+                 role="COLLECTOR" shortcut="ctrl D" />
+                
         <!-- approval actions -->
         <invoker type="formActions" caption="Accept" name="approve" 
                  mnemonic="e" role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
@@ -34,9 +37,8 @@
         -->
                  
         <!-- common in read -->
-        <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{mode == 'read' }" />
-        <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{mode == 'read' }" category="remittance:reports" />
-        
+        <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{canPrintReport == true}" />
+        <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{canPrintReport == true}" category="remittance:reports" />
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />

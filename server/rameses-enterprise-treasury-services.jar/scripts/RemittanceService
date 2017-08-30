@@ -31,9 +31,6 @@ class RemittanceService  {
 	@DataContext("remittance")
 	def remdb;
 
-	@DataContext("remittance_cashreceipt")
-	def remc_db;
-
 	@DataContext("remittance_fund")
 	def remf_db;
 
@@ -45,6 +42,9 @@ class RemittanceService  {
 
 	@DataContext("af_control")
 	def afc_db;
+
+	@DataContext('cashreceipt') 
+	def cashreceipt_db;
 
 	@ProxyMethod
 	public def init( param ) { 
@@ -71,7 +71,7 @@ class RemittanceService  {
 			info.txndate = getMonthFirstDate( rundate ); 
 			remdb.updateSerialReceipts( info );  
 			remdb.updateNonSerialReceipts( info );  
-			def test = remc_db.find([ remittanceid: remittanceid ]).first(); 
+			def test = cashreceipt_db.find([ remittanceid: remittanceid ]).first(); 
 			if ( test ) { 
 				o.endofmonth = true; 
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 

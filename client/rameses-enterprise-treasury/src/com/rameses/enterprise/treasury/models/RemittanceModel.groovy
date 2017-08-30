@@ -19,6 +19,9 @@ class RemittanceModel  {
 
     @Service("RemittanceImportExportService")
     def exportSvc;
+
+    @Service("PersistenceService")
+    def persistenceSvc;
     
     String title = "Remittance";
 
@@ -48,10 +51,14 @@ class RemittanceModel  {
         return entity.objid;
     }
 
-    def getExtActions() {
+    def getExtActions() { 
         return InvokerUtil.lookupActions( "remittance:formActions", [entity:entity] );
-    }
+    } 
 
+    boolean isCanPrintReport() { 
+        return ( entity.state != 'DRAFT' && mode=='read' ); 
+    } 
+    
     //whats bad about this is that the report is located in etracs treasuty gov.
     def print() {
         return InvokerUtil.lookupOpener( "remittance:rcd", [entity:entity] );
@@ -73,11 +80,16 @@ class RemittanceModel  {
         return "create";
     }
 
-    def capture() {
-        captureMode = true;
-        mode = "capture";    
+    def capture() { 
+        captureMode = true; 
+        mode = "capture"; 
         return "capture"; 
     }    
+    
+    def delete() { 
+        persistenceSvc.removeEntity([ _schemaname:'remittance', objid: entity.objid ]); 
+        return '_close'; 
+    } 
 
     def open(){
         mode = "read";
@@ -165,8 +177,9 @@ class RemittanceModel  {
                 collector: entity.collector, 
                 cashbreakdown: entity.cashbreakdown                 
             ]);
-            entity.txnno = o.txnno;
-            mode = 'read';
+            entity.txnno = o.txnno; 
+            entity.state = o.state; 
+            mode = 'read'; 
             MsgBox.alert("Posting successful. Control No " + entity.txnno);
             return "_close";
         } 

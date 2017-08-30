@@ -165,11 +165,10 @@ insert into remittance_noncashpayment (
   objid, remittanceid, amount, voided 
 ) 
 select 
-  nc.objid, remc.remittanceid, nc.amount, 0 as voided 
-from remittance_cashreceipt remc 
-  inner join cashreceipt c on remc.objid=c.objid 
+  nc.objid, c.remittanceid, nc.amount, 0 as voided 
+from cashreceipt c 
   inner join cashreceiptpayment_noncash nc on nc.receiptid=c.objid 
-where remc.remittanceid = $P{remittanceid} 
+where c.remittanceid = $P{remittanceid} 
   and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
   and c.state not in ('CANCELLED') 
 
@@ -182,8 +181,6 @@ from remittance_noncashpayment remnc
   inner join cashreceiptpayment_noncash nc on nc.objid=remnc.objid 
   inner join cashreceipt c on nc.receiptid=c.objid 
 where remnc.remittanceid = $P{remittanceid} 
-  and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
-  and c.state <> 'CANCELLED' 
 
 
 [getBuildReceiptSummary]
@@ -202,7 +199,7 @@ from (
     (select count(*) from cashreceipt_void where receiptid=c.objid) as voided, 
     (case when c.state='CANCELLED' then 0 else 1 end) as qty, 
     (case when c.state='CANCELLED' then 1 else 0 end) as cqty, 
-    c.amount, c.totalnoncash, (c.totalcash-c.cashchange) as totalcash, 
+    c.amount, c.totalnoncash, (c.amount - c.totalnoncash) as totalcash, 
     afc.startseries as afstartseries, afc.endseries as afendseries, 
     afc.currentseries as afnextseries, af.denomination 
   from cashreceipt c 
@@ -239,33 +236,33 @@ SELECT
     SUM( totalcash + totalnoncash + totalcr ) as amount, '[]' as cashbreakdown  
 FROM ( 
   SELECT 
-     remc.remittanceid, ia.fund_objid, SUM(ci.amount) AS totalcash, 0.0 AS totalnoncash, 0.0 AS totalcr 
-  FROM remittance_cashreceipt remc 
-    INNER JOIN cashreceipt c ON c.objid=remc.objid 
+     c.remittanceid, ia.fund_objid, SUM(ci.amount) AS totalcash, 0.0 AS totalnoncash, 0.0 AS totalcr 
+  FROM cashreceipt c 
     INNER JOIN cashreceiptitem ci ON ci.receiptid=c.objid 
     INNER JOIN itemaccount ia ON ci.item_objid=ia.objid 
-  WHERE remc.remittanceid=$P{remittanceid} 
+  WHERE c.remittanceid = $P{remittanceid} 
     AND c.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid=c.objid) 
     AND c.objid NOT IN (SELECT receiptid FROM cashreceiptpayment_noncash WHERE receiptid=c.objid) 
+    AND c.state <> 'CANCELLED' 
   GROUP BY ia.fund_objid 
   UNION ALL 
   SELECT 
-    remc.remittanceid, ci.fund_objid, 0.0 AS totalcash, 0.0 AS totalnoncash, SUM(ci.amount) AS totalcr 
-  FROM remittance_cashreceipt remc 
-    INNER JOIN cashreceipt c ON c.objid=remc.objid 
+    c.remittanceid, ci.fund_objid, 0.0 AS totalcash, 0.0 AS totalnoncash, SUM(ci.amount) AS totalcr 
+  FROM cashreceipt c 
     INNER JOIN cashreceiptpayment_noncash ci ON ci.receiptid=c.objid 
-  WHERE remc.remittanceid=$P{remittanceid} 
+  WHERE c.remittanceid = $P{remittanceid} 
     AND c.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid=c.objid) 
+    AND c.state <> 'CANCELLED' 
     AND ci.reftype = 'CREDITMEMO' 
   GROUP BY ci.fund_objid 
   UNION ALL 
   SELECT 
-    remc.remittanceid, nc.fund_objid, 0.0 AS totalcash, SUM(nc.amount) AS totalnoncash, 0.0 AS totalcr  
-  FROM remittance_cashreceipt remc 
-    INNER JOIN cashreceipt c ON c.objid=remc.objid 
+    c.remittanceid, nc.fund_objid, 0.0 AS totalcash, SUM(nc.amount) AS totalnoncash, 0.0 AS totalcr  
+  FROM cashreceipt c 
     INNER JOIN cashreceiptpayment_noncash nc ON nc.receiptid=c.objid 
-  WHERE remc.remittanceid=$P{remittanceid} 
+  WHERE c.remittanceid = $P{remittanceid} 
     AND c.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid=c.objid) 
+    AND c.state <> 'CANCELLED' 
     AND nc.reftype <> 'CREDITMEMO' 
   GROUP BY nc.fund_objid 
 )tmp1, fund 
@@ -275,11 +272,10 @@ GROUP BY remittanceid, fund_objid, fund.title
 
 [getBuildCancelSeries]
 select cs.*, c.series 
-from remittance_cashreceipt remc 
-  inner join cashreceipt c on remc.objid=c.objid 
+from cashreceipt c 
   inner join cashreceipt_cancelseries cs on cs.receiptid = c.objid
-where remc.remittanceid = $P{remittanceid} 
-  and c.state='CANCELLED' 
+where c.remittanceid = $P{remittanceid} 
+  and c.state = 'CANCELLED' 
 
 
 [getRemittedCashTickets]

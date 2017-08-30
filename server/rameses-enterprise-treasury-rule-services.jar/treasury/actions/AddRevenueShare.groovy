@@ -14,19 +14,29 @@ class AddRevenueShare implements RuleActionHandler  {
 
 		def refacct = params.refaccount;
 		def payableacct = params.payableaccount;
+		def share = params.share.decimalValue;
 		def amt = params.amount.decimalValue;
+
+		if( refacct ==null && payableacct==null)
+			throw new Exception("Error in AddRevenueShare action. Please indicate a ref account or a payable account. Check the rules");
 
 		def ct = RuleExecutionContext.getCurrentContext();
 		def rs = new RevenueShare();
-		rs.refaccount = ct.env.acctUtil.createAccountFact( [objid: refacct.key] );
-		rs.payableaccount = ct.env.acctUtil.createAccountFact( [objid: payableacct.key] );
-		rs.amount  = amt;
 
-		if (!ct.result.shareitems){
-			ct.result.shareitems = []
+		if(refacct?.key!=null && refacct?.key!='null') {
+			rs.refaccount = ct.env.acctUtil.createAccountFact( [objid: refacct.key] );
+		};	
+		if(payableacct?.key!=null && payableacct?.key!='null') {
+			rs.payableaccount = ct.env.acctUtil.createAccountFact( [objid: payableacct.key] );
 		}
+		rs.amount  = amt;
+		rs.share = share;
 
-		ct.result.shareitems << rs 
+		if (!ct.result.sharing){
+			ct.result.sharing = []
+		}
+		ct.facts << rs;
+		ct.result.sharing << rs 
 	}
 
 }

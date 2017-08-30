@@ -20,7 +20,6 @@ class CollectionRuleService  {
 		def data = [:];
 		def ruleFact = new FactBuilder();
 		if(p.collectiongroup) {
-			println "adding collection group"
 			ruleFact.facts << new CollectionGroup( objid:p.collectiongroup.objid, name:p.collectiongroup.name );
 		}	
 		def res = ruleSvc.execute("collection", data, ruleFact, null );
@@ -31,6 +30,7 @@ class CollectionRuleService  {
 			def m = [:];
 			m.billitems = res.billitems;
 			m.infos = res.infos;
+			m.sharing = res.sharing;
 			return m;
 		}	
 	}

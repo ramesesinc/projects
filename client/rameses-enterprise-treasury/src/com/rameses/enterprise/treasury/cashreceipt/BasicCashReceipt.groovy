@@ -100,21 +100,38 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         Modal.show("collectiongroup:lookup", [onselect:h]);
         if( pass ) {
             def result = rProcessor.execute( params );
-            if(!result.billitems) {
+            if(!result?.billitems) {
                  throw new Exception("No results fired");
             }
             else {
                 result.billitems.each { itm->
                     entity.items << [item: itm.item, amount: itm.amount, remarks:itm.remarks];
                 }
+                entity.sharing = result.sharing;
                 itemListModel.reload();
-                /*
-                result.shares?.each { sh->
-                    entity.shares << [ refaccount ]
-                }
-                */
+                updateBalances();
             }
 
         }
     }
+    
+    void viewSharing() {
+        if(!entity.sharing) throw new Exception("No sharing defined");
+        def lh = [
+            getColumnList: {
+                return [
+                    [name:'refaccount.title',caption:'Item Account'],
+                    [name:'payableaccount.title',caption:'Payable Account'],
+                    [name:'share',caption:'Share'],
+                    [name:'amount',caption:'Amount', type:'decimal']
+                ]
+            },
+            fetchList : {
+                return entity.sharing;
+            }
+        ] as BasicListModel;
+        Modal.show("basiclist:view", [listHandler: lh])
+    }
+    
+    
 }

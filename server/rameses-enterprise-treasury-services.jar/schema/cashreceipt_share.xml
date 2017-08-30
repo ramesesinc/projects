@@ -9,7 +9,7 @@
 		<complex name="payableaccount" ref="itemaccount" jointype="many-to-one" required="false">
 			<key field="payableacctid" target="objid"/> 
 		</complex>
-
+		<field name="share" required="true" type="decimal"/>
 		<field name="amount" required="true" type="decimal"/>
 	</element>
 

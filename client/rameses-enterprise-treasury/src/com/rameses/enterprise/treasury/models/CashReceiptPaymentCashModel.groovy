@@ -13,19 +13,8 @@ class CashReceiptPaymentCashModel  {
     def cash = 0.0;
     def change = 0.0;
     def saveHandler;
+    def page = "default";
     
-    @PropertyChangeListener
-    def listener = [
-        "cash" : { o->
-            cash = toDecimal( cash ); 
-            def amtdue = entity.amount - entity.totalnoncash;
-            if ( amtdue < cash && amtdue > 0.0 ) { 
-                change = cash - amtdue; 
-            } else { 
-                change = 0.0; 
-            } 
-        }
-    ]; 
 
     def toDecimal( value ) {
         if ( value == null ) return value; 
@@ -43,14 +32,40 @@ class CashReceiptPaymentCashModel  {
     } 
     
     def doOk() {
-        if(cash<=0)
+        if( page == "default") {
+            cash = toDecimal( cash ); 
+            if(cash<=0)
              throw new Exception("Cash amount must be greater than 0");
-        saveHandler( [cash:cash, change:change] );
-        return "_close";
+             
+            def amtdue = entity.amount - entity.totalnoncash;
+            if ( amtdue < cash && amtdue > 0.0 ) { 
+                change = cash - amtdue; 
+            } else { 
+                change = 0.0; 
+            } 
+            if(change>0) {
+                page = "change";
+                return "change";
+            }
+            else {
+                saveHandler( [cash:cash, change:change] );
+                return "_close";
+            }
+        }
+        else {
+            saveHandler( [cash:cash, change:change] );
+            return "_close";
+        }
     }
     
     def doCancel() {
-        return "_close";
+        if( page == "change" ) {
+            page = "default";
+            return page;
+        }
+        else {
+            return "_close";
+        }
     }
     
     

@@ -244,7 +244,7 @@ public abstract class AbstractCashReceipt {
             throw new Exception("Please select at least an item to pay");
         if( entity.totalcash + entity.totalnoncash == 0 )
             throw new Exception("Please make a payment either cash or check");
-        if( entity.totalcash + entity.totalnoncash != entity.amount )
+        if( (entity.totalcash-entity.cashchange) + entity.totalnoncash != entity.amount )
             throw new Exception("Total cash and total non cash must equal the amount");    
             
         if(entity.balancedue > 0)

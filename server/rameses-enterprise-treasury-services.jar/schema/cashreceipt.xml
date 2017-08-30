@@ -56,7 +56,7 @@
 			<key field="objid" target="receiptid" />
 		</complex>	
 
-		<complex name="shares" ref="cashreceipt_share" jointype="one-to-many" required="false">
+		<complex name="sharing" ref="cashreceipt_share" jointype="one-to-many" required="false">
 			<key field="objid" target="receiptid" />
 		</complex>	
 

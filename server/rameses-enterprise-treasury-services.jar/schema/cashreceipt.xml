@@ -38,6 +38,12 @@
 		<field name="subcollector_name" />
 		<field name="subcollector_title" />
 
+		<field name="remittanceid" />
+		<complex name="remittance" ref="remittance" jointype="many-to-one" 
+				 required="false" includefields="objid,txnno,dtposted">
+			<key field="remittanceid" target="objid"/> 
+		</complex>
+
 		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid">
 			<key field="objid" target="receiptid" />
 		</complex>	

@@ -130,31 +130,34 @@ SELECT a.* FROM
 ) a 
 
 
-[insertSerialReceipts]
-insert into remittance_cashreceipt ( objid, remittanceid )
-select c.objid, $P{remittanceid} as remittanceid 
-from cashreceipt c 
-  inner join af_control afc on c.controlid=afc.objid 
-  inner join af on afc.afid=af.objid 
-where c.collector_objid = $P{collectorid} 
+[updateSerialReceipts]
+update 
+  cashreceipt c, af_control afc, af 
+set 
+  c.remittanceid = $P{remittanceid} 
+where c.remittanceid is null 
+  and c.collector_objid = $P{collectorid} 
   and c.receiptdate < $P{txndate} 
   and c.state in ('POSTED','CANCELLED') 
-  and af.formtype='serial' 
-  and c.objid not in (select objid from remittance_cashreceipt where objid=c.objid) 
+  and c.controlid = afc.objid 
+  and afc.afid = af.objid 
+  and af.formtype = 'serial' 
 
 
-[insertCashTickets]
-insert into remittance_cashreceipt ( objid, remittanceid )
-select c.objid, $P{remittanceid} as remittanceid 
-from cashreceipt c 
-  inner join af_control afc on c.controlid=afc.objid 
-  inner join af on afc.afid=af.objid 
-where c.collector_objid = $P{collectorid} 
+[updateNonSerialReceipts]
+update 
+  cashreceipt c, af_control afc, af 
+set 
+  c.remittanceid = $P{remittanceid} 
+where c.remittanceid is null 
+  and c.collector_objid = $P{collectorid} 
   and c.receiptdate < $P{txndate} 
-  and c.state = 'POSTED' 
-  and af.formtype='cashticket' 
+  and c.state = 'POSTED'  
+  and c.controlid = afc.objid 
+  and afc.afid = af.objid 
+  and af.formtype = 'cashticket' 
   and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
-  and c.objid not in (select objid from remittance_cashreceipt where objid=c.objid) 
+  and c.objid not in (select receiptid from cashreceipt_cancelseries where receiptid=c.objid) 
 
 
 [insertNonCashPayment]
@@ -195,18 +198,17 @@ select
   afstartseries, afendseries, afnextseries 
 from ( 
   select 
-    remc.objid, c.formno, af.formtype, c.collector_objid, c.controlid, c.series,
-    (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided, 
+    c.objid, c.formno, af.formtype, c.collector_objid, c.controlid, c.series,
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided, 
     (case when c.state='CANCELLED' then 0 else 1 end) as qty, 
     (case when c.state='CANCELLED' then 1 else 0 end) as cqty, 
     c.amount, c.totalnoncash, (c.totalcash-c.cashchange) as totalcash, 
     afc.startseries as afstartseries, afc.endseries as afendseries, 
     afc.currentseries as afnextseries, af.denomination 
-  from remittance_cashreceipt remc 
-    inner join cashreceipt c on remc.objid=c.objid 
+  from cashreceipt c 
     inner join af_control afc on c.controlid=afc.objid 
     inner join af on afc.afid=af.objid 
-  where remc.remittanceid = $P{remittanceid} 
+  where c.remittanceid = $P{remittanceid} 
 )tmp1  
 group by 
   collector_objid, formno, controlid, formtype, 

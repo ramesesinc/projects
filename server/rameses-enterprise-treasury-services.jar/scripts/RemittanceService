@@ -69,8 +69,8 @@ class RemittanceService  {
 		def info = [ remittanceid: remittanceid, collectorid: env.USERID ];
 		if ( split_txn ) {
 			info.txndate = getMonthFirstDate( rundate ); 
-			remdb.insertSerialReceipts( info );  
-			remdb.insertCashTickets( info );  
+			remdb.updateSerialReceipts( info );  
+			remdb.updateNonSerialReceipts( info );  
 			def test = remc_db.find([ remittanceid: remittanceid ]).first(); 
 			if ( test ) { 
 				o.endofmonth = true; 
@@ -82,8 +82,8 @@ class RemittanceService  {
 		
 		if ( !hasPrevMonthTrxns ) {
 			info.txndate = dateSvc.serverDate; 
-			remdb.insertSerialReceipts( info ); 
-			remdb.insertCashTickets( info ); 
+			remdb.updateSerialReceipts( info ); 
+			remdb.updateNonSerialReceipts( info ); 
 			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
 		} 
 

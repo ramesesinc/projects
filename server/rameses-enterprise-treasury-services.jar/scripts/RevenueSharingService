@@ -1,0 +1,33 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import treasury.utils.*;
+
+
+class RevenueSharingService  {
+
+	@Service("AssessmentRuleService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public def execute( def rct ) {
+		def data = [billitems:[]];
+		rct.items.each {
+			data.billitems << [ item: it.item, amount: it.amount, remarks: it.remarks  ];
+		}
+
+		def ruleFact = new FactBuilder();
+
+		def res = ruleSvc.execute("revenuesharing", data, ruleFact, null );
+		if(!res.sharing) return [];
+		return res.sharing;
+	}
+
+
+
+}

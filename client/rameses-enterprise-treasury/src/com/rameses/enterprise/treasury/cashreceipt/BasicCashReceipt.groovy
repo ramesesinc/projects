@@ -107,7 +107,6 @@ public class BasicCashReceipt extends AbstractCashReceipt {
                 result.billitems.each { itm->
                     entity.items << [item: itm.item, amount: itm.amount, remarks:itm.remarks];
                 }
-                entity.sharing = result.sharing;
                 itemListModel.reload();
                 updateBalances();
             }

@@ -36,11 +36,9 @@
                               <Component id="xLookupField1" min="-2" pref="258" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="xButton2" min="-2" pref="94" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="xButton3" min="-2" pref="94" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="161" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -54,7 +52,6 @@
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="xLookupField1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="xButton3" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="xDataTable1" pref="241" max="32767" attributes="0"/>
@@ -99,13 +96,6 @@
         <Property name="immediate" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="fireRules" noResource="true"/>
         <Property name="text" type="java.lang.String" value="Run Rules"/>
-      </Properties>
-    </Component>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton3">
-      <Properties>
-        <Property name="immediate" type="boolean" value="true"/>
-        <Property name="name" type="java.lang.String" value="viewSharing" noResource="true"/>
-        <Property name="text" type="java.lang.String" value="View Sharing"/>
       </Properties>
     </Component>
   </SubComponents>

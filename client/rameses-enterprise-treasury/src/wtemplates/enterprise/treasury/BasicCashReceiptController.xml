@@ -21,6 +21,9 @@
         <invoker type="formActions" action="reprint" caption="Reprint" 
                  visibleWhen="#{completed}" shortcut="ctrl P"/>
             
+        <invoker type="formActions" action="viewSharing" caption="View Sharing" 
+                 visibleWhen="#{completed}" />
+        
         <invoker type="formActions" action="doVoid" caption="Void" immediate="true" 
                  visibleWhen="#{completed &amp;&amp; !entity.voided}" shortcut="ctrl V" mnemonic="v"/> 
         

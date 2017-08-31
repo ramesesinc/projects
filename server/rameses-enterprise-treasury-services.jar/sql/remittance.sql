@@ -125,15 +125,15 @@ where remnc.remittanceid = $P{remittanceid}
 
 [insertFundSummary] 
 insert into remittance_fund ( 
-   objid, remittanceid, fund_objid, fund_title, totalcash, totalnoncash, totalcr, amount, cashbreakdown 
+   objid, remittanceid, fund_objid, fund_title, totalcash, totalcheck, totalcr, amount, cashbreakdown 
 ) 
 SELECT 
     CONCAT(remittanceid, fund_objid) AS objid, remittanceid, fund_objid, fund.title as fund_title,  
-    SUM(totalcash) AS totalcash, SUM(totalnoncash) AS totalnoncash, SUM(totalcr) AS totalcr, 
-    SUM( totalcash + totalnoncash + totalcr ) as amount, '[]' as cashbreakdown  
+    SUM(totalcash) AS totalcash, SUM(totalcheck) AS totalcheck, SUM(totalcr) AS totalcr, 
+    SUM( totalcash + totalcheck + totalcr ) as amount, '[]' as cashbreakdown  
 FROM ( 
   SELECT 
-     c.remittanceid, ia.fund_objid, SUM(ci.amount) AS totalcash, 0.0 AS totalnoncash, 0.0 AS totalcr 
+     c.remittanceid, ia.fund_objid, SUM(ci.amount) AS totalcash, 0.0 AS totalcheck, 0.0 AS totalcr 
   FROM cashreceipt c 
     INNER JOIN cashreceiptitem ci ON ci.receiptid=c.objid 
     INNER JOIN itemaccount ia ON ci.item_objid=ia.objid 
@@ -144,7 +144,7 @@ FROM (
   GROUP BY ia.fund_objid 
   UNION ALL 
   SELECT 
-    c.remittanceid, ci.fund_objid, 0.0 AS totalcash, 0.0 AS totalnoncash, SUM(ci.amount) AS totalcr 
+    c.remittanceid, ci.fund_objid, 0.0 AS totalcash, 0.0 AS totalcheck, SUM(ci.amount) AS totalcr 
   FROM cashreceipt c 
     INNER JOIN cashreceiptpayment_noncash ci ON ci.receiptid=c.objid 
   WHERE c.remittanceid = $P{remittanceid} 
@@ -154,7 +154,7 @@ FROM (
   GROUP BY ci.fund_objid 
   UNION ALL 
   SELECT 
-    c.remittanceid, nc.fund_objid, 0.0 AS totalcash, SUM(nc.amount) AS totalnoncash, 0.0 AS totalcr  
+    c.remittanceid, nc.fund_objid, 0.0 AS totalcash, SUM(nc.amount) AS totalcheck, 0.0 AS totalcr  
   FROM cashreceipt c 
     INNER JOIN cashreceiptpayment_noncash nc ON nc.receiptid=c.objid 
   WHERE c.remittanceid = $P{remittanceid} 

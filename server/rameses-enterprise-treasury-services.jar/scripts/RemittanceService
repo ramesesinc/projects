@@ -94,6 +94,18 @@ class RemittanceService  {
 		remdb.insertFundSummary( info ); 
 		remdb.updateNonCashReceiptPayment( info ); 
 
+		o.amount = 0.0;
+		o.totalcash = 0.0;
+		o.totalnoncash = 0.0;
+		remf_db.find([ remittanceid: remittanceid ]).list().each{
+			o.amount += it.amount;
+			o.totalcash += it.totalcash;
+			o.totalnoncash += (it.totalcheck + it.totalcr); 
+		}
+		remdb.find([ objid: remittanceid ]).update([ 
+			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
+		]); 
+
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
 			def afc = o.items.find{ it.controlid == k } 
 			afc.cancelSeriesList = v; 
@@ -101,22 +113,8 @@ class RemittanceService  {
 
 		o.checks = remdb.getNonCashPayments( info );
 
-		o.amount = 0;
-		o.totalcash = 0;
-		o.totalnoncash = 0;
-		if ( o.items ) { 
-			o.amount = o.items.sum{( it.amount ? it.amount : 0.0 )} 
-			o.totalcash = o.items.sum{( it.totalcash ? it.totalcash : 0.0 )} 
-			o.totalnoncash = o.items.sum{( it.totalnoncash ? it.totalnoncash : 0.0 )} 
-		} 
-
-		remdb.find([ objid: remittanceid ]).update([ 
-			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
-		]); 
-
 		def afcs = afc_db.find([ owner_objid: o.collector.objid ]).where(' currentseries <= endseries ').list(); 
 		afcs.each{ it.controlid=it.objid } 
-
 
 		def rafparam = [ txndate: o.dtposted ]; 
 		rafparam.controls = afcs.collect{ it.objid } 
@@ -199,9 +197,10 @@ class RemittanceService  {
 		if ( !o.collector ) o.collector = [:];
 		if ( param.collector?.signature ) o.collector.signature = param.collector.signature; 
 
+		def rundate = dateSvc.getServerDate(); 
 		remdb.find([ objid: param.remittanceid ]).update([ 
+			txnno: o.txnno, state: o.state, dtposted: rundate, 
 			cashbreakdown: param.cashbreakdown, 
-			txnno: o.txnno, state: o.state, 
 			collector: o.collector 
 		]); 
 

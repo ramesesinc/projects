@@ -7,7 +7,7 @@
 		<field name="fund_title" required="true"/>
 		<field name="amount" required="true" type="decimal"/>
 		<field name="totalcash"  type="decimal" />
-		<field name="totalnoncash"  type="decimal"/>
+		<field name="totalcheck"  type="decimal"/>
 		<field name="totalcr"  type="decimal"/>
 		<complex name="cashbreakdown"  serializer="default" type="list" />
 

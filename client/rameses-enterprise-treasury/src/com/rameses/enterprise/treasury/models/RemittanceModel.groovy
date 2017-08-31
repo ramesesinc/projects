@@ -17,10 +17,13 @@ class RemittanceModel  extends CrudFormModel {
 
     @Service("RemittanceImportExportService")
     def exportSvc;
+
+    @Service("PersistenceService")
+    def persistenceSvc;
     
-    def todate;
     boolean captureMode = false;
     def selectedFund;
+    def todate;
 
     final def numFormatter = new java.text.DecimalFormat("#,##0.00"); 
     
@@ -30,13 +33,13 @@ class RemittanceModel  extends CrudFormModel {
     public String getTitle() {
         if( captureMode ) {
             return "Capture Remittance";
-        }
-        else if( mode == "create" ) {
-            return "New Remittance";
-        }
-        else {
+        } 
+        else if( entity?.state.toString().equalsIgnoreCase('DRAFT') ) {
+            return "New Remittance"; 
+        } 
+        else { 
             return "Remittance " + entity.txnno;
-        }
+        } 
     }
 
     @FormId
@@ -44,12 +47,10 @@ class RemittanceModel  extends CrudFormModel {
         return entity.objid;
     }
 
-    /*
-    def getExtActions() {
-        return InvokerUtil.lookupActions( "remittance:formActions", [entity:entity] );
-    }
-    */
-
+    boolean isCanPrintReport() { 
+        return ( entity.state != 'DRAFT' ); 
+    } 
+    
     //whats bad about this is that the report is located in etracs treasuty gov.
     def print() {
         return InvokerUtil.lookupOpener( "remittance:rcd", [entity:entity] );
@@ -64,18 +65,19 @@ class RemittanceModel  extends CrudFormModel {
         return popupMenu;
     }
 
-    def create() {
-        mode = "initial";
-        entity = service.init( [todate: todate ] );  
-        mode = "create";    
-        return "create";
-    }
+    public void afterCreate() { 
+        entity = service.init([ todate: todate ]);  
+    } 
 
-    def capture() {
-        captureMode = true;
-        mode = "capture";    
+    def capture() { 
+        captureMode = true; 
         return "capture"; 
     }    
+    
+    def delete() { 
+        persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
+        return '_close'; 
+    } 
 
     def remittanceFundModel = [
         fetchList: { o->
@@ -129,7 +131,9 @@ class RemittanceModel  extends CrudFormModel {
                 collector: entity.collector, 
                 cashbreakdown: entity.cashbreakdown                 
             ]);
-            entity.txnno = o.txnno;
+
+            entity.txnno = o.txnno; 
+            entity.state = o.state; 
             MsgBox.alert("Posting successful. Control No " + entity.txnno);
             return "_close";
         } 

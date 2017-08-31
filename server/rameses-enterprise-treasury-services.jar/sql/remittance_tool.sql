@@ -27,3 +27,14 @@ select rem.*,
 	(select count(*) from liquidation_remittance where objid=rem.objid) as liquidated  
 from remittance rem 
 where rem.objid=$P{remittanceid} 
+
+
+[revertCashReceiptNonCashPayments]
+update cashreceiptpayment_noncash set remittancefundid = null where receiptid in ( 
+	select objid from cashreceipt 
+	where objid = cashreceiptpayment_noncash.receiptid 
+		and remittanceid = $P{remittanceid} 
+) 
+
+[revertCashReceipts]
+update cashreceipt set remittanceid = null where remittanceid = $P{remittanceid} 

@@ -40,13 +40,12 @@
 
 		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid">
 			<key field="objid" target="receiptid" />
-		</complex>	
+		</complex> 
 
 		<field name="remittanceid" />
-
 		<complex name="remittance" ref="remittance" jointype="many-to-one" required="false">
-			<key field="remittanceid" target="objid" />
-		</complex>	
+			<key field="remittanceid" target="objid"/> 
+		</complex> 
 
 		<complex name="items" ref="cashreceiptitem" jointype="one-to-many">
 			<key field="objid" target="receiptid" />

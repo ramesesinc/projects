@@ -1,9 +1,6 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
 import com.rameses.common.*
-import com.rameses.services.extended.*
-
+import com.rameses.util.*;
 
 class RemittanceReportService  {
 
@@ -27,7 +24,6 @@ class RemittanceReportService  {
 
 	@Service('RAAFReportService') 
 	def raafSvc; 
-
 	
 	@Service 
 	def self; 
@@ -118,7 +114,6 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def getRCDReportDataByFund( rem, fund, af ) { 
-		println '** getrcdreportdata by fund '
 		def remittance = getRemittance( rem );
 		def params = [ remittanceid: rem.objid, fundid: (fund? fund.objid: '%'), formno: (af? af.formno: '%') ];  
 		remittance.collectiontype = buildCollectionTypes( db.getRCDCollectionTypesByFund( params ) );

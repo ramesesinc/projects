@@ -28,16 +28,8 @@
 			<key field="liquidationid" target="objid" />
 		</complex>	
 		
-		<complex name="funds" ref="remittance_fund" jointype="one-to-many" type="list">
+		<complex name="funds" ref="remittance_fund" jointype="one-to-many" type="list" required="false">
 			<key field="objid" target="remittanceid" />
 		</complex>	
-
-
-		<!--
-		<field name="liquidated" expr="CASE WHEN liquidation.liquidationid IS NULL THEN 0 ELSE 1 END" />		
-		-->
 	</element>
-
-
-	
 </schema>

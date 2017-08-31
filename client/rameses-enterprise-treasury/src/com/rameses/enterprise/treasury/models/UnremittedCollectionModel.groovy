@@ -14,7 +14,7 @@ class UnremittedCollectionModel extends CrudListModel {
     def df = new java.text.DecimalFormat("#,##0.00")
 
     def getCustomFilter() {
-        return [ "collector.objid=:uid", [ uid: user.userid ] ];
+        return [ "collector.objid=:uid AND remittanceid IS NULL", [ uid: user.userid ] ];
     }
     
     def viewSum() {

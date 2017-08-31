@@ -31,9 +31,6 @@ class RemittanceService  {
 	@DataContext("remittance")
 	def remdb;
 
-	@DataContext("remittance_cashreceipt")
-	def remc_db;
-
 	@DataContext("remittance_fund")
 	def remf_db;
 
@@ -45,6 +42,9 @@ class RemittanceService  {
 
 	@DataContext("af_control")
 	def afc_db;
+
+	@DataContext('cashreceipt') 
+	def cashreceipt_db;
 
 	@ProxyMethod
 	public def init( param ) { 
@@ -69,9 +69,9 @@ class RemittanceService  {
 		def info = [ remittanceid: remittanceid, collectorid: env.USERID ];
 		if ( split_txn ) {
 			info.txndate = getMonthFirstDate( rundate ); 
-			remdb.insertSerialReceipts( info );  
-			remdb.insertCashTickets( info );  
-			def test = remc_db.find([ remittanceid: remittanceid ]).first(); 
+			remdb.updateSerialReceipts( info );  
+			remdb.updateNonSerialReceipts( info );  
+			def test = cashreceipt_db.find([ remittanceid: remittanceid ]).first(); 
 			if ( test ) { 
 				o.endofmonth = true; 
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
@@ -82,8 +82,8 @@ class RemittanceService  {
 		
 		if ( !hasPrevMonthTrxns ) {
 			info.txndate = dateSvc.serverDate; 
-			remdb.insertSerialReceipts( info ); 
-			remdb.insertCashTickets( info ); 
+			remdb.updateSerialReceipts( info ); 
+			remdb.updateNonSerialReceipts( info ); 
 			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
 		} 
 
@@ -92,6 +92,19 @@ class RemittanceService  {
 
 		remdb.insertNonCashPayment( info ); 
 		remdb.insertFundSummary( info ); 
+		remdb.updateNonCashReceiptPayment( info ); 
+
+		o.amount = 0.0;
+		o.totalcash = 0.0;
+		o.totalnoncash = 0.0;
+		remf_db.find([ remittanceid: remittanceid ]).list().each{
+			o.amount += it.amount;
+			o.totalcash += it.totalcash;
+			o.totalnoncash += (it.totalcheck + it.totalcr); 
+		}
+		remdb.find([ objid: remittanceid ]).update([ 
+			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
+		]); 
 
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
 			def afc = o.items.find{ it.controlid == k } 
@@ -100,22 +113,8 @@ class RemittanceService  {
 
 		o.checks = remdb.getNonCashPayments( info );
 
-		o.amount = 0;
-		o.totalcash = 0;
-		o.totalnoncash = 0;
-		if ( o.items ) { 
-			o.amount = o.items.sum{( it.amount ? it.amount : 0.0 )} 
-			o.totalcash = o.items.sum{( it.totalcash ? it.totalcash : 0.0 )} 
-			o.totalnoncash = o.items.sum{( it.totalnoncash ? it.totalnoncash : 0.0 )} 
-		} 
-
-		remdb.find([ objid: remittanceid ]).update([ 
-			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
-		]); 
-
 		def afcs = afc_db.find([ owner_objid: o.collector.objid ]).where(' currentseries <= endseries ').list(); 
 		afcs.each{ it.controlid=it.objid } 
-
 
 		def rafparam = [ txndate: o.dtposted ]; 
 		rafparam.controls = afcs.collect{ it.objid } 
@@ -198,9 +197,10 @@ class RemittanceService  {
 		if ( !o.collector ) o.collector = [:];
 		if ( param.collector?.signature ) o.collector.signature = param.collector.signature; 
 
+		def rundate = dateSvc.getServerDate(); 
 		remdb.find([ objid: param.remittanceid ]).update([ 
+			txnno: o.txnno, state: o.state, dtposted: rundate, 
 			cashbreakdown: param.cashbreakdown, 
-			txnno: o.txnno, state: o.state, 
 			collector: o.collector 
 		]); 
 
@@ -269,6 +269,9 @@ class RemittanceService  {
     	def o = remittance_tool.findRemittance( params ); 
     	if ( o?.liquidated > 0 ) 
     		throw new Exception('This transaction has already been liquidated. Cannot revert remittance'); 
+
+		remittance_tool.revertCashReceiptNonCashPayments( params ); 
+		remittance_tool.revertCashReceipts( params ); 
 
     	remittance_tool.removeFunds( params ); 
     	remittance_tool.removeAFs( params ); 

@@ -68,11 +68,11 @@ public abstract class CashBreakdownModel2 extends CrudFormModel {
         if( diff  != 0 )
             throw new Exception("Cash breakdown must equal total cash");
         
-        update(entity);
+        getPersistenceService().update( entity );
         return "_close";
     }
     
-    def doCancel() {
+    def doCancel() {    
         entity.cashbreakdown = oldbreakdown;
         return "_close";
     }

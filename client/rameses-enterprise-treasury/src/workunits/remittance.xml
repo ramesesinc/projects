@@ -5,25 +5,23 @@
         <invoker type="remittance:open" caption="Remittance" action="open" target="popup" />
         
         <invoker type="quick_launcher" code="REM" caption="Remittance" action="create" target="window" role="COLLECTOR"/>
-        
-        <!-- OPEN ACTION -->
-        <!--
-        <invoker type="remittance:open" caption="Remittance (Open)" action="open" target="popup"/>
-        -->
-        
+                
         <invoker folderid="explorer/txn/treasury" caption="Remittance (Capture)" action="capture" target="window"/>
         
-        
         <invoker type="formActions" caption="Close" name="_close" immediate="true" index="-5" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        
         <!-- for initial capture -->
-        <invoker type="formActions" caption="Next" visibleWhen="#{mode == 'capture' }" mnemonic="n" 
-                 shortcut="ctrl N" action="create"/>
+        <invoker type="formActions" caption="Next" action="create" 
+                 visibleWhen="#{mode == 'capture' }" mnemonic="n" shortcut="ctrl N" />
   
-        <!-- for create -->
+        <!-- for draft -->
         <invoker type="formActions" caption="Submit" name="submit" 
                  visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="s" 
-                 shortcut="ctrl S" icon="images/toolbars/save.png" role="COLLECTOR"/>
-        
+                 role="COLLECTOR" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        <invoker type="formActions" caption="Delete" name="delete" 
+                 visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="d" 
+                 role="COLLECTOR" shortcut="ctrl D" />
+                
         <!-- approval actions -->
         <invoker type="formActions" caption="Accept" name="approve" 
                  mnemonic="e" role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
@@ -34,8 +32,8 @@
         -->
                  
         <!-- common in read -->
-        <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{mode == 'read' }" />
-        <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{mode == 'read' }" category="remittance:reports" />
+        <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{canPrintReport == true}" />
+        <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{canPrintReport == true}" category="remittance:reports" />
         <invoker type="formActions" caption="View Breakdown" acttion="viewBreakdown" />
     </invokers>
    
@@ -44,11 +42,6 @@
     <pages>
         <page name="default" template="com.rameses.enterprise.treasury.views.RemittancePage" />
         <page name="capture" template="com.rameses.enterprise.treasury.views.RemittanceCapturePage" />
-        <page name="create" template="com.rameses.enterprise.treasury.views.RemittancePage" />
-       
-        <!--
-        <page name="view" template="com.rameses.enterprise.treasury.views.RemittanceViewPage" />
-        -->
     </pages> 
        
 </workunit>

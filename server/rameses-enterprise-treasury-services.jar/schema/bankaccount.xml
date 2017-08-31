@@ -19,41 +19,12 @@
 		<field name="fund_title" required="true" caption="Fund Title" searchable="true"/>
 		
 		<field name="currency" required="true" visible="false" lov="CURRENCY_TYPES"/>
-		<field name="cashreport" visible="false"/>
-		<field name="cashbreakdownreport" visible="false"/>
-		<field name="checkreport" visible="false"/>
-		<field name="checkbreakdownreport" visible="false"/>
+		
 
-		<field name="beginbalance" required="true" defaultValue="0"/>
-		<field name="forwardbalance" required="true" defaultValue="0"/>
-		<field name="totaldr" required="true" caption="Total DR" datatype="decimal" defaultValue="0"/>
-		<field name="totalcr" required="true" caption="Total CR" datatype="decimal" defaultValue="0"/>
-		<field name="endbalance" required="true" caption="End Balance" datatype="decimal" defaultValue="0"/>
-		<field name="currentlineno" required="true" defaultValue="1"/>
-	</element>
-	
+		<complex name="account" ref="itemaccount" jointype="many-to-one" includefields="code,title" required="false">
+			<key field="acctid" target="objid" />
+		</complex>
 
-	<!--
-	<element name="detail" tablename="bankaccount_entry">
-		<field name="objid" primary="true"/>
-		<field name="parentid" required="true"/>
-		<field name="txndate"  required="true"/>
-		<field name="refid"  required="true"/>
-		<field name="reftype"  required="true"/>
-		<field name="refno"  required="true"/>
-		<field name="refdate"  required="true"/>
-		<field name="particulars"  required="true"/>
-		<field name="dr"  required="true"/>
-		<field name="cr"  required="true"/>
-		<field name="runbalance"  required="true"/>
-		<field name="lineno"  required="true"/>
-		<field name="postingrefid" />
-	</element>
-	-->
-	
-	<element name="account-segment" tablename="bankaccount_account">
-		<field name="objid" primary="true"/>	
-		<field name="acctid" />
 	</element>
 	
 	

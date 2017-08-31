@@ -41,13 +41,7 @@ public class BankAccountPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xTextField3 = new com.rameses.rcp.control.XTextField();
-        xTextField4 = new com.rameses.rcp.control.XTextField();
-        xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
+        xLookupField3 = new com.rameses.rcp.control.XLookupField();
 
         xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
@@ -107,6 +101,15 @@ public class BankAccountPage extends javax.swing.JPanel {
         xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
 
+        xLookupField3.setCaption("Cash In Bank Account");
+        xLookupField3.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xLookupField3.setExpression("#{item.code} #{item.title}");
+        xLookupField3.setHandler("lookupCashInBankAccount");
+        xLookupField3.setName("entity.acctid"); // NOI18N
+        xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLookupField3.setRequired(true);
+        xFormPanel1.add(xLookupField3);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -120,79 +123,11 @@ public class BankAccountPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         xTabbedPane1.addTab("General", jPanel1);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Deposit Slip Report Format");
-        jPanel3.setBorder(xTitledBorder1);
-
-        xTextField3.setCaption("Cash");
-        xTextField3.setCaptionWidth(110);
-        xTextField3.setName("entity.cashreport"); // NOI18N
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField3.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField3);
-
-        xTextField4.setCaption("Cash Breakdown");
-        xTextField4.setCaptionWidth(110);
-        xTextField4.setName("entity.cashbreakdownreport"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField4.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField4);
-
-        xTextField5.setCaption("Check");
-        xTextField5.setCaptionWidth(110);
-        xTextField5.setName("entity.checkreport"); // NOI18N
-        xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField5.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField5);
-
-        xTextField6.setCaption("Check Breakdown");
-        xTextField6.setCaptionWidth(110);
-        xTextField6.setName("entity.checkbreakdownreport"); // NOI18N
-        xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField6.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField6);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(81, Short.MAX_VALUE))
-        );
-
-        xTabbedPane1.addTab("Report Options", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -207,28 +142,22 @@ public class BankAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XLookupField xLookupField3;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
-    private com.rameses.rcp.control.XTextField xTextField3;
-    private com.rameses.rcp.control.XTextField xTextField4;
-    private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
     // End of variables declaration//GEN-END:variables
 }

@@ -11,4 +11,10 @@ class BankAccountModel extends CrudFormModel {
     def acctTypes = ["CHECKING", "SAVINGS", "TIME DEPOSIT", "HYSA"];
     def currencyTypes = [ "PHP", "USD" ];
     
+    
+    def getLookupCashInBankAccount() {
+        if(!entity.fund?.objid)
+            throw new Exception("Fund is required");
+        return Inv.lookupOpener( "cashinbankaccount:lookup", [fundid: entity.fund.objid ] );
+    }
 } 

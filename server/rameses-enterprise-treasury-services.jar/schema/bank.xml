@@ -9,5 +9,11 @@
 		<field name="depository" type="integer" required="true" defaultValue="0" visible="false" indexed="true"/>
 		<field name="address"  visible="false"/>
 		<field name="manager" visible="false"/>
+
+
+		<field name="cashreport" visible="false"/>
+		<field name="cashbreakdownreport" visible="false"/>
+		<field name="checkreport" visible="false"/>
+		<field name="checkbreakdownreport" visible="false"/>
 	</element>
 </schema>

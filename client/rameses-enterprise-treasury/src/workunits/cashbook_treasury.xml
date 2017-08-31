@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="cashbook_treasury">
+    
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" caption="Cash Book Treasury" action="init"  
+                 role="MASTER,SHARED" permission="cashbook_treasury.view" cols="officer.name,account.title,fund.title"/>
+    </invokers>
+   
+   
+</workunit>

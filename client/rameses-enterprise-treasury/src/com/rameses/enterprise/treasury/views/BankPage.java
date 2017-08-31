@@ -43,6 +43,13 @@ public class BankPage extends javax.swing.JPanel {
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xTextField5 = new com.rameses.rcp.control.XTextField();
+        xTextField6 = new com.rameses.rcp.control.XTextField();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
 
         xTabbedPane1.setItems("sections");
 
@@ -145,6 +152,74 @@ public class BankPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("General", jPanel1);
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Deposit Slip Report Format");
+        jPanel3.setBorder(xTitledBorder1);
+
+        xTextField5.setCaption("Cash");
+        xTextField5.setCaptionWidth(110);
+        xTextField5.setName("entity.cashreport"); // NOI18N
+        xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField5.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        xFormPanel2.add(xTextField5);
+
+        xTextField6.setCaption("Cash Breakdown");
+        xTextField6.setCaptionWidth(110);
+        xTextField6.setName("entity.cashbreakdownreport"); // NOI18N
+        xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField6.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        xFormPanel2.add(xTextField6);
+
+        xTextField7.setCaption("Check");
+        xTextField7.setCaptionWidth(110);
+        xTextField7.setName("entity.checkreport"); // NOI18N
+        xTextField7.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField7.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        xFormPanel2.add(xTextField7);
+
+        xTextField8.setCaption("Check Breakdown");
+        xTextField8.setCaptionWidth(110);
+        xTextField8.setName("entity.checkbreakdownreport"); // NOI18N
+        xTextField8.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField8.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        xFormPanel2.add(xTextField8);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(137, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(103, Short.MAX_VALUE))
+        );
+
+        xTabbedPane1.addTab("Print Options", jPanel2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -164,9 +239,12 @@ public class BankPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
@@ -174,5 +252,9 @@ public class BankPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
+    private com.rameses.rcp.control.XTextField xTextField5;
+    private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
     // End of variables declaration//GEN-END:variables
 }

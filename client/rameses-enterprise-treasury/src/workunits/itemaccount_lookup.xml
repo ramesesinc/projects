@@ -3,7 +3,14 @@
         <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" />
         
+       <invoker type="payableaccount:lookup" caption="Lookup Payable Account" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="PAYABLE"/>
        
+       <invoker type="cashinbankaccount:lookup" caption="Lookup Cash In Bank Account" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH_IN_BANK"/>
+       
+       <invoker type="cashintreasuryaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH"/>
     </invokers> 
    
     <code>
@@ -21,7 +28,18 @@
             def fundid;
             
             public def getCustomFilter() {
-                return [ "fund.objid = :fundid", [fundid: fundid] ];
+                def s = [];
+                def parm = [:];
+                if(fundid) {
+                    s << "fund.objid = :fundid";
+                    parm.fundid = fundid;
+                }
+                
+                if(tag) {
+                    s << "state='APPROVED' AND type= :atype ";
+                    parm.atype = tag;
+                }
+                return [s.join(" AND "), parm ];
             }
         
         }        

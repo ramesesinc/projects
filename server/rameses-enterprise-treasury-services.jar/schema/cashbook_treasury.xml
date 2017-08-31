@@ -1,0 +1,17 @@
+<schema>
+
+	<element  tablename="cashbook_treasury">
+		<field name="objid" required="true"/>
+		<field name="officer_objid" required="true"/>
+		<field name="officer_name" required="true"/>
+
+		<complex name="account" ref="itemaccount" jointype="many-to-one" includefields="code,title" required="false">
+			<key field="acctid" target="objid" />
+		</complex>	
+		<complex name="fund" ref="fund" jointype="many-to-one" includefields="code,title" required="true">
+			<key field="fundid" target="objid" />
+		</complex>	
+
+	</element>
+
+</schema>

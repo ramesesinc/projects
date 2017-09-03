@@ -222,7 +222,7 @@ class MachRPUService
             util.isFalse(machine.newlyinstalled) && 
             util.isTrue(machine.autodepreciate) && 
             machine.residualrate > 0.0) {
-                machine.replacementcost = numberSvc.round( machine.originalcost * residualrate / 100.0 )
+                machine.replacementcost = numberSvc.round( machine.originalcost * machine.residualrate / 100.0 )
         }
     }
 

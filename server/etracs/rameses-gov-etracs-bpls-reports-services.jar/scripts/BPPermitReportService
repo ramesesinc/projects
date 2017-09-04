@@ -52,9 +52,14 @@ class BPPermitReportService {
 		list.each { perm-> 
 			def lobs = getLOBs( perm.permitid ); 
 			if ( lobs ) { 
+				perm.gross = 0.0; 
+				perm.capital = 0.0; 
+				lobs.each{ 
+					perm.gross += ( it.gross ? it.gross : 0.0 ); 
+					perm.capital += ( it.capital ? it.capital : 0.0 ); 
+				} 
+				
 				perm.lobs = lobs.collect{ it.name }.join(", "); 
-				perm.gross = lobs.sum{( it.gross ? it.gross : 0.0 )} 
-				perm.capital = lobs.sum{( it.capital ? it.capital : 0.0 )} 
 			} 
 
 			if ( perm.gross == null ) perm.gross = 0.0; 

@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="itemaccount"
           cols="code,title,type,fund.code,fund.title,state,org.code,org.name">
     <invokers>

@@ -6,30 +6,24 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.common.* 
 
-class CreditMemoPaymentModel  { 
+class CashReceiptPaymentCreditMemoModel extends PageFlowController { 
 
     @Binding
     def binding;
     
     def entity;
     def entry;
-    
-    def funds;
+    def fundList;
     def saveHandler;
+    def payments = [];
     
-    void init() {
-        entry = [:]; 
-        if(!funds) throw new Exception("fundbreakdown is required");
-    }
-    
-    def fundList = [
-        fetchList: { o->
-            return funds;
-        }
+    def noncashListHandler = [
+        fetchList: { return payments; }, 
     ] as BasicListModel;
     
     def getLookupCreditMemo() {
         def h = {o->
+            entry = [:];
             entry.refid = o.objid;
             entry.refno = o.refno;
             entry.refdate = o.refdate;
@@ -43,7 +37,7 @@ class CreditMemoPaymentModel  {
         return Inv.lookupOpener("creditmemo:forreceipt:lookup", [onselect:h] );
     }
     
-    def doOk() {
+    void distributeFund() {
         if( entry.amount != entity.amount )
             throw new Exception("Amount must equal to the credit memo amount");
             
@@ -55,26 +49,29 @@ class CreditMemoPaymentModel  {
             boolean t = MsgBox.confirm(str);
             if(!t) return null;
         }
-        def arr = [];
+        payments = [];
         int i = 1;
-        int cnt = funds.size();
-        funds.each { f->
-            f.refid = entry.refid;
-            f.refno = entry.refno;
-            f.refdate = entry.refdate; 
-            f.reftype = entry.reftype;
-            f.bank = entry.bankaccount.bank.name;
-            f.bankid = entry.bankaccount.bank.objid;
-            f.bankaccountid = entry.bankaccountid;
-            f.particulars = "CM " + f.refno + " " + f.fund.title + " " + entry.bankaccount.bank.name + ((cnt>1)? " " + (i++) + " of " +cnt : "" );
-            arr << f;
+        int cnt = fundList.size();
+        fundList.each { f->
+            def m = [:];
+            m.reftype =  "CREDITMEMO"; 
+            m.refno = entry.refno;
+            m.refid = entry.refid;
+            m.amount = f.amount;
+            m.particulars = "CM " + f.refno + " " + f.fund.title + " " + entry.bankaccount.bank.name + ((cnt>1)? " " + (i++) + " of " +cnt : "" );
+            m.refdate = entry.refdate; 
+            m.fund = f.fund;
+            payments << m;
         }
-        saveHandler( arr );
+    }
+    
+    def savePayment() {
+        def m = [:];
+        m.creditmemo = entry;
+        m.paymentitems = payments;
+        saveHandler(m);  
         return "_close";
     }
     
-    def doCancel() {
-        return "_close";
-    }
     
 } 

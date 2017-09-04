@@ -30,9 +30,9 @@
     </pageflow>    
     
     <pages>
-        <page name="check-details" template="com.rameses.enterprise.treasury.views.CheckPaymentDetailPage"/>
+        <page name="check-details" template="com.rameses.enterprise.treasury.views.CashReceiptCheckPaymentPage"/>
         <page name="complete-balance" template="com.rameses.enterprise.treasury.views.CheckPaymentCompleteBalancePage" />
-        <page name="view-summary" template="com.rameses.enterprise.treasury.views.CheckPaymentSummaryPage" />
+        <page name="view-summary" template="com.rameses.enterprise.treasury.views.CashReceiptNoncashPaymentSummaryPage" />
     </pages>
     
 </workunit>

@@ -8,7 +8,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bankaccount">
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Bank Accounts" action="init" 
-                 cols="code,title,fund.code,fund.title,bank.name,bank.branchname,totaldr,totalcr,endbalance"
+                 cols="code,title,fund.title,bank.name,bank.branchname,account.title"
                  role="CASHIER" permission="bank.view"/> 
    </invokers>
 </workunit>

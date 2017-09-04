@@ -4,6 +4,7 @@
  */
 package com.rameses.enterprise.treasury.views;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -31,7 +32,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -40,14 +41,12 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
-
-        xTabbedPane1.setDynamic(true);
-        xTabbedPane1.setItems("sections");
 
         xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setPadding(new java.awt.Insets(10, 5, 5, 5));
@@ -91,7 +90,15 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xComboBox1.setItems("listTypes.type");
         xComboBox1.setName("entity.type"); // NOI18N
         xComboBox1.setStretchWidth(100);
+        xComboBox1.setVisibleWhen("#{ mode == 'create' }");
         xFormPanel1.add(xComboBox1);
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel1.setCaption("Item Type");
+        xLabel1.setExpression("#{entity.type}");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel1.setVisibleWhen("#{ mode != 'create' }");
+        xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -99,18 +106,18 @@ public class ItemAccountPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(309, Short.MAX_VALUE))
         );
 
-        xTabbedPane1.addTab("General", jPanel1);
+        jTabbedPane1.addTab("General", jPanel1);
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
@@ -162,7 +169,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
-                .addContainerGap(163, Short.MAX_VALUE))
+                .addContainerGap(305, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,11 +177,11 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        xTabbedPane1.addTab("Options", jPanel2);
+        jTabbedPane1.addTab("Options", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -182,14 +189,14 @@ public class ItemAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -198,6 +205,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
@@ -205,8 +213,8 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
-    private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

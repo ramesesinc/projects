@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(FormPage.class)
-public class CheckPaymentDetailPage extends javax.swing.JPanel {
+public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
 
     /**
      * Creates new form AddCheckPaymentPage
      */
-    public CheckPaymentDetailPage() {
+    public CashReceiptCheckPaymentPage() {
         initComponents();
     }
 

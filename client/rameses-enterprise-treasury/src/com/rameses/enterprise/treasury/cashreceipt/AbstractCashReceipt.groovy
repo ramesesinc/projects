@@ -169,7 +169,7 @@ public abstract class AbstractCashReceipt {
             }
             success = true; 
         }
-        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, funds:summarizeByFund() ] );
+        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] );
         if ( success ) {
             def outcome = post(); 
             binding.fireNavigation( outcome );  

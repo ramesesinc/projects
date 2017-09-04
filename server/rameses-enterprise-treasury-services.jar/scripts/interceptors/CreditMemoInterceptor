@@ -41,20 +41,7 @@ class CreditMemoInterceptor {
 		o.issuereceipt = 1;
 	}	
 
-	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
-	public void postToBank( def evt ) { 
-		def o = evt.args[0];
-		def m = [
-			objid: o.bankaccount.objid,
-			amount: o.amount,
-			refid: o.objid,
-			refno: o.refno,
-			refdate: o.refdate,
-			reftype: 'CREDITMEMO',
-			particulars: o.particulars
-		];
-		bankService.postDR( m );
-	}
+	
 
 	/*************************************************************************************************
 	* UPDATE POST TO INCOME
@@ -67,25 +54,6 @@ class CreditMemoInterceptor {
 		throw new Exception("updated credit memo");
 	} 
 
-	/*
-	@After(pattern="CreditMemoService.create", eval="#{args[0].type.issuereceipt == 0 }", index=0)
-	public void postIncomeSummary( def evt ) { 
-		def dc = evt.args[0];
-		dc.items.each {
-			def p = [:]
-			p.refid = it.parentid
-			p.refdate = dc.refdate
-			def rv = revItemSvc.findAccount( it.item )	
-			p.acctid = rv.objid
-			p.fundid = rv.fund.objid 
-			p.amount = it.amount
-			p.refno = dc.refno
-			p.reftype = dc.type.objid;
-			p.orgid = env.ORGID 
-			incSumEm.create(p)
-		}
-	}
-	*/	
 
 }
 

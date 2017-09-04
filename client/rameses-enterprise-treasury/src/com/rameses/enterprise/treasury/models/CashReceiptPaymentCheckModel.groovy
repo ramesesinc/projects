@@ -27,10 +27,9 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     def totalcash = 0;
     def openFundList;
     
-    def checkListHandler = [
+    def noncashListHandler = [
         fetchList: { return payments; }, 
     ] as BasicListModel;
-    
     
     void init() {
         check = [:];
@@ -45,6 +44,11 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     } 
     
     void addCheckEntry( def vfund, def vamt  ) {
+        //check the amount must not be greater than the allocated fund.
+        def entry = fundList.find{ it.fund == vfund };
+        if( entry.used + vamt > entry.amount )
+            throw new Exception("Amount is greater than the amount of " + entry.fund.title );
+        
         def m = [:];
         m.reftype =  "CHECK"; 
         m.check =  check;
@@ -56,7 +60,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         payments << m;
         
         //update fundList immediately
-        fundList.find{ it.fund == vfund }.used += vamt;
+        entry.used += vamt;
         openFundList = fundList.findAll{ (it.amount - it.used) > 0 }*.fund;
     }
     
@@ -67,8 +71,6 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         if(balance - check.amount < 0 )
             throw new Exception("Check amount must be greater than the balance unpaid");
         cashReceiptSvc.validateCheckDate( check.refdate );
-        balance = balance - check.amount;
-        checks << check;
         
         if( fund == null ) {
             //split the check
@@ -81,7 +83,11 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         } 
         else {
             addCheckEntry( fund, check.amount );
-        }    
+        }
+        
+        //update balance
+        balance = balance - check.amount;
+        checks << check;
     }
 
     void initCheck() {

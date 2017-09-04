@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(FormPage.class)
-public class CheckPaymentSummaryPage extends javax.swing.JPanel {
+public class CashReceiptNoncashPaymentSummaryPage extends javax.swing.JPanel {
 
     /**
      * Creates new form CheckPaymentPage
      */
-    public CheckPaymentSummaryPage() {
+    public CashReceiptNoncashPaymentSummaryPage() {
         initComponents();
     }
 
@@ -40,7 +40,7 @@ public class CheckPaymentSummaryPage extends javax.swing.JPanel {
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "refno"}
-                , new Object[]{"caption", "Check No."}
+                , new Object[]{"caption", "Ref No."}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -55,7 +55,7 @@ public class CheckPaymentSummaryPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "refdate"}
-                , new Object[]{"caption", "Check Date"}
+                , new Object[]{"caption", "Ref Date"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -115,8 +115,8 @@ public class CheckPaymentSummaryPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "remarks"}
-                , new Object[]{"caption", "Remarks"}
+                new Object[]{"name", "reftype"}
+                , new Object[]{"caption", "Ref Type"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -130,13 +130,13 @@ public class CheckPaymentSummaryPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("checkListHandler");
-        xDataTable1.setName("selectedCheck"); // NOI18N
+        xDataTable1.setHandler("noncashListHandler");
 
         xDecimalField2.setCaption("Additional Cash");
         xDecimalField2.setCaptionWidth(100);
         xDecimalField2.setEnabled(false);
         xDecimalField2.setName("totalcash"); // NOI18N
+        xDecimalField2.setVisibleWhen("#{totalcash >0}");
         xFormPanel1.add(xDecimalField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

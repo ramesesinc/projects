@@ -22,7 +22,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="502" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -31,18 +31,14 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="356" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" pref="555" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="com.rameses.rcp.control.XTabbedPane" name="xTabbedPane1">
-      <Properties>
-        <Property name="dynamic" type="boolean" value="true"/>
-        <Property name="items" type="java.lang.String" value="sections"/>
-      </Properties>
+    <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
@@ -60,7 +56,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xFormPanel1" pref="477" max="32767" attributes="1"/>
+                      <Component id="xFormPanel1" pref="619" max="32767" attributes="1"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -69,8 +65,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xFormPanel1" pref="306" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xFormPanel1" min="-2" pref="207" max="-2" attributes="0"/>
+                      <EmptySpace pref="309" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -143,6 +139,24 @@
                     <Property name="items" type="java.lang.String" value="listTypes.type"/>
                     <Property name="name" type="java.lang.String" value="entity.type" noResource="true"/>
                     <Property name="stretchWidth" type="int" value="100"/>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ mode == &apos;create&apos; }"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="caption" type="java.lang.String" value="Item Type"/>
+                    <Property name="expression" type="java.lang.String" value="#{entity.type}"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[0, 20]"/>
+                    </Property>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ mode != &apos;create&apos; }"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -167,7 +181,7 @@
                           <Component id="xFormPanel2" max="32767" attributes="0"/>
                           <Component id="xDataTable2" pref="324" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="163" max="32767" attributes="0"/>
+                      <EmptySpace pref="305" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -177,7 +191,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xFormPanel2" min="-2" pref="73" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xDataTable2" pref="227" max="32767" attributes="0"/>
+                      <Component id="xDataTable2" pref="426" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

@@ -115,13 +115,14 @@ where cro.rptreceiptid = $P{rptreceiptid}
   and rliq.rptledgerid = $P{rptledgerid}
 
 [fullyPaidQtrlyItems]
-update rptledgeritem_qtrly rliq set
+update rliq set
 	rliq.basicpaid = rliq.basic,
 	rliq.basicidlepaid = rliq.basicidle,
 	rliq.sefpaid = rliq.sef,
 	rliq.firecodepaid = rliq.firecode,
 	rliq.partialled = 0,
 	rliq.fullypaid = 1
+from rptledgeritem_qtrly rliq	
 where rptledgerid = $P{rptledgerid}
 and year = $P{year}
 and qtr < $P{qtr}

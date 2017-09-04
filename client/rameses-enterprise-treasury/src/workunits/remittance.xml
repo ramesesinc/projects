@@ -24,12 +24,11 @@
                 
         <!-- approval actions -->
         <invoker type="formActions" caption="Accept" name="approve" 
-                 mnemonic="e" role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
-        
-        <!--
-        <invoker type="formActions" caption="Disapprove" name="disapprove" mnemonic="e" 
-                 role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'OPEN' }"/>
-        -->
+                 role="LIQUIDATING_OFFICER" mnemonic="e" 
+                 visibleWhen="#{entity.state == 'OPEN' }"/>
+        <invoker type="formActions" caption="Disapprove" name="disapprove" 
+                 role="LIQUIDATING_OFFICER" mnemonic="d" 
+                 visibleWhen="#{entity.state == 'APPROVED' }"/>
                  
         <!-- common in read -->
         <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{canPrintReport == true}" />

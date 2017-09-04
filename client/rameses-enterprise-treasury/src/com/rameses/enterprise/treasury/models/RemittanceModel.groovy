@@ -21,6 +21,9 @@ class RemittanceModel  extends CrudFormModel {
     @Service("PersistenceService")
     def persistenceSvc;
     
+    @Caller 
+    def caller; 
+    
     boolean captureMode = false;
     def selectedFund;
     def todate;
@@ -75,8 +78,11 @@ class RemittanceModel  extends CrudFormModel {
     }    
     
     def delete() { 
-        persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
-        return '_close'; 
+        if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
+            persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
+            return '_close'; 
+        } 
+        return null; 
     } 
 
     def remittanceFundModel = [
@@ -143,10 +149,28 @@ class RemittanceModel  extends CrudFormModel {
     def approve() {
         boolean pass = MsgBox.confirm("You are about to accept this remittance. Proceed?");
         if ( pass ) { 
-            service.approve([ objid:entity.objid ]);
-            return "_close"; 
+            service.approve([ objid:entity.objid ]); 
+            try { 
+                return "_close"; 
+            } finally {
+                try {
+                    if (caller) caller?.reload(); 
+                } catch(Throwable t){;}
+            }
         } 
         return null;
     }
     
+    void disapprove() {
+        boolean pass = MsgBox.confirm("You are about to reverse the approval of this remittance. Proceed?");
+        if ( pass ) { 
+            def res = service.disapprove([ objid:entity.objid ]);
+            try {
+                if (caller) caller?.reload(); 
+            } catch(Throwable t){;}
+
+            entity.state = res.state; 
+            entity.liquidatingofficer = res.liquidatingofficer; 
+        } 
+    }     
 } 

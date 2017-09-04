@@ -5,7 +5,7 @@
 		<field name="liquidationid" required="true"/>
 		<field name="liquidationfundid" required="true"/>
 
-		<complex name="check" ref="cashreceiptpayment_noncash" jointype="many-to-one" required="false" includefields="refno,refdate,reftype,particulars,amount,fund.objid,fund.title,fund.code,bankid,bank,bankaccountid">
+		<complex name="payment" ref="cashreceiptpayment_noncash" jointype="many-to-one" required="false" includefields=".*">
 			<key field="objid" target="objid" />
 		</complex>   
 

@@ -25,9 +25,6 @@ class LiquidationService  {
 	@Service("Var")
 	def var 
 	
-	@DataContext("liquidation_remittance")
-	def liqRem;
-
 	@DataContext("liquidation_fund")
 	def liqfund;
 
@@ -41,21 +38,6 @@ class LiquidationService  {
 	def remEm;
 
 
-	@ProxyMethod 
-	public void delete( params ) {
-		def o = liqEm.find([ objid: params.objid ]).first(); 
-		if ( !o.state.toString().equalsIgnoreCase("DRAFT")) {
-			throw new Exception("Transaction no longer in DRAFT mode"); 
-		}
-
-		//def rems = liqRem.find([ liquidationid: params.objid ]).select('objid').list();
-
-		liqnoncash.find([ liquidationid: params.objid ]).delete();
-		liqRem.find([ liquidationid: params.objid ]).delete(); 
-		liqfund.find([ liquidationid: params.objid ]).delete(); 
-		liqEm.find([ objid: params.objid ]).delete(); 
-	} 
-
 	@ProxyMethod
 	public def init() {
 		/*if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
@@ -63,29 +45,36 @@ class LiquidationService  {
 			if(ud ) throw new Exception("There are still undeposited liquidations. ");	
 		}*/
 
-		def m = [ state:'DRAFT', posted:0, cashbreakdown:[] ];
+		def temptxnno = com.rameses.util.Encoder.MD5.encode( env.USERID ); 
+		def draftdata = liqEm.find([ txnno: temptxnno ]).first(); 
+		if ( draftdata ) throw new Exception("""  
+			You still have a DRAFT liquidation that was previously created.  
+		""");
+
+
+		def m = [ state:'DRAFT', posted:0, cashbreakdown:[], remittances:[], funds:[] ];
 		m.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];
-		m.txnno = Encoder.MD5.encode( env.USERID ); 
 		m.txndate = dateSvc.serverDate;
 		m.dtposted = m.txndate;
-		m.amount = 0.0;
-		m.totalcr = 0.0;
-		m.totalcash = 0.0;
+		m.txnno = temptxnno;
 		m.totalnoncash = 0.0;
+		m.totalcash = 0.0;
+		m.amount = 0.0;
 		m = liqEm.create( m ); 
 
 		def liqparam = [ liquidationid: m.objid, liquidatingofficerid: env.USERID ]; 
-		liqEm.insertRemittances( liqparam ); 
+		liqEm.bindRemittances( liqparam ); 
 		liqparam.remove('liquidatingofficerid');
 		
-		if ( !liqRem.find( liqparam ).first() ) 
+		if ( !remEm.find( liqparam ).first() ) 
 			throw new Exception("No pending remittances to liquidate"); 
 
 		liqEm.insertFunds( liqparam ); 
-		liqEm.insertNoncashPayments( liqparam );		
+		liqEm.insertNonCashPayments( liqparam );	
+		liqEm.bindRemittanceFunds( liqparam );	
 
         def cblist = [];
-		def cashbreakdowns = liqEm.getRemittanceFundsCashbreakdown( liqparam ); 
+		def cashbreakdowns = liqEm.getRemittanceFundCashbreakdowns( liqparam ); 
 		cashbreakdowns.each{ 
 			if ( it.cashbreakdown ) cblist.addAll( it.cashbreakdown );
 		}
@@ -98,76 +87,78 @@ class LiquidationService  {
 			]; 
 		}
 
-		def amount=0.0; def totalcr=0.0; def totalcash=0.0; def totalnoncash=0.0;
-		def funds = liqfund.find( liqparam ).select('amount,totalcash,totalnoncash,totalcr').list();
+		def amount=0.0; def totalcr=0.0; def totalcash=0.0; def totalcheck=0.0;
+		def funds = liqfund.find( liqparam ).select('amount,totalcash,totalcheck,totalcr').list();
 		funds.each{ 
 			amount += ( it.amount ? it.amount : 0.0 ); 
 			totalcr += ( it.totalcr ? it.totalcr : 0.0 ); 
 			totalcash += ( it.totalcash ? it.totalcash : 0.0 ); 
-			totalnoncash += ( it.totalnoncash ? it.totalnoncash : 0.0 ); 
+			totalcheck += ( it.totalcheck ? it.totalcheck : 0.0 ); 
 		} 
 		m.amount = amount;
 		m.totalcr = totalcr; 
 		m.totalcash = totalcash; 
-		m.totalnoncash = totalnoncash; 
+		m.totalnoncash = ( totalcheck + totalcr ); 
 		m.cashbreakdown = newcblist; 
 		liqEm.find([ objid: m.objid ]).update([ 
-			amount: m.amount, totalcash: m.totalcash, 
-			totalnoncash: m.totalnoncash, totalcr: m.totalcr, 
-			cashbreakdown: m.cashbreakdown 
+			amount        : m.amount, 
+			totalcash     : m.totalcash, 
+			totalnoncash  : m.totalnoncash, 
+			cashbreakdown : m.cashbreakdown 
 		]);
 
-		def o = open([ objid: m.objid ]); 
-		return o;
+		return open([ objid: m.objid ]); 
 	}
 
 	@ProxyMethod
-	public def open( o ) {
-		o = em.read([ objid:o.objid ]);
-		if( o.signature !=null ) {
+	public def open( params ) { 
+		def o = liqEm.find([ objid: params.objid ]).first(1);
+		if ( o.liquidatingofficer?.signature ) {
 			Base64Cipher cipher = new Base64Cipher()
-			o.signature = cipher.decode( o.signature );
+			o.liquidatingofficer.signature = cipher.decode( o.liquidatingofficer.signature );
 		}
-		if( o.cashier?.signature !=null ) {
+		if ( o.cashier?.signature ) {
 			Base64Cipher cipher = new Base64Cipher()
 			o.cashier.signature = cipher.decode( o.cashier.signature );
 		}
 
+		o.totalcash = o.totalcheck = o.totalcr = 0.0; 
+		o.funds.each{
+			o.totalcr += ( it.totalcr ? it.totalcr : 0.0 );
+			o.totalcash += ( it.totalcash ? it.totalcash : 0.0 );
+			o.totalcheck += ( it.totalcheck ? it.totalcheck : 0.0 );
+		}
+		o.totalnoncash = o.totalcheck + o.totalcr; 
+
 		def liqparam = [ liquidationid: o.objid ];
-		o.fundsummary = liqfund.find( liqparam ).list();
-		o.remittances = liqRem.find( liqparam ).list()*.remittance;
+		o.fundsummary = o.remove('funds');
 		o.creditmemos = [];
 		o.checks = [];
 		liqnoncash.find( liqparam ).list().each{
 			def a = [ objid: it.objid, liquidationid: o.objid ];
-			if ( it.check ) a.putAll( it.check ); 
+			if ( it.payment ) a.putAll( it.payment ); 
 			if ( a.reftype == 'CREDITMEMO' ) o.creditmemos << a; 
 			else o.checks << a; 
-		}
-
-		o.totalnoncash = o.checks.sum{( it.amount ? it.amount : 0.0 )} 
-		if ( !o.totalnoncash ) o.totalnoncash = 0.0;
-
-		o.totalcr = o.creditmemos.sum{( it.amount ? it.amount : 0.0 )} 
-		if ( !o.totalcr ) o.totalcr = 0.0;
-
-		o.totalcash = o.amount - ( o.totalnoncash - o.totalcr );
-		if ( !o.totalcash ) o.totalcash = 0.0;
-
-		o.totaldeposit = o.totalcash + o.totalnoncash; 
+		} 
 		return o; 
-	}
+	} 
 
 	@ProxyMethod
-	public def post( o ) { 
+	public def post( param ) { 
+		if ( !param.objid ) throw new Exception("objid parameter is required"); 
+
+		def o = liqEm.find([ objid: param.objid ]).first(); 
+		if ( !o ) throw new Exception('Liquidation record does not exist.');
+		if ( o.state != 'DRAFT' ) throw new Exception("Liquidation record is no longer in DRAFT mode");
+
 		o.state = 'POSTED'; 
+		o.dtposted = dateSvc.getServerDate(); 
 		o.txnno = formatTxnno( o ); 
-		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno ]); 
-		liqRem.find([ liquidationid: o.objid ]).list().each{
-			def f = [liquidatingofficer : [signature: o.signature] ];
-			f.state = 'CLOSED'; 
-			remEm.find([ objid: it.objid ]).update( f ); 
-		}		
+		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno, dtposted: o.dtposted ]); 
+		liqEm.updateFundControlNo([ liquidationid: o.objid ]); 
+
+		def f = [ state:'CLOSED', liquidatingofficer: [ signature: o.signature ]];
+		remEm.find([ liquidationid: o.objid ]).update( f ); 
 		return o; 
 	} 
 
@@ -180,6 +171,15 @@ class LiquidationService  {
 	public def getFundSummaries(o) {
 		return em.getFundSummaries([ liquidationid: o.objid ]);
 	}
+
+
+	@ProxyMethod
+    public void approve(def o) {
+    	def m = [ state: 'APPROVED' ];
+    	liqEm.find( [objid : o.objid] ).update( m );
+    } 
+
+
 
 	@ProxyMethod
     public def formatTxnno( liq ) {
@@ -241,12 +241,5 @@ class LiquidationService  {
             return true;
         
         return false;
-    }
-
-
-	@ProxyMethod
-    public void approve(def o) {
-    	def m = [ state: 'APPROVED' ];
-    	liqEm.find( [objid : o.objid] ).update( m );
-    }
+    }    
 }	

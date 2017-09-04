@@ -12,7 +12,7 @@ class UnremittedCollectionModel extends CrudListModel {
     def user;
     
     def df = new java.text.DecimalFormat("#,##0.00")
-
+    
     def getCustomFilter() {
         return [ "collector.objid=:uid AND remittanceid IS NULL", [ uid: user.userid ] ];
     }

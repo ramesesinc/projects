@@ -18,6 +18,9 @@ class LiquidationModel extends CrudFormModel {
 
     @Service("IncomeSummaryService")
     def incomeSvc;
+    
+    @Caller 
+    def caller; 
 
     String title = "Liquidation";
     String schemaName = "liquidation";
@@ -29,8 +32,12 @@ class LiquidationModel extends CrudFormModel {
     def selectedFund;
     
     @FormTitle
-    public String getTitle() {
-        return entity.txnno;
+    public String getTitle() { 
+        if( entity?.state.toString().equalsIgnoreCase('DRAFT') ) {
+            return "New Liquidation"; 
+        } else { 
+            return "Liquidation " + entity.txnno;
+        } 
     }
 
     @FormId
@@ -58,12 +65,9 @@ class LiquidationModel extends CrudFormModel {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
-    def create(){
-        mode = "create";
-        entity = service.init();
-        return null;
-    }
-    
+    public void afterCreate() { 
+        entity = service.init();  
+    }     
 
     def fundListModel = [
         fetchList: {
@@ -118,16 +122,27 @@ class LiquidationModel extends CrudFormModel {
         def pass = MsgBox.confirm("You are about to submit this transaction for deposit. Proceed?");
         if ( pass ) {
             service.approve([ objid: entity.objid ]);
-            MsgBox.alert('successfully sent');
-            return "_close";
+            try { 
+                return "_close"; 
+            } finally {
+                try {
+                    if (caller) caller?.reload(); 
+                } catch(Throwable t){;}
+            }
         }
         return null;
     }
     
     def delete() {
         if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
-            service.delete([ objid: entity.objid ]); 
-            return '_close'; 
+            persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
+            try { 
+                return "_close"; 
+            } finally {
+                try {
+                    if (caller) caller?.reload(); 
+                } catch(Throwable t){;}
+            }
         }
         return null; 
     }

@@ -3,7 +3,6 @@ import com.rameses.annotations.*;
 class LiquidationListInterceptor {
 
 	
-
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'liquidation' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];

@@ -17,7 +17,7 @@ class RemittanceDefaultInterceptor {
 	@DataContext("cashreceiptpayment_noncash")
 	def cashreceipt_noncash_db;
 
-	@Before( pattern="PersistenceService.removeEntity" )
+	@Before( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'remittance'}"  )
 	public void beforeDelete( evt ) {
 		def params = evt.args[0]; 
 		def m = [ remittanceid: params.objid ];

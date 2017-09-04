@@ -1,0 +1,29 @@
+import com.rameses.annotations.*;
+
+class LiquidationDefaultInterceptor {
+
+	@DataContext("liquidation_fund")
+	def liqf_db;
+
+	@DataContext("liquidation_noncashpayment")
+	def liqnc_db;
+
+	@DataContext("remittance_fund")
+	def remf_db;
+
+	@DataContext("remittance")
+	def rem_db;
+
+	@Before( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'liquidation'}" )
+	public void beforeDelete( evt ) {
+		def params = evt.args[0]; 
+		def m = [ liquidationid: params.objid ];
+		liqf_db.find( m ).list().each{
+			remf_db.find([ liquidationfundid: it.objid ]).update([ liquidationfundid: '{NULL}' ]); 
+		}
+		rem_db.find( m ).update([ liquidationid: '{NULL}' ]);
+		
+		liqf_db.find( m ).delete(); 
+		liqnc_db.find( m ).delete(); 
+	} 
+}

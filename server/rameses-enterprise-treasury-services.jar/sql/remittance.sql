@@ -166,3 +166,12 @@ FROM (
 where fund.objid=tmp1.fund_objid  
 GROUP BY remittanceid, fund_objid, fund.title  
 
+
+[updateFundControlNo]
+update 
+  remittance_fund remf, remittance rem, fund 
+set 
+  remf.controlno = concat(rem.txnno,'-',fund.code) 
+where rem.objid = $P{remittanceid} 
+  and remf.remittanceid = rem.objid 
+  and fund.objid = remf.fund_objid 

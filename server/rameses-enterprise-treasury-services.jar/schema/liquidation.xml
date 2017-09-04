@@ -26,12 +26,8 @@
 			<key field="objid" target="liquidationid" />
 		</complex>	
 
-		<complex name="remittances" ref="liquidation_remittance" jointype="one-to-many" type="list">
+		<complex name="remittances" ref="remittance" jointype="one-to-many" type="list">
 			<key field="objid" target="liquidationid" />
 		</complex>	
-
 	</element>
-
-	
-
 </schema>	

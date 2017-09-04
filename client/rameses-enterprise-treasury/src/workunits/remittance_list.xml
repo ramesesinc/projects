@@ -34,7 +34,7 @@
                  
         <!-- ACTIONS --> 
         <invoker type="listActions" caption="Revert" action="revert" 
-                 srole="ADMIN" /> 
+                 role="ADMIN" permission="remittance.revert" /> 
         <invoker type="listActions" caption="Liquidate" action="liquidate" 
                  role="LIQUIDATING_OFFICER" />
          

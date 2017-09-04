@@ -203,63 +203,10 @@ class RemittanceService  {
 			cashbreakdown: param.cashbreakdown, 
 			collector: o.collector 
 		]); 
-
+		remdb.updateFundControlNo([ remittanceid: param.remittanceid ]); 
 		return o; 
 	} 
 
-	public def getMonthFirstDate( dt ) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dt);
-        cal.set( Calendar.DAY_OF_MONTH, 1 );
-        return dateSvc.format('yyyy-MM-dd', cal.getTime()) + " 00:00:00";
-    }
-
-    @ProxyMethod
-    public def formatTxnno( remittance ) {
-    	def format = 'UTFS'
-    	def seqid = null
-    	if(var.remittance_format) format = var.remittance_format;
-    	if(var.remittance_sequenceid_format ) seqid = var.remittance_sequenceid_format;
-    	
-
-        //Formatting Options:
-        // YY - YEAR POSTED
-        // MM - MONTH POSTED 
-        // DD - DATE POSTED 
-        // UT - USER TXNCODE
-        // SQ - SEQUENCE 
-        // FS - FORMATTED SEQUENCE 
-        
-        def txncode = ["REM", env.TXNCODE, env.ORGTXNCODE].findAll{( it )}.join("-");
-        def dt = dateSvc.parseDate( remittance.dtposted, null); 
-        def values = [ 
-        	YY:dt.year+"", 
-        	MM:dt.month.toString().padLeft(2, '0',),
-        	DD:dt.day.toString().padLeft(2, '0'),
-        	UT:txncode 
-        ];
-
-        def txnno = format;  
-        values.keySet().each {
-            txnno = txnno.replace( it, values[it] )
-        }
-
-        def series; 
-        if ( seqid ) { 
-        	def seq = seqid;
-        	values.keySet().each {
-            	seq = seq.replace( it, values[it] )
-            }
-            series = seqSvc.getNextSeries( seq); 
-            
-        } else { 
-        	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
-        }
-
-        txnno = txnno.replace( 'SQ', series+"" );
-        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0')); 
-        return txnno; 
-    }
 
     @ProxyMethod 
     public void revert( params ) {
@@ -282,10 +229,31 @@ class RemittanceService  {
     } 
 
     @ProxyMethod
-    public void approve( o ) {
-    	def m = [state: 'APPROVED' ];
+    public void approve( o ) { 
+    	def m = [ state: 'APPROVED' ]; 
     	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
+    	if ( !m.liquidatingofficer.objid ) 
+    		throw new Exception('liquidatingofficer field is required');  
+
     	remdb.find([ objid : o.objid ]).update( m ); 
+    } 
+
+    @ProxyMethod
+    public def disapprove( params ) { 
+    	def o = remdb.find([ objid : params.objid ]).first(); 
+    	if ( !o ) return; 
+
+    	if ( !o.state.toString().equalsIgnoreCase('APPROVED')) 
+    		throw new Exception('This transaction is no longer in APPROVED mode');
+
+    	o.state = 'OPEN'; 
+    	o.liquidatingofficer = [:]; 
+    	
+		remdb.find([ objid : params.objid ]).update([ 
+			liquidatingofficer : [ objid:'{NULL}', name:'{NULL}', title:'{NULL}' ], 
+			state: o.state 
+		]); 
+		return o; 
     } 
 
 
@@ -294,8 +262,6 @@ class RemittanceService  {
 	public def getRemittedReceipts( o ) { 
 		return em.getRemittedReceipts( o );
 	}
-
-   
 
 	@ProxyMethod
     public def getCashBreakdown( def o ) {
@@ -363,4 +329,59 @@ class RemittanceService  {
         }
         return newarr; 
     }
+
+
+	public def getMonthFirstDate( dt ) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        cal.set( Calendar.DAY_OF_MONTH, 1 );
+        return dateSvc.format('yyyy-MM-dd', cal.getTime()) + " 00:00:00";
+    }
+
+    @ProxyMethod
+    public def formatTxnno( remittance ) {
+    	def format = 'UTFS'
+    	def seqid = null
+    	if(var.remittance_format) format = var.remittance_format;
+    	if(var.remittance_sequenceid_format ) seqid = var.remittance_sequenceid_format;
+    	
+
+        //Formatting Options:
+        // YY - YEAR POSTED
+        // MM - MONTH POSTED 
+        // DD - DATE POSTED 
+        // UT - USER TXNCODE
+        // SQ - SEQUENCE 
+        // FS - FORMATTED SEQUENCE 
+        
+        def txncode = ["REM", env.TXNCODE, env.ORGTXNCODE].findAll{( it )}.join("-");
+        def dt = dateSvc.parseDate( remittance.dtposted, null); 
+        def values = [ 
+        	YY:dt.year+"", 
+        	MM:dt.month.toString().padLeft(2, '0',),
+        	DD:dt.day.toString().padLeft(2, '0'),
+        	UT:txncode 
+        ];
+
+        def txnno = format;  
+        values.keySet().each {
+            txnno = txnno.replace( it, values[it] )
+        }
+
+        def series; 
+        if ( seqid ) { 
+        	def seq = seqid;
+        	values.keySet().each {
+            	seq = seq.replace( it, values[it] )
+            }
+            series = seqSvc.getNextSeries( seq); 
+            
+        } else { 
+        	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
+        }
+
+        txnno = txnno.replace( 'SQ', series+"" );
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0')); 
+        return txnno; 
+    }    
 }

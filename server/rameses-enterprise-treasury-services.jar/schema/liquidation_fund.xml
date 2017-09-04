@@ -11,7 +11,7 @@
 		<field name="amount" type="decimal"/>
 
 		<field name="totalcash" type="decimal"/>
-		<field name="totalnoncash" type="decimal"/>
+		<field name="totalcheck" type="decimal"/>
 		<field name="totalcr" type="decimal"/>
 
 		<complex name="liquidation" ref="liquidation" jointype="many-to-one" required="false" includefields="objid,txnno,dtposted,state">

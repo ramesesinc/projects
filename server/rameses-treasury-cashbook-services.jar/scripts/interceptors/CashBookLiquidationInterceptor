@@ -17,7 +17,7 @@ class LiquidationCashBookInterceptor {
 	@Service('UserService')
 	def userSvc; 	
 
-	@After(pattern="LiquidationService.post", index=-10)
+	//@After(pattern="LiquidationService.post", index=-10)
 	public void post( evt ) { 
 		def params = evt.args[0];
 		def list = liqdb.getFundsForCashBook([ liquidationid: params.objid ]); 

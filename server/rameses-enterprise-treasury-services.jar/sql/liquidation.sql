@@ -88,7 +88,7 @@ select
 	null as particulars 
 from liquidation l 
 	inner join liquidation_fund lf on lf.liquidationid = l.objid 
-	inner join cashbook_treasury ct on (ct.officer_objid=l.liquidatingofficer_objid and ct.fundid=lf.fund_objid) 
+	inner join cashbook_treasury ct on ct.fundid=lf.fund_objid  
 where l.objid = $P{liquidationid} 
 	and (lf.totalcash + lf.totalcheck) > 0 
 

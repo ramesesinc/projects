@@ -33,8 +33,6 @@
                  orderBy="remittancedate DESC"/>        
                  
         <!-- ACTIONS --> 
-        <invoker type="listActions" caption="Revert" action="revert" 
-                 role="ADMIN" permission="remittance.revert" /> 
         <invoker type="listActions" caption="Liquidate" action="liquidate" 
                  role="LIQUIDATING_OFFICER" />
          

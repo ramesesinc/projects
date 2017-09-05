@@ -7,9 +7,6 @@ import com.rameses.services.extended.*;
 
 class LiquidationService  {
 
-	@ActiveDB("liquidation")
-	def em; 
-
 	@Env
 	def env;
 
@@ -19,11 +16,11 @@ class LiquidationService  {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("CashBookPostService")
-	def cashBook;
-
 	@Service("Var")
-	def var 
+	def var;
+
+	@DataContext("liquidation")
+	def liqEm;
 	
 	@DataContext("liquidation_fund")
 	def liqfund;
@@ -31,11 +28,11 @@ class LiquidationService  {
 	@DataContext("liquidation_noncashpayment")
 	def liqnoncash;
 
-	@DataContext("liquidation")
-	def liqEm;
-
 	@DataContext("remittance")
-	def remEm;
+	def rem_db;
+
+	@DataContext("remittance_fund")
+	def remf_db;
 
 
 	@ProxyMethod
@@ -57,8 +54,9 @@ class LiquidationService  {
 		m.txndate = dateSvc.serverDate;
 		m.dtposted = m.txndate;
 		m.txnno = temptxnno;
-		m.totalnoncash = 0.0;
+		m.totalcheck = 0.0;
 		m.totalcash = 0.0;
+		m.totalcr = 0.0;
 		m.amount = 0.0;
 		m = liqEm.create( m ); 
 
@@ -66,30 +64,47 @@ class LiquidationService  {
 		liqEm.bindRemittances( liqparam ); 
 		liqparam.remove('liquidatingofficerid');
 		
-		if ( !remEm.find( liqparam ).first() ) 
+		if ( !rem_db.find( liqparam ).first() ) 
 			throw new Exception("No pending remittances to liquidate"); 
 
 		liqEm.insertFunds( liqparam ); 
 		liqEm.insertNonCashPayments( liqparam );	
 		liqEm.bindRemittanceFunds( liqparam );	
 
-        def cblist = [];
-		def cashbreakdowns = liqEm.getRemittanceFundCashbreakdowns( liqparam ); 
-		cashbreakdowns.each{ 
-			if ( it.cashbreakdown ) cblist.addAll( it.cashbreakdown );
-		}
-		def newcblist = [];
-		cblist.groupBy{ it.denomination }.each{ k,v-> 
-			newcblist << [ 
+		def totalcbs = [];
+		def liqfundlist = liqfund.find( liqparam ).list();
+		liqfundlist.each{ 
+			def cbs = [];
+			remf_db.find([ liquidationfundid: it.objid ]).select('cashbreakdown').list().each{ oi-> 
+				if ( oi.cashbreakdown ) cbs.addAll( oi.cashbreakdown ); 
+			}
+
+			def newcbs = []; 
+			cbs.groupBy{ it.denomination }.each{ k,v-> 
+				newcbs << [ 
+					caption:k, denomination:k, 
+					qty: v.sum{( it.qty? it.qty: 0 )}, 
+					amount: v.sum{( it.amount ? it.amount : 0.0 )} 
+				]; 
+			} 
+			
+			it.cashbreakdown = newcbs; 
+			liqfund.find([ objid: it.objid ]).update([ cashbreakdown: it.cashbreakdown ]);  
+			totalcbs.addAll( it.cashbreakdown ); 
+		} 
+
+		m.cashbreakdown = []; 
+		totalcbs.groupBy{ it.denomination }.each{ k,v-> 
+			m.cashbreakdown << [ 
 				caption:k, denomination:k, 
 				qty: v.sum{( it.qty? it.qty: 0 )}, 
 				amount: v.sum{( it.amount ? it.amount : 0.0 )} 
 			]; 
-		}
+		} 
+		totalcbs.clear(); 
 
 		def amount=0.0; def totalcr=0.0; def totalcash=0.0; def totalcheck=0.0;
-		def funds = liqfund.find( liqparam ).select('amount,totalcash,totalcheck,totalcr').list();
-		funds.each{ 
+		liqfundlist.each{ 
 			amount += ( it.amount ? it.amount : 0.0 ); 
 			totalcr += ( it.totalcr ? it.totalcr : 0.0 ); 
 			totalcash += ( it.totalcash ? it.totalcash : 0.0 ); 
@@ -98,14 +113,14 @@ class LiquidationService  {
 		m.amount = amount;
 		m.totalcr = totalcr; 
 		m.totalcash = totalcash; 
-		m.totalnoncash = ( totalcheck + totalcr ); 
-		m.cashbreakdown = newcblist; 
+		m.totalcheck = totalcheck; 
 		liqEm.find([ objid: m.objid ]).update([ 
 			amount        : m.amount, 
+			totalcr       : m.totalcr, 
 			totalcash     : m.totalcash, 
-			totalnoncash  : m.totalnoncash, 
+			totalcheck    : m.totalcheck, 
 			cashbreakdown : m.cashbreakdown 
-		]);
+		]); 
 
 		return open([ objid: m.objid ]); 
 	}
@@ -151,14 +166,13 @@ class LiquidationService  {
 		if ( !o ) throw new Exception('Liquidation record does not exist.');
 		if ( o.state != 'DRAFT' ) throw new Exception("Liquidation record is no longer in DRAFT mode");
 
-		o.state = 'POSTED'; 
 		o.dtposted = dateSvc.getServerDate(); 
+		o.state = 'POSTED'; 
 		o.txnno = formatTxnno( o ); 
 		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno, dtposted: o.dtposted ]); 
 		liqEm.updateFundControlNo([ liquidationid: o.objid ]); 
 
-		def f = [ state:'CLOSED', liquidatingofficer: [ signature: o.signature ]];
-		remEm.find([ liquidationid: o.objid ]).update( f ); 
+		rem_db.find([ liquidationid: o.objid ]).update([ state: 'CLOSED' ]); 
 		return o; 
 	} 
 

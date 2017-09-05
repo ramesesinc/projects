@@ -2,6 +2,9 @@ import com.rameses.annotations.*;
 
 class LiquidationDefaultInterceptor {
 
+	@DataContext("liquidation")
+	def liq_db;
+
 	@DataContext("liquidation_fund")
 	def liqf_db;
 
@@ -25,5 +28,16 @@ class LiquidationDefaultInterceptor {
 		
 		liqf_db.find( m ).delete(); 
 		liqnc_db.find( m ).delete(); 
+	} 
+
+
+	@After( pattern="LiquidationService.post" )
+	public void afterPost( evt ) {
+		def result = evt.result; 
+		def m = [ liquidationid: result.objid ]; 
+		liq_db.postJev( m ); 
+		liq_db.postJevItem( m ); 
+		liq_db.postJevItemForBankAccount( m ); 
+		liq_db.postJevItemForRevenue( m ); 
 	} 
 }

@@ -15,12 +15,12 @@
                  visibleWhen="#{mode == 'capture' }" mnemonic="n" shortcut="ctrl N" />
   
         <!-- for draft -->
-        <invoker type="formActions" caption="Submit" name="submit" 
+        <invoker type="formActions" caption="Submit" name="submit" role="COLLECTOR" 
                  visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="s" 
-                 role="COLLECTOR" shortcut="ctrl S" icon="images/toolbars/save.png"/>
-        <invoker type="formActions" caption="Delete" name="delete" 
-                 visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="d" 
-                 role="COLLECTOR" shortcut="ctrl D" />
+                 shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        <invoker type="formActions" caption="Delete" name="delete" role="COLLECTOR" 
+                 visibleWhen="#{entity.state.toString().matches('DRAFT|OPEN')==true}" 
+                 mnemonic="d" shortcut="ctrl D" />
                 
         <!-- approval actions -->
         <invoker type="formActions" caption="Accept" name="approve" 

@@ -80,7 +80,13 @@ class RemittanceModel  extends CrudFormModel {
     def delete() { 
         if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
             persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
-            return '_close'; 
+            try { 
+                return "_close"; 
+            } finally {
+                try {
+                    if (caller) caller?.reload(); 
+                } catch(Throwable t){;}
+            }
         } 
         return null; 
     } 
@@ -140,8 +146,15 @@ class RemittanceModel  extends CrudFormModel {
 
             entity.txnno = o.txnno; 
             entity.state = o.state; 
-            MsgBox.alert("Posting successful. Control No " + entity.txnno);
-            return "_close";
+            MsgBox.alert("Posting successful. Control No " + entity.txnno); 
+
+            try { 
+                return "_close"; 
+            } finally {
+                try {
+                    if (caller) caller?.reload(); 
+                } catch(Throwable t){;}
+            }
         } 
         return null; 
     }

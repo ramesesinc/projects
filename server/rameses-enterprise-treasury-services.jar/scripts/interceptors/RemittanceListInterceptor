@@ -24,8 +24,11 @@ class RemittanceListInterceptor {
 		def str = " state = :state ";
 		def m = [ state: o.node.state ]; 
 
-		if ( o.node.state.toString().equalsIgnoreCase('APPROVED')) {
+		def state = o.node.state.toString().toUpperCase(); 
+		if ( state == 'APPROVED' ) {
 			str = ' liquidationid IS NULL AND '+ str; 
+		} else if ( state == 'CLOSED' ) {
+			str = ' liquidationid IS NOT NULL '; 
 		} 
 
 		if( o.where ) {
@@ -34,7 +37,7 @@ class RemittanceListInterceptor {
 		}
 		else {
 			o.where = [str, m];
-		}		
+		} 
 	}	
 
 }

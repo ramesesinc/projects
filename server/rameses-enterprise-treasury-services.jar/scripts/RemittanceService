@@ -61,7 +61,8 @@ class RemittanceService  {
 		def o = [ objid: remittanceid, state:'DRAFT', txnno: temptxnno, dtposted: rundate ]; 
 		o.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
 		o.remittancedate = new java.sql.Date( rundate.time );
-		o.amount = o.totalcash = o.totalnoncash = 0.0; 
+		o.amount = o.totalcash = 0.0; 
+		o.totalcheck = o.totalcr = 0.0; 
 		o.cashbreakdown = [];
 		remdb.create( o );  
 
@@ -95,15 +96,18 @@ class RemittanceService  {
 		remdb.updateNonCashReceiptPayment( info ); 
 
 		o.amount = 0.0;
+		o.totalcr = 0.0;
 		o.totalcash = 0.0;
-		o.totalnoncash = 0.0;
+		o.totalcheck = 0.0;
 		remf_db.find([ remittanceid: remittanceid ]).list().each{
 			o.amount += it.amount;
+			o.totalcr += it.totalcr;
 			o.totalcash += it.totalcash;
-			o.totalnoncash += (it.totalcheck + it.totalcr); 
+			o.totalcheck += it.totalcheck;
 		}
 		remdb.find([ objid: remittanceid ]).update([ 
-			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
+			amount: o.amount, totalcash: o.totalcash, 
+			totalcheck: o.totalcheck, totalcr: o.totalcr 
 		]); 
 
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
@@ -192,16 +196,15 @@ class RemittanceService  {
 
 		param.cashbreakdown = summarizeFundCashbreakdown( o.objid ); 
 
+		o.dtposted = dateSvc.getServerDate(); 
 		o.state = 'OPEN'; 
 		o.txnno = formatTxnno( o ); 
 		if ( !o.collector ) o.collector = [:];
 		if ( param.collector?.signature ) o.collector.signature = param.collector.signature; 
 
-		def rundate = dateSvc.getServerDate(); 
 		remdb.find([ objid: param.remittanceid ]).update([ 
-			txnno: o.txnno, state: o.state, dtposted: rundate, 
-			cashbreakdown: param.cashbreakdown, 
-			collector: o.collector 
+			txnno: o.txnno, state: o.state, dtposted: o.dtposted, 
+			cashbreakdown: param.cashbreakdown, collector: o.collector 
 		]); 
 		remdb.updateFundControlNo([ remittanceid: param.remittanceid ]); 
 		return o; 

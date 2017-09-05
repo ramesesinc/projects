@@ -1,9 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="cashbook_treasury">
     
     <invokers>
-        <invoker type="cashbook_treasury:create" caption="Cash In Treasury" action="create"  />
-        <invoker type="cashbook_treasury:open" caption="Cash In Treasury" action="open"  />
+        <invoker type="cashbook_treasury:create" caption="Cash In Treasury" action="create"  target="popup"/>
+        <invoker type="cashbook_treasury:open" caption="Cash In Treasury" action="open"    target="popup"/>
     </invokers>
    
-   
+    <pages>
+        <page template="com.rameses.enterprise.accounting.views.CashInTreasuryPage" />
+    </pages>
 </workunit>

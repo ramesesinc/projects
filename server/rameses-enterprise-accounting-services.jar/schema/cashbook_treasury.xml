@@ -1,9 +1,9 @@
 <schema>
 
 	<element  tablename="cashbook_treasury">
-		<field name="objid" required="true"/>
-		<field name="officer_objid" required="true"/>
-		<field name="officer_name" required="true"/>
+		<field name="objid" primary="true" prefix="CSHTRY"/>
+		<field name="code" required="true"/>
+		<field name="title" required="true"/>
 
 		<complex name="account" ref="itemaccount" jointype="many-to-one" includefields="code,title" required="false">
 			<key field="acctid" target="objid" />

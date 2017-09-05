@@ -12,7 +12,7 @@
        <invoker type="cashinbankaccount:lookup" caption="Lookup Cash In Bank Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH_IN_BANK"/>
        
-       <invoker type="cashintreasuryaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
+       <invoker type="cashaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH"/>
     </invokers> 
    

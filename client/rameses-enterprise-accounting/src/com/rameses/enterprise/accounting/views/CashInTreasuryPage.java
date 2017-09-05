@@ -40,7 +40,7 @@ public class CashInTreasuryPage extends javax.swing.JPanel {
 
         xTabbedPane1.setItems("sections");
 
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionWidth(150);
 
         xTextField1.setCaption("Acct Code");
         xTextField1.setName("entity.code"); // NOI18N
@@ -53,19 +53,17 @@ public class CashInTreasuryPage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xLookupField1.setCaption("Org");
+        xLookupField1.setCaption("Fund");
         xLookupField1.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
-        xLookupField1.setEnabled(false);
-        xLookupField1.setExpression("#{ entity.org.name }");
-        xLookupField1.setHandler("org:lookup");
-        xLookupField1.setName("entity.org"); // NOI18N
+        xLookupField1.setExpression("#{ entity.fund.code } - #{ entity.fund.title }");
+        xLookupField1.setHandler("fund:lookup");
+        xLookupField1.setName("entity.fund"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 
-        xLookupField2.setCaption("Payable Account");
-        xLookupField2.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
+        xLookupField2.setCaption("Cash Account");
         xLookupField2.setExpression("#{ entity.account.code } - #{ entity.account.title }");
-        xLookupField2.setHandler("payableaccount:lookup");
+        xLookupField2.setHandler("cashaccount:lookup");
         xLookupField2.setName("entity.account"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField2);
@@ -76,15 +74,15 @@ public class CashInTreasuryPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -95,7 +93,7 @@ public class CashInTreasuryPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -106,6 +104,7 @@ public class CashInTreasuryPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

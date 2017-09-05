@@ -166,7 +166,7 @@ public class CashBreakdownPage extends javax.swing.JPanel {
         xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField5.setEnabled(false);
         xDecimalField5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xDecimalField5.setName("entity.totalnoncash"); // NOI18N
+        xDecimalField5.setName("entity.totalcheck"); // NOI18N
         xDecimalField5.setPreferredSize(new java.awt.Dimension(150, 23));
         xFormPanel2.add(xDecimalField5);
 
@@ -298,7 +298,7 @@ public class CashBreakdownPage extends javax.swing.JPanel {
         xDecimalField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField10.setEnabled(false);
         xDecimalField10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xDecimalField10.setName("entity.totalcredit"); // NOI18N
+        xDecimalField10.setName("entity.totalcr"); // NOI18N
         xDecimalField10.setPreferredSize(new java.awt.Dimension(150, 23));
         xFormPanel4.add(xDecimalField10);
 

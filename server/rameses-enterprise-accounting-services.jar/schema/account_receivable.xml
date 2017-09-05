@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="account_receivable">
+		<field name="objid" primary="true" prefix="AR"/>
+		<field name="code" required="true" caption="Acct Code"/>
+		<field name="title" required="true" caption="Acct Title"/>
+		<field name="entity_objid"  />
+		<field name="entity_name" />
+		<field name="org_objid"  />
+		<field name="org_name" />
+
+		
+	</element>
+</schema>
+

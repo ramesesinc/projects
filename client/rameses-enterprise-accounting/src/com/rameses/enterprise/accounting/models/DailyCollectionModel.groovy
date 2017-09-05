@@ -5,11 +5,10 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.* 
-import com.rameses.enterprise.treasury.models.*;
 import javax.swing.*;
 import com.rameses.io.*;
 
-class DailyCollectionModel extends LiquidationModel { 
+class DailyCollectionModel  { 
 
     public String getFormName() {
         return "daily_collection";

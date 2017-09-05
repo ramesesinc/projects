@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="creditmemo" allowDelete="false">
+    <invokers>
+        <invoker folderid="home/accounting" caption="Credit Memo List" 
+                 cols="controlno,refno,refdate,payer.name,bankaccount.code,bankaccount.name,bankaccount.bank.name,amount,issuedby.name"
+                 role="COLLECTOR,CASHIER" action="init"/>
+    </invokers>
+</workunit>

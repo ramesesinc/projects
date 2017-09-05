@@ -1,0 +1,12 @@
+<workunit schemaName="account_receivable">
+    
+   <invokers>
+         <invoker type="account_receivable:open" caption="Account Receivable" action="open" target="popup"/>
+         <invoker type="account_receivable:create" caption="New Account Receivable" action="create" target="popup"/>
+   </invokers>
+   <code class="com.rameses.seti2.models.CrudFormModel" />
+   <pages>
+       <page template="com.rameses.enterprise.accounting.views.AccountReceivablePage" />
+   </pages>
+   
+</workunit>

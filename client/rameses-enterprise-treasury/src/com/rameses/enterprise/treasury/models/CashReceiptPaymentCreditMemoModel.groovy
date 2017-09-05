@@ -58,7 +58,7 @@ class CashReceiptPaymentCreditMemoModel extends PageFlowController {
             m.refno = entry.refno;
             m.refid = entry.refid;
             m.amount = f.amount;
-            m.particulars = "CM " + f.refno + " " + f.fund.title + " " + entry.bankaccount.bank.name + ((cnt>1)? " " + (i++) + " of " +cnt : "" );
+            m.particulars = "CM " + entry.refno + " " + entry.bankaccount.bank.name + ((cnt>1)? " " + (i++) + " of " +cnt : "" );
             m.refdate = entry.refdate; 
             m.fund = f.fund;
             payments << m;

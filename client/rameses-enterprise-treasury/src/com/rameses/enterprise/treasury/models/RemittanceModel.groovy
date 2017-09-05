@@ -77,6 +77,7 @@ class RemittanceModel  extends CrudFormModel {
         return "capture"; 
     }    
     
+    
     def delete() { 
         if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
             persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
@@ -85,16 +86,6 @@ class RemittanceModel  extends CrudFormModel {
         return null; 
     } 
 
-    def remittanceFundModel = [
-        fetchList: { o->
-            return entity.funds;
-            //return service.getRemittanceFunds([remittanceid: entity.objid]);
-        },
-        onOpenItem: { item, colName->
-            return openFundBreakdown(item);
-        }
-    ] as BasicListModel;
-    
     //MAIN BREAKDOWN
     def viewBreakdown() {
         def h = [
@@ -105,17 +96,13 @@ class RemittanceModel  extends CrudFormModel {
                 return service.getRemittanceCreditMemos([remittanceid: entity.objid]);   
             }
         ]   
-        return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
+        return Inv.lookupOpener( "cashbreakdown", [entity:entity, handler: h ]);
     }
     
-    //called from the menu
-    def openFundBreakdown() {
-        if(!selectedFund) throw new Exception("Please choose a fund");
-        return Inv.lookupOpener("remittance_fund:open", [entity: selectedFund] )
-    }
    
     def submit() {
         boolean pass = false;
+        service.validateBreakdown([objid:entity.objid]);
         
         try {
             def h = { sig->

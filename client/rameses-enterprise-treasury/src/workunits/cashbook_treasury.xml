@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="cashbook_treasury">
-    
-    <invokers>
-        <invoker type="cashbook_treasury:create" caption="Cash Book Treasury" action="create"  />
-        <invoker type="cashbook_treasury:open" caption="Cash Book Treasury" action="open"  />
-    </invokers>
-   
-   
-</workunit>

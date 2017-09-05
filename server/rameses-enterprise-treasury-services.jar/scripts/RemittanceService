@@ -61,7 +61,7 @@ class RemittanceService  {
 		def o = [ objid: remittanceid, state:'DRAFT', txnno: temptxnno, dtposted: rundate ]; 
 		o.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
 		o.remittancedate = new java.sql.Date( rundate.time );
-		o.amount = o.totalcash = o.totalnoncash = 0.0; 
+		o.amount = o.totalcash = o.totalcheck = o.totalcr = 0.0; 
 		o.cashbreakdown = [];
 		remdb.create( o );  
 
@@ -95,15 +95,17 @@ class RemittanceService  {
 		remdb.updateNonCashReceiptPayment( info ); 
 
 		o.amount = 0.0;
+		o.totalcr = 0.0;
 		o.totalcash = 0.0;
-		o.totalnoncash = 0.0;
+		o.totalcheck = 0.0;
 		remf_db.find([ remittanceid: remittanceid ]).list().each{
 			o.amount += it.amount;
+			o.totalcr += it.totalcr; 
 			o.totalcash += it.totalcash;
-			o.totalnoncash += (it.totalcheck + it.totalcr); 
+			o.totalcheck += it.totalcheck; 
 		}
 		remdb.find([ objid: remittanceid ]).update([ 
-			amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash 
+			amount: o.amount, totalcash: o.totalcash, totalcheck: o.totalcheck, totalcr: o.totalcr  
 		]); 
 
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
@@ -169,6 +171,41 @@ class RemittanceService  {
 		return []; 
 	} 
 
+ 	@ProxyMethod
+    public void updateCashBreakdown( o ) { 
+        def m = remf_db.find([ objid: o.objid ]).select('objid,remittanceid').first(); 
+        if ( !m ) return;
+
+        remf_db.find([ objid: m.objid ]).update([ cashbreakdown: o.cashbreakdown ]);  
+
+		def totalcbd = summarizeFundCashbreakdown( m.remittanceid ); 
+		remdb.find([ objid: m.remittanceid ]).update([ cashbreakdown: totalcbd ]);
+    } 
+
+    private def summarizeFundCashbreakdown( remittanceid ) {
+        def arr = [];
+        def cblist = remf_db.find([ remittanceid: remittanceid ]).select("cashbreakdown").where(" totalcash > 0 ").list();
+        cblist.each { 
+        	if ( it.cashbreakdown ) arr.addAll( it.cashbreakdown ); 
+        }
+
+        def newarr = [];
+        arr.groupBy{ it.denomination }.each { k,v->
+        	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
+        }
+        return newarr; 
+    }
+
+	@ProxyMethod
+	public void validateBreakdown( def o ) {
+		// check cashbreakdown per fund 
+        def cblist = remf_db.find([ remittanceid: o.objid ]).select("cashbreakdown,fund.*").where(" totalcash > 0 ").list();
+		cblist.each {
+            if(it.totalcash >0 && ( it.cashbreakdown?.sum{c->c.amount}!=it.totalcash)  )
+                throw new Exception("Cashbreakdown for "+it.fund.title + " must be exact ");
+        }
+	}
+
 	@ProxyMethod 
 	public def post( param ) { 
 		if ( !param.remittanceid ) throw new Exception("remittanceid parameter is required"); 
@@ -176,21 +213,6 @@ class RemittanceService  {
 		def o = remdb.find([ objid: param.remittanceid ]).first(); 
 		if ( !o ) throw new Exception('Remittance record does not exist.');
 		if ( o.state != 'DRAFT' ) throw new Exception("Remittance record is no longer in DRAFT mode");
-
-		// check cashbreakdown per fund 
-        def cblist = remf_db.find([ remittanceid: o.objid ]).select("cashbreakdown,fund.*").where(" totalcash > 0 ").list();
-        cblist.each { 
-        	def amt = it.cashbreakdown?.sum{( it.amount ? it.amount: 0.0 )} 
-        	if ( !amt ) throw new Exception('Please specify a cashbreakdown for fund '+ it.fund.title ); 
-
-        	def diff = (o.totalcash - amt);
-	        if( diff  > 0.05 )
-	            throw new Exception("Cash to remit is insufficient. Please review your collection for " + it.fund.title);
-	        if( diff < -0.05 )
-	            throw new Exception("Please review your collection. You have over declared the cash breakdown for " + it.fund.title);
-        }
-
-		param.cashbreakdown = summarizeFundCashbreakdown( o.objid ); 
 
 		o.state = 'OPEN'; 
 		o.txnno = formatTxnno( o ); 
@@ -200,7 +222,6 @@ class RemittanceService  {
 		def rundate = dateSvc.getServerDate(); 
 		remdb.find([ objid: param.remittanceid ]).update([ 
 			txnno: o.txnno, state: o.state, dtposted: rundate, 
-			cashbreakdown: param.cashbreakdown, 
 			collector: o.collector 
 		]); 
 		remdb.updateFundControlNo([ remittanceid: param.remittanceid ]); 
@@ -287,6 +308,7 @@ class RemittanceService  {
     		cond << "ref.fund.objid = :fundid";
     		parm.fundid = o.fund.objid;
     	}
+    	xem.debug = true;
     	return xem.where(cond.join(" AND "), parm).list()*.ref;
     }
 
@@ -296,7 +318,7 @@ class RemittanceService  {
     	def cond  = [];
     	def parm = [:];
 
-		cond << " NOT( ref.reftype = 'CHECK') " 
+		cond << " ref.reftype = 'CREDITMEMO' " 
     	def xem = rem_noncash.find( [remittanceid: o.remittanceid ] );
     	if( o.fund ) {
     		cond << "ref.fund.objid = :fundid";
@@ -305,30 +327,16 @@ class RemittanceService  {
     	return xem.where(cond.join(" AND "), parm).list()*.ref;
     }
 
-    @ProxyMethod
-    public void updateCashBreakdown( o ) { 
-        def m = remf_db.find([ objid: o.objid ]).select('objid,remittanceid').first(); 
-        if ( !m ) return;
+   
 
-        remf_db.find([ objid: m.objid ]).update([ cashbreakdown: o.cashbreakdown ]);  
 
-		def totalcbd = summarizeFundCashbreakdown( m.remittanceid ); 
-		remdb.find([ objid: m.remittanceid ]).update([ cashbreakdown: totalcbd ]);
-    } 
 
-    private def summarizeFundCashbreakdown( remittanceid ) {
-        def arr = [];
-        def cblist = remf_db.find([ remittanceid: remittanceid ]).select("cashbreakdown").where(" totalcash > 0 ").list();
-        cblist.each { 
-        	if ( it.cashbreakdown ) arr.addAll( it.cashbreakdown ); 
-        }
 
-        def newarr = [];
-        arr.groupBy{ it.denomination }.each { k,v->
-        	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
-        }
-        return newarr; 
-    }
+
+
+
+
+
 
 
 	public def getMonthFirstDate( dt ) {

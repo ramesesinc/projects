@@ -57,8 +57,9 @@ class LiquidationService  {
 		m.txndate = dateSvc.serverDate;
 		m.dtposted = m.txndate;
 		m.txnno = temptxnno;
-		m.totalnoncash = 0.0;
+		m.totalcr = 0.0;
 		m.totalcash = 0.0;
+		m.totalcheck = 0.0; 
 		m.amount = 0.0;
 		m = liqEm.create( m ); 
 
@@ -98,12 +99,13 @@ class LiquidationService  {
 		m.amount = amount;
 		m.totalcr = totalcr; 
 		m.totalcash = totalcash; 
-		m.totalnoncash = ( totalcheck + totalcr ); 
+		m.totalcheck = totalcheck;
 		m.cashbreakdown = newcblist; 
 		liqEm.find([ objid: m.objid ]).update([ 
 			amount        : m.amount, 
+			totalcr       : m.totalcr, 
 			totalcash     : m.totalcash, 
-			totalnoncash  : m.totalnoncash, 
+			totalcheck    : m.totalcheck, 
 			cashbreakdown : m.cashbreakdown 
 		]);
 

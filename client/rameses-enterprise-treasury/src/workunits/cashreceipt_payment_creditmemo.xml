@@ -1,10 +1,28 @@
 <workunit>
     <invokers>
-          <invoker type="cashreceipt:payment-creditmemo" caption="Credit Memo" target="popup" action="init"/>
+          <invoker type="cashreceipt:payment-creditmemo" caption="Credit Memo" target="popup" action="start"/>
     </invokers>
-    <code class="com.rameses.enterprise.treasury.models.CreditMemoPaymentModel" />
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptPaymentCreditMemoModel" />
+    
+     <pageflow>
+        <start>
+            <transition to="initial" />
+        </start>
+        <page name="initial" title="Enter Details">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="view-summary"  caption="Next" action="distributeFund" mnemonic="N"/> 
+        </page>
+        
+        <page name="view-summary" title="Credit Memo Payment Summary">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="end" caption="Save" action="savePayment" mnemonic="S"/> 
+        </page>
+        <end/>
+    </pageflow> 
+    
     <pages>
-        <page template="com.rameses.enterprise.treasury.views.CashReceiptCreditMemoPayment"/>
+        <page name="initial" template="com.rameses.enterprise.treasury.views.CashReceiptCreditMemoPayment"/>
+        <page name="view-summary" template="com.rameses.enterprise.treasury.views.CashReceiptNoncashPaymentSummaryPage" />
     </pages>
     
 </workunit>

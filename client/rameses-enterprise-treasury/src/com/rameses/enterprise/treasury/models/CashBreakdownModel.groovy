@@ -4,59 +4,51 @@ import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
+import com.rameses.seti2.models.*;
         
-public class CashBreakdownModel  {
+public abstract class CashBreakdownModel extends CrudFormModel {
     
-    def entity;
     def total = 0;
     def cashremaining = 0;
-    def handler;
-    boolean editable;
+    boolean editable = true;
     
-    def oldbreakdown;
     boolean showCreditMemos = true;
     boolean showCashBreakdown = true;
     
-    def checks;
-    def creditMemos;
+    def checkslist;
+    def creditmemolist;
     
-    void copyBreakdown() {
+    abstract def getChecks();
+    abstract def getCreditMemos();
+    void afterUpdate() {}
+    
+    void afterOpen() {
         if(entity.totalcash == null) entity.totalcash = 0;
         if( entity.cashbreakdown == null ) entity.cashbreakdown = [];
-        //make a copy of the brakdown
-        oldbreakdown = [];
-        entity.cashbreakdown.each {
-            def m = [:];
-            m.putAll(it);
-            oldbreakdown << m;
-        }
-    }
-    
-    void init() {
-        copyBreakdown();
-        checks = handler.getChecks();
-        creditMemos = handler.getCreditMemos();
-        if( !creditMemos ) {
+        checkslist = getChecks();
+        creditmemolist = getCreditMemos();
+        if( !creditmemolist ) {
             showCreditMemos = false;
         }
-        if( entity.totalcash <=0 && !checks  ) {
+        if( entity.totalcash <=0 && !checkslist  ) {
             showCashBreakdown = false;
         }
     }
 
     def checkModel = [
         fetchList: { o->
-            return checks;
+            return checkslist;
         }
     ] as BasicListModel;
 
     def creditMemoModel = [
         fetchList: { o->
-            return creditMemos;
+            return creditmemolist;
         }
     ] as BasicListModel;
     
     def doOk() {
+        if(!editable) return "_close";
         def breakdown = 0;
         if( entity.cashbreakdown ) {
             breakdown = entity.cashbreakdown.sum{ it.amount };
@@ -65,12 +57,11 @@ public class CashBreakdownModel  {
         if( diff  != 0 )
             throw new Exception("Cash breakdown must equal total cash");
         
-        handler.update(entity);
+        afterUpdate();
         return "_close";
     }
     
-    def doCancel() {
-        entity.cashbreakdown = oldbreakdown;
+    def doCancel() {    
         return "_close";
     }
     

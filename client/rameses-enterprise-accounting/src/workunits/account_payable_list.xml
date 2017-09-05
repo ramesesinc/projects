@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="account_payable">
+    <invokers>
+        <invoker folderid="/explorer/master/accounting" caption="Account Payable" action="init" 
+                 cols="code,title,org.name"
+                 role="MASTER" permission="account_payable.view"/> 
+   </invokers>
+</workunit>

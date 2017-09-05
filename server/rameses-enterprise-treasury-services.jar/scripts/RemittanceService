@@ -173,6 +173,41 @@ class RemittanceService  {
 		return []; 
 	} 
 
+ 	@ProxyMethod
+    public void updateCashBreakdown( o ) { 
+        def m = remf_db.find([ objid: o.objid ]).select('objid,remittanceid').first(); 
+        if ( !m ) return;
+
+        remf_db.find([ objid: m.objid ]).update([ cashbreakdown: o.cashbreakdown ]);  
+
+		def totalcbd = summarizeFundCashbreakdown( m.remittanceid ); 
+		remdb.find([ objid: m.remittanceid ]).update([ cashbreakdown: totalcbd ]);
+    } 
+
+    private def summarizeFundCashbreakdown( remittanceid ) {
+        def arr = [];
+        def cblist = remf_db.find([ remittanceid: remittanceid ]).select("cashbreakdown").where(" totalcash > 0 ").list();
+        cblist.each { 
+        	if ( it.cashbreakdown ) arr.addAll( it.cashbreakdown ); 
+        }
+
+        def newarr = [];
+        arr.groupBy{ it.denomination }.each { k,v->
+        	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
+        }
+        return newarr; 
+    }
+
+	@ProxyMethod
+	public void validateBreakdown( def o ) {
+		// check cashbreakdown per fund 
+        def cblist = remf_db.find([ remittanceid: o.objid ]).select("cashbreakdown,fund.*").where(" totalcash > 0 ").list();
+		cblist.each {
+            if(it.totalcash >0 && ( it.cashbreakdown?.sum{c->c.amount}!=it.totalcash)  )
+                throw new Exception("Cashbreakdown for "+it.fund.title + " must be exact ");
+        }
+	}
+
 	@ProxyMethod 
 	public def post( param ) { 
 		if ( !param.remittanceid ) throw new Exception("remittanceid parameter is required"); 
@@ -290,6 +325,7 @@ class RemittanceService  {
     		cond << "ref.fund.objid = :fundid";
     		parm.fundid = o.fund.objid;
     	}
+    	xem.debug = true;
     	return xem.where(cond.join(" AND "), parm).list()*.ref;
     }
 
@@ -299,7 +335,7 @@ class RemittanceService  {
     	def cond  = [];
     	def parm = [:];
 
-		cond << " NOT( ref.reftype = 'CHECK') " 
+		cond << " ref.reftype = 'CREDITMEMO' " 
     	def xem = rem_noncash.find( [remittanceid: o.remittanceid ] );
     	if( o.fund ) {
     		cond << "ref.fund.objid = :fundid";
@@ -308,30 +344,16 @@ class RemittanceService  {
     	return xem.where(cond.join(" AND "), parm).list()*.ref;
     }
 
-    @ProxyMethod
-    public void updateCashBreakdown( o ) { 
-        def m = remf_db.find([ objid: o.objid ]).select('objid,remittanceid').first(); 
-        if ( !m ) return;
+   
 
-        remf_db.find([ objid: m.objid ]).update([ cashbreakdown: o.cashbreakdown ]);  
 
-		def totalcbd = summarizeFundCashbreakdown( m.remittanceid ); 
-		remdb.find([ objid: m.remittanceid ]).update([ cashbreakdown: totalcbd ]);
-    } 
 
-    private def summarizeFundCashbreakdown( remittanceid ) {
-        def arr = [];
-        def cblist = remf_db.find([ remittanceid: remittanceid ]).select("cashbreakdown").where(" totalcash > 0 ").list();
-        cblist.each { 
-        	if ( it.cashbreakdown ) arr.addAll( it.cashbreakdown ); 
-        }
 
-        def newarr = [];
-        arr.groupBy{ it.denomination }.each { k,v->
-        	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
-        }
-        return newarr; 
-    }
+
+
+
+
+
 
 
 	public def getMonthFirstDate( dt ) {

@@ -54,9 +54,9 @@ class LiquidationService  {
 		m.txndate = dateSvc.serverDate;
 		m.dtposted = m.txndate;
 		m.txnno = temptxnno;
-		m.totalcheck = 0.0;
-		m.totalcash = 0.0;
 		m.totalcr = 0.0;
+		m.totalcash = 0.0;
+		m.totalcheck = 0.0; 
 		m.amount = 0.0;
 		m = liqEm.create( m ); 
 

@@ -3,7 +3,7 @@
     <invokers>
         
         <invoker type="remittance:section" caption="Remittance Fund" tag="remittance" action="init" 
-            cols="controlno,fund.title,totalcash,totalnoncash,totalcr,amount"/>
+            cols="controlno,fund.title,totalcash,totalcheck,totalcr,amount"/>
         
         <invoker type="liquidation_fund:section" caption="Remittance Fund" tag="liquidation_fund" action="init" 
             cols="controlno,remittance.collector.name,totalcash,totalnoncash,totalcr,amount"/>

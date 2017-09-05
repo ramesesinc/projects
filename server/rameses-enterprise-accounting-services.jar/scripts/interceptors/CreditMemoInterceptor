@@ -1,0 +1,59 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class CreditMemoInterceptor { 
+	
+	@Env
+	def env
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc; 
+
+	@Service("BankAccountPostService")
+	def bankService;
+
+	@DataContext('creditmemo')
+	def creditmemoEm;	
+
+	@DataContext('income_summary')
+	def incEm;
+
+
+
+	/*************************************************************************************************
+	* CREATE POST TO BANK
+	*************************************************************************************************/
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
+	public void updateStateForPosting( def evt ) { 
+		def o = evt.args[0];
+		if (!o.state){
+			o.state = 'OPEN';
+		}
+		o.controlno = 'CR' + seqSvc.getNextFormattedSeries('CR');
+		o.issuedby = [objid: env.USERID, name:env.FULLNAME];
+		o.dtissued = dateSvc.getServerDate();	
+		o.issuereceipt = 1;
+	}	
+
+	
+
+	/*************************************************************************************************
+	* UPDATE POST TO INCOME
+	*************************************************************************************************/
+	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
+	public void postToIncome( def evt ) { 
+		def param = evt.args[0]; 
+		println '> ' + param; 
+		println '>> '+ evt.result;
+		throw new Exception("updated credit memo");
+	} 
+
+
+}
+

@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cashbook_treasury" allowCreate="false" allowDelete="false">
+    
+    <invokers>
+        <invoker folderid="/explorer/master/accounting" caption="Cash In Treasury" action="init"  
+                 role="MASTER" permission="cashbook_treasury.view" cols="code,title,fund.title,account.title"/>
+        
+        <!-- Build Cash In treasury ledgers -->
+        <invoker type="listActions" caption="Build" action="build" />
+    </invokers>
+    <code class="com.rameses.enterprise.accounting.models.CashbookTreasuryListModel" /> 
+</workunit>

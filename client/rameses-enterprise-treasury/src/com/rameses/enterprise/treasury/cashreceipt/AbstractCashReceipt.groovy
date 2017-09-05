@@ -164,12 +164,12 @@ public abstract class AbstractCashReceipt {
         def success = false;
         clearAllPayments();
         def handler = { o->
-            o.each { v->
-                entity.paymentitems << v;
-            }
+            entity.totalcash = 0;
+            entity.paymentitems = o.paymentitems;
+            entity.totalnoncash = o.paymentitems.sum{it.amount};
             success = true; 
         }
-        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, funds:summarizeByFund() ] );
+        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] );
         if ( success ) {
             def outcome = post(); 
             binding.fireNavigation( outcome );  

@@ -1,0 +1,24 @@
+<schema>
+
+	<element tablename="account">
+		<field name="objid" primary="true" prefix="ACCT"/>
+
+		<complex name="maingroup" ref="account_maingroup" jointype="many-to-one" includefields="name,title">
+			<key field="maingroupid" target="objid" />	
+		</complex> 
+		<complex name="group" ref="account_group" jointype="many-to-one" includefields="objid,code,title">
+			<key field="groupid" target="objid" />	
+		</complex> 
+
+		<field name="code" required="true" searchable="true" indexed="true"/>
+		<field name="title" required="true" searchable="true" indexed="true"/>
+
+		<field name="acctid" />
+		<field name="accttype"  />
+
+		<complex name="items" ref="account" jointype="one-to-many" required="false" orderBy="code">
+			<key field="objid" target="acctid" />
+		</complex>	
+	</element>
+
+</schema>

@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.seti2.models.*;
         
-public class LiquidationFundModel extends CashBreakdownModel2  {
+public class LiquidationFundModel extends CashBreakdownModel  {
     
     public def getChecks() {
         return entity.checks;

@@ -63,6 +63,10 @@ class RevenueItemLookupService  {
 			} 
 		} 
 
+		em.debug = true; 
+		m.each{
+			println '>> '+ it; 
+		}
 		return em.getLookup( m ); 
 	} 
 }

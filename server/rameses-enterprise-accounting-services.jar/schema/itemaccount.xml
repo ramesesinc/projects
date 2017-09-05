@@ -23,5 +23,10 @@
 		<complex name="tags" ref="itemaccount_tag" jointype="one-to-many">
 			<key field="objid" target="acctid"/>
 		</complex> 
+
+		<complex name="parentaccount" ref="itemaccount" jointype="one-to-many"
+			required="false" includefields="objid,code,title"> 
+			<key field="parentid" target="objid"/> 
+		</complex> 
 	</element>
 </schema>

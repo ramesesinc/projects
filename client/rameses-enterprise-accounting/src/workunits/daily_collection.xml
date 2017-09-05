@@ -1,4 +1,4 @@
-<workunit extends="workunits/liquidation.xml" formName="daily_collection">
+<workunit formName="daily_collection">
     <invokers>
         <invoker type="daily_collection:open" caption="Daily Collection" action="open" />
         

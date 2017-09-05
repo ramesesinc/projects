@@ -22,6 +22,7 @@ class RevenueSharingService  {
 		}
 
 		def ruleFact = new FactBuilder();
+		ruleFact.facts << new CashReceipt( orgid: rct.org?.objid, receiptdate: rct.receiptdate );
 
 		def res = ruleSvc.execute("revenuesharing", data, ruleFact, null );
 		if(!res.sharing) return [];

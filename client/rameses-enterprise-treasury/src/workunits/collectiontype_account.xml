@@ -1,58 +1,14 @@
 <workunit>
     
    <invokers>
-         <invoker type="collectiontypeaccount:edit" caption="Collection Type Account" action="edit" target="popup"/>
-         <invoker type="collectiontypeaccount:create" caption="Collection Type Account" action="create"  target="popup"/>
+       <invoker type="collectiontype_account:create" caption="Collection Type Account" action="create"  target="popup"/>
+       <invoker type="collectiontype_account:edit" caption="Collection Type Account" action="open" target="popup"/>
    </invokers>
    
-   <code>
-       <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        
-        class CollectionTypeAccountController  {
-        
-            def mode = 'create';
-            def entity;
-            def handler;
-            def fund; 
-            
-            def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
-            
-            void create() { 
-                entity = [:]; 
-                mode = 'create'; 
-            } 
-            
-            void edit() {
-                mode = 'edit'
-            }    
-            
-            def doOk() {
-                if( handler ) handler( entity );
-                return "_close";
-            }
-            
-            def doCancel() {
-                return "_close";
-            }
-            
-            def getLookupAccount() { 
-                def params = ['query.fund' : fund ];  
-                params.onselect = { o->
-                    entity.account = o;
-                }
-                return Inv.lookupOpener( "revenueitem:lookup", params );
-            }
-            
-        }      
-       ]]>
-   </code>
-   
+   <code class="com.rameses.enterprise.treasury.models.CollectionTypeAccountModel" />
+      
    <pages>
-       <page template="com.rameses.enterprise.treasury.collection.CollectionTypeAccountPage" />
+       <page template="com.rameses.enterprise.treasury.views.CollectionTypeAccountPage" />
    </pages>
    
 </workunit>

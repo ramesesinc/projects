@@ -23,11 +23,9 @@
 			<key field="fund_objid" target="objid" />
 		</complex>  
 
-		<!--
 		<complex name="payments" ref="cashreceiptpayment_noncash" jointype="one-to-many">
 			<key field="objid" target="liquidationfundid"/> 
 		</complex> 
-		-->
 
 	</element>
 

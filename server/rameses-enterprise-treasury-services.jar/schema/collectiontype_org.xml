@@ -1,0 +1,10 @@
+<schema>
+	
+	<element tablename="collectiontype_org" >
+		<field name="objid" primary="false"/>
+		<field name="collectiontypeid" required="false"/>
+		<field name="org_objid" required="false"/>
+		<field name="org_name" required="false"/>
+	</element>
+
+</schema>

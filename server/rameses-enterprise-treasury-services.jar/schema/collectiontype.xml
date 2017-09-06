@@ -1,7 +1,7 @@
 <schema>
 
-	<element name="collectiontype" tablename="collectiontype">
-		<field name="objid" primary="true"/>	
+	<element  tablename="collectiontype">
+		<field name="objid" primary="true" prefix="COLLTYPE"/>	
 		<field name="state" required="true"/>
 		<field name="name" required="true" searchable="true"/>
 		<field name="title" required="true" searchable="true"/>

@@ -1,9 +1,10 @@
 <schema>
 
-	<element name="collectiontype_account" tablename="collectiontype_account">
-		<field name="collectiontypeid"  primary="true"/>
-		<field name="account_objid"  primary="true"/>
-		<field name="account_title"  />
+	<element tablename="collectiontype_account">
+		<field name="objid"  primary="true"/>
+		<field name="collectiontypeid" required="true"/>
+		<field name="account_objid" required="true"/>
+		<field name="account_title"  required="true"/>
 		<field name="tag"  />
 		<field name="valuetype"  required="true"/>
 		<field name="defaultvalue" required="true"/>

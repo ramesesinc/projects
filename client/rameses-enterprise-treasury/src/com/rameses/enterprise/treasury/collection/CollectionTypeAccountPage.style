@@ -1,6 +1,0 @@
-"entity.account.*" [ mode == 'create' ] {
-    readonly: false;
-}
-"entity.account.*" [ mode != 'create' ] {
-    readonly: true;
-}

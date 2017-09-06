@@ -4,30 +4,27 @@ import com.rameses.osiris2.common.*;
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
+import com.rameses.seti2.models.*;
         
-public class CollectionTypeModel extends CRUDController {
+public class CollectionTypeModel extends CrudFormModel {
 
     @Service("CollectionTypeService")
     def service;
-
-    String entityName = "collectiontype";
-    String prefixId = "COLLTYPE";
-    boolean showConfirmOnSave = false;
-
-    def selectedAccount;
-    def selectedFund;
-
-    Map createEntity() { 
-        def m = super.createEntity(); 
-        m.sortorder = 0; 
-        m.allowonline = true;
-        m.defaultvalue = 0;
-        m.valuetype = 'ANY';
-        m.accounts = []; 
-        m.funds = []; 
-        return m; 
+    
+    void afterCreate() { 
+        entity.state = 'APPROVED';
+        entity.sortorder = 0; 
+        entity.allowonline = 1;
+        entity.allowoffline = 0;
+        entity.allowbatch = 0;
     } 
 
+    void afterOpen() {
+        if(!entity.allowonline) entity.allowonline = 0;
+        if(!entity.allowoffline) entity.allowoffline = 0;
+        if(!entity.allowbatch) entity.allowbatch = 0;
+    }
+    
     def getFormTypes() {
         return service.getFormTypes()*.objid;
     }
@@ -40,6 +37,16 @@ public class CollectionTypeModel extends CRUDController {
         return InvokerUtil.lookupOpeners( "collectiontype:batchhandler" )*.properties.name;
     }
 
+    def categoryModel = [
+        fetchList: { o->
+            return service.getCategories();
+        },
+        onselect: { o->
+            entity.category = o.category;
+        }
+    ] as SuggestModel;
+    
+    /*
     def addAccount() { 
         def params = [ fund: entity.fund ]; 
         params.handler = { o-> 
@@ -88,13 +95,7 @@ public class CollectionTypeModel extends CRUDController {
     void afterSave( o ) {
         accountModel.sync();
     } 
+    */
 
-    def categoryModel = [
-        fetchList: { o->
-            return service.getCategories();
-        },
-        onselect: { o->
-            entity.category = o.category;
-        }
-    ] as SuggestModel;
+    
 }

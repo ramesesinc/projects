@@ -46,6 +46,7 @@ WHERE rl.objid = $P{rptledgerid}
 SELECT *
 FROM rpttaxincentive_item
 WHERE rptledgerid = $P{rptledgerid}
+and $P{curryear} >= fromyear and $P{curryear} <= toyear 
 
 
 [getItemsForTaxComputation]

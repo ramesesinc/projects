@@ -2,6 +2,5 @@
    <invokers>
          <invoker type="collectiontype:section" caption="Accounts" action="init" target="popup" parentid="collectiontypeid" 
                   cols="account.title,tag,valuetype,defaultvalue,sortorder" index="1"/>
-         <invoker type="listActions" caption="Add Account" action="addAccount" />
    </invokers>
 </workunit>

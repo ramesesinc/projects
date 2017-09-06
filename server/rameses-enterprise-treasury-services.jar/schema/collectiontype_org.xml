@@ -1,10 +1,11 @@
 <schema>
 	
 	<element tablename="collectiontype_org" >
-		<field name="objid" primary="false"/>
-		<field name="collectiontypeid" required="false"/>
-		<field name="org_objid" required="false"/>
-		<field name="org_name" required="false"/>
+		<field name="objid" primary="true" prefix="COLLTYPEORG"/>
+		<field name="collectiontypeid" required="true"/>
+		<field name="org_objid" required="true"/>
+		<field name="org_name" required="true"/>
+		<field name="org_type" required="true"/>
 	</element>
 
 </schema>

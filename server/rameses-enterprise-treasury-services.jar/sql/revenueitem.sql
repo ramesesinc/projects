@@ -7,7 +7,7 @@ UPDATE itemaccount SET code=$P{code}, title=$P{title} WHERE objid=$P{objid}
 [getLookup]
 SELECT r.* FROM itemaccount r 
 WHERE  (r.title LIKE $P{title} OR r.code LIKE $P{code} OR r.description LIKE $P{title}) 
-	AND r.state = 'APPROVED' AND ia.type IN ('REVENUE','NONREVENUE','RECEIVABLE') 
+	AND r.state = 'APPROVED' AND r.type IN ('REVENUE','NONREVENUE','RECEIVABLE') 
 	${filter} 
 ORDER BY r.title 
 

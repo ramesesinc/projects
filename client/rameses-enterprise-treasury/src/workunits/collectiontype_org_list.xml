@@ -1,6 +1,34 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="collectiontype_org" allowCreate="false">
    <invokers>
-         <invoker type="collectiontype:section" caption="Orgs" action="init" target="popup" parentid="collectiontypeid" cols="org.name" index="2"/>
+         <invoker type="collectiontype:section" caption="Orgs" action="init" target="popup" parentid="collectiontypeid" cols="org.name,org.type" index="2"/>
          <invoker type="listActions" caption="Add Entry" action="addEntry" />
    </invokers>
+   <code>
+       <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+       
+       class CollectionTypeList extends CrudSubListModel {
+       
+            void addEntry() {
+                def mid = masterEntity.objid;
+                def h = { o->
+                    o.each { org->
+                        try {
+                            persistenceService.create( [_schemaname:'collectiontype_org', collectiontypeid:mid, org: [objid:org.objid, name:org.name, type:org.orgclass ] ]  );
+                        }
+                        catch(ign) {;}    
+                    }
+                    reload();
+                }
+                Modal.show( "org:lookup", [multiSelect: true, onselect:h] );
+            
+            }
+       
+       }
+       ]]>
+   </code>    
 </workunit>

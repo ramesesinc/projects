@@ -2,7 +2,10 @@
     <invokers>
         <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" />
-        
+
+        <invoker type="mainitemaccount:lookup" caption="Lookup Main Item Account" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="MAIN"/>
+                
        <invoker type="payableaccount:lookup" caption="Lookup Payable Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="PAYABLE"/>
        
@@ -39,8 +42,13 @@
                 }
                 
                 if(tag) {
-                    s << "state='APPROVED' AND type= :atype ";
-                    parm.atype = tag;
+                    if ( tag == 'MAIN' ) {
+                        s << " parentid IS NULL and state='APPROVED' AND type NOT IN ('CASH','CASH_IN_BANK') ";
+                        parm.atype = tag;
+                    } else {
+                        s << "state='APPROVED' AND type= :atype ";
+                        parm.atype = tag;
+                    } 
                 }
                 return [s.join(" AND "), parm ];
             }

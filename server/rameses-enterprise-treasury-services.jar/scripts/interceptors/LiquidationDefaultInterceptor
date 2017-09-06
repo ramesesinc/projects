@@ -39,5 +39,6 @@ class LiquidationDefaultInterceptor {
 		liq_db.postJevItem( m ); 
 		liq_db.postJevItemForBankAccount( m ); 
 		liq_db.postJevItemForRevenue( m ); 
+		liq_db.postJevItemForShare( m ); 
 	} 
 }

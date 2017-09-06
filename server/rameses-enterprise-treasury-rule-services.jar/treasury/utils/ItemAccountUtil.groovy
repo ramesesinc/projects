@@ -24,6 +24,21 @@ public class ItemAccountUtil {
  
 	public def createAccountFact(def v) {
 		def acct = lookup(v.objid);
+		return buildAccountFact( acct );
+	}
+
+	public def createAccountFactByOrg( def parentid, def orgid ) {
+		if(svc==null) {
+			svc = EntityManagerUtil.lookup( "itemaccount" );
+		}
+		def o = svc.find([ parentid: parentid ]).where(' org.objid = :orgid ', [ orgid: orgid ]).first(); 
+		if ( o ) {
+			return buildAccountFact( o );
+		} 
+		return null; 
+	}
+
+	public def buildAccountFact(def acct ) {
 		Fund f = null;
 		if( acct.fund?.objid  ) {
 			f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);

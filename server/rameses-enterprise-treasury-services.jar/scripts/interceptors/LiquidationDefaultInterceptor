@@ -21,9 +21,9 @@ class LiquidationDefaultInterceptor {
 	public void beforeDelete( evt ) {
 		def params = evt.args[0]; 
 		def m = [ liquidationid: params.objid ];
-		liqf_db.find( m ).list().each{
-			remf_db.find([ liquidationfundid: it.objid ]).update([ liquidationfundid: '{NULL}' ]); 
-		}
+		liqf_db.unbindNonCashPayments( m ); 
+		liqf_db.unbindRemittanceFunds( m ); 
+
 		rem_db.find( m ).update([ liquidationid: '{NULL}' ]);
 		
 		liqf_db.find( m ).delete(); 

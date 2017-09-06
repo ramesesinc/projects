@@ -69,7 +69,8 @@ class LiquidationService  {
 
 		liqEm.insertFunds( liqparam ); 
 		liqEm.insertNonCashPayments( liqparam );	
-		liqEm.bindRemittanceFunds( liqparam );	
+		liqfund.bindRemittanceFunds( liqparam ); 
+		liqfund.bindNonCashPayments( liqparam );
 
 		def totalcbs = [];
 		def liqfundlist = liqfund.find( liqparam ).list();

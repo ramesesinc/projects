@@ -1,15 +1,3 @@
-[getList]
-SELECT ia.* FROM (
-	SELECT objid FROM itemaccount WHERE (title LIKE $P{searchtext} or description LIKE $P{searchtext})  
-	UNION 
-	SELECT objid FROM itemaccount WHERE code LIKE $P{searchtext}
-) r, itemaccount ia 
-WHERE ia.objid=r.objid 
-ORDER BY ia.code
-
-[changeState-approved]
-UPDATE itemaccount SET state='APPROVED' WHERE objid=$P{objid} AND state='DRAFT'
-
 [approve]
 UPDATE itemaccount SET state='APPROVED' WHERE objid=$P{objid} AND state='DRAFT'
 
@@ -19,7 +7,7 @@ UPDATE itemaccount SET code=$P{code}, title=$P{title} WHERE objid=$P{objid}
 [getLookup]
 SELECT r.* FROM itemaccount r 
 WHERE  (r.title LIKE $P{title} OR r.code LIKE $P{code} OR r.description LIKE $P{title}) 
-	AND r.state = 'APPROVED' 
+	AND r.state = 'APPROVED' AND ia.type IN ('REVENUE','NONREVENUE','RECEIVABLE') 
 	${filter} 
 ORDER BY r.title 
 
@@ -34,12 +22,13 @@ FROM collectiontype_account ca
 	INNER JOIN fund f on r.fund_objid = f.objid 
 WHERE ca.collectiontypeid=$P{collectiontypeid}   
 	AND (r.title LIKE $P{title} OR r.code LIKE $P{code} OR r.description LIKE $P{title}) 
-	AND r.state = 'APPROVED' 
+	AND r.state = 'APPROVED' AND r.type IN ('REVENUE','NONREVENUE','RECEIVABLE') 
 	${filter} 
 ORDER BY r.title 
 
 [findHasCollectionTypeAccount]
-SELECT COUNT(*) AS count FROM  collectiontype_account  WHERE collectiontypeid=$P{collectiontypeid}
+SELECT COUNT(*) AS count FROM  collectiontype_account  
+WHERE collectiontypeid=$P{collectiontypeid}
 
 [findAccount]
 SELECT r.objid, r.code, r.title, r.fund_objid, r.fund_code, r.fund_title 

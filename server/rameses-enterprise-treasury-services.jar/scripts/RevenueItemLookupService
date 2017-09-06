@@ -12,9 +12,6 @@ class RevenueItemLookupService  {
 	@ActiveDB("collectiontype")
 	def collectiontype_adb;
 
-	@Service("OrgService")
-	def orgSvc; 
-
 	@Env
 	def env;
 

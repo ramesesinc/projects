@@ -63,15 +63,20 @@ where l.objid = $P{liquidationid}
 insert into jevitem ( 
 	objid, jevid, ledgerid, ledgertype, acctid, dr, cr, particulars 
 ) 
-select  
-	concat(lf.objid,'-',ct.acctid) as objid, 
-	lf.objid as jevid, ct.objid as ledgerid,
+select 
+	concat(lf.objid,'-',ia.acctid) as objid, 
+	lf.objid as jevid, ia.acctid as ledgerid,
 	'cashbook_treasury' as ledgertype, 
-	ct.acctid, (lf.totalcash + lf.totalcheck) as dr, 0.0 as cr, 
+	ia.acctid, (lf.totalcash + lf.totalcheck) as dr, 0.0 as cr, 
 	null as particulars 
 from liquidation l 
 	inner join liquidation_fund lf on lf.liquidationid = l.objid 
-	inner join cashbook_treasury ct on ct.fundid=lf.fund_objid  
+	inner join ( 
+		select fund_objid, min(objid) as acctid 
+		from itemaccount 
+		where type = 'CASH_IN_TREASURY' 
+		group by fund_objid  
+	) ia on ia.fund_objid = lf.fund_objid 
 where l.objid = $P{liquidationid} 
 	and (lf.totalcash + lf.totalcheck) > 0 
 

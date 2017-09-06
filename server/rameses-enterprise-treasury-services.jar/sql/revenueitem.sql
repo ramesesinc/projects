@@ -33,7 +33,7 @@ FROM collectiontype_account ca
 	INNER JOIN itemaccount r on ca.account_objid = r.objid 
 	INNER JOIN fund f on r.fund_objid = f.objid 
 WHERE ca.collectiontypeid=$P{collectiontypeid}   
-	AND (r.title LIKE $P{title} OR r.code LIKE $P{code} r.description LIKE $P{title}) 
+	AND (r.title LIKE $P{title} OR r.code LIKE $P{code} OR r.description LIKE $P{title}) 
 	AND r.state = 'APPROVED' 
 	${filter} 
 ORDER BY r.title 

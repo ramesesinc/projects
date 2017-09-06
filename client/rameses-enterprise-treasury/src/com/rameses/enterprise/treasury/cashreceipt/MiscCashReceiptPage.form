@@ -75,9 +75,9 @@
     </Component>
     <Component class="com.rameses.rcp.control.XButton" name="xButton1">
       <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
-        <Property name="name" type="java.lang.String" value="addAccount" noResource="true"/>
-        <Property name="text" type="java.lang.String" value="Add Account"/>
+        <Property name="immediate" type="boolean" value="true"/>
+        <Property name="name" type="java.lang.String" value="viewSharing" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="View Share"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">

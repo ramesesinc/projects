@@ -125,9 +125,9 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
         xDataTable1.setIndex(10);
         xDataTable1.setName("selectedItem"); // NOI18N
 
-        xButton1.setEnabled(false);
-        xButton1.setName("addAccount"); // NOI18N
-        xButton1.setText("Add Account");
+        xButton1.setImmediate(true);
+        xButton1.setName("viewSharing"); // NOI18N
+        xButton1.setText("View Share");
 
         jLabel1.setText("Collection Group :");
 

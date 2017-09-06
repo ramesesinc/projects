@@ -9,6 +9,9 @@ import com.rameses.enterprise.models.*;
         
 public class BasicCashReceipt extends AbstractCashReceipt {
 
+    @Service('RevenueSharingService')
+    def sharingSvc;
+    
     void init() {
         super.init();
     }
@@ -115,7 +118,10 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     }
     
     void viewSharing() {
-        if(!entity.sharing) throw new Exception("No sharing defined");
+        def sharing = entity.sharing; 
+        if (!sharing) sharing = sharingSvc.execute( entity ); 
+        if (!sharing) throw new Exception('No sharing rules defined'); 
+        
         def lh = [
             getColumnList: {
                 return [
@@ -126,7 +132,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
                 ]
             },
             fetchList : {
-                return entity.sharing;
+                return sharing;
             }
         ] as BasicListModel;
         Modal.show("basiclist:view", [listHandler: lh])

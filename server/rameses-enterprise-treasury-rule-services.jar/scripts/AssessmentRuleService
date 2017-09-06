@@ -98,7 +98,6 @@ public class AssessmentRuleService {
 			return true;
 		};
 
-
 		def res = ruleSvc.execute( ruleName, facts, null, hdlr );
 
 		def result = [:];
@@ -121,14 +120,17 @@ public class AssessmentRuleService {
 		if( res.sharing ) {
 			def si = res.remove("sharing");
 			result.sharing = si.collect{ it.toMap() };	
-			//check if sharing is 100%
-			def totalShare = 0;
-			result.sharing.each { ss->
-				totalShare += ss.share;	
+
+			result.sharing.groupBy{ it.refaccount }.each{ k,v-> 
+				def totalShare = 0;
+				v.each { ss->
+					totalShare += ss.share;	
+				}
+				if(totalShare!=100) {
+					throw new Exception("Error in sharing for account "+ k.title +". Total share must be equal to 100%. Please check your sharing rules");
+				}	
 			}
-			if(totalShare!=100) {
-				throw new Exception("Error in sharing. Total share must equal 100%. Please check your sharing rules");
-			}	
+			//check if sharing is 100%
 		}
 
 		if( resultHandler ) {

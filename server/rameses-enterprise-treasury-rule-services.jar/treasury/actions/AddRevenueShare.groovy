@@ -14,7 +14,7 @@ class AddRevenueShare implements RuleActionHandler  {
 
 		def refacct = params.refaccount;
 		def payableacct = params.payableaccount;
-		def share = params.share.intValue();
+		def share = Integer.parseInt( params.share ); 
 		def amt = params.amount.decimalValue;
 
 		if( refacct ==null && payableacct==null)

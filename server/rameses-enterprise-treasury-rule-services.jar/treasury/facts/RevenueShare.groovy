@@ -15,7 +15,6 @@ class RevenueShare {
 	public Map toMap() {
 		def m = [:];
 		m.refaccount = refaccount.toMap();
-		println "payabale account is "+ payableaccount;
 		if( payableaccount) {
 			m.payableaccount = payableaccount.toMap();
 		}	

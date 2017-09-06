@@ -12,9 +12,11 @@ class AddRevenueShareByOrg implements RuleActionHandler  {
 
 		def refacct = params.refaccount;
 		def payableacct = params.payableparentaccount;
-		def share = params.share.intValue();
+		def share = Integer.parseInt( params.share );
 		def amt = params.amount.decimalValue;
 		def org = params.org;
+
+		println ' share by org -> ' + org.orgid; 
 
 		if( refacct ==null && payableacct==null)
 			throw new Exception("Error in AddRevenueShareByOrg action. Please indicate a ref account or a payable parent account. Check the rules");

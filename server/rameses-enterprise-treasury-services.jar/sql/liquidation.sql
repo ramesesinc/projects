@@ -106,9 +106,8 @@ insert into jevitem (
 ) 
 select  
 	concat(lf.objid,'-',ci.item_objid) as objid, 
-	lf.objid as jevid, null as ledgerid,
-	'revenue' as ledgertype, 
-	ci.item_objid, 0.0 as dr, sum(ci.amount) as cr, 
+	lf.objid as jevid, null as ledgerid, 'revenue' as ledgertype, 
+	ci.item_objid as acctid, 0.0 as dr, sum(ci.amount) as cr, 
 	null as particulars 
 from liquidation_fund lf 
 	inner join liquidation l on l.objid=lf.liquidationid
@@ -116,10 +115,48 @@ from liquidation_fund lf
 	inner join cashreceipt c on c.remittanceid=rem.objid 	
 	inner join cashreceiptitem ci on (ci.receiptid=c.objid and ci.item_fund_objid=lf.fund_objid)
 where l.objid = $P{liquidationid} 
+	and c.objid not in (select receiptid from cashreceipt_share where receiptid=c.objid) 
 	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
 	and c.state <> 'CANCELLED' 
-	and ci.item_objid not in ( 
-		select refacctid from cashreceipt_share 
-		where receiptid=c.objid and refacctid=ci.item_objid 
-	) 
 group by lf.objid, ci.item_objid 
+
+
+[postJevItemForShare]
+insert into jevitem ( 
+	objid, jevid, ledgerid, ledgertype, acctid, dr, cr, particulars 
+) 
+select * from ( 
+	select  
+		concat(lf.objid,'-',ia.objid,'-revenue') as objid, 
+		lf.objid as jevid, null as ledgerid, 'revenue' as ledgertype, 
+		ia.objid as acctid, 0.0 as dr, sum(cs.amount) as cr, 
+		null as particulars 
+	from liquidation_fund lf 
+		inner join liquidation l on l.objid = lf.liquidationid
+		inner join remittance rem on rem.liquidationid = l.objid 
+		inner join cashreceipt c on c.remittanceid = rem.objid 	
+		inner join cashreceipt_share cs on (cs.receiptid = c.objid and cs.payableacctid is null)
+		inner join itemaccount ia on (ia.objid = cs.refacctid and ia.fund_objid = lf.fund_objid) 
+	where l.objid = $P{liquidationid} 
+		and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+		and c.state <> 'CANCELLED' 
+	group by lf.objid, ia.objid  
+
+	union all 
+
+	select  
+		concat(lf.objid,'-',ia.objid,'-payable') as objid, 
+		lf.objid as jevid, null as ledgerid, 'payable' as ledgertype, 
+		ia.objid as acctid, 0.0 as dr, sum(cs.amount) as cr, 
+		null as particulars 
+	from liquidation_fund lf 
+		inner join liquidation l on l.objid = lf.liquidationid
+		inner join remittance rem on rem.liquidationid = l.objid 
+		inner join cashreceipt c on c.remittanceid = rem.objid 	
+		inner join cashreceipt_share cs on cs.receiptid = c.objid 
+		inner join itemaccount ia on (ia.objid = cs.payableacctid and ia.fund_objid = lf.fund_objid) 
+	where l.objid = $P{liquidationid} 
+		and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+		and c.state <> 'CANCELLED' 
+	group by lf.objid, ia.objid 
+)tmp1 

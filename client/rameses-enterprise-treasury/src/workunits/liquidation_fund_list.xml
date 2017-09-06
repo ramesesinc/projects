@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
           schemaName="liquidation_fund" 
-    cols="txnno,fund.title,totalcash,totalnoncash,totalcr,amount" 
+    cols="txnno,fund.title,totalcash,totalcheck,totalcr,amount" 
     allowDelete="false" allowCreate="false">
     
     <invokers>

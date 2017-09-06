@@ -295,24 +295,6 @@ class RemittanceService  {
     } 
 
 
-    //LISTS THAT WILL BE RETRIEVED BY REMITTANCE
-	@ProxyMethod
-	public def getRemittedReceipts( o ) { 
-		return em.getRemittedReceipts( o );
-	}
-
-	@ProxyMethod
-    public def getCashBreakdown( def o ) {
-    	def r = remdb.find( [objid: o.objid ] ).select("cashbreakdown").val();
-    	return r;
-    }
-
-	@ProxyMethod
-    public def getFundCashBreakdown( def o ) {
-    	def r = remf_db.find( [objid: o.objid ] ).select("cashbreakdown").val();
-    	return r;
-    }
-
  	@ProxyMethod
     public def getRemittanceChecks( def o ) {
     	//check if there is fund provided

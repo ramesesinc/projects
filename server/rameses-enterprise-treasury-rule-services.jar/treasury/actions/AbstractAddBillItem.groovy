@@ -16,15 +16,25 @@ import com.rameses.osiris3.common.*;
 ****/
 public abstract class AbstractAddBillItem implements RuleActionHandler {
 
+	public def getAccountFactByOrgAndParent( def parentid, def orgid ) {
+		def ct = RuleExecutionContext.getCurrentContext();		
+		if( !ct.env.acctUtil ) ct.env.acctUtil = new ItemAccountUtil();
+		return ct.env.acctUtil.lookupIdByParentAndOrg( parentid, orgid );
+	}
+
+	public def getAccountFact( def acctid ) {
+		def ct = RuleExecutionContext.getCurrentContext();		
+		if( !ct.env.acctUtil ) ct.env.acctUtil = new ItemAccountUtil();
+		return ct.env.acctUtil.createAccountFact( [objid: acctid] );
+	}
+
 	public List getFacts() {
 		def ct = RuleExecutionContext.getCurrentContext();
 		return ct.facts;
 	}
 
 	public void setAccountFact( def billitem, def acctid ) {
-		def ct = RuleExecutionContext.getCurrentContext();		
-		if( !ct.env.acctUtil ) ct.env.acctUtil = new ItemAccountUtil();
-		billitem.account = ct.env.acctUtil.createAccountFact( [objid: acctid] );
+		billitem.account = getAccountFact( acctid );
 		//billitem.sortorder = acct.sortorder;
 	}
 

@@ -1,4 +1,4 @@
-<workunit schemaname="remittance">
+<workunit schemaName="remittance">
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="COLLECTOR,SUBCOLLECTOR"  action="init"/>
         <invoker folderid="home/collection" caption="Unliquidated Remittances" role="COLLECTOR,SUBCOLLECTOR" 

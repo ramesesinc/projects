@@ -1,7 +1,7 @@
 <workunit schemaName="liquidation_fund">
     
    <invokers>
-         <invoker type="liquidation_fund:open" caption="Liquidation Fund" action="init"/>
+         <invoker type="liquidation_fund:open" caption="Liquidation Fund" action="open"/>
    </invokers>
 
    <code class="com.rameses.enterprise.treasury.models.LiquidationFundModel" />

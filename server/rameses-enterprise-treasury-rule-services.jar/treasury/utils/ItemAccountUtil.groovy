@@ -31,4 +31,12 @@ public class ItemAccountUtil {
 		return new Account( objid: acct.objid, code: acct.code, title: acct.title, fund: f);
 	}
 
+
+	public def lookupIdByParentAndOrg( def parentid, def orgid ) {
+		if(svc==null) {
+			svc = EntityManagerUtil.lookup( "itemaccount" );
+		}; 
+		return svc.select("objid").find( [parentid:parentid ] ).where("org.objid = :orgid", [orgid: orgid ]);
+	}
+
 }

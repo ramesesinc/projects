@@ -8,12 +8,18 @@ import com.rameses.seti2.models.*;
         
 public class LiquidationFundModel extends CashBreakdownModel  {
     
+    
     public def getChecks() {
-        return entity.checks;
+        return entity.payments.findAll{ it.reftype == 'CHECK' };
     }
     
     public def getCreditMemos() {
-        return entity.creditmemos;
+        return entity.payments.findAll{ it.reftype == 'CREDITMEMO' };
+    }
+    
+    public void afterOpen() {
+        super.afterOpen();
+        editable = entity.remittance?.state == 'DRAFT';
     }
     
     

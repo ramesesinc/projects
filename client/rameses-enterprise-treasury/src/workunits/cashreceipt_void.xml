@@ -14,7 +14,7 @@
         <invoker 
            type="cashreceipt:form:formActions" caption="Void" action="open" 
            role="ADMIN,COLLECTOR,SUBCOLLECTOR" permission="receipt.void" 
-           visibleWhen="#{entity.voided == 0}"
+           visibleWhen="#{entity.voided == 0 &amp;&amp; entity.remittanceid == null }"
            target="popup"> 
            <action role="ADMIN" tag="admin"/> 
            <action role="COLLECTOR,SUBCOLLECTOR"/> 

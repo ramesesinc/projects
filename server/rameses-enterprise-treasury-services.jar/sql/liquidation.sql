@@ -167,3 +167,10 @@ select * from (
 		and c.state <> 'CANCELLED' 
 	group by lf.objid, ia.objid, ia.type  
 )tmp1 
+
+
+[unbindJev]
+delete from jev where objid = $P{jevid} 
+
+[unbindJevItem]
+delete from jevitem where jevid = $P{jevid} 

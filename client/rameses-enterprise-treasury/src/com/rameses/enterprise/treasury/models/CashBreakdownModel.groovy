@@ -49,13 +49,18 @@ public abstract class CashBreakdownModel extends CrudFormModel {
     
     def doOk() {
         if(!editable) return "_close";
-        def breakdown = 0;
+
+        def numformat = new java.text.DecimalFormat('0.00');          
+        def ntotalcash = new java.math.BigDecimal( numformat.format( entity.totalcash ));
+        
+        def breakdown = 0.0;
         if( entity.cashbreakdown ) {
-            breakdown = entity.cashbreakdown.sum{ it.amount };
+            breakdown = entity.cashbreakdown.sum{ it.amount } 
+            breakdown = new java.math.BigDecimal( numformat.format( breakdown )); 
         }
-        def diff = (entity.totalcash - breakdown);
-        if( diff  != 0 )
-            throw new Exception("Cash breakdown must equal total cash");
+        
+        def diff = ( ntotalcash - breakdown );
+        if ( diff != 0 ) throw new Exception("Cash breakdown must equal total cash");
         
         afterUpdate();
         return "_close";

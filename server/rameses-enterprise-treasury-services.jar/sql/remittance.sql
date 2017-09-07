@@ -175,3 +175,30 @@ set
 where rem.objid = $P{remittanceid} 
   and remf.remittanceid = rem.objid 
   and fund.objid = remf.fund_objid 
+
+
+[getRemainingCashFromChecks]
+select distinct 
+  ci.receiptid, tmp1.totalcash, tmp1.fundcount, 
+  fund.objid as fundid, fund.title as fundtitle, fund.code as fundcode  
+from ( 
+  select 
+    c.objid, c.amount, sum(nc.amount) as totalnoncash, 
+    (c.amount - sum(nc.amount)) as totalcash, 
+    ( 
+      select count(distinct item_fund_objid) 
+      from cashreceiptitem where receiptid = c.objid 
+    ) as fundcount 
+  from cashreceipt c 
+    inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+  where c.remittanceid = $P{remittanceid} 
+    and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+    and c.state <> 'CANCELLED' 
+    and nc.reftype <> 'CREDITMEMO' 
+  group by c.objid, c.amount 
+  having c.amount <> sum(nc.amount) 
+)tmp1 
+  inner join cashreceipt c on c.objid = tmp1.objid 
+  inner join cashreceiptitem ci on ci.receiptid = c.objid 
+  inner join fund on fund.objid = ci.item_fund_objid 
+order by ci.receiptid, fund.code 

@@ -21,15 +21,32 @@ class LiquidationDefaultInterceptor {
 	public void beforeDelete( evt ) {
 		def params = evt.args[0]; 
 		def m = [ liquidationid: params.objid ];
+		rem_db.find( m ).update([ liquidationid: '{NULL}', state: 'APPROVED' ]);
+		
 		liqf_db.unbindNonCashPayments( m ); 
 		liqf_db.unbindRemittanceFunds( m ); 
 
-		rem_db.find( m ).update([ liquidationid: '{NULL}' ]);
+		liqf_db.find( m ).select('objid').list().each{ 
+			def mm = [ jevid: it.objid ]; 
+			liq_db.unbindJevItem( mm ); 
+			liq_db.unbindJev( mm ); 
+		} 
 		
 		liqf_db.find( m ).delete(); 
 		liqnc_db.find( m ).delete(); 
 	} 
 
+
+	@Before( pattern="LiquidationService.post" )
+	public void beforePost( evt ) { 
+		def params = evt.args[0]; 
+		def m = [ liquidationid: params.objid ];
+		liqf_db.find( m ).select('objid').list().each{ 
+			def mm = [ jevid: it.objid ]; 
+			liq_db.unbindJevItem( mm ); 
+			liq_db.unbindJev( mm ); 
+		} 
+	} 
 
 	@After( pattern="LiquidationService.post" )
 	public void afterPost( evt ) {

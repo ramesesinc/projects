@@ -8,13 +8,11 @@ import com.rameses.osiris2.client.*;
 import com.rameses.util.*;
 import com.rameses.seti2.models.*;
 
+
 class LiquidationModel extends CrudFormModel { 
 
     @Service("LiquidationService")
     def service;
-
-    @Service("LiquidationImportExportService")
-    def exportSvc;
 
     @Service("IncomeSummaryService")
     def incomeSvc;
@@ -151,4 +149,6 @@ class LiquidationModel extends CrudFormModel {
         }
         return null; 
     }
+     
+    
 } 

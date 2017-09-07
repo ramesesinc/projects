@@ -217,15 +217,15 @@ class RemittanceService  {
 		if ( o.state != 'DRAFT' ) throw new Exception("Remittance record is no longer in DRAFT mode");
 
 		// check cashbreakdown per fund 
-        def cblist = remf_db.find([ remittanceid: o.objid ]).select("cashbreakdown,fund.*").where(" totalcash > 0 ").list();
+        def cblist = remf_db.find([ remittanceid: o.objid ]).select("totalcash,cashbreakdown,fund.*").where(" totalcash > 0 ").list();
         cblist.each { 
         	def amt = it.cashbreakdown?.sum{( it.amount ? it.amount: 0.0 )} 
         	if ( !amt ) throw new Exception('Please specify a cashbreakdown for fund '+ it.fund.title ); 
 
-        	def diff = (o.totalcash - amt);
-	        if( diff  > 0.05 )
+        	def diff = (it.totalcash - amt);
+	        if( diff  > 0.01 )
 	            throw new Exception("Cash to remit is insufficient. Please review your collection for " + it.fund.title);
-	        if( diff < -0.05 )
+	        if( diff < -0.01 )
 	            throw new Exception("Please review your collection. You have over declared the cash breakdown for " + it.fund.title);
         }
 

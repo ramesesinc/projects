@@ -6,7 +6,7 @@
             cols="controlno,fund.title,totalcash,totalcheck,totalcr,amount"/>
         
         <invoker type="liquidation_fund:section" caption="Remittance Fund" tag="liquidation_fund" action="init" 
-            cols="controlno,remittance.collector.name,totalcash,totalnoncash,totalcr,amount"/>
+            cols="controlno,remittance.collector.name,totalcash,totalcheck,totalcr,amount"/>
     </invokers> 
     <code>
         <![CDATA[

@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="daily_collection" 
-        cols="txndate,liquidatingofficer,amount,posted" hiddenCols="year,month,day" orderBy="txndate DESC">
-    <invokers>
-        <invoker folderid="home/accounting" caption="Daily Collection" action="init" role="MASTER" index="3"/>
-        <invoker type="daily_collection:view" caption="Daily Collection" action="init" role="MASTER" index="3"/>
-    </invokers>
-</workunit>

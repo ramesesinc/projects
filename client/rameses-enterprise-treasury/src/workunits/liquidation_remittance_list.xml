@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
           schemaName="remittance" 
-    cols="txnno,remittancedate,collector.name,totalcash,totalnoncash,totalcr,amount" 
+    cols="txnno,remittancedate,collector.name,totalcash,totalcheck,totalcr,amount" 
     allowDelete="false" allowCreate="false">
     
     <invokers>

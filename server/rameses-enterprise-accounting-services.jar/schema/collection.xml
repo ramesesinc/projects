@@ -1,7 +1,6 @@
 <schema>
-
-	<element tablename="jev">
-		<field name="objid" primary="true" prefix="ACCT"/>
+   <element tablename="jev">
+		<field name="objid" primary="true" />
 		<field name="state" />
 		<field name="jevno" />
 		<field name="jevdate" type="date"/>
@@ -25,8 +24,6 @@
 
 		<complex name="items" ref="jevitem" jointype="one-to-many">
 			<key field="objid" target="jevid" />
-		</complex>
-
-	</element>
-
+		</complex>		
+   </element>
 </schema>

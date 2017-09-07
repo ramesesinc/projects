@@ -1,5 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="daily_collection" entityName="liquidation">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="jev" entitySchemaName="deposit"
+        cols="refno,fund.title,postedby.name,amount,dtposted,jevno,jevdate,verifiedby.name" customFilter=" txntype='DEPOSIT' ">
     <invokers>
-        <invoker folderid="home/accounting" caption="Deposits" index="4" action="init"/>
+        <invoker folderid="home/accounting" caption="Deposits" action="init" role="MASTER" index="3"/>
     </invokers>
 </workunit>

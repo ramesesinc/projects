@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation"
-    cols="txnno,dtposted,liquidatingofficer.name,totalcash,totalnoncash,amount,cashier.name" 
+    cols="txnno,dtposted,liquidatingofficer.name,totalcash,totalcheck,totalcr,amount,cashier.name" 
     hiddenCols="state" allowDelete="false" allowCreate="false">
     
     <invokers>

@@ -95,33 +95,6 @@ class RemittanceService  {
 		remdb.insertFundSummary( info ); 
 		remdb.updateNonCashReceiptPayment( info ); 
 
-		def numformat = new java.text.DecimalFormat('0.0000');
-		def remcashlist = remdb.getRemainingCashFromChecks( info ); 
-		remcashlist.groupBy{ it.receiptid }.each{ k,v-> 
-			def vo = v.first(); 
-			def amt = vo.totalcash / vo.fundcount; 
-			amt = new java.math.BigDecimal( numformat.format( amt )); 
-
-			def totalamt = 0.0;
-			for (int i = 1; i <= vo.fundcount; i++) {
-				if ( i == vo.fundcount ) { 
-					v[i-1].amount = vo.totalcash - totalamt;  
-				} else { 
-					v[i-1].amount = amt; 
-					totalamt += amt; 
-				} 
-			}
-		} 
-
-		remcashlist.groupBy{ it.fundid }.each{ k,v-> 
-			def amt = v.sum{( it.amount ? it.amount : 0.0 )} 
-			def rfo = remf_db.find([ remittanceid: remittanceid ]).where(' fund.objid = :fundid ', [ fundid: k ]).first(); 
-			rfo.totalcash = new java.math.BigDecimal( numformat.format( rfo.totalcash + amt )); 
-			rfo.amount = new java.math.BigDecimal( numformat.format( rfo.totalcash + rfo.totalcheck + rfo.totalcr )); 
-			remf_db.find([ objid: rfo.objid ]).update([ amount: rfo.amount, totalcash: rfo.totalcash ]); 
-		} 
-		remcashlist.clear();
-
 		o.amount = 0.0;
 		o.totalcr = 0.0;
 		o.totalcash = 0.0;

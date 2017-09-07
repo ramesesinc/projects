@@ -127,44 +127,52 @@ where remnc.remittanceid = $P{remittanceid}
 insert into remittance_fund ( 
    objid, remittanceid, fund_objid, fund_title, totalcash, totalcheck, totalcr, amount, cashbreakdown 
 ) 
-SELECT 
-    CONCAT(remittanceid, fund_objid) AS objid, remittanceid, fund_objid, fund.title as fund_title,  
-    SUM(totalcash) AS totalcash, SUM(totalcheck) AS totalcheck, SUM(totalcr) AS totalcr, 
-    SUM( totalcash + totalcheck + totalcr ) as amount, '[]' as cashbreakdown  
-FROM ( 
-  SELECT 
-     c.remittanceid, ia.fund_objid, SUM(ci.amount) AS totalcash, 0.0 AS totalcheck, 0.0 AS totalcr 
-  FROM cashreceipt c 
-    INNER JOIN cashreceiptitem ci ON ci.receiptid=c.objid 
-    INNER JOIN itemaccount ia ON ci.item_objid=ia.objid 
-  WHERE c.remittanceid = $P{remittanceid} 
-    AND c.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid=c.objid) 
-    AND c.objid NOT IN (SELECT receiptid FROM cashreceiptpayment_noncash WHERE receiptid=c.objid) 
-    AND c.state <> 'CANCELLED' 
-  GROUP BY ia.fund_objid 
-  UNION ALL 
-  SELECT 
-    c.remittanceid, ci.fund_objid, 0.0 AS totalcash, 0.0 AS totalcheck, SUM(ci.amount) AS totalcr 
-  FROM cashreceipt c 
-    INNER JOIN cashreceiptpayment_noncash ci ON ci.receiptid=c.objid 
-  WHERE c.remittanceid = $P{remittanceid} 
-    AND c.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid=c.objid) 
-    AND c.state <> 'CANCELLED' 
-    AND ci.reftype = 'CREDITMEMO' 
-  GROUP BY ci.fund_objid 
-  UNION ALL 
-  SELECT 
-    c.remittanceid, nc.fund_objid, 0.0 AS totalcash, SUM(nc.amount) AS totalcheck, 0.0 AS totalcr  
-  FROM cashreceipt c 
-    INNER JOIN cashreceiptpayment_noncash nc ON nc.receiptid=c.objid 
-  WHERE c.remittanceid = $P{remittanceid} 
-    AND c.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid=c.objid) 
-    AND c.state <> 'CANCELLED' 
-    AND nc.reftype <> 'CREDITMEMO' 
-  GROUP BY nc.fund_objid 
-)tmp1, fund 
-where fund.objid=tmp1.fund_objid  
-GROUP BY remittanceid, fund_objid, fund.title  
+select 
+  concat(remittanceid, fundid) as objid, remittanceid, fundid as fund_objid, fundtitle as fund_title, 
+  (sum(amount)-sum(totalcheck + totalcr)) as totalcash, sum(totalcheck) as totalcheck,  
+  sum(totalcr) as totalcr, sum(amount) as amount, '[]' as cashbreakdown  
+from ( 
+  select 
+    c.remittanceid, fund.objid as fundid, fund.title as fundtitle, 
+    sum(ci.amount) as amount, 0.0 as totalcheck, 0.0 as totalcr 
+  from cashreceipt c 
+    inner join cashreceiptitem ci on ci.receiptid = c.objid 
+    inner join fund on fund.objid = ci.item_fund_objid 
+  where c.remittanceid = $P{remittanceid} 
+    and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+    and c.state <> 'CANCELLED' 
+  group by c.remittanceid, fund.objid, fund.title 
+
+  union all 
+
+  select 
+    c.remittanceid, fund.objid as fundid, fund.title as fundtitle, 
+    0.0 as amount, sum(nc.amount) as totalcheck, 0.0 as totalcr  
+  from cashreceipt c 
+    inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+    inner join fund on fund.objid = nc.fund_objid 
+  where c.remittanceid = $P{remittanceid} 
+    and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+    and c.state <> 'CANCELLED' 
+    and nc.reftype <> 'CREDITMEMO' 
+  group by c.remittanceid, fund.objid, fund.title 
+
+  union all 
+
+  select 
+    c.remittanceid, fund.objid as fundid, fund.title as fundtitle, 
+    0.0 as amount, 0.0 as totalcheck, sum(nc.amount) as totalcr 
+  from cashreceipt c 
+    inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+    inner join creditmemo cm on cm.objid = nc.refid 
+    inner join fund on fund.objid = nc.fund_objid 
+  where c.remittanceid = $P{remittanceid} 
+    and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+    and c.state <> 'CANCELLED' 
+    and nc.reftype = 'CREDITMEMO' 
+  group by c.remittanceid, fund.objid, fund.title 
+)tmp1 
+group by remittanceid, fundid, fundtitle 
 
 
 [updateFundControlNo]
@@ -176,24 +184,3 @@ where rem.objid = $P{remittanceid}
   and remf.remittanceid = rem.objid 
   and fund.objid = remf.fund_objid 
 
-
-[getRemainingCashFromChecks]
-select distinct 
-  ci.receiptid, ctmp.totalcash, ctmp.fundcount, 
-  fund.objid as fundid, fund.title as fundtitle, fund.code as fundcode  
-from ( 
-  select 
-    c.objid, c.amount, 
-    (select c.amount-sum(amount) from cashreceiptpayment_noncash where receiptid = c.objid) as totalcash,  
-    (select count(distinct item_fund_objid) from cashreceiptitem where receiptid = c.objid) as fundcount 
-  from cashreceipt c 
-  where c.remittanceid = $P{remittanceid} 
-    and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
-    and c.objid in (select receiptid from cashreceiptpayment_noncash where receiptid=c.objid and reftype <> 'CREDITMEMO') 
-    and c.state <> 'CANCELLED' 
-)ctmp 
-  inner join cashreceipt c on c.objid = ctmp.objid 
-  inner join cashreceiptitem ci on ci.receiptid = c.objid 
-  inner join fund on fund.objid = ci.item_fund_objid 
-where ctmp.totalcash > 0 
-order by ci.receiptid, fund.code 

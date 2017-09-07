@@ -179,26 +179,21 @@ where rem.objid = $P{remittanceid}
 
 [getRemainingCashFromChecks]
 select distinct 
-  ci.receiptid, tmp1.totalcash, tmp1.fundcount, 
+  ci.receiptid, ctmp.totalcash, ctmp.fundcount, 
   fund.objid as fundid, fund.title as fundtitle, fund.code as fundcode  
 from ( 
   select 
-    c.objid, c.amount, sum(nc.amount) as totalnoncash, 
-    (c.amount - sum(nc.amount)) as totalcash, 
-    ( 
-      select count(distinct item_fund_objid) 
-      from cashreceiptitem where receiptid = c.objid 
-    ) as fundcount 
+    c.objid, c.amount, 
+    (select c.amount-sum(amount) from cashreceiptpayment_noncash where receiptid = c.objid) as totalcash,  
+    (select count(distinct item_fund_objid) from cashreceiptitem where receiptid = c.objid) as fundcount 
   from cashreceipt c 
-    inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
   where c.remittanceid = $P{remittanceid} 
     and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+    and c.objid in (select receiptid from cashreceiptpayment_noncash where receiptid=c.objid and reftype <> 'CREDITMEMO') 
     and c.state <> 'CANCELLED' 
-    and nc.reftype <> 'CREDITMEMO' 
-  group by c.objid, c.amount 
-  having c.amount <> sum(nc.amount) 
-)tmp1 
-  inner join cashreceipt c on c.objid = tmp1.objid 
+)ctmp 
+  inner join cashreceipt c on c.objid = ctmp.objid 
   inner join cashreceiptitem ci on ci.receiptid = c.objid 
   inner join fund on fund.objid = ci.item_fund_objid 
+where ctmp.totalcash > 0 
 order by ci.receiptid, fund.code 

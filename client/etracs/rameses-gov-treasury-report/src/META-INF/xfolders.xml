@@ -1,0 +1,15 @@
+<folders>
+    <folder id="explorer">
+        <folder id="report" caption="Reports">
+            <folder id="treasury" caption="Treasury" >
+                <folder id="collector" caption="Collector" />  
+                <folder id="admin" caption="Admin" />  
+            </folder>
+        </folder>
+    </folder>
+     <folder id="menu">
+        <folder id="report" caption="Report">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+    </folder>   
+</folders>

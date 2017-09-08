@@ -1,0 +1,12 @@
+"entity.*" [1==1] {
+    visible: false; 
+}
+"entity.period" [1==1] {
+    visible: true; 
+}
+"entity.(month|year)" [ entity.period.code=='monthly' ] {
+    visible: true; 
+}
+"entity.date" [ entity.period.code=='daily' ] {
+    visible: true; 
+}

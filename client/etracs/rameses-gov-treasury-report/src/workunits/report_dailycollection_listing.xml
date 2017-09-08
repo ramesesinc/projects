@@ -1,0 +1,82 @@
+<workunit extends="wtemplates/ReportController.xml">
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" caption="Daily Report Of Collection" target="window" index="10">
+            <action name="doInit" role="REPORT" tag="all" permission="collectionreport.view"/> 
+            <action name="doInit" role="COLLECTOR" tag="collector" permission="collectionreport.view"/> 
+        </invoker> 
+    </invokers>
+    
+    <code>
+<![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class DailyReportCollectionListingController extends ReportController {
+
+    @Service('CollectionReportService') 
+    def svc;
+    
+    @Script('User')
+    def user;
+
+    @Script('ReportPeriod')
+    def reportPeriod;    
+        
+    String title = 'Daily Report Of Collection Listing';
+    String reportpath = 'com/rameses/gov/treasury/report/';
+    String reportName = reportpath + 'report_dailycollection_listing.jasper' 
+
+    def tag;
+    def data;
+    def months;
+    def periods;
+
+    def postingTypes = [
+        [objid: 'BY_REMITTANCE_DATE',  name: 'By Remittance Date'],
+        [objid: 'BY_LIQUIDATION_DATE', name: 'By Liquidation Date']
+    ]; 
+
+    void doInit( invoker ) {
+        init();
+        
+        tag = invoker?.properties?.tag; 
+        months = reportPeriod.getMonths(); 
+        periods = reportPeriod.getTypes().findAll{ it.type.matches('daily|monthly')}  
+        entity.period = 'daily'; 
+        entity.collector = [ objid: user.env.USERID, name: user.env.FULLNAME ]; 
+    } 
+    
+    def getReportData(){
+        data = svc.getReportListing( entity ); 
+        return data.reportdata; 
+    }
+
+    Map getParameters(){ 
+        return data.header;
+    }
+    
+    SubReport[] getSubReports() {
+        return [ 
+            new SubReport("ListingItem", reportpath + "report_dailycollection_listingitem.jasper"),
+        ] as SubReport[]; 
+    } 
+    
+    def lookupCollector = Inv.lookupOpener('collector:lookup', [
+        onselect: { o-> 
+            def name = [o.firstname, o.middlename, o.lastname].findAll{(it? true: false)}.join(' '); 
+            entity.collector = [objid: o.objid, name: name]; 
+        }, 
+        onempty: {
+            entity.collector = null; 
+        } 
+    ]); 
+}
+]]>        
+
+    </code>    
+    <pages>
+        <page template="com.rameses.gov.treasury.report.view.CollectionReportCriteriaPage"/>
+    </pages>      
+</workunit>

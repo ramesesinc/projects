@@ -1,0 +1,69 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="liquidation:rcd" caption="Report on Collection and Deposits (RCD)" action="initReport" index="1" target="self"/>
+         
+         <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class LiquidationRCDReportController extends com.rameses.etracs.shared.ReportController  {
+        
+            @Binding
+            def binding;
+        
+            @Service("LiquidationReportService")
+            def svc
+            
+            
+            String title = "Report on Collection and Deposits (RCD) " 
+            String reportpath = "com/rameses/gov/treasury/liquidation/report/rcd/"
+            String reportName = reportpath + 'main.jasper' 
+            
+            def fundlist 
+            def fund; 
+            
+            @PropertyChangeListener
+            def listener = [
+                "fund" : { o->
+                    report.viewReport(); 
+                    if ( binding ) binding.refresh()
+                }
+            ];
+            
+            def initReport() {
+                fundlist = svc.getFundlist( entity.objid ); 
+                return super.preview();
+            }
+            
+            def getReportData() {
+                def m = [:];
+                if( !fund ) {
+                    m = svc.getRCDSummaryData([ liquidationid: entity.objid  ])
+                }  
+                else {
+                    m = svc.getRCDReportData([ liquidationid: entity.objid, fundid: fund.fundid ]);
+                }
+                m.signature = entity.signature;
+                return m; 
+            }
+            
+            
+        }      
+       ]]>
+   </code>
+   
+   <pages>
+       <page name="preview" template="com.rameses.enterprise.treasury.report.PreviewByFundPage" />
+   </pages>
+   
+</workunit>

@@ -1,0 +1,59 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance:reports" caption="Remittance Report By Receipts" action="preview" target="self" index="6"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class RemittanceRevenueItemReportController extends com.rameses.etracs.shared.ReportController  {
+        
+            @Binding
+            def binding;
+        
+            @Service("RemittanceReportService")
+            def svc
+            
+            def fund
+            def fundlist
+             
+            String reportpath =  "com/rameses/gov/treasury/remittance/report/"
+            String reportName = reportpath + 'detailedreportbycashreceipts.jasper' 
+            String title = "Remittance Report By Receipts";
+            
+        
+            def getReportData(){
+                return svc.generateDetailedReport( entity)
+            }
+            
+            SubReport[] getSubReports() {
+                return [ 
+                    new SubReport("CASHRECEIPTITEMS", reportpath + "detailedreportbycashreceiptsitems.jasper"),
+                    new SubReport("FUNDSUMMARY", reportpath + "reportbyfundsummary.jasper")
+                ] as SubReport[];      
+            }
+            
+             Map getParameters(){
+                def params = [:]
+                params.SUBTITLE = 'SUMMARY OF COLLECTION BY RECEIPTS'
+                return params;
+             }
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" /> 
+   </pages>
+   
+</workunit>

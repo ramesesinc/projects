@@ -1,0 +1,68 @@
+<workunit>
+    <invokers>
+        <invoker type="bankdeposit:reports" caption="Bank Deposit Report By Revenue Item" action="init" target="self" index="5"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class BankDepositRevenueItemReportController {
+        
+            @Binding
+            def binding;
+        
+            @Service("BankDepositReportService")
+            def svc
+            
+            @Service("ReportParameterService")
+            def paramsvc
+            
+            def entity;
+            def reportdata;
+            def reportPath = "com/rameses/gov/treasury/bankdeposit/report/"
+            def mode = 'init'
+            
+            String title = "Bank Deposit Report By Revenue Item";
+            
+            void init() {
+                viewReport();
+            }
+            
+            void viewReport() {
+                reportdata = svc.generateReportByRevenueItem( entity)
+                report.viewReport();
+            }
+       
+            def report = [
+                getReportName : { return reportPath + 'reportbyrevenueitem.jasper' },
+                getReportData : { return reportdata }, 
+                getParameters : { 
+                    def params = paramsvc.getStandardParameter() 
+                    params.SUBTITLE = 'SUMMARY OF COLLECTION' 
+                    return params;
+                },
+                getSubReports : {
+                    return [ 
+                        new SubReport("ReportSummary", reportPath + "reportbyrevenueitemsummary.jasper"),
+                    ] as SubReport[];    
+                 }
+            ] as ReportModel
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+   </pages>
+   
+</workunit>

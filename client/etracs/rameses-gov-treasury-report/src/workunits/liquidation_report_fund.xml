@@ -1,0 +1,73 @@
+<workunit>
+
+  <invokers>
+    <invoker type="liquidation:reports" caption="Liquidation Report By Fund " action="initReport" index="3" target="self"/>
+
+    <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+  </invokers>
+
+  <code>
+  <![CDATA[
+    import com.rameses.osiris2.common.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import java.rmi.server.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.util.*;
+    import com.rameses.osiris2.reports.*;
+
+    class LiquidationReportByFundController extends com.rameses.etracs.shared.ReportController {
+
+      @Binding
+      def binding;
+
+      @Service("LiquidationReportService")
+      def svc
+
+      @Service("ReportParameterService")
+      def paramsvc
+
+      String title = "Liquidation Report By Fund";
+
+      String reportpath = "com/rameses/gov/treasury/liquidation/reports/"
+      String reportName = reportpath + 'reportbyfund.jasper' 
+
+      def fundlist 
+      def fund 
+
+      @PropertyChangeListener
+      def listener = [
+        "fund" : { o->
+            report.viewReport();
+            binding.refresh();
+        }
+      ];
+
+      def initReport() {
+        def opts = svc.getReportOptions([ objid: entity.objid ]); 
+        fundlist = opts.funds; 
+        return preview();
+      }
+
+      def getReportData(){
+         def m = svc.getReportByFund([ liquidationid: entity.objid, fundid: fund?.fundid ]); 
+         m.signature = entity.signature;
+         return m;
+      }
+
+      Map getParameters(){
+        def params = [SUBTITLE : 'SUMMARY OF COLLECTION']; 
+        if ( fund ) {
+            params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.fundname + ' FUND ';
+        }
+        return params;
+      }  
+    } 
+  ]]>
+  </code>
+
+  <pages>
+    <page name="preview" template="com.rameses.gov.treasury.liquidation.reports.LiquidationReportByFund" />
+  </pages>
+
+</workunit>

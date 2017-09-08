@@ -1,0 +1,76 @@
+<workunit>
+    <invokers>
+        <invoker type="liquidation:reports" caption="Liquidation Report By Revenue Item" action="initReport" target="self" index="5"/>
+        
+        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import java.rmi.server.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class LiquidationRevenueItemReportController extends com.rameses.etracs.shared.ReportController  {
+        
+            @Binding
+            def binding;
+        
+            @Service("LiquidationReportService")
+            def svc
+            
+            def fund
+            def fundlist
+             
+            String reportpath =  "com/rameses/gov/treasury/liquidation/reports/"
+            String reportName = reportpath + 'reportbyrevenueitem.jasper' 
+            String title = "Liquidation Report By Revenue Item";
+            
+            def initReport() {
+                fundlist = svc.getFundlist( entity.objid )
+                fund = [:]
+                return preview();
+            }
+            
+            void setFund( def fund) {
+                this.fund = fund;
+                
+                preview()  
+                binding.refresh() 
+            }
+            
+            def getReportData(){
+                return svc.generateReportByRevenueItem( entity, fund )
+            }
+            
+            SubReport[] getSubReports() {
+                return [ 
+                    new SubReport("ReportSummary", reportpath + "reportbyrevenueitemsummary.jasper")
+                ] as SubReport[];      
+            }
+            
+             Map getParameters(){
+                def params = [:]
+                params.SUBTITLE = 'SUMMARY OF COLLECTION'
+                params.FUND = "all"
+                if (fund) {
+                    params.SUBTITLE = params.SUBTITLE + ' BY ' + fund.fundname + ' FUND ' ;
+                    params.FUND = "specific"
+                }
+                    
+                return params;
+             }
+            
+        }      
+       ]]>
+    </code>
+    
+   <pages>
+       <page name="preview" template="com.rameses.gov.treasury.liquidation.reports.LiquidationReportByFund1" />
+   </pages>
+   
+</workunit>

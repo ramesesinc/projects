@@ -1,0 +1,7 @@
+"entity.*" [mode == 'processing'] {
+    enabled: false; 
+} 
+"entity.*" [mode != 'processing'] {
+    enabled: true; 
+} 
+

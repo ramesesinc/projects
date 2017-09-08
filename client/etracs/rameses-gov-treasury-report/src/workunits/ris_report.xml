@@ -1,0 +1,48 @@
+<workunit >
+    <invokers>
+       <invoker type="stockrequest:ris" caption="RIS Report" action="preview" />
+       
+       <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" /> 
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+ import com.rameses.osiris2.reports.*;
+
+class RISReportController  extends com.rameses.etracs.shared.ReportController 
+{
+
+    def title = 'RIS Report'
+    String reportpath = "com/rameses/gov/treasury/ris/report/"
+    String reportName = reportpath + 'ris.jasper' 
+    
+ 
+    void viewReport() {
+        report.viewReport();
+    } 
+    
+    def getReportData(){ 
+        entity.items.each{
+            it.cost = it.items?.sum{(it.cost? it.cost: 0.0)} 
+        } 
+        entity.totalcost = entity.items?.sum{( it.cost? it.cost: 0.0 )} 
+        return entity; 
+    }
+    
+    SubReport[] getSubReports() {
+        return [ 
+            new SubReport("ReportRISItem", reportpath + "risitem.jasper") 
+         ] as SubReport[]
+    }    
+}
+    ]]>        
+    </code>
+    <pages>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+</workunit>

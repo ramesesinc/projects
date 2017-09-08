@@ -1,0 +1,78 @@
+<workunit extends="wtemplates/gov/treasury/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" action="init" caption="RAAF" target="window" index="-9"> 
+            <action name="doInit" tag="all" role="REPORT" permission="raaf.viewreport"/>  
+            <action name="doInit" tag="all" role="AFO" permission="raaf.viewreport"/>  
+            <action name="doInit" tag="collector" role="COLLECTOR" permission="raaf.viewreport"/>  
+        </invoker>
+    </invokers>
+    
+    <code>
+<![CDATA[
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RAAFController extends com.rameses.etracs.shared.ReportController
+{
+    @Script('User')
+    def user;
+    
+    @Service('RAAFReportService') 
+    def svc
+    
+    @Service('UserRoleService')
+    def userroleSvc
+    
+    String title = 'Report of Accountability for Accountable Forms'
+    String reportpath = 'com/rameses/gov/treasury/report/raaf/'
+    String reportName = reportpath + 'raaf.jasper'
+    
+    def data;
+    def tag;
+    
+    List collectors = []; 
+    List months = []; 
+    
+    def formControl = [
+        getFormControls: {
+            return [
+                new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,19', captionWidth:100]), 
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,19', captionWidth:100]),
+                new FormControl( "combo", [caption:'Collector', name:'entity.collector', required:true, items:'collectors', expression:'#{item.fullname}', preferredSize:'0,19', captionWidth:100]),
+            ]    
+        }
+    ] as FormPanelModel;
+       
+    def doInit( invoker ) {
+        tag = invoker?.properties?.tag; 
+        
+        def users = userroleSvc.getUsers([ domain:'TREASURY', roles:'COLLECTOR' ]).collect{[ 
+            objid:it.objid, name:it.name, title:it.title, 
+            fullname: it.lastname +', '+ it.firstname +' '+ (it.middlename? it.middlename: '')  
+        ]}                 
+        if ( tag == 'all' ) { 
+            collectors = users; 
+        } else { 
+            entity.collector = users.find{( it.objid == user.env.USERID )}
+            if ( entity.collector ) collectors = [ entity.collector ];  
+        } 
+        
+        months = dtSvc.getMonths(); 
+        return init();
+    } 
+    
+    def getReportData(){
+        data = svc.getReportData(entity);
+        return data.items
+    }
+    
+    Map getParameters(){
+        return data.info
+    }
+}
+]]>        
+        
+    </code>
+</workunit>

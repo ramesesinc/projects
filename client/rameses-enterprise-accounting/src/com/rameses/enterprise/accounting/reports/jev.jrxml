@@ -48,29 +48,19 @@
 	<parameter name="ACCOUNTANTNAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="ACCOUNTANTTITLE" isForPrompting="false" class="java.lang.String"/>
 
-	<field name="cashier.title" class="java.lang.String"/>
-	<field name="cashier.name" class="java.lang.String"/>
-	<field name="txnno" class="java.lang.String"/>
-	<field name="collector.name" class="java.lang.String"/>
-	<field name="debit" class="java.math.BigDecimal"/>
-	<field name="credit" class="java.math.BigDecimal"/>
-	<field name="account.code" class="java.lang.String"/>
-	<field name="account.title" class="java.lang.String"/>
+	<field name="postedby.name" class="java.lang.String"/>
 	<field name="fund.title" class="java.lang.String"/>
 	<field name="dtposted" class="java.util.Date"/>
 	<field name="items" class="java.lang.Object"/>
-	<field name="rptincomes" class="java.lang.Object"/>
-	<field name="fund.objid" class="java.lang.String"/>
-	<field name="shares" class="java.lang.Object"/>
-	<field name="totaldebit" class="java.math.BigDecimal"/>
-	<field name="totalcredit" class="java.math.BigDecimal"/>
+	<field name="totaldr" class="java.math.BigDecimal"/>
+	<field name="totalcr" class="java.math.BigDecimal"/>
+	<field name="refno" class="java.lang.String"/>
+	<field name="postedby.jobtitle" class="java.lang.String"/>
+	<field name="refdate" class="java.util.Date"/>
+	<field name="txntype" class="java.lang.String"/>
+	<field name="verifiedby.name" class="java.lang.String"/>
+	<field name="verifiedby.jobtitle" class="java.lang.String"/>
 
-	<variable name="TCREDIT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{credit}]]></variableExpression>
-	</variable>
-	<variable name="TDEBIT" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
-		<variableExpression><![CDATA[$F{credit}]]></variableExpression>
-	</variable>
 
 		<group  name="ITEMS" >
 			<groupExpression><![CDATA[]]></groupExpression>
@@ -84,51 +74,7 @@
 						height="18"
 						key="subreport-1"/>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{ITEMS}]]></subreportExpression>
-				</subreport>
-			</band>
-			</groupHeader>
-			<groupFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-			</groupFooter>
-		</group>
-		<group  name="RPTINCOMES" >
-			<groupExpression><![CDATA[]]></groupExpression>
-			<groupHeader>
-			<band height="18"  isSplitAllowed="true" >
-				<printWhenExpression><![CDATA[new Boolean($F{fund.objid}.equalsIgnoreCase("GENERAL") || $F{fund.objid}.equalsIgnoreCase("SEF"))]]></printWhenExpression>
-				<subreport  isUsingCache="true">
-					<reportElement
-						x="0"
-						y="0"
-						width="522"
-						height="18"
-						key="subreport-2"/>
-					<dataSourceExpression><![CDATA[$F{rptincomes}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{ITEMS}]]></subreportExpression>
-				</subreport>
-			</band>
-			</groupHeader>
-			<groupFooter>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-			</groupFooter>
-		</group>
-		<group  name="RPTSHARES" >
-			<groupExpression><![CDATA[]]></groupExpression>
-			<groupHeader>
-			<band height="18"  isSplitAllowed="true" >
-				<printWhenExpression><![CDATA[new Boolean($F{fund.objid}.equalsIgnoreCase("GENERAL") || $F{fund.objid}.equalsIgnoreCase("SEF"))]]></printWhenExpression>
-				<subreport  isUsingCache="true">
-					<reportElement
-						x="0"
-						y="0"
-						width="522"
-						height="18"
-						key="subreport-3"/>
-					<dataSourceExpression><![CDATA[$F{shares}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{SHARES}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["jevitems.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 			</groupHeader>
@@ -222,7 +168,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txnno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{refno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -395,7 +341,7 @@ Center]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="151"
+						x="94"
 						y="64"
 						width="24"
 						height="17"
@@ -413,7 +359,7 @@ Center]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="175"
+						x="118"
 						y="64"
 						width="119"
 						height="17"
@@ -426,7 +372,7 @@ Center]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="294"
+						x="245"
 						y="64"
 						width="24"
 						height="17"
@@ -444,12 +390,12 @@ Center]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="318"
+						x="269"
 						y="64"
 						width="119"
 						height="17"
 						key="staticText-79"/>
-					<box leftPadding="3" rightPadding="3"></box>
+					<box></box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
@@ -581,6 +527,19 @@ Center]]></text>
 					</textElement>
 				<text><![CDATA[Credit]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="399"
+						y="61"
+						width="100"
+						height="18"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txntype}]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>
@@ -675,44 +634,6 @@ Center]]></text>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["GENERATED BY : ETRACS 2.5  LTR  PRINTED BY : " + $P{PRINTEDBY} + "  PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="15"
-						y="75"
-						width="178"
-						height="14"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField"
-						positionType="Float"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{USERFULLNAME}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="15"
-						y="89"
-						width="178"
-						height="14"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField"
-						positionType="Float"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{USERJOBTITLE}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						x="15"
@@ -760,7 +681,7 @@ Center]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalcredit}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalcr}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -796,7 +717,7 @@ Center]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totaldebit}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totaldr}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -826,7 +747,7 @@ Center]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{verifiedby.name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -847,7 +768,45 @@ Center]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERTITLE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{verifiedby.jobtitle}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="15"
+						y="75"
+						width="197"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-27"
+						positionType="Float"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{postedby.name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="15"
+						y="89"
+						width="197"
+						height="14"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-28"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{postedby.jobtitle}]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

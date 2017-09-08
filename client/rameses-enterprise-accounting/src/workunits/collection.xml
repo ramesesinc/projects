@@ -1,6 +1,7 @@
 <workunit schemaName="jev" formName="collection">
     <invokers>
         <invoker type="collection:open" caption="Daily Collection" action="open" />
+        
     </invokers>
     <code class="com.rameses.enterprise.accounting.models.JevModel" />
     <pages>

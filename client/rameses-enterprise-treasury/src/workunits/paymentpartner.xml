@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="paymentpartner">
-    <invokers>
-        <invoker type="paymentpartner:create" caption="New Payment Partner" action="create"/>
-        <invoker type="paymentpartner:open" caption="Payment Partner" action="open"/>
-   </invokers>
-    <pages>
-        <page template="com.rameses.enterprise.treasury.views.PaymentPartnerPage" />
-    </pages>
-</workunit>

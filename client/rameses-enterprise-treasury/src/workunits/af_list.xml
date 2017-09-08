@@ -1,5 +1,0 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="AFService" entityName="af" formName="af-list">
-    <invokers>
-        <invoker folderid="/explorer/master/treasury" caption="Accountable Forms" role="MASTER"/>
-   </invokers>
-</workunit>

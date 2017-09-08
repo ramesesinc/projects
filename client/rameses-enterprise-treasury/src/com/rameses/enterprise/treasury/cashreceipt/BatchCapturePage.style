@@ -1,7 +1,0 @@
-"selectedItem" [mode == 'saved']{
-    readonly:true;
-}
-
-"selectedItem" [mode != 'saved']{
-    readonly:false;
-}

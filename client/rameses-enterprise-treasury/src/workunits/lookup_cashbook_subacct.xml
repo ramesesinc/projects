@@ -1,6 +1,0 @@
-<workunit extends="wtemplates/ServiceLookupController.xml"  serviceName="UsergroupMemberLookupService" 
-    tag="COLLECTOR,LIQUIDATING_OFFICER,CASHIER">
-    <invokers>
-        <invoker type="cashbook_subacct:lookup" caption="Lookup Sub Accounts" target="popup"/>
-    </invokers>
-</workunit>

@@ -192,3 +192,6 @@ android/*/Thumbs.db
 /client/rameses-enterprise-accounting/build/
 /client/rameses-enterprise-accounting/dist/
 /client/etracs/rameses-gov-etracs-rptis-landtax-province/dist/
+/client/etracs/rameses-gov-treasury-report/nbproject/private/
+/client/etracs/rameses-gov-treasury-report/build/
+/client/etracs/rameses-gov-treasury-report/dist/

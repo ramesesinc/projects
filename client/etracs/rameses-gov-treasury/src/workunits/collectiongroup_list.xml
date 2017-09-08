@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="CollectionGroupService" entityName="collectiongroup" allowApprove="false">
+    <invokers>
+         <invoker folderid="/explorer/master/treasury" caption="Collection Groups" 
+         	      role="MASTER" permission="collectiongroup.view"/>
+    </invokers>
+</workunit>

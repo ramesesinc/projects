@@ -1,0 +1,108 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class CollectionGroupService extends ActiveCrudListService {
+
+	@ActiveDB("collectiongroup")
+	def em;
+
+	@Env 
+	def env; 
+
+	@ProxyMethod
+	public def getColumns( def o ) {
+		return [
+			[name:'name', caption:'Name'], 
+			[name:'org.name', caption:'Org Name (For Remote)']  
+		];
+	} 
+
+	void beforeList(o) { 
+		o.searchtext = (o.searchtext ? o.searchtext : '')+'%'; 
+		o.filter = ''; 
+
+		def filters = []; 
+		if ( o.fund?.objid ) { 
+			o.fundid = o.fund.objid; 
+			filters << ''' ia.fund_objid LIKE $P{fundid} '''; 
+		} 
+		if ( o.collectiontype?.org?.objid ) {
+			o.orgid = o.collectiontype.org.objid; 
+			filters << ''' cg.org_objid LIKE $P{orgid} '''; 
+		} 
+		if ( filters ) { 
+			o.filter = ' AND ' + filters.join(' AND '); 
+		} 
+	} 
+
+	void afterList( params, list ) { 
+		if ( params._tag == 'lookup' ) { 
+			
+			def flist = []; 
+			if ( env.CLIENTCODE ) {
+				flist = list.findAll{ it.org?.objid == env.ORGID } 
+			} else {
+				flist = list.findAll{( it.org?.objid == null )} 
+			} 
+
+			list.clear(); 
+			if ( flist ) { 
+				list.addAll( flist ); 
+			} 
+			flist.clear(); 
+		}
+	}
+
+	protected void beforeCreate(def entity){
+		em.deleteRevenueItems( entity )
+	}
+
+	protected void afterCreate(def entity){
+		entity.revenueitems.each {
+			it.collectiongroupid = entity.objid;
+			em.create(it, 'collectiongroup_revenueitem')
+		}
+	}
+	
+	protected void beforeRemoveEntity(def entity){
+		em.deleteRevenueItems( entity )
+	}
+
+	protected void afterOpen(def entity){
+		entity.revenueitems = em.getRevenueItems( entity )
+	}
+
+	protected void beforeUpdate(def entity){
+		em.deleteRevenueItems( entity )
+	}
+
+	protected void afterUpdate(def entity){
+		entity.revenueitems.each {
+			it.collectiongroupid = entity.objid;
+			em.create(it, 'collectiongroup_revenueitem')
+		}
+	}
+
+	@ProxyMethod
+	public def getRevenueItems( objid ) {
+		def items = []
+		def ri = em.getRevenueItems([objid:objid]).each{
+			items << [
+				objid  : 'RCTI' + new java.rmi.server.UID(),
+				amount : it.defaultvalue ? it.defaultvalue : 0.0 , 
+				item   : [ 
+					objid: it.objid,
+					code : it.code,
+					title: it.title,
+					fund : it.fund, 
+					valuetype : it.valuetype
+				]
+			]
+		} 
+		return items;
+	}
+
+}

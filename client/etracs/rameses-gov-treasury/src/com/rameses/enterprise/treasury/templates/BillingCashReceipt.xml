@@ -1,0 +1,38 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{!completed}" 
+            icon="images/toolbars/arrow_left.png" mnemonic="b" shortcut="ctrl B"/>
+        <!--
+        <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
+            icon="images/toolbars/save.png" shortcut="ctrl S" mnemonic="s" />
+        -->    
+        <!--
+        <invoker type="formActions" action="cancelSeries" caption="Cancel Series" visibleWhen="#{!completed}"
+            shortcut="ctrl C" mnemonic="c" immediate="true"/>     
+        -->
+        
+        <invoker type="formActions" action="_close" caption="Quit" 
+                 visibleWhen="#{completed}" shortcut="ctrl Q" mnemonic="q" />
+            
+        <invoker type="formActions" action="createAnother" caption="New" 
+                 visibleWhen="#{completed}" shortcut="ctrl N" mnemonic="n"/>
+            
+        <invoker type="formActions" action="reprint" caption="Reprint" 
+                 visibleWhen="#{completed}" shortcut="ctrl P"/>
+            
+        <invoker type="formActions" action="doVoid" caption="Void" immediate="true" 
+                 visibleWhen="#{completed &amp;&amp; !entity.voided}" shortcut="ctrl V" mnemonic="v"/> 
+        
+        <!-- 
+        FOR TESTING VIEWER
+        <invoker type="formActions" action="_completed" caption="Test View" immediate="true"/>
+        <invoker type="formActions" action="_default" caption="Backi" immediate="true"/>
+        -->
+    </invokers>
+    
+    <pages>
+        <page name="default" template="com.rameses.enterprise.treasury.views.BillingCashReceiptPage"/>
+        <page name="completed" template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+    </pages>
+    
+</workunit>

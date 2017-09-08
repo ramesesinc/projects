@@ -1,0 +1,7 @@
+"entity.frompage|entity.topage" [ entity.printrange == 'range' ] {
+    enabled: true;
+}
+
+"entity.frompage|entity.topage" [ entity.printrange != 'range' ] {
+    enabled: false;
+}

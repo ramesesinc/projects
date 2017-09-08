@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="xFormPanel11" min="-2" pref="240" max="-2" attributes="0"/>
+                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="0" pref="16" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel11" min="-2" pref="48" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel11">
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel10">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                <LineBorder>
+                  <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                </LineBorder>
+              </Border>
+            </Property>
+            <Property name="caption" type="java.lang.String" value="Total Breakdown"/>
+            <Property name="captionWidth" type="int" value="100"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="qty1"/>
+              </StringArray>
+            </Property>
+            <Property name="expression" type="java.lang.String" value="#{total}"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel11">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                <LineBorder>
+                  <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                </LineBorder>
+              </Border>
+            </Property>
+            <Property name="caption" type="java.lang.String" value="Cash Remaining"/>
+            <Property name="captionWidth" type="int" value="100"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="qty1"/>
+              </StringArray>
+            </Property>
+            <Property name="expression" type="java.lang.String" value="#{cashremaining}"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[120, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="opaque" type="boolean" value="false"/>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="jLabel1" min="-2" pref="38" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                          <Component id="jLabel2" min="-2" pref="77" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="xFormPanel12" min="-2" pref="130" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="xFormPanel13" min="-2" pref="85" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace min="0" pref="18" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel1" alignment="3" max="32767" attributes="0"/>
+                      <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="xFormPanel12" max="32767" attributes="0"/>
+                      <Component id="xFormPanel13" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel12">
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int1000">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="1000"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty1000" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int500">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="500"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty500" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int200">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="200"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty200" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int100">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="100"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty100" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int50">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="50"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty50" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int20">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="20"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty20" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="int20ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int10">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="10"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty10" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int5">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="5"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty5" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="int1">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="1"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qty1" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="intc50">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="0.50"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qtyc50" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="intc25">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="0.25"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qtyc25" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="intc10">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="0.10"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qtyc10" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="intc05">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="0.05"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qtyc05" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="intc01">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="0.01"/>
+                <Property name="captionWidth" type="int" value="60"/>
+                <Property name="name" type="java.lang.String" value="qtyc01" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[60, 20]"/>
+                </Property>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel13">
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty1000"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d1000}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty500"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d500}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty200"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d200}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty100"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d100}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty50"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d50}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel6">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty20"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d20}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel7">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty10"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d10}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel8">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty5"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d5}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel9">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qty1"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{d1}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel12">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qtyc50"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{dc50}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel13">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qtyc25"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{dc25}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel14">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qtyc10"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{dc10}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel15">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qtyc05"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{dc05}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel16">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="qtyc01"/>
+                  </StringArray>
+                </Property>
+                <Property name="expression" type="java.lang.String" value="#{dc01}"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="11" style="1"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="0"/>
+            <Property name="text" type="java.lang.String" value="Qty"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="11" style="1"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="0"/>
+            <Property name="text" type="java.lang.String" value="Totals"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

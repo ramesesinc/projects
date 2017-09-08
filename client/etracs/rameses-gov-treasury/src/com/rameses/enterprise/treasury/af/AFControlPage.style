@@ -1,0 +1,8 @@
+"entity.*|formtype|collector" [mode == 'create' ]{
+    enabled: true;
+} 
+
+"entity.*|formtype|collector" [mode != 'create' ]{
+    enabled: false;
+} 
+

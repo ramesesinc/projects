@@ -1,0 +1,112 @@
+<workunit>
+    
+   <invokers>
+         <invoker type="cashreceiptinfo:open" caption="Cash Receipt Info" action="open" />
+         
+         <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
+   </invokers>
+   
+   <code>
+   <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.util.*;
+
+class CashReceiptController extends CRUDController {
+
+    @Service("CashReceiptService")
+    def service;
+
+    String entityName = "cashreceiptinfo";
+    
+    boolean allowCreate = false;
+    boolean allowEdit = false;
+
+    def getInfoHtml() {
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
+    }
+    
+    def report;     
+    def reprint() {
+        if ( !verifyReprint() ) { 
+            MsgBox.alert('Invalid security code'); 
+            return; 
+        }
+
+        //check fist if form handler exists.
+        def o = InvokerUtil.lookupOpener( "cashreceipt-form:"+entity.formno, [ reportData: entity ] );
+        if ( !o ) throw new Exception("Handler not found");
+        
+        if ( entity.receiptdate instanceof String ) { 
+            // this is only true when txnmode is OFFLINE 
+            try {
+                def dateobj = YMD.parse( entity.receiptdate ); 
+                entity.receiptdate = dateobj; 
+            } catch( Throwable t ) {;} 
+        } 
+
+        def handle = o.handle;
+        def opt = handle.viewReport(); 
+        if ( opt instanceof Opener ) { 
+            // 
+            // possible routing of report opener has been configured 
+            // 
+            handle = opt.handle; 
+            handle.viewReport(); 
+        } 
+        
+        if ( handle instanceof com.rameses.osiris2.reports.ReportModel ) {
+            report = handle; 
+        } else { 
+            report = handle.report; 
+        } 
+        
+        if ( ReportUtil.isDeveloperMode() ) {
+            return 'preview'; 
+        } 
+        
+        if ( report instanceof com.rameses.osiris2.reports.ReportModel ) { 
+            report.print(); 
+        } else { 
+            ReportUtil.print(report, true); 
+        } 
+        return null; 
+    }
+
+    def edit() {
+        return Inv.lookupOpener("cashreceipt:edit", [entity: entity] );
+    }
+
+    boolean verifyReprint() {
+        return (MsgBox.prompt("Please enter security code") == "etracs"); 
+    }
+    boolean isAllowVoid() { 
+        if ( entity.voided==true || entity.voided==1 ) return false; 
+        if ( entity.remitted==true || entity.remitted==1 ) return false; 
+        
+        return true; 
+    } 
+    void refresh() { 
+        binding.refresh(); 
+    } 
+    
+    def showReport = { o->   
+        if ( o instanceof com.rameses.osiris2.reports.ReportModel ) {
+            report = o; 
+            report.viewReport(); 
+            binding.fireNavigation('preview');  
+        } 
+    } 
+} 
+   ]]>
+   </code>
+   
+   <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+   </pages>
+   
+</workunit>

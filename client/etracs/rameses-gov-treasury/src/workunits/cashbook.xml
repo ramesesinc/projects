@@ -1,0 +1,114 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="cashbook:open" caption="Cashbook" action="doOpen" role="MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.open"/>
+        <invoker type="cashbook:create" caption="Cashbook" action="doCreate" role="MASTER" permission="cashbook.create"/>
+
+        <invoker type="formActions" caption="Details" action="showDetails" visibleWhen="#{page=='default' &amp;&amp; entity.state=='APPROVED'}"/>
+        <invoker type="formActions" caption="Back" action="viewMain" visibleWhen="#{page=='details'}"/>
+        
+        <invoker type="cashbook-master-owner" role="ADMIN,MASTER"/> 
+    </invokers>
+   
+    <code>
+    <![CDATA[
+
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+
+class CashBookController extends CRUDController 
+{
+    @Binding
+    def binding;
+
+    @Service("CashBookService")
+    def service;
+
+    String title = "Cash Book";
+    String prefixId = "CSHBK";
+    boolean is_admin_user = false;
+    
+    def detailHandler = InvokerUtil.lookupOpener("account:detail");
+    def page = "default";
+    
+    void checkIdentity() {
+        def procid = InvokerUtil.lookup("cashbook-master-owner"); 
+        is_admin_user = (procid? true: false); 
+    }
+    
+    def doOpen() { 
+        checkIdentity(); 
+        return open(); 
+    } 
+    
+    def doCreate() { 
+        checkIdentity(); 
+        return create(); 
+    }     
+    
+    boolean isAllowCreate() { return is_admin_user; } 
+    boolean isAllowDelete() { return is_admin_user; } 
+    boolean isAllowApprove() { return is_admin_user; } 
+    boolean isAllowEdit() { return is_admin_user; } 
+
+    Map createEntity() {
+        return [subacct:[:], fund:[:]];
+    }
+
+    void beforeSave(o) {
+        if( !entity.subacct )
+            throw new Exception("Sub account is required");
+    }
+
+    def getLookupSubAccounts() {
+        return InvokerUtil.lookupOpener( "cashbook_subacct:lookup", [
+            onselect : { o->
+                entity.subacct.name = o.name + "("+o.role+")";
+                entity.subacct.objid = o.objid;
+                entity.type = o.role;
+                entity.title = entity.subacct.name + " - " + entity.fund?.title;
+                binding.refresh("entity.type");
+                binding.refresh("entity.title");
+            }
+        ]);
+    }
+
+    @PropertyChangeListener
+    def listener = [
+        "entity.fund" : {
+            entity.title = (entity.subacct?.name) ? entity.subacct.name + " - " : '';
+            entity.title += (entity.fund?.title) ? entity.fund.title : '';
+        }
+    ];
+
+    void entityChanged() {
+        if(page!='details') return;
+        detailHandler.handle.reload( entity );
+    }
+
+    def showDetails() {
+        detailHandler.handle.service = service;
+        detailHandler.handle.entity = entity;
+        detailHandler.handle.init();
+        page = "details";
+        return page;
+    }
+
+    def viewMain() {
+        page = "default";
+        return page;
+    }
+}    
+  
+    ]]>
+    </code>
+   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.cashbook.CashBookPage" />
+        <page name="details" template="com.rameses.enterprise.treasury.shared.AccountDetailsPage" />
+    </pages>
+   
+</workunit>

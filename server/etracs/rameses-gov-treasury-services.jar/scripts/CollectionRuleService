@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import treasury.utils.*;
+
+
+class CollectionRuleService  {
+
+	@Service("AssessmentRuleService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public def execute( def p ) {
+		def data = [:];
+		def ruleFact = new FactBuilder();
+		if(p.collectiongroup) {
+			ruleFact.facts << new CollectionGroup( objid:p.collectiongroup.objid, name:p.collectiongroup.name );
+		}	
+		def res = ruleSvc.execute("collection", data, ruleFact, null );
+		if(res.askinfos) {
+			return [askinfos: res.askinfos];
+		}
+		else {
+			def m = [:];
+			m.billitems = res.billitems;
+			m.infos = res.infos;
+			m.sharing = res.sharing;
+			return m;
+		}	
+	}
+
+
+
+}

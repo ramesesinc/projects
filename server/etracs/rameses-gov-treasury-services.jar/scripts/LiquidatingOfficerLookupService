@@ -1,0 +1,29 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+class LiquidatingOfficerLookupService extends AbstractListService {
+
+	@PersistenceContext("main")
+	def em;
+
+	String schemaName = "liquidatingofficer";
+	
+	@ProxyMethod
+	public def getColumns( def p ) {
+		return [
+			[name:"username", caption:"User Name"],
+			[name:"lastname", caption:"Last Name"],
+			[name:"firstname", caption:"First Name"],
+			[name:"title", caption:"Job Title"]
+		];	
+	}	
+
+	public void afterList(def p, def list) {
+		list.each {
+			it.name = it.firstname + " " + it.lastname;
+		}
+	}
+
+}

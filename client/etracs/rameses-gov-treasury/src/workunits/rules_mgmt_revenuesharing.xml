@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="revenuesharing">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/treasury" caption="Revenue Sharing Rules" action="init" role="RULE_AUTHOR" />
+    </invokers>
+</workunit>

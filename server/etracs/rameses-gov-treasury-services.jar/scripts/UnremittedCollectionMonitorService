@@ -1,0 +1,14 @@
+import com.rameses.annotations.*;
+
+class UnremittedCollectionMonitorService {
+
+	@ActiveDB('unremittedcollection')
+	def em; 
+	
+	@ProxyMethod
+	public def getList ( params ) {
+		params._pagingKeys = 'c.objid'; 
+		params.searchtext = (params.searchtext ? params.searchtext + "%" : "%");
+		return em.getList( params ); 
+	}
+}

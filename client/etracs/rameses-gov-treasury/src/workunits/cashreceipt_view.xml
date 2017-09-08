@@ -1,0 +1,39 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="cashreceipt_view"
+          allowEdit="false" allowDelete="false" allowCreate="false" formTitle="#{entity.receiptno}" formId="#{entity.objid}">
+    
+   <invokers>
+         <invoker type="cashreceipt_view:open" caption="Cash Receipt" action="open"/>
+         <invoker type="formActions" caption="Close" action="_close"/>
+         <invoker type="formActions" caption="View Remittance" action="viewRemittance"/>
+   </invokers>
+   
+   <code>
+       <![CDATA[
+    import com.rameses.osiris2.common.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.reports.*;
+    import com.rameses.util.*;
+    import com.rameses.seti2.models.*;
+       
+    class CashReceiptView extends CrudFormModel {
+
+         def getInfoHtml() {
+             return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
+         }
+       
+         def viewRemittance() {
+            if( !entity.remittance?.remittanceid )
+                throw new Exception("Cash receipt not yet remitted");
+            return Inv.lookupOpener( "remittance:open", [entity: [objid: entity.remittance?.remittanceid]] ); 
+         }
+    }
+    ]]>   
+   </code>
+   
+   <pages>
+        <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+   </pages>
+   
+</workunit>

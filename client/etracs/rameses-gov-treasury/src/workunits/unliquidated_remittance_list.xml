@@ -1,0 +1,20 @@
+<workunit schemaName="remittance">
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="COLLECTOR,SUBCOLLECTOR"  action="init"/>
+        <invoker folderid="home/collection" caption="Unliquidated Remittances" role="COLLECTOR,SUBCOLLECTOR" 
+                 action="init" target="window" index="10"/>
+        
+        <invoker type="unliquidated_remittance:collector:view" caption="Unliquidated Remittance" role="COLLECTOR" 
+                 action="init" target="window" index="10"/>
+        
+        <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
+        <invoker type="formActions" action="open" caption="Open" icon="images/toolbars/open.png" mnemonic="o" shortcut="ctrl O" />
+        <invoker type="formActions" action="refresh" caption="Refresh" icon="images/toolbars/refresh.png" mnemonic="r" shortcut="ctrl R"/>
+        
+        <invoker type="formActions" action="liquidate" caption="Liquidate" role="COLLECTOR" mnemonic="c" shortcut="ctrl T"/>        
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.UnremittedCollectionModel" />
+    <pages>
+        <page template="com.rameses.enterprise.treasury.collection.UnremittedCollectionPage"/>
+    </pages>
+</workunit>

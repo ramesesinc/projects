@@ -1,0 +1,24 @@
+<schema>
+
+	<element  tablename="af_control">
+		<field name="objid" primary="true" />
+		<field name="afid" required="true" />
+		<field name="txnmode"  />
+		<field name="assignee_objid" required="true" />
+		<field name="assignee_name" required="true" />
+		<field name="startseries" required="true" />
+		<field name="currentseries" required="true" />
+		<field name="endseries" required="true" />
+		<field name="active" required="true" />
+		<field name="org_objid"  />
+		<field name="org_name"  />
+		<field name="fund_objid"  />
+		<field name="fund_title"  />
+		<field name="stubno" required="true" />
+		<field name="owner_objid" required="true"/>
+		<field name="owner_name" required="true"/>
+		<field name="prefix" />
+		<field name="suffix" />
+	</element>
+
+</schema>

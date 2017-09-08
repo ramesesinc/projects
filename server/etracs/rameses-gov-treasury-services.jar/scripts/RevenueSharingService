@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import treasury.utils.*;
+import enterprise.facts.Org;
+
+
+class RevenueSharingService  {
+
+	@Service("AssessmentRuleService")
+	def ruleSvc;
+
+	@DataContext('sys_org') 
+	def sys_org;
+
+	@ProxyMethod
+	public def execute( def rct ) {
+		def data = [billitems:[]];
+		rct.items.each {
+			data.billitems << [ item: it.item, amount: it.amount, remarks: it.remarks  ];
+		}
+
+		def ruleFact = new FactBuilder();
+		ruleFact.facts << new CashReceipt( orgid: rct.org?.objid, receiptdate: rct.receiptdate ); 
+
+		def org = sys_org.find([ objid: rct.org.objid ]).first(); 
+		ruleFact.facts << new Org( orgid: org.objid, type: org.orgclass, root: (org.root==1)); 
+
+		def res = ruleSvc.execute("revenuesharing", data, ruleFact, null );
+		if(!res.sharing) return [];
+		return res.sharing;
+	}
+
+
+
+}

@@ -1,0 +1,34 @@
+<schema>
+	<element name="liquidation" tablename="liquidation" >
+		<field name="objid" primary="true" prefix="LIQ"/>
+		<field name="state" required="true"/>
+		<field name="txnno" required="true" searchable="true"/>
+		<field name="txndate" required="true" type="date"/>
+		<field name="dtposted" required="true" type="date" indexed="true" caption="Date"/>
+
+		<field name="liquidatingofficer_objid" required="true"/>
+		<field name="liquidatingofficer_name" required="true" searchable="true"/>
+		<field name="liquidatingofficer_title" required="true"/>
+		<field name="liquidatingofficer_signature" />
+
+		<field name="amount" required="true"/>
+		<field name="totalcash" required="true" type="decimal"/>
+		<field name="totalcheck" required="true" type="decimal"/>
+		<field name="totalcr" required="true" type="decimal"/>
+		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
+		<field name="posted" />
+
+		<field name="cashier_objid" />
+		<field name="cashier_name" />
+		<field name="cashier_title"/>
+		<field name="cashier_signature"/>
+
+		<complex name="funds" ref="liquidation_fund" jointype="one-to-many" type="list" >
+			<key field="objid" target="liquidationid" />
+		</complex>	
+
+		<complex name="remittances" ref="remittance" jointype="one-to-many" type="list">
+			<key field="objid" target="liquidationid" />
+		</complex>	
+	</element>
+</schema>	

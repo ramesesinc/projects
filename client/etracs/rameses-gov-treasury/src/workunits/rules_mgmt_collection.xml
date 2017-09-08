@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService"  tag="collection">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/treasury" caption="Collection Rules" action="init" role="RULE_AUTHOR"/>
+    </invokers>
+</workunit>

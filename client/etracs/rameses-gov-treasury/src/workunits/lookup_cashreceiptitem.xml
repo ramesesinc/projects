@@ -1,0 +1,35 @@
+<workunit extends="wtemplates/BasicLookupController.xml">
+    
+   <invokers>
+         <invoker type="cashreceiptitem:lookup" />
+   </invokers>
+   
+   <code>
+   <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class CashReceiptItemLookupController extends BasicLookupController {
+
+    @Service(  ) 
+
+    def entity;
+    String serviceName = "RevenueItemLookupService";
+    def title = "Lookup Cash Receipt Item";
+    
+    public Object doSelect() { 
+        def o =  super.getSelectedEntity();
+        if ( !o.fund.objid ) { 
+          throw new Exception("The item selected must be associated with a fund"); 
+        } 
+
+        return super.doSelect();
+    }
+}      
+   ]]>
+   </code>
+   
+   
+</workunit>

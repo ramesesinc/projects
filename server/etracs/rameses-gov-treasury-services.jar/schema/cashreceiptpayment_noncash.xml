@@ -1,0 +1,20 @@
+<schema>
+	<element tablename="cashreceiptpayment_noncash">
+		<field name="objid" primary="true" prefix="CRPMT"/>
+		<field name="receiptid" required="true" />
+		<field name="refid" />
+		<field name="refno" required="true"/>
+		<field name="refdate" required="true"/>
+		<field name="reftype" />
+		<field name="amount" />
+		<field name="particulars" />
+		<field name="fund_objid" required="true"/>
+
+		<field name="remittancefundid"/>
+		<field name="liquidationfundid"/>
+
+		<complex name="fund" ref="fund" jointype="many-to-one"  includefields="objid,code,title">
+			<key field="fund_objid" target="objid" />
+		</complex>   
+	</element>
+</schema>

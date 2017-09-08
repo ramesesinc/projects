@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="billitem_txntype">
+    <invokers>
+        <invoker type="billitem_txntype:create" caption="Bill Item TxnType" action="create" target="popup" />
+        <invoker type="billitem_txntype:open" caption="Bill Item TxnType" action="open" target="popup"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.BillItemTxnTypePage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+
+class CollectionDepositInterceptor {
+
+	@DataContext("collectiondeposit_liquidation_fund")
+	def cashliqFund;
+
+	@DataContext('liquidation') 
+	def liqEm;
+
+	@After(pattern="CollectionDepositService.post")
+	public void afterPost( evt ) {
+		def result = evt.result; 
+		def liqids = [];
+		cashliqFund.find([ depositid: result.objid ]).list().each{
+			liqids << it.liquidationfund?.liquidationid; 
+		} 
+
+		if ( liqids ) {
+			liqEm.where(" objid in ('"+ liqids.join("', '") +"') ").update([ state:'CLOSED']); 
+		} 
+	}
+} 

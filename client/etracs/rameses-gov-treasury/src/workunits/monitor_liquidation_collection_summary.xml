@@ -1,0 +1,17 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="LiquidationMonitorService"
+          allowCreate="false"
+          allowOpen="false"> 
+    
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/monitoring" caption="Liquidation Collection Summary Monitoring" 
+                 action="init" role="ADMIN"/>
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.LiquidationCollectionSummaryMonitorModel"/>
+
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.SimpleListPage"/>        
+        <page name="queryform" template="com.rameses.enterprise.treasury.views.LiquidationCollectionSummaryMonitorQuery"/>
+    </pages>   
+</workunit>

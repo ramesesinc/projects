@@ -1,0 +1,36 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
+          schemaName="remittance_cashreceiptitem" 
+          cols="receiptno,receiptdate,item.title,amount"
+          hiddenCols="receiptid"
+        allowDelete="false" allowCreate="false" orderBy="receiptno">
+    
+    <invokers>
+        <invoker type="remittance:section" caption="Receipt Details" action="init" tag="remittanceid"/> 
+        <invoker type="remittance_fund:section" caption="Receipt Details" action="init" tag="remittancefundid"/> 
+        <invoker type="liquidation:section" caption="Receipt Details" action="init" tag="liquidationid"/> 
+        <invoker type="liquidation_fund:section" caption="Receipt Details" action="init" tag="liquidationfundid"/> 
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.common.* 
+        import  com.rameses.seti2.models.*;
+        
+        class RemittanceCashReceiptitemList extends CrudSubListModel {
+            
+            public def getCustomFilter() {
+                return [ tag + "=:pid", [ pid: masterEntity.objid ]  ];
+            }
+        
+            def open() {
+                return Inv.lookupOpener("cashreceipt:open", [entity:[objid: selectedItem.receiptid]]);
+            }
+        }
+        
+        ]]>
+    </code>
+</workunit>

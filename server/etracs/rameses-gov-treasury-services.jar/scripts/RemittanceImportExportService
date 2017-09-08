@@ -1,0 +1,87 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+import com.rameses.util.*
+
+class RemittanceExportService  
+{
+
+	@ActiveDB("remittance_import_export")
+	def adb
+
+	@Service('RemittanceService')
+	def remSvc 
+
+	@Service("CashReceiptService")
+	def crSvc;
+
+	@Service("CashReceiptVoidService")
+	def voidSvc;
+
+	@PersistenceContext("main")
+	def em;
+
+
+	@ProxyMethod
+	public def exportRemittance(objid) {
+		def rem = [remittanceid:objid]
+
+		def data = [:]
+		data.entity = adb.findRemittanceByid(rem)
+		if(data.entity ) data.entity.remotetxn = true 
+
+		data.entity.items = adb.getRemittanceItems(rem).each{
+			it.cancelSeriesList = adb.getCancelledSeries([remittanceid: objid, controlid: it.controlid ]) 
+		}
+
+
+		//cashreceipts
+		data.cashreceipts = adb.getCashReceipts(rem).each {
+			it.items = adb.getCashReceiptItems(it);
+			it.paymentitems = adb.getCashReceiptCheckPayments(it).each{
+				it.type = 'CHECK' 
+			}
+
+			def voided = adb.findVoidedReceipt(it)
+			if(voided){
+				it.voided = 1
+				it.voidreason = voided.reason 
+			}
+		}
+	
+		return data 
+	}
+
+	
+	@Async
+	@ProxyMethod
+	public def importRemittance(data){
+		checkDuplicatePosting(data.entity)
+
+		//cashreceipts
+		data.cashreceipts.each {
+			crSvc.post( it )
+
+			if( it.voided && it.voided == 1) {
+				voidSvc.post([ receipt:it, reason: it.voidreason ])
+
+			}
+		}
+		data.entity.cashreceipts = data.cashreceipts*.objid 
+		data.entity.cashbreakdown = em.serializer.read( data.entity.cashbreakdown ) 
+		if ( data.entity.txnno ) data.entity.txnno = data.entity.txnno + '-R'; 
+		
+		remSvc.post( data.entity )
+		return "OK"
+	}
+
+	void checkDuplicatePosting(rem){
+		if ( adb.findRemittanceByid([remittanceid:rem.objid])){
+			throw new Exception('Remittance has already been posted.')
+		}
+	}
+
+}
+

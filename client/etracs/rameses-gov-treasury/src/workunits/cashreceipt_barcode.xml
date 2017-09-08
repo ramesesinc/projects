@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt-initial:formActions" caption="Barcode"
+            shortcut="ctrl B" mnemonic="b" target="process" action="init" index="50"/>
+        
+        <invoker type="cashreceipt:online" caption="Barcode" target="process" index="50" 
+            icon="images/toolbars/barcode_global.png"/>
+                
+    </invokers>    
+    <code class="com.rameses.enterprise.treasury.models.BarcodeLoader" />
+    
+</workunit>

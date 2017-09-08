@@ -1,0 +1,7 @@
+"itemHandler:item.(amount|surcharge|interest)" [ selectedItem.selected == false ]{
+    editable:false;
+}
+
+"itemHandler:item.(amount|surcharge|interest)" [ selectedItem.selected == true ]{
+    editable:true;
+}

@@ -1,0 +1,68 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class CashReceiptVoidService  {
+
+	@PersistenceContext("main")
+	def em;
+
+	@DataContext('cashreceipt_void') 
+	def cashreceipt_void;
+
+	@DataContext('txnlog') 
+	def txnlog;
+
+	@Service('Var') 
+	def var; 
+
+	@Env
+	def env;
+	
+	@Service("DateService")
+	def dateService;
+	
+	@ProxyMethod
+	public def post( def p ) {
+		def v = [objid: "VOID"+new UID()];
+		v.postedby = [ objid:env.USERID, name:env.FULLNAME ];
+		v.receiptid = p.receipt.objid;
+		v.reason = p.reason;
+		v.txndate = dateService.serverDate;
+		
+		em.create("cashreceipt:void", v );
+		
+		v.receipt = p.receipt;
+		return v;
+	}	
+	
+	@ProxyMethod 
+	public def getOptions() { 
+		return [ 
+			collector_allow_void_cashreceipt: var.collector_allow_void_cashreceipt 
+		];
+	}
+
+	@ProxyMethod 
+	public void revert( params ) { 
+		if ( !params.objid ) throw new Exception('objid parameter is required'); 
+		if ( !params.reason ) throw new Exception('reason parameter is required'); 
+
+		def o = cashreceipt_void.find([ receiptid: params.objid ]).first(); 
+		if ( !o ) throw new Exception('void receipt transaction not found');  
+
+		cashreceipt_void.find([ receiptid: params.objid ]).delete(); 
+
+		def v = [ objid: "LOG" + new UID() ];
+		v.txndate = dateService.serverDate;
+		v.ref = 'CashReceiptVoid';
+		v.refid = params.objid; 
+		v.action = 'revert';
+		v.userid = env.USERID;
+		v.username = env.FULLNAME;
+		v.remarks = params.reason;
+		txnlog.create( v );  
+	}
+}

@@ -1,0 +1,70 @@
+import com.rameses.annotations.*;
+
+class LedgerPaymentService {
+	
+	@Service
+	def self;
+
+	@DataContext(dynamic=true)
+	def db;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def getItems( def o ) {
+		return [];
+	}
+
+	@ProxyMethod
+	public def init(def o) {
+		if(!o._schemaname) throw new Exception("_schemaname is required in LedgerPaymentService.init");
+		def m = [:];
+		m.putAll(o);
+		m.refdate = dateSvc.getServerDate();
+		m.reftype = "cashreceipt";
+		m.amount = 0;
+		m.txnmode = 'CAPTURE';
+		m.voided = 0;
+
+		def items = self.getItems(o);
+
+		if( !items ) throw new Exception("No unpaid items found");
+		items.each { v->
+			if(!v.item ) throw new Exception("Each item must have an item (account)");
+			v.selected = false;
+			v.amount = 0;
+			v.surcharge = 0;
+			v.interest = 0;
+			v.total = 0;
+			v.discount = 0;
+			if(v.priority == null) v.priority = 0; 
+		};
+		m.items = items.sort{ it.priority };
+		m.amount = 0;
+		m.total = 0;
+		return m;
+	}
+
+	@ProxyMethod
+	public void post( o) {
+		if(!o._schemaname) throw new Exception("_schemaname is required in LedgerPaymentService.post");
+		def em = db.lookup( o._schemaname );
+		em.create( o );
+	}
+
+
+	@ProxyMethod
+	public def postVoid(def o) {
+		if ( !o._schemaname ) throw new Exception("_schemaname is required in LedgerPaymentService.postVoid");
+		if ( !o.objid && !o.refid ) throw new Exception('objid or refid is required in LedgerPaymentService.postVoid'); 
+		
+		def em = db.lookup( o._schemaname ); 
+		if ( o.refid ) { 
+			o.objid = em.find([ refid: o.refid ]).select('objid').val();
+		}
+
+		em.find([ objid: o.objid ]).update([voided: 1]);
+		return em.read([ objid: o.objid ]);
+	} 
+}

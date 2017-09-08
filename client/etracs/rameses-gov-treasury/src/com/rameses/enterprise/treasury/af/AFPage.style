@@ -1,0 +1,23 @@
+"entity.objid" [ mode == 'create' ] {
+    enabled: true;
+}
+
+"entity.objid" [ mode != 'create' ] {
+    enabled: false;
+}
+
+"entity.serieslength" [entity.formtype == 'serial'] {
+    visible: true;
+}
+
+"entity.serieslength" [entity.formtype != 'serial'] {
+    visible: false;
+}
+
+"entity.denomination" [entity.formtype == 'cashticket'] {
+    visible: true;
+}
+
+"entity.denomination" [entity.formtype != 'cashticket'] {
+    visible: false;
+}

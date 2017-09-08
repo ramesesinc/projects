@@ -1,0 +1,14 @@
+<workunit schemaName="collectiontype">
+
+   <invokers>
+         <invoker type="collectiontype:open" caption="Collection Type" action="open" role="MASTER" permission="collectiontype.open" target="popup"/>
+         <invoker type="collectiontype:create" caption="Collection Type" action="create" role="MASTER" permission="collectiontype.create" target="popup"/>
+   </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.CollectionTypeModel" />
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.CollectionTypePage" />
+   </pages>
+   
+</workunit>

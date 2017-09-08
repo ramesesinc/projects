@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+
+class LiquidationDefaultInterceptor {
+
+	@DataContext("liquidation")
+	def liq_db;
+
+	@DataContext("liquidation_fund")
+	def liqf_db;
+
+	@DataContext("liquidation_noncashpayment")
+	def liqnc_db;
+
+	@DataContext("remittance_fund")
+	def remf_db;
+
+	@DataContext("remittance")
+	def rem_db;
+
+	@Before( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'liquidation'}" )
+	public void beforeDelete( evt ) {
+		def params = evt.args[0]; 
+		def m = [ liquidationid: params.objid ];
+		rem_db.find( m ).update([ liquidationid: '{NULL}', state: 'APPROVED' ]);
+		
+		liqf_db.unbindNonCashPayments( m ); 
+		liqf_db.unbindRemittanceFunds( m ); 
+
+		liqf_db.find( m ).select('objid').list().each{ 
+			def mm = [ jevid: it.objid ]; 
+			liq_db.unbindJevItem( mm ); 
+			liq_db.unbindJev( mm ); 
+		} 
+		
+		liqf_db.find( m ).delete(); 
+		liqnc_db.find( m ).delete(); 
+	} 
+
+
+	@Before( pattern="LiquidationService.post" )
+	public void beforePost( evt ) { 
+		def params = evt.args[0]; 
+		def m = [ liquidationid: params.objid ];
+		liqf_db.find( m ).select('objid').list().each{ 
+			def mm = [ jevid: it.objid ]; 
+			liq_db.unbindJevItem( mm ); 
+			liq_db.unbindJev( mm ); 
+		} 
+	} 
+
+	@After( pattern="LiquidationService.post" )
+	public void afterPost( evt ) {
+		def result = evt.result; 
+		def m = [ liquidationid: result.objid ]; 
+		liq_db.postJev( m ); 
+		liq_db.postJevItem( m ); 
+		liq_db.postJevItemForBankAccount( m ); 
+		liq_db.postJevItemForRevenue( m ); 
+		liq_db.postJevItemForShare( m ); 
+	} 
+}

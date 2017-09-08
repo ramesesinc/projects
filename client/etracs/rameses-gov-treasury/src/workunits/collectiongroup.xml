@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="collectiongroup:create" caption="Collection Group" action="create" 
+                 role="MASTER" permission="collectiongroup.create" target="popup"/>
+        <invoker type="collectiongroup:open" caption="Collection Group" action="open"  
+                 role="MASTER" permission="collectiongroup.open" target="popup" />        
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.CollectionGroupModel"/>
+   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.collection.CollectionGroupPage"/>
+    </pages>   
+</workunit>

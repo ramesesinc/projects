@@ -1,0 +1,14 @@
+<workunit extends="wtemplates/ListController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (ALL)" role="DATA_CONTROLLER"/>
+        <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (Collector)" action="initCollector" role="COLLECTOR"/>
+        <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (Subcollector)" action="initSubcollector" role="SUBCOLLECTOR"/>
+        
+        <invoker folderid="home/collection" caption="Collector Batch List" action="initCollector" role="COLLECTOR"/>
+        <invoker folderid="home/collection" caption="Subcollector Batch List" action="initSubcollector" role="SUBCOLLECTOR"/>
+        
+        <invoker type="batchcapture:list:option:allowCreate" role="SUBCOLLECTOR" />  
+    </invokers>
+    
+    <code class="com.rameses.enterprise.treasury.models.BatchCaptureListModel"/> 
+</workunit>

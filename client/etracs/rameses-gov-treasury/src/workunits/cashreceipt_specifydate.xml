@@ -1,0 +1,40 @@
+<workunit>
+  <invokers>
+    <invoker type="cashreceipt:specifydate" caption="General Information" target="popup"/>
+  </invokers>
+
+  <code>
+  <![CDATA[
+import com.rameses.osiris2.common.*;
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.util.*;
+
+class CashReceiptOfflineInitController  {
+
+  @Binding
+  def binding;
+
+  def entity = [:];
+  def handler;
+
+  def doOk() {
+    if ( !entity.receiptdate ) return null; 
+
+    if (handler) handler(entity); 
+    return "_close"; 
+  } 
+
+  def doCancel() {
+    return '_close';
+  } 
+}      
+  ]]>
+  </code>
+
+  <pages>
+    <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSpecifyDatePage" />
+  </pages>
+
+</workunit>

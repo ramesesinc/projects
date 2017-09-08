@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
+          schemaName="remittance" 
+    cols="txnno,remittancedate,collector.name,totalcash,totalcheck,totalcr,amount" 
+    allowDelete="false" allowCreate="false">
+    
+    <invokers>
+        <invoker type="liquidation:section" caption="Remittances" action="init" /> 
+    </invokers>
+    <code>
+        import  com.rameses.seti2.models.*;
+        class LiquidationRemittanceList extends CrudSubListModel {
+        
+            public def getCustomFilter() {
+                return [ "liquidationid=:pid", [ pid: masterEntity.objid ]  ];
+            }
+        
+        }
+    </code>
+</workunit>

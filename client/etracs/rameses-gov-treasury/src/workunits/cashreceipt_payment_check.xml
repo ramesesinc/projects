@@ -1,0 +1,38 @@
+<workunit>
+    <invokers>
+          <invoker type="cashreceipt:payment-check" caption="Check Payment" action="start" target="popup"/>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptPaymentCheckModel" />
+
+    <pageflow>
+        <start>
+            <transition to="check-details" action="init"/>
+        </start>
+        <page name="check-details" title="Enter Check Details">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="determine-flow"  caption="Next" action="addCheck" mnemonic="N"/> 
+        </page>
+        <process name="determine-flow">
+            <transition to="complete-balance" cond="#{ balance > 0 }"/>
+            <transition to="view-summary" cond="#{ balance == 0 }" action="correctNoncashPayment"/>
+        </process> 
+        <page name="complete-balance" title="Complete Balance Due">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="check-details" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}" mnemonic="k"/> 
+            <transition to="determine-flow" name="add-cash" caption="Add Cash" action="addCash" visibleWhen="#{false}" mnemonic="A"/> 
+            
+        </page>
+        <page name="view-summary" title="Check Payment Summary">
+            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
+            <transition to="end" caption="Save" action="saveCheck" mnemonic="S"/> 
+        </page>
+        <end/>
+    </pageflow>    
+    
+    <pages>
+        <page name="check-details" template="com.rameses.enterprise.treasury.views.CashReceiptCheckPaymentPage"/>
+        <page name="complete-balance" template="com.rameses.enterprise.treasury.views.CheckPaymentCompleteBalancePage" />
+        <page name="view-summary" template="com.rameses.enterprise.treasury.views.CashReceiptNoncashPaymentSummaryPage" />
+    </pages>
+    
+</workunit>

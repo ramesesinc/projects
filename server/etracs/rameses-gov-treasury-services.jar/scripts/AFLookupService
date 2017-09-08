@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+class AFLookupService extends AbstractListService {
+
+	@PersistenceContext("main")
+	def em;
+
+	String schemaName = "af";
+	
+	@ProxyMethod
+	public def getColumns( def p ) {
+		return [
+			[name:"code", caption:"Code"],
+			[name:"description", caption:"Description"],
+		];	
+	}	
+	
+	public void beforeList( o ) {
+		o.searchtext = o.searchtext+"%";
+	}
+	
+}

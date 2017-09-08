@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="jevitems"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -42,22 +43,17 @@
 	<parameter name="remittancedeposits" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="LOGOTREASURY" isForPrompting="false" class="java.io.InputStream"/>
 
-	<field name="cashier.title" class="java.lang.String"/>
-	<field name="cashier.name" class="java.lang.String"/>
-	<field name="txnno" class="java.lang.String"/>
-	<field name="collector.name" class="java.lang.String"/>
-	<field name="debit" class="java.math.BigDecimal"/>
-	<field name="credit" class="java.math.BigDecimal"/>
+	<field name="dr" class="java.math.BigDecimal"/>
+	<field name="cr" class="java.math.BigDecimal"/>
 	<field name="account.code" class="java.lang.String"/>
 	<field name="account.title" class="java.lang.String"/>
-	<field name="fund.title" class="java.lang.String"/>
-	<field name="dtposted" class="java.util.Date"/>
+	<field name="particulars" class="java.lang.String"/>
 
 	<variable name="TCREDIT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{credit}]]></variableExpression>
+		<variableExpression><![CDATA[$F{cr}]]></variableExpression>
 	</variable>
 	<variable name="TDEBIT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{credit}]]></variableExpression>
+		<variableExpression><![CDATA[$F{cr}]]></variableExpression>
 	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -93,7 +89,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{account.title}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( ($F{dr}>0) ?'': '     ') + $F{account.title}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -129,7 +125,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{debit}.doubleValue() > 0 ? $F{debit} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{dr}.doubleValue() > 0 ? $F{dr} : null]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -165,7 +161,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{credit}.doubleValue() > 0 ? $F{credit} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{cr}.doubleValue() > 0 ? $F{cr} : null]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

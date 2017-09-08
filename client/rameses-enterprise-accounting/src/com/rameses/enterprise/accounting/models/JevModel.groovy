@@ -17,4 +17,17 @@ class JevModel  extends CrudFormModel {
         
    ] as BasicListModel;
 
+   def viewReport() {
+       def rh = [
+           getReportName : { 
+               return "com/rameses/enterprise/accounting/reports/jev.jasper";
+           },
+           getData : {
+               return entity;
+           } 
+       ]
+       return Inv.lookupOpener("simple_form_report", [reportHandler:rh, title:'Jev Report']) 
+   }  
+   
+    
 } 

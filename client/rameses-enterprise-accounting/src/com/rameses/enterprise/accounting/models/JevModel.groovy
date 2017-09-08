@@ -8,26 +8,15 @@ import com.rameses.seti2.models.*;
 
 class JevModel  extends CrudFormModel { 
 
+   String printFormName = 'jev';
+    
    def itemListModel = [
        fetchList : { o->
            def drlist = entity.items.findAll{ it.dr > 0 };
            def crlist = entity.items.findAll { it.cr > 0 };
-           return drlist + crlist; 
+           entity.items = drlist + crlist;
+           return entity.items; 
        }
         
    ] as BasicListModel;
-
-   def viewReport() {
-       def rh = [
-           getReportName : { 
-               return "com/rameses/enterprise/accounting/reports/jev.jasper";
-           },
-           getData : {
-               return entity;
-           } 
-       ]
-       return Inv.lookupOpener("simple_form_report", [reportHandler:rh, title:'Jev Report']) 
-   }  
-   
-    
 } 

@@ -1,4 +1,4 @@
-<workunit schemaName="liquidation_fund">
+<workunit schemaName="liquidation_fund" allowCreate="false" allowEdit="false" allowDelete="false">
     
    <invokers>
          <invoker type="liquidation_fund:open" caption="Liquidation Fund" action="open"/>

@@ -1,5 +1,5 @@
-<workunit>
-    
+<workunit schemaName="remittance" allowCreate="false" allowEdit="false" allowDelete="false">
+     
     <invokers>
         <invoker type="remittance:create" caption="Remittance" action="create" target="window" />
         <invoker type="remittance:open" caption="Remittance" action="open" target="popup" />
@@ -7,8 +7,6 @@
         <invoker type="quick_launcher" code="REM" caption="Remittance" action="create" target="window" role="COLLECTOR"/>
                 
         <invoker folderid="explorer/txn/treasury" caption="Remittance (Capture)" action="capture" target="window"/>
-        
-        <invoker type="formActions" caption="Close" name="_close" immediate="true" index="-5" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
         
         <!-- for initial capture -->
         <invoker type="formActions" caption="Next" action="create" 
@@ -31,7 +29,6 @@
                  visibleWhen="#{entity.state == 'APPROVED' }"/>
                  
         <!-- common in read -->
-        <invoker type="formActions" caption="Print"  name="print" visibleWhen="#{canPrintReport == true}" />
         <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{canPrintReport == true}" category="remittance:reports" />
         <invoker type="formActions" caption="View Breakdown" action="viewBreakdown" />
     </invokers>

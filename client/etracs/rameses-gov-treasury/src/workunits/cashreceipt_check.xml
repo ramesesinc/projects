@@ -1,0 +1,13 @@
+<workunit schemaName="cashreceipt_check" allowCreate="false" allowEdit="false" cols="refno,refdate,amount">
+    <invokers>
+       
+        <invoker type="cashreceipt_check:open" caption="Check Payment" 
+                 action="init" target="window" index="10" />
+        <invoker type="cashreceipt_check:create" caption="New Check Payments" 
+                 action="init" target="window" index="10" />
+        
+    </invokers>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.CashReceiptCheckPage" />
+    </pages>    
+</workunit>

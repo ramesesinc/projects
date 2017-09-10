@@ -49,6 +49,10 @@ class LiquidationModel extends CrudFormModel {
     }
     */
 
+    public String getPrintFormName() {
+        return "remittance";
+    }
+    
     def popupReports(def inv) {
         def popupMenu = new PopupMenuOpener();
         def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
@@ -59,7 +63,8 @@ class LiquidationModel extends CrudFormModel {
     }
 
      //whats bad about this is that the report is located in etracs treasuty gov.
-    def preview() {
+     
+    def print() {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     

@@ -1,4 +1,4 @@
-<workunit>
+<workunit schemaName="liquidation" allowCreate="false" allowEdit="false" allowDelete="false">
     
    <invokers>
          <invoker type="quick_launcher" code="LIQ" caption="Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER"/>
@@ -7,11 +7,10 @@
          <invoker type="liquidation:open" caption="Liquidation (Open)" action="open" target="window"/>
          
          <!-- liquidate buttons -->
-         <invoker type="formActions" caption="Close" name="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
          <invoker type="formActions" caption="Post" name="post" visibleWhen="#{entity.state=='DRAFT'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
          <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{ entity.state=='DRAFT' }" />
 
-         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{entity.state != 'DRAFT'}" action="preview" />
+         <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{entity.state != 'DRAFT'}" action="print" />
          <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{entity.state != 'DRAFT'}" category="liquidation:reports" />
          
          <!-- CASHIER FUNCTIONS -->

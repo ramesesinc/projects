@@ -1,4 +1,4 @@
-<workunit schemaName="jev" formName="collection">
+<workunit schemaName="jev" formName="collection" allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker type="collection:open" caption="Daily Collection" action="open" />
         

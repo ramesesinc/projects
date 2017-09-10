@@ -4,16 +4,14 @@
  */
 package com.rameses.enterprise.treasury.views;
 
-import com.rameses.osiris2.themes.OKCancelPage;
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(OKCancelPage.class)
-@StyleSheet
+@Template(CrudFormPage.class)
 public class RemittanceFundPage extends javax.swing.JPanel {
 
     /**

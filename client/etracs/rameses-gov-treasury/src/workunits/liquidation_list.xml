@@ -3,31 +3,19 @@
     hiddenCols="state" allowDelete="false" allowCreate="false">
     
     <invokers>
+        <invoker type="quick_launcher" code="LIQS" caption="Liquidations" 
+                 action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" />
+        
         <invoker folderid="home/collection" caption="Liquidations"
-                 target="window" action="init" index="90"/> 
+                 action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" index="90"/> 
         
-        <invoker type="liquidation_list:fordeposit" caption="Liquidations" action="initForDeposit" 
-                 role="CASHIER" target="window" /> 
+        <invoker type="liquidation_list:fordeposit" caption="Liquidations" 
+                 action="initForDeposit" role="CASHIER" target="window" /> 
         
-        <invoker type="listActions" caption="Deposit" action="deposit" 
-                 role="CASHIER" />
-        
-        <!--
-        <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER"> 
-            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
-            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
-        </invoker> 
-        
-        <invoker folderid="home/collection/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
-            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
-            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
-        </invoker>
-        -->
+        <invoker type="listActions" caption="Deposit" action="deposit" role="CASHIER" />         
     </invokers>
     
-    <!--
     <code class="com.rameses.enterprise.treasury.models.LiquidationListModel" /> 
-    -->
     
 </workunit>
        

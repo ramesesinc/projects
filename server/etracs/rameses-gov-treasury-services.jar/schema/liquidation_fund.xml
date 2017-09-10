@@ -13,13 +13,15 @@
 		<field name="totalcash" type="decimal"/>
 		<field name="totalcheck" type="decimal"/>
 		<field name="totalcr" type="decimal"/>
+		<field name="depositid" />
+		
 		<complex name="cashbreakdown" serializer="default" type="list" />
 
-		<complex name="liquidation" ref="liquidation" jointype="many-to-one" required="false" includefields="objid,txnno,dtposted,state">
+		<complex name="liquidation" ref="liquidation" jointype="many-to-one" includefields="objid,txnno,dtposted,state">
 			<key field="liquidationid" target="objid" />
 		</complex>	
 
-		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,title">
+		<complex name="fund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
 			<key field="fund_objid" target="objid" />
 		</complex>  
 

@@ -21,7 +21,7 @@ public class LiquidationListModel extends CrudListModel {
     }
 
     def deposit() {
-        return Inv.lookupOpener( "collectiondeposit:create" );
+        return Inv.lookupOpener( "deposit:create" );
     } 
     
     void initForDeposit() {

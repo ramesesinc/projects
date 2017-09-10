@@ -1,0 +1,11 @@
+<schema>
+	
+	<element tablename="deposit_fundtransfer">
+		<field name="objid" primary="true" />
+		<field name="depositid" required="true"/> 
+		<field name="bankaccountid" required="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="amounttransferred" required="true"/> 
+	</element>
+
+</schema>

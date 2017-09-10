@@ -2,16 +2,18 @@
 	
 	<element tablename="deposit">
 		<field name="objid" primary="true" />
-		<field name="controlno" required="true" />
-		<field name="state" required="true" />
-		<field name="dtcreated" required="true" />
-		<field name="dtposted" required="true" />
-		<field name="createdby_objid" required="true" />
-		<field name="createdby_name" required="true" />
-		<field name="fund_objid" required="true" />
-		<field name="fund_title" required="true" />
-		<field name="amount" required="true" />
-		<field name="amtdeposited" required="true" />
+		<field name="controlno" required="true"/> 
+		<field name="state" required="true"/> 
+		<field name="txndate" required="true"/> 
+		<field name="dtposted" required="true"/> 
+		<field name="postedby_name" required="true"/> 
+		<field name="postedby_objid" required="true"/> 
+		<field name="fundid" required="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="amountdeposited" required="true"/> 
+		<field name="cramount" required="true"/> 
+		<field name="cramounttransferred" required="true"/> 
+		<field name="batchid" required="true"/> 
 	</element>
 
 </schema>

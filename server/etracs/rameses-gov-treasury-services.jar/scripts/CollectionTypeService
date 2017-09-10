@@ -18,6 +18,7 @@ class CollectionTypeService extends ActiveCrudListService {
 	@Env
 	def env; 
 
+
 	@ProxyMethod
 	public def getColumns( def o ) {
 		return[

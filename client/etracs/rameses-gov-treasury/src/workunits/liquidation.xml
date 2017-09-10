@@ -16,8 +16,7 @@
          
          <!-- CASHIER FUNCTIONS -->
          <invoker type="formActions" caption="Submit for Deposit" action="approve" 
-                  role="LIQUIDATING_OFFICER"  
-                  visibleWhen="#{entity.state == 'POSTED'}" />
+                  role="LIQUIDATING_OFFICER" visibleWhen="#{entity.state == 'POSTED'}" />
          
    </invokers>
 

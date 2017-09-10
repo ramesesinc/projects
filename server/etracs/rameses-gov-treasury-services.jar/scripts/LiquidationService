@@ -10,8 +10,8 @@ class LiquidationService  {
 	@Env
 	def env;
 
-	@Service("SequenceService")
-	def seqSvc;
+	@Service('ControlService') 
+	def controlSvc;
 
 	@Service("DateService")
 	def dateSvc;
@@ -167,9 +167,12 @@ class LiquidationService  {
 		if ( !o ) throw new Exception('Liquidation record does not exist.');
 		if ( o.state != 'DRAFT' ) throw new Exception("Liquidation record is no longer in DRAFT mode");
 
-		o.dtposted = dateSvc.getServerDate(); 
 		o.state = 'POSTED'; 
-		o.txnno = formatTxnno( o ); 
+		o.dtposted = dateSvc.getServerDate(); 
+
+		def txncode = [ "LIQ", env.TXNCODE ].findAll{( it )}.join("-");
+		o.txnno = controlSvc.formatTxnno([ txncode: txncode, txndate: o.dtposted, format: var.liquidation_format, sequenceid_format: var.liquidation_sequenceid_format ]); 
+
 		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno, dtposted: o.dtposted ]); 
 		liqEm.updateFundControlNo([ liquidationid: o.objid ]); 
 
@@ -195,57 +198,7 @@ class LiquidationService  {
     } 
 
 
-
-	@ProxyMethod
-    public def formatTxnno( liq ) {
-    	def format = 'UTFS'
-    	def seqid = null
-    	if(var.liquidation_format) format = var.liquidation_format;
-    	if(var.liquidation_sequenceid_format ) seqid = var.liquidation_sequenceid_format;
-    	
-
-        //Formatting Options:
-        // YY - YEAR POSTED
-        // MM - MONTH POSTED 
-        // DD - DATE POSTED 
-        // UT - USER TXNCODE
-        // SQ - SEQUENCE 
-        // FS- FORMATTED SEQUENCE 
-        
-        def dt = dateSvc.parseDate( liq.dtposted, null)
-        def txncode = "LIQ";	
-		if(env.TXNCODE) txncode = "LIQ-" + env.TXNCODE; 		
-
-        def values = [
-        	YY:dt.year+"", 
-        	MM:dt.month.toString().padLeft(2, '0',),
-        	DD:dt.day.toString().padLeft(2, '0'),
-        	UT:txncode 
-        ]
-
-        def txnno  = format 
-        values.keySet().each {
-            txnno = txnno.replace( it, values[it] )
-        }
-
-        def series 
-        if(seqid) {
-        	def seq = seqid;
-        	values.keySet().each {
-            	seq = seq.replace( it, values[it] )
-            }
-            series = seqSvc.getNextSeries( seq); 
-            
-        } else {
-        	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
-        }
-
-        txnno = txnno.replace( 'SQ', series+"" )
-        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
-        return txnno 
-    }
-
-    public boolean toBoolean(value, defvalue){
+    boolean toBoolean(value, defvalue){
         if (value == null) 
             return defvalue;
 

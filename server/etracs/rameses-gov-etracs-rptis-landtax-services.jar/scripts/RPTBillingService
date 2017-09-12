@@ -802,7 +802,7 @@ public class RPTBillingService
 			throw new Exception('Bill To Qtr must be greater than Last Qtr Paid.')
 		
 
-		def maxbilltoyear = pdate.year + MAX_ADVANCE_YEARS
+		def maxbilltoyear = pdate.year + getMaxAllowedAdvanceYear()
 		if (bill.billtoyear > maxbilltoyear){
 			throw new Exception('Bill To Year must not exceed year ' +  maxbilltoyear + '.')
 		}
@@ -1004,6 +1004,17 @@ public class RPTBillingService
 	@ProxyMethod
 	public def getMaxAdvanceYear(  ) {
 		return dtSvc.serverYear + 3;
+	}
+
+	def getMaxAllowedAdvanceYear(){
+		def max_year = var.landtax_collection_max_advance_years_allowed
+		if (!max_year) max_year = '3'
+		try{
+			return new java.math.BigDecimal(max_year.toString()).intValue() 
+		}
+		catch(e){
+			return 3;
+		}
 	}
 
 

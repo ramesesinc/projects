@@ -84,13 +84,12 @@ class LiquidationModel extends CrudFormModel {
                 return entity.breakdown;   
             },
             getChecks: {
-                return  entity.checks;
+                return  entity.payments.findAll{ it.reftype == 'CHECK' };
             },
             getCreditMemos: {
-                return entity.creditmemos;
+                return entity.payments.findAll{ it.reftype == 'CREDITMEMO' };
             }
         ];
-        
         return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);
     }
     
@@ -141,6 +140,7 @@ class LiquidationModel extends CrudFormModel {
         return null;
     }
     
+    /*
     def delete() {
         if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
             persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
@@ -154,6 +154,6 @@ class LiquidationModel extends CrudFormModel {
         }
         return null; 
     }
-     
+    */ 
     
 } 

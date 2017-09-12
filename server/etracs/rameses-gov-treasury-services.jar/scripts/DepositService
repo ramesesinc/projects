@@ -1,0 +1,19 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+
+class DepositService  {
+
+	@DataContext("deposit")
+	def em;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def create( def o ) {
+		
+	}
+
+}

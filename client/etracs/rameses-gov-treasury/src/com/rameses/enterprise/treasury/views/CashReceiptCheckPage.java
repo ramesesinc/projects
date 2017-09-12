@@ -34,10 +34,12 @@ public class CashReceiptCheckPage extends javax.swing.JPanel {
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -55,21 +57,28 @@ public class CashReceiptCheckPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xFormPanel1.setCaptionWidth(160);
 
-        xLookupField1.setCaption("Bank");
-        xLookupField1.setExpression("#{entity.bank.code}");
-        xLookupField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xLookupField1.setHandler("bank:lookup");
-        xLookupField1.setName("entity.bank"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 27));
-        xLookupField1.setRequired(true);
-        xFormPanel1.add(xLookupField1);
-
         xTextField1.setCaption("Check No");
         xTextField1.setName("entity.refno"); // NOI18N
         xTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 27));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
+
+        xTextField2.setCaption("Received From");
+        xTextField2.setName("entity.receivedfrom"); // NOI18N
+        xTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 27));
+        xTextField2.setRequired(true);
+        xFormPanel1.add(xTextField2);
+
+        xLookupField1.setCaption("Bank");
+        xLookupField1.setExpression("#{entity.bank.name}");
+        xLookupField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xLookupField1.setHandler("bank:lookup");
+        xLookupField1.setName("entity.bank"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 27));
+        xLookupField1.setRequired(true);
+        xFormPanel1.add(xLookupField1);
 
         xDateField1.setCaption("Check Date");
         xDateField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -85,6 +94,13 @@ public class CashReceiptCheckPage extends javax.swing.JPanel {
         xDecimalField2.setRequired(true);
         xFormPanel1.add(xDecimalField2);
 
+        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel1.setCaption("Balance Unused");
+        xLabel1.setExpression("#{ entity.balance }");
+        xLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 24));
+        xFormPanel1.add(xLabel1);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -97,9 +113,9 @@ public class CashReceiptCheckPage extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel2);
@@ -110,12 +126,12 @@ public class CashReceiptCheckPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                 .addContainerGap())
@@ -127,8 +143,10 @@ public class CashReceiptCheckPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

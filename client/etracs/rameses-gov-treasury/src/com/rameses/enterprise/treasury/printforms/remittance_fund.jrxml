@@ -62,6 +62,7 @@
 	<field name="collector.signature.image" class="java.lang.Object"/>
 	<field name="liquidatingofficer.signature.image" class="java.lang.Object"/>
 	<field name="fund.title" class="java.lang.String"/>
+	<field name="cashbreakdown" class="java.lang.Object"/>
 
 
 		<group  name="TYPE_GROUP" >
@@ -284,21 +285,22 @@
 		<group  name="receiptGroup" >
 			<groupExpression><![CDATA[null]]></groupExpression>
 			<groupHeader>
-			<band height="87"  isSplitAllowed="true" >
+			<band height="145"  isSplitAllowed="true" >
 				<rectangle>
 					<reportElement
 						x="0"
 						y="0"
 						width="544"
-						height="87"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch"/>
+						height="140"
+						key="rectangle-1"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight"/>
 				</rectangle>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="434"
-						y="37"
+						x="433"
+						y="82"
 						width="100"
 						height="14"
 						forecolor="#000000"
@@ -398,8 +400,8 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="434"
-						y="52"
+						x="433"
+						y="97"
 						width="100"
 						height="14"
 						forecolor="#000000"
@@ -419,8 +421,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="434"
-						y="68"
+						x="433"
+						y="113"
 						width="100"
 						height="14"
 						forecolor="#000000"
@@ -433,6 +435,20 @@
 					</textElement>
 				<text><![CDATA[P                            0.00]]></text>
 				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="322"
+						y="4"
+						width="212"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-9"
+						positionType="Float"/>
+					<dataSourceExpression><![CDATA[$F{cashbreakdown}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["cashbreakdown.jasper"]]></subreportExpression>
+				</subreport>
 			</band>
 			</groupHeader>
 			<groupFooter>

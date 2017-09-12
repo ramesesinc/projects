@@ -297,8 +297,9 @@
 						y="0"
 						width="544"
 						height="130"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch"/>
+						key="rectangle-1"
+						stretchType="RelativeToBandHeight"/>
+					<graphicElement stretchType="RelativeToBandHeight"/>
 				</rectangle>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -523,6 +524,20 @@
 					</textElement>
 				<text><![CDATA[Less]]></text>
 				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="325"
+						y="10"
+						width="212"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-9"
+						positionType="Float"/>
+					<dataSourceExpression><![CDATA[$F{cashbreakdown}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["cashbreakdown.jasper"]]></subreportExpression>
+				</subreport>
 			</band>
 			</groupHeader>
 			<groupFooter>

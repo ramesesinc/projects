@@ -2,11 +2,12 @@
     <invokers>
        
         <invoker type="cashreceipt_check:open" caption="Check Payment" 
-                 action="init" target="window" index="10" />
+                 action="open" index="10" target="popup"/>
         <invoker type="cashreceipt_check:create" caption="New Check Payments" 
-                 action="init" target="window" index="10" />
+                 action="create" index="10" target="popup"/>
         
     </invokers>
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptCheckModel"/>
     <pages>
         <page template="com.rameses.enterprise.treasury.views.CashReceiptCheckPage" />
     </pages>    

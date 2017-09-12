@@ -4,14 +4,15 @@
     allowDelete="false" allowCreate="false">
     
     <invokers>
-        <invoker type="liquidation:section" caption="Funds" action="init" /> 
+        <invoker type="liquidation:section" caption="Funds" action="init" tag="liquidationid"/> 
+        <invoker type="deposit:section" caption="Collection" action="init" tag="depositid"/>
     </invokers>
     <code>
         import  com.rameses.seti2.models.*;
         class LiquidationFundList extends CrudSubListModel {
         
             public def getCustomFilter() {
-                return [ "liquidationid=:pid", [ pid: masterEntity.objid ]  ];
+                return [ " " + tag + " = :pid", [ pid: masterEntity.objid ]  ];
             }
         
             public def open() {

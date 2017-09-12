@@ -33,6 +33,7 @@
 	<field name="entityno" class="java.lang.String"/>
 	<field name="barcode" class="java.lang.String"/>
 	<field name="qrcode" class="java.awt.Image"/>
+	<field name="address.text" class="java.lang.String"/>
 
 
 		<group  name="front" >
@@ -48,14 +49,14 @@
 						key="staticText-1"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
-				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
+				<text><![CDATA[Republic of the Philippines]]></text>
 				</staticText>
 				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="10"
-						y="39"
+						y="40"
 						width="60"
 						height="81"
 						key="image-2"/>
@@ -65,122 +66,154 @@
 				</image>
 				<staticText>
 					<reportElement
-						x="82"
-						y="40"
-						width="39"
-						height="9"
-						key="staticText-4"/>
-					<box></box>
-					<textElement>
-						<font size="5"/>
-					</textElement>
-				<text><![CDATA[Name]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
 						x="0"
-						y="22"
+						y="24"
 						width="240"
-						height="15"
+						height="11"
 						key="staticText-6"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
-				<text><![CDATA[LGU TRANSACTION CARD]]></text>
+				<text><![CDATA[Local Government Unit Transaction Card]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						x="82"
-						y="69"
+						y="82"
 						width="39"
 						height="9"
 						key="staticText-7"/>
 					<box></box>
 					<textElement>
-						<font size="5"/>
+						<font fontName="Calibri" pdfFontName="Helvetica" size="6" isBold="false" isItalic="false"/>
 					</textElement>
 				<text><![CDATA[Birthdate]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						x="82"
-						y="99"
+						y="59"
 						width="39"
 						height="9"
 						key="staticText-9"/>
 					<box></box>
 					<textElement>
-						<font size="5"/>
+						<font fontName="Calibri" pdfFontName="Helvetica" size="6" isBold="false"/>
 					</textElement>
 				<text><![CDATA[Card No]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Opaque"
-						x="0"
-						y="126"
-						width="240"
-						height="20"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="barcode-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch" fill="Solid" />
-					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{barcode},true,false,null,0,0)]]></imageExpression>
-				</image>
-				<textField isStretchWithOverflow="false" pattern="yyyy MMM dd" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="82"
-						y="77"
-						width="109"
-						height="20"
-						key="textField"/>
-					<box></box>
-					<textElement>
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{birthdate}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="82"
-						y="53"
-						width="109"
-						height="20"
+						y="44"
+						width="140"
+						height="13"
 						key="textField"/>
 					<box></box>
 					<textElement>
-						<font/>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{lastname} + ", " + $F{firstname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="82"
-						y="107"
-						width="109"
-						height="20"
+						y="68"
+						width="140"
+						height="12"
 						key="textField"/>
 					<box></box>
 					<textElement>
-						<font/>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{entityno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="14"
+						y="15"
 						width="240"
 						height="10"
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font size="5"/>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUNAME}]]></textFieldExpression>
 				</textField>
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="173"
+						y="92"
+						width="59"
+						height="57"
+						key="image-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.awt.Image"><![CDATA[$F{qrcode}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="122"
+						width="91"
+						height="26"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{address.text}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="82"
+						y="114"
+						width="39"
+						height="9"
+						key="staticText-10"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica" size="6" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Address]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="91"
+						width="86"
+						height="23"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{birthdate}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="15"
+						y="135"
+						width="50"
+						height="9"
+						key="staticText-11"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="6" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SIGNATURE]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="12"
+						y="133"
+						width="55"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 			</band>
 			</groupHeader>
 			<groupFooter>
@@ -192,30 +225,6 @@
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
 			<band height="150"  isSplitAllowed="true" >
-				<staticText>
-					<reportElement
-						x="0"
-						y="23"
-						width="240"
-						height="10"
-						key="staticText-2"/>
-					<box></box>
-					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" size="5" isBold="true"/>
-					</textElement>
-				<text><![CDATA[THIS IS A TRANSACTION CARD. NOT TO BE USED AS OFFICIAL ID.]]></text>
-				</staticText>
-				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="80"
-						y="42"
-						width="80"
-						height="78"
-						key="image-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.awt.Image"><![CDATA[$F{qrcode}]]></imageExpression>
-				</image>
 			</band>
 			</groupHeader>
 			<groupFooter>

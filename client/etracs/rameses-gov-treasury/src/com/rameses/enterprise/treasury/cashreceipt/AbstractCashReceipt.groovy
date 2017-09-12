@@ -124,6 +124,8 @@ public abstract class AbstractCashReceipt {
     }
     
     void doCashPayment() { 
+        if(!entity.items) throw new Exception("At least one item is required");
+        if(entity.amount<=0) throw new Exception("Amount must be greater than 0");
         def success = false; 
         clearAllPayments();
         def handler = { o->
@@ -139,6 +141,8 @@ public abstract class AbstractCashReceipt {
     }
     
     void doCheckPayment() { 
+        if(!entity.items) throw new Exception("At least one item is required");
+        if(entity.amount<=0) throw new Exception("Amount must be greater than 0");
         def success = false; 
         clearAllPayments();
         def handler = { o-> 
@@ -161,6 +165,8 @@ public abstract class AbstractCashReceipt {
     }
     
     def doCreditMemo() {
+        if(!entity.items) throw new Exception("At least one item is required");
+        if(entity.amount<=0) throw new Exception("Amount must be greater than 0");
         def success = false;
         clearAllPayments();
         def handler = { o->

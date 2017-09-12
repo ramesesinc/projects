@@ -7,15 +7,22 @@
 			<key field="bankid" target="objid" />
 		</complex>	
 
-		<field name="refno" required="true" />	
+		<field name="refno" required="true" searchable="true"/>	
 		<field name="refdate" required="true" />
 		<field name="amount" required="true" type="decimal"/>	
-		<field name="receiptid" required="true" />	
+		<field name="receiptid"  />	
 		<field name="bank_name" required="true" />
-
-
+		<field name="receivedfrom" required="true" />
+		
 		<!-- amount issued. If this becomes equal to amount then this check is already closed. This starts at 0 --> 
-		<field name="amtused" required="true" type="decimal"/>	
+		<field name="amtused" required="true" type="decimal" defaultValue="0"/>	
+
+		<field name="bankdepositid" />
+		<complex name="items" ref="cashreceiptpayment_noncash" jointype="one-to-many" orderBy="refdate,refno" required="false">
+			<key field="objid" target="refid" />
+		</complex>	
+
+		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
 	</element>
 
 </schema>

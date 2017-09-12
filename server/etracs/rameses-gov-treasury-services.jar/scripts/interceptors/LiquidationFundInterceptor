@@ -1,0 +1,18 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+
+/** This posts transaction to income summary*/
+class LiquidationFundInterceptor {
+	
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'liquidation_fund' }")
+	public void afterOpen(evt) {
+		def o = evt.result;
+		o.cashbreakdown = o.cashbreakdown?.sort{ it.denomination * -1 }
+	}
+
+	
+}

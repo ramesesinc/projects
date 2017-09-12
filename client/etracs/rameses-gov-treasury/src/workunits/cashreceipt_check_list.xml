@@ -1,10 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="cashreceipt_check" allowCreate="false"
-    cols="refno,refdate,amount">
+    cols="refno,receivedfrom,refdate,bank.name,amount,balance">
     <invokers>
-       
-        <invoker folderid="home/collection" caption="Check Payments" 
-                 action="init" target="window" index="10" />
-        
+        <invoker folderid="home/collection" caption="Check Payments" action="init" target="window" index="10" />
     </invokers>
     
 </workunit>

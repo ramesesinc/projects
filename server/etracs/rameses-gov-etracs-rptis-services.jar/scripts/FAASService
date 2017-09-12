@@ -806,7 +806,8 @@ class FAASService
 		if (faas.rpu.rputype != 'land'){
 			def landowner = em.findLandOwner([rpuid:faas.rpu.objid]);
 			if (landowner && faas.taxpayer.objid != landowner.objid){
-				def tokens = faas.rpu.fullpin.tokenize('-')
+				def fullpin = faas.rpu.fullpin.replace('(', '').replace(')','')
+				def tokens = fullpin.tokenize('-')
 				tokens[4] = '(' + tokens[4] + ')'
 				faas.fullpin = tokens.join('-')
 			}

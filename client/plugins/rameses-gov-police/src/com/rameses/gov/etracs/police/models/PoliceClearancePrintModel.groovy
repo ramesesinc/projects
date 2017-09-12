@@ -28,9 +28,15 @@ class PoliceClearancePrintModel extends ReportController {
     def getReportData() { 
         if ( data ) {
             def appenv = ctx.appEnv; 
-            data.jsonurlpath = "http://"+ appenv['app.host']+'/'+appenv['app.cluster']+'/json';             
-        }
-        return data;
+            data.jsonurlpath = "http://"+ appenv['app.host']+'/'+appenv['app.cluster']+'/json'; 
+            data.apps1 = [ data.app ]; 
+            data.apps2 = [ data.app ]; 
+            data.ctcs1 = [ data.ctc ]; 
+            data.ctcs2 = [ data.ctc ]; 
+            data.applicants1 = [ data.applicant ]; 
+            data.applicants2 = [ data.applicant ]; 
+        } 
+        return data; 
     }
 
     def printReport() {

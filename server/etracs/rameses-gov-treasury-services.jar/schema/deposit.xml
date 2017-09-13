@@ -1,19 +1,26 @@
 <schema>
 	
 	<element tablename="deposit">
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="DEP"/>
 		<field name="controlno" required="true"/> 
 		<field name="state" required="true"/> 
-		<field name="txndate" required="true"/> 
-		<field name="dtposted" required="true"/> 
+		<field name="txndate" required="true" type="timestamp"/> 
+		<field name="dtposted" required="true" type="date"/>
+		<field name="depositdate" required="true" type="date"/>  
 		<field name="postedby_name" required="true"/> 
 		<field name="postedby_objid" required="true"/> 
-		<field name="fundid" required="true"/> 
+		 
 		<field name="amount" required="true"/> 
 		<field name="amountdeposited" required="true"/> 
 		<field name="cramount" required="true"/> 
 		<field name="cramounttransferred" required="true"/> 
 		<field name="batchid" required="true"/> 
+
+		<complex name="fund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
+			<key field="fundid" target="objid" />
+		</complex>	
+		 
+		
 	</element>
 
 </schema>

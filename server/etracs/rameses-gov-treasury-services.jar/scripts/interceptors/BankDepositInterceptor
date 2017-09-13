@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+
+class BankDepositInterceptor {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'bankdeposit' }")
+	public void beforeCreate( evt ) { 
+		def bd = evt.args[0];
+        bd.totalcheck = 0 ;
+        bd.totalcash = 0;
+        bd.amount = 0;
+        bd.depositedby = [ objid: env.USERID, name: env.FULLNAME ]; 
+		bd.depositdate = dateSvc.getBasicServerDate();
+		bd.cashbreakdown = [];
+	}
+
+		
+
+}

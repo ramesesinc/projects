@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="deposit">
+    <invokers>
+        <invoker folderid="home/collection" caption="Deposits" action="init" />
+    </invokers>
+</workunit>

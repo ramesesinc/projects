@@ -7,6 +7,13 @@
                  hiddenCols="bank.objid"
                     customFilter=" amount - amtused > 0 "/>
         
+        <invoker type="cashreceipt_check_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,balance"
+                 hiddenCols="bank.objid" multiSelect="true"
+                    customFilter=" bankdepositid IS NULL "/>
+        
+        
     </invokers>
     
 </workunit>

@@ -1,52 +1,22 @@
 <schema>
 	
-	<element name="bankdeposit" tablename="bankdeposit">
-		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="txnno" required="true"/>
-		<field name="dtposted" required="true"/>
-		<field name="cashier_objid" required="true"/>
-		<field name="cashier_name" required="true"/>
-		<field name="cashier_title" required="true"/>
+	<element tablename="bankdeposit">
+		<field name="objid" primary="true" prefix="BNKDEP"/>
+		<field name="depositid" required="true"/> 
+		<field name="depositedby_objid" required="true"/> 
+		<field name="depositedby_name" required="true"/> 
+		 
+		<field name="depositdate" required="true" type="date"/>
 
-		<field name="totalcash" required="true"/>
-		<field name="totalnoncash" required="true"/>
-		<field name="amount" required="true"/>
-
-		
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.name" required="false">
+			<key field="bankaccountid" target="objid"/>
+		</complex>
+		<field name="amount" required="true"  type="decimal"/> 
+		<field name="totalcash" required="true"  type="decimal"/> 
+		<field name="totalcheck" required="true"  type="decimal"/> 
+		<complex name="cashbreakdown" serializer="default" type="list"/> 
+		<field name="validationno" /> 
+		<field name="validationdate" /> 
 	</element>
-
-	<element name="entry" tablename="bankdeposit_entry">
-		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="parentid" required="true"/>
-		<field name="bankaccount_objid" required="true"/>
-		<field name="bankaccount_code" required="true"/>
-		<field name="bankaccount_title" required="true"/>
-
-		<field name="totalcash" required="true"/>
-		<field name="totalnoncash" required="true"/>
-		<field name="amount" required="true"/>
-		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
-		<complex name="summaries" required="false" serializer="default" type="list"/>
-		<field name="validationno" />
-		<field name="validationdate" />
-
-		
-	</element>
-
-	<element name="entry_check" tablename="bankdeposit_entry_check">
-		<field name="objid" primary="true"/>
-		<field name="parentid" required="true"/>
-	</element>
-
-	<element name="liquidation" tablename="bankdeposit_liquidation">
-		<field name="objid" primary="true"/>
-		<field name="bankdepositid" required="true"/>
-	</element>
-
-	
-	
-
 
 </schema>

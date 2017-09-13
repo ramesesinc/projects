@@ -1,17 +1,16 @@
 import com.rameses.annotations.*;
 
-class CollectionDepositListInterceptor {
+class DepositListInterceptor {
 
-
-	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectiondeposit' }")
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'deposit' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'draft', title: 'Draft', state:'DRAFT' ];
+		result << [ id:'draft', title: 'Open', state:'OPEN' ];
 		result << [ id:'posted', title: 'Processed', state:'POSTED' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiondeposit' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'deposit' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 

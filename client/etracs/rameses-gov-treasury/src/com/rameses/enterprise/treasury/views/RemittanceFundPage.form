@@ -54,7 +54,7 @@
       <SubComponents>
         <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Amount To Remit"/>
+            <Property name="caption" type="java.lang.String" value="Amount"/>
             <Property name="captionWidth" type="int" value="120"/>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 20, 0, 0]"/>

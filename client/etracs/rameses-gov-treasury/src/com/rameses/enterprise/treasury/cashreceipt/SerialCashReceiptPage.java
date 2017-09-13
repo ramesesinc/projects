@@ -54,7 +54,6 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         buttonCash1 = new com.rameses.rcp.control.XButton();
         buttonCheck1 = new com.rameses.rcp.control.XButton();
         buttonCheck2 = new com.rameses.rcp.control.XButton();
-        buttonCheck3 = new com.rameses.rcp.control.XButton();
         xDecimalField11 = new com.rameses.rcp.control.XDecimalField();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
@@ -301,19 +300,12 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         buttonCheck1.setName("doCheckPayment"); // NOI18N
         buttonCheck1.setText("F10 - CHECK ");
 
-        buttonCheck2.setAccelerator("F12");
+        buttonCheck2.setAccelerator("F11");
         buttonCheck2.setFocusable(false);
         buttonCheck2.setImmediate(true);
         buttonCheck2.setIndex(21);
         buttonCheck2.setName("doCreditMemo"); // NOI18N
-        buttonCheck2.setText("F12 - CREDIT MEMO ");
-
-        buttonCheck3.setAccelerator("F11");
-        buttonCheck3.setFocusable(false);
-        buttonCheck3.setImmediate(true);
-        buttonCheck3.setIndex(21);
-        buttonCheck3.setName("doSplitCheck"); // NOI18N
-        buttonCheck3.setText("F11 - SPLIT CHECK ");
+        buttonCheck2.setText("F11 - CREDIT MEMO ");
 
         org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -323,9 +315,8 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(buttonCash1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(buttonCheck1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(buttonCheck2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                    .add(buttonCheck3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(0, 0, Short.MAX_VALUE))
+                    .add(buttonCheck2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                .add(0, 2, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -334,10 +325,8 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(buttonCheck1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(buttonCheck3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(buttonCheck2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         xDecimalField11.setEditable(false);
@@ -541,7 +530,6 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton buttonCheck;
     private com.rameses.rcp.control.XButton buttonCheck1;
     private com.rameses.rcp.control.XButton buttonCheck2;
-    private com.rameses.rcp.control.XButton buttonCheck3;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;

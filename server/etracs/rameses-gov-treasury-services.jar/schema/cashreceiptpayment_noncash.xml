@@ -13,8 +13,24 @@
 		<field name="remittancefundid"/>
 		<field name="liquidationfundid"/>
 
+		<complex name="receipt" ref="cashreceipt" jointype="many-to-one"  
+			includefields="receiptno,receiptdate,collector.name" required="false">
+			<key field="receiptid" target="objid" />
+		</complex> 
+
 		<complex name="fund" ref="fund" jointype="many-to-one"  includefields="objid,code,title">
 			<key field="fund_objid" target="objid" />
-		</complex>   
+		</complex>  
+
+		<complex name="remittancefund" ref="remittance_fund" jointype="many-to-one"  
+			includefields="remittanceid" required="false">
+			<key field="remittancefundid" target="objid" />
+		</complex> 
+
+		<complex name="liquidationfund" ref="liquidation_fund" jointype="many-to-one"  
+			includefields="liquidationid" required="false">
+			<key field="liquidationfundid" target="objid" />
+		</complex> 
+
 	</element>
 </schema>

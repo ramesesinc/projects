@@ -32,7 +32,8 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     ] as BasicListModel;
     
     void init() {
-        check = [:];
+        check = [split:0];
+        check.receivedfrom = entity.paidby;
         balance = entity.amount;
         fundList.each {it.used=0};
         if( fundList.size() == 1 ) {

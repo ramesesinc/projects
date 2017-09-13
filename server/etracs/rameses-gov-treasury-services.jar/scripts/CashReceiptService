@@ -123,6 +123,9 @@ class CashReceiptService  {
 					c.receiptid = p.objid;
 					def cc = checkPayment.create( c );
 					c.objid = cc.objid;
+				}
+				else {
+					checkPayment.find( [objid: c.objid] ).update( [amtused: "{ amtused + :amt }"], [amt: c.amount] );
 				}	
 			}	
 			//update also payment items

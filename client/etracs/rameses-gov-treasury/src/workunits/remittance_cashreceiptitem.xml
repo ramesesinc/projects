@@ -5,10 +5,10 @@
         allowDelete="false" allowCreate="false" orderBy="receiptno">
     
     <invokers>
-        <invoker type="remittance:section" caption="Receipt Details" action="init" tag="remittanceid"/> 
-        <invoker type="remittance_fund:section" caption="Receipt Details" action="init" tag="remittancefundid"/> 
-        <invoker type="liquidation:section" caption="Receipt Details" action="init" tag="liquidationid"/> 
-        <invoker type="liquidation_fund:section" caption="Receipt Details" action="init" tag="liquidationfundid"/> 
+        <invoker type="remittance:section" caption="Receipt Details" action="init" tag="remittanceid" index="50"/> 
+        <invoker type="remittance_fund:section" caption="Receipt Details" action="init" tag="remittancefundid" index="50"/> 
+        <invoker type="liquidation:section" caption="Receipt Details" action="init" tag="liquidationid" index="50"/> 
+        <invoker type="liquidation_fund:section" caption="Receipt Details" action="init" tag="liquidationfundid" index="50"/> 
     </invokers>
     <code>
         <![CDATA[

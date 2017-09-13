@@ -4,16 +4,14 @@
  */
 package com.rameses.enterprise.treasury.views;
 
-import com.rameses.osiris2.themes.OKCancelPage;
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(OKCancelPage.class)
-@StyleSheet
+@Template(CrudFormPage.class)
 public class RemittanceFundPage extends javax.swing.JPanel {
 
     /**
@@ -51,7 +49,7 @@ public class RemittanceFundPage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
 
-        xDecimalField1.setCaption("Amount To Remit");
+        xDecimalField1.setCaption("Amount");
         xDecimalField1.setCaptionWidth(120);
         xDecimalField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xDecimalField1.setEnabled(false);

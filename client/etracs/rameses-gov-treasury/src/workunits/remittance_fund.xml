@@ -1,4 +1,4 @@
-<workunit allowCreate="false" allowUpdate="false">
+<workunit allowCreate="false" allowEdit="false" allowDelete="false" schemaName="remittance_fund">
     
     <invokers>
         <invoker type="remittance_fund:open" caption="Remittance" action="open" target="popup" />

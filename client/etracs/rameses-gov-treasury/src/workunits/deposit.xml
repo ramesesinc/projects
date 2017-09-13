@@ -1,23 +1,30 @@
 <workunit>
     
    <invokers>
-         <invoker type="deposit:create" caption="New Deposit" action="create" role="CASHIER" target="window"/>
-         <invoker type="deposit:open" caption="Deposit" action="open" role="CASHIER" target="window"/>
+         <invoker type="deposit:create" caption="New Deposit" action="initNew" target="window"/>
+          <invoker type="deposit:open" caption="Deposit" action="open" role="CASHIER" target="window"/>
+          
+          
+         <invoker type="formActions" caption="Submit" action="save" visibleWhen="#{mode == 'initial'}" />
          
+         <invoker type="formActions" caption="Add Bank Deposit" action="addBankDeposit" visibleWhen="#{mode == 'read'}" />
+         <invoker type="formActions" caption="Add Fund Transfer" action="addFundTransfer" visibleWhen="#{mode == 'read'}" />
+        
          <!-- liquidate buttons -->
+         <!--
          <invoker type="formActions" caption="Close" name="_close" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
          <invoker type="formActions" caption="Post" name="post" role="CASHIER" visibleWhen="#{entity.state=='DRAFT'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
          <invoker type="formActions" caption="Delete" action="delete" role="CASHIER" visibleWhen="#{ entity.state=='DRAFT' }" />
 
          <invoker type="formActions" caption="Print" name="preview"  visibleWhen="#{entity.state != 'DRAFT'}" action="preview" />
          <invoker type="formActions" caption="Reports" name="popupReports"  visibleWhen="#{entity.state != 'DRAFT'}" category="deposit:reports" />
-         
+         -->
    </invokers>
 
-   <code class="com.rameses.enterprise.treasury.models.CollectionDepositModel" />
+   <code class="com.rameses.enterprise.treasury.models.DepositModel" />
    
-   <!--pages>
-       <page template="com.rameses.enterprise.treasury.views.CollectionDepositPage" />
-   </pages-->
+   <pages>
+       <page name="init" template="com.rameses.enterprise.treasury.views.DepositInitialPage" />
+   </pages>
    
 </workunit>

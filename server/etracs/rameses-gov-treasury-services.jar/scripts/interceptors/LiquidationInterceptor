@@ -10,6 +10,22 @@ class LiquidationInterceptor {
 	@Service("IncomeSummaryService")
 	def incomeSvc;
 
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'liquidation' }")
+	public void afterOpen(evt) {
+		def o = evt.result;
+		if ( o.liquidatingofficer?.signature ) {
+			Base64Cipher cipher = new Base64Cipher()
+			o.liquidatingofficer.signature = cipher.decode( o.liquidatingofficer.signature );
+		}
+		o.cashbreakdown = o.cashbreakdown?.sort{ it.denomination * -1 }
+	}
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'liquidation' }")
+	public void beforeRemove(evt) {
+		//Check if can be removed!
+		throw new Exception("removing here");
+	}
+
 	@After(pattern="LiquidationService.post")
 	public void postIncomeSummary( def evt ) { 
 		def entity = evt.result;

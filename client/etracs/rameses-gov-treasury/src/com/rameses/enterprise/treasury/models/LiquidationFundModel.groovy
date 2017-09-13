@@ -21,14 +21,16 @@ public class LiquidationFundModel extends CashBreakdownModel  {
         return entity.payments.findAll{ it.reftype == 'CREDITMEMO' };
     }
     
+    public String getPrintFormName() {
+        return "remittance_fund";
+    }
+    
     public void afterOpen() {
         super.afterOpen();
         editable = entity.remittance?.state == 'DRAFT';
     }
     
     public def openFromCollection() {
-        MsgBox.alert( caller.entity );
-        MsgBox.alert("refid " + entity?.refid );
         entity.objid = entity.refid;
         return super.open();
     }

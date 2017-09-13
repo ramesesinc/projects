@@ -18,17 +18,9 @@
 		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
 		<field name="posted" />
 
-		<field name="cashier_objid" />
-		<field name="cashier_name" />
-		<field name="cashier_title"/>
-		<field name="cashier_signature"/>
-
-		<complex name="funds" ref="liquidation_fund" jointype="one-to-many" type="list" >
-			<key field="objid" target="liquidationid" />
+		<complex name="payments" ref="cashreceiptpayment_noncash" jointype="one-to-many" type="list" >
+			<key field="objid" target="liquidationfund_liquidationid" />
 		</complex>	
 
-		<complex name="remittances" ref="remittance" jointype="one-to-many" type="list">
-			<key field="objid" target="liquidationid" />
-		</complex>	
 	</element>
 </schema>	

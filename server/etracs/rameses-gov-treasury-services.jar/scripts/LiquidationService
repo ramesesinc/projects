@@ -126,38 +126,7 @@ class LiquidationService  {
 		return open([ objid: m.objid ]); 
 	}
 
-	@ProxyMethod
-	public def open( params ) { 
-		def o = liqEm.find([ objid: params.objid ]).first(1);
-		if ( o.liquidatingofficer?.signature ) {
-			Base64Cipher cipher = new Base64Cipher()
-			o.liquidatingofficer.signature = cipher.decode( o.liquidatingofficer.signature );
-		}
-		if ( o.cashier?.signature ) {
-			Base64Cipher cipher = new Base64Cipher()
-			o.cashier.signature = cipher.decode( o.cashier.signature );
-		}
-
-		o.totalcash = o.totalcheck = o.totalcr = 0.0; 
-		o.funds.each{
-			o.totalcr += ( it.totalcr ? it.totalcr : 0.0 );
-			o.totalcash += ( it.totalcash ? it.totalcash : 0.0 );
-			o.totalcheck += ( it.totalcheck ? it.totalcheck : 0.0 );
-		}
-		o.totalnoncash = o.totalcheck + o.totalcr; 
-
-		def liqparam = [ liquidationid: o.objid ];
-		o.fundsummary = o.remove('funds');
-		o.creditmemos = [];
-		o.checks = [];
-		liqnoncash.find( liqparam ).list().each{
-			def a = [ objid: it.objid, liquidationid: o.objid ];
-			if ( it.payment ) a.putAll( it.payment ); 
-			if ( a.reftype == 'CREDITMEMO' ) o.creditmemos << a; 
-			else o.checks << a; 
-		} 
-		return o; 
-	} 
+	
 
 	@ProxyMethod
 	public def post( param ) { 
@@ -179,16 +148,6 @@ class LiquidationService  {
 		rem_db.find([ liquidationid: o.objid ]).update([ state: 'CLOSED' ]); 
 		return o; 
 	} 
-
-	@ProxyMethod 
-	public def getChecks( params ) {
-		return liqEm.getChecks([ liquidationid: params.objid ]); 
-	}
-
-	@ProxyMethod
-	public def getFundSummaries(o) {
-		return em.getFundSummaries([ liquidationid: o.objid ]);
-	}
 
 
 	@ProxyMethod

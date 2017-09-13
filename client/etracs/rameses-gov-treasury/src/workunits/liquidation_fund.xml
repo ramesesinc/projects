@@ -1,11 +1,14 @@
-<workunit schemaName="liquidation_fund">
+<workunit schemaName="liquidation_fund" allowCreate="false" allowEdit="false" allowDelete="false">
     
    <invokers>
-         <invoker type="liquidation_fund:open" caption="Liquidation Fund" action="open"/>
+         <invoker type="liquidation_fund:open" caption="Liquidation Fund" action="open" target="popup"/>
          
          <!-- HOOK TO DAILY COLLECTION -->
          <invoker type="collection:formActions" caption="View Liquidation" action="openFromCollection" />
          <invoker type="collection:formActions" caption="Export to NGAS" action="doExport" />
+         
+         <!-- liquidation -->
+         <invoker type="formActions" caption="View Liquidation"  target="popup" visibleWhen="#{caller.schemaName != 'liquidation' }"/>
    </invokers>
 
    <code class="com.rameses.enterprise.treasury.models.LiquidationFundModel" />

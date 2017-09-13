@@ -36,7 +36,7 @@
            def acceptLiquidation() { return openAction("liquidation_list:fordeposit"); }
            
            def fundtransfer() { return openAction("collectiondeposit_fundtransfer:fortransfer"); }
-           def deposit() { return openAction("collectiondeposit_bank:fordeposit"); }
+           def deposit() { return openAction("deposit:create"); }
            def postDailyCollection() {return openAction("daily_collection:view") }
            def postDailyDeposit() {return openAction("daily_deposit:view") } 
         }

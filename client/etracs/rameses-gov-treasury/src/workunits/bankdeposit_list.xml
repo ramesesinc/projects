@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
+          schemaName="bankdeposit" 
+    cols="depositdate,depositedby.name,totalcash,totalcheck,amount,validationno,validationdate" 
+    allowDelete="false">
+    
+    <invokers>
+        <invoker type="deposit:section" caption="Bank Deposits" action="init" index="1"/> 
+    </invokers>
+    <code>
+        import  com.rameses.seti2.models.*;
+        class BasnkDepositList extends CrudSubListModel {
+        
+            public def getCustomFilter() {
+                return [ "depositid=:pid", [ pid: masterEntity.objid ]  ];
+            }
+        
+        }
+    </code>
+</workunit>

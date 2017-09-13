@@ -1,32 +1,8 @@
-[getAvailableFundsForDeposit]
-select 
-	lf.fund_objid as fundid, fund.code as fundcode, fund.title as fundtitle  
-from liquidation_fund lf 
-	inner join liquidation l on l.objid = lf.liquidationid 
-	inner join fund on fund.objid = lf.fund_objid 
-where lf.depositid is null 
-	and l.state = 'APPROVED' 
-group by lf.fund_objid, fund.code, fund.title  
-
-
-[bindLiquidationFunds]
-update 
-	liquidation_fund lf, liquidation l 
-set 
-	lf.depositid = $P{depositid}, 
-	l.state = 'CLOSED' 
-where 
-	lf.depositid is null 
-	and lf.liquidationid = l.objid 
-	and lf.fund_objid = $P{fundid} 
-	and l.state = 'APPROVED' 
-
-
 [bindCashReceipChecks]
 update 
 	liquidation_fund lf, deposit dep, cashreceiptpayment_noncash nc, cashreceipt_check cc 
 set 
-	cc.depositrefid = lf.depositid 
+	cc.depositid = lf.depositid 
 where 
 	lf.depositid = $P{depositid} 
 	and dep.objid = lf.depositid 
@@ -58,19 +34,26 @@ from liquidation_fund lf
 where lf.depositid = $P{depositid} 
 group by cm.bankaccount_objid 
 
-	
 
-
-[xxx]
+[unbindCashReceiptChecksByLiquidationFund]
 update 
-	deposit a, 
-	(
-		select depositid, sum(totalcash+totalcheck) as amount, sum(totalcr) as cramount 
-		from liquidation_fund where depositid = 'DEP-2f2b2bc4:15e69f72b85:-7fd9-GENERAL' 
-		group by depositid 
-	)b 
+	liquidation_fund lf, cashreceiptpayment_noncash nc, cashreceipt_check cc  
 set 
-	a.amount = b.amount, 
-	a.cramount = b.cramount 
+	cc.depositid = null 
 where 
-	a.objid = b.depositid 
+	lf.depositid = $P{depositid} 
+	and lf.objid = $P{liquidationfundid} 
+	and nc.liquidationfundid = lf.objid 
+	and cc.objid = nc.refid 
+
+
+[unbindLiquidationFund]
+update 
+	liquidation_fund lf, liquidation l 
+set 
+	lf.depositid = null 
+where 
+	lf.depositid = $P{depositid} 
+	and lf.objid = $P{liquidationfundid} 
+	and l.objid = lf.liquidationid 
+

@@ -166,6 +166,8 @@ GROUP BY pc.code, pc.name, ptal.name, ptd.assesslevel
 [getLandPlantTreeAssessment]
 SELECT
 	'plant/tree' AS propertytype,
+	pc.code AS dominantclasscode,
+	pc.name AS dominantclassification,
 	pc.code as classcode,
 	pc.name AS classification,
 	ptal.code AS actualcode,
@@ -211,6 +213,8 @@ WHERE f.objid = $P{faasid}
 [getBldgAssessments]
 SELECT 
 	'BLDG' as propertytype, 
+	dc.code AS dominantclasscode,
+	dc.name AS dominantclassification,
 	pc.code AS classcode,
 	pc.name AS classification,
 	bal.code AS actualusecode,
@@ -227,6 +231,8 @@ FROM faas f
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN bldgassesslevel bal ON r.actualuse_objid = bal.objid 
+	INNER JOIN rpu xr on f.rpuid = xr.objid 
+	INNER JOIN propertyclassification dc on xr.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}	
 
 
@@ -246,6 +252,8 @@ WHERE f.objid = $P{faasid}
 [getMachineAssessment]
 SELECT 
 	'MACH' AS propertytype,
+	dc.code AS dominantclasscode,
+	dc.name AS dominantclassification,
 	pc.code AS classcode,
 	pc.name AS classification,
 	mal.code AS actualusecode,
@@ -261,12 +269,16 @@ FROM faas f
 	INNER JOIN rpu_assessment r ON f.rpuid = r.rpuid
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN machassesslevel mal ON r.actualuse_objid = mal.objid 
+	INNER JOIN rpu xr on f.rpuid = xr.objid 
+	INNER JOIN propertyclassification dc on xr.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}	
 
 
 [getMachineDetailedAssessment]
 SELECT 
 	'MACH' AS propertytype,
+	pc.code AS dominantclasscode,
+	pc.name AS dominantclassification,
 	pc.name AS classification,
 	m.name AS machine,
 	mal.name AS actualuse,
@@ -295,6 +307,8 @@ WHERE f.objid = $P{faasid}
 [getPlantTreeAssessment]
 SELECT 
 	'PLANT/TREE' AS propertytype,
+	pc.code AS dominantclasscode,
+	pc.name AS dominantclassification,
 	pc.code AS classcode,
 	pc.name AS classification,
 	ptal.code AS actualusecode,
@@ -326,6 +340,8 @@ WHERE f.objid = $P{faasid}
 [getMiscAssessment]
 SELECT 
 	'MISC' AS propertytype,
+	pc.code AS dominantclasscode,
+	pc.name AS dominantclassification,
 	pc.code AS classcode,
 	pc.name AS classification,
 	mal.code AS actualusecode,

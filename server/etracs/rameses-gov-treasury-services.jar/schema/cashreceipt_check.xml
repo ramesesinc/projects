@@ -3,7 +3,7 @@
 	<element  tablename="cashreceipt_check">
 		<field name="objid" primary="true" prefix="CHKPMT"/>	
 
-		<complex name="bank" ref="bank" jointype="many-to-one" required="true">
+		<complex name="bank" ref="bank" jointype="many-to-one" required="true" includefields="objid,name">
 			<key field="bankid" target="objid" />
 		</complex>	
 

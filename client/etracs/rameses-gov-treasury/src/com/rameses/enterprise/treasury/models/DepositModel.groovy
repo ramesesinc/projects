@@ -85,6 +85,7 @@ class DepositModel extends CrudFormModel {
         },
         onOpenItem : { o,colName->
             def h = { v->
+                binding.refresh("entity.amountdeposited");
                 bankDepositListModel.reload();
             }
             return Inv.lookupOpener( "bankdeposit:open", [entity: o, fundid : entity.fund.objid, handler: h ] );
@@ -97,6 +98,7 @@ class DepositModel extends CrudFormModel {
         def r = persistenceService.create( bd );
         bankDepositListModel.reload();
         def h = { v->
+            binding.refresh("entity.amountdeposited");
             bankDepositListModel.reload();
         }
         return Inv.lookupOpener( "bankdeposit:open", [entity: r, fundid :entity.fund.objid, handler: h ] );

@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cashreceipt"
-    cols="formno,receiptno,txnmode,receiptdate,paidby,collectiontype.handler,collector.name,voided,amount">
+    cols="formno,receiptno,txnmode,receiptdate,paidby,collectiontype.handler,collector.name,voided,amount" 
+    orderBy="receiptdate desc">
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR"  action="init" orderBy="formno,receiptno"/>
         <invoker folderid="home/collection" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR" 

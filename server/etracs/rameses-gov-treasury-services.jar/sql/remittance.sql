@@ -154,7 +154,7 @@ from (
   where c.remittanceid = $P{remittanceid} 
     and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
     and c.state <> 'CANCELLED' 
-    and nc.reftype <> 'CREDITMEMO' 
+    and nc.reftype = 'CHECK' 
   group by c.remittanceid, fund.objid, fund.title 
 
   union all 
@@ -164,12 +164,11 @@ from (
     0.0 as amount, 0.0 as totalcheck, sum(nc.amount) as totalcr 
   from cashreceipt c 
     inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
-    inner join creditmemo cm on cm.objid = nc.refid 
     inner join fund on fund.objid = nc.fund_objid 
   where c.remittanceid = $P{remittanceid} 
     and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
     and c.state <> 'CANCELLED' 
-    and nc.reftype = 'CREDITMEMO' 
+    and nc.reftype <> 'CHECK' 
   group by c.remittanceid, fund.objid, fund.title 
 )tmp1 
 group by remittanceid, fundid, fundtitle 

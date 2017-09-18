@@ -52,11 +52,11 @@ public class AccountReceivablePage extends javax.swing.JPanel {
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
-        xLookupField1.setCaption("Org");
+        xLookupField1.setCaption("AR Account");
         xLookupField1.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
-        xLookupField1.setExpression("#{ entity.org.name }");
-        xLookupField1.setHandler("org:lookup");
-        xLookupField1.setName("entity.org"); // NOI18N
+        xLookupField1.setExpression("#{ entity.account.title }");
+        xLookupField1.setHandler("receivableaccount:lookup");
+        xLookupField1.setName("entity.account"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 

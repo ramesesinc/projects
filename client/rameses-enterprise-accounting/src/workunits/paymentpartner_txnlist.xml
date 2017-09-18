@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="jevitem">
+    <invokers>
+        <invoker type="paymentpartner:section" caption="Transactions" action="init"
+                 cols="account.title,jev.dtposted,jev.refno,jev.fund.title,dr,cr,particulars" 
+                 orderBy=" jev.dtposted " />
+   </invokers>
+   
+   <code>
+   import com.rameses.seti2.models.*;
+       
+   class PaymentPartnerTxnListModel extends CrudSubListModel {
+        def getCustomFilter() {
+            return [' acctid = :acctid ', [acctid: masterEntity.receivableacctid]]; 
+       } 
+   }
+   </code> 
+</workunit>

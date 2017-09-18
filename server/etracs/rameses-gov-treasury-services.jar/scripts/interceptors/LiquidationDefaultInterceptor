@@ -48,10 +48,11 @@ class LiquidationDefaultInterceptor {
 		} 
 	} 
 
-	@After( pattern="LiquidationService.post" )
+	//@After( pattern="LiquidationService.post" )
 	public void afterPost( evt ) {
 		def result = evt.result; 
 		def m = [ liquidationid: result.objid ]; 
+		liq_db.postToCollectionCash( m ); 
 		liq_db.postJev( m ); 
 		liq_db.postJevItem( m ); 
 		liq_db.postJevItemForBankAccount( m ); 

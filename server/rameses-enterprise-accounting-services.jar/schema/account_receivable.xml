@@ -3,11 +3,10 @@
 		<field name="objid" primary="true" prefix="AR"/>
 		<field name="code" required="true" caption="Acct Code"/>
 		<field name="title" required="true" caption="Acct Title"/>
-		<field name="entity_objid"  />
-		<field name="entity_name" />
-		<field name="org_objid"  />
-		<field name="org_name" />
 
+		<complex name="account" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title" required="false"> 
+			<key field="acctid" target="objid"/> 
+		</complex>
 		
 	</element>
 </schema>

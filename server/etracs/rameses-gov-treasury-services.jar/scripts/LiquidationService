@@ -16,6 +16,9 @@ class LiquidationService  {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("PersistenceService")
+	def persistSvc;
+
 	@Service("Var")
 	def var;
 
@@ -49,7 +52,7 @@ class LiquidationService  {
 		""");
 
 
-		def m = [ state:'DRAFT', posted:0, cashbreakdown:[], remittances:[], funds:[] ];
+		def m = [ state:'DRAFT', posted:0, cashbreakdown:[], remittances:[], funds:[], payments:[] ];
 		m.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];
 		m.txndate = dateSvc.serverDate;
 		m.dtposted = m.txndate;
@@ -123,7 +126,7 @@ class LiquidationService  {
 			cashbreakdown : m.cashbreakdown 
 		]); 
 
-		return open([ objid: m.objid ]); 
+		return persistSvc.read([ _schemaname: 'liquidation', objid: m.objid ]);
 	}
 
 	

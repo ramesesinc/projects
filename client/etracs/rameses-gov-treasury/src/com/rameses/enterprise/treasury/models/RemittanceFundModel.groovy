@@ -18,7 +18,7 @@ public class RemittanceFundModel extends CashBreakdownModel  {
     }
     
     public def getCreditMemos() {
-        return entity.payments.findAll{ it.reftype == 'CREDITMEMO' };
+        return entity.payments.findAll{ it.reftype != 'CHECK' };
     }
     
     public void afterOpen() {

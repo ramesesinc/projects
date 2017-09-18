@@ -30,16 +30,17 @@ class UnremittedCollectionModel extends CrudListModel {
     } 
 
     def remit() { 
+        /* 
         boolean pass = false; 
         def remdate = null; 
         def datehandler = { o-> 
             remdate = o; 
             pass = true; 
-        }
-        Modal.show("date:prompt", [ handler: datehandler, title: "Enter the Remittance Date" ]);
+        } 
+        Modal.show("date:prompt", [ handler: datehandler, title: "Enter the Remittance Date" ]); 
         if ( !pass ) return null; 
-        
-        return Inv.lookupOpener( "remittance:create", [ remittancedate: remdate ]);
+        */
+        return Inv.lookupOpener( "remittance:create", [:]); 
     }
 }
  

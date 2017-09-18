@@ -56,19 +56,24 @@ class RemittanceService  {
 			You still have a DRAFT remittance that was previously created.  
 		""");
 
-		boolean offlineMode = ( params.remittancedate ? true : false ); 
 
 		def rundate = dateSvc.getServerDate(); 
 		def remittanceid = "REM" + new java.rmi.server.UID(); 
 		def o = [ objid: remittanceid, state:'DRAFT', txnno: temptxnno, dtposted: rundate ]; 
 		o.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
-		o.amount = o.totalcash = 0.0; 
-		o.totalcheck = o.totalcr = 0.0; 
+		o.amount = o.totalcash = o.totalcheck = o.totalcr = 0.0; 
 		o.cashbreakdown = []; 
 
+		boolean offlineMode = ( param.remittancedate ? true : false ); 
 		if ( offlineMode ) { 
-			o.remittancedate = params.remittancedate; 
-			split_txn = false; 
+			def dt = null; 
+			if ( param.remittancedate instanceof Date ) {
+				dt = param.remittancedate;  
+			} else {
+				dt = new java.text.SimpleDateFormat('yyyy-MM-dd').parse( param.remittancedate.toString());  
+			} 
+
+			o.remittancedate = new java.sql.Date( dt.time );  
 
 		} else { 
 			o.remittancedate = new java.sql.Date( rundate.time ); 
@@ -76,32 +81,37 @@ class RemittanceService  {
 
 		remdb.create( o );  
 
-		def hasPrevMonthTrxns = false; 
 		def info = [ remittanceid: remittanceid, collectorid: env.USERID ];
 		if ( split_txn ) {
-			info.txndate = getMonthFirstDate( rundate ); 
+			info.txndate = getMonthFirstDate( o.remittancedate ); 
 			remdb.updateSerialReceipts( info );  
 			remdb.updateNonSerialReceipts( info );  
 			def test = cashreceipt_db.find([ remittanceid: remittanceid ]).first(); 
 			if ( test ) { 
 				o.endofmonth = true; 
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
-				o._txndate = info.txndate; 
-				hasPrevMonthTrxns = true; 
-
-				o.remittancedate = dateSvc.add( info.txndate, "-1d" );  
+				o.remittancedate = new java.sql.Date( dateSvc.add( info.txndate, "-1d" ).time );  
+				o._txndate = o.remittancedate; 
 			} 
 		} 
 		
-		if ( !hasPrevMonthTrxns ) {
-			info.txndate = ( offlineMode ? o.remittancedate : o.dtposted ); 
+		if ( !o.endofmonth ) { 
+			if ( offlineMode ) { 
+				info.txndate = dateSvc.add( o.remittancedate, "1d" ); 
+				o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', o.remittancedate ); 				
+			} else { 
+				info.txndate = rundate; 
+				o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate ); 		
+			} 
+
 			remdb.updateSerialReceipts( info ); 
 			remdb.updateNonSerialReceipts( info ); 
-			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
 		} 
 
-		o.items = remdb.getBuildReceiptSummary( info );  
-		if ( !o.items ) throw new Exception("No collections to be remitted.   ");
+		o.items = remdb.getBuildReceiptSummary( info ); 
+		if ( !o.items ) throw new Exception("No collections to be remitted.   "); 
+
+		remdb.find([ objid: o.objid ]).update([ remittancedate: o.remittancedate ]);
 
 		remdb.insertNonCashPayment( info ); 
 		remdb.insertFundSummary( info ); 
@@ -125,7 +135,7 @@ class RemittanceService  {
 		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
 			def afc = o.items.find{ it.controlid == k } 
 			afc.cancelSeriesList = v; 
-		}
+		} 
 
 		o.checks = remdb.getNonCashPayments( info );
 

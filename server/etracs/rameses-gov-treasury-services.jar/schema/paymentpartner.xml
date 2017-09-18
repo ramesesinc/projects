@@ -1,9 +1,0 @@
-<schema>
-	<element tablename="paymentpartner">
-		<field name="objid" primary="true" prefix="PMTPRT"/>
-		<field name="code" required="true" />
-		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one">
-			<key field="bankaccountid" target="objid" />
-		</complex>	
-	</element>
-</schema>	

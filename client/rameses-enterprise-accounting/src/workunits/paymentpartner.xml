@@ -4,6 +4,6 @@
         <invoker type="paymentpartner:open" caption="Payment Partner" action="open"/>
    </invokers>
     <pages>
-        <page template="com.rameses.enterprise.treasury.views.PaymentPartnerPage" />
+        <page template="com.rameses.enterprise.accounting.views.PaymentPartnerPage" />
     </pages>
 </workunit>

@@ -87,7 +87,7 @@ class LiquidationModel extends CrudFormModel {
                 return  entity.payments.findAll{ it.reftype == 'CHECK' };
             },
             getCreditMemos: {
-                return entity.payments.findAll{ it.reftype == 'CREDITMEMO' };
+                return entity.payments.findAll{ it.reftype != 'CHECK' };
             }
         ];
         return Inv.lookupOpener( "cashbreakdown", [entity:entity, editable: false, handler: h ]);

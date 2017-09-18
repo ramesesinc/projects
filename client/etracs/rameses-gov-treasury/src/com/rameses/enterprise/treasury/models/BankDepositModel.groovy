@@ -11,12 +11,15 @@ class BankDepositModel extends CrudFormModel {
     def depositid;
     def fundid;
     def handler;
-    def checks = [];
+    
+    boolean editable = true;
+    def selectedCheck;
     
     void afterOpen() {
         if(entity.totalcash == null) entity.totalcash = 0;
         if(entity.totalcheck == null) entity.totalcheck = 0;
         if( entity.cashbreakdown == null ) entity.cashbreakdown = [];
+        if(entity.checks == null ) entity.checks = [];
     }
 
     def checkModel = [
@@ -28,13 +31,23 @@ class BankDepositModel extends CrudFormModel {
     def addCheck() {
         def h = { o-> 
             o.each {
-                checks << o;
-                entity.checks << o;
+               entity.checks << it;
             }
             entity.totalcheck = entity.checks.sum{ it.amount };
             checkModel.reload();
+            binding.refresh("entity.totalcheck");
         }
         return Inv.lookupOpener("cashreceipt_check_undeposited:lookup", [onselect:h]);
+    }
+    
+    void removeCheck() {
+        if(!selectedCheck) throw new Exception("Select a check first");
+        if(!entity.removedchecks) entity.removedchecks = [];
+        entity.removedchecks << selectedCheck;
+        entity.checks.remove(selectedCheck);
+        entity.totalcheck = entity.checks.sum{ it.amount };
+        checkModel.reload();
+        binding.refresh("entity.totalcheck");
     }
     
     def getBankAccountLookup() {
@@ -45,16 +58,17 @@ class BankDepositModel extends CrudFormModel {
     }
 
     def doOk() {
-        def m = [_schemaname: schemaName];
-        m.objid = entity.objid;
-        m.bankaccount = entity.bankaccount;
-        m.amount = entity.amount;
+        entity.schemaname = schemaName;
         if(entity.cashbreakdown) {
-            m.cashbreakdown = entity.cashbreakdown;
-            m.totalcash = m.cashbreakdown.sum{it.amount};
+            entity.totalcash = entity.cashbreakdown.sum{it.amount};
         }
-        m.checks = checks;
-        persistenceService.update( m );
+        if( entity.checks ) {
+            entity.totalcheck = entity.totalcheck;
+        } 
+        if( entity.amount != entity.totalcash + entity.totalcheck) {
+            throw new Exception("Amount to deposit must be equal to total cash and total check");
+        }
+        persistenceService.update( entity );
         handler( entity );
         return "_close";
     }
@@ -62,5 +76,7 @@ class BankDepositModel extends CrudFormModel {
     def doCancel() {
         return "_close";
     }
+    
+    
     
 } 

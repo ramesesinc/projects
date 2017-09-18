@@ -168,5 +168,10 @@ class LiquidationService  {
             return true;
         
         return false;
-    }    
+    }  
+
+    @ProxyMethod
+    public def openForReport( def o ) {
+    	
+    } 
 }	

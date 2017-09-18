@@ -77,9 +77,11 @@ public class AFInventoryService  {
 			m.currentseries = o.currentseries; 
 			m.qtybegin = m.qtybalance; 			
 		} 
+
+		def detail = initDetail(o); 
+		m.dtfiled = detail.refdate; 
 		em.create( m );
 
-		def detail = initDetail(o);
 		detail.controlid = m.objid;
 		detail.lineno = m.currentlineno;
 		detail.txntype = o.txntype;

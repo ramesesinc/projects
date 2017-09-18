@@ -121,6 +121,7 @@ class CashReceiptService  {
 				if(!c.objid) {
 					c.amtused = c.amount;
 					c.receiptid = p.objid;
+					c.state = 'PENDING';
 					def cc = checkPayment.create( c );
 					c.objid = cc.objid;
 				}

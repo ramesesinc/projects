@@ -2,6 +2,7 @@
 
 	<element  tablename="af_control">
 		<field name="objid" primary="true" />
+		<field name="dtfiled" required="true" />
 		<field name="afid" required="true" />
 		<field name="txnmode"  />
 		<field name="assignee_objid" required="true" />

@@ -2,6 +2,7 @@
 
 	<element  tablename="cashreceipt_check">
 		<field name="objid" primary="true" prefix="CHKPMT"/>	
+		<field name="state" required="true" defaultValue="PENDING"/>	
 
 		<complex name="bank" ref="bank" jointype="many-to-one" required="true">
 			<key field="bankid" target="objid" />
@@ -10,7 +11,6 @@
 		<field name="refno" required="true" searchable="true"/>	
 		<field name="refdate" required="true" />
 		<field name="amount" required="true" type="decimal"/>	
-		<field name="receiptid"  />	
 		<field name="bank_name" required="true" />
 		<field name="receivedfrom" required="true" />
 		

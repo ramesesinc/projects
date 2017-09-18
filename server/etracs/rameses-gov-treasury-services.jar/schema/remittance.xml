@@ -27,10 +27,6 @@
 		
 		<complex name="liquidation" ref="liquidation" jointype="many-to-one" includefields="txnno,dtposted,state" required="false">
 			<key field="liquidationid" target="objid" />
-		</complex>	
-		
-		<complex name="funds" ref="remittance_fund" jointype="one-to-many" type="list" required="false">
-			<key field="objid" target="remittanceid" />
-		</complex>	
+		</complex>			
 	</element>
 </schema>

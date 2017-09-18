@@ -18,18 +18,11 @@ class RemittanceModel  extends CrudFormModel {
     @Service("RemittanceImportExportService")
     def exportSvc;
 
-    @Service("PersistenceService")
-    def persistenceSvc;
-    
-    @Caller 
-    def caller; 
-    
-    boolean captureMode = false;
-    def selectedFund;
-    def todate;
-
     final def numFormatter = new java.text.DecimalFormat("#,##0.00"); 
     
+    def selectedFund;
+    def remittancedate;
+    boolean captureMode = false;
     String schemaName = "remittance";
     
     @FormTitle
@@ -50,15 +43,23 @@ class RemittanceModel  extends CrudFormModel {
         return entity.objid;
     }
 
+    public void afterCreate() { 
+        entity = service.init([ remittancedate: remittancedate ]);  
+    } 
+
+    def capture() { 
+        captureMode = true; 
+        return "capture"; 
+    }    
+    
     boolean isCanPrintReport() { 
         return ( entity.state != 'DRAFT' ); 
     } 
     
-    //whats bad about this is that the report is located in etracs treasuty gov.
-    def print() {
-        return InvokerUtil.lookupOpener( "remittance:rcd", [entity:entity] );
-    }
-    
+    def getPrintFormData() {  
+        return service.openForReport([ objid:entity.objid ]); 
+    } 
+        
     def popupReports(def inv) {
         def popupMenu = new PopupMenuOpener();
         def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
@@ -67,17 +68,7 @@ class RemittanceModel  extends CrudFormModel {
         }
         return popupMenu;
     }
-
-    public void afterCreate() { 
-        entity = service.init([ todate: todate ]);  
-    } 
-
-    def capture() { 
-        captureMode = true; 
-        return "capture"; 
-    }    
-    
-    
+        
     def delete() { 
         if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
             persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 

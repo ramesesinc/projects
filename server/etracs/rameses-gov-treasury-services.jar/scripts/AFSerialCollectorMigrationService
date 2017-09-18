@@ -111,8 +111,8 @@ class AFSerialCollectorMigrationService  {
 		if(!head.respcenter.type) head.respcenter.type = 'COLLECTOR';
 		
 		def q = afInventorySvc.postReceipt(head);
-		q.txnmode = 'ONLINE'; 
 		q.active = 0; 		
+		q.txnmode = 'ONLINE'; 
 		q.assignee = q.respcenter; 
 		q.stubno = q.startstub; 
 		q.owner = q.respcenter; 

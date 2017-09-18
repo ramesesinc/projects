@@ -10,6 +10,9 @@ class RemittanceService  {
 	@Service 
 	def self; 
 
+	@Service('PersistenceService') 
+	def persistSvc; 
+
 	@Service('ControlService') 
 	def controlSvc;
 
@@ -40,6 +43,9 @@ class RemittanceService  {
 	@DataContext('cashreceipt') 
 	def cashreceipt_db;
 
+	@ActiveDB('remittance_rcd') 
+	def rcd_db;
+
 	@ProxyMethod
 	public def init( param ) { 
 		boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
@@ -50,14 +56,24 @@ class RemittanceService  {
 			You still have a DRAFT remittance that was previously created.  
 		""");
 
+		boolean offlineMode = ( params.remittancedate ? true : false ); 
+
 		def rundate = dateSvc.getServerDate(); 
 		def remittanceid = "REM" + new java.rmi.server.UID(); 
 		def o = [ objid: remittanceid, state:'DRAFT', txnno: temptxnno, dtposted: rundate ]; 
 		o.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
-		o.remittancedate = new java.sql.Date( rundate.time );
 		o.amount = o.totalcash = 0.0; 
 		o.totalcheck = o.totalcr = 0.0; 
-		o.cashbreakdown = [];
+		o.cashbreakdown = []; 
+
+		if ( offlineMode ) { 
+			o.remittancedate = params.remittancedate; 
+			split_txn = false; 
+
+		} else { 
+			o.remittancedate = new java.sql.Date( rundate.time ); 
+		} 
+
 		remdb.create( o );  
 
 		def hasPrevMonthTrxns = false; 
@@ -72,11 +88,13 @@ class RemittanceService  {
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
 				o._txndate = info.txndate; 
 				hasPrevMonthTrxns = true; 
+
+				o.remittancedate = dateSvc.add( info.txndate, "-1d" );  
 			} 
 		} 
 		
 		if ( !hasPrevMonthTrxns ) {
-			info.txndate = dateSvc.serverDate; 
+			info.txndate = ( offlineMode ? o.remittancedate : o.dtposted ); 
 			remdb.updateSerialReceipts( info ); 
 			remdb.updateNonSerialReceipts( info ); 
 			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
@@ -292,42 +310,26 @@ class RemittanceService  {
     } 
 
 
- 	@ProxyMethod
-    public def getRemittanceChecks( def o ) {
-    	//check if there is fund provided
-    	def cond  = [];
-    	def parm = [:];
+    @ProxyMethod 
+    public def openForReport( params ) {
+    	if ( !params.objid ) throw new Exception('objid parameter is required');  
 
-		cond << " ref.reftype = 'CHECK' " 
-    	def xem = rem_noncash.find( [remittanceid: o.remittanceid ] );
-    	if( o.fund ) {
-    		cond << "ref.fund.objid = :fundid";
-    		parm.fundid = o.fund.objid;
-    	}
-    	xem.debug = true;
-    	return xem.where(cond.join(" AND "), parm).list()*.ref;
+    	def findBy = [ objid: params.objid ]; 
+    	def o = persistSvc.read([ _schemaname: 'remittance', objid: findBy.objid, findBy: findBy ]); 
+    	if ( !o ) throw new Exception('Remittance record does not exist'); 
+
+    	def m = [ remittanceid: o.objid ]; 
+    	o.collectiontype = rcd_db.getReceiptForms( m ); 
+    	o.collectionsummaries = rcd_db.getCollectionSummaries( m ); 
+
+    	return o;  
     }
 
- 	@ProxyMethod
-    public def getRemittanceCreditMemos( def o ) {
-    	//check if there is fund provided
-    	def cond  = [];
-    	def parm = [:];
 
-		cond << " ref.reftype = 'CREDITMEMO' " 
-    	def xem = rem_noncash.find( [remittanceid: o.remittanceid ] );
-    	if( o.fund ) {
-    		cond << "ref.fund.objid = :fundid";
-    		parm.fundid = o.fund.objid;
-    	}
-    	return xem.where(cond.join(" AND "), parm).list()*.ref;
-    }
-
-   
-	public def getMonthFirstDate( dt ) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dt);
+	private def getMonthFirstDate( dt ) {
+        def cal = Calendar.getInstance();
+        cal.setTime ( dt ); 
         cal.set( Calendar.DAY_OF_MONTH, 1 );
-        return dateSvc.format('yyyy-MM-dd', cal.getTime()) + " 00:00:00";
-    }
+        return new java.sql.Date( cal.timeInMillis ); 
+    }  
 }

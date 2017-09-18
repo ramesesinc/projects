@@ -10,6 +10,7 @@
 	-->
 	<element name="af_inventory" tablename="af_inventory">
 		<field name="objid" primary="true"/>
+		<field name="dtfiled" required="true" />
 		<field name="afid" required="true"/>
 		<field name="respcenter_objid" required="true"/>
 		<field name="respcenter_name" required="true"/>

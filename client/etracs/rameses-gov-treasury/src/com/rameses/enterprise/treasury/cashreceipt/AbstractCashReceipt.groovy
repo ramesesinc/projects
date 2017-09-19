@@ -159,10 +159,6 @@ public abstract class AbstractCashReceipt {
         }
     }
     
-    void doSplitCheck() {
-        clearAllPayments();
-        MsgBox.alert('do split check payment');
-    }
     
     def doCreditMemo() {
         if(!entity.items) throw new Exception("At least one item is required");

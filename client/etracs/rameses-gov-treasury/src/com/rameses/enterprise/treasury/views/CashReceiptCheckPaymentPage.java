@@ -104,7 +104,7 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xFormPanel1.add(xLabel1);
 
         xComboBox1.setCaption("Assign To Fund");
-        xComboBox1.setEmptyText("Split Check Per Fund");
+        xComboBox1.setEmptyText("Distribute Per Fund");
         xComboBox1.setExpression("#{ item.title }");
         xComboBox1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xComboBox1.setItems("openFundList");
@@ -176,7 +176,7 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xFormPanel3.add(xLabel2);
 
         xComboBox2.setCaption("Assign To Fund");
-        xComboBox2.setEmptyText("Split Check Per Fund");
+        xComboBox2.setEmptyText("Distribute Per Fund");
         xComboBox2.setExpression("#{ item.title }");
         xComboBox2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xComboBox2.setItems("openFundList");

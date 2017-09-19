@@ -22,6 +22,11 @@ public abstract class CashBreakdownModel extends CrudFormModel {
     abstract def getCreditMemos();
     void afterUpdate() {}
     
+    //we must override this so it will not create style rules
+    public void buildStyleRules() {
+        //do nothing
+    }
+    
     void afterOpen() {
         if(entity.totalcash == null) entity.totalcash = 0;
         if( entity.cashbreakdown == null ) entity.cashbreakdown = [];

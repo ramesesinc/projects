@@ -54,7 +54,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         m.reftype =  "CHECK"; 
         m.check =  check;
         m.amount = vamt;
-        m.particulars = check.refno + " (" + check.bank.code + ") dated " + check.refdate; 
+        m.particulars = check.refno + " (" + check.bank.name + ") dated " + check.refdate; 
         m.refno = check.refno;
         m.refdate = check.refdate;
         m.fund = vfund;

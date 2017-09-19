@@ -28,8 +28,6 @@ class SignVerifySubmitModel  {
     }
 
     void loadDigitalSignatureStatus(){
-        if (digitalsigactive == null)
-            digitalsigactive = var.getProperty('digital_signature_active', 0);
         digitalsigactive = digitalsigactive.toString().toLowerCase().matches('1|y|yes|t|true');
     }
     

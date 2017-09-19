@@ -45,6 +45,7 @@ class RemittanceModel  extends CrudFormModel {
 
     public void afterCreate() { 
         entity = service.init([ remittancedate: remittancedate ]);  
+        mode = "read";
     } 
 
     def capture() { 

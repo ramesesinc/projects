@@ -434,7 +434,7 @@ public class CashDenomination extends XComponentPanel {
         }
         try {
             MethodResolver mr = MethodResolver.getInstance();
-            mr.invoke(cb, "reload", null);
+            mr.invoke(cb, "init", null);
         }
         catch(Exception e) {
             e.printStackTrace();

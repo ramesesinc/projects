@@ -21,7 +21,7 @@
 		<field name="receiptno" />
 		<field name="receiptdate"  type="date"/>
 
-		<complex name="bankaccount" ref="bankaccount" includefields="objid,code,title,fund.objid,fund.code,bank.name" jointype="many-to-one">
+		<complex name="bankaccount" ref="bankaccount" includefields="objid,code,title,fund.*,bank.name" jointype="many-to-one">
 			<key field="bankaccount_objid" target="objid"/>
 		</complex>	
 

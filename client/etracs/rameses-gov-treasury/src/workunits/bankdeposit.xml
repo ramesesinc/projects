@@ -1,6 +1,7 @@
 <workunit schemaName="bankdeposit" allowCreate="false" allowDelete="false" allowEdit="false">
     <invokers>
         <invoker type="bankdeposit:open" caption="Bank Deposit" action="open"  target="popup"/>
+        <invoker type="formActions" caption="Print" action="printCash"  />
    </invokers>
 
    <code class="com.rameses.enterprise.treasury.models.BankDepositModel"/>

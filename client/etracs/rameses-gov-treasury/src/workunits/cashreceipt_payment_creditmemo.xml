@@ -10,9 +10,12 @@
         </start>
         <page name="initial" title="Enter Details">
             <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
-            <transition to="view-summary"  caption="Next" action="distributeFund" mnemonic="N"/> 
+            <transition to="check-balance"  caption="Next" action="addEntry" mnemonic="N"/> 
         </page>
-        
+        <process name="check-balance">
+            <transition to="initial"  caption="Cancel" cond="#{hasBalance}" action="clearEntry"/> 
+            <transition to="view-summary"  caption="Cancel" cond="#{!hasBalance}"/> 
+        </process>     
         <page name="view-summary" title="Credit Memo Payment Summary">
             <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
             <transition to="end" caption="Save" action="savePayment" mnemonic="S"/> 

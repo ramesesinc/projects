@@ -2,8 +2,8 @@
     
    <invokers>
          <invoker type="creditmemo:forreceipt:lookup" caption="Credit Memo Lookup" action="init" tag="forreceipt"
-            cols="refno,refdate,payer.name,bankaccount.bank.name,amount,issuedby.name" 
-                hiddenCols="bankaccount.objid,bankaccount.name,bankaccount.code"
+            cols="refno,refdate,payer.name,bankaccount.bank.name,amount,bankaccount.fund.title,issuedby.name" 
+                hiddenCols="bankaccount.objid,bankaccount.name,bankaccount.code,bankaccount.fund.objid,bankaccount.fund.code"
                   target="popup"/>
    </invokers>
    

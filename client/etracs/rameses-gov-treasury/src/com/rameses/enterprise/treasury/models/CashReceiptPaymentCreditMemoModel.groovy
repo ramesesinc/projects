@@ -32,15 +32,18 @@ class CashReceiptPaymentCreditMemoModel extends PageFlowController {
             entry.bankaccountid = o.bankaccount.objid;
             entry.reftype = 'CREDITMEMO';
             entry.amount = o.amount;
+            entry.fund = o.bankaccount.fund;
+            entry.particulars = "CM " + entry.refno + " " + entry.bankaccount.bank.name + " " + entry.fund.title;
             binding.refresh();
         }
         return Inv.lookupOpener("creditmemo:forreceipt:lookup", [onselect:h] );
     }
     
-    void distributeFund() {
-        if( entry.amount != entity.amount )
-            throw new Exception("Amount must equal to the credit memo amount");
-            
+    void clearEntry() {
+        entry = [:];
+    }
+    
+    void addEntry() {
         def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
         def d1 = df.parse( df.format( entity.receiptdate ));
         def d2 = df.parse( df.format( entry.refdate ));
@@ -49,25 +52,24 @@ class CashReceiptPaymentCreditMemoModel extends PageFlowController {
             boolean t = MsgBox.confirm(str);
             if(!t) return null;
         }
-        payments = [];
-        int i = 1;
-        int cnt = fundList.size();
-        fundList.each { f->
-            def m = [:];
-            m.reftype =  "CREDITMEMO"; 
-            m.refno = entry.refno;
-            m.refid = entry.refid;
-            m.amount = f.amount;
-            m.particulars = "CM " + entry.refno + " " + entry.bankaccount.bank.name + ((cnt>1)? " " + (i++) + " of " +cnt : "" );
-            m.refdate = entry.refdate; 
-            m.fund = f.fund;
-            payments << m;
-        }
+        
+        def f = fundList.find{ it.fund.objid == entry.fund.objid };
+        if(!f) throw new Exception("Fund for payment not found");
+        if(f.amount != entry.amount )
+            throw new Exception("Amount for " + f.fund.title + " must be " + f.amount );
+        fundList.remove(f);
+        payments << entry;
+    }
+    
+    boolean getHasBalance() {
+        return (payments.sum{it.amount} != entity.amount);
     }
     
     def savePayment() {
+        if( payments.sum{it.amount} != entity.amount )
+            throw new Exception("Amount must equal to the total credit memo amount");
+        
         def m = [:];
-        m.creditmemo = entry;
         m.paymentitems = payments;
         saveHandler(m);  
         return "_close";

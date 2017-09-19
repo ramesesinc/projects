@@ -46,7 +46,7 @@ where liq.objid = $P{liquidationid}
   and fund.objid = liqf.fund_objid 
 
 
-[postToCollectionCash]
+[postCollectionCash]
 insert into collection_cash ( 
 	objid, liquidationfundid, controlno, fundid, amount 
 ) 
@@ -67,13 +67,13 @@ insert into jev (
 select 
 	lf.objid, null, null, lf.fund_objid, l.dtposted, 
 	'COLLECTION', lf.objid, lf.controlno, 'liquidation', lf.amount,
-	'OPEN', l.liquidatingofficer_objid,l.liquidatingofficer_name   
+	'OPEN', l.liquidatingofficer_objid, l.liquidatingofficer_name   
 from liquidation l 
 	inner join liquidation_fund lf on lf.liquidationid = l.objid 
 where l.objid = $P{liquidationid} 
 
 
-[postJevItem]
+[postJevItemForCash]
 insert into jevitem ( 
 	objid, jevid, accttype, acctid, dr, cr, particulars 
 ) 
@@ -90,15 +90,14 @@ from liquidation_fund lf
 where lf.liquidationid = $P{liquidationid} 
 
 
-[postJevItemForBankAccount]
+[postJevItemForCM]
 insert into jevitem ( 
 	objid, jevid, accttype, acctid, dr, cr, particulars  
 ) 
 select 
 	concat(lf.objid,'-',ba.acctid) as objid, 
-	lf.objid as jevid, ia.type, 
-	ba.acctid, sum(nc.amount) as dr, 
-	0.0 as cr, null as particulars 
+	lf.objid as jevid, ia.type, ba.acctid, 
+	sum(nc.amount) as dr, 0.0 as cr, null as particulars 
 from liquidation_fund lf 
 	inner join liquidation l on l.objid=lf.liquidationid
 	inner join remittance_fund remf on remf.liquidationfundid = lf.objid 
@@ -117,26 +116,23 @@ group by lf.objid, ba.acctid, ia.type
 insert into jevitem ( 
 	objid, jevid, accttype, acctid, dr, cr, particulars 
 )
-select * from (
-	select  
-		concat(lf.objid,'-',ia.objid) as objid, 
-		lf.objid as jevid, ia.type, ia.objid as acctid, 
-		sum(nc.amount) as dr, 0.0 as cr, null as particulars 
-	from liquidation_fund lf 
-		inner join liquidation l on l.objid=lf.liquidationid
-		inner join remittance_fund remf on remf.liquidationfundid = lf.objid 
-		inner join cashreceiptpayment_noncash nc on nc.remittancefundid = remf.objid 
-		inner join cashreceipt c on c.objid = nc.receiptid 
-		inner join epayment ep on ep.objid = nc.refid 
-		inner join paymentpartner cm on cm.objid = ep.partnerid 
-		inner join itemaccount ia on ia.objid = cm.receivableacctid 
-	where l.state in ('POSTED','CLOSED') 
-		and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
-		and c.state <> 'CANCELLED' 
-	group by lf.objid, ia.objid, ia.type
-)tmp1 
-where objid not in (select objid from jevitem where objid=tmp1.objid) 
-	and acctid is not null 
+select  
+	concat(lf.objid,'-',ia.objid) as objid, 
+	lf.objid as jevid, ia.type, ia.objid as acctid, 
+	sum(nc.amount) as dr, 0.0 as cr, null as particulars 
+from liquidation_fund lf 
+	inner join liquidation l on l.objid=lf.liquidationid
+	inner join remittance_fund remf on remf.liquidationfundid = lf.objid 
+	inner join cashreceiptpayment_noncash nc on nc.remittancefundid = remf.objid 
+	inner join cashreceipt c on c.objid = nc.receiptid 
+	inner join epayment ep on ep.objid = nc.refid 
+	inner join paymentpartner cm on cm.objid = ep.partnerid 
+	inner join account_receivable ar on ar.objid = cm.receivableacctid 
+	inner join itemaccount ia on ia.objid = ar.acctid 
+where l.objid = $P{liquidationid} 
+	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+	and c.state <> 'CANCELLED' 
+group by lf.objid, ia.objid, ia.type
 
 
 [postJevItemForRevenue]

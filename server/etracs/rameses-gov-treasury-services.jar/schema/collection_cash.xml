@@ -1,0 +1,12 @@
+<schema>
+	
+	<element tablename="collection_cash">
+		<field name="objid" primary="true"/>
+		<field name="depositid" /> 
+		<field name="controlno" required="true"/> 
+		<field name="liquidationfundid" required="true"/> 
+		<field name="fundid" required="true"/> 
+		<field name="amount" required="true"/> 
+	</element>
+
+</schema>

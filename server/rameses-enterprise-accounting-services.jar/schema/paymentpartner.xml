@@ -3,8 +3,13 @@
 		<field name="objid" primary="true" prefix="PMTPRT"/>
 		<field name="code" required="true" />
 		<field name="name" required="true" />
-		<complex name="receivableaccount" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title" required="false">
-			<key field="receivableacctid" target="objid" />
+		<complex name="account" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title" required="false">
+			<key field="acctid" target="objid" />
 		</complex>	
+
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="objid,code,title,bank.*" required="false">
+			<key field="bankaccountid" target="objid" />
+		</complex>	
+
 	</element>
 </schema>	

@@ -113,13 +113,19 @@ class LiquidationModel extends CrudFormModel {
         } 
         
         if( pass ) {
-            entity = service.post( entity ); 
-            MsgBox.alert("Posting successful"); 
-            mode = "read"; 
+            try {
+                entity = service.post( entity ); 
+                MsgBox.alert("Posting successful"); 
+                mode = "read";
+            } 
+            catch(Warning w) {
+                Modal.show( "jevposting_exception", [info: w.info ]);
+            }
             
             try {
                 if (caller) caller?.reload(); 
-            } catch(Throwable t){;}
+            }
+            catch(Throwable t){;}
             
             if ( handler ) handler(); 
         } 

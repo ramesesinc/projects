@@ -1,4 +1,5 @@
 import com.rameses.annotations.*;
+import com.rameses.util.*;
 
 class LiquidationDefaultInterceptor {
 
@@ -16,6 +17,9 @@ class LiquidationDefaultInterceptor {
 
 	@DataContext("remittance")
 	def rem_db;
+
+	@Service("JevValidationService")
+	def jevValidationSvc;
 
 	@Before( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'liquidation'}" )
 	public void beforeDelete( evt ) {
@@ -59,5 +63,7 @@ class LiquidationDefaultInterceptor {
 		liq_db.postJevItemFromEP( m ); 
 		liq_db.postJevItemForRevenue( m ); 
 		liq_db.postJevItemForShare( m ); 
+
+		jevValidationSvc.validate( [batchid: result.objid ] );
 	} 
 }

@@ -208,7 +208,7 @@ class MachRPUService
             machine.replacementcost  = 0.0
         } 
         if( util.isTrue(machine.imported) && machine.ferac > 0.0) {
-            def factor = numberSvc.round(machine.forex / machine.ferac)
+            def factor = numberSvc.roundA(machine.forex / machine.ferac, 6)
             cost = numberSvc.round( cost * factor) 
         }
         if( machine.conversionfactor > 0.0) {

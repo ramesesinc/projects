@@ -60,7 +60,7 @@ class RPTLedgerInterceptor
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
         
-        if (util.isTrue(faas.datacapture)) {
+        if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.faasid != null}.size() == 0 )) {
             postNewLedger(faas)
         }
         else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){

@@ -31,46 +31,164 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
+        jPanel5 = new javax.swing.JPanel();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField3 = new com.rameses.rcp.control.XLookupField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        jPanel2 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
         setLayout(new java.awt.BorderLayout());
 
         xTabbedPane1.setItems("sections");
 
+        xFormPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        xFormPanel4.setCaptionWidth(150);
+
+        xTextField3.setCaption("Code");
+        xTextField3.setName("entity.code"); // NOI18N
+        xTextField3.setRequired(true);
+        xFormPanel4.add(xTextField3);
+
+        xTextField4.setCaption("Name");
+        xTextField4.setName("entity.name"); // NOI18N
+        xTextField4.setRequired(true);
+        xTextField4.setStretchWidth(100);
+        xFormPanel4.add(xTextField4);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Accounts Receivable");
+        jPanel5.setBorder(xTitledBorder1);
+
+        xFormPanel5.setBorder(null);
+        xFormPanel5.setCaptionWidth(100);
+
+        xLookupField3.setCaption("Account");
+        xLookupField3.setExpression("#{ entity.account.code }");
+        xLookupField3.setHandler("receivableaccount:lookup");
+        xLookupField3.setName("entity.account"); // NOI18N
+        xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField3.setRequired(true);
+        xFormPanel5.add(xLookupField3);
+
+        xLabel2.setCaption("Title");
+        xLabel2.setDepends(new String[] {"entity.account"});
+        xLabel2.setExpression("#{ entity.account.title }");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xLabel2);
+
+        xButton1.setCaption("");
+        xButton1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xButton1.setPreferredSize(new java.awt.Dimension(100, 25));
+        xButton1.setText("View Ledger");
+        xFormPanel5.add(xButton1);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Bank Account (for Fund Transfer)");
+        jPanel2.setBorder(xTitledBorder2);
+
         xFormPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        xFormPanel3.setCaptionWidth(150);
+        xFormPanel3.setCaptionWidth(100);
 
-        xTextField1.setCaption("Code");
-        xTextField1.setName("entity.code"); // NOI18N
-        xTextField1.setRequired(true);
-        xFormPanel3.add(xTextField1);
-
-        xTextField2.setCaption("Name");
-        xTextField2.setName("entity.name"); // NOI18N
-        xTextField2.setRequired(true);
-        xTextField2.setStretchWidth(100);
-        xFormPanel3.add(xTextField2);
-
-        xLookupField1.setCaption("AR Account");
-        xLookupField1.setExpression("#{ entity.receivableaccount.title }");
-        xLookupField1.setHandler("receivableaccount:lookup");
-        xLookupField1.setName("entity.receivableaccount"); // NOI18N
+        xLookupField1.setCaption("Bank Account");
+        xLookupField1.setExpression("#{ entity.bankaccount.code }");
+        xLookupField1.setHandler("bankaccount:lookup");
+        xLookupField1.setName("entity.bankaccount"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
         xFormPanel3.add(xLookupField1);
 
-        xTabbedPane1.addTab(" General Information ", xFormPanel3);
+        xLabel1.setCaption("Bank Name");
+        xLabel1.setDepends(new String[] {"entity.bankaccount"});
+        xLabel1.setExpression("#{ entity.bankaccount.bank.name }");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(71, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(132, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(298, Short.MAX_VALUE))
+        );
+
+        xTabbedPane1.addTab("General Info", jPanel1);
 
         add(xTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel5;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField3;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
-    private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables
 }

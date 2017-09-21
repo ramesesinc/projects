@@ -64,7 +64,41 @@ class CashDenominationModel extends ComponentBean {
         }
     };
     
+    void initZero() {
+        qty1000 = 0;
+        qty500 = 0;
+        qty200 = 0;
+        qty100 = 0;
+        qty50 = 0;
+        qty20 = 0;
+        qty10 = 0;
+        qty5 = 0;
+        qty1 = 0;
+        qtyc50 = 0;
+        qtyc25 = 0;
+        qtyc10 = 0;
+        qtyc05 = 0;
+        qtyc01= 0;
+        d1000 = 0.0;
+        d500 = 0.0;
+        d200 = 0.0;
+        d100 = 0.0;
+        d50 = 0.0;
+        d20 = 0.0;
+        d10 = 0.0;
+        d5 = 0.0;
+        d1 = 0.0;
+        dc50 = 0.0;
+        dc25 = 0.0;
+        dc10 = 0.0;
+        dc05 = 0.0;
+        dc01 = 0.0;
+        total = 0.0;
+        cashremaining = 0.0;      
+    }
+    
     void init() {
+        initZero();
         model = getValue();
         if(model) {
             loadData( 1000, 'qty1000', 'd1000');

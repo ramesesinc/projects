@@ -1,0 +1,27 @@
+<schema>
+	<element tablename="af_control_detail">
+		<field name="objid" primary="true" />
+		<field name="controlid" required="true" />
+		<field name="indexno" required="true" />
+		<field name="refid" required="true" />
+		<field name="refno" required="true" />
+		<field name="reftype" required="true" />
+		<field name="refdate" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txntype" required="true" />
+		<field name="receivedstartseries" />
+		<field name="receivedendseries"  />
+		<field name="beginstartseries" />
+		<field name="beginendseries"  />
+		<field name="issuedstartseries"  />
+		<field name="issuedendseries" />
+		<field name="endingstartseries"  />
+		<field name="endingendseries" />
+		<field name="qtyreceived" required="true" />
+		<field name="qtybegin" required="true" />
+		<field name="qtyissued" required="true" />
+		<field name="qtycancelled" required="true" />
+		<field name="qtyending" required="true" />
+		<field name="remarks" required="true" />
+	</element>
+</schema>

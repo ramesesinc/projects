@@ -30,10 +30,12 @@ class LiquidationDefaultInterceptor {
 			def mm = [ jevid: it.objid ]; 
 			liq_db.unbindJevItem( mm ); 
 			liq_db.unbindJev( mm ); 
+			liq_db.unbindCollectionCash([ liquidationfundid: it.objid ]); 
 		} 
 		
-		liqf_db.find( m ).delete(); 
-		liqnc_db.find( m ).delete(); 
+		liqf_db.removeFunds( m ); 
+		liqnc_db.removePayments( m ); 
+		liq_db.remove([ objid: params.objid ]); 
 	} 
 
 

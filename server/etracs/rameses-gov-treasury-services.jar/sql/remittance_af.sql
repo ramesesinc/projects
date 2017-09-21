@@ -1,3 +1,77 @@
+[getBuildAFSerial]
+select 
+  controlid, startseries, endseries, 
+  receivedstartseries, receivedendseries, issuedstartseries as beginstartseries, 
+  endseries as beginendseries, issuedstartseries, issuedendseries, 
+  (case when issuedendseries >= endseries then null else issuedendseries+1 end) as endingstartseries, 
+  (case when issuedendseries >= endseries then null else endseries end) as endingendseries, 
+  0 as qtyreceived, (endseries-issuedstartseries)+1 as qtybegin, qtyissued, 
+  (case when issuedendseries >= endseries then 0 else (endseries-(issuedendseries+1)+1) end) as qtyending, qtycancelled  
+from ( 
+  select 
+    remittanceid, controlid, startseries, endseries, 
+    null as receivedstartseries, null as receivedendseries, 
+    null as beginstartseries, null as beginendseries, 
+    min(series) as issuedstartseries, max(series) as issuedendseries, 
+    sum(txncount) as txncount, sum(cancelled) as qtycancelled, 
+    sum(txncount)-sum(cancelled) as qtyissued  
+  from ( 
+    select 
+      c.remittanceid, c.controlid, afc.startseries, afc.endseries, c.series, 1 as txncount, 
+      (case when c.state='CANCELLED' then 1 else 0 end) as cancelled 
+    from remittance rem 
+      inner join cashreceipt c on c.remittanceid = rem.objid 
+      inner join af_control afc on afc.objid = c.controlid 
+      inner join af on af.objid = afc.afid 
+    where rem.objid = $P{remittanceid} 
+      and af.formtype = 'serial' 
+  )tmp1 
+  group by remittanceid, controlid, startseries, endseries 
+)tmp2  
+
+
+[getBuildAFNonSerial]
+select 
+  c.controlid, afc.startseries, afc.endseries,   
+  null as receivedstartseries, null as receivedendseries, 
+  null as beginstartseries, null as beginendseries, 
+  null as issuedstartseries, null as issuedendseries, 
+  null as endingstartseries, null as endingendseries, 
+  0 as qtyreceived, 0 as qtybegin,  
+  convert(sum(c.amount) / af.denomination, signed) as qtyissued, 
+  0 as qtyending, 0 qtycancelled, afc.endseries 
+from remittance rem 
+  inner join cashreceipt c on c.remittanceid = rem.objid 
+  inner join af_control afc on afc.objid = c.controlid 
+  inner join af on af.objid = afc.afid 
+where rem.objid = $P{remittanceid}  
+  and af.formtype <> 'serial' 
+  and c.state <> 'CANCELLED' 
+  and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+group by c.controlid, af.denomination, afc.startseries, afc.endseries  
+
+
+[getUnissuedAF]
+select 
+  afc.objid as controlid, 
+  af.formtype, afc.startseries, afc.endseries, 
+  afc.currentseries as beginstartseries, afc.endseries as beginendseries, 
+  afc.currentseries as endingstartseries, afc.endseries as endingendseries, 
+  (afc.endseries-afc.currentseries)+1 as qtybegin, 
+  (afc.endseries-afc.currentseries)+1 as qtyending, 
+  0 as qtyreceived, 0 as qtyissued, 0 as qtycancelled 
+from af_control afc 
+  inner join af on af.objid = afc.afid 
+where afc.owner_objid = $P{collectorid} 
+  and afc.currentseries <= afc.endseries 
+  and afc.objid not in ( 
+    select distinct controlid 
+    from af_control_detail 
+    where refid = $P{remittanceid} 
+      and controlid = afc.objid 
+  ) 
+
+
 [updateRemittanceAF]
 INSERT INTO remittance_af ( objid, remittanceid )
 SELECT ad.objid, $P{remittanceid} AS remittanceid 

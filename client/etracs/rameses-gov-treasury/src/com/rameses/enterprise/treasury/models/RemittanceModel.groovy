@@ -52,6 +52,14 @@ class RemittanceModel  extends CrudFormModel {
         return "capture"; 
     }    
     
+    boolean isViewReportAllowed() { 
+        if ( entity.state.toString().toUpperCase() == 'DRAFT' ) {
+            return false; 
+        } 
+        return super.isViewReportAllowed(); 
+    } 
+
+    
     boolean isCanPrintReport() { 
         return ( entity.state != 'DRAFT' ); 
     } 

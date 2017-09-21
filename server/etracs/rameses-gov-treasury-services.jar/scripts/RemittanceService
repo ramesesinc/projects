@@ -19,6 +19,9 @@ class RemittanceService  {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("NumberService")
+	def numSvc;	
+
 	@Service("Var")
 	def var;
 
@@ -132,67 +135,9 @@ class RemittanceService  {
 			totalcheck: o.totalcheck, totalcr: o.totalcr 
 		]); 
 
-		remdb.getBuildCancelSeries( info ).groupBy{ it.controlid }.each{ k,v-> 
-			def afc = o.items.find{ it.controlid == k } 
-			afc.cancelSeriesList = v; 
-		} 
-
 		o.checks = remdb.getNonCashPayments( info );
 
-		def afcs = afc_db.find([ owner_objid: o.collector.objid ]).where(' currentseries <= endseries ').list(); 
-		afcs.each{ it.controlid=it.objid } 
-
-		def rafparam = [ txndate: o.dtposted ]; 
-		rafparam.controls = afcs.collect{ it.objid } 
-		rafparam.controls.addAll( o.items.collect{ it.controlid } ); 
-		rafparam.controls = rafparam.controls.unique().collect{[ controlid: it ]} 
-
-		def rafs = self.getBuildAF( rafparam ); 
-		rafs.each{ a-> 
-			def b = o.items.find{ it.controlid==a.controlid } 
-			if ( !b ) return; 
-
-			if ( b.formtype=='serial' ) {
-				a.qtycancelled = b.cqty;
-				a.qtyissued = b.qty; 
-				a.issuedendseries = b.endseries; 
-				a.issuedstartseries = b.startseries; 
-				a.endingstartseries = a.issuedendseries+1; 
-				a.endingendseries = b.afendseries;
-			} else if ( b.formtype=='cashticket' ) { 
-				def currentseries = b.afstartseries;
-				def qty = (int) ( b.amount / b.denomination ); 
-				def cts = remdb.getRemittedCashTickets([ controlid: a.controlid ]); 
-				cts = cts.findAll{ it.remittanceid != remittanceid } 
-				if ( cts ) {
-					currentseries = ((int) (cts.sum{( it.amount ? it.amount : 0.0 )} / b.denomination)) + b.afstartseries; 
-				} 
-				a.issuedstartseries = currentseries; 
-				a.issuedendseries = (currentseries + qty)-1; 
-				a.qtyissued = qty; 
-				a.endingstartseries = a.issuedendseries+1;
-				a.endingendseries = b.afendseries;
-			}
-
-			if ( a.endingstartseries > b.afendseries ) {
-				a.endingstartseries = a.endingendseries = null; 
-				a.qtyending = 0; 
-			} else {
-				a.qtyending = (a.endingendseries - a.endingstartseries)+1; 
-			} 
-		}
-
-		rafs.each{ 
-			it.objid = 'REMAF-'+ new java.rmi.server.UID(); 
-			it.remittanceid = remittanceid; 
-			remaf_db.create( it ); 
-		} 
 		return o; 
-	} 
-
-	@ProxyMethod 
-	public def getBuildAF( afcs ) {
-		return []; 
 	} 
 
  	@ProxyMethod
@@ -255,9 +200,12 @@ class RemittanceService  {
 
 		o.state = 'OPEN'; 
 		o.dtposted = dateSvc.getServerDate(); 
-
-		def txncode = [ "REM", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
-		o.txnno = controlSvc.formatTxnno([ txncode: txncode, txndate: o.dtposted, format: var.remittance_format, sequenceid_format: var.remittance_sequenceid_format ]); 
+		if ( o.txnno.toString().toUpperCase().startsWith("REM")) {
+			// do nothing, we will use the same transaction number 
+		} else {
+			def txncode = [ "REM", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
+			o.txnno = controlSvc.formatTxnno([ txncode: txncode, txndate: o.dtposted, format: var.remittance_format, sequenceid_format: var.remittance_sequenceid_format ]); 
+		}
 
 		if ( !o.collector ) o.collector = [:];
 		if ( param.collector?.signature ) o.collector.signature = param.collector.signature; 
@@ -321,17 +269,87 @@ class RemittanceService  {
 
 
     @ProxyMethod 
-    public def openForReport( params ) {
+    public def openForReport( params ) { 
     	if ( !params.objid ) throw new Exception('objid parameter is required');  
 
-    	def findBy = [ objid: params.objid ]; 
-    	def o = persistSvc.read([ _schemaname: 'remittance', objid: findBy.objid, findBy: findBy ]); 
-    	if ( !o ) throw new Exception('Remittance record does not exist'); 
+    	def o = null; 
+    	boolean hasfund = false; 
+    	if ( params.fundid ) { 
+    		def rfo = remf_db.find([ remittanceid: params.objid, 'fund.objid': params.fundid ]).select('objid').first(); 
+    		if ( !rfo ) throw new Exception('Remittance fund record does not exist'); 
 
-    	def m = [ remittanceid: o.objid ]; 
+    		hasfund = true; 
+
+    		def findBy = [ objid: rfo.objid ]; 
+    		o = persistSvc.read([ _schemaname: 'remittance_fund', objid: findBy.objid, findBy: findBy ]); 
+
+    		def ro = remdb.find([ objid: params.objid ]).first(); 
+    		o.txnno = ro.txnno; 
+    		o.dtposted = ro.dtposted; 
+    		o.collector = ro.collector; 
+    		o.remittancedate = ro.remittancedate;
+    		o.liquidatingofficer = ro.liquidatingofficer; 
+
+    	} else { 
+	    	def findBy = [ objid: params.objid ]; 
+	    	o = persistSvc.read([ _schemaname: 'remittance', objid: findBy.objid, findBy: findBy ]); 
+	    	if ( !o ) throw new Exception('Remittance record does not exist'); 
+
+	    	params.fundid = '%'; 
+    	} 
+
+		params.remittanceid = params.objid; 
+
+    	def totalcr = (o.totalcr ? o.totalcr : 0.0); 
+    	def totalcheck = (o.totalcheck ? o.totalcheck : 0.0); 
+    	o.totalnoncash = totalcheck + totalcr; 
+
+    	def m = [ remittanceid: params.remittanceid, fundid: params.fundid, afid:'%' ]; 
     	o.collectiontype = rcd_db.getReceiptForms( m ); 
     	o.collectionsummaries = rcd_db.getCollectionSummaries( m ); 
+    	o.remittedforms = rcd_db.getAFSerials( m ); 
+    	if ( hasfund ) {
+    		o.remittedforms.findAll{ it.qtyissued > 0 }.each{
+    			it.qtyissued = it.issuecount; 
+    			if ( !it.qtyissued ) it.allowremove = true; 
+    		} 
+    	}
+    	o.remittedforms.removeAll( o.remittedforms.findAll{( it.allowremove==true )} ); 
+    	o.remittedforms.each{  
+    		it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null);
+    		it.qtybegin = (it.qtybegin ? it.qtybegin : null);
+    		it.qtyissued = (it.qtyissued ? it.qtyissued : null);
+    		it.qtyending = (it.qtyending ? it.qtyending : null);
+    	}
 
+    	o.nonserialremittances = rcd_db.getAFNonSerials( m ); 
+    	if ( hasfund ) {
+    		o.nonserialremittances.findAll{ it.qtyissued > 0 }.each{
+    			it.qtyissued = it.issuecount; 
+    			if ( !it.qtyissued ) it.allowremove = true; 
+    		} 
+    	} 
+		o.nonserialremittances.removeAll( o.nonserialremittances.findAll{( it.allowremove==true )} ); 
+    	o.nonserialremittances.each{ 
+    		it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null);
+    		it.qtybegin = (it.qtybegin ? it.qtybegin : null);
+    		it.qtyissued = (it.qtyissued ? it.qtyissued : null);
+    		it.qtyending = (it.qtyending ? it.qtyending : null);
+    	}
+
+    	o.payments = rcd_db.getPayments( m ); 
+    	
+    	def denominations = [1000.0, 500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0, 1.0, 0.50, 0.25, 0.10, 0.05, 0.01]; 
+    	def cblist = denominations.collect{[ denomination: it, qty: null, amount: null ]} 
+    	o.cashbreakdown.each{ cb-> 
+    		def fo = cblist.find{ it.denomination==cb.denomination } 
+    		if ( fo ) {
+    			fo.qty = ( cb.qty ? cb.qty : null ); 
+    			fo.amount = (cb.amount ? cb.amount : null); 
+    		} 
+    	} 
+    	o.cashbreakdown = cblist; 
+    	o.amountinwords = numberToWords( o.amount ); 
     	return o;  
     }
 
@@ -342,4 +360,20 @@ class RemittanceService  {
         cal.set( Calendar.DAY_OF_MONTH, 1 );
         return new java.sql.Date( cal.timeInMillis ); 
     }  
+
+	private def numberToWords( Number value ) { 
+		if ( value == null ) return null; 
+
+		def formatter = new java.text.DecimalFormat("0.00"); 
+		def amount = formatter.parse( formatter.format( value )); 
+		if ( amount < 1 ) { 
+			amount = Long.parseLong( amount.toString().split("\\.")[1] ); 
+			return numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS"; 
+		} else { 
+			def str = numSvc.doubleToWords( amount ).toUpperCase(); 
+			if ( amount > 1 ) return str+" PESOS ONLY"; 
+
+			return str+" PESO ONLY"; 
+		} 
+	}
 }

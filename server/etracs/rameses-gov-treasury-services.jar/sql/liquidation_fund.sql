@@ -56,3 +56,6 @@ where
 	and a.liquidationfundid = b.objid 
 
 
+[removeFunds]
+delete from liquidation_fund where liquidationid = $P{liquidationid} 
+ 

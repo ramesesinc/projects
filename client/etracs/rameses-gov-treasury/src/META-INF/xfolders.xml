@@ -40,4 +40,14 @@
         <folder id="collection" caption="Collection" icon="home/icons/collection.png"/>
         <folder id="cashmgmt" caption="Cash Management"/>
     </folder>   
+    
+    <folder id="menucategory">
+        <folder id="collection" caption="Collection">
+            <folder id="af" caption="Accountable Forms" index="0" icon="home/icons/af.png"/>
+            <folder id="cashreceipt" caption="Cash Receipt" index="1" icon="home/icons/cashreceipt.png"/>
+            <folder id="remittance" caption="Remittance" index="2" icon="home/icons/remittance.png"/>
+            <folder id="liquidation" caption="Liquidation" index="3" icon="home/icons/liquidation.png"/>
+            <folder id="deposit" caption="Deposit" index="4" icon="home/icons/deposit.png"/>
+        </folder>
+    </folder>
 </folders>

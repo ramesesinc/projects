@@ -19,6 +19,9 @@
          
          <invoker type="formActions" caption="View Breakdown" action="viewBreakdown" />
          
+         
+          <invoker folderid="menucategory/collection/liquidation" caption="Prepare Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER"/>
+          
    </invokers>
 
    <code class="com.rameses.enterprise.treasury.models.LiquidationModel" />

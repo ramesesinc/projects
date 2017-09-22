@@ -53,12 +53,8 @@ class JevValidationService  {
 			def jvitems = jevitem_db.find( [jevid: it.objid] ).list();
 
 			jv.dr = buildEntries( jv.amount, jvitems, 'dr');
-			println "size of dr ->" + jv.dr.size();
 			
 			jv.cr = buildEntries( jv.amount, jvitems, 'cr');
-			println "size of cr ->" + jv.cr.size();
-
-			println "*****************************";
 			
 			
 

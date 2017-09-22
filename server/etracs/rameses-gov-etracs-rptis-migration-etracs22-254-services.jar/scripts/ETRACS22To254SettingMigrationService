@@ -14,12 +14,14 @@ class ETRACS22To254SettingMigrationService
 	@DataContext('landspecificclass')
 	def em_landspecificclass
 
+	@DataContext('propertyclassification')
+	def em_propertyclassification 
 
 	@Service('ETRACS22To254UtilService')
 	def util 
 
 	def updateClassification(entity){
-		entity.classification = em22.findClassification(entity)
+		entity.classification = getClassification([objid:entity?.objid])
 	}
 
 
@@ -90,8 +92,14 @@ class ETRACS22To254SettingMigrationService
 		println 'Migrated specificclasses.'
 	}
 
+	def getClassification(param){
+		def classification = em_propertyclassification.find(param).first()
+		if (!classification) classification = em_propertyclassification.find([name:'RESIDENTIAL']).first()
+		return classification
+	}
+
 	void migrateLandSpecificClass(spc){
-		println 'spc ->  ' + spc 
+		spc.classification = getClassification([objid:spc.classification?.objid])
 		def exist = em_landspecificclass.find([objid:spc.code]).first()
 		if (!exist){
 			spc.landspecificclass.state = 'DRAFT'
@@ -328,6 +336,10 @@ class ETRACS22To254SettingMigrationService
 	@ActiveDB('rysetting_planttree_unitvalue')
 	def em_planttree_unitvalue
 
+	@DataContext('planttree')
+	def planttree
+
+
 	@ProxyMethod
 	public void migratePlantTreeSettings(lgutype){
 		def lgu = findLguByType(lgutype)
@@ -357,8 +369,21 @@ class ETRACS22To254SettingMigrationService
 	@ProxyMethod
 	public void migratePlantTreeUnitValues(){
 		em22.getPlantTreeUnitValues().each{
+			resolvePlantTree(it)
 			em_planttree_unitvalue.save(it)
 		}
+	}
+
+	void resolvePlantTree(ptv){
+		def pt = planttree.find([objid:ptv.planttree?.objid]).first()
+		if (!pt){
+			pt = ptv.planttree 
+			pt.code = ptv.code 
+			pt.name = ptv.code 
+			pt.state = 'DRAFT'
+			planttree.save(pt)
+		}
+
 	}
 
 

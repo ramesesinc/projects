@@ -149,3 +149,21 @@ order by afi.startseries
 [findFirstDetail]
 select * from af_inventory_detail 
 where controlid=$P{controlid} and lineno=1 
+
+[findInventory]
+select 
+   a.objid as controlid, a.afid, a.startseries, a.endseries, 
+   a.startstub, a.endstub, af.formtype, af.denomination, af.serieslength, 
+   (case when b.objid is null then null else b.receivedstartseries end) as receivedstartseries,
+   (case when b.objid is null then null else b.receivedendseries end) as receivedendseries,
+   (case when b.objid is null then a.startseries else b.beginstartseries end) as beginstartseries, 
+   (case when b.objid is null then a.endseries else b.beginendseries end) as beginendseries, 
+   (case when b.objid is null then 0 else b.qtyreceived end) as qtyreceived,
+   (case when b.objid is null then (a.endseries-a.startseries)+1 else b.qtybegin end) as qtybegin 
+from af_inventory a 
+   inner join af on af.objid = a.afid 
+   left join ( 
+      select * from af_inventory_detail 
+      where controlid=$P{controlid} and lineno=1 
+   )b on b.controlid = a.objid 
+where a.objid = $P{controlid} 

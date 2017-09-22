@@ -141,9 +141,12 @@ class LiquidationService  {
 
 		o.state = 'POSTED'; 
 		o.dtposted = dateSvc.getServerDate(); 
-
-		def txncode = [ "LIQ", env.TXNCODE ].findAll{( it )}.join("-");
-		o.txnno = controlSvc.formatTxnno([ txncode: txncode, txndate: o.dtposted, format: var.liquidation_format, sequenceid_format: var.liquidation_sequenceid_format ]); 
+		if ( o.txnno.toString().toUpperCase().startsWith("LIQ")) {
+			// do nothing, we will use the same transaction number 
+		} else { 
+			def txncode = [ "LIQ", env.TXNCODE ].findAll{( it )}.join("-");
+			o.txnno = controlSvc.formatTxnno([ txncode: txncode, txndate: o.dtposted, format: var.liquidation_format, sequenceid_format: var.liquidation_sequenceid_format ]); 
+		} 
 
 		liqEm.find([ objid: o.objid ]).update([ state: o.state, txnno: o.txnno, dtposted: o.dtposted ]); 
 		liqEm.updateFundControlNo([ liquidationid: o.objid ]); 

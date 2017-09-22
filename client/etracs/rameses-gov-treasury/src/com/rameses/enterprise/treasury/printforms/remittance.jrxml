@@ -152,7 +152,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{collector.title}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="424"
@@ -171,7 +171,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["Php " + new java.text.DecimalFormat("#,##0.00").format($F{amount})]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($F{amount} ? "Php " + new java.text.DecimalFormat("#,##0.00").format($F{amount}) : "")]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>
@@ -310,8 +310,7 @@
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField"
-						positionType="FixRelativeToBottom"/>
+						key="textField"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -331,8 +330,7 @@
 						height="12"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="staticText-25"
-						positionType="FixRelativeToBottom"/>
+						key="staticText-25"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -352,8 +350,7 @@
 						height="12"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="staticText-43"
-						positionType="FixRelativeToBottom"/>
+						key="staticText-43"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -364,7 +361,7 @@
 					</textElement>
 				<text><![CDATA[TOTAL Cash]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="158"
@@ -373,8 +370,7 @@
 						height="12"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField-10"
-						positionType="FixRelativeToBottom"/>
+						key="textField-10"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -394,8 +390,7 @@
 						height="12"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField-11"
-						positionType="FixRelativeToBottom"/>
+						key="textField-11"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -479,8 +474,7 @@
 						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField-13"
-						positionType="FixRelativeToBottom"/>
+						key="textField-13"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -527,9 +521,9 @@
 				<subreport  isUsingCache="true">
 					<reportElement
 						mode="Opaque"
-						x="325"
-						y="10"
-						width="212"
+						x="349"
+						y="4"
+						width="180"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -550,7 +544,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="98"  isSplitAllowed="true" >
+			<band height="100"  isSplitAllowed="true" >
 				<line direction="TopDown">
 					<reportElement
 						mode="Opaque"
@@ -565,26 +559,6 @@
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 </graphicElement>
 				</line>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="388"
-						y="6"
-						width="20"
-						height="12"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-4"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[No.]]></text>
-				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -605,25 +579,25 @@
 					</textElement>
 				<text><![CDATA[Date:]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="408"
+						x="325"
 						y="6"
-						width="136"
+						width="219"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<box rightPadding="15">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txnno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["No.    <style isBold=\"true\"> "+ $F{txnno} +" </style>"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -768,7 +742,7 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="433"
+						x="445"
 						y="0"
 						width="75"
 						height="18"
@@ -788,9 +762,9 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="508"
+						x="520"
 						y="0"
-						width="31"
+						width="20"
 						height="18"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -803,7 +777,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[""+ $V{PAGE_NUMBER}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -862,7 +836,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="styled" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["         I hereby certify that the foregoing report on collections has been verified and acknowledged receipt of  <style isBold = \"true\">"+$F{amountinwords}.toLowerCase() +" ONLY (Php "+ new DecimalFormat("#,##0.00").format($F{amount})+" )</style>"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["         I hereby certify that the foregoing report on collections has been verified and acknowledged receipt of  <style isBold = \"true\">"+ $F{amountinwords}.toString().toLowerCase() +" (Php "+ new DecimalFormat("#,##0.00").format($F{amount})+" )</style>"]]></textFieldExpression>
 				</textField>
 				<image  hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

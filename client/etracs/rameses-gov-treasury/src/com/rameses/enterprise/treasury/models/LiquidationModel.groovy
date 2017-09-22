@@ -52,7 +52,7 @@ class LiquidationModel extends CrudFormModel {
     public String getPrintFormName() {
         return "remittance";
     }
-    
+        
     def popupReports(def inv) {
         def popupMenu = new PopupMenuOpener();
         def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
@@ -146,7 +146,6 @@ class LiquidationModel extends CrudFormModel {
         return null;
     }
     
-    /*
     def delete() {
         if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
             persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
@@ -160,6 +159,5 @@ class LiquidationModel extends CrudFormModel {
         }
         return null; 
     }
-    */ 
     
 } 

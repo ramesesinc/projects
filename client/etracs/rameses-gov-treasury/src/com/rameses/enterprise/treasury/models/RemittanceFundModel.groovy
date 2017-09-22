@@ -31,4 +31,18 @@ public class RemittanceFundModel extends CashBreakdownModel  {
         caller?.caller?.reload();
     }
     
-}       
+    boolean isViewReportAllowed() { 
+        def state = entity.remittance?.state; 
+        if ( state.toString().toUpperCase() == 'DRAFT' ) {
+            return false; 
+        } 
+        return super.isViewReportAllowed(); 
+    } 
+    
+    def getPrintFormData() { 
+        return service.openForReport([ 
+            objid  : entity.remittanceid, 
+            fundid : entity.fund.objid 
+        ]); 
+    } 
+} 

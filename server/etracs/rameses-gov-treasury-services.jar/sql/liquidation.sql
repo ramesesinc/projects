@@ -204,3 +204,9 @@ delete from jev where objid = $P{jevid}
 
 [unbindJevItem]
 delete from jevitem where jevid = $P{jevid} 
+
+[unbindCollectionCash]
+delete from collection_cash where liquidationfundid = $P{liquidationfundid} 
+
+[remove]
+delete from liquidation where objid = $P{objid} 

@@ -173,3 +173,9 @@ select
 from af_control afc 
   inner join af on afc.afid=af.objid 
 where afc.objid=$P{controlid} 
+
+[syncCurrentIndexNo]
+update af_control set 
+  currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
+where 
+  objid = $P{objid} 

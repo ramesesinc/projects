@@ -47,6 +47,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
 
@@ -164,6 +165,14 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
         xComboBox6.setPreferredSize(new java.awt.Dimension(300, 20));
         xFormPanel1.add(xComboBox6);
 
+        xLookupField1.setCaption("Collector");
+        xLookupField1.setCaptionWidth(120);
+        xLookupField1.setExpression("#{item.name}");
+        xLookupField1.setHandler("lookupCollector");
+        xLookupField1.setName("entity.collector"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(300, 20));
+        xFormPanel1.add(xLookupField1);
+
         xCheckBox3.setCellPadding(new java.awt.Insets(0, 115, 0, 0));
         xCheckBox3.setName("entity.opthidenoactual"); // NOI18N
         xCheckBox3.setShowCaption(false);
@@ -229,6 +238,7 @@ public class SRSCriteriaPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XPanel xPanel1;
     // End of variables declaration//GEN-END:variables
 }

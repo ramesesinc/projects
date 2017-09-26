@@ -4,7 +4,7 @@
 "entity.*" [1==1] {
     visible: false; 
 }
-"entity.(period|postingtype|type|acctgroup|fund)" [1==1] {
+"entity.(period|postingtype|type|acctgroup|fund|collector)" [1==1] {
     visible: true; 
 }
 "entity.opt.*" [1==1] {

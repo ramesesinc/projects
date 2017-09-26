@@ -39,7 +39,10 @@ class QueueGroupService {
 	public def getSectionCounters( sectionid ) {
 		if ( !sectionid ) throw new Exception('sectionid parameter is required'); 
 
-		return qg.getSectionCounters([ sectionid: sectionid ]); 
+		def list = qg.getSectionCounters([ sectionid: sectionid ]); 
+		list.each{ it.strsortorder = it.code.toString().padLeft(5,'0'); }
+		list.sort{ it.strsortorder }
+		return list; 
 	} 
 
 	@ProxyMethod 

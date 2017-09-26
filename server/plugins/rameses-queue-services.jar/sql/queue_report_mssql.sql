@@ -5,8 +5,8 @@ select
 from ( 
 	select 
 		section_objid as sectionid, section_title as sectiontitle, 
-		convert(enddate, DATE) as txndate, year(enddate) as txnyear, 
-		DAYOFMONTH(enddate) as txnday, hour(enddate) as txnhour, 
+		convert(DATE, enddate) as txndate, DATEPART(YEAR,enddate) as txnyear, 
+		DATEPART(MONTH,enddate) as txnday, DATEPART(HOUR,enddate) as txnhour, 
 		(case when state='CLOSED' then 1 else 0 end) as closedcount, 
 		(case when state='SKIP' then 1 else 0 end) as skipcount 
 	from queue_number_archive 

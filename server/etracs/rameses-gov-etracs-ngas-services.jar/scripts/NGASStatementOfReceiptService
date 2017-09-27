@@ -53,6 +53,11 @@ class NGASStatementOfReceiptService {
 	@ProxyMethod
 	public def getReport( params ) {
 		buildParams( params ); 
+		params.filter = ''; 
+		if ( params.collector?.objid ) { 
+			params.collectorid = params.collector.objid; 
+			params.filter += ''' AND inc.collectorid = $P{collectorid} '''; 
+		} 
 
 		def unmaps = []; 
 		def sourcelist = []; 
@@ -253,7 +258,7 @@ class NGASStatementOfReceiptService {
 		params.fundid = (fundid? fundid: '%'); 
 		params.filter = ' 1=1 '; 
 		if ( params.type=='standard' ) { 
-			params.filter = ''' a.type in ('group','detail') '''; 
+			params.filter = ''' AND a.type in ('group','detail') '''; 
 		} 
 
 		if (!(params.enddate instanceof Date)) {

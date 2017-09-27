@@ -23,6 +23,7 @@ from (
 			select revenueitemid from ngas_revenue_mapping 
 			where revenueitemid=inc.acctid
 		) 
+		${filter} 
 	group by acctid 
 )xx 
 	inner join itemaccount ia on xx.acctid = ia.objid 
@@ -54,6 +55,7 @@ from (
 			select revenueitemid from ngas_revenue_mapping 
 			where revenueitemid=inc.acctid
 		) 
+		${filter} 
 	group by inc.acctid 
 )xx 
 	inner join itemaccount ia on xx.acctid = ia.objid 
@@ -74,6 +76,7 @@ with t0 as (
 			union 
 			select objid from fund where parentid like $P{fundid} 
 		) 
+		${filter} 
 	group by acctid 
 
 ), t1 as ( 
@@ -123,6 +126,7 @@ with t0 as (
 			union 
 			select objid from fund where parentid like $P{fundid} 
 		) 
+		${filter}
 	group by inc.acctid 
 
 ), t1 as ( 

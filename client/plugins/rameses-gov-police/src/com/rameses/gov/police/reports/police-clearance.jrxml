@@ -8,13 +8,13 @@
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
-		 pageHeight="792"
+		 pageHeight="1008"
 		 columnWidth="552"
 		 columnSpacing="0"
 		 leftMargin="30"
 		 rightMargin="30"
-		 topMargin="20"
-		 bottomMargin="20"
+		 topMargin="18"
+		 bottomMargin="90"
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
@@ -24,187 +24,154 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
+	<parameter name="PC_SIGNATORY1_NAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_SIGNATORY1_TITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_SIGNATORY2_NAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_SIGNATORY2_TITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_SIGNATORY3_NAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_SIGNATORY3_TITLE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_STATION_NAME" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="PC_STATION_ADDRESS" isForPrompting="false" class="java.lang.String"/>
 
-	<field name="applicant.name" class="java.lang.String"/>
-	<field name="applicant.age" class="java.lang.Number"/>
-	<field name="applicant.civilstatus" class="java.lang.String"/>
-	<field name="applicant.citizenship" class="java.lang.String"/>
-	<field name="applicant.address.text" class="java.lang.String"/>
-	<field name="dtissued" class="java.util.Date"/>
-	<field name="controlno" class="java.lang.String"/>
-	<field name="jsonurlpath" class="java.lang.String"/>
-	<field name="applicant.objid" class="java.lang.String"/>
-	<field name="withcase" class="java.lang.Number"/>
-	<field name="remarks" class="java.lang.String"/>
+	<field name="app.payment.refdate" class="java.util.Date"/>
+	<field name="app.payment.refno" class="java.lang.String"/>
+	<field name="ctcs1" class="java.lang.Object"/>
+	<field name="app.photo.objid" class="java.lang.String"/>
+	<field name="applicants1" class="java.lang.Object"/>
+	<field name="app.purpose" class="java.lang.String"/>
+	<field name="applicant.gender" class="java.lang.String"/>
+	<field name="applicant.birthplace" class="java.lang.String"/>
+	<field name="applicant.birthdate" class="java.util.Date"/>
+	<field name="applicant.entityno" class="java.lang.String"/>
 	<field name="appid" class="java.lang.String"/>
+	<field name="remarks" class="java.lang.String"/>
+	<field name="withcase" class="java.lang.Number"/>
+	<field name="applicant.objid" class="java.lang.String"/>
+	<field name="jsonurlpath" class="java.lang.String"/>
+	<field name="controlno" class="java.lang.String"/>
+	<field name="dtissued" class="java.util.Date"/>
+	<field name="applicant.address.text" class="java.lang.String"/>
+	<field name="applicant.citizenship" class="java.lang.String"/>
+	<field name="applicant.civilstatus" class="java.lang.String"/>
+	<field name="applicant.age" class="java.lang.Number"/>
+	<field name="applicant.name" class="java.lang.String"/>
+	<field name="applicants2" class="java.lang.Object"/>
+	<field name="ctcs2" class="java.lang.Object"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</background>
 		<title>
-			<band height="459"  isSplitAllowed="true" >
+			<band height="900"  isSplitAllowed="false" >
 				<staticText>
 					<reportElement
 						x="0"
-						y="5"
+						y="2"
 						width="552"
-						height="16"
+						height="12"
 						key="staticText-1"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" size="12"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<text><![CDATA[Republic of the Philippines]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						x="0"
-						y="33"
+						y="24"
 						width="552"
-						height="18"
+						height="13"
 						key="staticText-2"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
 					</textElement>
 				<text><![CDATA[PHILIPPINE NATIONAL POLICE]]></text>
 				</staticText>
-				<image  scaleImage="RetainShape" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="31"
-						y="5"
-						width="91"
-						height="80"
-						key="image-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA["classpath://images/pnp-logo.png"]]></imageExpression>
-				</image>
 				<staticText>
 					<reportElement
-						x="0"
-						y="118"
+						x="1"
+						y="97"
 						width="408"
 						height="18"
-						key="staticText-6"/>
+						key="staticText-3"/>
 					<box></box>
 					<textElement>
-						<font fontName="Times New Roman" pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="13" isBold="true"/>
 					</textElement>
 				<text><![CDATA[TO WHOM IT MAY CONCERN:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						x="0"
-						y="66"
+						y="59"
 						width="552"
 						height="22"
-						key="staticText-7"/>
+						key="staticText-4"/>
 					<box></box>
-					<textElement textAlignment="Center">
+					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="18" isBold="true"/>
 					</textElement>
 				<text><![CDATA[P O L I C E    C L E A R A N C E]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="397"
-						y="413"
-						width="139"
+						x="418"
+						y="334"
+						width="120"
 						height="15"
-						key="staticText-21"/>
+						key="staticText-5"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" size="12"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 				<text><![CDATA[Signature of Applicant]]></text>
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="397"
-						y="409"
-						width="140"
+						x="418"
+						y="330"
+						width="120"
 						height="0"
-						key="line-7"/>
+						key="line-1"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<staticText>
 					<reportElement
 						x="0"
-						y="19"
+						y="13"
 						width="552"
-						height="16"
-						key="staticText-35"/>
+						height="12"
+						key="staticText-6"/>
 					<box></box>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" size="12"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<text><![CDATA[National Police Commission]]></text>
 				</staticText>
-				<staticText>
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="18"
-						y="144"
-						width="321"
-						height="103"
-						key="staticText-36"/>
-					<box></box>
-					<textElement textAlignment="Justified">
-						<font fontName="Times New Roman" pdfFontName="Helvetica" size="12" isBold="false"/>
-					</textElement>
-				<text><![CDATA[This is to certify that the person whose photo, signature, and right thumb mark appears herein has requested a record clearance from this office.
-
-Verification has been made and the result(s) and finding(s) are listed below: ]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="397"
-						y="114"
-						width="140"
-						height="23"
-						key="staticText-37"/>
-					<box topPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" pdfFontName="Helvetica" size="12" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Date Issued]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="397"
-						y="96"
-						width="140"
-						height="16"
-						key="textField-16"/>
-					<box></box>
-					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" size="12"/>
-					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtissued}]]></textFieldExpression>
-				</textField>
-				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="397"
-						y="149"
-						width="140"
-						height="120"
+						x="418"
+						y="117"
+						width="120"
+						height="100"
 						key="image-2"/>
-					<box>					<topPen lineWidth="0.25" lineStyle="Solid"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[""+ $F{jsonurlpath} +"/etracs25/EntityService.getMedia?objid="+ $F{applicant.objid}]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[""+ $F{jsonurlpath} +"/etracs25/EntityPhotoService.getMedia?objid="+ $F{app.photo.objid}]]></imageExpression>
 				</image>
-				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="397"
-						y="279"
-						width="140"
-						height="78"
+						x="418"
+						y="220"
+						width="120"
+						height="70"
 						key="image-3"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
@@ -216,45 +183,591 @@ Verification has been made and the result(s) and finding(s) are listed below: ]]
 				</image>
 				<staticText>
 					<reportElement
-						x="397"
-						y="360"
-						width="140"
+						x="418"
+						y="292"
+						width="120"
 						height="16"
-						key="staticText-38"/>
+						key="staticText-7"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center">
-						<font fontName="Times New Roman" pdfFontName="Helvetica" size="12" isBold="false"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
 				<text><![CDATA[Right Thumb Mark]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="9"
-						y="428"
-						width="272"
-						height="18"
-						forecolor="#FF0066"
-						key="textField-17"/>
+						x="10"
+						y="374"
+						width="316"
+						height="20"
+						forecolor="#CC0000"
+						key="textField-1"/>
 					<box></box>
-					<textElement textAlignment="Left">
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
 						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{controlno}]]></textFieldExpression>
 				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="20"
+						y="173"
+						width="388"
+						height="99"
+						key="subreport-1"/>
+					<subreportParameter  name="PURPOSE">
+						<subreportParameterExpression><![CDATA[$F{app.purpose}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FINDINGS">
+						<subreportParameterExpression><![CDATA[($F{withcase}==1 ? $F{remarks} : "NO PENDING CRIMINAL CASE")]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{applicants1}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["police-clearance-applicant.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						x="16"
+						y="117"
+						width="370"
+						height="54"
+						key="staticText-8"/>
+					<box></box>
+					<textElement textAlignment="Justified">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<text><![CDATA[This is to certify that the person whose photo, signature, and right thumb mark appears herein has requested a record clearance from this office.
+
+Verification has been made and the result(s) and finding(s) are listed below: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="66"
+						y="361"
+						width="248"
+						height="18"
+						forecolor="#333333"
+						key="staticText-9"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VALID FOR SIX (6) MONTHS]]></text>
+				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="18"
-						y="247"
-						width="347"
-						height="145"
-						key="textField-18"/>
+						x="82"
+						y="338"
+						width="223"
+						height="13"
+						key="textField-2"/>
 					<box></box>
-					<textElement textAlignment="Left">
-						<font fontName="Times New Roman" size="12"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[($F{withcase}==1 ? $F{remarks} : "NO PENDING CRIMINAL CASE")]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY1_TITLE}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="325"
+						width="223"
+						height="13"
+						key="textField-3"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY1_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="10"
+						y="289"
+						width="153"
+						height="13"
+						key="textField-4"/>
+					<box>					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY2_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="10"
+						y="301"
+						width="153"
+						height="13"
+						key="textField-5"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY2_TITLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="226"
+						y="289"
+						width="153"
+						height="13"
+						key="textField-6"/>
+					<box>					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY3_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="226"
+						y="301"
+						width="153"
+						height="13"
+						key="textField-7"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY3_TITLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="37"
+						width="552"
+						height="12"
+						key="textField-8"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_STATION_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="48"
+						width="552"
+						height="12"
+						key="textField-9"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_STATION_ADDRESS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="418"
+						y="81"
+						width="120"
+						height="16"
+						key="textField-10"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtissued}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="418"
+						y="97"
+						width="120"
+						height="18"
+						key="staticText-10"/>
+					<box topPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Date Issued]]></text>
+				</staticText>
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="2"
+						width="84"
+						height="79"
+						key="image-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/pnp-logo.png"]]></imageExpression>
+				</image>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="357"
+						y="353"
+						width="181"
+						height="53"
+						key="subreport-2"/>
+					<subreportParameter  name="ORNO">
+						<subreportParameterExpression><![CDATA[$F{app.payment.refno}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ORDATE">
+						<subreportParameterExpression><![CDATA[$F{app.payment.refdate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{ctcs1}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["police-clearance-payment.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						x="0"
+						y="473"
+						width="552"
+						height="12"
+						key="staticText-11"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[Republic of the Philippines]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="495"
+						width="552"
+						height="13"
+						key="staticText-12"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[PHILIPPINE NATIONAL POLICE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="531"
+						width="552"
+						height="22"
+						key="staticText-13"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="18" isBold="true"/>
+					</textElement>
+				<text><![CDATA[P O L I C E    C L E A R A N C E]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="484"
+						width="552"
+						height="12"
+						key="staticText-14"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+				<text><![CDATA[National Police Commission]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="507"
+						width="552"
+						height="12"
+						key="textField-11"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_STATION_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="518"
+						width="552"
+						height="12"
+						key="textField-12"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_STATION_ADDRESS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="569"
+						width="408"
+						height="18"
+						key="staticText-15"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="13" isBold="true"/>
+					</textElement>
+				<text><![CDATA[TO WHOM IT MAY CONCERN:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="418"
+						y="553"
+						width="120"
+						height="16"
+						key="textField-13"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtissued}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="418"
+						y="569"
+						width="120"
+						height="18"
+						key="staticText-17"/>
+					<box topPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Date Issued]]></text>
+				</staticText>
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="418"
+						y="589"
+						width="120"
+						height="100"
+						key="image-4"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[""+ $F{jsonurlpath} +"/etracs25/EntityPhotoService.getMedia?objid="+ $F{app.photo.objid}]]></imageExpression>
+				</image>
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="418"
+						y="692"
+						width="120"
+						height="70"
+						key="image-5"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[""+ $F{jsonurlpath} +"/etracs25/PoliceClearanceReportService.getFingerPrintMedia?appid="+ $F{appid}]]></imageExpression>
+				</image>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="20"
+						y="642"
+						width="388"
+						height="99"
+						key="subreport-3"/>
+					<subreportParameter  name="PURPOSE">
+						<subreportParameterExpression><![CDATA[$F{app.purpose}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FINDINGS">
+						<subreportParameterExpression><![CDATA[($F{withcase}==1 ? $F{remarks} : "NO PENDING CRIMINAL CASE")]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{applicants2}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["police-clearance-applicant.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						x="16"
+						y="593"
+						width="363"
+						height="54"
+						key="staticText-16"/>
+					<box></box>
+					<textElement textAlignment="Justified">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<text><![CDATA[This is to certify that the person whose photo, signature, and right thumb mark appears herein has requested a record clearance from this office.
+
+Verification has been made and the result(s) and finding(s) are listed below: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="418"
+						y="764"
+						width="120"
+						height="16"
+						key="staticText-18"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Right Thumb Mark]]></text>
+				</staticText>
+				<image  scaleImage="RetainShape" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="39"
+						y="473"
+						width="84"
+						height="80"
+						key="image-6"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/pnp-logo.png"]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="804"
+						width="223"
+						height="13"
+						key="textField-14"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY1_TITLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="82"
+						y="791"
+						width="223"
+						height="13"
+						key="textField-15"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY1_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="10"
+						y="757"
+						width="153"
+						height="13"
+						key="textField-16"/>
+					<box>					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY2_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="10"
+						y="769"
+						width="153"
+						height="13"
+						key="textField-17"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY2_TITLE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="226"
+						y="757"
+						width="153"
+						height="13"
+						key="textField-18"/>
+					<box>					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY3_NAME}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="226"
+						y="769"
+						width="153"
+						height="13"
+						key="textField-19"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PC_SIGNATORY3_TITLE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="418"
+						y="808"
+						width="120"
+						height="15"
+						key="staticText-19"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="10"/>
+					</textElement>
+				<text><![CDATA[Signature of Applicant]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="418"
+						y="804"
+						width="120"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="71"
+						y="827"
+						width="248"
+						height="18"
+						forecolor="#333333"
+						key="staticText-20"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[VALID FOR SIX (6) MONTHS]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="840"
+						width="316"
+						height="20"
+						forecolor="#CC0000"
+						key="textField-20"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font fontName="Courier New" pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{controlno}]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="357"
+						y="827"
+						width="181"
+						height="53"
+						key="subreport-4"/>
+					<subreportParameter  name="ORNO">
+						<subreportParameterExpression><![CDATA[$F{app.payment.refno}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ORDATE">
+						<subreportParameterExpression><![CDATA[$F{app.payment.refdate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{ctcs2}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["police-clearance-payment.jasper"]]></subreportExpression>
+				</subreport>
 			</band>
 		</title>
 		<pageHeader>

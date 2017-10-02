@@ -1,0 +1,47 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="item_size">35dp</dimen>
+    
+    <dimen name="title_font_size">20dp</dimen>
+    <dimen name="description_font_size">16dp</dimen>
+
+    <dimen name="readingsheet_caption_width">140dp</dimen>
+    <dimen name="img_width">100dp</dimen>
+    <dimen name="img_height">100dp</dimen>
+    <dimen name="img_padding">15dp</dimen>
+    
+    <dimen name="search_font_size">20sp</dimen>
+    
+    <dimen name="info_font_size">18sp</dimen>
+    <dimen name="info_text_width">140dp</dimen>
+    
+    <dimen name="numberpicker_width">45dp</dimen>
+    <dimen name="numberpicker_height">120dp</dimen>
+    <dimen name="numberpicker_font_size">30sp</dimen>
+    
+    <dimen name="reading_btn_width">100dp</dimen>
+    <dimen name="reading_btn_height">40dp</dimen>
+    <dimen name="reading_btn_font_size">20sp</dimen>
+    <dimen name="reading_container_width">100dp</dimen>
+    
+    <dimen name="reading_info_size">14sp</dimen>
+    
+    <dimen name="upload_font_size">40sp</dimen>
+    
+   	<dimen name="pt_lvprinter_height">150dp</dimen> 
+   	
+    <dimen name="userinfo_img_width">120dp</dimen>
+    <dimen name="userinfo_img_height">120dp</dimen>
+    <dimen name="userinfo_img_padding">7dp</dimen>
+    
+    <dimen name="nav_btn_height">35dp</dimen>
+    <dimen name="nav_paging_width">30dp</dimen>
+    
+    <dimen name="bulletin_img_width">40dp</dimen>
+    <dimen name="bulletin_img_height">40dp</dimen>
+    <dimen name="bulletin_font_size">18sp</dimen>
+    
+</resources>

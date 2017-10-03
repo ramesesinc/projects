@@ -1,0 +1,46 @@
+<workunit extends="wtemplates/ListController.xml">
+        
+   <invokers>
+       
+       <invoker folderid="menucategory/treasury/collection" caption="Manage Accountable Forms" formTitle="Accountable Form Management" role="COLLECTOR">
+            <action name="init" role="COLLECTOR" /> 
+            <action name="init" role="SUBCOLLECTOR" /> 
+        </invoker> 
+       
+        <invoker folderid="/explorer/txn/treasury" caption="AF Controls" role="COLLECTOR,SUBCOLLECTOR"> 
+            <action name="init" role="COLLECTOR" /> 
+            <action name="init" role="SUBCOLLECTOR" /> 
+        </invoker>
+        
+
+        <!-- OWN TOOLBARS -->
+        <invoker type="formActions" caption="Activate" action="activate" 
+            visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.active ==0}" />
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+           visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.active !=0}"/>
+                       
+        <invoker type="formActions" caption="Assign Subcollector" action="assign" 
+            visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.assignee?.objid==selectedEntity.owner?.objid }" role="COLLECTOR"/>
+        <invoker type="formActions" caption="Unassign Subcollector" action="unassign" 
+            visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.assignee?.objid!=selectedEntity.owner?.objid}" role="COLLECTOR"/>
+        
+        <invoker type="formActions" caption="Change Mode" action="changeMode" 
+            visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.txnmode!='REMOTE'}" role="COLLECTOR"/>
+        <invoker type="formActions" caption="Assign Fund" action="assignFund" 
+            visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.afid == '51' &amp;&amp; selectedEntity.fund?.objid==null}" 
+            role="COLLECTOR"/>
+        <invoker type="formActions" caption="Unassign Fund" action="unassignFund" 
+            visibleWhen="#{selectedEntity!=null &amp;&amp; selectedEntity.afid == '51' &amp;&amp; selectedEntity.fund?.objid!=null}"
+            role="COLLECTOR"/>
+        <invoker type="formActions" caption="Cancel Series" action="cancelseries" 
+            visibleWhen="#{selectedEntity!=null}" role="COLLECTOR"/>
+        <invoker type="formActions" caption="Export" action="doExport" role="COLLECTOR"/>
+        <invoker type="formActions" caption="Import" action="doImport" role="COLLECTOR"/>
+   </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.AFControlModel" />
+   
+    <pages>
+        <page name="queryform" template="com.rameses.enterprise.treasury.af.CollectorAFControlQuery"/>
+    </pages>   
+</workunit>

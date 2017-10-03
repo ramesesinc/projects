@@ -33,7 +33,8 @@
         <invoker type="formActions" caption="View Breakdown" action="viewBreakdown" />
         
         
-        <invoker folderid="menucategory/collection/remittance" caption="Remittance for Collector" action="create" target="window" />
+        <invoker folderid="menucategory/treasury/collection" caption="Remit" formTitle="New Remittance" action="create" 
+                 role="COLLECTOR" target="window" />
 
     </invokers>
    

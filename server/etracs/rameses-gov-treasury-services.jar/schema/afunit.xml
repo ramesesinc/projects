@@ -1,0 +1,10 @@
+<schema>
+	<element tablename="afunit">
+		<field name="objid" primary="true"/>
+		<field name="itemid" required="true"/>
+		<field name="unit" required="true"/>
+		<field name="qty" required="true" type="integer"/>
+	</element>
+</schema>
+
+

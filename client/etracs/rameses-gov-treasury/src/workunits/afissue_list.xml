@@ -1,0 +1,8 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="afissue" allowDelete="false">
+    <invokers>
+        <invoker folderid="menucategory/treasury/af" caption="AF Issuances" 
+                 formTitle="Issuances List" action="init" role="AFO"
+                 cols="issueno,dtissued,issueto.name,txntype,state" />
+    </invokers>
+</workunit>

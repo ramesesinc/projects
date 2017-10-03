@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="menucategory/collection:formActions" caption="Map" tooltip="View Process Map" icon="home/icons/processflow-small.png"/>
+        <invoker type="menucategory/treasury:formActions" caption="Map" tooltip="View Process Map" icon="home/icons/processflow-small.png"/>
         <invoker type="formActions" caption="Back" action="_close"/>
     </invokers> 
     

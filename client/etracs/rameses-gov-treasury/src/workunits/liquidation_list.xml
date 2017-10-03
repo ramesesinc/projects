@@ -6,7 +6,8 @@
         <invoker type="quick_launcher" code="LIQS" caption="Liquidations" 
                  action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" />
         
-        <invoker folderid="home/collection" caption="Liquidations"
+        <invoker folderid="menucategory/treasury/liquidation" caption="View Liquidations"
+                 formTitle="Liquidation List"
                  action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" index="90"/> 
         
         <invoker type="liquidation_list:fordeposit" caption="Liquidations" 

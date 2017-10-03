@@ -1,7 +1,8 @@
-<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="collection" cols="2">
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="treasury" cols="2">
     <invokers>
         <invoker type="home.action" 
-                 caption="Collection 2" icon="home/icons/collection.png"
+                 caption="Treasury" icon="home/icons/treasury.png"
+                 visibleWhen="#{self.hasChildren('menucategory/treasury')==true}" 
                  index="1" action="init"/>
         
         <!--

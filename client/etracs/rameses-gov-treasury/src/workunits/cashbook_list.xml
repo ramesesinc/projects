@@ -4,10 +4,10 @@
         <invoker folderid="/explorer/master/treasury" caption="Cash Books" action="doInit"  
                  role="ADMIN,MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.view"/>
         
-        <invoker folderid="home/collection" caption="Cash Books" action="doInit"  
+        <invoker folderid="menucategory/treasury/monitor" caption="Cash Books" action="doInit"  
                  role="ADMIN,MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.view" 
                  target="window"/>
-            
+        
         <invoker type="cashbooklist-master-owner" role="ADMIN,MASTER"/> 
     </invokers>
    

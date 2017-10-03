@@ -1,0 +1,44 @@
+<workunit schemaName="af_control">
+     
+    <invokers>
+        <invoker type="af_control:open" caption="AF Control" formTitle="AF Control" action="open" target="popup" />
+        
+        
+        <!-- control actions -->
+         <invoker type="formActions" caption="Activate" action="activate" 
+            visibleWhen="#{ entity.active ==0}" />
+            
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+           visibleWhen="#{entity.active !=0}" />
+                       
+        <invoker type="formActions" caption="Assign Subcollector" action="assign" 
+            visibleWhen="#{entity.assignee?.objid==entity.owner?.objid }" role="COLLECTOR" />
+        
+        <invoker type="formActions" caption="Unassign Subcollector" action="unassign" 
+            visibleWhen="#{entity.assignee?.objid!=entity.owner?.objid}" role="COLLECTOR" />
+        
+        <invoker type="formActions" caption="Change Mode" action="changeMode" 
+            visibleWhen="#{entity.txnmode!='REMOTE'}" role="COLLECTOR" />
+        
+        <invoker type="formActions" caption="Assign Fund" action="assignFund" 
+            visibleWhen="#{entity.afid == '51' &amp;&amp; entity.fund?.objid==null}" 
+            role="COLLECTOR" />
+        
+        <invoker type="formActions" caption="Unassign Fund" action="unassignFund" 
+            visibleWhen="#{entity.afid == '51' &amp;&amp; entity.fund?.objid!=null}"
+            role="COLLECTOR" />
+            
+        <invoker type="formActions" caption="Cancel Series" action="cancelseries" 
+            visibleWhen="#{entity!=null}" role="COLLECTOR" />
+        <invoker type="formActions" caption="Export" action="doExport" role="COLLECTOR"/>
+        <invoker type="formActions" caption="Import" action="doImport" role="COLLECTOR"/>
+        
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.AFControlModel" />
+   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.AFControlPage" />
+    </pages> 
+       
+</workunit>

@@ -1,0 +1,3 @@
+"entity.objid" [ mode != 'create' ] {
+    enabled: false;
+}

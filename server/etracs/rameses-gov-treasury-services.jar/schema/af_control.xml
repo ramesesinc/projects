@@ -1,27 +1,42 @@
 <schema>
 
 	<element  tablename="af_control">
-		<field name="objid" primary="true" /> 
-		<field name="afid" required="true" /> 
-		<field name="txnmode" /> 
-		<field name="assignee_objid" required="true" /> 
-		<field name="assignee_name" required="true" /> 
-		<field name="startseries" required="true" /> 
-		<field name="currentseries" required="true" /> 
-		<field name="endseries" required="true" /> 
-		<field name="active" required="true" /> 
+		<field name="objid" primary="true" prefix="AFCTRL"/> 
+		<field name="state" required="true" /> 
+		<field name="afid" required="true" caption="AF No"/> 
+		<field name="txnmode" caption="Txn Mode"/> 
+		<field name="assignee_objid"  /> 
+		<field name="assignee_name"  caption="Assignee"/> 
+		<field name="startseries" required="true" caption="Start Series" type="integer"/> 
+		<field name="currentseries" required="true" caption="Current Series" type="integer"/> 
+		<field name="endseries" required="true" caption="End Series" type="integer"/> 
+		<field name="active" required="true" caption="Active" type="integer"/> 
 		<field name="org_objid"  /> 
 		<field name="org_name"  /> 
 		<field name="fund_objid"  /> 
-		<field name="fund_title"  /> 
-		<field name="stubno" required="true" /> 
-		<field name="owner_objid" required="true"/> 
-		<field name="owner_name" required="true"/> 
+		<field name="fund_title"  caption="Fund Title" /> 
+		<field name="stubno" required="true" caption="Stub No" /> 
+		<field name="unit" caption="Unit" required="true" /> 
+		<field name="owner_objid" /> 
+		<field name="owner_name" caption="Issued To"/> 
 		<field name="prefix" /> 
 		<field name="suffix" /> 
 		<field name="dtfiled" required="true" /> 
-		<field name="currentindexno" required="true" /> 
+		<field name="currentindexno" required="true" type="integer"/> 
+		<field name="batchno" /> 
+
+		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
+		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>
 		<field name="lockid" /> 
+
+		<field name="receiptid" /> 
+		<field name="respcenter_objid" /> 
+		<field name="respcenter_name" /> 
+
+		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title" required="false">
+			<key field="afid" target="objid" />
+		</complex>	
 	</element> 
+
 
 </schema>

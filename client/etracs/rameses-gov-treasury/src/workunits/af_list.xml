@@ -1,5 +1,5 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="AFService" entityName="af" formName="af-list">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="af">
     <invokers>
-        <invoker folderid="/explorer/master/treasury" caption="Accountable Forms" role="MASTER"/>
+        <invoker folderid="menucategory/treasury/af" caption="Accountable Forms" role="MASTER" action="init"/>
    </invokers>
 </workunit>

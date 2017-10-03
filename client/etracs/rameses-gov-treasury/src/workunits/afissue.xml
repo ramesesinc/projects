@@ -1,0 +1,11 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit schemaName="afissue" allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker type="afissue:open" caption="Accountable Form Issuance" formTitle="Accountable Form Issuance" action="open" role="AFO"/>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.AFIssueModel" />
+   
+    <pages>
+       <page template="com.rameses.enterprise.treasury.views.AFIssuePage" />
+    </pages>
+</workunit>

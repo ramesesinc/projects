@@ -1,0 +1,3 @@
+"entity.txntype" [ mode == "edit" ]{
+    enabled:false;
+}

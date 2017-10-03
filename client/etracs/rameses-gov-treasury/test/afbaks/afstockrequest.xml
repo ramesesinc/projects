@@ -17,7 +17,7 @@
         --> 
         
         <invoker type="afrequest:create" caption="AF Request" action="create" role="COLLECTOR,AFO" target="window"/>
-        <invoker type="afrequest:open" caption="AF Request" action="open" role="COLLECTOR,AFO" target="window"/>
+        <invoker type="afrequest1:open" caption="AF Request" action="open" role="COLLECTOR,AFO" target="window"/>
         
         <invoker type="formActions" caption="Delete" action="delete" role="AFO" visibleWhen="#{mode=='read' &amp;&amp; entity.state=='OPEN'}"/>
         
@@ -36,7 +36,8 @@
 
         <invoker type="quick_launcher" code="AFREQC" caption="Collection Request" role="AFO,COLLECTOR" action="initReqCollection" target="window" index="10"/>
         <invoker type="quick_launcher" code="AFREQP" caption="Purchase Stock Request" role="AFO" action="initReqPurchase" target="window" index="10"/>
-        <invoker type="quick_launcher" code="AFREQS" caption="Sale Request" role="AFO" action="initReqSale" target="window" index="10"/>        
+        <invoker type="quick_launcher" code="AFREQS" caption="Sale Request" role="AFO" action="initReqSale" target="window" index="10"/>      
+        
     </invokers>
     
     <code>

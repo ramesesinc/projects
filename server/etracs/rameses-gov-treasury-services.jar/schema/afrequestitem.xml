@@ -1,0 +1,16 @@
+<schema>
+	<element name="afrequestitem" tablename="stockrequestitem">
+		<field name="objid" primary="true"/>			
+		<field name="parentid" required="true"/>
+		<field name="item_objid" required="true"/>
+		<field name="item_title" required="true"/>
+
+		<field name="unit" required="true"/>
+		<field name="qty" required="true" type="integer"/>
+		<field name="qtyreceived" required="true" type="integer" defaultValue="0"/>
+
+		<complex name="item" ref="af" jointype="many-to-one" required="false" includefields="code">
+			<key field="item_objid" target="objid" />
+		</complex> 
+	</element>	
+</schema>

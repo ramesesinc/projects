@@ -30,7 +30,7 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="treasury" caption="Treasury" icon="home/icons/treasury.png">
+        <folder id="treasury" caption="Treasury 2" icon="home/icons/treasury.png">
             <folder id="af" caption="Accountable Forms"/>
             <folder id="remittance" caption="Remittance"/>
             <folder id="liquidation" caption="Liquidation"/>
@@ -42,12 +42,14 @@
     </folder>   
     
     <folder id="menucategory">
-        <folder id="collection" caption="Collection">
+        <folder id="treasury" caption="Treasury">
             <folder id="af" caption="Accountable Forms" index="0" icon="home/icons/af.png"/>
             <folder id="cashreceipt" caption="Cash Receipt" index="1" icon="home/icons/cashreceipt.png"/>
+            <folder id="collection" caption="Collection" index="1" icon="home/icons/collection.png"/>
             <folder id="remittance" caption="Remittance" index="2" icon="home/icons/remittance.png"/>
             <folder id="liquidation" caption="Liquidation" index="3" icon="home/icons/liquidation.png"/>
             <folder id="deposit" caption="Deposit" index="4" icon="home/icons/deposit.png"/>
+            <folder id="monitor" caption="Monitoring" index="4" icon="home/icons/postledger.png"/>
         </folder>
     </folder>
 </folders>

@@ -2,11 +2,12 @@
     
    <invokers>
          <invoker type="deposit:create" caption="New Deposit" action="initNew" target="window"/>
-          <invoker type="deposit:open" caption="Deposit" action="open" role="CASHIER" target="window"/>
+         <invoker type="deposit:open" caption="Deposit" action="open" role="CASHIER" target="window"/>
           
           
          <invoker type="formActions" caption="Submit" action="submit" visibleWhen="#{mode == 'initial'}" />
-         
+         <invoker folderid="menucategory/treasury/deposit" caption="New Deposit" action="initNew" 
+                  role="CASHIER" target="window" index="-1"/>
             
          <!-- liquidate buttons -->
          <!--

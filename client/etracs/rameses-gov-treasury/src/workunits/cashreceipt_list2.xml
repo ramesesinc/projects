@@ -5,9 +5,6 @@
           orderBy="formno,receiptno">
     
     <invokers>
-        <invoker folderid="/home/collection" caption="Cash Receipts" 
-                 role="SHARED" permission="cashreceipt.list" action="init" />
-        
         <!--
         <invoker type="formActions" caption="Revert Void" action="revertVoid" 
                  role="ADMIN" permission="cashreceiptvoid.revert" 
@@ -15,8 +12,9 @@
         -->    
         
        <!-- menu panel -->
-        <invoker folderid="menucategory/collection/cashreceipt" caption="View Listing" 
-                 role="SHARED" permission="cashreceipt.list" action="init"  />          
+        <invoker folderid="menucategory/treasury/monitor" caption="View Cash Receipts" 
+                 formTitle="Cash Receipt List"
+                 role="SHARED,ADMIN" permission="cashreceipt.list" action="init"  />          
    </invokers>
         
     

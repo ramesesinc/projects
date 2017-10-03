@@ -1,0 +1,10 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af" allowCreate="false" allowEdit="false" allowDelete="false" >
+    <invokers>
+        <invoker type="af_collection:lookup" caption="Lookup AF" action="init" 
+                 customFilter="usetype='collection' " tag="lookup" 
+            cols="objid,title" hiddenCols="formtype"/>
+    </invokers>
+    
+   
+</workunit>

@@ -3,7 +3,7 @@
     orderBy="receiptdate desc">
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR"  action="init" orderBy="formno,receiptno"/>
-        <invoker folderid="home/collection" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR" 
+        <invoker folderid="menucategory/treasury/monitor" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR" 
                  action="init" target="window" index="10" orderBy="formno,receiptno"/>
         
         <invoker type="unremitted_collection:collector:view" caption="Unremitted Collections" role="COLLECTOR" 

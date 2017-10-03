@@ -1,12 +1,20 @@
 <schema>
-	<element name="af" tablename="af">
-		<field name="objid" primary="true"/>
+	<element tablename="af">
+		<field name="objid" primary="true" visible="true" searchable="true"/>
 		<field name="title" required="true"/>
+
 		<field name="usetype" required="true"/>
 		<field name="serieslength" required="true"/>
 		<field name="system" required="true"/>
 		<field name="denomination" required="true"/>
 		<field name="formtype" required="true"/>
+		<field name="baseunit" />
+		<field name="defaultunit" />
+
+		
+		<complex name="units" ref="afunit" jointype="one-to-many" >
+			<key field="objid" target="itemid" />
+		</complex>	
 	</element>
 </schema>
 

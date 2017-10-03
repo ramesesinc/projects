@@ -1,0 +1,20 @@
+<schema>
+
+	<element tablename="afreceipt">
+		<field name="objid" primary="true" prefix="AFRCT"/>	
+		<field name="state" required="true"/>
+		<field name="receiptno" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="user_objid" required="true"/>
+		<field name="user_name" required="true"/>
+
+		<field name="respcenter_objid"/>
+		<field name="respcenter_name" />
+
+		<complex name="items" ref="afreceiptitem" jointype="one-to-many">
+			<key field="objid" target="parentid" />
+		</complex>	
+	</element>
+	
+
+</schema>

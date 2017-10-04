@@ -38,10 +38,7 @@
             
             def receiptsListModel = [
                 fetchList: {
-                    if( !remitted ) 
-                        return service.getUnremittedReceipts([ collector:entity.collector, txndate: entity._txndate ]);
-                    else 
-                        return service.getRemittedReceipts([ objid:entity.objid ]);
+                    return service.getRemittedReceipts([ objid:entity.objid, remitted: remitted ]);
                 } 
             ] as BasicListModel;
         }      

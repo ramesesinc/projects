@@ -37,7 +37,7 @@ public class ChangeModePage extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(244, 184));
 
         xRadio1.setCaption("ONLINE");
-        xRadio1.setName("entity.txnmode"); // NOI18N
+        xRadio1.setName("data.txnmode"); // NOI18N
         xRadio1.setOptionValue("ONLINE");
         xRadio1.setText("ONLINE");
 
@@ -45,12 +45,12 @@ public class ChangeModePage extends javax.swing.JPanel {
         jLabel1.setText("Select a mode");
 
         xRadio2.setCaption("ONLINE");
-        xRadio2.setName("entity.txnmode"); // NOI18N
+        xRadio2.setName("data.txnmode"); // NOI18N
         xRadio2.setOptionValue("OFFLINE");
         xRadio2.setText("OFFLINE");
 
         xRadio3.setCaption("CAPTURE");
-        xRadio3.setName("entity.txnmode"); // NOI18N
+        xRadio3.setName("data.txnmode"); // NOI18N
         xRadio3.setOptionValue("CAPTURE");
         xRadio3.setText("CAPTURE");
 

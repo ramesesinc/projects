@@ -13,7 +13,7 @@ class AFListInterceptor  {
 		def r = evt.result;
 		def e = evt.args[0];
 		r.each {
-			it.units = unitEm.find( [itemid: it.objid ] ).list()*.unit;
+			it.units = unitEm.find( [itemid: it.objid ] ).select('unit,saleprice').list();
 		}
 	}
 	

@@ -8,9 +8,6 @@
 		<field name="system" required="true"/>
 		<field name="denomination" required="true"/>
 		<field name="formtype" required="true"/>
-		<field name="baseunit" />
-		<field name="defaultunit" />
-
 		
 		<complex name="units" ref="afunit" jointype="one-to-many" >
 			<key field="objid" target="itemid" />

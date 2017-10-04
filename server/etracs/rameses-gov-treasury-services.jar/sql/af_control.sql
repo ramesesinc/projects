@@ -179,3 +179,17 @@ update af_control set
   currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
 where 
   objid = $P{objid} 
+
+
+[syncCurrentIndexNoByReceipt]
+update af_control set 
+  currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
+where 
+  receiptid = $P{receiptid} 
+
+
+[syncCurrentIndexNoByIDs]
+update af_control set 
+    currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
+where 
+  objid in (${ids}) 

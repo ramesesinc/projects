@@ -23,5 +23,9 @@
 		<field name="qtycancelled" required="true" />
 		<field name="qtyending" required="true" />
 		<field name="remarks" required="true" />
+
+		<complex name="parent" ref="af_control" jointype="many-to-one" includefields="afid,batchno,stubno"> 
+			<key field="controlid" target="objid"/> 
+		</complex> 
 	</element>
 </schema>

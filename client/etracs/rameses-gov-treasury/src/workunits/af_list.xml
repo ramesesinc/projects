@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="af">
     <invokers>
-        <invoker folderid="menucategory/treasury/af" caption="Accountable Forms" role="MASTER" action="init"/>
+        <invoker folderid="menucategory/treasury/af" caption="AF Types" role="AFO" action="init"/>
    </invokers>
 </workunit>

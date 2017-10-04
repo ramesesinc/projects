@@ -1,0 +1,15 @@
+<schema>
+	<element tablename="vw_afunit">
+		<field name="objid" primary="true"/>
+		<field name="title" searchable="true"/>
+		<field name="usetype" />
+		<field name="serieslength" />
+		<field name="system" />
+		<field name="denomination" />
+		<field name="formtype" searchable="true"/>
+		<field name="itemid" searchable="true"/>
+		<field name="unit" searchable="true"/>
+		<field name="qty" />
+		<field name="saleprice" />
+	</element>
+</schema>

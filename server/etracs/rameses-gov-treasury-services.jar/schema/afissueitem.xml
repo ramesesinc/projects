@@ -10,6 +10,7 @@
 		<field name="qtyissued" required="true"/>
 		<field name="txntype" />
 		<field name="remarks" />
+		<field name="cost" />
 	</element>	
 
 </schema>

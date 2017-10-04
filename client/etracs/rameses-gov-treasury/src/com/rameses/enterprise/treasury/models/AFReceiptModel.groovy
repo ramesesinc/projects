@@ -13,12 +13,12 @@ class AFReceiptModel extends CrudFormModel {
     @Service("AFReceiptService")
     def afRct;
     
-    def txnTypes = ["PURCHASE", "BEGIN_BALANCE"];
+    def txnTypes = ["PURCHASE", "FORWARD"];
     def selectedItem;
     
     
     public def getUnitList() {
-        return selectedItem.item.units;
+        return selectedItem.item.units*.unit;
     }
     
     public void afterCreate() {
@@ -58,6 +58,8 @@ class AFReceiptModel extends CrudFormModel {
         e.unit = selectedItem.unit;
         e.qtyrequested = selectedItem.qtyrequested;
         e.qtyreceived = selectedItem.qtyreceived; 
+        e.cost = selectedItem.cost;
+        e.respcenter = entity.respcenter;
         if(!e.qtyreceived) e.qtyreceived = 0;
         return Inv.lookupOpener( "afreceiptitem_detail:add", [ entity:e, handler:h ] );
     }

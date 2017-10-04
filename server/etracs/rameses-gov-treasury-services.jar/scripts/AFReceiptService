@@ -23,10 +23,16 @@ class AFReceiptService  {
 	
 	@ProxyMethod
 	public void addNewBatch( def o ) {
+ 		int starter = (o.startseries ? Integer.parseInt( o.startseries ) : 0);
+		int stubno = o.startstub; 
+		int len = (o.ref.item.serieslength ? o.ref.item.serieslength : 10);	
+		def batchno = null; 
+		if ( o.ref.item.formtype=='serial') { 
+			batchno = o.ref.refno + "-"+ o.startseries.toString().padLeft(len, '0'); 
+		} else {
+			batchno = o.ref.refno + "-"+ o.startstub.toString().padLeft(len, '0'); 
+		} 
 
-		int starter = Integer.parseInt( o.startseries );
-		int stubno = o.startstub;
-		def batchno = o.ref.refno + "-"+ o.startstub.toString().padLeft(5, '0');
 		def afid = o.ref.item.objid;
 		(1..o.qty).each { 
 			def m = [:];
@@ -34,13 +40,16 @@ class AFReceiptService  {
 			m.afid = afid;
 			m.txnmode = 'ONLINE';
 			m.unit = o.ref.unit;
-			if( o.ref.item.formtype == 'serial' ) {
-				int len = o.ref.item.serieslength;	
+			if( o.ref.item.formtype == 'serial' ) {				
 				m.startseries = formatSeries( starter, len  );
 				m.currentseries = m.startseries;
 				m.endseries = formatSeries( starter + o.ref.unitqty - 1, len );
 				starter += o.ref.unitqty ;
-			};
+			} else {
+				m.startseries = 1;
+				m.endseries = o.ref.unitqty; 
+				m.currentseries = m.startseries; 
+			} 
 			m.dtfiled = o.ref.dtfiled;
 			m.stubno = stubno++;
 			m.active = 0;
@@ -49,7 +58,8 @@ class AFReceiptService  {
 			m.batchno = batchno;
 			m.currentindexno = 1;
 			m.receiptid = o.ref.refid;
-			//println m.afid + "->" + m.startseries + " " + m.endseries + " " + m.stubno;
+			m.respcenter = o.ref.respcenter; 
+			m.cost = o.ref.cost;
 			afControl.create(m);
 		};
 		def f = [parentid: o.ref.refid, "item_objid": afid];
@@ -70,12 +80,12 @@ class AFReceiptService  {
 	@ProxyMethod
 	public def post( def o ) {
 		def z = afRctItem.find( [parentid: o.objid] ).select( "q1:{SUM(qtyrequested)},q2:{SUM(qtyreceived)}" ).first();
-		if(z.q1 != z.q2)
-			throw new Exception("Please ensure that all qty requested equal to qty received");
+		if (z.q1 != z.q2) throw new Exception("Please ensure that all qty requested equal to qty received");
 
-		//check first if qty requested = qty received
-		afRct.find( [objid: o.objid] ).update([state: 'POSTED']);
-		afControl.find([receiptid: o.objid]).update( [state:'OPEN']);
+		afRct.find([ objid: o.objid ]).update([state: 'POSTED']);
+		afRct.post([ objid: o.objid ]); 
+		afControl.find([ receiptid: o.objid ]).update( [state:'OPEN']); 
+		afControl.syncCurrentIndexNoByReceipt([ receiptid: o.objid ]); 
 	}
 
 }

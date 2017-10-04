@@ -8,37 +8,98 @@ class AFIssueService  {
 	@DataContext("af_control")
 	def afControl;
 
+	@DataContext("afissue")
+	def afissue;
+
 	@Env
 	def env;
+
+	@Service('DateService')
+	def dateSvc;  
+
+	@Service("SequenceService") 
+	def seqSvc;
+
 
     def formatSeries( def o,  int len ) {
     	return  o.toString().padLeft( len, '0');
     }
 	
 	public def getOpenAF( def o ) {
-		def respCenterId = o.respcenter?.objid;
 		def qty = o.qty;
 		def afid = o.afid;
-		//afControl.debug = true;
+		def respCenterId = o.respcenter?.objid;
+		def whereStr = 'currentseries <= endseries';
+		def whereParam = [:];
+		if( respCenterId ) { 
+			whereParam.rid = respCenterId; 
+			whereStr += " and respcenter.objid = :rid"; 
+		} 
 
-		def scols = "batchno,startseries:{ MIN(startseries) },endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)},qty:{COUNT(*)}"; 
-		afControl.find( [afid: afid, state:'OPEN'] ).select(scols).groupBy("batchno").orderBy("dtfiled").limit(qty);
+		def list = afControl.find([ afid: afid, state: 'OPEN' ]).where( whereStr, whereParam )
+				 			.select('objid,afid,startseries,endseries,stubno,batchno')
+				 			.orderBy('dtfiled, batchno, startseries')
+				 			.list(0, qty); 
+		if ( !list ) throw new Exception('No available stocks for accountable form #'+ afid); 
 
-		if( respCenterId ) {
-			afControl.where( "respcenter.objid = :rid", [rid: respCenterId ] );
-		}
-		return afControl.list();
+		def results = []; 
+		list.groupBy{[ afid: it.afid, batchno: it.batchno ]}.each{ k,v-> 
+			def afmin = v.min{ it.startseries } 
+			def afmax = v.max{ it.endseries } 
+			def m = [:]; 
+			m.putAll( k ); 
+			m.startseries = afmin.startseries;
+			m.startstub = afmin.stubno; 
+			m.endseries = afmax.endseries; 
+			m.endstub = afmax.stubno; 
+			results << m; 
+		} 
+		return [ items: results, controls: list.collect{ it.objid }];
 	}
 
 	@ProxyMethod
 	public def fetchOpenAF( def o ) {
-		o.items.each {
-			it.items = getOpenAF( [afid:it.item.objid, qty: it.qtyissued, respcenter: o.respcenter ] );
-			if( !it.items ) {
-				throw new Exception("There are no available stock for " + it.item.title );
-			}
-		}
+		o.items.each { 
+			def result = getOpenAF( [afid:it.item.itemid, qty: it.qtyissued, respcenter: o.respcenter ] );
+			if( !result.items ) throw new Exception("There are no available stock for " + it.item.title );
+
+			it.items = result.items; 
+			it.controls = result.controls; 			
+		} 
 		return o;
 	}
 
-}
+	@ProxyMethod 
+	public def post( o ) { 
+		o.user = [objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE]; 
+		o.issueno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
+		o.dtfiled = o.dtissued;
+		o.state = 'POSTED';
+		def a = afissue.create( o );  
+
+		o.items.each{ bb-> 
+			bb.controls.each{ 
+				def p = [ state:'ISSUED', owner: o.issueto, assignee: o.issueto ]; 
+				def txntype = bb.txntype.toString().toUpperCase(); 
+				if ( txntype == 'SALE' ) { 
+					p.currentseries = '{endseries+1}'; 
+				} 
+
+				def m = [ objid: it ]; 
+				afControl.find( m ).update( p ); 
+				afControl.syncCurrentIndexNo( m ); 
+
+				m = [ objid: a.objid, controlid: it, detailid: 'AFD'+ new java.rmi.server.UID() ]; 
+				if ( txntype == 'SALE' ) {
+					m.txntype = 'SALE'; 
+					m.remarks = 'SOLD TO '+ o.issueto.name; 
+				} else { 
+					m.txntype = 'ISSUANCE';
+					m.remarks = 'ISSUED TO '+ o.issueto.name; 
+				} 
+				afissue.post( m ); 
+				afControl.syncCurrentIndexNo([ objid: it ]);  
+			}
+		} 
+	} 
+} 

@@ -32,6 +32,7 @@
 		<field name="receiptid" /> 
 		<field name="respcenter_objid" /> 
 		<field name="respcenter_name" /> 
+		<field name="cost" /> 
 
 		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title" required="false">
 			<key field="afid" target="objid" />

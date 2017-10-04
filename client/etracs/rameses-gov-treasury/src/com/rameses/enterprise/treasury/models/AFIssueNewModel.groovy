@@ -54,25 +54,40 @@ class AFIssueNewModel extends CrudPageFlowModel {
     }
     
     public def getUnitList() {
-        return selectedItem.item.units;
+        return selectedItem.item.units*.unit;
     }
     
     def itemListHandler = [
         fetchList : { o->
             return entity.items;
         },
-        onAddItem: { o->
+        onAddItem: { o-> 
+            if ( !o.qtyrequested ) o.qtyrequested = o.qtyissued;
+            
             entity.items << o;
         },
         onRemoveItem: { o->
             entity.items.remove(o);
         },
         onColumnUpdate: { o,colName->
-            if(colName=="qtyissued" && afrequest!=null) {
-                if( o.qtyissued > o.qtyrequested ) throw new Exception("Qty to issue must be less than qty requested");
+            if ( colName == "item" ) {
+                o.item.objid = o.item.itemid;
+                o.unit = o.item.unit; 
+                o.saleprice = o.item.saleprice; 
+                computeCost( o ); 
             }
+            if(colName=="qtyissued") { 
+                if ( afrequest && o.qtyissued > o.qtyrequested ) 
+                    throw new Exception("Qty to issue must be less than qty requested");
+
+                computeCost( o ); 
+            } 
         }
     ] as EditorListModel;
+    
+    private void computeCost( o ) {
+        o.cost = (o.qtyissued ? o.qtyissued : 0) * (o.saleprice ? o.saleprice : 0.0); 
+    }
     
     public def getInfo() {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/templates/AFIssueDetail.gtpl", [entity:entity] );
@@ -80,18 +95,15 @@ class AFIssueNewModel extends CrudPageFlowModel {
     
     
     void loadOpenAF() {
-        if(afrequest!=null) {
+        if ( afrequest != null ) {
             def list = entity.items.findAll{ it.qtyrequested!=null && it.qtyrequested > it.qtyissued };
-            if(list) {
-                throw new Exception("Qty Issued must be less than or equal to the qty requested")
-            }
+            if ( list ) throw new Exception("Qty Issued must be less than or equal to the qty requested")
         }
         
         entity = svc.fetchOpenAF(entity);
     }
     
-    void post() {
-        MsgBox.alert('post!');
+    void post() { 
+        svc.post( entity ); 
     }
-    
 }    

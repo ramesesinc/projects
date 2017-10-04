@@ -26,7 +26,7 @@ class AFRequestModel extends CrudFormModel {
     }
     
     public def getUnitList() {
-        return selectedItem.item.units;
+        return selectedItem.item.units*.unit;
     }
     
 }    

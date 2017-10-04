@@ -51,7 +51,7 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
         xSeparator4 = new com.rameses.rcp.control.XSeparator();
         xNumberField7 = new com.rameses.rcp.control.XNumberField();
         xNumberField8 = new com.rameses.rcp.control.XNumberField();
@@ -213,9 +213,10 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         xLabel3.setPreferredSize(new java.awt.Dimension(150, 22));
         formPanel2.add(xLabel3);
 
-        xIntegerField2.setCaption("Unit Qty");
-        xIntegerField2.setName("entry.qty"); // NOI18N
-        formPanel2.add(xIntegerField2);
+        xLabel5.setCaption("Unit");
+        xLabel5.setExpression("#{ entry.qty }");
+        xLabel5.setPreferredSize(new java.awt.Dimension(150, 22));
+        formPanel2.add(xLabel5);
 
         xSeparator4.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -302,10 +303,10 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel2;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;

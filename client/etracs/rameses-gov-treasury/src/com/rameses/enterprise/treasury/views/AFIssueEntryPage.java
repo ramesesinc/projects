@@ -48,7 +48,7 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "item.objid"}
                 , new Object[]{"caption", "Item Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -78,24 +78,23 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "unit"}
                 , new Object[]{"caption", "Unit"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "CENTER"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("item.unittypes", null, null)}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "qtyrequested"}
                 , new Object[]{"caption", "Qty Requested"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -110,7 +109,7 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "qtyissued"}
                 , new Object[]{"caption", "Qty To Issue"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -122,6 +121,22 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 , new Object[]{"alignment", "CENTER"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "cost"}
+                , new Object[]{"caption", "Cost"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", true}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "txntype"}
@@ -150,7 +165,7 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "item"}
                 , new Object[]{"caption", "Item Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -160,7 +175,7 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.item.objid}", "af_collection:lookup")}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.item.itemid}", "afunit_collection:lookup")}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.title"}
@@ -181,24 +196,23 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 new Object[]{"name", "unit"}
                 , new Object[]{"caption", "Unit"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
+                , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "CENTER"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("unitList", null, null)}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "qtyissued"}
                 , new Object[]{"caption", "Qty To Issue"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", true}
                 , new Object[]{"resizable", true}
@@ -210,6 +224,22 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
                 , new Object[]{"alignment", "CENTER"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "cost"}
+                , new Object[]{"caption", "Cost"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", true}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "txntype"}

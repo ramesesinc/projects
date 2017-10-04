@@ -1,0 +1,30 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit schemaName="afissue">
+    <invokers>
+        <invoker type="afissue:create" caption="Issue Accountable Form" formTitle="New Issue" action="start" role="AFO"/>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.AFIssueNewModel" />
+    <pageflow>
+        <start>
+            <transition to="initial" />
+        </start>
+        <page name="initial" title="New Accountable Form Issuance" action="create">
+            <transition to="entry" caption="Next"  action="initNew" immediate="false"/>
+        </page>
+        <page name="entry" title="Enter Qty To Issue">
+            <transition to="initial" caption="Back" />
+            <transition to="view" caption="Next" action="loadOpenAF" immediate="false"/>
+        </page>
+        <page name="view" title="Accountable Form Issuance">
+            <transition to="entry" caption="Back" />
+            <transition to="end" caption="Post" confirm="This will immediately update the inventory. Proceed?" action="post"/>
+        </page>
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="initial" template="com.rameses.enterprise.treasury.views.AFTxnInitialPage" />
+        <page name="entry"  template="com.rameses.enterprise.treasury.views.AFIssueEntryPage" />
+        <page name="view" template="com.rameses.enterprise.treasury.views.AFIssuePage" />
+    </pages>
+</workunit>

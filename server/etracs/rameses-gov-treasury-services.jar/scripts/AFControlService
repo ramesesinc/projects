@@ -11,59 +11,6 @@ class AFControlService  {
 	@Env
 	def env;
 
-	@ProxyMethod
-	public def getColumns(o) {
-	    return [
-	        [name:'afid', caption:'AF No'],
-	        [name:'startseries', caption:'Start Series', alignment:'CENTER'],
-	        [name:'endseries', caption:'End Series', alignment:'CENTER'],
-	        [name:'currentseries', caption:'Current Series', alignment:'CENTER'],
-	        [name:'stubno', caption:'Stub No', alignment:'CENTER', maxWidth:60],
-	        [name:'qtybalance', caption:'Balance', alignment:'CENTER', maxWidth:70 ],
-	        [name:'qtyissued', caption:'Qty Issued', alignment:'CENTER', maxWidth:70],
-	        [name:'active', caption:'Active', type:'checkbox', checkedValue:1, uncheckedValue:0, maxWidth:70],
-	        [name:'txnmode', caption:'Mode', width:100],
-	        [name:'fund.title', caption:'Fund' ],
-	        [name:'assignee.name', caption:'Assignee'],
-	    ];    
-	}
-
-	@ProxyMethod
-	public def getOpenList( def o ) {
-		o._pagingKeys = 'a.objid';
-		if(! o.userid ) o.userid = env.USERID; 
-
-		def filters = []; 
-		if ( o.filter ) filters << o.filter; 
-		if ( o.formno ) filters << ''' afid = $P{formno} ''';
-		
-		if ( filters ) {
-			o.filter = ' AND '+ filters.join(' AND '); 
-		} else { 
-			o.filter = ''; 
-		} 
-		return em.getOpenList( o ); 
-	} 
-
-	@ProxyMethod
-	public def getAssigneeOpenList( def o ) { 
-		o.userid = env.USERID;
-		o.filter = ''
-
-		if( o.collectiontype?.fund?.objid ) {
-			o.fundid = o.collectiontype.fund.objid 
-			o.filter = ''' and fund_objid=$P{fundid}  '''
-		}
-		return em.getAssigneeOpenList(o);
-	}
-
-
-	@ProxyMethod
-	public def getAssigneeIssuanceList(def o){
-		def p = [userid : ( o.userid ? o.userid:env.USERID ) , formno: o.formno]
-		return  em.getAssigneeIssuanceList(p);
-	}
-
 	@ProxyMethod 
 	public void assignFund(entity) {
 		def params = [

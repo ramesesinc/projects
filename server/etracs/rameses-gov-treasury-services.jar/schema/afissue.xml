@@ -1,0 +1,25 @@
+<schema>
+
+	<element tablename="afissue">
+		<field name="objid" primary="true"/>	
+		<field name="state" required="true"/>
+		<field name="request_objid" required="true"/>
+		<field name="request_reqno" required="true"/>
+		<field name="issueno" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="reqtype" required="true"/>
+		<field name="user_objid" required="true"/>
+		<field name="user_name" required="true"/>
+		<field name="issueto_objid" required="true"/>
+		<field name="issueto_name" required="true"/>
+		<field name="issueto_title" />	
+
+		<field name="respcenter_objid" />	
+		<field name="respcenter_name" />	
+
+		<complex name="items" ref="afissueitem" jointype="one-to-many">
+			<key field="objid" target="parentid" />	
+		</complex> 	
+	</element>
+	
+</schema>

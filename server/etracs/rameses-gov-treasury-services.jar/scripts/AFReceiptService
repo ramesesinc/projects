@@ -1,0 +1,81 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+class AFReceiptService  {
+
+	@DataContext("af_control")
+	def afControl;
+
+	@DataContext("afreceiptitem")
+	def afRctItem;
+
+	@DataContext("afreceipt")
+	def afRct;
+
+	@Env
+	def env;
+
+    def formatSeries( def o,  int len ) {
+    	return  o.toString().padLeft( len, '0');
+    }
+	
+	@ProxyMethod
+	public void addNewBatch( def o ) {
+
+		int starter = Integer.parseInt( o.startseries );
+		int stubno = o.startstub;
+		def batchno = o.ref.refno + "-"+ o.startstub.toString().padLeft(5, '0');
+		def afid = o.ref.item.objid;
+		(1..o.qty).each { 
+			def m = [:];
+			m.state = 'DRAFT';
+			m.afid = afid;
+			m.txnmode = 'ONLINE';
+			m.unit = o.ref.unit;
+			if( o.ref.item.formtype == 'serial' ) {
+				int len = o.ref.item.serieslength;	
+				m.startseries = formatSeries( starter, len  );
+				m.currentseries = m.startseries;
+				m.endseries = formatSeries( starter + o.ref.unitqty - 1, len );
+				starter += o.ref.unitqty ;
+			};
+			m.dtfiled = o.ref.dtfiled;
+			m.stubno = stubno++;
+			m.active = 0;
+			m.prefix = o.prefix;
+			m.suffix = o.suffix;
+			m.batchno = batchno;
+			m.currentindexno = 1;
+			m.receiptid = o.ref.refid;
+			//println m.afid + "->" + m.startseries + " " + m.endseries + " " + m.stubno;
+			afControl.create(m);
+		};
+		def f = [parentid: o.ref.refid, "item_objid": afid];
+		afRctItem.find( f ).update( [qtyreceived: "{qtyreceived + :qty}"], [qty: o.qty] ); 
+		def z = afRctItem.find( f ).select( "qtyrequested,qtyreceived" ).first();
+		if( z.qtyreceived > z.qtyrequested )
+			throw new Exception("Qty received must be less than or equal to qty requested");
+		
+	}
+
+	@ProxyMethod
+	public def removeBatch( def o ) {
+		def z = afControl.find( [batchno: o.batchno ] ).select("qty:{COUNT(*)}").first();
+		afControl.find( [batchno: o.batchno ] ).delete();
+		afRctItem.find( [objid: o.refid] ).update( [qtyreceived: "{qtyreceived - :qty}"], [qty: z.qty] ); 
+	}
+
+	@ProxyMethod
+	public def post( def o ) {
+		def z = afRctItem.find( [parentid: o.objid] ).select( "q1:{SUM(qtyrequested)},q2:{SUM(qtyreceived)}" ).first();
+		if(z.q1 != z.q2)
+			throw new Exception("Please ensure that all qty requested equal to qty received");
+
+		//check first if qty requested = qty received
+		afRct.find( [objid: o.objid] ).update([state: 'POSTED']);
+		afControl.find([receiptid: o.objid]).update( [state:'OPEN']);
+	}
+
+}

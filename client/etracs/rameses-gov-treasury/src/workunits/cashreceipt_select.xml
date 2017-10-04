@@ -9,6 +9,15 @@
         
         <invoker type="cashreceipt:subcollector:create" caption="Collector Cash Receipt" icon="home/icons/cashreceipt.png"
                  action="init" target="window" role="SUBCOLLECTOR" />
+        
+        
+        
+        <!-- menu panel -->
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="Issue Receipt" 
+                 windowTitle="Cash Receipt Issuance"
+                 formTitle="Cash Receipt Issuance"
+                 action="init" target="window" role="COLLECTOR" index="-1"/>
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.CashReceiptSelectionModel" />

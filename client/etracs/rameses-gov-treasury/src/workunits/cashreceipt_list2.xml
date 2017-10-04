@@ -1,18 +1,20 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="cashreceipt" 
           allowCreate="false" allowEdit="false" allowDelete="false"
+          cols="formno,receiptno,txnmode,receiptdate,paidbyname,collector.name,collectiontype.name,amount,voided"
           orderBy="formno,receiptno">
     
     <invokers>
-        <invoker folderid="/home/collection" caption="Cash Receipts" 
-                 role="SHARED" permission="cashreceipt.list" action="init" 
-                 cols="formno,receiptno,txnmode,receiptdate,paidbyname,collector.name,collectiontype.name,amount,voided" />
-        
         <!--
         <invoker type="formActions" caption="Revert Void" action="revertVoid" 
                  role="ADMIN" permission="cashreceiptvoid.revert" 
                  visibleWhen="#{allowRevertVoid==true}"/>
-        -->         
+        -->    
+        
+       <!-- menu panel -->
+        <invoker folderid="menucategory/treasury/monitor" caption="View Cash Receipts" 
+                 formTitle="Cash Receipt List"
+                 role="SHARED,ADMIN" permission="cashreceipt.list" action="init"  />          
    </invokers>
         
     

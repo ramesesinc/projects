@@ -1,6 +1,8 @@
-<workunit extends="wtemplates/ListController.xml" serviceName="AFRequestListService" 
-          entityName="afrequest" tag="list" allowCreate="false">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="afrequest" allowCreate="false">
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="AF Requests" role="AFO,COLLECTOR"/>
+        <invoker folderid="menucategory/treasury/af" caption="AF Request List" 
+                 action="init"
+                 cols="reqno,dtfiled,reqtype,requester.name,org.name"
+                 formTitle="AF Request List" role="AFO,COLLECTOR"/>
     </invokers>
 </workunit>

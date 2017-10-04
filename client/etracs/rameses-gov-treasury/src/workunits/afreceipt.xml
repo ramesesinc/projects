@@ -1,0 +1,14 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit schemaName="afreceipt" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker type="afreceipt:create" caption="Receive Accountable Form" formTitle="New AF Receipt" action="create"/>
+        <invoker type="afreceipt:open" caption="Receive Accountable Form" formTitle="AF Receipt #{entity.receiptno}" action="open"/>
+        
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{entity.state == 'DRAFT' &amp;&amp; mode=='read' }" />
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.AFReceiptModel" />
+    <pages>
+        <page name="default" template="com.rameses.enterprise.treasury.views.AFReceiptPage" />
+        <page name="create" template="com.rameses.enterprise.treasury.views.AFReceiptEntryPage" />
+    </pages>
+</workunit>

@@ -15,6 +15,7 @@ public class AFControlMonitorQuery extends javax.swing.JPanel {
      */
     public AFControlMonitorQuery() {
         initComponents();
+        
     }
 
     /**

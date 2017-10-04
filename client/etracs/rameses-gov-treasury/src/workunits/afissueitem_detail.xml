@@ -1,0 +1,46 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+        <invoker type="afissueitem:view" caption="AF Issue Item" action="init"/>
+    </invokers>
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+
+        class AFReceiptItemDetailModel {
+
+            def entry;
+
+            void init() {
+                entry.qty = entry.qtyissued;
+                MsgBox.alert( entry.item.formtype );
+                itemModel.reload();
+            }
+
+            def itemModel = [
+                fetchList: { o->
+                    return entry.items;
+                }
+
+            ] as EditorListModel;
+
+            def doCancel() {
+                return "_close";
+            }
+
+            def doOk() {
+                return "_close";
+            }
+        }    
+        ]]>
+        
+    </code>
+    <pages>
+       <page template="com.rameses.enterprise.treasury.views.AFItemDetailPage" />
+    </pages>
+</workunit>

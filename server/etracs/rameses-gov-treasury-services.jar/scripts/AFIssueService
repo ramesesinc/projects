@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+class AFIssueService  {
+
+	@DataContext("af_control")
+	def afControl;
+
+	@Env
+	def env;
+
+    def formatSeries( def o,  int len ) {
+    	return  o.toString().padLeft( len, '0');
+    }
+	
+	public def getOpenAF( def o ) {
+		def respCenterId = o.respcenter?.objid;
+		def qty = o.qty;
+		def afid = o.afid;
+		//afControl.debug = true;
+
+		def scols = "batchno,startseries:{ MIN(startseries) },endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)},qty:{COUNT(*)}"; 
+		afControl.find( [afid: afid, state:'OPEN'] ).select(scols).groupBy("batchno").orderBy("dtfiled").limit(qty);
+
+		if( respCenterId ) {
+			afControl.where( "respcenter.objid = :rid", [rid: respCenterId ] );
+		}
+		return afControl.list();
+	}
+
+	@ProxyMethod
+	public def fetchOpenAF( def o ) {
+		o.items.each {
+			it.items = getOpenAF( [afid:it.item.objid, qty: it.qtyissued, respcenter: o.respcenter ] );
+			if( !it.items ) {
+				throw new Exception("There are no available stock for " + it.item.title );
+			}
+		}
+		return o;
+	}
+
+}

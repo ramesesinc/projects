@@ -1,9 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="home/collection" 
-                 caption="Collection Process Flow" 
-                 icon="home/icons/processflow.png"
-                 index="-1"/>
+        <invoker type="menucategory/treasury:formActions" caption="Map" tooltip="View Process Map" icon="home/icons/processflow-small.png"/>
+        <invoker type="formActions" caption="Back" action="_close"/>
     </invokers> 
     
     <code>

@@ -1,0 +1,56 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFRequestInterceptor { 
+	
+	@Service("SequenceService") 
+	def seqSvc;
+
+	@Service("DateService") 
+	def dateSvc;
+
+	@Env
+	def env;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'afrequest' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.requester = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
+		o.org = [objid:env.ORGID, name:env.ORGNAME];
+		o.reqno = "RIS" + seqSvc.getNextFormattedSeries("RIS");
+		o.dtfiled = dateSvc.serverDate;
+		o.state = "OPEN";
+	}
+
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'afrequest' }")
+	public void getNodes( evt ) { 
+		def x = evt.args[0];
+		def result = evt.result; 
+		result << [ id:'open', title: 'Open', state:'OPEN' ];
+		result << [ id:'closed', title: 'Closed', state:'CLOSED' ];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'afrequest' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+
+		//o.debug = true;
+		if( !o.node?.id ) return;
+
+		def str = " state = :state ";
+		def m = [ state: o.node.state ]; 
+
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		} 
+	}	
+
+
+}

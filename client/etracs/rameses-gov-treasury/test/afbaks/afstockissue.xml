@@ -1,7 +1,11 @@
 <workunit extends="wtemplates/StockIssueController.xml">
     <invokers>
+        <invoker folderid="menucategory/treasury/af" caption="Issue Accountable Form" action="create" 
+                 role="AFO" target="window" index="1"/>
+        
+        
         <invoker folderid="/menu/txn/treasury/af" caption="Issue AF" action="create" role="AFO"/> 
-        <invoker folderid="home/treasury/af" caption="Issue AF" action="create" role="AFO" target="window" index="1"/>
+        
         <invoker type="quick_launcher" code="AFISS" caption="Accountable Form Issuance" action="create" role="AFO" target="window"/>
         
         <invoker type="issueafrequest:create" caption="Accountable Form Issuance" action="create" role="AFO" target="window"/>

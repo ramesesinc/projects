@@ -1,8 +1,8 @@
-<workunit>
+<workunit schemaName="af">
     
    <invokers>
-         <invoker type="af:create" caption="Accountable Form" action="create" />
-         <invoker type="af:open" caption="Accountable Form" action="open" />
+         <invoker type="af:create" caption="Accountable Form" action="create" target="popup"/>
+         <invoker type="af:open" caption="Accountable Form" action="open" target="popup" />
    </invokers>
    
    <code>
@@ -11,19 +11,17 @@
         import com.rameses.rcp.common.*;
         import com.rameses.rcp.annotations.*;
         import com.rameses.osiris2.client.*;
+        import com.rameses.seti2.models.*;
         
-        class AFController extends CRUDController {
+        class AFModel extends CrudFormModel {
             
-            @Service("AFService")
-            def service;
-            
-            String entityName = "af";
-            
-            def useTypes = ["collection", "disbursement", "general"];
+            def useTypes = ["collection", "disbursement"];
             def formTypes = [ "serial", "cashticket" ];
             
-            Map createEntity() {
-                return [ objid: '', system:0, serieslength:0, denomination:0 ]
+            void afterCreate() {
+                entity.system = 0;
+                entity.serieslength = 0;
+                entity.denomination = 0;
             }
             
         }      
@@ -31,7 +29,7 @@
    </code>
    
    <pages>
-       <page template="com.rameses.enterprise.treasury.af.AFPage" />
+       <page template="com.rameses.enterprise.treasury.views.AFPage" />
    </pages>
    
 </workunit>

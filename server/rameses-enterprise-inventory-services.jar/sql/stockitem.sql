@@ -12,7 +12,7 @@ itemclass, itemclass as caption
 FROM stockitem
 
 [getLookup]
-SELECT r.objid, r.code, r.title, su.unit 
+SELECT r.objid, r.code, r.title, su.unit, r.type, r.itemclass 
 FROM stockitem r
 INNER JOIN stockitem_unit su ON r.objid=su.itemid 
 WHERE r.itemclass =  $P{itemclass}

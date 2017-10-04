@@ -2,22 +2,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.af;
+package com.rameses.enterprise.treasury.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
- * @author dell
+ * @author Elmo Nazareno
  */
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
 @StyleSheet
 public class AFPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form AfPage
+     * Creates new form AFPage
      */
     public AFPage() {
         initComponents();
@@ -39,6 +39,8 @@ public class AFPage extends javax.swing.JPanel {
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jLabel1 = new javax.swing.JLabel();
 
         xFormPanel1.setCaptionWidth(100);
 
@@ -72,13 +74,55 @@ public class AFPage extends javax.swing.JPanel {
         xIntegerField1.setDepends(new String[] {"entity.formtype"});
         xIntegerField1.setName("entity.serieslength"); // NOI18N
         xIntegerField1.setRequired(true);
+        xIntegerField1.setVisibleWhen("#{ entity.formtype == 'serial' }");
         xFormPanel1.add(xIntegerField1);
 
         xDecimalField1.setCaption("Denomination");
         xDecimalField1.setDepends(new String[] {"entity.formtype"});
         xDecimalField1.setName("entity.denomination"); // NOI18N
         xDecimalField1.setRequired(true);
+        xDecimalField1.setVisibleWhen("#{ entity.formtype == 'cashticket' }");
         xFormPanel1.add(xDecimalField1);
+
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "unit"}
+                , new Object[]{"caption", "Unit"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "qty"}
+                , new Object[]{"caption", "Qty"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
+            })
+        });
+        xDataTable1.setHandler("itemHandlers.units");
+        xDataTable1.setId("itemHandlers.units");
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setText("Unit of Measure");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -86,20 +130,29 @@ public class AFPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(3, 3, 3)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;

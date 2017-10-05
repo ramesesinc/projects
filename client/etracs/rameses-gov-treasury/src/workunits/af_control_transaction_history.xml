@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="vw_af_control_detail" 
-          allowCreate="false" allowOpen="false" allowDelete="false" debug="true">
+          allowCreate="false" allowOpen="false" allowDelete="false" >
     <invokers>
         <invoker type="af_control:section" caption="Transaction History" action="init" parentid="controlid" 
             cols="refno,refdate,issuedto.name,startseries,endseries" hiddenCols="controlid"/>

@@ -34,10 +34,10 @@ public class AFControlPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
@@ -50,6 +50,9 @@ public class AFControlPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xSeparator4 = new com.rameses.rcp.control.XSeparator();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
 
         xTabbedPane1.setItems("sections");
@@ -62,29 +65,32 @@ public class AFControlPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xLabel1);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel2.setCaption("Issued To");
-        xLabel2.setExpression("#{ entity.owner.name }");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel2);
-
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaption("Assigned To");
-        xLabel7.setExpression("#{ entity.assignee.name }");
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel7);
-
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setCaption("Date Filed");
         xLabel3.setExpression("#{ entity.dtfiled }");
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xLabel3);
 
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel10.setCaption("Status");
+        xLabel10.setExpression("#{ entity.dtfiled }");
+        xLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel10.setName("entity.state"); // NOI18N
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLabel10);
+
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel8.setCaption("Txn Mode");
         xLabel8.setExpression("#{ entity.txnmode }");
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xLabel8);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setName("entity.active"); // NOI18N
+        xCheckBox1.setText("Active");
+        xCheckBox1.setUncheckValue(0);
+        formPanel1.add(xCheckBox1);
 
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -198,6 +204,25 @@ public class AFControlPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator4);
 
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel2.setCaption("Issued To");
+        xLabel2.setExpression("#{ entity.owner.name }");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLabel2);
+
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel7.setCaption("Sub Collector");
+        xLabel7.setExpression("#{ entity.assignee.name }");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel7.setVisibleWhen("#{ entity.assignee.objid != entity.owner.objid  }");
+        formPanel1.add(xLabel7);
+
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel9.setCaption("Resp. Center");
+        xLabel9.setExpression("#{ entity.respcenter.name }");
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLabel9);
+
         xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel6.setCaption("Fund");
@@ -219,8 +244,8 @@ public class AFControlPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(formPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -238,14 +263,16 @@ public class AFControlPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -253,6 +280,7 @@ public class AFControlPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XNumberField xNumberField4;

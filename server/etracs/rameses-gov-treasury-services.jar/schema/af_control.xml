@@ -4,13 +4,13 @@
 		<field name="objid" primary="true" prefix="AFCTRL"/> 
 		<field name="state" required="true" /> 
 		<field name="afid" required="true" caption="AF No" searchable="true" indexed="true"/> 
-		<field name="txnmode" caption="Txn Mode"/> 
+		<field name="txnmode" caption="Txn Mode" indexed="true"/> 
 		<field name="assignee_objid"  /> 
 		<field name="assignee_name"  caption="Assignee" searchable="true" indexed="true"/> 
 		<field name="startseries" required="true" caption="Start Series" type="integer" searchable="true" indexed="true"/> 
 		<field name="currentseries" required="true" caption="Current Series" type="integer"/> 
 		<field name="endseries" required="true" caption="End Series" type="integer"/> 
-		<field name="active" required="true" caption="Active" type="integer"/> 
+		<field name="active" required="true" caption="Active" type="integer" indexed="true"/> 
 		<field name="org_objid"  /> 
 		<field name="org_name"  /> 
 		<field name="fund_objid"  /> 
@@ -21,9 +21,9 @@
 		<field name="owner_name" caption="Issued To" searchable="true" indexed="true"/> 
 		<field name="prefix" /> 
 		<field name="suffix" /> 
-		<field name="dtfiled" required="true" type="date" caption="Date Filed"/> 
+		<field name="dtfiled" required="true" type="date" caption="Date Filed" /> 
 		<field name="currentindexno" required="true" type="integer"/> 
-		<field name="batchno" /> 
+		<field name="batchno" indexed="true" /> 
 
 		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
 		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>

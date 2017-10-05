@@ -2,27 +2,32 @@
      
     <invokers>
         
-        <invoker type="af_control:form:actions" caption="Activate" action="activate" 
+        <invoker type="af_control:form:actions" caption="Activate" action="activate" target="process"
                  visibleWhen="#{ entity.state=='ISSUED' &amp;&amp; entity.active ==0}" />
-        <invoker type="af_control:form:actions" caption="Deactivate" action="deactivate"
+                 
+        <invoker type="af_control:form:actions" caption="Deactivate" action="deactivate" target="process"
                  visibleWhen="#{entity.state=='ISSUED' &amp;&amp;  entity.active !=0}" />
-        <invoker type="af_control:form:actions" caption="Assign Subcollector" action="assign" 
+                 
+        <invoker type="af_control:form:actions" caption="Assign To Subcollector" action="assignSubcollector" target="process"
             visibleWhen="#{entity.state=='ISSUED' &amp;&amp; entity.assignee?.objid==entity.owner?.objid }"  />
         
-        <invoker type="af_control:form:actions" caption="Unassign Subcollector" action="unassign"   
+        <invoker type="af_control:form:actions" caption="Unassign Subcollector" action="unassignSubcollector" target="process"  
             visibleWhen="#{entity.state=='ISSUED' &amp;&amp;  entity.assignee?.objid!=entity.owner?.objid}" />        
         
-        <invoker type="af_control:form:actions" caption="Assign Fund" action="assignFund"  
-            xvisibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.afid == '51' &amp;&amp; selectedItem.fund?.objid==null}" />
+        <invoker type="af_control:form:actions" caption="Assign Fund" action="assignFund"  target="process"
+            visibleWhen="#{entity.state=='ISSUED' &amp;&amp; entity.fund?.objid==null}" />
         
-        <invoker type="af_control:form:actions" caption="Unassign Fund" action="unassignFund"  
-            xvisibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.afid == '51' &amp;&amp; selectedItem.fund?.objid!=null}"/>
+        <invoker type="af_control:form:actions" caption="Unassign Fund" action="unassignFund"  target="process"
+            visibleWhen="#{entity.state=='ISSUED' &amp;&amp; entity.fund?.objid!=null}"/>
+            
+        <invoker type="af_control:form:actions" caption="Change Mode"  action="changeMode" target="popup"
+                  xvisibleWhen="#{entity.state=='ISSUED'} "/>            
     </invokers>
    
-    <code class="com.rameses.enterprise.treasury.models.AFControlModel" />
+    <code class="com.rameses.enterprise.treasury.models.AFControlActionModel" />
    
     <pages>
-        <page template="com.rameses.enterprise.treasury.views.AFControlNewPage" />
+        <page name="changemode" template="com.rameses.enterprise.treasury.views.AFChangeModePage" />
     </pages> 
        
 </workunit>

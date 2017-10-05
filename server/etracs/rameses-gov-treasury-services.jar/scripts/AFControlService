@@ -1,7 +1,6 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
-import com.rameses.services.extended.*;
 
 class AFControlService  {
 
@@ -11,21 +10,43 @@ class AFControlService  {
 	@Env
 	def env;
 
-	@ProxyMethod 
-	public void assignFund(entity) {
-		def params = [
-			objid: entity.objid,
-			fundid: entity.fund.objid,
-			fundtitle: entity.fund.title 
-		]
-		em.assignFund( params );
+	@ProxyMethod
+	public void activate( def o ) {
+		em.find( [objid: o.objid] ).update( [active:1 ]);
+	}
+
+	@ProxyMethod
+	public void deactivate( def o ) {
+		em.find( [objid: o.objid] ).update( [active:0]);	
 	}
 
 	@ProxyMethod 
-	public void unassignFund(entity) {
-		em.unassignFund( entity );
+	public void assignFund(def o) {
+		em.find([objid: o.objid] ).update( [fund: o.fund ] );
 	}
 
+	@ProxyMethod 
+	public void unassignFund(def o) {
+		em.find([objid: o.objid] ).update( [fund: [objid: null, title: null] ] );
+	}
+
+	@ProxyMethod 
+	public void changeMode(def o) {
+		em.find([objid: o.objid] ).update( [txnmode: o.txnmode] );
+	}
+
+	@ProxyMethod
+	public void assignSubcollector(def o) {
+		em.find([objid: o.objid] ).update( [assignee: o.assignee] );
+	}
+
+	@ProxyMethod
+	public void unassignSubcollector(def o) {
+		em.find([objid: o.objid] ).update( [assignee: o.owner] );
+	}
+
+
+	/*
 	@ProxyMethod
 	public void activateControl(def p) {
 		def m = [:];
@@ -121,4 +142,5 @@ class AFControlService  {
 
 		return em.findAFSummary( params ); 
 	} 
+	*/
 }

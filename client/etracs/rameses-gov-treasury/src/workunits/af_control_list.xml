@@ -4,8 +4,8 @@
        
        <invoker folderid="menucategory/treasury/af" 
                 caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
-                cols="afid,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
-                orderBy="afid,startseries"/>
+                cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
+                orderBy="afid,dtfiled,startseries"/>
            
        <invoker folderid="menucategory/treasury/collection" 
                 caption="Manage Accountable Forms" formTitle="Collection Accountable Forms" role="COLLECTOR">
@@ -18,34 +18,7 @@
             <action name="init" role="SUBCOLLECTOR" /> 
         </invoker>
         
-        <!-- OWN TOOLBARS -->
-        <invoker type="listActions" caption="Activate" action="activate" 
-            visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.active ==0}" depends="selectedItem"/>
-            
-        <invoker type="listActions" caption="Deactivate" action="deactivate" 
-           visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.active !=0}" depends="selectedItem"/>
-                       
-        <invoker type="listActions" caption="Assign Subcollector" action="assign" 
-            visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.assignee?.objid==selectedItem.owner?.objid }" role="COLLECTOR" depends="selectedItem"/>
         
-        <invoker type="listActions" caption="Unassign Subcollector" action="unassign" 
-            visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.assignee?.objid!=selectedItem.owner?.objid}" role="COLLECTOR" depends="selectedItem"/>
-        
-        <invoker type="listActions" caption="Change Mode" action="changeMode" 
-            visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.txnmode!='REMOTE'}" role="COLLECTOR" depends="selectedItem"/>
-        
-        <invoker type="listActions" caption="Assign Fund" action="assignFund" 
-            visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.afid == '51' &amp;&amp; selectedItem.fund?.objid==null}" 
-            role="COLLECTOR" depends="selectedItem"/>
-        
-        <invoker type="listActions" caption="Unassign Fund" action="unassignFund" 
-            visibleWhen="#{selectedItem!=null &amp;&amp; selectedItem.afid == '51' &amp;&amp; selectedItem.fund?.objid!=null}"
-            role="COLLECTOR" depends="selectedItem"/>
-            
-        <invoker type="listActions" caption="Cancel Series" action="cancelseries" 
-            visibleWhen="#{selectedItem!=null}" role="COLLECTOR" depends="selectedItem"/>
-        <invoker type="listActions" caption="Export" action="doExport" role="COLLECTOR"/>
-        <invoker type="listActions" caption="Import" action="doImport" role="COLLECTOR"/>
    </invokers>
    
   

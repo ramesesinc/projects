@@ -15,9 +15,7 @@ class AFRequestModel extends CrudFormModel {
     
     void afterCreate() {
         entity.state = 'DRAFT';
-        entity.itemclass = 'AF';
         entity.items = [];
-        entity.reqtype = invoker.properties.reqtype;
     }
     
     public boolean isEditAllowed() { 
@@ -25,8 +23,10 @@ class AFRequestModel extends CrudFormModel {
         return super.isEditAllowed();
     }
     
-    public def getUnitList() {
-        return selectedItem.item.units*.unit;
+    public void afterColumnUpdate(String name, def o, String colName ) {
+        if( colName == "item" )  {
+            o.item.objid = o.item.itemid
+            o.unit = o.item.unit;
+        }        
     }
-    
 }    

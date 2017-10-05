@@ -34,7 +34,6 @@ class AFReceiptInterceptor {
 	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'afreceipt' }")
 	public void beforeOpen( evt ) { 
 		def result = evt.result;
-		//afcontrol.debug = true;
 		def scols = "batchno,afid,startseries:{MIN(startseries)},endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)}"; 
 		def list = vw_afcd.find([ refid: result.objid ]).select( scols ).groupBy("batchno,afid").list(); 
 		result.items.each { r->

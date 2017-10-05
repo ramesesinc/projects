@@ -1,5 +1,5 @@
 <schema>
-	<element name="afrequestitem" tablename="stockrequestitem">
+	<element tablename="afrequestitem">
 		<field name="objid" primary="true"/>			
 		<field name="parentid" required="true"/>
 		<field name="item_objid" required="true"/>

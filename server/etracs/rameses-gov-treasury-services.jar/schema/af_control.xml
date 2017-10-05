@@ -3,11 +3,11 @@
 	<element  tablename="af_control">
 		<field name="objid" primary="true" prefix="AFCTRL"/> 
 		<field name="state" required="true" /> 
-		<field name="afid" required="true" caption="AF No"/> 
+		<field name="afid" required="true" caption="AF No" searchable="true" indexed="true"/> 
 		<field name="txnmode" caption="Txn Mode"/> 
 		<field name="assignee_objid"  /> 
-		<field name="assignee_name"  caption="Assignee"/> 
-		<field name="startseries" required="true" caption="Start Series" type="integer"/> 
+		<field name="assignee_name"  caption="Assignee" searchable="true" indexed="true"/> 
+		<field name="startseries" required="true" caption="Start Series" type="integer" searchable="true" indexed="true"/> 
 		<field name="currentseries" required="true" caption="Current Series" type="integer"/> 
 		<field name="endseries" required="true" caption="End Series" type="integer"/> 
 		<field name="active" required="true" caption="Active" type="integer"/> 
@@ -18,10 +18,10 @@
 		<field name="stubno" required="true" caption="Stub No" /> 
 		<field name="unit" caption="Unit" required="true" /> 
 		<field name="owner_objid" /> 
-		<field name="owner_name" caption="Issued To"/> 
+		<field name="owner_name" caption="Issued To" searchable="true" indexed="true"/> 
 		<field name="prefix" /> 
 		<field name="suffix" /> 
-		<field name="dtfiled" required="true" /> 
+		<field name="dtfiled" required="true" type="date" caption="Date Filed"/> 
 		<field name="currentindexno" required="true" type="integer"/> 
 		<field name="batchno" /> 
 
@@ -30,7 +30,7 @@
 		<field name="lockid" /> 
 
 		<field name="respcenter_objid" /> 
-		<field name="respcenter_name" /> 
+		<field name="respcenter_name" indexed="true"/> 
 		<field name="cost" /> 
 
 		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title" required="false">

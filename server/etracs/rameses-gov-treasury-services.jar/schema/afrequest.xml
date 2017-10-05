@@ -1,11 +1,10 @@
 <schema>
-	<element name="afrequest" tablename="stockrequest">
+	<element tablename="afrequest">
 		<field name="objid" primary="true" prefix="AFREQ"/>	
 		<field name="state" />
 		<field name="reqno" required="true"  indexed="true" searchable="true"/>
 		<field name="dtfiled" required="true"/>
-		<field name="reqtype" required="true"/>
-		<field name="itemclass" required="true" indexed="true"/>
+		
 		<field name="requester_objid" required="true"/>
 		<field name="requester_name" required="true"  indexed="true" searchable="true"/>
 		<field name="requester_title" />

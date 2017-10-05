@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="af:changemode" caption="Change Mode" target="popup" />
+         <invoker type="af_control:form:actions" caption="Change Mode" target="popup"/>
     </invokers>
     <code>
     <![CDATA[    

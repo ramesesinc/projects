@@ -1,7 +1,7 @@
 <workunit>
         
    <invokers>
-        <invoker type="afcontrol:export" action="init" caption="Export AF Controls" />
+        <invoker type="af_control:form:actions" caption="Export" action="init" role="COLLECTOR"/>
         
         <invoker type="formActions" caption="Close" action="_close" icon="images/toolbars/cancel.png"/>
         <invoker type="formActions" caption="Export" action="doExport" />

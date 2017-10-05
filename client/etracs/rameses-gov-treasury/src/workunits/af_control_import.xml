@@ -1,7 +1,7 @@
 <workunit>
         
    <invokers>
-        <invoker type="afcontrol:import" action="init" caption="Import AF Controls" target="popup"/>
+        <invoker type="af_control:form:actions" caption="Import" action="init" role="COLLECTOR"/>
         
         <invoker type="formActions" caption="Close" action="_close" icon="images/toolbars/cancel.png"/>
         <invoker type="formActions" caption="Browse File to Import" action="doImport" visibleWhen="#{mode == 'init'}" />

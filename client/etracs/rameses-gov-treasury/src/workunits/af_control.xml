@@ -23,19 +23,8 @@
         <invoker type="formActions" caption="Import" action="doImport" role="COLLECTOR"/>
         -->
         
-        <invoker type="formActions" caption="Transaction" action="showMenu" context="transactions"/>
+        <invoker type="formActions" caption="Action" action="showMenu" context="actions"  role="COLLECTOR" />
         
-        <invoker type="af_control:form:transactions" caption="Activate" action="activate" role="COLLECTOR"
-                 visibleWhen="#{ entity.state=='ISSUED' &amp;&amp; entity.active ==0}" />
-        <invoker type="af_control:form:transactions" caption="Deactivate" action="deactivate" role="COLLECTOR"
-                 visibleWhen="#{entity.state=='ISSUED' &amp;&amp;  entity.active !=0}" />
-        <invoker type="af_control:form:transactions" caption="Assign Subcollector" action="assign" role="COLLECTOR"
-            visibleWhen="#{entity.state=='ISSUED' &amp;&amp; entity.assignee?.objid==entity.owner?.objid }"  />
-        
-        <invoker type="af_control:form:transactions" caption="Unassign Subcollector" action="unassign" role="COLLECTOR"  
-            visibleWhen="#{entity.state=='ISSUED' &amp;&amp;  entity.assignee?.objid!=entity.owner?.objid}" />
-        
-         
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.AFControlModel" />

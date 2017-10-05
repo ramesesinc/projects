@@ -17,10 +17,6 @@ class AFReceiptModel extends CrudFormModel {
     def selectedItem;
     
     
-    public def getUnitList() {
-        return selectedItem.item.units*.unit;
-    }
-    
     public void afterCreate() {
         entity.items = [];
     }
@@ -39,6 +35,12 @@ class AFReceiptModel extends CrudFormModel {
         },
         onRemoveItem: { o->
             entity.items.remove(o);
+        },
+        onColumnUpdate: { o,colName->
+            if( colName == "item" ) {
+                o.item.objid = o.item.itemid
+                o.unit = o.item.unit
+            }
         }
     ] as EditorListModel;
     
@@ -47,7 +49,6 @@ class AFReceiptModel extends CrudFormModel {
         def h = { vv->
             afRct.addNewBatch(vv);
             reloadEntity();
-            
         }
         selectedItem = entity.items.find{ it.item.objid == o.id };
         def e = [:];

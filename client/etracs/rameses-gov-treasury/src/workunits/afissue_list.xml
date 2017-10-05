@@ -3,6 +3,6 @@
     <invokers>
         <invoker folderid="menucategory/treasury/af" caption="AF Issuances" 
                  formTitle="Issuances List" action="init" role="AFO"
-                 cols="issueno,dtissued,issueto.name,txntype,state" />
+                 cols="controlno,dtissued,issueto.name,txntype,state" orderBy="controlno"/>
     </invokers>
 </workunit>

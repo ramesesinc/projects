@@ -33,10 +33,10 @@ public class AFIssuePage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         xHtmlView1 = new com.rameses.rcp.control.XHtmlView();
 
@@ -53,27 +53,27 @@ public class AFIssuePage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel2.setCaption("Date Issued");
-        xLabel2.setExpression("#{ entity.dtissued}");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel2);
+        xLabel4.setCaption("Req No");
+        xLabel4.setExpression("#{ entity.request.reqno }");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel4.setVisibleWhen("#{ entity.request != null }");
+        xFormPanel1.add(xLabel4);
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setCaption("Issue No");
-        xLabel3.setExpression("#{ entity.issueno }");
+        xLabel3.setExpression("#{ entity.controlno }");
         xLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel3);
 
-        xLabel4.setCaption("Req No");
-        xLabel4.setExpression("#{ entity.request.reqno }");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel4.setVisibleWhen("#{ entity.request != null }");
-        xFormPanel2.add(xLabel4);
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel2.setCaption("Date Issued");
+        xLabel2.setExpression("#{ entity.dtfiled}");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

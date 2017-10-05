@@ -98,20 +98,14 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
               <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder>
-                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
-                    </LineBorder>
-                  </Border>
-                </Property>
-                <Property name="caption" type="java.lang.String" value="Date Issued"/>
-                <Property name="expression" type="java.lang.String" value="#{ entity.dtissued}"/>
+                <Property name="caption" type="java.lang.String" value="Req No"/>
+                <Property name="expression" type="java.lang.String" value="#{ entity.request.reqno }"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
+                <Property name="visibleWhen" type="java.lang.String" value="#{ entity.request != null }"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -132,7 +126,7 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Issue No"/>
-                <Property name="expression" type="java.lang.String" value="#{ entity.issueno }"/>
+                <Property name="expression" type="java.lang.String" value="#{ entity.controlno }"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="12" style="1"/>
                 </Property>
@@ -141,14 +135,20 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
               <Properties>
-                <Property name="caption" type="java.lang.String" value="Req No"/>
-                <Property name="expression" type="java.lang.String" value="#{ entity.request.reqno }"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="caption" type="java.lang.String" value="Date Issued"/>
+                <Property name="expression" type="java.lang.String" value="#{ entity.dtfiled}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
-                <Property name="visibleWhen" type="java.lang.String" value="#{ entity.request != null }"/>
               </Properties>
             </Component>
           </SubComponents>

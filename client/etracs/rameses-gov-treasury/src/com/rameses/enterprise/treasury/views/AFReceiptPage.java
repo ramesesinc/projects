@@ -33,40 +33,30 @@ public class AFReceiptPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         xHtmlView1 = new com.rameses.rcp.control.XHtmlView();
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Requisition Info");
-        jPanel2.setBorder(xTitledBorder1);
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
 
         xLabel4.setCaption("Receipt No");
-        xLabel4.setExpression("#{ entity.receiptno }");
+        xLabel4.setExpression("#{ entity.controlno }");
         xLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel4);
 
-        xLabel5.setCaption("State");
-        xLabel5.setExpression("#{ entity.state }");
-        xLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel5);
+        xLabel6.setCaption("Receipt Date");
+        xLabel6.setExpression("#{ entity.dtfiled }");
+        xLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel6);
 
         xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setCaptionWidth(100);
-
-        xLabel6.setCaption("Receipt No");
-        xLabel6.setExpression("#{ entity.receiptno }");
-        xLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel3.add(xLabel6);
 
         xLabel7.setCaption("Resp. Center");
         xLabel7.setExpression("#{ entity.respcenter.name }");
@@ -74,31 +64,31 @@ public class AFReceiptPage extends javax.swing.JPanel {
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel7);
 
+        xLabel5.setCaption("State");
+        xLabel5.setExpression("#{ entity.state }");
+        xLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel3.add(xLabel5);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(449, 449, 449)
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(20, 20, 20)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(539, Short.MAX_VALUE)))
+                .addContainerGap(548, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                    .addContainerGap()))
         );
 
         xHtmlView1.setName("info"); // NOI18N
@@ -113,7 +103,7 @@ public class AFReceiptPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,7 +111,7 @@ public class AFReceiptPage extends javax.swing.JPanel {
                 .addGap(5, 5, 5)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

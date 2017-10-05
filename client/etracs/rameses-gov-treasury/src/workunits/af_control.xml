@@ -1,22 +1,11 @@
 <workunit schemaName="af_control">
      
     <invokers>
+        
         <invoker type="af_control:open" caption="AF Control" formTitle="AF Control" action="open" target="popup" />
         
-        
         <!-- control actions -->
-         <invoker type="formActions" caption="Activate" action="activate" 
-            visibleWhen="#{ entity.active ==0}" />
-            
-        <invoker type="formActions" caption="Deactivate" action="deactivate" 
-           visibleWhen="#{entity.active !=0}" />
-                       
-        <invoker type="formActions" caption="Assign Subcollector" action="assign" 
-            visibleWhen="#{entity.assignee?.objid==entity.owner?.objid }" role="COLLECTOR" />
-        
-        <invoker type="formActions" caption="Unassign Subcollector" action="unassign" 
-            visibleWhen="#{entity.assignee?.objid!=entity.owner?.objid}" role="COLLECTOR" />
-        
+        <!--
         <invoker type="formActions" caption="Change Mode" action="changeMode" 
             visibleWhen="#{entity.txnmode!='REMOTE'}" role="COLLECTOR" />
         
@@ -32,7 +21,21 @@
             visibleWhen="#{entity!=null}" role="COLLECTOR" />
         <invoker type="formActions" caption="Export" action="doExport" role="COLLECTOR"/>
         <invoker type="formActions" caption="Import" action="doImport" role="COLLECTOR"/>
+        -->
         
+        <invoker type="formActions" caption="Transaction" action="showMenu" context="transactions"/>
+        
+        <invoker type="af_control:form:transactions" caption="Activate" action="activate" role="COLLECTOR"
+                 visibleWhen="#{ entity.state=='ISSUED' &amp;&amp; entity.active ==0}" />
+        <invoker type="af_control:form:transactions" caption="Deactivate" action="deactivate" role="COLLECTOR"
+                 visibleWhen="#{entity.state=='ISSUED' &amp;&amp;  entity.active !=0}" />
+        <invoker type="af_control:form:transactions" caption="Assign Subcollector" action="assign" role="COLLECTOR"
+            visibleWhen="#{entity.state=='ISSUED' &amp;&amp; entity.assignee?.objid==entity.owner?.objid }"  />
+        
+        <invoker type="af_control:form:transactions" caption="Unassign Subcollector" action="unassign" role="COLLECTOR"  
+            visibleWhen="#{entity.state=='ISSUED' &amp;&amp;  entity.assignee?.objid!=entity.owner?.objid}" />
+        
+         
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.AFControlModel" />

@@ -9,8 +9,14 @@ class AFReceiptInterceptor {
 	@Service("SequenceService") 
 	def seqSvc;
 
+	@Service("DateService") 
+	def dateSvc;
+
 	@DataContext("af_control")
 	def afcontrol;
+
+	@DataContext("vw_af_control_detail")
+	def vw_afcd;
 
 	@Env
 	def env;
@@ -20,7 +26,8 @@ class AFReceiptInterceptor {
 		def o = evt.args[0];
 		o.user = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
 		o.org = [objid:env.ORGID, name:env.ORGNAME];
-		o.receiptno = "RRIS" + seqSvc.getNextFormattedSeries("RRIS");
+		o.controlno = "RRIS" + seqSvc.getNextFormattedSeries("RRIS");
+		o.txndate = dateSvc.getServerDate();
 		o.state = "DRAFT";
 	}
 
@@ -28,13 +35,11 @@ class AFReceiptInterceptor {
 	public void beforeOpen( evt ) { 
 		def result = evt.result;
 		//afcontrol.debug = true;
-		def scols = "batchno,afid,startseries:{ MIN(startseries) },endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)}"; 
-		def list = afcontrol.find( [receiptid: result.objid] ).select(scols).groupBy("batchno,afid").list();
-		
+		def scols = "batchno,afid,startseries:{MIN(startseries)},endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)}"; 
+		def list = vw_afcd.find([ refid: result.objid ]).select( scols ).groupBy("batchno,afid").list(); 
 		result.items.each { r->
 			r.items = list.findAll{ ac-> ac.afid == r.item.objid };
 		}
-
 	}
 	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'afreceipt' }")

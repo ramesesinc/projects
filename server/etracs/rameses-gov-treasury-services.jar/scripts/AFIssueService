@@ -72,7 +72,8 @@ class AFIssueService  {
 	@ProxyMethod 
 	public def post( o ) { 
 		o.user = [objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE]; 
-		o.issueno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
+		o.controlno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
+		o.txndate = dateSvc.getServerDate();
 		o.dtfiled = o.dtissued;
 		o.state = 'POSTED';
 		def a = afissue.create( o );  

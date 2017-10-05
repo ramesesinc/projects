@@ -3,8 +3,9 @@
 	<element tablename="afreceipt">
 		<field name="objid" primary="true" prefix="AFRCT"/>	
 		<field name="state" required="true"/>
-		<field name="receiptno" required="true"/>
-		<field name="dtfiled" required="true"/>
+		<field name="controlno" required="true"/>
+		<field name="txndate" required="true" type="timestamp"/>
+		<field name="dtfiled" required="true" type="date"/>
 		<field name="user_objid" required="true"/>
 		<field name="user_name" required="true"/>
 

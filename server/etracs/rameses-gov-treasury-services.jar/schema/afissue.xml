@@ -5,8 +5,9 @@
 		<field name="state" required="true"/>
 		<field name="request_objid" />
 		<field name="request_reqno" />
-		<field name="issueno" required="true"/>
-		<field name="dtfiled" required="true"/>
+		<field name="controlno" required="true"/>
+		<field name="txndate" required="true" type="timestamp"/>
+		<field name="dtfiled" required="true" type="date"/>
 		<field name="user_objid" required="true"/>
 		<field name="user_name" required="true"/>
 		<field name="issueto_objid" required="true"/>

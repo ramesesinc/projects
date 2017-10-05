@@ -16,13 +16,13 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jPanel2" max="32767" attributes="1"/>
-                  <Component id="jScrollPane1" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel2" min="-2" max="-2" attributes="1"/>
+                  <Component id="jScrollPane1" min="-2" pref="815" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -32,7 +32,7 @@
               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="476" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="354" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -46,10 +46,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel3" min="-2" pref="409" max="-2" attributes="0"/>
+                  <Component id="xFormPanel3" min="-2" pref="421" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="xFormPanel2" min="-2" pref="479" max="-2" attributes="0"/>
-                  <EmptySpace pref="548" max="32767" attributes="0"/>
+                  <Component id="xFormPanel2" pref="356" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

@@ -52,7 +52,7 @@ class AFReceiptModel extends CrudFormModel {
         selectedItem = entity.items.find{ it.item.objid == o.id };
         def e = [:];
         e.dtfiled = entity.dtfiled; 
-        e.refno = entity.receiptno;
+        e.refno = entity.controlno;
         e.refid = entity.objid;
         e.item = selectedItem.item;
         e.unit = selectedItem.unit;
@@ -60,6 +60,7 @@ class AFReceiptModel extends CrudFormModel {
         e.qtyreceived = selectedItem.qtyreceived; 
         e.cost = selectedItem.cost;
         e.respcenter = entity.respcenter;
+        e.txntype = selectedItem.txntype;
         if(!e.qtyreceived) e.qtyreceived = 0;
         return Inv.lookupOpener( "afreceiptitem_detail:add", [ entity:e, handler:h ] );
     }

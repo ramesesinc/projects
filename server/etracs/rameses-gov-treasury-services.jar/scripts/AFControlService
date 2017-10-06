@@ -46,6 +46,29 @@ class AFControlService  {
 	}
 
 
+	@ProxyMethod
+	public def findActiveControlForCashReceipt(def params) {
+		params.filter = ' and ac.fund_objid is null ';
+		if( params.fundid ) {
+			params.filter =  ''' and ac.fund_objid = $P{fundid} ''';
+		} 
+		return em.findActiveControlForCashReceipt( params );
+	}
+
+	@ProxyMethod
+	public void updateNextSeries( p ) {
+		if (!p.qtyissued) p.qtyissued = 1;
+
+		//open and check if the end series is not valid
+		def o = em.find([ objid: p.objid ]).first(); 
+		if( p.qtyissued >  (o.endseries - o.currentseries + 1)  ) {
+			throw new Exception("There is not enough accountable forms for this batch");
+		} 
+
+		def nextseries = o.currentseries + p.qtyissued; 
+		em.find([ objid: p.objid ]).update([ currentseries: nextseries ]); 		
+	}
+
 	/*
 	@ProxyMethod
 	public void activateControl(def p) {
@@ -74,14 +97,7 @@ class AFControlService  {
 		
 	}
 
-	@ProxyMethod
-	public def findActiveControlForCashReceipt(def params) {
-		params.filter = ' and ac.fund_objid is null ';
-		if( params.fundid ) {
-			params.filter =  ''' and ac.fund_objid = $P{fundid} ''';
-		} 
-		return em.findActiveControlForCashReceipt( params );
-	}
+	
 
 	@ProxyMethod
 	public void deactivateControl(def p) {
@@ -93,19 +109,7 @@ class AFControlService  {
 		em.deactivateControl(m);
 	}
 
-	@ProxyMethod
-	public void updateNextSeries( p ) {
-		if (!p.qtyissued) p.qtyissued = 1;
-
-		//open and check if the end series is not valid
-		def o = em.find([ objid: p.objid ]).first(); 
-		if( p.qtyissued >  (o.endseries - o.currentseries + 1)  ) {
-			throw new Exception("There is not enough accountable forms for this batch");
-		} 
-
-		def nextseries = o.currentseries + p.qtyissued; 
-		em.find([ objid: p.objid ]).update([ currentseries: nextseries ]); 		
-	}
+	
 
 	@ProxyMethod
 	public void changeMode( p ) { 

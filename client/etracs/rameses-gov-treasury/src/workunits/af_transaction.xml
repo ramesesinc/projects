@@ -1,6 +1,0 @@
-<workunit>
-   <invokers>
-       <invoker folderid="menucategory/treasury/af" 
-                caption="AF Transaction" formTitle="AF Transaction" role="AFO" action="init" />
-   </invokers>
-</workunit>

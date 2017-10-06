@@ -176,20 +176,20 @@ where afc.objid=$P{controlid}
 
 [syncCurrentIndexNo]
 update af_control set 
-  currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
+  currentindexno = ifnull((select max(indexno) from af_control_detail where controlid=af_control.objid),0)
 where 
   objid = $P{objid} 
 
 
 [syncCurrentIndexNoByReceipt]
 update af_control set 
-  currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
+  currentindexno = ifnull((select max(indexno) from af_control_detail where controlid=af_control.objid),0) 
 where 
   receiptid = $P{receiptid} 
 
 
 [syncCurrentIndexNoByIDs]
 update af_control set 
-    currentindexno = (select max(indexno) from af_control_detail where controlid=af_control.objid) 
+    currentindexno = ifnull((select max(indexno) from af_control_detail where controlid=af_control.objid),0)
 where 
   objid in (${ids}) 

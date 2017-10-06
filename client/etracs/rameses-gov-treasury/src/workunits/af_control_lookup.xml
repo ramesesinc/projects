@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_control">
+   <invokers>
+       <invoker type="af_control_issued:lookup" 
+                caption="AF Issued Lookup" formTitle="AF Issued Lookup" action="init" 
+                cols="afid,startseries,endseries" orderBy="afid,startseries"
+                customFilter="state='ISSUED' AND currentseries &lt;= endseries" />
+                
+       <invoker type="af_control:lookup" 
+                caption="AF All Lookup" formTitle="AF All Lookup" action="init" 
+                cols="afid,startseries,endseries" orderBy="afid,startseries" />
+   </invokers>
+</workunit>

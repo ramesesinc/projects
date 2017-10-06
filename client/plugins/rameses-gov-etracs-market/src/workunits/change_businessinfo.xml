@@ -2,8 +2,7 @@
     <invokers>
         <invoker type="market_account:form:editActions" 
             caption="Edit Business Info" index="4" 
-            target="popup" action="init"
-            visibleWhen="#{mode=='read'}"/> 
+            target="popup" action="init"/> 
         
         <!-- action buttons -->
         <invoker type="formActions" caption="Cancel" action="_close" />

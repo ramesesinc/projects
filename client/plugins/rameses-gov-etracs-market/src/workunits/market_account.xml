@@ -4,8 +4,8 @@
             formTitle="#{entity.unitno} - #{entity.owner.name}" formId="#{entity.objid}"/>
         
         
-        <invoker type="formActions" caption="Edit" action="showEditMenu" 
-                 visibleWhen="#{mode=='read'}" role="ADMIN"/>
+        <invoker type="formActions" caption="Edit" action="showMenu" 
+                 visibleWhen="#{mode=='read'}" srole="ADMIN" context="editActions"/>
         
         <invoker type="formActions" caption="Close Account" action="closeAccount" role="ADMIN" visibleWhen="#{entity.state != 'CLOSED'}"/>
         

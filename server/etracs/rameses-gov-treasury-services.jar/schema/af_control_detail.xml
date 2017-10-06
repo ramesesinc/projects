@@ -24,6 +24,9 @@
 		<field name="qtyending" required="true" />
 		<field name="remarks" required="true" />
 
+		<field name="issuedto_objid" />
+		<field name="issuedto_name" />
+
 		<complex name="parent" ref="af_control" jointype="many-to-one" includefields="afid,batchno,stubno"> 
 			<key field="controlid" target="objid"/> 
 		</complex> 

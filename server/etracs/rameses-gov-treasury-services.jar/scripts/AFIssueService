@@ -80,17 +80,11 @@ class AFIssueService  {
 
 		o.items.each{ bb-> 
 			bb.controls.each{ 
-				def p = [ state:'ISSUED', owner: o.issueto, assignee: o.issueto ]; 
 				def txntype = bb.txntype.toString().toUpperCase(); 
-				if ( txntype == 'SALE' ) { 
-					p.currentseries = '{endseries+1}'; 
-				} 
-
 				def m = [ objid: it ]; 
-				afControl.find( m ).update( p ); 
 				afControl.syncCurrentIndexNo( m ); 
 
-				m = [ objid: a.objid, controlid: it, detailid: 'AFD'+ new java.rmi.server.UID() ]; 
+				m = [ objid: a.objid, controlid: it ]; 
 				if ( txntype == 'SALE' ) {
 					m.txntype = 'SALE'; 
 					m.remarks = 'SOLD TO '+ o.issueto.name; 
@@ -99,7 +93,15 @@ class AFIssueService  {
 					m.remarks = 'ISSUED TO '+ o.issueto.name; 
 				} 
 				afissue.post( m ); 
-				afControl.syncCurrentIndexNo([ objid: it ]);  
+
+				def p = [ state:'ISSUED', owner: o.issueto, assignee: o.issueto ]; 
+				if ( txntype == 'SALE' ) { 
+					p.currentseries = '{endseries+1}'; 
+				} 
+
+				m = [ objid: it ]; 
+				afControl.find( m ).update( p );  
+				afControl.syncCurrentIndexNo( m );  
 			}
 		} 
 	} 

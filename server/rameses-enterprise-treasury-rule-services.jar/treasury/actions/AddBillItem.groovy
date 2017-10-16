@@ -16,15 +16,22 @@ import com.rameses.osiris3.common.*;
 class AddBillItem extends AbstractAddBillItem {
 
 	public void execute(def params, def drools) {
-
-		def acct = params.account;
 		def amt = params.amount.decimalValue;
 
+		if(!params.account && !params.txntype ) {
+			throw new Exception("AddBillItem error. Please specify an account or txntype in rule");
+		}
+
 		def billitem = new BillItem(amount: NumberUtil.round( amt));
-		if( params.txntype?.key ) {
+		if( params.txntype?.key && params.txntype?.key != "null" ) {
 			billitem.txntype = params.txntype.key;
 		}
-		setAccountFact( billitem, acct.key );
+
+		def acct = params.account;
+		if(  acct ) {
+			setAccountFact( billitem, acct.key );
+		}
+		
 		addToFacts( billitem );
 	}
 

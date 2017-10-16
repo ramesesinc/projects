@@ -4,7 +4,7 @@
 * Created on March 31, 2014, 10:42 AM
  */
 
-package baks;
+package _baks;
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;

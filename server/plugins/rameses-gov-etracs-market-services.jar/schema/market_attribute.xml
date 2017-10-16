@@ -1,0 +1,6 @@
+<schema  adapter="market">
+	<element tablename="market_attribute">
+		<field name="name" primary="true" visible="true" searchable="true"/>
+		<field name="title"/>
+	</element>
+</schema>

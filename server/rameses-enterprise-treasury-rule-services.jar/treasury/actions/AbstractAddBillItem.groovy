@@ -23,6 +23,9 @@ public abstract class AbstractAddBillItem implements RuleActionHandler {
 	}
 
 	public def getAccountFact( def acctid ) {
+		if( acctid ==null || acctid == "null") {
+			return null;
+		}	
 		def ct = RuleExecutionContext.getCurrentContext();		
 		if( !ct.env.acctUtil ) ct.env.acctUtil = new ItemAccountUtil();
 		return ct.env.acctUtil.createAccountFact( [objid: acctid] );

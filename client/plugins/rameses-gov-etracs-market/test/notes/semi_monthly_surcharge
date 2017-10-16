@@ -1,0 +1,15 @@
+def fromdate = FROMDATE;
+def middate = @DATE(YR, MON, 15);
+def todate = TODATE;
+def currdate = CURRDATE;
+
+if( fromdate < currdate && todate < currdate ) {
+   return AMT * 0.25;
+};
+else if(  fromdate < currdate && middate < currdate && fromdate < middate) {
+    return ((@DAYDIFF( fromdate, middate )+1) * RATE) * 0.25;
+};
+else {
+   return 0; 
+};
+

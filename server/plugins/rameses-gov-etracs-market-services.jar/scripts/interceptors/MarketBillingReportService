@@ -36,12 +36,13 @@ class MarketBillingReportService {
 		if( !m.items )
 			throw new Exception("No billitems found!");
 
-		acct.items = m.items;
+		acct.items = m.billitems;
 		acct.fromdate = m.fromdate;
 		acct.todate = m.todate;
 		acct.duedate = m.duedate;
-		acct.grandtotal = acct.items.sum{ it.amount };
+		acct.grandtotal = acct.items.sum{ it.total};
 		acct.billdate = pp.billdate;
+		
 		
 		//the purpose of this is for the reports
 		acct.hasitems = (acct.items) ? true : false;

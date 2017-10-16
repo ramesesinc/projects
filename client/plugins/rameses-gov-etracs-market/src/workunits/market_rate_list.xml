@@ -1,0 +1,16 @@
+    <workunit>
+    <invokers>
+        <invoker type="market_rentalunit:form:formActions" 
+                 caption="View Rental Rates" index="4" 
+                 action="initFromRentalUnit" target="popup"/>
+        
+        <invoker type="market_account:form:formActions" 
+                 caption="View Rental Rates" index="4" 
+                 action="initFromAccount" target="popup"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalRatesModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketRentalRatesPage"/>
+    </pages>
+</workunit>

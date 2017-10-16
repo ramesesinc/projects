@@ -1,0 +1,9 @@
+<schema  adapter="market">
+	<element tablename="market_rentalunit_attribute">
+		<field name="objid" primary="true" prefix="MKT_UNIT_ATTR"/>
+		<field name="unitid" required="true" />
+		<complex name="attribute" ref="market_attribute" jointype="many-to-one" includefields="name,title" required="true">
+			<key field="attributeid" target="name" /> 
+		</complex>
+	</element>
+</schema>

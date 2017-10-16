@@ -19,8 +19,6 @@ public class MarketAccountNewModel extends CrudFormModel {
         },
         'entity.unit' : { o->
             entity.unitno = o.code;
-            entity.rate = o.rate;
-            entity.ratetype = o.ratetype;
         }
     ];        
     

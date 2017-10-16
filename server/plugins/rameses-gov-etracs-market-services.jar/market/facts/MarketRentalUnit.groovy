@@ -3,17 +3,17 @@ package market.facts;
 import java.util.*;
 
 class MarketRentalUnit {
-	
+
+	String unitno;
 	String unittype;		//MARKET_UNIT_TYPES
-	String payfrequency;	//MARKET_PAY_FREQUENCY
-	String ratetype;		//DAY OR MONTH
-	double rate;
-	
 	String clusterid;
 	String sectionid;
 	
-	Date lastdatecovered;
-	double partialbalance;
-	
-	double extrate;
+	public MarketRentalUnit(def mm) {
+		unitno = mm.code;
+		unittype = mm.unittype;
+		clusterid = mm.clusterid;
+		sectionid = mm.sectionid;
+	}
+
 }

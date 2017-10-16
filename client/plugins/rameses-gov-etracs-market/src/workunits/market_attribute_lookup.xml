@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="market_attribute">
+    <invokers>
+         <invoker type="market_attribute:lookup" caption="Market Attributes" action="init" index="-1"/>
+    </invokers>
+</workunit>

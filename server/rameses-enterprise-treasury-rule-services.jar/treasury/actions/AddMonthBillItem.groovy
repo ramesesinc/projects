@@ -17,9 +17,13 @@ class AddMonthBillItem extends AbstractAddBillItem {
 
 	public void execute(def params, def drools) {
 
-		def acct = params.account;
 		def me = params.monthentry;
 		def amt = params.amount.decimalValue;
+
+		if(!params.account && !params.txntype ) {
+			throw new Exception("AddMonthBillItem error. Please specify an account or txntype in rule");
+		}
+
 
 		def remarks = null;
 		if( params.remarks ) {
@@ -34,7 +38,11 @@ class AddMonthBillItem extends AbstractAddBillItem {
 		if( params.txntype?.key ) {
 			billitem.txntype = params.txntype.key;
 		}
-		setAccountFact( billitem, acct.key );
+
+		def acct = params.account;
+		if( acct  ) {
+			setAccountFact( billitem, acct.key );
+		}
 		addToFacts( billitem );
 	}
 

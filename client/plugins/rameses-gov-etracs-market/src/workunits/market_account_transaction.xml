@@ -1,0 +1,15 @@
+<workunit schemaName="market_account">
+    <invokers>
+        <invoker type="market_account:form:transaction" caption="Close Account" target="process"
+                 action="closeAccount" role="ADMIN" visibleWhen="#{entity.state != 'CLOSED'}"/>
+        
+        <invoker type="market_account:form:transaction" caption="Block Account" target="process"
+                 action="blockAccount" role="ADMIN" visibleWhen="#{entity.state=='ACTIVE'}"/>
+        
+        <invoker type="market_account:form:transaction" caption="UnBlock Account" target="process"
+                 action="unblockAccount" role="ADMIN" visibleWhen="#{entity.state=='BLOCKED'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.market.models.MarketAccountTransactionModel" />
+    
+</workunit>

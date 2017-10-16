@@ -5,7 +5,6 @@ class MarketAccountService {
 	@DataContext('market_account') 
 	def acct_em;
 
-
 	@DataContext('market_rentalunit') 
 	def rentalunit_em;
 

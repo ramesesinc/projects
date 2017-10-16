@@ -8,13 +8,23 @@ class MarketCashReceiptInterceptor{
 	@DataContext("market_account")
 	def marketAcct;
 
+	@DataContext("market_rental_ledger")
+	def marketRentalLedger;
+
 	@DataContext(dynamic=true)
 	def em;
+
+
+	void postPayment( def o ) {
+
+	}
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'market'}")
 	public void beforePostItems(def evt) {
 		def e = evt.args[0];
 		
+		throw new Exception("post payment");
+
 		def pmt = [:];
 		pmt.reftype = "cashreceipt";
 		pmt.refno = e.receiptno;
@@ -26,6 +36,7 @@ class MarketCashReceiptInterceptor{
 		pmt.amount = e.amount;
 		pmt.items = [];
 
+		//main billitem represents one rental unit.
 		e.billitems.each { itm->
 			itm.billitems.each {z->
 				z.acctid = itm.acctid;
@@ -33,6 +44,12 @@ class MarketCashReceiptInterceptor{
 			pmt.items.addAll(itm.billitems);
 		}
 		marketPmt.create(pmt);
+
+
+		
+
+
+
 		e.billitems?.each { itm->
 			itm.billitems.findAll{ it.ledgertype !=null }.each { p->
 				def ledgerEm = em.lookup( p.ledgertype );

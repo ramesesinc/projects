@@ -1,0 +1,15 @@
+<schema  adapter="market">
+	<element tablename="market_rental_ledger">
+		<field name="objid" primary="true" prefix="MKTRENTLDG"/>
+		<field name="acctid" required="true"/>
+		<field name="year" required="true"/>
+		<field name="month" required="true"/>
+		<field name="days" required="true"/>
+		<field name="fromdate" required="true"/>
+		<field name="todate" required="true"/>
+		<field name="rate" required="true" type="decimal"/>
+		<field name="amount" required="true"  type="decimal"/>
+		<field name="amtpaid" required="true"  type="decimal"/>
+	</element>
+</schema>
+

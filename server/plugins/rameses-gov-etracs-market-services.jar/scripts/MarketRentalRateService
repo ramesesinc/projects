@@ -1,0 +1,83 @@
+import com.rameses.annotations.*;
+import java.text.*;
+import com.rameses.functions.*;
+import com.rameses.util.*;
+import market.facts.*;
+import com.rameses.rules.common.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+
+
+class MarketRentalRateService {
+	
+	@Service("AssessmentRuleService")
+	def assmtSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("market_rentalunit")
+	def mruEm;
+
+	private def fetchRates( def facts, def resultHandler, def fromYear, def toYear ) {
+		def fb = new FactBuilder();
+		fb.facts.addAll( facts );
+
+		if(!fromYear) fromYear = dateSvc.getServerYear().toInteger();
+		if(!toYear) toYear = dateSvc.getServerYear().toInteger();
+
+		(fromYear..toYear).each {
+			fb.facts << new YearEntry( year: it );
+		}
+
+		assmtSvc.execute( "marketrentalrate", [:], fb, resultHandler );
+	}
+
+
+	/**********************************************************
+	* This is called by the client
+	**********************************************************/
+	@ProxyMethod
+	public def getRates( def o ) {
+		def facts = [];
+		if(o.unitid) {
+			def mm = mruEm.find( [objid: o.unitid ] ).first(1);
+			facts << new MarketRentalUnit ( mm );
+			mm.attributes.each {
+				facts << new MarketAttribute(name: it.attributeid );
+			}
+		}
+
+		def resultList = [];
+		def	resultHandler = [
+			getFactKeyValue : { f->
+				if(f instanceof MarketRentalRate ) {
+					resultList << f.toMap();	
+				}
+			}
+		] as ResultHandler;;
+
+		fetchRates(facts, resultHandler, o.fromyear, o.toyear);
+		return resultList.sort{ it.year * -1 };
+	}
+
+
+	/**********************************************************
+	* This is called by getBilling
+	**********************************************************/
+	@ProxyMethod
+	public def getRatesFact( def facts, def fromyear, def toyear ) {
+		def resultList = [];
+		def	resultHandler = [
+			getFactKeyValue : { f->
+				if(f instanceof MarketRentalRate ) {
+					resultList << f;
+				}
+			}
+		] as ResultHandler;;
+		fetchRates(facts, resultHandler, fromyear, toyear );
+		return resultList;
+	}
+
+}

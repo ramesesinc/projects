@@ -17,6 +17,7 @@ class MonthBillItem extends BillItem {
 	//this is set assuming you are not starting using the whole month
 	Date fromdate;
 	Date todate;
+	double rate;
 	
 	public int getPaypriority() {
 	   return (year*12)+month;
@@ -31,6 +32,7 @@ class MonthBillItem extends BillItem {
 		m.fromdate = fromdate;
 		m.todate = todate;
 		m.duedate = duedate;
+		m.rate = rate;
 
 		if(!m.fromdate || !m.todate) {
 			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -51,20 +53,22 @@ class MonthBillItem extends BillItem {
 		return (year*12)+month;
 	}
 
+
+	//in the hash code priority is the txntype not the accout code
 	public int hashCode() {
 		def buff = new StringBuilder();
 		buff.append( yearMonth );
-		if( account?.objid ) {
-			buff.append( "-" + account.objid  )
-		};
 		if( txntype ) {
 			buff.append( "-" + txntype );
 		}
+		else if( account?.objid ) {
+			buff.append( "-" + account.objid  )
+		};
 		return buff.toString().hashCode();
 	}
 
 	public int getSortorder() {
-		return getYearMonth();
+		return (getYearMonth()*1000) + super.getSortorder();
 	}	
 
 	public String getMonthname() {

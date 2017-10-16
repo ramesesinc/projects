@@ -149,6 +149,13 @@ public class AssessmentRuleService {
 				}
 			};
 		}
+		else {
+			//return other results not mentioned
+			res.each { k,v->
+				result.put( k,v );
+			}
+		}
+
 		return result;
 	}
 

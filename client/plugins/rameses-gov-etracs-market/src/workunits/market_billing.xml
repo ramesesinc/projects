@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="market_account:form:formActions" 
             caption="View Billing" index="-10" 
-            reportName="com/rameses/gov/etracs/market/reports/billing/marketbilling.jasper" 
+            reportName="com/rameses/gov/etracs/market/reports/market_account_billing.jasper" 
             reportId="market_account_billing"
             target="popup"
             visibleWhen="#{mode=='read'}"

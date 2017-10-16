@@ -4,14 +4,14 @@
  */
 package com.rameses.gov.etracs.market.views;
 
-import com.rameses.osiris2.themes.FormPage;
+import com.rameses.osiris2.themes.OKCancelPage;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(FormPage.class)
+@Template(OKCancelPage.class)
 public class ChangeWaterReadingPage extends javax.swing.JPanel {
 
     /**

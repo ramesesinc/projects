@@ -12,6 +12,9 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
     
      @Service("MarketCashReceiptService")
      def cashReceiptSvc;
+     
+     @Service("MarketBillingService")
+     def billingSvc;
     
      @Service('DateService') 
      def dateSvc; 
@@ -60,19 +63,28 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
          def p = [:];
          p.putAll( itm );
          if( acctFilter !=null ) p.filters = acctFilter;
-         def mm = cashReceiptSvc.getBillItem( p );
+         p.acctid = p.objid;
+         def mm = billingSvc.getBilling( p );
          itm.putAll(mm);
      }   
-     
-    void updateReceipt() {
+    
+     void updateReceipt() {
         entity.amount = 0;
         if( entity.billitems ) {
             if(entity.items == null )entity.items = [];
             entity.items.clear();
-            entity.billitems.each {
-                entity.items.addAll( it.items );
+            entity.billitems.each { b->
+                entity.items.addAll( b.items );
+            };
+            /*
+            def grp = tlist.groupBy{ it.item };
+            grp.each { k,v->
+                def mv = [ item: k, amount: NumberUtil.round( v.sum{ it.amount } )  ];
+                mv.remarks = v.findAll{ it.remarks }*.remarks?.join(";");
+                entity.items << mv; 
             }
-            entity.amount = entity.billitems.sum{ it.amount };
+            */
+            entity.amount = entity.items.sum{ it.amount };
         }
         updateBalances();
         //binding.refresh("entity.amount");
@@ -149,7 +161,7 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      }
      
      def viewCashReceipt() {
-         if(!entity.billitems)
+         if(!entity.items)
             throw new Exception("Please select at least one item")
          return Inv.lookupOpener( "cashreceipt:preview", [entity:entity]);
      }

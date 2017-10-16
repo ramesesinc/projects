@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="market_billitem_txntype">
+    <invokers>
+        <invoker type="market_billitem_txntype:lookup" caption="Lookup Market Bill Item Txn" action="init"/>
+    </invokers>
+</workunit>

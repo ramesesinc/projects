@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="market_rentalunit"
-    cols="objid,code,section.name,cluster.name,currentaccount.acctname,ratetype,rate," 
+    cols="objid,code,section.name,cluster.name,currentaccount.acctname" 
     filterField="cluster.market.objid">
     <invokers>
         <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" 

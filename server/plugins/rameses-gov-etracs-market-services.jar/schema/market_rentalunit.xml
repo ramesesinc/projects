@@ -15,13 +15,17 @@
 			includefields="objid,name,description,market.name,market.objid">
 			<key field="clusterid" target="objid" />
 		</complex>
-		<field name="ratetype" required="true" lov="MARKET_PAY_FREQUENCY"  caption="Rate Type"/>
-		<field name="rate" required="true" type="decimal" caption="Rate"/>
+		
 		
 		<complex name="currentaccount" ref="market_account" jointype="many-to-one" required="false" 
 				includefields="acctname,owner.name,startdate,dateclosed">
 			<key field="currentacctid"  target="objid"/>
 		</complex>	
+
+		<complex name="attributes" ref="market_rentalunit_attribute" jointype="one-to-many" required="false">
+			<key field="objid"  target="unitid"/>
+		</complex>	
+
 		
 	</element>
 </schema>

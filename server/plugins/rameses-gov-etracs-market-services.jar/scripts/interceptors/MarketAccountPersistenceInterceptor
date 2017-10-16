@@ -58,7 +58,9 @@ public class MarketAccountPersistenceInterceptor {
 	@After( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_account'}")
 	public void afterSave( evt ) {
 		def o = evt.args[0];
-		mruEm.find( [objid: o.unit.objid ] ).update( [currentacctid: o.objid ] );
+		if(o.unit?.objid) {
+			mruEm.find( [objid: o.unit.objid ] ).update( [currentacctid: o.objid ] );
+		}
 	}
 
 

@@ -1,0 +1,38 @@
+<workunit schemaName="market_account">
+    <invokers>
+        <invoker type="market_account:form:change" target="popup"
+            caption="Change Owner" index="1"  action="initEdit" txntype="owner"/> 
+        
+        <invoker type="market_account:form:change" target="popup" 
+            caption="Edit Rental Unit" index="2"  action="initEdit" txntype="rentalunit"/>     
+        
+        <invoker type="market_account:form:change" target="popup" 
+            caption="Edit Business" index="3"  action="initEdit" txntype="business"/>  
+        
+        <invoker type="market_account:form:change" target="popup"
+            caption="Edit Ledger Information" index="1" 
+             action="initEdit" txntype="ledger"/> 
+        
+        <invoker type="market_account:form:change" 
+            caption="Change Current Electric Reading" index="10" 
+            target="popup" action="initEdit" txntype="electricity"/>            
+        
+
+         <invoker type="market_account:form:change" 
+            caption="Change Current Water Reading" index="11" 
+            target="popup" action="initEdit" txntype="water" /> 
+         
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.market.models.MarketChangeActionModel" />
+    
+    <pages>
+        <page name="owner" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
+        <page name="rentalunit" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
+        <page name="business" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
+        <page name="ledger" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
+                
+        <page name="electricity" template="com.rameses.gov.etracs.market.views.ChangeElectricityReadingPage" />
+        <page name="water" template="com.rameses.gov.etracs.market.views.ChangeWaterReadingPage" />
+    </pages>
+</workunit>

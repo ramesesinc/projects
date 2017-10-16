@@ -1,0 +1,12 @@
+<workunit schemaName="market_attribute">
+    <invokers>
+       
+        <invoker type="market_attribute:create" action="create" caption="New Market Attribute" target="popup"/>
+        <invoker type="market_attribute:open" action="open" caption="Market Attribute"  target="popup"/>
+
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketAttributePage"/>
+    </pages>    
+</workunit>

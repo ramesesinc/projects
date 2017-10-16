@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="market_rentalunit:open:lookup" 
                 cols="objid,code,unittype,section.name"
-                hiddenCols="rate,ratetype,cluster.*"
+                hiddenCols="cluster.*"
                 caption="Lookup Rental Unit" 
                  target="popup" 
                  customFilter="currentacctid IS NULL"

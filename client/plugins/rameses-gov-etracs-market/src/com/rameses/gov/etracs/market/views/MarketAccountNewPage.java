@@ -43,7 +43,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         jPanel3 = new javax.swing.JPanel();
@@ -54,7 +53,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Lessor Information");
@@ -135,12 +133,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel4);
 
-        xLabel5.setCaption("Rate");
-        xLabel5.setDepends(new String[] {"entity.unit"});
-        xLabel5.setExpression("#{entity.rate} #{entity.ratetype}");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xLabel5);
-
         xDecimalField1.setCaption("Ext. Area (sqm)");
         xDecimalField1.setName("entity.extarea"); // NOI18N
         xFormPanel2.add(xDecimalField1);
@@ -200,54 +192,13 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         monthList1.setRequired(true);
         xFormPanel3.add(monthList1);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder4.setTitle("Recurring Fees");
-        xDataTable1.setBorder(xTitledBorder4);
-        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "txntype"}
-                , new Object[]{"caption", "Txn Type"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LookupColumnHandler("#{item.txntype.objid} - #{item.txntype.title} ", "billitem_txntype:lookup")}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "amount"}
-                , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 150}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            })
-        });
-        xDataTable1.setHandler("itemHandlers.recurringfees");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -255,8 +206,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -295,7 +244,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XComboBox xComboBox6;
-    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
@@ -307,7 +255,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

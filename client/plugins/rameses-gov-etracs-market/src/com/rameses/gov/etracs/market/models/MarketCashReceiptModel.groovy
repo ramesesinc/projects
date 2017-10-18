@@ -70,9 +70,11 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
     
      void updateReceipt() {
         entity.amount = 0;
+        entity.items.clear();
+        
         if( entity.billitems ) {
             if(entity.items == null )entity.items = [];
-            entity.items.clear();
+            
             entity.billitems.each { b->
                 entity.items.addAll( b.items );
             };
@@ -87,7 +89,7 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
             entity.amount = entity.items.sum{ it.amount };
         }
         updateBalances();
-        //binding.refresh("entity.amount");
+        binding.refresh("entity.amount");
      }     
     
      def itemHandler = [
@@ -151,8 +153,10 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      
      void clearAll() {
          if( entity.billitems == null ) entity.billitems = [];
+         if( entity.items ) entity.items.clear();
          entity.billitems.clear();
          updateReceipt();
+         binding.refresh();
      }
      
      def viewDetails() {

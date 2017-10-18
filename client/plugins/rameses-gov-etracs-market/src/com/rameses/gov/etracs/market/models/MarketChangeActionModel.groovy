@@ -27,9 +27,8 @@ public class MarketChangeActionModel extends CrudFormModel {
         }
         else if(txntype=="ledger" ) {
             entity.payfrequency = oldEntry.payfrequency;
-            entity.startdate = oldEntry.startdate;
-            entity.month = oldEntry.month;
-            entity.year = oldEntry.year;
+            entity.dtstarted = oldEntry.dtstarted;
+            entity.lastdatepaid = oldEntry.lastdatepaid;
             entity.partialbalance = oldEntry.partialbalance;
         }
         return txntype;

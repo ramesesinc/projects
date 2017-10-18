@@ -49,10 +49,8 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        xDateField3 = new com.rameses.rcp.control.XDateField();
+        xDateField4 = new com.rameses.rcp.control.XDateField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Lessor Information");
@@ -169,28 +167,20 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xComboBox6.setRequired(true);
         xFormPanel3.add(xComboBox6);
 
-        xDateField2.setCaption("Start Date");
-        xDateField2.setName("entity.startdate"); // NOI18N
+        xDateField2.setCaption("Date Started");
+        xDateField2.setName("entity.dtstarted"); // NOI18N
         xDateField2.setRequired(true);
         xFormPanel3.add(xDateField2);
 
-        xDateField3.setCaption("Last Date Covered");
-        xDateField3.setName("entity.lastdatecovered"); // NOI18N
-        xFormPanel3.add(xDateField3);
+        xDateField4.setCaption("Paid Until Date");
+        xDateField4.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
+        xDateField4.setName("entity.lastdatepaid"); // NOI18N
+        xDateField4.setRequired(true);
+        xFormPanel3.add(xDateField4);
 
         xDecimalField3.setCaption("Partial Balance");
         xDecimalField3.setName("entity.partialbalance"); // NOI18N
         xFormPanel3.add(xDecimalField3);
-
-        xIntegerField2.setCaption("Last Year covered");
-        xIntegerField2.setName("entity.lastyearpaid"); // NOI18N
-        xIntegerField2.setRequired(true);
-        xFormPanel3.add(xIntegerField2);
-
-        monthList1.setCaption("Last Month covered");
-        monthList1.setName("entity.lastmonthpaid"); // NOI18N
-        monthList1.setRequired(true);
-        xFormPanel3.add(monthList1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -205,7 +195,7 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -242,17 +232,15 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDateField xDateField2;
-    private com.rameses.rcp.control.XDateField xDateField3;
+    private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;

@@ -23,8 +23,6 @@ class MarketCashReceiptInterceptor{
 	public void beforePostItems(def evt) {
 		def e = evt.args[0];
 		
-		throw new Exception("post payment");
-
 		def pmt = [:];
 		pmt.reftype = "cashreceipt";
 		pmt.refno = e.receiptno;
@@ -45,9 +43,13 @@ class MarketCashReceiptInterceptor{
 		}
 		marketPmt.create(pmt);
 
-
+		//find the market rental max year and date
+		def zz = pmt.items.findAll{ it.txntype == 'MARKETRENTAL' }?.max{ (it.year * 12)+it.month };
+		if( zz ) {
+			throw new Exception("year-month: " + zz.year + " " + zz.month + " " + zz.todate );	
+		} 
 		
-
+		throw new Exception("stop it here");
 
 
 		e.billitems?.each { itm->

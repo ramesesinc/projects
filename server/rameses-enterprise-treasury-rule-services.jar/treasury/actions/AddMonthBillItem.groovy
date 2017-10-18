@@ -17,25 +17,30 @@ class AddMonthBillItem extends AbstractAddBillItem {
 
 	public void execute(def params, def drools) {
 
-		def me = params.monthentry;
-		def amt = params.amount.decimalValue;
+		
 
 		if(!params.account && !params.txntype ) {
 			throw new Exception("AddMonthBillItem error. Please specify an account or txntype in rule");
 		}
 
+		
+
+		def me = params.monthentry;
+		def amt = params.amount.decimalValue;
 
 		def remarks = null;
 		if( params.remarks ) {
 			remarks = params.remarks.eval();		
 		}
 
+	
+
 		def billitem = new MonthBillItem(amount: NumberUtil.round( amt), year: me.year, month: me.month );
 		billitem.fromdate = me.fromdate;
 		billitem.todate = me.todate;
 		
 		billitem.remarks = remarks;
-		if( params.txntype?.key ) {
+		if( params.txntype?.key &&  params.txntype != 'null' ) {
 			billitem.txntype = params.txntype.key;
 		}
 

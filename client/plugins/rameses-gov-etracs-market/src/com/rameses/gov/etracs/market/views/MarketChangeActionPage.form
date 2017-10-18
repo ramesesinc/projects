@@ -321,8 +321,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xFormPanel6" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="322" max="32767" attributes="0"/>
+                      <Component id="xFormPanel6" min="-2" pref="197" max="-2" attributes="0"/>
+                      <EmptySpace pref="238" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -347,21 +347,17 @@
                 <Component class="com.rameses.rcp.control.XDateField" name="xDateField2">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Start Date"/>
-                    <Property name="name" type="java.lang.String" value="entity.startdate" noResource="true"/>
+                    <Property name="name" type="java.lang.String" value="entity.dtstarted" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.enterprise.components.MonthList" name="monthList1">
+                <Component class="com.rameses.rcp.control.XDateField" name="xDateField4">
                   <Properties>
-                    <Property name="caption" type="java.lang.String" value="Month"/>
-                    <Property name="name" type="java.lang.String" value="entity.lastmonthpaid" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
-                <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField2">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Year"/>
-                    <Property name="name" type="java.lang.String" value="entity.lastyearpaid" noResource="true"/>
+                    <Property name="caption" type="java.lang.String" value="Paid Until Date"/>
+                    <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[40, 0, 0, 0]"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="entity.lastdatepaid" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>

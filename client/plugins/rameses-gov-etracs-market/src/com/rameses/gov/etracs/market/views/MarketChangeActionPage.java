@@ -55,8 +55,7 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xDateField4 = new com.rameses.rcp.control.XDateField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
         jPanel1.setLayout(new java.awt.CardLayout());
@@ -216,19 +215,15 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xFormPanel6.add(xComboBox6);
 
         xDateField2.setCaption("Start Date");
-        xDateField2.setName("entity.startdate"); // NOI18N
+        xDateField2.setName("entity.dtstarted"); // NOI18N
         xDateField2.setRequired(true);
         xFormPanel6.add(xDateField2);
 
-        monthList1.setCaption("Month");
-        monthList1.setName("entity.lastmonthpaid"); // NOI18N
-        monthList1.setRequired(true);
-        xFormPanel6.add(monthList1);
-
-        xIntegerField2.setCaption("Year");
-        xIntegerField2.setName("entity.lastyearpaid"); // NOI18N
-        xIntegerField2.setRequired(true);
-        xFormPanel6.add(xIntegerField2);
+        xDateField4.setCaption("Paid Until Date");
+        xDateField4.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
+        xDateField4.setName("entity.lastdatepaid"); // NOI18N
+        xDateField4.setRequired(true);
+        xFormPanel6.add(xDateField4);
 
         xDecimalField3.setCaption("Partial Balance");
         xDecimalField3.setName("entity.partialbalance"); // NOI18N
@@ -247,8 +242,8 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(322, Short.MAX_VALUE))
+                .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(238, Short.MAX_VALUE))
         );
 
         jPanel1.add(xPanel4, "card5");
@@ -275,10 +270,10 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDateField xDateField2;
+    private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
@@ -286,7 +281,6 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;

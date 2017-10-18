@@ -217,18 +217,18 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{year} + " " + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][$F{month}-1]]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="61"
 						y="0"
-						width="339"
+						width="150"
 						height="14"
 						key="textField"/>
 					<box></box>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{item.title}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{item.title} + ' ' + (($F{remarks}==null)?"": $F{remarks})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -295,7 +295,7 @@
 					<textElement textAlignment="Center">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[(( $F{rate} == 0 ) ? null : $F{rate}) + (($F{ratetype}=="DAY")? " (" + $F{numdays} + ")" :"") ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(( $F{rate} == 0 ) ? null : $F{rate}) + (($F{ratetype}=="DAY")? " (" + $F{numdays} + ")" :"")]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

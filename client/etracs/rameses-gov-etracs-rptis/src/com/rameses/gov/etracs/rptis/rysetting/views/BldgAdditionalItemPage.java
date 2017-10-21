@@ -6,10 +6,6 @@
 
 package com.rameses.gov.etracs.rptis.rysetting.views;
 
-/**
- *
- * @author  jzamora
- */
 public class BldgAdditionalItemPage extends javax.swing.JPanel {
     
     /** Creates new form BldgAdditionalItemPage */

@@ -205,7 +205,7 @@ public class PlantTreeRYSettingService
     }
 
     void copyUnitValues(newsetting, setting, updateprevid){
-        getPlantTrees().each{pt ->
+        getPlantTrees([:]).each{pt ->
             getUnitValues( setting, pt).each{ uv ->
                 uv.previd   = (updateprevid ? uv.objid : null)
                 uv.objid    = util.generateId('UV')
@@ -214,6 +214,15 @@ public class PlantTreeRYSettingService
             }
         }
     }
+
+    void copyLgus(newsetting, setting){
+        def lgus = em_rysettinglgu.find([rysettingid:setting.objid]).list()
+        lgus.each{
+            it.objid = 'RL' + new java.rmi.server.UID()
+            it.rysettingid = newsetting.objid 
+            em_rysettinglgu.create(it)
+        }
+    }    
 
 
 

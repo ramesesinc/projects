@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Txn Type Attributes master data support
 	- FAAS Backtax Update
 
 - LANDTAX

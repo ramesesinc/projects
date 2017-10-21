@@ -1,0 +1,19 @@
+<workunit extends="rpt_wtemplates/MasterListModel.xml" 
+          schemaName="faastxnattributetype" 
+          windowTitle="Attribute"
+          cols="attribute" 
+          orderBy="attribute" 
+          allowEdit="false">
+    <invokers>
+        <invoker folderid="/explorer/master/rpt" caption="Attributes"  index="20" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist" />
+        
+        <invoker folderid="/home/rpt/master" caption="Attributes"  index="20" 
+                 action="init" 
+                 role="MASTER" 
+                 permission="master.viewlist"
+                 icon="home/icons/txntypes.png"/>
+    </invokers>
+</workunit>

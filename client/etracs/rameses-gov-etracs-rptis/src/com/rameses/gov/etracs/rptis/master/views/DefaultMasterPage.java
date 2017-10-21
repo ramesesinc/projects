@@ -39,6 +39,7 @@ public class DefaultMasterPage extends javax.swing.JPanel {
         xTitledBorder1.setPadding(new java.awt.Insets(20, 5, 5, 5));
         xTitledBorder1.setTitle("General Information");
         formPanel1.setBorder(xTitledBorder1);
+        formPanel1.setCaptionWidth(110);
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel1.setCaption("State");
@@ -69,7 +70,7 @@ public class DefaultMasterPage extends javax.swing.JPanel {
         xNumberField1.setRequired(true);
         formPanel1.add(xNumberField1);
 
-        xCheckBox1.setCellPadding(new java.awt.Insets(5, 80, 0, 0));
+        xCheckBox1.setCellPadding(new java.awt.Insets(5, 110, 0, 0));
         xCheckBox1.setName("entity.special"); // NOI18N
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText(" Is Special?");
@@ -88,8 +89,8 @@ public class DefaultMasterPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 152, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 160, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(40, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

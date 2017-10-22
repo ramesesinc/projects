@@ -39,3 +39,23 @@ alter table planttreerysetting
 delete from sys_var where name in ('gr_ordinance_date','gr_ordinance_no');
 
 	
+
+
+
+drop TABLE if exists `bldgrpu_land`;
+
+CREATE TABLE `bldgrpu_land` (
+  `objid` varchar(50) NOT NULL DEFAULT '',
+  `rpu_objid` varchar(50) NOT NULL DEFAULT '',
+  `landfaas_objid` varchar(50) DEFAULT NULL,
+  `landrpumaster_objid` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`),
+  KEY `ix_bldgrpu_land_bldgrpuid` (`rpu_objid`),
+  KEY `ix_bldgrpu_land_landfaasid` (`landfaas_objid`),
+	KEY `ix_bldgrpu_land_landrpumasterid` (`landrpumaster_objid`),
+  CONSTRAINT `FK_bldgrpu_land_bldgrpu` FOREIGN KEY (`rpu_objid`) REFERENCES `bldgrpu` (`objid`),
+  CONSTRAINT `FK_bldgrpu_land_rpumaster` FOREIGN KEY (`landrpumaster_objid`) REFERENCES `rpumaster` (`objid`),
+  CONSTRAINT `FK_bldgrpu_land_landfaas` FOREIGN KEY (`landfaas_objid`) REFERENCES `faas` (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+	

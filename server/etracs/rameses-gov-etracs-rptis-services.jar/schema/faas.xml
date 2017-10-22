@@ -33,8 +33,18 @@
 		<field name="cancelledbytdnos" />
 		<field name="lguid" />
 		<field name="lgutype" />
+		<field name="txntimestamp" />
+		<field name="cancelledtimestamp"/>
 		<field name="name"/>
 		<field name="dtapproved" />
+		<field name="year" type="integer" />
+		<field name="qtr" type="integer" />
+		<field name="month" type="integer" />
+		<field name="day" type="integer" />
+		<field name="cancelledyear" type="integer" />
+		<field name="cancelledqtr" type="integer" />
+		<field name="cancelledmonth" type="integer" />
+		<field name="cancelledday" type="integer" />
 		<field name="originlguid" />
 		<field name="parentfaasid" />
 		<complex name="taxpayer" ref="entity" jointype="many-to-one" required="false" 

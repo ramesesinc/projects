@@ -2,10 +2,12 @@
     <invokers>
         <invoker type="market_rentalunit:form:formActions" 
                  caption="View Rental Rates" index="4" 
+                 visibleWhen="#{mode != 'create'}"
                  action="initFromRentalUnit" target="popup"/>
         
         <invoker type="market_account:form:formActions" 
                  caption="View Rental Rates" index="4" 
+                 visibleWhen="#{mode != 'create'}"
                  action="initFromAccount" target="popup"/>
     </invokers>
     

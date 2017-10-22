@@ -17,7 +17,6 @@ class MonthBillItem extends BillItem {
 	//this is set assuming you are not starting using the whole month
 	Date fromdate;
 	Date todate;
-	double rate;
 	
 	public int getPaypriority() {
 	   return (year*12)+month;
@@ -32,7 +31,6 @@ class MonthBillItem extends BillItem {
 		m.fromdate = fromdate;
 		m.todate = todate;
 		m.duedate = duedate;
-		m.rate = rate;
 
 		if(!m.fromdate || !m.todate) {
 			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");

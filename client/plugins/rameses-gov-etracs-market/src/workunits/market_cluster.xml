@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" 
+          schemaName="market_cluster" target="popup">
+    <invokers>
+        <invoker type="market_cluster:create" caption="New Market Cluster" action="create" target="popup"/>
+        <invoker type="market_cluster:open" caption="Market Cluster" action="open" target="popup"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketClusterPage" />
+    </pages>
+</workunit>

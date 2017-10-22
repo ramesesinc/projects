@@ -1,0 +1,26 @@
+<schema  adapter="market">
+	<element tablename="market_utility_ledger">
+		<field name="objid" primary="true" prefix="MKTUTILFEE"/>
+
+		<field name="parentid" required="true"/>
+
+		<field name="txntypeid" required="true" caption="Txn Type"/>
+
+		<field name="year" required="true" width="50" caption="Year"/>
+		<field name="month" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="readingdate"  />
+		<field name="monthname" expr="MONTH_ARRAY(month)"  width="50" caption="Month"/>
+
+		<field name="amount" required="true" type="decimal" defaultValue="0" caption="Amount"/>
+		<field name="amtpaid" required="true" type="decimal" defaultValue="0" caption="Amt Paid"/>
+
+		<field name="prevreading" required="true" type="integer" defaultValue="0" caption="Prev Reading"/>
+		<field name="reading" required="true" type="integer" defaultValue="0" caption="Current Reading"/>
+		<field name="usage" expr="reading-prevreading" caption="Usage(kwh)" type="integer" defaultValue="0" />
+		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance" />
+		
+	</element>
+</schema>

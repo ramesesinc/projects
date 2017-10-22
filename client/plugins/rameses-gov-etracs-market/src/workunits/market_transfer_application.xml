@@ -1,6 +1,6 @@
 <workunit schemaName="market_transfer_application">
     <invokers>
-        <invoker folderid="/home/market" caption="Transfer" role="INFO" action="start"/>
+        <invoker folderid="/menucategory/market/txn" caption="Transfer" role="INFO" action="start"/>
     </invokers>
     
     <code class="com.rameses.gov.etracs.market.models.MarketTransferApplicationModel" />

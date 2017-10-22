@@ -1,13 +1,12 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
-          schemaName="market_payment_item"
-          cols="year,monthname,fromdate,todate,amount,parent.refno,parent.refdate"
+          schemaName="market_rental_ledger"
+          cols="year,monthname,fromdate,todate,rate,ratetype,amount,amtpaid"
           orderBy="year,month">
     <invokers>
         <invoker type="market_account:section" 
-                 caption="Rental Payments" 
+                 caption="Rental Accounts" 
                  action="init" 
                  visibleWhen="#{mode!='create'}" index="1"
-                 customFilter=" txntype = 'MARKETRENTAL' AND parent.voided=0"
                  parentid="acctid"/>
         
     </invokers>

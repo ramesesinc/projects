@@ -25,6 +25,7 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="TOTAL" isForPrompting="false" class="java.lang.Number"/>
+	<parameter name="RATETYPE" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="year" class="java.lang.Integer"/>
 	<field name="month" class="java.lang.Integer"/>
@@ -197,7 +198,7 @@
 					<textElement textAlignment="Center">
 						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["Rate / " + $F{ratetype}?.toLowerCase()]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Rate / " + $P{RATETYPE}.toLowerCase()]]></textFieldExpression>
 				</textField>
 			</band>
 		</columnHeader>
@@ -243,7 +244,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{total}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="400"
 						y="-1"
@@ -256,7 +257,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{interest}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="335"
 						y="0"

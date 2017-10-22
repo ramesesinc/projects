@@ -31,15 +31,6 @@ public class MarketAccountPersistenceInterceptor {
 	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'market_account'}")
 	public void beforeCreate( evt ) {
 		def o = evt.args[0];
-
-		if( o.todate == null ) {
-			o.todate = dformat.parse(o.startdate);
-		}
-		if( o.todate == null ) throw new Exception("Please specify startdate or last payment date");
-
-		def dd = dateSvc.parseDate( o.todate , null );
-		o.lastmonthpaid = dd.month;
-		o.lastyearpaid = dd.year;
 		if(!o.acctno) {
 			def lgucode = orgSvc.getRoot()?.code;
 			if(!lgucode)

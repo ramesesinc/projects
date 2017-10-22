@@ -1,0 +1,18 @@
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="market" cols="2">
+    <invokers>
+        <invoker type="home.action" 
+                 caption="Market" icon="home/icons/market.png"
+                 visibleWhen="#{self.hasChildren('menucategory/market')==true}" 
+                 index="1" action="init"/>
+        
+        <!--
+        <invoker type="formActions" 
+                 caption="View HTML" 
+                 index="-1" action="viewHtml"/>
+        
+        <invoker type="formActions" 
+                 caption="Change Color" 
+                 index="-1" action="changeColor"/>
+        -->         
+    </invokers> 
+</workunit>

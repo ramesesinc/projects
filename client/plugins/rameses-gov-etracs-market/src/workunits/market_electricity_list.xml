@@ -1,10 +1,11 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="market_electricity"
-          cols="account.acctno,account.unitno,account.acctname,year,monthname,readingdate,prevreading,reading,udage,amount,amtpaid,balance,createdby.name,dtcreated"
+  <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="market_electricity" 
+          cols="account.acctno,account.unitno,account.acctname,year,monthname,currentreading"
           orderBy="dtcreated">
     
     <invokers>
-        <invoker folderid="home/market" caption="Electricity Bill" action="init" index="10"/>
+        <invoker folderid="/menucategory/market/acct"  caption="Electricity" action="init" 
+                 index="10" customFilter=" type='ELECTRICITY' "/>
     </invokers>
     
 </workunit>

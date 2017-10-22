@@ -1,15 +1,16 @@
 import com.rameses.annotations.*;
 
-class MarketAccountListInterceptor{
+class MarketUtiltityListInterceptor{
 	
-	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname.matches('market_electricity|market_water')}")
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname.matches('market_electricity|market_water') }")
 	public void getAcctNodeList(def evt) {
 		def result = evt.result;
-		result << [ title: 'Open', id:'open'];
-		result << [ title: 'Paid', id:'paid'];
+		result << [ title: 'Active', id:'ACTIVE'];
+		result << [ title: 'For Reading', id:'forreading'];
+		result << [ title: 'Closed', id:'CLOSED'];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.matches('market_electricity|market_water')}")
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.matches('market_electricity|market_water')  }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		if( !o.node?.id ) return;
@@ -17,18 +18,10 @@ class MarketAccountListInterceptor{
 		def str = "";
 		def m = [:];
 
-		switch( o.node.id ) {
-
-			case 'open':
-				str += ' amount - amtpaid > 0 '; 
-				break;
-
-			case 'paid':
-				str += ' amount - amtpaid <= 0 '; 
-				break;
-
-		}
-
+		
+		str = "state = :state";
+		m.state = o.node.id;
+	
 		//add to first position of where
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

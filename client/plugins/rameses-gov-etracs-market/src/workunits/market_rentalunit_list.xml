@@ -2,11 +2,10 @@
     cols="objid,code,section.name,cluster.name,currentaccount.acctname" 
     filterField="cluster.market.objid">
     <invokers>
-        <invoker folderid="/explorer/master/market" caption="Market Rental Units" index="1" 
+        <invoker folderid="/menucategory/market/master" caption="Market Rental Units" index="1" 
                  role="MASTER" action="init"/>
 
-        <invoker folderid="/home/market" caption="Market Rental Units" index="0" 
-                 role="MASTER" action="init"/>
+        
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketListFilter" />
     <pages>

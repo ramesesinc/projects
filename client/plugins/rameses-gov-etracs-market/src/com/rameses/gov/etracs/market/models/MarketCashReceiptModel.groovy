@@ -128,9 +128,9 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
             if( entity.billitems.find{ it.objid == o.objid } )
                 throw new Exception("Item already added.");
             def itm = [unitno: o.unitno, objid: o.objid];
-            itm.fromdate = o.startdate;
-            if( o.lastdatecovered !=null ) {
-                itm.fromdate = DateFunc.getDayAdd(o.lastdatecovered,1);
+            itm.fromdate = o.dtstarted;
+            if( o.lastdatepaid !=null ) {
+                itm.fromdate = DateFunc.getDayAdd(o.lastdatepaid,1);
             }
             itm.todate = billdate;
             if( itm.todate.before(itm.fromdate) ) {

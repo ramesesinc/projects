@@ -3,6 +3,6 @@
           cols="year,monthname,readingdate,prevreading,reading,amount,amtpaid,balance,createdby.name,dtcreated"
           orderBy="dtcreated">
     <invokers>
-        <invoker folderid="home/market" caption="Water Bill" action="init" index="11"/>
+        <invoker folderid="/menucategory/market/acct" caption="Water" action="init" index="11"/>
     </invokers>
 </workunit>

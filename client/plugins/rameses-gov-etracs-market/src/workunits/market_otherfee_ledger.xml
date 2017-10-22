@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_otherfee">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_otherfee_ledger">
     <invokers>
         <invoker type="market_otherfee:create" caption="Market Other Fee" action="create" target="popup" />
         <invoker type="market_otherfee:open" caption="Market Other Fee" action="open"  target="popup" />

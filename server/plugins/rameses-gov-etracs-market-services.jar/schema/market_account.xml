@@ -36,21 +36,12 @@
 
 		<!-- link to market_rental_payment -->
 		<field name="remarks" />
-
-		<field name="electricityreading" type="integer" defaultValue="0"/>
-		<field name="waterreading"  type="integer" defaultValue="0"/>
 		
 		<!-- link to business -->
 		<field name="business_objid" />
 		<field name="business_bin" indexed="true"/>
 		<field name="business_tradename" indexed="true"/>
 		<field name="business_owner_name" />
-
-
-		<!-- link to recurring fees -->
-		<complex name="recurringfees" ref="market_account_recurringfee" jointype="one-to-many">
-			<key field="objid" target="acctid"/>
-		</complex>	
 		
 	</element>
 </schema>

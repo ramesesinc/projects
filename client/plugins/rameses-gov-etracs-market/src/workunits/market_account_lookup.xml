@@ -2,8 +2,8 @@
           schemaName="market_account" target="popup">
     <invokers>
         <invoker type="market_account:lookup" caption="Search Market Account" 
-            cols="acctno,acctname,owner.name,unitno,section.name,lastdatecovered"
-            hiddenCols="startdate" 
+            cols="acctno,acctname,owner.name,unitno,section.name,lastdatepaid"
+            hiddenCols="dtstarted" 
             width="1024"
             action="init"/>
     </invokers>

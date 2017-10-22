@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/FormReport.xml">
     <invokers>
-        <invoker folderid="/explorer/report/market" 
+        <invoker folderid="/menucategory/market/report" 
                  caption="Master List" 
                  target="window" 
                  index="1" 

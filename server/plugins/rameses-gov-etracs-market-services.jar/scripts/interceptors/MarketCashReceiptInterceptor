@@ -2,6 +2,9 @@ import com.rameses.annotations.*;
 
 class MarketCashReceiptInterceptor{
 	
+	@Service("DateService")
+	def dateSvc;
+
 	@DataContext("market_payment")
 	def marketPmt;
 
@@ -9,14 +12,76 @@ class MarketCashReceiptInterceptor{
 	def marketAcct;
 
 	@DataContext("market_rental_ledger")
-	def marketRentalLedger;
+	def rentalLedger;
 
-	@DataContext(dynamic=true)
-	def em;
+	@DataContext("market_payment_rental")
+	def rentalPmt;
+
+	@DataContext("market_payment_utilityfee")
+	def utilityFeePmt;
+
+	@DataContext("market_utility_ledger")
+	def utilityLedger;
+
+	@DataContext("market_otherfee_ledger")
+	def otherFeeLedger;
+
+	@DataContext("market_payment_otherfee")
+	def otherFeePmt;
 
 
-	void postPayment( def o ) {
+	//entry for 1 month / year
+	void postRentalPayment(def itm, def pmt, def o ) {
+		def ledgerid = null;
+		def p = [acctid: itm.acctid, year: o.year, month: o.month ]
+		def r = rentalLedger.find( p ).first();
+		if( !r  ) {
+			def le = [:];
+			le.putAll(p);
+			le.fromdate = o.fromdate;
+			le.todate = o.todate;
+			le.currdate = o.todate;
+			le.amount = o.amount;
+			le.amtpaid = o.amount;
+			le.rate = o.rate;
+			le.ratetype = o.ratetype;
+			le.days = o.numdays;
+			rentalLedger.create(le);
+			ledgerid = le.objid;
+		}	
+		else {
+			ledgerid = r.objid;
+			rentalLedger.find( [objid: r.objid ] ).update( 
+				[todate: o.todate, currdate:o.todate, amount: '{amount + :amt}', amtpaid:'{amtpaid + :amt}'], 
+				[amt: o.amount ]  
+			);
+		}	
+		//insert into rental payment
+		def rr = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, 
+			surcharge: o.surcharge, interest:o.interest, fromdate: o.fromdate, todate:o.todate ];
+		rentalPmt.create(rr);
+	}
 
+	void postUtilityPayment(def itm, def pmt, def o ) {
+		utilityLedger.find([objid: o.ledgerid] ).update( [amtpaid: '{amtpaid + :amt}'], [amt: o.amount ] );
+		def r = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest ];
+		utilityFeePmt.create(r);
+	}
+
+	//insert first if the txntype and month does not exist
+	void postOtherFeePayment(def itm, def pmt, def o ) {
+		def ledgerid = o.ledgerid;
+		if(! ledgerid ) {
+			def z = [acctid:itm.acctid, year:o.year, month: o.month, txntypeid: o.txntype, amount: o.amount, amtpaid: 0  ];
+			z.dtcreated = dateSvc.getServerDate();
+			otherFeeLedger.create(z);
+			ledgerid = z.objid;
+		}
+		otherFeeLedger.find([objid: ledgerid]).update( [amtpaid: '{amtpaid +:amt}' ], [amt: o.amount] );
+		if(o.interest == null ) o.interest = 0;
+		if(o.surcharge == null ) o.surcharge = 0;
+		def r = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest ];
+		otherFeePmt.create(r);
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'market'}")
@@ -32,41 +97,22 @@ class MarketCashReceiptInterceptor{
 		pmt.voided = 0;
 		pmt.txnmode = e.txnmode;
 		pmt.amount = e.amount;
-		pmt.items = [];
+		pmt = marketPmt.create(pmt);
 
-		//main billitem represents one rental unit.
+		//check first if payment already exists in the ledger. if not, create ledger first
+		//insert into payment rental,other fee and utility if applicable
 		e.billitems.each { itm->
-			itm.billitems.each {z->
-				z.acctid = itm.acctid;
+			itm.billitems.each { i->
+				if( i.txntype == 'MARKETRENTAL') postRentalPayment( itm, pmt, i );
+				else if(i.txntype.matches("WATER|ELECTRICITY")) postUtilityPayment( itm, pmt, i );
+				else postOtherFeePayment( itm, pmt, i );
 			}
-			pmt.items.addAll(itm.billitems);
+
+			//find the lastdate paid
+			def todate = itm.billitems.findAll{ it.txntype == 'MARKETRENTAL' }.max{ it.todate }.todate;
+			marketAcct.find( [objid: itm.acctid ] ).update( [lastdatepaid: todate ] );
 		}
-		marketPmt.create(pmt);
 
-		//find the market rental max year and date
-		def zz = pmt.items.findAll{ it.txntype == 'MARKETRENTAL' }?.max{ (it.year * 12)+it.month };
-		if( zz ) {
-			throw new Exception("year-month: " + zz.year + " " + zz.month + " " + zz.todate );	
-		} 
-		
-		throw new Exception("stop it here");
-
-
-		e.billitems?.each { itm->
-			itm.billitems.findAll{ it.ledgertype !=null }.each { p->
-				def ledgerEm = em.lookup( p.ledgertype );
-				ledgerEm.find( [objid: p.refid ] ).update( [amtpaid:'{amtpaid + :apaid}'], [apaid: p.amount] );	
-			}
-			def v = itm.billitems.findAll{it.txntype=='MARKETRENTAL'}?.max{ (it.year*12)+it.month }
-			if( v ) {
-				def m = [:];
-				m.lastyearpaid = v.year;
-				m.lastmonthpaid = v.month;
-				m.partialbalance = v.partialunpaid;
-				m.lastdatecovered = v.todate;
-				marketAcct.find( [ objid: itm.acctid]).update(m);
-			}
-		}
 	}
 
 	

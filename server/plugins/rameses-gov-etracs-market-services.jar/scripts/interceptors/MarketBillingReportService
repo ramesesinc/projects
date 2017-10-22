@@ -42,7 +42,7 @@ class MarketBillingReportService {
 		acct.duedate = m.duedate;
 		acct.grandtotal = acct.items.sum{ it.total};
 		acct.billdate = pp.billdate;
-		
+		acct.ratetype = m.ratetype;
 		
 		//the purpose of this is for the reports
 		acct.hasitems = (acct.items) ? true : false;

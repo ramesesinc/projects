@@ -14,9 +14,7 @@
 		<field name="amount" required="true"/>
 		<field name="voided" datatype="checkbox" checkValue="1" uncheckvalue="0"/>
 		
-		<complex name="items" ref="market_payment_item" jointype="one-to-many" orderBy="year,month">
-			<key field="objid" target="parentid"/> 	 
-		</complex>	
+
 	</element>
 
 

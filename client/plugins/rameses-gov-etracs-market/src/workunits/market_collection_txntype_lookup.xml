@@ -1,8 +1,58 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="market_collection_txntype" target="popup" multiSelect="true" allowNull="true"
-          cols="caption" hiddenCols="txntype" orderBy="sortorder">
+<workunit>
     <invokers>
-        <invoker type="market_collection_txntype:lookup" caption="Select Txn Type"  action="init"/>
+        <invoker type="market_collection_txntype:lookup" caption="Select Txn Type" />
         <invoker type="formActions" caption="Reset All" /> 
     </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.framework.ClientContext;
+
+        public class MarketCollectionTypeLookupModel {
+        
+            @Script("Lov")
+            def lov;
+            
+            String title;
+            def selectedItem;
+            def onselect;
+
+            def listHandler = [
+                getColumnList: {
+                    return [
+                        [name:'objid', caption:'']
+                    ];
+                },
+                isMultiSelect: {
+                    return true;
+                },
+                fetchList: {
+                    return lov.MARKET_COLLECTION_OPTIONS.collect{ [objid:it ] };
+                }
+            ] as BasicListModel;
+
+                                    
+            def doOk() {
+                if(!onselect) throw new Exception("Please specify onselect" );
+                if( !listHandler.isMultiSelect() ) {
+                    onselect( selectedItem );
+                }
+                else {
+                    onselect( listHandler.selectedValue );
+                }
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+        }
+        ]]>     
+    </code>
+    <pages>
+        <page template="com.rameses.seti2.views.SimpleLookupListPage"/>
+    </pages>
 </workunit>

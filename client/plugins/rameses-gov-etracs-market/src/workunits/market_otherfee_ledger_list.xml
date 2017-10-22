@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
-          schemaName="market_otherfee"
-          cols="txntype.title,dtcreated,year,monthname,amount,amtpaid,balance,remarks,createdby.name"
-          orderBy="dtcreated">
+          schemaName="market_otherfee_ledger"
+          cols="txntypeid,year,monthname,amount,amtpaid,balance,remarks,createdby.name"
+          orderBy="year,month">
     <invokers>
         <invoker type="market_account:section" 
                  caption="Other Fees" action="init" visibleWhen="#{mode!='create'}" index="2"

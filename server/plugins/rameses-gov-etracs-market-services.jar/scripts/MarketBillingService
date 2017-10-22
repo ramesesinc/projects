@@ -23,7 +23,7 @@ class MarketBillingService {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("market_otherfee")
+	@DataContext("market_otherfee_ledger")
 	def otherFeeEm;
 
 	@DataContext("market_electricity")
@@ -83,12 +83,12 @@ class MarketBillingService {
  		//use fromyear - 1 to ensure that it will be always be included.
 		def rates = rentalRateSvc.getRatesFact(facts, (fromdate.year-1), todate.year );
 		facts.addAll(rates);
+		ma.ratetype =  rates[0].type;
 		
 		//add other fees
-		def filter = " txntype.objid NOT IN ('ELECTRICITY','WATER') " ;
-		otherFeeEm.find( [acctid: ma.objid ]).where( filter ).list().each {
+		otherFeeEm.find( [acctid: ma.objid ]).list().each {
 			facts << new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee',
-				 year: it.year, month: it.month, txntype: it.txntype?.objid, 
+				 year: it.year, month: it.month, txntype: it.txntypeid, 
 				amount:it.balance, remarks: it.remarks );
 		};
 	}
@@ -153,22 +153,15 @@ class MarketBillingService {
 				if(v instanceof DueDate ) {
 					m.duedate = v.date;
 				}
-				else if(v instanceof BillItem) {
+				else if(v instanceof MarketAccount ) {
+					m.ratetype = v.ratetype;
+				}
+				else if(v instanceof MonthBillItem) {
 					def itm = v.toMap();
 					if( itm.item?.objid == null ) {
 						throw new Exception("There is no account mapping for " + itm.txntype );						
 					}
-					if( itm.txntype == 'MARKETRENTAL' ) {
-						def mr = rates.find{ it.year == itm.year }
-						itm.rate = NumberUtil.round( mr.rate );		
-						itm.ratetype = mr.type;
-						itm.numdays = v.numdays;
-					} 
-
 					m.billitems << itm;
-
-					if(itm.surcharge == null) itm.surcharge = 0;
-					if(itm.interest == null)  itm.interest = 0;
 
 					//add to item
 					def ve = m.items.find{ xx-> xx.item.objid == itm.item.objid } 
@@ -191,7 +184,7 @@ class MarketBillingService {
 					m.todate = ve.todate;
 					ve.remarks = "|" + mu.unitno + " (" + formatDateRange( m.fromdate, m.todate) + ")";
 				}	
-				else if( v instanceof SummaryBillItem ) {
+				else if( (v instanceof BillItem) || (v instanceof SummaryBillItem) ) {
 					def itm = v.toMap();
 					m.items << itm;									
 				}
@@ -232,7 +225,9 @@ class MarketBillingService {
 	@ProxyMethod
 	public def getBilling( def o ) {
 		if( !o.acctid ) throw new Exception("acctid is required in MarketBillingService.getBilling");
-		
+		o.each { k,v->
+			println k+"="+v;
+		}
 
 		def facts = [];
 		buildInitialFacts(facts, o );

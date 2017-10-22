@@ -89,6 +89,9 @@ public class MarketRentalUnitPage extends javax.swing.JPanel {
         xLabel1.setExpression("#{entity.currentaccount.owner.name}");
         xFormPanel1.add(xLabel1);
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Attributes");
+        xDataTable3.setBorder(xTitledBorder1);
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "attribute"}

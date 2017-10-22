@@ -5,6 +5,7 @@ class MarketUtilityPersistenceInterceptor{
 	@DataContext("market_account")
 	def acctEm;
 
+	/*
 	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'market_electricity' }")
 	public void createElectricity(def evt) {
 		def e = evt.args[0];
@@ -50,4 +51,5 @@ class MarketUtilityPersistenceInterceptor{
 			throw new Exception("Prev reading must match the existing reading in the account")
 		acctEm.find( [objid: e.acctid ] ).update( [waterreading: e.reading] ); 	
 	}
+	*/
 }

@@ -12,6 +12,7 @@ class MarketAccount {
 	double partialbalance;
 	double extrate;
 
+	String ratetype;
 	Date lastdatepaid;
 
 	//Date nextbilldate;

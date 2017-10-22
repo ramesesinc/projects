@@ -52,6 +52,7 @@
 	<field name="fromdate" class="java.util.Date"/>
 	<field name="hasitems" class="java.lang.Boolean"/>
 	<field name="duedate" class="java.util.Date"/>
+	<field name="ratetype" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -447,7 +448,7 @@
 					</textElement>
 				<text><![CDATA[Due Date :]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="420"
 						y="111"
@@ -458,7 +459,7 @@
 					<textElement>
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{duedate}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{duedate}]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>
@@ -483,6 +484,9 @@
 						backcolor="#FFFFFF"
 						key="subreport-1"
 						positionType="Float"/>
+					<subreportParameter  name="RATETYPE">
+						<subreportParameterExpression><![CDATA[$F{ratetype}]]></subreportParameterExpression>
+					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
 					<subreportExpression  class="java.lang.String"><![CDATA["market_account_billingitem.jasper"]]></subreportExpression>
 				</subreport>

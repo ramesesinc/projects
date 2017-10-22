@@ -477,3 +477,15 @@ where refid = $P{faasid}
 and state = 'approver' 
 and signature is not null 
 order by startdate desc
+
+
+[findOrdinanceInfo]
+select ordinanceno, ordinancedate from landrysetting where 'land' = $P{rputype} and ry = $P{ry}
+union 
+select ordinanceno, ordinancedate from bldgrysetting where 'bldg' = $P{rputype} and ry = $P{ry}
+union 
+select ordinanceno, ordinancedate from machrysetting where 'mach' = $P{rputype} and ry = $P{ry}
+union 
+select ordinanceno, ordinancedate from planttreerysetting where 'planttree' = $P{rputype} and ry = $P{ry}
+union 
+select ordinanceno, ordinancedate from miscrysetting where 'misc' = $P{rputype} and ry = $P{ry}

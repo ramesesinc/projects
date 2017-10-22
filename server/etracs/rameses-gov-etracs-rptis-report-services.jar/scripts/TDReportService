@@ -64,6 +64,7 @@ class TDReportService
 		def td = em.sqlContext.createNamedQuery('tdreport:getTDInfo')
 						.setParameter('faasid', faasid).singleResult
 		if (!td) throw new Exception('FAAS does not exist or has already been deleted.')
+		buildOrdinanceInfo(td)
 		buildCancelNote(td)
 		td.fullpin = td.displaypin 
 		td.taxable = util.toBoolean(td.taxable, true)
@@ -336,5 +337,18 @@ class TDReportService
 			}
 			td.cancelnote = notes + (td.cancelnote ? td.cancelnote : '')
 		}
+	}
+
+	void buildOrdinanceInfo(td){
+		def ordinance = adb.findOrdinanceInfo(td)
+		if (!ordinance.ordinanceno){
+			def type = 'Land'
+			if (td.rputype == 'bldg')  type = 'Building'
+			if (td.rputype == 'mach')  type = 'Machinery'
+			if (td.rputype == 'planttree')  type = 'Plant/Tree'
+			if (td.rputype == 'misc')  type = 'Miscellaneous'
+			throw new Exception('Ordinance No. and date in ' + type + ' Revision setting is not set.')
+		}
+		td.putAll(ordinance)
 	}
 }

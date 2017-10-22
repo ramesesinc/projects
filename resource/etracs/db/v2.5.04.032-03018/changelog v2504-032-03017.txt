@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Centralize FAAS ordinance info on revision settings
 	- Txn Type Attributes master data support
 	- FAAS Backtax Update
 

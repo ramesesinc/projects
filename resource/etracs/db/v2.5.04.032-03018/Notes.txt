@@ -1,0 +1,2 @@
+ASSESSOR 
+	- update ordinance info in revision settings

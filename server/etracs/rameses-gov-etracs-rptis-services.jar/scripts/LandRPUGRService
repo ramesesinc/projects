@@ -3,8 +3,8 @@ import com.rameses.util.*
 
 class LandRPUGRService
 {
-	@PersistenceContext('main')
-	def em
+	@ActiveDB('landrysettinglookup')
+	def em 
 
 	@Service('LandRYSettingLookupService')
 	def landLookupSvc
@@ -47,7 +47,7 @@ class LandRPUGRService
 		rpu.landdetails.each { ld ->
 			ld.objid 	= util.generateId('LD')
 
-			def subclass = landLookupSvc.lookupSubclassByPrevId(ld.subclass.objid)
+			def subclass = getRevisedSubClass(rpu, ld)
 			if (subclass){
 				ld.subclass = subclass 
 				ld.basevalue = subclass.basevalue 
@@ -59,7 +59,8 @@ class LandRPUGRService
 				ld.unitvalue = 0.0	
 			}
 
-			def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
+			def al = getRevisedAssessLevel(rpu, ld)
+			// def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
 
 			ld.actualuse = null 
 			ld.assesslevel = 0.0
@@ -70,6 +71,40 @@ class LandRPUGRService
 		}
 		
 		rpu.landdetails.removeAll( deletedItems ) 
+	}
+
+	def getRevisedAssessLevel(rpu, ld){
+		def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
+
+		if (!al){
+			//try searching using landassessleve classification
+			//if only one record exist, use it otherwise return null 
+			def p = [:]
+			p.ry = rpu.ry 
+			p.lguid = rpu.rp.lguid 
+			p.classid = ld.actualuse.classification.objid 
+			p.classname = ld.actualuse.classification.name 
+			p.landspecificclassid = ld.landspecificclass.objid 
+			def als = em.getRevisedAssessLevelsByClass(p)
+			if (als.size() == 1){
+				al = als[0]
+			}
+		}
+		return al 
+	}
+
+
+	def getRevisedSubClass(rpu, ld){
+		def subclass = landLookupSvc.lookupSubclassByPrevId(ld.subclass.objid)
+		if (!subclass){
+			def p = [:]
+			p.ry = rpu.ry 
+			p.lguid = rpu.rp.lguid 
+			p.subclasscode = ld.subclass.code 
+			p.landspecificclassid = ld.landspecificclass.objid 
+			subclass = em.findRevisedSubclassByCode(p)
+		}
+		return subclass 
 	}
 	
 	void reviseLandAdjustments( rpu ) {

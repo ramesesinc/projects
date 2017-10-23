@@ -15,6 +15,18 @@ FROM landassesslevel lal
 WHERE lal.previd = $P{previd}
 
 
+[getRevisedAssessLevelsByClass]
+SELECT lal.*
+FROM landrysetting rs
+	INNER JOIN rysetting_lgu l ON rs.objid = l.rysettingid 
+	INNER JOIN landassesslevel lal ON rs.objid = lal.landrysettingid 
+WHERE rs.ry = $P{ry}
+  AND l.lguid = $P{lguid}
+  and lal.classification_objid = $P{classid}
+  and lal.name = $P{classname}
+ORDER BY code 
+
+
 [lookupSubclasses]  
 SELECT sub.*, l.barangayid,
 	lspc.code AS specificclass_code,
@@ -52,6 +64,27 @@ FROM lcuvsubclass sub
 	INNER JOIN landspecificclass lspc ON spc.landspecificclass_objid = lspc.objid  
 	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
 WHERE sub.previd = $P{previd}
+
+
+[findRevisedSubclassByCode]
+SELECT sub.*,
+	lspc.code AS specificclass_code,
+	lspc.name AS specificclass_name,
+	spc.areatype AS specificclass_areatype,
+	spc.classification_objid,
+	pc.code AS classification_code,
+	pc.name AS classification_name
+FROM landrysetting rs
+	INNER JOIN rysetting_lgu l ON rs.objid = l.rysettingid 
+	INNER JOIN lcuvspecificclass spc ON rs.objid = spc.landrysettingid 
+	INNER JOIN landspecificclass lspc ON spc.landspecificclass_objid = lspc.objid 
+	INNER JOIN lcuvsubclass sub ON spc.objid = sub.specificclass_objid 
+	INNER JOIN propertyclassification pc ON spc.classification_objid = pc.objid 
+WHERE rs.ry = $P{ry}
+  AND l.lguid = $P{lguid}
+  and sub.code = $P{subclasscode}
+  and lspc.objid = $P{landspecificclassid}
+
 
 
 [lookupStrippings]

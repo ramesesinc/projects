@@ -2,22 +2,24 @@ import com.rameses.annotations.*;
 
 class MarketUtilityPersistenceInterceptor{
 	
-	@DataContext("market_account")
-	def acctEm;
+	@DataContext("market_utility")
+	def utilEm;
 
-	/*
-	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'market_electricity' }")
-	public void createElectricity(def evt) {
+	
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'market_utility_ledger' }")
+	public void createUtility(def evt) {
 		def e = evt.args[0];
 		if( e.amount <= 0 )
 			throw new Exception("Amount must be greater than 0")
 
-		def z = acctEm.find( [objid: e.acctid ] ).select("electricityreading").first(); 
-		if( z.electricityreading != e.prevreading )
-			throw new Exception("Prev reading must match the existing reading in the account")
-		acctEm.find( [objid: e.acctid ] ).update( [electricityreading: e.reading] ); 	
+		def id = e.parent.objid;
+		def z = utilEm.find( [objid: id ] ).select("currentreading").first(); 
+		if( z.currentreading != e.prevreading )
+			throw new Exception("Prev reading must match the existing reading")
+		utilEm.find( [objid: id ] ).update( [currentreading: e.reading, year: e.year, month: e.month, nextreadingdate: e.nextreadingdate] ); 	
 	}
 
+	/*
 	@After(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'market_electricity' }")
 	public void updateElectricity(def evt) {
 		def e = evt.args[0];

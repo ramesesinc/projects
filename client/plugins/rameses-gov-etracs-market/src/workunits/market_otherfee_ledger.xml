@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_otherfee_ledger">
     <invokers>
-        <invoker type="market_otherfee:create" caption="Market Other Fee" action="create" target="popup" />
-        <invoker type="market_otherfee:open" caption="Market Other Fee" action="open"  target="popup" />
+        <invoker type="market_otherfee_ledger:create" caption="Market Other Fee" action="create" target="popup" />
+        <invoker type="market_otherfee_ledger:open" caption="Market Other Fee" action="open"  target="popup" />
     </invokers>
     <code>
         import com.rameses.rcp.common.*
@@ -14,6 +14,17 @@
         
             @Caller
             def caller;
+        
+            @PropertyChangeListener
+            def listener = [
+                "entity.txntype" : { o->
+                    entity.txntypeid = o.objid;
+                }
+            ]
+        
+            void afterOpen() {
+                entity.txntype = [objid: entity.txntypeid];
+            }
         
             void afterCreate() {
                 if(caller?.masterEntity?.objid) {

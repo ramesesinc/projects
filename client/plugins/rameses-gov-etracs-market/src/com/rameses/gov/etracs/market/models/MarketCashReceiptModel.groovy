@@ -29,13 +29,6 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      
      def df = new java.text.SimpleDateFormat("yyyy-MM-dd")
     
-     public def payerChanged( o ) {
-        //do nothing for now
-        clearAll();
-        itemHandler.reload();
-        return null;
-     }
-    
      public String getContextName() {
         return "market"; 
      }   
@@ -57,6 +50,8 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
         if(!acctFilter) {
             throw new Exception("Please choose at least one type");
         }
+        entity.billitems = [];
+        entity.items = [];
      }
      
      void processBillingItem( def itm ) {
@@ -122,12 +117,10 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      ] as EditorListModel;  
      
      def getMarketAccountLookup() {
-         if( !entity.payer)
-            throw new Exception("Payer is required");
          def h = { o->
             if( entity.billitems.find{ it.objid == o.objid } )
                 throw new Exception("Item already added.");
-            def itm = [unitno: o.unitno, objid: o.objid];
+            def itm = [unitno: o.unitno, objid: o.objid, acctname: o.acctname ];
             itm.fromdate = o.dtstarted;
             if( o.lastdatepaid !=null ) {
                 itm.fromdate = DateFunc.getDayAdd(o.lastdatepaid,1);
@@ -148,7 +141,7 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
             updateReceipt();
             itemHandler.reload();
          }
-        return Inv.lookupOpener( "market_account:lookup", [onselect:h, ownerid: entity.payer.objid] ); 
+        return Inv.lookupOpener( "market_account:lookup", [onselect:h] ); 
      }
      
      void clearAll() {

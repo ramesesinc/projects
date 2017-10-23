@@ -40,7 +40,7 @@ public class MarketUtilityPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
         xDateField1 = new com.rameses.rcp.control.XDateField();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
 
         xTabbedPane1.setItems("sections");
 
@@ -71,7 +71,6 @@ public class MarketUtilityPage extends javax.swing.JPanel {
 
         monthList1.setCaption("Month");
         monthList1.setCaptionWidth(120);
-        monthList1.setEnabled(false);
         monthList1.setName("entity.month"); // NOI18N
         monthList1.setRequired(true);
         xFormPanel2.add(monthList1);
@@ -81,10 +80,11 @@ public class MarketUtilityPage extends javax.swing.JPanel {
         xDateField1.setName("entity.nextreadingdate"); // NOI18N
         xFormPanel2.add(xDateField1);
 
-        xDecimalField1.setCaption("Current Reading");
-        xDecimalField1.setCaptionWidth(120);
-        xDecimalField1.setName("entity.currentreading"); // NOI18N
-        xFormPanel2.add(xDecimalField1);
+        xIntegerField2.setCaption("Current Reading");
+        xIntegerField2.setCaptionWidth(120);
+        xIntegerField2.setName("entity.currentreading"); // NOI18N
+        xIntegerField2.setRequired(true);
+        xFormPanel2.add(xIntegerField2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -105,8 +105,8 @@ public class MarketUtilityPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(74, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -132,10 +132,10 @@ public class MarketUtilityPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLookupField xLookupField1;

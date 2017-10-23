@@ -42,8 +42,8 @@
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Txn Type"/>
-            <Property name="expression" type="java.lang.String" value="#{entity.txntype.title}"/>
-            <Property name="handler" type="java.lang.String" value="billitem_txntype:lookup"/>
+            <Property name="expression" type="java.lang.String" value="#{entity.txntypeid}"/>
+            <Property name="handler" type="java.lang.String" value="market_billitem_txntype:lookup"/>
             <Property name="name" type="java.lang.String" value="entity.txntype" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>

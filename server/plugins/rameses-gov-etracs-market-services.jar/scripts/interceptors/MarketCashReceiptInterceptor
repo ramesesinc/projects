@@ -17,7 +17,7 @@ class MarketCashReceiptInterceptor{
 	@DataContext("market_payment_rental")
 	def rentalPmt;
 
-	@DataContext("market_payment_utilityfee")
+	@DataContext("market_payment_utility")
 	def utilityFeePmt;
 
 	@DataContext("market_utility_ledger")
@@ -64,7 +64,7 @@ class MarketCashReceiptInterceptor{
 
 	void postUtilityPayment(def itm, def pmt, def o ) {
 		utilityLedger.find([objid: o.ledgerid] ).update( [amtpaid: '{amtpaid + :amt}'], [amt: o.amount ] );
-		def r = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest ];
+		def r = [paymentid:pmt.objid, ledgerid: o.ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest ];
 		utilityFeePmt.create(r);
 	}
 

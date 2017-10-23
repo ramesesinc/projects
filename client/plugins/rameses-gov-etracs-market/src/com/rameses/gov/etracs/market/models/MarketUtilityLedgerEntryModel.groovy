@@ -13,7 +13,7 @@ public class MarketUtilityLedgerEntryModel extends CrudFormModel {
     
     void afterCreate() {
         entity.txntypeid = caller.masterEntity.type;
-        entity.parentid = caller.masterEntity.objid;
+        entity.parent = [objid: caller.masterEntity.objid];
         int ym = (caller.masterEntity.year*12)+caller.masterEntity.month;
         entity.year = (int)((ym+1)/12);
         entity.month = (ym+1) % 12;
@@ -27,6 +27,7 @@ public class MarketUtilityLedgerEntryModel extends CrudFormModel {
         entity.usage = entity.reading - entity.prevreading;
         def p = [txntype:entity.txntypeid,usage: entity.usage, year:entity.year, month:entity.month];
         def z = svc.calculate( p ); 
+        entity.nextreadingdate = z.nextreadingdate;
         entity.amount = z.amount;
         entity.amtpaid = 0;
     }        

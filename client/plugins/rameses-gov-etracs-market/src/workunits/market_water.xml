@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_water">
+    <invokers>
+        <invoker type="market_water:create" caption="Market Water" action="create" target="popup" />
+        <invoker type="market_water:open" caption="Market Water" action="open"  target="popup" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketUtilityModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketUtilityPage" />
+    </pages>    
+</workunit>

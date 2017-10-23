@@ -31,6 +31,7 @@ class MarketBillingReportService {
 		def acct = acctEm.find([objid: acctid]).first();
 		def pp = [acctid: acctid ];
 		pp.billdate = (p.parameters.billdate) ? df.parse(p.parameters.billdate) : dateSvc.getServerDate();
+		pp.filters = p.parameters.filters;
 		
 		def m = billingSvc.getBilling( pp );
 		if( !m.items )

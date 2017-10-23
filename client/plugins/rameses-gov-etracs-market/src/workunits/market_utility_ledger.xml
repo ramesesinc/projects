@@ -1,6 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_utility_ledger">
     <invokers>
         <invoker type="market_utility_ledger:create" caption="Add Ledger Entry" action="create"  target="popup"/>
+        <invoker type="market_utility_ledger:open" caption="Ledger Entry" action="open"  target="popup"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketUtilityLedgerEntryModel" />
     <pages>

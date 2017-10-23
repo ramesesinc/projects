@@ -2,6 +2,7 @@
 	<element tablename="market_utility">
 		<field name="objid" primary="true" prefix="MKTUTIL"/>
 		<field name="state" required="state" defaultValue="ACTIVE"/>
+		<field name="acctid" />
 
 		<complex name="account" ref="market_account" jointype="many-to-one" includefields="acctno,acctname,state,owner.*,unitno">
 			<key field="acctid" target="objid"/>
@@ -11,7 +12,7 @@
 		<field name="currentreading" type="integer" required="true"/>
 		<field name="type" required="true"/>
 
-		<field name="currentyear" type="integer"/>
-		<field name="currentmonth" type="integer"/>
+		<field name="year" type="integer"/>
+		<field name="month" type="integer"/>
 	</element>
 </schema>

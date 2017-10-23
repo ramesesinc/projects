@@ -2,7 +2,9 @@
 	<element tablename="market_utility_ledger">
 		<field name="objid" primary="true" prefix="MKTUTILFEE"/>
 
-		<field name="parentid" required="true"/>
+		<complex name="parent" ref="market_utility" jointype="many-to-one" includefields="acctid">
+			<key field="parentid" target="objid" />
+		</complex>	
 
 		<field name="txntypeid" required="true" caption="Txn Type"/>
 

@@ -1,6 +1,6 @@
 <schema  adapter="market">
 	<element tablename="market_utility">
-		<field name="objid" primary="true" prefix="MKTELEC"/>
+		<field name="objid" primary="true" prefix="MKTWATER"/>
 		<field name="state" required="state" defaultValue="ACTIVE"/>
 
 		<complex name="account" ref="market_account" jointype="many-to-one" includefields="acctno,acctname,state,owner.*,unitno">
@@ -9,7 +9,7 @@
 		
 		<field name="nextreadingdate" type="date" required="true"/>
 		<field name="currentreading" type="integer" required="true"/>
-		<field name="type" required="true" defaultValue="ELECTRICITY"/>
+		<field name="type" required="true" defaultValue="WATER"/>
 
 		<field name="year" type="integer"/>
 		<field name="month" type="integer"/>

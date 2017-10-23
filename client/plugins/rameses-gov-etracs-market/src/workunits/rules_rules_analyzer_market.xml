@@ -7,7 +7,7 @@
        <invoker folderid="home/market" 
                 caption="Market Billing Analyzer" target="window" role="RULE_AUTHOR"/>       
        -->
-            
+                 
        <invoker type="formActions" caption="Back" action="_close" immediate="true"/>
        <invoker type="formActions" caption="Compute Rate" action="computeRate"/>
        <invoker type="formActions" caption="Run Billing" action="runTest"/>

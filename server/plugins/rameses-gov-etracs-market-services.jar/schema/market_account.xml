@@ -4,7 +4,7 @@
 		<field name="state" required="true" defaultValue="ACTIVE"/>
 		<field name="txntype" required="true" defaultValue="CAPTURED"/>
 
-		<field name="acctno"  searchable="true" indexed="true"/>
+		<field name="acctno"  searchable="true" indexed="true" caption="Acct No"/>
 		<field name="acctname" required="true" caption="Account Name" searchable="true" indexed="true"/>
 		<field name="dtcreated" required="true" />
 		<field name="createdby_objid" required="true" />
@@ -22,7 +22,8 @@
 		<field name="extrate" type="decimal" caption="Ext Rate" required="true" defaultValue="0"/>
 		<field name="extarea" type="decimal" caption="Ext Area" required="true" defaultValue="0"/>
 
-		<complex name="unit" ref="market_rentalunit" jointype="many-to-one" required="true" includefields="code,clusterid,sectionid,cluster.*">
+		<complex name="unit" ref="market_rentalunit" jointype="many-to-one" required="true" 
+			includefields="code,clusterid,sectionid,cluster.*,section.name">
 			<key field="unitid" target="objid" />
 		</complex>	
 

@@ -13,16 +13,28 @@ class MarketUtilityService {
 	@ProxyMethod 
 	public def calculate( params ) {
 
-		def utilityRate = new UtilityRate( type: params.txntype, usage: params.usage );
-
 		def fb = new FactBuilder();
-		fb.facts << utilityRate;
+		fb.facts << new UtilityRate( type: params.txntype, usage: params.usage );
+		fb.facts << new MonthEntry( year:params.year, month: params.month );
+		def m = [:];
 
-		assmtSvc.execute( "marketutility", [:], fb, null );
-		if( utilityRate.rate <= 0 )
+		def resultHandler = [
+			getFactKeyValue : { v->
+				if(v instanceof VarDate ) {
+					m.nextreadingdate = v.date;
+				}
+				else if( v instanceof UtilityRate ) {
+					m.amount = v.rate;
+				}
+			}	
+		] as ResultHandler;
+
+		assmtSvc.execute( "marketutility", [:], fb, resultHandler );
+
+		if( !m.amount || m.amount <=0 )
 			throw new Exception("Utility rate not computed. Please check the rules");		
 
-		return [amount:  utilityRate.rate ];
+		return m;
 	} 	
 
 }

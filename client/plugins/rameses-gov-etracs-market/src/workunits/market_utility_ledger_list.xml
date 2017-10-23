@@ -1,7 +1,12 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="market_utility_ledger">
     <invokers>
         <invoker type="market_electricity:section" caption="Ledger" action="init" 
-          cols="year,monthname,readingdate,prevreading,reading,amount,amtpaid,balance,createdby.name,dtcreated"
-          orderBy="dtcreated" parentid="parentid"/>
+          cols="year,monthname,prevreading,reading,amount,amtpaid,balance,createdby.name,dtcreated"
+          orderBy="year,month" hiddenCols="month" parentid="parentid"/>
+        
+        <invoker type="market_water:section" caption="Ledger" action="init" 
+          cols="year,monthname,prevreading,reading,amount,amtpaid,balance,createdby.name,dtcreated"
+          orderBy="year,month" hiddenCols="month" parentid="parentid"/>
+        
     </invokers>
 </workunit>

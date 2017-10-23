@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.market.views;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -12,6 +13,7 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Elmo Nazareno
  */
 @Template(CrudFormPage.class)
+@StyleSheet
 public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
 
     /**
@@ -34,7 +36,7 @@ public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
-        xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xButton1 = new com.rameses.rcp.control.XButton();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLabel9 = new com.rameses.rcp.control.XLabel();
@@ -59,10 +61,10 @@ public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
         xLabel12.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel3.add(xLabel12);
 
-        xIntegerField4.setCaption("Current Reading");
-        xIntegerField4.setName("entity.reading"); // NOI18N
-        xIntegerField4.setRequired(true);
-        xFormPanel3.add(xIntegerField4);
+        xIntegerField1.setCaption("Current Reading");
+        xIntegerField1.setName("entity.reading"); // NOI18N
+        xIntegerField1.setRequired(true);
+        xFormPanel3.add(xIntegerField1);
 
         xButton1.setCaption("");
         xButton1.setName("calcAmount"); // NOI18N
@@ -116,7 +118,7 @@ public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
-    private com.rameses.rcp.control.XIntegerField xIntegerField4;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;

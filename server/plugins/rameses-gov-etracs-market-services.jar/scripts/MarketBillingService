@@ -26,11 +26,8 @@ class MarketBillingService {
 	@DataContext("market_otherfee_ledger")
 	def otherFeeEm;
 
-	@DataContext("market_electricity")
-	def electricityEm;
-
-	@DataContext("market_water")
-	def waterEm;
+	@DataContext("market_utility_ledger")
+	def utilityEm;
 
 	@Service("MarketRentalRateService")
 	def rentalRateSvc;
@@ -93,23 +90,19 @@ class MarketBillingService {
 		};
 	}
 
-	public void buildElectricityFacts( def facts ) {
+	public void buildUtilityFacts( def facts, def filters ) {
+		if(!filters) return;
+		def filt = filters.findAll{ it.matches('ELECTRICITY|WATER') };
+		if( !filt ) return;
+
 		def ma = facts.find{ it instanceof market.facts.MarketAccount };
-		electricityEm.find( [acctid: ma.objid ]).where( " txntype.objid = 'ELECTRICITY' " ).list().each {
-			facts <<  new MonthBillItem( refid:it.objid, ledgertype:'market_electricity',
-				 year: it.year, month: it.month, txntype: 'ELECTRICITY', 
-				amount:it.balance );
+		//utilityEm.debug = true;
+		utilityEm.where( "parent.acctid =:pid AND txntypeid IN ('" + filt.join("','") + "')", [pid: ma.objid ] ).list().each {
+			facts <<  new MonthBillItem( refid:it.objid, ledgertype:'market_utility_ledger',
+				 year: it.year, month: it.month, txntype: it.txntypeid, amount:it.balance );
 		};
 	}
 
-	public void buildWaterFacts( def facts ) {
-		def ma = facts.find{ it instanceof market.facts.MarketAccount };
-		waterEm.find( [acctid: ma.objid ]).where( " txntype.objid = 'WATER' " ).list().each {
-			facts << new MonthBillItem( refid:it.objid, ledgertype:'market_water',
-				 year: it.year, month: it.month, txntype: 'WATER', 
-				amount:it.balance );
-		};
-	}
 	
 	/***************************************************************************************************
 	* Two lists will be returned. 
@@ -225,17 +218,13 @@ class MarketBillingService {
 	@ProxyMethod
 	public def getBilling( def o ) {
 		if( !o.acctid ) throw new Exception("acctid is required in MarketBillingService.getBilling");
-		o.each { k,v->
-			println k+"="+v;
-		}
 
 		def facts = [];
 		buildInitialFacts(facts, o );
 		buildAccountFacts(facts, o.acctid );
 		buildRentalFacts( facts );
 
-		//buildElectricityFacts( facts );
-		//buildWaterFacts( facts );
+		buildUtilityFacts( facts, o.filters );
 
 		/*
 		facts.each {

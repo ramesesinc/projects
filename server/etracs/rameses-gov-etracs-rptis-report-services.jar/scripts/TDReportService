@@ -66,6 +66,7 @@ class TDReportService
 		if (!td) throw new Exception('FAAS does not exist or has already been deleted.')
 		buildOrdinanceInfo(td)
 		buildCancelNote(td)
+		buildMultiClaimInfo(td)
 		td.fullpin = td.displaypin 
 		td.taxable = util.toBoolean(td.taxable, true)
 		td.propertytype = td.rputype
@@ -350,5 +351,22 @@ class TDReportService
 			throw new Exception('Ordinance No. and date in ' + type + ' Revision setting is not set.')
 		}
 		td.putAll(ordinance)
+	}
+
+	void buildMultiClaimInfo(td){
+		if (td.rputype != 'land') return
+
+		def claims = adb.getActiveClaims(td)
+		if (claims){
+			claims.each{
+				it.info = it.owner.name + ' under TD No. ' + it.tdno 
+			}
+			def claim = claims.info.join(' and ')
+			def msg = 'Property is also declared in the name of ' + claim + '.'
+			td.claiminfo = msg 
+
+			td.memoranda += '\n\n' + td.claiminfo 
+		}
+
 	}
 }

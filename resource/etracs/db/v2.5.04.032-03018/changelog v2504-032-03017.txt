@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- FAAS:  add property also declared info for multiple claim
 	- Implement building occupying portion of land
 	- Centralize FAAS ordinance info on revision settings
 	- Txn Type Attributes master data support

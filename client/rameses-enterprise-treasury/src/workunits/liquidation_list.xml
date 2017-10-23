@@ -1,13 +1,21 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="LiquidationListService" entityName="liquidation">
     
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER"> 
+        <invoker type="quick_launcher" code="LIQS" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER,CASHIER">
             <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="CASHIER" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
+        </invoker>
+        
+        <invoker folderid="/explorer/txn/treasury" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER,CASHIER"> 
+            <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="CASHIER" tag="all" permission="liquidation.view"/> 
             <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
         </invoker> 
         
-        <invoker folderid="home/treasury/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER" target="window"> 
+        <invoker folderid="home/treasury/liquidation" caption="Liquidations" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window"> 
             <action name="doInit" role="SHARED" tag="all" permission="liquidation.view"/> 
+            <action name="doInit" role="CASHIER" tag="all" permission="liquidation.view"/> 
             <action name="doInit" role="LIQUIDATING_OFFICER" tag="byliquidatingofficer"/> 
         </invoker>
     </invokers>

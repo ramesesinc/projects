@@ -1,113 +1,16 @@
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER"  action="init"/>
-        <invoker folderid="home/treasury/liquidation" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER"  target="window" action="init"/>
+        <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER" action="init"/>
+        <invoker folderid="home/treasury/liquidation" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER" action="init" target="window" index="-10"/>
+        
+        <invoker folderid="/explorer/txn/treasury" caption="Capture Liquidation" role="LIQUIDATING_OFFICER" action="initCapture"/>
+        <invoker folderid="home/treasury/liquidation" caption="Capture Liquidation" role="LIQUIDATING_OFFICER" action="initCapture" target="window" index="1"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
         <invoker type="formActions" action="refresh" caption="Refresh" icon="images/toolbars/refresh.png" mnemonic="r" shortcut="ctrl R"/>
     </invokers>
     
-    <code>
-    <![CDATA[    
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        
-        class UnliquidatedRemittancePage {
-        
-            @Binding
-            def binding
-        
-            @Service("LiquidationService")
-            def liqSvc;
-            
-            @Service("UnliquidatedRemittanceService")
-            def svc;
-
-            def params=[:];
-            def list;
-            def nodes;
-            def selectedNode;
-            def selectedItem;
-            def entity = [:];
-            
-            String title = "Unliquidated Remittances";
-            
-            void init() {
-                search();
-            }
-            
-            def listHandler = [
-                fetchList: { o ->
-                    entity = svc.getList(selectedNode);
-                    entity.remittances.each{ 
-                        def totalcash = (it.totalcash ? it.totalcash : 0.0);
-                        def totalnoncash = (it.totalnoncash ? it.totalnoncash : 0.0);
-                        it.totalamount = totalcash + totalnoncash;  
-                    } 
-                    binding.refresh("entity.*");
-                    return entity.remittances;
-                },
-                onOpenItem: { o,col->
-                    return viewRemittance();
-                }
-            ] as BasicListModel;
-            
-            def search() {
-                nodes = svc.getNodes();
-                if(nodes) selectedNode = nodes[0];
-            }
-            
-            def viewRemittance() {
-                if(!selectedItem) throw new Exception('Select an Item first');
-                def op = Inv.lookupOpener( "remittance:reportbyfund", [entity:selectedItem] );
-                op.target = 'popup';
-                op.properties.width = 800;
-                op.properties.height = 650;
-                return op;
-            }
-            
-            def liquidate() {
-                def h = { 
-                    listHandler.reload();
-                }
-                return Inv.lookupOpener("liquidation:liquidate", [entity: entity, handler: h] );
-            }
-            
-            def refresh() {
-                search();
-                listHandler.load()
-            }
-            
-            void hold() {
-                if(!selectedItem) throw new Exception("Please select an item ");
-                def p = MsgBox.prompt('Please enter reason for hold');
-                if(!p) return;
-                liqSvc.holdRemittance( [objid:selectedItem.objid, remarks: p ] );
-                listHandler.reload();
-            }
-            
-            void revert() {
-                if(!selectedItem) throw new Exception("Please select an item ");
-                liqSvc.unholdRemittance( [objid:selectedItem.objid ] );
-                listHandler.reload();
-            }
-
-            void submitForLiquidation() {
-                if(!selectedItem) throw new Exception("Please select an item ");
-                liqSvc.submitForLiquidation( [objid:selectedItem.objid ] );
-                listHandler.reload();
-            }
-            
-            def getTotal() {
-                def totalcash = (entity.totalcash ? entity.totalcash : 0.0);
-                def totalnoncash = (entity.totalnoncash ? entity.totalnoncash : 0.0);
-                return totalcash + totalnoncash;
-            } 
-        }
-    ]]>    
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.UnliquidatedRemittanceModel"/>
     
     <pages>
         <page template="com.rameses.enterprise.treasury.liquidation.UnliquidatedRemittancePage"/>

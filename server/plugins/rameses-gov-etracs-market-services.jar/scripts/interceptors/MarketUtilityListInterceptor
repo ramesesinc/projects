@@ -6,7 +6,7 @@ class MarketUtiltityListInterceptor{
 	public void getAcctNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'Active', id:'ACTIVE'];
-		result << [ title: 'For Reading', id:'forreading'];
+		result << [ title: 'For Reading', id:'FORREADING'];
 		result << [ title: 'Closed', id:'CLOSED'];
 	}
 
@@ -19,8 +19,13 @@ class MarketUtiltityListInterceptor{
 		def m = [:];
 
 		
-		str = "state = :state";
-		m.state = o.node.id;
+		if ( o.node.id == 'FORREADING' ) {
+			str = " nextreadingdate <= NOW() and state = 'ACTIVE' ";
+		} else if ( o.node.id == 'ACTIVE' ) {
+			str = " nextreadingdate > NOW() and state = 'ACTIVE' "; 
+		} else {
+			str = " state = 'CLOSED' "; 
+		}
 	
 		//add to first position of where
 		if( o.where ) {

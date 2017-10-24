@@ -19,6 +19,9 @@ public class MarketAccountPersistenceInterceptor {
 	@Env
 	def env;
 
+	@DataContext("market_account")
+	def macct_em;
+
 	@DataContext("market_rentalunit")
 	def mruEm;
 
@@ -44,6 +47,15 @@ public class MarketAccountPersistenceInterceptor {
 		}
 		o.dtcreated = dateSvc.getServerDate();
 		o.createdby = [objid:env.USERID, name: env.USERNAME];
+	}
+
+	@Before( pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'market_account'}")
+	public void beforeUpdate( evt ) { 
+		def o = evt.args[0]; 
+		def mr = macct_em.find([ objid: o.objid ]).select('objid,unitid').first(); 
+		if ( !mr ) throw new Exception('market account does not exist');  
+
+		mruEm.find([ objid: mr.unitid ]).update([ currentacctid: '{NULL}' ]); 
 	}
 
 	@After( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_account'}")

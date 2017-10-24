@@ -1,7 +1,7 @@
 <schema  adapter="market">
 	<element tablename="market_utility">
 		<field name="objid" primary="true" prefix="MKTWATER"/>
-		<field name="state" required="state" defaultValue="ACTIVE"/>
+		<field name="state" required="true" defaultValue="ACTIVE"/>
 
 		<complex name="account" ref="market_account" jointype="many-to-one" includefields="acctno,acctname,state,owner.*,unitno">
 			<key field="acctid" target="objid"/>

@@ -121,3 +121,14 @@ WHERE rs.ry = $P{ry}
 SELECT lat.*
 FROM landadjustmenttype lat 
 WHERE lat.previd = $P{previd}
+
+
+[findRevisedAdjustmentByCode]
+SELECT DISTINCT lat.*, l.barangayid
+FROM landadjustmenttype lat 
+	INNER JOIN landrysetting rs ON lat.landrysettingid = rs.objid 
+	INNER JOIN rysetting_lgu l ON rs.objid = l.rysettingid 
+WHERE rs.ry = $P{ry}
+  AND l.lguid = $P{lguid}
+  AND lat.code = $P{adjcode}
+

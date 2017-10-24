@@ -1,5 +1,6 @@
 import com.rameses.annotations.*
 import com.rameses.common.*
+import com.rameses.services.extended.*
 
 
 class TxnRefService
@@ -10,6 +11,9 @@ class TxnRefService
 
 	@Service('RPTUtil')
 	def util 
+
+	@DataContext('txnref')
+	def em_txnref 
 
 
 	@ProxyMethod
@@ -46,7 +50,7 @@ class TxnRefService
 		util.required('refid', txnref.refid)
 		util.required('msg', txnref.msg)
 		try{
-			em.sqlContext.createNamedExecutor('txnref:insert').setParameters(txnref).execute()
+			em_txnref.create(txnref)
 		}
 		catch(e) {
 			def refs = getTxnRefs(txnref.objid)

@@ -59,3 +59,8 @@ CREATE TABLE `bldgrpu_land` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 	
+
+create table batchgr_log (
+	objid varchar(50) not null,
+	primary key (objid)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

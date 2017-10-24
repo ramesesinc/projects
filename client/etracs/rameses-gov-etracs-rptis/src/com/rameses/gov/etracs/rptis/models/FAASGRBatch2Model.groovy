@@ -7,12 +7,12 @@ import java.rmi.server.UID;
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-public class FAASGRBatchModel 
+public class FAASGRBatch2Model 
 {
     @Binding
     def binding;
     
-    @Service("BatchGRService")
+    @Service("BatchGR2Service")
     def svc
             
      @Service("LGUService")
@@ -51,7 +51,7 @@ public class FAASGRBatchModel
         counter = [success:0, error:0];
         cancelled = false;
         msg = 'Loading properties to revise.'
-        batchTask = new BatchGRTask(svc:svc, params:params,cancelled:cancelled, oncomplete:oncomplete, onrevise:onrevise);
+        batchTask = new BatchGRTask(svc:svc, params:params,cancelled:cancelled, oncomplete:oncomplete, onrevise:onrevise,showMessage:showMessage, onerror:onerror);
         Thread t = new Thread(batchTask);
         t.start();
         
@@ -72,12 +72,23 @@ public class FAASGRBatchModel
         binding.refresh('msg');
     }
     
+    def showMessage = {
+        msg = it;
+        binding.refresh('msg');
+    }
+    
+    def onerror = {
+        msg = it;
+        processing = false;
+        binding.refresh('msg');
+    }
+    
     def getBarangays(){
         return lguSvc.getBarangaysByParentId(params.lgu?.objid)
     }
     
     def getRputypes(){
-        return ['land', 'bldg', 'mach', 'planttree', 'misc']
+        return ['land']
     }
     
     def getRylist(){
@@ -158,44 +169,75 @@ public class FAASGRBatchModel
 }
 
 public class BatchGRTask implements Runnable{
-    // ExecutorService executor;
-
     def svc;
     def params;
     def items;
     def cancelled;
     def oncomplete;
     def onrevise;
+    def onerror;
+    def showMessage;
 
     public void run(){
         println 'params.inititems -> ' + params.inititems
         if (params.inititems == true){
+            showMessage('Generating list of items for revision.');
             svc.buildItemsForRevision(params);
         }
         
-        if (params.interval == null) params.interval = 10;
-        params.count = 50;
-        items = svc.getFaasesForRevision(params)
-        
-        while (items){
-            for(int i=0; i<items.size(); i++) {
-                if (cancelled) break;
-                try{
-                    params.faas = items[i];
-                    params.datacapture = true;
-                    def retval = svc.reviseFaas(params);
-                    onrevise(retval);
-                    sleep(params.interval);
-                }
-                catch(err){
-                    err.printStackTrace();
-                }
+        try{
+            showMessage('Revising real properties...')
+            svc.reviseRealProperties(params)
+            showMessage('Revising real property units...')
+            svc.reviseRpus(params)
+            showMessage('Revising FAAS...')
+            svc.reviseFaases(params)
+            showMessage('Generating FAAS listing...')            
+            svc.reviseFaasList(params)
+            showMessage('Generating new signatories...')
+            svc.reviseFaasSignatories(params)
+            showMessage('Generating superseded information...')
+            svc.reviseFaasPreviousList(params)
+            
+            
+            if ('land'.equalsIgnoreCase(params.rputype)){
+                showMessage('Revising land real property units...')
+                svc.reviseLandRpus(params)
+                showMessage('Revising land appraisals...')
+                svc.reviseLandAppraisals(params)
+                showMessage('Revising plant/tree appraisals...')
+                svc.revisePlantTreeAppraisals(params)
+                showMessage('Revising land adjustments...')
+                svc.reviseLandAdjustments(params)
             }
+
+            showMessage('Recalculating revised faases...')
+            if (params.interval == null) params.interval = 10;
+            params.count = 50;
             items = svc.getFaasesForRevision(params)
+
+            while (items){
+                for(int i=0; i<items.size(); i++) {
+                    if (cancelled) break;
+                    try{
+                        params.faas = items[i];
+                        params.datacapture = true;
+                        def retval = svc.reviseFaas(params);
+                        onrevise(retval);
+                        sleep(params.interval);
+                    }
+                    catch(err){
+                        err.printStackTrace();
+                    }
+                }
+                items = svc.getFaasesForRevision(params)
+            }
+            oncomplete()
         }
-        
-        
-        oncomplete()
+        catch(e){
+            e.printStackTrace();
+            onerror('Error: ' + e.message);
+        }
     }
 }
 

@@ -92,3 +92,10 @@ alter table bldgrpu_land
 go 
 
 
+
+
+create table batchgr_log (
+	objid varchar(50) not null,
+	primary key (objid)
+)
+go 

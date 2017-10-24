@@ -232,7 +232,6 @@ class RealPropertyService
 	}
 
 	void updatePin(entity){
-		println 'entity -> ' + entity.pin + '  claimno: ' + entity.claimno
 		if (entity.claimno) {
 			entity.pin = entity.pin.replace('-' + entity.claimno, '')  
 		}

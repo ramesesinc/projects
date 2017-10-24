@@ -112,14 +112,15 @@ class LandRPUGRService
 			def deletedItems = [] 
 			ld.actualuseadjustments.each { la ->
 				la.landrpuid = ld.landrpuid 
-				doReviseAdjustment(la, deletedItems)
+				doReviseAdjustment(rpu, la, deletedItems)
 			}
 			ld.actualuseadjustments.removeAll( deletedItems ) 
 		}
 	}
 
-	void doReviseAdjustment(la, deletedItems){
-		def adj = landLookupSvc.lookupAdjustmentTypeByPrevId(la.adjustmenttype.objid)
+	void doReviseAdjustment(rpu, la, deletedItems){
+		def adj = getRevisedAdjustment(rpu, la)
+		// def adj = landLookupSvc.lookupAdjustmentTypeByPrevId(la.adjustmenttype.objid)
 		if( adj ) {
 			la.objid = util.generateId('LA')
 			la.adjustmenttype = adj 
@@ -128,6 +129,19 @@ class LandRPUGRService
 		else {
 			deletedItems.add( la )
 		}
+	}
+
+	def getRevisedAdjustment(rpu, la){
+		def adj = landLookupSvc.lookupAdjustmentTypeByPrevId(la.adjustmenttype.objid)
+		if (!adj){
+			def p = [:]
+			p.ry = rpu.ry 
+			p.lguid = rpu.rp.lguid 
+			p.classid = la.classid 
+			p.adjcode = la.adjustmenttype.code  
+			adj = em.findRevisedAdjustmentByCode(p)
+		}
+		return adj 
 	}
 	
 	void reviseStripping( rpu ) {
@@ -173,7 +187,7 @@ class LandRPUGRService
 	void reviseAdjustments( rpu ) {
 		def deletedItems = [] 
 		rpu.landadjustments.each { la -> 
-			doReviseAdjustment(la, deletedItems)
+			doReviseAdjustment(rpu, la, deletedItems)
 		}
 		rpu.landadjustments.removeAll( deletedItems ) 
 	}

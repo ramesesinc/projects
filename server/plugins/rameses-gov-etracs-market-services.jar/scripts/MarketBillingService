@@ -35,12 +35,15 @@ class MarketBillingService {
 	@DataContext("sys_holiday")
 	def holidayEm;
 
+	@Service("HolidayService")
+	def holidaySvc;
+
 	private void buildInitialFacts( def facts, def o  ) {
 
-		def holidays = holidayEm.select("date").where("1=1").list()*.date; 
 		facts << new HolidayFact(  
 			handler: { dt->
-				return holidays.contains(dt);
+				def h = holidaySvc.lookup(dt);
+				return (h!=null);
 			}
 		);
 

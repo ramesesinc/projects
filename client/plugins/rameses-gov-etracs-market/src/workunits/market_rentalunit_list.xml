@@ -2,7 +2,7 @@
     cols="objid,code,section.name,cluster.name,currentaccount.acctname" 
     filterField="cluster.market.objid">
     <invokers>
-        <invoker folderid="/menucategory/market/master" caption="Market Rental Units" index="1" 
+        <invoker folderid="/menucategory/market/master" caption="Market Rental Units" index="10" 
                  role="MASTER" action="init"/>
 
         

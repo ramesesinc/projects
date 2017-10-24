@@ -42,6 +42,7 @@ public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
         xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel3.setCaptionWidth(120);
 
@@ -94,6 +95,13 @@ public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
         xLabel11.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel4.add(xLabel11);
 
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel13.setCaption("Next Reading Date");
+        xLabel13.setDepends(new String[] {"entity.reading"});
+        xLabel13.setExpression("#{nextReadingDate}");
+        xLabel13.setPreferredSize(new java.awt.Dimension(100, 20));
+        xFormPanel4.add(xLabel13);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,6 +130,7 @@ public class MarketUtilityLedgerEntryPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;

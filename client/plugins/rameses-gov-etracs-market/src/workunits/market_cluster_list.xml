@@ -3,8 +3,8 @@
           cols="name,description,market.name,market.barangay.name"
           filterField="market.objid">
     <invokers>
-        <invoker folderid="/explorer/master/market" caption="Market Cluster" action="init" index="-1"/>
-        <invoker folderid="/menucategory/market/master" caption="Market Cluster" action="init" index="-1"/>
+        <invoker folderid="/explorer/master/market" caption="Market Cluster" action="init" role="MASTER,MASTER" index="-1"/>
+        <invoker folderid="/menucategory/market/master" caption="Market Cluster" action="init" role="MASTER,MASTER" index="-1"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketListFilter" />
     <pages>

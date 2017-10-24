@@ -44,6 +44,7 @@ public class MarketAttributePage extends javax.swing.JPanel {
         xTextField2.setCaption("Title");
         xTextField2.setName("entity.title"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

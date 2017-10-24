@@ -66,6 +66,7 @@ public class MarketClusterPage extends javax.swing.JPanel {
         xLookupField1.setHandler("market_property:lookup");
         xLookupField1.setName("entity.market"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
         xLabel3.setCaption("Barangay");

@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="market_attribute">
     <invokers>
-         <invoker folderid="/menucategory/market/data" caption="Market Attributes" action="init" index="-1"/>
+         <invoker folderid="/menucategory/market/master" caption="Market Attributes" action="init" role="MASTER" index="-1"/>
     </invokers>
 </workunit>

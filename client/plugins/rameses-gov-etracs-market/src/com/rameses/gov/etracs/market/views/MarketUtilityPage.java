@@ -41,6 +41,7 @@ public class MarketUtilityPage extends javax.swing.JPanel {
         monthList1 = new com.rameses.enterprise.components.MonthList();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
         xTabbedPane1.setItems("sections");
 
@@ -85,6 +86,13 @@ public class MarketUtilityPage extends javax.swing.JPanel {
         xIntegerField2.setName("entity.currentreading"); // NOI18N
         xIntegerField2.setRequired(true);
         xFormPanel2.add(xIntegerField2);
+
+        xButton1.setCaption("");
+        xButton1.setCaptionWidth(120);
+        xButton1.setImmediate(true);
+        xButton1.setName("calcNextReadingDate"); // NOI18N
+        xButton1.setText("Get Next Reading Date");
+        xFormPanel2.add(xButton1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -131,6 +139,7 @@ public class MarketUtilityPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private com.rameses.enterprise.components.MonthList monthList1;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

@@ -1,11 +1,11 @@
   <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="market_water" 
           cols="account.acctno,account.unitno,account.acctname,year,monthname,currentreading"
-          orderBy="dtcreated">
+          orderBy="year,month">
     
     <invokers>
         <invoker folderid="/menucategory/market/acct"  caption="Water" action="init" 
-                 index="11" customFilter=" type='WATER' "/>
+                 role="MASTER" index="11" customFilter=" type='WATER' "/>
     </invokers>
     
 </workunit>

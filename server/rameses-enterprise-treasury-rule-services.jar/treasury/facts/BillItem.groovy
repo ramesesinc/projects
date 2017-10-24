@@ -5,8 +5,8 @@ import com.rameses.util.*;
 
 class BillItem extends AbstractBillItem {
 
-	String refid;
-	String ledgertype;
+	String refid; 
+	String ledgertype; 
 
 	//amount that is left unpaid from the full amount
 	double partialunpaid;

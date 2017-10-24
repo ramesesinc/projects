@@ -32,4 +32,11 @@ public class MarketUtilityLedgerEntryModel extends CrudFormModel {
         entity.amtpaid = 0;
     }        
             
+    def getNextReadingDate() {
+        if ( entity.nextreadingdate instanceof java.util.Date ) {
+            return new java.sql.Date( entity.nextreadingdate.time ); 
+        } 
+        return entity.nextreadingdate; 
+    }
+    
 }    

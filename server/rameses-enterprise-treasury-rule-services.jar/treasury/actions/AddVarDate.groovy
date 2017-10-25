@@ -29,8 +29,9 @@ public class AddVarDate  implements RuleActionHandler {
 			}
 		}
 		catch(e) {
-			println "Error in AddVarDate. " + e.message;		
-		}	
+			throw e;
+			//println "Error in AddVarDate. " + e.message;		
+		}
 	}
 
 }

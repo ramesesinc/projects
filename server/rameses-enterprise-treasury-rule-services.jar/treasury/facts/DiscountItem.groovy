@@ -10,7 +10,7 @@ class DiscountItem extends BillSubItem {
 
 	public def toMap() {
 		def m = super.toMap();
-		m.txntype = "DISCOUNT";
+		m.txntype = "discount";
 		return m;
 	}
 }

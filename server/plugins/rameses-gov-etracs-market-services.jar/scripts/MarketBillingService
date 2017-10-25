@@ -77,6 +77,7 @@ class MarketBillingService {
  			return;
  		}
  		def ma = facts.find{ it instanceof market.facts.MarketAccount };
+
  		if( !ma.lastdatepaid )
  			throw new Exception("Market Billing Error. lastdatepaid is required in the market account ledger");
  		def fromdate =  new DateBean(ma.lastdatepaid);
@@ -138,7 +139,6 @@ class MarketBillingService {
 	private def processBill(def facts) {
 		def ma = facts.find{ it instanceof MarketAccount };
 		def mu = facts.find{ it instanceof MarketRentalUnit };
-		def rates = facts.findAll{ it instanceof MarketRentalRate };	
 
 		def fb = new FactBuilder();
 		fb.facts.addAll(facts);
@@ -231,12 +231,6 @@ class MarketBillingService {
 		buildRentalFacts( facts, o.filters );
 
 		buildUtilityFacts( facts, o.filters );
-
-		/*
-		facts.each {
-			println it;
-		}
-		*/
 
 		return processBill(facts);
 	}

@@ -158,7 +158,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xFormPanel5.setCaptionWidth(120);
 
-        xLabel13.setCaption("Pay Frequency");
+        xLabel13.setCaption("Mode of Payment");
         xLabel13.setExpression("#{entity.payfrequency}");
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel13);

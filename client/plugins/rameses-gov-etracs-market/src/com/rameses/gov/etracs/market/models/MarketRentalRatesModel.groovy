@@ -18,6 +18,7 @@ public class MarketRentalRatesModel  {
     def rates;
     
     void fetchRates(def m) {
+        
         rates = rateSvc.getRates( m );    
     }
     

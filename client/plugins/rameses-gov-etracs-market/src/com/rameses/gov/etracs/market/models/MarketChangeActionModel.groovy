@@ -21,7 +21,7 @@ public class MarketChangeActionModel extends CrudFormModel {
             entity.remarks = oldEntry.remarks;
         };
         else if( txntype == "rentalunit") {
-            entity.unit = oldEntry.owner;
+            entity.unit = oldEntry.unit;
             entity.extarea = oldEntry.extarea;
             entity.extrate = oldEntry.extrate;
         }

@@ -56,6 +56,7 @@ class BillItem extends AbstractBillItem {
 		m.partialunpaid = partialunpaid;
 		if( m.surcharge == null ) m.surcharge = 0;
 		if(m.interest == null ) m.interest = 0;
+		if(m.discount == null) m.discount = 0;
 		return m;
 	}
 

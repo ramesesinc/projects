@@ -15,6 +15,9 @@ class BuildMonthYearEntries implements RuleActionHandler {
 	public void execute(def params, def drools) {
 		def fromdate = params.fromdate.eval();
 		def todate = params.todate.eval();
+		if( fromdate >= todate ) {
+			throw new Exception("From date must be less than to date");
+		}
 
 		def fdb = new DateBean(fromdate, 'yyyy-MM-dd');
 		int fyr = fdb.year;
@@ -35,10 +38,12 @@ class BuildMonthYearEntries implements RuleActionHandler {
 		def list = [];
 		def ct = RuleExecutionContext.getCurrentContext();	
 
-		(((fyr*12)+fmon)..((tyr*12)+tmon)).eachWithIndex { s, idx ->
+		(((fyr*12)+(fmon))..((tyr*12)+(tmon))).eachWithIndex { s, idx ->
 
-			int fromYear = (int)(s/12);
+			int fromYear = (int)((s-1)/12);
 			int fromMonth = s % 12;
+			if( fromMonth == 0 ) fromMonth = 12;
+
 			def fromDate = sdf.parse( fromYear + "-" + fromMonth + "-" + fday );
 			def toDate = null;
 

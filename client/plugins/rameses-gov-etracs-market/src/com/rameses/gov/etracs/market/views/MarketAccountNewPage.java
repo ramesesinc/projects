@@ -156,7 +156,7 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
 
         xFormPanel3.setCaptionWidth(120);
 
-        xComboBox6.setCaption("Pay Frequency");
+        xComboBox6.setCaption("Mode of Payment");
         xComboBox6.setItems("lov.MARKET_PAY_FREQUENCY");
         xComboBox6.setName("entity.payfrequency"); // NOI18N
         xComboBox6.setRequired(true);

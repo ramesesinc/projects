@@ -38,6 +38,7 @@
 	<field name="total" class="java.lang.Number"/>
 	<field name="ratetype" class="java.lang.String"/>
 	<field name="numdays" class="java.lang.Integer"/>
+	<field name="discount" class="java.lang.Number"/>
 
 	<variable name="TOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
@@ -150,9 +151,9 @@
 				</line>
 				<staticText>
 					<reportElement
-						x="336"
+						x="379"
 						y="0"
-						width="53"
+						width="40"
 						height="14"
 						key="staticText-6"/>
 					<box></box>
@@ -163,9 +164,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="400"
+						x="422"
 						y="0"
-						width="54"
+						width="41"
 						height="14"
 						key="staticText-7"/>
 					<box></box>
@@ -200,6 +201,19 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["Rate / " + $P{RATETYPE}.toLowerCase()]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement
+						x="337"
+						y="0"
+						width="40"
+						height="14"
+						key="staticText-11"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Disc]]></text>
+				</staticText>
 			</band>
 		</columnHeader>
 		<detail>
@@ -246,9 +260,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="400"
+						x="422"
 						y="-1"
-						width="54"
+						width="41"
 						height="14"
 						key="textField-1"/>
 					<box></box>
@@ -259,9 +273,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="335"
+						x="379"
 						y="0"
-						width="54"
+						width="40"
 						height="14"
 						key="textField-2"/>
 					<box></box>
@@ -297,6 +311,19 @@
 						<font size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[(( $F{rate} == 0 ) ? null : $F{rate}) + (($F{ratetype}=="DAY")? " (" + $F{numdays} + ")" :"")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="337"
+						y="0"
+						width="40"
+						height="14"
+						key="textField-5"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{discount}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

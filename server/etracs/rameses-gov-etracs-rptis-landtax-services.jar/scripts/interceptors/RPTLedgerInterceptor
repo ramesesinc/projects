@@ -77,6 +77,23 @@ class RPTLedgerInterceptor
         }		
 	}
 
+    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env.ORGCLASS?.equalsIgnoreCase('province')}")
+    public void postToProvinceLedger(evt){
+        def faas = evt.result 
+
+        if (isLedgerExisting(faas)){
+            svc.postLedgerFaasData(faas)
+        }
+    }
+
+    def isLedgerExisting(faas){
+        def ledger = em_ledger.select('objid').find([faasid:faas.objid]).first() 
+        if (!ledger)
+            ledger = em_ledger.select('objid').find([tdno:faas.prevtdno]).first() 
+        return ledger != null 
+    }
+    
+
     boolean isFAASFromSubdivision(faas){
         return em.findFaasFromSubdividedLand(faas) != null 
     }

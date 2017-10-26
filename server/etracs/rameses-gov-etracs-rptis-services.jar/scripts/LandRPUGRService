@@ -35,7 +35,8 @@ class LandRPUGRService
 		return rpu 
 	}
 
-	void reviseLandDetails( rpu) {
+	@ProxyMethod 
+	public void reviseLandDetails( rpu) {
 		reviseSubclass( rpu )
 		reviseLandAdjustments( rpu )
 		reviseStripping( rpu )
@@ -45,7 +46,9 @@ class LandRPUGRService
 		def deletedItems = []
 		
 		rpu.landdetails.each { ld ->
-			ld.objid 	= util.generateId('LD')
+			if (util.toBoolean(rpu._newid, true)){
+				ld.objid = util.generateId('LD')
+			}
 
 			def subclass = getRevisedSubClass(rpu, ld)
 			if (subclass){
@@ -60,8 +63,6 @@ class LandRPUGRService
 			}
 
 			def al = getRevisedAssessLevel(rpu, ld)
-			// def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
-
 			ld.actualuse = null 
 			ld.assesslevel = 0.0
 			if (al){
@@ -73,7 +74,8 @@ class LandRPUGRService
 		rpu.landdetails.removeAll( deletedItems ) 
 	}
 
-	def getRevisedAssessLevel(rpu, ld){
+	@ProxyMethod
+	public def getRevisedAssessLevel(rpu, ld){
 		def al = landLookupSvc.lookupAssessLevelByPrevId(ld.actualuse.objid)
 
 		if (!al){
@@ -94,7 +96,8 @@ class LandRPUGRService
 	}
 
 
-	def getRevisedSubClass(rpu, ld){
+	@ProxyMethod
+	public def getRevisedSubClass(rpu, ld){
 		def subclass = landLookupSvc.lookupSubclassByPrevId(ld.subclass.objid)
 		if (!subclass){
 			def p = [:]
@@ -122,7 +125,9 @@ class LandRPUGRService
 		def adj = getRevisedAdjustment(rpu, la)
 		// def adj = landLookupSvc.lookupAdjustmentTypeByPrevId(la.adjustmenttype.objid)
 		if( adj ) {
-			la.objid = util.generateId('LA')
+			if (util.toBoolean(rpu._newid, true)){
+				la.objid = util.generateId('LA')
+			}
 			la.adjustmenttype = adj 
 			la.expr = adj.expr
 		}
@@ -165,7 +170,9 @@ class LandRPUGRService
 		rpu.planttrees.each { planttree -> 
 			def ptuv = ptLookupSvc.lookupUnitValueByPrevId(planttree.planttreeunitvalue.objid)
 			if( ptuv ) {
-				planttree.objid = util.generateId('PTD')
+				if (util.toBoolean(rpu._newid, true)){
+					planttree.objid = util.generateId('PTD')
+				}
 				planttree.planttreeunitvalue = ptuv 
 				planttree.unitvalue = ptuv.unitvalue 
 				

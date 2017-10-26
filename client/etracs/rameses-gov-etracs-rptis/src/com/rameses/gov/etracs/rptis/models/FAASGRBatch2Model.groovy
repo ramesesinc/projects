@@ -51,7 +51,7 @@ public class FAASGRBatch2Model
         counter = [success:0, error:0];
         cancelled = false;
         msg = 'Loading properties to revise.'
-        batchTask = new BatchGRTask(svc:svc, params:params,cancelled:cancelled, oncomplete:oncomplete, onrevise:onrevise,showMessage:showMessage, onerror:onerror);
+        batchTask = new BatchGRTask(svc:svc, params:params,cancelled:cancelled, oncomplete:oncomplete, onrevise:onrevise,showMessage:showMessage, onerror:onerror, rputypes:rputypes);
         Thread t = new Thread(batchTask);
         t.start();
         
@@ -59,8 +59,8 @@ public class FAASGRBatch2Model
     }
     
     
-    def oncomplete = {
-        msg = 'Successfully Processed: ' + counter.success + '  Errors: ' + counter.error;
+    def oncomplete = {cnt ->
+        msg = 'Batch revision complete. Total records processed : ' + cnt 
         processing = false;
         binding.refresh();
     }
@@ -80,7 +80,7 @@ public class FAASGRBatch2Model
     def onerror = {
         msg = it;
         processing = false;
-        binding.refresh('msg');
+        binding.refresh();
     }
     
     def getBarangays(){
@@ -88,7 +88,8 @@ public class FAASGRBatch2Model
     }
     
     def getRputypes(){
-        return ['land']
+        return ['land', 'bldg', 'mach']
+        // return ['land', 'bldg', 'mach', 'planttree', 'misc']
     }
     
     def getRylist(){
@@ -177,67 +178,124 @@ public class BatchGRTask implements Runnable{
     def onrevise;
     def onerror;
     def showMessage;
+    def rputypes;
 
     public void run(){
-        println 'params.inititems -> ' + params.inititems
-        if (params.inititems == true){
-            showMessage('Generating list of items for revision.');
-            svc.buildItemsForRevision(params);
+        cancelled = false;
+        
+        params.processallrpus = true
+        
+        if(params.rputype){
+            rputypes = [params.rputype]
+            params.processallrpus = false
         }
         
-        try{
-            showMessage('Revising real properties...')
-            svc.reviseRealProperties(params)
-            showMessage('Revising real property units...')
-            svc.reviseRpus(params)
-            showMessage('Revising FAAS...')
-            svc.reviseFaases(params)
-            showMessage('Generating FAAS listing...')            
-            svc.reviseFaasList(params)
-            showMessage('Generating new signatories...')
-            svc.reviseFaasSignatories(params)
-            showMessage('Generating superseded information...')
-            svc.reviseFaasPreviousList(params)
-            
-            
-            if ('land'.equalsIgnoreCase(params.rputype)){
-                showMessage('Revising land real property units...')
-                svc.reviseLandRpus(params)
-                showMessage('Revising land appraisals...')
-                svc.reviseLandAppraisals(params)
-                showMessage('Revising plant/tree appraisals...')
-                svc.revisePlantTreeAppraisals(params)
-                showMessage('Revising land adjustments...')
-                svc.reviseLandAdjustments(params)
+        rputypes.each{ rputype ->
+            params.rputype = rputype 
+
+            if (params.inititems == true){
+                showMessage('Generating ' + params.rputype + ' items for revision.');
+                svc.buildItemsForRevision(params);
+                if (cancelled) return
             }
 
-            showMessage('Recalculating revised faases...')
-            if (params.interval == null) params.interval = 10;
-            params.count = 50;
-            items = svc.getFaasesForRevision(params)
-
-            while (items){
-                for(int i=0; i<items.size(); i++) {
-                    if (cancelled) break;
-                    try{
-                        params.faas = items[i];
-                        params.datacapture = true;
-                        def retval = svc.reviseFaas(params);
-                        onrevise(retval);
-                        sleep(params.interval);
-                    }
-                    catch(err){
-                        err.printStackTrace();
-                    }
+            try{
+                if ('land'.equalsIgnoreCase(params.rputype)){
+                    showMessage('Revising real properties ...')
+                    svc.reviseRealProperties(params)
+                    if (cancelled) return
                 }
-                items = svc.getFaasesForRevision(params)
+
+                showMessage('Revising real property units ...')
+                svc.reviseRpus(params)
+                if (cancelled) return;
+
+                showMessage('Revising FAAS ...')
+                svc.reviseFaases(params)
+                if (cancelled) return;
+
+                showMessage('Generating FAAS listing ...')            
+                svc.reviseFaasList(params)
+                if (cancelled) return;
+
+                showMessage('Generating new signatories ...')
+                svc.reviseFaasSignatories(params)
+                if (cancelled) return;
+
+                showMessage('Generating superseded information ...')
+                svc.reviseFaasPreviousList(params)
+                if (cancelled) return;
+
+                if ('land'.equalsIgnoreCase(params.rputype)){
+                    showMessage('Revising land real property units ...')
+                    svc.reviseLandRpus(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising land appraisals ...')
+                    svc.reviseLandAppraisals(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising plant/tree appraisals ...')
+                    svc.revisePlantTreeAppraisals(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising land adjustments ...')
+                    svc.reviseLandAdjustments(params)
+                    if (cancelled) return;
+                }
+                else if ('bldg'.equalsIgnoreCase(params.rputype)){
+                    showMessage('Revising building real property units ...')
+                    svc.reviseBldgRpus(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising building structures ...')
+                    svc.reviseBldgStructures(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising building structural types ...')
+                    svc.reviseBldgStructureTypes(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising building uses ...')
+                    svc.reviseBldgUses(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising building floors ...')
+                    svc.reviseBldgFloors(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising building additional items ...')
+                    svc.reviseBldgAdditionalItems(params)
+                    if (cancelled) return;
+
+                    showMessage('Revising building additional item parameters ...')
+                    svc.reviseBldgAdditionalItemParams(params)
+                    if (cancelled) return;
+                }
+                else if ('mach'.equalsIgnoreCase(params.rputype)){
+                    showMessage('Revising machinery real property units ...')
+                    svc.reviseMachRpus(params)
+                    if (cancelled) return;
+                    
+                    showMessage('Revising machinery uses ...')
+                    svc.reviseMachUses(params)
+                    if (cancelled) return;
+                    
+                    showMessage('Revising machinery informations ...')
+                    svc.reviseMachDetails(params)
+                    if (cancelled) return;
+                }
             }
-            oncomplete()
+            catch(e){
+                e.printStackTrace();
+                onerror('Error: ' + e.message);
+            }
         }
-        catch(e){
-            e.printStackTrace();
-            onerror('Error: ' + e.message);
-        }
+        
+        if (params.processallrpus) 
+            params.rputype = null 
+            
+        oncomplete(svc.getRevisedCount(params).revisedcount)
     }
 }
 

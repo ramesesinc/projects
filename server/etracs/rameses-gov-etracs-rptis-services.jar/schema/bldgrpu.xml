@@ -43,7 +43,7 @@
 		<field name="bldgrpuid" required="true" />
 		<field name="classification_objid" required="true" />
 		<field name="bldgtype_objid" required="true" />
-		<field name="bldgkindbucc_objid" required="true" />
+		<field name="bldgkindbucc_objid" />
 		<field name="floorcount" type="integer"/>
 		<field name="basefloorarea" required="true" type="decimal" />
 		<field name="totalfloorarea" required="true" type="decimal" />

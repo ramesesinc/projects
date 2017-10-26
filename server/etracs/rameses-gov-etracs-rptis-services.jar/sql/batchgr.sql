@@ -1,3 +1,10 @@
+[findRevisedCount]
+select count(*) as revisedcount 
+from batchgr_items_forrevision 
+where barangayid = $P{barangayid}
+and rputype LIKE $P{rputype}
+
+
 [insertItemsForRevision]
 insert into batchgr_items_forrevision(
   objid,
@@ -142,7 +149,7 @@ insert into rpu(
 select 
   concat(replace(r.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
   'INTERIM' as state,
-  concat(replace(r.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry})) as realpropertyid ,
+  (select objid from realproperty where objid = concat(replace(r.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry}))) as realpropertyid,
   r.rputype,
   $P{newry} as ry,
   r.fullpin,

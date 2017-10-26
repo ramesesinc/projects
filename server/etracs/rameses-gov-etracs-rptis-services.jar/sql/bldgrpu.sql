@@ -18,7 +18,7 @@ SELECT
   bal.code AS  actualuse_code,
   bal.name AS actualuse_name
 FROM bldguse bu
-  INNER JOIN bldgassesslevel bal ON bu.actualuse_objid = bal.objid 
+  LEFT JOIN bldgassesslevel bal ON bu.actualuse_objid = bal.objid 
 WHERE bu.structuraltype_objid = $P{structuraltypeid}
 
 
@@ -90,9 +90,9 @@ SELECT
   pc.code AS classification_code, 
   pc.name AS classification_name
 FROM bldgrpu_structuraltype stt
-  INNER JOIN bldgtype bt ON stt.bldgtype_objid = bt.objid 
-  INNER JOIN bldgkindbucc bucc ON stt.bldgkindbucc_objid = bucc.objid 
-  INNER JOIN propertyclassification pc ON stt.classification_objid = pc.objid 
+  LEFT JOIN bldgtype bt ON stt.bldgtype_objid = bt.objid 
+  LEFT JOIN bldgkindbucc bucc ON stt.bldgkindbucc_objid = bucc.objid 
+  LEFT JOIN propertyclassification pc ON stt.classification_objid = pc.objid 
 WHERE stt.bldgrpuid = $P{bldgrpuid}
 
 

@@ -51,9 +51,6 @@
 			includefields="objid,entityno,name,address_text">
 			<key field="taxpayer_objid" target="objid" />
 		</complex>
-		<complex name="restrictions" ref="faas_restriction" jointype="one-to-many" required="false">
-			<key field="objid" target="parent_objid" />
-		</complex>
 	</element>
 
 </schema>

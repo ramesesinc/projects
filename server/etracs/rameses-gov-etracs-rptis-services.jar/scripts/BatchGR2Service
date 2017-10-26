@@ -22,6 +22,12 @@ class BatchGR2Service
 
 	@ActiveDB('batchgr_land')
 	def em_land
+
+	@ActiveDB('batchgr_bldg')
+	def em_bldg
+
+	@ActiveDB('batchgr_mach')
+	def em_mach
     
 
 	@Service('GeneralRevisionService')
@@ -43,32 +49,26 @@ class BatchGR2Service
 	public void buildItemsForRevision( params ) {
 		params.barangayid = params.barangay.objid 
 		if (!params.rputype) throw new Exception('Property Type must be specified.')
-		em_batchgr_items_forrevision.find([barangayid:params.barangayid]).delete();
+		em_batchgr_items_forrevision.find([barangayid:params.barangayid, rputype:params.rputype]).delete();
 		em.insertItemsForRevision(params)
 	}
 
-	@ProxyMethod
-	public def batchReviseFaas(params){
-		validateParams(params)
-		reviseRealProperties(params)
-		reviseRpus(params)
-		reviseFaases(params)
-		reviseFaasList(params)
-		reviseFaasSignatories(params)
-		reviseFaasPreviousList(params)
 
-		if ('land'.equalsIgnoreCase(params.rputype)){
-			reviseLandRpus(params)
-			reviseLandAppraisals(params)
-			revisePlantTreeAppraisals(params)
-			reviseLandAdjustments(params)
+	@ProxyMethod
+	public def getRevisedCount(params){
+		validateParams(params)
+		if (params.processallrpus){
+			params.rputype = '%'
 		}
+		return em.findRevisedCount(params)
 	}
+
 
 	void validateParams(params){
 		if (!params.rputype) throw new Exception('Property Type must be specified.')
 		params.lguid = params.lgu.objid 
 		params.barangayid = params.barangay?.objid 
+		params.snewry = params.newry.toString()
 	}
 
 
@@ -88,7 +88,7 @@ class BatchGR2Service
 	@ProxyMethod
 	public void reviseRpus(params){
 		try{
-			println 'reviseRpus...'
+			println 'reviseRpus... ' + params.rputype 
 			validateParams(params)
 			em.insertRevisedRpus(params)
 		}
@@ -125,6 +125,21 @@ class BatchGR2Service
 	public void reviseFaasSignatories(params){
 		try{
 			println 'reviseFaasSignatories...'
+			params.appraisername = params.appraiser?.name 
+			params.appraisertitle = params.appraiser?.title 
+			params.appraiserdtsigned = params.appraiser?.dtsigned 
+			params.recommendername = params.recommender?.name 
+			params.recommendertitle = params.recommender?.title 
+			params.recommenderdtsigned = params.recommender?.dtsigned 
+			params.taxmappername = params.taxmapper?.name 
+			params.taxmappertitle = params.taxmapper?.title 
+			params.taxmapperdtsigned = params.taxmapper?.dtsigned 
+			params.approvername = params.approver?.name 
+			params.approvertitle = params.approver?.title 
+			params.approverdtsigned = params.approver?.dtsigned 
+			params.provapprovername = params.provapprover?.name 
+			params.provapprovertitle = params.provapprover?.title 
+			params.provapproverdtsigned = params.provapprover?.dtsigned 
 			validateParams(params)
 			em.insertRevisedSignatories(params)
 		}
@@ -146,6 +161,16 @@ class BatchGR2Service
 	}
 
 
+
+
+
+	/*=======================================================
+	*
+	*  LAND SUPPORT 
+	*
+	=======================================================*/
+
+
 	@ProxyMethod
 	public void reviseLandRpus(params){
 		try{
@@ -164,13 +189,12 @@ class BatchGR2Service
 			println 'reviseLandAppraisals...'
 			validateParams(params)
 			em_land.insertRevisedLandDetails(params)	
-			em_land.updateLandActualUses(params)	
-			em_land.updateLandSubclasses(params)	
 		}
 		catch(e){
 			println 'ERROR: reviseLandAppraisals: ' + e.message 		
 		}
 	}
+
 
 	@ProxyMethod
 	public void revisePlantTreeAppraisals(params){
@@ -178,8 +202,6 @@ class BatchGR2Service
 			println 'revisePlantTreeAppraisals...'
 			validateParams(params)
 			em_land.insertRevisedPlantTreeDetails(params)	
-			em_land.updatePlantTreeUnitValues(params)	
-			em_land.updatePlantTreeActualUses(params)	
 		}
 		catch(e){
 			println 'ERROR: revisePlantTreeAppraisals: ' + e.message 		
@@ -192,13 +214,160 @@ class BatchGR2Service
 			println 'reviseLandAdjustments...'
 			validateParams(params)
 			em_land.insertRevisedLandAdjustments(params)	
-			em_land.updatLandAdjustmentTypes(params)	
 			em_land.insertRevisedLandAdjustmentParameters(params)	
 		}
 		catch(e){
 			println 'ERROR: reviseLandAdjustments: ' + e.message 		
 		}
 	}
+
+
+
+
+	/*=======================================================
+	*
+	*  BUILDING SUPPORT 
+	*
+	=======================================================*/
+	@ProxyMethod
+	public void reviseBldgRpus(params){
+		try{
+			println 'reviseBldgRpus...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgRpus: ' + e.message 		
+		}
+	}
+
+
+	@ProxyMethod
+	public void reviseBldgStructures(params){
+		try{
+			println 'reviseBldgStructures...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgStructures(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgStructures: ' + e.message 		
+		}
+	}
+
+
+	@ProxyMethod
+	public void reviseBldgStructureTypes(params){
+		try{
+			println 'reviseBldgStructureTypes...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgStructuralTypes(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgStructureTypes: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgUses(params){
+		try{
+			println 'reviseBldgUses...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgUses(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgUses: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgFloors(params){
+		try{
+			println 'reviseBldgFloors...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgFloors(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgFloors: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgAdditionalItems(params){
+		try{
+			println 'reviseBldgAdditionalItems...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgAdditionalItems(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgAdditionalItems: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgAdditionalItemParams(params){
+		try{
+			println 'reviseBldgAdditionalItemParams...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgAdditionalItemParams(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgAdditionalItemParams: ' + e.message 		
+		}
+	}	
+
+
+
+	/*=======================================================
+	*
+	*  MACHINERY SUPPORT 
+	*
+	=======================================================*/
+
+	@ProxyMethod
+	public void reviseMachRpus(params){
+		try{
+			println 'reviseMachRpus...'
+			validateParams(params)
+			em_mach.insertRevisedMachRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMachRpus: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMachUses(params){
+		try{
+			println 'reviseMachUses...'
+			validateParams(params)
+			em_mach.insertRevisedMachUses(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMachUses: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMachDetails(params){
+		try{
+			println 'reviseMachDetails...'
+			validateParams(params)
+			em_mach.insertRevisedMachDetails(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMachDetails: ' + e.message 		
+		}
+	}	
+
+
+
+
 
 
 

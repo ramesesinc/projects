@@ -99,3 +99,8 @@ create table batchgr_log (
 	primary key (objid)
 )
 go 
+
+
+
+alter table bldgrpu_structuraltype alter column bldgkindbucc_objid nvarchar(50) null
+go 

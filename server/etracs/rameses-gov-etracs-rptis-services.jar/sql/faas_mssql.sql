@@ -3,6 +3,7 @@ SELECT *
 from faas_list f 
 where 1=1 
 ${filters}
+${orderby}
 
 
 [findById]

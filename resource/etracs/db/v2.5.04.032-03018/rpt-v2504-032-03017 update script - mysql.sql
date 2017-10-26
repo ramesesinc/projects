@@ -64,3 +64,6 @@ create table batchgr_log (
 	objid varchar(50) not null,
 	primary key (objid)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+alter table bldgrpu_structuraltype modify column bldgkindbucc_objid nvarchar(50) null;

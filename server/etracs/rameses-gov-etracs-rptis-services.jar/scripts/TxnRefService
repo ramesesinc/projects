@@ -12,7 +12,7 @@ class TxnRefService
 	@Service('RPTUtil')
 	def util 
 
-	@DataContext('txnref')
+	@ActiveDB('txnref')
 	def em_txnref 
 
 
@@ -50,7 +50,7 @@ class TxnRefService
 		util.required('refid', txnref.refid)
 		util.required('msg', txnref.msg)
 		try{
-			em_txnref.create(txnref)
+			em_txnref.insert(txnref)
 		}
 		catch(e) {
 			def refs = getTxnRefs(txnref.objid)

@@ -1,3 +1,10 @@
+[findRevisedCount]
+select count(*) as revisedcount 
+from batchgr_items_forrevision 
+where barangayid = $P{barangayid}
+and rputype like $P{rputype}
+
+
 [insertItemsForRevision]
 insert into batchgr_items_forrevision(
   objid,
@@ -80,7 +87,7 @@ insert into realproperty(
   stewardshipno
 )
 select 
-  concat(replace(rp.objid, concat('-',rp.ry), ''), concat('-', $P{newry})) as objid,
+  replace(rp.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as objid,
   'INTERIM' as state,
   rp.autonumber,
   rp.pintype,
@@ -109,7 +116,7 @@ from faas f
   inner join batchgr_items_forrevision xbi on f.objid = xbi.objid 
 where rp.barangayid = $P{barangayid}
 and f.state = 'current'
-and r.rputype = $P{rputype}
+and r.rputype = 'land'
 and r.ry < $P{newry}
 
 
@@ -140,11 +147,11 @@ insert into rpu(
   stewardparentrpumasterid
 )
 select 
-  concat(replace(r.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
+  replace(r.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),${snewry})) as objid,
   'INTERIM' as state,
-  concat(replace(r.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry})) as realpropertyid ,
+  (select objid from realproperty where objid = replace(r.realpropertyid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),${snewry}))) as realpropertyid,
   r.rputype,
-  $P{newry} as ry,
+  ${snewry} as ry,
   r.fullpin,
   r.suffix,
   r.subsuffix,
@@ -216,9 +223,9 @@ insert into faas(
   parentfaasid
 )
 select 
-  concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
+  replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as objid,
   'INTERIM' as state,
-  concat(replace(f.rpuid, concat('-',r.ry), ''), concat('-', $P{newry})) as rpuid,
+  replace(f.rpuid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as rpuid,
   1 as datacapture,
   f.autonumber,
   concat(utdno, '-', $P{newry}) as utdno,
@@ -244,7 +251,7 @@ select
   f.lguid,
   f.name,
   f.dtapproved,
-  concat(replace(f.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry})) as realpropertyid,
+  replace(f.realpropertyid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as realpropertyid,
   f.lgutype,
   null as signatories,
   f.fullpin,
@@ -362,6 +369,7 @@ from faas f
 where rp.barangayid = $P{barangayid}
 and r.rputype = $P{rputype}
 and r.ry = $P{newry}
+and not exists(select * from faas_list where objid = f.objid)
 
 
 
@@ -384,7 +392,7 @@ insert into faas_signatory(
   provapprover_dtsigned
 )
 select 
-  concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
+  replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as objid,
   $P{appraisername} as appraiser_name,
   $P{appraisertitle} as appraiser_title,
   $P{appraiserdtsigned} as appraiser_dtsigned,
@@ -424,8 +432,8 @@ insert into faas_previous(
   preveffectivity
 )
 select 
-  concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
-  concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as faasid,
+  replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as objid,
+  replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})) as faasid,
   f.objid as prevfaasid,
   f.rpuid as prevrpuid,
   f.tdno as prevtdno,

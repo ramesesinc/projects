@@ -104,3 +104,11 @@ go
 
 alter table bldgrpu_structuraltype alter column bldgkindbucc_objid nvarchar(50) null
 go 
+
+
+
+alter table bldgadditionalitem add idx int
+go 
+
+update bldgadditionalitem set idx = 0 where idx is null
+go 

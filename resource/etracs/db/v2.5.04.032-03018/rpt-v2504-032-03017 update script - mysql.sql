@@ -67,3 +67,10 @@ create table batchgr_log (
 
 
 alter table bldgrpu_structuraltype modify column bldgkindbucc_objid nvarchar(50) null;
+
+
+
+alter table bldgadditionalitem add idx int;
+update bldgadditionalitem set idx = 0 where idx is null;
+
+	

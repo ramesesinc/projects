@@ -31,6 +31,7 @@ public class BldgAdditionalItemPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
@@ -79,6 +80,10 @@ public class BldgAdditionalItemPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
         xComboBox1.setRequired(true);
         formPanel2.add(xComboBox1);
+
+        xIntegerField1.setCaption("Index No.");
+        xIntegerField1.setName("entity.idx"); // NOI18N
+        formPanel2.add(xIntegerField1);
 
         xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 5, 0));
         xCheckBox1.setCheckValue(1);
@@ -133,7 +138,7 @@ public class BldgAdditionalItemPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -154,6 +159,7 @@ public class BldgAdditionalItemPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

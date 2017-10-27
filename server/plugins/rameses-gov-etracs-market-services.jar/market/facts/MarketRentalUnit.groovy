@@ -9,6 +9,7 @@ class MarketRentalUnit {
 	String clusterid;
 	String sectionid;
 	double areasqm;
+	String ratetype;
 	
 	public MarketRentalUnit(def mm) {
 		unitno = mm.code;

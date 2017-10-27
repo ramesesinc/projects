@@ -3,7 +3,7 @@
 		<field name="objid" primary="true" prefix="MKTUNT"/>
 		<field name="state" required="true" defaultValue="ACTIVE"/>
 		<field name="unittype" required="true" lov="MARKET_UNIT_TYPES" caption="Type"/>
-		<field name="code" required="true" searchable="true"  caption="Unit Code"/>
+		<field name="code" required="true" searchable="true" indexed="true" caption="Unit Code"/>
 
 		<field name="indexno" required="true" type="integer" caption="Index No" defaultValue="0" indexed="true"/>
 		<field name="areasqm" required="true" type="decimal" caption="Area (sqm)" />

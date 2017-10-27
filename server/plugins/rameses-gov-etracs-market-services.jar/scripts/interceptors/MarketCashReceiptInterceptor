@@ -58,13 +58,13 @@ class MarketCashReceiptInterceptor{
 		}	
 		//insert into rental payment
 		def rr = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, 
-			surcharge: o.surcharge, interest:o.interest, fromdate: o.fromdate, todate:o.todate ];
+			surcharge: o.surcharge, interest:o.interest, discount:o.discount, fromdate: o.fromdate, todate:o.todate ];
 		rentalPmt.create(rr);
 	}
 
 	void postUtilityPayment(def itm, def pmt, def o ) {
 		utilityLedger.find([objid: o.ledgerid] ).update( [amtpaid: '{amtpaid + :amt}'], [amt: o.amount ] );
-		def r = [paymentid:pmt.objid, ledgerid: o.ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest ];
+		def r = [paymentid:pmt.objid, ledgerid: o.ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest, discount:o.discount ];
 		utilityFeePmt.create(r);
 	}
 
@@ -80,7 +80,7 @@ class MarketCashReceiptInterceptor{
 		otherFeeLedger.find([objid: ledgerid]).update( [amtpaid: '{amtpaid +:amt}' ], [amt: o.amount] );
 		if(o.interest == null ) o.interest = 0;
 		if(o.surcharge == null ) o.surcharge = 0;
-		def r = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest ];
+		def r = [paymentid:pmt.objid, ledgerid: ledgerid, amount: o.amount, surcharge: o.surcharge, interest:o.interest, discount:o.discount ];
 		otherFeePmt.create(r);
 	}
 
@@ -109,9 +109,15 @@ class MarketCashReceiptInterceptor{
 			}
 
 			//find the lastdate paid
-			def lastItem = itm.billitems.findAll{ it.txntype == 'MARKETRENTAL' }.max{ it.todate };
+			def lastItem = itm.billitems.findAll{ it.txntype == 'MARKETRENTAL' && it.partialunpaid==0 }.max{ it.todate };
 			def todate = lastItem.todate;
-			def partial = lastItem.partialunpaid;
+
+			def partial = 0;
+			def partialItem = itm.billitems.find{it.partialunpaid > 0 };
+			if( partialItem ) {
+				partial = partialItem.partialunpaid;
+			}
+
 			marketAcct.find( [objid: itm.acctid ] ).update( [lastdatepaid: todate, partialbalance: partial ] );
 		}
 

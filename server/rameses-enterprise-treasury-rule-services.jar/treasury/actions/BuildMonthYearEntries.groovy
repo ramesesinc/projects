@@ -15,7 +15,9 @@ class BuildMonthYearEntries implements RuleActionHandler {
 	public void execute(def params, def drools) {
 		def fromdate = params.fromdate.eval();
 		def todate = params.todate.eval();
+
 		if( fromdate >= todate ) {
+			println " " + fromdate + " to " + todate;
 			throw new Exception("From date must be less than to date");
 		}
 

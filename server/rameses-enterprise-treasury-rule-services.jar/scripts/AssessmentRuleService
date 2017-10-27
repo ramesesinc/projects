@@ -61,7 +61,7 @@ public class AssessmentRuleService {
 						ac.put(k,v);
 					}
 				}
-				ac.refid = bi.objid; 
+				if(!ac.refid) ac.refid = bi.objid; 
 				def bbi = factBuilder.getBillItemFact( ac );
 				if( !facts.find{ (it instanceof AbstractBillItem) && (it.hashCode()==bbi.hashCode())  } ) {
 					facts << bbi;

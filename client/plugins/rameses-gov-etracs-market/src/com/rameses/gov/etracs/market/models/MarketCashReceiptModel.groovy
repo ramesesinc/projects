@@ -57,7 +57,7 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
      void processBillingItem( def itm ) {
          def p = [:];
          p.putAll( itm );
-         if( acctFilter !=null ) p.filters = acctFilter;
+         if( acctFilter ) p.filters = acctFilter;
          p.acctid = p.objid;
          def mm = billingSvc.getBilling( p );
          itm.putAll(mm);
@@ -141,7 +141,9 @@ public class MarketCashReceiptModel extends AbstractSimpleCashReceiptModel {
             updateReceipt();
             itemHandler.reload();
          }
-        return Inv.lookupOpener( "market_account:lookup", [onselect:h] ); 
+         def pp = [onselect:h];
+         if( entity.payer?.objid ) pp.ownerid = entity.payer.objid;
+        return Inv.lookupOpener( "market_account:lookup", pp ); 
      }
      
      void clearAll() {

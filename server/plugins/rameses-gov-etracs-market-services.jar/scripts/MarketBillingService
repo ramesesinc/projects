@@ -77,6 +77,7 @@ class MarketBillingService {
  			return;
  		}
  		def ma = facts.find{ it instanceof market.facts.MarketAccount };
+ 		def mu = facts.find{ it instanceof market.facts.MarketRentalUnit };
 
  		if( !ma.lastdatepaid )
  			throw new Exception("Market Billing Error. lastdatepaid is required in the market account ledger");
@@ -88,24 +89,25 @@ class MarketBillingService {
 		def rates = rentalRateSvc.getRatesFact(facts, (fromdate.year-1), todate.year );
 		facts.addAll(rates);
 		ma.ratetype =  rates[0].type;
-		
+		mu.ratetype = rates[0].type;
 		//add other fees
 		otherFeeEm.find( [acctid: ma.objid ]).list().each {
-			facts << new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee',
+			facts << new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee', ledgerid: it.objid, 
 				 year: it.year, month: it.month, txntype: it.txntypeid, 
 				amount:it.balance, remarks: it.remarks );
 		};
+
 	}
 
 	public void buildUtilityFacts( def facts, def filters ) {
 		if(!filters) return;
 		def filt = filters.findAll{ it.matches('ELECTRICITY|WATER') };
 		if( !filt ) return;
-
+		
 		def ma = facts.find{ it instanceof market.facts.MarketAccount };
 		//utilityEm.debug = true;
 		utilityEm.where( "parent.acctid =:pid AND txntypeid IN ('" + filt.join("','") + "')", [pid: ma.objid ] ).list().each {
-			facts <<  new MonthBillItem( refid:it.objid, ledgertype:'market_utility_ledger',
+			facts <<  new MonthBillItem( refid:it.objid, ledgerid:it.objid, ledgertype:'market_utility_ledger',
 				 year: it.year, month: it.month, txntype: it.txntypeid, amount:it.balance );
 		};
 	}
@@ -136,7 +138,7 @@ class MarketBillingService {
         }
      }
 
-	private def processBill(def facts) {
+	private def processBill(def facts, def filters) {
 		def ma = facts.find{ it instanceof MarketAccount };
 		def mu = facts.find{ it instanceof MarketRentalUnit };
 
@@ -213,8 +215,8 @@ class MarketBillingService {
 		if(!m.items) 
 			throw new Exception("No billitems found");
 
-		m.items = m.items.sort{   it.sortorder };
-		m.billitems = m.billitems.sort{  it.sortorder };
+		m.items = m.items.sort{ (it.sortorder==null)?0:  it.sortorder };
+		m.billitems = m.billitems.sort{  (it.sortorder==null)?0:  it.sortorder };
 		m.amount = NumberUtil.round(m.items.sum{ it.amount });
 
 		return m;
@@ -232,7 +234,7 @@ class MarketBillingService {
 
 		buildUtilityFacts( facts, o.filters );
 
-		return processBill(facts);
+		return processBill(facts, o.filters );
 	}
 
 }

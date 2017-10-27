@@ -26,9 +26,6 @@
                         [name:'objid', caption:'']
                     ];
                 },
-                //isItemSelected: { o->
-                //    return ( o.objid == 'RENTAL' );
-                //},
                 isMultiSelect: {
                     return true;
                 },

@@ -1,3 +1,18 @@
+<workunit>
+    <invokers>
+        <invoker type="market_account:section" 
+                 caption="Rental Accounts" 
+                 action="init" 
+                 visibleWhen="#{mode!='create'}" index="1"
+                 />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalLedgerModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketRentalLedgerPage" />
+    </pages>    
+</workunit>
+<!--
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" 
           schemaName="market_rental_ledger"
           cols="year,monthname,fromdate,todate,rate,ratetype,amount,amtpaid"
@@ -11,3 +26,4 @@
         
     </invokers>
 </workunit>
+-->

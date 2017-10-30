@@ -16,7 +16,7 @@
 			<key field="clusterid" target="objid" />
 		</complex>
 		
-		
+		<field name="currentacctid" />
 		<complex name="currentaccount" ref="market_account" jointype="many-to-one" required="false" 
 				includefields="acctname,owner.name,startdate,dateclosed">
 			<key field="currentacctid"  target="objid"/>

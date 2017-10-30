@@ -2,12 +2,23 @@ import com.rameses.annotations.*;
 
 class MarketRentalUnitInterceptor {
 	
+	@DataContext("market_account")
+	def marketAcct;
+
 	@Before( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_rentalunit'}")
-	public void beforeCreate(def evt) {
+	public void beforeCreateOrUpdate(def evt) {
 		def o = evt.args[0];
 		o.attributes.each {
 			it.attributeid = it.attribute.name;
 		}
-	}
+ 	}
+
+ 	@After( pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'market_rentalunit'}")
+	public void afterUpdate(def evt) {
+		def o = evt.args[0];
+		if( o.currentacctid ) {
+			marketAcct.find([objid:o.currentacctid]).update( [unitno: o.code ] );
+		}
+ 	}
 
 }

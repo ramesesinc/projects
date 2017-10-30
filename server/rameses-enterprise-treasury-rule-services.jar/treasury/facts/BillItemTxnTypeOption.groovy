@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import com.rameses.rules.common.*;
 
-public class BillItemTxnType {
+public class BillItemTxnTypeOption {
     
     String txntype;	
     

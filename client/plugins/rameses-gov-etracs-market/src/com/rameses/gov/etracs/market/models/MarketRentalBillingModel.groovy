@@ -19,7 +19,6 @@ public class MarketRentalBillingModel extends FormReportModel {
             if( o ) {
                  query.filters = o*.objid;
             }
-            MsgBox.alert('query filters ' + query.filters);
             return null;
         };
         Modal.show( "market_collection_txntype:lookup" , [onselect:s] );

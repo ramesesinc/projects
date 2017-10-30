@@ -39,6 +39,14 @@ class MarketBillingService {
 	def holidaySvc;
 
 	private void buildInitialFacts( def facts, def o  ) {
+		//add billitem txntype
+		
+		if(o.filters) {
+			o.filters.each {
+				facts << new BillItemTxnTypeOption( txntype : it );
+			}
+		}
+		
 
 		facts << new HolidayFact(  
 			handler: { dt->

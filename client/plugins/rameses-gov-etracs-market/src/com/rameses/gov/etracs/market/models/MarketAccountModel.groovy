@@ -8,16 +8,12 @@ import com.rameses.seti2.models.*;
 
 public class MarketAccountModel extends CrudFormModel {
     
-    
-    void afterOpen() {
-        itemHandler.reload();
+    def viewUnit() {
+        if(!entity.unit?.objid) 
+            throw new Exception("Please select a unit first");
+        def op = Inv.lookupOpener("market_rentalunit:open", [ entity: [objid: entity.unit?.objid ]])
+        op.target = "popup";
+        return  op;
     }
-    
-    def itemHandler = [
-        fetchList: {
-            return entity.recurringfees;
-        }
-    ] as BasicListModel;
-    
     
 }

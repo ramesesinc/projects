@@ -1,6 +1,6 @@
 <workunit schemaName="market_account" allowCreate="false" allowEdit="false">
     <invokers>
-        <invoker type="market_account:open" caption="Market Account" action="open"  role="MASTER"
+        <invoker type="market_account:open" caption="Market Ledger" action="open"  role="MASTER"
             formTitle="#{entity.unitno} - #{entity.owner.name}" formId="#{entity.objid}"/>
         
         

@@ -54,8 +54,9 @@ public class MarketAccountPersistenceInterceptor {
 		def o = evt.args[0]; 
 		def mr = macct_em.find([ objid: o.objid ]).select('objid,unitid').first(); 
 		if ( !mr ) throw new Exception('market account does not exist');  
-
-		mruEm.find([ objid: mr.unitid ]).update([ currentacctid: '{NULL}' ]); 
+		if(o.unit?.objid) {
+			mruEm.find([ objid: mr.unitid ]).update([ currentacctid: '{NULL}' ]); 
+		}
 	}
 
 	@After( pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'market_account'}")

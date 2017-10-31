@@ -11,9 +11,11 @@ class MarketAccount {
 	String payfrequency;	//MARKET_PAY_FREQUENCY
 	double partialbalance;
 	double extrate;
+	double extarea;
 
 	String ratetype;
 	Date lastdatepaid;
+	Date startdate;
 
 	//Date nextbilldate;
 	//Date nextstartdate;
@@ -25,6 +27,8 @@ class MarketAccount {
 		partialbalance = mm.partialbalance;
 		lastdatepaid = mm.lastdatepaid;
 		if(mm.extrate) extrate = mm.extrate;
+		if(mm.dtstarted) startdate = mm.dtstarted;
+		if(mm.extarea) extarea = mm.extarea;
 	}
 
 }

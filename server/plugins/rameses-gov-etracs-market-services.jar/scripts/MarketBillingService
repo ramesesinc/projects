@@ -56,8 +56,8 @@ class MarketBillingService {
 		}
 		facts << new treasury.facts.BillDate( billdate );
 		facts << new treasury.facts.SystemDate(svrDate);
-		if( o.payment ) {
-			facts << new treasury.facts.Payment( amount: o.payment );
+		if( o.partial ) {
+			facts << new treasury.facts.Payment( amount: o.partial );
 		}
 	}
 
@@ -72,7 +72,10 @@ class MarketBillingService {
 		}
 	}
  
- 	private void buildRentalFacts( def facts ) {
+ 	private void buildRentalFacts( def facts, def filters ) {
+ 		if(filters && !filters.contains('RENTAL') ) {
+ 			return;
+ 		}
  		def ma = facts.find{ it instanceof market.facts.MarketAccount };
  		if( !ma.lastdatepaid )
  			throw new Exception("Market Billing Error. lastdatepaid is required in the market account ledger");
@@ -225,7 +228,7 @@ class MarketBillingService {
 		def facts = [];
 		buildInitialFacts(facts, o );
 		buildAccountFacts(facts, o.acctid );
-		buildRentalFacts( facts );
+		buildRentalFacts( facts, o.filters );
 
 		buildUtilityFacts( facts, o.filters );
 

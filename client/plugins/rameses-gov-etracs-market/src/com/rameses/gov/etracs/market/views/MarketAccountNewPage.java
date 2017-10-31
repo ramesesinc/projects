@@ -44,7 +44,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
@@ -134,10 +133,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
         xDecimalField1.setCaption("Ext. Area (sqm)");
         xDecimalField1.setName("entity.extarea"); // NOI18N
         xFormPanel2.add(xDecimalField1);
-
-        xDecimalField2.setCaption("Ext Rate");
-        xDecimalField2.setName("entity.extrate"); // NOI18N
-        xFormPanel2.add(xDecimalField2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -236,7 +231,6 @@ public class MarketAccountNewPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

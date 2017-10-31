@@ -109,8 +109,10 @@ class MarketCashReceiptInterceptor{
 			}
 
 			//find the lastdate paid
-			def todate = itm.billitems.findAll{ it.txntype == 'MARKETRENTAL' }.max{ it.todate }.todate;
-			marketAcct.find( [objid: itm.acctid ] ).update( [lastdatepaid: todate ] );
+			def lastItem = itm.billitems.findAll{ it.txntype == 'MARKETRENTAL' }.max{ it.todate };
+			def todate = lastItem.todate;
+			def partial = lastItem.partialunpaid;
+			marketAcct.find( [objid: itm.acctid ] ).update( [lastdatepaid: todate, partialbalance: partial ] );
 		}
 
 	}

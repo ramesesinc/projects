@@ -20,6 +20,9 @@ class MarketRentalRateService {
 	@DataContext("market_rentalunit")
 	def mruEm;
 
+	@DataContext("market_account")
+	def acctEm;
+
 	private def fetchRates( def facts, def resultHandler, def fromYear, def toYear ) {
 		def fb = new FactBuilder();
 		fb.facts.addAll( facts );
@@ -41,6 +44,10 @@ class MarketRentalRateService {
 	@ProxyMethod
 	public def getRates( def o ) {
 		def facts = [];
+		if(o.acctid) {
+			def mm = acctEm.find( [objid: o.acctid ] ).first();
+			facts << new MarketAccount ( mm );
+		}
 		if(o.unitid) {
 			def mm = mruEm.find( [objid: o.unitid ] ).first(1);
 			facts << new MarketRentalUnit ( mm );

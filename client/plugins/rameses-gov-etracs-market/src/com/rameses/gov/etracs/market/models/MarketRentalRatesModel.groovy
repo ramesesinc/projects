@@ -26,7 +26,7 @@ public class MarketRentalRatesModel  {
     }
     
     void initFromAccount() {
-        def m = [unitid: caller.entity.unitid];
+        def m = [unitid: caller.entity.unitid, acctid: caller.entity.objid ];
         if( caller.entity.dtstarted ) {
             def db = new DateBean(caller.entity.dtstarted);
             m.fromyear = db.year; 

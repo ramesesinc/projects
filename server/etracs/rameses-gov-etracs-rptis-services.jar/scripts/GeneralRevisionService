@@ -86,29 +86,25 @@ class GeneralRevisionService
 		faas.rpu.rp = faas.rp
 		faas.restrictions.each{ it.objid = 'FR' + new java.rmi.server.UID()}
 		if (!faas.memoranda) faas.memoranda = var.gr_default_memoranda
-		copyPreviousSignatories(faas, info)
+		buildDefaultSignatories(faas, info)
 		rpuSvc.reviseRpu(faas.rpu)
 		return faas 
 	}
 
-	void copyPreviousSignatories(faas, info){
-		if (faas.appraiser?.name) return 
-		def sig = faasSvc.findSignatory([objid:info.faas.objid])
-		if (sig.appraiser.name){
-			def dtsigned = dtSvc.serverDate 
-			faas.appraiser = sig.appraiser
-			faas.appraiser.dtsigned = dtsigned
-			faas.taxmapper = sig.taxmapper
-			faas.taxmapper.dtsigned = dtsigned
-			faas.recommender = sig.recommender
-			faas.recommender.dtsigned = dtsigned
-			faas.approver = sig.approver
-			faas.approver.dtsigned = dtsigned
-		}
+	void buildDefaultSignatories(faas, info){
+		def dtsigned = dtSvc.serverDate 
+		updateSignatory(faas, 'appraiser', dtsigned, var.gr_default_appraiser, var.gr_default_appraiser_title)
+		updateSignatory(faas, 'recommender', dtsigned, var.gr_default_recommender, var.gr_default_recommender_title)
+		updateSignatory(faas, 'approver', dtsigned, var.gr_default_approver, var.gr_default_approver_title)
+	}
+
+	void updateSignatory(faas, field, dtsigned, name, title ){
+		faas[field] = [name:name, title:title, dtsigned:dtsigned]
 	}
 
 	@ProxyMethod
 	public def createDataCaptureGeneralRevision( info ) {
+		info._checkTxnRef = true 
 		def faas = initGeneralRevision( info )
 		def entity = faasSvc.createFaas(faas)
 		em_batchgr_error.find([objid:info.faas.objid]).delete()

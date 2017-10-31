@@ -83,7 +83,6 @@ FROM landrysetting rs
 WHERE rs.ry = $P{ry}
   AND l.lguid = $P{lguid}
   and sub.code = $P{subclasscode}
-  and lspc.objid = $P{landspecificclassid}
 
 
 

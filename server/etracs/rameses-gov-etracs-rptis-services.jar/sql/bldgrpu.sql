@@ -85,8 +85,6 @@ DELETE FROM bldgrpu_structuraltype WHERE bldgrpuid = $P{objid}
 [getStructuralTypes]
 SELECT 
   stt.*,
-  bt.objid AS bldgtype_objid,
-  bucc.objid AS bldgkindbucc_objid,
   pc.code AS classification_code, 
   pc.name AS classification_name
 FROM bldgrpu_structuraltype stt

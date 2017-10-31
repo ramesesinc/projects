@@ -66,7 +66,7 @@ class TDReportService
 		if (!td) throw new Exception('FAAS does not exist or has already been deleted.')
 		buildOrdinanceInfo(td)
 		buildCancelNote(td)
-		buildMultiClaimInfo(td)
+		//buildMultiClaimInfo(td)
 		td.fullpin = td.displaypin 
 		td.taxable = util.toBoolean(td.taxable, true)
 		td.propertytype = td.rputype

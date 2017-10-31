@@ -105,7 +105,7 @@ class FAASReportService
 		buildOwnerContactNo(faas)
 		buildSignatories(faas)
 		buildPreviousInfo(faas)
-		buildMultiClaimInfo(faas)
+		//buildMultiClaimInfo(faas)
 		faas.annotations = em.getActiveAnnotations(faas)
 		faas.show_interim_watermark = util.toBoolean(var.show_interim_watermark, false)
 		return faas

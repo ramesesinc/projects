@@ -361,7 +361,7 @@ SELECT
   f.tdno AS landfaas_tdno, f.fullpin AS landfaas_fullpin
 FROM bldgrpu_land bl 
   INNER JOIN faas f ON bl.landfaas_objid = f.objid 
-WHERE bl.bldgrpuid = $P{objid}  
+WHERE bl.rpu_objid = $P{objid}  
 
 
 [findEntityContactInfo]
@@ -480,15 +480,15 @@ order by startdate desc
 
 
 [findOrdinanceInfo]
-select ordinanceno, ordinancedate from landrysetting where 'land' = $P{rputype} and ry = $P{ry}
+select ordinanceno, ordinanceno as ryordinanceno, ordinancedate, ordinancedate as ryordinancedate from landrysetting where 'land' = $P{rputype} and ry = $P{ry}
 union 
-select ordinanceno, ordinancedate from bldgrysetting where 'bldg' = $P{rputype} and ry = $P{ry}
+select ordinanceno, ordinanceno as ryordinanceno, ordinancedate, ordinancedate as ryordinancedate from bldgrysetting where 'bldg' = $P{rputype} and ry = $P{ry}
 union 
-select ordinanceno, ordinancedate from machrysetting where 'mach' = $P{rputype} and ry = $P{ry}
+select ordinanceno, ordinanceno as ryordinanceno, ordinancedate, ordinancedate as ryordinancedate from machrysetting where 'mach' = $P{rputype} and ry = $P{ry}
 union 
-select ordinanceno, ordinancedate from planttreerysetting where 'planttree' = $P{rputype} and ry = $P{ry}
+select ordinanceno, ordinanceno as ryordinanceno, ordinancedate, ordinancedate as ryordinancedate from planttreerysetting where 'planttree' = $P{rputype} and ry = $P{ry}
 union 
-select ordinanceno, ordinancedate from miscrysetting where 'misc' = $P{rputype} and ry = $P{ry}
+select ordinanceno, ordinanceno as ryordinanceno, ordinancedate, ordinancedate as ryordinancedate from miscrysetting where 'misc' = $P{rputype} and ry = $P{ry}
 
 
 [getActiveClaims]

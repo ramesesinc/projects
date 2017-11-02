@@ -11,7 +11,7 @@ public class MarketChangeActionModel extends CrudFormModel {
     String txntype;
     def oldEntry;
     
-    def initEdit() {
+    void initEdit() {
         txntype = invoker.properties.txntype;
         oldEntry = entity;
         entity = [objid: oldEntry.objid, _schemaname: schemaName];
@@ -22,16 +22,17 @@ public class MarketChangeActionModel extends CrudFormModel {
         };
         else if( txntype == "rentalunit") {
             entity.unit = oldEntry.unit;
-            entity.extarea = oldEntry.extarea;
-            entity.extrate = oldEntry.extrate;
         }
         else if(txntype=="ledger" ) {
             entity.payfrequency = oldEntry.payfrequency;
             entity.dtstarted = oldEntry.dtstarted;
-            entity.lastdatepaid = oldEntry.lastdatepaid;
-            entity.partialbalance = oldEntry.partialbalance;
         }
-        return txntype;
+        else if( txntype=="extarea") {
+            entity.extarea = oldEntry.extarea;
+        }
+        else if( txntype=="lastdatepaid") {
+            entity.lastdatepaid = oldEntry.lastdatepaid;
+        }
     }
 
     @PropertyChangeListener

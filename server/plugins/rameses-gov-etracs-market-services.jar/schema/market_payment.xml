@@ -12,9 +12,8 @@
 
 		<field name="txnmode" required="true"/>		
 		<field name="amount" required="true"/>
-		<field name="voided" datatype="checkbox" checkValue="1" uncheckvalue="0"/>
+		<field name="voided" type="integer" datatype="checkbox" checkValue="1" uncheckValue="0"/>
 		
-
 	</element>
 
 

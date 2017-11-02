@@ -53,7 +53,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel25 = new com.rameses.rcp.control.XLabel();
-        xLabel16 = new com.rameses.rcp.control.XLabel();
         jPanel5 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
@@ -103,6 +102,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel11.setExpression("#{entity.extarea}");
         xLabel11.setPadding(new java.awt.Insets(0, 3, 1, 1));
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel11.setVisibleWhen("#{ entity.extarea > 0 }");
         xFormPanel2.add(xLabel11);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -193,11 +193,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel25.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel25);
 
-        xLabel16.setCaption("Partial Balance");
-        xLabel16.setExpression("#{entity.partialbalance}");
-        xLabel16.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel5.add(xLabel16);
-
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -211,7 +206,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 178, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -320,7 +315,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
-    private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel25;

@@ -23,4 +23,17 @@ class MarketRentalBillItem extends MonthBillItem {
 		return m;
 	}	
 
+	double applyPayment( double payamt ) {
+		double pmt = super.applyPayment( payamt );
+		if(pmt == 0 ) {
+			if(ratetype == "DAY") {
+				//for partial payments use the ff. formula.
+				int dd = ((int) (amount / rate )) +  ((amount % rate > 0 )?1 : 0);
+				todate =  DateFunc.getDayAdd(fromdate, dd - 1);
+				principal = dd * rate;
+			}
+		}
+		return pmt;
+	}
+
 }

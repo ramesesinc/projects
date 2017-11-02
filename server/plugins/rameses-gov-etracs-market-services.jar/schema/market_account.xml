@@ -23,7 +23,7 @@
 		<field name="extarea" type="decimal" caption="Ext Area" required="true" defaultValue="0"/>
 
 		<complex name="unit" ref="market_rentalunit" jointype="many-to-one" required="true" 
-			includefields="objid,code,clusterid,sectionid,cluster.*,section.name">
+			includefields="objid,code,clusterid,sectionid,cluster.*,section.name,areasqm">
 			<key field="unitid" target="objid" />
 		</complex>	
 

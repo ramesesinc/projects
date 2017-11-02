@@ -52,7 +52,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xFormPanel1" min="-2" pref="497" max="-2" attributes="1"/>
                       <EmptySpace pref="39" max="32767" attributes="0"/>
@@ -199,18 +199,6 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Ext. Area (sqm)"/>
-                    <Property name="name" type="java.lang.String" value="entity.extarea" noResource="true"/>
-                  </Properties>
-                </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Ext Rate"/>
-                    <Property name="name" type="java.lang.String" value="entity.extrate" noResource="true"/>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
           </SubComponents>
@@ -338,7 +326,7 @@
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox6">
                   <Properties>
-                    <Property name="caption" type="java.lang.String" value="Pay Frequency"/>
+                    <Property name="caption" type="java.lang.String" value="Mode of Payment"/>
                     <Property name="items" type="java.lang.String" value="lov.MARKET_PAY_FREQUENCY"/>
                     <Property name="name" type="java.lang.String" value="entity.payfrequency" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
@@ -351,7 +339,99 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XDateField" name="xDateField4">
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="com.rameses.rcp.control.XPanel" name="xPanel5">
+          <Properties>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ txntype == &apos;extarea&apos; }"/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+              <CardConstraints cardName="card6"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xFormPanel3" min="-2" pref="441" max="-2" attributes="0"/>
+                      <EmptySpace pref="95" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xFormPanel3" min="-2" pref="115" max="-2" attributes="0"/>
+                      <EmptySpace pref="320" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
+              <Properties>
+                <Property name="captionWidth" type="int" value="120"/>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Extension Area (sqm)"/>
+                    <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[40, 0, 0, 0]"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="entity.extarea" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="com.rameses.rcp.control.XPanel" name="xPanel6">
+          <Properties>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ txntype == &apos;lastdatepaid&apos; }"/>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+              <CardConstraints cardName="card6"/>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xFormPanel7" min="-2" pref="482" max="-2" attributes="0"/>
+                      <EmptySpace pref="54" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xFormPanel7" min="-2" pref="91" max="-2" attributes="0"/>
+                      <EmptySpace pref="344" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel7">
+              <Properties>
+                <Property name="captionPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 5]"/>
+                </Property>
+                <Property name="captionWidth" type="int" value="120"/>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XDateField" name="xDateField5">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Paid Until Date"/>
                     <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -359,12 +439,6 @@
                     </Property>
                     <Property name="name" type="java.lang.String" value="entity.lastdatepaid" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Partial Balance"/>
-                    <Property name="name" type="java.lang.String" value="entity.partialbalance" noResource="true"/>
                   </Properties>
                 </Component>
               </SubComponents>

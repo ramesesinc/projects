@@ -31,10 +31,13 @@ public abstract class AbstractBillItem {
 	}
 
 	public def toMap() {
+		if(!principal) principal = amount;
+
 		def m = [:];
 		m.item = account?.toMap();
 		m.amount = amount;
 		m.amtpaid = amtpaid;
+		m.principal = principal;
 		m.balance = amount - amtpaid;
 		m.txntype = txntype;
 		m.sortorder = sortorder;

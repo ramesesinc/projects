@@ -12,14 +12,20 @@
         <invoker type="market_account:form:change" target="popup" role="ADMIN" 
             caption="Edit Ledger Information" index="1" 
              action="initEdit" txntype="ledger"/> 
+        
+         <invoker type="market_account:form:change" target="popup" role="ADMIN" 
+            caption="Edit Last Date Paid" index="1" 
+             action="initEdit" txntype="lastdatepaid"/> 
+         
+          <invoker type="market_account:form:change" target="popup" role="ADMIN" 
+            caption="Edit Extension Area" index="1" 
+             action="initEdit" txntype="extarea"/> 
+        
     </invokers>
     
     <code class="com.rameses.gov.etracs.market.models.MarketChangeActionModel" />
     
     <pages>
-        <page name="owner" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
-        <page name="rentalunit" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
-        <page name="business" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
-        <page name="ledger" template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
+        <page template="com.rameses.gov.etracs.market.views.MarketChangeActionPage" />
     </pages>
 </workunit>

@@ -10,7 +10,7 @@
 		<field name="startseries" required="true" caption="Start Series" type="integer" searchable="true" indexed="true"/> 
 		<field name="currentseries" required="true" caption="Current Series" type="integer"/> 
 		<field name="endseries" required="true" caption="End Series" type="integer"/> 
-		<field name="active" required="true" caption="Active" type="integer" indexed="true"/> 
+		<field name="active" required="true" caption="Active" type="integer" indexed="true" datatype="checkbox" checkValue="1" uncheckValue="0" /> 
 		<field name="org_objid"  /> 
 		<field name="org_name"  /> 
 		<field name="fund_objid"  /> 

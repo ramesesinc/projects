@@ -184,6 +184,7 @@
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 20]"/>
                         </Property>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.extarea &gt; 0 }"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -302,7 +303,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xFormPanel5" min="-2" pref="178" max="-2" attributes="0"/>
+                          <Component id="xFormPanel5" min="-2" pref="116" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -342,15 +343,6 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="11" style="1"/>
                         </Property>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[0, 18]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="com.rameses.rcp.control.XLabel" name="xLabel16">
-                      <Properties>
-                        <Property name="caption" type="java.lang.String" value="Partial Balance"/>
-                        <Property name="expression" type="java.lang.String" value="#{entity.partialbalance}"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[0, 18]"/>
                         </Property>

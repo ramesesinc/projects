@@ -23,6 +23,9 @@ class MarketBillingService {
 	@Service("DateService")
 	def dateSvc;
 
+	@DataContext("market_rental_ledger")
+	def rentalEm;
+
 	@DataContext("market_otherfee_ledger")
 	def otherFeeEm;
 
@@ -40,14 +43,11 @@ class MarketBillingService {
 
 	private void buildInitialFacts( def facts, def o  ) {
 		//add billitem txntype
-		
-		if(o.filters) {
-			o.filters.each {
-				facts << new BillItemTxnTypeOption( txntype : it );
-			}
+		if(!o.filters) throw new Exception("BillItemTxnType otpions filter not provided");
+		o.filters.each {
+			facts << new BillItemTxnTypeOption( txntype : it );
 		}
 		
-
 		facts << new HolidayFact(  
 			handler: { dt->
 				def h = holidaySvc.lookup(dt);
@@ -80,10 +80,8 @@ class MarketBillingService {
 		}
 	}
  
- 	private void buildRentalFacts( def facts, def filters ) {
- 		if(filters && !filters.contains('RENTAL') ) {
- 			return;
- 		}
+ 	private void buildRentalFacts( def facts ) {
+ 		
  		def ma = facts.find{ it instanceof market.facts.MarketAccount };
  		def mu = facts.find{ it instanceof market.facts.MarketRentalUnit };
 
@@ -93,29 +91,42 @@ class MarketBillingService {
  		def bill = facts.find{ it instanceof treasury.facts.BillDate };
  		def todate = new DateBean(bill.date);
 
- 		//use fromyear - 1 to ensure that it will be always be included.
+			//use fromyear - 1 to ensure that it will be always be included.
 		def rates = rentalRateSvc.getRatesFact(facts, (fromdate.year-1), todate.year );
 		facts.addAll(rates);
 		ma.ratetype =  rates[0].type;
 		mu.ratetype = rates[0].type;
+ 		
+		//load the unpaid market rentals
+		rentalEm.find( [acctid: ma.objid ]).where("amount-amtpaid > 0").list().each {
+			try {
+				facts << new MarketRentalBillItem( refid:it.objid, ledgertype:'market_rental_ledger',  
+					rate:it.rate, ratetype:it.ratetype,
+				 year: it.year, month: it.month, txntype: "MARKETRENTAL-BAL", 
+				 fromdate: (it.ratetype=='MONTH')?it.fromdate:it.currdate, 
+				 todate:it.todate,
+				 amount:it.amount-it.amtpaid, remarks: it.remarks );
+			}
+			catch(e) {
+				throw new Exception("Error loading market rental billitem");	
+			}
+		};
+	}
+
+	public void buildOtherFeeFacts( def facts ) {
+		def ma = facts.find{ it instanceof market.facts.MarketAccount };
 		//add other fees
-		otherFeeEm.find( [acctid: ma.objid ]).list().each {
-			facts << new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee', ledgerid: it.objid, 
+		otherFeeEm.find( [acctid: ma.objid ]).where("amount - amtpaid > 0").list().each {
+			facts << new MonthBillItem( refid:it.objid, ledgertype:'market_otherfee_ledger', 
 				 year: it.year, month: it.month, txntype: it.txntypeid, 
 				amount:it.balance, remarks: it.remarks );
 		};
-
 	}
 
-	public void buildUtilityFacts( def facts, def filters ) {
-		if(!filters) return;
-		def filt = filters.findAll{ it.matches('ELECTRICITY|WATER') };
-		if( !filt ) return;
-		
+	public void buildUtilityFacts( def facts ) {
 		def ma = facts.find{ it instanceof market.facts.MarketAccount };
-		//utilityEm.debug = true;
-		utilityEm.where( "parent.acctid =:pid AND txntypeid IN ('" + filt.join("','") + "')", [pid: ma.objid ] ).list().each {
-			facts <<  new MonthBillItem( refid:it.objid, ledgerid:it.objid, ledgertype:'market_utility_ledger',
+		utilityEm.where( "parent.acctid =:pid", [pid: ma.objid ] ).where("amount-amtpaid > 0").list().each {
+			facts <<  new MonthBillItem( refid:it.objid, ledgertype:'market_utility_ledger',
 				 year: it.year, month: it.month, txntype: it.txntypeid, amount:it.balance );
 		};
 	}
@@ -146,7 +157,7 @@ class MarketBillingService {
         }
      }
 
-	private def processBill(def facts, def filters) {
+	private def processBill(def facts) {
 		def ma = facts.find{ it instanceof MarketAccount };
 		def mu = facts.find{ it instanceof MarketRentalUnit };
 
@@ -225,8 +236,9 @@ class MarketBillingService {
 
 		m.items = m.items.sort{ (it.sortorder==null)?0:  it.sortorder };
 		m.billitems = m.billitems.sort{  (it.sortorder==null)?0:  it.sortorder };
-		m.amount = NumberUtil.round(m.items.sum{ it.amount });
 
+		m.amount = NumberUtil.round(m.items.sum{ it.amount });
+		if( m.duedate ==null ) m.duedate = m.billitems.max{ it.duedate }?.duedate;
 		return m;
 	}
 
@@ -238,11 +250,10 @@ class MarketBillingService {
 		def facts = [];
 		buildInitialFacts(facts, o );
 		buildAccountFacts(facts, o.acctid );
-		buildRentalFacts( facts, o.filters );
-
-		buildUtilityFacts( facts, o.filters );
-
-		return processBill(facts, o.filters );
+		buildRentalFacts( facts );
+		buildUtilityFacts( facts );
+		buildOtherFeeFacts( facts );
+		return processBill(facts );
 	}
 
 }

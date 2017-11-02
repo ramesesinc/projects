@@ -29,6 +29,11 @@
 
 		<field name="controlid" required="true" />
 		<field name="collectiontype_objid" required="true" />
+
+		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="handler">
+			<key field="collectiontype_objid" target="objid" />
+		</complex> 
+
 		<field name="collectiontype_name" required="true" />
 		<field name="user_objid" required="true" />
 		<field name="user_name" required="true" indexed="true" caption="User Name"/>

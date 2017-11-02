@@ -73,7 +73,7 @@ public class MarketRentalLedgerModel  {
             if( includeVoidPayments == false ) {
                 m.where = [" parent.voided = 0 "];
             }
-            m.orderBy = "fromdate";
+            m.orderBy = "parent.refdate,parent.refno";
             return querySvc.getList(m);
         }
     ] as BasicListModel;

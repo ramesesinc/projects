@@ -37,11 +37,12 @@ public class MarketBillItemTxnTypePage extends javax.swing.JPanel {
         xTextField1.setCaption("ID");
         xTextField1.setName("entity.objid"); // NOI18N
         xTextField1.setDisableWhen("#{ mode != 'create' }");
+        xTextField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
         xTextField2.setCaption("Title");
-        xTextField2.setName("entity.objid"); // NOI18N
+        xTextField2.setName("entity.title"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);

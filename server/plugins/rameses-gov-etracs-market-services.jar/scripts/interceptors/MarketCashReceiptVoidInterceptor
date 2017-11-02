@@ -31,26 +31,28 @@ class MarketCashReceiptVoidInterceptor{
 
 	void reverseRentalPayment( def itm ) {
 		def ledgerid = itm.ledgerid;
-		rentalLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid + :amt}'], [amt: itm.amount ]  );
+		rentalLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid  - :amt}'], [amt: itm.amount ]  );
 	}
 
 	void reverseUtilityPayment( def itm ) {
 		def ledgerid = itm.ledgerid;
-		utilityLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid + :amt}'], [amt: itm.amount ]  ); 
+		utilityLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid - :amt}'], [amt: itm.amount ]  ); 
 	}
 
 	void reverseOtherFeePayment( def itm ) {
 		def ledgerid = itm.ledgerid;
-		otherFeeLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid + :amt}'], [amt: itm.amount ]  );
+		otherFeeLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid - :amt}'], [amt: itm.amount ]  );
 	}
 
-	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='market'}")
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{args[0].receipt.collectiontype.handler=='market'}")
 	public void voidPayment( evt ) {
 		def rct = evt.result.receipt;
 
 		def p = marketPmt.find( [refid: rct.objid ] ).first();
+		marketPmt.find( [refid: rct.objid ] ).update( [voided: 1] );
 
 		//show rental items
+		rentalPmt.debug = true;
 		rentalPmt.find( [paymentid: p.objid] ).list()?.each {
 			reverseRentalPayment( it );
 		}

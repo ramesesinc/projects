@@ -1,0 +1,13 @@
+<workunit ledgerSchemaName="market_utility_ledger" paymentSchemaName="market_payment_utility" 
+          txntype="ELECTRICITY" parentid="parent.acctid">
+    <invokers>
+          <invoker type="market_account:section" 
+                 caption="Electricity" 
+                 action="init" 
+                 visibleWhen="#{mode!='create'}" index="4"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.BasicLedgerModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.BasicLedgerPage" />
+    </pages>
+</workunit>

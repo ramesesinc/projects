@@ -1,0 +1,28 @@
+<!--
+<workunit>
+    <invokers>
+        <invoker type="market_account:section" 
+                 caption="Rental Accounts" 
+                 action="init" 
+                 visibleWhen="#{mode!='create'}" index="1"/>
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.MarketRentalLedgerModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketRentalLedgerPage" />
+    </pages>    
+</workunit>
+-->
+
+<workunit ledgerSchemaName="market_rental_ledger" paymentSchemaName="market_payment_rental" >
+    <invokers>
+          <invoker type="market_account:section" 
+                 caption="Rental" 
+                 action="init" 
+                 visibleWhen="#{mode!='create'}" index="2"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.BasicLedgerModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketRentalLedgerPage" />
+    </pages>
+</workunit>

@@ -45,13 +45,15 @@ public class MarketUtilityPage extends javax.swing.JPanel {
 
         xTabbedPane1.setItems("sections");
 
+        xFormPanel1.setCaptionWidth(150);
+
         xLabel1.setCaption("Type");
-        xLabel1.setCaptionWidth(120);
+        xLabel1.setCaptionWidth(150);
         xLabel1.setExpression("#{entity.type}");
         xFormPanel1.add(xLabel1);
 
-        xLookupField1.setCaption("Account");
-        xLookupField1.setCaptionWidth(120);
+        xLookupField1.setCaption("Market Ledger Account");
+        xLookupField1.setCaptionWidth(150);
         xLookupField1.setExpression("#{entity.account.acctno} - #{entity.account.acctname}");
         xLookupField1.setHandler("market_account:lookup");
         xLookupField1.setName("entity.account"); // NOI18N
@@ -59,36 +61,38 @@ public class MarketUtilityPage extends javax.swing.JPanel {
         xFormPanel1.add(xLookupField1);
 
         xLabel3.setCaption("Unit No");
-        xLabel3.setCaptionWidth(120);
+        xLabel3.setCaptionWidth(150);
         xLabel3.setDepends(new String[] {"entity.account"});
         xLabel3.setExpression("#{entity.account.unitno}");
         xFormPanel1.add(xLabel3);
 
+        xFormPanel2.setCaptionWidth(120);
+
         xIntegerField1.setCaption("Year");
-        xIntegerField1.setCaptionWidth(120);
+        xIntegerField1.setCaptionWidth(150);
         xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setRequired(true);
         xFormPanel2.add(xIntegerField1);
 
         monthList1.setCaption("Month");
-        monthList1.setCaptionWidth(120);
+        monthList1.setCaptionWidth(150);
         monthList1.setName("entity.month"); // NOI18N
         monthList1.setRequired(true);
         xFormPanel2.add(monthList1);
 
         xDateField1.setCaption("Next Reading Date");
-        xDateField1.setCaptionWidth(120);
+        xDateField1.setCaptionWidth(150);
         xDateField1.setName("entity.nextreadingdate"); // NOI18N
         xFormPanel2.add(xDateField1);
 
         xIntegerField2.setCaption("Current Reading");
-        xIntegerField2.setCaptionWidth(120);
+        xIntegerField2.setCaptionWidth(150);
         xIntegerField2.setName("entity.currentreading"); // NOI18N
         xIntegerField2.setRequired(true);
         xFormPanel2.add(xIntegerField2);
 
         xButton1.setCaption("");
-        xButton1.setCaptionWidth(120);
+        xButton1.setCaptionWidth(150);
         xButton1.setImmediate(true);
         xButton1.setName("calcNextReadingDate"); // NOI18N
         xButton1.setText("Get Next Reading Date");
@@ -101,10 +105,8 @@ public class MarketUtilityPage extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 311, Short.MAX_VALUE)))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(

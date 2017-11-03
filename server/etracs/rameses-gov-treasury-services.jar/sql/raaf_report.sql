@@ -1,138 +1,98 @@
 [getReportData]
-select xxc.*, af.formtype, af.denomination, af.serieslength, 
-  afi.respcenter_objid as ownerid, afi.respcenter_name as name, afi.respcenter_type as respcentertype, 
-  (select count(*) from af_inventory_detail where controlid=xxc.controlid and lineno=1 and reftype='stocksale') as saled, 
-  (case when afi.respcenter_type='AFO' then 0 else 1 end) as categoryindex, afi.afid 
+select tmp5.*, 
+  case 
+    when tmp5.saled > 0 then 'SALE' 
+    when tmp5.consumed > 0 then 'CONSUMED' 
+  end as remarks  
 from ( 
-  select 
-    (case when afi.respcenter_type='AFO' then 1 else 2 end) as respcenterlevel,  
-    xxb.controlid, afi.afid as formno, afi.startstub, afi.endstub, 
-    afi.startseries, afi.endseries, afi.endseries+1 as nextseries, 
-    min(beginstartseries) as beginstartseries, min(beginendseries) as beginendseries, 
-    min(receivedstartseries) as receivedstartseries, min(receivedendseries) as receivedendseries, 
-    min(issuedstartseries) as issuedstartseries, min(issuedendseries) as issuedendseries, 
-    (case 
-        when min(issuedendseries) >= afi.endseries then null 
-        when min(issuedendseries) > 0 then min(issuedendseries)+1 
-        when min(beginstartseries) > 0 then min(beginstartseries)
-        when min(receivedstartseries) > 0 then min(receivedstartseries)  
-        else min(endingstartseries) 
-     end) as endingstartseries, 
-    (case when min(issuedendseries) >= afi.endseries then null else afi.endseries end) as endingendseries, 
-    (case when min(issuedendseries) >= afi.endseries then 1 else 0 end) as consumed, 
-    (case when min(issuedstartseries) > 0 then 0 else 1 end) as groupindex   
+  select tmp4.*, 
+    (case when tmp4.receivedendseries-tmp4.receivedstartseries+1 > 0 then tmp4.receivedendseries-tmp4.receivedstartseries+1 else 0 end) as qtyreceived, 
+    (case when tmp4.beginendseries-tmp4.beginstartseries+1 > 0 then tmp4.beginendseries-tmp4.beginstartseries+1 else 0 end) as qtybegin, 
+    (case when tmp4.endingendseries-tmp4.endingstartseries+1 > 0 then tmp4.endingendseries-tmp4.endingstartseries+1 else 0 end) as qtyending, 
+    (case when tmp4.issuedendseries >= tmp4.endseries then 1 else 0 end) as consumed, 
+    (case when afi.respcenter_type='AFO' then 1 else 2 end) as respcenterlevel, 
+    (case when tmp4.qtyissued > 0 then 0 else 1 end) as categoryindex, 
+    afi.respcenter_type as respcentertype, afi.respcenter_name as name, afi.respcenter_objid as ownerid, 
+    afi.afid as formno, af.formtype, af.denomination, af.serieslength 
   from ( 
-
     select 
-      afd.controlid, 
-      afd.endingstartseries as beginstartseries, afd.endingendseries as beginendseries, 
-      null as receivedstartseries, null as receivedendseries, 
-      null as issuedstartseries, null as issuedendseries, 
-      afd.endingstartseries, afd.endingendseries 
+      controlid, afid, startstub, endstub, startseries, endseries, endseries+1 as nextseries,  
+      min(receivedstartseries) as receivedstartseries, min(receivedendseries) as receivedendseries, 
+      min(beginstartseries) as beginstartseries, min(beginendseries) as beginendseries, 
+      min(issuedstartseries) as issuedstartseries, max(issuedendseries) as issuedendseries, 
+      case 
+        when max(issuedendseries) >= endseries then null 
+        when max(issuedendseries) is not null then max(issuedendseries)+1 
+        when min(beginstartseries) is not null then min(beginstartseries) 
+        else min(receivedstartseries) 
+      end as endingstartseries, 
+      case 
+        when max(issuedendseries) >= endseries then null 
+        when max(issuedendseries) is not null then endseries 
+        when min(beginstartseries) is not null then min(beginendseries) 
+        else min(receivedendseries) 
+      end as endingendseries,
+      sum(qtyissued) as qtyissued, sum(saled) as saled  
     from ( 
-      select afd.controlid, max(afd.lineno) as maxlineno 
-      from af_inventory afi, af_inventory_detail afd 
-      where afi.respcenter_objid = $P{collectorid}  
-        and afd.controlid = afi.objid 
-        and afd.refdate < $P{startdate}  
-      group by afd.controlid 
-    )xxa, af_inventory_detail afd 
-    where afd.controlid = xxa.controlid 
-      and afd.lineno = xxa.maxlineno 
-      and afd.endingstartseries > 0 
-
-    union all 
-
-    select 
-      afd.controlid, 
-      afd.endingstartseries as beginstartseries, afd.endingendseries as beginendseries, 
-      null as receivedstartseries, null as receivedendseries, 
-      null as issuedstartseries, null as issuedendseries, 
-      null as endingstartseries, null as endingendseries 
-    from ( 
-      select afd.controlid, max(afd.lineno) as maxlineno 
+      select 
+        controlid, afid, startstub, endstub, startseries, endseries, 
+        receivedstartseries, receivedendseries, 
+        (case when receivedstartseries is not null then null else beginstartseries end) as beginstartseries, 
+        (case when receivedstartseries is not null then null else beginendseries end) as beginendseries, 
+        issuedstartseries, issuedendseries, qtyissued, saled   
       from ( 
-        select b.controlid 
-        from af_inventory a, af_inventory_detail b 
-        where a.respcenter_objid = $P{collectorid}  
-          and b.controlid = a.objid 
-          and b.refdate >= $P{startdate}  
-          and b.refdate <  $P{enddate}   
-        group by b.controlid 
-      )xxa, af_inventory_detail afd 
-      where afd.controlid=xxa.controlid 
-        and afd.refdate < $P{startdate}  
-      group by afd.controlid 
-    )xxa, af_inventory_detail afd 
-    where afd.controlid=xxa.controlid 
-      and afd.lineno=xxa.maxlineno 
 
-    union all 
+        select 
+          afd.refdate, afd.controlid, afi.afid, afi.startstub, afi.endstub, afi.startseries, afi.endseries, 
+          null as receivedstartseries, null as receivedendseries, 
+          afd.endingstartseries as beginstartseries, afd.endingendseries as beginendseries, 
+          null as issuedstartseries, null as issuedendseries, 0 as qtyissued, 0 as saled   
+        from ( 
+          select afd.controlid, max(afd.lineno) as xlineno  
+          from af_inventory_detail afd 
+            inner join af_inventory afi on afi.objid = afd.controlid 
+          where afd.refdate < $P{startdate} 
+            and afi.respcenter_objid = $P{collectorid} 
+          group by afd.controlid 
+        )tmp1 
+          inner join af_inventory_detail afd on (afd.controlid = tmp1.controlid and afd.lineno = tmp1.xlineno) 
+          inner join af_inventory afi on afi.objid = afd.controlid 
+        where afd.qtyending > 0 
+          and afd.endingstartseries <= afd.endingendseries 
 
-    select 
-      afd.controlid, 
-      null as beginstartseries, null as beginendseries, 
-      afd.receivedstartseries, afd.receivedendseries, 
-      null as issuedstartseries, null as issuedendseries, 
-      null as endingstartseries, null as endingendseries 
-    from ( 
-      select b.controlid, min(b.lineno) as maxlineno
-      from af_inventory a, af_inventory_detail b 
-      where a.respcenter_objid = $P{collectorid}  
-        and b.controlid = a.objid 
-        and b.refdate >= $P{startdate}   
-        and b.refdate <  $P{enddate}  
-        and b.receivedstartseries > 0 
-      group by b.controlid 
-    )xxa, af_inventory_detail afd 
-    where afd.controlid=xxa.controlid 
-      and afd.lineno=xxa.maxlineno 
+        union all 
 
-    union all 
+        select 
+          afd.refdate, afd.controlid, afi.afid, afi.startstub, afi.endstub, afi.startseries, afi.endseries, 
+          (case when afd.txntype='COLLECTOR BEG.BAL.' then null else tmp1.receivedstartseries end) as receivedstartseries, 
+          (case when afd.txntype='COLLECTOR BEG.BAL.' then null else tmp1.receivedendseries end) as receivedendseries, 
+          tmp1.beginstartseries, tmp1.beginendseries, tmp1.issuedstartseries, tmp1.issuedendseries, tmp1.qtyissued, 
+          (case when afd.reftype='stocksale' then 1 else 0 end) as saled 
+        from ( 
+          select 
+            afd.controlid, min(afd.lineno) as xlineno, 
+            min(afd.receivedstartseries) as receivedstartseries, min(afd.receivedendseries) as receivedendseries, 
+            min(afd.beginstartseries) as beginstartseries, min(afd.beginendseries) as beginendseries, 
+            min(afd.issuedstartseries) as issuedstartseries, max(afd.issuedendseries) as issuedendseries, 
+            sum(afd.qtyissued) as qtyissued 
+          from af_inventory_detail afd 
+          where afd.refdate >= $P{startdate} 
+            and afd.refdate <  $P{enddate} 
+            and afd.reftype <> 'TRANSFER' 
+          group by afd.controlid 
+        )tmp1 
+          inner join af_inventory_detail afd on (afd.controlid = tmp1.controlid and afd.lineno = tmp1.xlineno) 
+          inner join af_inventory afi on afi.objid = afd.controlid 
+        where afi.respcenter_objid = $P{collectorid} 
 
-    select 
-      b.controlid, 
-      null as beginstartseries, null as beginendseries, 
-      null as receivedstartseries, null as receivedendseries,  
-      min(b.issuedstartseries) as issuedstartseries, max(b.issuedendseries) as issuedendseries, 
-      null as endingstartseries, null as endingendseries 
-    from af_inventory a, af_inventory_detail b 
-    where a.respcenter_objid = $P{collectorid}  
-      and b.controlid = a.objid 
-      and b.refdate >= $P{startdate}   
-      and b.refdate <  $P{enddate}   
-    group by b.controlid 
-
-    union all 
-
-    select 
-      afd.controlid, 
-      null as beginstartseries, null as beginendseries, 
-      null as receivedstartseries, null as receivedendseries,  
-      null as issuedstartseries, null as issuedendseries, 
-      afd.endingstartseries, afd.endingendseries 
-    from ( 
-      select b.controlid, max(b.lineno) as maxlineno 
-      from af_inventory a, af_inventory_detail b 
-      where a.respcenter_objid = $P{collectorid}  
-        and b.controlid = a.objid 
-        and b.refdate >= $P{startdate}   
-        and b.refdate <  $P{enddate}   
-        and b.endingstartseries > 0 
-      group by b.controlid 
-    )xxa, af_inventory_detail afd 
-    where afd.controlid=xxa.controlid 
-      and afd.lineno=xxa.maxlineno 
-
-  )xxb, af_inventory afi 
-  where afi.objid=xxb.controlid 
-  group by 
-    afi.respcenter_type, xxb.controlid, afi.afid, 
-    afi.startstub, afi.endstub, afi.startseries, afi.endseries 
-)xxc, af, af_inventory afi  
-where xxc.formno = af.objid 
-    and afi.objid = xxc.controlid 
-order by xxc.formno, xxc.respcenterlevel, xxc.groupindex, xxc.startseries 
+      )tmp2 
+    )tmp3 
+    group by controlid, afid, startstub, endstub, startseries, endseries 
+  )tmp4 
+    inner join af_inventory afi on afi.objid = tmp4.controlid 
+    inner join af on af.objid = afi.afid 
+)tmp5 
+order by tmp5.afid, tmp5.respcenterlevel, tmp5.categoryindex, tmp5.startseries 
 
 
 [getReportDataByRef]
@@ -154,7 +114,7 @@ select * from (
       when t2.receivedstartseries > 0 then t2.receivedstartseries 
       else t2.endingstartseries 
     end as sortseries, 
-    afi.afid 
+    afi.afid, t2.qtycancelled 
   from ( 
     select t1.*, 
       (
@@ -176,7 +136,8 @@ select * from (
         max(afd.issuedendseries) as issuedendseries, 
         max(afd.issuedendseries)+1 as issuednextseries, 
         max(afd.endingstartseries) as endingstartseries, 
-        max(afd.endingendseries) as endingendseries 
+        max(afd.endingendseries) as endingendseries, 
+        sum(afd.qtycancelled) as qtycancelled  
       from remittance_af raf 
         inner join af_inventory_detail afd on raf.objid=afd.objid 
       where raf.remittanceid = $P{refid} 
@@ -192,7 +153,8 @@ select * from (
         max(afd.issuedendseries) as issuedendseries, 
         max(afd.issuedendseries)+1 as issuednextseries, 
         max(afd.endingstartseries) as endingstartseries, 
-        max(afd.endingendseries) as endingendseries 
+        max(afd.endingendseries) as endingendseries, 
+        sum(afd.qtycancelled) as qtycancelled 
       from liquidation_remittance lr 
         inner join remittance_af raf on lr.objid = raf.remittanceid 
         inner join af_inventory_detail afd on raf.objid=afd.objid 

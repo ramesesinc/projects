@@ -16,14 +16,10 @@ class CapturePaymentService {
 		pmtEm.create( o );
 
 		//load each item
-		/*
-		if(o.items) {
-			o.items.findAll{ it.ledgertype!=null && it.ledgerid!=null }.each {
-				def ledgerEm = em.lookup( it.ledgertype );
-				ledgerEm.find( [objid: it.ledgerid ] ).update( "amtpaid += :apaid", [apaid: it.amount] );	
-			}
+		o.items.each {
+			//update the ledger
+			
 		}
-		*/
 	}	
 
 

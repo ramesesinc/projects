@@ -7,7 +7,7 @@ import com.rameses.services.extended.*
 public class AFInventoryService  {
 	
 	@ActiveDB("af_inventory")
-	def em
+	def em;
  
 	@ActiveDB("af_control")
 	def afserial;
@@ -112,61 +112,68 @@ public class AFInventoryService  {
 		def head = em.read([ objid: o.controlid ]);
 		if ( !head ) {
 			throw new Exception('AF control '+ o.controlid + ' record does not exist in the inventory. Please verify.'); 
-		}		
+		} 
 
-		def cqty = 0;
-		if ( o.cqty ) cqty = o.cqty;
 		if ( !o.qtyissued ) o.qtyissued = o.qty; 
+		if ( !o.qtycancelled ) o.qtycancelled = o.cqty;
 
-		def diff = o.qty - o.qtyissued; 
-		o.qtycancelled = (diff > 0 ? diff : 0);
 		head.qtycancelled += o.qtycancelled; 
-		head.qtybalance -= (o.qty + cqty);
-		head.qtyout = head.qtyin - head.qtybalance; 
+
 		if( o.currentseries ) {
 			head.currentseries = o.currentseries; 
 		} else {
 			head.currentseries = o.startseries + o.qty;	
 		} 
 		
-		if ( head.startstub != head.endstub ) {
-			head.currentstub = o.endstub + 1; 
+		head.qtyout = ( head.currentseries - head.startseries ); 
+		head.qtybalance = ( head.qtyin - head.qtyout ); 
+		head.qtybalance = ( head.qtybalance > 0 ? head.qtybalance : 0 ); 
+		if ( head.qtybalance == 0 ) { 
+			def currentstub = head.currentstub + 1; 
+			head.currentstub = ( currentstub > head.endstub ? head.endstub : currentstub );  
 		} 
-		head.currentlineno += 1;
+		head.currentlineno += 1; 
 		em.update( head );
 
 		def startseries = o.startseries; 
-		def endseries = o.startseries + o.qtyissued - 1; 
-		def estartseries = o.startseries + o.qty - 1; 
+		def endseries = o.endseries;
 		def detail = initDetail(o);
+		detail.txndate = detail.refdate; 
 		detail.controlid = head.objid;
-		detail.lineno = head.currentlineno;
 		detail.txntype = o.txntype;
-		detail.issuedstartseries = startseries;
-		detail.issuedendseries = endseries;
-		detail.endingstartseries = (estartseries==head.endseries ? null : estartseries+1); 
-		detail.endingendseries = (estartseries==head.endseries ? null : head.endseries); 
-		detail.qtyissued = o.qtyissued;
-		detail.qtyending = head.qtybalance;
-		detail.qtycancelled = o.qtycancelled + cqty;
-		if ( detail.qtycancelled > 0 ) {
-			detail.cancelledstartseries = startseries + o.qtyissued; 
-			detail.cancelledendseries = detail.cancelledstartseries + detail.qtycancelled - 1; 
+		detail.beginstartseries = startseries;
+		detail.beginendseries = head.endseries;
+		detail.qtybegin = (detail.beginendseries-detail.beginstartseries)+1; 
+		detail.qtycancelled = (o.qtycancelled ? o.qtycancelled : 0);
+		detail.qtyissued = o.qtyissued; 
+		if ( detail.qtyissued > 0 ) { 
+			detail.issuedstartseries = startseries; 
+			detail.issuedendseries = endseries;	
+			detail.endingstartseries = endseries+1; 
+			detail.endingendseries = head.endseries; 
+			detail.qtyending = detail.qtybegin - detail.qtyissued - detail.qtycancelled; 
+			if ( detail.qtyending <= 0 ) {
+				detail.endingstartseries = null; 
+				detail.endingendseries = null; 
+				detail.qtyending = 0; 
+			} 
+		} else {
+			detail.endingstartseries = detail.beginstartseries; 
+			detail.endingendseries = detail.beginendseries; 
+			detail.qtyending = detail.qtybegin - detail.qtycancelled; 
 		} 
+
+		detail.lineno = head.currentlineno;
 		detail.remarks = o.remarks;
-		detail.cost =  o.cost 
-		em.create( detail, "detail" );
-		if( o.cancelSeriesList) {
-			def cs = [
-				objid: detail.objid, 
-				controlid: detail.controlid 
-			]
-			o.cancelSeriesList.each {
-				cs.series = it.series 
-				em.create( cs, "detail_cancelseries" );
-			}
-		}
-	}
+		detail.cost =  o.cost;
+		em.create( detail, "detail" ); 
+
+		def cs = [ objid: detail.objid, controlid: detail.controlid ]; 
+		o.cancelSeriesList?.each { oi-> 
+			cs.series = oi.series; 
+			em.create( cs, "detail_cancelseries" );
+		} 
+	} 
 
 	@ProxyMethod
 	public def postSale(def o)	{

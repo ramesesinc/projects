@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 
 class AFControlInterceptor {
 
-	@ActiveDB('cashreceipt') 
+	@DataContext('cashreceipt') 
 	def cashreceipt;
 
 	@After(pattern="AFControlService.findAFSummary")
@@ -13,5 +13,16 @@ class AFControlInterceptor {
 		def info = cashreceipt.findAFSummary([ controlid: result.objid ]); 
 		if ( info?.amount ) result.amount = info.amount; 
 	}
+
+
+	@Before(pattern="AFControlService.unassign")
+	public void beforeUnassign( evt ) { 
+		def param = evt.args[0]; 
+
+		def o = cashreceipt.select('objid').find([ controlid: param.objid, state: 'DELEGATED' ]).first(); 
+		if ( o ) { 
+			throw new Exception('There are still delegated receipts that needs to be remitted by your subcollector'); 
+		} 
+	} 
 
 }

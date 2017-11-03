@@ -1,0 +1,31 @@
+import com.rameses.annotations.*;
+
+class RemittanceDefaultInterceptor {
+
+	@ActiveDB('unliquidated_remittance') 
+	def unliqrem_db; 
+
+	@Service("Var")
+	def var;
+
+	@After(pattern="RemittanceService.init")
+	public void afterInit( evt ) { 
+		checkMultipleUniquidatedRemittanceOption( evt.result ); 
+	} 
+
+	@Before(pattern="RemittanceService.post")
+	public void beforePost( evt ) { 
+		def param = evt.args[0]; 
+		checkMultipleUniquidatedRemittanceOption( param ); 
+	} 
+
+	private void checkMultipleUniquidatedRemittanceOption( param ) {
+		boolean allow_multi = (var.allow_multiple_unliquidated_remittance.toString().matches('false|0') ? false : true); 
+		if ( allow_multi ) return; 
+
+		def list = unliqrem_db.getListByCollector([ filter:'', collectorid: param.collector.objid ]); 
+		if ( list ) {
+			throw new Exception('You still have pending unliquidated remittances. Kindly inform your liquidating officer.'); 
+		}  
+	}
+}

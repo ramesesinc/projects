@@ -1,0 +1,8 @@
+<schema>
+
+	<element tablename="remittance_cashreceipt">
+		<field name="objid" primary="true" prefix="REMC"/>
+		<field name="remittanceid" required="true"/>
+	</element>
+	
+</schema>

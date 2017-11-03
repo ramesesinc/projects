@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 
 class UnliquidatedRemittanceService {
 	
-	@ActiveDB("liquidation")
+	@ActiveDB("unliquidated_remittance")
 	def em; 
 
 	@Env
@@ -19,15 +19,19 @@ class UnliquidatedRemittanceService {
 
 	@ProxyMethod
 	public def getList( o ) {
-		if(!o) o = [state: 'OPEN'];
-		def e = [:]
-		e.remittances = em.getUnliquidatedRemittanceList([userid: env.USERID, state:o?.state ])
-		e.amount = e.remittances.sum{ it.amount };	
-		e.totalcash = e.remittances.sum{ it.totalcash };	
-		e.totalnoncash = e.remittances.sum{ it.totalnoncash };
-		return e;
-	}
+		if ( o == null ) o = [:];
+		if ( !o.state ) o.state = 'OPEN'; 
 
+		def p = [ userid: env.USERID, state:o?.state, filter:" AND r.txnmode <> 'CAPTURE'" ]; 
+		if ( o.capturemode == true ) p.filter = " AND r.txnmode = 'CAPTURE'"; 
 
-
+		def e = [amount: 0.0, totalcash: 0.0, totalnoncash: 0.0];
+		e.remittances = em.getList( p); 
+		e.remittances.each { 
+			e.amount += (it.amount ? it.amount: 0.0);
+			e.totalcash += (it.totalcash ? it.totalcash: 0.0);
+			e.totalnoncash += (it.totalnoncash ? it.totalnoncash: 0.0); 
+		} 
+		return e; 
+	} 
 }

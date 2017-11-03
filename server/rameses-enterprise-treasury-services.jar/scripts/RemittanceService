@@ -6,20 +6,35 @@ import com.rameses.services.extended.*
 
 class RemittanceService  {
 
+	@Env
+	def env;
+
 	@ActiveDB("remittance")
 	def em; 
 
 	@ActiveDB("remittance_tool")
 	def remittance_tool; 
 
-	@Env
-	def env;
+	@DataContext("draftremittance")
+	def draftrem_db; 
 
-	@Service("SequenceService")
-	def seqSvc;
+	@DataContext("draftremittance_cashreceipt")
+	def draftremc_db; 
+
+	@DataContext("remittance_fund")
+	def remf_db; 
+
+	@DataContext("remittance_cashreceipt")
+	def remc_db; 
+
+	@DataContext("remittance_noncashpayment")
+	def remnc_db; 
 
 	@Service("DateService")
 	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
 
 	@Service("CashBookPostService")
 	def cashBook;
@@ -28,95 +43,163 @@ class RemittanceService  {
 	def var;
 
 	@ProxyMethod
-	public def init() { 
+	public def init( params ) { 
 		boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
 
+		def rundate = dateSvc.getServerDate(); 
+		def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+		boolean capturemode = ( params.capturemode == true ); 
+		if ( capturemode ) {
+			if ( !params.remittancedate ) throw new Exception('Please specify the remittance date');  
+
+			if ( params.remittancedate instanceof String ) { 
+				params.remittancedate = sdf.parse( params.remittancedate ); 
+			} 
+
+			params.remittancedate = new java.sql.Date( params.remittancedate.time ); 
+
+		} else { 
+			params.remittancedate = rundate; 
+		} 
+
+		def remo = [ state: 'OPEN', dtfiled: rundate, remittancedate: params.remittancedate ];
+		remo.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];   
+		remo.amount = remo.totalcash = remo.totalnoncash = 0.0; 
+		remo.txnmode = ( capturemode ? 'CAPTURE' : 'ONLINE' ); 
+		remo.objid = 'REM'+ new java.rmi.server.UID(); 
+		remo = createDraftRemittance( remo ); 
+
 		//check first if there are still remaining collection on the end of the month 
-		def o = [ objid: "REM"+new UID() ]; 
-		def info = [ collectorid: env.USERID ];
+		def o = [ objid: remo.objid ]; 
+		def m = [ remittanceid : remo.objid ]; 
+		def info = [ remittanceid: remo.objid, collectorid: remo.collector.objid ]; 
+		info.txnstate = ( capturemode ? 'CAPTURED' : 'POSTED' );
+
 		if ( split_txn ) {
-			info.txndate = getMonthFirstDate( dateSvc.serverDate ); 
-			o.items = em.getUnremittedForCollector( info ); 
+			info.txndate = getMonthFirstDate( params.remittancedate ); 
+			draftrem_db.insertCashReceipts( info ); 
+
+			remo.remittancedate = dateSvc.add( info.txndate, '-1d' ); 
+			draftrem_db.find([ objid: remo.objid ]).update([ remittancedate: remo.remittancedate ]); 
+
+			o.items = draftrem_db.getCashReceiptSummary( info ); 
 			if ( o.items ) { 
 				o.endofmonth = true; 
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
-				o._txndate = info.txndate; 
+				o._txndate = info.txndate.toString(); 
 			} 
 		} 
 
 		if ( !o.items ) {
-			info.txndate = dateSvc.serverDate; 
-			o.items = em.getUnremittedForCollector( info ); 
-			o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate);
+			info.txndate = rundate; 
+			if ( capturemode ) { 
+				info.txndate = dateSvc.add( params.remittancedate, '1d' ); 
+			} 
+
+			draftrem_db.insertCashReceipts( info ); 
+			o.items = draftrem_db.getCashReceiptSummary( info ); 
+			o._txndate =  dateSvc.format('yyyy-MM-dd HH:mm:ss', params.remittancedate );
 		} 
 
 		if ( !o.items ) throw new Exception("No collections to be remitted.   ");
 
-		o.items.each {
-			it.cancelSeriesList = em.getUnremittedCancelSeries([ collectorid:it.collector.objid, controlid: it.controlid ])
+		// check delegated receipts 
+		if ( draftrem_db.findDelegatedReceipt( info )) {
+			throw new Exception('There are still delegated receipts that needs to be remitted by your subcollector'); 
 		}
-		o.amount = 0;
-		o.totalcash = 0;
-		o.totalnoncash = 0;
-		if ( o.items ) { 
-			o.amount = o.items.sum{ it.amount };	
-			o.totalcash = o.items.sum{ it.totalcash };	
-			o.totalnoncash = o.items.sum{ it.totalnoncash };	
-		} 
-		o.checks = em.getUnremittedChecks( info );
-		o.collector = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
 
-		//used for checking
-		o.checksum = em.getUnremittedTotals( info  );
+		o.amount = 0.0;
+		o.totalcash = 0.0;
+		o.totalnoncash = 0.0;
+
+		def cancelledreceipts = draftrem_db.getCancelledCashReceipts( info ); 
+		o.items.each { oi-> 
+			oi.cancelSeriesList = cancelledreceipts.findAll{( it.controlid == oi.controlid )} 
+			o.amount += (oi.amount ? oi.amount : 0.0);
+			o.totalcash += (oi.totalcash ? oi.totalcash : 0.0);
+			o.totalnoncash += (oi.totalnoncash ? oi.totalnoncash : 0.0);
+		} 
+
+		draftrem_db.find([ objid: remo.objid ]).update([ amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash ]); 
+
+		o.checks = draftrem_db.getCashReceiptChecks( info ); 
+		o.collector = remo.collector; 
 		return o; 
+	} 
+
+	private def createDraftRemittance( remo ) { 
+		if ( !remo?.collector?.objid ) throw new Exception('collector parameter is required'); 
+
+		//
+		// clear previous draft remittances for this collector  
+		// 
+		draftrem_db.find(['collector.objid': remo.collector?.objid ]).list().each{ 
+			draftrem_db.removeCashReceipts([ remittanceid: it.objid ]); 
+			draftrem_db.find([ objid: it.objid ]).delete(); 
+		} 
+
+		return draftrem_db.create( remo ); 
 	} 
 
 	@ProxyMethod 
 	public def post( o ) { 
-		if( o.amount == 0 ) 
-			throw new Exception("There is no amount to remit");
+		if ( o.amount == 0 && !o.items ) throw new Exception("There is no amount to remit"); 
+		else if ( !o.items ) throw new Exception("No available item(s) to remit"); 
 
-		if(! o.cashbreakdown ) throw new Exception("Cash breakdown has been change during the submission.Please recreate transaction");
+		if ( !o.cashbreakdown ) throw new Exception("Cash breakdown has been change during the submission.Please recreate transaction");
 
-		//compare checksum. deny if changed
-		def p = [remittanceid: o.objid, collectorid: o.collector.objid, txndate : dateSvc.serverDate]
+		boolean remotetxn = ( o.remotetxn == true );
+		if ( remotetxn ) { 
+			o.dtfiled = o.dtposted; 
+			o.txnmode = ( o.txnmode ? o.txnmode : 'ONLINE' ); 
+			createDraftRemittance( o ); 
 
-		if(! o.remotetxn ) {
-			if( o.endofmonth ) p.txndate = getMonthFirstDate( p.txndate )
-			def checksum = o.checksum;
-			def checktest = em.getUnremittedTotals( p );
-			if(checksum!=checktest)
-				throw new Exception("Changes have been made prior to remittance. Please redo transaction");
-
-			o.dtposted = dateSvc.serverDate;
-			o.remittancedate = o.endofmonth ? dateSvc.add(dateSvc.parse("yyyy-MM-dd",p.txndate), "-1d") : o.dtposted 
-		
-			o.txnno = formatTxnno(o)
-			o.state = "OPEN";	
-		}
-
-		em.create( o );
-		//insert the cash receipts 
-		if( o.remotetxn  ) {
 			o.cashreceipts.each{
-				def rc = [objid: it, remittanceid: o.objid ]
-				em.create(rc, "remittance_cashreceipt") 
-			}
+				draftrem_db.insertCashReceipt([ remittanceid: o.objid, receiptid: it ]); 
+			} 
+		} 
 
-		} else {
-			em.collectReceipts(p);
+		// initiate lock of the draft records 
+		o.lockid = new java.rmi.server.UID().toString();
+		draftrem_db.find([ objid: o.objid ]).update([ lockid: o.lockid ]); 
+		draftremc_db.find([ remittanceid: o.objid ]).update([ lockid: o.lockid ]); 
+
+		// check in the draftremittance table 
+		def remo = draftrem_db.find([ objid: o.objid ]).first();
+		if ( !remo ) throw new Exception('Draft remittance record no longer exist. Please recreate the remittance transaction.'); 
+
+		if ( remotetxn ) { 
+			remo.txnno = o.txnno; 
+			remo.dtposted = remo.dtfiled; 
+		} else { 
+			remo.dtposted = dateSvc.getServerDate(); 
+			remo.txnno = formatTxnno( remo ); 
 		}
 
-		em.collectNoncash(p); 
-				
-		em.getRemittedFundTotals(p).each { 
-			def n = [:]
-			n.objid = "REMFUND"+new UID();
-			n.remittanceid = o.objid;
-			n.fund = it.fund;
-			n.amount = it.amount;
-			em.create( n, "remittance_fund" );
+		remo.cashbreakdown = o.cashbreakdown; 
+		remo.liquidatingofficer = o.liquidatingofficer;
+		remo.remarks = o.remarks; 
+		em.create( remo ); 
+		
+		if ( !remotetxn ) {
+			o.putAll( remo ); 
 		} 
+
+		def m = [ remittanceid: remo.objid ]; 
+		draftrem_db.postCashReceipts( m ); 
+		draftrem_db.postCashReceiptPayments( m ); 
+		draftrem_db.getFundSummary( m ).each{ 
+			it.objid = 'REMF'+ new java.rmi.server.UID(); 
+			it.remittanceid = m.remittanceid; 
+			remf_db.create( it ); 
+		} 
+
+		// initiate checking here...
+		if ( !remf_db.find( m ).first() ) 
+			throw new Exception('Posting failed! No fund summary found for this remittance. Please recreate your transaction.');  
+		if ( !remc_db.find( m ).first() ) 
+			throw new Exception('Posting failed! No cashreceipt found for this remittance. Please recreate your transaction.');  
+
 		return o; 
 	} 
 
@@ -137,42 +220,29 @@ class RemittanceService  {
 	}
 
 	@ProxyMethod
-	public def getUnremittedReceipts( o ) { 
-		def m = [ collectorid: o.collector.objid, txndate: o.txndate ];
-		if ( !m.txndate ) {
-			boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
-			if ( split_txn ) { 
-				m.txndate = getMonthFirstDate( dateSvc.serverDate ); 
-				def list =  em.getUnremittedReceipts( m ); 
-				if ( list ) return list; 
-			} 
-
-			m.txndate = dateSvc.serverDate; 
+	public def getRemittedReceipts( o ) { 
+		if ( o.remitted ) {
+			return em.getRemittedReceipts( o ); 
+		} else { 
+			o.remittanceid = o.objid; 
+			return draftrem_db.getCashReceipts( o ); 
 		} 
-		return em.getUnremittedReceipts( m ); 
-	}
-
-	@ProxyMethod
-	public def getRemittedReceipts(o) {
-		return em.getRemittedReceipts(o);
-	}
-
+	} 
 
 	public def getMonthFirstDate( dt ) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dt);
-        cal.set( Calendar.DAY_OF_MONTH, 1 );
-        return dateSvc.format('yyyy-MM-dd', cal.getTime()) + " 00:00:00";
-    }
+        def cal = Calendar.getInstance();
+        cal.setTime( dt );
+        cal.set( Calendar.DAY_OF_MONTH, 1 ); 
+        return new java.sql.Date( cal.time.time ); 
+    } 
 
     @ProxyMethod
     public def formatTxnno( remittance ) {
-    	def format = 'UTFS'
-    	def seqid = null
-    	if(var.remittance_format) format = var.remittance_format;
-    	if(var.remittance_sequenceid_format ) seqid = var.remittance_sequenceid_format;
+    	def format = 'UTFS';
+    	def seqid = null;
+    	if ( var.remittance_format ) format = var.remittance_format;
+    	if ( var.remittance_sequenceid_format ) seqid = var.remittance_sequenceid_format;
     	
-
         //Formatting Options:
         // YY - YEAR POSTED
         // MM - MONTH POSTED 
@@ -181,7 +251,10 @@ class RemittanceService  {
         // SQ - SEQUENCE 
         // FS - FORMATTED SEQUENCE 
         
-        def txncode = ["REM", env.TXNCODE, env.ORGTXNCODE].findAll{( it )}.join("-");
+        def txncode = "REM"; 
+        if ( remittance.txnmode == 'CAPTURE' ) txncode = "CAPREM"; 
+
+        txncode = [txncode, env.TXNCODE, env.ORGTXNCODE].findAll{( it )}.join("-");
         def dt = dateSvc.parseDate( remittance.dtposted, null); 
         def values = [ 
         	YY:dt.year+"", 
@@ -218,8 +291,8 @@ class RemittanceService  {
 
     	params.remittanceid = params.objid; 
     	def o = remittance_tool.findRemittance( params ); 
-    	if ( o?.liquidated > 0 ) 
-    		throw new Exception('This transaction has already been liquidated. Cannot revert remittance'); 
+    	if ( !o ) throw new Exception('Remittance record does not exist'); 
+    	if ( o.liquidated > 0 ) throw new Exception('This transaction has already been liquidated. Cannot revert remittance'); 
 
     	remittance_tool.removeFunds( params ); 
     	remittance_tool.removeAFs( params ); 

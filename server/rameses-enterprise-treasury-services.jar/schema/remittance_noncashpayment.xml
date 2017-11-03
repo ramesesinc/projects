@@ -1,0 +1,8 @@
+<schema>
+	
+	<element tablename="remittance_noncashpayment">
+		<field name="objid" primary="true" prefix="REMNC"/>
+		<field name="remittanceid" required="true"/>
+	</element>
+	
+</schema>

@@ -16,68 +16,54 @@ FROM (
 	INNER JOIN liquidation l ON x.objid=l.objid 
 ORDER BY l.dtposted DESC
 
-[getUnliquidatedRemittanceList]
-SELECT r.* FROM remittance r
-LEFT JOIN liquidation_remittance lr ON r.objid=lr.objid
-WHERE lr.objid IS NULL AND state=$P{state} AND liquidatingofficer_objid=$P{userid}
-
-[getUndepositedLiquidations]
-select * from liquidation l 
-	inner join liquidation_cashier_fund lcf on lcf.liquidationid = l.objid 
-	left join bankdeposit_liquidation bl on bl.objid = lcf.objid
-where l.liquidatingofficer_objid = $P{liquidatingofficerid} 
-	and bl.objid is null 
-
 
 [getUnliquidatedRemittances]
-SELECT 
-	r.objid, 
-	r.txnno AS remittanceno,
-	r.remittancedate AS remittancedate,
-	r.collector_name,
-	r.totalcash,
-	r.totalnoncash,
-	r.amount 
-FROM remittance r
-	LEFT JOIN liquidation_remittance lr ON r.objid=lr.objid
-WHERE r.liquidatingofficer_objid = $P{liquidatingofficerid}  
-	AND r.state = 'APPROVED'
-	AND lr.objid IS NULL 
-
-
-[getUnliquidatedChecks]
-SELECT a.* FROM (
-	SELECT 
-		pc.objid, pc.refno, pc.refdate, pc.particulars,
-		CASE WHEN cv.objid IS NULL THEN pc.amount ELSE 0 END AS amount,
-		CASE WHEN cv.objid IS NULL THEN 0 ELSE 1 END AS voided, pc.reftype 
-	FROM remittance_noncashpayment rcp 
-		INNER JOIN cashreceiptpayment_noncash pc ON rcp.objid=pc.objid
-		INNER JOIN remittance r ON rcp.remittanceid=r.objid
-		LEFT JOIN cashreceipt_void cv ON cv.receiptid=pc.receiptid
-		LEFT JOIN liquidation_remittance lr ON r.objid=lr.objid
-	WHERE r.liquidatingofficer_objid = $P{liquidatingofficerid} 
-		AND r.state = 'APPROVED'
-		AND lr.objid IS NULL
-)a 
+select r.*, r.txnno as remittanceno 
+from remittance r
+	left join liquidation_remittance lr ON r.objid=lr.objid
+where lr.objid IS NULL 
+	and r.liquidatingofficer_objid = $P{liquidatingofficerid}  
+	and r.state = 'APPROVED' 
+	${filter} 
 
 
 [getUnliquidatedFundSummary]
-SELECT a.* 
-FROM (
-	SELECT 
+select a.* 
+from (
+	select 
 		rf.fund_objid, f.code as fund_code, 
 		rf.fund_title, SUM(rf.amount) AS amount 
-	FROM remittance r 
+	from remittance r 
 		inner join remittance_fund rf on rf.remittanceid = r.objid 
 		inner join fund f on f.objid = rf.fund_objid 
-		LEFT JOIN liquidation_remittance lr ON r.objid=lr.objid
-	WHERE r.liquidatingofficer_objid = $P{liquidatingofficerid}  
-		AND r.state = 'APPROVED'
-		AND lr.objid IS NULL 
-	GROUP BY rf.fund_objid, rf.fund_title, f.code  
+		left join liquidation_remittance lr ON lr.objid = r.objid 
+	where lr.objid IS NULL 
+		and r.liquidatingofficer_objid = $P{liquidatingofficerid} 
+		and r.state = 'APPROVED' 
+		${filter} 
+	group by rf.fund_objid, rf.fund_title, f.code 
 )a 
-ORDER BY a.fund_code 
+order by a.fund_code, a.fund_title 
+
+
+[getUnliquidatedChecks]
+select a.* 
+from (
+	select 
+		pc.objid, pc.refno, pc.refdate, pc.particulars,
+		(case when cv.objid IS NULL then pc.amount else 0 end) as amount,
+		(case when cv.objid IS NULL then 0 else 1 end ) as voided, pc.reftype 
+	from remittance r 
+		inner join remittance_noncashpayment rcp on rcp.remittanceid = r.objid 
+		inner join cashreceiptpayment_noncash pc ON pc.objid = rcp.objid 
+		left join cashreceipt_void cv ON cv.receiptid = pc.receiptid 
+		left join liquidation_remittance lr ON lr.objid = r.objid 
+	WHERE lr.objid IS NULL 
+		AND r.liquidatingofficer_objid = $P{liquidatingofficerid} 
+		AND r.state = 'APPROVED' 
+		${filter} 
+)a 
+order by a.refdate, a.refno 
 
 
 [postLiquidateRemittance]
@@ -133,3 +119,12 @@ from liquidation_cashier_fund lcf
 	inner join liquidation l on lcf.liquidationid=l.objid 
 	left join fund on lcf.fund_objid=fund.objid 
 where lcf.liquidationid=$P{liquidationid} 
+
+
+[getUndepositedLiquidations]
+select * from liquidation l 
+	inner join liquidation_cashier_fund lcf on lcf.liquidationid = l.objid 
+	left join bankdeposit_liquidation bl on bl.objid = lcf.objid
+where l.liquidatingofficer_objid = $P{liquidatingofficerid} 
+	and bl.objid is null 
+

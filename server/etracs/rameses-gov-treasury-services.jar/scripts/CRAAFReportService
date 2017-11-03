@@ -59,183 +59,90 @@ class CRAAFReportService {
 		]
 	}
 
-	def getCraafData(params) { 
+
+	private def getCraafData( params ) { 
 		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
 		def startdate = YMD.parse( params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-01' );
 		def enddate = DateUtil.add( startdate, '1M' ); 	
 
 		def list = adb.getCraafData([ startdate: startdate, enddate: enddate ]); 
-		list.each {
-			it.beginstartseries = (it.receivedstartseries>0? null: it.beginstartseries); 
-			it.beginendseries = (it.receivedstartseries>0? null: it.beginendseries); 
-			if ( it.issuedstartseries>0 ) {
-				it.beginstartseries = (it.prevendingstartseries>0 ? it.prevendingstartseries : it.beginstartseries); 
-				it.beginendseries = (it.prevendingendseries>0 ? it.prevendingendseries : it.beginendseries); 
-			} 
+		list.eachWithIndex{ o,idx-> o.lineno = idx; }
 
-			if ( it.receivedstartseries>0 && it.receivedendseries>0 ) { 
-				it.qtyreceived = (it.receivedendseries-it.receivedstartseries)+1; 
-			} 
-			if ( it.beginstartseries>0 && it.beginendseries>0 ) { 
-				it.qtybegin = (it.beginendseries-it.beginstartseries)+1; 
-			} 
-			if ( it.issuedstartseries>0 && it.issuedendseries>0 ) { 
-				it.qtyissued = (it.issuedendseries-it.issuedstartseries)+1; 
-			} 
-			if ( it.endingstartseries>0 && it.endingendseries>0 ) {
-				it.qtyending = (it.endingendseries-it.endingstartseries)+1; 
-			}
+		def unissuedlist = list.findAll{( it.qtyissued==0 )} 
+		list.removeAll( unissuedlist ); 
 
-			if ( it.aftype=='cashticket' ) {
-				def denomination = (it.denomination? it.denomination: 1) * 1.0;
-				if ( it.qtyreceived>0 ) it.receivedamt = it.qtyreceived * denomination;  
-				if ( it.qtybegin>0 ) it.beginamt = it.qtybegin * denomination;  
-				if ( it.qtyissued>0 ) it.issuedamt = it.qtyissued * denomination;  
-				if ( it.qtyending>0 ) it.endingamt = it.qtyending * denomination;  
-
-				it.receivedstartseries = it.receivedendseries = null; 
-				it.beginstartseries = it.beginendseries = null; 
-				it.issuedstartseries = it.issuedendseries = null; 
-				it.endingstartseries = it.endingendseries = null; 
-				if ( it.stubno  ) it.afid = (''+ it.afid +'  #'+ it.stubno);
-			}
-
-			if ( !it.qtyending ) {
-				it.remarks = 'CONSUMED'; 
-				if ( it.categoryindex>0 && it.saled>0 ) {
-					it.remarks = 'SALE'; 
-				} 
-			} 
-
-			it.receivedstartseries = (Integer) it.receivedstartseries;
-			it.receivedendseries = (Integer) it.receivedendseries;
-			it.beginstartseries = (Integer) it.beginstartseries;
-			it.beginendseries = (Integer) it.beginendseries;
-			it.issuedstartseries = (Integer) it.issuedstartseries;
-			it.issuedendseries = (Integer) it.issuedendseries;
-			it.endingstartseries = (Integer) it.endingstartseries;
-			it.endingendseries = (Integer) it.endingendseries;
-			it.qtyreceived = (Integer) it.qtyreceived;
-			it.qtybegin = (Integer) it.qtybegin;
-			it.qtyissued = (Integer) it.qtyissued;
-			it.qtyending = (Integer) it.qtyending;	
-
-			if ( it.qtyreceived > 0 ) it.sortseries = it.receivedstartseries; 
-			else if ( it.qtybegin > 0 ) it.sortseries = it.beginstartseries; 
-			else if ( it.qtyissued > 0 ) it.sortseries = it.issuedstartseries; 
-			else if ( it.qtyending > 0 ) it.sortseries = it.endingstartseries; 
-
-			if ( it.serieslength > 0 ) it.pattern = '0'*it.serieslength; 
-		} 
-
-		def list2 = []; 
-		def startindex = 0;
-		def forms = list.collect{[ afid: it.afid, aftype: it.aftype ]}.unique().sort{ it.afid } 
-		forms.each{ o-> 
-			if ( o.aftype == 'serial' ) {
-				buildSerialForms( list2, list, o.afid, startindex );	
-			} else {
-				buildNonSerialForms( list2, list, o.afid, startindex ); 
-			}
-			startindex += 1000; 
-		} 
-		list.clear(); 
-		list.addAll( list2 ); 
-		list2.clear(); 
-		return list; 
-	} 
-
-	private void buildSerialForms( targetlist, sourcelist, afid, startindex ) {
-		def list = sourcelist.findAll{( it.afid==afid && it.respcentertype=='AFO' )}
-		if ( list ) { 
-			targetlist.addAll( list ); 
-			list.clear(); 
-		} 
-
-		list = sourcelist.findAll{( it.afid==afid && it.respcentertype != 'AFO' )}.sort{ it.sortseries } 
-
-		def grouplist = [];
-		def groupindex = startindex; 
-		def nextstartseries = 0; 
-		def nextname = null; 
-		list.each { o-> 
-			if ( o.qtyissued > 0 ) { 
-				targetlist << o; 
-				return; 
-			} 
-			def oldindex = groupindex; 
-			if ( o.sortseries != nextstartseries) {
-				groupindex++; 
-			} else if ( o.name != nextname ) {
-				groupindex++; 
-			}
-			o.groupindex = groupindex; 
-			nextstartseries = o.sortseries+1; 
-			nextname = o.name; 
-			if ( oldindex == groupindex ) {
-				grouplist << o; 
-			} else if ( grouplist ) { 
-				suppress( targetlist, grouplist ); 
-				grouplist.clear(); 
-			}
-		} 
-		if ( grouplist ) { 
-			suppress( targetlist, grouplist ); 
-			grouplist.clear(); 
-		} 
-	} 
-
-	private void buildNonSerialForms( targetlist, sourcelist, afid, startindex ) {
-		def list = sourcelist.findAll{( it.afid==afid && it.respcentertype=='AFO' )}
-		if ( list ) { 
-			list.findAll{( it.qtyissued > 0 )}.each{ 
-				targetlist << it; 
-				list.remove( it );  
-			}
-			if ( list ) {
-				def oo = list.first(); 
-				oo.qtybegin = list.sum{( it.qtybegin? it.qtybegin : 0.0 )}
-				oo.qtyreceived = list.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
-				oo.qtyissued = list.sum{( it.qtyissued? it.qtyissued : 0.0 )}
-				oo.qtyending = list.sum{( it.qtyending? it.qtyending : 0.0 )}
-				list.clear(); 
-			} 
-		} 
-
-		list = sourcelist.findAll{( it.afid==afid && it.respcentertype != 'AFO' )} 
-		list.collect{ it.name }.unique().sort().each{ name-> 
-			def sublist = list.findAll{( it.name==name )} 
-			sublist.findAll{( it.qtyissued > 0 )}.each{
-				targetlist << it; 
-			}
-			sublist = sublist.findAll{( !it.qtyissued )} 
-			if ( sublist ) {
-				def oo = sublist.first(); 
-				oo.qtybegin = sublist.sum{( it.qtybegin? it.qtybegin : 0.0 )}
-				oo.qtyreceived = sublist.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
-				oo.qtyissued = sublist.sum{( it.qtyissued? it.qtyissued : 0.0 )}
-				oo.qtyending = sublist.sum{( it.qtyending? it.qtyending : 0.0 )}
-			} 
+		list.findAll{ it.formtype != 'serial' }.each{
+			it.beginstartseries = it.beginendseries = null; 
+			it.issuedstartseries = it.issuedendseries = null; 
+			it.endingstartseries = it.endingendseries = null; 
+			it.receivedstartseries = it.receivedendseries = null; 
 		}
-	} 
 
-	private void suppress( targetlist, grouplist ) {
-		if ( !grouplist ) return; 
+		def groupindex = 1000; 
+		def serials = unissuedlist.findAll{ it.formtype == 'serial' } 
+		unissuedlist.removeAll( serials ); 
 
-		def oo = grouplist.first(); 
-		oo.beginstartseries = grouplist.min{ it.beginstartseries }?.beginstartseries;
-		oo.beginendseries = grouplist.max{ it.beginendseries }?.beginendseries;
-		oo.receivedstartseries = grouplist.min{ it.receivedstartseries }?.receivedstartseries;
-		oo.receivedendseries = grouplist.max{ it.receivedendseries }?.receivedendseries;
-		oo.issuedstartseries = grouplist.min{ it.issuedstartseries }?.issuedstartseries;
-		oo.issuedendseries = grouplist.max{ it.issuedendseries }?.issuedendseries;
-		oo.endingstartseries = grouplist.min{ it.endingstartseries }?.endingstartseries;
-		oo.endingendseries = grouplist.max{ it.endingendseries }?.endingendseries;
-		oo.qtybegin = grouplist.sum{( it.qtybegin? it.qtybegin : 0.0 )}
-		oo.qtyreceived = grouplist.sum{( it.qtyreceived? it.qtyreceived : 0.0 )}
-		oo.qtyissued = grouplist.sum{( it.qtyissued? it.qtyissued : 0.0 )}
-		oo.qtyending = grouplist.sum{( it.qtyending? it.qtyending : 0.0 )}
-		oo.startstub = oo.startstub + grouplist.size()-1; 
-		targetlist << oo; 
+		serials.groupBy{[ ownerid: it.ownerid, formno: it.formno ]}.each{ k,v-> 
+			v.sort{ it.startseries } 
+
+			def nextseries = 0; 
+			v.each{ vo-> 
+				if ( vo.startseries == nextseries ) {
+					vo.groupindex = groupindex;  
+				} else {
+					vo.groupindex = groupindex + 1; 
+				} 
+				groupindex = vo.groupindex; 
+				nextseries = vo.nextseries; 
+			} 
+
+			v.groupBy{ it.groupindex }.each{ kk,vv-> 
+				def fo = vv.first(); 
+				def receivedstartseries = vv.collect{ it.receivedstartseries }.findAll{( it )}.min{( it )}
+				def receivedendseries = vv.collect{ it.receivedendseries }.findAll{( it )}.max{( it )}
+				def endingstartseries = vv.collect{ it.endingstartseries }.findAll{( it )}.min{( it )}
+				def endingendseries = vv.collect{ it.endingendseries }.findAll{( it )}.min{( it )}
+				def beginstartseries = vv.collect{ it.beginstartseries }.findAll{( it )}.min{( it )}
+				def beginendseries = vv.collect{ it.beginendseries }.findAll{( it )}.min{( it )}
+
+				fo.qtyreceived = vv.findAll{( it.qtyreceived > 0 )}.sum{ it.qtyreceived } 
+				if ( fo.qtyreceived == null ) fo.qtyreceived = 0; 
+
+				fo.qtyending = vv.findAll{( it.qtyending > 0 )}.sum{ it.qtyending } 
+				if ( fo.qtyending == null ) fo.qtyending = 0; 
+
+				fo.qtybegin = vv.findAll{( it.qtybegin > 0 )}.sum{ it.qtybegin } 
+				if ( fo.qtybegin == null ) fo.qtybegin = 0; 
+
+				fo.receivedstartseries = receivedstartseries; 
+				fo.receivedendseries = receivedendseries; 
+				fo.endingstartseries = endingstartseries; 
+				fo.endingendseries = endingendseries; 
+				fo.beginstartseries = beginstartseries; 
+				fo.beginendseries = beginendseries; 
+				list << fo; 
+			} 
+		} 
+		serials.clear(); 
+
+		unissuedlist.groupBy{[ ownerid: it.ownerid, formno: it.formno ]}.each{ k,v-> 
+			def fo = v.first(); 
+			def qtyreceived = 0; def qtyending = 0; def qtybegin = 0; 
+			v.each{
+				if ( it.qtyreceived > 0 ) qtyreceived += it.qtyreceived; 
+				if ( it.qtyending > 0 ) qtyending += it.qtyending; 
+				if ( it.qtybegin > 0 ) qtybegin += it.qtybegin; 
+			} 
+			fo.qtyreceived = qtyreceived;
+			fo.qtyending = qtyending; 
+			fo.qtybegin = qtybegin; 
+			fo.receivedstartseries = fo.receivedendseries = null; 
+			fo.endingstartseries = fo.endingendseries = null; 
+			fo.beginstartseries = fo.beginendseries = null; 
+			list << fo; 
+		} 
+		unissuedlist.clear(); 
+		list.sort{ it.lineno } 
+		return list;  
 	} 
 } 

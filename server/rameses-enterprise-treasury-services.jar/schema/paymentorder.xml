@@ -2,6 +2,7 @@
 	<element tablename="paymentorder">
 		<field name="txnid" primary="true"/>
 		<field name="txndate" type="timestamp" required="true" />
+		<field name="controlno"  />
 		<field name="payer_objid" required="true" />
 		<field name="payer_name" required="true" />
 		<field name="paidby" required="true" />
@@ -11,16 +12,9 @@
 		<field name="expirydate" type="date" required="true" />
 		<field name="refid" required="true"  />
 		<field name="refno" />
-		<field name="controlno" />
-		<field name="locationid" />
-		<field name="receiptid" />
-		<field name="origin" required="true"/>
 		<complex name="info" serializer="default" required="true"/>
 		<complex name="txntype" ref="paymentorder_type" jointype="many-to-one">
 			<key field="txntypeid" target="objid"/>
-		</complex>
-		<complex name="items" ref="paymentorder_item" jointype="one-to-many" required="true">
-			<key field="txnid" target="parent_objid"/>
 		</complex>
 	</element>
 </schema>

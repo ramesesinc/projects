@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+
+class MarketCashReceiptVoidInterceptor{
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("market_payment")
+	def marketPmt;
+
+	@DataContext("market_account")
+	def marketAcct;
+
+	@DataContext("market_rental_ledger")
+	def rentalLedger;
+
+	@DataContext("market_payment_rental")
+	def rentalPmt;
+
+	@DataContext("market_payment_utility")
+	def utilityFeePmt;
+
+	@DataContext("market_utility_ledger")
+	def utilityLedger;
+
+	@DataContext("market_otherfee_ledger")
+	def otherFeeLedger;
+
+	@DataContext("market_payment_otherfee")
+	def otherFeePmt;
+
+	void reverseRentalPayment( def itm ) {
+		def ledgerid = itm.ledgerid;
+		rentalLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid  - :amt}'], [amt: itm.amount ]  );
+	}
+
+	void reverseUtilityPayment( def itm ) {
+		def ledgerid = itm.ledgerid;
+		utilityLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid - :amt}'], [amt: itm.amount ]  ); 
+	}
+
+	void reverseOtherFeePayment( def itm ) {
+		def ledgerid = itm.ledgerid;
+		otherFeeLedger.find( [objid: ledgerid ] ).update( [amtpaid:'{amtpaid - :amt}'], [amt: itm.amount ]  );
+	}
+
+	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{args[0].receipt.collectiontype.handler=='market'}")
+	public void voidPayment( evt ) {
+		def rct = evt.result.receipt;
+
+		def p = marketPmt.find( [refid: rct.objid ] ).first();
+		marketPmt.find( [refid: rct.objid ] ).update( [voided: 1] );
+
+		//show rental items
+		rentalPmt.debug = true;
+		rentalPmt.find( [paymentid: p.objid] ).list()?.each {
+			reverseRentalPayment( it );
+		}
+
+		utilityFeePmt.find( [paymentid: p.objid] ).list()?.each {
+			reverseUtilityPayment( it );
+		}
+		
+		otherFeePmt.find( [paymentid: p.objid] ).list()?.each {
+			reverseOtherFeePayment( it );
+		}
+	}
+
+
+	
+}

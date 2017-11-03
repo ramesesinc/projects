@@ -17,8 +17,9 @@ public class AddMarketRentalBillItem extends AddMonthBillItem {
 		}
 		def rr = params.rentalrate;
 		def mr = new MarketRentalBillItem();		
-		mr .rate = rr.rate;
+		mr.rate = rr.rate;
 		mr.ratetype = rr.type;
+
 		return mr;
 	}
 

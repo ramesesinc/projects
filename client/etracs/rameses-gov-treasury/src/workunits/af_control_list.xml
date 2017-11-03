@@ -8,7 +8,9 @@
                 orderBy="afid,dtfiled,startseries"/>
            
        <invoker folderid="menucategory/treasury/collection" 
-                caption="Manage Accountable Forms" formTitle="Collection Accountable Forms" role="COLLECTOR">
+            cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
+            customFilter="owner.objid = 'USR-ADMIN' "
+                caption="Manage AF (Collection)" formTitle="Collection Accountable Forms" role="COLLECTOR">
             <action name="init" role="COLLECTOR" /> 
             <action name="init" role="SUBCOLLECTOR" /> 
         </invoker> 
@@ -20,7 +22,6 @@
         
         
    </invokers>
-   
   
    
     <!--

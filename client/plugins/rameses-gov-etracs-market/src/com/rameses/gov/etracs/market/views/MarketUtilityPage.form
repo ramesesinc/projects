@@ -56,11 +56,8 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="xFormPanel1" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="xFormPanel2" min="-2" pref="302" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="311" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="xFormPanel1" pref="613" max="32767" attributes="0"/>
+                          <Component id="xFormPanel2" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -80,18 +77,21 @@
           </Layout>
           <SubComponents>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+              <Properties>
+                <Property name="captionWidth" type="int" value="150"/>
+              </Properties>
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Type"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="expression" type="java.lang.String" value="#{entity.type}"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
                   <Properties>
-                    <Property name="caption" type="java.lang.String" value="Account"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="caption" type="java.lang.String" value="Market Ledger Account"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="expression" type="java.lang.String" value="#{entity.account.acctno} - #{entity.account.acctname}"/>
                     <Property name="handler" type="java.lang.String" value="market_account:lookup"/>
                     <Property name="name" type="java.lang.String" value="entity.account" noResource="true"/>
@@ -103,7 +103,7 @@
                 <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Unit No"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                       <StringArray count="1">
                         <StringItem index="0" value="entity.account"/>
@@ -115,11 +115,14 @@
               </SubComponents>
             </Container>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+              <Properties>
+                <Property name="captionWidth" type="int" value="120"/>
+              </Properties>
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Year"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="name" type="java.lang.String" value="entity.year" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
@@ -127,7 +130,7 @@
                 <Component class="com.rameses.enterprise.components.MonthList" name="monthList1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Month"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="name" type="java.lang.String" value="entity.month" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
@@ -135,14 +138,14 @@
                 <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Next Reading Date"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="name" type="java.lang.String" value="entity.nextreadingdate" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField2">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Current Reading"/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="name" type="java.lang.String" value="entity.currentreading" noResource="true"/>
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
@@ -150,7 +153,7 @@
                 <Component class="com.rameses.rcp.control.XButton" name="xButton1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value=""/>
-                    <Property name="captionWidth" type="int" value="120"/>
+                    <Property name="captionWidth" type="int" value="150"/>
                     <Property name="immediate" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="calcNextReadingDate" noResource="true"/>
                     <Property name="text" type="java.lang.String" value="Get Next Reading Date"/>

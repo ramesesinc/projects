@@ -1,0 +1,13 @@
+<workunit ledgerSchemaName="market_utility_ledger" paymentSchemaName="market_payment_utility" 
+          txntype="WATER" parentid="parent.acctid">
+    <invokers>
+          <invoker type="market_account:section" 
+                 caption="Water" 
+                 action="init" 
+                 visibleWhen="#{mode!='create'}" index="5"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.market.models.BasicLedgerModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.BasicLedgerPage" />
+    </pages>
+</workunit>

@@ -10,12 +10,11 @@ import com.rameses.util.*;
 public class MarketRentalBillingModel extends FormReportModel {
     
     public def preview() {
-        def billdate = null;
-        Modal.show("date:prompt", [handler: {o->billdate=o} ] );
         query.acctid = caller.entityContext?.objid;
-        if(!billdate) {
+        Modal.show("date:prompt", [handler: {o->query.billdate=o} ] );
+        if(!query.billdate) {
             throw new BreakException();    
-        }
+        };
         def s = { o->
             if( o ) {
                  query.filters = o*.objid;

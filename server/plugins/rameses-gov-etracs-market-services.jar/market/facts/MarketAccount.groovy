@@ -17,9 +17,6 @@ class MarketAccount {
 	Date lastdatepaid;
 	Date startdate;
 
-	//Date nextbilldate;
-	//Date nextstartdate;
-
 	public MarketAccount(def mm) {
 		objid = mm.objid;
 		acctno = mm.acctno;

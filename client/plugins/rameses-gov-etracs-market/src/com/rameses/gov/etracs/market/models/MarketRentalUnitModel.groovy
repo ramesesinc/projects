@@ -12,9 +12,9 @@ public class MarketRentalUnitModel extends CrudFormModel {
     def historyListModel = [
         fetchList: { o->
             def m = [_schemaname:'market_account'];
-            m.select = 'objid,acctname,owner.name,startdate,dateclosed';
+            m.select = 'objid,acctname,owner.name,dtstarted,dateclosed';
             m.findBy = [ 'unitid': entity.objid ];
-            m.orderBy = "startdate";
+            m.orderBy = "dtstarted";
             return qryService.getList(m);
         }
     ] as BasicListModel;

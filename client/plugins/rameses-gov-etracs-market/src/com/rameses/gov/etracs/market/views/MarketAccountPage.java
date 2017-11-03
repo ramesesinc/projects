@@ -36,7 +36,9 @@ public class MarketAccountPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xButton1 = new com.rameses.rcp.control.XButton();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -51,7 +53,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel25 = new com.rameses.rcp.control.XLabel();
-        xLabel16 = new com.rameses.rcp.control.XLabel();
         jPanel5 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
@@ -72,10 +73,24 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel8);
 
-        xLabel1.setCaption("Unit No");
-        xLabel1.setExpression("#{entity.unitno}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel1);
+        xFormPanel4.setCaptionWidth(120);
+        xFormPanel4.setCellspacing(0);
+        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel4.setPreferredSize(new java.awt.Dimension(0, 25));
+        xFormPanel4.setShowCaption(false);
+
+        xLabel9.setCaption("Unit No");
+        xLabel9.setExpression("#{entity.unitno}");
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel4.add(xLabel9);
+
+        xButton1.setName("viewUnit"); // NOI18N
+        xButton1.setShowCaption(false);
+        xButton1.setText("View");
+        xFormPanel4.add(xButton1);
+
+        xFormPanel2.add(xFormPanel4);
 
         xLabel10.setCaption("Rented Area (sqm)");
         xLabel10.setExpression("#{entity.unit.areasqm}");
@@ -83,8 +98,11 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xFormPanel2.add(xLabel10);
 
         xLabel11.setCaption("Extension Area");
+        xLabel11.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xLabel11.setExpression("#{entity.extarea}");
+        xLabel11.setPadding(new java.awt.Insets(0, 3, 1, 1));
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel11.setVisibleWhen("#{ entity.extarea > 0 }");
         xFormPanel2.add(xLabel11);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -99,8 +117,8 @@ public class MarketAccountPage extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, Short.MAX_VALUE))
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -158,7 +176,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
 
         xFormPanel5.setCaptionWidth(120);
 
-        xLabel13.setCaption("Pay Frequency");
+        xLabel13.setCaption("Mode of Payment");
         xLabel13.setExpression("#{entity.payfrequency}");
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel13);
@@ -175,11 +193,6 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel25.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel25);
 
-        xLabel16.setCaption("Partial Balance");
-        xLabel16.setExpression("#{entity.partialbalance}");
-        xLabel16.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel5.add(xLabel16);
-
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -193,7 +206,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 178, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xFormPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -262,7 +275,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(218, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel2);
@@ -279,7 +292,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -291,17 +304,17 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
-    private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel25;
@@ -311,6 +324,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     // End of variables declaration//GEN-END:variables
     

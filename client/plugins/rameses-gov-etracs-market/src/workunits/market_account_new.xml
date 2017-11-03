@@ -1,6 +1,6 @@
 <workunit schemaName="market_account">
     <invokers>
-        <invoker type="market_account:create" caption="New Market Account" action="create" role="MASTER" />
+        <invoker type="market_account:create" caption="New Market Ledger" action="create" role="MASTER" />
     </invokers>
     
     <code class="com.rameses.gov.etracs.market.models.MarketAccountNewModel" />

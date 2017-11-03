@@ -55,7 +55,8 @@ class BillItem extends AbstractBillItem {
 		m.total = total;
 		m.partialunpaid = partialunpaid;
 		if( m.surcharge == null ) m.surcharge = 0;
-		if(m.interest == null ) m.interest = 0;
+		if( m.interest == null ) m.interest = 0;
+		if( m.discount == null) m.discount = 0;
 		return m;
 	}
 
@@ -64,6 +65,9 @@ class BillItem extends AbstractBillItem {
 
 	//call this to distribute payment and return the remainder
 	double applyPayment( double payamt ) {
+		//store original amount in principal so we can recover it later
+		principal = amount;
+
 		double linetotal = NumberUtil.round(total);
 		if( payamt >= linetotal ) {
 			return payamt - linetotal;

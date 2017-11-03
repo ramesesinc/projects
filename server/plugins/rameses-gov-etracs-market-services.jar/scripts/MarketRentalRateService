@@ -30,10 +30,14 @@ class MarketRentalRateService {
 		if(!fromYear) fromYear = dateSvc.getServerYear().toInteger();
 		if(!toYear) toYear = dateSvc.getServerYear().toInteger();
 
-		(fromYear..toYear).each {
-			fb.facts << new YearEntry( year: it );
+		if(fromYear >= toYear ) {
+			fb.facts << new YearEntry( year: fromYear );
 		}
-
+		else {
+			(fromYear..toYear).each {
+				fb.facts << new YearEntry( year: it );
+			}
+		}
 		assmtSvc.execute( "marketrentalrate", [:], fb, resultHandler );
 	}
 

@@ -32,7 +32,7 @@ class MarketBillingReportService {
 		def pp = [acctid: acctid ];
 		pp.billdate = (p.parameters.billdate) ? df.parse(p.parameters.billdate) : dateSvc.getServerDate();
 		pp.filters = p.parameters.filters;
-		
+
 		def m = billingSvc.getBilling( pp );
 		if( !m.items )
 			throw new Exception("No billitems found!");

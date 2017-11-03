@@ -43,8 +43,6 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel4 = new com.rameses.rcp.control.XLabel();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         xButton2 = new com.rameses.rcp.control.XButton();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
@@ -55,8 +53,12 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xDateField2 = new com.rameses.rcp.control.XDateField();
-        xDateField4 = new com.rameses.rcp.control.XDateField();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xPanel5 = new com.rameses.rcp.control.XPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xPanel6 = new com.rameses.rcp.control.XPanel();
+        xFormPanel7 = new com.rameses.rcp.control.XFormPanel();
+        xDateField5 = new com.rameses.rcp.control.XDateField();
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
@@ -127,14 +129,6 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xLabel4.setExpression("#{entity.unit.cluster.market.name}  #{entity.unit.cluster.name} ");
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel4);
-
-        xDecimalField1.setCaption("Ext. Area (sqm)");
-        xDecimalField1.setName("entity.extarea"); // NOI18N
-        xFormPanel2.add(xDecimalField1);
-
-        xDecimalField2.setCaption("Ext Rate");
-        xDecimalField2.setName("entity.extrate"); // NOI18N
-        xFormPanel2.add(xDecimalField2);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
@@ -208,7 +202,7 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xFormPanel6.setCaptionPadding(new java.awt.Insets(0, 0, 0, 5));
         xFormPanel6.setCaptionWidth(120);
 
-        xComboBox6.setCaption("Pay Frequency");
+        xComboBox6.setCaption("Mode of Payment");
         xComboBox6.setItems("lov.MARKET_PAY_FREQUENCY");
         xComboBox6.setName("entity.payfrequency"); // NOI18N
         xComboBox6.setRequired(true);
@@ -218,16 +212,6 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xDateField2.setName("entity.dtstarted"); // NOI18N
         xDateField2.setRequired(true);
         xFormPanel6.add(xDateField2);
-
-        xDateField4.setCaption("Paid Until Date");
-        xDateField4.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
-        xDateField4.setName("entity.lastdatepaid"); // NOI18N
-        xDateField4.setRequired(true);
-        xFormPanel6.add(xDateField4);
-
-        xDecimalField3.setCaption("Partial Balance");
-        xDecimalField3.setName("entity.partialbalance"); // NOI18N
-        xFormPanel6.add(xDecimalField3);
 
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
         xPanel4.setLayout(xPanel4Layout);
@@ -247,6 +231,64 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         );
 
         jPanel1.add(xPanel4, "card5");
+
+        xPanel5.setVisibleWhen("#{ txntype == 'extarea' }");
+
+        xFormPanel3.setCaptionWidth(120);
+
+        xDecimalField2.setCaption("Extension Area (sqm)");
+        xDecimalField2.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
+        xDecimalField2.setName("entity.extarea"); // NOI18N
+        xFormPanel3.add(xDecimalField2);
+
+        javax.swing.GroupLayout xPanel5Layout = new javax.swing.GroupLayout(xPanel5);
+        xPanel5.setLayout(xPanel5Layout);
+        xPanel5Layout.setHorizontalGroup(
+            xPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(95, Short.MAX_VALUE))
+        );
+        xPanel5Layout.setVerticalGroup(
+            xPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(320, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(xPanel5, "card6");
+
+        xPanel6.setVisibleWhen("#{ txntype == 'lastdatepaid' }");
+
+        xFormPanel7.setCaptionPadding(new java.awt.Insets(0, 0, 0, 5));
+        xFormPanel7.setCaptionWidth(120);
+
+        xDateField5.setCaption("Paid Until Date");
+        xDateField5.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
+        xDateField5.setName("entity.lastdatepaid"); // NOI18N
+        xDateField5.setRequired(true);
+        xFormPanel7.add(xDateField5);
+
+        javax.swing.GroupLayout xPanel6Layout = new javax.swing.GroupLayout(xPanel6);
+        xPanel6.setLayout(xPanel6Layout);
+        xPanel6Layout.setHorizontalGroup(
+            xPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(54, Short.MAX_VALUE))
+        );
+        xPanel6Layout.setVerticalGroup(
+            xPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(344, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(xPanel6, "card6");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -273,14 +315,14 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XDateField xDateField2;
-    private com.rameses.rcp.control.XDateField xDateField4;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDateField xDateField5;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
-    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
+    private com.rameses.rcp.control.XFormPanel xFormPanel7;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -290,6 +332,8 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XPanel xPanel3;
     private com.rameses.rcp.control.XPanel xPanel4;
+    private com.rameses.rcp.control.XPanel xPanel5;
+    private com.rameses.rcp.control.XPanel xPanel6;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables

@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="market_billitem_txntype">
+    <invokers>
+        <invoker type="market_billitem_txntype:create" caption="Add Bill Item Txn" action="create" target="popup"/>
+        <invoker type="market_billitem_txntype:open" caption="Bill Item Txn" action="open" target="popup"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.market.views.MarketBillItemTxnTypePage" />
+    </pages>    
+</workunit>

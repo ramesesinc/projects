@@ -3,7 +3,7 @@
           cols="acctno,acctname,address.text,unitno,section.name,payfrequency"
            filterField="unit.cluster.market.objid" >
     <invokers>
-        <invoker folderid="/menucategory/market/acct" caption="Market Accounts" role="MASTER" action="init"/>
+        <invoker folderid="/menucategory/market/acct" caption="Market Ledger" role="MASTER" action="init"/>
     </invokers>
     <code class="com.rameses.gov.etracs.market.models.MarketListFilter" />
     <pages>

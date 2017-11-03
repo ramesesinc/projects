@@ -1,0 +1,17 @@
+<workunit>
+   <invokers>
+         <invoker type="aklanspecialpassacct:create" caption="Special Pass Account Information" 
+                  action="create" target="popup" domain="TERMINAL" role="ADMIN"/>
+         <invoker type="aklanspecialpassacct:open" caption="Special Pass Account Information" 
+                  action="open" target="popup" domain="TERMINAL" role="ADMIN"/>
+         
+         <invoker type="formActions" caption="Print Terminal Pass" action="print" 
+                  target="process" depends="entity.*" visibleWhen="#{!(mode=='create' || mode=='edit')}"/> 
+   </invokers>
+   
+   <code class="gov.lgu.aklan.terminal.AklanSpecialPassAcctController"/>
+   
+   <pages>
+       <page template="gov.lgu.aklan.terminal.AklanSpecialPassAcctPage" />
+   </pages>
+</workunit>

@@ -1,0 +1,140 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.sevices.extended.* 
+import java.rmi.server.*;
+
+class AklanTerminalCashReceiptInterceptor  
+{
+	@DataContext('aklan_cashreceipt_terminal')
+	def em_cashreceipt_terminal;
+
+	@DataContext('aklan_terminal_ticket_void')
+	def em_terminal_ticket_void;
+
+	@ActiveDB(value='aklan_terminal_ticket', em='aklanterminal')
+	def terminal_ticket;
+
+	@DataContext('aklan_terminal_ticket')
+	def em_terminal_ticket;
+
+	@DataContext('aklan_turnstile_category')
+	def em_turnstile_category;
+
+	@ActiveDB('collectiontype_account')
+	def acct;
+
+	@Service('ReportParameterService')
+	def paramSvc;
+
+	@Service('AklanTerminalTicketService')
+	def ticketSvc;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@Service('Var')
+	def var;
+
+	@Service('OrgService')
+	def orgSvc; 
+
+	@Env 
+	def env; 
+
+	@After(pattern="CashReceiptService.init", index=500, eval="#{result.collectiontype.handler == 'aklanterminal'}")
+	public void onInit(def evt) { 
+		def r = evt.result;
+		def z = acct.findAccount([objid: r.collectiontype.objid] );
+		if (!z) throw new Exception("Account not found for aklanterminal handler. Please define at least one account in collection type"); 
+		if (!z.defaultvalue) throw new Exception("Please indicate default value in collection type account"); 
+
+		def lguinfo = orgSvc.open([ objid: env.CLIENTCODE? env.CLIENTCODE: env.ORGCODE ]); 
+		def item = [objid:'RCTITEM'+new UID(), item:z.account, amount: 0, tag:z.tag];
+		r.items << item; 
+		r.numadult = 0;
+		r.numchildren = 0;		
+		r.paidby = 'TOURIST';		
+		r.paidbyaddress = lguinfo?.address; 
+		r.rate = z.defaultvalue; 
+	} 
+
+	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype.handler == 'aklanterminal'}")
+	public void postCashReceipt(def evt) { 
+		def r = evt.args[0];
+		if ( !r.numadult ) throw new Exception('Please specify the number of adults'); 
+		if ( r.numadult <= 0 ) throw new Exception('Number of adults must be greater than zero'); 
+
+		r.thermalprintername = var.thermal_printername; 
+		if ( !r.thermalprintername ) throw new Exception('Please specify the thermal_printername in system variables'); 
+
+		def lguinfo = orgSvc.open([ objid: env.CLIENTCODE? env.CLIENTCODE: env.ORGCODE ]); 
+		def rundate = dateSvc.getServerDate(); 
+		def accttag = (r.items? r.items[0].tag: null); 
+		em_turnstile_category.debug = true 
+		def catidxno = em_turnstile_category.find([ objid: accttag ]).first()?.indexno; 
+		if (!catidxno) throw new Exception('Please set the category indexno for "'+ accttag +'"');
+
+		def batchsize = r.numadult; 
+		def prefixyr = rundate.toString().split('-')[0][-2..-1];
+		def prefix = lguinfo.objid + prefixyr + catidxno; 
+		int seriesno = seqSvc.getNextBatchSeries([ objid: prefix+'-aklanterminal', size: batchsize ]); 
+		def startseqno = seqSvc.formatSeries([ seriesno:seriesno, serieslength:6, prefix: prefix ]); 
+		def endseqno = seqSvc.formatSeries([ seriesno:seriesno+batchsize-1, serieslength:6, prefix: prefix ]); 
+		r.xinfo = [
+			objid 		: r.objid, 
+			dtfiled 	: rundate, 
+			startseqno  : startseqno, 
+			endseqno 	: endseqno, 
+			numadult 	: r.numadult, 
+			numchildren : r.numchildren, 
+			discount	: (r.discount? r.discount: 0.0), 
+			tag 		: accttag 
+		]; 
+		em_cashreceipt_terminal.create( r.xinfo );
+
+		r.tickets = []; 
+		for (int idx=0; idx<batchsize; idx++) { 
+			def m = [
+				seqno     : seqSvc.formatSeries([ seriesno:seriesno+idx, serieslength:6, prefix: prefix ]), 
+				dtfiled   : rundate, 
+				refid  	  : r.objid, 
+				reftype   : 'cashreceipt', 
+				refno     : r.receiptno, 
+				guesttype : 'A',
+				tag 	  : accttag  
+			]; 
+			ticketSvc.create( m ); 
+			r.tickets << m; 
+		} 
+	} 
+
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype.handler == 'aklanterminal'}")
+	public void openCashReceipt( evt ) { 
+		def r = evt.result;
+		r.thermalprintername = var.thermal_printername; 
+		if ( !r.thermalprintername ) throw new Exception('Please specify the thermal_printername in system variables'); 
+
+		r.xinfo = em_cashreceipt_terminal.read([ objid: r.objid ]); 
+		r.tickets = terminal_ticket.getTickets([ objid: r.objid ]); 
+	} 
+
+	@After(pattern="CashReceiptVoidService.post", eval="#{args[0].receipt.collectiontype.handler == 'aklanterminal'}")
+	public void postVoidCashReceipt( evt ) { 
+		def vr = evt.result;
+
+		//get all tickets for this receipt 
+		def tickets = em_terminal_ticket.select('objid').find([refid:vr.receiptid]).list()
+		tickets.each{
+			def v = [:]
+			v.putAll(vr)
+			v.objid = 'VT' + new java.rmi.server.UID()
+			v.ticketid = it.objid 
+			em_terminal_ticket_void.create(v)
+		}
+		
+	} 
+} 
+

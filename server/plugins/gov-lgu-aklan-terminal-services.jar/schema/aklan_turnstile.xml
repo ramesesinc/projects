@@ -1,0 +1,11 @@
+<schema adapter="aklanterminal">
+	<element name="aklan_turnstile" tablename="turnstile">
+		<field name="objid" primary="true"/>
+		<field name="state" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true"/>
+		<field name="title" required="true"/> 
+		<field name="location"/> 
+	</element> 
+</schema>

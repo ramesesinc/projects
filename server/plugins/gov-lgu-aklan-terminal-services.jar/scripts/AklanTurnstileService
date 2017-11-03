@@ -1,0 +1,78 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class AklanTurnstileService extends ActiveCrudListService 
+{
+	@ActiveDB(value='aklan_turnstile', em='aklanterminal')
+	def em; 
+
+	@ActiveDB(value='aklan_turnstile_item', em='aklanterminal')
+	def turnstile_item; 
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@Env 
+	def env; 
+
+	@ProxyMethod 
+	public def getColumns( params ) {
+		return [
+			[name:'objid', caption:'Code', width:150, maxWidth:150],
+			[name:'title', caption:'Title', width:150, maxWidth:150],
+			[name:'location', caption:'Location'],
+			[name:'dtfiled', caption:'Date Filed', width:140, maxWidth:140],
+			[name:'tags', caption:'Tags'] 
+		]; 
+	} 
+
+	@ProxyMethod 
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '') + '%'; 
+		def list = super.getList( params ); 
+		list.each{o-> 
+			o.tags = turnstile_item.getTurnstile([ turnstileid: o.objid ]).collect{ it.categoryid }.join(','); 
+		}
+		return list; 
+	}
+
+
+	public void afterOpen( data ) {
+		if (data.state == 'ACTIVE') data.state='DRAFT';
+
+		loadCategories( data ); 
+	} 
+
+	public void beforeCreate( data ) {
+		data.dtfiled = dateSvc.serverDate.toString(); 
+		data.createdby = [objid: env.USERID, name: env.FULLNAME]; 
+	} 
+
+	public void afterCreate( data ) {
+		if (data.state == 'ACTIVE') data.state='DRAFT';		
+
+		insertCategories( data );
+	} 
+
+	public void afterUpdate( data ) {
+		if (data.state == 'ACTIVE') data.state='DRAFT';		
+
+		insertCategories( data );
+	}
+
+	private void loadCategories( data ) {
+		data.categories = turnstile_item.getCategories([ turnstileid: data.objid ]);
+	}
+
+	private void insertCategories( data ) {
+		turnstile_item.removeTurnstile([ turnstileid: data.objid ]);
+		data.categories?.each{o-> 
+			o.categoryid = o.objid; 
+			o.turnstileid = data.objid; 
+			turnstile_item.create( o ); 
+		} 
+	}
+}	

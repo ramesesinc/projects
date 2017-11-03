@@ -1,0 +1,22 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/aklanterminal" caption="Terminal Pass AKLANON" 
+                 action="create" role="COLLECTOR,SUBCOLLECTOR" target="window" index="100"/> 
+
+        <invoker type="terminalpasshome.action" caption="AKLANON" 
+                 action="create" role="COLLECTOR,SUBCOLLECTOR"/> 
+                
+        <invoker type="formActions" caption="Cancel" action="cancel" mnemonic="c" depends="entity.*" visibleWhen="#{mode=='create'}"/> 
+        <invoker type="formActions" caption="Print" action="save" mnemonic="p" depends="entity.*" visibleWhen="#{mode=='create'}"/> 
+        
+        <invoker type="formActions" caption="Close" action="close" mnemonic="c" depends="entity.*" visibleWhen="#{mode=='read'}"/> 
+        <invoker type="formActions" caption="New" action="createAnother" mnemonic="n" depends="entity.*" visibleWhen="#{mode=='read'}"/> 
+        <invoker type="formActions" caption="Reprint" action="reprint" mnemonic="p" depends="entity.*" visibleWhen="#{mode=='read'}"/> 
+    </invokers> 
+    
+    <code class="gov.lgu.aklan.terminal.AklanonTerminalPassController"/>    
+    
+    <pages>
+        <page template="gov.lgu.aklan.terminal.AklanonTerminalPassPage"/> 
+    </pages> 
+</workunit>

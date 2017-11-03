@@ -1,0 +1,148 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class AklanTerminalTicketService 
+{
+	@DataContext('aklan_terminal_ticket')
+	def em_aklan_terminal_ticket;
+
+	@ActiveDB(value="aklan_terminal_ticket", em="aklanterminal")
+	def em;
+
+	@ActiveDB(value='aklan_turnstile_item', em='aklanterminal')
+	def turnstile_item; 
+
+	@Service('DateService') 
+	def dateSvc; 
+
+	@ProxyMethod 
+	public def getColumns( params ) {
+		return [
+			[name:'seqno', caption:'Sequence No.', width:120, maxWidth:120], 
+			[name:'barcode', caption:'Barcode', width:120, maxWidth:120], 
+			[name:'dtfiled', caption:'Date Filed', width:150, maxWidth:150], 
+			[name:'tag', caption:'Tag', width:120, maxWidth:120], 
+			[name:'reftype', caption:'Reference Type', width:120, maxWidth:120], 
+			[name:'refno', caption:'Reference No.', width:120, maxWidth:120], 
+			[name:'dtused', caption:'Date Consumed'], 
+			[name:'voided', caption:'Voided', type:'boolean'] 
+		]; 
+	}
+
+	@ProxyMethod 
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '') + '%'; 
+		return em.getList( params ); 
+	}
+
+	@ProxyMethod
+	public def getTickets(params) {
+		return 	em_aklan_terminal_ticket.find([refid:params.objid]).orderBy('seqno').list()
+	}
+
+
+	@ProxyMethod
+	public void create( o ) {
+		o.objid = "TKT" + new UID(); 
+		o.barcode = KeyGen.newProvider().generateAlphanumKey( null, 9 );
+		em.create( o );
+	}
+
+	@ProxyMethod 
+	public def reprint( params ) { 
+		def info = em.read( params );  
+		if ( !info ) throw new Exception('terminal pass record not found'); 
+
+		return [ticket: info, tag: info.tag]; 
+	} 
+
+
+	
+	private def RET_CODES = [
+		0  : [retcode:0,  message:'SUCCESS'], 
+		1  : [retcode:1,  message:'General Error'], 
+		2  : [retcode:2,  message:'Barcode does not exist'], 
+		3  : [retcode:3,  message:'Invalid Barcode'], 
+		4  : [retcode:4,  message:'Barcode has already been used'], 
+		5  : [retcode:5,  message:'Invalid token id'], 
+		6  : [retcode:6,  message:'Barcode has already been voided.'], 
+		10 : [retcode:10, message:'Turnstile id does not exist'], 
+		11 : [retcode:11, message:'Turnstile id is currently deactivated'] 
+	]; 
+
+
+	@ProxyMethod 
+	public def verify( params ) {
+		// params contains: id, barcode
+		try { 
+			if ( !params.id ) return RET_CODES[10]; 
+			if ( !params.barcode ) return RET_CODES[2]; 
+
+			def machinfo = turnstile_item.findTurnstile([ turnstileid: params.id ]); 
+			if ( !machinfo ) return RET_CODES[10]; 
+
+			def tkinfo = em.findBarcode([ barcode: params.barcode, turnstileid: params.id ]); 
+			if ( !tkinfo ) return RET_CODES[2]; 
+			if ( tkinfo.dtused ) return RET_CODES[4]; 
+			if (tkinfo.voided == 1) return RET_CODES[6];
+
+			if ( tkinfo.tag == tkinfo.categoryid ) {
+				def tokenid = KeyGen.newProvider().generateRandomKey( null ); 
+				em.updateToken([ tokenid: tokenid, barcode: params.barcode ]);  
+
+				def resp = [:]; 
+				resp.putAll( RET_CODES[0] ); 
+				resp.tokenid = tokenid; 
+				return resp; 
+			} else { 
+				return RET_CODES[3]; 
+			} 
+		} catch(Throwable t) {
+			def m = RET_CODES[1];
+			m.message = t.message; 	
+			return m; 
+		}
+	} 
+
+	@ProxyMethod 
+	public def consume( params ) {
+		// params contains: id, barcode, tokenid 
+		try { 
+			if ( !params.id ) return RET_CODES[10]; 
+			if ( !params.barcode ) return RET_CODES[2]; 			
+			if ( !params.tokenid ) return RET_CODES[5]; 
+
+			def machinfo = turnstile_item.findTurnstile([ turnstileid: params.id ]); 
+			if ( !machinfo ) return RET_CODES[10]; 
+
+			def tkinfo = em.findBarcode([ barcode: params.barcode, turnstileid: params.id ]); 
+			if ( !tkinfo ) return RET_CODES[2]; 
+			if ( tkinfo.dtused ) return RET_CODES[4]; 
+			if ( !tkinfo.tokenid ) return RET_CODES[5]; 
+			if (tkinfo.voided == 1) return RET_CODES[6];
+
+			if ( tkinfo.tag == tkinfo.categoryid ) {
+				if ( tkinfo.tokenid == params.tokenid ) {
+					em.consume([
+						objid   : tkinfo.objid, 
+						tokenid : params.tokenid, 
+						dtused  : dateSvc.serverDate 
+					]); 
+					return RET_CODES[0]; 
+				} else { 
+					return RET_CODES[5]; 
+				} 
+			} else { 
+				return RET_CODES[3]; 
+			} 
+		} catch(Throwable t) {
+			def resp = [:]; 
+			resp.putAll( RET_CODES[1] ); 
+			resp.message = t.message; 	
+			return resp; 
+		} 
+	} 
+} 

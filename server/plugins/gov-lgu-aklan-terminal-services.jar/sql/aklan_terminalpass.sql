@@ -1,0 +1,2 @@
+[getList]
+SELECT * FROM terminalpass 

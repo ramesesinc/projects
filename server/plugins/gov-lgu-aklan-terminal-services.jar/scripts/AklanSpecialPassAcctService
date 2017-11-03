@@ -1,0 +1,132 @@
+
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class AklanSpecialPassAcctService extends ActiveCrudListService 
+{
+	@ActiveDB(value='aklan_specialpass_account', em='aklanterminal')
+	def em; 
+
+	@ActiveDB(value='aklan_specialpass_type', em='aklanterminal')
+	def specialpass_type; 
+
+	@ActiveDB(value='aklan_terminalpass', em='aklanterminal')
+	def terminal_pass; 
+
+	@ActiveDB(value='aklan_turnstile_category', em='aklanterminal')
+	def turnstile_category;
+
+	@Service('AklanTerminalTicketService')
+	def ticketSvc;
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('SequenceService')
+	def seqSvc;	
+
+	@Service('OrgService')
+	def orgSvc;	
+
+	@Service('Var') 
+	def var; 
+
+	@Env 
+	def env;
+
+
+	@ProxyMethod 
+	public def getColumns( params ) {
+		return [
+			[name:'acctno', caption:'Account No.'],
+			[name:'accttype.objid', caption:'Account Type'],
+			[name:'name', caption:'Name'],
+			[name:'address', caption:'Address'],
+			[name:'gender', caption:'Gender'],
+			[name:'expirydate', caption:'Expiry Date'],
+			[name:'txnstatus', caption:'Status'] 
+		]; 
+	}
+
+	void beforeList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '')+'%'; 
+	}
+
+	void beforeCreate(  data ) {
+		def rundate = dateSvc.getServerDate(); 
+		validateExpiryDate( data, rundate );  
+
+		data.dtfiled = rundate.toString(); 
+		data.createdby = [objid: env.USERID, name:env.FULLNAME]; 
+	} 
+
+	void beforeUpdate( data ) {
+		def rundate = dateSvc.getServerDate(); 
+		validateExpiryDate( data, rundate );  
+	}
+
+	void afterOpen( data ) { 
+		def o = specialpass_type.read([ objid: data.accttype?.objid ]);
+		if (o) data.accttype = o; 
+	}
+
+	void validateExpiryDate( data, rundate ) {
+		if ( !data.expirydate ) throw new Exception('Please specify an expirydate'); 
+
+		def curdate = new java.text.SimpleDateFormat('yyyy-MM-dd').parse( rundate.toString().split(' ')[0] ); 
+		def expdate = new java.text.SimpleDateFormat('yyyy-MM-dd').parse( data.expirydate.toString() ); 
+		if ( expdate.before(curdate) ) throw new Exception('Expiry date must be greater than or equal to the current date'); 		
+	}
+
+	def printTicket( params ) {
+		def info = em.findByPrimaryKey([ objid: params.objid ]); 
+		if ( !info ) throw new Exception('Special terminal pass record does not exist'); 
+		if ( info.indexno == null ) throw new Exception('Please specify indexno to acct type '+ info.accttype?.objid); 
+		if ( info.indexno <= 0 ) throw new Exception('The indexno for '+ info.accttype?.objid +' must be greater than zero'); 
+		if ( !info.expirydate ) throw new Exception('Please set an expiry date for this account'); 
+
+		def rundate = dateSvc.getServerDate(); 
+		def curdate = new java.text.SimpleDateFormat('yyyy-MM-dd').parse( rundate.toString().split(' ')[0] ); 
+		if ( info.expirydate.before(curdate) ) throw new Exception('Account already expired! Please renew or reactivate the account'); 
+
+		def thermalprintername = var.thermal_printername; 
+		if ( !thermalprintername ) throw new Exception('Please specify the thermal_printername in system variables'); 
+
+		def tag = 'AKLANON'; 
+		def catinfo = turnstile_category.read([ objid: tag ]); 
+		if ( !catinfo ) throw new Exception('Turnstile category '+ tag +' does not exist'); 
+
+		def lguinfo = orgSvc.open([ objid: env.CLIENTCODE? env.CLIENTCODE: env.ORGCODE ]); 
+		def data = [ numadult: 1, numchildren: 0, special: 1, thermalprintername: thermalprintername ]; 
+		data.collector = [objid: env.USERID, name: env.FULLNAME]; 
+		data.org = [objid: env.ORGID, name: env.ORGNAME]; 
+		data.objid = 'TPASS' + new java.rmi.server.UID(); 		
+		data.dtfiled = rundate.toString(); 
+		data.reftype = 'specialpass'; 
+		data.refid = data.objid;
+		data.tag = tag;
+
+		def batchsize = data.numadult; 
+		def prefixyr = rundate.toString().split('-')[0][-2..-1];
+		def prefix = lguinfo.objid + prefixyr + info.indexno; 
+		int seriesno = seqSvc.getNextBatchSeries([ objid: prefix+'-aklanterminal', size: batchsize ]); 
+		data.startseqno = seqSvc.formatSeries([ seriesno:seriesno, serieslength:6, prefix: prefix ]); 
+		data.endseqno = seqSvc.formatSeries([ seriesno:seriesno+batchsize-1, serieslength:6, prefix: prefix ]); 
+		
+		terminal_pass.create( data ); 
+
+		data.ticket = [
+			seqno     : seqSvc.formatSeries([ seriesno:seriesno, serieslength:6, prefix:prefix ]), 
+			dtfiled   : data.dtfiled, 
+			refid  	  : data.refid, 
+			reftype   : data.reftype, 
+			tag 	  : data.tag, 
+			guesttype : 'A' 		
+		]; 
+		ticketSvc.create( data.ticket ); 
+		return data; 
+	} 
+} 

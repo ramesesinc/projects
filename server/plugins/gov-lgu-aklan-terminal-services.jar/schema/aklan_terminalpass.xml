@@ -1,0 +1,16 @@
+<schema adapter="aklanterminal">
+	<element name="aklan_terminalpass" tablename="terminalpass">
+		<field name="objid" primary="true"/> 
+		<field name="dtfiled" required="true"/> 
+		<field name="collector_objid" required="true"/> 
+		<field name="collector_name" required="true"/> 
+		<field name="org_objid" required="true"/> 
+		<field name="org_name" required="true"/> 
+		<field name="startseqno" required="true"/> 
+		<field name="endseqno" required="true"/> 
+		<field name="numadult" required="true"/> 
+		<field name="numchildren" required="true"/> 
+		<field name="special" required="true"/> 
+		<field name="tag" required="true"/> 
+	</element> 
+</schema> 

@@ -1,0 +1,19 @@
+<schema adapter="aklanterminal">
+	<element name="aklan_specialpass_account" tablename="specialpass_account">
+		<field name="objid" primary="true"/> 
+		<field name="state" required="true"/> 
+		<field name="dtfiled" required="true"/> 
+		<field name="createdby_objid" required="true"/> 
+		<field name="createdby_name" required="true"/> 
+		<field name="acctno" required="true"/> 
+		<field name="accttype_objid" required="true"/> 
+		<field name="expirydate" required="true"/> 
+		<field name="name" required="true"/> 
+		<field name="address" required="true"/> 
+		<field name="gender" required="true"/> 
+		<field name="idtype" required="true"/> 
+		<field name="idno" required="true"/> 
+		<field name="citizenship" /> 
+		<field name="civilstatus" /> 
+	</element> 
+</schema>

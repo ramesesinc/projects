@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceiptinfo:formActions" 
+                 action="init" caption="Reprint Terminal Pass" 
+                 target="popup" index="1000" />
+        
+        <invoker type="formActions" action="_close" caption="Close" immediate="true" mnemonic="c" />
+        <invoker type="formActions"
+            action="reprintTickets" caption="Reprint" 
+            role="COLLECTOR" permission="cashreceipt.reprintterminalpass" />
+    </invokers>	
+    <code class="gov.lgu.aklan.terminal.models.CashReceiptReprintModel">
+    </code>
+    <pages>
+        <page template="gov.lgu.aklan.terminal.views.CashReceiptReprintPage" />
+    </pages>		
+</workunit>

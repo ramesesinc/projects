@@ -1,6 +1,6 @@
 <workunit schemaName="paymentorder">
     <invokers>
-       <invoker type="home.action" caption="Order of Payment" 
+       <invoker xtype="home.action" caption="Order of Payment" 
                 action="create" target="popup"/>
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.PaymentOrderModel"/>

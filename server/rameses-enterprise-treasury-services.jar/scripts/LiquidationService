@@ -1,8 +1,6 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
 import com.rameses.common.*
-import com.rameses.services.extended.*
+import com.rameses.util.*;
 
 class LiquidationService  {
 
@@ -25,51 +23,65 @@ class LiquidationService  {
 	def var 
 	
 	@ProxyMethod
-	public def init() {
-		if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
-			def ud = em.getUndepositedLiquidations([liquidatingofficerid: env.USERID] ) 
-			if(ud ) throw new Exception("There are still undeposited liquidations. ");	
+	public def init( params ) { 
+		if ( !toBoolean(var.allow_multiple_open_liquidation, true)) {
+			def ud = em.getUndepositedLiquidations([ liquidatingofficerid: env.USERID ]); 
+			if ( ud ) throw new Exception("There are still undeposited liquidations. ");	
 		} 
 
-		def o = [objid: "LIQ"+new UID(), cashier:[:]];	
-		o.remittances = em.getUnliquidatedRemittances( [liquidatingofficerid: env.USERID]);
-		if(!o.remittances)
-			throw new Exception("No pending remittances to liquidate");
+		def rundate = dateSvc.getServerDate(); 
+		boolean capturemode = ( params.capturemode == true ); 
 
-		o.amount = o.remittances.sum{ it.amount };	
-		o.totalcash = o.remittances.sum{ it.totalcash };	
-		o.totalnoncash = o.remittances.sum{ it.totalnoncash };	
+		def o = [ objid: "LIQ"+ new java.rmi.server.UID(), state:'OPEN', cashier:[:] ]; 
+		def p = [ liquidatingofficerid: env.USERID, filter:" AND r.txnmode <> 'CAPTURE'" ];
+		if ( capturemode ) { 
+			p.filter = " AND r.txnmode = 'CAPTURE'"; 
+			o.state = 'CAPTURED'; 
+			o.txnmode = 'CAPTURE';  
+			o.liqdate = params.txndate; 
+		} else { 
+			o.txnmode = 'ONLINE'; 
+			o.liqdate = new java.sql.Date( rundate.time ); 
+		} 
+
+		p.txndate = o.liqdate; 
+		p.filter = p.filter +''' AND r.remittancedate <= $P{txndate} '''; 
+		o.remittances = em.getUnliquidatedRemittances( p ); 
+		if ( !o.remittances ) throw new Exception("No pending remittances to liquidate"); 
+
+		o.amount = o.totalcash = o.totalnoncash = 0.0; 
+		o.remittances.each { 
+			o.amount += (it.amount ? it.amount : 0.0); 
+			o.totalcash += (it.totalcash ? it.totalcash : 0.0); 
+			o.totalnoncash += (it.totalnoncash ? it.totalnoncash : 0.0); 
+		} 
 
 		//get fund summary
-		o.fundsummary =  em.getUnliquidatedFundSummary( [liquidatingofficerid: env.USERID] );		
-		o.checks = em.getUnliquidatedChecks( [liquidatingofficerid: env.USERID] );	
+		o.fundsummary =  em.getUnliquidatedFundSummary( p ); 
+		o.checks = em.getUnliquidatedChecks( p ); 
 
 		//initial values
-		o.liquidatingofficer = [objid:env.USERID, name:env.FULLNAME, title: env.JOBTITLE ];	
-		o.state = "OPEN";
-		o.dtposted = dateSvc.serverDate;
-
-		return o;
-	}
+		o.liquidatingofficer = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		o.dtposted = dateSvc.getServerDate(); 
+		return o; 
+	} 
 
 
 	@ProxyMethod
 	public def post( o ) {
-		if( o.fundsummary.find{ !it.cashier }   )
+		if( o.fundsummary.find{ !it.cashier } )
 			throw new Exception("There must be a cashier associated");
 
-		o.txnno = formatTxnno(o)
-		
+		o.txnno = formatTxnno( o ); 
 		em.create( o );
 
 		def ids = "'" + o.remittances*.objid.join("','") + "'";
-		def m = [liquidationid:o.objid];
-		m.ids = ids;
-		em.postLiquidateRemittance(m);
-		em.postLiquidateNoncash(m);
+		def m = [ liquidationid: o.objid, ids: ids ];
+		em.postLiquidateRemittance( m );
+		em.postLiquidateNoncash( m ); 
 		
 		o.fundsummary.each {
-			it.objid = "LIQFUND"+new UID();
+			it.objid = "LIQFUND"+ new java.rmi.server.UID();
 			it.liquidationid = o.objid;
 			em.create( it, "cashier_fund");
 		} 
@@ -101,12 +113,11 @@ class LiquidationService  {
 
 	@ProxyMethod
     public def formatTxnno( liq ) {
-    	def format = 'UTFS'
-    	def seqid = null
-    	if(var.liquidation_format) format = var.liquidation_format;
-    	if(var.liquidation_sequenceid_format ) seqid = var.liquidation_sequenceid_format;
+    	def format = 'UTFS';
+    	def seqid = null;
+    	if ( var.liquidation_format ) format = var.liquidation_format;
+    	if ( var.liquidation_sequenceid_format ) seqid = var.liquidation_sequenceid_format;
     	
-
         //Formatting Options:
         // YY - YEAR POSTED
         // MM - MONTH POSTED 
@@ -115,24 +126,25 @@ class LiquidationService  {
         // SQ - SEQUENCE 
         // FS- FORMATTED SEQUENCE 
         
-        def dt = dateSvc.parseDate( liq.dtposted, null)
-        def txncode = "LIQ";	
-		if(env.TXNCODE) txncode = "LIQ-" + env.TXNCODE; 		
+        def txncode = "LIQ"; 
+        if ( liq.txnmode == 'CAPTURE' ) txncode = "CAPLIQ"; 
+		if ( env.TXNCODE ) txncode = (txncode +"-"+ env.TXNCODE); 
 
+        def dt = dateSvc.parseDate( liq.dtposted, null); 
         def values = [
         	YY:dt.year+"", 
         	MM:dt.month.toString().padLeft(2, '0',),
         	DD:dt.day.toString().padLeft(2, '0'),
         	UT:txncode 
-        ]
+        ]; 
 
-        def txnno  = format 
+        def txnno  = format; 
         values.keySet().each {
-            txnno = txnno.replace( it, values[it] )
+            txnno = txnno.replace( it, values[it] ); 
         }
 
-        def series 
-        if(seqid) {
+        def series;  
+        if ( seqid ) {
         	def seq = seqid;
         	values.keySet().each {
             	seq = seq.replace( it, values[it] )
@@ -143,10 +155,10 @@ class LiquidationService  {
         	series = seqSvc.getNextSeries(  txnno.replace("FS", '') ); 
         }
 
-        txnno = txnno.replace( 'SQ', series+"" )
-        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') )
-        return txnno 
-    }
+        txnno = txnno.replace( 'SQ', series+"" );
+        txnno = txnno.replace( 'FS', "$series".padLeft(5, '0') );
+        return txnno; 
+    } 
 
     public boolean toBoolean(value, defvalue){
         if (value == null) 
@@ -155,7 +167,7 @@ class LiquidationService  {
         if (value instanceof Boolean) 
             return value;
 
-        if ('1/y/yes/t/true'.indexOf(value.toString().trim()) >= 0 ) 
+        if ('1/y/yes/true'.indexOf(value.toString().toLowerCase().trim()) >= 0 ) 
             return true;
         
         return false;

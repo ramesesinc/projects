@@ -9,6 +9,12 @@ class WaterworksMobileUploadService {
 	@DataContext('waterworks_billing_cycle') 
 	def wbc;
 
+	@DataContext('waterworks_account') 
+	def wa;
+
+	@DataContext('waterworks_consumption') 
+	def wc;
+
 	@Service('DateService')
 	def dateSvc;
 
@@ -23,25 +29,40 @@ class WaterworksMobileUploadService {
 		if(!o.userid) throw new Exception("Please specify userid!");
 		if(!o.name) throw new Exception("Please specify reader_name!");
 		if(!o.amount) throw new Exception("Please specify amount!");
+		if(!o.account?.objid) throw new Exception("Please specify account objid!");
 
-		def mobileinfo = wm.find([ objid: o.account.objid ]).first();
-		if ( !mobileinfo ) throw new Exception('Account not found in mobile info table');
+		def bc = null; 
+		def mobileinfo = wm.find([ objid: o.account.objid ]).first(); 
+		//if ( !mobileinfo ) throw new Exception('Account not found in mobile info table');
+
+		if ( !mobileinfo ) {  
+			def rundatestr = new java.text.SimpleDateFormat('yyyy-MM-dd').format( o.dtreading );
+			def wao = wa.find([ objid: o.account.objid ]).first();
+			bc = wbc.find([ sectorid: wao.sectorid ])
+						 .where(' readingdate <= :rd ', [ rd: rundatestr ])
+						 .orderBy(' objid desc ')
+						 .first(); 
+
+		} else { 
+			bc = wbc.find([ sectorid: mobileinfo.sectorid, year: mobileinfo.year, month: mobileinfo.month ]).first(); 
+		}
 		
-		def bc = wbc.find([ sectorid: mobileinfo.sectorid, year: mobileinfo.year, month: mobileinfo.month ]).first(); 
-
 		def c = [ account: o.account ]; 
-		c._schemaname = 'waterworks_consumption';
-		c.readingmethod = 'ONLINE';
-		c.acctid = o.account.objid;
-		c.dtreading = o.dtreading;
-		c.reading = o.reading;
-		c.prevreading = mobileinfo.lastreading;
-		c.reader = [objid:o.userid, name: o.name]; 
-		c.volume = c.reading - c.prevreading;
-		c.billingcycle = bc; 
-		c.amount = o.amount; 
-		c.amtpaid = 0.0; 
-		perSvc.create( c ); 
+		def wco = wc.find([ acctid: o.account.objid, billingcycleid: bc.objid ]).first(); 
+		if ( !wco ) { 
+			c._schemaname = 'waterworks_consumption';
+			c.readingmethod = 'ONLINE'; 
+			c.acctid = o.account.objid; 
+			c.dtreading = o.dtreading; 
+			c.reading = o.reading; 
+			c.prevreading = mobileinfo.lastreading; 
+			c.reader = [objid:o.userid, name: o.name]; 
+			c.volume = c.reading - c.prevreading; 
+			c.billingcycle = bc; 
+			c.amount = o.amount; 
+			c.amtpaid = 0.0; 
+			perSvc.create( c ); 
+		}
 
 		wm.find([ objid: c.acctid ]).delete(); 
 		wm.find([ objid: o.objid ]).delete(); 

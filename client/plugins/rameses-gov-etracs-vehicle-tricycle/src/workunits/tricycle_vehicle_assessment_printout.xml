@@ -1,11 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudReport.xml">
     <invokers>
-        <invoker type="vehicle_application_tricycle:form:formActions" 
+        <invoker xtype="vehicle_application_tricycle:form:formActions" 
                  caption="Print Assessment" 
                  target="self" action="view"
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/assessment.jasper" />
 
-        <invoker type="vehicle_assessment_tricycle:print" 
+        <invoker xtype="vehicle_assessment_tricycle:print" 
                  caption="Print Assessment" 
                  target="self" action="view"
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/assessment.jasper" />

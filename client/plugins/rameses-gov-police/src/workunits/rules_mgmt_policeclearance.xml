@@ -1,8 +1,7 @@
 <workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService">
     <invokers>
         <invoker folderid="/explorer/rulemgmt/police" 
-                caption="Police Clearance Fee" 
-                tag="policeclearance"
-                action="init" index="1" srole="RULE_AUTHOR"/>
+                caption="Police Clearance Fee" action="init" 
+                role="RULE_AUTHOR" tag="policeclearance" index="1" />
     </invokers>
 </workunit>

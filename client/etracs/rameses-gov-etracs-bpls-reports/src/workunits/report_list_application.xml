@@ -96,7 +96,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
         entity.state_completed = true; 
         entity.period = periodUtil.types[0]; 
         entity.withgross = entity.withcapital = true; 
-        entity.apptypes = appTypes; 
+        entity.apptypes = appTypeList.findAll{ it.objid.matches('NEW|RENEW')}
+        entity.appstates = appStatusList.findAll{ it.objid == 'COMPLETED' }    
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
         entity.permitoption = permitOptions[0];

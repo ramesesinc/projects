@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+
+            <AutoCompleteTextView
+                android:id="@+id/act_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/menu_search"
+                android:textSize="@dimen/search_font_size" >
+
+                <requestFocus />
+            </AutoCompleteTextView>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_acctno"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_acctno"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_address"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/TextView04"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_serialno"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_serialno"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/TextView05"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_classification"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_classification"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/TextView09"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_prevbalance"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_prevbalance"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/TextView11"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_amtdue"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_amtdue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/TextView07"
+                android:layout_width="@dimen/info_text_width"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_caption_background"
+                android:text="@string/account_info_totaldue"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_totaldue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/label_value_background"
+                android:text="@string/txt_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/info_font_size" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" >
+
+                <RelativeLayout
+                    android:layout_width="@dimen/reading_container_width"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/border_reading_info" >
+
+                    <TextView
+                        android:id="@+id/TextView08"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/reading_info_background"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="5dp"
+                        android:text="@string/account_info_prevreading"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/reading_info_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_reading_prev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/TextView08"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="5dp"
+                        android:text="@string/txt_empty"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="@dimen/reading_info_size" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="@dimen/reading_container_width"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/border_reading_info" >
+
+                    <TextView
+                        android:id="@+id/TextView03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/reading_info_background"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="5dp"
+                        android:text="@string/account_info_presentreading"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/reading_info_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_reading_present"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/TextView03"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="5dp"
+                        android:text="@string/txt_empty"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="@dimen/reading_info_size" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="@dimen/reading_container_width"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_reading_info" >
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/reading_info_background"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="5dp"
+                        android:text="@string/account_info_consumptionreading"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/reading_info_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_reading_consumption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/textView3"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:padding="5dp"
+                        android:text="@string/txt_empty"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="@dimen/reading_info_size" />
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btn_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/button_background"
+                android:fontFamily="Arial"
+                android:paddingBottom="3dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
+                android:text="@string/btn_capture"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size" />
+
+            <Button
+                android:id="@+id/btn_print"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/btn_capture"
+                android:background="@drawable/button_background"
+                android:fontFamily="Arial"
+                android:paddingBottom="3dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
+                android:text="@string/btn_print"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textColor="@color/white"
+                android:textSize="@dimen/info_font_size" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

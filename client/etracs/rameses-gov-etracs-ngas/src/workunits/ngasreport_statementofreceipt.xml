@@ -70,16 +70,31 @@ class NGASStatementOfReceiptController extends com.rameses.etracs.shared.AsyncRe
     } 
 
     Map getParameters(){ 
-         return [ 
-             TITLE    : data.title, 
-             PERIOD   : data.period, 
-             TOTALAMT : data.totalamt 
-         ] 
+        return [ 
+            TITLE    : data.title, 
+            PERIOD   : data.period, 
+            TOTALAMT : data.totalamt, 
+            COLLECTOR_ID  : entity.collector?.objid, 
+            COLLECTOR_NAME: entity.collector?.name, 
+            ACCTGROUP     : entity.acctgroup, 
+            FUND_ID    : entity.fund?.objid, 
+            FUND_TITLE : entity.fund?.title 
+        ] 
     } 
 
     def getReportTypes(){ 
          return ['standard', 'extended','details'] 
     } 
+    
+    def lookupCollector = Inv.lookupOpener('collector:lookup', [
+        onselect: { o-> 
+            def name = [o.firstname, o.middlename, o.lastname].findAll{(it? true: false)}.join(' '); 
+            entity.collector = [objid: o.objid, name: name]; 
+        }, 
+        onempty: {
+            entity.collector = null; 
+        } 
+    ]); 
 }
 ]]>        
         

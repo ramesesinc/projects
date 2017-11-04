@@ -17,13 +17,14 @@ class RemittanceListService extends AbstractListService {
 	@ProxyMethod
 	public def getColumns( params ) { 
 		return [ 
-			[name:"txnno", caption:"Remittance No", width:100, maxWidth:120],
-			[name:"dtposted", caption:"Remittance Date", width:120, maxWidth:140],
-			[name:"collector.name", caption:"Collector", minWidth:50],
-			[name:"totalcash", caption:"Total Cash", type:"decimal", width:80, minWidth:50, maxWidth:100],
-			[name:"totalnoncash", caption:"Total Noncash", type:"decimal", width:80, minWidth:50, maxWidth:100],
-			[name:"amount", caption:"Amount", type:"decimal", width:80, minWidth:50, maxWidth:100],
+			[name:"txnno", caption:"Remittance No", width:130, maxWidth:150],
+			[name:"dtposted", caption:"Remittance Date", width:125, maxWidth:125],
+			[name:"collector.name", caption:"Collector"],
+			[name:"totalcash", caption:"Total Cash", type:"decimal", maxWidth:110],
+			[name:"totalnoncash", caption:"Total Noncash", type:"decimal", maxWidth:110],
+			[name:"amount", caption:"Amount", type:"decimal", maxWidth:110],
 			[name:"liquidated", caption:"Liquidated", type:"checkbox", checkedValue:1, uncheckedValue:0, width:80, resizable:false],
+			[name:"state", caption:"Status", maxWidth:100],
 			[name:"emptycell", caption:" "] 
 		]; 
 	}	

@@ -39,27 +39,47 @@ WHERE r.collector_name like $P{searchtext}
 ORDER BY r.collector_name, r.txnno DESC 
 
 [getUnremittedForCollector]
-SELECT 
-  c.formno, c.collector_objid, c.controlid, min(c.formtype) as formtype,  
-  case when c.formtype='serial' then min(series) else null end as startseries, 
-  case when c.formtype='serial' then max(series) else null end as endseries, 
-  min( series ) as minseries, 
-  sum( CASE WHEN c.state = 'POSTED' then 1 else 0 end ) as qty ,  
-  sum( CASE WHEN c.state = 'CANCELLED' then 1 else 0 end ) as cqty , 
-  sum( CASE WHEN bt.voided=0 THEN c.amount ELSE 0.0 END ) AS amount,
-  sum( CASE WHEN bt.voided=0 THEN c.totalcash-c.cashchange ELSE 0.0 END ) AS totalcash,
-  sum( CASE WHEN bt.voided=0 THEN c.totalnoncash ELSE 0.0 END ) AS totalnoncash
-FROM ( 
-  SELECT objid, 
-    (SELECT COUNT(*) FROM cashreceipt_void WHERE receiptid=c.objid) AS voided 
-  FROM cashreceipt c 
-  WHERE collector_objid = $P{collectorid} 
-    AND receiptdate < $P{txndate} 
-    AND state IN ('POSTED', 'CANCELLED') 
-    AND objid NOT IN (SELECT objid FROM remittance_cashreceipt WHERE objid=c.objid) 
-)bt 
-  INNER JOIN cashreceipt c ON bt.objid=c.objid 
-GROUP BY c.collector_objid, c.formno, c.formtype, c.controlid 
+select  
+  collector_objid, controlid, formno, formtype,  
+  case when formtype='serial' then min(series) else null end as startseries, 
+  case when formtype='serial' then max(series) else null end as endseries, 
+  sum( qty ) as qty, sum( cqty ) as cqty, 
+  sum( case when voided=0 then amount else 0.0 end ) AS amount,
+  sum( case when voided=0 then totalcash-cashchange else 0.0 end ) AS totalcash,
+  sum( case when voided=0 then totalnoncash else 0.0 end ) AS totalnoncash
+from ( 
+  select 
+    c.objid, c.controlid, c.collector_objid, af.formtype, af.objid as formno, 0 as formindex, 
+    c.series, c.amount, c.totalcash, c.totalnoncash, c.cashchange, 
+    (case when c.state = 'CANCELLED' then 0 else 1 end) as qty, 
+    (case when c.state = 'CANCELLED' then 1 else 0 end) as cqty, 
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+  from cashreceipt c 
+    inner join af_control afc on afc.objid = c.controlid 
+    inner join af on (af.objid = afc.afid and af.formtype='serial') 
+  where c.collector_objid = $P{collectorid} 
+    and c.receiptdate < $P{txndate} 
+    and c.state in ($P{txnstate}, 'CANCELLED') 
+    and c.objid not in (select objid from remittance_cashreceipt where objid=c.objid) 
+
+  union all 
+
+  select 
+    c.objid, c.controlid, c.collector_objid, af.formtype, af.objid as formno, 1 as formindex,  
+    c.series, c.amount, c.totalcash, c.totalnoncash, c.cashchange, 
+    convert((c.amount/af.denomination), signed) as qty, 0 as cqty, 0 as voided 
+  from cashreceipt c 
+    inner join af_control afc on afc.objid = c.controlid 
+    inner join af on (af.objid = afc.afid and af.formtype <> 'serial') 
+  where c.collector_objid = $P{collectorid} 
+    and c.receiptdate < $P{txndate} 
+    and c.state = $P{txnstate}  
+    and c.objid not in (select objid from remittance_cashreceipt where objid=c.objid) 
+    and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+
+)tmp1 
+group by collector_objid, controlid, formno, formtype 
+
 
 [getUnremittedCancelSeries]
 SELECT cs.*, c.series 

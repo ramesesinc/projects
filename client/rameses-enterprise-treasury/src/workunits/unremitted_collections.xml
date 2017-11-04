@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/explorer/txn/treasury" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR"  action="init"/>
-        <invoker folderid="home/treasury/remittance" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR" action="init" target="window" index="-10"/>
+        <invoker folderid="home/treasury/remittance" caption="Unremitted Collections" role="COLLECTOR,SUBCOLLECTOR" action="init" target="window" index="-100"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
         <invoker type="formActions" action="open" caption="Open" icon="images/toolbars/open.png" mnemonic="o" shortcut="ctrl O" />
@@ -69,6 +69,10 @@ class UnremittedCollectionPage
     def remit() {
         return Inv.lookupOpener( "remittance:create" );
     }
+    
+    def viewSummary() { 
+        return null; 
+    } 
 }
     ]]>    
     </code>

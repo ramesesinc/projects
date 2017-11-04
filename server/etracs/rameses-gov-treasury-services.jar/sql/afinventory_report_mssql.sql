@@ -1,4 +1,123 @@
 [getReport]
+select 
+  controlid, receivedstartseries, receivedendseries, beginstartseries, beginendseries, 
+  issuedstartseries, issuedendseries, endingstartseries, endingendseries, 
+  (case when qtyreceived > 0 then qtyreceived/afqty else 0 end) as qtyreceived, 
+  (case when qtybegin > 0 then qtybegin/afqty else 0 end) as qtybegin, 
+  (case when qtyissued > 0 then qtyissued/afqty else 0 end) as qtyissued, 
+  (case when qtyending > 0 then qtyending/afqty else 0 end) as qtyending, 
+  formtype, afid, startseries, endseries, unit, denomination, serieslength, 
+  costperstub, afqty, afindex, groupindex, gaincost, 
+  (case when qtybegin > 0 then (qtybegin/afqty)*costperstub else 0.0 end) as qtybegincost,  
+  (case when qtyissued > 0 then (qtyissued/afqty)*costperstub else 0.0 end) as qtyissuedcost, 
+  (case when qtyending > 0 then (qtyending/afqty)*costperstub else 0.0 end) as qtyendingcost 
+from ( 
+  select tmp2.*, 
+    case when (receivedendseries-receivedstartseries)+1 is null then 0 else (receivedendseries-receivedstartseries)+1 end as qtyreceived, 
+    case when (beginendseries-beginstartseries)+1 is null then 0 else (beginendseries-beginstartseries)+1 end as qtybegin,
+    case when (endingendseries-endingstartseries)+1 is null then 0 else (endingendseries-endingstartseries)+1 end as qtyending, 
+    0 as qtycancelled, a.afid, a.unit, (case when a.cost is null then 0 else a.cost end) as costperstub, 
+    a.startseries, a.endseries, af.formtype, af.denomination, af.serieslength, siu.qty as afqty, 
+    (case when af.formtype='serial' then 0 else 1 end) as afindex, 
+    (case when tmp2.qtyissued > 0 then 0 else 1 end) as groupindex  
+  from ( 
+    select controlid, 
+      min(receivedstartseries) as receivedstartseries, min(receivedendseries) as receivedendseries, 
+      min(beginstartseries) as beginstartseries, min(beginendseries) as beginendseries, 
+      min(issuedstartseries) as issuedstartseries, max(issuedendseries) as issuedendseries, 
+      case 
+        when max(issuedendseries) >= endseries then null 
+        when max(issuedendseries) < endseries then max(issuedendseries)+1 
+        when min(beginstartseries) is not null then min(beginstartseries) 
+        else min(receivedstartseries) 
+      end as endingstartseries, 
+      case 
+        when max(issuedendseries) >= endseries then null 
+        when max(issuedendseries) < endseries then endseries 
+        when min(beginendseries) is not null then min(beginendseries) 
+        else min(receivedendseries) 
+      end as endingendseries, 
+      sum(qtyissued) as qtyissued, sum(salecost)-sum(purchasecost) as gaincost 
+    from ( 
+
+      select d.controlid, tmp1.endseries, 
+        null as receivedstartseries, null as receivedendseries, 
+        d.endingstartseries as beginstartseries, d.endingendseries as beginendseries, 
+        null as issuedstartseries, null as issuedendseries, 
+        0 as qtyissued, 0.0 as issuedcost, 0.0 as salecost, 0.0 as purchasecost     
+      from ( 
+        select d.controlid, a.endseries, max(d.[lineno]) as maxlineno  
+        from af_inventory_detail d 
+          inner join af_inventory a on a.objid = d.controlid 
+        where a.respcenter_type = 'AFO' 
+          and d.refdate < $P{startdate} 
+        group by d.controlid, a.endseries  
+      )tmp1, af_inventory_detail d 
+      where d.controlid = tmp1.controlid 
+        and d.[lineno] = tmp1.maxlineno 
+        and d.qtyending > 0 
+
+      union all 
+
+      select d.controlid, a.endseries, 
+        min(d.receivedstartseries) as receivedstartseries, min(d.receivedendseries) as receivedendseries, 
+        case when min(d.receivedstartseries) is not null then null else min(d.beginstartseries) end as beginstartseries, 
+        case when min(d.receivedstartseries) is not null then null else min(d.beginendseries) end as beginendseries, 
+        null as issuedstartseries, null as issuedendseries, 0 as qtyissued, 0.0 as issuedcost, 0.0 as salecost, 0.0 as purchasecost    
+      from af_inventory_detail d 
+        inner join af_inventory a on a.objid = d.controlid 
+      where a.respcenter_type = 'AFO' 
+        and d.refdate >= $P{startdate} 
+        and d.refdate <  $P{enddate} 
+        and d.qtyissued = 0 
+      group by d.controlid, a.endseries  
+
+      union all 
+
+      select d.controlid, a.endseries, 
+        null as receivedstartseries, null as receivedendseries, 
+        min(d.issuedstartseries) as beginstartseries, a.endseries as beginendseries, 
+        min(d.issuedstartseries) as issuedstartseries, max(d.issuedendseries) as issuedendseries, 
+        sum(d.qtyissued) as qtyissued, sum(d.cost) as issuedcost, 0.0 as salecost, 0.0 as purchasecost  
+      from af_inventory_detail d 
+        inner join af_inventory a on a.objid = d.controlid 
+      where a.respcenter_type = 'AFO' 
+        and d.refdate >= $P{startdate} 
+        and d.refdate <  $P{enddate} 
+        and d.qtyissued > 0 
+      group by d.controlid, a.endseries 
+
+      union all 
+
+      select d.controlid, a.endseries, 
+        null as receivedstartseries, null as receivedendseries, 
+        null as beginstartseries, null as beginendseries, 
+        null as issuedstartseries, null as issuedendseries, 
+        0 as qtyissued, 0.0 as issuedcost, sum(d.cost) as salecost, 
+        (sum(d.qtyissued)/siu.qty)*a.cost as purchasecost 
+      from af_inventory_detail d 
+        inner join af_inventory a on a.objid = d.controlid 
+        inner join af on af.objid = a.afid 
+        inner join stockitem_unit siu on (siu.itemid = af.objid and siu.unit = a.unit) 
+      where a.respcenter_type = 'AFO' 
+        and d.refdate >= $P{startdate} 
+        and d.refdate <  $P{enddate} 
+        and d.reftype = 'stocksale' 
+        and d.txntype = 'SALE' 
+        and d.qtyissued > 0 
+      group by d.controlid, a.endseries, siu.qty, a.cost 
+
+    )tmp1 
+    group by controlid, endseries 
+  )tmp2 
+    inner join af_inventory a on a.objid = tmp2.controlid 
+    inner join af on af.objid = a.afid 
+    inner join stockitem_unit siu on (siu.itemid = af.objid and siu.unit = a.unit) 
+)tmp3 
+order by afindex, afid, startseries 
+
+
+[getReport_bak1]
 select xx.* from ( 
   select 
     aaa.objid, aaa.afid, aaa.cost as costperstub, af.formtype, 

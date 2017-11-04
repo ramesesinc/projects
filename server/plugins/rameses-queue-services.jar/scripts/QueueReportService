@@ -9,6 +9,9 @@ class QueueReportService {
 	@ActiveDB(value='queue_report', em='queue') 
 	def reportdb; 
 
+	@DataContext('queue_counter') 
+	def qc_db; 
+
 	@ProxyMethod 
 	public def getReport( params ) { 
 		if ( !params.period ) throw new Exception('period parameter is required'); 
@@ -17,6 +20,12 @@ class QueueReportService {
 
 		def result = [:]; 
 		result.startdate = params.startdate; 
+
+		params.filter = '';
+		if ( params.counterid ) { 
+			params.filter = ''' AND counter_objid = $P{counterid} '''; 
+			result.counter = qc_db.find([ objid: params.counterid ]).first(); 
+		} 
 
 		if ( params.period == 'daily' ) { 
 			result.periodtitle = new java.text.SimpleDateFormat('MMMMM dd, yyyy').format( params.startdate ); 

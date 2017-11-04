@@ -1,0 +1,22 @@
+#root, #footer, #header, .toolbar-button {
+    -fx-background-color: #062140;
+}
+#footer, #header {
+    -fx-padding: 0 60 0 60;
+}
+#header-toolbar {
+    -fx-padding: 10 10 20 10;
+}
+.toolbar-button {
+    -fx-background-color: yellow;
+    -fx-font-color: black;
+    -fx-margin: 5;
+}
+.toolbar-button:hover {
+    -fx-background-color: red;
+    -fx-font-color: black;
+}
+.toolbar-button:pressed {
+    -fx-background-color: orange;
+    -fx-font-color: black;
+}

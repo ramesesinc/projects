@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="af:changemode" caption="Change Mode" target="popup" />
+        <invoker type="af:changemode" caption="Change Mode" action="init" target="popup" />
     </invokers>
     <code>
     <![CDATA[    
@@ -14,24 +14,34 @@ class AFControlChangeModeController {
     @Caller
     def caller;
 
-    def entity;
-    def saveHandler;
-
     @Service("AFControlService")
     def service;
 
-    def doOk() {
-        def m = [objid:entity.objid, txnmode: entity.txnmode];
-        service.changeMode(m);
-        if(saveHandler) saveHandler();
-        return "_close";
-    }
+    def entity;
+    def saveHandler;
+    def data;
+    
+    void init() {
+        if ( entity==null ) entity = [:]; 
 
-    def doCancel() {
-        return "_close";
-    }
+        data = [:]; 
+        data.objid = entity.objid; 
+        data.txnmode = entity.txnmode;
+    } 
 
-}
+    def doOk() { 
+        service.changeMode( data ); 
+        entity.putAll( data ); 
+        if ( saveHandler ) { 
+            saveHandler( entity ); 
+        } 
+        return "_close"; 
+    } 
+
+    def doCancel() { 
+        return "_close"; 
+    } 
+} 
     ]]>
     </code>
     <pages>

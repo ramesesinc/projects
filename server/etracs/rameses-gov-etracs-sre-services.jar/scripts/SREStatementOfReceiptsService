@@ -45,10 +45,14 @@ class SREStatementOfReceiptsService {
 	} 
 
 	@ProxyMethod
-	public def getReport( params ) {
+	public def getReport( params ) { 
 		buildParams( params ); 
-		params.filter = '';
-		if ( params.acctgroup ) {
+		params.filter = ''; 
+		if ( params.collector?.objid ) { 
+			params.collectorid = params.collector.objid; 
+			params.filter += ''' AND inc.collectorid = $P{collectorid} '''; 
+		} 
+		if ( params.acctgroup ) { 
 			params.filter += ''' AND ia.type LIKE $P{acctgroup} ''';
 		}
 		if ( params.fundid ) {

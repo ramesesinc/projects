@@ -15,13 +15,14 @@ class LiquidationListService extends ActiveListService {
 	@ProxyMethod
 	public def getColumns( def p ) {
 		return [
-			[name:"txnno", caption:"Liq No", width:120, resizable:false],
-			[name:"dtposted", caption:"Liq Date", width:120, resizable:false],
-			[name:"liquidatingofficer.name", caption:"Liquidating Officer"],
-			[name:"totalcash", caption:"Total Cash", type:"decimal"],
-			[name:"totalnoncash", caption:"Total Noncash", type:"decimal"],
-			[name:"amount", caption:"Amount", type:"decimal"],
-			[name:"posted", caption:"Posted", type:"checkbox", uncheckValue:0, checkValue:1, width:80]
+			[name:"txnno", caption:"Liq. No", maxWidth:150, width:130],
+			[name:"dtposted", caption:"Liq. Date", maxWidth:125, width:125],
+			[name:"liquidatingofficer.name", caption:"Liq. Officer"],
+			[name:"totalcash", caption:"Total Cash", type:"decimal", maxWidth:110],
+			[name:"totalnoncash", caption:"Total Noncash", type:"decimal", maxWidth:110],
+			[name:"amount", caption:"Amount", type:"decimal", maxWidth:110],
+			[name:"posted", caption:"Posted", type:"checkbox", uncheckValue:0, checkValue:1, maxWidth:70], 
+			[name:'dummy', caption:" "] 
 		];	
 	}	
 

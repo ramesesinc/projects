@@ -81,7 +81,12 @@ class StatementOfReceiptsController extends com.rameses.etracs.shared.AsyncRepor
             TOTALEXCESS: data.totalexcess, 
             TOTALPERCENTAGE: data.totalpercentage,
             TOTALPERCENTAGEVALUE: data.totalpercentagevalue, 
-            HIDEINCOMETARGET: (entity.opthideincometarget==true) 
+            HIDEINCOMETARGET: (entity.opthideincometarget==true), 
+            COLLECTOR_ID  : entity.collector?.objid, 
+            COLLECTOR_NAME: entity.collector?.name, 
+            ACCTGROUP     : entity.acctgroup, 
+            FUND_ID    : entity.fund?.objid, 
+            FUND_TITLE : entity.fund?.title 
         ] 
     }
 
@@ -95,6 +100,16 @@ class StatementOfReceiptsController extends com.rameses.etracs.shared.AsyncRepor
         exporter.data = data.reportdata;
         exporter.export();
     }
+    
+    def lookupCollector = Inv.lookupOpener('collector:lookup', [
+        onselect: { o-> 
+            def name = [o.firstname, o.middlename, o.lastname].findAll{(it? true: false)}.join(' '); 
+            entity.collector = [objid: o.objid, name: name]; 
+        }, 
+        onempty: {
+            entity.collector = null; 
+        } 
+    ]); 
 }
     ]]> 
     </code>

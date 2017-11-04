@@ -99,7 +99,7 @@
 					<textElement textAlignment="Center">
 						<font pdfFontName="Helvetica" size="11" isBold="false"/>
 					</textElement>
-				<text><![CDATA[Republic of the Philippines1]]></text>
+				<text><![CDATA[Republic of the Philippines]]></text>
 				</staticText>
 				<staticText>
 					<reportElement

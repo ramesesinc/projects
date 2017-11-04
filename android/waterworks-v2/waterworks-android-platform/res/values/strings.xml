@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Waterworks</string>
+    <string name="action_settings">Settings</string>
+    
+	<string name="registration_information">This device is not yet registered. Terminal registration is required for performing secured transactions. Please choose a type of action below:</string>
+	<string name="registration_new_information">Please fill in the information below. You may contact your system administrator for assistance.</string> 
+	<string name="rbtn_register_terminal">Register new terminal</string>
+	<string name="rbtn_recover_terminal">Recover existing terminal</string>
+	<string name="tag_register">register</string>
+	<string name="tag_recover">recover</string>
+	
+	<string name="txt_registration_terminalkey">Terminal Key</string>
+	<string name="txt_registration_registeredby">Registered By</string>
+	<string name="rbtn_next">Next</string>	
+<!--     <string name="btn_next">Next</string> -->
+    <string name="btn_register">Register</string>
+    
+    <string name="txt_login">Login</string>
+    <string name="txt_changepassword_header">Change Password</string>
+    <string name="txt_changepassword_old">Old Password</string>
+    <string name="txt_changepassword_new">New Password</string>
+    <string name="txt_changepassword_confirm">Confirm Password</string>
+    
+    <string name="btn_ok">OK</string>
+	<string name="btn_save">SAVE</string>
+	<string name="btn_upload">UPLOAD</string>
+	<string name="btn_prev">PREV</string>
+	<string name="btn_next">NEXT</string> 
+	<string name="btn_capture">CAPTURE</string>
+	<string name="btn_print">PRINT</string>
+	<string name="btn_sync">SYNC</string>
+	<string name="btn_set_printer">SET PRINTER</string> 
+	
+	<string name="cb_offline">Offline</string>
+    
+    <string name="semicolon">:</string>
+    
+    <string name="txt_empty"></string>
+    <string name="txt_btn_cancel">CANCEL</string>
+    <string name="txt_btn_login">LOGIN</string>
+    <string name="txt_btn_logout">LOGOUT</string>
+    <string name="txt_hint_username">USERNAME</string>
+    <string name="txt_hint_password">PASSWORD</string>
+    <string name="txt_hint_search">Search</string>
+	<string name="txt_mode"></string>
+	
+	<string name="settings_information">The information below determines your device\'s connectivity to the server. Make sure the entries are correct.</string>
+	<string name="settings_ipaddress">IP Address</string>
+	<string name="settings_portnumber">Port Number</string>
+	<string name="settings_context">Context</string>
+	<string name="settings_cluster">Cluster</string>
+	<string name="settings_readtimeout">Read Timeout</string>
+	
+	<string name="search_hint_zone">Search Zone</string>
+	<string name="search_hint_account">Search Account</string>
+	<string name="search_hint_stubout">Search Stubout</string>
+	
+	<string name="text_record">RECORD(S)</string>
+	
+	<string name="readingsheet_serialno">Serial No.</string>
+	<string name="readingsheet_name">Name</string>
+	<string name="readingsheet_classification">Classification</string>
+	<string name="readingsheet_prevreading">Prev. Reading</string>
+	<string name="readingsheet_reading">Reading</string>
+	
+	<string name="account_info_acctno">Account No.</string>
+	<string name="account_info_name">Name</string>
+	<string name="account_info_address">Address</string>
+	<string name="account_info_serialno">Serial No.</string>
+	<string name="account_info_classification">Classification</string>
+	<string name="account_info_prevbalance">Prev. Balance</string>
+	<string name="account_info_amtdue">Amout Due</string>
+	<string name="account_info_totaldue">Total Due</string>
+	<string name="account_info_prevreading">Previous</string>
+	<string name="account_info_presentreading">Present</string>
+	<string name="account_info_consumptionreading">Consumption</string>
+	
+	<string name="rate_condition">Condition</string>
+	<string name="rate_action">Action</string>
+	
+	<string name="menu_search">Search</string>
+	
+	<string name="numberpicker_default_value">0</string>
+	
+	<string name="btn_reading_0">0</string>
+	<string name="btn_reading_1">1</string>
+	<string name="btn_reading_2">2</string>
+	<string name="btn_reading_3">3</string>
+	<string name="btn_reading_4">4</string>
+	<string name="btn_reading_5">5</string>
+	<string name="btn_reading_6">6</string>
+	<string name="btn_reading_7">7</string>
+	<string name="btn_reading_8">8</string>
+	<string name="btn_reading_9">9</string>
+	<string name="btn_reading_clear">C</string>
+	<string name="btn_reading_backspace">&lt;</string>
+	
+	<string name="ps_printer">Printer</string>
+	<string name="ps_reportdata">Report Data</string>
+	<string name="ps_zebra">Zebra</string>
+	<string name="ps_oneil">Datamax Oneil</string>
+	
+	<string name="menu_userinfo">User</string>
+	<string name="menu_settings">Settings</string>
+	
+	<string name="id_tag">ID</string>
+	<string name="description_tag">DESCRIPTION</string>
+	<string name="code_tag">CODE</string>
+	<string name="previd_tag">PREV_ID</string>
+	<string name="nextid_tag">NEXT_ID</string>
+	<string name="index_tag">INDEX</string>
+	<string name="name_tag">NAME</string>
+	
+</resources>

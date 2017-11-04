@@ -1,4 +1,4 @@
-[findRemittanceByid]
+[findRemittance]
 SELECT * FROM remittance WHERE objid = $P{remittanceid}
 
 [getCashReceipts]

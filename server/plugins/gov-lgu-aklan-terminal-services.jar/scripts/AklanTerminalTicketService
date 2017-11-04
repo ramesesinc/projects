@@ -35,6 +35,10 @@ class AklanTerminalTicketService
 	@ProxyMethod 
 	public def getList( params ) {
 		params.searchtext = (params.searchtext? params.searchtext: '') + '%'; 
+		params.orderBy = ''
+		if (params.searchtext != '%'){
+			params.orderBy = 'ORDER BY seqno'
+		}
 		return em.getList( params ); 
 	}
 
@@ -59,13 +63,18 @@ class AklanTerminalTicketService
 		return [ticket: info, tag: info.tag]; 
 	} 
 
+	//intercepted by AklanTerminalLogger 
+	@ProxyMethod
+	public void log(data) {
+	}
+
 
 	
 	private def RET_CODES = [
 		0  : [retcode:0,  message:'SUCCESS'], 
 		1  : [retcode:1,  message:'General Error'], 
 		2  : [retcode:2,  message:'Barcode does not exist'], 
-		3  : [retcode:3,  message:'Invalid Barcode'], 
+		3  : [retcode:3,  message:'Barcode is invalid for this turnstile'], 
 		4  : [retcode:4,  message:'Barcode has already been used'], 
 		5  : [retcode:5,  message:'Invalid token id'], 
 		6  : [retcode:6,  message:'Barcode has already been voided.'], 

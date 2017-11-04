@@ -2,12 +2,12 @@
     <invokers>
         <invoker type="cashreceiptinfo:formActions" 
                  action="init" caption="Reprint Terminal Pass" 
-                 target="popup" index="1000" />
+                 target="popup" index="1000" 
+                 role="COLLECTOR" permission="cashreceipt.reprintterminalpass"/>
         
         <invoker type="formActions" action="_close" caption="Close" immediate="true" mnemonic="c" />
         <invoker type="formActions"
-            action="reprintTickets" caption="Reprint" 
-            role="COLLECTOR" permission="cashreceipt.reprintterminalpass" />
+            action="reprintTickets" caption="Reprint" />
     </invokers>	
     <code class="gov.lgu.aklan.terminal.models.CashReceiptReprintModel">
     </code>

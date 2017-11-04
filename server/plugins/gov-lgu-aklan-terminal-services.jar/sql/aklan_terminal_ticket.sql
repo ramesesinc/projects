@@ -7,7 +7,7 @@ WHERE t.objid in(
 	union 
 	select objid from ticket where refno LIKE $P{searchtext} 
 )
-ORDER BY dtfiled DESC 
+${orderBy}
 
 
 [findBarcode]

@@ -109,7 +109,7 @@
                 <Property name="caption" type="java.lang.String" value="Account"/>
                 <Property name="captionFontStyle" type="java.lang.String" value=""/>
                 <Property name="captionWidth" type="int" value="180"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.items[0].item.title}"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.accts[0].account.title}"/>
                 <Property name="fontStyle" type="java.lang.String" value="font-size:18;"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 30]"/>

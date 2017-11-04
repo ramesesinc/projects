@@ -15,9 +15,6 @@
         import gov.lgu.aklan.terminal.*; 
 
         class  AklanTerminalCashReceiptController extends AbstractCashReceipt {
-            @Service('Var')
-            def var 
-            
             def optionList = ['YES', 'NO'];
             
             String getTitle(){
@@ -36,7 +33,16 @@
                 },
                 "entity.num.*" : {
                     if (!entity.numadult) entity.numadult = 0;
-                    entity.amount = NumberUtil.round(entity.numadult * entity.rate);
+                    entity.items = []
+                    entity.accts.each{
+                        def item = [:];
+                        item.objid = 'RI' + new java.rmi.server.UID();
+                        item.item = it.account 
+                        item.amount = NumberUtil.round(entity.numadult * it.defaultvalue)
+                        item.tag = it.tag 
+                        entity.items << item 
+                    }
+                    entity.amount = NumberUtil.round(entity.items.amount.sum());
                     binding.refresh();
                 }
             ];
@@ -52,16 +58,13 @@
 
             void init() {
                 entity.remarks = '';
-                def addr = var.get('aklan_terminal_collection_default_address')
-                entity.paidbyaddress = (addr ? addr : 'PROVINCE OF AKLAN')
-                if(!entity.items) 
-                    throw new Exception("Item account must be specified.Please check cash receipt interceptor for single item");
+                if(!entity.accts) 
+                    throw new Exception("Item accounts must be specified.Please check cash receipt interceptor.");
             }
 
             public void validateBeforePost() {
                 if (entity.amount > entity.totalcash)
                     throw new Exception('Cash Received must be greater than or equal to Amount.')
-                entity.items[0].amount = entity.amount;
             }
 
             def close(){

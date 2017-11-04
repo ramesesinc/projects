@@ -52,6 +52,8 @@ class  CashReceiptReprintModel
             
         if (!MsgBox.confirm('Reprint selected tickets?')) return; 
         
+        logReprint()
+        
         selectedTickets.each {o-> 
             o.collector = entity.collector.name;
             o.orno = entity.receiptno;
@@ -61,5 +63,14 @@ class  CashReceiptReprintModel
         def printer = new TicketPrinter();
         printer.terminalname = entity.org.name;
         printer.print( entity.thermalprintername, entity.tickets ); 
+    }
+    
+    void logReprint(){
+        def data = [:]
+        data.action = 'reprintTickets'
+        data.ref = 'cashreceipt'
+        data.refid = entity.objid 
+        data.remarks = 'Reprint terminal tickets.'
+        svc.log(data)
     }
 } 

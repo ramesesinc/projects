@@ -47,18 +47,20 @@ class AklanTerminalCashReceiptInterceptor
 	@After(pattern="CashReceiptService.init", index=500, eval="#{result.collectiontype.handler == 'aklanterminal'}")
 	public void onInit(def evt) { 
 		def r = evt.result;
-		def z = acct.findAccount([objid: r.collectiontype.objid] );
-		if (!z) throw new Exception("Account not found for aklanterminal handler. Please define at least one account in collection type"); 
-		if (!z.defaultvalue) throw new Exception("Please indicate default value in collection type account"); 
+		def accts = acct.getAccounts([objid: r.collectiontype.objid] );
+		if (!accts) throw new Exception("Accounts not found for aklanterminal handler. Please define at least one account in collection type"); 
 
-		def lguinfo = orgSvc.open([ objid: env.CLIENTCODE? env.CLIENTCODE: env.ORGCODE ]); 
-		def item = [objid:'RCTITEM'+new UID(), item:z.account, amount: 0, tag:z.tag];
-		r.items << item; 
+		accts.each{
+			if (!it.defaultvalue) throw new Exception("Please indicate default value in collection type account"); 
+		}
+		r.accts = accts 
 		r.numadult = 0;
 		r.numchildren = 0;		
 		r.paidby = 'TOURIST';		
-		r.paidbyaddress = lguinfo?.address; 
-		r.rate = z.defaultvalue; 
+
+		def lguinfo = orgSvc.open([ objid: env.CLIENTCODE? env.CLIENTCODE: env.ORGCODE ]); 
+        def addr = var.get('aklan_terminal_collection_default_address')
+        r.paidbyaddress = (addr ? addr : lguinfo?.address)
 	} 
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype.handler == 'aklanterminal'}")

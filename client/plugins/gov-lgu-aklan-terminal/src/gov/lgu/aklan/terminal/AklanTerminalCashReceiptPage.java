@@ -72,7 +72,7 @@ public class AklanTerminalCashReceiptPage extends javax.swing.JPanel {
         xLabel1.setCaption("Account");
         xLabel1.setCaptionFontStyle("");
         xLabel1.setCaptionWidth(180);
-        xLabel1.setExpression("#{entity.items[0].item.title}");
+        xLabel1.setExpression("#{entity.accts[0].account.title}");
         xLabel1.setFontStyle("font-size:18;");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 30));
         xFormPanel1.add(xLabel1);

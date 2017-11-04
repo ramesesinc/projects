@@ -5,6 +5,7 @@ select * from propertyclassification order by orderno
 select
     rrd.dtgenerated,
     b.name as barangay,
+    b.pin, 
     count(distinct rptledgerid) as rpucount,
     sum(rrd.basic) as basic, 
     sum(rrd.basicdisc) as basicdisc,
@@ -19,5 +20,5 @@ from report_rptdelinquency rrd
 where rl.classification_objid like $P{classid}
 and rl.rputype like $P{type}
 and rl.taxable = 1 
-group by rrd.dtgenerated, b.name 
+group by rrd.dtgenerated, b.name, b.pin  
 order by b.pin 

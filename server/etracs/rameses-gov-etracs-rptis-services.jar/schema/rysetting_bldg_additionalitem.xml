@@ -9,5 +9,6 @@
         <field name="expr" required="true"  />
         <field name="addareatobldgtotalarea" type="integer" />
         <field name="previd"  />
+        <field name="idx" type="integer" />
 	</element>
 </schema>

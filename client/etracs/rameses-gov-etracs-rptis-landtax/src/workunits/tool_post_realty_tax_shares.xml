@@ -1,0 +1,20 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/landtax/util"
+            caption="Post Realty Tax Shares"
+            action="init"
+            target="popup"
+            role="ADMIN" />
+        
+        <invoker type="formActions" action="_close" caption="Cancel" immediate="true" mnemonic="c"/>
+        <invoker type="formActions" action="postShares" caption="Post Shares" mnemonic="p"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.PostRealtyTaxShareModel" >
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.PostRealtyTaxSharePage" />
+    </pages>
+    
+</workunit>

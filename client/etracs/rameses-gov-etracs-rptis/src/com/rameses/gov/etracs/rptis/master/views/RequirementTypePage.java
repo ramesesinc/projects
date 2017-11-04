@@ -37,7 +37,7 @@ public class RequirementTypePage extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(748, 396));
 
-        formPanel1.setCaptionWidth(120);
+        formPanel1.setCaptionWidth(140);
 
         xTextField2.setCaption("Requirement Type");
         xTextField2.setDepends(new String[] {"selectedItem"});
@@ -84,8 +84,8 @@ public class RequirementTypePage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 213, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(172, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 190, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(195, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     

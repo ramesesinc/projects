@@ -5,7 +5,13 @@
 - BPLS 
 		
 - ASSESSOR	
+	- FAAS:  add property also declared info for multiple claim
+	- Implement building occupying portion of land
+	- Centralize FAAS ordinance info on revision settings
+	- Txn Type Attributes master data support
 	- FAAS Backtax Update
 
 - LANDTAX
+	- Rule: Add quarterly missed payment support
+	- Update on RPT Billing Report (for MSSQL)
 	

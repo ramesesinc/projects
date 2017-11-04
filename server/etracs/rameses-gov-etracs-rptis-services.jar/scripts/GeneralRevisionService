@@ -15,6 +15,9 @@ class GeneralRevisionService
 	@Env
 	def env
 
+	@Service('DateService')
+	def dtSvc
+
 	@Service('FAASService')
 	def faasSvc 
 
@@ -34,7 +37,13 @@ class GeneralRevisionService
 	def utilSvc
 
 	@DataContext('batchgr_error')
-	def em_error 
+	def em_batchgr_error 
+
+	@DataContext('batchgr_items_forrevision')
+	def em_batchgr_items_forrevision 
+
+	@DataContext('batchgr_log')
+	def em_batchgr_log 
 
 
 
@@ -76,15 +85,32 @@ class GeneralRevisionService
 		faas.rp.ry = info.newry 
 		faas.rpu.rp = faas.rp
 		faas.restrictions.each{ it.objid = 'FR' + new java.rmi.server.UID()}
+		if (!faas.memoranda) faas.memoranda = var.gr_default_memoranda
+		buildDefaultSignatories(faas, info)
 		rpuSvc.reviseRpu(faas.rpu)
 		return faas 
 	}
 
+	void buildDefaultSignatories(faas, info){
+		def dtsigned = dtSvc.serverDate 
+		updateSignatory(faas, 'appraiser', dtsigned, var.gr_default_appraiser, var.gr_default_appraiser_title)
+		updateSignatory(faas, 'recommender', dtsigned, var.gr_default_recommender, var.gr_default_recommender_title)
+		updateSignatory(faas, 'approver', dtsigned, var.gr_default_approver, var.gr_default_approver_title)
+	}
+
+	void updateSignatory(faas, field, dtsigned, name, title ){
+		faas[field] = [name:name, title:title, dtsigned:dtsigned]
+	}
+
 	@ProxyMethod
 	public def createDataCaptureGeneralRevision( info ) {
+		info._checkTxnRef = true 
 		def faas = initGeneralRevision( info )
-		em_error.find([objid:info.faas.objid]).delete()
-		return faasSvc.createFaas(faas)
+		def entity = faasSvc.createFaas(faas)
+		em_batchgr_error.find([objid:info.faas.objid]).delete()
+		em_batchgr_items_forrevision.find([objid:info.faas.objid]).delete()
+		em_batchgr_log.save(info.faas)
+		return entity 
 	}	
 
 

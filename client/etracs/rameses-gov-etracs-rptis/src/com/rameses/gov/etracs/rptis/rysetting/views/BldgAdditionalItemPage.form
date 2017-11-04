@@ -85,7 +85,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="114" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="92" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="xButton1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -162,6 +162,12 @@
                       <Dimension value="[250, 22]"/>
                     </Property>
                     <Property name="required" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Index No."/>
+                    <Property name="name" type="java.lang.String" value="entity.idx" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">

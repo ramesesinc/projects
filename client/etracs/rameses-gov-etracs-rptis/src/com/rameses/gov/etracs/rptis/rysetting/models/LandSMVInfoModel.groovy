@@ -115,13 +115,7 @@ public class LandSMVInfoModel implements SubPage
                 
         onColumnUpdate : { item, colName -> 
             if (colName=='code'){
-                if (item.code && item.code.matches('.*[0-9]')){
-                    def num = item.code[-1];
-                    if (num == '1') item.name = '1ST CLASS'
-                    else if (num == '2') item.name = '2ND CLASS'
-                    else if (num == '3') item.name = '3RD CLASS'
-                    else item.name = num + 'TH CLASS'
-                }
+                updateSubClassName(item)
             }
         },
                 
@@ -153,6 +147,20 @@ public class LandSMVInfoModel implements SubPage
                 
         fetchList    : { return subclasses },
     ] as EditorListModel
+    
+    
+    void updateSubClassName(item){
+        if (item.code && item.code.matches('.*[0-9]')){
+            def num = item.code.replaceAll('[^0-9]', '')
+            if (num){
+                if (num.matches('11|12|13')) item.name = num + 'TH CLASS'
+                else if (num[-1] == '1') item.name = num + 'ST CLASS'
+                else if (num[-1] == '2') item.name = num + 'ND CLASS'
+                else if (num[-1] == '3') item.name = num + 'RD CLASS'
+                else item.name = num + 'TH CLASS'
+            }
+        }
+    }
     
 
 
@@ -206,13 +214,17 @@ public class LandSMVInfoModel implements SubPage
     }
     
     Map createSubClass() {
-        return [ 
+        def code = selectedSpecificClass.landspecificclass.code + '' + (subclasses.size() + 1)
+        def item = [ 
             objid               : 'SC' + new java.rmi.server.UID(),
+            code                : code, 
             specificclass       : selectedSpecificClass,
             landrysettingid     : entity?.objid,
             unitvalue           : 0.0,
             landrysettingid     : entity?.objid,
         ]
+        updateSubClassName(item)
+        return item
     }
     
     Map createStripping() {

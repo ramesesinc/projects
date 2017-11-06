@@ -38,15 +38,6 @@ class RemittanceModel {
         return InvokerUtil.lookupActions( "remittance:formActions", [entity:entity] );
     }
 
-    def popupReports(def inv) {
-        def popupMenu = new PopupMenuOpener();
-        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
-        list.each{
-            popupMenu.add( it );
-        }
-        return popupMenu;
-    }
-    
     void create() { 
         mode = "initial"; 
         
@@ -156,4 +147,32 @@ class RemittanceModel {
         }   
     }
 
+    def popupReports(def inv) { 
+        return showMenus( inv, null ); 
+    } 
+    
+    def showModifyMenus( def inv ) { 
+        def p = [:]; 
+        p.handler = { o-> 
+            binding.refresh(); 
+        }
+        return showMenus( inv, p ); 
+    }
+    
+    def showMenus( def inv, def param ) { 
+        if ( param == null ) param = [:]; 
+        
+        param.entity = entity; 
+        
+        def popupMenu = new PopupMenuOpener();
+        try { 
+            def list = Inv.lookupOpeners( inv.properties.category, param );
+            list.each { 
+                popupMenu.add( it ); 
+            } 
+        } catch(Throwable ign) {
+            // just ignore the errors 
+        } 
+        return popupMenu;
+    }
 }    

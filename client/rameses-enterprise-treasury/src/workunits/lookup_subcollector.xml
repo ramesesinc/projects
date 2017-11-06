@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ServiceLookupController.xml" 
           serviceName="UsergroupMemberLookupService" 
-          tag="SUBCOLLECTOR">
+          tag="SUBCOLLECTOR" allowSearch="true">
     <invokers>
         <invoker type="subcollector:lookup" caption="Lookup Subollectors" target="popup" width="800"/>
     </invokers>

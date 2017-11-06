@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt-form:CT1" />
+        <invoker type="cashreceipt-form:CT2" />
+        <invoker type="cashreceipt-form:CT5" />
+        <invoker type="cashreceipt-form:CT10" />
+    </invokers>
+    
+    <code class="com.rameses.gov.treasury.models.CashReceiptFormCT"/>
+    
+</workunit>

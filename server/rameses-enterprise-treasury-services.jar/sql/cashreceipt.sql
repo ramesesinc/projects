@@ -8,7 +8,7 @@ SELECT c.*,
 FROM cashreceipt c 
 	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
 	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
-WHERE c.receiptno LIKE $P{searchtext} 
+WHERE c.receiptno LIKE $P{searchtext} ${filter} 
 ORDER BY ${orderBy} 
 
 
@@ -19,7 +19,7 @@ SELECT c.*,
 FROM cashreceipt c 
 	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
 	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
-WHERE c.paidby LIKE $P{searchtext} 
+WHERE c.paidby LIKE $P{searchtext} ${filter} 
 ORDER BY ${orderBy} 
 
 
@@ -30,7 +30,7 @@ SELECT c.*,
 FROM cashreceipt c 
 	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
 	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
-WHERE c.payer_name LIKE $P{searchtext} 
+WHERE c.payer_name LIKE $P{searchtext} ${filter} 
 ORDER BY ${orderBy} 
 
 

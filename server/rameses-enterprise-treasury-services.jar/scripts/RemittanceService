@@ -30,6 +30,9 @@ class RemittanceService  {
 	@DataContext("remittance_noncashpayment")
 	def remnc_db; 
 
+	@Service("PersistenceService")
+	def persistSvc;
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -123,6 +126,7 @@ class RemittanceService  {
 		draftrem_db.find([ objid: remo.objid ]).update([ amount: o.amount, totalcash: o.totalcash, totalnoncash: o.totalnoncash ]); 
 
 		o.checks = draftrem_db.getCashReceiptChecks( info ); 
+		o.remittancedate = remo.remittancedate; 
 		o.collector = remo.collector; 
 		return o; 
 	} 
@@ -301,4 +305,33 @@ class RemittanceService  {
     	remittance_tool.removeNonCashPayments( params ); 
     	remittance_tool.removeRemittance( params ); 
     } 
-}
+
+    @ProxyMethod 
+    public def modify( o ) { 
+    	if ( !o?.objid ) throw new Exception('objid parameter is required'); 
+    	if ( !o?.action ) throw new Exception('action parameter is required'); 
+    	if ( !o?.reason ) throw new Exception('reason parameter is required'); 
+    	if ( !o?.info ) throw new Exception('info parameter is required'); 
+
+    	def rundate = dateSvc.getServerDate(); 
+    	def p = [ _schemaname: 'remittance' ]; 
+    	p.findBy = [ objid: o.objid ]; 
+    	p.putAll( o.info ); 
+		persistSvc.update( p ); 
+
+		def remarks = new StringBuilder();
+		remarks.append("[REASON] ").append( o.reason ); 
+		remarks.append(" [CHANGES] ").append( o.info.toString()); 
+
+		p = [ _schemaname: 'txnlog' ]; 
+		p.ref = 'remittance';
+		p.refid = o.objid; 
+		p.action = o.action;
+		p.txndate = rundate; 
+		p.userid = env.USERID; 
+		p.username = env.FULLNAME; 
+		p.remarks = remarks.toString();
+		persistSvc.create( p ); 
+    	return o; 
+    } 
+} 

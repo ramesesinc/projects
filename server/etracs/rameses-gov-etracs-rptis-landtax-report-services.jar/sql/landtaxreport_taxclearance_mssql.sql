@@ -26,11 +26,13 @@ SELECT
 	case when m.objid is not null then m.name else c.name end as lguname, 
 	b.name AS barangay,
 	rl.classcode,
+	pc.name as classification, 
 	rl.titleno,
 	rp.surveyno
 FROM rptcertificationitem rci 
 	INNER JOIN rptledger rl ON rci.refid = rl.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
+	left JOIN propertyclassification pc ON rl.classification_objid = pc.objid 
 	LEFT JOIN municipality m on b.parentid = m.objid
 	LEFT JOIN district d on b.parentid = d.objid 
 	LEFT JOIN city c on d.parentid = c.objid 

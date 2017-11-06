@@ -190,7 +190,8 @@ public class BldgRYSettingService
         params.searchtext += '%'
         params.code = params.searchtext
         params.name= params.searchtext
-        return em_additionalitem.where('code like :code or name like :name', params).orderBy('code').list()
+        return em_additionalitem.where('bldgrysettingid = :bldgrysettingid and (code like :code or name like :name)', params)
+                                    .orderBy('code').list()
     }
     
     

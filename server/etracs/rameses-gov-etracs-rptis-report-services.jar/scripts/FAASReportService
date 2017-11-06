@@ -105,6 +105,7 @@ class FAASReportService
 		buildOwnerContactNo(faas)
 		buildSignatories(faas)
 		buildPreviousInfo(faas)
+		//buildMultiClaimInfo(faas)
 		faas.annotations = em.getActiveAnnotations(faas)
 		faas.show_interim_watermark = util.toBoolean(var.show_interim_watermark, false)
 		return faas
@@ -220,5 +221,22 @@ class FAASReportService
 		faas.munidistrict = (muni ? muni.name : district.name)
 		faas.provcity = (prov  ? prov.name : city.name)
 	}
+
+	void buildMultiClaimInfo(faas){
+		if (faas.rpu.rputype != 'land') return
+
+		def claims = em.getActiveClaims(faas)
+		if (claims){
+			claims.each{
+				it.info = it.owner.name + ' under TD No. ' + it.tdno 
+			}
+			def claim = claims.info.join(' and ')
+			def msg = 'Property is also declared in the name of ' + claim + '.'
+			faas.claiminfo = msg 
+
+			faas.memoranda += '\n\n' + faas.claiminfo 
+		}
+
+	}	
 
 }

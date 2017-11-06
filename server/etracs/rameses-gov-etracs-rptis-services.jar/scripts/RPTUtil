@@ -446,12 +446,11 @@ class RPTUtil
     @ProxyMethod
     public def formalizeNumber( num ) {
         def snum = numSvc.format('#0', num )
-        if( snum == '11' ) return snum + 'TH'
-        else if( snum == '12' ) return snum + 'TH'
-        else if( snum.endsWith('1') ) return snum + 'ST'
-        else if( snum.endsWith('2') ) return snum + 'ND'
-        else if( snum.endsWith('3') ) return snum + 'RD'
-        else return snum + 'TH' 
+        if (snum.matches('11|12|13')) return snum + 'th'
+        else if (snum[-1] == '1') return snum + 'st'
+        else if (snum[-1] == '2') return snum + 'nd'
+        else if (snum[-1] == '3') return snum + 'rd'
+        else return snum + 'th'
     }
 
     @ProxyMethod

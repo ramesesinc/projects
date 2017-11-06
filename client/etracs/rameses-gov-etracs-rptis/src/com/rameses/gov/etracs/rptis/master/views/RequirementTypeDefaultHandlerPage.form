@@ -70,6 +70,7 @@
             <EmptyBorder/>
           </Border>
         </Property>
+        <Property name="captionWidth" type="int" value="100"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[0, 10, 5, 5]"/>
         </Property>

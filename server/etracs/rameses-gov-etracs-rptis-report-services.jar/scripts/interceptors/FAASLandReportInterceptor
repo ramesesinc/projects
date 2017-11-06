@@ -61,8 +61,9 @@ class FaasLandReportInterceptor
 		faas.landadjustments = adjs
 
 		//append plant/tree adjustments
-		def plantadj = em.findPlantTreeAdjustment(faas.rpu)
-		if (plantadj && plantadj.adjrate != 0.0){
+		def showplantadj = util.toBoolean(var.faas_display_plant_adjustments, true) 
+		if (showplantadj){
+			def plantadj = em.findPlantTreeAdjustment(faas.rpu)
 			if (faas.landadjustments.size()  == 0){
 				plantadj.adjtypename = 'TOTAL LAND ADJUSTMENT';
 				faas.landadjustments << plantadj
@@ -76,11 +77,8 @@ class FaasLandReportInterceptor
 			}
 		}
 
-		if (!faas.landadjustments){
-			faas.landadjustments << [:]
-			faas.landadjustments << [:]
-			faas.landadjustments << [:]
-		}
+		faas.landadjustments << [:]
+		faas.landadjustments << [:]
 
 	}
 

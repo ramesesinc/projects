@@ -1,0 +1,23 @@
+<workunit extends="rpt_wtemplates/MasterModel.xml"
+    schemaName="faastxnattributetype">
+    
+    <invokers>
+        <invoker type="faastxnattributetype:create" 
+                 caption="Attribute (New)" 
+                 action="create" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="faastxntypeattribute.create" />
+        
+        <invoker type="faastxnattributetype:open" 
+                 caption="Attribute" 
+                 action="open" 
+                 target="popup" 
+                 role="MASTER"
+                 permission="faastxntypeattribute.read" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.AttributeModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.master.views.AttributePage"/>
+    </pages>
+</workunit>

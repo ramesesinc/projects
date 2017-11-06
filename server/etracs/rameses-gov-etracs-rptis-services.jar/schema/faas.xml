@@ -26,17 +26,8 @@
 		<field name="beneficiary_address" />
 		<field name="memoranda" />
 		<field name="cancelnote" />
-		<field name="restrictionid" />
 		<field name="backtaxyrs" required="true"/>
 		<field name="prevtdno" />
-		<field name="prevpin" />
-		<field name="prevowner" />
-		<field name="prevadministrator" />
-		<field name="prevav" />
-		<field name="prevmv"  />
-		<field name="prevareasqm"  />
-		<field name="prevareaha"  />
-		<field name="preveffectivity" />
 		<field name="cancelreason" />
 		<field name="canceldate" />
 		<field name="cancelledbytdnos" />
@@ -46,8 +37,6 @@
 		<field name="cancelledtimestamp"/>
 		<field name="name"/>
 		<field name="dtapproved" />
-		<field name="ryordinanceno" />
-		<field name="ryordinancedate"  />
 		<field name="year" type="integer" />
 		<field name="qtr" type="integer" />
 		<field name="month" type="integer" />
@@ -61,9 +50,6 @@
 		<complex name="taxpayer" ref="entity" jointype="many-to-one" required="false" 
 			includefields="objid,entityno,name,address_text">
 			<key field="taxpayer_objid" target="objid" />
-		</complex>
-		<complex name="restrictions" ref="faas_restriction" jointype="one-to-many" required="false">
-			<key field="objid" target="parent_objid" />
 		</complex>
 	</element>
 

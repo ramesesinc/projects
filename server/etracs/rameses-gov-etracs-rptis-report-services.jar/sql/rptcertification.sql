@@ -277,10 +277,18 @@ WHERE f.state IN ('CURRENT')
 [findBldgLandCount]
 SELECT COUNT(*) AS improvcount
 FROM bldgrpu_land bl 
-	INNER JOIN faas bf ON bl.bldgrpuid = bf.rpuid 
+	INNER JOIN faas bf ON bl.rpu_objid = bf.rpuid 
 WHERE bl.landfaas_objid = $P{faasid}
-  AND bf.state IN ('CURRENT')
+  AND bf.state NOT IN ('CANCELLED')
   AND bf.year <= $P{asofyear}
+
+[getBldgLands]
+SELECT bf.tdno, bf.fullpin 
+FROM bldgrpu_land bl 
+	INNER JOIN faas bf ON bl.rpu_objid = bf.rpuid 
+WHERE bl.landfaas_objid = $P{faasid}
+  AND bf.state NOT IN ('CANCELLED')
+  AND bf.year <= $P{asofyear}  
 
 
 [findPlantTreeCount]  

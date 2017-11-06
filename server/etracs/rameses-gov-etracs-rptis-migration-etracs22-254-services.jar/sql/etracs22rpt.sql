@@ -236,7 +236,7 @@ where f.objid = $P{objid}
 insert into etracs25_migrate_faasannotation_log
 	(objid, log)
 values 
-	($P{objid}, ${log})
+	($P{objid}, $P{log})
 
 [deleteXFaasAnnotation]
 delete from xfaas_annotation where objid = $P{objid}

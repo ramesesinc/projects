@@ -7,12 +7,12 @@ package com.rameses.gov.etracs.rptis.views;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 
 @StyleSheet()
-public class RPUBldgInfoLandLinkPage extends javax.swing.JPanel {
+public class RPUBldgInfoLandPage extends javax.swing.JPanel {
 
     /**
      * Creates new form BldgRpuInfoLandPage
      */
-    public RPUBldgInfoLandLinkPage() {
+    public RPUBldgInfoLandPage() {
         initComponents();
     }
 
@@ -79,8 +79,8 @@ public class RPUBldgInfoLandLinkPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable5.setHandler("bldgLandListHandler");
-        xDataTable5.setName("selectedLand"); // NOI18N
+        xDataTable5.setHandler("listHandler");
+        xDataTable5.setName("selectedItem"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

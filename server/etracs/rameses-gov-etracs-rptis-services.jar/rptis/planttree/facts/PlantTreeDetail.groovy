@@ -5,7 +5,7 @@ import java.math.*;
 
 public class PlantTreeDetail 
 {
-    RPU rpu;
+    rptis.facts.RPU rpu;
     String actualuseid
     String classificationid
     Double productive

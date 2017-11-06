@@ -25,9 +25,15 @@ class RPTCertificationLandService
     @ProxyMethod
     public def validateLandWithNoImprovement( params ) {
     	def result = em.findImprovementCount(params)
-		def bldgland = em.findBldgLandCount(params)
-    	if (result.improvcount > 0 || bldgland.improvcount > 0)
+    	if (result.improvcount > 0)
     		throw new Exception("Selected Land has existing improvements.")
+		
+		def bldglands = em.getBldgLands(params)
+		if (bldglands.size() > 0 ){
+			def msg = "Selected Land has existing improvements.\n"
+			msg += 'Building with TD No. ' + bldglands.tdno.join(',') + ' are erected or occupying portion of the land.'
+    		throw new Exception(msg)    		
+		}
     }
 
 

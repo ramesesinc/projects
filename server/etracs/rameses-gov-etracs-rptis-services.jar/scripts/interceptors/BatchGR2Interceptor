@@ -1,0 +1,95 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class BatchGR2Interceptor
+{
+	@Service('RPUService')
+	def rpuSvc 
+
+	@Service('LandRPUGRService')
+	def landGrSvc 
+
+	@Service('BldgRPUGRService')
+	def bldgGrSvc 
+
+	@Service('MachRPUGRService')
+	def machGrSvc 
+
+	@Service('RPTUtil')
+	def util
+
+	@DataContext('batchgr_items_forrevision')
+	def em_batchgr_items_forrevision
+
+	@DataContext('batchgr_log')
+	def em_batchgr_log
+
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'land' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedLandDetails( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			landGrSvc.reviseLandRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+		}
+
+	}
+
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'bldg' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedBldgeDetails( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			bldgGrSvc.reviseBldgRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+		}
+
+	}
+
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'mach' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedMachDetails( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			println 'revisedMachDetails...'
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			machGrSvc.reviseMachRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+		}
+
+	}
+}
+

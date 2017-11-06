@@ -624,6 +624,7 @@ public class RPTBillingService
 
 		rptledger.undercompromise = determineUnderCompromise(rptledger)
 		rptledger.firstqtrpaidontime = determineFirstQtrPaidOntime(rptledger)
+		rptledger.missedpayment = determineMissedPayment(rptledger)
 
 		def ledgerfact = new RPTLedgerFact(rptledger)
 		facts << ledgerfact 
@@ -658,6 +659,38 @@ public class RPTBillingService
 		curryearpmt.receiptdate = dtSvc.parse('yyyy-MM-dd', curryearpmt.receiptdate)
 		def firstqtrenddate = dtSvc.getQtrEndDate(1, pdate.year)
 		return curryearpmt.receiptdate <= firstqtrenddate
+	}
+
+	def determineMissedPayment(rptledger){
+		def pdate = dtSvc.parseCurrentDate()
+
+		//1st qtr, no missed payment 
+		if (pdate.qtr == 1) 
+			return false 
+
+
+		def payments = em.getCurrentYearCredits([objid:rptledger.objid, cy:pdate.year])
+
+		if (!payments && pdate.qtr > 1) {
+			//no payments since 1st qtr 
+			return true 
+		}
+
+		if (payments.toqtr.max()+1 < pdate.qtr){
+			//miss payment previous qtr
+			return true 
+		}
+
+		def missedpayment = false 
+		payments.each{pmt -> 
+			pmt.fromqtr.upto(pmt.toqtr){qtr->
+				def qtrenddate = dtSvc.getQtrEndDate((Integer)qtr, pdate.year) + 1 
+				if (pmt.receiptdate > qtrenddate){
+					missedpayment = true 
+				}
+			}
+		}
+		return missedpayment
 	}
 
 
@@ -769,7 +802,7 @@ public class RPTBillingService
 			throw new Exception('Bill To Qtr must be greater than Last Qtr Paid.')
 		
 
-		def maxbilltoyear = pdate.year + MAX_ADVANCE_YEARS
+		def maxbilltoyear = pdate.year + getMaxAllowedAdvanceYear()
 		if (bill.billtoyear > maxbilltoyear){
 			throw new Exception('Bill To Year must not exceed year ' +  maxbilltoyear + '.')
 		}
@@ -971,6 +1004,17 @@ public class RPTBillingService
 	@ProxyMethod
 	public def getMaxAdvanceYear(  ) {
 		return dtSvc.serverYear + 3;
+	}
+
+	def getMaxAllowedAdvanceYear(){
+		def max_year = var.landtax_collection_max_advance_years_allowed
+		if (!max_year) max_year = '3'
+		try{
+			return new java.math.BigDecimal(max_year.toString()).intValue() 
+		}
+		catch(e){
+			return 3;
+		}
 	}
 
 

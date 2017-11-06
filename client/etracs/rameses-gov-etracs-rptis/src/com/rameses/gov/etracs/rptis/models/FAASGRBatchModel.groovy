@@ -73,7 +73,7 @@ public class FAASGRBatchModel
     }
     
     def getBarangays(){
-        return lguSvc.lookupBarangays([:])
+        return lguSvc.getBarangaysByParentId(params.lgu?.objid)
     }
     
     def getRputypes(){
@@ -174,7 +174,7 @@ public class BatchGRTask implements Runnable{
         }
         
         if (params.interval == null) params.interval = 10;
-        params.count = 25;
+        params.count = 50;
         items = svc.getFaasesForRevision(params)
         
         while (items){

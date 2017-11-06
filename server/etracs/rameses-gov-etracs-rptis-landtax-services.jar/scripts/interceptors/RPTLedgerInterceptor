@@ -60,7 +60,7 @@ class RPTLedgerInterceptor
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
         
-        if (util.isTrue(faas.datacapture)) {
+        if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
             postNewLedger(faas)
         }
         else if ((faas.txntype.objid.matches('SD|CS') || isFAASFromSubdivision(faas)) && faas.rpu.rputype == 'land'){
@@ -76,6 +76,23 @@ class RPTLedgerInterceptor
         	svc.postLedgerFaasData(faas);
         }		
 	}
+
+    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env.ORGCLASS?.equalsIgnoreCase('province')}")
+    public void postToProvinceLedger(evt){
+        def faas = evt.result 
+
+        if (isLedgerExisting(faas)){
+            svc.postLedgerFaasData(faas)
+        }
+    }
+
+    def isLedgerExisting(faas){
+        def ledger = em_ledger.select('objid').find([faasid:faas.objid]).first() 
+        if (!ledger)
+            ledger = em_ledger.select('objid').find([tdno:faas.prevtdno]).first() 
+        return ledger != null 
+    }
+    
 
     boolean isFAASFromSubdivision(faas){
         return em.findFaasFromSubdividedLand(faas) != null 

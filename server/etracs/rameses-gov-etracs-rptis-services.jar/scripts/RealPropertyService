@@ -64,18 +64,21 @@ class RealPropertyService
 		if (!entity.state)
 			entity.state = 'INTERIM'
 		validate(entity)
+		updatePin(entity)
 		return em_realproperty.create(entity)	
 	}
 
 	@ProxyMethod
 	public def update( entity ) {
 		validate(entity)
+		updatePin(entity)
 		return em_realproperty.update(entity)	
 	}
 
 	@ProxyMethod
 	public def save( entity ) {
 		validate(entity)
+		updatePin(entity)
 		return em_realproperty.save(entity)	
 	}
 
@@ -160,11 +163,6 @@ class RealPropertyService
 		def section = info.section.toString().padLeft(maxsectionlen,'0')
 		def parcel  = info.parcel.toString().padLeft(maxparcellen,'0')
 		pin = pin + '-' + section + '-' + parcel 
-
-		if (info.claimno) {
-			pin += '-' + info.claimno
-		}
-
 		rp.pintype = info.pintype 
 		rp.section = section 
 		rp.parcel  = parcel 
@@ -231,6 +229,13 @@ class RealPropertyService
 		def rp = em_realproperty.select('objid, state').find(params).first();
 		if(rp && !'CANCELLED'.equalsIgnoreCase(rp.state))
 			throw new Exception('PIN ' + info.fullpin + ' already exist.')
+	}
+
+	void updatePin(entity){
+		if (entity.claimno) {
+			entity.pin = entity.pin.replace('-' + entity.claimno, '')  
+		}
+
 	}
 
 }

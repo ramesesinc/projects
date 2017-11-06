@@ -46,6 +46,7 @@ WHERE rl.objid = $P{rptledgerid}
 SELECT *
 FROM rpttaxincentive_item
 WHERE rptledgerid = $P{rptledgerid}
+and $P{curryear} >= fromyear and $P{curryear} <= toyear 
 
 
 [getItemsForTaxComputation]
@@ -670,5 +671,30 @@ where bl.rptledgerid = $P{objid}
 
 [deleteEmptyBills]
 delete from rptbill where not exists(select * from rptbill_ledger where billid = rptbill.objid)
+
+
+[getCurrentYearCredits]	
+select x.* 
+from (
+	select c.receiptdate, min(cro.qtr) as fromqtr, max(cro.qtr) as toqtr
+	from cashreceipt c 
+	inner join cashreceiptitem_rpt_online cro on c.objid = cro.rptreceiptid
+	left join cashreceipt_void cv on c.objid = cv.receiptid
+	where cro.rptledgerid = $P{objid}
+	and cro.year = $P{cy}
+	and cv.objid is null 
+	group by c.receiptdate, cro.year 
+
+	union 
+
+	select 
+		rc.refdate as receiptdate, 
+		case when 2017 = rc.fromyear then rc.fromqtr else 1 end as fromqtr,
+		case when 2017 = rc.toyear then rc.toqtr else 4 end as toqtr
+	from rptledger_credit rc
+	where rc.rptledgerid = $P{objid}
+	and $P{cy} >= rc.fromyear and $P{cy} <= rc.toyear 
+)x 
+order by x.fromqtr 
 
 	

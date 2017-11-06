@@ -5,7 +5,7 @@ import rptis.planttree.facts.*;
 import java.math.*;
 
 public class LandDetail {
-    RPU rpu
+    rptis.facts.RPU rpu
     Classification classification      
     Classification specificclassification      
     String classificationid             

@@ -18,6 +18,7 @@ SELECT
 	r.totalmv,
 	r.totalav,
 	rp.cadastrallotno,
+	rp.blockno,
 	rp.surveyno,
 	pc.code AS classcode
 FROM faas f 

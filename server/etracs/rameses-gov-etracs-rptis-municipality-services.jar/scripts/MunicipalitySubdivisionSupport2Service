@@ -88,7 +88,7 @@ class MunicipalitySubdivisionSupport2Service
         msg.txnno       = subdivision.txnno 
         msg.groupid     = null 
         msg.filetype    = null 
-        msg.message     = 'New FAAS for Subdivision No. ' + subdivision.txnno 
+        msg.message     = 'New FAAS ' + data.tdno + ' for Subdivision No. ' + subdivision.txnno 
         msg.messagetype = 'subdivision-faas'
         svc.sendAsyncMessage(msg)
     }

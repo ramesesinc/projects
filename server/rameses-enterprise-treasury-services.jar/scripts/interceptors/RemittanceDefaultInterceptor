@@ -42,10 +42,5 @@ class RemittanceDefaultInterceptor {
 		if ( pending ) {
 			throw new Exception('You still have pending unliquidated remittances. Kindly inform your liquidating officer.'); 
 		}  
-	}
-
-	@After(pattern="RemittanceService.init")
-	public void afterInit( evt ) { 
-		checkMultipleUniquidatedRemittanceOption( evt.result ); 
-	} 	
+	}	
 }

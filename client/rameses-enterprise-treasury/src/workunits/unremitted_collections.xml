@@ -29,7 +29,7 @@ class UnremittedCollectionPage
     def params=[:];
     def list
     def selectedItem
-
+    
     void init() {
         search();
     }

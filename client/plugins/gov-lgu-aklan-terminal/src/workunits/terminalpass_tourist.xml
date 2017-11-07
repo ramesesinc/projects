@@ -1,0 +1,7 @@
+<workunit>
+    <invokers>
+        <!--
+        <invoker type="terminalpasshome.action" caption="Tourist" role="COLLECTOR,SUBCOLLECTOR"/> 
+        -->
+    </invokers> 
+</workunit>

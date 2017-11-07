@@ -1,0 +1,13 @@
+"entity.objid" [mode=='create'] {
+    enabled: true; 
+}
+"entity.objid" [!(mode=='create')] {
+    enabled: false; 
+}
+"entity.lkpcategory" [mode=='create' || mode=='edit'] {
+    enabled: true; 
+} 
+"entity.lkpcategory" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+} 
+

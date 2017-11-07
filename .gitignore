@@ -191,3 +191,4 @@ android/**/bin
 /client/plugins/rameses-gov-etracs-vehicle-pedicab/build/
 /client/plugins/rameses-gov-etracs-vehicle-pedicab/dist/
 /client/kiosk/rameses-kiosk/nbproject/private/
+/client/plugins/gov-lgu-aklan-terminal/dist/

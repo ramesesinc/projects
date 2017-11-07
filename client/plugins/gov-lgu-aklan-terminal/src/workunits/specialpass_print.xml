@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="aklanspecialpassacct:formActions" caption="Print Terminal Pass" action="print" 
+                 target="process" depends="selectedEntity" visibleWhen="#{selectedEntity != null}"/>  
+        
+        <invoker type="aklanspecialpassacct:printpass" caption="Print Terminal Pass" 
+                 action="print" target="process"/>         
+   </invokers>
+   
+   <code class="gov.lgu.aklan.terminal.AklanSpecialTerminalPassPrintController"/> 
+</workunit>

@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/home/aklanterminal" caption="Issued Terminal Pass" index="100" role="COLLECTOR"/> 
+    </invokers>
+    
+    <code class="gov.lgu.aklan.terminal.AklanTerminalPassListController"/> 
+</workunit>

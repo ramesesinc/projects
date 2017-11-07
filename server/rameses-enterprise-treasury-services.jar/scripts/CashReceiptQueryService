@@ -39,6 +39,11 @@ class CashReceiptQueryService extends AbstractListService {
 			params.orderBy = ' c.'+ params.sortfield +' '+ sorttype +' ';  
 		} 
 
+		params.filter = '';
+		if ( params.collectorid ) {
+			params.filter = ''' AND c.collector_objid = $P{collectorid} '''; 
+		} 
+
 		def list = em.getList(params);
 		if(! list ) list = em.getListByPaidBy(params);
 		if(! list ) list = em.getListByPayer(params); 

@@ -1,0 +1,8 @@
+<schema>
+
+	<element tablename="liquidation_remittance">
+		<field name="objid" primary="true"/>
+		<field name="liquidationid" required="true"/>
+	</element>
+
+</schema>

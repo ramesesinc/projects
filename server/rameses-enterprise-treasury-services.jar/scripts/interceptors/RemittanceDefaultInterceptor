@@ -23,9 +23,24 @@ class RemittanceDefaultInterceptor {
 		boolean allow_multi = (var.allow_multiple_unliquidated_remittance.toString().matches('false|0') ? false : true); 
 		if ( allow_multi ) return; 
 
-		def list = unliqrem_db.getListByCollector([ filter:'', collectorid: param.collector.objid ]); 
-		if ( list ) {
+		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd');
+		def dt = null; 
+		if ( param.remittancedate instanceof java.util.Date ) {
+			dt = param.remittancedate; 
+		} else if ( param.remittancedate instanceof String ) {
+			dt = YMD.parse( param.remittancedate.toString().split(" ")[0] );
+		}
+
+		def iyear = 0; def imonth = 0; 
+		if ( dt instanceof java.util.Date ) {
+			def arr = YMD.format( dt ).split("-"); 
+			iyear = arr[0].toInteger(); 
+			imonth = arr[1].toInteger(); 
+		} 
+
+		def pending = unliqrem_db.findPendingByCollector([ collectorid: param.collector.objid, year: iyear, month: imonth ]); 
+		if ( pending ) {
 			throw new Exception('You still have pending unliquidated remittances. Kindly inform your liquidating officer.'); 
 		}  
-	}
+	}	
 }

@@ -1,0 +1,9 @@
+"entity.*" [mode=='create' || mode=='edit'] {
+    enabled: true; 
+} 
+"entity.*" [!(mode=='create' || mode=='edit')] {
+    enabled: false; 
+} 
+"entity.acctno" [1==1] {
+    enabled: false; 
+} 

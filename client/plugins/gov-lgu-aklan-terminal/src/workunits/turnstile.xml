@@ -1,0 +1,14 @@
+<workunit>
+   <invokers>
+         <invoker type="aklanturnstile:create" caption="Tunstile Information" 
+                  action="create" domain="TERMINAL" role="ADMIN"/>
+         <invoker type="aklanturnstile:open" caption="Tunstile Information" 
+                  action="open" domain="TERMINAL" role="ADMIN"/>
+   </invokers>
+   
+   <code class="gov.lgu.aklan.terminal.AklanTurnstileController"/>
+   
+   <pages>
+       <page template="gov.lgu.aklan.terminal.AklanTurnstilePage" />
+   </pages>
+</workunit>

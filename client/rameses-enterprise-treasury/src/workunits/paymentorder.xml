@@ -1,7 +1,7 @@
 <workunit schemaName="paymentorder">
     <invokers>
        <invoker type="home.action" caption="Order of Payment" 
-                action="create" target="popup"/>
+                action="create" target="popup" role="TODO"/>
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.PaymentOrderModel"/>
     <pages>

@@ -47,13 +47,15 @@ public class BPBillingRuleService  {
 		//actions.addCommand( "set_interest_account",  new SetupInterestAccount( request:req, BA:ba ));
 		actions.addCommand( "set_taxcredit_account",  new SetupTaxCreditAccount( request:req, BA:ba ));
 
+		actions.addCommand( "add_sysvar", new AddSysVar(request:req, comparator: comparator));
+		actions.addCommand( "assert_sysvars", new AssertSysVars(request:req));
 		actions.addCommand( "print_test", new PrintTest());
 		return actions;
 	}
 
 	@ProxyMethod
 	public def execute( def facts ) {
-		def request = [items: [], receivables:[] ];
+		def request = [vars:[:], items: [], receivables:[]];
 		request.facts = facts;
 		request.actions = buildActions( request );
 		def grps = ruleDB.getRulegroups( [ruleset: RULESET] );

@@ -14,20 +14,47 @@ public class AddSysVar implements RuleActionHandler {
 		String agg = params.aggregate;
 		String dtype = params.datatype;
 		def value = params.value;
-		if( agg == "COUNT") dtype = "integer";
+
+		if ( agg == "COUNT" ) dtype = "integer";
 		
 		def var = vars[name];
 		if( var == null ) {
 			var = [datatype:dtype, name: name ];
 			vars[name] = var;
 		}
-		def newAmt = 0;
-		if( agg !="COUNT") {
-			newAmt = (dtype=="integer") ? value.intValue : value.doubleValue;
+
+		def oldVal = var.value; 
+		def newVal = null; 
+		if ( dtype == 'string' ) { 
+			newVal = value.eval(); 
+			var.value = string_comparator( agg, oldVal, newVal ); 
+			return; 
+		} 
+
+		if ( agg !="COUNT" ) { 
+			newVal = ( dtype == "integer" ? value.intValue : value.doubleValue );
 		}
-		
-		def oldAmt = (var.value==null) ? 0 : var.value;
-		var.value = comparator( agg, oldAmt, newAmt );
- 		
+		var.value = comparator( agg, oldVal, newVal );
+	} 
+
+
+	def string_comparator = { agg, oldvalue, newvalue ->
+		switch( agg ) {
+			case "COUNT":
+				return null; 
+
+			case "SUM":
+				return null;
+
+			case "MIN": 
+				def vals = [ oldvalue, newvalue ].findAll{( it )}.sort{ it } 
+				return ( vals ? vals.first() : null ); 
+
+			case "MAX":
+				def vals = [ oldvalue, newvalue ].findAll{( it )}.sort{ it } 
+				return ( vals ? vals.last() : null ); 
+		} 
+
+		return null; 
 	}
 }

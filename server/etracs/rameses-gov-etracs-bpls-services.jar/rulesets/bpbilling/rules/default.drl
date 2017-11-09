@@ -123,3 +123,10 @@ rule "distribute-excess"
 		retract( P );
 end
 
+rule "assert-variables"
+	salience -100
+	no-loop
+	when
+	then
+		action.execute( "assert_sysvars", null, drools);
+end

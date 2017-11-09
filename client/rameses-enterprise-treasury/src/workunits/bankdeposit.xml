@@ -112,7 +112,11 @@ class BankDepositController {
     }
     
     void updateTotalAmount() { 
-        entity.depositamt = liquidationListModel.getSelectedValue().amount.sum();
+        println 'pass'
+        entity.depositamt = 0
+        if (liquidationListModel.getSelectedValue()){
+            entity.depositamt = liquidationListModel.getSelectedValue().sum{it.amount  == null ? 0 : it.amount}
+        }
         binding.refresh('entity.depositamt'); 
     } 
 

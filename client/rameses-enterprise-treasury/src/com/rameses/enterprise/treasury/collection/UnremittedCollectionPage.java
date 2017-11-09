@@ -57,6 +57,7 @@ public class UnremittedCollectionPage extends javax.swing.JPanel {
         jPanel3.setLayout(new java.awt.BorderLayout());
 
         xActionBar1.setBorder(null);
+        xActionBar1.setDynamic(true);
         xActionBar1.setName("formActions"); // NOI18N
         jPanel3.add(xActionBar1, java.awt.BorderLayout.CENTER);
 

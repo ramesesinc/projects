@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class NagaLandTaxTaxClearanceInterceptor 
+{
+    @Service('DateService')
+    def dtSvc
+
+    @ActiveDB('naga_landtax_taxclearance')
+    def em 
+
+
+    @After(pattern="LandTaxReportTaxClearanceService.(createClearance|openClearance)")
+    public void afterOpen(evt){
+        def cert = evt.result 
+        cert.payments = []
+        cert.items.each{item ->
+
+            if ('land' == item.rputype) item.kind = 'Land'
+            else if ('bldg' == item.rputype) item.kind = 'Building'
+            else if ('mach' == item.rputype) item.kind = 'Machinery'
+            else if ('planttree' == item.rputype) item.kind = 'Plant/Tree'
+            else if ('misc' == item.rputype) item.kind = 'Miscellaneous'
+
+            item.rptledgerid = item.refid 
+            def p = [
+                rptcertificationid : cert.objid,
+                rptledgerid : item.rptledgerid,
+                year : cert.year,
+                qtr : cert.qtr,
+            ]
+            cert.payments += em.getPaymentInfo(p).each{
+                if (it.ordate){
+                    it.ordate = dtSvc.parse('yyyy-MM-dd', it.ordate)
+                }
+            }
+        }
+    }
+}

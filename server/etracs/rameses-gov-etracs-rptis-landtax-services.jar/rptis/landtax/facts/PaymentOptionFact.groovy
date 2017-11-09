@@ -1,4 +1,4 @@
-ackage rptis.landtax.facts;
+package rptis.landtax.facts;
 
 public class PaymentOptionFact 
 {

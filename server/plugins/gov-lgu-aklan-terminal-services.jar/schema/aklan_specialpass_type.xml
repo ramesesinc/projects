@@ -1,0 +1,7 @@
+<schema adapter="aklanterminal">
+	<element name="aklan_specialpass_type" tablename="specialpass_type">
+		<field name="objid" primary="true"/> 
+		<field name="title" required="true"/> 
+		<field name="indexno" required="true"/> 
+	</element> 
+</schema>

@@ -1,0 +1,12 @@
+<schema adapter="aklanterminal">
+	<element tablename="cashreceipt_terminal">
+		<field name="objid" primary="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="startseqno" required="true"/>
+		<field name="endseqno" required="true"/>
+		<field name="numadult" required="true"/>
+		<field name="numchildren" required="true"/>
+		<field name="discount"/> 
+		<field name="tag"/> 
+	</element> 
+</schema>

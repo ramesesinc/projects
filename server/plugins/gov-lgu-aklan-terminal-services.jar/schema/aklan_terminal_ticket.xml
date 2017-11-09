@@ -1,0 +1,14 @@
+<schema adapter="aklanterminal">
+	<element name="aklan_terminal_ticket" tablename="ticket">
+		<field name="objid" primary="true"/>
+		<field name="seqno" required="true"/>
+		<field name="barcode" required="true"/>
+		<field name="dtfiled" required="true"/>
+		<field name="dtused" />
+		<field name="guesttype" required="true"/>
+		<field name="refid" required="true"/>
+		<field name="reftype" required="true"/>
+		<field name="refno" />
+		<field name="tag"/>
+	</element>
+</schema>

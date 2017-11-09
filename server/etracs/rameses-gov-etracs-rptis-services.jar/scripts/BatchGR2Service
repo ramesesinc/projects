@@ -28,6 +28,12 @@ class BatchGR2Service
 
 	@ActiveDB('batchgr_mach')
 	def em_mach
+
+	@ActiveDB('batchgr_planttree')
+	def em_planttree
+
+	@ActiveDB('batchgr_misc')
+	def em_misc
     
 
 	@Service('GeneralRevisionService')
@@ -48,18 +54,21 @@ class BatchGR2Service
 	@ProxyMethod
 	public void buildItemsForRevision( params ) {
 		params.barangayid = params.barangay.objid 
-		if (!params.rputype) throw new Exception('Property Type must be specified.')
-		em_batchgr_items_forrevision.find([barangayid:params.barangayid, rputype:params.rputype]).delete();
+		if (!params.rputype) {
+			params.rputype = '%'
+			em_batchgr_items_forrevision.find([barangayid:params.barangayid]).delete();
+		}
+		else {
+			em_batchgr_items_forrevision.find([barangayid:params.barangayid, rputype:params.rputype]).delete();
+		}
 		em.insertItemsForRevision(params)
 	}
 
 
 	@ProxyMethod
 	public def getRevisedCount(params){
+		if (!params.rputype) params.rputype = '%'
 		validateParams(params)
-		if (params.processallrpus){
-			params.rputype = '%'
-		}
 		return em.findRevisedCount(params)
 	}
 
@@ -366,6 +375,86 @@ class BatchGR2Service
 	}	
 
 
+
+
+	/*=======================================================
+	*
+	* PLANT/TREE SUPPORT 
+	*
+	=======================================================*/
+
+	@ProxyMethod
+	public void revisePlantTreeRpus(params){
+		try{
+			println 'revisePlantTreeRpus...'
+			validateParams(params)
+			em_planttree.insertRevisedPlantTreeRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: revisePlantTreeRpus: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void revisePlantTreeDetails(params){
+		try{
+			println 'revisePlantTreeDetails...'
+			validateParams(params)
+			em_planttree.insertRevisedPlantTreeDetails(params)	
+		}
+		catch(e){
+			println 'ERROR: revisePlantTreeDetails: ' + e.message 		
+		}
+	}	
+
+
+
+
+
+	/*=======================================================
+	*
+	* MISCELLANEOUS PROPERTY SUPPORT 
+	*
+	=======================================================*/
+
+	@ProxyMethod
+	public void reviseMiscRpus(params){
+		try{
+			println 'reviseMiscRpus...'
+			validateParams(params)
+			em_misc.insertRevisedMiscRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMiscRpus: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMiscRpuItems(params){
+		try{
+			println 'reviseMiscRpuItems...'
+			validateParams(params)
+			em_misc.insertRevisedMiscRpuItems(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMiscRpuItems: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMiscRpuItemParams(params){
+		try{
+			println 'reviseMiscRpuItemParams...'
+			validateParams(params)
+			em_misc.insertRevisedMiscRpuItemParams(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMiscRpuItemParams: ' + e.message 		
+		}
+	}	
 
 
 

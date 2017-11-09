@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.sevices.extended.* 
+import java.rmi.server.*;
+
+class AklanTerminalLogger  
+{
+    @Service('LogService')
+    def logSvc
+
+
+	@After(pattern="AklanTerminalTicketService.log") 
+    public void logTicketLog( evt ) {
+        def data = evt.args[0]
+        logSvc.logA( data.action, data.ref, data.refid, data.remarks)
+    }
+
+    @After(pattern="AklanTerminalTicketService.reprint") 
+    public void logTicketReprint( evt ) {
+        def data = evt.result 
+        logSvc.logA( evt.methodName, 'aklanticket', data.ticket.objid, 'Reprint Ticket ' + data.ticket.barcode + '.')
+
+    }
+} 
+

@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/aklanterminal" caption="Terminal Pass" 
+                 action="init" target="window" index="100" 
+                 role="COLLECTOR,SUBCOLLECTOR"/> 
+    </invokers> 
+    
+    <code class="gov.lgu.aklan.terminal.TerminalPassHomeController"/>    
+    
+    <pages>
+        <page template="gov.lgu.aklan.terminal.TerminalPassHomePage"/> 
+    </pages> 
+</workunit>

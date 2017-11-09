@@ -51,7 +51,7 @@ public class FAASGRBatch2Model
         counter = [success:0, error:0];
         cancelled = false;
         msg = 'Loading properties to revise.'
-        batchTask = new BatchGRTask(svc:svc, params:params,cancelled:cancelled, oncomplete:oncomplete, onrevise:onrevise,showMessage:showMessage, onerror:onerror, rputypes:rputypes);
+        batchTask = new BatchGRTask(svc:svc, params:params,cancelled:cancelled, oncomplete:oncomplete, showMessage:showMessage, onerror:onerror, rputypes:rputypes);
         Thread t = new Thread(batchTask);
         t.start();
         
@@ -59,17 +59,10 @@ public class FAASGRBatch2Model
     }
     
     
-    def oncomplete = {cnt ->
-        msg = 'Batch revision complete. Total records processed : ' + cnt 
+    def oncomplete = {
+        msg = 'Batch general revision has completed successfully.';
         processing = false;
         binding.refresh();
-    }
-    
-    def onrevise = {
-        counter.success += it.success;
-        counter.error += it.error;
-        msg = 'Successfully Processed: ' + counter.success + '  Errors: ' + counter.error;
-        binding.refresh('msg');
     }
     
     def showMessage = {
@@ -88,8 +81,7 @@ public class FAASGRBatch2Model
     }
     
     def getRputypes(){
-        return ['land', 'bldg', 'mach']
-        // return ['land', 'bldg', 'mach', 'planttree', 'misc']
+        return ['land', 'bldg', 'mach', 'planttree', 'misc']
     }
     
     def getRylist(){
@@ -175,22 +167,22 @@ public class BatchGRTask implements Runnable{
     def items;
     def cancelled;
     def oncomplete;
-    def onrevise;
     def onerror;
     def showMessage;
     def rputypes;
 
     public void run(){
         cancelled = false;
-        
-        params.processallrpus = true
+        def types = rputypes 
+        def oldtype = params.rputype 
+        def error = false;
+        def errormsg = null;
         
         if(params.rputype){
-            rputypes = [params.rputype]
-            params.processallrpus = false
+            types = [params.rputype]
         }
         
-        rputypes.each{ rputype ->
+        types.each{ rputype ->
             params.rputype = rputype 
 
             if (params.inititems == true){
@@ -285,17 +277,43 @@ public class BatchGRTask implements Runnable{
                     svc.reviseMachDetails(params)
                     if (cancelled) return;
                 }
+                else if ('planttree'.equalsIgnoreCase(params.rputype)){
+                    showMessage('Revising plants/trees real property units ...')
+                    svc.revisePlantTreeRpus(params)
+                    if (cancelled) return;
+                    
+                    showMessage('Revising plants/trees appraisals ...')
+                    svc.revisePlantTreeDetails(params)
+                    if (cancelled) return;
+                }
+                else if ('misc'.equalsIgnoreCase(params.rputype)){
+                    showMessage('Revising miscellaneous real property units ...')
+                    svc.reviseMiscRpus(params)
+                    if (cancelled) return;
+                    
+                    showMessage('Revising miscellaneous items appraisal ...')
+                    svc.reviseMiscRpuItems(params)
+                    if (cancelled) return;
+                    
+                    showMessage('Revising miscellaneous item parameters ...')
+                    svc.reviseMiscRpuItemParams(params)
+                    if (cancelled) return;
+                }
             }
             catch(e){
+                error = true;
+                errormsg = e.message;
                 e.printStackTrace();
-                onerror('Error: ' + e.message);
             }
         }
         
-        if (params.processallrpus) 
-            params.rputype = null 
-            
-        oncomplete(svc.getRevisedCount(params).revisedcount)
+        if (error){
+            onerror('Error: ' + errormsg);
+        }
+        else{
+            params.rputype = oldtype 
+            oncomplete()
+        }
     }
 }
 

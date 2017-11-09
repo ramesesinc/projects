@@ -1,0 +1,84 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class AklanTerminalPassService extends ActiveCrudService 
+{
+	@ActiveDB(value='aklan_terminalpass', em='aklanterminal')
+	def em; 
+
+	@ActiveDB(value='aklan_turnstile_category', em='aklanterminal')
+	def turnstile_category;
+	
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('SequenceService')
+	def seqSvc;
+
+	@Service('Var')
+	def var;
+
+	@Service('OrgService')
+	def orgSvc; 
+
+	@Service('AklanTerminalTicketService')
+	def ticketSvc;
+
+	@Env 
+	def env; 
+
+
+	void beforeCreate( data ) {
+		if ( !data.numadult ) throw new Exception('Please specify the number of adults'); 
+		if ( data.numadult <= 0 ) throw new Exception('Number of adults must be greater than zero'); 
+		if ( data && data.numadult <= 0 ) throw new Exception('Number of children must be greater than or equal to zero'); 
+
+		data.thermalprintername = var.thermal_printername; 
+		if ( !data.thermalprintername ) throw new Exception('Please specify the thermal_printername in system variables'); 
+
+		def lguinfo = orgSvc.open([ objid: env.CLIENTCODE? env.CLIENTCODE: env.ORGCODE ]); 
+		def rundate = dateSvc.getServerDate(); 
+		data.dtfiled = rundate.toString(); 
+		data.collector = [objid: env.USERID, name: env.FULLNAME]; 
+		data.org = [objid: env.ORGID, name: env.ORGNAME];
+		data.tag = 'AKLANON';
+		data.special = 0;
+
+		def catidxno = turnstile_category.read([ objid: data.tag ])?.indexno;
+		if (!catidxno) throw new Exception('Please set the category indexno for "'+ data.tag +'"');
+
+		def batchsize = data.numadult; 
+		def prefixyr = rundate.toString().split('-')[0][-2..-1];
+		def prefix = lguinfo.objid + prefixyr + catidxno; 
+		int seriesno = seqSvc.getNextBatchSeries([ objid: prefix+'-aklanterminal', size: batchsize ]); 
+		data.startseqno = seqSvc.formatSeries([ seriesno:seriesno, serieslength:6, prefix: prefix ]); 
+		data.endseqno = seqSvc.formatSeries([ seriesno:seriesno+batchsize-1, serieslength:6, prefix: prefix ]); 
+
+		data.seriesno = seriesno; 
+		data.batchsize = batchsize; 
+		data.prefix = prefix; 
+	} 
+
+	void afterCreate( data ) { 
+		int batchsize = data.batchsize; 
+		int seriesno = data.seriesno;
+		def prefix = data.prefix;
+		
+		data.tickets = []; 
+		for (int idx=0; idx<batchsize; idx++) { 
+			def m = [
+				seqno     : seqSvc.formatSeries([ seriesno:seriesno+idx, serieslength:6, prefix:prefix ]), 
+				dtfiled   : data.dtfiled, 
+				refid  	  : data.objid, 
+				reftype   : 'terminalpass', 
+				tag 	  : data.tag, 
+				guesttype : 'A' 				
+			]; 
+			ticketSvc.create( m ); 
+			data.tickets << m; 
+		} 
+	} 
+} 

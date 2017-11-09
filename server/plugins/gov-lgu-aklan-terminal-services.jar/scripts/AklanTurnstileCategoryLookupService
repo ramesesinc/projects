@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class AklanTurnstileCategoryLookupService 
+{
+	@ActiveDB(value='aklan_turnstile_category', em='aklanterminal')
+	def em; 
+
+	@ProxyMethod 
+	public def getColumns( params ) {
+		return [
+			[name:'objid', caption:'Code'],
+			[name:'title', caption:'Title']
+		]; 
+	} 
+
+	@ProxyMethod 
+	public def getList( params ) {
+		params.searchtext = (params.searchtext? params.searchtext: '') + '%'; 
+		return em.getList( params ); 
+	}
+}	

@@ -1,0 +1,58 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class AklanTerminalTicketInterceptor  
+{
+	@ActiveDB(value='aklan_terminalpass', em='aklanterminal') 
+	def em; 
+
+	@ActiveDB(value='aklan_terminal_ticket', em='aklanterminal') 
+	def terminal_ticket;
+
+	@Service('CashReceiptService') 
+	def cashreceptSvc; 
+
+	@Service('DateService')
+	def dateSvc;
+
+	@Service('Var')
+	def var;
+
+
+	@After(pattern="AklanTerminalTicketService.reprint", eval="#{result.tag=='AKLANON'}")
+	public void reprintAklanonTerminalPass( evt ) { 
+		def thermalprintername = var.thermal_printername; 
+		if ( !thermalprintername ) throw new Exception('Please specify the thermal_printername in system variables'); 
+
+		def r = evt.result; 
+		def ticket = verifyTicket( r.ticket?.objid ); 
+		ticket.receiptdate = dateSvc.serverDate.toString();
+
+		def info = em.read([ objid: ticket.refid ]);
+		if ( !info ) throw new Exception('Terminal pass reference record does not exist'); 
+
+		info.thermalprintername = thermalprintername; 
+		info.receiptdate = ticket.receiptdate; 
+		info.ticket = ticket; 
+		r.putAll( info ); 
+	} 
+
+	@After(pattern="AklanTerminalTicketService.reprint", eval="#{result.tag=='TOURIST'}")
+	public void reprintTouristTerminalPass( evt ) { 
+		def r = evt.result; 
+		def ticket = verifyTicket( r.ticket?.objid ); 
+		def info = cashreceptSvc.open([ objid: ticket.refid ]);
+		info.ticket = ticket; 
+		r.putAll( info ); 
+	} 
+
+	def verifyTicket( ticketid  ) {
+		def ticket = terminal_ticket.read([ objid: ticketid ]);
+		if ( !ticket ) throw new Exception('Terminal pass record does not exist'); 
+		if ( ticket.dtused ) throw new Exception('Terminal pass has already been used'); 
+
+		return ticket; 
+	}
+} 
+

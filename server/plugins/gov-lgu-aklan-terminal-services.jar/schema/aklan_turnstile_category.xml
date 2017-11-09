@@ -1,0 +1,7 @@
+<schema adapter="aklanterminal">
+	<element tablename="turnstile_category">
+		<field name="objid" primary="true" prefix="TC" />
+		<field name="title" required="true"/>
+		<field name="indexno" required="true"/>
+	</element> 
+</schema>

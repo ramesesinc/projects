@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class AklanTerminalOrgInterceptor  
+{
+	@ActiveDB(value='aklan_terminal', em='aklanterminal') 
+	def em; 
+
+	@After(pattern="OrgService.open", index=500, eval="#{result.orgclass=='TERMINAL'}")
+	public void onOpen( evt ) { 
+		def r = evt.result;
+		def xinfo = em.read([ objid: r.objid ]); 
+		if (xinfo) r.putAll( xinfo ); 
+	} 
+} 
+

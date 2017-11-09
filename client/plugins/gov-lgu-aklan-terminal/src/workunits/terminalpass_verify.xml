@@ -1,0 +1,19 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/aklanterminal" 
+                 action="init" caption="Verify Terminal Pass" 
+                 role="COLLECTOR,SUBCOLLECTOR"
+                 target="popup"/> 
+        
+        <invoker type="formActions" 
+                 action="_close" caption="Close" 
+                 immediate="true" mnemonic="c" />
+   </invokers>
+   
+    <code class="gov.lgu.aklan.terminal.models.TerminalPassVerifyModel"/> 
+   
+    <pages>
+       <page template="gov.lgu.aklan.terminal.views.TerminalPassVerifyPage" />
+   </pages>
+
+</workunit>

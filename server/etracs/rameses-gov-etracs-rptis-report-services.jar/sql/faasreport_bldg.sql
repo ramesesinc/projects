@@ -114,6 +114,7 @@ SELECT
 FROM bldgflooradditional bfa 
   INNER JOIN bldgadditionalitem bi ON bfa.additionalitem_objid = bi.objid 
 WHERE bfa.bldgfloorid = $P{objid}
+order by bi.idx 
 
 
 [getAdditionalItemParams]

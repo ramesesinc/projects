@@ -90,7 +90,7 @@ WHERE b.objid = $P{billid}
     and rl.objid = $P{rptledgerid}
   and rl.state = 'APPROVED'
   and rliq.fullypaid = 0 
-  and (rliq.year < b.billtoyear  or (rliq.year = b.billtoyear and rliq.qtr <= b.billtoqtr))
+  and (rliq.year < $P{billtoyear}  or (rliq.year = $P{billtoyear} and rliq.qtr <= $P{billtoqtr}))
 order by rliq.year, rliq.qtr   
 
 
@@ -115,13 +115,14 @@ where cro.rptreceiptid = $P{rptreceiptid}
   and rliq.rptledgerid = $P{rptledgerid}
 
 [fullyPaidQtrlyItems]
-update rptledgeritem_qtrly rliq set
+update rliq set
 	rliq.basicpaid = rliq.basic,
 	rliq.basicidlepaid = rliq.basicidle,
 	rliq.sefpaid = rliq.sef,
 	rliq.firecodepaid = rliq.firecode,
 	rliq.partialled = 0,
 	rliq.fullypaid = 1
+from rptledgeritem_qtrly rliq	
 where rptledgerid = $P{rptledgerid}
 and year = $P{year}
 and qtr < $P{qtr}

@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <!-- 
+        <invoker type="aklanterminalpass:formActions" caption="Reprint" action="reprint" 
+                 target="process" depends="selectedEntity" visibleWhen="#{selectedEntity != null}"/>  
+                -->
+   </invokers>
+   
+   <code class="gov.lgu.aklan.terminal.AklanTerminalPassReprintController"/> 
+</workunit>

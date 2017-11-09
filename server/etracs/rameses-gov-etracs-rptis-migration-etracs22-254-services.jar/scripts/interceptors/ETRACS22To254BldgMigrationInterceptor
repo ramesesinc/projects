@@ -208,6 +208,7 @@ class ETRACS22To254BldgMigrationInterceptor
 					additionalitem  : [objid:item.addlitemid],
 					amount 			: item.amount,
 					expr			: item.expr,
+					depreciate      : true, 
 				]
 				rpuEm.create(newitem, 'additional')
 			}
@@ -279,6 +280,8 @@ class ETRACS22To254BldgMigrationInterceptor
 				code 	: bs.structurecode,
 				name 	: bs.structurename,
 				idx 	: 0,
+				indexno : 0,
+				showinfaas: 0,
 			]
 			structEm.create(st)
 		}

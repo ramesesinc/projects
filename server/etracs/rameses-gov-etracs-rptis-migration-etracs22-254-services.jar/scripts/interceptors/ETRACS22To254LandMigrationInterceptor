@@ -378,14 +378,18 @@ class ETRACS22To254LandMigrationInterceptor
 		if (!al){
 			def rysetting = em254.findPlantTreeRySettingByRy(rpu)
 			al = [
-				objid 		: pt.assesslevelid,
+				objid 		: (pt.assesslevelid ? pt.assesslevelid : pt.al?.objid),
 				planttreerysettingid : rysetting.objid,
-				code 		: pt.assesslevelcode,
-				name 		: pt.assesslevelname,
+				code 		: (pt.assesslevelcode ? pt.assesslevelcode : pt.al.code),
+				name 		: (pt.assesslevelname ? pt.assesslevelname : pt.al.name),
 				rate 		: pt.assesslevel,
 				classification : [objid:rpu.classid],
 			]
-			planttreeSettingEm.create(al, 'assesslevel')
+			planttreeSettingEm.save(al, 'assesslevel')
+
+			if (!pt.assesslevelid) pt.assesslevelid = al.objid 
+			if (!pt.assesslevelcode) pt.assesslevelcode = al.code 
+			if (!pt.assesslevelname) pt.assesslevelname = al.name 
 		}
 	}
 }

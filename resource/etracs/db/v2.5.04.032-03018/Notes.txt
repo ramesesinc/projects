@@ -8,3 +8,5 @@ Add Connections
 	- remote-script-mq
 	- remote-script-service
 	- local-gdx
+ASSESSOR 
+	- update ordinance info in revision settings

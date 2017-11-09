@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpubldg:info" action="init" caption="Lands" index="6" mnemonic="u"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.models.RPUBldgInfoLandModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.RPUBldgInfoLandPage"/>
+    </pages>
+</workunit>

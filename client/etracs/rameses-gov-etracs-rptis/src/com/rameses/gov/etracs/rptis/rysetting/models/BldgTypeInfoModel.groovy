@@ -53,6 +53,7 @@ public class BldgTypeInfoModel implements SubPage
         
         depreciations = service.getDepreciations(selectedBldgType)
         depreciationListHandler.load();
+        binding.requestFocus('selectedBldgType');
     }
     
     def bldgTypeListHandler = [

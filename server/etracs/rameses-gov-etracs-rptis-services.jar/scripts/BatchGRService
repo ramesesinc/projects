@@ -11,6 +11,9 @@ class BatchGRService
 	@DataContext('batchgr_items_forrevision')
 	def em_items_forrevision
 
+	@DataContext('batchgr_log')
+	def em_batchgr_log 
+
 	@DataContext('batchgr_error')
 	def em_error 
 
@@ -52,7 +55,7 @@ class BatchGRService
 	public def reviseFaas( info ) {
 		def retval = [success:0, error:0]
 		try {
-			info.faas = em.findFaasForRevision(info.faas)
+			//info.faas = em.findFaasForRevision(info.faas)
 			def faas = grSvc.initGeneralRevision(info)
 			faas.memoranda = info.memoranda 
 			faas.appraiser = info.appraiser 
@@ -66,6 +69,7 @@ class BatchGRService
 				faas = faasSvc.approveFaas(faas)
 			}
 			retval.success += 1
+			em_batchgr_log.create(faas)
 			println 'Successfully revised -> ' + faas.rpu.rputype + ' : ' +  faas.prevtdno 
 		}
 		catch ( e ) {

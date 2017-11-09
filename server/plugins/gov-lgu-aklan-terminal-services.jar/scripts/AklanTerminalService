@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+
+class AklanTerminalService extends ActiveCrudService 
+{
+	@ActiveDB(value='aklan_terminal', em='aklanterminal')
+	def em; 
+	
+}	

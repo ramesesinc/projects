@@ -9,7 +9,6 @@
 "entity.rpu.distance.*"  [allowEdit == true] {
     enabled:true;
     visible:true;
-    required:true;
 }
 
 

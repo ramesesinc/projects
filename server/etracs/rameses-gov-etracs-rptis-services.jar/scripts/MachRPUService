@@ -208,7 +208,7 @@ class MachRPUService
             machine.replacementcost  = 0.0
         } 
         if( util.isTrue(machine.imported) && machine.ferac > 0.0) {
-            def factor = numberSvc.round(machine.forex / machine.ferac)
+            def factor = numberSvc.roundA(machine.forex / machine.ferac, 6)
             cost = numberSvc.round( cost * factor) 
         }
         if( machine.conversionfactor > 0.0) {
@@ -222,7 +222,7 @@ class MachRPUService
             util.isFalse(machine.newlyinstalled) && 
             util.isTrue(machine.autodepreciate) && 
             machine.residualrate > 0.0) {
-                machine.replacementcost = numberSvc.round( machine.originalcost * residualrate / 100.0 )
+                machine.replacementcost = numberSvc.round( machine.originalcost * machine.residualrate / 100.0 )
         }
     }
 
@@ -329,6 +329,7 @@ class MachRPUService
                                 it.imported = util.toBoolean(it.imported, false)   
                                 it.newlyinstalled = util.toBoolean(it.newlyinstalled, false)   
                                 it.autodepreciate = util.toBoolean(it.autodepreciate, true)   
+                                it.taxable = util.toBoolean(it.taxable, true)   
                             }
         }
          

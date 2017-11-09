@@ -139,7 +139,7 @@ class RPUBldgInfoAppraisalModel extends SubPageModel
     def bldgUseListHandler = [
         createItem : { return [
             bldgrpuid           : entity.rpu.objid,
-            structuraltype      : selectedStructuralType,
+            structuraltype      : [objid:selectedStructuralType?.objid],
             basevalue           : selectedStructuralType.basevalue,
             area                : 0.00,
             basemarketvalue     : 0.00,

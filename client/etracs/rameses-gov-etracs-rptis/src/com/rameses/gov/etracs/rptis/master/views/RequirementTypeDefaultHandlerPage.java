@@ -46,6 +46,7 @@ public class RequirementTypeDefaultHandlerPage extends javax.swing.JPanel {
         xLabel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setPadding(new java.awt.Insets(0, 10, 5, 5));
 
         xCheckBox1.setName("entity.complied"); // NOI18N

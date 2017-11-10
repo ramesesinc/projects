@@ -2,7 +2,8 @@
     <invokers>
         <invoker folderid="/home/aklanterminal" caption="Terminal Pass" 
                  action="init" target="window" index="100" 
-                 role="COLLECTOR,SUBCOLLECTOR"/> 
+                 role="COLLECTOR,SUBCOLLECTOR"
+                 visibleWhen="#{env.CLIENTCODE=='AKL'}"/> 
     </invokers> 
     
     <code class="gov.lgu.aklan.terminal.TerminalPassHomeController"/>    

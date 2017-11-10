@@ -74,3 +74,20 @@ alter table bldgadditionalitem add idx int;
 update bldgadditionalitem set idx = 0 where idx is null;
 
 	
+
+
+
+/*=================================================	
+*
+*  PROVINCE-MUNI LEDGER SYNCHRONIZATION SUPPORT 
+*
+====================================================*/
+CREATE TABLE `rptledger_remote` (
+  `objid` varchar(50) NOT NULL,
+  `remote_objid` varchar(50) NOT NULL,
+  `createdby_name` varchar(255) NOT NULL,
+  `createdby_title` varchar(100) DEFAULT NULL,
+  `dtcreated` datetime NOT NULL,
+  PRIMARY KEY (`objid`),
+  CONSTRAINT `FK_rptledgerremote_rptledger` FOREIGN KEY (`objid`) REFERENCES `rptledger` (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

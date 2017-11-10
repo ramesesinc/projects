@@ -112,3 +112,26 @@ go
 
 update bldgadditionalitem set idx = 0 where idx is null
 go 
+
+
+
+
+
+/*=================================================	
+*
+*  PROVINCE-MUNI LEDGER SYNCHRONIZATION SUPPORT 
+*
+====================================================*/
+CREATE TABLE rptledger_remote (
+  objid nvarchar(50) NOT NULL,
+  remote_objid nvarchar(50) NOT NULL,
+  createdby_name nvarchar(255) NOT NULL,
+  createdby_title nvarchar(100) DEFAULT NULL,
+  dtcreated datetime NOT NULL,
+  PRIMARY KEY (objid)
+)
+go 
+
+alter table rptledger_remote 
+add CONSTRAINT FK_rptledgerremote_rptledger FOREIGN KEY (objid) REFERENCES rptledger (objid)
+go 

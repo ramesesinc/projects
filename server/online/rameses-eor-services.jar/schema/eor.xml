@@ -8,6 +8,7 @@
 		<field name="txnrefid" required="true"/>
 		<field name="txnreftype" required="true"/>
 		<field name="txntype" required="true"/>
+		<field name="controlno"/>
 
 		<!-- reference from the partner -->
 		<field name="refno" required="true"/>

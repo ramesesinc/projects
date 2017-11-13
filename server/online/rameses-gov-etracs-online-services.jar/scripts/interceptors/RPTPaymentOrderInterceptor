@@ -7,12 +7,23 @@ class RPTPaymentOrderInterceptor
 	@Service('RPTReceiptService')
     def receiptSvc 
 
+    @DataContext('rptbill')
+    def em_rptbill 
+
 	@After(pattern="PaymentOrderService.fetchPaymentInfo", eval="#{result.txntype == 'rptcol'}") 
 	public void fetchInfo( evt ) {
 		def entity = evt.result 
-		def bill = [billid:entity.refid, rptitems:[[rptledgerid:entity.info.rptledgerid ]]]
-		entity.rptitems = [[rptledgerid:bill.rptledgerid]]
-        entity.items = receiptSvc.getSummarizedCashReceiptItems(bill)
+		entity.bill = [objid:entity.refid, billid:entity.refid, billno:entity.refno]
+		em_rptbill.find([objid:entity.bill.objid]).update([billtoyear:entity.billtoyear, billtoqtr:entity.billtoqtr])
+		entity.billid = entity.bill.objid 
+		entity.bill.rptledgerid = entity.info.rptledgerid
+
+		entity.bill = em_rptbill.find([objid:entity.bill.objid]).first()
+		if (!entity.bill) 
+			throw new Exception('Bill ' + entity.bill.billno + ' does not exist or has already been deleted.')
+			
+		entity.rptitems = receiptSvc.getItemsForPayment(entity.bill)
+    	entity.items = receiptSvc.getSummarizedItems(entity)
 	}
 
 }

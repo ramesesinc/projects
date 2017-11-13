@@ -18,10 +18,14 @@ class OnlineElectronicReceiptService
     def paymentorder 
     
     @DataContext("cashreceipt")
-    def cashreceipt 
+    def em_cashreceipt; 
 
     @DataContext("cashreceiptitem")
-    def cashreceiptItem 
+    def em_cashreceiptitem; 
+
+    @DataContext("cashreceiptpayment_noncash")
+    def em_cashreceiptpayment_noncash; 
+
 
     @DataContext("cashreceiptpayment_eor")
     def cashreceiptpayment_eor 
@@ -34,11 +38,20 @@ class OnlineElectronicReceiptService
 
     @Service('OrgService')
     def orgSvc 
+
+    @DataContext("paymentpartner")
+    def paymentpartner 
+
+    @DataContext('creditmemo')
+    def creditmemo 
+
+    @ActiveDB('onlinecashreceipt')
+    def em_onlinecashreceipt
     
 
     @ProxyMethod
     public def post( eor) {
-        def po = paymentorder.find([txnid:eor.txnpoid]).first()
+        def po = paymentorder.read([txnid:eor.txnpoid])
         if (!po) throw new Exception('Payment Order No. ' + eor.txnpoid + ' does not exist or has already been deleted.')
 
         def svrDate = dateService.serverDate
@@ -61,17 +74,61 @@ class OnlineElectronicReceiptService
         entity.cashchange = 0
         entity.totalcredit = 0
         entity.collectiontype = collectiontype.find(po.txntype.collectiontype).first()
-        entity = cashreceipt.create(entity)
-        po.items.each { m->
-            m.receiptid = entity.objid
-            cashreceiptItem.create(m)
-        }
 
+        postCashReceipt(entity, eor, po)
         createCashReceiptPaymentEor(entity,eor)
         paymentorder.find([txnid:po.txnid]).update([receiptid: entity.objid])
         entity.po = po 
         return entity 
     }   
+
+    void postCashReceipt(entity, eor, po){
+        def cm = createCreditMemo(entity, eor, po)
+        entity = em_cashreceipt.create(entity); 
+        po.items.each { itm->
+            if(! itm.objid  ) itm.objid = "RCI"+ new java.rmi.server.UID();
+            itm.receiptid = entity.objid
+            em_cashreceiptitem.create(itm);
+        }
+        
+        def fundsummaries = em_onlinecashreceipt.getFundSummaries(entity)
+        fundsummaries.eachWithIndex{fs, idx -> 
+            def p = [:]
+            p.objid = 'CRN' + new java.rmi.server.UID()
+            p.receiptid = entity.objid 
+            p.bankid = cm.bankaccount.bank.objid 
+            p.deposittype = 'EOR'
+            p.bank = cm.bankaccount.bank.name  
+            p.refno = cm.refno 
+            p.refdate = cm.refdate 
+            p.reftype = 'CREDIT_MEMO'
+            p.amount = fs.amount 
+            p.particulars = 'CM # ' + cm.refno + ' (' + (idx+1) + '/' + fundsummaries.size() + ')'
+            p.account = [:]
+            p.account.fund = fs.fund 
+            em_cashreceiptpayment_noncash.create(p);
+        }
+    }
+
+    def createCreditMemo(entity, eor, po){
+        def pp = paymentpartner.find([objid:eor.partner.objid]).first()
+        def cm = [:]
+        cm.objid = 'CME' + new java.rmi.server.UID()
+        cm.state = 'CLOSED'
+        cm.controlno = entity.receiptno 
+        po.payer.address = [text:po.paidbyaddress]
+        cm.payer = po.payer 
+        cm.payeraddress = po.paidbyaddress
+        cm.refdate = entity.receiptdate 
+        cm.refno = entity.receiptno 
+        cm.amount = po.amount 
+        cm.particulars = po.particulars 
+        cm.bankaccount = pp.bankaccount 
+        cm.type = 'EOR'
+        cm.dtissued = entity.receiptdate 
+        cm.issuereceipt = 1
+        creditmemo.create(cm)
+    }
 
     def getControl( def afControlId ) {
         def ac = afControl.find( [objid: afControlId ]).first()
@@ -99,7 +156,7 @@ class OnlineElectronicReceiptService
         def ac = getControl(afControlId)
         int series = ac.currentseries
         afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] )
-        return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'serial', controlid: afControlId, stub: 1 ] 
+        return [series: series, receiptno: afControlId + '-' + series.toString().padLeft(7, '0'), formno:'EOR', formtype:'serial', controlid: afControlId, stub: 1 ] 
     }
 
     void createCashReceiptPaymentEor(entity, eor){

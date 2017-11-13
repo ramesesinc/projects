@@ -1,0 +1,10 @@
+<schema adapter="eor">
+	<element tablename="partner_payment_option">
+		<field name="objid" primary="true"/>	
+		<field name="partnerid" />
+		<complex name="paypartner" ref="payment_partner" jointype="many-to-one" required="true"> 
+			<key field="paypartnerid" target="objid"/>	
+		</complex>
+		<complex name="info" serializer="default" required="true"/>
+	</element>
+</schema>

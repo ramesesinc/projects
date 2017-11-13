@@ -45,7 +45,6 @@ class AFControlService  {
 		em.find([objid: o.objid] ).update( [assignee: o.owner] );
 	}
 
-
 	@ProxyMethod
 	public def findActiveControlForCashReceipt(def params) {
 		params.filter = ' and ac.fund_objid is null ';
@@ -67,6 +66,11 @@ class AFControlService  {
 
 		def nextseries = o.currentseries + p.qtyissued; 
 		em.find([ objid: p.objid ]).update([ currentseries: nextseries ]); 		
+	}
+
+	@ProxyMethod
+	public void activateSelectedControl(def o) {
+		em.find([objid: o.objid] ).update( [active: 1] );
 	}
 
 	/*
@@ -97,8 +101,6 @@ class AFControlService  {
 		
 	}
 
-	
-
 	@ProxyMethod
 	public void deactivateControl(def p) {
 		def m =[ objid: p.objid ]
@@ -110,7 +112,6 @@ class AFControlService  {
 	}
 
 	
-
 	@ProxyMethod
 	public void changeMode( p ) { 
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 

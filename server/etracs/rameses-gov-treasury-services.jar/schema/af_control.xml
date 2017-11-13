@@ -27,6 +27,7 @@
 
 		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
 		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>
+
 		<field name="lockid" /> 
 
 		<field name="respcenter_objid" /> 

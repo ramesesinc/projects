@@ -196,3 +196,4 @@ android/**/bin
 /client/rameses-enterprise-accounting/dist/
 /client/etracs/rameses-gov-etracs-rptis-landtax-province/dist/
 /client/plugins/gov-lgu-aklan-terminal/dist/
+/client/etracs/rameses-gov-treasury-report/build/

@@ -66,7 +66,10 @@ public class CashReceiptSelectionModel  {
         fetchList: {o-> 
             def xlist = [];
             xlist.addAll( items );
-            def p = [formtype: formType.objid];  
+
+            def p = [formtype: formType?.objid]; 
+            if ( p.formtype == null ) p.formtype = '';
+            
             def list = null;
             if(txnmode == 'ONLINE') {
                 list = collectionTypeSvc.getOnlineCollectionTypes(p);
@@ -74,6 +77,7 @@ public class CashReceiptSelectionModel  {
             else {
                 list = collectionTypeSvc.getOfflineCollectionTypes(p);
             }
+            
             list.each{
                 it.caption = it.title;
                 it.icon = homeicon;

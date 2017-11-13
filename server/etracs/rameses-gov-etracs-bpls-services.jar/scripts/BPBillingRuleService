@@ -28,6 +28,28 @@ public class BPBillingRuleService  {
 
 	String RULESET = "bpbilling";
 
+	def comparator = { agg, oldvalue, newvalue ->
+		switch(agg) {
+			case "COUNT":
+				return (oldvalue + 1);
+
+			case "SUM":
+				return oldvalue + newvalue;
+
+			case "MIN":
+				if( oldvalue <= newvalue  )		
+					return oldvalue;
+				else
+					return newvalue;
+			case "MAX":
+				if( oldvalue >= newvalue  )		
+					return oldvalue;
+				else
+					return newvalue;
+		}
+		return 0;
+	}
+
 	def buildActions(def req) {
 		def actions = new RuleAction();
 		actions.addCommand( "split_by_qtr", new SplitByQtr( request:req, NS:numberSvc ));
@@ -47,13 +69,15 @@ public class BPBillingRuleService  {
 		//actions.addCommand( "set_interest_account",  new SetupInterestAccount( request:req, BA:ba ));
 		actions.addCommand( "set_taxcredit_account",  new SetupTaxCreditAccount( request:req, BA:ba ));
 
+		actions.addCommand( "add_sysvar", new AddSysVar(request:req, comparator: comparator));
+		actions.addCommand( "assert_sysvars", new AssertSysVars(request:req));
 		actions.addCommand( "print_test", new PrintTest());
 		return actions;
 	}
 
 	@ProxyMethod
 	public def execute( def facts ) {
-		def request = [items: [], receivables:[] ];
+		def request = [vars:[:], items: [], receivables:[]];
 		request.facts = facts;
 		request.actions = buildActions( request );
 		def grps = ruleDB.getRulegroups( [ruleset: RULESET] );

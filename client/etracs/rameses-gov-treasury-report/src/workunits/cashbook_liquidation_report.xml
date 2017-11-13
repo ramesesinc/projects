@@ -1,0 +1,15 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/treasury" caption="Liquidation Report" target="window">
+            <action name="doInit" role="REPORT" tag="SHARED"/> 
+            <action name="doInit" role="SHARED" tag="SHARED"/> 
+            <action name="doInit" role="LIQUIDATING_OFFICER" tag="LIQ"/> 
+        </invoker>
+    </invokers>
+    
+    <code class="com.rameses.gov.treasury.report.models.CashbookLiquidationReportModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.report.views.CashBookLiquidationReportInitPage"/> 
+    </pages>
+</workunit>

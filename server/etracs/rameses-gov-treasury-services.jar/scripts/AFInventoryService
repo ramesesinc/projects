@@ -117,7 +117,7 @@ public class AFInventoryService  {
 		if ( !o.qtyissued ) o.qtyissued = o.qty; 
 		if ( !o.qtycancelled ) o.qtycancelled = o.cqty;
 
-		head.qtycancelled += o.qtycancelled; 
+		head.qtycancelled += (o.qtycancelled ? o.qtycancelled : 0); 
 
 		if( o.currentseries ) {
 			head.currentseries = o.currentseries; 

@@ -192,3 +192,4 @@ android/**/bin
 /client/plugins/rameses-gov-etracs-vehicle-pedicab/dist/
 /client/kiosk/rameses-kiosk/nbproject/private/
 /client/plugins/gov-lgu-aklan-terminal/dist/
+/client/etracs/rameses-gov-treasury-report/build/

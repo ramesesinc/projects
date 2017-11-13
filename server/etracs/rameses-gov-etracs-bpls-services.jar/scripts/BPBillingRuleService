@@ -28,6 +28,28 @@ public class BPBillingRuleService  {
 
 	String RULESET = "bpbilling";
 
+	def comparator = { agg, oldvalue, newvalue ->
+		switch(agg) {
+			case "COUNT":
+				return (oldvalue + 1);
+
+			case "SUM":
+				return oldvalue + newvalue;
+
+			case "MIN":
+				if( oldvalue <= newvalue  )		
+					return oldvalue;
+				else
+					return newvalue;
+			case "MAX":
+				if( oldvalue >= newvalue  )		
+					return oldvalue;
+				else
+					return newvalue;
+		}
+		return 0;
+	}
+
 	def buildActions(def req) {
 		def actions = new RuleAction();
 		actions.addCommand( "split_by_qtr", new SplitByQtr( request:req, NS:numberSvc ));

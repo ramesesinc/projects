@@ -39,10 +39,10 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xFormPanel11 = new com.rameses.rcp.control.XFormPanel();
         formPanel4 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
@@ -138,22 +138,9 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
 
         formPanel1.add(jScrollPane1);
 
-        xCheckBox1.setCaption("Auto-Approve FAAS");
-        xCheckBox1.setCaptionWidth(140);
-        xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
-        xCheckBox1.setName("params.autoapprove"); // NOI18N
-        xCheckBox1.setPreferredSize(new java.awt.Dimension(0, 23));
-        xCheckBox1.setShowCaption(false);
-        xCheckBox1.setText("Automatically approve FAAS?");
-        xCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xCheckBox1ActionPerformed(evt);
-            }
-        });
-        formPanel1.add(xCheckBox1);
-
         xCheckBox2.setCaption("Re-initialize Item for Revision");
         xCheckBox2.setCaptionWidth(140);
+        xCheckBox2.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xCheckBox2.setName("params.inititems"); // NOI18N
         xCheckBox2.setPreferredSize(new java.awt.Dimension(0, 20));
         xCheckBox2.setShowCaption(false);
@@ -164,6 +151,19 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
             }
         });
         formPanel1.add(xCheckBox2);
+
+        xCheckBox1.setCaption("Auto-Approve FAAS");
+        xCheckBox1.setCaptionWidth(140);
+        xCheckBox1.setName("params.autoapprove"); // NOI18N
+        xCheckBox1.setPreferredSize(new java.awt.Dimension(0, 23));
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText("Automatically approve FAAS?");
+        xCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox1ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xCheckBox1);
 
         xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -180,11 +180,18 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
 
         formPanel1.add(xSeparator2);
 
-        xIntegerField1.setCaption("Interval / FAAS (millisec)");
-        xIntegerField1.setCaptionWidth(140);
-        xIntegerField1.setName("params.interval"); // NOI18N
-        xIntegerField1.setRequired(true);
-        formPanel1.add(xIntegerField1);
+        xCheckBox3.setCaption("Re-initialize Item for Revision");
+        xCheckBox3.setCaptionWidth(140);
+        xCheckBox3.setName("params.continueonerror"); // NOI18N
+        xCheckBox3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xCheckBox3.setShowCaption(false);
+        xCheckBox3.setText(" Continue on error?");
+        xCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox3ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xCheckBox3);
 
         xFormPanel11.setCellspacing(1);
         xFormPanel11.setPadding(new java.awt.Insets(0, 5, 0, 0));
@@ -337,6 +344,10 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private void xCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_xCheckBox2ActionPerformed
+
+    private void xCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xCheckBox3ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -348,6 +359,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
@@ -357,7 +369,6 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField5;
     private com.rameses.rcp.control.XDateField xDateField6;
     private com.rameses.rcp.control.XFormPanel xFormPanel11;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;

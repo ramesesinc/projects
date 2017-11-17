@@ -31,11 +31,30 @@ class BatchGR2Interceptor
 	@DataContext('batchgr_log')
 	def em_batchgr_log
 
+	@DataContext('batchgr_error')
+	def em_batchgr_error
+
+	@DataContext('faas_previous')
+	def em_faas_previous
+
+
+	@After(pattern="FAASService.approveFaas", eval="#{result.txntype?.objid=='GR'}") 
+	public void interceptApprove( evt ) {
+		def faas = evt.result 
+		def pf = em_faas_previous.find([faasid:faas.objid]).first()
+		if (pf){
+			em_batchgr_error.find([objid:pf.prevfaasid]).delete()
+		}
+	}
+	
 
 	@After(pattern="FAASService.deleteFaas") 
 	public void deleteBatchGrLog( evt ) {
 		def faas = evt.result 
-		em_batchgr_log.find([objid:faas.objid]).delete()
+		def pf = em_faas_previous.find([faasid:faas.objid]).first()
+		if (pf){
+			em_batchgr_log.find([objid:pf.prevfaasid]).delete()
+		}
 	}
 
 

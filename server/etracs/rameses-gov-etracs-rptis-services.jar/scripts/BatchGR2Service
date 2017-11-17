@@ -45,6 +45,9 @@ class BatchGR2Service
 	@Service('FAASService')
 	def faasSvc 
 
+	@DataContext('faas_previous')
+	def em_faas_previous 
+
 
 	@ProxyMethod
 	public def getRyList(lguid, ry, rputype ) {
@@ -70,6 +73,33 @@ class BatchGR2Service
 		if (!params.rputype) params.rputype = '%'
 		validateParams(params)
 		return em.findRevisedCount(params)
+	}
+
+
+	@ProxyMethod
+	public void approveFaas(params) {
+		def prevfaas = params.faas 
+		try{
+			def fp = em_faas_previous.find([prevfaasid:prevfaas.objid]).first()
+			if (!fp) throw new Exception('Previous FAAS record for does not exist.')
+
+			def faas = faasSvc.openFaas([objid:fp.faasid])
+			faasSvc.approveFaas(faas)
+			em_batchgr_log.save([objid:prevfaas.objid])
+			em_batchgr_items_forrevision.find([objid:prevfaas.objid]).delete()
+			println 'Successfully revised FAAS ' + prevfaas.tdno  
+		}
+		catch(e){
+			e.printStackTrace()
+			if (params.continueonerror){
+				logError( prevfaas.objid, params.newry, e )
+				em_batchgr_log.delete([objid:prevfaas.objid])
+				em_batchgr_items_forrevision.find([objid:prevfaas.objid]).delete()
+			}
+			else{
+				throw e 
+			}
+		}
 	}
 
 

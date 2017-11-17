@@ -67,6 +67,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid from bldgrpu where objid = replace(br.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -94,6 +95,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid from bldgstructure where objid = replace(bs.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedBldgStructuralTypes]
@@ -129,6 +131,8 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid from bldgrpu_structuraltype where objid = replace(bs.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
+
 
 
 
@@ -175,6 +179,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid from bldguse where objid = replace(bu.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -213,6 +218,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid  from bldgfloor where objid = replace(bf.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -243,6 +249,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid from bldgflooradditional where objid = replace(bfa.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedBldgAdditionalItemParams]
@@ -270,4 +277,5 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
+and not exists(select objid from bldgflooradditionalparam where objid = replace(bfa.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 

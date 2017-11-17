@@ -45,18 +45,14 @@ public class FAASGRBatch2Model
             autoapprove : false,
             interval    : 50,
             continueonerror: true,
-            counter     : [sucess:0, error:0],
-            showMessage : showMessage,
-            cancelled  : false,
         ]
         lgus = lguSvc.getLgus();
     }         
             
     void revise() {
         if( !MsgBox.confirm("Revise all faas? ")) return;
-        params.cancelled = false;
         msg = 'Loading properties to revise.'
-        batchTask = new BatchGRTask(svc:svc, params:params, rputypes:rputypes);
+        batchTask = new BatchGRTask(svc:svc, params:params, rputypes:rputypes, showMessage:showMessage);
         Thread t = new Thread(batchTask);
         t.start();
         
@@ -64,11 +60,14 @@ public class FAASGRBatch2Model
     }
     
     def showMessage = {
+        msg = it.msg;
         if ('COMPLETED'.equalsIgnoreCase(it.status)){
             processing = false;
+            binding.refresh();
         }
-        msg = it.msg;
-        binding.refresh('msg');
+        else{
+            binding.refresh('msg');
+        }
     }
     
     def getBarangays(){
@@ -85,7 +84,6 @@ public class FAASGRBatch2Model
     
     void cancel() {
         processing = false;
-        cancelled = true;
         batchTask.cancelled = true;
         msg = null;
     }
@@ -161,9 +159,11 @@ public class BatchGRTask implements Runnable{
     def params;
     def items;
     def rputypes;
+    def showMessage;
+    def cancelled;
 
     public void run(){
-        params.cancelled = false;
+        cancelled = false;
         def types = rputypes 
         def oldtype = params.rputype 
         
@@ -294,11 +294,48 @@ public class BatchGRTask implements Runnable{
             }
         }
         
-        
-        
-        
         params.rputype = oldtype 
-        showMessage([msg:'Revising miscellaneous item parameters ...'])
+        
+        if (params.autoapprove){
+            params.counter = [success:0, error:0]
+            params.interval = 250;
+            params.count = 25;
+            def error = false;
+            def items = svc.getFaasesForRevision(params)
+            
+            while (items && !error){
+                for(int i=0; i<items.size(); i++) {
+                    if (cancelled) break;
+                    try{
+                        params.faas = items[i]
+                        svc.approveFaas(params);
+                        params.counter.success++;
+                        showMessage([msg:'Successfully approved FAAS ' + params.faas.tdno + '.'])
+                    }
+                    catch(err){
+                        err.printStackTrace()
+                        if (params.continueonerror){
+                            params.counter.error++;
+                            err.printStackTrace();
+                        }
+                        else{
+                            error = true 
+                            showMessage([status:'ERROR', msg:'Error processing FAAS ' + params.faas.tdno + '. [ERROR] ' + err.message])
+                            break;
+                        }
+                    }
+                }
+                if (!error){
+                    items = svc.getFaasesForRevision(params)
+                }
+            }
+            showMessage([status:'COMPLETED', msg:'Batch revision completed. Processed: ' + params.counter.success + ' Error: ' + params.counter.error])
+        }
+        else{
+            def count = svc.getRevisedCount(params).revisedcount
+            showMessage([status:'COMPLETED', msg:'Batch revision has successfully completed. Total Processed: ' + count]);
+        }
+        
     }
 }
 

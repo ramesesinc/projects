@@ -19,6 +19,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'planttree'
 and r.ry < $P{newry}  
+and not exists(select objid from planttreerpu where objid = replace(p.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -69,3 +70,4 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'planttree'
 and r.ry < $P{newry}  
+and not exists(select objid from planttreedetail where objid = replace(p.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))

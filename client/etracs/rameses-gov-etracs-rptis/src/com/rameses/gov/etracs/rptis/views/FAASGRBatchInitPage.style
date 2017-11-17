@@ -13,7 +13,3 @@
 "msg" [ processing == true] {
     visible:true;
 }
-
-"params.autoapprove" [true]{
-    visible:false;
-}

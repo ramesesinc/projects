@@ -188,6 +188,7 @@ public class ModifyPinPage extends javax.swing.JPanel {
         xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCaption("");
         xCheckBox1.setCaptionWidth(120);
+        xCheckBox1.setDepends(new String[] {"entity.pintype"});
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("entity.useoldpin"); // NOI18N
         xCheckBox1.setText(" Use old Index No.?");

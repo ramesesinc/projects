@@ -32,8 +32,16 @@ class BatchGR2Interceptor
 	def em_batchgr_log
 
 
+	@After(pattern="FAASService.deleteFaas") 
+	public void deleteBatchGrLog( evt ) {
+		def faas = evt.result 
+		em_batchgr_log.find([objid:faas.objid]).delete()
+	}
+
+
+
 	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'land' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
-	public void revisedLandDetails( evt ) {
+	public void reviseFaas( evt ) {
 		def faas = evt.result 
 		if (! util.isTrue(faas.datacapture)) return 
 

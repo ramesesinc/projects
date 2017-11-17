@@ -84,7 +84,7 @@ and f.state not in ('CURRENT', 'CANCELLED')
 
 
 [getLandsForRepinning]
-select f.objid, f.rpuid, f.realpropertyid, f.tdno, rp.pin, rp.barangayid  
+select f.objid, f.rpuid, f.realpropertyid, f.tdno, rp.pin, rp.barangayid, rp.pintype  
 from realproperty rp 
 	inner join faas f on rp.objid = f.realpropertyid 
 	inner join rpu r on f.rpuid = r.objid 

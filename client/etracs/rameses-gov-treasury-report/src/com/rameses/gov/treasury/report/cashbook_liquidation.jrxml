@@ -182,7 +182,7 @@ order by refdate, sortindex, username, refno]]></queryString>
 					</textElement>
 				<text><![CDATA[REPUBLIC OF THE PHILIPPINES]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="12"
@@ -193,9 +193,9 @@ order by refdate, sortindex, username, refno]]></queryString>
 					<textElement textAlignment="Center">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PARENTLGUFORMALNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{PARENTLGUFORMALNAME} ? $P{PARENTLGUFORMALNAME} : $P{LGUFORMALNAME})]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="24"
@@ -206,7 +206,7 @@ order by refdate, sortindex, username, refno]]></queryString>
 					<textElement textAlignment="Center">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUFORMALNAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{LGUFORMALNAME} ? $P{LGUFORMALNAME} : null)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

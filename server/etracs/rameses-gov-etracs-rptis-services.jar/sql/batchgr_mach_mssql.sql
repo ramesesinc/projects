@@ -17,6 +17,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'mach'
 and r.ry < $P{newry} 
+and not exists(select objid from machrpu where objid = replace(m.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedMachUses]
@@ -46,6 +47,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'mach'
 and r.ry < $P{newry} 
+and not exists( select objid from machuse where objid = replace(m.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedMachDetails]
@@ -145,3 +147,4 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'mach'
 and r.ry < $P{newry} 
+and not exists(select objid from machdetail where objid = replace(m.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))

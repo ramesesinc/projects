@@ -25,14 +25,16 @@ public class ModifyPINUtilityController
     @PropertyChangeListener
     def listener = [
         '.*' : { 
-            if (faas.rputype == 'land'){
-                RPTUtil.buildPin(entity, varSvc);
+            if (faas){
+                if (faas.rputype == 'land'){
+                    RPTUtil.buildPin(entity, varSvc);
+                }
+                else{
+                    entity.fullpin = landfaas.fullpin + '-' + (entity.suffix ? entity.suffix : '0000');
+                }
+                entity.newpin = entity.fullpin;
+                binding?.refresh('entity.newpin');
             }
-            else{
-                entity.fullpin = landfaas.fullpin + '-' + (entity.suffix ? entity.suffix : '0000');
-            }
-            entity.newpin = entity.fullpin;
-            binding?.refresh('entity.newpin');
         } 
     ]
     

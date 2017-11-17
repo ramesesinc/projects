@@ -37,6 +37,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from landrpu where objid = replace(lr.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -99,6 +100,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from landdetail where objid = replace(ld.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedPlantTreeDetails]
@@ -148,6 +150,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from planttreedetail where objid = replace(ptd.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedLandAdjustments]
@@ -183,6 +186,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from landadjustment where objid = replace(la.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{snewry})))
 
 
 [insertRevisedLandAdjustmentParameters]
@@ -210,5 +214,6 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from landadjustmentparameter where objid = replace(la.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 

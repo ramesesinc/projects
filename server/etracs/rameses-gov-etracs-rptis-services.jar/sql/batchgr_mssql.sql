@@ -118,6 +118,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from realproperty where objid=replace(rp.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedRpus]
@@ -178,6 +179,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
+and not exists(select objid from rpu where objid = replace(r.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),${snewry})))
 
 
 [insertRevisedFaases]
@@ -270,6 +272,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
+and not exists(select objid from faas where objid = replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -330,7 +333,7 @@ select
   f.utdno,
   f.prevtdno,
   f.fullpin as displaypin,
-  rp.pin,
+  case when r.rputype = 'land' then rp.pin else (rp.pin + '-' + convert(varchar(4),r.suffix)) end as pin,
   f.taxpayer_objid,
   f.owner_name,
   f.owner_address,
@@ -369,7 +372,7 @@ from faas f
 where rp.barangayid = $P{barangayid}
 and r.rputype = $P{rputype}
 and r.ry = $P{newry}
-and not exists(select * from faas_list where objid = f.objid)
+and not exists(select objid from faas_list where objid = f.objid)
 
 
 
@@ -413,6 +416,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
+and not exists(select objid from faas_signatory where objid = replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedPreviousFaases]
@@ -453,7 +457,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-
+and not exists(select objid from faas_previous where objid = replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 

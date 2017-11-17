@@ -67,37 +67,27 @@ class RPTUtil
     
     public static void buildPin(entity, varSvc){       
         def newpin = new StringBuilder();
-
         def provcity = entity.barangay?.provcity;
         def munidistrict = entity.barangay?.munidistrict;
 
-        if( provcity ) {
-            newpin = provcity.indexno + '-';
-        }
-        else {
-            newpin = '000-';
-        }
-
-        if( munidistrict ) {
-            newpin += munidistrict.indexno + '-';
-        }
-        else {
-            newpin += '00-';
-        }
-
-
         if( entity.barangay && entity.barangay.oldindexno == null) {
             entity.barangay.oldindexno = entity.barangay.indexno ;
+            entity.barangay.oldpin  = entity.barangay.pin ;
         }
-
+        
         if( entity.barangay && entity.pintype == 'new') {
-            newpin += entity.barangay?.indexno + '-';
+            newpin += entity.barangay?.pin + '-';
         }
         else if( entity.barangay && entity.pintype == 'old') {
-            newpin += entity.barangay?.oldindexno + '-';
+            if (entity.useoldpin){
+                newpin += entity.barangay?.oldpin + '-';
+            }
+            else {
+                newpin += entity.barangay?.pin + '-';
+            }
         }
         else {
-            newpin += ( entity.pintype == 'new' ? '0000' : '000') + '-';
+            newpin += ( entity.pintype == 'new' ? '000-00-0000' : '000-00-000') + '-';
         }        
         
         def ssection = '';

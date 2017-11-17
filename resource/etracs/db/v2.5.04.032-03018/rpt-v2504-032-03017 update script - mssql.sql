@@ -135,3 +135,13 @@ go
 alter table rptledger_remote 
 add CONSTRAINT FK_rptledgerremote_rptledger FOREIGN KEY (objid) REFERENCES rptledger (objid)
 go 
+
+
+
+/*======================================
+* AUTOMATIC MACH AV RECALC SUPPORT
+=======================================*/
+INSERT INTO rptparameter (objid, state, name, caption, description, paramtype, minvalue, maxvalue) 
+VALUES ('TOTAL_VALUE', 'APPROVED', 'TOTAL_VALUE', 'TOTAL VALUE', '', 'decimal', '0', '0')
+GO 
+

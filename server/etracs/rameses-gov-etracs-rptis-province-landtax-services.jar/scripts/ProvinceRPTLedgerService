@@ -1,0 +1,56 @@
+import com.rameses.osiris3.xconnection.*;
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class ProvinceRPTLedgerService
+{   
+    @Service('RPTLedgerService')
+    def  ledgerSvc
+
+	@Service('LandTaxLedgerSupportService')
+	def supportSvc     
+
+    @DataContext('rptledger_credit')
+    def em_credit
+
+    @DataContext('rptledger')
+    def em_ledger 
+
+    @DataContext('rptledger_remote')
+    def em_mapping
+
+    @DataContext('cashreceipt')
+    def em_cashreceipt 
+
+    
+	@ProxyMethod
+	public void syncLedger(ledger){
+		def remoteledger = getRemoteLedgerForSync(ledger)
+		supportSvc.resolveLedgerIds(ledger, remoteledger)
+		remoteledger._credits.each{
+			def creditexist = em_credit.find([refno:it.refno, rptledgerid:ledger.objid]).first()
+			def paymentexist = em_cashreceipt.find([formno:'56',receiptno:it.refno]).first()
+			if ( !(creditexist || paymentexist) ){
+				it.objid = 'RLC' + new java.rmi.server.UID()
+				it.collector = it.collector?.name 
+				em_credit.save(it)
+			}
+		}
+		ledgerSvc.updateLedger(remoteledger)
+		supportSvc.fixLedger(remoteledger)
+	}	
+
+	def getRemoteLedgerForSync(ledger){
+		def mapping = supportSvc.getRemoteLedgerMapping(ledger)
+		def remoteSvc = supportSvc.getRemoteService('RPTLedgerService', ledger.faasid)
+		return remoteSvc.getLedgerForSync(mapping.remote)
+	}
+
+
+	@ProxyMethod
+	public void postMunicipalPayment(payments) {
+		supportSvc.postRemotePayments(payments)
+		println 'Municipal ledger payment has been successfully posted.'
+	}
+
+}

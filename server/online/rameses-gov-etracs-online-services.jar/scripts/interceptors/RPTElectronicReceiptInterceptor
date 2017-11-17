@@ -13,10 +13,10 @@ class RPTElectronicReceiptInterceptor
     @After(pattern="OnlineElectronicReceiptService.post", eval="#{args[0].txntype=='rptcol'}")
     public void postRPTReceipt(evt){
         def rct = evt.result 
-        def po = rct.po 
-        rct.billid = po.refid 
-        def bill = em_rptbill.find([objid:rct.billid]).first()
-        rct.rptitems = receiptSvc.getItemsForPayment(bill)
+        rct.billid = rct.po.refid 
+        rct.bill = em_rptbill.find([objid:rct.billid]).first()
+        rct.rptitems = receiptSvc.getItemsForPayment(rct.bill)
+        rct.items = receiptSvc.getSummarizedItems(rct)
         rct.txntype = 'eor'
         receiptSvc.createReceipt(rct)
     }

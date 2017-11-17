@@ -1,0 +1,52 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+
+class ProvinceRPTLedgerInterceptor
+{
+	@Env
+	def env
+
+    @Service('RPTCloudNotificationService')
+    def svc
+
+    @ActiveDB('rptledger')
+    def em_rptledger
+
+    @Service('OrgService')
+    def orgSvc
+
+
+	@After(pattern="RPTReceiptService.createReceipt", index=50000) 
+    public void interceptLedgerPayment( evt ) {
+        def receipt = evt.result 
+        def payments = em_rptledger.getCreditsByReceipt(receipt)
+        if (payments){
+            checkEnv()
+            def grp = payments.groupBy{it.lguid}
+            grp.each{lguid, items -> 
+                def asyncreq = svc.createAsyncRequest('MunicipalityRPTLedgerService', 'postProvincePayment', items)
+                svc.sendMessage(createAsyncMessage('province-rptledger-payment', asyncreq[0], lguid))
+            }
+        }
+    }   
+
+    def createAsyncMessage(messagetype, asyncreq, lguid){
+        def msg = svc.createAsyncMessage(asyncreq, lguid)
+        msg.messagetype =  messagetype 
+        return msg 
+    }    
+
+    void checkEnv(){
+        if (!env.USERID){
+            def org = orgSvc.getRoot() 
+            env.FULLNAME = 'EOR'
+            env.USERID = 'EOR' 
+            env.ORGID = org.objid 
+            env.ORGCODE = org.code
+            env.ORGCLASS = 'PROVINCE'
+        }
+    }    
+
+ 
+}
+

@@ -9,6 +9,12 @@ class LandbankPaymentMethodInterceptor  {
 
 	def formatter = new java.text.DecimalFormat('0.00');
 	
+	@After(pattern="PaymentMethodService.loadPartner", eval="#{args[0].objid.equalsIgnoreCase('LBPTEST')}")
+	public void lbpTest(evt){
+		loadLandbankPartner(evt)
+	}
+	
+
 	@After(pattern="PaymentMethodService.loadPartner", eval="#{args[0].objid.equalsIgnoreCase('LBP')}")
 	public void loadLandbankPartner( evt ) {
 		

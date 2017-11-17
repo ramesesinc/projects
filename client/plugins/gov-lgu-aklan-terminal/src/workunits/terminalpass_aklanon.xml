@@ -1,10 +1,12 @@
 <workunit>
     <invokers>
         <invoker folderid="/home/aklanterminal" caption="Terminal Pass AKLANON" 
-                 action="create" role="COLLECTOR,SUBCOLLECTOR" target="window" index="100"/> 
+                 action="create" role="COLLECTOR,SUBCOLLECTOR" target="window" index="100"
+                 visibleWhen="#{env.CLIENTCODE=='AKL'}"/> 
 
         <invoker type="terminalpasshome.action" caption="AKLANON" 
-                 action="create" role="COLLECTOR,SUBCOLLECTOR"/> 
+                 action="create" role="COLLECTOR,SUBCOLLECTOR"
+                  visibleWhen="#{showItem == true}"/> 
                 
         <invoker type="formActions" caption="Cancel" action="cancel" mnemonic="c" depends="entity.*" visibleWhen="#{mode=='create'}"/> 
         <invoker type="formActions" caption="Print" action="save" mnemonic="p" depends="entity.*" visibleWhen="#{mode=='create'}"/> 

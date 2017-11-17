@@ -1,7 +1,8 @@
 <workunit extends="wtemplates/ListController.xml">
     <invokers>
         <invoker folderid="/home/aklanterminal" caption="Special Pass Account" 
-                 index="100" role="COLLECTOR,SUBCOLLECTOR"/> 
+                 index="100" role="COLLECTOR,SUBCOLLECTOR"
+                visibleWhen="#{env.CLIENTCODE=='AKL'}"/> 
         
         <invoker type="terminalpasshome.action" caption="Special Pass" 
                  role="COLLECTOR,SUBCOLLECTOR" index="1"/> 

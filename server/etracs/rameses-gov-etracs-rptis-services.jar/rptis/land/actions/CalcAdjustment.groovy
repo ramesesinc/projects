@@ -15,6 +15,7 @@ public class CalcAdjustment implements RuleActionHandler {
 		def ld = params.landdetail
 
 		def val = params.expr.getDecimalValue()
+		if (!val) val = 0.0
 		adj.adjustment = NS.roundA( adj.adjustment + val, 2)
 		adj.basemarketvalue += ld.basemarketvalue
 		adj.marketvalue += ld.marketvalue

@@ -26,18 +26,30 @@ class OnlineRPTBilllingService
 
     def BARCODE_KEY = '56001';
 
+    @DataContext('rptbill')
+    def em_rptbill 
+
+    @DataContext('rptbill_ledger')
+    def em_rptbill_ledger  
+
+    @ActiveDB('onlinerptbilling')
+    def em_rptbilling 
+
 
     @ProxyMethod
     public def getBilling(params){
-        params.ledger = validateLedger(params)
-        def bill = buildBilling(initBill(params))
+        def bill = buildBilling(params)
+        updateBillReferenceInfo(bill)
+        return bill 
+    }
 
+    def updateBillReferenceInfo(bill){
         bill.origin = 'filipizen'
         bill.txntype = 'rptcol'
         bill.txntypename = 'Real Property Tax'
         bill.refid = bill.billid
         bill.refno = bill.barcode 
-        bill.controlno = numSvc.generateControlNo()
+        bill.controlno = numSvc.generateControlNo() 
         bill.payer = bill.taxpayer
         bill.paidby = bill.taxpayer.name 
         bill.paidbyaddress =bill.taxpayer.address 
@@ -47,7 +59,6 @@ class OnlineRPTBilllingService
         bill.info.rptledgerid = bill.rptledgerid 
         bill.info.billtoyear = bill.billtoyear 
         bill.info.billtoqtr = bill.billtoqtr 
-        return bill 
     }
 
     def initBill(params){
@@ -70,13 +81,16 @@ class OnlineRPTBilllingService
             bill.billtoqtr =params.billtoqtr  
         }
 
-        bill = billSvc.generateBillByLedgerId3(bill)
-        bill.rptledger.remove('faases')
         return bill 
     }
 
-    @ProxyMethod
-    public def buildBilling(bill){
+
+    def buildBilling(params){
+        params.ledger = validateLedger(params)
+        def bill = initBill(params)
+        bill = billSvc.generateBill(bill)
+        bill.rptledger.remove('faases')
+
         def billing = [:]
         billing.dtposted = bill.dtposted 
         billing.objid = bill.billid 
@@ -110,7 +124,6 @@ class OnlineRPTBilllingService
         buildPeriod(billing)
         return billing
     }
-
 
     void buildPeriod(billing){
         billing.fromyear = (billing.lastqtrpaid == 4 ? billing.lastyearpaid + 1 : billing.lastyearpaid)
@@ -164,5 +177,42 @@ class OnlineRPTBilllingService
         }
         return ledger 
     }
+
+
+    @ProxyMethod
+    public def getBillingByBillNo( params ) {
+        def bill = getValidatedBill(params)
+        bill.amount = em_rptbilling.findBillTotal(bill)?.amount 
+        if (!bill.amount) throw new Exception('Bill No. ' + params.billno + ' does not exist or has already been paid.')
+        
+        bill.billid = bill.objid 
+        bill.billdate = dtSvc.serverDate
+        bill.validuntil = bill.expirydate - 1 
+        updateBillReferenceInfo(bill)
+        return bill 
+    }
+
+    def getValidatedBill(params){
+        if (!params.billno) 
+            throw new Exception('Bill No. is required.')
+
+        def bill = em_rptbill.find([barcode:params.billno]).first()
+        if (!bill){
+            bill = em_rptbill.find([barcode:BARCODE_KEY +':'+params.billno]).first()
+        }
+        if (!bill)
+            throw new Exception('Bill No. ' + params.billno + ' does not exist or has already been paid.')
+
+        if (bill.expirydate < dtSvc.serverDate)
+            throw new Exception('Bill No. ' + params.billno + ' has already expired.')
+
+        //make sure it has items, other if none, the bill has already been paid
+        def data = em_rptbill_ledger.select('count:{count(*)}').find([billid:bill.objid]).first()
+        if (data.count == 0)
+            throw new Exception('Bill No. ' + params.billno + 'has already been paid.')
+
+        return bill 
+    }
+
 }
 

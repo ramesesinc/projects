@@ -1,2 +1,18 @@
-ASSESSOR 
+RPTLedger Province and Municipal Synchronization
+=========================================================================
+	* LGU SERVER Libraries
+		- rabbitmq-client.jar
+
+	* LGU GDX SERVER Libraries
+		- rameses-rabbitmq-script-connection.jar
+		- rabbitmq-client.jar
+
+Add Connections
+	- remote-script-mq 			=>  connection to rabbitmq server
+	- remote-script-service     =>  connection to gdx server (cloud)
+
+
+=========================================================================
+RPTIS MODULE
+
 	- update ordinance info in revision settings

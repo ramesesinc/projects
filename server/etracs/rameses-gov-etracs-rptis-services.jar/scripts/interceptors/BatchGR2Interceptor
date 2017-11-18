@@ -37,6 +37,12 @@ class BatchGR2Interceptor
 	@DataContext('faas_previous')
 	def em_faas_previous
 
+	@Service('RPTRequirementRuleService')
+    def ruleSvc
+
+    @Service('RPTRequirementService')
+    def reqSvc
+
 
 	@After(pattern="FAASService.approveFaas", eval="#{result.txntype?.objid=='GR'}") 
 	public void interceptApprove( evt ) {
@@ -76,6 +82,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -98,6 +105,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -121,6 +129,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -143,6 +152,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -165,8 +175,37 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
+	}
+
+
+	void buildRequirements(faas){
+		def requirements = ruleSvc.getRequirements([
+			txntype 		: faas.txntype,
+			txntypemode 	: '',
+			attributes		: [],
+			rputype    		: faas.rpu.rputype, 
+			classificationid : faas.rpu.classification?.objid,
+		])
+
+		println 'requirements -> ' + requirements
+
+		requirements.unique().each{
+			reqSvc.create([
+				objid  				: 'R' + new java.rmi.server.UID(),
+				requirementtypeid 	: it.objid,
+				handler 			: it.handler,
+				refid 				: faas.objid,
+				value_objid 		: null,
+				value_txnno			: null,
+				value_txndate 		: null,
+				value_txnamount 	: 0.0,
+				value_remarks 		: null,
+				complied 			: 0,
+			])
+		}
 	}
 }
 

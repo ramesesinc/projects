@@ -31,31 +31,36 @@ public class RequirementTypeDefaultHandlerPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        jPanel4 = new javax.swing.JPanel();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
+        xDataTable2 = new com.rameses.rcp.control.XDataTable();
 
-        xLabel1.setExpression("#{caption}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jSplitPane1.setDividerLocation(320);
 
         xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setPadding(new java.awt.Insets(0, 10, 5, 5));
 
+        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xCheckBox1.setName("entity.complied"); // NOI18N
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText("Complied?");
         xFormPanel1.add(xCheckBox1);
 
         xTextField1.setCaption("Ref. No.");
-        xTextField1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xTextField1.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
         xTextField1.setName("entity.value.txnno"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
@@ -65,17 +70,30 @@ public class RequirementTypeDefaultHandlerPage extends javax.swing.JPanel {
         xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xDateField1);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 60));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 85));
 
+        xTextArea1.setLineWrap(true);
+        xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Remarks");
         xTextArea1.setName("entity.value.remarks"); // NOI18N
         jScrollPane1.setViewportView(xTextArea1);
 
         xFormPanel1.add(jScrollPane1);
 
+        jSplitPane1.setLeftComponent(xFormPanel1);
+
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
         xTitledBorder1.setTitle("Support Documents");
-        xDataTable2.setBorder(xTitledBorder1);
+        jPanel4.setBorder(xTitledBorder1);
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xActionBar1.setDepends(new String[] {"selectedItem"});
+        xActionBar1.setName("supportActions"); // NOI18N
+        xActionBar1.setUseToolBar(false);
+        jPanel4.add(xActionBar1, java.awt.BorderLayout.NORTH);
+
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "title"}
@@ -110,53 +128,26 @@ public class RequirementTypeDefaultHandlerPage extends javax.swing.JPanel {
         });
         xDataTable2.setHandler("listHandler");
         xDataTable2.setName("selectedItem"); // NOI18N
+        jPanel4.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
-        xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xActionBar1.setDepends(new String[] {"selectedItem"});
-        xActionBar1.setName("supportActions"); // NOI18N
-        xActionBar1.setUseToolBar(false);
+        jSplitPane1.setRightComponent(jPanel4);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
-                    .addComponent(xLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(xActionBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xActionBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        jPanel2.add(jSplitPane1, java.awt.BorderLayout.CENTER);
+
+        add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables

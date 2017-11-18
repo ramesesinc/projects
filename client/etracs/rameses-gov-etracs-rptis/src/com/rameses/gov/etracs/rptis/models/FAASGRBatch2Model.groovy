@@ -12,6 +12,9 @@ public class FAASGRBatch2Model
     @Binding
     def binding;
     
+    @Service('QueryService')
+    def querySvc 
+    
     @Service("BatchGR2Service")
     def svc
             
@@ -80,6 +83,13 @@ public class FAASGRBatch2Model
     
     def getRylist(){
         return svc.getRyList(params.lgu?.objid, null,null)   
+    }
+    
+    def getClassifications(){
+        def p = [_schemaname:'propertyclassification']
+        p.findBy = [state:'APPROVED']
+        p.orderBy = 'orderno'
+        return querySvc.getList(p)
     }
     
     void cancel() {

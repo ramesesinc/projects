@@ -5,6 +5,25 @@ where barangayid = $P{barangayid}
 and rputype like $P{rputype}
 
 
+[clearItemsForRevision]
+delete from batchgr_items_forrevision 
+where objid in (
+  select f.objid 
+  from faas f 
+    inner join rpu r on f.rpuid = r.objid 
+    inner join realproperty rp on f.realpropertyid = rp.objid
+    inner join propertyclassification pc on r.classification_objid = pc.objid 
+    inner join barangay b on rp.barangayid = b.objid 
+  where rp.barangayid = $P{barangayid}
+    and r.ry < $P{newry}
+    and f.state = 'CURRENT'
+    and r.rputype like $P{rputype}
+    and r.classification_objid like $P{classid}
+    and rp.section like $P{section}
+)
+
+
+
 [insertItemsForRevision]
 insert into batchgr_items_forrevision(
   objid,
@@ -12,6 +31,8 @@ insert into batchgr_items_forrevision(
   realpropertyid,
   barangayid,
   rputype,
+  section,
+  classification_objid,
   tdno,
   fullpin,
   pin,
@@ -23,6 +44,8 @@ SELECT
   f.realpropertyid,
   rp.barangayid,
   r.rputype,
+  rp.section,
+  r.classification_objid,
   f.tdno,
   f.fullpin,
   rp.pin,
@@ -38,7 +61,6 @@ WHERE rp.barangayid = $P{barangayid}
   AND f.state = 'CURRENT'
   AND NOT EXISTS(SELECT * FROM batchgr_error WHERE objid = f.objid)
   AND NOT EXISTS(SELECT * FROM batchgr_log WHERE objid = f.objid)
-ORDER BY rp.pin, r.suffix 
 
 
 [findFaasForRevision]

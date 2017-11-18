@@ -100,3 +100,9 @@ CREATE TABLE `rptledger_remote` (
 INSERT INTO `rptparameter` (`objid`, `state`, `name`, `caption`, `description`, `paramtype`, `minvalue`, `maxvalue`) 
 VALUES ('TOTAL_VALUE', 'APPROVED', 'TOTAL_VALUE', 'TOTAL VALUE', '', 'decimal', '0', '0');
 
+
+
+
+/* BATCH GR ADDITIONAL SUPPORT */
+alter table batchgr_items_forrevision add section varchar(3);
+alter table batchgr_items_forrevision add classification_objid varchar(50);

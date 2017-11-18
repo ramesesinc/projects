@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpuland:info" action="init" caption="Requirements" index="10000" mnemonic="Q" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; (entity.datacapture == 1 || entity.datacapture == true)}" />
+        <invoker type="rpubldg:info" action="init" caption="Requirements" index="10000" mnemonic="Q" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; (entity.datacapture == 1 || entity.datacapture == true) }" />
+        <invoker type="rpumach:info" action="init" caption="Requirements" index="10000" mnemonic="Q" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; (entity.datacapture == 1 || entity.datacapture == true) }" />
+        <invoker type="rpuplanttree:info" action="init" caption="Requirements" index="10000" mnemonic="Q" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; (entity.datacapture == 1 || entity.datacapture == true) }" />
+        <invoker type="rpumisc:info" action="init" caption="Requirements" index="10000" mnemonic="Q" visibleWhen="#{!entity.state.matches('CURRENT|CANCELLED') &amp;&amp; (entity.datacapture == 1 || entity.datacapture == true) }" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rptis.models.RPUInfoRequirementsModel">
+   </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.requirement.ui.RequirementInfoPage"/>
+    </pages>
+</workunit>
+
+

@@ -35,6 +35,8 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -101,6 +103,19 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xComboBox3.setRequired(true);
         formPanel1.add(xComboBox3);
 
+        xComboBox5.setCaption("Classification");
+        xComboBox5.setEmptyText("ALL");
+        xComboBox5.setExpression("#{item.name}");
+        xComboBox5.setItems("classifications");
+        xComboBox5.setName("params.classification"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xComboBox5);
+
+        xTextField1.setCaption("Section");
+        xTextField1.setName("params.section"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(120, 20));
+        formPanel1.add(xTextField1);
+
         xComboBox2.setCaption("Property Type");
         xComboBox2.setEmptyText("ALL");
         xComboBox2.setExpression("#{item.name}");
@@ -120,7 +135,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 76));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 70));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
@@ -305,13 +320,13 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 319, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xFormPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(435, Short.MAX_VALUE)
+                    .addContainerGap(439, Short.MAX_VALUE)
                     .add(xPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(38, 38, 38)))
         );
@@ -344,6 +359,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDateField xDateField5;
@@ -358,6 +374,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -5,6 +5,24 @@ where barangayid = $P{barangayid}
 and rputype LIKE $P{rputype}
 
 
+[clearItemsForRevision]
+delete from batchgr_items_forrevision 
+where objid in (
+  select f.objid 
+  from faas f 
+    inner join rpu r on f.rpuid = r.objid 
+    inner join realproperty rp on f.realpropertyid = rp.objid
+    inner join propertyclassification pc on r.classification_objid = pc.objid 
+    inner join barangay b on rp.barangayid = b.objid 
+  where rp.barangayid = $P{barangayid}
+    and r.ry < $P{newry}
+    and f.state = 'CURRENT'
+    and r.rputype like $P{rputype}
+    and r.classification_objid like $P{classid}
+    and rp.section like $P{section}
+)
+
+
 [insertItemsForRevision]
 insert into batchgr_items_forrevision(
   objid,
@@ -12,33 +30,38 @@ insert into batchgr_items_forrevision(
   realpropertyid,
   barangayid,
   rputype,
+  section,
+  classification_objid,
   tdno,
   fullpin,
   pin,
   suffix
 )
-SELECT 
+select 
   f.objid,
   f.rpuid,
   f.realpropertyid,
   rp.barangayid,
   r.rputype,
+  rp.section,
+  r.classification_objid,
   f.tdno,
   f.fullpin,
   rp.pin,
   r.suffix
-FROM faas f 
-    INNER JOIN rpu r ON f.rpuid = r.objid 
-    INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
-    INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-    INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE rp.barangayid = $P{barangayid}
-  AND r.rputype LIKE $P{rputype}
-  AND r.ry < $P{newry}
-  AND f.state = 'CURRENT'
-  AND NOT EXISTS(SELECT * FROM batchgr_error WHERE objid = f.objid)
-  AND NOT EXISTS(SELECT * FROM batchgr_log WHERE objid = f.objid)
-ORDER BY rp.pin, r.suffix 
+from faas f 
+    inner join rpu r on f.rpuid = r.objid 
+    inner join realproperty rp on f.realpropertyid = rp.objid
+    inner join propertyclassification pc on r.classification_objid = pc.objid 
+    inner join barangay b on rp.barangayid = b.objid 
+where rp.barangayid = $P{barangayid}
+  and r.ry < $P{newry}
+  and f.state = 'CURRENT'
+  and r.rputype like $P{rputype}
+  and r.classification_objid like $P{classid}
+  and rp.section like $P{section}
+  and not exists(select * from batchgr_error where objid = f.objid)
+  and not exists(select * from batchgr_log where objid = f.objid)
 
 
 [findFaasForRevision]

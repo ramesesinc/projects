@@ -57,13 +57,10 @@ class BatchGR2Service
 	@ProxyMethod
 	public void buildItemsForRevision( params ) {
 		params.barangayid = params.barangay.objid 
-		if (!params.rputype) {
-			params.rputype = '%'
-			em_batchgr_items_forrevision.find([barangayid:params.barangayid]).delete();
-		}
-		else {
-			em_batchgr_items_forrevision.find([barangayid:params.barangayid, rputype:params.rputype]).delete();
-		}
+		params.section = (params.section ? params.section : '%')
+		params.classid = (params.classification ? params.classification.objid : '%')
+		params.rputype = (params.rputype ? params.rputype : '%')
+		em.clearItemsForRevision(params)
 		em.insertItemsForRevision(params)
 	}
 

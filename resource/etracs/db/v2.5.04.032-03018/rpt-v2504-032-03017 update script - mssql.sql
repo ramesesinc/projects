@@ -145,3 +145,10 @@ INSERT INTO rptparameter (objid, state, name, caption, description, paramtype, m
 VALUES ('TOTAL_VALUE', 'APPROVED', 'TOTAL_VALUE', 'TOTAL VALUE', '', 'decimal', '0', '0')
 GO 
 
+
+
+/* BATCH GR ADDITIONAL SUPPORT */
+alter table batchgr_items_forrevision add section varchar(3)
+go 
+alter table batchgr_items_forrevision add classification_objid varchar(50)
+go 

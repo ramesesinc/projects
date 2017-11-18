@@ -137,7 +137,7 @@ public class CashReceiptSelectionModel  {
             } 
         } catch(BreakException be) { 
             return null;
-
+  
         } catch(Warning w) { 
             String m = "cashreceipt:" + w.message;
             return InvokerUtil.lookupOpener(m, [entity: o]);

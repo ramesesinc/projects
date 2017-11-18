@@ -32,19 +32,15 @@ public class BarcodeLoader {
         if ('PMO'.equalsIgnoreCase(prefix)){
             def q = [:]
             q._schemaname = 'paymentorder'
-            q.findBy = [txnid:barcodeid]
-
-            po = qrySvc.findFirst(q)
+            q.findBy = [objid:p];
+            q.debug = true;
+            po = qrySvc.findFirst(q);
             if (!po){
-                q.findBy = [txnid:p]
+                q.findBy = [objid:barcodeid]
                 po = qrySvc.findFirst(q)
             }
             if (!po) throw new Exception('Payment Order does not exist.')
-            
-            q._schemaname = 'collectiontype'
-            q.findBy = po.txntype.collectiontype
-            def colltype = qrySvc.findFirst(q)
-            if (!colltype) throw new Exception('Collection Type ' + po.txntype.collectiontype.objid + ' does not exist.')
+            def colltype = po.collectiontype;
             
             prefix = colltype.barcodekey 
             barcodeid = po.refno 
@@ -59,7 +55,7 @@ public class BarcodeLoader {
                 throw new Exception("There is no handler found for requested entry");
             
             def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
-            def m = [barcodeid: barcodeid, prefix: prefix, _paymentorderid:po?.txnid];
+            def m = [barcodeid: barcodeid, prefix: prefix, _paymentorderid:po?.objid];
             m.entity = e;
             m.info = po?.info;
              

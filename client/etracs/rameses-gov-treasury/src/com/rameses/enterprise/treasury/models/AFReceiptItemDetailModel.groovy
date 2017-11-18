@@ -16,6 +16,7 @@ class AFReceiptItemDetailModel  {
     def querySvc;
 
     def entity;
+    def itemid;
     def entry = [:];
     int unitqty;
     def handler;
@@ -72,6 +73,7 @@ class AFReceiptItemDetailModel  {
     def doOk() {
         entry.ref = entity;
         entry.ref.unitqty = unitqty;
+        entry.itemid = itemid;
         handler( entry );
         return "_close";
     }

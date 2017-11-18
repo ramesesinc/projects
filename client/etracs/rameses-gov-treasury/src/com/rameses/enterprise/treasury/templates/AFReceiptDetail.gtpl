@@ -30,7 +30,7 @@
                     <tr>
                         <td>&nbsp;</td>
                         <td colspan="6">
-                            series: ${ii.startseries} - ${ii.endseries} stub: ${ii.startstub} - ${ii.endstub} 
+                            batch:${ii.batchno} series: ${ii.startseries} - ${ii.endseries} stub: ${ii.startstub} - ${ii.endstub} 
                             <%if( entity.state == 'DRAFT' ) {  %>  
                             &nbsp;&nbsp;<a href="removeEntry" batchno="${ii.batchno}" refid="${o.objid}">Remove</a></td>
                             <% } %>

@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFIRInterceptor { 
+	
+	@Service("SequenceService") 
+	def seqSvc;
+
+	@Service("DateService") 
+	def dateSvc;
+
+	@DataContext("af_control")
+	def afcontrol;
+
+	@DataContext("af_control_detail")
+	def afcd;
+
+	@DataContext("afrequest")
+	def afReq;
+
+	@Env
+	def env;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'afir' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.user = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
+		o.org = [objid:env.ORGID, name:env.ORGNAME];
+		o.controlno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
+		o.dtfiled = dateSvc.serverDate;
+		o.state = "DRAFT";
+		o.txndate = dateSvc.serverDate;
+
+		if( o.request ) {
+			afReq.find( [objid: o.request.objid ]).update( [state:'CLOSED']);
+		}
+	}	
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'afir' && args[0].txntype == 'ISSUE' }")
+	public void afterCreateIssue( evt ) { 
+		def o = evt.result;
+	}	
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'afir' && args[0].txntype != 'ISSUE' }")
+	public void afterCreatePurchase( evt ) { 
+		def o = evt.result;
+	}	
+
+}

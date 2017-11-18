@@ -9,6 +9,8 @@ import com.rameses.util.*;
 
 class AFIssueModel extends CrudFormModel {
 
+    String printFormName = "afris";
+    
     def selectedItem;
     
     def itemListHandler = [
@@ -23,7 +25,6 @@ class AFIssueModel extends CrudFormModel {
     }
     
     public def getInfo() {
-        println 'get info ' + entity;
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/templates/AFIssueDetail.gtpl", [entity:entity] );
     }
 }    

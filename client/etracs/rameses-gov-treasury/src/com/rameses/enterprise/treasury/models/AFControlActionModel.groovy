@@ -20,14 +20,14 @@ class AFControlActionModel  {
     void activate() {
         if(entity.active==1)
             throw new Exception("Entry is already active");
-        service.activate( [objid: entity.objid ] );
+        service.activateControl( entity );
         if(caller) caller.reloadEntity();
     }
 
     void deactivate() {
         if(entity.active==0)
             throw new Exception("Entry is already inactive");
-        service.deactivate( [objid: entity.objid ] );
+        service.deactivateControl( entity );
         if(caller) caller.reloadEntity();
     }
     

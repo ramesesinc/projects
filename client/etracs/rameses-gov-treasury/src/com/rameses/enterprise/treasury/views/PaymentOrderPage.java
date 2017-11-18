@@ -65,8 +65,9 @@ public class PaymentOrderPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField3);
 
         xTextField1.setCaption("Particulars");
-        xTextField1.setName("entity.remarks"); // NOI18N
+        xTextField1.setName("entity.particulars"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -87,6 +88,7 @@ public class PaymentOrderPage extends javax.swing.JPanel {
         );
 
         accountItemList1.setName("entity.items"); // NOI18N
+        accountItemList1.setTotalsFieldName("entity.amount");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

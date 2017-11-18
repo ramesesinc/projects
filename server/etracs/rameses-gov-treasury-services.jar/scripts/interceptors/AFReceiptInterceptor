@@ -15,8 +15,6 @@ class AFReceiptInterceptor {
 	@DataContext("af_control")
 	def afcontrol;
 
-	@DataContext("vw_af_control_detail")
-	def vw_afcd;
 
 	@Env
 	def env;
@@ -34,10 +32,11 @@ class AFReceiptInterceptor {
 	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'afreceipt' }")
 	public void beforeOpen( evt ) { 
 		def result = evt.result;
-		def scols = "batchno,afid,startseries:{MIN(startseries)},endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)}"; 
-		def list = vw_afcd.find([ refid: result.objid ]).select( scols ).groupBy("batchno,afid").list(); 
+		def scols = "receiptid,batchno,afid,startseries:{MIN(startseries)},endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)}"; 
+		def list = afcontrol.find([ receiptid: result.objid ] ).select( scols ).groupBy("receiptid,batchno,afid").list(); 
 		result.items.each { r->
 			r.items = list.findAll{ ac-> ac.afid == r.item.objid };
+			r.remarks = r.items.collect{ i-> i.startseries + "-" + i.endseries +";" }.join(","); 
 		}
 	}
 	

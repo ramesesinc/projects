@@ -40,6 +40,8 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
@@ -300,6 +302,21 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
         xLabel4.setVisibleWhen("#{ afrequest != null }");
         xFormPanel2.add(xLabel4);
 
+        xLabel5.setCaption("Resp. Center");
+        xLabel5.setExpression("#{ entity.respcenter.name  }");
+        xLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel5.setVisibleWhen("#{ afrequest != null }");
+        xFormPanel2.add(xLabel5);
+
+        xLookupField2.setCaption("Resp. Center");
+        xLookupField2.setExpression("#{ entity.respcenter.name }");
+        xLookupField2.setHandler("org:lookup");
+        xLookupField2.setName("entity.respcenter"); // NOI18N
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField2.setVisibleWhen("#{ afrequest == null }");
+        xFormPanel2.add(xLookupField2);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -311,19 +328,19 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(412, 412, 412)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(265, Short.MAX_VALUE)))
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(207, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -343,8 +360,8 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(5, 5, 5)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -358,6 +375,8 @@ public class AFIssueEntryPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     // End of variables declaration//GEN-END:variables
 }

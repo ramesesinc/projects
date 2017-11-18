@@ -2,6 +2,7 @@
           allowCreate="false" allowOpen="false" allowDelete="false" >
     <invokers>
         <invoker type="af_control:section" caption="Transaction History" action="init" parentid="controlid" 
-            cols="refno,refdate,issuedto.name,startseries,endseries" hiddenCols="controlid"/>
+            cols="refno,refdate,issuedto.name,receivedstartseries,receivedendseries,beginstartseries,beginendseries,issuedstartseries,issuedendseries,endingstartseries,endingendseries,qtyreceived,qtybegin,qtyissued,qtyending,qtycancelled,remarks" 
+                 hiddenCols="controlid"/>
    </invokers>
 </workunit>

@@ -16,6 +16,33 @@ class AFReceiptModel extends CrudFormModel {
     def txnTypes = ["PURCHASE", "FORWARD"];
     def selectedItem;
     
+    String printFormName = "afris";
+    
+     def getPrintFormData() {
+        def m = [:];
+        m.putAll( entity );
+        m.items.each {
+            it.qty = it.qtyrequested;
+            it.qtyout = it.qtyreceived;
+        }
+        return m;
+    }
+    
+    @FormTitle
+    String getTitle() {
+        if( mode == 'create')
+            return "New AF Receipt";
+        else    
+            return "AFR " + entity.controlno;
+    }
+    
+    @FormId
+    String getFormId() {
+        if( mode == 'create')
+            return "afreceipt";
+        else    
+            return entity.objid;
+    }
     
     public void afterCreate() {
         entity.items = [];
@@ -63,10 +90,11 @@ class AFReceiptModel extends CrudFormModel {
         e.respcenter = entity.respcenter;
         e.txntype = selectedItem.txntype;
         if(!e.qtyreceived) e.qtyreceived = 0;
-        return Inv.lookupOpener( "afreceiptitem_detail:add", [ entity:e, handler:h ] );
+        return Inv.lookupOpener( "afreceiptitem_detail:add", [ entity:e, handler:h, itemid: selectedItem.objid ] );
     }
     
     void removeEntry(def o) {
+        o.receiptid = entity.objid;
         afRct.removeBatch(o);
         reloadEntity();
     }

@@ -10,16 +10,6 @@ class AFControlService  {
 	@Env
 	def env;
 
-	@ProxyMethod
-	public void activate( def o ) {
-		em.find( [objid: o.objid] ).update( [active:1 ]);
-	}
-
-	@ProxyMethod
-	public void deactivate( def o ) {
-		em.find( [objid: o.objid] ).update( [active:0]);	
-	}
-
 	@ProxyMethod 
 	public void assignFund(def o) {
 		em.find([objid: o.objid] ).update( [fund: o.fund ] );
@@ -28,11 +18,6 @@ class AFControlService  {
 	@ProxyMethod 
 	public void unassignFund(def o) {
 		em.find([objid: o.objid] ).update( [fund: [objid: null, title: null] ] );
-	}
-
-	@ProxyMethod 
-	public void changeMode(def o) {
-		em.find([objid: o.objid] ).update( [txnmode: o.txnmode] );
 	}
 
 	@ProxyMethod
@@ -73,7 +58,7 @@ class AFControlService  {
 		em.find([objid: o.objid] ).update( [active: 1] );
 	}
 
-	/*
+	
 	@ProxyMethod
 	public void activateControl(def p) {
 		def m = [:];
@@ -111,7 +96,6 @@ class AFControlService  {
 		em.deactivateControl(m);
 	}
 
-	
 	@ProxyMethod
 	public void changeMode( p ) { 
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
@@ -127,6 +111,7 @@ class AFControlService  {
 		}
 	} 
 
+	/*
 	@ProxyMethod
 	public void assignToSubcollector(def p) {
 		def m = [:];
@@ -140,6 +125,7 @@ class AFControlService  {
 	public void unassign(def p) {
 		em.unassignSubcollector([objid:p.objid]) 
 	}
+	*/
 
 	@ProxyMethod 
 	public def findAFSummary( params ) {
@@ -147,5 +133,5 @@ class AFControlService  {
 
 		return em.findAFSummary( params ); 
 	} 
-	*/
+	
 }

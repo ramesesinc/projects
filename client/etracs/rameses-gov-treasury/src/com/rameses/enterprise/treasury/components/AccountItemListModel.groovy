@@ -21,10 +21,12 @@ import com.rameses.rcp.common.ComponentBean;
 public class AccountItemListModel extends ComponentBean {
 
     def total = 0;
+    String totalsFieldName;
     
     void updateTotal() {
         total = getValue().sum{ it.amount };
         binding.refresh("total");
+        if(totalsFieldName) setValue( totalsFieldName, total );
     }
     
     def itemListModel = [
@@ -76,6 +78,7 @@ public class AccountItemListModel extends ComponentBean {
         return InvokerUtil.lookupOpener("cashreceiptitem:lookup", p );
     }
     
+    /*
     def getCollectionGroupHandler() {
         def p = [:];
         p.put("query.txntype","cashreceipt"); 
@@ -88,6 +91,6 @@ public class AccountItemListModel extends ComponentBean {
         };
         return InvokerUtil.lookupOpener("collectiongroup:lookup", p); 
     }
-            
+    */       
     
 }

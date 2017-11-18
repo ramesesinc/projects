@@ -1,10 +1,10 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="af_control">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="af_control" allowDelete="false">
         
    <invokers>
        
        <invoker folderid="menucategory/treasury/af" 
                 caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
-                cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
+                cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtyissued,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"
                 orderBy="afid,dtfiled,startseries"/>
            
        <invoker folderid="menucategory/treasury/collection" 

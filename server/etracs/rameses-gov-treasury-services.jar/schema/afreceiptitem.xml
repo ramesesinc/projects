@@ -10,7 +10,6 @@
 		<field name="qtyrequested" defaultvalue="0" type="integer"/>
 		<field name="qtyreceived" required="true" defaultvalue="0"  type="integer"/>
 		<field name="remarks" />
-		<field name="txntype" required="true"/>
 		<field name="cost" />
 
 		<complex name="item" ref="af" jointype="many-to-one" includefields="serieslength,denomination,formtype">

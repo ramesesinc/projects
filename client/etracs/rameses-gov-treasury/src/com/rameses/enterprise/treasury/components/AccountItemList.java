@@ -14,6 +14,8 @@ import com.rameses.rcp.ui.annotations.ComponentBean;
 @ComponentBean("com.rameses.enterprise.treasury.components.AccountItemListModel")
 public class AccountItemList extends XComponentPanel {
 
+    private String totalsFieldName;
+    
     /**
      * Creates new form AccountItemList
      */
@@ -156,6 +158,7 @@ public class AccountItemList extends XComponentPanel {
     @Override
     public void afterLoad() {
         com.rameses.rcp.common.ComponentBean cb = (com.rameses.rcp.common.ComponentBean)getComponentBean();
+        cb.setProperty("totalsFieldName", getTotalsFieldName() );
         //cb.setProperty("handler", getProperty( getHandler()));
         /*
         com.rameses.rcp.common.ComponentBean cb = (com.rameses.rcp.common.ComponentBean)getComponentBean();
@@ -168,6 +171,20 @@ public class AccountItemList extends XComponentPanel {
             e.printStackTrace();
         }
         */ 
+    }
+
+    /**
+     * @return the totalsFieldName
+     */
+    public String getTotalsFieldName() {
+        return totalsFieldName;
+    }
+
+    /**
+     * @param totalsFieldName the totalsFieldName to set
+     */
+    public void setTotalsFieldName(String totalsFieldName) {
+        this.totalsFieldName = totalsFieldName;
     }
 
 }

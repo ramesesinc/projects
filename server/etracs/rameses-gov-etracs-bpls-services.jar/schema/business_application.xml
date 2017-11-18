@@ -33,6 +33,10 @@
 		<field name="businessaddress" required="true"/>
 		<field name="parentapplicationid" />
 		<field name="nextbilldate" />
+
+		<complex name="business" ref="business" jointype="many-to-one" required="false" includefields="bin,owner.objid,owner.name">
+			<key field="business_objid" target="objid" />
+		</complex>	
 	</element>	
 
 

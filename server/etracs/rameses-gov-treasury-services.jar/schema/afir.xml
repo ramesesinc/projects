@@ -1,0 +1,27 @@
+<schema>
+
+	<element tablename="afir">
+		<field name="objid" primary="true"/>	
+		<field name="state" required="true"/>
+		<field name="request_objid" />
+		<field name="request_reqno" />
+		<field name="controlno" required="true"/>
+		<field name="txndate" required="true" type="timestamp"/>
+		<field name="dtfiled" required="true" type="date"/>
+		<field name="user_objid" required="true"/>
+		<field name="user_name" required="true"/>
+		<field name="issueto_objid" required="true"/>
+		<field name="issueto_name" required="true"/>
+		<field name="issueto_title" />	
+		<field name="particulars" />	
+		<field name="respcenter_objid" />	
+		<field name="respcenter_name" />	
+		<field name="txntype" required="true" />	
+		<field name="cost" type="decimal"/>	
+
+		<complex name="items" ref="afiritem" jointype="one-to-many">
+			<key field="objid" target="parentid" />	
+		</complex> 	
+	</element>
+	
+</schema>

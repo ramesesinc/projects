@@ -11,6 +11,7 @@
 
 		<field name="respcenter_objid"/>
 		<field name="respcenter_name" />
+		<field name="txntype" required="true"/>
 
 		<complex name="items" ref="afreceiptitem" jointype="one-to-many">
 			<key field="objid" target="parentid" />

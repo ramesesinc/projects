@@ -1,10 +1,9 @@
-<workunit schemaName="af_control">
+<workunit schemaName="af_control" allowEdit="false" allowDelete="false">
      
     <invokers>
-        
         <invoker type="af_control:open" caption="AF Control" formTitle="AF Control" action="open" target="popup" />
-        <invoker type="formActions" caption="Action" action="showMenu" context="actions"  role="COLLECTOR" />
-        
+        <invoker type="formActions" caption="Action" action="showMenu" 
+                 context="actions"  role="COLLECTOR" visibleWhen="#{entity.currentseries &lt;= entity.endseries }"/>
     </invokers>
    
     <code class="com.rameses.seti2.models.CrudFormModel" />

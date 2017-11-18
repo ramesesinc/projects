@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class PaymentOrderCashReceiptInterceptor {
+
+	@DataContext("paymentorder")
+	def svc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service('OrgService')
+	def orgSvc 
+
+	def getLocationId(){
+		return orgSvc.getRoot().code.replaceAll('-', '')
+	}
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'paymentorder'}")
+	public def beforeCreatePaymentOrder(def evt) { 
+		def r = evt.args[0];
+		r.objid = KeyGen.generateAlphanumKey( "PMO:" + getLocationId() + ":", 6 );
+		r.txndate = dateSvc.getServerDate();
+
+		def cal = Calendar.instance;
+		cal.setTime( r.txndate );
+		cal.add( Calendar.HOUR, 24 );
+		r.expirydate = new java.sql.Timestamp( cal.getTimeInMillis() );
+	} 
+
+	@After(pattern="CashReceiptService.post", eval="#{args[0].paymentorderid!=null}", index=10000)
+	public def deletePaymentOrder(def evt) { 
+		def result = evt.result;
+		def pmtOrderId = evt.args[0].paymentorderid;
+		svc.close( pmtOrder );
+	} 
+
+}

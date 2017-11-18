@@ -1,7 +1,6 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 import java.rmi.server.*;
-import com.rameses.services.extended.*;
 import java.text.*;
 
 public class OnlineBusinessBillingService  {
@@ -15,7 +14,9 @@ public class OnlineBusinessBillingService  {
 	@Service("PaymentOrderService")
 	def pmoSvc;	
 
-	
+	@DataContext("collectiontype")
+	def collectionType;	
+
 	@Service("NumberService")
 	def numSvc;
 
@@ -77,17 +78,29 @@ public class OnlineBusinessBillingService  {
 	}
 
 	@ProxyMethod
-	public def postPaymentOrder( def o ) {
-		def z = generateBilling(o);
-		def m = [:];
-		z.each { k,v->
-			if(k.matches("payer.*|paidby.*|amount|remarks" )) {
-				m.put(k,v);
-			}
-		};
-		m.refid = z.applicationid;
-		m.info = [ payoption: getPaymentOption(o) ];
-		m.txntype = 'bpls';
-		return pmoSvc.create(m);
+	public def createPaymentOrder( def o ) {
+		def z = getBilling(o);
+		def m =[:]
+		m.txnid = KeyGen.generateAlphanumKey( "PMO:", 10 );
+		m.txndate = dateSvc.getServerDate();
+
+		def cal = Calendar.instance;
+		cal.setTime(  m.txndate );
+		cal.add( Calendar.HOUR, 3 );
+		m.expirydate = new java.sql.Timestamp( cal.getTimeInMillis());
+
+		m.payer = z.payer;
+		m.paidby = z.paidby;
+		m.paidbyaddress = z.paidbyaddress;
+		m.txntypename = 'Business Permit';
+		m.particulars = z.particulars;
+		m.collectiontype = collectionType.select("objid").find( [handler: 'bpls' ] ).first();
+		m.amount = z.amount;
+		m.items = z.items.collect{ [ item: it.item, amount:it.amount, remarks:it.remarks ] };
+		m.refid = z.refid;
+		m.refno = z.refno;
+		m.info = z.info;
+		return m;
+		//return pmoSvc.create(m);
 	} 
 }

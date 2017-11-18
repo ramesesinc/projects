@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="afreceipt">
     <invokers>
         <invoker folderid="menucategory/treasury/af" caption="AF Receipts" formTitle="AF Receipts" action="init" 
-                 cols="controlno,dtreceived,user.name,txntype,state" 
+                 cols="controlno,dtreceived,respcenter.name,txntype,user.name" 
                  orderBy="controlno"  
                  role="AFO"/>
     </invokers>

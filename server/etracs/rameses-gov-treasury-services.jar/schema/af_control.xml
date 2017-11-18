@@ -29,6 +29,7 @@
 		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>
 
 		<field name="lockid" /> 
+		<field name="receiptid" /> 
 
 		<field name="respcenter_objid" /> 
 		<field name="respcenter_name" indexed="true"/> 

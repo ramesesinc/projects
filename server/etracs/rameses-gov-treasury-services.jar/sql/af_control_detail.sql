@@ -1,3 +1,37 @@
+[addPurchaseReceiptDetails]
+insert into af_control_detail (
+  objid, controlid, indexno, 
+  refid, refno, reftype, refdate, txndate, txntype, 
+  receivedstartseries, receivedendseries, endingstartseries, endingendseries, 
+  qtyreceived, qtybegin, qtyissued, qtyending, qtycancelled, remarks 
+)
+select 
+  afc.objid, afc.objid, 1, afc.receiptid, afr.controlno, 'afreceipt', afr.dtfiled, afr.txndate, 'RECEIPT', 
+  afc.startseries, afc.endseries, afc.startseries, afc.endseries, 
+  (afc.endseries-afc.startseries)+1 as qtyreceived, 0 as qtybegin,
+  0 as qtyissued, (afc.endseries-afc.startseries)+1 as qtyending, 0 as qtycancelled, 
+  'RECEIPT OF PURCHASE' as remarks 
+from af_control afc
+inner join  afreceipt afr ON afc.receiptid = afr.objid   
+where afr.objid = $P{receiptid}  
+
+[addForwardReceiptDetails]
+insert into af_control_detail (
+  objid, controlid, indexno, 
+  refid, refno, reftype, refdate, txndate, txntype, 
+  beginstartseries, beginendseries, endingstartseries, endingendseries, 
+  qtyreceived, qtybegin, qtyissued, qtyending, qtycancelled, remarks 
+)
+select 
+  afc.objid, afc.objid, 1, afc.receiptid, afr.controlno, 'afreceipt', afr.dtfiled, afr.txndate, 'RECEIPT', 
+  afc.startseries, afc.endseries, afc.startseries, afc.endseries, 
+  0 as qtyreceived, (afc.endseries-afc.startseries)+1 as qtybegin,
+  0 as qtyissued, (afc.endseries-afc.startseries)+1 as qtyending, 0 as qtycancelled, 
+  'BEGIN BALANCE' as remarks 
+from af_control afc
+inner join  afreceipt afr ON afc.receiptid = afr.objid   
+where afr.objid = $P{receiptid}  
+
 
 [getRemittanceAF]
 select 

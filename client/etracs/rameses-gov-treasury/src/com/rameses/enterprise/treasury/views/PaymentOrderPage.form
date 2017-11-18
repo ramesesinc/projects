@@ -109,10 +109,11 @@
             <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Particulars"/>
-                <Property name="name" type="java.lang.String" value="entity.remarks" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="entity.particulars" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
+                <Property name="required" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -122,6 +123,7 @@
     <Component class="com.rameses.enterprise.treasury.components.AccountItemList" name="accountItemList1">
       <Properties>
         <Property name="name" type="java.lang.String" value="entity.items" noResource="true"/>
+        <Property name="totalsFieldName" type="java.lang.String" value="entity.amount"/>
       </Properties>
     </Component>
   </SubComponents>

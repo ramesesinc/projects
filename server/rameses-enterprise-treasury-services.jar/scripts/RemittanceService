@@ -82,14 +82,14 @@ class RemittanceService  {
 			info.txndate = getMonthFirstDate( params.remittancedate ); 
 			draftrem_db.insertCashReceipts( info ); 
 
-			remo.remittancedate = dateSvc.add( info.txndate, '-1d' ); 
-			draftrem_db.find([ objid: remo.objid ]).update([ remittancedate: remo.remittancedate ]); 
-
 			o.items = draftrem_db.getCashReceiptSummary( info ); 
 			if ( o.items ) { 
 				o.endofmonth = true; 
 				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
 				o._txndate = info.txndate.toString(); 
+
+				remo.remittancedate = dateSvc.add( info.txndate, '-1d' ); 
+				draftrem_db.find([ objid: remo.objid ]).update([ remittancedate: remo.remittancedate ]); 				
 			} 
 		} 
 

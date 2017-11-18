@@ -12,6 +12,9 @@ public class AFInventoryService  {
 	@ActiveDB("af_control")
 	def afserial;
 
+	@DataContext("af")
+	def af_db;
+
 	@Service("DateService")
 	def dateSvc;
 
@@ -96,12 +99,11 @@ public class AFInventoryService  {
 			detail.beginendseries = m.endseries; 
 			detail.qtybegin = m.qtybegin; 
 
-			detail.endingstartseries = detail.beginstartseries;
+			detail.endingstartseries = detail.beginstartseries; 
 			detail.endingendseries = detail.beginendseries; 
 			detail.qtyending = detail.qtybegin; 
-		}
+		} 
 		em.create( detail, "detail" );
-
 		m.detail = detail;
 		return m;
 	}
@@ -109,8 +111,8 @@ public class AFInventoryService  {
 
 	@ProxyMethod
 	public def postIssue( o ) {  
-		def head = em.read([ objid: o.controlid ]);
-		if ( !head ) {
+		def head = em.read([ objid: o.controlid ]); 
+		if ( !head ) { 
 			throw new Exception('AF control '+ o.controlid + ' record does not exist in the inventory. Please verify.'); 
 		} 
 
@@ -118,6 +120,7 @@ public class AFInventoryService  {
 		if ( !o.qtycancelled ) o.qtycancelled = o.cqty;
 
 		head.qtycancelled += (o.qtycancelled ? o.qtycancelled : 0); 
+		if ( o.endstub ) head.currentstub = o.endstub + 1; 
 
 		if( o.currentseries ) {
 			head.currentseries = o.currentseries; 
@@ -245,7 +248,7 @@ public class AFInventoryService  {
 			objid: o.objid, 
 			currentseries:control.endseries + 1, 
 			currentlineno: control.currentlineno + 1 
-		]
+		]; 
 
 		control.respcenter.objid = o.collector.objid
 		control.respcenter.name = o.collector.name 
@@ -258,7 +261,19 @@ public class AFInventoryService  {
 		control.reftype = "TRANSFER";
 		control.txntype = "TRANFER";
 		control.refdate = dateSvc.serverDate;
-		control = postReceipt(control) 
+
+		def afdata = af_db.find([ objid: o.afid ]).first(); 
+		control.formtype = afdata.formtype; 
+		if ( control.formtype.toString().toLowerCase() == 'cashticket' ) { 
+			control.startseries = (control.startseries == null ? 1 : control.startseries); 
+			control.endseries = (control.endseries == null ? control.qty : control.endseries); 
+			control.currentseries = (control.currentseries == null ? control.startseries : control.currentseries); 
+		} 
+
+		o.startseries = (o.startseries == null ? control.startseries : o.startseries);
+		o.currentseries = (o.currentseries == null ? control.startseries : o.currentseries);
+		o.endseries = (o.endseries == null ? control.endseries : o.endseries);
+		control = postReceipt( control ); 
 
 		def c = [:];
 		c.putAll(control);

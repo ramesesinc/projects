@@ -14,8 +14,7 @@ class BusinessOnlinePaymentInterceptor {
 	@Service("PersistenceService")
 	def persistenceSvc;	
 
-	//@Service("PaymentOrderService")
-	//def pmoSvc;	
+	
 
 	@Service("NumberService")
 	def numSvc;
@@ -78,14 +77,13 @@ class BusinessOnlinePaymentInterceptor {
 		result.putAll(p); 
 	}
 
-	@After(pattern="OnlinePaymentService.createPaymentOrder", eval="#{args[0].txntype=='bpls'}")
+	@Before(pattern="OnlinePaymentService.createPaymentOrder", eval="#{args[0].txntype=='bpls'}")
 	public void createPaymentOrder( def evt ) { 
 		def o = evt.args[0];
-		def result = evt.result;
 		o.appno = o.refno;
 		def z = generateBilling(o);
 
-		def m = [_schemaname:'paymentorder'];
+		def m = [:];
 		m.payer = z.app.business.owner;
 		m.paidby = z.app.tradename;
 		m.paidbyaddress = z.app.businessaddress;
@@ -96,13 +94,17 @@ class BusinessOnlinePaymentInterceptor {
 		m.info = z.payment;
 		m.amount = z.amount;
 		m.txntype = 'bpls';
-		m = persistenceSvc.create( m );
+		m.txntypename = 'Business';
 
-		def r = [:]
-		r.paymentrefid = m.objid;
-		r.amount = m.amount;
-		r.txntype = 'bpls';
-		result.putAll(r);
+		//retrieve the contactinfo
+		def contact = [:];
+		def c = appEm.find( [objid: z.app.objid ] ).select("business.*").first();
+		def biz  = c.business;
+		m.mobileno = (biz.mobileno) ? biz.mobileno : biz.owner.mobileno;
+		m.email = (biz.email) ? biz.email : biz.owner.email;
+		m.phoneno = (biz.phoneno) ? biz.phoneno : biz.owner.phoneno;
+
+		o.info = m;
 	}
 
 	@Before(pattern="OnlinePaymentService.postPayment", eval="#{args[0].txntype=='bpls'}")
@@ -110,10 +112,10 @@ class BusinessOnlinePaymentInterceptor {
 		def o = evt.args[0];
 		//call the cash receipt service
 		println "receiving payment ->" + o;
+
 		o.receipt = [:];
 		o.receipt.receiptno = 'DUMMY12788';
 		o.receipt.receiptdate = dateSvc.getServerDate();
-		o.receipt.contact = [ mobile: '09063459119' ];
 	}
 
 }

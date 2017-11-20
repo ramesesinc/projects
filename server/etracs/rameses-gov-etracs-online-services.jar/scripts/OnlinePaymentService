@@ -8,6 +8,10 @@ import com.rameses.common.*
 *************************************************/
 class OnlinePaymentService   {
 
+    
+
+    @Service("PaymentOrderService")
+    def pmoSvc;   
 
     /***************************************************
     * This must be overridden by discrminating txntype.
@@ -21,12 +25,38 @@ class OnlinePaymentService   {
     @ProxyMethod
     public def createPaymentOrder( def o ) {
         if(!o.txntype) return [status:1, message:'txntype is required'];
-        return [:];
+        if( !o.info ) 
+            throw new Exception("info is required in the arguments. Please override @Before OnlinePaymentService.createPaymentOrder and pass info");
+
+        def info = o.info;
+        def m = pmoSvc.create( info );
+
+        def result = [:];
+        result.status=0
+        result.paymentrefid=m.objid;
+        result.amount=m.amount;
+        result.txntype=m.txntype;
+        result.txntypename=m.txntypename;
+        result.controlno=m.controlno;
+        result.paidby=m.paidby;
+        result.particulars=m.particulars;
+
+        result.message=info.message;
+        result.email=info.email;
+        result.mobileno=info.mobileno;
+        result.phoneno=info.phoneno;
+        return result;
     }
 
     @ProxyMethod
     public def postPayment( def o ) {
         if(!o.txntype) return [status:1, message:'txntype is required'];
+
+        //steps:
+        //1. retrieve payment order
+        //2. create a credit memo of type eor using bank 
+
+
         o.receipt.url = o.receipt.receiptno;
         return o.receipt;
     }
@@ -35,5 +65,31 @@ class OnlinePaymentService   {
     public def getReceipt( def o ) {
         //
     }
+
+
+    def postCreditMemo(receipt, eor, po){
+        def pp = paymentpartner.find([code:eor.partner.objid]).first()
+        def cm = [_schemaname:'creditmemo']
+        cm.objid = 'CME' + new java.rmi.server.UID()
+        cm.state = 'CLOSED'
+        cm.controlno = po.controlno
+        cm.payer = [:]
+        cm.payer.objid = po.payer?.objid  
+        cm.payer.name = po.paidby 
+        cm.payer.address = [text:po.paidbyaddress]
+        cm.refdate = eor.refdate 
+        cm.refno = eor.refno
+        cm.amount = po.amount 
+        cm.particulars = po.particulars 
+        cm.bankaccount = pp.bankaccount 
+        cm.type = 'EOR'
+        cm.dtissued = receipt.receiptdate 
+        cm.receiptid = receipt.objid 
+        cm.receiptno = receipt.receiptno 
+        cm.receiptdate = receipt.receiptdate 
+        persistenceSvc.create(cm)
+        return cm 
+    }
+
 
 }

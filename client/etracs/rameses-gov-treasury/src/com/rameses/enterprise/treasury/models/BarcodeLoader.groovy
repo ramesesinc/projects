@@ -49,7 +49,6 @@ public class BarcodeLoader {
             def q = [:]
             q._schemaname = 'paymentorder'
             q.findBy = [objid:p];
-            q.debug = true;
             po = qrySvc.findFirst(q);
             if (!po){
                 q.findBy = [objid:barcodeid]

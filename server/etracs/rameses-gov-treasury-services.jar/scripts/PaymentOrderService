@@ -20,7 +20,7 @@ class PaymentOrderService {
 	def orgSvc 
 
 	@Service('PersistenceService')
-	def peristenceSvc; 
+	def persistenceSvc; 
 
 	@ProxyMethod
 	public def create(def entity) {	

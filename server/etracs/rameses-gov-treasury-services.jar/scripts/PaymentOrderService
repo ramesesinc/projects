@@ -19,35 +19,14 @@ class PaymentOrderService {
 	@Service('OrgService')
 	def orgSvc 
 
+	@Service('PersistenceService')
+	def peristenceSvc; 
+
 	@ProxyMethod
 	public def create(def entity) {	
-		entity.objid = KeyGen.generateAlphanumKey( "PMO:" + getLocationId() + ":", 6 );
-		entity.txndate = dateSvc.getServerDate();
-
-		def cal = Calendar.instance;
-		cal.setTime( entity.txndate );
-		cal.add( Calendar.HOUR, 24 );
-		entity.expirydate = new java.sql.Timestamp( cal.getTimeInMillis() );
-
-		if(entity.items) {
-			entity.items.eachWithIndex{ o,idx-> 
-				if( !o.item?.objid ) throw new Exception("Items item must have an objid");
-				if( !o.amount ) throw new Exception("Items item must have an amount");
-				def item = revItem.find([objid: o.item.objid]).first(); 
-				if ( !item ) throw new Exception('Item #'+ (idx+1)  +' account '+ o.item.title +' does not exist'); 
-				o.item = item; 
-			}
-			if( entity.items.sum{it.amount} != entity.amount)
-				throw new Exception("Amount must be equal sum of amount of items");
-		}	
-		
-		pmt.create(m);
-		return m; 
+		entity._schemaname = 'paymentorder';
+		persistenceSvc.create(entity);	
 	} 
-
-	def getLocationId(){
-		return orgSvc.getRoot().code.replaceAll('-', '')
-	}
 
 	/***********************************
 	* This is called during receipts

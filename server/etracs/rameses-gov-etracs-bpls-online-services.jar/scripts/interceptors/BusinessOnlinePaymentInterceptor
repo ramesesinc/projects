@@ -104,16 +104,15 @@ class BusinessOnlinePaymentInterceptor {
 		result.putAll(r);
 	}
 
-
 	@Before(pattern="OnlinePaymentService.postPayment", eval="#{args[0].txntype=='bpls'}")
 	public void postPayment( def evt ) { 
 		def o = evt.args[0];
+		//call the cash receipt service
 		println "receiving payment ->" + o;
 		o.receipt = [:];
 		o.receipt.receiptno = 'DUMMY12788';
 		o.receipt.receiptdate = dateSvc.getServerDate();
 		o.receipt.contact = [ mobile: '09063459119' ];
-		
 	}
 
 }

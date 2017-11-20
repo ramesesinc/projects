@@ -95,6 +95,7 @@ class BusinessOnlinePaymentInterceptor {
 		m.refno = o.appno;
 		m.info = z.payment;
 		m.amount = z.amount;
+		m.txntype = 'bpls';
 		m = persistenceSvc.create( m );
 
 		def r = [:]

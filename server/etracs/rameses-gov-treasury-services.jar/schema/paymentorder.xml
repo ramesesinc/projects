@@ -2,6 +2,7 @@
 	<element tablename="paymentorder">
 		<field name="objid" primary="true"/>
 		<field name="txndate" type="timestamp" required="true" />
+		<field name="txntype" required="true" />
 		<field name="payer_objid" required="true" />
 		<field name="payer_name" required="true" />
 		<field name="paidby" required="true" />

@@ -45,7 +45,7 @@ public class BarcodeLoader {
         } 
         
         def po = null;
-        if ('PMO'.equalsIgnoreCase(prefix)){
+        if (prefix == null){
             def q = [:]
             q._schemaname = 'paymentorder'
             q.findBy = [objid:p];
@@ -66,7 +66,6 @@ public class BarcodeLoader {
             }
         }
 
-        
         try {
             if(!prefix) {
                 def pp = barcodeSvc.findPrefix( [barcodeid: barcodeid] );

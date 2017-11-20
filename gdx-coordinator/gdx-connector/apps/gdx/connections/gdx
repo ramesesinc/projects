@@ -1,0 +1,13 @@
+provider=rabbitmq
+host=107.21.113.74
+user=ramesesinc
+pwd=!ramesesinc#
+exchange=gdx
+queue=195
+type=direct
+heartbeat=10
+poolSize=3
+
+app.host=localhost:8571
+app.cluster=osiris3
+app.context=gdx

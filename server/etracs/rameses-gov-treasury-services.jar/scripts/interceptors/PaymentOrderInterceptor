@@ -11,17 +11,20 @@ class PaymentOrderCashReceiptInterceptor {
 	def dateSvc;
 
 	@Service('OrgService')
-	def orgSvc 
+	def orgSvc; 
 
-	def getLocationId(){
-		return orgSvc.getRoot().code.replaceAll('-', '')
-	}
+	@Service("SequenceService") 
+	def seqSvc;
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'paymentorder'}")
 	public def beforeCreatePaymentOrder(def evt) { 
 		def r = evt.args[0];
-		r.objid = KeyGen.generateAlphanumKey( "PMO:" + getLocationId() + ":", 6 );
+
+		String locid = orgSvc.getRoot().code.replaceAll('-', '');
+
+		r.objid =  KeyGen.generateAlphanumKey( locid.padRight( 5, "0" ), 8 );
 		r.txndate = dateSvc.getServerDate();
+		r.controlno =  locid.padRight( 5, "0" ) + seqSvc.getNextFormattedSeriesA("PAYORDER", 10);
 
 		def cal = Calendar.instance;
 		cal.setTime( r.txndate );

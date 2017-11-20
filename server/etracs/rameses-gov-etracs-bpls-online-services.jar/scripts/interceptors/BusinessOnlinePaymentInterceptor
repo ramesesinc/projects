@@ -105,30 +105,15 @@ class BusinessOnlinePaymentInterceptor {
 	}
 
 
-	@After(pattern="OnlinePaymentService.postPayment", eval="#{args[0].txntype=='bpls'}")
-	public void createPaymentOrder( def evt ) { 
+	@Before(pattern="OnlinePaymentService.postPayment", eval="#{args[0].txntype=='bpls'}")
+	public void postPayment( def evt ) { 
 		def o = evt.args[0];
-		def result = evt.result;
-		o.appno = o.refno;
-		def z = generateBilling(o);
-
-		def m = [_schemaname:'paymentorder'];
-		m.payer = z.app.business.owner;
-		m.paidby = z.app.tradename;
-		m.paidbyaddress = z.app.businessaddress;
-		m.collectiontype = [objid:'BUSINESS_COLLECTION'];
-		m.particulars = 'Business Permit';
-		m.refid = z.app.objid;
-		m.refno = o.appno;
-		m.info = z.payment;
-		m.amount = z.amount;
-		m = persistenceSvc.create( m );
-
-		def r = [:]
-		r.paymentrefid = m.objid;
-		r.amount = m.amount;
-		r.txntype = 'bpls';
-		result.putAll(r);
+		println "receiving payment ->" + o;
+		o.receipt = [:];
+		o.receipt.receiptno = 'DUMMY12788';
+		o.receipt.receiptdate = dateSvc.getServerDate();
+		o.receipt.contact = [ mobile: '09063459119' ];
+		
 	}
 
 }

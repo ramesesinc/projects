@@ -20,6 +20,12 @@ class CashReceiptService  {
 
 	@Service("DateService")
 	def dateService;
+
+	@Service("PaymentOrderService")
+	def paymentOrderSvc;
+
+	@DataContext("paymentorder")
+   	def paymentOrderEm;
 		
 	@Service("NumberService")
 	def numSvc;
@@ -50,6 +56,8 @@ class CashReceiptService  {
 
     @DataContext("cashreceipt_check")
    	def checkPayment;
+
+	
 
 	/**
 	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
@@ -154,8 +162,12 @@ class CashReceiptService  {
 				creditmemo.find( [objid: x.refid] ).update(cmp);
 			}
 		} 
-		if (p._paymentorderid) deletePaymentOrder(p);
 
+		if (p._paymentorderid) {
+			//retrieve payment order first before firing close
+			def po = paymentOrderEm.find( [objid: p._paymentorderid]).first();
+			paymentOrderSvc.close( po );
+		}	
 
 		//add this method here so it will not be forgotten. This method is to automate 
 		//posting of payments if there is a postpayment object attached.
@@ -171,10 +183,6 @@ class CashReceiptService  {
 			pmt.amount = p.amount;
 			postPmtSvc.post( pmt );
 		}
-
-		
-
-
 
 		return formatReport(p);
 	}	
@@ -236,10 +244,4 @@ class CashReceiptService  {
 		return dateService.parse('yyyy-MM-dd', sdate); 
 	} 
 
-	void deletePaymentOrder(rct){
-		def q = [:]
-		q._schemaname = 'paymentorder'
-		q.txnid = rct._paymentorderid
-		persistence.removeEntity(q)
-	}
 }

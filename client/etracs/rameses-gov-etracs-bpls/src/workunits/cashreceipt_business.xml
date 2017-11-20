@@ -58,8 +58,8 @@
                 r.billdate = entity.receiptdate;
                 r.applicationid = entity.applicationid;
                 r.payment = m.payment; 
-                if ( !r.payment && info?.payoption ) { 
-                    r.payment = info.payoption;
+                if ( !r.payment && info ) { 
+                    r.payment = info;
                 } 
                 def z = cashRctSvc.getBillingForPayment( r ); 
                 if (z.excess) {

@@ -48,4 +48,12 @@ class PaymentOrderService {
 	def getLocationId(){
 		return orgSvc.getRoot().code.replaceAll('-', '')
 	}
+
+	/***********************************
+	* This is called during receipts
+	************************************/
+	@ProxyMethod
+	public void close(def po) {
+		pmt.delete( po );
+	}
 }

@@ -8,6 +8,7 @@ import com.rameses.common.*
 *************************************************/
 class OnlinePaymentService   {
 
+
     /***************************************************
     * This must be overridden by discrminating txntype.
     ****************************************************/
@@ -24,9 +25,10 @@ class OnlinePaymentService   {
     }
 
     @ProxyMethod
-    public void postPayment( def o ) {
+    public def postPayment( def o ) {
         if(!o.txntype) return [status:1, message:'txntype is required'];
-        //do nothing
+        o.receipt.url = o.receipt.receiptno;
+        return o.receipt;
     }
 
     @ProxyMethod

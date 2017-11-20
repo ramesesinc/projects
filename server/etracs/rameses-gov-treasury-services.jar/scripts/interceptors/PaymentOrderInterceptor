@@ -29,11 +29,5 @@ class PaymentOrderCashReceiptInterceptor {
 		r.expirydate = new java.sql.Timestamp( cal.getTimeInMillis() );
 	} 
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].paymentorderid!=null}", index=10000)
-	public def deletePaymentOrder(def evt) { 
-		def result = evt.result;
-		def pmtOrderId = evt.args[0].paymentorderid;
-		svc.close( pmtOrder );
-	} 
 
 }

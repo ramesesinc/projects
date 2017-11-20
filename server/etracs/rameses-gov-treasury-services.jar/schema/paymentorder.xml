@@ -17,12 +17,15 @@
 		<field name="origin" />
 		<complex name="info" serializer="default" required="true"/>
 
-		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="objid,handler,barcodekey">
+		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="objid,handler,barcodekey,formno">
 			<key field="collectiontypeid" target="objid"/>
 		</complex>
+		<complex name="items" serializer="default" required="false" type="list" />
+		<!--
 		<complex name="items" ref="paymentorder_item" jointype="one-to-many" required="false">
 			<key field="objid" target="parent_objid"/>
 		</complex>
+		-->
 	</element>
 </schema>
 

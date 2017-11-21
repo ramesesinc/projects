@@ -1,0 +1,17 @@
+"entity.idleland" [entity.rputype == 'land']{
+    enabled:true;
+}
+
+"entity.idleland" [entity.rputype != 'land']{
+    enabled:false;
+}
+
+"entity.subledger.*|separator"[entity.subledger?.objid == null]{
+    visible:false;
+    enabled:false;
+}
+
+"entity.subledger.*|separator"[entity.subledger?.objid != null]{
+    visible:true;
+    enabled:true;
+}

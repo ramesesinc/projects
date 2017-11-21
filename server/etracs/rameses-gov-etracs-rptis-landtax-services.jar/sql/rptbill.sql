@@ -43,22 +43,19 @@ WHERE rl.objid = $P{rptledgerid}
 
 
 [getIncentivesByLedgerId]
-SELECT *
-FROM rpttaxincentive_item
-WHERE rptledgerid = $P{rptledgerid}
+SELECT ri.*
+FROM rpttaxincentive r
+inner join rpttaxincentive_item ri on r.objid = ri.rpttaxincentiveid 
+WHERE ri.rptledgerid = $P{rptledgerid}
+and r.state = 'APPROVED'
 
 
 [getItemsForTaxComputation]
 select 
 	rli.objid, 
-	rli.rptledgerid, 
-	rli.rptledgerfaasid, 
-	rli.objid AS rptledgeritemid, 
-	null as rptledgeritemqtrlyid,
 	rli.year, 
 	1 as qtr, 
 	rli.av,
-	rli.av AS originalav, 
 	rli.basicav, 
 	rli.sefav, 
 	rl.txntype_objid,
@@ -67,22 +64,8 @@ select
 	lf.backtax,
 	lf.reclassed,
 	lf.idleland,
-	0.0 as basic,
-	0.0 as basicint,
-	0.0 as basicdisc,
-	0.0 as basicidle,
-	0.0 as basicidleint,
-	0.0 as basicidledisc,
-	0.0 as sef,
-	0.0 as sefint,
-	0.0 as sefdisc,
-	0.0 as firecode,
-	0 as partialled,
-	rli.year AS effectiveyear,
-	rli.taxdifference ,
-	(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear,
-	0 as qtrly,
-	0 as qtrlycomputed
+	rli.taxdifference,
+	(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear
 from rptledger rl 
 	inner join rptledgeritem rli on rl.objid = rli.rptledgerid
 	inner join rptledgerfaas lf on rli.rptledgerfaasid = lf.objid 
@@ -91,19 +74,15 @@ and rli.av > 0.0
 and rli.fullypaid = 0
 
 
-[getItemsForPenaltyDiscountComputation]
-select x.* 
- from (
- 	select 
-		rli.objid, 
-		rli.rptledgerid, 
-		rli.rptledgerfaasid, 
-		rli.objid AS rptledgeritemid, 
-		null as rptledgeritemqtrlyid,
+[getItemsForPenaltyDiscount]
+select * 
+from (
+	select 
+		rli.objid,
+		null as parentid,
 		rli.year, 
-		1 as qtr,
+		(select min(qtr) from rptledgeritem_qtrly where parentid = rli.objid and fullypaid = 0) as qtr, 
 		rli.av,
-		rli.av AS originalav, 
 		rli.basicav, 
 		rli.sefav, 
 		rl.txntype_objid,
@@ -112,44 +91,29 @@ select x.*
 		lf.backtax,
 		lf.reclassed,
 		lf.idleland,
-		rli.basic as basic,
-		0.0 as basicint,
-		0.0 as basicdisc,
-		0.0 as basicidle,
-		0.0 as basicidleint,
-		0.0 as basicidledisc,
-		rli.sef as sef, 
-		0.0 as sefint,
-		0.0 as sefdisc,
-		0.0 as firecode,
-		0 as partialled,
-		rli.year AS effectiveyear,
-		rli.taxdifference ,
-		(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear,
-		rli.qtrly,
-		rli.qtrly as qtrlycomputed,
-		0 as haspayment 
+		rli.basic - rli.basicpaid as basic,
+		rli.basicidle - rli.basicidlepaid as basicidle,
+		rli.sef - rli.sefpaid as sef,
+		rli.firecode - rli.firecodepaid as firecode,
+		rli.sh - rli.shpaid as sh,
+		rli.taxdifference,
+		(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear
 	from rptledger rl 
 		inner join rptledgeritem rli on rl.objid = rli.rptledgerid
 		inner join rptledgerfaas lf on rli.rptledgerfaasid = lf.objid 
 	where rl.objid = $P{rptledgerid}
-		and rli.qtrly = 0 
-		and rli.fullypaid = 0 
-		and rli.av > 0.0
-		and rli.basicpaid = 0 and rli.sefpaid = 0 
+	and rli.av > 0.0
+	and rli.fullypaid = 0
+	and (rli.basicpaid + rli.sefpaid + rli.basicidlepaid + rli.firecodepaid + rli.shpaid) = 0 
 
-	UNION all 
+	union 
 
 	select 
- 		rliq.objid, 
-		rli.rptledgerid, 
-		rli.rptledgerfaasid, 
-		rli.objid AS rptledgeritemid, 
-		rliq.objid as rptledgeritemqtrlyid,
+		rliq.objid,
+		rli.objid as parentid,
 		rli.year, 
 		rliq.qtr, 
 		rliq.av,
-		rliq.av AS originalav, 
 		rliq.basicav, 
 		rliq.sefav, 
 		rl.txntype_objid,
@@ -159,130 +123,21 @@ select x.*
 		lf.reclassed,
 		lf.idleland,
 		rliq.basic - rliq.basicpaid as basic,
- 		0.0 as basicint,
- 		0.0 as basicdisc,
- 		0.0 as basicidle,
- 		0.0 as basicidleint,
- 		0.0 as basicidledisc,
-		rliq.sef - rliq.sefpaid  as sef,
- 		0.0 as sefint,
- 		0.0 as sefdisc,
- 		0.0 as firecode,
- 		0 as partialled,
- 		rli.year AS effectiveyear,
- 		rli.taxdifference ,
- 		(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear,
-		rli.qtrly,
-		rli.qtrly as qtrlycomputed,
-		1 as haspayment 
- 	from rptledger rl 
- 		inner join rptledgeritem rli on rl.objid = rli.rptledgerid
- 		inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
- 		inner join rptledgerfaas lf on rli.rptledgerfaasid = lf.objid 
- 	where rl.objid = $P{rptledgerid}
-		and (rli.qtrly = 1 or (rli.qtrly = 0 and (rli.basicpaid > 0 or rli.sefpaid > 0 )))
- 		and rliq.fullypaid = 0 
- 		and rli.av > 0.0
- ) x
- order by x.year, x.qtr
-
-
-[updateLedgerItemData]
-update rptledgeritem set 
-		basic = $P{basic}, 
-        basicint = $P{basicint}, 
-        basicdisc = $P{basicdisc}, 
-        basicidle = $P{basicidle}, 
-        basicidledisc = $P{basicidledisc}, 
-        basicidleint = $P{basicidleint}, 
-        sef = $P{sef}, 
-        sefint = $P{sefint}, 
-        sefdisc = $P{sefdisc}, 
-        firecode = $P{firecode}, 
-        revperiod = $P{revperiod}
-where objid = $P{objid}    
-
-[updateLedgerItemTaxData]
-update rptledgeritem set 
-        basic = $P{basic}, 
-        basicidle = $P{basicidle}, 
-        sef = $P{sef}, 
-        firecode = $P{firecode}, 
-        revperiod = $P{revperiod}
-where objid = $P{objid}        
-
-[updateLedgerItemPenaltyDiscData]
-update rptledgeritem set 
-        basicint = $P{basicint}, 
-        basicdisc = $P{basicdisc}, 
-        basicidledisc = $P{basicidledisc}, 
-        basicidleint = $P{basicidleint}, 
-        sefint = $P{sefint}, 
-        sefdisc = $P{sefdisc}, 
-        revperiod = $P{revperiod}
-where objid = $P{objid}        
-
-
-[updateLedgerItemQtrlyData]
-update rptledgeritem_qtrly set 
-        basic = $P{basic}, 
-        basicint = $P{basicint}, 
-        basicdisc = $P{basicdisc}, 
-        basicidle = $P{basicidle}, 
-        basicidledisc = $P{basicidledisc}, 
-        basicidleint = $P{basicidleint}, 
-        sef = $P{sef}, 
-        sefint = $P{sefint}, 
-        sefdisc = $P{sefdisc}, 
-        firecode = $P{firecode}, 
-        revperiod = $P{revperiod}
-where objid = $P{objid}        
-and fullypaid = 0
-
-
-[updateLedgerItemQtrlyTaxData]
-update rptledgeritem_qtrly set 
-        basic = $P{basic}, 
-        basicidle = $P{basicidle}, 
-        sef = $P{sef}, 
-        firecode = $P{firecode}, 
-        revperiod = $P{revperiod}
-where objid = $P{objid}        
-and fullypaid = 0
-
-[updateLedgerItemQtrlyPenaltyDiscData]
-update rptledgeritem_qtrly set 
-        basicint = $P{basicint}, 
-        basicdisc = $P{basicdisc}, 
-        basicidledisc = $P{basicidledisc}, 
-        basicidleint = $P{basicidleint}, 
-        sefint = $P{sefint}, 
-        sefdisc = $P{sefdisc}, 
-        revperiod = $P{revperiod}
-where objid = $P{objid}        
-and fullypaid = 0
-
-
-[getLedgerItemQtrlyAggregates]
-select 
-	rliq.parentid as objid, 
-	sum(rliq.basic) as basic,
-	sum(rliq.basicint) as basicint,
-	sum(rliq.basicdisc) as basicdisc,
-	sum(rliq.basicidle) as basicidle,
-	sum(rliq.basicidledisc) as basicidledisc,
-	sum(rliq.basicidleint) as basicidleint,
-	sum(rliq.sef) as sef,
-	sum(rliq.sefint) as sefint,
-	sum(rliq.sefdisc) as sefdisc,
-	sum(rliq.firecode) as firecode,
-	rliq.revperiod
-from rptledgeritem rli
-	inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
-where rli.rptledgerid = $P{rptledgerid}
- and rli.qtrly = 1 
- and rli.fullypaid = 0 
-group by rliq.parentid, rliq.revperiod 
+		rliq.basicidle - rliq.basicidlepaid as basicidle,
+		rliq.sef - rliq.sefpaid as sef,
+		rliq.firecode - rliq.firecodepaid as firecode,
+		rliq.sh - rliq.shpaid as sh,
+		rli.taxdifference,
+		(select effectivityyear from faas where objid = rl.faasid)  as effectivityyear
+	from rptledger rl 
+		inner join rptledgeritem rli on rl.objid = rli.rptledgerid
+		inner join rptledgeritem_qtrly rliq on rli.objid = rliq.parentid 
+		inner join rptledgerfaas lf on rli.rptledgerfaasid = lf.objid 
+	where rl.objid = $P{rptledgerid}
+	and rliq.av > 0.0
+	and rliq.fullypaid = 0
+	and (rli.basicpaid + rli.sefpaid + rli.basicidlepaid + rli.firecodepaid + rli.shpaid) <> 0 
+)x
 
 
 [getBillLedgerItems]
@@ -306,6 +161,9 @@ select
 	rliq.sefint,
 	rliq.sefdisc,
 	rliq.firecode - rliq.firecodepaid as firecode,
+	rliq.sh - rliq.shpaid as sh,
+	rliq.shint,
+	rliq.shdisc,
 	
 	(	rliq.basic - rliq.basicpaid + rliq.basicint - rliq.basicdisc +
 		rliq.basicidle - rliq.basicidlepaid + rliq.basicidleint - rliq.basicidledisc
@@ -314,7 +172,8 @@ select
 	
 	(	rliq.basic - rliq.basicpaid + rliq.basicint - rliq.basicdisc +
 		rliq.basicidle - rliq.basicidlepaid + rliq.basicidleint - rliq.basicidledisc +
-		rliq.sef - rliq.sefpaid + rliq.sefint - rliq.sefdisc + rliq.firecode - rliq.firecodepaid
+		rliq.sef - rliq.sefpaid + rliq.sefint - rliq.sefdisc + rliq.firecode - rliq.firecodepaid +
+		rliq.sh - rliq.shpaid + rliq.shint - rliq.shdisc 
 	) as total,
 	rliq.revperiod,
 	0 as partialled,
@@ -335,123 +194,6 @@ FROM rptexpiry
 WHERE iqtr=$P{qtr} AND iyear=$P{year}
 AND expirydate >= $P{date}
 ORDER BY expirydate ASC
-
-
-[findBrgyTaxAccountMapping]
-SELECT 
-	bam.*, 
-	prior.title AS basicprioracct_title, 
-	priorint.title AS basicpriorintacct_title,
-	prev.title AS basicprevacct_title, 
-	prevint.title AS basicprevintacct_title,
-	curr.title AS basiccurracct_title, 
-	currint.title AS basiccurrintacct_title,
-	adv.title AS basicadvacct_title
-FROM brgy_taxaccount_mapping bam 
-	INNER JOIN itemaccount prior ON bam.basicprioracct_objid = prior.objid 
-	INNER JOIN itemaccount priorint ON bam.basicpriorintacct_objid = priorint.objid 
-	INNER JOIN itemaccount prev ON bam.basicprevacct_objid = prev.objid 
-	INNER JOIN itemaccount prevint ON bam.basicprevintacct_objid = prevint.objid 
-	INNER JOIN itemaccount curr ON bam.basiccurracct_objid = curr.objid 
-	INNER JOIN itemaccount currint ON bam.basiccurrintacct_objid = currint.objid 
-	INNER JOIN itemaccount adv ON bam.basicadvacct_objid = adv.objid 
-WHERE bam.barangayid = $P{barangayid}
-
-
-[findMunicipalityTaxAccountMapping]
-SELECT 
-	mm.*,
-	m.name,
-	m.indexno,
-	basicprior.title AS basicprioracct_title, 
-	basicpriorint.title AS basicpriorintacct_title,
-	basicprev.title AS basicprevacct_title, 
-	basicprevint.title AS basicprevintacct_title,
-	basiccurr.title AS basiccurracct_title, 
-	basiccurrint.title AS basiccurrintacct_title,
-	basicadv.title AS basicadvacct_title,
-	basicidlecurr.title AS basicidlecurracct_title, 
-	basicidlecurrint.title AS basicidlecurrintacct_title,
-	basicidleprev.title AS basicidleprevacct_title, 
-	basicidleprevint.title AS basicidleprevintacct_title,
-	basicidleadv.title AS basicidleadvacct_title,
-
-	sefprior.title AS sefprioracct_title, 
-	sefpriorint.title AS sefpriorintacct_title,
-	sefprev.title AS sefprevacct_title, 
-	sefprevint.title AS sefprevintacct_title,
-	sefcurr.title AS sefcurracct_title, 
-	sefcurrint.title AS sefcurrintacct_title,
-	sefadv.title AS sefadvacct_title
-FROM municipality_taxaccount_mapping mm
-	LEFT JOIN municipality m ON mm.lguid = m.objid 
-	LEFT JOIN itemaccount basicprior ON mm.basicprioracct_objid = basicprior.objid 
-	LEFT JOIN itemaccount basicpriorint ON mm.basicpriorintacct_objid = basicpriorint.objid 
-	LEFT JOIN itemaccount basicprev ON mm.basicprevacct_objid = basicprev.objid 
-	LEFT JOIN itemaccount basicprevint ON mm.basicprevintacct_objid = basicprevint.objid 
-	LEFT JOIN itemaccount basiccurr ON mm.basiccurracct_objid = basiccurr.objid 
-	LEFT JOIN itemaccount basiccurrint ON mm.basiccurrintacct_objid = basiccurrint.objid 
-	LEFT JOIN itemaccount basicadv ON mm.basicadvacct_objid = basicadv.objid 
-	LEFT JOIN itemaccount basicidlecurr ON mm.basicidlecurracct_objid = basicidlecurr.objid 
-	LEFT JOIN itemaccount basicidlecurrint ON mm.basicidlecurrintacct_objid = basicidlecurrint.objid 
-	LEFT JOIN itemaccount basicidleprev ON mm.basicidleprevacct_objid = basicidleprev.objid 
-	LEFT JOIN itemaccount basicidleprevint ON mm.basicidleprevintacct_objid = basicidleprevint.objid 
-	LEFT JOIN itemaccount basicidleadv ON mm.basicidleadvacct_objid = basicidleadv.objid 
-	
-	LEFT JOIN itemaccount sefprior ON mm.sefprioracct_objid = sefprior.objid 
-	LEFT JOIN itemaccount sefpriorint ON mm.sefpriorintacct_objid = sefpriorint.objid 
-	LEFT JOIN itemaccount sefprev ON mm.sefprevacct_objid = sefprev.objid 
-	LEFT JOIN itemaccount sefprevint ON mm.sefprevintacct_objid = sefprevint.objid 
-	LEFT JOIN itemaccount sefcurr ON mm.sefcurracct_objid = sefcurr.objid 
-	LEFT JOIN itemaccount sefcurrint ON mm.sefcurrintacct_objid = sefcurrint.objid 
-	LEFT JOIN itemaccount sefadv ON mm.sefadvacct_objid = sefadv.objid 
-WHERE mm.lguid = $P{lguid}
-
-
-[findProvinceTaxAccountMapping]
-SELECT 
-	mm.*,
-	basicprior.title AS basicprioracct_title, 
-	basicpriorint.title AS basicpriorintacct_title,
-	basicprev.title AS basicprevacct_title, 
-	basicprevint.title AS basicprevintacct_title,
-	basiccurr.title AS basiccurracct_title, 
-	basiccurrint.title AS basiccurrintacct_title,
-	basicadv.title AS basicadvacct_title,
-	basicidlecurr.title AS basicidlecurracct_title, 
-	basicidlecurrint.title AS basicidlecurrintacct_title,
-	basicidleprev.title AS basicidleprevacct_title, 
-	basicidleprevint.title AS basicidleprevintacct_title,
-	basicidleadv.title AS basicidleadvacct_title,
-
-	sefprior.title AS sefprioracct_title, 
-	sefpriorint.title AS sefpriorintacct_title,
-	sefprev.title AS sefprevacct_title, 
-	sefprevint.title AS sefprevintacct_title,
-	sefcurr.title AS sefcurracct_title, 
-	sefcurrint.title AS sefcurrintacct_title,
-	sefadv.title AS sefadvacct_title
-FROM province_taxaccount_mapping mm
-	LEFT JOIN itemaccount basicprior ON mm.basicprioracct_objid = basicprior.objid 
-	LEFT JOIN itemaccount basicpriorint ON mm.basicpriorintacct_objid = basicpriorint.objid 
-	LEFT JOIN itemaccount basicprev ON mm.basicprevacct_objid = basicprev.objid 
-	LEFT JOIN itemaccount basicprevint ON mm.basicprevintacct_objid = basicprevint.objid 
-	LEFT JOIN itemaccount basiccurr ON mm.basiccurracct_objid = basiccurr.objid 
-	LEFT JOIN itemaccount basiccurrint ON mm.basiccurrintacct_objid = basiccurrint.objid 
-	LEFT JOIN itemaccount basicadv ON mm.basicadvacct_objid = basicadv.objid 
-	LEFT JOIN itemaccount basicidlecurr ON mm.basicidlecurracct_objid = basicidlecurr.objid 
-	LEFT JOIN itemaccount basicidlecurrint ON mm.basicidlecurrintacct_objid = basicidlecurrint.objid 
-	LEFT JOIN itemaccount basicidleprev ON mm.basicidleprevacct_objid = basicidleprev.objid 
-	LEFT JOIN itemaccount basicidleprevint ON mm.basicidleprevintacct_objid = basicidleprevint.objid 
-	LEFT JOIN itemaccount basicidleadv ON mm.basicidleadvacct_objid = basicidleadv.objid 
-	
-	LEFT JOIN itemaccount sefprior ON mm.sefprioracct_objid = sefprior.objid 
-	LEFT JOIN itemaccount sefpriorint ON mm.sefpriorintacct_objid = sefpriorint.objid 
-	LEFT JOIN itemaccount sefprev ON mm.sefprevacct_objid = sefprev.objid 
-	LEFT JOIN itemaccount sefprevint ON mm.sefprevintacct_objid = sefprevint.objid 
-	LEFT JOIN itemaccount sefcurr ON mm.sefcurracct_objid = sefcurr.objid 
-	LEFT JOIN itemaccount sefcurrint ON mm.sefcurrintacct_objid = sefcurrint.objid 
-	LEFT JOIN itemaccount sefadv ON mm.sefadvacct_objid = sefadv.objid 
 
 
 [getBilledLedgers]
@@ -523,39 +265,15 @@ WHERE rl.objid =  $P{rptledgerid}
 ORDER BY rlf.fromyear   
 
 
-
-
 [findCollectionTypeByBarcodeKey]
 SELECT * FROM collectiontype WHERE barcodekey = $P{barcodekey}
   
-
-
-
-
-
-
-
-
-
 
 [updateLedgerNextBillDate]
 UPDATE rptledger SET
 	nextbilldate = $P{nextbilldate},
 	forcerecalcbill = $P{forcerecalcbill}
 WHERE objid = $P{rptledgerid}
-
-
-
-
-
-[getLandDetails]
-select pc.objid as classification_objid, ld.area
-from faas f 
-	inner join landdetail ld on f.rpuid = ld.landrpuid 
-	inner join landassesslevel lal on ld.actualuse_objid = lal.objid 
-	inner join propertyclassification pc on lal.classification_objid = pc.objid 
-where f.objid = $P{faasid}
-
 
 
 [getLedgerFaasesByYear]
@@ -576,65 +294,25 @@ where rptledgerid = $P{objid}
 [findLatestPayment]
 select max(x.receiptdate) as receiptdate
 from (
-	select max(receiptdate) as receiptdate 
-	from cashreceipt c
-		inner join cashreceipt_rpt cr on c.objid = cr.objid 
-		inner join cashreceiptitem_rpt_online cro on c.objid = cro.rptreceiptid 
-	where cro.rptledgerid = $P{objid}
-    and (cro.year = $P{cy} and cro.fromqtr = 1)
+    select max(c.receiptdate) as receiptdate 
+    from cashreceipt c
+        inner join cashreceipt_rpt cr on c.objid = cr.objid 
+        inner join rptledger_payment rp on c.objid = rp.receiptid 
+        inner join rptledger_payment_item cro on rp.objid = cro.parentid
+    where rp.rptledgerid = $P{objid}
+    and (cro.year = $P{cy} and cro.qtr = 1)
 
-	union 
+    union 
 
-	select max(refdate) as receiptdate 
-	from rptledger_credit cr 
-	where cr.rptledgerid = $P{objid}
-	 and ((cr.fromyear = $P{cy} and cr.fromqtr = 1) 
-				or (cr.toyear = $P{cy} and cr.toqtr >= 1)
-				or ($P{cy} > cr.fromyear and $P{cy} < cr.toyear)
-		)
+    select max(refdate) as receiptdate 
+    from rptledger_credit cr 
+    where cr.rptledgerid = $P{objid}
+     and ((cr.fromyear = $P{cy} and cr.fromqtr = 1) 
+                or (cr.toyear = $P{cy} and cr.toqtr >= 1)
+                or ($P{cy} > cr.fromyear and $P{cy} < cr.toyear)
+        )
 )x
 
-
-[updateLedgerItemQtrlyFlag]
-update rptledgeritem set qtrly = $P{qtrly} where objid = $P{objid}
-
-[resetLedgerItemQtrlyFlagByLedger]	
-update rptledgeritem set qtrly =  0
-where rptledgerid = $P{rptledgerid} and fullypaid = 0 
-
-
-[updateLedgerItemFromQtrlyAggregates]
-update rptledgeritem rli, 
-	(	select 
-			parentid as rptledgeritemid, 
-			sum(basic) as basic,
-			sum(basicint) as basicint,
-			sum(basicdisc) as basicdisc,
-			sum(basicidle) as basicidle,
-			sum(basicidledisc) as basicidledisc,
-			sum(basicidleint) as basicidleint,
-			sum(sef) as sef,
-			sum(sefint) as sefint,
-			sum(sefdisc) as sefdisc,
-			sum(firecode) as firecode
-		from rptledgeritem_qtrly
-		where rptledgerid = $P{rptledgerid}
-		and parentid = $P{rptledgeritemid}
-		group by parentid 
-	)x 
-set
-	rli.basic = x.basic,
-	rli.basicint = x.basicint,
-	rli.basicdisc = x.basicdisc,
-	rli.basicidle = x.basicidle,
-	rli.basicidledisc = x.basicidledisc,
-	rli.basicidleint = x.basicidleint,
-	rli.sef = x.sef,
-	rli.sefint = x.sefint,
-	rli.sefdisc = x.sefdisc,
-	rli.firecode = x.firecode
-where rli.rptledgerid = $P{rptledgerid}
-  and rli.objid = x.rptledgeritemid 
 
 
 [mergeBillLedger]
@@ -652,12 +330,6 @@ and not exists(
 )
 
 
-[getLedgerQtrlyItems]
-select year, qtr, av, basicav, sefav 
-from rptledgeritem_qtrly 
-where parentid = $P{parentid} 
-
-
 [getPaidLedgerBills]
 select b.objid, bl.rptledgerid
 from rptbill b 
@@ -668,3 +340,29 @@ where bl.rptledgerid = $P{objid}
 
 [deleteEmptyBills]
 delete from rptbill where not exists(select * from rptbill_ledger where billid = rptbill.objid)
+
+
+[getCurrentYearCredits]	
+select x.* 
+from (
+    select c.receiptdate, min(cro.qtr) as fromqtr, max(cro.qtr) as toqtr
+    from cashreceipt c 
+    inner join rptledger_payment rp on c.objid = rp.receiptid 
+    inner join rptledger_payment_item cro on rp.objid = cro.parentid
+    left join cashreceipt_void cv on c.objid = cv.receiptid
+    where rp.rptledgerid = $P{objid}
+    and cro.year = $P{cy}
+    and cv.objid is null 
+    group by c.receiptdate, cro.year 
+
+    union 
+
+    select 
+        rc.refdate as receiptdate, 
+        case when 2017 = rc.fromyear then rc.fromqtr else 1 end as fromqtr,
+        case when 2017 = rc.toyear then rc.toqtr else 4 end as toqtr
+    from rptledger_credit rc
+    where rc.rptledgerid = $P{objid}
+    and $P{cy} >= rc.fromyear and $P{cy} <= rc.toyear 
+)x 
+order by x.fromqtr 

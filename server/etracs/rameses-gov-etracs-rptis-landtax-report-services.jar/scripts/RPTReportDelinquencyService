@@ -59,10 +59,17 @@ class RPTReportDelinquencyService
 		*/
 	}
 
+	def getBillingByLedger(ledger){
+		def bill = billSvc.initBill(ledger.objid)
+		bill.billdate = dtSvc.parse('yyyy-MM-dd', ledger.billdate)
+		bill._commit == false 
+		billSvc.generateBill(bill)
+		return bill.items.findAll{it.year <= bill.billtoyear}
+	}	
 
 	@ProxyMethod
 	public void buildDelinquency( rptledger, dtgenerated ) {
-		def items = billSvc.generateBillItemsByLedger(rptledger.objid, dtgenerated)
+		def items = getBillingByLedger([objid:rptledger.objid, billdate:dtgenerated])
 		if (!items) return;
 
 		items.each{ item ->

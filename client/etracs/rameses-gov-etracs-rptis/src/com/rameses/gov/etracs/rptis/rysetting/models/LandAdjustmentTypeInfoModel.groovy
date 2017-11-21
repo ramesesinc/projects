@@ -76,7 +76,7 @@ public class LandAdjustmentTypeInfoModel implements SubPage
 
     
     def openAdjustmentType() {
-        if( selectedItem ) {
+        if( selectedItem && mode != 'read') {
             def adjustment = service.openAdjustmentType(selectedItem)
             return InvokerUtil.lookupOpener('landadjustmenttype:open', [entity:adjustment, updateHandler:updateLandAdjustmentTypeHandler, adjustments:items, mode:mode] )
         }

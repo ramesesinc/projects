@@ -8,9 +8,10 @@ DELETE FROM faas_task WHERE refid = $P{objid}
 [findOnlinePaymentByFaas]
 select f.objid, rl.objid as rptledgerid  
 from faas f 
-	inner join rptledger rl on f.objid = rl.faasid 
-	inner join cashreceiptitem_rpt_online cro on rl.objid = cro.rptledgerid
+    inner join rptledger rl on f.objid = rl.faasid 
+    inner join rptledger_payment rp on rl.objid = rp.rptledgerid
 where f.objid = $P{objid}
+and rp.voided = 0 
 
 [findLedgerByFaasId]
 select objid from rptledger where faasid = $P{objid}

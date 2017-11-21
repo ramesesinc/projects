@@ -21,12 +21,12 @@ SELECT ld.*,
 	st.striplevel AS stripping_striplevel,
 	st.rate AS stripping_rate
 FROM landdetail ld
-	INNER JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid
-	INNER JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
-	INNER JOIN landspecificclass lspc ON ld.landspecificclass_objid = lspc.objid 
-	INNER JOIN propertyclassification cls ON spc.classification_objid = cls.objid 
-	INNER JOIN landassesslevel lal ON ld.actualuse_objid = lal.objid 
-	INNER JOIN propertyclassification pc ON lal.classification_objid = pc.objid 
+	LEFT JOIN lcuvsubclass sub ON ld.subclass_objid = sub.objid
+	LEFT JOIN lcuvspecificclass spc ON ld.specificclass_objid = spc.objid 
+	LEFT JOIN landspecificclass lspc ON ld.landspecificclass_objid = lspc.objid 
+	LEFT JOIN propertyclassification cls ON spc.classification_objid = cls.objid 
+	LEFT JOIN landassesslevel lal ON ld.actualuse_objid = lal.objid 
+	LEFT JOIN propertyclassification pc ON lal.classification_objid = pc.objid 
 	LEFT JOIN lcuvstripping st ON ld.stripping_objid = st.objid 
 WHERE ld.landrpuid = $P{landrpuid}
 ORDER BY ld.objid DESC, sub.code, st.striplevel 

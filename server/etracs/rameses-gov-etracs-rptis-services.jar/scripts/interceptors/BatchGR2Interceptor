@@ -1,0 +1,211 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class BatchGR2Interceptor
+{
+	@Service('RPUService')
+	def rpuSvc 
+
+	@Service('LandRPUGRService')
+	def landGrSvc 
+
+	@Service('BldgRPUGRService')
+	def bldgGrSvc 
+
+	@Service('MachRPUGRService')
+	def machGrSvc 
+
+	@Service('PlantTreeRPUGRService')
+	def plantTreeGrSvc 
+
+	@Service('MiscRPUGRService')
+	def miscGrSvc 
+
+	@Service('RPTUtil')
+	def util
+
+	@DataContext('batchgr_items_forrevision')
+	def em_batchgr_items_forrevision
+
+	@DataContext('batchgr_log')
+	def em_batchgr_log
+
+	@DataContext('batchgr_error')
+	def em_batchgr_error
+
+	@DataContext('faas_previous')
+	def em_faas_previous
+
+	@Service('RPTRequirementRuleService')
+    def ruleSvc
+
+    @Service('RPTRequirementService')
+    def reqSvc
+
+
+	@After(pattern="FAASService.approveFaas", eval="#{result.txntype?.objid=='GR'}") 
+	public void interceptApprove( evt ) {
+		def faas = evt.result 
+		def pf = em_faas_previous.find([faasid:faas.objid]).first()
+		if (pf){
+			em_batchgr_error.find([objid:pf.prevfaasid]).delete()
+		}
+	}
+	
+
+	@After(pattern="FAASService.deleteFaas") 
+	public void deleteBatchGrLog( evt ) {
+		def faas = evt.result 
+		def pf = em_faas_previous.find([faasid:faas.objid]).first()
+		if (pf){
+			em_batchgr_log.find([objid:pf.prevfaasid]).delete()
+		}
+	}
+
+
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'land' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void reviseFaas( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			landGrSvc.reviseLandRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
+		}
+
+	}
+
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'bldg' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedBldgeDetails( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			bldgGrSvc.reviseBldgRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
+		}
+
+	}
+
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'mach' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedMachDetails( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			println 'revisedMachDetails...'
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			machGrSvc.reviseMachRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
+		}
+
+	}
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'planttree' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedPlantTrees( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			println 'revisedPlantTrees...'
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			plantTreeGrSvc.revisePlantTreeRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
+		}
+
+	}
+
+	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'misc' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
+	public void revisedMisc( evt ) {
+		def faas = evt.result 
+		if (! util.isTrue(faas.datacapture)) return 
+
+		// if not online GR processed sa datacapture
+		if (!faas.previousfaases || faas.previousfaases.findAll{it.prevfaasid != null} == 0) return 
+
+		// check if for revision, if so recalculate then log 
+		def gritem = em_batchgr_items_forrevision.find([objid:faas.previousfaases[0].prevfaasid]).first()
+		if (gritem){
+			println 'revisedPlantTrees...'
+			faas.rpu._newid = false 
+			faas.rpu.rp = [lguid:faas.lguid]
+			miscGrSvc.reviseMiscRpu(faas.rpu)
+			rpuSvc.updateRpu(faas.rpu)
+			em_batchgr_log.create(gritem)
+			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
+		}
+
+	}
+
+
+	void buildRequirements(faas){
+		def requirements = ruleSvc.getRequirements([
+			txntype 		: faas.txntype,
+			txntypemode 	: '',
+			attributes		: [],
+			rputype    		: faas.rpu.rputype, 
+			classificationid : faas.rpu.classification?.objid,
+		])
+
+		println 'requirements -> ' + requirements
+
+		requirements.unique().each{
+			reqSvc.create([
+				objid  				: 'R' + new java.rmi.server.UID(),
+				requirementtypeid 	: it.objid,
+				handler 			: it.handler,
+				refid 				: faas.objid,
+				value_objid 		: null,
+				value_txnno			: null,
+				value_txndate 		: null,
+				value_txnamount 	: 0.0,
+				value_remarks 		: null,
+				complied 			: 0,
+			])
+		}
+	}
+}
+

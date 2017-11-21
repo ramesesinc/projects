@@ -214,7 +214,7 @@ class FaasBldgReportInterceptor
 						def  expr = replaceExpr( it.expr, binding )
 						
 						def item = [
-							floorno 	: floor.floorno,
+							floorno 	: stt.bldgtype.code + ' - ' + floor.floorno,
 							addlitemcode: it.additionalitem.code,
 							addlitemname: it.additionalitem.name,
 							expr		: expr,
@@ -230,15 +230,16 @@ class FaasBldgReportInterceptor
 			faas.additionalitems << [:]
 		}
 		else {
-			sortAdditionalItems(faas)
-			if (faas.additionalitems.size() > 5){
-				def additionalitems2 = faas.additionalitems[5..faas.additionalitems.size()-1];
+			//sortAdditionalItems(faas)
+			def LIST_SIZE = 6
+			if (faas.additionalitems.size() > LIST_SIZE){
+				def additionalitems2 = faas.additionalitems[LIST_SIZE..faas.additionalitems.size()-1];
 				def additionalitems = faas.additionalitems - additionalitems2
 				additionalitems << [
 					floorno 		: null, 
 					addlitemname	: 'PAGE 3 ADDITIONAL ITEMS TOTAL ', 
 					expr 			: null, 
-					amount 			: additionalitems2.amount.sum()
+					amount 			: additionalitems2.sum{ it.amount ? it.amount : 0.0 }
 				]
 
 				faas.additionalitems = [] 

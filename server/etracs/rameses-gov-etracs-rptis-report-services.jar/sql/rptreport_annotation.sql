@@ -3,7 +3,8 @@
 SELECT 
 	f.tdno, f.titleno, f.titledate, f.titletype, f.owner_name, f.owner_address, 
 	r.fullpin, rp.cadastrallotno, r.rputype, b.name AS barangay, pc.code AS classcode, r.totalmv, r.totalav, 
-	r.totalareaha,	r.totalareasqm, fat.type AS annotationtype, fa.memoranda 
+	r.totalareaha,	r.totalareasqm, fat.type AS annotationtype, fa.memoranda, 
+	rp.blockno, rp.surveyno
 FROM faasannotation fa 
 	INNER JOIN faasannotationtype fat ON fa.annotationtype_objid = fat.objid 
 	INNER JOIN faas f ON fa.faasid = f.objid 

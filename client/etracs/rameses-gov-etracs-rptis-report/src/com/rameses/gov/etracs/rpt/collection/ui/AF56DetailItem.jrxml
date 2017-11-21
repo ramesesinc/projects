@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="AF56DetailItem"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Landscape"
 		 pageWidth="1418"
@@ -43,12 +44,16 @@
 	<field name="sefdp" class="java.math.BigDecimal"/>
 	<field name="firecode" class="java.math.BigDecimal"/>
 	<field name="basicidle" class="java.math.BigDecimal"/>
+	<field name="sh" class="java.lang.Number"/>
 
 	<variable name="T_FIRECODE" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{firecode}]]></variableExpression>
 	</variable>
 	<variable name="T_BASICIDLE" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{basicidle}]]></variableExpression>
+	</variable>
+	<variable name="T_SH" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{sh}]]></variableExpression>
 	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -537,14 +542,14 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="367"
+						x="354"
 						y="3"
 						width="46"
 						height="18"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField-13">
-							<printWhenExpression><![CDATA[new Boolean($V{T_FIRECODE}.doubleValue()> 0)]]></printWhenExpression>
+						key="textField-15">
+							<printWhenExpression><![CDATA[$V{T_FIRECODE} > 0]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -559,16 +564,16 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="284"
+						x="271"
 						y="3"
 						width="83"
 						height="18"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="staticText-14">
-							<printWhenExpression><![CDATA[new Boolean($V{T_FIRECODE}.doubleValue()> 0)]]></printWhenExpression>
+						key="staticText-16">
+							<printWhenExpression><![CDATA[$V{T_FIRECODE} > 0]]></printWhenExpression>
 						</reportElement>
-					<box rightPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -581,16 +586,16 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="417"
-						y="2"
+						x="403"
+						y="3"
 						width="83"
 						height="18"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="staticText-15">
-							<printWhenExpression><![CDATA[new Boolean($V{T_BASICIDLE}.doubleValue() > 0)]]></printWhenExpression>
+						key="staticText-17">
+							<printWhenExpression><![CDATA[$V{T_BASICIDLE} > 0]]></printWhenExpression>
 						</reportElement>
-					<box rightPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -603,16 +608,16 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="500"
-						y="2"
+						x="486"
+						y="3"
 						width="57"
 						height="18"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField-14">
-							<printWhenExpression><![CDATA[new Boolean($V{T_BASICIDLE}.doubleValue() > 0)]]></printWhenExpression>
+						key="textField-16">
+							<printWhenExpression><![CDATA[$V{T_BASICIDLE} > 0]]></printWhenExpression>
 						</reportElement>
-					<box rightPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -622,6 +627,50 @@
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{T_BASICIDLE}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="210"
+						y="3"
+						width="58"
+						height="18"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-17">
+							<printWhenExpression><![CDATA[$V{T_SH} > 0]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{T_FIRECODE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="95"
+						y="3"
+						width="115"
+						height="18"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-18">
+							<printWhenExpression><![CDATA[$V{T_SH} > 0]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[SOCIALIZED HOUSING:]]></text>
+				</staticText>
 			</band>
 		</columnFooter>
 		<pageFooter>

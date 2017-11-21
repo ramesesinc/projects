@@ -1,0 +1,3 @@
+"entity.total.*"[true]{
+    enabled:false;
+}

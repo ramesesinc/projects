@@ -7,6 +7,9 @@ class BldgRPUGRService
 	@ActiveDB('bldgrpu')
 	def em
 
+	@ActiveDB('bldgrysettinglookup')
+	def em_bldgsetting 
+
 	@Service('BldgRYSettingLookupService')
 	def lookupSvc
 
@@ -86,7 +89,6 @@ class BldgRPUGRService
 			reviseBldgUses(rpu, st)
 		}
 	}
-
 
 	void reviseBldgUses( rpu, st) {
 		reviseActualUse( rpu, st  )

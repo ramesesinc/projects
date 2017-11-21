@@ -16,7 +16,8 @@ select
 	rp.surveyno,
 	rp.blockno,
 	pc.code as classcode,
-	pc.name as classification 
+	pc.name as classification,
+	r.rputype  
 from faas f 
 	inner join rpu r on f.rpuid = r.objid
 	inner join realproperty rp on f.realpropertyid = rp.objid 

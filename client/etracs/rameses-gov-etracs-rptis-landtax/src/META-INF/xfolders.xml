@@ -1,7 +1,10 @@
+
 <folders>
     <folder id="explorer">
         <folder id="txn" caption="Transactions" index="2">
-            <folder id="landtax" caption="Land Tax" index="3"/>
+            <folder id="landtax" caption="Land Tax" index="3">
+                <folder id="util" caption="Utilities" />
+            </folder>
         </folder>
         
         <folder id="report" caption="Reports" index="3">

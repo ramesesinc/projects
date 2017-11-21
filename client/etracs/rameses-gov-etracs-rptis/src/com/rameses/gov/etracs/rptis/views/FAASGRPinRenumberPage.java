@@ -37,7 +37,7 @@ public class FAASGRPinRenumberPage extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
@@ -60,7 +60,7 @@ public class FAASGRPinRenumberPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Initial Information");
         jPanel1.setBorder(xTitledBorder1);
 
-        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setCaptionWidth(130);
         xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
         xIntegerField1.setCaption("Revision Year");
@@ -95,11 +95,14 @@ public class FAASGRPinRenumberPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xCheckBox1.setName("entity.approvefaas"); // NOI18N
-        xCheckBox1.setShowCaption(false);
-        xCheckBox1.setText("Approve FAAS Automatically?");
-        xFormPanel1.add(xCheckBox1);
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaption("Numbering Option");
+        xComboBox1.setExpression("#{item.title}");
+        xComboBox1.setItems("numberingOptions");
+        xComboBox1.setName("entity.numberingoption"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox1.setRequired(true);
+        xFormPanel1.add(xComboBox1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -107,14 +110,14 @@ public class FAASGRPinRenumberPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -150,7 +153,7 @@ public class FAASGRPinRenumberPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -158,7 +161,7 @@ public class FAASGRPinRenumberPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

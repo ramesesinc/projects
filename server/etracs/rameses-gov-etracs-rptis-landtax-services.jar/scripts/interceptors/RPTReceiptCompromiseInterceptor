@@ -59,13 +59,9 @@ class RPTReceiptCompromiseInterceptor
 	}
 
 	def createReceiptItem(receipt, tax){
-		return [
-			objid  		: tax.objid,
-			receiptid 	: receipt.objid,
-			item        : em_itemaccount.select('objid, code, title, fund_objid, fund_code, fund_title').find([objid:tax.item.objid]).first(),
-			amount		: tax.amount,
-			remarks		: null,
-		]
+		tax.receiptid = receipt.objid 
+		tax.item = em_itemaccount.select('objid, code, title, fund_objid, fund_code, fund_title').find([objid:tax.item.objid]).first()
+		return tax 
 	}
 
 	void addLGUInfo( receipt ) {

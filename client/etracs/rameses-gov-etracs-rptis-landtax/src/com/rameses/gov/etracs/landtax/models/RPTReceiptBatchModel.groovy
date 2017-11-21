@@ -242,7 +242,7 @@ class RPTReceiptBatchModel extends PageFlowController
             }
             try{
                 buildBillParams(item)
-                billSvc.generateBillByLedgerId3(bill)
+                billSvc.generateBill(bill)
                 itemsforpayment << svc.getItemsForPayment(bill)[0]
             }
             catch(e){

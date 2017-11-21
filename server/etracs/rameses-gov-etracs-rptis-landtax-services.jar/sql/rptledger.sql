@@ -1,14 +1,13 @@
 [getList]
 SELECT 
-	${columns}
+    ${columns}
 FROM rptledger rl 
-	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
-	INNER JOIN barangay b ON rl.barangayid = b.objid 
+    INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
+    INNER JOIN barangay b ON rl.barangayid = b.objid 
 WHERE 1=1
 ${fixfilters}
 ${filters}
 ${orderby}
-
 
 [findById]
 SELECT 
@@ -30,10 +29,6 @@ FROM rptledger rl
 	INNER JOIN faas f ON rl.faasid = f.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 WHERE rl.faasid = $P{faasid} AND rl.state = 'APPROVED' 
-
-
-[findLedgerByFaasId]	
-SELECT * FROM rptledger WHERE faasid = $P{faasid} 
 
 
 [getLedgerFaases]
@@ -87,156 +82,107 @@ WHERE state = 'APPROVED'
 [getLedgerCredits]
 SELECT t.*
 FROM (
-	SELECT 
-		objid, 
-		objid AS rptreceiptid,
-		refno,
-		refdate ,
-		collector as collector_name, 
-		paidby_name,
-		fromyear,
-		fromqtr,
-		toyear, 
-		toqtr,
-		basic,
-		basicint,
-		basicdisc,
-		basicidle,
-		sef,
-		sefint,
-		sefdisc,
-		firecode,
-		amount,
-		type AS txnmode,
-		0 as partialled,
-		type, 
-		'-' as paidby_address, 
-		postedby,
-		postedbytitle,
-		dtposted
-	FROM rptledger_credit rc 
-	WHERE rptledgerid = $P{rptledgerid}
-	and rc.type <> 'COMPROMISE'
+    SELECT 
+        objid AS rptreceiptid,
+        refno,
+        refdate ,
+        collector as collector_name, 
+        paidby_name,
+        fromyear,
+        fromqtr,
+        toyear, 
+        toqtr,
+        basic,
+        basicint,
+        basicdisc,
+        basicidle,
+        sef,
+        sefint,
+        sefdisc,
+        firecode,
+        amount,
+        type AS txnmode,
+        0 as partialled
+    FROM rptledger_credit rc 
+    WHERE rptledgerid = $P{rptledgerid}
+    and rc.type <> 'COMPROMISE'
 
-	UNION ALL
-	
-	SELECT 
-		cr.objid,
-		cr.objid AS rptreceiptid, 
-		cr.receiptno AS refno,
-		cr.receiptdate AS refdate,
-		cr.collector_name,
-		cr.paidby AS paidby_name,
-		cri.year AS fromyear,
-		case when cri.qtr = 0 then cri.fromqtr else cri.qtr end AS fromqtr,
-		cri.year AS toyear,
-		case when cri.qtr = 0 then cri.toqtr else cri.qtr end AS toqtr,
-		cri.basic AS basic,
-		cri.basicint AS basicint,
-		cri.basicdisc AS basicdisc,
-		cri.basicidle- cri.basicidledisc + cri.basicidleint AS basicidle,
-		cri.sef AS sef,
-		cri.sefint AS sefint,
-		cri.sefdisc AS sefdisc,
-		cri.firecode AS firecode,
-		cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
-				cri.sef + cri.sefint - cri.sefdisc + cri.firecode AS amount,
-		crr.txntype AS txnmode,
-		cri.partialled,
-		'online' as type, 
-		cr.paidbyaddress as paidby_address, 
-		'sytem' as postedby,
-		'system' as postedbytitle,
-		cr.receiptdate as dtposted
-	FROM cashreceipt_rpt crr
-		INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
-		INNER JOIN cashreceiptitem_rpt_online cri ON cr.objid = cri.rptreceiptid 	
-		LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-	WHERE cri.rptledgerid = $P{rptledgerid}
-		AND cv.objid IS NULL 	
+    UNION ALL
+    
+    SELECT 
+        cr.objid AS rptreceiptid, 
+        cr.receiptno AS refno,
+        cr.receiptdate AS refdate,
+        cr.collector_name,
+        cr.paidby AS paidby_name,
+        cri.year AS fromyear,
+        rp.fromqtr,
+        cri.year AS toyear,
+        rp.toqtr,
+        cri.basic AS basic,
+        cri.basicint AS basicint,
+        cri.basicdisc AS basicdisc,
+        cri.basicidle- cri.basicidledisc + cri.basicidleint AS basicidle,
+        cri.sef AS sef,
+        cri.sefint AS sefint,
+        cri.sefdisc AS sefdisc,
+        cri.firecode AS firecode,
+        cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
+                cri.sef + cri.sefint - cri.sefdisc + cri.firecode AS amount,
+        crr.txntype AS txnmode,
+        cri.partialled
+    FROM cashreceipt_rpt crr
+        INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
+        inner join rptledger_payment rp on cr.objid = rp.receiptid 
+        inner join rptledger_payment_item cri on rp.objid = cri.parentid
+        LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
+    WHERE rp.rptledgerid = $P{rptledgerid}
+        AND cv.objid IS NULL    
     AND cri.partialled = 1 
 
-	UNION ALL 
+    UNION ALL 
 
-	select 				
-		x.objid, 
-			x.rptreceiptid, 
-				x.refno,
-				x.refdate,
-				x.collector_name,
-				x.paidby_name,
-				x.fromyear,
-				(select min(fromqtr) from cashreceiptitem_rpt_online where rptledgerid =  $P{rptledgerid} and rptreceiptid = x.rptreceiptid and year = x.fromyear and partialled = 0) as fromqtr,
-				x.toyear,
-				(select max(toqtr) from cashreceiptitem_rpt_online where rptledgerid =  $P{rptledgerid} and  rptreceiptid = x.rptreceiptid and year = x.toyear and partialled = 0) as toqtr, 
-				x.basic,
-				x.basicint,
-				x.basicdisc,
-				x.basicidle,
-				x.sef,
-				x.sefint,
-				x.sefdisc,
-				x.firecode,
-				x.amount,
-				x.txnmode,
-				x.partialled,
-				x.type,
-				x.paidby_address,
-				x.postedby,
-				x.postedbytitle,
-				x.dtposted
-	from (
-		SELECT 
-			cr.objid, 
-				cr.objid AS rptreceiptid, 
-				cr.receiptno AS refno,
-				cr.receiptdate AS refdate,
-				cr.collector_name,
-				cr.paidby AS paidby_name,
-				min(cri.year) AS fromyear,
-				0 AS fromqtr,
-				max(cri.year) AS toyear,
-				0 as toqtr,
-				sum(cri.basic) AS basic,
-				sum(cri.basicint) AS basicint,
-				sum(cri.basicdisc) AS basicdisc,
-				sum(cri.basicidle- cri.basicidledisc + cri.basicidleint) AS basicidle,
-				sum(cri.sef) AS sef,
-				sum(cri.sefint) AS sefint,
-				sum(cri.sefdisc) AS sefdisc,
-				sum(cri.firecode) AS firecode,
-				sum(cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
-						cri.sef + cri.sefint - cri.sefdisc + cri.firecode) AS amount,
-				crr.txntype AS txnmode,
-				cri.partialled,
-				'online' as type, 
-				cr.paidbyaddress as paidby_address, 
-				'sytem' as postedby,
-				'system' as postedbytitle,
-				cr.receiptdate as dtposted
-			FROM cashreceipt_rpt crr
-				INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
-				INNER JOIN cashreceiptitem_rpt_online cri ON cr.objid = cri.rptreceiptid 	
-				LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-			WHERE cri.rptledgerid =  $P{rptledgerid}
-				AND cv.objid IS NULL
-				AND cri.partialled = 0 	
-		group by 
-			cr.objid,
-			cr.receiptno,
-			cr.receiptdate,
-			cr.collector_name,
-			cr.paidby,
-			crr.txntype,
-			cri.year, 
-			cri.partialled,
-			cr.paidbyaddress,
-			cr.receiptdate
-	) x 
-
+    SELECT 
+        cr.objid AS rptreceiptid, 
+        cr.receiptno AS refno,
+        cr.receiptdate AS refdate,
+        cr.collector_name,
+        cr.paidby AS paidby_name,
+        min(cri.year) AS fromyear,
+        min(rp.fromqtr) AS fromqtr,
+        max(cri.year) AS toyear,
+        min(rp.toqtr) as toqtr,
+        sum(cri.basic) AS basic,
+        sum(cri.basicint) AS basicint,
+        sum(cri.basicdisc) AS basicdisc,
+        sum(cri.basicidle- cri.basicidledisc + cri.basicidleint) AS basicidle,
+        sum(cri.sef) AS sef,
+        sum(cri.sefint) AS sefint,
+        sum(cri.sefdisc) AS sefdisc,
+        sum(cri.firecode) AS firecode,
+        sum(cri.basic+ cri.basicint - cri.basicdisc + cri.basicidle - cri.basicidledisc + cri.basicidleint +
+                cri.sef + cri.sefint - cri.sefdisc + cri.firecode) AS amount,
+        crr.txntype AS txnmode,
+        cri.partialled
+    FROM cashreceipt_rpt crr
+        INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
+        inner join rptledger_payment rp on cr.objid = rp.receiptid 
+        inner join rptledger_payment_item cri on rp.objid = cri.parentid
+        LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
+    WHERE rp.rptledgerid = $P{rptledgerid}
+        AND cv.objid IS NULL
+        AND cri.partialled = 0  
+    group by 
+        cr.objid,
+        cr.receiptno,
+        cr.receiptdate,
+        cr.collector_name,
+        cr.paidby,
+        crr.txntype,
+        cri.year, 
+        cri.partialled      
 ) t
-ORDER BY t.fromyear desc, t.fromqtr desc 
-
+ORDER BY t.refdate desc, t.fromyear desc, t.fromqtr desc 
 
 
 [approveLedgerFaas]
@@ -247,11 +193,6 @@ UPDATE rptledgerfaas SET state = 'APPROVED' WHERE objid = $P{objid}
 UPDATE rptledger SET 
 	lastyearpaid = $P{toyear}, lastqtrpaid = $P{toqtr}, nextbilldate = null 
 WHERE objid = $P{rptledgerid}
-
-
-[updateState]
-UPDATE rptledger SET state = $P{state} WHERE objid = $P{objid}
-
 
 [setLedgerItemFullyPaidFlag]
 update rptledgeritem set 
@@ -278,17 +219,6 @@ UPDATE rptledger SET
 	nextbilldate = null
 WHERE objid = $P{rptledgerid}
 
-
-
-[findLedgerbyTdNo]
-SELECT objid 
-FROM rptledger 
-WHERE tdno = $P{tdno} 
-
-[findLedgerbyPrevTdNo]
-SELECT objid 
-FROM rptledger 
-WHERE tdno = $P{prevtdno} 
 
 [findLedgerByFullPin]
 SELECT objid 
@@ -456,48 +386,11 @@ where rptledgerid = $P{objid}
   and taxdifference = 0
   and not exists(
 		select *
-		from cashreceiptitem_rpt_online 
-		where rptledgerid = $P{objid}
-		and rptledgeritemid = rptledgeritem.objid 
-	);
-
-[deleteLedgerItemQtrly]  
-delete from rptledgeritem_qtrly where parentid = $P{objid}
-
-
-
-[updateLedgerInfoFromNewRevision]
-update rptledger set 
-	fullpin = $P{fullpin},
-	tdno = $P{tdno},
-	txntype_objid = $P{txntype_objid},
-	classification_objid = $P{classification_objid},
-	classcode = $P{classcode},
-	totalav = $P{totalav},
-	taxable = $P{taxable}
-where objid = $P{objid}
-
-
-
-
-[deleteRptBillLedger]
-delete from rptbill_ledger where rptledgerid = $P{objid}
-
-[deleteRptLedgerItem]
-delete from rptledgeritem where rptledgerid = $P{objid}
-
-[deleteRptLedgerItemQtrly]
-delete from rptledgeritem_qtrly where rptledgerid = $P{objid}
-
-[deleteLedgerFaases]
-DELETE FROM rptledgerfaas WHERE rptledgerid = $P{objid} 
-
-[deleteLedgerCredits]
-delete from rptledger_credit where rptledgerid = $P{objid} 
-	
-[deleteLedger]
-DELETE FROM rptledger WHERE objid = $P{objid}
-
+		from  rptledger_payment rp 
+    inner join rptledger_payment_item rpi on rp.objid = rpi.parentid
+		where rp.rptledgerid = $P{objid}
+		and rpi.rptledgeritemid = rptledgeritem.objid 
+	)
 
 [cancelCurrentLedgerFaasReference]
 update rptledgerfaas set 
@@ -518,14 +411,6 @@ UPDATE rptledger SET
 WHERE objid = $P{rptledgerid}
 
 
-[updateLedgerItemAvByLedgerFaas]
-update rptledgeritem rli, rptledgerfaas rlf set 
-	av = rlf.assessedvalue,
-	basicav = rlf.assessedvalue,
-	sefav = rlf.assessedvalue
-where rli.rptledgerfaasid = rlf.objid 
-  and rlf.objid = $P{objid}	
-  and rli.fullypaid = 0
 
 [getAffectedQtrlyItemsByLedgerFaas]
 select rli.*, rli.objid as parentid, rliq.qtr, rliq.partialled  
@@ -537,15 +422,6 @@ where rli.rptledgerfaasid = $P{objid}
   		(rliq.year = $P{toyear} and rliq.qtr <= $P{toqtr}) 
   	)
   and rliq.fullypaid = 0
-
-
-[findPartialPayment]
-select 
-	basicpaid, basicdisc, basicint,
-	sefpaid, sefdisc, sefint, firecodepaid
-from rptledgeritem_qtrly
-where rptledgerid = $P{objid}	
-and partialled = 1
 
 
 [findPartialledItem]
@@ -594,10 +470,6 @@ where rptledgerid = $P{rptledgerid}
 
 [findQtrlyItemCount]  	
 select count(*) as count from rptledgeritem_qtrly where parentid = $P{objid}
-
-
-[findFaasFromSubdividedLand]
-select objid from subdividedland where newfaasid = $P{objid}
 
 
 [findLedgerFaasById]

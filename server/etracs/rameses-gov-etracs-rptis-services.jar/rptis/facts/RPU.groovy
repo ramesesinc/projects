@@ -41,7 +41,7 @@ public class RPU {
         this.swornamount        = rpu.swornamount
         this.useswornamount     = rpu.useswornamount
         this.classification     = new Classification(rpu.classification?.objid);
-        this.txntype            = rpu.txntype.objid 
+        this.txntype            = rpu.txntype?.objid 
         this.effectivityyear    = rpu.effectivityyear
     }
 

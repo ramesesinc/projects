@@ -107,7 +107,7 @@ public class BldgAssessmentRuleService
 		def rpufact = new BldgRPU(rpu)
 		facts << rpufact
 
-		facts << new RPU(rpu)
+		facts << new rptis.facts.RPU(rpu)
 
 		rpu.structuraltypes.each{bs ->
 			def bsfact = new BldgStructure(rpufact, bs)

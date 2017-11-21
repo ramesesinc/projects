@@ -209,3 +209,17 @@ where refid = $P{objid}
 and state = 'approver' 
 and signature is not null 
 order by startdate desc
+
+
+
+[getActiveClaims]
+select cf.owner_name, cf.tdno 
+from faas f 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+inner join realproperty cp on rp.pin = cp.pin 
+inner join faas cf on cp.objid = cf.realpropertyid
+inner join rpu cr on cf.rpuid = cr.objid 
+where cf.state = 'CURRENT'
+and cr.rputype = 'land' 
+and f.objid = $P{objid}
+and f.objid <> cf.objid

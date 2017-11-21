@@ -19,10 +19,10 @@
 	<element name="landdetail"	tablename="landdetail" >
 		<field name="objid" primary="true" />
 		<field name="landrpuid" required="true" />
-		<field name="subclass_objid" required="true" />
-		<field name="landspecificclass_objid" required="true" />
-		<field name="specificclass_objid" required="true" />
-		<field name="actualuse_objid" required="true" />
+		<field name="subclass_objid" />
+		<field name="landspecificclass_objid" />
+		<field name="specificclass_objid" />
+		<field name="actualuse_objid" />
 		<field name="stripping_objid" />
 		<field name="addlinfo" />
 		<field name="striprate" type="decimal" />

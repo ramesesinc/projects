@@ -32,13 +32,13 @@ class FAASLookupService
 			params.orderby = ' order by f.tdno '
 			params.searchtext 	= (params.searchtext ? params.searchtext : '') + '%';
 			def filters = [
-				' and f.objid in (select objid from faas_list where tdno LIKE $P{searchtext} )',
-				' and f.objid in (select objid from faas_list where pin LIKE $P{searchtext} )',
-				' and f.objid in (select objid from faas_list where owner_name LIKE $P{searchtext} )',
-				' and f.objid in (select objid from faas_list where cadastrallotno LIKE $P{searchtext} )',
-				' and f.objid in (select objid from faas_list where blockno LIKE $P{searchtext} )',
-				' and f.objid in (select objid from faas_list where surveyno LIKE $P{searchtext} )',
-				' and f.objid in (select objid from faas_list where trackingno LIKE $P{searchtext} )',
+				' and fl.tdno LIKE $P{searchtext} ',
+				' and fl.pin LIKE $P{searchtext} ',
+				' and fl.owner_name LIKE $P{searchtext} ',
+				' and fl.cadastrallotno LIKE $P{searchtext} ',
+				' and fl.blockno LIKE $P{searchtext} ',
+				' and fl.surveyno LIKE $P{searchtext} ',
+				' and fl.trackingno LIKE $P{searchtext} ',
 			]
 			return utilSvc.getListFromQuery('faas:getLookupFaas', filters, params, 'f.objid');
 		}

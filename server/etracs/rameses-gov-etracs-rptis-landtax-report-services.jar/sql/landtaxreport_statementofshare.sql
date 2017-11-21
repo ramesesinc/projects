@@ -1,299 +1,235 @@
 [getIdleLandSharesAbstract]
-SELECT 
-    b.name AS barangay,
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidle' THEN cra.amount ELSE 0 END) AS brgycurr,
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidleint' THEN cra.amount ELSE 0 END) AS brgycurrpenalty,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidle' THEN cra.amount ELSE 0 END) AS brgyprev,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidleint' THEN cra.amount ELSE 0 END) AS brgyprevpenalty,
-    SUM(0.0) AS brgypenalty,
-    SUM(CASE WHEN cra.revperiod <> 'advance' AND cra.revtype in ('basicidle','basicidleint') THEN cra.amount ELSE 0 END) AS brgytotal,
+select 
+    b.name as barangay,
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidle' then cra.amount else 0 end) as brgycurr,
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidleint' then cra.amount else 0 end) as brgycurrpenalty,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidle' then cra.amount else 0 end) as brgyprev,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidleint' then cra.amount else 0 end) as brgyprevpenalty,
+    sum(0.0) as brgypenalty,
+    sum(case when cra.revperiod <> 'advance' and cra.revtype in ('basicidle','basicidleint') then cra.amount else 0 end) as brgytotal,
 
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidle' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS municurrshare,
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidleint' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS municurrsharepenalty,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidle' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS muniprevshare,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidleint' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS muniprevsharepenalty,
-    SUM(0.0) AS munipenaltyshare,
-    SUM(CASE WHEN cra.revperiod <> 'advance' AND cra.revtype in ('basicidle','basicidleint') AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS munisharetotal,
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidle' and cra.sharetype = 'municipality' then cra.amount else 0 end) as municurrshare,
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidleint' and cra.sharetype = 'municipality' then cra.amount else 0 end) as municurrsharepenalty,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidle' and cra.sharetype = 'municipality' then cra.amount else 0 end) as muniprevshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidleint' and cra.sharetype = 'municipality' then cra.amount else 0 end) as muniprevsharepenalty,
+    sum(0.0) as munipenaltyshare,
+    sum(case when cra.revperiod <> 'advance' and cra.revtype in ('basicidle','basicidleint') and cra.sharetype = 'municipality' then cra.amount else 0 end) as munisharetotal,
 
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidle' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provcurrshare,
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidleint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provcurrsharepenalty,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidle' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provprevshare,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidleint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provprevsharepenalty,
-    SUM(0.0) AS provpenaltyshare,
-    SUM(CASE WHEN cra.revperiod <> 'advance' AND  cra.revtype in ('basicidle','basicidleint') AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provsharetotal
-FROM remittance rem 
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provcurrshare,
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidleint' and cra.sharetype = 'province' then cra.amount else 0 end) as provcurrsharepenalty,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provprevshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidleint' and cra.sharetype = 'province' then cra.amount else 0 end) as provprevsharepenalty,
+    sum(0.0) as provpenaltyshare,
+    sum(case when cra.revperiod <> 'advance' and  cra.revtype in ('basicidle','basicidleint') and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
+from remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
     inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
-    INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    left JOIN barangay b on rl.barangayid = b.objid 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+    inner join rptledger_payment_share cra on rp.objid = cra.parentid
+    left join rptledger rl on rp.rptledgerid = rl.objid
+    left join barangay b on rl.barangayid = b.objid 
 where ${filter}   
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-    AND cra.revtype in  ('basicidle', 'basicidleint') 
-    AND cra.amount > 0
-GROUP BY b.name 
+    and cra.revtype in  ('basicidle', 'basicidleint') 
+    and cra.amount > 0
+group by b.name 
 
 
 [getIdleLandShares]
-SELECT 
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidle' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS municurrshare,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidle' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS muniprevshare,
-    SUM(0.0) AS munipenaltyshare,
-    SUM(CASE WHEN cra.revperiod <> 'advance' AND cra.revtype = 'basicidle' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS munisharetotal,
+select 
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidle' and cra.sharetype = 'municipality' then cra.amount else 0 end) as municurrshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidle' and cra.sharetype = 'municipality' then cra.amount else 0 end) as muniprevshare,
+    sum(0.0) as munipenaltyshare,
+    sum(case when cra.revperiod <> 'advance' and cra.revtype = 'basicidle' and cra.sharetype = 'municipality' then cra.amount else 0 end) as munisharetotal,
 
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basicidle' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provcurrshare,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basicidle' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provprevshare,
-    SUM(0.0) AS provpenaltyshare,
-    SUM(CASE WHEN cra.revperiod <> 'advance' AND  cra.revtype = 'basicidle' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provsharetotal
-FROM remittance rem 
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provcurrshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provprevshare,
+    sum(0.0) as provpenaltyshare,
+    sum(case when cra.revperiod <> 'advance' and  cra.revtype = 'basicidle' and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
+from remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
     inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
-    INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-WHERE ${filter} 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+    inner join rptledger_payment_share cra on rp.objid = cra.parentid
+where ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
 
 
 [getBasicSharesAbstract]
-SELECT
-    b.name AS barangay,
-    SUM(t.brgycurr) AS brgycurr,
-    SUM(t.brgyprev) AS brgyprev,
-    SUM(t.brgypenalty) AS brgypenalty,
-    SUM(t.brgycurrshare) AS brgycurrshare,
-    SUM(t.brgyprevshare) AS brgyprevshare,
-    SUM(t.brgypenaltyshare) AS brgypenaltyshare,
-    SUM(t.provmunicurrshare) AS provmunicurrshare,
-    SUM(t.provmuniprevshare) AS provmuniprevshare,
-    SUM(t.provmunipenaltyshare) AS provmunipenaltyshare
-FROM (
-    SELECT 
-        b.objid AS barangayid,
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' THEN cra.amount ELSE 0 END AS brgycurr,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' THEN cra.amount ELSE 0 END AS brgyprev,
-        CASE WHEN cra.revtype = 'basicint' THEN cra.amount ELSE 0 END AS brgypenalty,
-        
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgycurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgyprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgypenaltyshare,
+select 
+    b.objid as barangayid,
+    b.name as barangay, 
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basic' then cra.amount else 0 end) as brgycurr,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' then cra.amount else 0 end) as brgyprev,
+    sum(case when cra.revtype = 'basicint' then cra.amount else 0 end) as brgypenalty,
+    
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype = 'barangay' then cra.amount else 0 end) as brgycurrshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'barangay' then cra.amount else 0 end) as brgyprevshare,
+    sum(case when cra.revtype = 'basicint' and cra.sharetype = 'barangay' then cra.amount else 0 end) as brgypenaltyshare,
 
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmunicurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmuniprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmunipenaltyshare
-    FROM remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
-        INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-        left JOIN rptledger rl ON cra.rptledgerid = rl.objid
-        left JOIN barangay b on rl.barangayid = b.objid 
-    WHERE ${filter} 
-        and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-        AND cra.revperiod <> 'advance' 
-        AND cra.revtype IN ('basic', 'basicint')
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmunicurrshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmuniprevshare,
+    sum(case when cra.revtype = 'basicint' and cra.sharetype in ('province', 'municipality') then cra.amount else 0 end) as provmunipenaltyshare
+from remittance rem 
+    inner join liquidation_remittance liqr on rem.objid = liqr.objid 
+    inner join liquidation liq on liqr.liquidationid = liq.objid
+    inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
+    inner join cashreceipt cr on remc.objid = cr.objid 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+    inner join rptledger_payment_share cra on rp.objid = cra.parentid
+    left join rptledger rl on rp.rptledgerid = rl.objid
+    left join barangay b on rl.barangayid = b.objid 
+where ${filter} 
+    and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
+    and cra.revperiod <> 'advance' 
+    and cra.revtype in ('basic', 'basicint')
+group by b.objid, b.name
+order by b.name 
 
-    UNION ALL
-
-    SELECT  
-        ( SELECT MIN(crn.barangay_objid) FROM cashreceiptitem_rpt_noledger crn 
-                INNER JOIN cashreceiptitem_rpt_online cro ON crn.objid = cro.objid 
-            WHERE cro.rptreceiptid = cr.objid 
-        ) AS barangayid,
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' THEN cra.amount ELSE 0 END AS brgycurr,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' THEN cra.amount ELSE 0 END AS brgyprev,
-        CASE WHEN cra.revtype = 'basicint' THEN cra.amount ELSE 0 END AS brgypenalty,
-                        
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgycurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgyprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgypenaltyshare,
-
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmunicurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmuniprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype IN ('province', 'municipality') THEN cra.amount ELSE 0 END AS provmunipenaltyshare
-    FROM remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
-        INNER JOIN cashreceipt_rpt crr ON cr.objid = crr.objid 
-        INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    WHERE ${filter} 
-        and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-        AND crr.txntype = 'noledger'
-        AND cra.revperiod <> 'advance' 
-        AND cra.revtype IN ('basic', 'basicint')
-)t 
-left JOIN barangay b ON t.barangayid = b.objid 
-GROUP BY b.name 
 
 
 [getBasicShares]
-SELECT
-    b.name AS barangay,
-    SUM(t.brgytotalshare) AS brgytotalshare,
-    SUM(t.municurrshare) AS municurrshare,
-    SUM(t.muniprevshare) AS muniprevshare,
-    SUM(t.munipenaltyshare) AS munipenaltyshare,
-    SUM(t.provcurrshare) AS provcurrshare,
-    SUM(t.provprevshare) AS provprevshare,
-    SUM(t.provpenaltyshare) AS provpenaltyshare,
-    SUM(t.brgytotalshare + t.municurrshare + t.muniprevshare + t.munipenaltyshare +
+select
+    b.name as barangay,
+    sum(t.brgytotalshare) as brgytotalshare,
+    sum(t.municurrshare) as municurrshare,
+    sum(t.muniprevshare) as muniprevshare,
+    sum(t.munipenaltyshare) as munipenaltyshare,
+    sum(t.provcurrshare) as provcurrshare,
+    sum(t.provprevshare) as provprevshare,
+    sum(t.provpenaltyshare) as provpenaltyshare,
+    sum(t.brgytotalshare + t.municurrshare + t.muniprevshare + t.munipenaltyshare +
             t.provcurrshare + t.provprevshare + t.provpenaltyshare
-    ) AS grandtotal
-FROM (
-    SELECT 
-        b.objid AS barangayid,
-        CASE WHEN cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgytotalshare,
+    ) as grandtotal
+from (
+    select 
+        b.objid as barangayid,
+        case when cra.sharetype = 'barangay' then cra.amount else 0 end as brgytotalshare,
 
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END AS municurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END AS muniprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END AS munipenaltyshare,
+        case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype = 'municipality' then cra.amount else 0 end as municurrshare,
+        case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'municipality' then cra.amount else 0 end as muniprevshare,
+        case when cra.revtype = 'basicint' and cra.sharetype = 'municipality' then cra.amount else 0 end as munipenaltyshare,
 
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provcurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provpenaltyshare
-    FROM remittance rem 
+        case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype = 'province' then cra.amount else 0 end as provcurrshare,
+        case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'province' then cra.amount else 0 end as provprevshare,
+        case when cra.revtype = 'basicint' and cra.sharetype = 'province' then cra.amount else 0 end as provpenaltyshare
+    from remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
         inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
-        INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-        left JOIN rptledger rl ON cra.rptledgerid = rl.objid
-        left JOIN barangay b on rl.barangayid = b.objid 
-    WHERE ${filter} 
+        inner join rptledger_payment rp on cr.objid = rp.receiptid 
+        inner join rptledger_payment_share cra on rp.objid = cra.parentid
+        left join rptledger rl on rp.rptledgerid = rl.objid
+        left join barangay b on rl.barangayid = b.objid 
+    where ${filter} 
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-        AND cra.revperiod <> 'advance' 
-        AND cra.revtype IN ('basic', 'basicint')
-
-    UNION ALL
-
-    SELECT  
-        ( SELECT MIN(crn.barangay_objid) 
-                FROM cashreceiptitem_rpt_noledger crn 
-                INNER JOIN cashreceiptitem_rpt_online cro ON crn.objid = cro.objid 
-                WHERE cro.rptreceiptid = cr.objid 
-         ) AS barangayid,
-
-        CASE WHEN cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END AS brgytotalshare,
-
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END AS municurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END AS muniprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END AS munipenaltyshare,
-
-        CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provcurrshare,
-        CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provprevshare,
-        CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END AS provpenaltyshare
-    FROM remittance rem 
-        inner join liquidation_remittance liqr on rem.objid = liqr.objid 
-        inner join liquidation liq on liqr.liquidationid = liq.objid
-        inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
-        inner join cashreceipt cr on remc.objid = cr.objid 
-        INNER JOIN cashreceipt_rpt crr ON cr.objid = crr.objid 
-        INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    WHERE ${filter} 
-        and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-        AND crr.txntype = 'noledger'
-        AND cra.revperiod <> 'advance' 
-        AND cra.revtype IN ('basic', 'basicint')
+        and cra.revperiod <> 'advance' 
+        and cra.revtype in ('basic', 'basicint')
 ) t
-left JOIN barangay b ON t.barangayid = b.objid 
-GROUP BY b.name 
+left join barangay b on t.barangayid = b.objid 
+group by b.name 
 
 
 [getBasicSharesSummary]   
-SELECT xx.*, 
+select xx.*, 
     (brgytotalshare + munitotalshare + provtotalshare) as totalshare 
-FROM ( 
-    SELECT 
-        SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END) AS brgycurrshare,
-        SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END) AS brgyprevshare,
-        SUM(CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END) AS  brgypenaltyshare,
-        SUM(CASE WHEN cra.sharetype = 'barangay' THEN cra.amount ELSE 0 END) AS  brgytotalshare,
+from ( 
+    select 
+        sum(case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype = 'barangay' then cra.amount else 0 end) as brgycurrshare,
+        sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'barangay' then cra.amount else 0 end) as brgyprevshare,
+        sum(case when cra.revtype = 'basicint' and cra.sharetype = 'barangay' then cra.amount else 0 end) as  brgypenaltyshare,
+        sum(case when cra.sharetype = 'barangay' then cra.amount else 0 end) as  brgytotalshare,
 
-        SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS  municurrshare,
-        SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS  muniprevshare,
-        SUM(CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS  munipenaltyshare,
-        SUM(CASE WHEN cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS  munitotalshare,
+        sum(case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype = 'municipality' then cra.amount else 0 end) as  municurrshare,
+        sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'municipality' then cra.amount else 0 end) as  muniprevshare,
+        sum(case when cra.revtype = 'basicint' and cra.sharetype = 'municipality' then cra.amount else 0 end) as  munipenaltyshare,
+        sum(case when cra.sharetype = 'municipality' then cra.amount else 0 end) as  munitotalshare,
 
-        SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'basic' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS  provcurrshare,
-        SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'basic' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS  provprevshare,
-        SUM(CASE WHEN cra.revtype = 'basicint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS  provpenaltyshare,
-        SUM(CASE WHEN cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS  provtotalshare 
-    FROM remittance rem 
+        sum(case when cra.revperiod = 'current' and cra.revtype = 'basic' and cra.sharetype = 'province' then cra.amount else 0 end) as  provcurrshare,
+        sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'basic' and cra.sharetype = 'province' then cra.amount else 0 end) as  provprevshare,
+        sum(case when cra.revtype = 'basicint' and cra.sharetype = 'province' then cra.amount else 0 end) as  provpenaltyshare,
+        sum(case when cra.sharetype = 'province' then cra.amount else 0 end) as  provtotalshare 
+    from remittance rem 
         inner join liquidation_remittance liqr on rem.objid = liqr.objid 
         inner join liquidation liq on liqr.liquidationid = liq.objid
         inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
         inner join cashreceipt cr on remc.objid = cr.objid 
-        inner join cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
+        inner join rptledger_payment rp on cr.objid = rp.receiptid 
+        inner join rptledger_payment_share cra on rp.objid = cra.parentid
     where ${filter}   
         and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
         and cra.revperiod <> 'advance' 
-        and cra.revtype IN ('basic', 'basicint')
+        and cra.revtype in ('basic', 'basicint')
 )xx 
 
 
 [getSefShares]
-SELECT 
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'sef' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS municurrshare,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'sef' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS muniprevshare,
-    SUM(CASE WHEN cra.revtype = 'sefint' AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS munipenaltyshare,
-    SUM(CASE WHEN cra.revtype IN ('sef', 'sefint') AND cra.sharetype = 'municipality' THEN cra.amount ELSE 0 END) AS munisharetotal,
+select 
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'sef' and cra.sharetype = 'municipality' then cra.amount else 0 end) as municurrshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'sef' and cra.sharetype = 'municipality' then cra.amount else 0 end) as muniprevshare,
+    sum(case when cra.revtype = 'sefint' and cra.sharetype = 'municipality' then cra.amount else 0 end) as munipenaltyshare,
+    sum(case when cra.revtype in ('sef', 'sefint') and cra.sharetype = 'municipality' then cra.amount else 0 end) as munisharetotal,
 
-    SUM(CASE WHEN cra.revperiod = 'current' AND cra.revtype = 'sef' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provcurrshare,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND cra.revtype = 'sef' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provprevshare,
-    SUM(CASE WHEN cra.revtype = 'sefint' AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provpenaltyshare,
-    SUM(CASE WHEN cra.revtype IN ('sef', 'sefint') AND cra.sharetype = 'province' THEN cra.amount ELSE 0 END) AS provsharetotal
-FROM remittance rem 
+    sum(case when cra.revperiod = 'current' and cra.revtype = 'sef' and cra.sharetype = 'province' then cra.amount else 0 end) as provcurrshare,
+    sum(case when cra.revperiod in ('previous', 'prior') and cra.revtype = 'sef' and cra.sharetype = 'province' then cra.amount else 0 end) as provprevshare,
+    sum(case when cra.revtype = 'sefint' and cra.sharetype = 'province' then cra.amount else 0 end) as provpenaltyshare,
+    sum(case when cra.revtype in ('sef', 'sefint') and cra.sharetype = 'province' then cra.amount else 0 end) as provsharetotal
+from remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
     inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
-    INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-WHERE ${filter} 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+    inner join rptledger_payment_share cra on rp.objid = cra.parentid
+where ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-    AND cra.revperiod <> 'advance'
-    AND cra.revtype IN ('sef', 'sefint')
+    and cra.revperiod <> 'advance'
+    and cra.revtype in ('sef', 'sefint')
 
 
 [getBrgySharesStandard]
-SELECT  
-    MIN(b.name) AS brgyname, 
-    SUM(CASE WHEN cra.revperiod='current' AND revtype='basic' THEN cra.amount + cra.discount ELSE 0.0 END )AS basiccurrentamt,     
-    SUM(CASE WHEN cra.revperiod='current' AND revtype='basic' THEN cra.discount ELSE 0.0 END )AS basiccurrentdiscamt,     
-    SUM(CASE WHEN cra.revperiod = 'current' AND revtype ='basicint' THEN cra.amount ELSE 0.0 END) AS basiccurrentintamt,
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND revtype ='basic' THEN cra.amount ELSE 0.0 END) AS basicprevamt,    
-    SUM(CASE WHEN cra.revperiod IN ('previous', 'prior') AND revtype ='basicint' THEN cra.amount ELSE 0.0 END) AS basicprevintamt   
-FROM remittance rem 
+select  
+    b.name as brgyname, 
+    sum(case when cra.revperiod='current' and revtype='basic' then cra.amount + cra.discount else 0.0 end )as basiccurrentamt,     
+    sum(case when cra.revperiod='current' and revtype='basic' then cra.discount else 0.0 end )as basiccurrentdiscamt,     
+    sum(case when cra.revperiod = 'current' and revtype ='basicint' then cra.amount else 0.0 end) as basiccurrentintamt,
+    sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basic' then cra.amount else 0.0 end) as basicprevamt,    
+    sum(case when cra.revperiod in ('previous', 'prior') and revtype ='basicint' then cra.amount else 0.0 end) as basicprevintamt   
+from remittance rem 
     inner join liquidation_remittance liqr on rem.objid = liqr.objid 
     inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
-    INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    left JOIN barangay b ON rl.barangayid = b.objid 
-WHERE ${filter} 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+    inner join rptledger_payment_share cra on rp.objid = cra.parentid
+    left join rptledger rl on rp.rptledgerid = rl.objid
+    left join barangay b on rl.barangayid = b.objid 
+where ${filter} 
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
-    AND cra.sharetype ='barangay'
-GROUP BY b.objid
+    and cra.sharetype ='barangay'
+group by b.name
+
 
 
 [getBrgySharesAdvance]
-SELECT  
-    MIN(b.name) AS brgyname, 
-    SUM(CASE WHEN cra.revperiod='advance' AND revtype='basic' THEN cra.amount ELSE 0.0 END )AS basiccurrentamt,     
-    SUM(CASE WHEN cra.revperiod = 'advance' AND revtype ='basicint' THEN cra.amount ELSE 0.0 END) AS basiccurrentintamt,
-FROM cashreceipt cr 
-    INNER JOIN cashreceiptitem_rpt_account cra ON cr.objid = cra.rptreceiptid 
-    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-    left JOIN rptledger rl ON cra.rptledgerid = rl.objid
-    left JOIN barangay b ON rl.barangayid = b.objid 
-    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
-WHERE cr.receiptdate >= $P{fromdate} AND cr.receiptdate < $P{todate}
-    AND cra.sharetype ='barangay'
-     AND cv.objid IS NULL  
-GROUP BY b.objid  
+select  
+    min(b.name) as brgyname, 
+    sum(case when cra.revperiod='advance' and revtype='basic' then cra.amount else 0.0 end )as basiccurrentamt,     
+    sum(case when cra.revperiod = 'advance' and revtype ='basicint' then cra.amount else 0.0 end) as basiccurrentintamt
+from cashreceipt cr 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+    inner join rptledger_payment_share cra on rp.objid = cra.parentid
+    left join cashreceipt_void cv on cr.objid = cv.receiptid 
+    left join rptledger rl on rp.rptledgerid = rl.objid
+    left join barangay b on rl.barangayid = b.objid 
+    inner join remittance_cashreceipt rc on cr.objid = rc.objid
+where cr.receiptdate >= $P{fromdate} and cr.receiptdate < $P{todate}
+    and cra.sharetype ='barangay'
+     and cv.objid is null  
+group by b.objid  
 

@@ -12,11 +12,11 @@
         <invoker type="faas_restriction:open" action="open" caption="Restriction" target="popup"/>
         
         <invoker type="formActions" action="approve" caption="Approve" 
-                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read' &amp;&amp; type==null}"
                  role="RECORD_APPROVER" permission="faas_restriction.approve"/>
                  
         <invoker type="formActions" action="approve" caption="Approve" 
-                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read' &amp;&amp; type=='ledger'}"
                  domain="LANDTAX" role="RECORD_APPROVER" permission="faas_restriction.approve"/>
    </invokers>
    

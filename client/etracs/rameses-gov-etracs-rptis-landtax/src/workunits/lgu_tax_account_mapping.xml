@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="landtax_lgu_account_mapping"
+    cols="revtype,revperiod,item.title"
+    orderBy="revtype,revperiod"
+    allowCreate="false"
+    allowDelete="false"
+    allowOpen="false"
+    allowPrint="false" >
+    <invokers>
+        <invoker folderid="/explorer/setting/landtax" 
+                 action="init" caption="Realty Tax Account Mapping" 
+                 role="LANDTAX" />
+        
+        <invoker type="listActions" action="buildAccounts" caption="Build Account Mappings"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.RealtyTaxAccountMappingModel"/>
+</workunit>

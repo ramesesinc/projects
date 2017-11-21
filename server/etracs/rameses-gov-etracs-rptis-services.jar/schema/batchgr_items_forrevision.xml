@@ -5,6 +5,8 @@
 		<field name="realpropertyid" />
 		<field name="barangayid" />
 		<field name="rputype" />
+		<field name="section" />
+		<field name="classification_objid" />
 		<field name="tdno" />
 		<field name="fullpin" />
 		<field name="pin" />

@@ -111,7 +111,7 @@ ORDER BY sar.prevpin
 
 
 [getAffectedRpusForCreate]
-SELECT 
+select distinct 
 	f.objid AS objid,
 	f.state, 
 	f.tdno as prevtdno,
@@ -121,15 +121,19 @@ SELECT
 	r.objid AS prevrpuid, 
 	r.rputype,
 	rl.state AS ledgerstate
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
+from faas mf 
+	inner join realproperty mrp on mf.realpropertyid = mrp.objid,
+	faas f 
+	inner join realproperty rp on f.realpropertyid = rp.objid 
+	inner join rpu r on f.rpuid = r.objid
 	LEFT JOIN rptledger rl ON f.objid = rl.faasid 
-WHERE r.realpropertyid = $P{realpropertyid}
-  AND r.rputype <> 'land' 
-  AND f.state NOT IN ('CANCELLED', 'PENDING')
+where mf.realpropertyid = $P{realpropertyid}
+and mrp.pin = rp.pin 
+and r.rputype <> 'land' 
+AND f.state NOT IN ('CANCELLED', 'PENDING')
   AND NOT EXISTS(SELECT * FROM subdivisionaffectedrpu WHERE prevfaasid = f.objid )
   AND NOT EXISTS(SELECT * FROM subdivision_cancelledimprovement WHERE faasid = f.objid )
-ORDER BY rputype 
+ORDER BY r.rputype 
 
 
   

@@ -45,7 +45,7 @@ rule "calc-landvalue-adj"
 	salience 500000
 	no-loop
 	when
-		LD   : LandDetail(taxable ==true, $classificationid:classificationid)
+		LD   : LandDetail($classificationid:classificationid)
 		ADJ  : LandAdjustment(type == 'LV', appliedtolist contains $classificationid)
 	then	
 		Map bindings = new HashMap();
@@ -71,7 +71,7 @@ rule "calc-actualuse-adj"
 	salience 500000
 	no-loop
 	when
-		LD   : LandDetail(taxable == true)
+		LD   : LandDetail()
 		ADJ  : LandAdjustment(type == 'AU', landdetail == LD)
 	then	
 		Map bindings = new HashMap();

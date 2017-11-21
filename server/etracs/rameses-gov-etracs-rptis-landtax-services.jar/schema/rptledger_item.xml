@@ -1,5 +1,5 @@
 <schema>
-    <element name="ledgeritem" tablename="rptledgeritem">
+    <element tablename="rptledgeritem">
         <field name="objid" primary="true" />
         <field name="rptledgerid" required="true"/>
         <field name="rptledgerfaasid" required="true"/>
@@ -25,8 +25,24 @@
         <field name="sefdisc" type="decimal" required="true" />
         <field name="firecode" type="decimal" required="true" />
         <field name="firecodepaid" type="decimal" required="true" />
+        <field name="sh" type="decimal" required="true" />
+        <field name="shpaid" type="decimal" required="true" />
+        <field name="shint" type="decimal" required="true" />
+        <field name="shdisc" type="decimal" required="true" />
         <field name="revperiod" />
         <field name="qtrly" type="integer" required="true" />
         <field name="fullypaid" required="true" type="integer" />
+        <field name="basicidlenet" expr="basicidle-basicidlepaid+basicidleint-basicidledisc" type="decimal" />
+        <field name="shnet" expr="sh-shpaid+shint-shdisc" type="decimal" />
+        <field name="total" expr="basic-basicpaid+basicint-basicdisc+sef-sefpaid+sefint-sefdisc+basicidle-basicidlepaid+basicidleint-basicidledisc+sh-shpaid+shint-shdisc+firecode-firecodepaid" type="decimal" />
+
+        <complex name="classification" ref="propertyclassification" jointype="many-to-one" 
+            includefields="code,name">
+                <key field="classification_objid" target="objid" />
+        </complex>
+        <complex name="actualuse" ref="propertyclassification" jointype="many-to-one"
+            includefields="code,name">
+                <key field="actualuse_objid" target="objid" />
+        </complex>
     </element>  
 </schema>

@@ -1,7 +1,7 @@
 <schema>
     <element tablename="rptledgerfaas">
-        <field name="objid" primary="true" />
-        <field name="state" required="true" />
+        <field name="objid" primary="true" prefix="RLF"/>
+        <field name="state" required="true"/>
         <field name="rptledgerid" required="true" />
         <field name="faasid" />
         <field name="tdno" required="true" />
@@ -18,5 +18,17 @@
         <field name="toqtr" required="true" type="integer" />
         <field name="assessedvalue" required="true" type="decimal" />
         <field name="systemcreated" required="true" type="boolean" />
+        <complex name="txntype" ref="faas_txntype" jointype="many-to-one"
+            includefields="name">
+            <key field="txntype_objid" target="objid" />
+        </complex>
+        <complex name="classification" ref="propertyclassification" jointype="many-to-one"
+            includefields="code,name">
+            <key field="classification_objid" target="objid" />
+        </complex>
+        <complex name="actualuse" ref="propertyclassification" jointype="many-to-one"
+            includefields="code,name">
+            <key field="actualuse_objid" target="objid" />
+        </complex>
     </element>
 </schema>

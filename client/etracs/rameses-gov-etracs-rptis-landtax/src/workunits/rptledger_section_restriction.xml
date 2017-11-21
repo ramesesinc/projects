@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:section" action="init" caption="Restrictions" index="25"/> 
+        
+        <invoker type="itemActions" 
+                 action="add" caption="Add" 
+                 role="RECORD" permission="rptledger.addrestriction" />
+        
+        <invoker type="itemActions" 
+                 action="open" caption="Open" 
+                 role="RECORD" permission="rptledger.readrestriction" 
+                 visibleWhen="#{selectedItem!=null}"/>
+        
+        <invoker type="itemActions" 
+                 action="delete" caption="Delete" 
+                 role="RECORD" permission="rptledger.readrestriction"
+                 visibleWhen="#{selectedItem &amp;&amp; selectedItem.state == 'DRAFT'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerRestrictionModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerRestrictionPage" />
+    </pages>
+</workunit>

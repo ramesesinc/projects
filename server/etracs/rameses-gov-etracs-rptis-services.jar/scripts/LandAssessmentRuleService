@@ -88,16 +88,16 @@ public class LandAssessmentRuleService
 		}
 
 		if (rpu.landdetails){
-			rpu.totallandbmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}?.basemarketvalue.sum()
+			rpu.totallandbmv = rpu.landdetails.basemarketvalue.sum()
 			if (rpu.totallandbmv == null) rpu.totallandbmv = 0.0 
-			rpu.totallandmv = rpu.landdetails.findAll{util.isTrue(it.taxable)}?.marketvalue.sum()
+			rpu.totallandmv = rpu.landdetails.marketvalue.sum()
 			if (rpu.totallandmv == null)  rpu.totallandmv = 0.0
 			rpu.totalareaha = numSvc.roundA(rpu.landdetails.areaha.sum(), 6)
 			rpu.totalareasqm = numSvc.round(rpu.landdetails.areasqm.sum())
 		}
 		rpu.totalbmv = rpu.totallandbmv + rpu.totalplanttreebmv
 
-		rpu.totalmv = rpu.assessments.findAll{util.isTrue(it.taxable)}?.marketvalue.sum()
+		rpu.totalmv = rpu.assessments.marketvalue.sum()
 		if (rpu.totalmv == null) rpu.totalbmv = 0.0
 		if (rpu.totalmv == null) rpu.totalmv = 0.0 
 
@@ -136,7 +136,7 @@ public class LandAssessmentRuleService
 		/*-------------------------------------
 		* RPU
 		-------------------------------------*/
-		def rpufact = new RPU(rpu)
+		def rpufact = new rptis.facts.RPU(rpu)
 		facts << rpufact
 		request.rpufact = rpufact
 
@@ -188,17 +188,21 @@ public class LandAssessmentRuleService
 		def adjustmentrate = 0.0
 	    
 		// get total basemarketvalue for agrilands only 
-		def agrilands 		  = rpu.landdetails.findAll{ it.actualuse && (it.actualuse.code.matches('A|AA|AGR') || it.actualuse.name.matches('AGRICULTURAL'))}
+		def agrilands 		  = rpu.landdetails.findAll{ it.actualuse && 
+									((it.actualuse?.code?.matches('A|AA|AGR') || it.actualuse?.name?.matches('AGRICULTURAL')) &&
+									(it.specificclass?.classification?.code?.matches('A|AA|AGR') || it.specificclass?.classification?.name?.matches('AGRICULTURAL')))}
 		def totallandbmv 	  = agrilands.basemarketvalue.sum()
 		def totalvalueadj     = 0.0 
 		def totalactualuseadj = 0.0 
-		
+
 		totallandbmv 		= ( totallandbmv ? totallandbmv : 0.0 )
 		def totallandadj  	= agrilands.landvalueadjustment.sum() + agrilands.actualuseadjustment.sum() 
 
+		println 'totallandbmv : ' + totallandbmv + '  totallandadj: ' + totallandadj
 		if( totallandbmv > 0.0 && totallandadj != 0.0 ){
 			adjustmentrate = ( totallandadj / totallandbmv ) * 100;
 		}
+		println 'adjustmentrate -> ' + adjustmentrate
 		return numSvc.roundA(adjustmentrate,0)
 	}
 

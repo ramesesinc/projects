@@ -41,7 +41,7 @@ class LandTaxSMSService
 	public void sendTaxDueInfo(ledger){
 		println 'sendTaxDueInfo -> ' + ledger.phoneno  
 
-		billSvc.generateBillByLedgerId(ledger.objid)
+		billSvc.generateBillByLedger(ledger)
 		def bill = em.findLatestBillByLedger(ledger)
 		if (!bill) return
 		bill = billReportSvc.getBilledLedger( bill )

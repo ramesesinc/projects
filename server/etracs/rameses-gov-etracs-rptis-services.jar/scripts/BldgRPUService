@@ -15,7 +15,10 @@ class BldgRPUService
 
 	@DataContext('structure')
 	def em_structure
-	
+
+	@DataContext('bldgrpu_land')
+	def em_bldgrpu_land
+
 	@Service('RPTUtil')
 	def util
 
@@ -98,7 +101,6 @@ class BldgRPUService
 		rpu.structures 		= getStructures(rpu)
 		rpu.structuraltypes = getStructuralTypes(rpu)
 		rpu.assessments 	= em.getAssessments(rpu)
-		rpu.lands 			= em.getBldgLands(rpu)
 		return rpu 
 	}
 
@@ -194,6 +196,23 @@ class BldgRPUService
         }
 	}
 
+
+	@ProxyMethod
+	public def getBldgLands(entity) {
+		return em_bldgrpu_land.find(['rpu.objid':entity.objid]).orderBy('landfaas.fullpin').list() 
+			
+	}
+
+	@ProxyMethod
+	public void deleteBldgLand( bldgland ) {
+		em_bldgrpu_land.delete(bldgland)
+	}
+
+	@ProxyMethod
+	public def saveBldgLand(item){
+		em_bldgrpu_land.save(item)
+		return item 
+	}
 	
 	/*-------------------------------------------------------------------
 	*

@@ -4,7 +4,7 @@ import rptis.facts.*;
 import java.math.*;
 
 public class MachineActualUse {
-    RPU rpu
+    rptis.facts.RPU rpu
     String actualuseid 
     Double basemarketvalue
     Double marketvalue

@@ -11,34 +11,42 @@ WHERE rl.objid = $P{objid}
 
 [getCredits]
 select 
-	'downpayment' as type,
-	'Downpayment' as particular,
-	cr.receiptno, 
-	cr.receiptdate, 
-	max(cro.year) as year, 
-	sum(cro.basic - cro.basicdisc) as basic,
-	sum(cro.sef - cro.sefdisc) as sef, 
-	sum(cro.basicint + cro.sefint) as penalty 
+  'downpayment' as type,
+  'Downpayment' as particular,
+  cr.receiptno, 
+  cr.receiptdate, 
+  max(cro.year) as year, 
+  sum(cro.basic - cro.basicdisc) as basic,
+  sum(cro.basicidle - cro.basicidledisc) as basicidle,
+  sum(cro.sef - cro.sefdisc) as sef,
+  sum(cro.sh - cro.shdisc) as sh,
+  sum(cro.firecode) as firecode,
+  sum(cro.basicint + cro.sefint + cro.basicidleint + cro.shint) as penalty 
 from rptledger_compromise rc 
-	inner join cashreceipt cr on rc.downpaymentreceiptid = cr.objid
-	inner join cashreceiptitem_rpt_online cro on cr.objid = cro.rptreceiptid 
+  inner join cashreceipt cr on rc.downpaymentreceiptid = cr.objid
+  inner join rptledger_payment rp on cr.objid = rp.receiptid 
+  inner join rptledger_payment_item cro on rp.objid = cro.parentid
 where rc.objid = $P{objid}
 group by cr.receiptno, cr.receiptdate
 
 union all 
 
 select 
-	'cypayment' as type,
-	'Current Year Payment' as particular,
-	cr.receiptno, 
-	cr.receiptdate, 
-	max(cro.year) as year, 
-	sum(cro.basic - cro.basicdisc) as basic,
-	sum(cro.sef - cro.sefdisc) as sef, 
-	sum(cro.basicint + cro.sefint) as penalty 
+  'cypayment' as type,
+  'Current Year Payment' as particular,
+  cr.receiptno, 
+  cr.receiptdate, 
+  max(cro.year) as year, 
+  sum(cro.basic - cro.basicdisc) as basic,
+  sum(cro.basicidle - cro.basicidledisc) as basicidle,
+  sum(cro.sef - cro.sefdisc) as sef,
+  sum(cro.sh - cro.shdisc) as sh,
+  sum(cro.firecode) as firecode,
+  sum(cro.basicint + cro.sefint + cro.basicidleint + cro.shint) as penalty 
 from rptledger_compromise rc 
-	inner join cashreceipt cr on rc.cypaymentreceiptid = cr.objid
-	inner join cashreceiptitem_rpt_online cro on cr.objid = cro.rptreceiptid 
+  inner join cashreceipt cr on rc.cypaymentreceiptid = cr.objid
+  inner join rptledger_payment rp on cr.objid = rp.receiptid 
+  inner join rptledger_payment_item cro on rp.objid = cro.parentid
 where rc.objid = $P{objid}
 group by cr.receiptno, cr.receiptdate 
 

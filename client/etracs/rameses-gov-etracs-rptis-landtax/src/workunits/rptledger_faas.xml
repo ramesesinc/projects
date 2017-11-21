@@ -6,10 +6,10 @@
         <invoker type="rptledgerfaas:edit" action="edit" caption="Ledger FAAS (New)" target="popup"/>
     </invokers>
     
-    <code class="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerFaasController">
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerFaasModel">
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.ledger.ui.RPTLedgerFaasPage" />
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerFaasPage" />
     </pages>
 </workunit>

@@ -43,26 +43,29 @@ from (
       else convert(varchar(1),min(bi.qtr)) + convert(varchar(1),max(bi.qtr))
       end 
     ) as period,
-    sum(bi.basic) as basic,
+    sum(bi.basic - bi.basicpaid) as basic,
     sum(bi.basicint) as basicint,
     sum(bi.basicdisc) as basicdisc,
     sum(bi.basicint - bi.basicdisc) as  basicdp,
-    sum(bi.basic - bi.basicdisc + bi.basicint) as basicnet,
+    sum(bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint) as basicnet,
 
-    sum(bi.basicidle + bi.basicidleint - bi.basicidledisc) as basicidle,
+    sum(bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc) as basicidle,
     
-    sum(bi.sef) as sef, 
+    sum(bi.sef - bi.sefpaid) as sef, 
     sum(bi.sefint) as sefint, 
     sum(bi.sefdisc) as sefdisc, 
     sum(bi.sefint - bi.sefdisc) as  sefdp,
-    sum(bi.sef - bi.sefdisc + bi.sefint) as sefnet,
+    sum(bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint) as sefnet,
     
-    sum(bi.firecode) as firecode,
+    sum(bi.firecode - bi.firecodepaid) as firecode,
+
+    sum(bi.sh - bi.shpaid - bi.shdisc + bi.shint) as sh,
     
-    sum( bi.basic - bi.basicdisc + bi.basicint +
-      bi.sef - bi.sefdisc + bi.sefint + 
-      bi.basicidle + bi.basicidleint - bi.basicidledisc +
-      bi.firecode) as total,
+    sum( bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint +
+      bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint + 
+      bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc +
+      bi.firecode - bi.firecodepaid +
+      bi.sh - bi.shpaid - bi.shdisc + bi.shint) as total,
     rl.barangayid,
     rli.taxdifference
   from rptbill b 
@@ -92,26 +95,29 @@ from (
     rlf.assessedvalue as originalav,
     bi.av as assessedvalue,
     (convert(varchar(4),bi.year)  + '-' + convert(varchar(1),bi.qtr)) as period,
-    bi.basic,
+    bi.basic - bi.basicpaid as basic,
     bi.basicint,
     bi.basicdisc,
     bi.basicint - bi.basicdisc as  basicdp,
-    bi.basic - bi.basicdisc + bi.basicint as basicnet,
+    bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint as basicnet,
 
-    bi.basicidle + bi.basicidleint - bi.basicidledisc as basicidle,
+    bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc as basicidle,
     
-    bi.sef, 
+    bi.sef - bi.sefpaid as sef, 
     bi.sefint, 
     bi.sefdisc, 
     bi.sefint - bi.sefdisc as  sefdp,
-    bi.sef - bi.sefdisc + bi.sefint as sefnet,
+    bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint as sefnet,
     
-    bi.firecode as firecode,
+    bi.firecode - bi.firecodepaid as firecode,
+
+    bi.sh - bi.shpaid - bi.shdisc + bi.shint as sh,
     
-    ( bi.basic - bi.basicdisc + bi.basicint +
-      bi.sef - bi.sefdisc + bi.sefint + 
-      bi.basicidle + bi.basicidleint - bi.basicidledisc +
-      bi.firecode) as total,
+    ( bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint +
+      bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint + 
+      bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc +
+      bi.firecode - bi.firecodepaid + 
+      bi.sh - bi.shpaid - bi.shdisc + bi.shint ) as total,
     rl.barangayid,
     rli.taxdifference
     from rptbill b 

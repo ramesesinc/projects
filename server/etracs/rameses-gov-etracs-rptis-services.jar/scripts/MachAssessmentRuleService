@@ -77,7 +77,7 @@ public class MachAssessmentRuleService
 		/*-------------------------------------
 		* RPU
 		-------------------------------------*/
-		def rpufact = new RPU(rpu)
+		def rpufact = new rptis.facts.RPU(rpu)
 		facts << rpufact
 		request.rpufact = rpufact
 

@@ -32,7 +32,9 @@ public class RYSettingPage extends javax.swing.JPanel {
     private void initComponents() {
 
         formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xNumberField1 = new com.rameses.rcp.control.XNumberField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
@@ -40,17 +42,27 @@ public class RYSettingPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("General Information");
         formPanel1.setBorder(xTitledBorder1);
-        formPanel1.setCaptionWidth(100);
+        formPanel1.setCaptionWidth(120);
         formPanel1.setCellpadding(new java.awt.Insets(0, 0, 2, 0));
         formPanel1.setCellspacing(0);
         formPanel1.setPreferredSize(new java.awt.Dimension(114, 80));
 
-        xNumberField1.setCaption("Revision Year");
-        xNumberField1.setCaptionWidth(100);
-        xNumberField1.setFieldType(Integer.class);
-        xNumberField1.setName("entity.ry"); // NOI18N
-        xNumberField1.setRequired(true);
-        formPanel1.add(xNumberField1);
+        xIntegerField1.setCaption("Revision Year");
+        xIntegerField1.setName("entity.ry"); // NOI18N
+        xIntegerField1.setRequired(true);
+        formPanel1.add(xIntegerField1);
+
+        xTextField3.setCaption("Ordinance No.");
+        xTextField3.setName("entity.ordinanceno"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(120, 20));
+        xTextField3.setRequired(true);
+        formPanel1.add(xTextField3);
+
+        xDateField1.setCaption("Ordinance Date");
+        xDateField1.setName("entity.ordinancedate"); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 20));
+        xDateField1.setRequired(true);
+        formPanel1.add(xDateField1);
 
         xTextField1.setCaption("Applied To");
         xTextField1.setEnabled(false);
@@ -80,9 +92,9 @@ public class RYSettingPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 101, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 151, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -90,10 +102,12 @@ public class RYSettingPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
-    private com.rameses.rcp.control.XNumberField xNumberField1;
+    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
     // End of variables declaration//GEN-END:variables
     
 }

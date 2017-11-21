@@ -103,19 +103,31 @@ class BusinessOnlinePaymentInterceptor {
 		m.mobileno = (biz.mobileno) ? biz.mobileno : biz.owner.mobileno;
 		m.email = (biz.email) ? biz.email : biz.owner.email;
 		m.phoneno = (biz.phoneno) ? biz.phoneno : biz.owner.phoneno;
-
 		o.info = m;
 	}
 
-	@Before(pattern="OnlinePaymentService.postPayment", eval="#{args[0].txntype=='bpls'}")
+	@Before(pattern="EORService.post", eval="#{args[0].txntype=='bpls'}")
 	public void postPayment( def evt ) { 
 		def o = evt.args[0];
-		//call the cash receipt service
-		println "receiving payment ->" + o;
 
-		o.receipt = [:];
-		o.receipt.receiptno = 'DUMMY12788';
-		o.receipt.receiptdate = dateSvc.getServerDate();
+		def r = [:]
+		r.appno = o.refno;
+		if(o.info?.qtr) r.qtr = o.info.qtr;
+
+		def z = generateBilling(r);
+		if( o.amount != z.amount ) 
+			throw new Exception("Amount is incorrect, pay order amount is " + o.amount + " bill amount is " + z.amount);
+
+		o.extinfo = [
+			businessid : z.app.business.objid,
+			applicationid : z.app.objid,
+			appyear : z.app.appyear,
+			taxfees  :z.taxfees,
+			expirydate : z.expirydate
+		];
+
+		o.items = z.items;
+
 	}
 
 }

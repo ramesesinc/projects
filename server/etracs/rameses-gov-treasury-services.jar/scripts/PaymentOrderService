@@ -35,4 +35,13 @@ class PaymentOrderService {
 	public void close(def po) {
 		pmt.delete( po );
 	}
+
+	/***********************************
+	* This is called during receipts
+	************************************/
+	@ProxyMethod
+	public def open(def po) {
+		po._schemaname = 'paymentorder';
+		return persistenceSvc.read(po);	
+	}
 }

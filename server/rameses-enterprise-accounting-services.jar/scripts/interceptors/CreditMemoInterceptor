@@ -21,11 +21,6 @@ class CreditMemoInterceptor {
 	@DataContext('creditmemo')
 	def creditmemoEm;	
 
-	@DataContext('income_summary')
-	def incEm;
-
-
-
 	/*************************************************************************************************
 	* CREATE POST TO BANK
 	*************************************************************************************************/
@@ -35,13 +30,20 @@ class CreditMemoInterceptor {
 		if (!o.state){
 			o.state = 'OPEN';
 		}
-		o.controlno = 'CR' + seqSvc.getNextFormattedSeries('CR');
-		o.issuedby = [objid: env.USERID, name:env.FULLNAME];
-		o.dtissued = dateSvc.getServerDate();	
-		o.issuereceipt = 1;
+		if(!o.controlno) {
+			o.controlno = 'CR' + seqSvc.getNextFormattedSeries('CR');
+		}
+		if(!o.issuedby)	{
+			o.issuedby = [objid: env.USERID, name:env.FULLNAME];
+		}
+		if(!o.dtissued) {
+			o.dtissued = dateSvc.getServerDate();	
+		}
+		if( o.issuereceipt == null ) {
+			o.issuereceipt = 1;
+		}
 	}	
 
-	
 
 	/*************************************************************************************************
 	* UPDATE POST TO INCOME
@@ -49,9 +51,6 @@ class CreditMemoInterceptor {
 	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'creditmemo' }", index=0)
 	public void postToIncome( def evt ) { 
 		def param = evt.args[0]; 
-		println '> ' + param; 
-		println '>> '+ evt.result;
-		throw new Exception("updated credit memo");
 	} 
 
 

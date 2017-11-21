@@ -3,8 +3,7 @@ import com.rameses.util.*
 import com.rameses.common.*
 import com.rameses.services.extended.*
 
-class OnlineElectronicReceiptService  
-{
+class EORService {
 
     @Env 
     def env 
@@ -18,17 +17,8 @@ class OnlineElectronicReceiptService
     @Service('CashReceiptService')
     def cashreceiptSvc 
 
-    @DataContext("paymentorder")
-    def paymentorder 
-
-    @DataContext("paymentorder_item")
-    def paymentorder_item 
-    
     @DataContext("af_control")
     def afControl 
-
-    @DataContext("collectiontype")
-    def collectiontype 
 
     @Service('OrgService')
     def orgSvc 
@@ -36,24 +26,22 @@ class OnlineElectronicReceiptService
     @DataContext("paymentpartner")
     def paymentpartner 
 
-    @DataContext('creditmemo')
-    def creditmemo 
-
-    @ActiveDB('onlinecashreceipt')
-    def em_onlinecashreceipt
-
     @Service('PersistenceService')
     def persistenceSvc 
     
+    @Service("PaymentOrderService")
+    def pmoSvc;   
+
+    @DataContext("itemaccount")
+    def itemAcctEm;
 
     @ProxyMethod
-    public def post( eor) {
-        def po = paymentorder.find([txnid:eor.txnpoid]).first()
-        if (!po) throw new Exception('Payment Order No. ' + eor.txnpoid + ' does not exist or has already been deleted.')
-
-        def svrDate = dateService.serverDate
-        def entity = [objid:eor.objid]
-        entity.putAll( getNextEORNumber() )
+    public def post( def po ) {
+        if(!po.items)
+            throw new Exception("Please provide items in EORService.post");      
+        def svrDate = dateService.serverDate;
+        def entity = [:];
+        entity.putAll( getNextEORNumber() );
         entity.state = 'POSTED'
         entity.txnmode = 'ONLINE'
         entity.txntype = 'eor'
@@ -61,8 +49,8 @@ class OnlineElectronicReceiptService
         entity.paidby = po.paidby
         entity.paidbyaddress = po.paidbyaddress
         entity.amount = numSvc.round( po.amount )
-        entity.receiptdate = eor.refdate
-        entity.txndate = eor.dtposted
+        entity.receiptdate = po.tracedate;
+        entity.txndate = svrDate;
         entity.org = orgSvc.getRoot()
         entity.collector = getCollector()
         entity.user = [objid: 'EOR', name:'EOR']
@@ -71,63 +59,60 @@ class OnlineElectronicReceiptService
         entity.balancedue = 0
         entity.cashchange = 0
         entity.totalcredit = 0
-        entity.collectiontype = collectiontype.find(po.txntype.collectiontype).first()
-        entity.items = po.items 
+        entity.collectiontype = po.collectiontype;
+        entity.items = po.items; 
 
-        def cm = postCreditMemo(entity, eor, po)
+        entity._paymentorderid = po.paymentrefid;
+
+        if(!entity._paymentorderid)
+            throw new Exception("entity._paymentorderid is null");
         
-        //build paymentitems
-        entity.paymentitems = []
-        def fundsummaries = em_onlinecashreceipt.getFundSummaries(po)
-        fundsummaries.eachWithIndex{fs, idx -> 
-            def p = [:]
-            p.objid = 'PMTE' + new java.rmi.server.UID()
-            p.receiptid = entity.objid 
-            p.bankid = cm.bankaccount.bank.objid 
-            p.deposittype = 'EOR'
-            p.bank = cm.bankaccount.bank.name  
-            p.refid = eor.objid 
-            p.refno = cm.refno 
-            p.refdate = cm.refdate 
-            p.reftype = 'CREDITMEMO'
-            p.bankaccountid = cm.bankaccount.objid
-            p.amount = fs.amount 
-            p.particulars = 'CM # ' + cm.refno + ' (' + (idx+1) + '/' + fundsummaries.size() + ')'
-            p.fund = fs.fund 
-            entity.paymentitems << p 
-        }
-        entity.po = po 
-        entity.eor = eor 
-        cashreceiptSvc.post(entity)
-        paymentorder.find([txnid:po.txnid]).update([receiptid: entity.objid])
-        
-        println 'EOR has been successfully posted.'
-        return entity 
+        if( po.extinfo ) {
+            entity.putAll( po.extinfo ); 
+        }    
+
+        postCreditMemo( po, entity );
+        cashreceiptSvc.post(entity);
     }   
 
-    def postCreditMemo(receipt, eor, po){
-        def pp = paymentpartner.find([code:eor.partner.objid]).first()
-
+    void postCreditMemo( def po, def entity ){
+        def pp = paymentpartner.find([ code:po.partnercode ]).first()
         def cm = [_schemaname:'creditmemo']
         cm.objid = 'CME' + new java.rmi.server.UID()
         cm.state = 'CLOSED'
-        cm.controlno = po.controlno
+        cm.controlno = po.traceid;
         cm.payer = [:]
         cm.payer.objid = po.payer?.objid  
         cm.payer.name = po.paidby 
         cm.payer.address = [text:po.paidbyaddress]
-        cm.refdate = eor.refdate 
-        cm.refno = eor.refno
+        cm.refdate = po.tracedate;
+        cm.refno = po.traceid;
         cm.amount = po.amount 
         cm.particulars = po.particulars 
         cm.bankaccount = pp.bankaccount 
         cm.type = 'EOR'
-        cm.dtissued = receipt.receiptdate 
-        cm.receiptid = receipt.objid 
-        cm.receiptno = receipt.receiptno 
-        cm.receiptdate = receipt.receiptdate 
-        persistenceSvc.create(cm)
-        return cm 
+        persistenceSvc.create(cm);
+
+        //Add payment items
+        //Group Item accounts by fund for payment items
+        //correct first all items that has no fund just in case there is none;
+        entity.items.findAll{ !it.item.fund?.objid }.each {
+            def a = itemAcctEm.find( [objid: it.item.objid ] ).first();
+            it.item = a;
+        }
+
+        entity.paymentitems = [];
+        def fundGroup = entity.items.groupBy{ it.item.fund };
+        fundGroup.each { k,v->
+            def pmi = [:];
+            pmi.refid = cm.objid;
+            pmi.refno = po.traceid;
+            pmi.refdate = po.tracedate;
+            pmi.reftype = 'EOR';
+            pmi.amount = numSvc.round( v.sum{ it.amount } );
+            pmi.fund = k;
+            entity.paymentitems << pmi;
+        }
     }
 
     def getControl( def afControlId ) {

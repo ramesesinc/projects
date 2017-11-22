@@ -118,7 +118,7 @@
                       </Border>
                     </Property>
                     <Property name="caption" type="java.lang.String" value="Status"/>
-                    <Property name="expression" type="java.lang.String" value="#{ entity.dtfiled }"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.state }"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="12" style="1"/>
                     </Property>

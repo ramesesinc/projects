@@ -73,7 +73,7 @@ public class AFControlPage extends javax.swing.JPanel {
 
         xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel10.setCaption("Status");
-        xLabel10.setExpression("#{ entity.dtfiled }");
+        xLabel10.setExpression("#{ entity.state }");
         xLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel10.setName("entity.state"); // NOI18N
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));

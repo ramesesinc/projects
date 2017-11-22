@@ -15,7 +15,6 @@
 		<field name="refno" />
 		<field name="controlno" />
 		<field name="locationid" />
-		<field name="receiptid" />
 		<field name="origin" />
 		<complex name="info" serializer="default" required="true"/>
 
@@ -23,11 +22,6 @@
 			<key field="collectiontypeid" target="objid"/>
 		</complex>
 		<complex name="items" serializer="default" required="false" type="list" />
-		<!--
-		<complex name="items" ref="paymentorder_item" jointype="one-to-many" required="false">
-			<key field="objid" target="parent_objid"/>
-		</complex>
-		-->
 	</element>
 </schema>
 

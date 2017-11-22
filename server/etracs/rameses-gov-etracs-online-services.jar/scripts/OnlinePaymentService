@@ -17,6 +17,9 @@ class OnlinePaymentService   {
     @DataContext("collectiontype")
     def collTypeEm; 
 
+    @DataContext("cashreceipt")
+    def cashreceipt; 
+
     /***************************************************
     * This must be overridden by discrminating txntype.
     ****************************************************/
@@ -76,7 +79,11 @@ class OnlinePaymentService   {
 
     @ProxyMethod
     public def getReceipt( def o ) {
-        //
+        def rc = cashreceipt.find(o).first();
+        if(!rc) {
+            throw new Exception("Receipt " + o + " not found");
+        }
+        return rc;
     }
 
 

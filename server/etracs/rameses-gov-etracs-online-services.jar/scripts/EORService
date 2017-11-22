@@ -125,6 +125,8 @@ class EORService {
             ac.currentseries = 1
             ac.stubno = 1
             ac.active = 1
+            ac.txnmode = 'ONLINE';
+            ac.dtfiled = dateService.getServerDate();
             ac.owner =  getCollector()
             ac.assignee = ac.owner
             afControl.create(ac)
@@ -141,6 +143,6 @@ class EORService {
         def ac = getControl(afControlId)
         int series = ac.currentseries
         afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] )
-        return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'serial', controlid: afControlId, stub: 1 ] 
+        return [series: series, receiptno: afControlId + '-' + series, formno:'EOR', formtype:'eor', controlid: afControlId, stub: 1 ] 
     }
 }

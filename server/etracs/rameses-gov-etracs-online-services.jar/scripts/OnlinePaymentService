@@ -72,14 +72,21 @@ class OnlinePaymentService   {
             po.tracedate = df.parse( o.tracedate );
         }
 
-        def result = eorSvc.post( po );
+        def r = eorSvc.post( po );
+
+        def retval = [:];
+        retval.paymentrefid =  o.paymentrefid;
+        retval.receiptno = r.receiptno;
+        retval.receiptid = r.objid;
+        retval.receiptdate = r.receiptdate; 
+
         //log the payment...
-        return result;
+        return retval;
     }
 
     @ProxyMethod
     public def getReceipt( def o ) {
-        def rc = cashreceipt.find(o).first();
+        def rc = cashreceipt.find(o).first(1);
         if(!rc) {
             throw new Exception("Receipt " + o + " not found");
         }

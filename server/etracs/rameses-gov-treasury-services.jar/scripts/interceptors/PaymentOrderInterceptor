@@ -22,7 +22,7 @@ class PaymentOrderCashReceiptInterceptor {
 
 		String locid = orgSvc.getRoot().code.replaceAll('-', '');
 
-		r.objid =  KeyGen.generateAlphanumKey( locid.padRight( 5, "0" ), 8 );
+		r.objid =  KeyGen.generateAlphanumKey( locid.padRight( 6, "0" ), 12 );
 		r.txndate = dateSvc.getServerDate();
 		r.controlno =  locid.padRight( 5, "0" ) + seqSvc.getNextFormattedSeriesA("PAYORDER", 10);
 		r.locationid = locid;

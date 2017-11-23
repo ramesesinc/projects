@@ -312,7 +312,7 @@ public class RPTBillingService
 				lguid = env.ORGID.replaceAll('-', '')
 			}
 		}
-		return BARCODE_PREFIX + lguid + cy + seqSvc.getNextFormattedSeriesA('RPTBILL-' + cy,7)
+		return lguid + cy + seqSvc.getNextFormattedSeriesA('RPTBILL-' + cy,7)
 	}
 
 	

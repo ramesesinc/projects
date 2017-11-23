@@ -14,7 +14,6 @@ class BusinessOnlinePaymentInterceptor {
 	@Service("PersistenceService")
 	def persistenceSvc;	
 
-	
 
 	@Service("NumberService")
 	def numSvc;
@@ -73,6 +72,7 @@ class BusinessOnlinePaymentInterceptor {
 					total: numSvc.round(it.total) 
 			]};
 		}
+
 		p.amount = z.amount;
 		result.putAll(p); 
 	}
@@ -94,7 +94,7 @@ class BusinessOnlinePaymentInterceptor {
 		m.info = z.payment;
 		m.amount = z.amount;
 		m.txntype = 'bpls';
-		m.txntypename = 'Business';
+		m.txntypename = 'Business Permit';
 
 		//retrieve the contactinfo
 		def contact = [:];

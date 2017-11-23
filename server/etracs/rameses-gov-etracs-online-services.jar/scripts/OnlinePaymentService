@@ -86,7 +86,9 @@ class OnlinePaymentService   {
 
     @ProxyMethod
     public def getReceipt( def o ) {
-        def rc = cashreceipt.find(o).first(1);
+        def m = [:];
+        if( o.receiptno ) m.receiptno = o.receiptno;
+        def rc = cashreceipt.find(m).first(1);
         if(!rc) {
             throw new Exception("Receipt " + o + " not found");
         }

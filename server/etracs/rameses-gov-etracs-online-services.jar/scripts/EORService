@@ -130,7 +130,11 @@ class EORService {
             ac.afid = 'EOR'
             ac.startseries = 1
             ac.endseries = 999999999
-            ac.currentseries = 1
+            ac.currentseries = 1;
+            ac.currentindexno = 0;
+            ac.batchno = 0;
+            ac.state = 'ISSUED';
+            ac.unit = 'PC';
             ac.stubno = 1
             ac.active = 1
             ac.txnmode = 'ONLINE';

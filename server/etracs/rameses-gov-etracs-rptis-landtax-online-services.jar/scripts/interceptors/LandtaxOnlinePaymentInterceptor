@@ -96,11 +96,6 @@ class LandtaxOnlinePaymentInterceptor
 	public void postPayment( def evt ) { 
 		def po = evt.args[0]
 
-		println 'PO-------------------------------------- '
-		po.each{ println '  => ' + it}
-		println 'PO-------------------------------------- '
-		
-
 		def bill = em_rptbill.find([objid:po.refid]).first()
 		if (!bill) throw new Exception('Bill does not exist or has already been deleted.')
 

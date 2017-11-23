@@ -147,7 +147,7 @@ class EORService {
     }
 
     def getCollector(){
-        return [objid: 'EOR', name:'EOR', title:'EOR']
+        return [objid: 'EOR', name:'EOR', title:'EOR', txncode:'EOR']
     }
 
     def getNextEORNumber() {

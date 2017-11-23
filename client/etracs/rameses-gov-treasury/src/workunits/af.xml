@@ -16,7 +16,7 @@
         class AFModel extends CrudFormModel {
             
             def useTypes = ["collection", "disbursement"];
-            def formTypes = [ "serial", "cashticket" ];
+            def formTypes = [ "serial", "cashticket", "eor" ];
             
             void afterCreate() {
                 entity.system = 0;

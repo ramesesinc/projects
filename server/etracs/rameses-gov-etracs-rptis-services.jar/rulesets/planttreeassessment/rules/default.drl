@@ -10,7 +10,7 @@ global RuleAction action;
 
 rule "initial-bmv-productive"
 	agenda-group "INITIAL"
-	salience 500000
+	salience -500000
 	no-loop
 	when
 		PTD : PlantTreeDetail(PRODUCTIVE:productive, UV:unitvalue, areacovered <= 0.0)
@@ -27,7 +27,7 @@ end
 
 rule "initial-bmv-areacovered"
 	agenda-group "INITIAL"
-	salience 500000
+	salience -500000
 	no-loop
 	when
 		PTD : PlantTreeDetail(UV:unitvalue, AREACOVERED:areacovered > 0.0)
@@ -44,7 +44,7 @@ end
 
 rule "initial-adjustment"
 	agenda-group "ADJUSTMENT"
-	salience 500000
+	salience -500000
 	no-loop
 	when
 		PTD : PlantTreeDetail(BMV:basemarketvalue, RATE:adjustmentrate)
@@ -61,7 +61,7 @@ end
 
 rule "initial-mv"
 	agenda-group "MARKETVALUE"
-	salience 500000
+	salience -500000
 	no-loop
 	when
 		PTD : PlantTreeDetail(BMV:basemarketvalue, ADJ:adjustment)
@@ -79,7 +79,7 @@ end
 
 rule "initial-assess-value"
 	agenda-group "ASSESSEDVALUE"
-	salience 500000
+	salience -500000
 	no-loop
 	when
 		PTD  : PlantTreeDetail(MV:marketvalue,AL:assesslevel)
@@ -95,3 +95,22 @@ rule "initial-assess-value"
 		action.execute( "calc-planttree-av", map, drools );
 end
 
+
+
+rule "ADD_ASSESSMENT_INFO"
+	agenda-group "SUMMARY"
+	salience -500000
+	no-loop
+	
+	when
+		PTD: rptis.planttree.facts.PlantTreeDetail (   )
+	then
+		Map bindings = new HashMap();
+		bindings.put("PTD", PTD );
+		Map _p0 = new HashMap();
+		_p0.put( "planttreedetail", PTD );
+		action.execute( "add-planttree-assessment-info",_p0,drools);
+end
+
+
+	

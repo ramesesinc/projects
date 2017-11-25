@@ -1,0 +1,4 @@
+* CDU Rating support
+	- required:  RULEDE_rpt-03019.dat
+	- to effect: modify rule to compute depreciation rate and pass cdu rating
+

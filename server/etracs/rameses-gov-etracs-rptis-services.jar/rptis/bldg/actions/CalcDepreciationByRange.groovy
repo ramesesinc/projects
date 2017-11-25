@@ -10,6 +10,7 @@ public class CalcDepreciationByRange implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def bs = params.bldgstructure
+		def cdurating = params.cdurating 
 
 		if ( bs.entity.bldgtype && bs.entity.bldgtype.objid ){
 			def depreciations = bldgSettingSvc.getDepreciations(bs.entity.bldgtype?.objid)
@@ -22,8 +23,11 @@ public class CalcDepreciationByRange implements RuleActionHandler {
 				int effectiveage = bs.rpu.effectiveage 
 		        if( effectiveage > 0 )  {
 		        	def sked = depreciations.find{effectiveage >= it.agefrom && effectiveage <= it.ageto}
-		        	if (sked)
-		        		depreciationrate = sked.rate 
+		        	if (sked){
+		        		def rate = (cdurating ? sked[cdurating] : sked.rate )
+		        		if (rate == null) rate = 0.0 
+		        		depreciationrate = rate
+		        	}
 				}
 				
 				def maxdepreciation = 100.0 - bs.entity.bldgtype.residualrate 

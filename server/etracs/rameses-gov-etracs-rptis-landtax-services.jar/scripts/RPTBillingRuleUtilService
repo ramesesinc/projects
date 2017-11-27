@@ -237,9 +237,6 @@ public class RPTBillingRuleUtilService
 	
 	def getRevenueAccount = {params ->
 		def acct = params.acct 
-		if (acct)
-			return acct;
-
 		def p = [:]
 		p.revtype = params.sharetype.replaceAll('disc', '')
 		p.revperiod = params.taxsummary.revperiod 

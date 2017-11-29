@@ -67,7 +67,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldgrpu where objid = concat(replace(br.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 [insertRevisedBldgStructures]
@@ -93,7 +93,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldgstructure where objid = concat(replace(bs.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 
@@ -130,8 +130,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldgrpu_structuraltype where objid = concat(replace(bs.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
-
+${filter}
 
 
 [insertRevisedBldgUses]
@@ -177,8 +176,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldguse where objid = concat(replace(bu.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
-
+${filter}
 
 
 [insertRevisedBldgFloors]
@@ -216,7 +214,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldgfloor where objid = concat(replace(bf.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 
@@ -247,7 +245,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldgflooradditional where objid = concat(replace(bfa.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 
@@ -276,5 +274,5 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'bldg'
 and r.ry < $P{newry} 
-and not exists(select * from bldgflooradditionalparam where objid = concat(replace(bfa.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 

@@ -17,7 +17,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'misc'
 and r.ry < $P{newry}  
-and not exists(select * from miscrpu where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 
@@ -56,7 +56,8 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'misc'
 and r.ry < $P{newry}  
-and not exists(select * from miscrpuitem where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
+
 
 [insertRevisedMiscRpuItemParams]
 insert into miscrpuitem_rptparameter (
@@ -81,4 +82,5 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'misc'
 and r.ry < $P{newry}  
-and not exists(select * from miscrpuitem_rptparameter where miscrpuitemid = concat(replace(m.miscrpuitemid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
+

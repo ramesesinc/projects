@@ -55,6 +55,7 @@ class GeneralRevisionPinRenumberService
 
 	@ProxyMethod
 	public void repinLand(faas){
+		def option = faas.numberingoption
 		def barangaypin = faas.barangay.pin
 
 		//build new parcel from idx and update new pin 
@@ -62,10 +63,22 @@ class GeneralRevisionPinRenumberService
 		if (!newrp) throw new Exception('Real Property does not exist or has already been deleted.')
 		def oldpin = newrp.pin 
 
-		newrp.barangaypin = barangaypin
-		newrp.parcel = faas.idx.toString().padLeft(2, '0')
+		def sectionlen = (faas.pintype == 'new' ? 3 : 2)
+		def parcellen = (faas.pintype == 'new' ? 2 : 3)
+
+		if ('RESET'.equalsIgnoreCase(option.code)){
+			newrp.barangaypin = barangaypin
+			newrp.parcel = padLeft(faas.idx.toString(), parcellen)
+		}
+		else if ('NEWPIN'.equalsIgnoreCase(option.code)){
+			newrp.barangaypin = barangaypin
+			newrp.section = padLeft(newrp.section.toString(), 3)
+			newrp.parcel = padLeft(newrp.parcel.toString(), 2)
+		}
+
 		newrp.pin = barangaypin + '-' + newrp.section + '-' + newrp.parcel 
 
+		// throw new Exception('test ')
 		em_realproperty.find([objid:newrp.objid]).update([pin:newrp.pin, parcel:newrp.parcel])
 		em_rpu.find([objid:faas.rpuid]).update([fullpin:newrp.pin])
 		em_faas.find([objid:faas.objid]).update([fullpin:newrp.pin])
@@ -79,6 +92,15 @@ class GeneralRevisionPinRenumberService
 		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'planttree']), 3001)
 		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'misc']), 5001)
 		updateImprovementPins(newrp, em.getImprovementsForRepinning([rpid:newrp.objid, rputype:'misc']), 7001)
+	}
+
+	def padLeft(String sval, padlen){
+		 try {
+		 	return Integer.parseInt(sval).toString().padLeft(padlen, '0')
+		 }
+		 catch(e){
+		 	return sval 
+		 }
 	}
 
 	void updateImprovementPins(newrp, improvements, basesuffix){

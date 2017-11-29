@@ -31,9 +31,42 @@ class BatchGR2Interceptor
 	@DataContext('batchgr_log')
 	def em_batchgr_log
 
+	@DataContext('batchgr_error')
+	def em_batchgr_error
+
+	@DataContext('faas_previous')
+	def em_faas_previous
+
+	@Service('RPTRequirementRuleService')
+    def ruleSvc
+
+    @Service('RPTRequirementService')
+    def reqSvc
+
+
+	@After(pattern="FAASService.approveFaas", eval="#{result.txntype?.objid=='GR'}") 
+	public void interceptApprove( evt ) {
+		def faas = evt.result 
+		def pf = em_faas_previous.find([faasid:faas.objid]).first()
+		if (pf){
+			em_batchgr_error.find([objid:pf.prevfaasid]).delete()
+		}
+	}
+	
+
+	@After(pattern="FAASService.deleteFaas") 
+	public void deleteBatchGrLog( evt ) {
+		def faas = evt.result 
+		def pf = em_faas_previous.find([faasid:faas.objid]).first()
+		if (pf){
+			em_batchgr_log.find([objid:pf.prevfaasid]).delete()
+		}
+	}
+
+
 
 	@After(pattern="FAASService.openFaas", eval="#{result.rpu?.rputype == 'land' && result.state.matches('INTERIM') && result.txntype?.objid=='GR'}") 
-	public void revisedLandDetails( evt ) {
+	public void reviseFaas( evt ) {
 		def faas = evt.result 
 		if (! util.isTrue(faas.datacapture)) return 
 
@@ -49,6 +82,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -71,6 +105,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -94,6 +129,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -116,6 +152,7 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
 	}
@@ -138,8 +175,37 @@ class BatchGR2Interceptor
 			rpuSvc.updateRpu(faas.rpu)
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
+			buildRequirements(faas)
 		}
 
+	}
+
+
+	void buildRequirements(faas){
+		def requirements = ruleSvc.getRequirements([
+			txntype 		: faas.txntype,
+			txntypemode 	: '',
+			attributes		: [],
+			rputype    		: faas.rpu.rputype, 
+			classificationid : faas.rpu.classification?.objid,
+		])
+
+		println 'requirements -> ' + requirements
+
+		requirements.unique().each{
+			reqSvc.create([
+				objid  				: 'R' + new java.rmi.server.UID(),
+				requirementtypeid 	: it.objid,
+				handler 			: it.handler,
+				refid 				: faas.objid,
+				value_objid 		: null,
+				value_txnno			: null,
+				value_txndate 		: null,
+				value_txnamount 	: 0.0,
+				value_remarks 		: null,
+				complied 			: 0,
+			])
+		}
 	}
 }
 

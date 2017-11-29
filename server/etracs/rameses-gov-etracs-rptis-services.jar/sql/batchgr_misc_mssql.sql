@@ -17,6 +17,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'misc'
 and r.ry < $P{newry}  
+and not exists(select objid from miscrpu where objid = replace(m.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -55,6 +56,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'misc'
 and r.ry < $P{newry}  
+and not exists(select objid from miscrpuitem where objid = replace(m.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -81,3 +83,4 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'misc'
 and r.ry < $P{newry}  
+and not exists(select * from miscrpuitem_rptparameter where miscrpuitemid = replace(m.miscrpuitemid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))

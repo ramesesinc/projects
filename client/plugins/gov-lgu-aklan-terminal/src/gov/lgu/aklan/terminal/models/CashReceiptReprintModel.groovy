@@ -46,15 +46,15 @@ class  CashReceiptReprintModel
     }
     
     void reprintTickets() {
-        def selectedTickets = tickets.findAll{it.print}
-        if (!selectedTickets) 
+        entity.tickets = tickets.findAll{it.print}
+        if (!entity.tickets) 
             throw new Exception("Ticket(s) to reprint should be selected.")
             
         if (!MsgBox.confirm('Reprint selected tickets?')) return; 
         
         logReprint()
         
-        selectedTickets.each {o-> 
+        entity.tickets.each {o-> 
             o.collector = entity.collector.name;
             o.orno = entity.receiptno;
             o.ordate = entity.receiptdate; 

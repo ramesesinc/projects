@@ -26,6 +26,11 @@ class FAASGRPinRenumberModel
     def task;
     def logs;
     
+    def numberingOptions = [
+        [code:'RESET', title:'Renumber PIN consecutively starting from one'],
+        [code:'NEWPIN', title:'Modify PIN based on NEW Format']
+    ]
+    
     void init(){
         entity = [approvefaas:false];
         entity.ry = svc.getCurrentRevisionYear();
@@ -124,6 +129,7 @@ class RepinTask implements Runnable {
             if (cancelled) break;
             def landfaas = landfaases[i];
             landfaas.idx = i+1;
+            landfaas.numberingoption = entity.numberingoption
 
             try{
                 logStatus('FAAS PIN # ' + landfaas.pin + ' ... ')

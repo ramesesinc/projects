@@ -5,6 +5,25 @@ where barangayid = $P{barangayid}
 and rputype like $P{rputype}
 
 
+[clearItemsForRevision]
+delete from batchgr_items_forrevision 
+where objid in (
+  select f.objid 
+  from faas f 
+    inner join rpu r on f.rpuid = r.objid 
+    inner join realproperty rp on f.realpropertyid = rp.objid
+    inner join propertyclassification pc on r.classification_objid = pc.objid 
+    inner join barangay b on rp.barangayid = b.objid 
+  where rp.barangayid = $P{barangayid}
+    and r.ry < $P{newry}
+    and f.state = 'CURRENT'
+    and r.rputype like $P{rputype}
+    and r.classification_objid like $P{classid}
+    and rp.section like $P{section}
+)
+
+
+
 [insertItemsForRevision]
 insert into batchgr_items_forrevision(
   objid,
@@ -12,6 +31,8 @@ insert into batchgr_items_forrevision(
   realpropertyid,
   barangayid,
   rputype,
+  section,
+  classification_objid,
   tdno,
   fullpin,
   pin,
@@ -23,6 +44,8 @@ SELECT
   f.realpropertyid,
   rp.barangayid,
   r.rputype,
+  rp.section,
+  r.classification_objid,
   f.tdno,
   f.fullpin,
   rp.pin,
@@ -38,7 +61,6 @@ WHERE rp.barangayid = $P{barangayid}
   AND f.state = 'CURRENT'
   AND NOT EXISTS(SELECT * FROM batchgr_error WHERE objid = f.objid)
   AND NOT EXISTS(SELECT * FROM batchgr_log WHERE objid = f.objid)
-ORDER BY rp.pin, r.suffix 
 
 
 [findFaasForRevision]
@@ -118,6 +140,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
+and not exists(select objid from realproperty where objid=replace(rp.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedRpus]
@@ -178,6 +201,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
+and not exists(select objid from rpu where objid = replace(r.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),${snewry})))
 
 
 [insertRevisedFaases]
@@ -270,6 +294,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
+and not exists(select objid from faas where objid = replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 
@@ -330,7 +355,7 @@ select
   f.utdno,
   f.prevtdno,
   f.fullpin as displaypin,
-  rp.pin,
+  case when r.rputype = 'land' then rp.pin else (rp.pin + '-' + convert(varchar(4),r.suffix)) end as pin,
   f.taxpayer_objid,
   f.owner_name,
   f.owner_address,
@@ -369,7 +394,7 @@ from faas f
 where rp.barangayid = $P{barangayid}
 and r.rputype = $P{rputype}
 and r.ry = $P{newry}
-and not exists(select * from faas_list where objid = f.objid)
+and not exists(select objid from faas_list where objid = f.objid)
 
 
 
@@ -413,6 +438,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
+and not exists(select objid from faas_signatory where objid = replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 [insertRevisedPreviousFaases]
@@ -453,7 +479,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-
+and not exists(select objid from faas_previous where objid = replace(f.objid, '-'+convert(varchar(4),rp.ry), '') + ('-' + convert(varchar(4),$P{newry})))
 
 
 

@@ -15,7 +15,9 @@ select
 	rp.cadastrallotno,
 	rp.surveyno,
 	rp.blockno, 
-	rp.claimno 
+	rp.claimno,
+	f.titleno,
+	r.rputype
 from faas f 
 	inner join rpu r on f.rpuid = r.objid 
 	inner join propertyclassification pc on r.classification_objid = pc.objid

@@ -10,6 +10,9 @@ import javax.swing.JFileChooser;
         
 public class RPTRequirementTypeDefaultHandler 
 {
+    @Caller
+    def caller; 
+    
     def svc;   // RPTRequirementService
             
     def onupdate;
@@ -70,6 +73,7 @@ public class RPTRequirementTypeDefaultHandler
             
             
     def listHandler = [
+        getRows  : { return (images.size() + 1 )},
         fetchList : { return images },
     ] as BasicListModel
             

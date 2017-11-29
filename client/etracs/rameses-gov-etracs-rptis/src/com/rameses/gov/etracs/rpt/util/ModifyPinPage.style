@@ -25,3 +25,7 @@
 "entity.suffix" [faas && faas.rputype != null && faas.rputype == 'land']{
     visible:false;
 }
+
+"entity.useoldpin"[entity.pintype == 'new']{
+    visible:false;
+}

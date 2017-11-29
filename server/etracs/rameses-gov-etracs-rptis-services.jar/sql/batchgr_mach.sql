@@ -17,6 +17,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'mach'
 and r.ry < $P{newry} 
+and not exists(select * from machrpu where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
 
 
 
@@ -47,6 +48,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'mach'
 and r.ry < $P{newry} 
+and not exists(select * from machuse where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
 
 
 [insertRevisedMachDetails]
@@ -146,3 +148,4 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'mach'
 and r.ry < $P{newry} 
+and not exists(select * from machdetail where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))

@@ -91,3 +91,18 @@ CREATE TABLE `rptledger_remote` (
   PRIMARY KEY (`objid`),
   CONSTRAINT `FK_rptledgerremote_rptledger` FOREIGN KEY (`objid`) REFERENCES `rptledger` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+/*======================================
+* AUTOMATIC MACH AV RECALC SUPPORT
+=======================================*/
+INSERT INTO `rptparameter` (`objid`, `state`, `name`, `caption`, `description`, `paramtype`, `minvalue`, `maxvalue`) 
+VALUES ('TOTAL_VALUE', 'APPROVED', 'TOTAL_VALUE', 'TOTAL VALUE', '', 'decimal', '0', '0');
+
+
+
+
+/* BATCH GR ADDITIONAL SUPPORT */
+alter table batchgr_items_forrevision add section varchar(3);
+alter table batchgr_items_forrevision add classification_objid varchar(50);

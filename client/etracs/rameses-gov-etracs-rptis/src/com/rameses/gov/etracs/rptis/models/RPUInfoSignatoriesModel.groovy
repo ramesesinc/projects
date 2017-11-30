@@ -8,6 +8,9 @@ import com.rameses.osiris2.common.*
 
 class RPUInfoSignatoriesModel extends SubPageModel 
 {
+    @Script("FaasSignatoryUtil")
+    def util;
+
     
     @PropertyChangeListener
     def listener = [
@@ -17,67 +20,22 @@ class RPUInfoSignatoriesModel extends SubPageModel
     /*===============================================
      * Signatory Lookup Support
      *===============================================*/
-            
+    
+    
     def getLookupAppraiser(){
-        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
-            doctype : 'RPTAPPRAISER',
-            onselect : { 
-                if (!entity.appraiser) 
-                    entity.appraiser = [:]
-                entity.appraiser.putAll(it)
-            },
-            onempty  : {clearSignatory(entity.appraiser)},
-        ])
-        
+        return util.getLookupAppraiser();
     }
     
     def getLookupRecommender(){
-        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
-            doctype : 'RPTRECOMMENDER',
-            onselect : { 
-                if ( !entity.recommender )
-                    entity.recommender = [:]
-                entity.recommender.putAll(it) 
-            },
-            onempty  : { clearSignatory(entity.recommender)},
-        ])
-        
+        return util.getLookupRecommender();
     }
     
     def getLookupTaxmapper(){
-        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
-            doctype : 'RPTTAXMAPPER',
-            onselect : { 
-                if (!entity.taxmapper)
-                    entity.taxmapper = [:]
-                entity.taxmapper.putAll(it) 
-            },
-            onempty  : { clearSignatory(entity.taxmapper) },
-        ])
-        
+        return util.getLookupTaxmapper();
     }
     
     def getLookupApprover(){
-        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
-            doctype : 'RPTAPPROVER',
-            onselect : { 
-                if (!entity.approver)
-                    entity.approver = [:]
-                entity.approver.putAll(it)
-            },
-            onempty  : { clearSignatory(entity.approver)},
-        ])
-        
+        return util.getLookupApprover();
     }
-    
-    void clearSignatory(signatory){
-        if (signatory){
-            signatory.personnelid = null;
-            signatory.name = null;
-            signatory.title = null;
-        }
-    }    
-    
-    
    
 }    

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:changeinfo" action="init" 
+            caption="Signatories" target="popup"  
+            role="ADMIN" permission="faas.change_signatories" index="10" 
+            actiontype="change_signatories"/>
+
+        <invoker type="formActions" action="doCancel" caption="Cancel" mnemonic="c" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" />
+   </invokers>
+   
+   <code class="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeSignatoriesInfoController"/>       
+   
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.faas.change.ui.ChangeSignatoriesInfoPage"/>
+    </pages>
+</workunit>
+
+

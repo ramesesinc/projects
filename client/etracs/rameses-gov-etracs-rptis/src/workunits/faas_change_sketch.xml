@@ -2,7 +2,7 @@
 <workunit>
     <invokers>
         <invoker type="faas:redflag:action" action="init" 
-            caption="Change FAAS Sketch" index="7" 
+            caption="FAAS Sketch" index="7" 
             actiontype="change_faas_sketch"/>        
         
         <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" />

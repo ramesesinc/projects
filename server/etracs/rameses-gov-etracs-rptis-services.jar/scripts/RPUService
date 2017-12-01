@@ -47,7 +47,7 @@ class RPUService
 
     @ProxyMethod
     public def initRpu( info ) {
-        def rputype = getTypeFromSuffix( info.suffix )
+        validateSuffix(info.rputype, info.suffix )
         def ry = (info.ry == null ? var.current_ry : info.ry)
         checkValidRy(ry)
         def rpu = [
@@ -57,7 +57,7 @@ class RPUService
             suffix          : info.suffix,
             subsuffix       : info.subsuffix,
             fullpin         : info.fullpin,
-            rputype         : rputype,
+            rputype         : info.rputype,
             taxable         : true,
             totalareaha     : 0.0,
             totalareasqm    : 0.0,
@@ -193,31 +193,42 @@ class RPUService
         return [RPUTYPE_LAND, RPUTYPE_BLDG, RPUTYPE_MACH, RPUTYPE_PLANTTREE, RPUTYPE_MISC]
     }
 
-
-    @ProxyMethod
-    public def getTypeFromSuffix( suffix ) {
-        def type = null
-        if (suffix == 0) 
-            type = RPUTYPE_LAND
-        else if (suffix >= 1001 && suffix <= 1999) 
-            type = RPUTYPE_BLDG
-        else if (suffix >= 2001 && suffix <= 2999) 
-            type = RPUTYPE_MACH
-        else if (suffix >= 3001 && suffix <= 4999) 
-            type = RPUTYPE_PLANTTREE
-        else if ((suffix >= 5001 && suffix <= 5999) || (suffix >= 7001 && suffix <= 7999)  )
-            type = RPUTYPE_MISC
-        else 
-            throw new Exception('Suffix No. ' + suffix + ' is invalid or not supported.')
-        return type 
+    @ProxyMethod 
+    public def getSuffixes(rputype){
+        def suffixes = []
+        if ('land' == rputype){
+            suffixes << [from:0, to:0]
+        }
+        else if ('bldg' == rputype){
+            suffixes << [from:1001, to:1999]
+        }
+        else if ('mach' == rputype){
+            suffixes << [from:2001, to:2999]
+        }
+        else if ('planttree' == rputype){
+            suffixes << [from:3001, to:6999]
+        }
+        else if ('misc' == rputype){
+            suffixes << [from:7001, to:7999]
+            if (util.isTrue(var.rpu_misc_suffix_allow_1001_1999))
+                suffixes << [from:1001, to:1999]
+            if (util.isTrue(var.rpu_misc_suffix_allow_5001_5999))
+                suffixes << [from:5001, to:5999]
+        }
+        else{
+            throw new Exception('Suffixes are not defined for RPU type ' + rputype + '.')
+        }
+        return suffixes 
     }
 
 
     @ProxyMethod
     public void validateSuffix( rputype, suffix ) { 
-        def type = getTypeFromSuffix(suffix)
-        if (type != rputype)
-            throw new Exception('Suffix is invalid for property type ' + rputype + '.')
+        def suffixes = getSuffixes(rputype)
+        def valid = suffixes.find{ suffix >= it.from && suffix <= it.to } != null 
+        if (!valid){
+            throw new Exception('Suffix is invalid for type ' + rputype + '.')
+        }
     }
 
 

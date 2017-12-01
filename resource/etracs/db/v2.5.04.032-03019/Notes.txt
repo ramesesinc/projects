@@ -2,3 +2,7 @@
 	- required:  RULEDE_rpt-03019.dat
 	- to effect: modify rule to compute depreciation rate and pass cdu rating
 
+* Miscellaneous additional suffix (1001 - 1999)
+	add sys_var: 
+		- rpu_misc_suffix_allow_1001_1999
+		- rpu_misc_suffix_allow_5001_5999

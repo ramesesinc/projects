@@ -287,7 +287,7 @@ select
   0 as month,
   0 as day,
   f.prevadministrator,
-  f.originlguid,
+  $P{originlguid} as originlguid,
   f.parentfaasid
 from faas f 
   inner join realproperty rp on f.realpropertyid = rp.objid

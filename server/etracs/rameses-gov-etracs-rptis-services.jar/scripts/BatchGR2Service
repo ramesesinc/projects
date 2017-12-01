@@ -102,6 +102,7 @@ class BatchGR2Service
 
 	void validateParams(params){
 		if (!params.rputype) throw new Exception('Property Type must be specified.')
+		params.originlguid = env.ORGID 
 		params.lguid = params.lgu.objid 
 		params.barangayid = params.barangay?.objid 
 		params.snewry = params.newry.toString()

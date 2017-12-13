@@ -1,7 +1,7 @@
 <schema>
 
 	<element tablename="afiritem">
-		<field name="objid" primary="true"/>			
+		<field name="objid" primary="true" prefix="AFIRITM"/>			
 		<field name="parentid" required="true"/>
 		<field name="item_objid" required="true"/>
 		<field name="item_title" required="true"/>

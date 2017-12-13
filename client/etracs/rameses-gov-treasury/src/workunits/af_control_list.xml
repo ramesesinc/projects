@@ -4,8 +4,8 @@
        
        <invoker folderid="menucategory/treasury/af" 
                 caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
-                cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtyissued,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"
-                orderBy="afid,dtfiled,startseries"/>
+                cols="afid,dtfiled,stubno,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"
+                orderBy="afid,dtfiled,stubno"/>
            
        <invoker folderid="menucategory/treasury/collection" 
             cols="state,afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"

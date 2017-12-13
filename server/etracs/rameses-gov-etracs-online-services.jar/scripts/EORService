@@ -154,7 +154,7 @@ class EORService {
         String afControlId = 'EOR'+ dateService.getServerYear()
         def ac = getControl(afControlId)
         int series = ac.currentseries
-        afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] );
+        //afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] );
         def rctno = afControlId + '-' + (series+"").padLeft(9, "0");
         return [series: series, receiptno: rctno, formno:'EOR', formtype:'eor', controlid: afControlId, stub: 1 ] 
     }

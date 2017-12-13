@@ -27,7 +27,7 @@
             <transition to="initial" caption="Back" />
             <transition to="view" caption="Next" action="saveCreate" immediate="false"/>
         </page>
-        <page name="view" title="Accountable Form Issuance" action="open">
+        <page name="view" title="Accountable Form Issue/Receipt" action="open">
             <transition to="end" caption="Post" confirm="This will immediately update the inventory. Proceed?" action="post"/>
         </page>
         <end/>

@@ -3,6 +3,7 @@
     <invokers>
         <invoker folderid="menucategory/treasury/af" caption="AF Issue/Receipt List" 
                  formTitle="IRAF List" action="init" role="AFO"
-                 cols="controlno,dtissued,issueto.name,txntype,state" orderBy="controlno"/>
+                 cols="controlno,dtissued,issueto.name,txntype,state,respcenter.name" 
+                 orderBy="controlno"/>
     </invokers>
 </workunit> 

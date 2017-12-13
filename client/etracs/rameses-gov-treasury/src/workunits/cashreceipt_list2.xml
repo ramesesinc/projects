@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="cashreceipt" 
           allowCreate="false" allowEdit="false" allowDelete="false"
-          cols="formno,receiptno,txnmode,receiptdate,paidbyname,collector.name,collectiontype.name,amount,voided"
+          cols="formno,receiptno,txnmode,receiptdate,paidby,collector.name,collectiontype.name,amount,voided"
           orderBy="formno,receiptno">
     
     <invokers>
@@ -19,7 +19,7 @@
     
    <code>
     <![CDATA[   
-    
+       
     import com.rameses.rcp.annotations.*
     import com.rameses.rcp.common.*
     import com.rameses.osiris2.client.*

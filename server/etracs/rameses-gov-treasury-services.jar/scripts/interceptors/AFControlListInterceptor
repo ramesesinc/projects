@@ -16,9 +16,10 @@ class AFControlListInterceptor {
 			result << [  title: 'Sold', state:'SOLD' ];
 			result << [  title: 'Consumed', state:'CLOSED' ];
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
+			result << [  title: 'Processing', state:'PROCESSING' ];
 		} 
 		else if( x._tag == 'COLLECTION' ) {
-			result << [  title: 'Open', state:'ACTIVE' ];
+			result << [  title: 'Open', state:'ISSUED' ];
 			result << [  title: 'Consumed', state:'CONSUMED' ];
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
 		}
@@ -34,30 +35,17 @@ class AFControlListInterceptor {
 		def str = "";
 		def m = [:]; 
 
-		if( o.node.state == 'DRAFT' ) {
-			str = " state = 'DRAFT' ";		
-		}
-		else if( o.node.state == 'OPEN' ) {
-			str = " state = 'OPEN' ";
-		}
-		else if( o.node.state == 'ISSUED' ) {
-			str = " state = 'ISSUED' ";
-		}
-		else if( o.node.state == 'SOLD' ) {
-			str = " state = 'SOLD' ";
-		}
-		else if( o.node.state == 'ACTIVE' ) {
+		if( o.node.state == 'ISSUED' ) {
 			str = " state='ISSUED' AND currentseries < endseries ";
 		}
 		else if( o.node.state == 'CONSUMED' ) {
 			str = " currentseries >= endseries ";
 		}
-		else if( o.node.state == 'CLOSED' ) {
-			str = " state = 'CLOSED' ";
+		else {
+			str = " state = :state";
+			m.state = o.node.state;
 		}
-		else  {
-			str = " state = 'CANCELLED' ";
-		};
+		
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

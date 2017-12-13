@@ -1,7 +1,7 @@
 <schema>
 
 	<element tablename="afir">
-		<field name="objid" primary="true"/>	
+		<field name="objid" primary="true" prefix="AFIR"/>	
 		<field name="state" required="true"/>
 		<field name="request_objid" />
 		<field name="request_reqno" />
@@ -10,8 +10,8 @@
 		<field name="dtfiled" required="true" type="date"/>
 		<field name="user_objid" required="true"/>
 		<field name="user_name" required="true"/>
-		<field name="issueto_objid" required="true"/>
-		<field name="issueto_name" required="true"/>
+		<field name="issueto_objid" />
+		<field name="issueto_name" />
 		<field name="issueto_title" />	
 		<field name="particulars" />	
 		<field name="respcenter_objid" />	

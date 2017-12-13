@@ -34,6 +34,7 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         xPanel1 = new com.rameses.rcp.control.XPanel();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
+        xLabel9 = new com.rameses.rcp.control.XLabel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
@@ -49,17 +50,18 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         xPanel2 = new com.rameses.rcp.control.XPanel();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
         xSeparator4 = new com.rameses.rcp.control.XSeparator();
+        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xNumberField7 = new com.rameses.rcp.control.XNumberField();
         xNumberField8 = new com.rameses.rcp.control.XNumberField();
         xSeparator6 = new com.rameses.rcp.control.XSeparator();
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
-        xPanel1.setVisibleWhen("#{ entity.item.formtype == 'serial' }");
+        xPanel1.setVisibleWhen("#{ afunit.formtype == 'serial' }");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Serial Accountable Form");
@@ -67,18 +69,24 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         formPanel1.setCaptionWidth(110);
 
         xLabel8.setCaption("Ref No");
-        xLabel8.setExpression("#{ entity.refno }");
+        xLabel8.setExpression("#{ entry.refno }");
         xLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel1.add(xLabel8);
 
+        xLabel9.setCaption("Ref Type");
+        xLabel9.setExpression("#{ entry.reftype }");
+        xLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel9.setPreferredSize(new java.awt.Dimension(0, 22));
+        formPanel1.add(xLabel9);
+
         xLabel1.setCaption("AF No");
-        xLabel1.setExpression("#{ entity.item.objid } - #{entity.item.title}");
+        xLabel1.setExpression("#{ entry.afid }");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel1.add(xLabel1);
 
         xLabel4.setCaption("Unit");
-        xLabel4.setExpression("#{ entity.unit }");
+        xLabel4.setExpression("#{ entry.unit }");
         xLabel4.setPreferredSize(new java.awt.Dimension(150, 22));
         formPanel1.add(xLabel4);
 
@@ -190,7 +198,7 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
 
         jPanel1.add(xPanel1, "card2");
 
-        xPanel2.setVisibleWhen("#{ entity.item.formtype == 'cashticket' }");
+        xPanel2.setVisibleWhen("#{ afunit.formtype == 'cashticket' }");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Cash Ticket Entry");
@@ -198,25 +206,26 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         formPanel2.setCaptionWidth(110);
 
         xLabel7.setCaption("Ref No");
-        xLabel7.setExpression("#{ refno }");
+        xLabel7.setExpression("#{ entry.refno }");
         xLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel2.add(xLabel7);
 
-        xLabel6.setCaption("AF No");
-        xLabel6.setExpression("#{ entity.item.objid } - #{entity.item.title}");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 22));
-        formPanel2.add(xLabel6);
+        xLabel10.setCaption("Ref Type");
+        xLabel10.setExpression("#{ entry.reftype }");
+        xLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 22));
+        formPanel2.add(xLabel10);
+
+        xLabel2.setCaption("AF No");
+        xLabel2.setExpression("#{ entry.afid }");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 22));
+        formPanel2.add(xLabel2);
 
         xLabel3.setCaption("Unit");
-        xLabel3.setExpression("#{ entity.unit }");
+        xLabel3.setExpression("#{ entry.unit }");
         xLabel3.setPreferredSize(new java.awt.Dimension(150, 22));
         formPanel2.add(xLabel3);
-
-        xLabel5.setCaption("Unit");
-        xLabel5.setExpression("#{ entry.qty }");
-        xLabel5.setPreferredSize(new java.awt.Dimension(150, 22));
-        formPanel2.add(xLabel5);
 
         xSeparator4.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -232,6 +241,12 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
         );
 
         formPanel2.add(xSeparator4);
+
+        xIntegerField2.setCaption("Unit Qty");
+        xIntegerField2.setEnabled(false);
+        xIntegerField2.setMinValue(1.0);
+        xIntegerField2.setName("entry.qty"); // NOI18N
+        formPanel2.add(xIntegerField2);
 
         xNumberField7.setCaption("Start Stub No");
         xNumberField7.setName("entry.startstub"); // NOI18N
@@ -303,13 +318,15 @@ public class AFReceiptItemDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel2;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel10;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField7;

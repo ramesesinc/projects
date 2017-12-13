@@ -1,13 +1,24 @@
 <schema>
 	<element tablename="business_recurringfee">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="BPLSRECFEE"/>
 		<field name="businessid" required="true"/>
 		<field name="state" required="true"/>
 		<field name="account_objid" required="true"/>
 		<field name="account_title" required="true"/>
 		<field name="amount" required="true"/>
 		<field name="remarks" />
+		<field name="txntypeid"/>
 		<field name="department"/>
+		<complex name="txntype" ref="business_billitem_txntype" jointype="many-to-one" required="false" includefields="objid,title,code">
+			<key field="txntypeid" target="objid" />
+		</complex>	
+		<field name="createdby_objid"/>
+		<field name="createdby_name"/>
+		<field name="dtcreated"/>
+
+		<field name="modifiedby_objid"/>
+		<field name="modifiedby_name"/>
+		<field name="dtmodified"/>
 	</element>
 </schema>
 

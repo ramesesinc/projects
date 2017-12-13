@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.util.*;
 
-class AFIssueModel extends CrudPageFlowModel {
+class AFIRModel extends CrudPageFlowModel {
 
     @Service("AFIRService")
     def svc;
@@ -54,7 +54,10 @@ class AFIssueModel extends CrudPageFlowModel {
             itemTxnTypes = [ req.reqtype ];
         }
         else {
-            if( entity.txntype == 'ISSUE' ) itemTxnTypes = ["COLLECTION", "SALE"]
+            if( entity.txntype == 'ISSUE' ) itemTxnTypes = ["COLLECTION", "SALE"];
+            else if(entity.txntype == 'PURCHASE_RECEIPT' ) itemTxnTypes = ['PURCHASE'];
+            else if(entity.txntype == 'BEGIN_BALANCE' ) itemTxnTypes = ['BEGIN'];
+            else throw new Exception("Unrecognized txntype " + entity.txntype );
         }
     }
 
@@ -120,17 +123,60 @@ class AFIssueModel extends CrudPageFlowModel {
         return super.start( "open" );
     }
     
-    void post() { 
-        svc.post( entity ); 
+    void post() {
+        svc.post([objid:entity.objid, txntype: entity.txntype ]);
+        reloadEntity();
+    }
+
+    void reloadEntity() {
+        open();
+        binding.refresh();
     }
     
-    //details
+    //**************************************************************************
+    //PURCHASE RECEIPT 
+    //**************************************************************************/
+    def addBatchEntry( def o ) {
+        return Inv.lookupOpener( "afreceiptitem_detail:add", [ 
+            entity:entity, params: o, handler:{ vv-> reloadEntity(); } 
+        ]);
+    }
+    
+    void removeBatchEntry(def o) {
+        if( !MsgBox.confirm('You are about to remove the entered accountable forms. Proceed?') ) return;
+        o.refid = entity.objid;
+        o.txntype = entity.txntype;
+        try {
+            svc.removeBatchEntry(o);
+            reloadEntity();
+        }
+        catch(e) {
+            MsgBox.err(e);
+        }
+    }
+    
+    //**************************************************************************
+    //AF ISSUANCE 
+    //**************************************************************************/
     void assignAvailableStock() {
         MsgBox.alert( "entity is " + entity.objid );
     }
     
-    void receiveStock(def p) {
-        MsgBox.alert( "entity is " + p );
+    def issueBatch( def o ) {
+        o.refid = entity.objid;
+        o.reftype = entity.txntype;
+        o.refdate = entity.dtfiled;
+        o.refno = entity.controlno;
+        try {
+            svc.issueBatch(o);
+            reloadEntity();
+        }
+        catch(e) {
+            MsgBox.err(e);
+        }
     }
     
+    def editEntry( def o ) {
+        MsgBox.alert( 'edit entry ' + o );
+    }
 }    

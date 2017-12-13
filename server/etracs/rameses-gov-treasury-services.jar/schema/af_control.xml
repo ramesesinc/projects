@@ -29,13 +29,12 @@
 		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>
 
 		<field name="lockid" /> 
-		<field name="receiptid" /> 
 
 		<field name="respcenter_objid" /> 
 		<field name="respcenter_name" indexed="true"/> 
 		<field name="cost" /> 
 
-		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title" required="false">
+		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title,formtype" required="false">
 			<key field="afid" target="objid" />
 		</complex>	
 	</element> 

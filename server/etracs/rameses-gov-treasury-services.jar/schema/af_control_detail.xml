@@ -1,7 +1,7 @@
 <schema>
 	<element tablename="af_control_detail">
-		<field name="objid" primary="true" />
-		<field name="controlid" required="true" />
+		<field name="objid" primary="true" prefix="AFCTRLD" />
+		<field name="state" required="true" type="integer" defaultvalue="0" />
 		<field name="indexno" required="true" />
 		<field name="refid" required="true" />
 		<field name="refno" required="true" />
@@ -27,7 +27,10 @@
 		<field name="issuedto_objid" />
 		<field name="issuedto_name" />
 
-		<complex name="parent" ref="af_control" jointype="many-to-one" includefields="afid,batchno,stubno"> 
+		<field name="respcenter_objid" />
+		<field name="respcenter_name" />
+
+		<complex name="parent" ref="af_control" jointype="many-to-one"> 
 			<key field="controlid" target="objid"/> 
 		</complex> 
 	</element>

@@ -116,10 +116,15 @@ class CashReceiptService  {
 		} 
 
 		/***************************************************************
-		//do the sharing here 
+		//do the sharing here. Just proceed if there are errors 
 		****************************************************************/
-		def sharing = sharingSvc.execute( p );
-		if(sharing) p.sharing = sharing;
+		try {
+			def sharing = sharingSvc.execute( p );
+			if(sharing) p.sharing = sharing;
+		}
+		catch(e) {
+			println "Error executing sharing rule service. " + e.message;
+		}
 		
 		/***************************************************************
 		//additional code on checks 

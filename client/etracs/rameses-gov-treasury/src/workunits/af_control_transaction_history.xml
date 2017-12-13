@@ -3,6 +3,7 @@
     <invokers>
         <invoker type="af_control:section" caption="Transaction History" action="init" parentid="controlid" 
             cols="refno,refdate,issuedto.name,receivedstartseries,receivedendseries,beginstartseries,beginendseries,issuedstartseries,issuedendseries,endingstartseries,endingendseries,qtyreceived,qtybegin,qtyissued,qtyending,qtycancelled,remarks" 
+            orderBy="txndate"
                  hiddenCols="controlid"/>
    </invokers>
 </workunit>

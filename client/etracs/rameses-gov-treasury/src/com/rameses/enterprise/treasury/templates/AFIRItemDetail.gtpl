@@ -22,9 +22,16 @@
                    <td align="center">${o.cost}</td>
                    <td align="center">${o.txntype}</td>
                    <td align="center">
-                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT') ) {  %> 
-                        <a href="receiveStock" id="${o.item.objid}">Add Entry</a>
+                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT') && (o.qty > o.qtyserved) ) {  %> 
+                        <a href="addBatchEntry" unit="${o.unit}" afid="${o.item.objid}">Add Entry</a>
                       <% } %>
+                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && (o.qty > o.qtyserved) ) {  %> 
+                        <a href="issueBatch" unit="${o.unit}" afid="${o.item.objid}">Issue</a>
+                      <% } %>
+                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && ( o.qtyserved > 0 ) && o.afunit.formtype == 'cashticket' ) {  %> 
+                        &nbsp;&nbsp;<a href="editEntry" unit="${o.unit}" afid="${o.item.objid}">Edit</a>
+                      <% } %>
+
                    </td>
                 </tr>
 
@@ -32,9 +39,13 @@
                     <tr>
                         <td>&nbsp;</td>
                         <td colspan="6">
-                            batch:${ii.batchno} series: ${ii.startseries} - ${ii.endseries} stub: ${ii.startstub} - ${ii.endstub} 
+                            batch:${ii.batchno} 
+                            <% if(o.afunit.formtype == 'serial') { %> 
+                            ${ (ii.prefix==null)?'':ii.prefix } ${ii.startseries} - ${ii.endseries} ${(ii.suffix==null)?'':ii.suffix}
+                            <% } %>
+                            stub: ${ii.startstub} - ${ii.endstub} 
                             <%if( entity.state == 'DRAFT' ) {  %>  
-                            &nbsp;&nbsp;<a href="removeEntry" batchno="${ii.batchno}" refid="${o.objid}">Remove</a></td>
+                                &nbsp;&nbsp;<a href="removeBatchEntry" batchno="${ii.batchno}" unit="${o.unit}" afid="${o.item.objid}">Remove</a></td>
                             <% } %>
                         </td>
                     </tr>

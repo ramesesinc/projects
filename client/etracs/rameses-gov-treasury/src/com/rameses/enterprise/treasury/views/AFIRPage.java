@@ -61,7 +61,6 @@ public class AFIRPage extends javax.swing.JPanel {
         xLabel5.setExpression("#{ entity.respcenter.name  }");
         xLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel5.setVisibleWhen("#{ afrequest != null }");
         xFormPanel1.add(xLabel5);
 
         xLabel4.setCaption("Request No");
@@ -126,7 +125,7 @@ public class AFIRPage extends javax.swing.JPanel {
 
         xButton1.setName("assignAvailableStock"); // NOI18N
         xButton1.setText("Assign Available Stock");
-        xButton1.setVisibleWhen("#{ entity.txntype == 'ISSUE' }");
+        xButton1.setVisibleWhen("#{ entity.state == 'DRAFT' && entity.txntype == 'ISSUE' }");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

@@ -13,7 +13,7 @@
 		<field name="receivedendseries" type="integer" caption="Received End"/> 
 		<field name="beginstartseries" type="integer" caption="Begin Start"/> 
 		<field name="beginendseries" type="integer" caption="Begin End"/> 
-		<field name="issuedstartseries" type="integer" caption="Issued Satrt"/> 
+		<field name="issuedstartseries" type="integer" caption="Issued Start"/> 
 		<field name="issuedendseries" type="integer" caption="Issued End"/> 
 		<field name="endingstartseries" type="integer" caption="Ending Start"/> 
 		<field name="endingendseries" type="integer" caption="Ending End"/> 

@@ -43,12 +43,10 @@ public class LobCountListingReportController extends ReportController {
                 [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
                 [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
                 [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
-                
-                [type:'checkbox', caption:'State', text:'INFO', name:'entity.state_info', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'ASSESSMENT', name:'entity.state_assessment', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'PAYMENT', name:'entity.state_payment', immediate:true, preferredSize:'0,20', captionWidth:100 ],                                                
-                [type:'checkbox', caption:'',  text:'RELEASE', name:'entity.state_release', immediate:true, preferredSize:'0,20', captionWidth:100 ],
-                [type:'checkbox', caption:'',  text:'COMPLETED', name:'entity.state_completed', immediate:true, preferredSize:'0,20', captionWidth:100 ],                        
+                [type:'date', caption:'Start Date', name:'entity.startdate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
+                [type:'date', caption:'End Date', name:'entity.enddate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
+
+                [type:'checklist', caption:'Status', name:'entity.appstates', immediate:true, preferredSize:'0,20', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
 
                 [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100] 
@@ -58,6 +56,14 @@ public class LobCountListingReportController extends ReportController {
     
     def permitTypes;
     def lobClassifications;
+    
+    def appStatusList = [
+        [objid: 'INFO', title: 'INFO'],
+        [objid: 'ASSESSMENT', title: 'ASSESSMENT'],
+        [objid: 'PAYMENT', title: 'FOR-PAYMENT'],
+        [objid: 'RELEASE', title: 'FOR-RELEASE'],
+        [objid: 'COMPLETED', title: 'COMPLETED'] 
+    ];     
 
     def initReport() {
         def outcome = super.initReport(); 
@@ -66,29 +72,15 @@ public class LobCountListingReportController extends ReportController {
         entity.year = new java.sql.Date( System.currentTimeMillis() ).toString().split("-")[0]; 
         permitTypes = permitTypeSvc.getList(); 
         entity.permittype = (permitTypes? permitTypes[0] : null); 
-        lobClassifications = businessReportUtil.getLOBClassifications();
+        entity.appstates = appStatusList.findAll{ it.objid == 'COMPLETED' }         
+        lobClassifications = businessReportUtil.getLOBClassifications();        
         return outcome; 
     } 
     
     def getReportData() { 
-        def startdate = null; 
-        def enddate = null; 
-        if ( entity.period.type == 'yearly' ) {
-            startdate = periodUtil.format( periodUtil.getYearStartDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
-            enddate   = periodUtil.format( periodUtil.getYearEndDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
-        } else if ( entity.period.type == 'quarterly' ) {
-            startdate = periodUtil.format( periodUtil.getQtrStartDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
-            enddate   = periodUtil.format( periodUtil.getQtrEndDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
-        } else if ( entity.period.type == 'monthly' ) { 
-            startdate = periodUtil.format( periodUtil.getMonthStartDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
-            enddate   = periodUtil.format( periodUtil.getMonthEndDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
-        } else if ( entity.period.type == 'daily' ) { 
-            startdate = ''+ periodUtil.parse( entity.date ) +' 00:00:00'; 
-            enddate   = ''+ periodUtil.parse( entity.date ) +' 23:59:59'; 
-        } 
-
-        entity.startdate = startdate;
-        entity.enddate = enddate; 
+        def m = periodUtil.build( entity.period.type, entity ); 
+        entity.startdate = m.startdate;
+        entity.enddate = m.enddate; 
         return svc.getReport( entity ); 
     }
     
@@ -102,19 +94,15 @@ public class LobCountListingReportController extends ReportController {
             periodtitle = periodUtil.getPeriodTitle([ year: entity.year, month: entity.month.index ]);
         } else if ( entity.period.type == 'daily' ) {
             periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
+        } else if ( entity.period.type == 'range' ) {
+            periodtitle = periodUtil.getPeriodTitle([ startdate: entity.startdate, enddate: entity.enddate ]);
         } 
 
-        def appstates = [
-            (entity.state_info? 'INFO' : null),
-            (entity.state_assessment? 'ASSESSMENT' : null),
-            (entity.state_payment? 'PAYMENT' : null),
-            (entity.state_release? 'RELEASE' : null),
-            (entity.state_completed? 'COMPLETED' : null) 
-        ].findAll{( it != null )} 
+        def appstates = entity.appstates.collect{( it.objid )} 
 
         return [
             PERIOD         : periodtitle, 
-            STATE          : appstates.join(','),
+            STATE          : appstates.join(', '),
             BARANGAYNAME   : ( entity.barangay  ? entity.barangay.name : 'ALL' ), 
             CLASSIFICATION : ( entity.classification? entity.classification.name : 'ALL' ) 
         ]; 

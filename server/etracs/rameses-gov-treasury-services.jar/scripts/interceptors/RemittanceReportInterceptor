@@ -4,13 +4,13 @@ import com.rameses.util.*;
 
 class RemittanceReportInterceptor {
 	
-	@ActiveDB('remittancereport_rpt')
+	//@ActiveDB('remittancereport_rpt')
 	def em; 
 
-	@After(pattern="RemittanceReportService.getBrgyShares")
+	//@After(pattern="RemittanceReportService.getBrgyShares")
 	void afterGetBrgyShares( evt ) { 
 		def params = evt.args[0]; 
 		def result = evt.result; 
-		result.items = em.getBrgyShares( params ); 
+		//result.items = em.getBrgyShares( params ); 
 	} 
 } 

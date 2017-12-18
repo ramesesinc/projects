@@ -15,6 +15,9 @@ class BPPermitReportService {
 
 	@ProxyMethod
 	public def getReport( params ) { 
+		if ( !params.permittype?.objid ) 
+			throw new Exception('permit type parameter is required'); 
+
 		def startdate = resolveDate( params.startdate ); 
 		if ( !startdate ) throw new Exception('startdate parameter is required');  
 
@@ -24,18 +27,13 @@ class BPPermitReportService {
 		enddate = dateSvc.add( enddate, '1d' ); 
 		params.enddate = resolveDate( enddate ); 
 		params.startdate = startdate; 
-		params.year = startdate.toString().split('-')[0]; 
-
-		params.filter = '';
+		params.permittypeid = params.permittype.objid; 		
+		params.filter = ''' AND b.permittype=$P{permittypeid} '''; 	
 		
 		if ( params.barangay?.objid ) { 
 			params.barangayid = params.barangay.objid; 
 			params.filter += ''' AND addr.barangay_objid=$P{barangayid} '''; 	
 		}		
-		if ( params.permittype?.objid ) { 
-			params.permittypeid = params.permittype.objid; 
-			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
-		} 
 		if ( params.orgtype?.objid ) { 
 			params.orgtypeid = params.orgtype.objid; 
 			params.filter += ''' AND b.orgtype=$P{orgtypeid} '''; 	

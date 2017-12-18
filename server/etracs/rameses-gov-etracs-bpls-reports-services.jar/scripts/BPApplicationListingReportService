@@ -33,7 +33,6 @@ class BPApplicationListingReportService {
 		params.startdate = startdate; 
 		params.enddate = resolveDate( dateSvc.add( enddate, '1d' )); 
 		params.permittypeid = params.permittype.objid;  
-		params.year = Integer.parseInt( startdate.toString().split('-')[0]); 
 
 		if ( params.apptypes ) {
 			params.apptypefilter = params.apptypes.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 

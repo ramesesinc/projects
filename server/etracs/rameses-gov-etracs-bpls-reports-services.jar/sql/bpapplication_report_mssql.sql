@@ -29,7 +29,7 @@ from (
 		from business_application ba 
 			inner join business b on ba.business_objid=b.objid 
 			inner join business_application_lob bal on bal.applicationid=ba.objid 
-		where ba.appyear = $P{year} 
+		where ba.appyear in (YEAR($P{startdate}), YEAR($P{enddate}))
 			and ba.dtfiled >= $P{startdate} 
 			and ba.dtfiled <  $P{enddate}   
 			and ba.apptype in ( ${apptypefilter} ) 

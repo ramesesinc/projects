@@ -71,7 +71,7 @@ select * from (
 			select 
 				businessid, activeyear, max(version) as maxver 
 			from business_permit 
-			where activeyear = $P{year} 
+			where activeyear in (YEAR($P{startdate}), YEAR($P{enddate}))
 				and dtissued >= $P{startdate} 
 				and dtissued <  $P{enddate} 
 				and state = 'ACTIVE' 

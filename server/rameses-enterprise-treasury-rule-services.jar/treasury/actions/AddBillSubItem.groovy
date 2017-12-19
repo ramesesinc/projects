@@ -28,6 +28,7 @@ class AddBillSubItem extends AbstractAddBillItem {
 		if(txntype!=null &&  !(txntype instanceof String )) {
 			txntype = params.txntype?.key;
 		}
+
 		def subItem = createSubItemFact(  billitem, amt, txntype );
 		if(acct!=null) {
 			setAccountFact( subItem, acct.key );

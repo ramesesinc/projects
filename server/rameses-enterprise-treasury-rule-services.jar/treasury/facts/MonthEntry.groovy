@@ -1,10 +1,15 @@
 package treasury.facts;
 
+import java.util.*;
+import com.rameses.util.*;
+import com.rameses.functions.*;
+
 class MonthEntry {
 
-   int numdays;
    Date fromdate;
    Date todate;
+   Date duedate;
+   
    int month;
    int year;
    int fromday;
@@ -37,8 +42,16 @@ class MonthEntry {
 
    public int getMaxdays() {
       def cal = Calendar.instance;
-      cal.setTime( fromdate );
+      cal.set(Calendar.YEAR, year);
+      cal.set(Calendar.MONTH, month - 1 );
+      cal.set(Calendar.DATE, 1 );
       return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
     } 
+
+    public int getNumdays() {
+      if( fromdate == null ) return 0;
+      if(todate == null) return 0;
+      return DateFunc.daysDiff( fromdate, todate ) + 1;
+    }
 
 }

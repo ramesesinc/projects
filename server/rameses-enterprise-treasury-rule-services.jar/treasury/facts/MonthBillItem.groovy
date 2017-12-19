@@ -30,6 +30,7 @@ class MonthBillItem extends BillItem {
 		m.sortorder = getSortorder();
 		m.fromdate = fromdate;
 		m.todate = todate;
+		m.duedate = duedate;
 
 		if(!m.fromdate || !m.todate) {
 			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -39,6 +40,10 @@ class MonthBillItem extends BillItem {
 			def tmpDt = DateFunc.getMonthAdd(m.fromdate, 1);
 			m.todate = DateFunc.getDayAdd(tmpDt, -1);
 		}
+
+		if(fromdate) m.fromday = getFromday();
+		if(todate) m.today = getToday();
+
 		return m;
 	}
 
@@ -46,20 +51,22 @@ class MonthBillItem extends BillItem {
 		return (year*12)+month;
 	}
 
+
+	//in the hash code priority is the txntype not the accout code
 	public int hashCode() {
 		def buff = new StringBuilder();
 		buff.append( yearMonth );
-		if( account?.objid ) {
-			buff.append( "-" + account.objid  )
-		};
 		if( txntype ) {
 			buff.append( "-" + txntype );
 		}
+		else if( account?.objid ) {
+			buff.append( "-" + account.objid  )
+		};
 		return buff.toString().hashCode();
 	}
 
 	public int getSortorder() {
-		return getYearMonth();
+		return (getYearMonth()*1000) + super.getSortorder();
 	}	
 
 	public String getMonthname() {

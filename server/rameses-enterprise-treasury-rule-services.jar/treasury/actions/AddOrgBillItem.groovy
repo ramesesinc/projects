@@ -13,25 +13,23 @@ import com.rameses.osiris3.common.*;
 *    account 
 *    amount
 ****/
-class AddBillItem extends AbstractAddBillItem {
+class AddOrgBillItem extends AbstractAddBillItem {
 
 	public void execute(def params, def drools) {
+
+		def acct = params.parentaccount;
+		def org = params.org;
 		def amt = params.amount.decimalValue;
 
-		if(!params.account && !params.txntype ) {
-			throw new Exception("AddBillItem error. Please specify an account or txntype in rule");
-		}
+		def acctid = getAccountFactByOrgAndParent( acct.key, org.orgid );
+		if(!acctid)
+			throw new Exception("RuleAction AddOrgBillItem error. No record found having parent "+acct.value + " org:" + org.orgid );
 
 		def billitem = new BillItem(amount: NumberUtil.round( amt));
-		if( params.txntype?.key && params.txntype?.key != "null" ) {
+		if( params.txntype?.key ) {
 			billitem.txntype = params.txntype.key;
 		}
-
-		def acct = params.account;
-		if(  acct ) {
-			setAccountFact( billitem, acct.key );
-		}
-		
+		setAccountFact( billitem, acctid );
 		addToFacts( billitem );
 	}
 

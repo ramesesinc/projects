@@ -19,11 +19,11 @@
 		<field name="unit" caption="Unit" required="true" /> 
 		<field name="owner_objid" /> 
 		<field name="owner_name" caption="Issued To" searchable="true" indexed="true"/> 
-		<field name="prefix" /> 
-		<field name="suffix" /> 
+		<field name="prefix" caption="Prefix"/> 
+		<field name="suffix" caption="Suffix"/> 
 		<field name="dtfiled" required="true" type="date" caption="Date Filed" /> 
 		<field name="currentindexno" required="true" type="integer"/> 
-		<field name="batchno" indexed="true" /> 
+		<field name="batchno" indexed="true" caption="Batch No"/> 
 
 		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
 		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>

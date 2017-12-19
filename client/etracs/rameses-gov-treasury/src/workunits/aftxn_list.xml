@@ -1,0 +1,9 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="aftxn" allowDelete="false">
+    <invokers>
+        <invoker folderid="menucategory/treasury/af" caption="AF Transactions" 
+                 formTitle="AF Transactions" action="init" role="AFO"
+                 cols="controlno,dtissued,issueto.name,txntype,state,respcenter.name" 
+                 orderBy="controlno"/>
+    </invokers>
+</workunit> 

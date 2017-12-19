@@ -1,0 +1,23 @@
+"itemListHandler:item.*" [ withrequest == true ]{
+    editable:false;
+}
+
+"itemListHandler:item.*" [ withrequest == false ]{
+    editable:true;
+}
+
+"entity.issueto.*" [ entity.txntype.matches('ISSUE|FORWARD') ]{
+    visible:true;
+}
+
+"entity.issueto.*" [ !entity.txntype.matches('ISSUE|FORWARD') ]{
+    visible:false;
+}
+
+"entity.(issueto|respcenter).*" [ afrequest == null ]{
+    enabled:true;
+}
+
+"entity.(issueto|respcenter).*" [ afrequest != null ]{
+    enabled:false;
+}

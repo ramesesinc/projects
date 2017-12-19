@@ -13,6 +13,7 @@ class AFControlDetailService  {
 		mm.parent = [objid: controlid];
 		mm.txndate = txndate;
 		mm.refno = ref.refno;
+		mm.refitemid = ref.refitemid;
 		mm.refid = ref.refid;
 		mm.refdate = ref.refdate;
 		mm.reftype = ref.reftype;

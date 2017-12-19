@@ -98,6 +98,8 @@ class AFControlService  {
 
 	@ProxyMethod
 	public void changeMode( p ) { 
+		throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
+
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
 
 		def o = em.find([ objid: p.objid ]).first(); 

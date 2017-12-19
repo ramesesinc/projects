@@ -1,0 +1,48 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit schemaName="aftxn">
+    <invokers>
+        <invoker type="aftxn:create" 
+                 caption="New AF Issue/Receipt" formTitle="New AF IR" action="start" role="AFO"/>
+        
+        <invoker type="aftxn:open" 
+                 formTitle="#{ entity.controlno }"
+                 formId="#{entity.objid }"
+                 caption="AF Issue/Receipt" 
+                 action="startOpen" role="AFO"/>
+        
+        <invoker type="navActions" caption="Assign Available Stock" action="assignAvailableStock"/> 
+    </invokers>
+    
+    <code class="com.rameses.enterprise.treasury.models.AFTxnModel" />
+    
+    <pageflow>
+        <start>
+            <transition to="initial" name="default" />
+            <transition to="view" name="open"/>
+            <transition to="posted" name="posted"/>
+        </start>
+        <page name="initial" title="New Accountable Form Issue/Receipt" action="create">
+            <transition to="entry" caption="Next"  action="initNew" immediate="false"/>
+        </page>
+        <page name="entry" title="Enter Qty and Details">
+            <transition to="initial" caption="Back" />
+            <transition to="view" caption="Next" action="saveCreate" immediate="false"/>
+        </page>
+        <page name="view" title="Accountable Form Issue/Receipt" action="open">
+            <transition to="end" caption="Close" />
+            <transition to="posted" caption="Post" confirm="This will immediately update the inventory. Proceed?" action="post"/>
+        </page>
+        <page name="posted" title="Accountable Form Issue/Receipt" action="open">
+            <transition to="end" caption="Close" />
+        </page>
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="initial" template="com.rameses.enterprise.treasury.views.AFTxnInitialPage" />
+        <page name="entry"   template="com.rameses.enterprise.treasury.views.AFTxnEntryPage" />
+        <page name="view"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
+        <page name="posted"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
+    </pages>
+    
+</workunit>

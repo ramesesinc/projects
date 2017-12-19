@@ -1,0 +1,23 @@
+"entry.(startstub|endstub)" [ entry.qty == 1 && entry.reftype!='PURCHASE_RECEIPT' ]{
+    visible:false;
+}
+
+"entry.(startstub|endstub)" [ entry.qty > 1 && entry.reftype!='PURCHASE_RECEIPT' ]{
+    visible:true;
+}
+
+"entry.currentseries|stubno|qtybalance" [ entry.qty == 1 && entry.reftype!='PURCHASE_RECEIPT' ]{
+    visible:true;
+}
+
+"entry.currentseries|stubno|qtybalance" [ entry.qty > 1 && entry.reftype!='PURCHASE_RECEIPT'  ]{
+    visible:false;
+}
+
+"stubno|qtybalance|entry.currentseries" [ entry.reftype=='PURCHASE_RECEIPT' ] {
+    visible:false;
+}
+
+"entry.(.*series|.*fix)" [ afunit.formtype == 'cashticket' ] {
+    visible: false;
+}

@@ -1,7 +1,7 @@
 <workunit>     
     <invokers>
         <invoker type="business_assessment:change" caption="Change Business Info" 
-                 action="init" role="ASSESSOR" permission="assessment.changeinfo" 
+                 action="init" role="ASSESSOR,BUSINESSINFO" permission="assessment.changeinfo" 
                  target="process" index="1" /> 
     </invokers>
     

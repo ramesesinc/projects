@@ -71,6 +71,7 @@ public class BusinessPermitListingReportController extends ReportController {
         [objid: 'SCH', title: 'SCHOOL'] 
     ]; 
 
+
     def initReport() {
         def outcome = super.initReport(); 
         permitTypes = permitTypeSvc.getList(); 
@@ -81,6 +82,10 @@ public class BusinessPermitListingReportController extends ReportController {
         entity.sortfield = sortFields[0]; 
         return outcome; 
     }     
+    
+    boolean isDynamic() {
+        return true; 
+    } 
     
     String getReportName() { 
         return (reportpath + entity.template.name);  

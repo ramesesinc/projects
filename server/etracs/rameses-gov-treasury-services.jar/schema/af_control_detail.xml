@@ -26,6 +26,8 @@
 		<field name="qtyending" required="true" />
 		<field name="remarks" required="true" />
 
+		<field name="prevdetailid" />
+
 		<field name="issuedto_objid" />
 		<field name="issuedto_name" />
 
@@ -34,6 +36,9 @@
 
 		<complex name="parent" ref="af_control" jointype="many-to-one"> 
 			<key field="controlid" target="objid"/> 
+		</complex> 
+		<complex name="statetype" ref="aftxn_type" jointype="many-to-one" required="false"> 
+			<key field="txntype" target="txntype"/> 
 		</complex> 
 	</element>
 </schema>

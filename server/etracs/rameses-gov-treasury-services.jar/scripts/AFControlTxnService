@@ -1,0 +1,147 @@
+import com.rameses.annotations.*;
+
+class AFControlTxnService {
+	
+	@DataContext('af_control')
+	def afCtrl;
+
+	@DataContext('af_control_detail')
+	def afDetail;
+
+	def formatSeries(vv,  len) {
+		return  vv.toString().padLeft( len, '0');
+	}
+
+	
+
+	/*********************************************************************************
+	* ref is the reference transaction while afc is the af control object
+	* ref must have refno,reftype,refid,refdate,
+	* af control is either created here or fetched and then passed here
+	*********************************************************************************/
+	@ProxyMethod 
+	public void add( def ref, def afc ) {
+		def prevdetailid = null;
+		if ( !afc?.objid ) {
+			def afunit = afc.afunit;
+			int len = (afunit.serieslength ? afunit.serieslength : 10);	
+
+			def m = [:];
+			m.afid = afc.afid;
+			m.txnmode = 'ONLINE';
+			m.state = 'DRAFT';
+			m.unit = afc.unit;
+			m.cost = afc.cost;
+
+			if( afunit.formtype == 'serial' ) {				
+				m.startseries = formatSeries( afc.startseries, len  );
+				m.currentseries = m.startseries;
+				m.endseries = formatSeries( afc.endseries, len );
+			} else {
+				m.startseries = 1;
+				m.endseries = afc.endseries; 
+				m.currentseries = m.startseries; 
+			}
+			m.stubno = afc.stubno;
+
+			m.dtfiled = afc.dtfiled;
+			m.active = 0;
+			m.prefix = afc.prefix;
+			m.suffix = afc.suffix;
+			m.batchno = afc.batchno;
+			m.currentindexno = 1;
+			m.respcenter = afc.respcenter; 
+			if( afc.issuedto  ) {
+				m.owner = afc.issuedto;
+				m.assignee = afc.issuedto;
+			}
+			afc = afCtrl.create( m ); 
+		}
+		else {
+			prevdetailid = afc.currentdetailid;
+		}
+
+		def d = [:];
+		d.putAll( ref );
+
+		d.controlid = afc.objid;
+		d.parent = afc;
+		d.issuedto = ref.issueto;
+		d.respcenter = ref.respcenter;
+		d.prevdetailid = prevdetailid;
+		d.state = 0;
+		d.indexno = 1;
+
+		//initialize the values
+		d.receivedstartseries = 0;
+		d.receivedendseries = 0;
+		d.beginstartseries = 0;
+		d.beginendseries = 0;
+		d.issuedstartseries = 0;
+		d.issuedendseries = 0;
+		d.endingstartseries = 0;
+		d.endingendseries = 0;
+		d.qtyreceived = 0;
+		d.qtybegin = 0;
+		d.qtyissued = 0;
+		d.qtycancelled = 0;
+		d.qtyending = 0;
+
+		if ( ref.reftype == 'PURCHASE_RECEIPT') {
+			d.receivedstartseries = afc.startseries;
+			d.receivedendseries = afc.endseries; 
+			d.qtyreceived = (afc.endseries.toInteger() - afc.startseries.toInteger() ) +1;
+			d.endingstartseries = afc.startseries;
+			d.endingendseries = afc.endseries; 
+			d.qtyending = d.qtyreceived;
+		} else if ( ref.reftype == 'BEGIN_BALANCE') {
+			d.beginstartseries = afc.startseries;
+			d.beginendseries = afc.endseries; 
+			d.qtybegin = (afc.endseries.toInteger() - afc.startseries.toInteger() ) +1;
+			d.endingstartseries = afc.startseries;
+			d.endingendseries = afc.endseries; 
+			d.qtyending = d.qtybegin;
+		} else if ( ref.reftype.matches('ISSUE|FORWARD|TRANSFER')) {
+			d.receivedstartseries = afc.currentseries;
+			d.receivedendseries = afc.endseries; 
+			d.qtyreceived = (d.receivedendseries.toInteger() - d.receivedstartseries.toInteger() ) +1;
+			d.endingstartseries = d.receivedstartseries;
+			d.endingendseries = d.receivedendseries;
+			d.qtyending = d.qtyreceived;
+		} else if ( ref.reftype == 'RETURN') {
+			d.beginstartseries = afc.currentseries;
+			d.beginendseries = afc.endseries; 
+			d.qtybegin = (d.beginendseries.toInteger() - d.beginstartseries.toInteger() ) +1;
+			d.endingstartseries = d.beginstartseries;
+			d.endingendseries = d.beginendseries;
+			d.qtyending = d.qtybegin;			
+		} else if ( ref.reftype == 'REMITTANCE') {
+			d.beginstartseries = ref.startseries;
+			d.beginendseries = afc.endseries;  
+			d.qtybegin = (d.beginendseries.toInteger() - d.beginstartseries.toInteger() ) +1;
+			d.issuedstartseries = ref.startseries;
+			d.issuedendseries = ref.endseries;
+			if ( ref.endseries < afc.endseries ) {
+				d.endingstartseries = d.issuedstartseries + 1;
+				d.endingendseries = d.beginendseries; 
+				d.qtyending = (d.endingendseries.toInteger() - d.endingstartseries.toInteger() )+1;
+			} else {
+				d.qtyending = 0;      
+			}
+		}
+
+		d = afDetail.create( d );
+
+		//update the af control
+		def u = [:];
+		u.state = 'PROCESSING';
+		u.currentdetailid = d.objid;
+		if( ref.issueto ) {
+			u.owner = ref.issueto;
+			u.assignee = ref.issueto;
+		}
+		u.respcenter = ref.respcenter;
+		afCtrl.find( [objid: afc.objid ] ).update( u );
+	}
+
+}

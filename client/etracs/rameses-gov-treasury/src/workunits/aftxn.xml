@@ -18,7 +18,7 @@
     <pageflow>
         <start>
             <transition to="initial" name="default" />
-            <transition to="view" name="open"/>
+            <transition to="view" name="view"/>
             <transition to="posted" name="posted"/>
         </start>
         <page name="initial" title="New Accountable Form Issue/Receipt" action="create">

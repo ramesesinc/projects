@@ -4,8 +4,8 @@
        
        <invoker folderid="menucategory/treasury/af" 
                 caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
-                cols="afid,dtfiled,stubno,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"
-                orderBy="afid,dtfiled,stubno"/>
+                cols="afid,dtfiled,batchno,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"
+                orderBy="afid,dtfiled,batchno,stubno"/>
            
        <invoker folderid="menucategory/treasury/collection" 
             cols="state,afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
@@ -13,11 +13,12 @@
             action="init"
             formTitle="Collection Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
        
+        <!--
         <invoker folderid="/explorer/txn/treasury" caption="AF Controls" role="COLLECTOR,SUBCOLLECTOR"> 
             <action name="init" role="COLLECTOR" /> 
             <action name="init" role="SUBCOLLECTOR" /> 
         </invoker>
-        
+        -->
    </invokers>
   
    <code class="com.rameses.enterprise.treasury.models.AFControlListModel" />

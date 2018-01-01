@@ -1,0 +1,10 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_control" multiSelect="true">
+    <invokers>
+        <invoker type="af_control_batch:serial:lookup" caption="Lookup Control Batch" action="init" target="popup" 
+                cols="afid,batchno,stubno,currentseries,endseries,qtybalance"/>
+         <invoker type="af_control_batch:cashticket:lookup" caption="Lookup Control Batch" action="init" target="popup" 
+                cols="afid,batchno,stubno,qtyissued,qtybalance"/>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.AFControlLookupBatchModel" />
+</workunit>

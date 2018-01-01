@@ -13,6 +13,10 @@
 		<field name="cost" type="decimal"/>
 		<field name="linetotal" expr="qty * cost" type="decimal" />
 
+		<complex name="parent" ref="aftxn" jointype="many-to-one" required="false">
+			<key field="parentid" target="objid" />
+		</complex> 
+
 		<complex name="afunit" ref="vw_afunit" jointype="many-to-one" required="false" includefields="serieslength,denomination,formtype,saleprice,qty">
 			<key field="item_objid" target="itemid" />
 			<key field="unit" target="unit" />

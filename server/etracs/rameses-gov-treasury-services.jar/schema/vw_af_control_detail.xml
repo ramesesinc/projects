@@ -4,6 +4,7 @@
 		<field name="controlid" /> 
 		<field name="indexno" type="integer"/> 
 		<field name="refid" /> 
+		<field name="refitemid" /> 
 		<field name="refno" /> 
 		<field name="reftype" /> 
 		<field name="refdate" type="timestamp"/> 
@@ -40,5 +41,11 @@
 		<field name="cost" type="decimal"/> 
 		<field name="state" /> 
 		<field name="batchno" /> 
+
+		<field name="controlstate" /> 
+		<field name="startseries" /> 
+		<field name="endseries" /> 
+		<field name="currentseries" /> 
+		<field name="qtybalance" />
 	</element>
 </schema>

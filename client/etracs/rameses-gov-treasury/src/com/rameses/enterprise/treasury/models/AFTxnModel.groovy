@@ -18,7 +18,7 @@ class AFTxnModel extends CrudPageFlowModel {
     boolean withrequest = false;
     def afrequest;
     
-    def txnTypes;
+    def formTypes;
     def reqtype = null;
     def selectedItem;
     
@@ -31,6 +31,12 @@ class AFTxnModel extends CrudPageFlowModel {
         afrequest = null;
         itemListHandler.reload();
         entity.dtfiled = dateSvc.getBasicServerDate();
+        
+        def m = [_schemaname:'aftxn_type'];
+        m.select = "formtype";
+        m.where = ["1=1"];
+        m.orderBy = "sortorder";
+        formTypes = queryService.getList(m)*.formtype.unique();
     }
     
     void initNew() {
@@ -55,11 +61,17 @@ class AFTxnModel extends CrudPageFlowModel {
             itemTxnTypes = [ req.reqtype ];
         }
         else {
+            def m = [_schemaname:"aftxn_type"];
+            m.findBy = [formtype: entity.txntype];
+            m.orderBy = "sortorder";
+            itemTxnTypes = queryService.getList( m )*.txntype;
+            /*
             if( entity.txntype.matches('ISSUE|RETURN|TRANSFER') ) itemTxnTypes = ["COLLECTION", "SALE"];
             else if(entity.txntype == 'PURCHASE_RECEIPT' ) itemTxnTypes = ['PURCHASE'];
             else if(entity.txntype == 'BEGIN_BALANCE' ) itemTxnTypes = ['BEGIN'];
             else if( entity.txntype == 'FORWARD' ) itemTxnTypes = ['FORWARD']; 
             else throw new Exception("Unrecognized txntype " + entity.txntype );
+            */
         }
     }
 
@@ -122,12 +134,13 @@ class AFTxnModel extends CrudPageFlowModel {
     }
     
     def startOpen() {
-        String state = (entity.state == 'DRAFT') ? 'open' : 'posted';
+        open();
+        String state = (entity.state == 'DRAFT') ? 'view' : 'posted';
         return super.start( state );
     }
     
     void post() {
-        svc.post([objid:entity.objid, txntype: entity.txntype ]);
+        svc.post([objid:entity.objid ]);
         reloadEntity();
     }
 
@@ -139,18 +152,19 @@ class AFTxnModel extends CrudPageFlowModel {
     //**************************************************************************
     //PURCHASE RECEIPT 
     //**************************************************************************/
-    def addBatchEntry( def o ) {
-        return Inv.lookupOpener( "aftxn_control_entry:add", [ 
-            entity:entity, params: o, handler:{ vv-> reloadEntity(); } 
+    def addBatch( def o ) {
+        def item = entity.items.find{ it.objid == o.refitemid };
+        return Inv.lookupOpener( "af_control:addbatch", [ 
+            refitem:item, handler:{ vv-> reloadEntity(); } 
         ]);
     }
     
-    void removeBatchEntry(def o) {
+    void removeBatch(def o) {
         if( !MsgBox.confirm('You are about to remove the entered accountable forms. Proceed?') ) return;
         o.refid = entity.objid;
         o.txntype = entity.txntype;
         try {
-            svc.removeBatchEntry(o);
+            svc.removeBatch(o);
             reloadEntity();
         }
         catch(e) {
@@ -158,20 +172,31 @@ class AFTxnModel extends CrudPageFlowModel {
         }
     }
     
-    //**************************************************************************
-    //AF ISSUANCE 
-    //**************************************************************************/
-    void assignAvailableStock() {
-        MsgBox.alert( "entity is " + entity.objid );
+    void revertBatch(def o) {
+        if( !MsgBox.confirm('You are about to revert the entries. Proceed?') ) return;
+        o.refid = entity.objid;
+        o.txntype = entity.txntype;
+        try {
+            svc.revertBatch(o);
+            reloadEntity();
+        }
+        catch(e) {
+            MsgBox.err(e);
+        }
+    }
+
+    def editBatch( def o ) {
+        def item = entity.items.find{ it.objid == o.refitemid };
+        def e= [:];
+        e.afid = item.item.objid;
+        e.unit = item.unit;
+        e.afunit = item.afunit;
+        return Inv.lookupOpener("af_control:editbatch", ['refitemid': o.refitemid, entity: e, txntype:entity.txntype ]);
     }
     
     def issueBatch( def o ) {
-        o.refid = entity.objid;
-        o.reftype = entity.txntype;
-        o.refdate = entity.dtfiled;
-        o.refno = entity.controlno;
         try {
-            svc.issue(o);
+            svc.issueBatch( [refitemid:o.refitemid] );
             reloadEntity();
         }
         catch(e) {
@@ -179,7 +204,11 @@ class AFTxnModel extends CrudPageFlowModel {
         }
     }
     
-    def editEntry( def o ) {
-        return Inv.lookupOpener("af_control_detail:lookup", ['query.refitemid': o.refitemid ]);
+    def selectBatch( def o ) {
+        def item = entity.items.find{ it.objid == o.refitemid };
+        item.parent = entity;
+        def strname = "af_control_batch:" + item.afunit.formtype + ":lookup"
+        return Inv.lookupOpener(strname, [refitem: item ] );
     }
+    
 }    

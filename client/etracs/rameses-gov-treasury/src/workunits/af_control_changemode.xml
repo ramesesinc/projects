@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="af_control:form:actions" caption="Change Modex"  target="popup"
+        <invoker type="af_control:form:actions" caption="Change Mode"  target="popup"
                   xvisibleWhen="#{entity.state=='ISSUED'} "/>            
     </invokers>
    
@@ -22,7 +22,6 @@
             def entity;
         
             def doOk() {
-                MsgBox.alert( "txn mode is " + entity );
                 service.changeMode( [objid: entity.objid, txnmode: entity.txnmode ] );
                 if(caller) caller.reloadEntity();
                 return "_close";

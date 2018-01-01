@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import com.rameses.util.*;
 
 class AFControlModel extends CrudFormModel {
 
@@ -58,5 +59,18 @@ class AFControlModel extends CrudFormModel {
     }
 
     
+    public def getDetailInfo() {
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFControlPage.gtpl", [details: details] );
+    }
+    
+    def _details;
+    def getDetails() {
+        if(_details ) return _details;
+        def m = [_schemaname:"af_control_detail"];
+        m.findBy = [controlid: entity.objid];
+        m.orderBy = "refdate,txndate";
+        _details = queryService.getList(m);
+        return _details;
+    }
     
 }    

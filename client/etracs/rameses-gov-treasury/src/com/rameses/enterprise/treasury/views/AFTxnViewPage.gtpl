@@ -1,6 +1,14 @@
 <html>
+    <head>
+        <style>
+            body {font-family:arial; font-size:10px;}
+            th { background-color: #848482; color:white; }
+            table { border: 1px solid #848482; }
+            td { background-color: #E0FFFF }
+        </style>
+    </head>
     <body>
-        <table style="border:1px solid black;" width="100%">
+        <table cellpadding="1" cellspacing="1" width="100%">
              <tr>
                      <th align="left">AF No</th>
                      <th align="left">Description</th>
@@ -23,16 +31,19 @@
                    <td align="center">${o.txntype}</td>
                    <td align="center">
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD') && (o.qty > o.qtyserved) ) {  %> 
-                        <a href="addBatchEntry" unit="${o.unit}" afid="${o.item.objid}">Add Entry</a>
+                        <a href="addBatch" unit="${o.unit}" afid="${o.item.objid}" refitemid="${o.objid}">Add Entry</a>
+                      <% } %>
+                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('TRANSFER|RETURN') && (o.qty > o.qtyserved) ) {  %> 
+                        <a href="selectBatch" refitemid="${o.objid}">Select</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && (o.qty > o.qtyserved) ) {  %> 
-                        <a href="issueBatch" unit="${o.unit}" afid="${o.item.objid}">Issue</a>
+                        <a href="issueBatch" refitemid="${o.objid}">Issue</a>
                       <% } %>
-                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE|FORWARD')  && ( o.qtyserved > 0 ) && o.afunit.formtype == 'cashticket' ) {  %> 
-                        &nbsp;&nbsp;<a href="editEntry" unit="${o.unit}" afid="${o.item.objid}">Edit</a>
+                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && ( o.qtyserved > 0 ) && o.afunit.formtype == 'cashticket' ) {  %> 
+                        &nbsp;&nbsp;<a href="editBatch" refitemid="${o.objid}">Edit Qty</a>
                       <% } %>
-                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('FORWARD')  && ( o.qtyserved > 0 ) && o.afunit.formtype != 'cashticket' ) {  %> 
-                        &nbsp;&nbsp;<a href="editEntry" refitemid="${o.objid}">Edit</a>
+                      <%if( entity.state == 'DRAFT' && entity.txntype.matches('FORWARD')  && ( o.qtyserved > 0 )) {  %> 
+                        &nbsp;&nbsp;<a href="editBatch" refitemid="${o.objid}">Edit</a>
                       <% } %>
                    </td>
                 </tr>
@@ -46,10 +57,12 @@
                             ${ (ii.prefix==null)?'':ii.prefix } ${ii.startseries} - ${ii.endseries} ${(ii.suffix==null)?'':ii.suffix}
                             <% } %>
                             stub: ${ii.startstub} - ${ii.endstub} 
-                            <%if( entity.state == 'DRAFT' ) {  %>  
-                                &nbsp;&nbsp;<a href="removeBatchEntry" batchno="${ii.batchno}" unit="${o.unit}" afid="${o.item.objid}">Remove</a></td>
+                            <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD') ) {  %>  
+                                &nbsp;&nbsp;<a href="removeBatch" batchno="${ii.batchno}" refitemid="${o.objid}">Remove</a></td>
                             <% } %>
-                           
+                            <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE') ) {  %>  
+                                &nbsp;&nbsp;<a href="revertBatch" batchno="${ii.batchno}" refitemid="${o.objid}">Revert</a></td>
+                            <% } %>
                         </td>
                     </tr>
                 <% } %>

@@ -21,7 +21,6 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="1"/>
                   <Component id="jScrollPane1" alignment="0" min="-2" pref="916" max="-2" attributes="0"/>
-                  <Component id="xButton1" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -32,9 +31,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xButton1" min="-2" pref="32" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="432" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="470" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -230,12 +227,5 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="assignAvailableStock" noResource="true"/>
-        <Property name="text" type="java.lang.String" value="Assign Available Stock"/>
-        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.state == &apos;DRAFT&apos; &amp;&amp; entity.txntype == &apos;ISSUE&apos; }"/>
-      </Properties>
-    </Component>
   </SubComponents>
 </Form>

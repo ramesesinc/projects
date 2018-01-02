@@ -136,12 +136,24 @@ class AFControlTxnService {
 		def u = [:];
 		u.state = 'PROCESSING';
 		u.currentdetailid = d.objid;
-		if( ref.issueto ) {
-			u.owner = ref.issueto;
-			u.assignee = ref.issueto;
-		}
-		u.respcenter = ref.respcenter;
 		afCtrl.find( [objid: afc.objid ] ).update( u );
 	}
 
+	@ProxyMethod
+	public void update( def detail ) {
+		if( !detail.objid ) throw new Exception("AFControlTxnService.update error. detail.objid is required" );
+		if( !detail.controlid ) throw new Exception("AFControlTxnService.update error. detail.controlid is required" );
+		if( !detail.currentseries ) throw new Exception("AFControlTxnService.update error. detail.currentseries is required" );
+		if( !detail.endseries ) throw new Exception("AFControlTxnService.update error. detail.endseries is required" );
+
+		def d = [:];
+		d.receivedstartseries = detail.currentseries;
+		d.receivedendseries = detail.endseries; 
+		d.qtyreceived = (d.receivedendseries.toInteger() - d.receivedstartseries.toInteger() ) +1;
+		d.endingstartseries = d.receivedstartseries;
+		d.endingendseries = d.receivedendseries;
+		d.qtyending = d.qtyreceived;
+
+		afDetail.find([objid: detail.objid ]).update( d );
+	}	
 }

@@ -125,18 +125,18 @@ class AFTxnService  {
 
 	@ProxyMethod
 	public void editBatch( def o ) { 
-		println "entering batch"
 		o.each {
-			println it;
+			afControlDetailSvc.update( it );
 		}
 	}	
 
 	@ProxyMethod
 	public void revertBatch( def o ) { 
-		println "revert batch"
-		o.each {
-			println it;
-		}
+		if( !o.refitemid ) throw new Exception("AFTxnService.revertBatch error. refitemid is required ");
+		def p = [refitemid: o.refitemid ];
+		afControl.where( "currentdetail.refitemid = :refitemid", p ).update( [state:'OPEN', currentdetailid: '{currentdetail.prevdetailid}'] );
+		afControlDetail.where( "refitemid = :refitemid ", p ).delete();
+		aftxnItem.find([objid: o.refitemid ]).update( [qtyserved: 0] );
 	}	
 
 	//this is called by the main AFRI ebtry screen
@@ -180,16 +180,22 @@ class AFTxnService  {
 
     @ProxyMethod
 	public def post( def o ) {
-
 		def ar = aftxn.find([ objid: o.objid ]).first(1);
 		def zlist = ar.items.findAll{ it.qtyserved > 0 };
 		if(!zlist)
 			throw new Exception("There must be at least one item served");	
 
-		afControl.where( "currentdetail.refid = :refid", [refid: ar.objid ] ).update( [state: "{currentdetail.statetype.poststate}" ] );
+		def  u = [:];
+		u.state = "{currentdetail.statetype.poststate}";
+		u.endseries = "{currentdetail.endingendseries}";
+		u.currentseries = "{currentdetail.endingstartseries}";
+		u.owner = [ objid: "{currentdetail.issuedto.objid}",  name: "{currentdetail.issuedto.name}" ];
+		u.assignee = [ objid: "{currentdetail.issuedto.objid}",  name: "{currentdetail.issuedto.name}" ];
+		u.respcenter = [ objid: "{currentdetail.respcenter.objid}",  name: "{currentdetail.respcenter.name}" ];
+
+		afControl.where( "currentdetail.refid = :refid", [refid: ar.objid ] ).update( u );
 		afControlDetail.find( [ refid: ar.objid ] ).update( [state: 1 ] );
 		aftxn.find([ objid: o.objid ]).update([state: 'POSTED']);
-
 	}
 
 }

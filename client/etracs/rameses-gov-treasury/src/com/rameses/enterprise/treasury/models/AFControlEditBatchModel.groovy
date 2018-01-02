@@ -29,7 +29,7 @@ class AFControlEditBatchModel  {
         def m = [_schemaname:'vw_af_control_detail'];
         m.findBy = [refitemid: refitemid];
         m.orderBy = "stubno";
-        m.select = "stubno,batchno,controlid,startseries,endseries,currentseries,qtybalance,qtyissued"
+        m.select = "objid,stubno,batchno,controlid,startseries,endseries,currentseries,qtybalance,qtyissued"
         list = qrySvc.getList(m); 
     }
     
@@ -54,6 +54,7 @@ class AFControlEditBatchModel  {
                     if( (item.endseries - newValue + 1) <= 0 ) throw new Exception("Qty balance must be greater than 0");
                     if( (item.endseries - newValue + 1) > maxQty ) throw new Exception("Qty balance must be less than pr equal to " + maxQty );
                 }
+                item._edited = true;
                 return true;
             }
             catch(e) {
@@ -64,7 +65,7 @@ class AFControlEditBatchModel  {
     ] as EditorListModel;
     
     def doOk() {
-        def v = list.findAll{  it.startseries!=it.currentseries };
+        def v = list.findAll{  it._edited };
         service.editBatch(v);
         return "_close";
     }

@@ -9,8 +9,7 @@
                  formId="#{entity.objid }"
                  caption="AF Issue/Receipt" 
                  action="startOpen" role="AFO"/>
-        
-        <invoker type="navActions" caption="Assign Available Stock" action="assignAvailableStock"/> 
+         
     </invokers>
     
     <code class="com.rameses.enterprise.treasury.models.AFTxnModel" />

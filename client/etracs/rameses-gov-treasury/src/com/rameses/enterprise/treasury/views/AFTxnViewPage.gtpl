@@ -8,16 +8,16 @@
         </style>
     </head>
     <body>
-        <table cellpadding="1" cellspacing="1" width="100%">
+        <table cellpadding="2" cellspacing="2" width="100%">
              <tr>
-                     <th align="left">AF No</th>
-                     <th align="left">Description</th>
-                     <th align="center">Unit</th>
-                     <th align="center">Qty</th>
-                     <th align="center">Qty Served</th>
-                     <th align="center">Unit Cost</th>
-                     <th align="center">Txn Type</th>
-                     <th>&nbsp;</th>
+                <th align="left">AF No</th>
+                <th align="left">Description</th>
+                <th align="center">Unit</th>
+                <th align="center">Qty</th>
+                <th align="center">Qty Served</th>
+                <th align="center">Unit Cost</th>
+                <th align="center">Txn Type</th>
+                <th>&nbsp;</th>
              </tr>
              
              <%entity.items.each { o-> %>

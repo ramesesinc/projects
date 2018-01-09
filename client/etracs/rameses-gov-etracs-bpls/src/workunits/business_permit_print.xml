@@ -4,8 +4,9 @@
        <invoker type="business_permit:open" index="50" action="openReport" target="window"/>    
        
        <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" /> 
-       <invoker type="formActions" caption="Update Plate No" action="updatePlateno"  /> 
+       <invoker type="formActions" caption="Update Plate No." action="updatePlateno"  /> 
        <invoker type="formActions" caption="Update Remarks" action="updateRemarks"  /> 
+       <invoker type="formActions" caption="Issue Official Permit" action="issueOfficialPermit" visibleWhen="#{canIssueOfficialPermit == true}" /> 
     </invokers>
     
     <code>
@@ -27,8 +28,9 @@
             def data = [:];
             def title = "Business Permit"
 
-            String reportpath = "com/rameses/gov/etracs/bpls/reports/permit/"
-            String reportName = reportpath + "BusinessPermit.jasper";
+            String reportpath = "com/rameses/gov/etracs/bpls/reports/permit/"            
+            String stdReportName = reportpath + "BusinessPermit.jasper";            
+            String tmpReportName = reportpath + "BusinessPermit_Temporary.jasper";
                         
             @FormId
             def formId
@@ -37,27 +39,43 @@
             def formTitle
             
             def applicationid;
+            def permittype;
             
-            def getReportData(){
-                data = permitSvc.getReport( [applicationid: applicationid] );
-                if(data.photo) {
+            boolean isDynamic() {
+                return true; 
+            } 
+            
+            String getReportName() { 
+                if ( permittype.toString().equalsIgnoreCase('TEMPORARY')) { 
+                    return tmpReportName; 
+                } else {
+                    return stdReportName; 
+                } 
+            } 
+                                                                                                                        
+            def getReportData() { 
+                data = permitSvc.getReport([ applicationid: applicationid ]); 
+                if ( data.permittype ) permittype = data.permittype;                 
+                if ( data.photo ) {
                     try {
                         data.photo = new java.io.ByteArrayInputStream( data.photo );
                     } catch(e) {
                         data.photo = null;
-                    }    
+                    } 
                 }
                 return data;
             }
             
             def printReport() {
                 applicationid = entity.objid;
+                permittype = entity.permit?.permittype;
                 return preview(); 
             } 
             
             def openReport() {
-                formTitle = entity.permitno;
                 formId = entity.objid;
+                formTitle = entity.permitno;
+                permittype = entity.permittype;
                 applicationid = entity.applicationid;
                 preview(); 
             } 
@@ -89,6 +107,32 @@
                     preview();
                 }
                 Modal.show( "remarks:update", [handler: h, remarks: entity.remarks] );
+            } 
+            
+            boolean isCanIssueOfficialPermit() {
+                return permittype.toString().equalsIgnoreCase('TEMPORARY'); 
+            } 
+            
+            void issueOfficialPermit() { 
+                def m = [ applicationid: data.applicationid, businessid: data.businessid ];
+                def resp = permitSvc.init( m ); 
+                def prevplateno = resp?.prevplateno;
+
+                boolean pass = false;                                   
+                def h = { o->
+                    m.plateno = o.plateno;
+                    m.remarks = o.remarks;
+                    m.permitid = data?.objid; 
+                    resp = permitSvc.issueOfficialPermit( m ); 
+                    if ( resp?.permittype ) { 
+                        permittype = resp.permittype; 
+                        if ( entity.permit ) entity.permit.permittype = permittype; 
+                        if ( entity.permittype ) entity.permittype = permittype;
+                    } 
+                    pass = true; 
+                }
+                Modal.show( "businessplate:ask", [handler: h, entity: [plateno: prevplateno], allowTypeSelection: false]);
+                if ( pass ) preview(); 
             } 
          }   
         ]]>

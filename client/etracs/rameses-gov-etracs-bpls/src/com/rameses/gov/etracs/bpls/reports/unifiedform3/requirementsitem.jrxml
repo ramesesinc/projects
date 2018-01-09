@@ -216,6 +216,23 @@
 		</columnHeader>
 		<detail>
 			<band height="12"  isSplitAllowed="true" >
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Left" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="507"
+						y="1"
+						width="8"
+						height="7"
+						key="image-1">
+							<printWhenExpression><![CDATA[$F{completed}==1]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["classpath://images/check.png"]]></imageExpression>
+				</image>
 				<line direction="TopDown">
 					<reportElement
 						x="159"
@@ -310,6 +327,7 @@
 				</textField>
 				<rectangle>
 					<reportElement
+						mode="Transparent"
 						x="507"
 						y="2"
 						width="6"

@@ -16,19 +16,23 @@ public class ComputeTaxFee implements RuleActionHandler {
 		def lob = params.lob;
 		def acctid = params.account.key;
 		def amt = params.amount.doubleValue;
+		def tag = params.tag; 
+		def flag = params.flag; 
 		def test = null;
 		
- 		if( !lob ) {
-			test = taxfees.find{it.lob?.objid==null && it.account.objid == acctid};
-		}
-		else {
-			test = taxfees.find{it.lob?.objid!=null && it.lob.objid == lob.objid && it.account.objid == acctid };
-		}
+ 		//if( !lob ) {
+		//	test = taxfees.find{it.lob?.objid==null && it.account.objid == acctid};
+		//}
+		//else {
+		//	test = taxfees.find{it.lob?.objid!=null && it.lob.objid == lob.objid && it.account.objid == acctid };
+		//}
+
+		test = taxfees.find{ it.lob?.objid==lob?.objid && it.account?.objid == acctid && it.tag == tag } 
 
 		//if account already exists, do not override.
 		if(!test) {
-			def info = [objid:"BPTXFEE"+new UID()];
-			info.account = BA.findAccount( [objid: acctid] );
+			def info = [ objid:"BPTXFEE"+ new UID(), tag: tag, flag: flag ];
+			info.account = BA.findAccount([ objid: acctid ]);
 			if(lob) {
 				info.lob = [objid:lob.objid, name:lob.name, assessmenttype: lob.assessmenttype];
 			}

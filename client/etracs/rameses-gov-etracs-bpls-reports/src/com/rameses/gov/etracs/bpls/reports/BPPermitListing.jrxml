@@ -52,7 +52,7 @@
 	<field name="dtissued" class="java.util.Date"/>
 	<field name="permitno" class="java.lang.String"/>
 	<field name="owner.name" class="java.lang.String"/>
-	<field name="owner.address" class="java.lang.String"/>
+	<field name="businessaddress" class="java.lang.String"/>
 	<field name="lobs" class="java.lang.String"/>
 	<field name="ornos" class="java.lang.String"/>
 	<field name="tradename" class="java.lang.String"/>
@@ -433,7 +433,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Top">
 						<font pdfFontName="Helvetica" size="7" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.address}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{businessaddress}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

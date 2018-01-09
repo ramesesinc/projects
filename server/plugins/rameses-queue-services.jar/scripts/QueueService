@@ -101,6 +101,9 @@ class QueueService {
 		if ( params.counterid ) { 
 			m.counterid = params.counterid; 
 			return qn.getPendingListByCounter( m ); 
+		} else if ( params.sectionid ) {
+			m.sectionid = params.sectionid; 
+			return qn.getPendingListBySection( m ); 
 		} else if ( params.groupid ) {
 			m.groupid = params.groupid; 
 			return qn.getPendingListByGroup( m ); 

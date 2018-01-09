@@ -197,3 +197,5 @@ android/**/bin
 /client/etracs/rameses-gov-etracs-rptis-landtax-province/dist/
 /client/plugins/gov-lgu-aklan-terminal/dist/
 /client/etracs/rameses-gov-treasury-report/build/
+/client/plugins/rameses-gov-etracs-vehicle/nbproject/private/
+/client/plugins/rameses-gov-etracs-vehicle-tricycle/nbproject/private/

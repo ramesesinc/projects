@@ -1,0 +1,39 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleReport.xml">
+    <invokers>
+        <invoker type="tricycle_application_printout" 
+                 caption="Application of Franchise" target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/application_franchise.jasper" />
+
+        <invoker type="tricycle_application_printout" 
+                 caption="Motorized Tricycle Operator Permit" target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/application_mtop.jasper" />
+
+        <invoker type="tricycle_application_printout" 
+                 caption="Confirmation" target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/application_confirmation.jasper" />
+        
+        <invoker type="tricycle_application_printout" 
+                 caption="Verification" target="self" action="view"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/application_verification.jasper" />
+    </invokers>       
+    
+    <code>
+<![CDATA[ 
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.seti2.models.*; 
+
+public class DefaultTricycleApplicationPrintModel extends CrudReportModel {
+    
+    public def getReportData() { 
+        println '** report data'
+        entity.each{
+            println '>> '+ it; 
+        }
+        return entity;
+    }
+    
+}    
+]]>                 
+    </code>
+</workunit>

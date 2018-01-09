@@ -5,10 +5,10 @@
         
         <!-- toolbars -->
         <invoker type="formActions" caption="Assess" role="ASSESSOR" action="calculate"
-             visibleWhen="#{!caller.prevmode?.contains('assessment') &amp;&amp; task.state.contains('assessment') &amp;&amp; task?.owner==true}"/>
+             visibleWhen="#{!caller?.prevmode?.contains('assessment') &amp;&amp; task?.state.contains('assessment') &amp;&amp; task?.owner==true}"/>
             
-        <invoker type="formActions" caption="Edit" action="showEditMenu" icon="images/toolbars/edit.png"
-             visibleWhen="#{!caller.prevmode?.contains('assessment') &amp;&amp; task.state.contains('assessment') &amp;&amp; task?.owner==true}"/> 
+        <invoker type="formActions" caption="Edit" action="showEditMenu" 
+                 icon="images/toolbars/edit.png" visibleWhen="#{allowShowEditMenu == true}"/> 
              
         <invoker type="formActions" caption="Capture Assess" role="ASSESSOR,ADMIN" action="calculate" 
              visibleWhen="#{entity.txnmode.matches('CAPTURE|LATERENEWAL')}"/> 
@@ -22,7 +22,10 @@
         <invoker type="formActions" caption="Payment" action="showPayMenu" role="ADMIN" 
                  visibleWhen="#{task?.state == 'payment' || task?.state == 'release' || entity.state=='COMPLETED' }"/> 
 
-        <invoker type="formActions" caption="Info History" action="viewInfoHistory" target="popup" />        
+        <invoker type="formActions" caption="Info History" action="viewInfoHistory" target="popup" />  
+        
+        <invoker type="business_application:showeditmenu" role="ASSESSOR" tag="assessor"/>
+        <invoker type="business_application:showeditmenu" role="BUSINESSINFO" tag="info"/>
     </invokers>
     
     <code>
@@ -53,6 +56,8 @@ class  BusinessApplicationAssessmentController {
     def task;
     def entity;
     String entityName = "business_application:assessment";
+
+    def menuInvokers = Inv.lookup('business_application:showeditmenu'); 
 
     public void load() {
         assessmentInfo = caller.assessmentInfo;
@@ -102,6 +107,23 @@ class  BusinessApplicationAssessmentController {
         assessmentInfo.calculate() ;
     }    
 
+    boolean isAllowShowEditMenu() {         
+        def appstate = entity.state.toString().toUpperCase(); 
+        if ( !appstate.matches('INFO|ASSESSMENT')) return false; 
+        if ( task?.state.toString() == 'assign-assessor' ) return false;
+        
+        boolean assessorUser = ( menuInvokers.find{( it.properties?.tag == 'assessor' )} != null );
+        boolean infoUser = ( menuInvokers.find{( it.properties?.tag == 'info' )} != null );
+                
+        if (!caller?.prevmode?.contains('assessment') && task?.state.contains('assessment') && task?.owner==true) {
+            return true; 
+        } 
+        if ( appstate == 'ASSESSMENT' && assessorUser == true && task?.owner == true ) {
+            return true; 
+        } 
+        return ( appstate == 'INFO' && infoUser == true ); 
+    } 
+
     def showEditMenu() { 
         // 
         // we will only allow this if there are no payments made 
@@ -110,12 +132,16 @@ class  BusinessApplicationAssessmentController {
         if ( payments && payments.find{( it.voided==0 )} != null ) { 
             throw new Exception('There are payments already posted to the ledger. Please void them first');             
         } 
-    
+
+        def pop = new PopupMenuOpener();   
+        if ( task?.state.toString() == 'assign-assessor' ) { 
+            return pop; 
+        } 
+        
         def h = { t->
             if (t) refresh();
         }
         def list = Inv.lookupOpeners( "business_assessment:change", [entity:entity, handler:h] );
-        def pop = new PopupMenuOpener();
         list.each { pop.add( it ) }
         return pop;
     }

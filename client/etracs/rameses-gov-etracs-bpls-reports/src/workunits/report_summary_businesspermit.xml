@@ -48,16 +48,25 @@ public class BusinessPermitSummaryReportController extends ReportController
         return outcome; 
     } 
     
-    def getReportData(){
-        return svc.getReport( entity ); 
-    }
-    
     String getReportName() {
         if ( entity.template?.objid == 'B' ) {
             return reportpath + 'BusinessPermitSummary_TemplateB.jasper';             
         } else {
             return reportpath + 'BusinessPermitSummary.jasper';
         } 
+    } 
+
+    boolean isDynamic() {
+        return true; 
+    } 
+    
+    def getReportData(){
+        return svc.getReport( entity ); 
+    }
+    
+    Map getParameters(){
+        def m = [:];  
+        return m; 
     } 
 }
     ]]>

@@ -66,7 +66,7 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 		}
 
 		def syswft = sys_wf_transition.find([ processname: processname, action: r.action, parentid: r.state ]).first(); 
-		if ( syswft ) r.to = syswft.to;
+		if ( syswft ) r.to = syswft.to; 
 
 		env.TASK_MESSAGE = r.message;
 		if( r.state == 'assign-assessor') {
@@ -74,18 +74,29 @@ public class BusinessApplicationWorkflowService extends ActiveWorkflowService {
 			ba.update( [objid:data.objid, assessor: data.assessor, state: 'ASSESSMENT'  ] );
 			env.TASK_ASSIGNEE = data.assessor;	
 		}
-		else if( r.state == 'assessment') {
-			if(!data.taxfees) 
+		else if( r.state == 'assessment') { 
+			if ( !data.taxfees ) 
 				throw new Exception("Please calculate taxfees first. Go to assessment and run calculate");
-			if(!r.assignee) 
-				throw new Exception('Please specify an assignee '); 
-			//update the taxfees
-			data.approver = r.assignee;
-			ba.update( [objid:data.objid, approver: data.approver] );
-			env.TASK_ASSIGNEE = data.approver;
+
+			if ( r.action == 'return-for-verification') {
+				ba.update([ objid: data.objid, state: 'INFO', assessor: null ]); 
+				env.TASK_ASSIGNEE = data.createdby;
+
+			} else {
+				if ( !r.assignee ) throw new Exception('Please specify an assignee '); 
+				//update the taxfees
+				data.approver = r.assignee;
+				ba.update([ objid: data.objid, approver: data.approver ]);
+				env.TASK_ASSIGNEE = data.approver;
+			}
 		}
-		else if( r.state == 'reassessment') {
-			env.TASK_ASSIGNEE = data.approver;
+		else if( r.state == 'reassessment') { 
+			env.TASK_ASSIGNEE = data.approver; 
+
+			if ( r.action == 'return-for-verification' ) { 
+				ba.update([ objid: data.objid, state: 'INFO', assessor: null, approver: null ]); 
+				env.TASK_ASSIGNEE = data.createdby; 
+			} 
 		}
 		else if(r.state == 'approval' && r.action=='return-assessment') {
 			env.TASK_ASSIGNEE = data.assessor;

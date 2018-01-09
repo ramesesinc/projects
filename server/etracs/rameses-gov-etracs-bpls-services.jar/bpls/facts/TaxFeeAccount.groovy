@@ -13,6 +13,9 @@ public class TaxFeeAccount {
     Object data;
     boolean highest;
     boolean lowest;
+
+    String tag; 
+    String flag; 
     
     public TaxFeeAccount() {
     }

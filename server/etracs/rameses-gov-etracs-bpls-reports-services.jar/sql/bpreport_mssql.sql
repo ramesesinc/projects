@@ -262,35 +262,48 @@ group by tmpb.activeyear, tmpb.imonth
 
 [getQtrlyPaidBusinessList]
 select 
-	xx.bin, xx.businessname, xx.businessaddress, 
-	sum(case when xx.q1 > 0.0 then xx.q1 else 0.0 end) as q1,
-	sum(case when xx.q2 > 0.0 then xx.q2 else 0.0 end) as q2,
-	sum(case when xx.q3 > 0.0 then xx.q3 else 0.0 end) as q3, 
-	sum(case when xx.q4 > 0.0 then xx.q4 else 0.0 end) as q4, 
-	sum(xx.balance) as balance 
+	b.bin, b.businessname, b.address_text as businessaddress, 
+	tmp2.balance, tmp2.q1, tmp2.q2, tmp2.q3, tmp2.q4 
 from ( 
 	select 
-		b.bin, b.businessname, b.address_text AS businessaddress, a.objid as applicationid, 
-		(select sum(amount) from business_payment where applicationid=a.objid and DATEPART(QUARTER,refdate)=1 and voided=0 group by applicationid) AS q1,
-		(select sum(amount) from business_payment where applicationid=a.objid and DATEPART(QUARTER,refdate)=2 and voided=0 group by applicationid) AS q2,
-		(select sum(amount) from business_payment where applicationid=a.objid and DATEPART(QUARTER,refdate)=3 and voided=0 group by applicationid) AS q3,
-		(select sum(amount) from business_payment where applicationid=a.objid and DATEPART(QUARTER,refdate)=4 and voided=0 group by applicationid) AS q4, 
-		( 
-			select 
-				sum(case when amount=amtpaid then 0.0 else amount-(amtpaid+discount) end)  
-			from business_receivable 
-			where applicationid=a.objid 
-		) as balance 
-	from business_application a 
-		inner join business b on a.business_objid=b.objid 
-	where a.appyear in (YEAR($P{startdate}), YEAR($P{enddate})) 
-		and a.dtfiled >= $P{startdate} 
-		and a.dtfiled <  $P{enddate}  
-		${filter} 
-)xx 
-group by xx.bin, xx.businessname, xx.businessaddress 
-having sum(ISNULL(xx.q1,0)+ISNULL(xx.q2,0)+ISNULL(xx.q3,0)+ISNULL(xx.q4,0)) > 0 
-order by xx.bin 
+		businessid, sum(balance) as balance, 
+		sum(q1) as q1, sum(q2) as q2, sum(q3) as q3, sum(q4) as q4 
+	from ( 
+		select 
+			ba.business_objid as businessid, 
+			(case when datepart(quarter, bpay.refdate)=1 then bpay.amount else 0.0 end) as q1, 
+			(case when datepart(quarter, bpay.refdate)=2 then bpay.amount else 0.0 end) as q2, 
+			(case when datepart(quarter, bpay.refdate)=3 then bpay.amount else 0.0 end) as q3, 	
+			(case when datepart(quarter, bpay.refdate)=4 then bpay.amount else 0.0 end) as q4,  
+			0.0 as balance 
+		from business_payment bpay 
+			inner join business_application ba on ba.objid = bpay.applicationid 
+			inner join business b on (b.objid = ba.business_objid and b.permittype = $P{permittypeid}) 
+		where bpay.refdate >= $P{startdate}  
+			and bpay.refdate <  $P{enddate} 
+			and bpay.voided = 0 
+			${filter} 
+
+		union all 
+
+		select 
+			ba.business_objid as businessid, 
+			0.0 as q1, 0.0 as q2, 0.0 as q3, 0.0 as q4, 
+			(br.amount - br.amtpaid) as balance 
+		from business_payment bpay 
+			inner join business_application ba on ba.objid = bpay.applicationid 
+			inner join business b on (b.objid = ba.business_objid and b.permittype = $P{permittypeid}) 
+			inner join business_receivable br on br.applicationid = bpay.applicationid 
+		where bpay.refdate >= $P{startdate} 
+			and bpay.refdate <  $P{enddate} 
+			and bpay.voided = 0 
+			${filter} 
+
+	)tmp1 
+	group by businessid 
+)tmp2 
+	inner join business b on b.objid = tmp2.businessid 
+order by b.businessname 
 
 
 [getEmployerList]
@@ -350,64 +363,6 @@ LEFT JOIN business_address ba ON b.address_objid=ba.objid
 WHERE 
   ba.barangay_objid LIKE $P{barangayid}
 ORDER BY a.appyear, b.owner_name
-
-
-[getBPCollectionSummary]
-select 
-	a.activeyear, a.iqtr, a.imonth, a.strmonth,
-	SUM(a.newcount) AS newcount,
-	SUM(a.newamount) AS newamount,
-	SUM(a.renewcount) AS renewcount,
-	SUM(a.renewamount) AS renewamount,
-	SUM(a.retirecount) AS retirecount,
-	SUM(a.retireamount) AS retireamount,
-	SUM(a.amount) AS total 
-from ( 
-	select 
-		xx.activeyear, xx.imonth, xx.amount, 
-		case  
-			when xx.imonth=1 then 'JANUARY'
-			when xx.imonth=2 then 'FEBRUARY'
-			when xx.imonth=3 then 'MARCH'
-			when xx.imonth=4 then 'APRIL'
-			when xx.imonth=5 then 'MAY'
-			when xx.imonth=6 then 'JUNE'
-			when xx.imonth=7 then 'JULY'
-			when xx.imonth=8 then 'AUGUST'
-			when xx.imonth=9 then 'SEPTEMBER'
-			when xx.imonth=10 then 'OCTOBER'
-			when xx.imonth=11 then 'NOVEMBER'
-			when xx.imonth=12 then 'DECEMBER' 
-			else null 
-		end as strmonth,
-		case 
-			when xx.imonth between 1 and 3 then 1 
-			when xx.imonth between 4 and 6 then 2 
-			when xx.imonth between 7 and 9 then 3 
-			when xx.imonth between 10 and 12 then 4 
-			else 0 
-		end as iqtr, 
-		(case when xx.apptype in ('NEW','ADDITIONAL') then 1 else 0 end) as newcount,
-		(case when xx.apptype in ('NEW', 'ADDITIONAL') then xx.amount else 0.0 end) as newamount,
-		(case when xx.apptype = 'RENEW' then 1 else 0 end) as renewcount,
-		(case when xx.apptype = 'RENEW' then xx.amount else 0.0 end) as renewamount,
-		(case when xx.apptype in ('RETIRE', 'RETIRELOB') then 1 else 0 end) as retirecount,
-		(case when xx.apptype in ('RETIRE', 'RETIRELOB') then xx.amount else 0.0 end) as retireamount 
-	from ( 
-		select 
-			ba.appyear as activeyear, bp.businessid, bp.applicationid, ba.apptype, 
-			month(bp.refdate) as imonth, sum(bp.amount) as amount  
-		from business_application ba 
-			inner join business_payment bp on bp.applicationid=ba.objid 
-			inner join business b on b.objid=ba.business_objid  
-		where ba.appyear=$P{year} and bp.voided=0 
-			and ba.state in ('COMPLETED','RELEASE','PAYMENT') 
-			${filter} 
-		group by ba.appyear, bp.businessid, bp.applicationid, ba.apptype, month(bp.refdate) 
-	)xx 
-)a 
-group by a.activeyear, a.iqtr, a.imonth, a.strmonth 
-order by a.activeyear, a.iqtr, a.imonth 
 
 
 [getBPTaxFeeTopList]

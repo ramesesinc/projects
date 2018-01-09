@@ -15,6 +15,7 @@ from queue_section s
 	inner join queue_counter_section cs on s.objid=cs.sectionid 
 	inner join queue_counter c on cs.counterid=c.objid 
 where s.objid=$P{sectionid} 
+order by cs.sectionid, c.code
 
 [resetTickets]
 delete from queue_number 

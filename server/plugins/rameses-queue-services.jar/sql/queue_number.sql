@@ -30,6 +30,18 @@ where qcs.counterid=$P{counterid}
 	and qn.objid not in (select objid from queue_number_counter where objid=qn.objid) 
 order by qn.txndate 
 
+[getPendingListBySection]
+select 
+	qn.*, qs.title as sectiontitle 
+from queue_number qn 
+	inner join queue_section qs on qs.objid = qn.sectionid 
+	left join queue_number_counter qnc on qnc.objid = qn.objid 
+where qn.sectionid = $P{sectionid} 
+	and qn.txndate between $P{startdate} and $P{enddate}  
+	and qn.state = 'PENDING' 
+	and qnc.objid is null 
+order by qn.txndate 
+
 [getPendingListByGroup]
 select 
 	qn.*, qs.title as sectiontitle 

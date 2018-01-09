@@ -1,0 +1,28 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle_application_tricycle:form:formActions" 
+                 caption="Print Application" action="showMenu" target="opener"/>
+    </invokers>       
+    
+    <code> 
+<![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.seti2.models.*; 
+
+public class TricyleApplicationPrintModel {
+    
+    def entity;
+    
+    def showMenu() { 
+        def pop = new PopupMenuOpener();  
+        def list = Inv.lookupOpeners("tricycle_application_printout", [ entity: entity ]);
+        list.each { pop.add( it ) }        
+        return pop; 
+    } 
+}
+]]>                 
+    </code>
+</workunit>

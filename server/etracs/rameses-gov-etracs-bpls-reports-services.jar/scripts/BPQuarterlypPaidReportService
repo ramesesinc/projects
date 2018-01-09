@@ -30,8 +30,7 @@ class BPQuarterlypPaidReportService {
 			params.appstatefilter = "''";	
 		}
 
-		params.filter = " AND a.state IN (" + params.appstatefilter + ")"; 
-		params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		params.filter = " AND ba.state IN (" + params.appstatefilter + ")"; 
 
 		def list = em.getQtrlyPaidBusinessList( params );
 		if ( !list ) throw new Exception('No record(s) found that matches your criteria.');

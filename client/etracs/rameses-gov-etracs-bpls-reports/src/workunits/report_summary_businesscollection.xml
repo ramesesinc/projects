@@ -20,7 +20,7 @@ public class BPCollectionSummaryReportController extends ReportController
     @Service('BusinessPermitTypeService')
     def permitTypeSvc;    
 
-    String title = "Business Collection Summary";
+    String title = "Summary of Business Collection";
     String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
     String reportName = reportpath + 'BusinessCollectionSummary.jasper'
 

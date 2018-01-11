@@ -81,7 +81,7 @@ public class RPTLedgerItemFact
         this()
         this.entity = item
         this.objid = item.objid
-        this.parentid = null 
+        this.parentid = item.parentid 
         this.rptledger = ledgerfact
         this.rptledgerfaasid = item.rptledgerfaasid
         this.rptledgeritemid = item.rptledgeritemid 

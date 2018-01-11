@@ -1199,7 +1199,7 @@ class FAASService
     
     @ProxyMethod
     public def saveAffectedRpu(arpu) {
-    	em.save(arpu, 'affectedrpu')
+    	em_faas_affectedrpu.save(arpu)
     }
 
     @ProxyMethod

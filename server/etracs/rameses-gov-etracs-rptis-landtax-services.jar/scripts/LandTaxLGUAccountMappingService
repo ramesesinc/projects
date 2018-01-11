@@ -186,7 +186,7 @@ class LandTaxLGUAccountMappingService
 			accts.each{ acct -> 
 				updateRevenueInfo(acct)
 				if (acct.revtype && acct.revperiod ){
-					landtax_lgu_account_mapping.create(acct)
+					landtax_lgu_account_mapping.save(acct)
 				}
 			}
 		}

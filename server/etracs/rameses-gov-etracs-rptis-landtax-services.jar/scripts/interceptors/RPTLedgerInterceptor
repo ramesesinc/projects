@@ -74,7 +74,7 @@ class RPTLedgerInterceptor
         svc.deleteLedger(ledger)
     }
 
-	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
+	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && !env?.ORGCLASS?.equalsIgnoreCase('province')}")
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
         if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
@@ -94,7 +94,7 @@ class RPTLedgerInterceptor
         }       
 	}
 
-    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env.ORGCLASS?.equalsIgnoreCase('province')}")
+    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && env?.ORGCLASS?.equalsIgnoreCase('province')}")
     public void postToProvinceLedger(evt){
         def faas = evt.result 
 

@@ -128,6 +128,7 @@ public class RPTBillingService
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g);
 		}
+		bill.calctype = 'tax'
 		saveBillItems(bill, request)
 	}
 
@@ -138,7 +139,16 @@ public class RPTBillingService
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g);
 		}
+		bill.calctype = 'penaltydisc'
 		saveBillItems(bill, request)
+		updatePreviousItemQtrlyFlag(bill)
+	}
+
+	void updatePreviousItemQtrlyFlag(bill){
+		if (util.toBoolean(var.landtax_bill_previous_year_annual_computation, true)){
+			if (!bill.curryear) bill.curryear = dtSvc.serverYear
+			em_rptledger_item.where('rptledgerid = :rptledgerid and year < :curryear', bill).update([qtrly:0])
+		}
 	}
 
 	void saveBillItems(bill, request){
@@ -152,6 +162,7 @@ public class RPTBillingService
 
 		if (util.toBoolean(bill._commit, true) == true){
 			items.each{
+				def xitem = removeTaxValues(bill,it)
 				if (it.parentid){
 					em_rptledger_item_qtrly.find([objid:it.objid]).update(it)
 					bill.items << it 
@@ -168,6 +179,7 @@ public class RPTBillingService
 						updateLedgerItemTotals(it.objid, it.qtrlyitems, false)
 					}
 				}
+				it.putAll(xitem);
 			}
 			//for qtrlyitems, update rptledgeritem info 
 			def m = items.findAll{it.parentid != null}.groupBy{it.parentid}
@@ -175,6 +187,16 @@ public class RPTBillingService
 				updateLedgerItemTotals(k, v, true)
 			}
 		}
+	}
+
+	def removeTaxValues(bill,item){
+		def m = [:]
+		if (bill.calctype == 'penaltydisc'){
+			['basic', 'sef', 'basicidle', 'firecode', 'sh'].each{key ->
+				m[key] = item.remove(key)
+			}
+		}
+		return m 
 	}
 
 	void updateLedgerItemTotals(k, list, qtrly){

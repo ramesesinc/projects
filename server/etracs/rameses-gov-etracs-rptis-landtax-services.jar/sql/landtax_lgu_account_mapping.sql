@@ -125,7 +125,7 @@ insert into landtax_lgu_account_mapping(
 	revtype,
 	item_objid
 )
-select 
+select distinct 
 	x.objid,
 	x.lgu_objid,
 	x.revperiod,
@@ -190,6 +190,7 @@ from (
 
 )x
 where x.item_objid is not null 
+and exists(select * from sys_org where objid = x.lgu_objid)
 
 
 [migrateProvinceMappings]
@@ -200,7 +201,7 @@ insert into landtax_lgu_account_mapping(
 	revtype,
 	item_objid
 )
-select 
+select distinct 
 	x.objid,
 	x.lgu_objid,
 	x.revperiod,
@@ -360,6 +361,8 @@ from (
 	from province_taxaccount_mapping
 )x
 where x.item_objid is not null 
+and exists(select * from sys_org where objid = x.lgu_objid)
+
 
 
 [migrateMunicipalityMappings]
@@ -370,7 +373,7 @@ insert into landtax_lgu_account_mapping(
 	revtype,
 	item_objid
 )
-select 
+select distinct 
 	x.objid,
 	x.lgu_objid,
 	x.revperiod,
@@ -530,6 +533,7 @@ from (
 	from municipality_taxaccount_mapping
 )x
 where x.item_objid is not null 
+and exists(select * from sys_org where objid = x.lgu_objid)
 
 
 [getLgus]

@@ -25,7 +25,7 @@ class RPTSubLedgerModel
     def ledger;
     def entity;
     def mode;
-    def totalSubledgerArea;
+    def totalSubledgerAreaSqm;
     def totalSubledgerMV;
     def totalSubledgerAV;
     
@@ -73,13 +73,13 @@ class RPTSubLedgerModel
         entity.state = 'PENDING';
         entity.taxpayer = null;
         entity.totalav = 0.0;
-        entity.totalareaha = ledger.totalareaha - totalSubledgerArea;
-        entity.totalareasqm = 0.0;
+        entity.totalareasqm = ledger.totalareasqm - totalSubledgerAreaSqm;
+        entity.totalareaha = entity.totalareasqm / 10000.0;
+        calcMvAv();
         entity.partialbasic = 0.0;
         entity.partialbasicint = 0.0;
         entity.partialsef = 0.0;
         entity.partialsefint = 0.0;
-        listener['entity.totalareaha']();
         mode = MODE_CREATE;
     }
     
@@ -95,6 +95,7 @@ class RPTSubLedgerModel
         entity.state = entity.rptledger.state;
         entity.taxpayer = entity.rptledger.taxpayer;
         entity.totalav = entity.rptledger.totalav
+        entity.totalmv = entity.rptledger.totalmv
         entity.totalareaha = entity.rptledger.totalareaha
         entity.totalareasqm = entity.rptledger.totalareasqm
         entity.lastyearpaid = entity.rptledger.lastyearpaid
@@ -167,7 +168,8 @@ class RPTSubLedgerModel
         if (entity.totalareaha == ledger.totalareaha)
             throw new Exception('Sub-Ledger area must be less than Main Ledger area.');
             
-        if (entity.totalareaha + totalSubledgerArea > ledger.totalareaha)
+        def totalSubledgerAreaHa = totalSubledgerAreaSqm / 10000;
+        if (entity.totalareaha + totalSubledgerAreaHa > ledger.totalareaha)
             throw new Exception('Total Sub-Ledger area must not exceed Main Ledger area.');
             
         if (entity.totalmv + totalSubledgerMV > ledger.totalmv)

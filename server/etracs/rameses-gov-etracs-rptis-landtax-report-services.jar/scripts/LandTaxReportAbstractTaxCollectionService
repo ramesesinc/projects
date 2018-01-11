@@ -99,6 +99,7 @@ class LandTaxReportAbstractTaxCollectionService {
         if(params.period=='Daily'){
             params.fromdate = dtsvc.parse("yyyy-MM-dd",params.date);
             params.todate = dtsvc.add(params.fromdate,"1d");
+            params.year = dtsvc.getYear(params.fromdate);
             period = 'For ' + dtsvc.format('MMMMM dd, yyyy', params.fromdate);
         }
         if(params.period=='Monthly'){
@@ -112,11 +113,10 @@ class LandTaxReportAbstractTaxCollectionService {
             params.fromdate = dtsvc.parse('yyyy-MM-dd', params.startdate);
             def todate = dtsvc.parse("yyyy-MM-dd",params.enddate)
             params.todate = dtsvc.add(todate,"1d");
+            params.year = dtsvc.getYear(params.fromdate);
             period = 'For the Period ' + dtsvc.format('MMMMM dd, yyyy', params.fromdate) 
             period += ' - ' + dtsvc.format('MMMMM dd, yyyy', todate);
         }
-
-        params.year = dtsvc.getYear(params.todate);
 
         params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){

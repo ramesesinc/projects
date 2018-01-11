@@ -38,7 +38,14 @@ class BldgRPUGRService
 		updateBldgStructure(rpu)
 		reviseStructuralTypes(rpu)
 		bldgRpuSvc.calculateAssessment(rpu)
+		updateEffectiveAge(rpu)
 		return rpu
+	}
+
+	void updateEffectiveAge(rpu){
+		if (rpu.effectiveage == null){
+			rpu.effectiveage = rpu.bldgage
+		}
 	}
 
 	void updateBldgDateInfo(rpu){

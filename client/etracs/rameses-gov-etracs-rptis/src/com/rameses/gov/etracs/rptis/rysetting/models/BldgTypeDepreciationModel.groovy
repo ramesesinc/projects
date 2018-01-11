@@ -12,7 +12,6 @@ public class BldgTypeDepreciationModel
     def binding
             
     def service
-    def entity
     def bldgType
     def mode 
     def selectedDepreciation
@@ -94,7 +93,7 @@ public class BldgTypeDepreciationModel
         return [
             objid           : RPTUtil.generateId('BD'),
             bldgtypeid      : bldgType?.objid,
-            bldgrysettingid : entity.objid,
+            bldgrysettingid : bldgType?.bldgrysettingid,
             isnew           : true,
         ]
     }

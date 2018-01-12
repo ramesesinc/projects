@@ -13,9 +13,6 @@ import enterprise.utils.*;
 ***********************************************************/
 class VehicleBillingService {
 	
-	@Service("RuleExecutorService")
-	def ruleSvc;
-
 	@Service("DateService")
 	def dateSvc;
 
@@ -37,22 +34,15 @@ class VehicleBillingService {
 		else if( o.appid ) {
 			appEm.find( [appno: o.appno] ).first();
 		}
-
 	}
 
-	@ProxyMethod
-	public def process( def app ) {
-
-		if(!app.billitems) {
+	/*
+			if(!app.billitems) {
 			throw new Exception("VehicleBillingService requires billitems");
 		}
 		if(!app.apptype) throw new Exception("app type is required");
 		if(!app.vehicletype) throw new Exception("vehicle type is required");	
 		if(!app.franchise?.controlno) throw new Exception("franchise controlno  is required");	
-
-		def svrDate = dateSvc.getServerDate();
-		if(!app.billdate) app.billdate = svrDate;
-		
 		def fb = new FactBuilder();
 		fb.facts << new VehicleApplication( app );
 		fb.facts << new VehicleFranchise( app.franchise );
@@ -61,17 +51,56 @@ class VehicleBillingService {
 		fb.facts << new treasury.facts.BillDate(app.billdate);
 		if(app.payment?.amount) {
 			fb.facts << new treasury.facts.Payment( amount: app.payment.amount );
-		}	
+		}
+		def svrDate = dateSvc.getServerDate();
+		if(!app.billdate) app.billdate = svrDate;
+			
+	*/
+
+	//This assumes you have already sent the BillItem facts inside
+	@ProxyMethod
+	public def execute( def facts ) {
+		if(! facts.findAll{ it instanceof BillItem } ) 
+			throw new Exception("There are no billitems computed. Please review the rules");
+
+
+		def fb = new FactBuilder();
+		fb.facts.addAll( facts );
+
+		if( !facts.find{ it instanceof BillDate }  ) {
+			facts << new BillDate( dateSvc.getServerDate() );	
+		}
+
+		def r = [ billitems:[] ];
 
 		def rh = [
 			getFactKeyValue: { f->
 				if( f instanceof DueDate ) {
-					return new ResultKeyValue( "duedate", f.date );
+					r.duedate = f.date;
+				}
+				else if( f instanceof BillSubItem ) {
+					def sv = r.billitems.find{ it.item.objid == f.account.objid };
+					if( sv ) {
+						sv.amount += f.amount;
+						sv.balance += f.amount;
+					}
+					else {
+						r.billitems << f.toMap();
+					}
+				}
+				else if( f instanceof BillItem ) {
+					def sv = r.billitems.find{ it.item.objid == f.account.objid };
+					if(!sv) {
+						r.billitems << f.toMap();	
+					}
 				}
 			}
 		] as ResultHandler;
 
-		return assmtSvc.execute( "vehiclebilling", app, fb, rh );
+		assmtSvc.execute( "vehiclebilling", null, fb, rh );
+		r.amount = r.billitems.sum{ it.amount }
+		return r;
 	}
+
 
 }

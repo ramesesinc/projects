@@ -39,6 +39,7 @@ public class AFControlPage extends javax.swing.JPanel {
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xLabel17 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
@@ -108,6 +109,13 @@ public class AFControlPage extends javax.swing.JPanel {
         );
 
         formPanel1.add(xSeparator1);
+
+        xLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel17.setCaption("Allocation");
+        xLabel17.setExpression("#{ entity.allocation.objid }");
+        xLabel17.setPreferredSize(new java.awt.Dimension(150, 20));
+        formPanel1.add(xLabel17);
 
         xLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -300,6 +308,7 @@ public class AFControlPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel16;
+    private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;

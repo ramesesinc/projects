@@ -3,6 +3,10 @@ import java.rmi.server.UID;
 import enterprise.facts.*;
 import enterprise.utils.*;
 
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
 class VehicleApplicationPersistenceInterceptor {
 	
 	@DataContext('sys_user') 
@@ -42,10 +46,7 @@ class VehicleApplicationPersistenceInterceptor {
 
 		//LOAD FEES
 		entity.fees = appFeeEm.find([appid: entity.objid]).list();
-		entity.amount = 0;
-        if(entity.fees) {
-            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
-        };
+        entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
 
         //LOAD PAYMENTS
 		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();

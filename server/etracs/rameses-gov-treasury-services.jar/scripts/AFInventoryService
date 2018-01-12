@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class AFControlTxnService {
+class AFInventoryService {
 	
 	@DataContext('af_control')
 	def afCtrl;
@@ -49,12 +49,10 @@ class AFControlTxnService {
 			m.prefix = afc.prefix;
 			m.suffix = afc.suffix;
 			m.batchno = afc.batchno;
+			m.batchref = ref.refno;
 			m.currentindexno = 1;
-			m.respcenter = afc.respcenter; 
-			if( afc.issuedto  ) {
-				m.owner = afc.issuedto;
-				m.assignee = afc.issuedto;
-			}
+			m.allocation = afc.allocation;
+			
 			afc = afCtrl.create( m ); 
 		}
 		else {
@@ -94,14 +92,31 @@ class AFControlTxnService {
 			d.endingstartseries = afc.startseries;
 			d.endingendseries = afc.endseries; 
 			d.qtyending = d.qtyreceived;
-		} else if ( ref.reftype == 'BEGIN_BALANCE') {
+		} else if ( ref.reftype.matches('BEGIN_BALANCE|FORWARD')) {
 			d.beginstartseries = afc.startseries;
 			d.beginendseries = afc.endseries; 
 			d.qtybegin = (afc.endseries.toInteger() - afc.startseries.toInteger() ) +1;
 			d.endingstartseries = afc.startseries;
 			d.endingendseries = afc.endseries; 
 			d.qtyending = d.qtybegin;
-		} else if ( ref.reftype.matches('ISSUE|FORWARD|TRANSFER')) {
+		} 
+		else if( ref.reftype.matches("ISSUE") && ref.txntype == "COLLECTION" ) {
+			d.receivedstartseries = afc.currentseries;
+			d.receivedendseries = afc.endseries; 
+			d.qtyreceived = (d.receivedendseries.toInteger() - d.receivedstartseries.toInteger() ) +1;
+			d.endingstartseries = d.receivedstartseries;
+			d.endingendseries = d.receivedendseries;
+			d.qtyending = d.qtyreceived;
+		} 
+		else if( ref.reftype.matches("ISSUE") && ref.txntype == "SALE" ) {
+			d.issuedstartseries = afc.currentseries;
+			d.issuedendseries = afc.endseries; 
+			d.qtyissued = (d.issuedendseries.toInteger() - d.issuedstartseries.toInteger() ) +1;
+			d.endingstartseries = d.issuedstartseries;
+			d.endingendseries = d.issuedendseries;
+			d.qtyending = d.qtyissued;
+		}
+		else if ( ref.reftype.matches('TRANSFER')) {
 			d.receivedstartseries = afc.currentseries;
 			d.receivedendseries = afc.endseries; 
 			d.qtyreceived = (d.receivedendseries.toInteger() - d.receivedstartseries.toInteger() ) +1;
@@ -114,7 +129,8 @@ class AFControlTxnService {
 			d.qtybegin = (d.beginendseries.toInteger() - d.beginstartseries.toInteger() ) +1;
 			d.endingstartseries = d.beginstartseries;
 			d.endingendseries = d.beginendseries;
-			d.qtyending = d.qtybegin;			
+			d.qtyending = d.qtybegin;	
+
 		} else if ( ref.reftype == 'REMITTANCE') {
 			d.beginstartseries = ref.startseries;
 			d.beginendseries = afc.endseries;  
@@ -134,17 +150,17 @@ class AFControlTxnService {
 
 		//update the af control
 		def u = [:];
-		u.state = 'PROCESSING';
+		u.lockid = 'PROCESSING';
 		u.currentdetailid = d.objid;
 		afCtrl.find( [objid: afc.objid ] ).update( u );
 	}
 
 	@ProxyMethod
 	public void update( def detail ) {
-		if( !detail.objid ) throw new Exception("AFControlTxnService.update error. detail.objid is required" );
-		if( !detail.controlid ) throw new Exception("AFControlTxnService.update error. detail.controlid is required" );
-		if( !detail.currentseries ) throw new Exception("AFControlTxnService.update error. detail.currentseries is required" );
-		if( !detail.endseries ) throw new Exception("AFControlTxnService.update error. detail.endseries is required" );
+		if( !detail.objid ) throw new Exception("AFInventoryService.update error. detail.objid is required" );
+		if( !detail.controlid ) throw new Exception("AFInventoryService.update error. detail.controlid is required" );
+		if( !detail.currentseries ) throw new Exception("AFInventoryService.update error. detail.currentseries is required" );
+		if( !detail.endseries ) throw new Exception("AFInventoryService.update error. detail.endseries is required" );
 
 		def d = [:];
 		d.receivedstartseries = detail.currentseries;
@@ -155,5 +171,8 @@ class AFControlTxnService {
 		d.qtyending = d.qtyreceived;
 
 		afDetail.find([objid: detail.objid ]).update( d );
+
+		//we must update this immediately so we can see the effects during lookup
+		afCtrl.find([objid: detail.controlid ] ).update( [currentseries:detail.currentseries, endseries: detail.endseries ]);
 	}	
 }

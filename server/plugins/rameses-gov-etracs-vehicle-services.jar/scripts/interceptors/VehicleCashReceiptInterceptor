@@ -71,11 +71,15 @@ class VehicleCashReceiptInterceptor {
 		pmtSvc.post( m );
 
 		if(r.info.appid ) {
-			def pp = [:];
-			pp.processname = "vehicle_application";
-			pp.refid = 	r.info.appid;
-			pp.taskstate = 'payment';
-			taskSvc.signal( pp );
+			//search first if there is a task associated. otherwise do not fire
+			def taskid = appEm.select("taskid").find([objid: r.info.appid]).val();
+			if(taskid ) {
+				def pp = [:];
+				pp.processname = "vehicle_application";
+				pp.refid = 	r.info.appid;
+				pp.taskstate = 'payment';
+				taskSvc.signal( pp );
+			}
 		}
 	}
 

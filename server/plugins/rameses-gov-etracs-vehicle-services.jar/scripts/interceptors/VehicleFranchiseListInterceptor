@@ -42,8 +42,8 @@ class VehicleFranchiseListInterceptor {
 				break;
 
 			case 'forrenewal':
-				m.duedate = dateSvc.getServerDate();
-				str = " billexpirydate < :duedate";
+				m.year = dateSvc.getServerYear();
+				str = " ( activeyear + 1 ) = :year";
 				break;
 
 			case 'delinquent':

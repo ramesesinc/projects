@@ -3,12 +3,12 @@
     hiddenCols="state" allowDelete="false" allowCreate="false">
     
     <invokers>
+        <invoker folderid="menucategory/treasury/deposit" caption="View Liquidations"
+                 formTitle="Liquidation List"
+                 action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" index="20"/> 
+        
         <invoker type="quick_launcher" code="LIQS" caption="Liquidations" 
                  action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" />
-        
-        <invoker folderid="menucategory/treasury/liquidation" caption="View Liquidations"
-                 formTitle="Liquidation List"
-                 action="init" role="SHARED,LIQUIDATING_OFFICER,CASHIER" target="window" index="90"/> 
         
         <invoker type="liquidation_list:fordeposit" caption="Liquidations" 
                  action="initForDeposit" role="CASHIER" target="window" /> 

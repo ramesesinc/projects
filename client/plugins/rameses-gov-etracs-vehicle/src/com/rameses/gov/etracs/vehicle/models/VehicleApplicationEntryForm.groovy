@@ -30,6 +30,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     
     def apptypes = ["NEW","RENEW"];
     def appType;
+    int reqYear;
+    
+    def df = new java.text.SimpleDateFormat( "yyyy" );
     
     void setUp() {
         formTitle = workunit.info.workunit_properties.title;
@@ -54,6 +57,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
             if( entity.txnmode == "CAPTURE"  ) {
                 entity.apptype = o;
             }
+        },
+        "entity.appdate": { o->
+            entity.appyear = df.format( df.parse(o) ).toInteger();
         }
     ];
     
@@ -63,6 +69,7 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         entity.franchiseno = franchiseno;
         entity = applicationService.init( entity );
         editmode = 'read';
+        if(entity.appyear) reqYear = entity.appyear;
     }
     
     void save() {
@@ -70,6 +77,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     }
     
     void assess() {
+        if( reqYear && reqYear != entity.appyear )
+            throw new Exception("App Year must be " + reqYear );
+        
         def p = [:];
         p.putAll( entity );
         p.defaultinfos = p.remove("infos");
@@ -77,7 +87,8 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         if( !r) {
             throw new BreakException();
         }
-        entity.billexpirydate = r.duedate;
+        entity.expirydate = r.expirydate;
+        entity.franchise.expirydate = r.franchise?.expirydate;
         
         if ( entity.fees == null ) {
             entity.fees = []; 
@@ -90,14 +101,15 @@ public class VehicleApplicationEntryForm extends PageFlowController {
             entity.infos.clear(); 
         }
 
-        if( r.infos ) entity.infos.addAll( r.infos );  
+        if( r.infos ) entity.infos.addAll( r.infos.unique() );  
         
         if( r.items ) {
             entity.fees.addAll( r.items );
             entity.amount = entity.fees.sum{ it.amount };
         }
-        feeListModel.reload();
-        infoListModel.reload();
+
+        feeListModel.reloadAll();
+        infoListModel.reloadAll();
     }
         
     def feeListModel = [

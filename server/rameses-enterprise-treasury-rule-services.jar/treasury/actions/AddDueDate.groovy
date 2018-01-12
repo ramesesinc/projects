@@ -30,6 +30,7 @@ class AddDueDate implements RuleActionHandler {
 			}
 		}
 		catch(e) {
+			e.printStackTrace();
 			println "Error in AddDueDate. " + e.message;		
 		}	
 	}

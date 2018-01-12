@@ -31,7 +31,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel5" pref="126" max="32767" attributes="0"/>
+              <Component id="jPanel5" pref="204" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -96,16 +96,6 @@
                 <Property name="visibleWhen" type="java.lang.String" value="#{ entity.txnmode == &apos;CAPTURE&apos; }"/>
               </Properties>
             </Component>
-            <Component class="com.rameses.rcp.control.XDateField" name="xDateField4">
-              <Properties>
-                <Property name="caption" type="java.lang.String" value="Franchise Expiry Date"/>
-                <Property name="name" type="java.lang.String" value="entity.expirydate" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[150, 20]"/>
-                </Property>
-                <Property name="visibleWhen" type="java.lang.String" value="#{ entity.txnmode == &apos;CAPTURE&apos; }"/>
-              </Properties>
-            </Component>
             <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -133,15 +123,6 @@
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
                 <Property name="visibleWhen" type="java.lang.String" value="#{ entity.txnmode == &apos;CAPTURE&apos;  }"/>
-              </Properties>
-            </Component>
-            <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
-              <Properties>
-                <Property name="caption" type="java.lang.String" value="App Year"/>
-                <Property name="name" type="java.lang.String" value="entity.appyear" noResource="true"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[150, 20]"/>
-                </Property>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">

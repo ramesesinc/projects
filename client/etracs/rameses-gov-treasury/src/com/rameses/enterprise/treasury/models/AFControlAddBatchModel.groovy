@@ -12,6 +12,8 @@ class AFControlAddBatchModel  {
     @Service("AFTxnService")
     def service;
     
+    @Service("QueryService")
+    def queryService;
     
     def refitem;
     
@@ -67,6 +69,8 @@ class AFControlAddBatchModel  {
     }
 
     def doOk() {
+        if(entry.prefix==null) entry.prefix = '';
+        if(entry.suffix==null) entry.suffix = '';
         service.addBatch( entry );
         handler( entry );
         return "_close";

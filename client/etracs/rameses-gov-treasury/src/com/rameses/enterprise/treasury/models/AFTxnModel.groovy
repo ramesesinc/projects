@@ -24,6 +24,13 @@ class AFTxnModel extends CrudPageFlowModel {
     
     def itemTxnTypes;
     
+    @PropertyChangeListener
+    def listener = [
+        "entity.issueto" : { o->
+            entity.respcenter = [objid:o.orgid, name:o.orgname];
+        }
+    ];
+    
     void create() {
         entity = [:];
         entity.state = 'DRAFT';
@@ -65,13 +72,6 @@ class AFTxnModel extends CrudPageFlowModel {
             m.findBy = [formtype: entity.txntype];
             m.orderBy = "sortorder";
             itemTxnTypes = queryService.getList( m )*.txntype;
-            /*
-            if( entity.txntype.matches('ISSUE|RETURN|TRANSFER') ) itemTxnTypes = ["COLLECTION", "SALE"];
-            else if(entity.txntype == 'PURCHASE_RECEIPT' ) itemTxnTypes = ['PURCHASE'];
-            else if(entity.txntype == 'BEGIN_BALANCE' ) itemTxnTypes = ['BEGIN'];
-            else if( entity.txntype == 'FORWARD' ) itemTxnTypes = ['FORWARD']; 
-            else throw new Exception("Unrecognized txntype " + entity.txntype );
-            */
         }
     }
 
@@ -204,11 +204,20 @@ class AFTxnModel extends CrudPageFlowModel {
         }
     }
     
-    def selectBatch( def o ) {
+    def moveBatch( def o ) {
         def item = entity.items.find{ it.objid == o.refitemid };
         item.parent = entity;
         def strname = "af_control_batch:" + item.afunit.formtype + ":lookup"
-        return Inv.lookupOpener(strname, [refitem: item ] );
+        def h = { v ->
+            try {
+                svc.moveBatch( item, v );
+                reloadEntity();
+            }
+            catch(e) {
+                MsgBox.err(e);
+            }
+        }
+        return Inv.lookupOpener(strname, [refitem: item, onselect: h ] );
     }
     
 }    

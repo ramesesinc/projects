@@ -22,7 +22,9 @@
 
 		<!-- this will be loaded automatically -->
 		<field name="vehicletype" required="true" />
-		<field name="billexpirydate" required="true" type="date"/>
+		<field name="expirydate" type="date"/>
+
+		<field name="controlid" required="true"/>
 
 		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno,startdate,expirydate" required="true">
 			<key field="controlid" target="objid" />
@@ -40,6 +42,9 @@
 				includefields=".*" required="false">
 			<key field="taskid" target="taskid" />
 		</complex>	
+
+		<field name="prevappid" />
+		<field name="dtapproved" type="date" />
 
 	</element>
 </schema>

@@ -34,7 +34,7 @@
                         <a href="addBatch" unit="${o.unit}" afid="${o.item.objid}" refitemid="${o.objid}">Add Entry</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('TRANSFER|RETURN') && (o.qty > o.qtyserved) ) {  %> 
-                        <a href="selectBatch" refitemid="${o.objid}">Select</a>
+                        <a href="moveBatch" refitemid="${o.objid}">Select</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && (o.qty > o.qtyserved) ) {  %> 
                         <a href="issueBatch" refitemid="${o.objid}">Issue</a>

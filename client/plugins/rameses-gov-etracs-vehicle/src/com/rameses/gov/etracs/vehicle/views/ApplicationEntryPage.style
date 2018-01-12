@@ -6,8 +6,12 @@
     enabled:true;
 }
 
-"entity.(appyear|appdate)" [ entity.txnmode != 'CAPTURE' ] {
+"entity.appdate" [ entity.txnmode != 'CAPTURE' ] {
     enabled: false;
+}
+
+"entity.appdate" [ entity.apptype == 'LATE_RENEWAL' ] {
+    enabled: true;
 }
 
 "entity.particulars" [1==1] {

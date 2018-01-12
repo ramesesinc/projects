@@ -17,5 +17,4 @@ class AddSurchargeItem extends AddBillSubItem {
 		return new SurchargeItem(parent: billitem, amount: NumberUtil.round(amt), txntype:"SURCHARGE");
 	}
 
-
 }

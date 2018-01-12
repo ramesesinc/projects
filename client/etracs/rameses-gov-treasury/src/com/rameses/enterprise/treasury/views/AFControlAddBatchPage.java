@@ -40,6 +40,7 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
@@ -96,6 +97,13 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
         );
 
         formPanel1.add(xSeparator1);
+
+        xLookupField1.setCaption("Allocate To");
+        xLookupField1.setExpression("#{ entry.allocation.objid }  ");
+        xLookupField1.setHandler("af_allocation:lookup");
+        xLookupField1.setName("entry.allocation"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLookupField1);
 
         xNumberField3.setCaption("Start Stub No");
         xNumberField3.setName("entry.startstub"); // NOI18N
@@ -179,6 +187,7 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XSeparator xSeparator1;

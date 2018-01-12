@@ -22,7 +22,9 @@
 		<field name="prefix" caption="Prefix"/> 
 		<field name="suffix" caption="Suffix"/> 
 		<field name="dtfiled" required="true" type="date" caption="Date Filed" /> 
-		<field name="currentindexno" required="true" type="integer"/> 
+		<field name="currentindexno" required="true" type="integer"/>
+
+		<field name="batchref" />
 		<field name="batchno" indexed="true" caption="Batch No"/> 
 
 		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
@@ -46,6 +48,10 @@
 			<key field="afid" target="itemid" />
 			<key field="unit" target="unit" />
 		</complex>
+
+		<complex name="allocation" ref="af_allocation" jointype="many-to-one" required="false" includefields="objid,name">
+			<key field="allocid" target="objid"/>
+		</complex>	
 	</element> 
 
 

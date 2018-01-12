@@ -11,6 +11,7 @@
         <table  cellpadding="1" cellspacing="1" width="100%">
              <tr>
                 <th rowspan="2" align="center">Date Filed</th>
+                <th rowspan="2" align="center">Ref No</th>
                 <th rowspan="2" align="center">Issued To</th>
                 <th colspan="3" align="center">Received</th>
                 <th colspan="3" align="center">Begin</th>
@@ -36,6 +37,7 @@
              <% details.each { i-> %>
                 <tr>
                    <td align="center">${i.refdate}</td>
+                   <td align="center"><a href="viewRef" refid="${i.refid}">${i.refno}</a></td>
                    <td align="center">${ (i.issuedto?.name != null) ? i.issuedto?.name : '' }</td>
 
                    <td align="center">${i.receivedstartseries}</td>

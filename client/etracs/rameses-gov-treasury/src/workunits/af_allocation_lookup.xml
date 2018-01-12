@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_allocation">
+   <invokers>
+       <invoker type="af_allocation:lookup" 
+                caption="AF Allocation Lookup" formTitle="AF Allocation" action="init" />
+   </invokers>
+</workunit>

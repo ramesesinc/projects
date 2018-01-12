@@ -40,6 +40,7 @@ class VehicleApplicationWorkflowInterceptor {
 	  eval="#{ args[0].processname=='vehicle_application' }", index=100)
 	public void afterWorkflowStartAndSignal( def evt ) {
 		def p = evt.args[0];
+
 		def task = evt.result;
 		if ( task.state != 'end') {
 			appEm.find([objid: p.refid]).update([taskid: task.taskid]);
@@ -69,17 +70,6 @@ class VehicleApplicationWorkflowInterceptor {
 		def u = [:];
 		u.appid = p.refid;
 		u.activeyear = m.appyear;
-
-		def expiryYrs = '3y';
-		if( m.apptype == 'NEW') {
-			u.startdate = m.appdate;
-			u.expirydate = DateUtil.add( u.startdate, expiryYrs );
-		};	
-		else if( m.apptype == 'RENEW' && m.franchise?.expirydate ) {
-			if( dateSvc.serverDate.after(m.franchise?.expirydate) ) {
-				u.expirydate = DateUtil.add( m.franchise.expirydate, expiryYrs );	
-			}		
-		}	
 		franchiseEm.find([objid: m.controlid]).update(u);
 	}
 

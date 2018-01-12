@@ -5,8 +5,12 @@ import com.rameses.util.*;
 
 class BillItem extends AbstractBillItem {
 
+	//initiated because of late renewal from Vehicle, Business etc.
+	String billrefid;
+
 	String refid; 
 	String ledgertype; 
+	Date duedate;
 
 	//amount that is left unpaid from the full amount
 	double partialunpaid;
@@ -16,8 +20,7 @@ class BillItem extends AbstractBillItem {
 	}
 	*/
 	
-	//pay priority is only used during apply payment and will not be used anywhere else. This is defined by the extending class.
-	int paypriority = 0;
+	
 	
 	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
 
@@ -57,6 +60,7 @@ class BillItem extends AbstractBillItem {
 		if( m.surcharge == null ) m.surcharge = 0;
 		if( m.interest == null ) m.interest = 0;
 		if( m.discount == null) m.discount = 0;
+		m.duedate = duedate;
 		return m;
 	}
 
@@ -100,6 +104,23 @@ class BillItem extends AbstractBillItem {
 
 		//we must return 0 to indicate that all payment is consumed.
 		return 0;
+	}
+
+	//pay priority is only used during apply payment and will not be used anywhere else. This is defined by the extending class.
+	int _paypriority = 0;
+	def payDf = new java.text.SimpleDateFormat("yyyyMM");
+
+	public void setPaypriority( int p ) {
+		this._paypriority = p;
+	}
+
+	public int getPaypriority() {
+		if( duedate !=null ) {
+			return (payDf.format(duedate) + _paypriority.toString().substring(0,4).padLeft(4, "0")).toInteger();
+		}
+		else {
+			return _paypriority;	
+		}
 	}
 
 

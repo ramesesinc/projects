@@ -1,7 +1,10 @@
 <workunit schemaName="liquidation" allowCreate="false" allowEdit="false" allowDelete="false">
     
    <invokers>
-         <invoker folderid="menucategory/treasury/liquidation" caption="New Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER" index="-1"/>
+         <invoker folderid="menucategory/treasury/deposit" 
+                  caption="New Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER" index="11"/>
+         
+         
          <invoker type="quick_launcher" code="LIQ" caption="Liquidation" action="init" target="window" role="LIQUIDATING_OFFICER"/>
          
          <invoker type="liquidation:create" caption="New Liquidation" action="create" target="window"/>

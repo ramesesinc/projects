@@ -58,14 +58,13 @@ class AFControlModel extends CrudFormModel {
         if(caller) caller.reloadEntity();
     }
 
-    
-    public def getDetailInfo() {
+    public def getDetailInfo() { 
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFControlPage.gtpl", [details: details] );
     }
     
     def _details;
     def getDetails() {
-        if(_details ) return _details;
+        if(_details !=null ) return _details;
         def m = [_schemaname:"af_control_detail"];
         m.findBy = [controlid: entity.objid];
         m.orderBy = "refdate,txndate";
@@ -73,4 +72,14 @@ class AFControlModel extends CrudFormModel {
         return _details;
     }
     
+    void afterOpen() {
+        _details = null;       
+        if(binding) binding.refresh("detailInfo");
+    }
+    
+    def viewRef( def o ) {
+        def op = Inv.lookupOpener( "aftxn:open", [entity: [objid: o.refid ]] );
+        op.target = "popup";
+        return op;
+    }
 }    

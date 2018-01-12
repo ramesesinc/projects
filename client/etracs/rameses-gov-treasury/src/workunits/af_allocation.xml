@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="af_allocation">
+    
+   <invokers>
+         <invoker type="af_allocation:create" caption="AF Allocation" action="create" target="popup"/>
+         <invoker type="af_allocation:open" caption="AF Allocation" action="open" target="popup" />
+   </invokers>
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.AFAllocationPage" />
+   </pages>
+   
+</workunit>

@@ -12,7 +12,7 @@ class MonthBillItem extends BillItem {
 	def monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 	int year;
 	int month;
-	Date duedate;
+	
 	
 	//this is set assuming you are not starting using the whole month
 	Date fromdate;
@@ -30,7 +30,6 @@ class MonthBillItem extends BillItem {
 		m.sortorder = getSortorder();
 		m.fromdate = fromdate;
 		m.todate = todate;
-		m.duedate = duedate;
 
 		if(!m.fromdate || !m.todate) {
 			def df = new java.text.SimpleDateFormat("yyyy-MM-dd");

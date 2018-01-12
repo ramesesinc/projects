@@ -21,7 +21,7 @@ class SelectAFModel extends CrudLookupModel {
 
     def getCustomFilter() {
         return [ 
-              "state='ISSUED' AND afid = :formno AND assignee.objid = :uid AND txnmode=:mode AND currentseries <= endseries AND active=0", 
+              "state='ISSUED' AND afid = :formno AND assignee.objid = :uid AND txnmode=:mode AND currentseries <= endseries AND active=0 AND lockid IS NULL", 
             [formno: entity.formno, uid: user.userid, mode: entity.txnmode ]  
         ];
     }

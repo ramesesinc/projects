@@ -6,18 +6,10 @@
     editable:true;
 }
 
-"entity.issueto.*" [ entity.txntype.matches('ISSUE|FORWARD') ]{
+"entity.(issueto|respcenter).*" [ entity.txntype.matches('ISSUE|FORWARD|TRANSFER') ]{
     visible:true;
 }
 
-"entity.issueto.*" [ !entity.txntype.matches('ISSUE|FORWARD') ]{
+"entity.(issueto|respcenter).*" [ !entity.txntype.matches('ISSUE|FORWARD|TRANSFER') ]{
     visible:false;
-}
-
-"entity.(issueto|respcenter).*" [ afrequest == null ]{
-    enabled:true;
-}
-
-"entity.(issueto|respcenter).*" [ afrequest != null ]{
-    enabled:false;
 }

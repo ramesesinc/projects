@@ -18,8 +18,13 @@ class AddBillItem extends AbstractAddBillItem {
 	public void execute(def params, def drools) {
 		def amt = params.amount.decimalValue;
 
-		if(!params.account && !params.txntype ) {
-			throw new Exception("AddBillItem error. Please specify an account or txntype in rule");
+		int t = 0;
+
+		if( !params.account || params.account.key == "null" ) t=1;
+		if( !params.txntype || params.txntype.key == "null" ) t=t+1;
+
+		if( t == 2 ) {
+			throw new Exception("AddBillItem error. Please specify an account or txntype in rule "  );
 		}
 
 		def billitem = new BillItem(amount: NumberUtil.round( amt));

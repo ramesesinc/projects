@@ -15,6 +15,13 @@ class AFControlLookupBatchModel  extends CrudLookupModel {
         def m = [:];
         m.afid = refitem.item.objid;
         m.unit = refitem.unit;
-        return [ "afid=:afid AND unit =:unit", m ];
+        
+        if( refitem.txntype.matches(".*SALE") ) {
+            m.state = 'SOLD';
+        }
+        else if( refitem.txntype.matches(".*COLLECTION")) {
+            m.state = 'ISSUED'
+        }
+        return [ "afid=:afid AND unit =:unit AND state =:state AND active=0 AND lockid IS NULL", m ];
     }
 }    

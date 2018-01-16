@@ -44,7 +44,8 @@ public class AddWaterBillItem implements RuleActionHandler {
 		bi.ledgertype = txntype.ledgertype;
 		bi.sortorder = (((year * 12)+month)*10) + bi.priority;
 		bi.refid = refid;
-		ct.facts << bi;
-
+		if ( !ct.facts.contains(bi)) {
+			ct.facts << bi;
+		}		
 	}
 }

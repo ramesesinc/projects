@@ -18,4 +18,7 @@ public class WaterBillItem extends BillItem {
 		return m;		
 	}	
 
+	public int hashCode() {
+		return (""+ year +"-"+ month +"-"+ txntype).hashCode();
+	}	
 }	

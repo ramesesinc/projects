@@ -3,7 +3,7 @@
           cols="acctno,acctname,address.text,sector.code,zone.code,meter.serialno,lastdateread,stubout.code,currentreading,billingcycle.readingdate,billingcycle.duedate,billingcycle.disconnectiondate"
           orderBy="acctname">
     <invokers>
-        <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" />
+        <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" role="MASTER"/>
     </invokers>
     
     <code>

@@ -21,7 +21,7 @@ class VehicleAssessmentService {
 	@Service("AssessmentRuleService")
 	def assmtSvc;
 
-	@Service("VehicleBillingService")
+	@Service("BillingRuleService")
 	def billingSvc;
 
 	@DataContext(dynamic=true)
@@ -89,7 +89,7 @@ class VehicleAssessmentService {
 		def res = assmtSvc.execute( "vehicleassessment", o, fb, rh );
 		if( res.askinfos ) return [askinfos: res.askinfos];
 
-		def billRes = billingSvc.execute( billFacts );
+		def billRes = billingSvc.execute( "vehiclebilling", billFacts, null );
 
 		def app = [:];
 		app.infos = resultInfos;

@@ -1,0 +1,13 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+
+class OnlinePaymentResolverService {
+
+    @ProxyMethod
+    public void resolve(def p) {
+        throw new Exception("Resolve");
+    }        
+
+
+}

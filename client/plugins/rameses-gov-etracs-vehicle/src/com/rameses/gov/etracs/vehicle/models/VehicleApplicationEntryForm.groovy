@@ -76,7 +76,21 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         entity = applicationService.create( entity );
     }
     
-    void assess() {
+    def assess() {
+        def m = [rulename : 'vehiclebilling'];
+        m.handler = { o->
+            entity.fees = o.billitems;
+            entity.infos = o.infos;
+            feeListModel.reloadAll();
+            infoListModel.reloadAll();
+        }
+        m.params = entity;
+        m.defaultInfos = entity.infos;
+        return Inv.lookupOpener("ruleprocessor", m );
+    }
+
+    /*
+    void assess1() {
         if( reqYear && reqYear != entity.appyear )
             throw new Exception("App Year must be " + reqYear );
         
@@ -111,7 +125,8 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         feeListModel.reloadAll();
         infoListModel.reloadAll();
     }
-        
+    */  
+    
     def feeListModel = [
         fetchList: { o->
             return entity.fees;

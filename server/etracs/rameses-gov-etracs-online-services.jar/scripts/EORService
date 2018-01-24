@@ -134,6 +134,8 @@ class EORService {
             ac.currentindexno = 0;
             ac.batchno = 0;
             ac.state = 'ISSUED';
+            ac.prefix = '';
+            ac.suffix = '';
             ac.unit = 'PC';
             ac.stubno = 1
             ac.active = 1

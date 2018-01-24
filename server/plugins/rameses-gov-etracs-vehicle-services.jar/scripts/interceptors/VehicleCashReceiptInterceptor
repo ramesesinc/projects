@@ -34,7 +34,7 @@ class VehicleCashReceiptInterceptor {
 	}	
 
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler == 'vehicle'}")
+	@After(pattern="CashReceiptService.post1", eval="#{args[0].collectiontype?.handler == 'vehicle'}")
 	public void postPayment(def evt) {
 
 		def r = evt.args[0];
@@ -83,7 +83,7 @@ class VehicleCashReceiptInterceptor {
 		}
 	}
 
-	@After(pattern="CashReceiptVoidService.post",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")
+	@After(pattern="CashReceiptVoidService.post1",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")
 	public void voidPayment(def evt) {
 		def r = evt.args[0].receipt;
 

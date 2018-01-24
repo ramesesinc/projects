@@ -16,15 +16,56 @@ class VehicleBillingService {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("vehicle_application")
-	def appEm;
-
 	@Service("AssessmentRuleService")
 	def assmtSvc;
 
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_franchise_fee")
+	def franFeeEm;
+
+	private void loadAppFees( def appid, def controlid, def facts, def buildBillItem ) {
+		def list = null;
+		if(appid) {
+			list = appFeeEm.where( "app.objid = :appid AND amount - amtpaid > 0", [appid: appid] ).list();
+		}
+		else {
+			list = appFeeEm.where( "app.controlid = :controlid AND amount - amtpaid > 0", [controlid: controlid] ).list();
+		}
+		list.each {
+			def appFact = new VehicleApplication( it.app );
+			it.ledgertype = "vehicle_application";
+			it.billrefid = appFact.objid;
+			facts << buildBillItem(it);
+			facts << appFact;
+		}
+	}
+
+	private void loadFranchiseFees( def controlid, def facts, def builder ) {
+		def list  = franFeeEm.find( [parentid: controlid]  ).where("amount - amtpaid > 0").list();
+		list.each {
+			it.ledgertype = "vehicle_franchise";
+			it.billrefid = it.parentid;
+			facts << buildBillItem(it);
+		}
+	}
+
 	@ProxyMethod
 	public def getBilling( def o ) {
-		//find application or vehicleid
+		if(!o.id) throw new Exception("id is required in VehicleBillingService.getInfo");
+		if(!o._schemaname ) throw new Exception("_schemaname is required in VehicleBilling.getBilling ")
+		o.id = o.id.trim();
+
+		def newfacts = [];
+
+		//find application or franchise...
 		def vehicleid = null;
 		def appid = null;
 		if(o.appno) {
@@ -34,6 +75,19 @@ class VehicleBillingService {
 		else if( o.appid ) {
 			appEm.find( [appno: o.appno] ).first();
 		}
+
+		
+		def itemAcct = new ItemAccountUtil();
+		def buildBillItem = { oo ->
+			def bi = new BillItem();
+			bi.billrefid = oo.billrefid;
+			bi.refid = oo.objid;
+			bi.account = itemAcct.createAccountFact( oo.item );
+			bi.ledgertype = oo.ledgertype;
+			bi.amount = oo.amount - oo.amtpaid;
+			return bi;
+		}
+
 	}
 
 	/*
@@ -57,50 +111,6 @@ class VehicleBillingService {
 			
 	*/
 
-	//This assumes you have already sent the BillItem facts inside
-	@ProxyMethod
-	public def execute( def facts ) {
-		if(! facts.findAll{ it instanceof BillItem } ) 
-			throw new Exception("There are no billitems computed. Please review the rules");
-
-
-		def fb = new FactBuilder();
-		fb.facts.addAll( facts );
-
-		if( !facts.find{ it instanceof BillDate }  ) {
-			facts << new BillDate( dateSvc.getServerDate() );	
-		}
-
-		def r = [ billitems:[] ];
-
-		def rh = [
-			getFactKeyValue: { f->
-				if( f instanceof DueDate ) {
-					r.duedate = f.date;
-				}
-				else if( f instanceof BillSubItem ) {
-					def sv = r.billitems.find{ it.item.objid == f.account.objid };
-					if( sv ) {
-						sv.amount += f.amount;
-						sv.balance += f.amount;
-					}
-					else {
-						r.billitems << f.toMap();
-					}
-				}
-				else if( f instanceof BillItem ) {
-					def sv = r.billitems.find{ it.item.objid == f.account.objid };
-					if(!sv) {
-						r.billitems << f.toMap();	
-					}
-				}
-			}
-		] as ResultHandler;
-
-		assmtSvc.execute( "vehiclebilling", null, fb, rh );
-		r.amount = r.billitems.sum{ it.amount }
-		return r;
-	}
 
 
 }

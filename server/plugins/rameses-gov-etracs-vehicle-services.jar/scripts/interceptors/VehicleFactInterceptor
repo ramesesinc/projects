@@ -1,0 +1,37 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import vehicle.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
+class VehicleFactInterceptor {
+	
+    def variableInfoProvider = new VariableInfoProvider(
+		schemaName:"vehicle_variable",
+		createIntegerFact: { o-> return new VehicleIntegerInfo(o); },
+		createDecimalFact: { o-> return new VehicleDecimalInfo(o); },
+		createBooleanFact: { o-> return new VehicleBooleanInfo(o); },
+		createStringFact : { o-> return new VehicleStringInfo(o); }
+	);
+
+	//update the franchise info if capture or 
+	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'vehiclebilling' }", index=10)
+	public void buildFactsForAssesssment(def evt) {
+		def data = evt.args[1];
+		def factBuilder = evt.result;
+		factBuilder.variableInfoProvider = variableInfoProvider;
+		factBuilder.facts << new VehicleFranchise( data.franchise );
+		factBuilder.facts << new VehicleApplication( data );
+		factBuilder.addInfos( data.infos );  
+	}
+ 
+}

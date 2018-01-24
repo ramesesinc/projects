@@ -1,0 +1,61 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleBillingHandler {
+	
+	@After( pattern="BillingCashReceiptHandler.getHeader", eval="#{ args[0].collectiontype.handler == 'vehicle' }")
+	public void loadInfo(def evt ) {
+		def p = evt.result;
+		p.payer = [objid:'ENT001', name:'elmo'];
+		p.paidby = 'Business 1';
+		p.paidbyaddress = 'Cebu City';
+		p.txntype = 'vehicle_application';
+		p.txnid = 'VH00001';
+		p.franchiseid = 'FRAN0001';
+		p.taskid = 'TSK000001';
+		p.appid = 'VAPP00001';
+	} 
+	
+	@After( pattern="BillingCashReceiptHandler.getBillItems", eval="#{ args[0].txntype == 'vehicle_application' }")
+	public void loadBilling(def evt ) {
+		def p = evt.result;
+
+		p.billitems = [];
+		p.billitems << [ item:[objid:'ITMACCT-21574c97:160fcd0428a:-7f49', code:'-', title:'MTOP FRANCHISE FEE'], amount: 200 ];
+		p.billitems << [ item:[objid:'ITMACCT-21574c97:160fcd0428a:-7f60', code:'-', title:'MTOP SERVICE FEE'], amount: 300 ];
+		p.billitems << [ item:[objid:'ITMACCT-21574c97:160fcd0428a:-7f20', code:'-', title:'MTOP SURCHARGE'], txntype:'SURCHARGE', amount: 100 ];
+
+		p.billitems.each {
+			it.item.fund = [objid: 'GENERAL', code: '01', title:'GENERAL' ];
+			it.discount = 0;
+			it.surcharge = 50;
+			it.interest = 0;
+			it.postingrefid = 'V00001';
+			it.postingreftype = 'vehicle_application';
+			it.total = (it.amount - it.discount) + it.surcharge + it.interest;
+		}
+
+		//p.billitems = fetchBillItems(o);
+		//throw new Exception("Lookup info now " +  p.collectiontype.handler );
+	} 
+
+	@After( pattern="BillingCashReceiptHandler.getPostPaymentInfo", eval="#{ args[0].txntype == 'vehicle_application' }")
+	public void loadPaymentInfo(def evt ) {
+		def p = evt.args[0];
+		def res = evt.result;
+		res._schemaname = 'vehicle_payment';
+		res.franchiseid = p.franchiseid;
+		res.items = p.billitems;
+	} 
+
+	@After( pattern="BillingCashReceiptHandler.getWorkflowTask1", eval="#{ args[0].txntype == 'vehicle_application' && args[0].taskid !=null }")
+	public void getWorkflowTask(def evt ) {
+		def p = evt.args[0];
+		def res = evt.result;
+		res.processname = 'vehicle_application';
+		res.taskid = p.taskid;
+		res.refid = p.appid;
+		res.taskstate = 'payment';
+	} 
+
+}

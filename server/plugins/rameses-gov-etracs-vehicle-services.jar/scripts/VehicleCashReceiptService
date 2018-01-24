@@ -31,27 +31,34 @@ class VehicleCashReceiptService {
 	@Service("DateService")
 	def dateSvc;
 
-	
+	private void buildSpecificAppFee( def appid, def facts, def buildBillItem ) {
+		def list = appFeeEm.where( "app.objid = :appid AND amount - amtpaid > 0", [appid: appid] ).list();
+		list.each {
+			it.ledgertype = "vehicle_application";
+			facts << buildBillItem(it);
+		}
+	}
+
 	private void buildLateRenewalFees( String controlid, def facts, def buildBillItem ) {
 		def list = appFeeEm.where( "app.controlid = :controlid AND app.apptype='LATE_RENEWAL' AND amount - amtpaid > 0", [controlid: controlid] ).list();
-		println "--------------------------- LATE RENEWAL ----------------------------"
 		list.each {
+			it.ledgertype = "vehicle_application";
 			facts << buildBillItem( it );
 		}
 	}
 
 	private void buildCurrentAppFees( def controlid, def facts, def buildBillItem ) {
 		def list = appFeeEm.where( "app.controlid = :controlid AND NOT(app.apptype='LATE_RENEWAL') AND amount - amtpaid > 0", [controlid: controlid] ).list();
-		println "--------------------------- APP FEES ----------------------------"
 		list.each {
+			it.ledgertype = "vehicle_application";
 			facts << buildBillItem(it);
 		}
 	}
 
 	private void buildOtherFees( def controlid, def facts, def builder ) {
 		def list  = franFeeEm.find( [parentid: controlid]  ).where("amount - amtpaid > 0").list();
-		println "--------------------------- OTHER FEES ----------------------------"
 		list.each {
+			it.ledgertype = "vehicle_franchise";
 			facts << buildBillItem(it);
 		}
 	}
@@ -60,23 +67,21 @@ class VehicleCashReceiptService {
 	public def getInfo( def o ) {
 		if(!o.id) throw new Exception("id is required in VehicleCashReceiptService.getInfo");
 		o.id = o.id.trim();
+		
 		/*************************************************************
 		* Determine first if code requested is appno or franchise no
 		**************************************************************/
 		def controlid = null;
 		def app = null;
 		def fran = franchiseEm.find( [controlno: o.id] ).first();
-		if( !fran ) {
-			app = appEm.find( [appno: o.id] ).first();
-			if( app ) fran = franchiseEm.find( [objid: app.controlid] ).first();
-		}
-		else {
-			app = appEm.find( [controlid: fran.objid] ).where(" task.state='payment' ").first();
+		if(!fran) {
+			app = appEm.find( [appno: o.id ] ).first();
+			if(!app) throw new Exception("Ref id " + o.id + " not found in franchise or vehicle application");
+			if(app.task && app.task.state != 'payment')
+				throw new Exception("This application is not yet ready for payment");
 		}
 
-		controlid = fran?.objid;
-
-		//this is the new routine
+		//this is the new routine. billitem collector
 		def newfacts = [];
 		def itemAcct = new ItemAccountUtil();
 		def buildBillItem = { oo ->
@@ -88,56 +93,17 @@ class VehicleCashReceiptService {
 			bi.amount = oo.amount - oo.amtpaid;
 			return bi;
 		}
-
-		buildLateRenewalFees( controlid, newfacts, buildBillItem );
-		buildCurrentAppFees( controlid, newfacts, buildBillItem );
-		buildOtherFees( controlid, newfacts, buildBillItem );
-		println "************** PRINT FACTS ******************* ";
-		newfacts.each {
-			println it;
-		}
-
-
-
-		def fees = null;
-		def ledgertype = null;
-		if( app?.objid!=null ) {
-			//check first if this is on payment mode...
-			fees = appFeeEm.find( [appid: app.objid]  ).where("amount - amtpaid > 0").list();
-			if( !fees )
-				throw new Exception("There are no unpaid items");
-			ledgertype = "application";	
-		}
-		else if(fran!=null) {
-			//check first if this is on payment mode...
-			fees = franFeeEm.find( [parentid: controlid]  ).where("amount - amtpaid > 0").list();
-			if( !fees )
-				throw new Exception("There are no unpaid items");
-			ledgertype = "franchise";	
+		if( fran ) {
+			buildLateRenewalFees( controlid, newfacts, buildBillItem );
+			buildCurrentAppFees( controlid, newfacts, buildBillItem );
+			buildOtherFees( controlid, newfacts, buildBillItem );
 		}
 		else {
-			throw new Exception("No vehicle record found for " + o.id);
+			buildSpecificAppFee( controlid, newfacts, buildBillItem )
 		}
-			
-		controlid = fran?.objid;
-		if( !controlid ) controlid = app.controlid;
-		def billitems = [];
-		fees.each { 
-			def vv = [:];
-			if(it.appid) {
-				vw.billrefid = it.appid;
-			}
-			else {
-				vw.billrefid = it.parentid;
-			}
-			vv.item = it.item;
-			vv.ledgertype = ledgertype;
-			vv.refid = it.objid;
-			vv.principal = it.amount;
-			vv.amount = (it.amount - it.amtpaid);
-			billitems << vv;
-		}	
 
+		if(!newfacts)
+			throw new Exception("Not unpaid fees found");
 
 		/*************************************************************************
 		* RUN BILLING ROUTINE TO CALCULATE SURCHARGE AND INTEREST
@@ -167,6 +133,10 @@ class VehicleCashReceiptService {
 		entity.particulars = fran.controlno;
 		entity.remarks = "Franchise No." + fran.controlno;
 		entity.items = res.billitems;
+
+		//add flags
+		entity.payment = [_schemaname: "vehicle_payment"];
+		entity._workflow = "vehicle_workflow";
 		return entity;
 	}
 

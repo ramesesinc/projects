@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/treasury/common/templates/CapturePayment.xml">
+    <invokers>
+           <invoker folderid="/home/vehicle/tricycle" caption="Capture Payment" 
+                 srole="ADMIN"/>
+    </invokers>             
+  
+</workunit>

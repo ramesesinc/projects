@@ -1,10 +1,6 @@
-<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+<workunit extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml">
     <invokers>
-        <invoker type="cashreceipt:vehicle" action="init" />
-        <invoker type="cashreceipt:barcode:51010" action="loadBarcode" caption="Cash Receipt Vehicle Registration"/>
+        <invoker type="cashreceipt:vehicle" action="init" caption="Vehicle Registration"/>
+        <invoker type="cashreceipt:barcode:51010" action="loadBarcode" caption="Vehicle Registration"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleCashReceipt" />
-    <pages>
-        <page template="com.rameses.enterprise.treasury.views.SimpleCashReceiptPage"/>
-    </pages>
 </workunit>

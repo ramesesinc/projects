@@ -2,8 +2,9 @@
     <invokers>
         <!-- This is for application billing -->
         <invoker type="vehicle_application_tricycle:form:formActions" 
-                 caption="Print Bill" 
-                 target="popup" action="previewByFranchiseId"
+                 caption="Print Bill X" 
+                 target="popup" 
+                 action="preview"
                  index="5"
                  reportId="vehicle_billing"
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/billing.jasper" 
@@ -11,7 +12,8 @@
         
         <invoker type="vehicle_franchise_tricycle:form:formActions" 
                  caption="Print Bill" 
-                 target="popup" action="preview"
+                 target="popup" 
+                 action="previewByFranchiseId"
                  index="5"
                  reportId="vehicle_billing"
                  reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/billing.jasper" />

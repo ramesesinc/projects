@@ -1,0 +1,86 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+/**************************************************************************************
+* This interceptor is for printing the bill 
+***************************************************************************************/
+class VehicleBillingReportInterceptor {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("VehicleBillingService")
+	def billingSvc;
+
+	def processBill( def franchise, def billdate, def app, def billitems ) {
+		def itemAcct = new ItemAccountUtil();
+		def facts = [];
+		facts << franchise;
+		facts << billdate;
+		facts << new VehicleApplication(app);
+		billitems.each {
+			try {
+				def bi = new BillItem();
+				bi.billrefid = app.objid;
+				bi.refid = it.objid;
+				bi.account = itemAcct.createAccountFact( it.item );
+				bi.ledgertype = it.ledgertype;
+				bi.amount = it.amount;
+				facts << bi;
+			}
+			catch(e) {
+				//			
+			}
+		};
+		def res = billingSvc.execute( facts );
+		res.billitems.each {
+			it.ref = [objid:app.objid, year:app.appyear, controlno: app.appno, type: app.apptype ];
+		}
+		return res.billitems;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_billing' }")
+	public void getData(def evt) {
+		throw new Exception("Process Bill");
+
+		def params = evt.args[0];
+		def result = evt.result;
+		def p = params.parameters;
+		def db = em.lookup( "vehicle_franchise_" + p.vehicletype );
+		def fran = db.find( [objid: p.objid ]).first();
+
+		//get bill items unpaid
+		def apps = appFeeEm.where("app.controlid =:id AND (amount-amtpaid) > 0 ", [id: p.objid]).select("objid,app.*,item.*,amount:{amount-amtpaid}").list(); 
+
+		if(!apps)
+			throw new Exception("No unapid items ");
+
+		def vf = new VehicleFranchise( fran );
+		def bd = new BillDate( dateSvc.getServerDate() );
+
+		def billitems = [];
+		apps.groupBy{ it.app }.each { _app, _items ->
+			_app.vehicletype = fran.vehicletype;
+			def res = processBill( vf, bd, _app, _items );
+			billitems.addAll( res );
+		}
+
+		fran.billitems = billitems.sort{ it.ref.year };
+		fran.amount = fran.billitems.sum{ it.amount }
+		fran.billdate = bd.date;
+
+		result.data = fran;
+	}
+
+}

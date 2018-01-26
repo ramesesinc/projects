@@ -1,0 +1,73 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import vehicle.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
+class VehicleSingleBillingInterceptor {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_franchise_fee")
+	def franFeeEm;
+
+    @After(pattern="SingleBillingService.getInfo",  eval="#{ args[0] == 'vehiclebilling' }", index=10)
+	public void getInfo(def evt) {
+		def p = evt.args[1];
+		def r = evt.result;
+		//objid
+		//vehicletype
+		//def db = em.lookup( "vehicle_franchise_" + p.vehicletype );
+		def controlid;
+		def vehicletype;
+		def app = appEm.find( [objid: p.objid ] ).first();
+		if(app) {
+			controlid = app.controlid;
+			vehicletype = app.vehicletype;
+			r.billtype = "vehicle_application";	
+			r.application = app;
+			r.franchise = app.franchise;
+		}
+		else {
+			r.billtype = "vehicle_franchise";	 
+			r.franchise = franchiseEm.find( [objid: p.objid ] ).first();
+			controlid = r.franchise.objid;
+			vehicletype = r.franchise.vehicletype;
+		}
+		def db = em.lookup( "vehicle_franchise_" + vehicletype );
+		r.franchise.putAll( db.find([objid: controlid]).first() );
+	}
+ 
+    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[1].billtype == 'vehicle_application' }" )
+	public void getAppBillItems(def evt) {
+		def p = evt.args[1];
+		def list = evt.result;
+		def res = appFeeEm.select("item.*,amount:{amount-amtpaid}").where( "app.objid = :appid AND amount - amtpaid > 0", [appid: p.application.objid] ).list();
+		list.addAll( res );
+	}
+
+    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[1].billtype == 'vehicle_franchise' }" )
+	public void getFranchiseBillItems(def evt) {
+		def r = evt.result;
+	}
+
+}

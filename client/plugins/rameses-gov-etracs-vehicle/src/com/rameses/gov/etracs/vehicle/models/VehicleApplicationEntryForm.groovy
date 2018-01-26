@@ -84,9 +84,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
             feeListModel.reloadAll();
             infoListModel.reloadAll();
         }
-        m.params = entity;
+        m.params = [application: entity, franchise: entity.franchise];
         m.defaultInfos = entity.infos;
-        return Inv.lookupOpener("ruleprocessor", m );
+        return Inv.lookupOpener("assessment", m );
     }
 
     /*

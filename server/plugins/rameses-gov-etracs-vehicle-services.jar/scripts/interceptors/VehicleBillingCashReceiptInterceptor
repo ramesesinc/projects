@@ -1,7 +1,7 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
 
-class VehicleBillingHandler {
+class VehicleBillingCashReceiptInterceptor {
 	
 	@After( pattern="BillingCashReceiptHandler.getHeader", eval="#{ args[0].collectiontype.handler == 'vehicle' }")
 	public void loadInfo(def evt ) {

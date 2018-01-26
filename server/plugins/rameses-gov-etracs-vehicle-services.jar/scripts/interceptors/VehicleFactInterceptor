@@ -16,11 +16,7 @@ import com.rameses.util.*;
 class VehicleFactInterceptor {
 	
     def variableInfoProvider = new VariableInfoProvider(
-		schemaName:"vehicle_variable",
-		createIntegerFact: { o-> return new VehicleIntegerInfo(o); },
-		createDecimalFact: { o-> return new VehicleDecimalInfo(o); },
-		createBooleanFact: { o-> return new VehicleBooleanInfo(o); },
-		createStringFact : { o-> return new VehicleStringInfo(o); }
+		schemaName:"vehicle_variable"
 	);
 
 	//update the franchise info if capture or 
@@ -30,8 +26,16 @@ class VehicleFactInterceptor {
 		def factBuilder = evt.result;
 		factBuilder.variableInfoProvider = variableInfoProvider;
 		factBuilder.facts << new VehicleFranchise( data.franchise );
-		factBuilder.facts << new VehicleApplication( data );
-		factBuilder.addInfos( data.infos );  
+		if( data.application ) {
+			factBuilder.facts << new VehicleApplication( data.application );
+		}
+		else if(data.applications) {
+			data.applications.each {
+				factBuilder.facts << new VehicleApplication( it );	
+			}
+		}
+		factBuilder.addInfos( data.infos ); 
+		factBuilder.addBillItems( data.billitems ); 
 	}
  
 }

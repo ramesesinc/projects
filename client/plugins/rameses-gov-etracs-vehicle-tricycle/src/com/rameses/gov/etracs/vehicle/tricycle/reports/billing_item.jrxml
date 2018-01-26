@@ -48,17 +48,17 @@
 	<field name="amtpaid" class="java.lang.Number"/>
 	<field name="item.code" class="java.lang.String"/>
 	<field name="balance" class="java.lang.Number"/>
-	<field name="ref.objid" class="java.lang.String"/>
-	<field name="ref.controlno" class="java.lang.String"/>
-	<field name="ref.year" class="java.lang.String"/>
-	<field name="ref.type" class="java.lang.String"/>
+	<field name="parent.objid" class="java.lang.String"/>
+	<field name="parent.appno" class="java.lang.String"/>
+	<field name="parent.appyear" class="java.lang.String"/>
+	<field name="parent.apptype" class="java.lang.String"/>
 
 	<variable name="totalamount" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
 	</variable>
 
 		<group  name="refgroup" >
-			<groupExpression><![CDATA[$F{ref.objid}]]></groupExpression>
+			<groupExpression><![CDATA[$F{parent.objid}]]></groupExpression>
 			<groupHeader>
 			<band height="42"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
@@ -72,7 +72,7 @@
 					<textElement>
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ref.controlno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{parent.appno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -85,7 +85,7 @@
 					<textElement>
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ref.year}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{parent.appyear}]]></textFieldExpression>
 				</textField>
 				<image  scaleImage="FillFrame" vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -99,7 +99,7 @@
 						key="barcode-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch" fill="Solid" />
-					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{ref.controlno},false,false,null,0,0)]]></imageExpression>
+					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{parent.appno},false,false,null,0,0)]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -112,7 +112,7 @@
 					<textElement>
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ref.type}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{parent.apptype}]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement

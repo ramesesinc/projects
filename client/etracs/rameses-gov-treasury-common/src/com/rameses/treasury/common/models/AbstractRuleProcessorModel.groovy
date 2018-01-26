@@ -7,10 +7,9 @@ import com.rameses.osiris2.common.*
 import com.rameses.enterprise.treasury.cashreceipt.*;
 import com.rameses.util.*;
 
-public class RuleProcessorModel  {
+public abstract class AbstractRuleProcessorModel  {
 
-    @Service("AssessmentProcessorService")    
-    def ruleExecutor;
+    abstract def getRuleExecutor();
     
     def handler;
     
@@ -28,7 +27,7 @@ public class RuleProcessorModel  {
         
         //we must first clear this when doing initial rules
         params.infos = [];
-        def result = ruleExecutor.execute(rulename, params);
+        def result = ruleExecutor.execute([rulename:rulename, params:params]);
         
         if(result.askinfos) {
             infos = result.askinfos;
@@ -72,7 +71,7 @@ public class RuleProcessorModel  {
         def p = [:];
         p.putAll(params);
         p.infos = createStackedInfos();
-        def result = ruleExecutor.execute( rulename, p );
+        def result = ruleExecutor.execute( [rulename:rulename, params:p] );
         if(result.askinfos) {
             if(infos) infoStack.push( infos );
             infos = result.askinfos;
@@ -85,7 +84,7 @@ public class RuleProcessorModel  {
             if( result.infos ) {
                 infos.addAll( result.infos );
             }	            
-            result.infos = infos;
+            result.infos = infos.unique();
             handler( result );
             return "_close";
         }

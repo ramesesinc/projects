@@ -37,11 +37,10 @@ class VehicleApplicationPersistenceInterceptor {
 	public void afterOpen(def evt) {
 		def entity = evt.result;
 
-        //LOAD INFOS
-        def vi = new VariableInfoUtil("vehicle_variable");
         entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
         entity.infos.each {
-        	vi.convertData( it );
+        	it.putAll( it.remove("variable") );
+        	it.value = VariableInfoConverter.convertValue( it );
         };
 
 		//LOAD FEES

@@ -59,6 +59,8 @@ class VehicleBillingService {
 
 	@ProxyMethod
 	public def getBilling( def o ) {
+		throw new Exception("fire billing");
+		/*
 		if(!o.id) throw new Exception("id is required in VehicleBillingService.getInfo");
 		if(!o._schemaname ) throw new Exception("_schemaname is required in VehicleBilling.getBilling ")
 		o.id = o.id.trim();
@@ -87,6 +89,7 @@ class VehicleBillingService {
 			bi.amount = oo.amount - oo.amtpaid;
 			return bi;
 		}
+		*/
 
 	}
 

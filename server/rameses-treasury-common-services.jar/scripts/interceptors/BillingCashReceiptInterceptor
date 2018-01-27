@@ -1,0 +1,66 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+public class BillingReceiptInterceptor {
+	
+	@Service("PostPaymentService")
+	def service;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@DataContext("cashreceipt")
+	def em;
+
+	@Service("ReversePaymentService")
+	def reversePmtService;
+
+	@After(pattern="CashReceiptService.post", eval="#{ args[0]._postpayment !=null  }",  index=50)
+	public void postPayment(def evt) {
+		def e = evt.args[0];
+		def result = evt.result;
+		def pmt = e._postpayment;
+
+		//format the payment references
+		pmt.reftype = "cashreceipt";
+		pmt.refno = result.receiptno;
+		pmt.refdate = result.receiptdate;
+		pmt.refid = result.objid;
+		pmt.txndate = result.txndate;
+		service.post( pmt );
+	}
+
+	@After(pattern="CashReceiptService.post", eval="#{ args[0]._workflow !=null  }",  index=100)
+	public void fireWorkflow(def evt) {
+		def e = evt.args[0];
+		def wf = e._workflow; 
+		taskSvc.signal( wf );
+	}
+
+	@After(pattern="CashReceiptVoidService.post")
+	public void voidPayment(def evt) {
+		def res= evt.result;
+		def sm = em.schemaManager;
+		String schemaName = res.receipt.collectiontype.handler + "_payment";
+		def pmtSchema = null;
+		try { 
+			pmtSchema = sm.getSchema( schemaName ); 
+		}
+		catch(ign) {;}
+
+		//if payment schema exists
+		if( pmtSchema!=null) {
+			def param = [ _schemaname: schemaName, refid: res.receipt.objid ];
+			reversePmtService.post( param );	
+		}
+	}
+
+}

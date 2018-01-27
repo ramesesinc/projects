@@ -3,8 +3,9 @@ package com.rameses.gov.etracs.vehicle.models;
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*; 
+import com.rameses.treasury.common.models.*; 
 
-public class VehicleReportForm extends FormReportModel {
+public class VehicleReportForm extends SingleBillingReportModel {
     
     public def preview() {
         def entity =  caller.entityContext;

@@ -14,17 +14,18 @@ class VehicleBillingReportInterceptor {
 	@Service("SingleBillingService")
 	def billingSvc;
 
-	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_billing' }")
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehiclebilling' }")
 	public void getData(def evt) {
 		def params = evt.args[0];
 		def result = evt.result;
-		def vv = [rulename:'vehiclebilling', params: params.parameters ];
+
+		def vv = [ rulename:params.reportid, params: params.parameters ];
 		def bill = billingSvc.execute( vv );
 		
 		def m = [:];
-		m.controlno = 'AWESOME'
 		m.putAll( bill.franchise );
 		m.amount = bill.amount;
+		m.billdate = bill.billdate;
 		def app = bill.application;
 		bill.billitems.each {
 			it.parent = app;

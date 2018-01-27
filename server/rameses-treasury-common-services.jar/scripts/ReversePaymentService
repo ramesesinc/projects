@@ -1,0 +1,40 @@
+import com.rameses.annotations.*;
+
+class ReversePaymentService {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@ProxyMethod 
+	public def post( def ref ) {
+		if(!ref._schemaname)
+			throw new Exception("Please provide _schemaname in ReversePaymentService.post ");
+
+		throw new Exception("Entering revesre payment " + ref );	
+
+		def emMap = [:];
+		def emLookup = { name ->
+			if( !emMap.containsKey(name)) {
+				emMap.put( name, em.lookup( name));
+			}
+			return emMap.get(name);
+		}
+
+		String schemaName = ref.remove("_schemaname");
+		def pmtEm = emLookup( schemaName );
+
+		def pmt = pmtEm.find( ref ).first(1);
+		//after create post the posting references
+		pmt.items.each {
+			def gb = emLookup( it.reftype );
+			//find first if it exists then save 
+			gb.find( [objid: it.refid] ).update( [amount: "{amtpaid - :amt}"], [amt: it.amount] );
+		}
+
+		def u = [voided : 1 ];
+		pmtEm.find(ref).update( u );
+		return pmt;
+	}
+
+
+}

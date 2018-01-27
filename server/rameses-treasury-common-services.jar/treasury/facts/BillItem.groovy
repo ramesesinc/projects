@@ -6,10 +6,11 @@ import com.rameses.util.*;
 class BillItem extends AbstractBillItem {
 
 	//initiated because of late renewal from Vehicle, Business etc.
-	String billrefid;
+	String parentid;
 
 	String refid; 
-	String ledgertype; 
+	String reftype;
+
 	Date duedate;
 
 	//amount that is left unpaid from the full amount
@@ -49,8 +50,8 @@ class BillItem extends AbstractBillItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.refid = refid;
-		m.ledgerid = refid;	//add this because this is new style 
-		m.ledgertype = ledgertype;
+		m.reftype = reftype;
+		m.parentrefid = parentid;
 		items.each {
 			if(it.amount == null) it.amount = 0;
 			m.put(it.txntype?.toLowerCase(), NumberUtil.round(it.amount));

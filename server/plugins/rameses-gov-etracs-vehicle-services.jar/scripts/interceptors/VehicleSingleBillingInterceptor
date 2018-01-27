@@ -34,12 +34,27 @@ class VehicleSingleBillingInterceptor {
 	public void getInfo(def evt) {
 		def p = evt.args[1];
 		def r = evt.result;
-		//objid
-		//vehicletype
-		//def db = em.lookup( "vehicle_franchise_" + p.vehicletype );
+
+		def app = null;
+		def fran = null;
+		def errkey = null;
+
+		if( p.objid ) {
+			errkey = p.objid;
+			app = appEm.find( [objid: p.objid ] ).first();
+			if(!app) fran = franchiseEm.find( [objid: p.objid ] ).first();
+		}
+		else if( p.id ) {
+			errkey = p.id; 
+			app = appEm.find( [appno: p.id ] ).first();
+			if(!app) fran = franchiseEm.find( [controlno: p.id ] ).first();
+		}
+
+		if(!app && !fran) throw new Exception("Vehicle billing not found with key " + errkey);
+
 		def controlid;
 		def vehicletype;
-		def app = appEm.find( [objid: p.objid ] ).first();
+
 		if(app) {
 			controlid = app.controlid;
 			vehicletype = app.vehicletype;
@@ -48,10 +63,10 @@ class VehicleSingleBillingInterceptor {
 			r.franchise = app.franchise;
 		}
 		else {
+			controlid = fran.objid;
+			vehicletype = fran.vehicletype;
 			r.billtype = "vehicle_franchise";	 
-			r.franchise = franchiseEm.find( [objid: p.objid ] ).first();
-			controlid = r.franchise.objid;
-			vehicletype = r.franchise.vehicletype;
+			r.franchise = fran;
 		}
 		def db = em.lookup( "vehicle_franchise_" + vehicletype );
 		r.franchise.putAll( db.find([objid: controlid]).first() );
@@ -61,7 +76,8 @@ class VehicleSingleBillingInterceptor {
 	public void getAppBillItems(def evt) {
 		def p = evt.args[1];
 		def list = evt.result;
-		def res = appFeeEm.select("item.*,amount:{amount-amtpaid}").where( "app.objid = :appid AND amount - amtpaid > 0", [appid: p.application.objid] ).list();
+		def select = "refid:{objid},reftype:{'vehicle_application'},item.*,amount:{amount-amtpaid},parentid:{app.objid}";
+		def res = appFeeEm.select(select).where( "app.objid = :appid AND amount - amtpaid > 0", [appid: p.application.objid] ).list();
 		list.addAll( res );
 	}
 
@@ -69,5 +85,8 @@ class VehicleSingleBillingInterceptor {
 	public void getFranchiseBillItems(def evt) {
 		def r = evt.result;
 	}
+
+
+
 
 }

@@ -3,9 +3,16 @@ import java.rmi.server.UID;
 
 class VehicleBillingCashReceiptInterceptor {
 	
-	@After( pattern="BillingCashReceiptHandler.getHeader", eval="#{ args[0].collectiontype.handler == 'vehicle' }")
+	@Service("SingleBillingService")
+	def billingSvc;
+
+	@After( pattern="BillingCashReceiptService.getBillInfo", eval="#{ args[0].collectiontype.handler == 'vehicle' }")
 	public void loadInfo(def evt ) {
 		def p = evt.result;
+		def e = evt.args[0];
+
+		throw new Exception("args is " + e );
+
 		p.payer = [objid:'ENT001', name:'elmo'];
 		p.paidby = 'Business 1';
 		p.paidbyaddress = 'Cebu City';
@@ -16,7 +23,7 @@ class VehicleBillingCashReceiptInterceptor {
 		p.appid = 'VAPP00001';
 	} 
 	
-	@After( pattern="BillingCashReceiptHandler.getBillItems", eval="#{ args[0].txntype == 'vehicle_application' }")
+	@After( pattern="BillingCashReceiptService.getBillItems", eval="#{ args[0].txntype == 'vehicle_application' }")
 	public void loadBilling(def evt ) {
 		def p = evt.result;
 
@@ -30,8 +37,8 @@ class VehicleBillingCashReceiptInterceptor {
 			it.discount = 0;
 			it.surcharge = 50;
 			it.interest = 0;
-			it.postingrefid = 'V00001';
-			it.postingreftype = 'vehicle_application';
+			it.refid = 'V00001';
+			it.reftype = 'vehicle_application';
 			it.total = (it.amount - it.discount) + it.surcharge + it.interest;
 		}
 
@@ -39,7 +46,7 @@ class VehicleBillingCashReceiptInterceptor {
 		//throw new Exception("Lookup info now " +  p.collectiontype.handler );
 	} 
 
-	@After( pattern="BillingCashReceiptHandler.getPostPaymentInfo", eval="#{ args[0].txntype == 'vehicle_application' }")
+	@After( pattern="BillingCashReceiptService.getPostPaymentInfo", eval="#{ args[0].txntype == 'vehicle_application' }")
 	public void loadPaymentInfo(def evt ) {
 		def p = evt.args[0];
 		def res = evt.result;
@@ -48,7 +55,7 @@ class VehicleBillingCashReceiptInterceptor {
 		res.items = p.billitems;
 	} 
 
-	@After( pattern="BillingCashReceiptHandler.getWorkflowTask1", eval="#{ args[0].txntype == 'vehicle_application' && args[0].taskid !=null }")
+	@After( pattern="BillingCashReceiptService.getWorkflowTask", eval="#{ args[0].txntype == 'vehicle_application' && args[0].taskid !=null }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def res = evt.result;

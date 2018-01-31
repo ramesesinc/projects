@@ -10,6 +10,11 @@ import com.rameses.seti2.models.*;
  
 public class SingleBillingReportModel extends FormReportModel  {
     
+    
+    public String getReportId() {
+        return "singlebillingreport";
+    }
+    
     public def getConfInfo() {
         def d = super.getConfInfo();
         d.rulename = getRulename();

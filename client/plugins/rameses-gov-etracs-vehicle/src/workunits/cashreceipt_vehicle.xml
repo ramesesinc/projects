@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml">
+<workunit extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml" rulename="vehiclebilling">
     <invokers>
         <invoker type="cashreceipt:vehicle" action="init" caption="Vehicle Registration"/>
         <invoker type="cashreceipt:barcode:51010" action="loadBarcode" caption="Vehicle Registration"/>

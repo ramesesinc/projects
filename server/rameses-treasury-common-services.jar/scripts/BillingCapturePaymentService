@@ -6,7 +6,7 @@ import vehicle.facts.*;
 import treasury.utils.*;
 import treasury.facts.*;
 
-class BillingCashReceiptService {
+class BillingCapturePaymentService {
 
 	@Service("BillingPaymentHandler")
 	def self;
@@ -80,7 +80,7 @@ class BillingCashReceiptService {
 		}
 
 		//check if there is workflow tasks
-		def taskInfo = self.getPaymentWorkflow(  p );
+		def taskInfo = self.getWorkflowTask(  p );
 		if( taskInfo ) {
 			if( !taskInfo.processname ) 
 				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error processname is required");

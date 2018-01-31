@@ -2,6 +2,7 @@
 	<element tablename="vehicle_payment">
 		<field name="objid" primary="true" prefix="VPMT"/>
 		<field name="appid"  />
+		
 		<field name="franchiseid" required="true" />
 		<field name="txndate" required="true" />
 		<field name="amount" required="true" />
@@ -13,5 +14,9 @@
 		<complex name="items" ref="vehicle_payment_item" jointype="one-to-many">
 			<key field="objid" target="parentid" />
 		</complex>	
+
+		<complex name="application" ref="vehicle_application" required="false" jointype="many-to-one" includefields="taskid">
+			<key field="appid" target="objid" />
+		</complex>
 	</element>
 </schema>

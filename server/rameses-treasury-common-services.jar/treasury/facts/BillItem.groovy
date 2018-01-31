@@ -15,13 +15,7 @@ class BillItem extends AbstractBillItem {
 
 	//amount that is left unpaid from the full amount
 	double partialunpaid;
-	/*
-	public BillItem(def o) {
-		copy(o);
-	}
-	*/
-	
-	
+
 	
 	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
 
@@ -51,7 +45,7 @@ class BillItem extends AbstractBillItem {
 		def m = super.toMap();
 		m.refid = refid;
 		m.reftype = reftype;
-		m.parentrefid = parentid;
+		m.parentid = parentid;
 		items.each {
 			if(it.amount == null) it.amount = 0;
 			m.put(it.txntype?.toLowerCase(), NumberUtil.round(it.amount));

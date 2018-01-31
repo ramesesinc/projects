@@ -65,7 +65,8 @@ public class AssessmentBillingService {
 		};
 
 		if( data.amtpaid ) {
-			facts << new treasury.facts.Payment( amount: data.amtpaid );
+			def amt = new BigDecimal( data.amtpaid + "" );
+			facts << new treasury.facts.Payment( amount: amt );
 		}
 
 		def startgroup = params.startgroup;
@@ -106,6 +107,10 @@ public class AssessmentBillingService {
 			else if( o instanceof BillDate ) {
 				m.billdate = o.date;
 			}
+		}
+		//calc totals
+		if(m.billitems) {
+			m.amount = m.billitems.sum{ it.amount };	
 		}
 		return m;
 	}

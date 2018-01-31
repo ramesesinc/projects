@@ -26,10 +26,8 @@ class VehicleAssessmentReportInterceptor {
 		entity.fees.each {
 			try {
 				def bi = new BillItem();
-				bi.billrefid = entity.objid;
-				bi.refid = it.objid;
+				bi.parentid = entity.objid;
 				bi.account = itemAcct.createAccountFact( it.item );
-				bi.ledgertype = it.ledgertype;
 				bi.amount = it.amount;
 				facts << bi;
 			}
@@ -54,10 +52,8 @@ class VehicleAssessmentReportInterceptor {
 		def db = em.lookup( "vehicle_application_" + p.vehicletype );
 		def app = db.find( [objid: p.objid ]).first(1);
 		
-		app.fees = appFeeEm.find( [appid: p.objid ] ).select("objid,item.*,amount").list();
-
+		app.fees = appFeeEm.find( [parentid: p.objid ] ).select("objid,item.*,amount").list();
 		processBilling( app );
-
 		app.amount = app.fees.sum{ it.amount };
 		result.data = app;
 	}

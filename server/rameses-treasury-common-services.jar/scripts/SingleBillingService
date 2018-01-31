@@ -18,39 +18,43 @@ class SingleBillingService {
 	def self;
 
 	@ProxyMethod
-	public def getInfo(String rulename, def o ) {return [:];}
+	public def getInfo(def o ) {return [:];}
 
 	@ProxyMethod
-	public def getBillItems(String rulename, def o  ) {return [];}
+	public def getBillItems( def o  ) {return [];}
 
 	@ProxyMethod
-	public def execute(  def params ) {
-		if( !params.rulename ) throw new Exception("SingleBillingService error. rulename is required");
-		if( !params.params ) throw new Exception("SingleBillingService error. params is required");
+	public def execute(  def pp ) {
+		if( !pp.rulename ) throw new Exception("SingleBillingService error. rulename is required");
+		if( !pp.params ) throw new Exception("SingleBillingService error. params is required");
 
-		String rulename = params.rulename;
-		def info = null;
+		String rulename = pp.rulename;
+		def data = null;
 
-		if( !params.data ) {
-			info = self.getInfo(rulename, params.params ); 
-			info.billitems = self.getBillItems( rulename, info );
+		if( !pp.data ) {
+			def m = [rulename:rulename, params: pp.params];
+			data = self.getInfo( m ); 
+			m.data = data;
+			data.billitems = self.getBillItems( m );
 		}
 		else {
-			info = params.data;
+			data = p.data;
 		}
 
-		if(!info.billitems)
-			throw new Exception("There must be at least one billitem in info.billitems SingleBillingService.execute");
+		if(!data.billitems)
+			throw new Exception("There must be at least one billitem in data billitems SingleBillingService.execute");
 
 		def startgroup = "billing";
-		if( params.startgroup ) rulegroup = params.rulegroup; 
+		if( pp.startgroup ) rulegroup = p.rulegroup; 
 
-		def p = [rulename: rulename, startgroup: startgroup, params: info ]
-		def res = billingSvc.execute( p ); 
-		info.putAll( res );
-		info.amount = info.billitems.sum{ it.amount };
+		data.putAll( pp.params );
 
-		return info;
+		def r = billingSvc.execute( [rulename: rulename, startgroup: startgroup, params: data ] ); 
+		def result = [:];
+		result.putAll( data );
+		result.putAll( r ); 
+		result.amount = result.billitems.sum{ it.amount };
+		return result;
 	}
 
 

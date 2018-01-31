@@ -5,7 +5,7 @@
             <transition to="initial" action="create"/>
         </start>
         <page name="initial" title="#{formTitle} - Specify Information">
-            <transition to="assessment" caption="Next" action="assess" immediate="false"/>
+            <transition to="assessment" caption="Next" immediate="false"/>
         </page>
         <page name="assessment" title="#{formTitle} - Assessment">
             <transition to="initial" caption="Back" />

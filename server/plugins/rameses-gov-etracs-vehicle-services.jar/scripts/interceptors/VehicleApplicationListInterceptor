@@ -1,7 +1,4 @@
 import com.rameses.annotations.*;
-import java.rmi.server.UID;
-import enterprise.facts.*;
-import enterprise.utils.*;
 
 class VehicleApplicationListInterceptor {
 	
@@ -18,6 +15,7 @@ class VehicleApplicationListInterceptor {
 
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }")
 	public void loadList(def evt) {
+
 		def o = evt.args[0];
 		//o.debug = true;
 		if( !o.node?.id ) return;

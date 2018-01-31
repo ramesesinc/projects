@@ -31,7 +31,7 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     
     def _payOptions;
     
-     public String getTitle() {
+    public String getTitle() {
         if( invoker.properties.formTitle ) {
             return ExpressionResolver.getInstance().evalString(invoker.properties.formTitle,this);
         }
@@ -47,7 +47,16 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         pfn = workunit?.info?.workunit_properties?.contextName;
         if ( pfn ) return pfn; 
         return super.getSchemaName(); 
-     }
+    }
+     
+    public String getRulename() {
+        String s = invoker.properties.rulename;
+        if( s!=null ) {
+            return s;
+        }
+        s = workunit?.info?.workunit_properties?.rulename;
+        if( s != null ) return s;
+    }
 
     public String getDetails() {
         return "Details";
@@ -83,6 +92,7 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     void loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
+        p.rulename = getRulename();
         def info = cashReceiptSvc.getInfo( p );
         entity.putAll(info);
         reloadItems(); 
@@ -114,6 +124,18 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
             loadInfo( [id: txnid, payment: o, action:'payoption'] );
         }
         return Inv.lookupOpener( "simple_cashreceipt_payoption", m);
+    }
+    
+    void specifyPayAmount() {
+        def o = MsgBox.prompt("Enter Pay Amount");
+        if(!o) return null;
+        def p = [amtpaid: o, id:txnid, action:'open' ];
+        loadInfo( p );
+    }
+    
+    void reloadBill() {
+        def p = [id:txnid, action:'open' ];
+        loadInfo( p );
     }
     
     def resetPayOption() {

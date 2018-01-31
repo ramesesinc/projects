@@ -168,7 +168,6 @@ public class AssessmentPage extends javax.swing.JPanel {
         xButton1.setImmediate(true);
         xButton1.setName("assess"); // NOI18N
         xButton1.setText("Assess");
-        xButton1.setVisibleWhen("#{  entity.txnmode == 'CAPTURE' }");
 
         xButton2.setImmediate(true);
         xButton2.setName("addItem"); // NOI18N

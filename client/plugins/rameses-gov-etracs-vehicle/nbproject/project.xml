@@ -38,14 +38,6 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>rameses-enterprise-treasury</foreign-project>
-                <artifact-type>jar</artifact-type>
-                <script>build.xml</script>
-                <target>jar</target>
-                <clean-target>clean</clean-target>
-                <id>jar</id>
-            </reference>
-            <reference>
                 <foreign-project>rameses-etracs-main</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
@@ -62,7 +54,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>rameses-gov-treasury-common</foreign-project>
+                <foreign-project>rameses-seti</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -70,7 +62,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>rameses-seti</foreign-project>
+                <foreign-project>rameses-treasury-common</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>

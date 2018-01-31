@@ -38,6 +38,7 @@
 			<key field="objid" target="appid" />
 		</complex>
 
+		<field name="taskid"/>
 		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" 
 				includefields=".*" required="false">
 			<key field="taskid" target="taskid" />

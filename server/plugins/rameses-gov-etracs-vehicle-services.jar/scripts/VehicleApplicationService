@@ -65,11 +65,13 @@ class VehicleApplicationService {
 		if(o.fees) {
 			o.fees.findAll{ !it.txntype }.each { it.txntype = 'FEE' };
 			o.fees = o.fees.findAll{ !it.txntype?.matches('surcharge|interest|discount') }
+			o.fees.each { it.parent = o }
 		};
 		if(o.infos) {
 			def vi = new VariableInfoUtil("vehicle_variable");
 			o.infos.each {
 				vi.fixData( it, it.datatype, it.value );
+				it.parent = o;
 			}
 		}
 

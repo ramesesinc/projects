@@ -1,8 +1,8 @@
 <schema adapter="vehicledb">
-	<element tablename="vehicle_application_fee">
-		<field name="objid" primary="true" prefix="VAPPF"/>
-		<complex name="parent" ref="vehicle_application" jointype="many-to-one" 
-			includefields="objid,appno,apptype,appyear,vehicletype,controlid" required="true">
+	<element tablename="vehicle_taxcredit">
+		<field name="objid" primary="true" prefix="VTAXCREDIT"/>
+		<complex name="parent" ref="vehicle_franchise" jointype="many-to-one" 
+			includefields="objid,controlno,vehicletype" required="false">
 			<key field="parentid" target="objid"/>
 		</complex>	
 		<field name="item_objid" required="true" />
@@ -11,8 +11,5 @@
 		<field name="amount" required="true" />
 		<field name="amtpaid" required="true" />
 		<field name="balance" expr="amount - amtpaid" />
-
-		<field name="txntype" required="true" />
-		<field name="sortorder" required="true" />
 	</element>
 </schema>

@@ -22,6 +22,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     @FormTitle
     def formTitle;
     
+    @Binding
+    def binding;
+    
     def franchiseno;
     def ruleExecutor;
     def entity;
@@ -79,54 +82,24 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     def assess() {
         def m = [rulename : 'vehiclebilling'];
         m.handler = { o->
+            if(!o) return;  
             entity.fees = o.billitems;
             entity.infos = o.infos;
+            entity.amount = o.amount;
+            entity.expirydate = o.expirydate;
+            if(o.franchise?.expirydate) {
+                entity.franchise.expirydate = o.franchise.expirydate;
+            }
+            entity.billexpirydate = entity.billexpirydate;
             feeListModel.reloadAll();
             infoListModel.reloadAll();
+            binding.refresh();
         }
         m.params = [application: entity, franchise: entity.franchise];
         m.defaultInfos = entity.infos;
-        return Inv.lookupOpener("assessment", m );
+        return Inv.lookupOpener( "assessment", m );
     }
 
-    /*
-    void assess1() {
-        if( reqYear && reqYear != entity.appyear )
-            throw new Exception("App Year must be " + reqYear );
-        
-        def p = [:];
-        p.putAll( entity );
-        p.defaultinfos = p.remove("infos");
-        def r = ruleExecutor.execute(p);
-        if( !r) {
-            throw new BreakException();
-        }
-        entity.expirydate = r.expirydate;
-        entity.franchise.expirydate = r.franchise?.expirydate;
-        
-        if ( entity.fees == null ) {
-            entity.fees = []; 
-        } else { 
-            entity.fees.clear(); 
-        }
-        if ( entity.infos == null ) {
-            entity.infos = []; 
-        } else { 
-            entity.infos.clear(); 
-        }
-
-        if( r.infos ) entity.infos.addAll( r.infos.unique() );  
-        
-        if( r.items ) {
-            entity.fees.addAll( r.items );
-            entity.amount = entity.fees.sum{ it.amount };
-        }
-
-        feeListModel.reloadAll();
-        infoListModel.reloadAll();
-    }
-    */  
-    
     def feeListModel = [
         fetchList: { o->
             return entity.fees;

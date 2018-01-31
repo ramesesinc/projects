@@ -37,14 +37,15 @@ class VehicleApplicationPersistenceInterceptor {
 	public void afterOpen(def evt) {
 		def entity = evt.result;
 
-        entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
+
+        entity.infos = appInfoEm.find( [parentid: entity.objid]).orderBy( "sortorder" ).list();
         entity.infos.each {
         	it.putAll( it.remove("variable") );
         	it.value = VariableInfoConverter.convertValue( it );
         };
 
 		//LOAD FEES
-		entity.fees = appFeeEm.find([appid: entity.objid]).list();
+		entity.fees = appFeeEm.find([parentid: entity.objid]).list();
         entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
 
         //LOAD PAYMENTS

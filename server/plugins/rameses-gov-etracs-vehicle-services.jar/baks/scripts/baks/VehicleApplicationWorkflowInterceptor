@@ -33,21 +33,24 @@ class VehicleApplicationWorkflowInterceptor {
 	public void afterOpen(def evt) {
 		def entity = evt.result;
 
+		throw new Exception("fire fire");
+
         //LOAD INFOS
         def vi = new VariableInfoUtil("vehicle_variable");
-        entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
+        entity.infos = appInfoEm.find( [parentid: entity.objid]).orderBy( "sortorder" ).list();
         entity.infos.each {
         	vi.convertData( it );
         };
 
 		//LOAD FEES
-		entity.fees = appFeeEm.find([appid: entity.objid]).list();
+		entity.fees = appFeeEm.find([parentid: entity.objid]).list();
 		entity.amount = 0;
         if(entity.fees) {
             entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
         };
 
         //LOAD PAYMENTS
+        appPaymentEm.debug = true;
 		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();
 
 		//LOAD COMPLETE USER INFO

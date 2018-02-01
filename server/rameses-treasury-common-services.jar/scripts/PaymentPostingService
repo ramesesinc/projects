@@ -72,7 +72,6 @@ class PaymentPostingService {
 		if( pmt._workflow ) {
 			taskSvc.signal( pmt._workflow );
 		}
-
 		return pmt;
 	}
 

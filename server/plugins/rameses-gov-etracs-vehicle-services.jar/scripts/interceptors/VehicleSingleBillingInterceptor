@@ -144,6 +144,7 @@ class VehicleSingleBillingInterceptor {
 		result.refid = p.txnid; 
 		result.taskid = p.taskid;
 		result.taskstate = 'payment';
+		result.autostart = true;
 	} 
 
 	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
@@ -161,8 +162,10 @@ class VehicleSingleBillingInterceptor {
 		def p = evt.args[0];
 		def result = evt.result;
 		result.processname = 'vehicle_application';
+		result.refid = p.appid;
 		result.taskid = p.taskid;
 		result.action = 'return';
+		result.autostart = true;
 	} 
 
 }

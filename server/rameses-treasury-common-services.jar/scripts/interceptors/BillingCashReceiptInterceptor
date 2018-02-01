@@ -50,6 +50,7 @@ public class BillingReceiptInterceptor {
 				if(!wf.processname) throw new Exception("processname is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
 				if(!wf.taskid) throw new Exception("taskid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
 				if(!wf.action) throw new Exception("action is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+				if(!wf.refid ) throw new Exception("refid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
 				pmt._workflow = wf; 
 			}
 			if(!pmt._schemaname) throw new Exception("_schemaname is required in getVoidPaymentInfo for " + rct.collectiontype.handler );

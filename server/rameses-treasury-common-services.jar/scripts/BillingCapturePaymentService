@@ -15,27 +15,20 @@ class BillingCapturePaymentService {
 	def billingSvc;
 
 	@ProxyMethod
-	public def getInfo( def o ) {
-		if(!o.collectiontype?.handler) throw new Exception("collectiontype handler is required in CashReceiptBillingService.getInfo");
-		if( !o.rulename ) throw new Exception("rulename is required in BillingCashReceiptService");
+	public def getInfo( def p ) {
+		if(!p.txntype) throw new Exception("txntype handler is required in BillingCapturePaymentService.getInfo");
+		if(!p.rulename ) throw new Exception("rulename is required in BillingCapturePaymentService");
+		if(!p.id) throw new Exception("txnid handler is required in BillingCapturePaymentService.getInfo");	
 
-		def  p = [rulename: o.rulename, collectiontype: [handler:o.collectiontype.handler], params: [:] ];
-		o.each { k,v->
-			if(!k.matches("rulename|collectiontype")) {
-				p.params.put(k,v);
-			}
-		}
+		def pp = [:];
+		pp.txntype = p.remove("txntype");
+		pp.rulename = p.remove("rulename");
+		pp.params = [:];
+		pp.params.putAll( p );
 
-		def pi = billingSvc.execute( p );
-		p.params.putAll( pi );
-
-		def rct = self.formatReceiptInfo( p );
-		if( rct.payer && !rct.payer.objid ) throw new Exception("Payer must have an objid ");
-		if( !rct.paidby  ) throw new Exception("Paid by is required");
-		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
-		rct.billitems = pi.billitems;
-		rct.collectiontype = o.collectiontype;
-		return getItems( rct );
+		def pi = billingSvc.execute( pp );
+		if(!pi.txntype) pi.txntype = pp.txntype;
+		return getItems( pi );
 	}
 
 	@ProxyMethod
@@ -43,26 +36,7 @@ class BillingCapturePaymentService {
 		if( !p.billitems )
 			throw new Exception("CashReceiptBillingService error. billitems is required "  );
 
-		def billitems = p.billitems;
-		p.billitems = billitems.findAll{ it.txntype==null || !it.txntype.toLowerCase().matches('discount|surcharge|interest')  };
-
-		//if cash receipt items not specified
-		if( !p.items ) {
-			//summarize the billitems into cashreceipt items. For specialized grouping, the group complex field must be specified
-			//in each billitem, otherwise this will be grouped by account only. The group must contain the label and remarks if any.
-			def cashRctItems = [];
-			def grpItems = billitems.groupBy{ [it.item, it.group] };
-			grpItems.each { k,v->
-				cashRctItems << [item: k[0], remarks: k[1]?.remarks, amount: NumberUtil.round(v.sum{ it.amount }) ];
-			} 
-			p.items = cashRctItems;
-			p.items.each {
-				if(!it.item?.objid) throw new Exception("item.objid is required");
-				if(!it.item?.title) throw new Exception("item.title is required");
-				if(!it.amount) throw new Exception("amount is required in line item");
-			}
-		}
-		p.amount = p.items.sum{ it.amount };
+		p.billitems = p.billitems.findAll{ it.txntype==null || !it.txntype.toLowerCase().matches('discount|surcharge|interest')  };
 
 		//get also the payment info. This will instruct the PostPaymentService regarding how to update the ledger
 		def payInfo = self.getPostPaymentInfo(  p );
@@ -80,12 +54,12 @@ class BillingCapturePaymentService {
 		}
 
 		//check if there is workflow tasks
-		def taskInfo = self.getWorkflowTask(  p );
+		def taskInfo = self.getPaymentWorkflow(  p );
 		if( taskInfo ) {
 			if( !taskInfo.processname ) 
-				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error processname is required");
+				throw new Exception("CashReceiptBillingService.getItems getPaymentWorkflow error processname is required");
 			if( !taskInfo.refid )
-				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error refid is required");
+				throw new Exception("CashReceiptBillingService.getItems getPaymentWorkflow error refid is required");
 			p._workflow = taskInfo;		
 		}
 

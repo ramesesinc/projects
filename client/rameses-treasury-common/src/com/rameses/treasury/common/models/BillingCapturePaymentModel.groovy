@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*
 import com.rameses.enterprise.treasury.cashreceipt.*;
 import com.rameses.util.*;
 
-public class CapturePaymentModel {
+public class BillingCapturePaymentModel {
     
     @Controller
     def workunit;
@@ -15,12 +15,14 @@ public class CapturePaymentModel {
     @Invoker
     def invoker;
     
-    @Service("CapturePaymentService")
+    @Service("BillingCapturePaymentService")
     def capturePaymentSvc;
     
      //we specify this so print detail will appear.
     
     def page = "initial";
+    def txntype;
+    def rulename;
     def txnid;
     def payOption;
     def selectedItem;
@@ -29,7 +31,7 @@ public class CapturePaymentModel {
     
     def _payOptions;
     
-     public String getTitle() {
+    public String getTitle() {
         if( invoker.properties.formTitle ) {
             return ExpressionResolver.getInstance().evalString(invoker.properties.formTitle,this);
         }
@@ -37,21 +39,37 @@ public class CapturePaymentModel {
             return invoker.caption;
         }
         return getContextName();
-     }
+    }
     
-     public String getContextName() {
+    public String getContextName() {
         def pfn = invoker.properties.contextName;
         if(pfn) return pfn;
         pfn = workunit?.info?.workunit_properties?.contextName;
         if ( pfn ) return pfn; 
         return super.getSchemaName(); 
-     }
-
-    public String getDetails() {
-        return "Details";
+    }
+     
+    public def init() {
+        txntype = invoker.properties.txntype;
+        if(!txntype) txntype = workunit?.info?.workunit_properties?.txntype;
+        if(!txntype) throw new Exception("Please specify txntype in workunit or invoker for Billing Capture Payment");
+        
+        rulename = invoker.properties.rulename;
+        if(!rulename) rulename = workunit?.info?.workunit_properties?.rulename;
+        if(!rulename) throw new Exception("Please specify rulename in workunit or invoker for Billing Capture Payment");
+        
+        page = "initial";
+        return page;
     }
 
+    void loadItems( def p ) {
+        def b = capturePaymentSvc.getInfo( [id: txnid, txntype: txntype, rulename: rulename ] );
+        entity.billitems = b.billitems;
+        entity.amount = b.amount;
+    }
+    
     public def doNext() {
+        loadItems( [:] );
         /*
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
@@ -65,10 +83,7 @@ public class CapturePaymentModel {
         return page;
     }
     
-     public def doInitial() {
-        page = "initial";
-        return page;
-    }
+    
     
     /*
     public void loadPayOptions() {

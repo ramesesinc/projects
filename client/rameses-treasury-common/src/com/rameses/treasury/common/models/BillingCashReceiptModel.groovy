@@ -20,6 +20,9 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     
      //we specify this so print detail will appear.
     
+    @Binding
+    def binding;    
+    
     String entityName = "misc_cashreceipt"
     def prefix;
     def barcodeid;
@@ -29,7 +32,14 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     def selectedItem;
     def txnid;
     
+    def billAmount = 0;
+    def miscAmount = 0;
+    
+    def miscList = [];
+    def billItemList = [];
+    
     def _payOptions;
+    boolean amountSpecified = false;
     
     public String getTitle() {
         if( invoker.properties.formTitle ) {
@@ -94,10 +104,33 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         p.billdate = entity.receiptdate;
         p.rulename = getRulename();
         def info = cashReceiptSvc.getInfo( p );
+        billItemList = info.items;
         entity.putAll(info);
         reloadItems(); 
-        afterLoadInfo();
-        loadPayOptions();
+        //afterLoadInfo();
+        //loadPayOptions();
+    }
+    
+    void reloadItems() {
+        entity.items = [];
+        entity.items.addAll( billItemList );
+        if( miscList ) {
+            entity.items.addAll( miscList );
+        }
+        itemListModel.reload();
+        miscListModel.reload();
+        if(binding) binding.refresh();
+        updateBalances();
+    }
+    
+    public void updateBalances() {
+        billAmount = NumberUtil.round( billItemList.sum{ it.amount } );
+        miscAmount = 0;
+        if( miscList ) {
+            miscAmount = NumberUtil.round( miscList.sum{ it.amount } );
+        }
+        //entity.amount = NumberUtil.round( entity.items.sum{ it.amount } );  
+        super.updateBalances();
     }
     
     void init() {
@@ -116,7 +149,7 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
     
-    def showPayOption() {
+    def showPayOptions() {
         if( getPayOptions()==null) return null;
         def m = [:];
         m.payOptions = getPayOptions();
@@ -131,11 +164,13 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         if(!o) return null;
         def p = [amtpaid: o, id:txnid, action:'open' ];
         loadInfo( p );
+        amountSpecified = true;
     }
     
-    void reloadBill() {
+    void payAll() {
         def p = [id:txnid, action:'open' ];
         loadInfo( p );
+        amountSpecified = false;
     }
     
     def resetPayOption() {
@@ -147,18 +182,50 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
             throw new Exception("Amount must be equal to amount paid");
     }
     
-    void reloadItems() {
-        if(!entity.items) throw new Exception("There must be at least 1 item to pay");
-        entity.amount = NumberUtil.round( entity.items.sum{ it.amount } );  
-        updateBalances();
-        itemListModel.reload();
-    }
-     
     def itemListModel = [
         fetchList: { o->
             return entity.billitems;
         }
     ] as BasicListModel;
           
+    
+    def selectedMiscItem;
+    def getLookupItems() {
+        def n = contextName + "_miscitem:lookup";
+        try {
+            return InvokerUtil.lookupOpener( n, [ 
+                onselect:{ o-> 
+                    selectedMiscItem.item = o; 
+                    selectedMiscItem.amount = o.defaultvalue; 
+                } 
+            ]); 
+        }
+        catch(e) {
+            MsgBox.err( "No lookup handler found for " + n );
+        }
+    } 
+    
+    def miscListModel = [
+        fetchList: { o-> 
+            return miscList;
+        }, 
+        isColumnEditable: { o,colName ->
+            return (amountSpecified == false);
+        },
+        onAddItem: {o-> 
+            o.objid = 'RCTI' + new java.rmi.server.UID();
+            miscList << o; 
+            reloadItems();
+        },
+        onColumnUpdate: {o,name-> 
+            updateBalances();
+        },
+        onRemoveItem: { o->
+            if ( !MsgBox.confirm("You are about to remove this entry. Continue?")) return false;
+            miscList.remove( o );
+            reloadItems();
+            return true;
+        }        
+    ] as EditorListModel;
     
 }

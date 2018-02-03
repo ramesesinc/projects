@@ -29,17 +29,10 @@ class SingleBillingService {
 		if( !pp.params ) throw new Exception("SingleBillingService error. params is required");
 
 		String rulename = pp.rulename;
-		def data = null;
-
-		if( !pp.data ) {
-			def m = [rulename:rulename, params: pp.params];
-			data = self.getInfo( m ); 
-			m.data = data;
-			data.billitems = self.getBillItems( m );
-		}
-		else {
-			data = p.data;
-		}
+		def m = [rulename:rulename, params: pp.params];
+		def data = self.getInfo( m ); 
+		m.putAll( data );
+		data.billitems = self.getBillItems( m );
 
 		if(!data.billitems)
 			throw new Exception("There must be at least one billitem in data billitems SingleBillingService.execute");
@@ -47,9 +40,11 @@ class SingleBillingService {
 		def startgroup = "billing";
 		if( pp.startgroup ) rulegroup = p.rulegroup; 
 
-		data.putAll( pp.params );
-
-		def r = billingSvc.execute( [rulename: rulename, startgroup: startgroup, params: data ] ); 
+		def rp = [:]
+		rp.putAll( pp.params );
+		rp.putAll( data );
+		
+		def r = billingSvc.execute( [rulename: rulename, startgroup: startgroup, params: rp ] ); 
 		def result = [:];
 		result.putAll( data );
 		result.putAll( r ); 

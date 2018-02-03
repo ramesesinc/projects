@@ -11,23 +11,47 @@ public class BillItemProvider {
 
 	public def createFact(def v) {
 
-		def acct = itemAcctUtil.lookup( v.item.objid );
+		def acct = null;
 		Fund f = null;
-		if( acct.fund?.objid  ) {
-			f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);
+		if(v.item?.objid) {
+			acct = itemAcctUtil.lookup( v.item.objid );
+			if( acct.fund?.objid  ) {
+				f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);
+			}
 		}
 
 		def info = [:];
 		info.parentid = v.parentid;
 		info.refid = v.refid;
 		info.reftype = v.reftype;
-		info.account = new Account( objid: acct.objid, code: acct.code, title: acct.title, fund: f);
+		if( acct ) {
+			info.account = new Account( objid: acct.objid, code: acct.code, title: acct.title, fund: f);	
+		}
+		info.txntype = v.txntype;
 		info.amount = v.amount;
+
+		if(v.principal) info.principal = v.principal;
+		if(v.sortorder) info.sortorder = v.sortorder;
+		if(v.remarks) info.remarks = v.remarks;
+		if(v.duedate) info.duedate = v.duedate;
+
+
+		//for month bill items
 		if(v.year) info.year = v.year;
 		if(v.month) info.month = v.month;
+		if(v.fromdate) info.fromdate = v.fromdate;
+		if(v.todate) info.todate = v.todate;
+
 		return createBillItemFact( info );
 	}
 
-	def createBillItemFact = { o-> new BillItem(o) };
+	def createBillItemFact = { o-> 
+		if(o.month && o.year) {
+			return new MonthBillItem(o);
+		}
+		else {
+			return new BillItem(o); 	
+		}
+	};
 
 }

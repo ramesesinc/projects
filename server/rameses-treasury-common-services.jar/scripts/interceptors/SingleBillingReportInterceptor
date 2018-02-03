@@ -26,6 +26,14 @@ class SingleBillingReportInterceptor {
 		def vv = [ rulename:params.rulename, params: params.parameters ];
 
 		result.data = billingSvc.execute( vv );
+
+		def billitems = [];
+		result.data.billitems.each {
+			if( it.txntype ==null) billitems << it;
+			else if( it.summary ) billitems << it;
+			else if( !it.txntype.toLowerCase().matches('discount|surcharge|interest') ) billitems << it;
+		}
+		result.data.billitems = billitems;
 	}
 
 

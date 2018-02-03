@@ -83,16 +83,16 @@ class VehicleSingleBillingInterceptor {
 	}
  
 
-    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' && args[0].data.txntype == 'vehicle_application' }" )
+    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' && args[0].txntype == 'vehicle_application' }" )
 	public void getAppBillItems(def evt) {
-		def p = evt.args[0].data;
+		def p = evt.args[0];
 		def list = evt.result;
 		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount:{amount-amtpaid},parentid";
 		def res = appFeeEm.select(select).where( "parentid = :parentid AND amount - amtpaid > 0", [parentid: p.application.objid] ).list();
 		list.addAll( res );
 	}
 
-    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[0].data.txntype == 'vehicle_franchise' }" )
+    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[0].txntype == 'vehicle_franchise' }" )
 	public void getFranchiseBillItems(def evt) {
 		def r = evt.result;
 	}
@@ -119,14 +119,17 @@ class VehicleSingleBillingInterceptor {
 		res.payer = info.owner;
 		res.paidby = info.owner.name + " (" + info.controlno + ")";
 		res.paidbyaddress = info.owner.address.text;
-		res.txntype = info.txntype;
 		res.txnid = info.txnid;
 		res.taskid = info.taskid;
 		res.appid = info.application?.objid;
 		res.franchiseid = info.controlid;
 	} 
 
-	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+
+	/***********************************************************
+    * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
+	************************************************************/
+	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].txntype == 'vehicle'  }")
 	public void getPostPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
@@ -136,7 +139,7 @@ class VehicleSingleBillingInterceptor {
 		result.items = e.billitems;
 	} 
 
-	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' && args[0].taskid != null  }")
+	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].txntype == 'vehicle' && args[0].taskid != null  }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
@@ -147,7 +150,7 @@ class VehicleSingleBillingInterceptor {
 		result.autostart = true;
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].txntype == 'vehicle' }")
 	public void getVoidPaymentInfo(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
@@ -157,7 +160,7 @@ class VehicleSingleBillingInterceptor {
 		result.putAll( pmt );
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' && args[0].taskid!=null}")
+	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].txntype == 'vehicle' && args[0].taskid!=null}")
 	public void getVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;

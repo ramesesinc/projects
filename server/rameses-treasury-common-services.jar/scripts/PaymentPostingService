@@ -23,7 +23,7 @@ class PaymentPostingService {
 		pmtEm.create( pmt );
 
 		//save or update the reference
-		pmt.items.each {
+		pmt.items.findAll{ it.reftype != null }.each {
 			def gb = emLookup( it.reftype );
 			//if there is a _new marker, then create this before saving
 			if( !it.refid || it.refid.matches("new|create") ) {

@@ -29,4 +29,12 @@ public class SingleBillingReportModel extends FormReportModel  {
         s = workunit?.info?.workunit_properties?.rulename;
         if( s != null ) return s;
     }
+    
+    public def preview() {
+        def entity =  caller?.entityContext;
+        if( entity && !query.objid ) {
+            query.objid = entity.objid;
+        }
+        return super.preview();
+    }
 }

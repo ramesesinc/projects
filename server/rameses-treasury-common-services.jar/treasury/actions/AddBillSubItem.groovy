@@ -16,7 +16,7 @@ class AddBillSubItem extends AbstractAddBillItem {
 	public def createSubItemFact( def billitem, def amt, def txntype ) {
 		def subItem = new BillSubItem(parent: billitem);
 		subItem.amount = NumberUtil.round(amt);
-		subItem.txntype = txntype;
+		if(txntype!=null && txntype!='null') subItem.txntype = txntype;
 		return subItem;
 	}
 
@@ -28,6 +28,7 @@ class AddBillSubItem extends AbstractAddBillItem {
 		def txntype = params.txntype;
 		if(txntype!=null &&  !(txntype instanceof String )) {
 			txntype = params.txntype?.key;
+			if( txntype == "null") txntype = null;
 		}
 
 		def subItem = createSubItemFact(  billitem, amt, txntype );

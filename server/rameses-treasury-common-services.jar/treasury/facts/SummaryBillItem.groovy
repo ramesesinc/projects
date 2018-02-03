@@ -14,5 +14,10 @@ public class SummaryBillItem extends AbstractBillItem {
 		return 100000;	//just an arbitrary high number	
 	}
 	
+	public def toMap() {
+		def map = super.toMap();
+		map.summary = true;
+		return map;
+	}
 
 }

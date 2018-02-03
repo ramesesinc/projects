@@ -15,15 +15,18 @@ import com.rameses.util.*;
 ***************************************************************************************/
 class VehicleFactInterceptor {
 	
-    def variableInfoProvider = new VariableInfoProvider(
-		schemaName:"vehicle_variable"
-	);
+    
 
 	//update the franchise info if capture or 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'vehiclebilling' }", index=10)
 	public void buildFactsForAssesssment(def evt) {
 		def data = evt.args[1];
 		def factBuilder = evt.result;
+
+		def variableInfoProvider = new VariableInfoProvider(
+			schemaName:"vehicle_variable"
+		);
+
 		factBuilder.variableInfoProvider = variableInfoProvider;
 		factBuilder.facts << new VehicleFranchise( data.franchise );
 		if( data.application ) {

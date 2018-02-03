@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount">
+    <invokers>
+        <invoker type="vehicle_miscitem:lookup" action="init" caption="Vehicle Item Lookup"/>
+    </invokers>
+</workunit>

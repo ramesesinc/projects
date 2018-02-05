@@ -129,7 +129,7 @@ class VehicleSingleBillingInterceptor {
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].txntype == 'vehicle'  }")
+	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
 	public void getPostPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
@@ -139,36 +139,34 @@ class VehicleSingleBillingInterceptor {
 		result.items = e.billitems;
 	} 
 
-	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].txntype == 'vehicle' && args[0].taskid != null  }")
+	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
-		result.processname = 'vehicle_application';
-		result.refid = p.txnid; 
-		result.taskid = p.taskid;
-		result.taskstate = 'payment';
-		result.autostart = true;
+		if( p.taskid != null ) {
+			result.processname = 'vehicle_application';
+			result.refid = p.txnid; 
+			result.taskid = p.taskid;
+			result.taskstate = 'payment';
+		}
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].txntype == 'vehicle' }")
+	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
 	public void getVoidPaymentInfo(def evt ) {
-		def p = evt.args[0];
 		def result = evt.result;
-		def pmt = vehiclePmt.find( [refid: p.refid] ).first(1);
 		result._schemaname = 'vehicle_payment';
-		result.taskid = pmt.application?.taskid;
-		result.putAll( pmt );
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].txntype == 'vehicle' && args[0].taskid!=null}")
+	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
 	public void getVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
-		result.processname = 'vehicle_application';
-		result.refid = p.appid;
-		result.taskid = p.taskid;
-		result.action = 'return';
-		result.autostart = true;
+		if( p.application?.taskid ) {
+	 		result.taskid = p.application?.taskid;
+			result.processname = 'vehicle_application';
+			result.refid = p.appid;
+			result.action = 'return';
+		}
 	} 
 
 }

@@ -17,7 +17,7 @@ class WaterworksSingleBillingInterceptor {
 	def acctEm; 
 
 	@DataContext('waterworks_payment')
-	def wpEm; 
+	def waterPmt; 
 
 	@DataContext("waterworks_consumption")
 	def wcEm;
@@ -27,7 +27,6 @@ class WaterworksSingleBillingInterceptor {
 		def obj = evt.args[0];
 		def r = evt.result;
 		def p = obj.params;
-
 		def acct = null;
 		if( p.objid ) {
 			acct = acctEm.find([objid:p.objid]).first();
@@ -92,56 +91,55 @@ class WaterworksSingleBillingInterceptor {
 	public void formatCashReceipt(def evt ) {
 		def info = evt.args[0].params;
 		def res = evt.result;
-		res.payer = info.owner;
-		res.paidby = info.acctname + " (" + acct.acctno + ")";
+		if(info.owner?.objid) {
+			res.payer = info.owner;
+		}
+		res.paidby = info.acctname + " (" + info.acctno + ")";
 		res.paidbyaddress = info.address?.text;
-		res.acctid = info.objid;
 		res.acctno = info.acctno;
+		res.acctid = info.objid;
 	} 
-
 
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].txntype == 'waterworks'  }")
+	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
 	public void getPostPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
 		result._schemaname = 'waterworks_payment';
-		result.acctid =  e.appid
+		result.acctid =  e.acctid;
 		result.items = e.billitems;
 	} 
 
-	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].txntype == 'waterworks' && args[0].taskid != null  }")
+	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
-		result.processname = 'waterworks_application';
-		result.refid = p.txnid; 
-		result.taskid = p.taskid;
-		result.taskstate = 'payment';
-		result.autostart = true;
+		if(p.taskid) {
+			result.processname = 'waterworks_application';
+			result.refid = p.txnid; 
+			result.taskid = p.taskid;
+			result.taskstate = 'payment';
+		}
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].txntype == 'waterworks' }")
+	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'waterworks' }")
 	public void getVoidPaymentInfo(def evt ) {
-		def p = evt.args[0];
 		def result = evt.result;
-		def pmt = waterPmt.find( [refid: p.refid] ).first(1);
 		result._schemaname = 'waterworks_payment';
-		result.taskid = pmt.application?.taskid;
-		result.putAll( pmt );
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].txntype == 'waterworks' && args[0].taskid!=null}")
+	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks' }")
 	public void getVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
+		/*
 		result.processname = 'waterworks_application';
 		result.refid = p.appid;
 		result.taskid = p.taskid;
 		result.action = 'return';
-		result.autostart = true;
+		*/
 	} 
 
 }

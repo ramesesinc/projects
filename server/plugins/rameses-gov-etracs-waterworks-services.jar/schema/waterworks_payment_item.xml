@@ -7,8 +7,8 @@
 		<field name="item_objid" required="true" />
 		<field name="item_title" required="true" />
 
-		<field name="txnrefid"  />
-		<field name="ledgertype"  />
+		<field name="refid"  />
+		<field name="reftype"  />
 
 		<field name="year"  />
 		<field name="month"  />

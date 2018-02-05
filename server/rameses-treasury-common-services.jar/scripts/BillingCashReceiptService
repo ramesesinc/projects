@@ -34,8 +34,7 @@ class BillingCashReceiptService {
 		if( !rct.paidby  ) throw new Exception("Paid by is required");
 		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
 		rct.billitems = pi.billitems;
-
-		if(!rct.txntype) rct.txntype = o.collectiontype.handler;
+		rct.collectiontype = o.collectiontype;
 		return getItems( rct );
 	}
 

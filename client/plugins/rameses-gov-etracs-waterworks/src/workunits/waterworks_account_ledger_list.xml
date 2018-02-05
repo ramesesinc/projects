@@ -1,0 +1,16 @@
+<workunit extends="com/rameses/treasury/common/templates/LedgerList.xml"
+          schemaName="waterworks_consumption"
+          paymentSchemaName="waterworks_payment_item"
+          title="Consumption Ledger"
+          cols="billingcycle.year,billingcycle.month,prevreading,reading,volume,amount,amtpaid,balance" >
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Ledger" 
+                 index="2" action="init" 
+                 parentkey="acctid"
+                 visibleWhen="#{mode=='read'}"  />
+        
+        <!-- List Actions -->
+        <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
+        <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
+    </invokers>
+</workunit>

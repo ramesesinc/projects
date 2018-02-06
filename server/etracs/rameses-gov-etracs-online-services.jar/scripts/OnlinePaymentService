@@ -14,11 +14,9 @@ class OnlinePaymentService   {
     @Service("PaymentOrderService")
     def pmoSvc;  
     
-    @DataContext("collectiontype")
-    def collTypeEm; 
+    @DataContext("eor")
+    def eorEm; 
 
-    @DataContext("cashreceipt")
-    def cashreceipt; 
 
     /***************************************************
     * This must be overridden by discrminating txntype.
@@ -60,13 +58,7 @@ class OnlinePaymentService   {
         if(!o.txntype) return [status:1, message:'txntype is required'];
         def po = pmoSvc.open( [objid: o.paymentrefid ] );
         if (!po) throw new Exception('Payment Order No. ' + o.objid + ' does not exist or has already been processed.')
-        po.collectiontype = collTypeEm.find( [objid: po.collectiontype.objid ] ).first();
-        o.each { k,v->
-            if( !po.containsKey(k) ) {
-               po.put(k,v);
-            }    
-        }    
-
+        
         if(o.tracedate instanceof String ) {
             def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
             po.tracedate = df.parse( o.tracedate );
@@ -75,7 +67,7 @@ class OnlinePaymentService   {
         def r = eorSvc.post( po );
 
         def retval = [:];
-        retval.paymentrefid =  o.paymentrefid;
+        retval.paymentrefid =  r.paymentrefid;
         retval.receiptno = r.receiptno;
         retval.receiptid = r.objid;
         retval.receiptdate = r.receiptdate; 
@@ -88,7 +80,7 @@ class OnlinePaymentService   {
     public def getReceipt( def o ) {
         def m = [:];
         if( o.receiptno ) m.receiptno = o.receiptno;
-        def rc = cashreceipt.find(m).first(1);
+        def rc = eorEm.find(m).first(1);
         if(!rc) {
             throw new Exception("Receipt " + o + " not found");
         }

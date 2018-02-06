@@ -4,6 +4,8 @@
                  caption="Capture Payment" action="init" target="popup" 
                  shortcut="ctrl 1" mnemonic="C"/> 
         
+        <invoker type="waterworks_payment:create" action="init" target="popup"/> 
+        
         <invoker type="formActions" caption="Cancel" action="cancel"/> 
         <invoker type="formActions" caption="Save" action="save"/> 
     </invokers>

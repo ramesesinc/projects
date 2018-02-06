@@ -1,0 +1,17 @@
+<schema adapter="eor">
+	<element tablename="eor_share">
+		<field name="objid" primary="true" prefix="EORSHR"//>
+		<field name="parentid" required="true"/>
+		
+		<field name="itemaccount_objid" required="true"/>
+		<field name="itemaccount_code" />
+		<field name="itemaccount_title" required="true"/>
+
+		<field name="shareaccount_objid" required="true"/>
+		<field name="shareaccount_code" />
+		<field name="shareaccount_title" required="true"/>
+
+		<field name="amount" required="true" type="decimal"/>
+		<field name="share" required="true" type="decimal"/>
+	</element>
+</schema>

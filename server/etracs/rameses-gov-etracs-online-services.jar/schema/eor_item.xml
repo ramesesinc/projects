@@ -1,0 +1,12 @@
+<schema adapter="eor">
+	<element tablename="eor_item">
+		<field name="objid" required="true"/>
+		<field name="parentid" required="true"/>
+		<field name="item_objid" required="true"/>
+		<field name="item_code" required="true"/>
+		<field name="item_title" required="true"/>
+		<field name="amount" required="true"/>
+		<field name="remarks" required="true"/>
+		<field name="item_fund_objid" required="true"/>
+	</element>
+</schema>

@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="eor">
 	<element tablename="paymentpartner">
 		<field name="objid" primary="true" prefix="PMTPRT"/>
 		<field name="code" required="true" />

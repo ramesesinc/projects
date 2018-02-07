@@ -3,9 +3,9 @@ package rptis.landtax.facts;
 public class ShareInfoFact 
 {
     RPTLedgerFact rptledger 
-    String  lgutype   
+    String lgutype  
     String sharetype  
-    String  revperiod 
+    String revperiod 
     String barangayid 
     Double basic     
     Double basicint  
@@ -16,14 +16,18 @@ public class ShareInfoFact
     Double sef       
     Double sefint    
     Double sefdisc   
-    Double firecode    
+    Double firecode  
+    Double sh       
+    Double shint    
+    Double shdisc     
 
     public ShareInfoFact(){}
 
     public ShareInfoFact(params){
         this.rptledger = params.taxsummary.rptledger 
-        this.lgutype = params.lgutype 
-        this.sharetype = params.sharetype 
+        this.barangayid = params.taxsummary.rptledger.barangayid 
+        this.lgutype = params.lgutype  
+        this.sharetype = params.sharetype
         this.revperiod = params.taxsummary.revperiod
         this.basic = 0.0
         this.basicint = 0.0
@@ -35,5 +39,8 @@ public class ShareInfoFact
         this.sefint = 0.0
         this.sefdisc = 0.0
         this.firecode = 0.0
+        this.sh = 0.0
+        this.shint = 0.0
+        this.shdisc = 0.0
     }
 }

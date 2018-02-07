@@ -1,0 +1,133 @@
+import com.rameses.annotations.*; 
+
+class BusinessOnlinePaymentInterceptor {
+
+	@Service("BusinessCashReceiptService")
+	def svc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("business_application")
+	def appEm;
+
+	@Service("PersistenceService")
+	def persistenceSvc;	
+
+
+	@Service("NumberService")
+	def numSvc;
+
+	private def generateBilling( def o ) {
+		def app = appEm.find( [appno: o.appno ]).first();
+		if(!app) {
+			throw new Exception("Cannot find business application no " + o.appno);
+		}	
+		if(!app.state.equalsIgnoreCase('payment')) {
+			throw new Exception("Application is not in payment state");
+		}
+		def r = [:];
+        	r.app = [apptype:app.apptype, appyear:app.appyear, dtfiled:app.dtfiled, appno:app.appno]; 
+        	r.billdate = dateSvc.getBasicServerDate();
+        	r.applicationid = app.objid;
+        if( o.qtr ) {
+        	r.payment = [option:'FULLQTR', qtr: o.qtr.toInteger() ]		
+        }	
+        else {
+        	r.payment = [option: 'FULLYEAR' ];
+        }
+		def z = svc.getBillingForPayment( r ); 
+		z.app = app;
+		z.payment = r.payment;
+        z.amount = numSvc.round( z.totals.total );
+		return z;
+	}
+
+	@After(pattern="OnlinePaymentService.getBilling", eval="#{args[0].txntype=='bpls'}")
+	public void fetchBilling( def evt ) { 
+		def o = evt.args[0];
+		def result = evt.result;
+		o.appno = o.refno;
+		def z = generateBilling(o);
+
+		def p = [:];
+		p.info = [
+			ownername: z.app.ownername, 
+			tradename: z.app.tradename, 
+			address: z.app.businessaddress, 
+			appno: z.app.appno, 
+			bin: z.app.business.bin, 
+			appdate:z.app.dtfiled, 
+			apptype: z.app.apptype,
+			expirydate:z.expirydate
+		];
+		if( o.showdetails ) {
+			p.info.items = z.taxfees.collect{[ 
+					lobname: it.lob.name, 
+					account:it.account?.title, 
+					amount: numSvc.round(it.amtdue), 
+					discount:numSvc.round(it.discount), 
+					surcharge:numSvc.round(it.surcharge),
+					interest:numSvc.round(it.interest),
+					total: numSvc.round(it.total) 
+			]};
+		}
+
+		p.amount = z.amount;
+		result.putAll(p); 
+	}
+
+	@Before(pattern="OnlinePaymentService.createPaymentOrder", eval="#{args[0].txntype=='bpls'}")
+	public void createPaymentOrder( def evt ) { 
+		def o = evt.args[0];
+		o.appno = o.refno;
+		def z = generateBilling(o);
+
+		def m = [:];
+		m.payer = z.app.business.owner;
+		m.paidby = z.app.tradename;
+		m.paidbyaddress = z.app.businessaddress;
+		m.collectiontype = [objid:'BUSINESS_COLLECTION'];
+		m.particulars = 'Business Permit';
+		m.refid = z.app.objid;
+		m.refno = o.appno;
+		m.info = z.payment;
+		m.amount = z.amount;
+		m.txntype = 'bpls';
+		m.txntypename = 'Business Permit';
+
+		//retrieve the contactinfo
+		def contact = [:];
+		def c = appEm.find( [objid: z.app.objid ] ).select("business.*").first();
+		def biz  = c.business;
+		m.mobileno = (biz.mobileno) ? biz.mobileno : biz.owner.mobileno;
+		m.email = (biz.email) ? biz.email : biz.owner.email;
+		m.phoneno = (biz.phoneno) ? biz.phoneno : biz.owner.phoneno;
+		o.info = m;
+	}
+
+	@Before(pattern="EORService.post", eval="#{args[0].txntype=='bpls'}")
+	public void postPayment( def evt ) { 
+		def o = evt.args[0];
+
+		def r = [:]
+		r.appno = o.refno;
+		if(o.info?.qtr) r.qtr = o.info.qtr;
+
+		def z = generateBilling(r);
+		if( o.amount != z.amount ) 
+			throw new Exception("Amount is incorrect, pay order amount is " + o.amount + " bill amount is " + z.amount);
+
+		o.extinfo = [
+			businessid : z.app.business.objid,
+			applicationid : z.app.objid,
+			appyear : z.app.appyear,
+			taxfees  :z.taxfees,
+			expirydate : z.expirydate
+		];
+
+		o.items = z.items;
+
+	}
+
+}

@@ -28,7 +28,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jSplitPane1" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" pref="667" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -37,7 +37,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jSplitPane1" pref="392" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -46,8 +46,7 @@
       <SubComponents>
         <Container class="javax.swing.JSplitPane" name="jSplitPane1">
           <Properties>
-            <Property name="dividerLocation" type="int" value="150"/>
-            <Property name="orientation" type="int" value="0"/>
+            <Property name="dividerLocation" type="int" value="250"/>
           </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
@@ -88,8 +87,8 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="formPanel2" alignment="0" pref="640" max="32767" attributes="0"/>
-                                  <Component id="xSubFormPanel1" alignment="0" pref="640" max="32767" attributes="0"/>
+                                  <Component id="formPanel2" alignment="0" pref="386" max="32767" attributes="0"/>
+                                  <Component id="xSubFormPanel1" alignment="0" pref="386" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -101,7 +100,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="formPanel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="xSubFormPanel1" pref="150" max="32767" attributes="0"/>
+                              <Component id="xSubFormPanel1" pref="304" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -167,12 +166,12 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <EmptySpace min="0" pref="640" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="386" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <EmptySpace min="0" pref="150" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="304" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
@@ -194,7 +193,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="formPanel3" alignment="0" pref="640" max="32767" attributes="0"/>
+                                  <Component id="formPanel3" alignment="0" pref="386" max="32767" attributes="0"/>
                                   <Component id="xDataTable5" alignment="0" min="-2" pref="384" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -207,7 +206,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="formPanel3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="xDataTable5" pref="151" max="32767" attributes="0"/>
+                              <Component id="xDataTable5" pref="305" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>

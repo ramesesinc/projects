@@ -155,7 +155,7 @@ class RPTReceiptController extends com.rameses.enterprise.treasury.cashreceipt.A
             throw new Exception('There are no unpaid properties for this owner.')
         ledgers.each{
             buildBillParams(it)
-            billSvc.generateBillByLedgerId3(bill)
+            billSvc.generateBill(bill)
         }
     }
         

@@ -286,6 +286,12 @@ class LandRPUService
 			if (!detail.landspecificclass || !detail.landspecificclass.objid ) {
 				detail.landspecificclass = detail.specificclass
 			}
+			if (!detail.subclass.code){
+				detail.specificclass.areatype = 'SQM'
+				detail.subclass.unitvalue = 0 
+				detail.unitvalue = 0 
+				detail.areatype = 'SQM'
+			}
 		}
 		return details 
     }

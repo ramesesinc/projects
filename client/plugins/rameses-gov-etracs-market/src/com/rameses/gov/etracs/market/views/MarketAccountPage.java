@@ -53,6 +53,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel25 = new com.rameses.rcp.control.XLabel();
+        xLabel26 = new com.rameses.rcp.control.XLabel();
         jPanel5 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
@@ -193,6 +194,12 @@ public class MarketAccountPage extends javax.swing.JPanel {
         xLabel25.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel25);
 
+        xLabel26.setCaption("Partial Balance");
+        xLabel26.setExpression("#{entity.partialbalance}");
+        xLabel26.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel26.setPreferredSize(new java.awt.Dimension(0, 18));
+        xFormPanel5.add(xLabel26);
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -318,6 +325,7 @@ public class MarketAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel25;
+    private com.rameses.rcp.control.XLabel xLabel26;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;

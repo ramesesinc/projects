@@ -1,0 +1,22 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.text.*;
+import com.rameses.functions.*;
+
+public class PartnerPaymentServiceInterceptor {
+
+	@Service(value="OnlinePaymentService", connection="local-etracs")
+	def svc;
+
+	@Service(value="PartnerNotificationService", connection="gdx-service")
+    def notifier;
+
+	@After( pattern="RemoteMessagingService.onMessage", eval="#{ args[0].action == 'payment' }" )
+	public void receivePayment( def evt ) {
+		def o = evt.args[0];
+		def p = svc.postPayment( o );	
+		notifier.ackReceipt( p );
+	}
+
+}

@@ -1,0 +1,22 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleReport.xml">
+    <invokers>
+        <!-- This is for application billing -->
+        <invoker type="vehicle_application_tricycle:form:formActions" 
+                 caption="Print Bill" 
+                 target="popup" 
+                 action="preview"
+                 index="5"
+                 reportId="vehiclebilling"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/billing.jasper" 
+                 visibleWhen="#{entity.dtapproved != null }" />
+        
+        <invoker type="vehicle_franchise_tricycle:form:formActions" 
+                 caption="Print Bill" 
+                 target="popup" 
+                 action="previewByFranchiseId"
+                 index="5"
+                 reportId="vehiclebilling"
+                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/billing.jasper" />
+    </invokers> 
+    
+</workunit>

@@ -11,6 +11,5 @@ public class CalcTotalRPUAssessValue implements RuleActionHandler {
 	public void execute(def params, def drools) {
 		def rpu = params.rpu
 		rpu.totalav = params.expr.getDecimalValue()
-		println 'rpu.totalav -> ' + rpu.totalav
 	}
 }

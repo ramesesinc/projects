@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptsubledger:create" action="create" caption="Realty Tax Sub-Ledger" target="popup" />
+        <invoker type="rptsubledger:open" action="open" caption="Realty Tax Sub-Ledger"  target="popup" />
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='create'}" />
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" immediate="true" visibleWhen="#{mode=='edit'}" />
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode=='read'}" />
+        
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" 
+                 visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" icon="images/toolbars/edit.png" 
+                 role="LANDTAX" />
+            
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" 
+                 visibleWhen="#{mode!='read'}" icon="images/toolbars/save.png" />
+        
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="a" 
+                 visibleWhen="#{mode=='read' &amp;&amp; entity.state=='PENDING'}" icon="images/toolbars/approve.png" 
+                 role="LANDTAX" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTSubLedgerModel"/>
+        <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTSubLedgerPage" />
+    </pages>
+</workunit>

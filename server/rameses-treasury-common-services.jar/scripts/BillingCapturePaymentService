@@ -1,0 +1,70 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+class BillingCapturePaymentService {
+
+	@Service("BillingPaymentHandler")
+	def self;
+
+	@Service("SingleBillingService")
+	def billingSvc;
+
+	@ProxyMethod
+	public def getInfo( def p ) {
+		if(!p.txntype) throw new Exception("txntype handler is required in BillingCapturePaymentService.getInfo");
+		if(!p.rulename ) throw new Exception("rulename is required in BillingCapturePaymentService");
+		if(!p.id) throw new Exception("txnid handler is required in BillingCapturePaymentService.getInfo");	
+
+		def pp = [:];
+		pp.txntype = p.remove("txntype");
+		pp.rulename = p.remove("rulename");
+		pp.params = [:];
+		pp.params.putAll( p );
+
+		def pi = billingSvc.execute( pp );
+		if(!pi.txntype) pi.txntype = pp.txntype;
+		return getItems( pi );
+	}
+
+	@ProxyMethod
+	public def getItems( def p ) {
+		if( !p.billitems )
+			throw new Exception("CashReceiptBillingService error. billitems is required "  );
+
+		p.billitems = p.billitems.findAll{ it.txntype==null || !it.txntype.toLowerCase().matches('discount|surcharge|interest')  };
+
+		//get also the payment info. This will instruct the PostPaymentService regarding how to update the ledger
+		def payInfo = self.getPostPaymentInfo(  p );
+		if( payInfo ) {
+			if( !payInfo._schemaname  )
+				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error _schemaname is required");
+			if( !payInfo.items  )
+				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error items is required");
+			payInfo.items.each {
+				if(!it.item?.objid) throw new Exception( "CashReceiptBillingService.getItems getPostPaymentInfo error. item.objid is required in each item" );\
+				if(!it.reftype ) throw new Exception( "CashReceiptBillingService.getItems error. getPostPaymentInfo reftype  is required in " + it.item.title );
+			}
+			payInfo.amount = p.amount;
+			p._postpayment = payInfo;
+		}
+
+		//check if there is workflow tasks
+		def taskInfo = self.getPaymentWorkflow(  p );
+		if( taskInfo ) {
+			if( !taskInfo.processname ) 
+				throw new Exception("CashReceiptBillingService.getItems getPaymentWorkflow error processname is required");
+			if( !taskInfo.refid )
+				throw new Exception("CashReceiptBillingService.getItems getPaymentWorkflow error refid is required");
+			p._workflow = taskInfo;		
+		}
+
+		return p;
+	}
+	
+
+}

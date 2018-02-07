@@ -34,6 +34,7 @@ class VehicleApplicationInitInterceptor {
 		def f = em.lookup("vehicle_franchise_"+ entity.vehicletype).find( [controlno: franchiseno ] ).first();
 		if(!f) 
 			throw new Exception(franchiseno + " does not exist");
+		
 		if(f.state!='ACTIVE') 
 			throw new Exception("Cannot process. Franchise " + franchiseno + " is not in ACTIVE state. Please check and release pending application");
 
@@ -46,6 +47,7 @@ class VehicleApplicationInitInterceptor {
         entity.franchise = [objid:f.objid, controlno: f.controlno, expirydate: f.expirydate];
 	}
 
+
 	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'RENEW'}", index=10)
 	public void afterInitApplicationForRenew(def evt) {
 		def params = evt.args[0];
@@ -57,6 +59,18 @@ class VehicleApplicationInitInterceptor {
 		checkUnpaidFees(  entity );
 	}
 
+	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype == 'LATE_RENEWAL'}", index=10)
+	public void afterInitApplicationForLateRenewal(def evt) {
+		def params = evt.args[0];
+		def entity = evt.result;
+		loadFranchiseInfo( params.franchiseno, entity );
+		int yr = dateSvc.getServerYear();
+		entity.appyear = entity.appyear + 1;
+		if( entity.appyear >= yr ) throw new Exception("Invalid year for late renewal. Year must be less than current year" );
+
+		def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		entity.appdate = df.parse( entity.appyear + "-01-01" );
+	}
 	
 	@After(pattern="VehicleApplicationService.init", eval="#{args[0].apptype.matches('DROP|CHANGE_OWNER_UNIT') }", index=10)
 	public void afterInitApplicationForRetire(def evt) {

@@ -13,16 +13,6 @@ class RPTReceiptInterceptor
 	@Service('RPTUtil')
 	def util
 
-	@DataContext('rptbill')
-    def em_rptbill  
-
-    @Service('RPTReceiptService')
-    def receiptSvc 
-
-     @ActiveDB('cashreceiptrpt')
-	def em
-
-
 
 	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler == 'rpt'}") 
 	public void interceptOpenReceipt( evt ) {
@@ -44,24 +34,6 @@ class RPTReceiptInterceptor
 	public void interceptBeforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 		receipt.items = svc.getSummarizedItems(receipt); 
-	}
-
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('eor')}") 
-	public void interceptBeforePostEorReceipt( evt ) {
-		def receipt = evt.args[0]
-		def eor = receipt.eor 
-		def po = receipt.po 
-
-		def bill = em_rptbill.find([objid:po.refid]).first()
-        def rptledger = em.findLedgerInfo([objid:po.info.rptledgerid])
-        if (!rptledger) throw new Exception('Ledger does not exist or has already been deleted.')
-        receiptSvc.buildLedgerForPaymentInfo(bill, rptledger)
-
-        receipt.billid = po.refid 
-        receipt.receiptdate = eor.refdate
-        receipt.rptitems = [rptledger]
-        receipt.amount = eor.amount 
-        receipt.items = receiptSvc.getSummarizedItems(receipt)
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 

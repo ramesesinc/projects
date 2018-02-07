@@ -8,24 +8,46 @@ class AFControlListInterceptor {
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'af_control' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
-		def result = evt.result; 
-		result << [  title: 'Draft', state:'DRAFT' ];
-		result << [  title: 'Open', state:'OPEN' ];
-		result << [  title: 'Issued', state:'ISSUED' ];
-		result << [  title: 'Sold', state:'SOLD' ];
-		result << [  title: 'Consumed', state:'CLOSED' ];
-		result << [  title: 'Cancelled', state:'CANCELLED' ];
+		def result = evt.result;
+		if( x._tag == "AFO" ) {
+			result << [  title: 'Open', state:'OPEN' ];
+			result << [  title: 'Issued', state:'ISSUED' ];
+			result << [  title: 'Sold', state:'SOLD' ];
+			result << [  title: 'Consumed', state:'CLOSED' ];
+			result << [  title: 'Cancelled', state:'CANCELLED' ];
+			result << [  title: 'Processing', state:'PROCESSING' ];
+		} 
+		else if( x._tag == 'COLLECTION' ) {
+			result << [  title: 'Open', state:'ISSUED' ];
+			result << [  title: 'Consumed', state:'CONSUMED' ];
+			result << [  title: 'Cancelled', state:'CANCELLED' ];
+		}
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'af_control' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 
-		//o.debug = true;
 		if( !o.node?.state ) return;
 
-		def str = " state = :state ";
-		def m = [ state: o.node.state ]; 
+		//o.debug = true;
+		def str = "";
+		def m = [:]; 
+
+		if(o.node.state == 'PROCESSING') {
+			str = " lockid = 'PROCESSING' ";
+		}
+		else if( o.node.state == 'ISSUED' ) {
+			str = " state='ISSUED' AND currentseries < endseries AND lockid IS NULL";
+		}
+		else if( o.node.state == 'CONSUMED' ) {
+			str = " currentseries >= endseries AND lockid IS NULL ";
+		}
+		else {
+			str = " state = :state AND lockid IS NULL";
+			m.state = o.node.state;
+		}
+		
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

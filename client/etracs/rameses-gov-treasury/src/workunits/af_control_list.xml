@@ -1,34 +1,29 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="af_control">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="af_control" allowDelete="false">
         
    <invokers>
        
        <invoker folderid="menucategory/treasury/af" 
                 caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
-                cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
-                orderBy="afid,dtfiled,startseries"/>
+                cols="afid,dtfiled,batchno,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"
+                orderBy="afid,dtfiled,batchno,stubno"/>
            
        <invoker folderid="menucategory/treasury/collection" 
-            cols="afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
-            customFilter="owner.objid = 'USR-ADMIN' "
-                caption="Manage AF (Collection)" formTitle="Collection Accountable Forms" role="COLLECTOR">
-            <action name="init" role="COLLECTOR" /> 
-            <action name="init" role="SUBCOLLECTOR" /> 
-        </invoker> 
+            cols="state,afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
+            caption="Manage AF (Collection)" 
+            action="init"
+            formTitle="Collection Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
        
+        <!--
         <invoker folderid="/explorer/txn/treasury" caption="AF Controls" role="COLLECTOR,SUBCOLLECTOR"> 
             <action name="init" role="COLLECTOR" /> 
             <action name="init" role="SUBCOLLECTOR" /> 
         </invoker>
-        
-        
+        -->
    </invokers>
   
-   
-    <!--
-    <code class="com.rameses.enterprise.treasury.models.AFControlModel" />
+   <code class="com.rameses.enterprise.treasury.models.AFControlListModel" />
    
     <pages>
-        <page name="queryform" template="com.rameses.enterprise.treasury.af.CollectorAFControlQuery"/>
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.AFControlQueryPanel"/>
     </pages>
-    -->   
 </workunit>

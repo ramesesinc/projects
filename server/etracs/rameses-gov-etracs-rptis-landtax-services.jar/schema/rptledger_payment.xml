@@ -1,0 +1,26 @@
+<schema>
+    <element tablename="rptledger_payment">
+        <field name="objid" primary="true" />
+        <field name="rptledgerid" required="true" />
+        <field name="type" required="true" />
+        <field name="receiptid" />
+        <field name="receiptno" required="true" />
+        <field name="receiptdate" required="true" type="date" />
+        <field name="paidby_name" required="true" />
+        <field name="paidby_address" required="true" />
+        <field name="postedby" required="true" />
+        <field name="postedbytitle" required="true" />
+        <field name="dtposted" required="true" />
+        <field name="fromyear" required="true" type="integer" />
+        <field name="fromqtr" required="true" type="integer" />
+        <field name="toyear" required="true" type="integer" />
+        <field name="toqtr" required="true" type="integer" />
+        <field name="amount" required="true" type="decimal" />
+        <field name="collectingagency" />
+        <field name="voided" required="true" type="boolean" />
+        <complex name="rptledger" ref="rptledger" jointype="many-to-one"
+            includefields="barangay.name" >
+            <key field="rptledgerid" target="objid"/>
+        </complex>
+    </element>  
+</schema>

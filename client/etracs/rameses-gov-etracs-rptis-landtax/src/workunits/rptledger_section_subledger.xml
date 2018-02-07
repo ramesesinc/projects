@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:section" action="init" caption="Sub-Ledgers" index="20"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerSubLedgerModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerSubLedgerPage" />
+    </pages>
+</workunit>

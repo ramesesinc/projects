@@ -32,12 +32,13 @@ class MunicipalityRPTLedgerInterceptor
     }   
 
     void checkEnv(payments){
-        env.FULLNAME = 'EOR'
-        env.USERID = 'EOR' 
-        env.ORGID = payments[0].lguid 
-        env.ORGCODE = payments[0].lguid 
-        env.ORGCLASS = 'MUNICIPALITY'
-        println 'env -> ' + env 
+        if (!env.USERID){
+            env.FULLNAME = 'EOR'
+            env.USERID = 'EOR' 
+            env.ORGID = payments[0].lguid 
+            env.ORGCODE = payments[0].lguid 
+            env.ORGCLASS = 'MUNICIPALITY'
+        }
     }
 
 }

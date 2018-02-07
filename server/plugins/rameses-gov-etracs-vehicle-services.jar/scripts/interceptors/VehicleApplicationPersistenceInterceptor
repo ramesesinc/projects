@@ -3,6 +3,10 @@ import java.rmi.server.UID;
 import enterprise.facts.*;
 import enterprise.utils.*;
 
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
 class VehicleApplicationPersistenceInterceptor {
 	
 	@DataContext('sys_user') 
@@ -33,19 +37,16 @@ class VehicleApplicationPersistenceInterceptor {
 	public void afterOpen(def evt) {
 		def entity = evt.result;
 
-        //LOAD INFOS
-        def vi = new VariableInfoUtil("vehicle_variable");
-        entity.infos = appInfoEm.find( [appid: entity.objid]).orderBy( "sortorder" ).list();
+
+        entity.infos = appInfoEm.find( [parentid: entity.objid]).orderBy( "sortorder" ).list();
         entity.infos.each {
-        	vi.convertData( it );
+        	it.putAll( it.remove("variable") );
+        	it.value = VariableInfoConverter.convertValue( it );
         };
 
 		//LOAD FEES
-		entity.fees = appFeeEm.find([appid: entity.objid]).list();
-		entity.amount = 0;
-        if(entity.fees) {
-            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
-        };
+		entity.fees = appFeeEm.find([parentid: entity.objid]).list();
+        entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
 
         //LOAD PAYMENTS
 		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();

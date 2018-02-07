@@ -1,0 +1,49 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          allowCreate="false"  
+          schemaName="af_control_detail">
+   <invokers>
+       <invoker type="af_control_detail:lookup" target="popup" 
+                caption="Lookup For Edit" action="init" 
+                cols="parent.batchno,parent.afid,parent.startseries,parent.endseries,parent.prefix,parent.suffix,controlid" 
+                hiddenCols="controlid"
+                orderBy="parent.batchno,parent.startseries"/>
+       
+       <invoker type="extActions" caption="Edit Qty" action="editQty"/>
+       
+   </invokers>
+   <code>
+       import com.rameses.rcp.common.*;
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.osiris2.client.*;
+       import com.rameses.osiris2.common.*;
+       import com.rameses.seti2.models.*;
+       
+       class XList extends com.rameses.seti2.models.CrudLookupModel {
+        
+            def getFindBy() {
+                if( query.refitemid ) {
+                    return [refitemid: query.refitemid ];
+                }
+                return null;
+            }
+       
+            def entry;
+       
+            def editQty() {
+                def si = getSelectedItem();
+                MsgBox.alert( si );
+                return Inv.lookupOpener( "af_control:open", [entity: [objid: si.parent.objid ]] );
+            }
+             
+       
+            def back() {
+                return "default";
+            }
+       
+       
+       }
+   </code>  
+   <pages>
+       <page name="edit" template="com.rameses.enterprise.treasury.views.AFControlDetailEditPage"/>
+   </pages>  
+</workunit>

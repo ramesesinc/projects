@@ -3,6 +3,7 @@ SELECT *
 from faas_list f 
 where 1=1 
 ${filters}
+${orderby}
 
 
 [findById]
@@ -179,6 +180,7 @@ ORDER BY f.tdno
 SELECT 
 	${columns}
 FROM faas f
+	INNER JOIN faas_list fl on f.objid = fl.objid 
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 

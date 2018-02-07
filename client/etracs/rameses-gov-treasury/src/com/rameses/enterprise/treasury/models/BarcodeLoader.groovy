@@ -8,12 +8,28 @@ import com.rameses.util.*;
         
 public class BarcodeLoader {
         
+    @Service("CashReceiptService")
+    def cashReceiptSvc;
+    
     @Service("CashReceiptBarcodeService")
     def barcodeSvc;
 
     @Service('QueryService')
     def qrySvc 
 
+    def findCollectionTypeParams( def finder ) {
+        //find collection type based on the prefix
+        def p = [_schemaname: 'collectiontype'];
+        p.findBy = finder;
+        def res = qrySvc.findFirst( p );
+        def params = [:];
+        params.txnmode = "ONLINE";
+        params.formno = res.af.objid;
+        params.formtype = res.af.formtype;
+        params.collectiontype = [objid:res.objid, title: res.title, handler: res.handler, name: res.name ];
+        return params;
+    } 
+    
     def init() {
         def p = MsgBox.prompt("Enter barcode");
         if(!p) return null;
@@ -29,25 +45,24 @@ public class BarcodeLoader {
         } 
         
         def po = null;
-        if ('PMO'.equalsIgnoreCase(prefix)){
+        if (prefix == null){
             def q = [:]
             q._schemaname = 'paymentorder'
-            q.findBy = [txnid:barcodeid]
-
-            po = qrySvc.findFirst(q)
+            q.findBy = [objid:p];
+            po = qrySvc.findFirst(q);
             if (!po){
-                q.findBy = [txnid:p]
+                q.findBy = [objid:barcodeid]
                 po = qrySvc.findFirst(q)
             }
             if (!po) throw new Exception('Payment Order does not exist.')
+            prefix = po.collectiontype.barcodekey 
+            barcodeid = po.refno;
             
-            q._schemaname = 'collectiontype'
-            q.findBy = po.txntype.collectiontype
-            def colltype = qrySvc.findFirst(q)
-            if (!colltype) throw new Exception('Collection Type ' + po.txntype.collectiontype.objid + ' does not exist.')
-            
-            prefix = colltype.barcodekey 
-            barcodeid = po.refno 
+            //this is usually for general collections
+            if(barcodeid==null) {
+                def parms = findCollectionTypeParams( [ objid: po.collectiontype.objid ] );
+                return findOpener( po,  parms, po.objid ); 
+            }
         }
 
         try {
@@ -58,12 +73,20 @@ public class BarcodeLoader {
             if(!prefix) 
                 throw new Exception("There is no handler found for requested entry");
             
-            def e = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
-            def m = [barcodeid: barcodeid, prefix: prefix, _paymentorderid:po?.txnid];
-            m.entity = e;
+            def binfo = barcodeSvc.init( [barcodeid: barcodeid, prefix: prefix] );
+            def m = [barcodeid: barcodeid, prefix: prefix, _paymentorderid:po?.objid];
+            m.entity = binfo;
             m.info = po?.info;
              
             return InvokerUtil.lookupOpener( "cashreceipt:barcode:"+prefix, m);
+        }
+        catch(BreakException be) { 
+            return null;
+        }    
+        catch(Warning w) { 
+            def parms = findCollectionTypeParams( [ barcodekey: prefix  ] );
+            String m = "cashreceipt:" + w.message;
+            return InvokerUtil.lookupOpener(m, [entity: parms]);
         }
         catch(e) {
             //MsgBox.err("No appropriate handler found for this particular barcode.[ cashreceipt:barcode:"+prefix+"]->"+barcodeid);
@@ -71,4 +94,30 @@ public class BarcodeLoader {
             return null;
         }
     }
+        
+    //This is generally for miscellaneous general collection
+    def findOpener( def entity, def params, paymentOrderId ) {
+        try {
+            def info = cashReceiptSvc.init( params );
+            def e = [:];
+            e.putAll( info );
+            e.payer = entity.payer;
+            e.paidby = entity.paidby;
+            e.paidbyaddress = entity.paidbyaddress;
+            e.amount = entity.amount;
+            e.info = entity.info;
+            e.items = entity.items.collect{ [item:it.item, amount:it.amount, remarks:it.remarks ] };
+            e.collectiontype = params.collectiontype;
+            def openerParams = [entity: e, _paymentorderid: paymentOrderId]; 
+            return Inv.lookupOpener("cashreceipt:"+ params.collectiontype.handler, openerParams);  
+        } 
+        catch(BreakException be) { 
+            return null;
+        } catch(Warning w) { 
+            String m = "cashreceipt:" + w.message;
+            return InvokerUtil.lookupOpener(m, [entity: params]);
+        }
+    } 
+        
+        
 }       

@@ -1,0 +1,239 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+/********************************************************************************************************************
+* Notes: 
+* ACTION	    TXNTYPES														DESCRIPTION
+* ------		--------														-----------
+* addBatch      RECEIPT,BEGIN_BALANCE and FORWARD
+* editBatch     FORWARD (current series), ISSUE (for cashtickets - endseries)
+* issue   		ISSUE
+* move			RETURN, TRANSFER
+********************************************************************************************************************/
+
+class AFTxnService  {
+
+	@DataContext("af_control")
+	def afControl;
+
+	@DataContext("af_control_detail")
+	def afControlDetail;
+
+	@DataContext("aftxn")
+	def aftxn;
+
+	@DataContext("aftxnitem")
+	def aftxnItem;
+
+	@DataContext("af_allocation")
+	def afAlloc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("AFInventoryService")
+	def afInvSvc;
+
+	@Env
+	def env;
+
+
+	/****************************************************************************
+	* must only pass the ff:
+	* refitemid, qty, startseries, endseries, startstub, endstub, prefix, suffix
+	*****************************************************************************/
+	@ProxyMethod
+	public void addBatch( def o ) { 
+		def txndate = dateSvc.getServerDate();
+		def afi = aftxnItem.find([objid: o.refitemid] ).select("objid,item.objid,unit,qtyserved,qty,txntype,parent.*,afunit.*").first();
+
+		if( (afi.qtyserved + o.qty) > afi.qty )
+			throw new Exception("qty specified must not exceed the unserved qty");
+
+		//find first if there is already a previous batch
+		def  z = afControlDetail.select( "batchno:{MAX( parent.batchno )}" ).find( [ refitemid: o.refitemid ] ).groupBy( "refitemid" ).first();
+
+		int batchno = 1;
+		if( z ) {
+			batchno = z.batchno + 1;
+		}
+		
+		def afunit = afi.afunit;
+
+		int len = (afunit.serieslength ? afunit.serieslength : 10);	
+		int stubno = o.startstub; 
+ 		int starter = (o.startseries ? Integer.parseInt( o.startseries ) : 0);
+		(1..o.qty).each { 
+			def afc = [:];
+			afc.afid = afi.item.objid;
+			afc.unit = afi.unit;
+
+			afc.afunit = afi.afunit;
+			if( afunit.formtype == 'serial' ) {				
+				afc.startseries = starter;
+				afc.endseries = starter + afunit.qty - 1;
+				starter = afc.endseries + 1;
+			}
+			else {
+				afc.startseries = 1;
+				afc.endseries = afunit.qty; 
+			}
+
+			afc.dtfiled = afi.parent.dtfiled;
+			afc.stubno = stubno++;
+			afc.prefix = o.prefix;
+			afc.suffix = o.suffix;
+			afc.batchno = batchno;
+			afc.cost = afi.cost;
+			afc.allocation = o.allocation;
+
+			def ref = [:];
+			ref.refno = afi.parent.controlno;
+			ref.refdate = afi.parent.dtfiled;
+			ref.reftype = afi.parent.txntype;
+			ref.refid = afi.parent.objid;
+			ref.remarks = (ref.reftype == 'PURCHASE_RECEIPT') ? 'RECEIPT OF PURCHASE' : 'BEGIN BALANCE';
+			ref.txntype = afi.txntype;
+			ref.refitemid = afi.objid;
+			ref.txndate = txndate;
+			ref.issueto = afi.parent.issueto;
+			ref.respcenter = afi.parent.respcenter;
+
+			afInvSvc.add( ref, afc );
+		} 
+		aftxnItem.find( [objid: afi.objid] ).update( [qtyserved: "{qtyserved + :qty}"], [qty: o.qty] );
+	}
+
+
+	//remove batch is only applicable for PURCHASE_RECEIPT,BEGIN_BALANCE AND FORWARD
+	@ProxyMethod
+	public void removeBatch( def o ) { 
+		if( !o.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD' )) 
+			throw new Exception( "AF Remove Batch Entry is only applicable for PURCHASE_RECEIPT,BEGIN_BALANCE or FORWARD")
+
+		def p = [refitemid: o.refitemid, batchno:o.batchno ];
+		def  u = [state:'DELETE', currentdetailid: '{currentdetail.prevdetailid}']
+		afControl.where( "currentdetail.refitemid = :refitemid AND batchno = :batchno" , p ).update( u );
+
+		def ws = "refitemid = :refitemid AND parent.batchno = :batchno"
+		int qty = afControlDetail.where(ws, p ).select("count:{COUNT(objid)}").val();
+		afControlDetail.where( ws, p ).delete();
+		afControl.where("state = 'DELETE'" ).delete();
+
+		//update batchno for afcontrols 
+		afControl.where( "currentdetail.refitemid=:refitemid AND batchno > :batchno",p ).update( [batchno: "{batchno - 1}"] );
+
+		aftxnItem.find( [objid: o.refitemid] ).update( [qtyserved: "{qtyserved - :qty}"], [qty: qty] ); 
+	}	
+
+	@ProxyMethod
+	public void editBatch( def o ) { 
+		o.each {
+			afInvSvc.update( it );
+		}
+	}	
+
+	@ProxyMethod
+	public void revertBatch( def o ) { 
+		if( !o.refitemid ) throw new Exception("AFTxnService.revertBatch error. refitemid is required ");
+		def p = [refitemid: o.refitemid ];
+		afControl.where( "currentdetail.refitemid = :refitemid", p ).update( [lockid:'{NULL}', currentdetailid: '{currentdetail.prevdetailid}'] );
+		afControlDetail.where( "refitemid = :refitemid ", p ).delete();
+
+		//we need to re-update based on the updated detail id i.e. the prevdetailid 
+		afControl.where( "currentdetail.refitemid = :refitemid", p ).update( [currentseries: '{currentdetail.endingstartseries}', endseries: '{currentdetail.endingendseries}'] );
+		aftxnItem.find([objid: o.refitemid ]).update( [qtyserved: 0] );
+	}	
+
+	@ProxyMethod
+	public void moveBatch( def refitem, def o ) { 
+		def txndate = dateSvc.getServerDate();
+		def afi = aftxnItem.find([objid: refitem.objid ]).select("objid,qtyserved,qty,txntype,parent.*").first();
+		def ref = [:];
+		ref.refid = afi.parent.objid;
+        ref.reftype = afi.parent.txntype;
+        ref.refdate = afi.parent.dtfiled;
+        ref.txntype = afi.txntype;
+        ref.remarks = afi.txntype;
+        ref.txndate = txndate;
+        ref.refno = afi.parent.controlno;
+        ref.issueto = afi.parent.issueto;
+        ref.respcenter = afi.parent.respcenter;
+        ref.refitemid = afi.objid;
+		o.each {
+			def afc = afControl.find( [objid: it.objid ] ).first();
+			afInvSvc.add( ref, afc );
+		}
+		aftxnItem.find([objid: afi.objid]).update( [qtyserved: '{qtyserved + :qty}'], [qty: o.size() ] );
+	}	
+
+
+	//this is called by the main AFRI ebtry screen
+	@ProxyMethod
+	public void issueBatch( def o ) { 
+		def txndate = dateSvc.getServerDate();
+
+		def afi = aftxnItem.find([objid: o.refitemid ]).select("objid,qtyserved,qty,txntype,afid:{item.objid},unit,parent.*").first();
+
+		//lookup allocation based on the resp. center defined in the allocation
+		def alloc = null;
+		if( afi.parent.respcenter?.objid) {
+			alloc = afAlloc.where( "respcenter.objid = :orgid", [orgid: afi.parent.respcenter.objid ] ).first();
+		}
+
+		def ref = [:];
+		ref.refid = afi.parent.objid;
+        ref.reftype = afi.parent.txntype;
+        ref.refdate = afi.parent.dtfiled;
+        ref.txntype = afi.txntype;
+        ref.remarks = afi.txntype;
+        ref.txndate = txndate;
+        ref.refno = afi.parent.controlno;
+        ref.issueto = afi.parent.issueto;
+        ref.respcenter = afi.parent.respcenter;
+        ref.refitemid = afi.objid;
+
+		int qty = afi.qty - afi.qtyserved;
+		def remarks = afi.txntype;
+		def sbuff = new StringBuilder();
+		def p = [:];
+        p.afid = afi.afid;
+        p.unit = afi.unit;
+		sbuff.append( "state = 'OPEN' AND afid =:afid AND unit =:unit" );
+		if( alloc ) {
+			sbuff.append(  " AND allocid =:allocid " );
+			p.allocid = alloc.objid;
+		}
+		def list = afControl.select('objid,startseries,currentseries,endseries,prevdetailid').where( sbuff.toString(), p ).orderBy('dtfiled,batchno,stubno').limit( qty ).list();
+		if(!list)
+			throw new Exception("No available stock for " + p.afid + " " + p.unit);		
+		list.each {
+			afInvSvc.add( ref, it );
+		}
+		aftxnItem.find([objid: afi.objid]).update( [qtyserved: '{qtyserved + :qty}'], [qty: list.size() ] );
+	}	
+
+
+    @ProxyMethod
+	public def post( def o ) {
+		def ar = aftxn.find([ objid: o.objid ]).first(1);
+		def z = ar.items.find{ it.qtyserved != it.qty };
+		if(z) {
+			throw new Exception("All qty served must be equal to qty");	
+		}
+
+		def  u = [:];
+		u.state = "{currentdetail.statetype.poststate}";
+		u.owner = [ objid: "{currentdetail.issuedto.objid}",  name: "{currentdetail.issuedto.name}" ];
+		u.assignee = [ objid: "{currentdetail.issuedto.objid}",  name: "{currentdetail.issuedto.name}" ];
+		u.respcenter = [ objid: "{currentdetail.respcenter.objid}",  name: "{currentdetail.respcenter.name}" ];
+		u.lockid = "{NULL}";
+
+		afControl.where( "currentdetail.refid = :refid", [refid: ar.objid ] ).update( u );
+		afControlDetail.find( [ refid: ar.objid ] ).update( [state: 1 ] );
+		aftxn.find([ objid: o.objid ]).update([state: 'POSTED']);
+	}
+
+}

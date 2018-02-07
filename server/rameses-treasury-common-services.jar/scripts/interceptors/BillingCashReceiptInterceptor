@@ -1,0 +1,78 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+public class BillingReceiptInterceptor {
+	
+	@Service("PaymentPostingService")
+	def service;
+
+	@Service("BillingPaymentHandler")
+	def voidHandler;
+
+	@DataContext(dynamic=true)
+	def pmtEm;
+
+	@After(pattern="CashReceiptService.post", eval="#{ args[0]._postpayment !=null  }",  index=50)
+	public void postPayment(def evt) {
+		def e = evt.args[0];
+		def result = evt.result;
+		def pmt = e._postpayment;
+
+		//format the payment references
+		pmt.reftype = "cashreceipt";
+		pmt.refno = result.receiptno;
+		pmt.refdate = result.receiptdate;
+		pmt.refid = result.objid;
+		pmt.txndate = result.txndate;
+		pmt.txnmode = e.txnmode;
+		def wf = e._workflow;
+		if( wf ) { 
+			wf.autostart = true;
+			pmt._workflow = wf; 
+		}
+		service.post( pmt );
+	}
+
+
+	@After(pattern="CashReceiptVoidService.post")
+	public void voidPayment(def evt) {
+		def e = evt.args[0];
+		def res= evt.result;
+		def rct = res.receipt;
+		def pmtInfo = voidHandler.getVoidPaymentInfo( [ collectiontype: rct.collectiontype ] );
+
+		if( pmtInfo ) {
+			if(!pmtInfo._schemaname) throw new Exception("_schemaname is required in getVoidPaymentInfo for " + rct.collectiontype.handler );
+
+			def pmtDb = pmtEm.lookup( pmtInfo._schemaname );
+			def pmt = pmtDb.find( [refid: rct.objid] ).first(1);
+			pmt._schemaname = pmtInfo._schemaname;
+			pmt.collectiontype = rct.collectiontype;
+
+			def wf = voidHandler.getVoidPaymentWorkflow( pmt );
+			if(wf) { 
+				if(!wf.processname) throw new Exception("processname is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+				if(!wf.taskid) throw new Exception("taskid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+				if(!wf.action) throw new Exception("action is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+				if(!wf.refid ) throw new Exception("refid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+
+				wf.autostart = true; //flag to indicate that this must start task immediately, does not require assign to me
+				pmt._workflow = wf; 
+			}
+
+
+			service.reversePayment( pmt );
+		}
+	}
+
+
+
+}

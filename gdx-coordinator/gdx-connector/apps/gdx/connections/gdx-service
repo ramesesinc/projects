@@ -1,0 +1,6 @@
+provider=script
+app.host=107.21.113.74:9070
+app.cluster=osiris3
+app.context=gdx
+readTimeout=60000
+

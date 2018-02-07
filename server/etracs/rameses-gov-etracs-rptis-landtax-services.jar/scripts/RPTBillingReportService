@@ -26,9 +26,16 @@ public class RPTBillingReportService
 
 		ledger.items.each{
 			it.flag = ''
-			if (it.taxdifference == 1) it.flag += '*'
+			if (it.taxdifference == 1 || 
+				it.firecode > 0.0 ||
+				it.basicidle > 0.0 ||
+				it.sh > 0.0 )
+				 	it.flag += '*'
 		}
 		ledger.hastaxdifference = ledger.items.findAll{it.taxdifference == 1}.size() > 0
+		ledger.hasidle = ledger.items.findAll{it.basicidle > 0}.size() > 0
+		ledger.hasfirecode = ledger.items.findAll{it.firecode > 0}.size() > 0
+		ledger.hassh = ledger.items.findAll{it.sh > 0}.size() > 0
 		summarizeLedgerInfo(ledger)
 		return ledger 
 	}

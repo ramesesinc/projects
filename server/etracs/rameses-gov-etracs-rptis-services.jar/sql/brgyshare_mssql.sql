@@ -24,7 +24,7 @@ WHERE lr.liquidationid in (
 		SELECT distinct liquidationid 
 		FROM bankdeposit bd
 			INNER JOIN bankdeposit_liquidation bl ON bd.objid = bl.bankdepositid
-			INNER JOIN liquidation_fund lcf ON bl.objid = lcf.objid
+			INNER JOIN liquidation_cashier_fund lcf ON bl.objid = lcf.objid
 		WHERE YEAR(bd.dtposted) =  $P{year}
 		  AND MONTH(bd.dtposted) = $P{month}
 	)

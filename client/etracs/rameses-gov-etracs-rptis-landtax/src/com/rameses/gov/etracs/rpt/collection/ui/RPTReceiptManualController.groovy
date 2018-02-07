@@ -20,6 +20,11 @@ class RPTReceiptManualController extends com.rameses.gov.etracs.rpt.collection.u
         bill.remove('itemcount');
     }
     
+    void updateItemDue(item){
+        super.updateItemDue(item);
+        itemListHandler.reload();
+    }
+    
     void calcReceiptAmount(){
         entity.amount = 0.0
          if (itemsforpayment){
@@ -42,9 +47,13 @@ class RPTReceiptManualController extends com.rameses.gov.etracs.rpt.collection.u
             }
             item.basicnet = item.basic + item.basicint - item.basicdisc;
             item.sefnet = item.sef + item.sefint - item.sefdisc;
-            item.total = item.basicnet + item.basicidle + item.sefnet;
+            item.basicidlenet = item.basicidle + item.basicidleint - item.basicidledisc;
+            item.shnet = item.sh + item.shint - item.shdisc ;
+            
             item.totalgeneral = item.basicnet;
             item.totalsef = item.sefnet;
+            
+            item.total = item.basicnet + item.sefnet + item.basicidlenet + item.shnet + item.firecode;
         },
         
         validate : {li -> 
@@ -58,8 +67,9 @@ class RPTReceiptManualController extends com.rameses.gov.etracs.rpt.collection.u
         selectedItem.totalbasic = selectedItem.items.basicnet.sum();
 		selectedItem.totalsef = selectedItem.items.sefnet.sum();
 		selectedItem.totalfirecode = selectedItem.items.firecode.sum();
-		selectedItem.totalbasicidle = selectedItem.items.basicidle.sum();
-		selectedItem.totalgeneral = selectedItem.totalbasic + selectedItem.totalfirecode + selectedItem.totalbasicidle;
+		selectedItem.totalbasicidle = selectedItem.items.basicidlenet.sum();
+		selectedItem.totalsh = selectedItem.items.shnet.sum();
+		selectedItem.totalgeneral = selectedItem.totalbasic + selectedItem.totalfirecode + selectedItem.totalbasicidle + selectedItem.totalsh;
 		selectedItem.amount = selectedItem.totalgeneral + selectedItem.totalsef ;
         binding.refresh('selectedItem');
     }

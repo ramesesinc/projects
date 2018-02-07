@@ -19,14 +19,18 @@ class ProvinceRPTLedgerService
     @DataContext('rptledger_remote')
     def em_mapping
 
+    @DataContext('cashreceipt')
+    def em_cashreceipt 
+
     
 	@ProxyMethod
 	public void syncLedger(ledger){
 		def remoteledger = getRemoteLedgerForSync(ledger)
 		supportSvc.resolveLedgerIds(ledger, remoteledger)
 		remoteledger._credits.each{
-			def exist = em_credit.find([refno:it.refno, rptledgerid:ledger.objid]).first()
-			if (!exist){
+			def creditexist = em_credit.find([refno:it.refno, rptledgerid:ledger.objid]).first()
+			def paymentexist = em_cashreceipt.find([formno:'56',receiptno:it.refno]).first()
+			if ( !(creditexist || paymentexist) ){
 				it.objid = 'RLC' + new java.rmi.server.UID()
 				it.collector = it.collector?.name 
 				em_credit.save(it)
@@ -38,7 +42,7 @@ class ProvinceRPTLedgerService
 
 	def getRemoteLedgerForSync(ledger){
 		def mapping = supportSvc.getRemoteLedgerMapping(ledger)
-		def remoteSvc = supportSvc.getRemoteService('RPTLedgerRemoteService', ledger.faasid)
+		def remoteSvc = supportSvc.getRemoteService('RPTLedgerService', ledger.faasid)
 		return remoteSvc.getLedgerForSync(mapping.remote)
 	}
 

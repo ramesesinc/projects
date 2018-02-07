@@ -1,60 +1,25 @@
-<workunit extends="wtemplates/ListController.xml">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml"
+    schemaName="rptledger"
+    cols="state,tdno,owner.name,administrator.name,barangay.name,fullpin,titleno,
+          cadastrallotno,blockno,totalareasqm,totalmv,totalav,lastyearpaid,lastqtrpaid,ismanual"
+    hiddenCols="faasid,barangayid,rputype,txntype.objid,classification.objid"
+    allowDelete="#{entity &amp;&amp; entity.state == 'PENDING' &amp;&amp; entity.faasid == null}"
+    surroundSearch="false" 
+>
     <invokers>
-        <invoker folderid="/explorer/txn/landtax/list" action="init" caption="Realty Tax Ledgers"  target="window" index="110"  role="SHARED" permission="rptledger.list"/>
-        <invoker folderid="/home/landtax" action="init" caption="Realty Tax Ledgers"  target="window" index="1000"  role="SHARED" permission="rptledger.list"/>
-        <invoker type="quick_launcher" action="init" code="RL00" caption="Realty Tax Ledgers"  role="SHARED"  permission="rptledger.list"/>
+        <invoker folderid="/explorer/txn/landtax/list" 
+                 action="init" caption="Realty Tax Ledgers"  
+                 target="window" index="110"  
+                 role="SHARED" permission="rptledger.list"/>
+        
+        <invoker folderid="/home/landtax" 
+                 action="init" caption="Realty Tax Ledgers"  
+                 target="window" index="1000"  
+                 role="SHARED" permission="rptledger.list"/>
+        
+        <invoker type="quick_launcher" 
+                 action="init" code="RL00" caption="Realty Tax Ledgers"  
+                 role="SHARED"  permission="rptledger.list"/>
     </invokers>
-    <code>
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.gov.etracs.rptis.util.*;
-        
-        class RPTLedgerListController extends ListController
-        {
-            String formTarget   = 'self'
-            String serviceName  = 'RPTLedgerListService'
-            String formName     = 'rptledger:list'
-            String entityName = 'rptledger';
-            
-            @PropertyChangeListener
-            def listener = [
-                'query.state' : { search(); }
-            ]
-        
-            void init(){
-            }
-        
-            int getRows() { return 20 }
-            
-            Column[] getColumns(){
-                return [
-                    new Column(name:"state", caption:"State", width:80),
-                    new Column(name:"tdno", caption:"TD No.", width:140),
-                    new Column(name:"taxpayer.name", caption:"Owner Name", width:250),
-                    new Column(name:"administrator.name", caption:"Administrator", width:250),
-                    new Column(name:"fullpin", caption:"PIN", width:150),
-                    new Column(name:"titleno", caption:"Title No.", width:100),
-                    new Column(name:"cadastrallotno", caption:"Lot No.", width:100),
-                    new Column(name:"blockno", caption:"Block No.", width:100),
-                    new Column(name:"totalareaha", caption:"Area (ha)", width:100, type:'decimal', format:'#,##0.0000'),
-                    new Column(name:"totalmv", caption:"Market Value", width:100, type:'decimal', format:'#,##0.00'),
-                    new Column(name:"totalav", caption:"Assessed Value", width:100, type:'decimal', format:'#,##0.00'),
-                    new Column(name:"lastyearpaid", caption:"Last Year Paid", width:80, type:'integer', format:'0000'),
-                    new Column(name:"lastqtrpaid", caption:"Last Qtr Paid", width:80, type:'integer', format:'0'),
-                    new Column(name:"type", caption:"Type", width:30),
-                ]
-            }
-            
-            List getStates(){
-                return ['PENDING', 'APPROVED', 'CANCELLED']
-            }
-        }
-        
-    </code>
-    <pages>
-        <page name="queryform" template="com.rameses.gov.etracs.rpt.ledger.ui.StateQueryPage"/>
-    </pages>
-    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerListModel" />
 </workunit>

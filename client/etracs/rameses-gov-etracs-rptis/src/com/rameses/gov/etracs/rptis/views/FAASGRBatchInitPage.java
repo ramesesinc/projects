@@ -35,14 +35,15 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
-        xSeparator2 = new com.rameses.rcp.control.XSeparator();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xFormPanel11 = new com.rameses.rcp.control.XFormPanel();
         formPanel4 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
@@ -63,6 +64,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Batch General Revision Information");
         formPanel1.setBorder(xTitledBorder1);
+        formPanel1.setCaptionWidth(150);
 
         xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
 
@@ -70,7 +72,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 575, Short.MAX_VALUE)
+            .add(0, 592, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -81,7 +83,6 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
 
         xComboBox4.setAllowNull(false);
         xComboBox4.setCaption("LGU");
-        xComboBox4.setCaptionWidth(140);
         xComboBox4.setDepends(new String[] {"entity.rputype"});
         xComboBox4.setExpression("#{item.name}");
         xComboBox4.setItems("lgus");
@@ -92,7 +93,6 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
 
         xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Barangay");
-        xComboBox3.setCaptionWidth(140);
         xComboBox3.setDepends(new String[] {"params.lgu"});
         xComboBox3.setDynamic(true);
         xComboBox3.setExpression("#{item.name}");
@@ -103,8 +103,20 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xComboBox3.setRequired(true);
         formPanel1.add(xComboBox3);
 
+        xComboBox5.setCaption("Classification");
+        xComboBox5.setEmptyText("ALL");
+        xComboBox5.setExpression("#{item.name}");
+        xComboBox5.setItems("classifications");
+        xComboBox5.setName("params.classification"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xComboBox5);
+
+        xTextField1.setCaption("Section");
+        xTextField1.setName("params.section"); // NOI18N
+        xTextField1.setPreferredSize(new java.awt.Dimension(120, 20));
+        formPanel1.add(xTextField1);
+
         xComboBox2.setCaption("Property Type");
-        xComboBox2.setCaptionWidth(140);
         xComboBox2.setEmptyText("ALL");
         xComboBox2.setExpression("#{item.name}");
         xComboBox2.setImmediate(true);
@@ -115,7 +127,6 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("New General Revision");
-        xComboBox1.setCaptionWidth(140);
         xComboBox1.setDepends(new String[] {"params.lgu", "params.barangay"});
         xComboBox1.setDynamic(true);
         xComboBox1.setItems("rylist");
@@ -124,12 +135,11 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 76));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 70));
 
         xTextArea1.setLineWrap(true);
         xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Default Memoranda");
-        xTextArea1.setCaptionWidth(140);
         xTextArea1.setName("params.memoranda"); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(0, 100));
         xTextArea1.setRequired(true);
@@ -138,22 +148,9 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
 
         formPanel1.add(jScrollPane1);
 
-        xCheckBox1.setCaption("Auto-Approve FAAS");
-        xCheckBox1.setCaptionWidth(140);
-        xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
-        xCheckBox1.setName("params.autoapprove"); // NOI18N
-        xCheckBox1.setPreferredSize(new java.awt.Dimension(0, 23));
-        xCheckBox1.setShowCaption(false);
-        xCheckBox1.setText("Automatically approve FAAS?");
-        xCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xCheckBox1ActionPerformed(evt);
-            }
-        });
-        formPanel1.add(xCheckBox1);
-
         xCheckBox2.setCaption("Re-initialize Item for Revision");
         xCheckBox2.setCaptionWidth(140);
+        xCheckBox2.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xCheckBox2.setName("params.inititems"); // NOI18N
         xCheckBox2.setPreferredSize(new java.awt.Dimension(0, 20));
         xCheckBox2.setShowCaption(false);
@@ -165,37 +162,44 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         });
         formPanel1.add(xCheckBox2);
 
-        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xCheckBox1.setCaption("Auto-Approve FAAS");
+        xCheckBox1.setCaptionWidth(140);
+        xCheckBox1.setName("params.autoapprove"); // NOI18N
+        xCheckBox1.setPreferredSize(new java.awt.Dimension(0, 23));
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText("Automatically approve FAAS?");
+        xCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox1ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xCheckBox1);
 
-        org.jdesktop.layout.GroupLayout xSeparator2Layout = new org.jdesktop.layout.GroupLayout(xSeparator2);
-        xSeparator2.setLayout(xSeparator2Layout);
-        xSeparator2Layout.setHorizontalGroup(
-            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 575, Short.MAX_VALUE)
-        );
-        xSeparator2Layout.setVerticalGroup(
-            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
-        );
+        xCheckBox3.setCaption("Re-initialize Item for Revision");
+        xCheckBox3.setCaptionWidth(140);
+        xCheckBox3.setDepends(new String[] {"params.autoapprove"});
+        xCheckBox3.setName("params.continueonerror"); // NOI18N
+        xCheckBox3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xCheckBox3.setShowCaption(false);
+        xCheckBox3.setText(" Continue on error?");
+        xCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox3ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xCheckBox3);
 
-        formPanel1.add(xSeparator2);
-
-        xIntegerField1.setCaption("Interval / FAAS (millisec)");
-        xIntegerField1.setCaptionWidth(140);
-        xIntegerField1.setName("params.interval"); // NOI18N
-        xIntegerField1.setRequired(true);
-        formPanel1.add(xIntegerField1);
-
+        xFormPanel11.setCaptionWidth(100);
         xFormPanel11.setCellspacing(1);
         xFormPanel11.setPadding(new java.awt.Insets(0, 5, 0, 0));
 
+        formPanel4.setCaptionWidth(100);
         formPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel4.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel4.setShowCaption(false);
 
         xLookupField1.setCaption("Appraiser");
-        xLookupField1.setCaptionWidth(90);
         xLookupField1.setExpression("#{params.appraiser.name}");
         xLookupField1.setHandler("lookupAppraiser");
         xLookupField1.setName("params.appraiser"); // NOI18N
@@ -208,19 +212,18 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xDateField3.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xDateField3.setHint("Date Appraised");
         xDateField3.setName("params.appraiser.dtsigned"); // NOI18N
-        xDateField3.setPreferredSize(new java.awt.Dimension(91, 20));
         xDateField3.setRequired(true);
         formPanel4.add(xDateField3);
 
         xFormPanel11.add(formPanel4);
 
+        formPanel6.setCaptionWidth(100);
         formPanel6.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel6.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel6.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel6.setShowCaption(false);
 
         xLookupField3.setCaption("Taxmapper");
-        xLookupField3.setCaptionWidth(90);
         xLookupField3.setExpression("#{params.taxmapper.name}");
         xLookupField3.setHandler("lookupTaxmapper");
         xLookupField3.setName("params.taxmapper"); // NOI18N
@@ -231,18 +234,17 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xDateField5.setCaptionWidth(90);
         xDateField5.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xDateField5.setName("params.taxmapper.dtsigned"); // NOI18N
-        xDateField5.setPreferredSize(new java.awt.Dimension(91, 20));
         formPanel6.add(xDateField5);
 
         xFormPanel11.add(formPanel6);
 
+        formPanel5.setCaptionWidth(100);
         formPanel5.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel5.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel5.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel5.setShowCaption(false);
 
         xLookupField2.setCaption("Recommender");
-        xLookupField2.setCaptionWidth(90);
         xLookupField2.setExpression("#{params.recommender.name}");
         xLookupField2.setHandler("lookupRecommender");
         xLookupField2.setName("params.recommender"); // NOI18N
@@ -253,18 +255,17 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xDateField4.setCaptionWidth(90);
         xDateField4.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xDateField4.setName("params.recommender.dtsigned"); // NOI18N
-        xDateField4.setPreferredSize(new java.awt.Dimension(91, 20));
         formPanel5.add(xDateField4);
 
         xFormPanel11.add(formPanel5);
 
+        formPanel7.setCaptionWidth(100);
         formPanel7.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel7.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel7.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel7.setShowCaption(false);
 
         xLookupField4.setCaption("Approver");
-        xLookupField4.setCaptionWidth(90);
         xLookupField4.setExpression("#{params.approver.name}");
         xLookupField4.setHandler("lookupApprover");
         xLookupField4.setName("params.approver"); // NOI18N
@@ -277,7 +278,6 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xDateField6.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xDateField6.setHint("Date Approved");
         xDateField6.setName("params.approver.dtsigned"); // NOI18N
-        xDateField6.setPreferredSize(new java.awt.Dimension(91, 20));
         xDateField6.setRequired(true);
         formPanel7.add(xDateField6);
 
@@ -304,27 +304,29 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
-                    .add(xFormPanel11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xFormPanel11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 606, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 25, Short.MAX_VALUE)))
+                .addContainerGap())
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(xPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
+                    .add(xPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 331, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xFormPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .add(xFormPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(435, Short.MAX_VALUE)
+                    .addContainerGap(439, Short.MAX_VALUE)
                     .add(xPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(38, 38, 38)))
         );
@@ -337,6 +339,10 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private void xCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_xCheckBox2ActionPerformed
+
+    private void xCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xCheckBox3ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -348,16 +354,17 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDateField xDateField5;
     private com.rameses.rcp.control.XDateField xDateField6;
     private com.rameses.rcp.control.XFormPanel xFormPanel11;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
@@ -366,8 +373,8 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLookupField xLookupField4;
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
-    private com.rameses.rcp.control.XSeparator xSeparator2;
     private com.rameses.rcp.control.XTextArea xTextArea1;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

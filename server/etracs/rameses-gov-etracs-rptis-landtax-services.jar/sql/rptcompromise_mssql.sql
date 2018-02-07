@@ -18,9 +18,16 @@ ORDER BY c.txnno
 
 
 [findLedgerById]
-SELECT rl.*, e.name AS taxpayer_name, e.address_text AS taxpayer_address  
+SELECT 
+	rl.*, 
+	e.name AS taxpayer_name, e.address_text AS taxpayer_address,
+	case when m.objid is not null then m.objid else c.objid end as lguid 
 FROM rptledger rl
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
+	INNER JOIN barangay b on rl.barangayid = b.objid 
+	left join municipality m on b.parentid = m.objid 
+	left join district d on b.parentid = d.objid 
+	left join city c on d.parentid = c.objid 
 WHERE rl.objid = $P{objid}
 
 
@@ -48,7 +55,11 @@ SELECT
 	li.sefint,
 	0.0 AS sefintpaid,
 	li.firecode,
-	0.0 AS firecodepaid
+	0.0 AS firecodepaid,
+	li.sh,
+	0.0 AS shpaid,
+	li.shint,
+	0.0 AS shintpaid
 FROM rptbill b 
 	inner join rptbill_ledger bl on b.objid = bl.billid
 	inner join rptledger rl on bl.rptledgerid = rl.objid 
@@ -77,7 +88,10 @@ WHERE objid = $P{objid}
 [getRPTCompromiseItems]
 SELECT 
 	f.* , 
-	f.basicpaid + f.basicintpaid + f.basicidlepaid + f.basicidleintpaid + f.sefpaid + f.sefintpaid as payment
+	(f.basicpaid + f.basicintpaid + 
+	 f.basicidlepaid + f.basicidleintpaid + 
+	 f.sefpaid + f.sefintpaid +
+	 f.shpaid + f.shintpaid) as payment
 FROM rptledger_compromise_item f
 WHERE f.rptcompromiseid  = $P{rptcompromiseid}
 ORDER BY f.year, f.qtr 
@@ -203,7 +217,9 @@ select
 	(basicidleint - basicidleintpaid ) as basicidleint,
 	(sef - sefpaid ) as sef,
 	(sefint - sefintpaid ) as sefint,
-	(firecode - firecodepaid ) as firecode
+	(firecode - firecodepaid ) as firecode,
+	(sh - shpaid ) as sh,
+	(shint - shintpaid ) as shint
 from rptledger_compromise_item
 where rptcompromiseid = $P{objid}
   and fullypaid = 0
@@ -236,7 +252,15 @@ SELECT
 	cc.sefint as sefdp,
 	cc.sef + cc.sefint as sefnet,
 	cc.firecode,
-	cc.basic + cc.basicint + cc.basicidle + cc.basicidleint + cc.sef + cc.sefint + cc.firecode as amount,
+	cc.sh,
+	0.0 as shdisc,
+	cc.shint,
+	cc.shint as shdp,
+	cc.sh + cc.shint as shnet,
+	(cc.basic + cc.basicint + 
+	 cc.basicidle + cc.basicidleint + 
+	 cc.sef + cc.sefint + cc.firecode +
+ 	 cc.sh + cc.shint) as amount,
 	cc.partial,
 	ci.installmentno
 FROM rptledger_compromise_credit cc 
@@ -260,6 +284,8 @@ UPDATE rptledger_compromise_item SET
 	sefpaid = sef,
 	sefintpaid = sefint,
 	firecodepaid = firecode,
+	shpaid = sh,
+	shintpaid = shint,
 	fullypaid = 1
 WHERE objid = $P{itemid}	
 
@@ -273,6 +299,8 @@ UPDATE rptledger_compromise_item SET
 	sefpaid = sefpaid + $P{sef},
 	sefintpaid = sefintpaid + $P{sefint},
 	firecodepaid = firecodepaid + $P{firecode},
+	shpaid = shpaid + $P{sh},
+	shintpaid = shintpaid + $P{shint},
 	fullypaid = 0
 WHERE objid = $P{itemid}	
 
@@ -324,6 +352,8 @@ UPDATE i SET
 	i.sefpaid = i.sefpaid - cr.sef,
 	i.sefintpaid = i.sefintpaid - cr.sefint,
 	i.firecodepaid = i.firecodepaid - cr.firecode,
+	i.shpaid = i.shpaid - cr.sh,
+	i.shintpaid = i.shintpaid - cr.shint,
 	i.fullypaid = 0
 from rptledger_compromise_item i, rptledger_compromise_item_credit cr 
 WHERE i.objid = cr.rptcompromiseitemid 
@@ -372,7 +402,8 @@ update rptledgeritem set
 	basicpaid = basic,
 	basicidlepaid = basicidle,
 	sefpaid = sef,
-	firecodepaid = firecode
+	firecodepaid = firecode,
+	shpaid = sh
 where rptledgerid = $P{objid}
   and year <= $P{lastyearpaid}
   and fullypaid = 0 
@@ -384,7 +415,8 @@ update rptledgeritem_qtrly set
 	basicpaid = basic,
 	basicidlepaid = basicidle,
 	sefpaid = sef,
-	firecodepaid = firecode
+	firecodepaid = firecode,
+	shpaid = sh
 where rptledgerid = $P{objid}
   and year <= $P{lastyearpaid}
   and fullypaid = 0 
@@ -435,7 +467,8 @@ update rptledgeritem set
 	basicpaid = 0.0,
 	basicidlepaid = 0.0,
 	sefpaid = 0.0,
-	firecodepaid = 0.0
+	firecodepaid = 0.0,
+	shpaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and year >= $P{fromyear} 
   and year <= $P{toyear}
@@ -446,7 +479,8 @@ update rptledgeritem_qtrly set
 	basicpaid = 0.0,
 	basicidlepaid = 0.0,
 	sefpaid = 0.0,
-	firecodepaid = 0.0
+	firecodepaid = 0.0,
+	shpaid = 0.0
 where rptledgerid = $P{rptledgerid}
   and year >= $P{fromyear} 
   and year <= $P{toyear}
@@ -483,7 +517,9 @@ update rptledger_compromise_item set
 	basicidleintpaid = basicidleint,
 	sefpaid = sef,
 	sefintpaid = sefint,
-	firecodepaid = firecode
+	firecodepaid = firecode,
+	shpaid = sh,
+	shintpaid = shint
 where objid = $P{objid}
 
 
@@ -538,7 +574,8 @@ select
 		rliq.basic - rliq.basicpaid - rliq.basicdisc + rliq.basicint +
 		rliq.basicidle - rliq.basicidlepaid - rliq.basicidledisc + rliq.basicidleint +
 		rliq.sef - rliq.sefpaid - rliq.sefdisc + rliq.sefint +
-		rliq.firecode - rliq.firecodepaid 
+		rliq.firecode - rliq.firecodepaid  +
+		rliq.sh - rliq.shpaid - rliq.shdisc + rliq.shint 
 	) as amount 
 from rptbill_ledger bl 
 	inner join rptledgeritem_qtrly rliq on bl.rptledgerid = rliq.rptledgerid
@@ -564,6 +601,9 @@ SELECT
     rliq.sefint,
     rliq.sefdisc,
     rliq.firecode - rliq.firecodepaid as firecode,
+    rliq.sh - rliq.shpaid as sh,
+    rliq.shint,
+    rliq.shdisc,
     rliq.revperiod,
     rliq.basic - rliq.basicpaid - rliq.basicdisc + rliq.basicint as basicnet,
     rliq.sef - rliq.sefpaid - rliq.sefdisc + rliq.sefint as sefnet,

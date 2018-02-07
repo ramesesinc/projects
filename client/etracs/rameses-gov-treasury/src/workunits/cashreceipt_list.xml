@@ -63,6 +63,6 @@ class CashReceiptQueryModel extends DefaultListController {
     </code>      
     
     <pages>
-        <page name="queryform" template="com.rameses.enterprise.treasury.views.CashReceiptQueryFilter"/>
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.CashReceiptQueryFilter"/>
     </pages>        
 </workunit>

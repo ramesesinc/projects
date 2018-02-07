@@ -19,6 +19,6 @@
         <end/>
     </pageflow>
     <pages>
-        <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.CaptureAssessmentPage" />
+        <page name="assessment" template="com.rameses.gov.etracs.vehicle.views.AssessmentPage" />
     </pages>
 </workunit>

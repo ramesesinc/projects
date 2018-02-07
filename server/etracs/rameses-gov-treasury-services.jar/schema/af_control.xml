@@ -8,7 +8,7 @@
 		<field name="assignee_objid"  /> 
 		<field name="assignee_name"  caption="Assignee" searchable="true" indexed="true"/> 
 		<field name="startseries" required="true" caption="Start Series" type="integer" searchable="true" indexed="true"/> 
-		<field name="currentseries" required="true" caption="Current Series" type="integer"/> 
+		<field name="currentseries" required="true" caption="Current Series" type="integer" searchable="true"/> 
 		<field name="endseries" required="true" caption="End Series" type="integer"/> 
 		<field name="active" required="true" caption="Active" type="integer" indexed="true" datatype="checkbox" checkValue="1" uncheckValue="0" /> 
 		<field name="org_objid"  /> 
@@ -19,22 +19,38 @@
 		<field name="unit" caption="Unit" required="true" /> 
 		<field name="owner_objid" /> 
 		<field name="owner_name" caption="Issued To" searchable="true" indexed="true"/> 
-		<field name="prefix" /> 
-		<field name="suffix" /> 
+		<field name="prefix" caption="Prefix"/> 
+		<field name="suffix" caption="Suffix"/> 
 		<field name="dtfiled" required="true" type="date" caption="Date Filed" /> 
-		<field name="currentindexno" required="true" type="integer"/> 
-		<field name="batchno" indexed="true" /> 
+		<field name="currentindexno" required="true" type="integer"/>
+
+		<field name="batchref" />
+		<field name="batchno" indexed="true" caption="Batch No"/> 
 
 		<field name="qtybalance" expr="endseries-currentseries+1" caption="Qty Balance" type="integer"/>
 		<field name="qtyissued" expr="currentseries-startseries" caption="Qty Issued" type="integer"/>
-		<field name="lockid" /> 
 
+		<field name="lockid" /> 
+		
 		<field name="respcenter_objid" /> 
 		<field name="respcenter_name" indexed="true"/> 
 		<field name="cost" /> 
 
-		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title" required="false">
+		<complex name="af" ref="af" jointype="many-to-one" includefields="objid,title,formtype" required="false">
 			<key field="afid" target="objid" />
+		</complex>	
+
+		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,refno,refid,reftype,refdate,refitemid,prevdetailid,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
+			<key field="currentdetailid" target="objid" />
+		</complex>
+
+		<complex name="afunit" ref="vw_afunit" jointype="many-to-one" required="false" includefields="serieslength,denomination,formtype,saleprice,qty">
+			<key field="afid" target="itemid" />
+			<key field="unit" target="unit" />
+		</complex>
+
+		<complex name="allocation" ref="af_allocation" jointype="many-to-one" required="false" includefields="objid,name">
+			<key field="allocid" target="objid"/>
 		</complex>	
 	</element> 
 

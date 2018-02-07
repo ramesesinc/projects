@@ -26,11 +26,13 @@ SELECT
 	case when m.objid is not null then m.name else c.name end as lguname, 
 	b.name AS barangay,
 	rl.classcode,
+	pc.name as classification, 
 	rl.titleno,
 	rp.surveyno
 FROM rptcertificationitem rci 
 	INNER JOIN rptledger rl ON rci.refid = rl.objid 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
+	left JOIN propertyclassification pc ON rl.classification_objid = pc.objid 
 	LEFT JOIN municipality m on b.parentid = m.objid
 	LEFT JOIN district d on b.parentid = d.objid 
 	LEFT JOIN city c on d.parentid = c.objid 
@@ -65,57 +67,58 @@ WHERE rl.state = 'APPROVED'
 
 
 [getPaymentInfo]
-SELECT 
-	rl.objid as rptledgerid, 
-	xr.receiptno AS orno,
-	xr.txndate AS ordate,
-	SUM(ri.basic + ri.basicint - ri.basicdisc + ri.sef + ri.sefint - ri.sefdisc) AS oramount,
-	SUM(ri.basic) AS basic,
-	SUM(ri.basicdisc) AS basicdisc,
-	SUM(ri.basicint) as basicint,
-	SUM(ri.sef) AS sef,
-	SUM(ri.sefdisc) AS sefdisc,
-  SUM(ri.sefint) AS sefint,  
-	CASE WHEN (MIN(ri.qtr) = 1 AND MAX(ri.qtr) = 4) OR ((MIN(ri.qtr) = 0 AND MAX(ri.qtr) = 0))
-		THEN  'FULL ' + CONVERT(VARCHAR(4), ri.year)
-		ELSE
-			CONVERT(VARCHAR(1),MIN(ri.qtr)) + 'Q,' + CONVERT(VARCHAR(4),ri.year) + ' - ' + 
-			CONVERT(VARCHAR(1),MAX(ri.qtr)) + 'Q,' + CONVERT(VARCHAR(4),ri.year) 
-	END AS period
-FROM rptcertificationitem rci 
-	INNER JOIN rptledger rl ON rci.refid = rl.objid 
-	INNER JOIN cashreceiptitem_rpt_online  ri ON rl.objid = ri.rptledgerid
-	INNER JOIN cashreceipt xr ON ri.rptreceiptid = xr.objid 
-	LEFT JOIN cashreceipt_void cv ON xr.objid = cv.receiptid  
-WHERE rci.rptcertificationid = $P{rptcertificationid}
-	AND rl.objid = $P{rptledgerid}
-  AND (ri.year = $P{year} AND ri.qtr <= $P{qtr}) 
-  AND cv.objid IS NULL 
-GROUP BY rl.objid, xr.receiptno, xr.txndate, ri.year
+select 
+    rl.objid as rptledgerid, 
+    xr.receiptno as orno,
+    xr.txndate as ordate,
+    sum(ri.basic + ri.basicint - ri.basicdisc + ri.sef + ri.sefint - ri.sefdisc) as oramount,
+    sum(ri.basic) as basic,
+    sum(ri.basicdisc) as basicdisc,
+    sum(ri.basicint) as basicint,
+    sum(ri.sef) as sef,
+    sum(ri.sefdisc) as sefdisc,
+  sum(ri.sefint) as sefint,  
+    case when (min(ri.qtr) = 1 and max(ri.qtr) = 4) or ((min(ri.qtr) = 0 and max(ri.qtr) = 0))
+        then  'FULL ' + convert(varchar(4), ri.year)
+        else
+            convert(varchar(1),min(ri.qtr)) + 'Q,' + convert(varchar(4),ri.year) + ' - ' + 
+            convert(varchar(1),max(ri.qtr)) + 'Q,' + convert(varchar(4),ri.year) 
+    end as period
+from rptcertificationitem rci 
+    inner join rptledger rl on rci.refid = rl.objid 
+    inner join rptledger_payment rp on rl.objid  = rp.rptledgerid
+    inner join rptledger_payment_item ri on rp.objid = ri.parentid
+    inner join cashreceipt xr on rp.receiptid = xr.objid 
+    left join cashreceipt_void cv on xr.objid = cv.receiptid  
+where rci.rptcertificationid = $P{rptcertificationid}
+    and rl.objid = $P{rptledgerid}
+  and (ri.year = $P{year} and ri.qtr <= $P{qtr}) 
+  and cv.objid is null 
+group by rl.objid, xr.receiptno, xr.txndate, ri.year
 
-UNION ALL
+union all
 
-SELECT 
-	rl.objid as rptledgerid, 
-	rc.refno AS orno,
-	rc.refdate AS ordate,
-	SUM(rc.basic + rc.basicint - rc.basicdisc + rc.sef + rc.sefint - rc.sefdisc ) AS oramount,
-	SUM(rc.basic) AS basic,
-	SUM(rc.basicdisc) AS basicdisc,
-	SUM(rc.basicint) as basicint,
-	SUM(rc.sef) AS sef,
-	SUM(rc.sefdisc) AS sefdisc,
-  	SUM(rc.sefint) AS sefint,  
-	CASE WHEN MIN(rc.fromyear) = MAX(rc.toyear) AND MIN(rc.fromqtr) = 1 AND MAX(rc.toqtr) = 4
-		THEN  'FULL ' + CONVERT(VARCHAR(4), rc.toyear)
-		ELSE
-			CONVERT(VARCHAR(1),MIN(rc.fromqtr)) + 'Q,' + CONVERT(VARCHAR(4),rc.fromyear) + ' - ' + 
-			CONVERT(VARCHAR(1),MAX(rc.toqtr)) + 'Q,' + CONVERT(VARCHAR(4),rc.toyear) 
-	END AS period
-FROM rptcertificationitem rci 
-	INNER JOIN rptledger rl ON rci.refid = rl.objid 
-	INNER JOIN rptledger_credit rc on rl.objid = rc.rptledgerid
-WHERE rci.rptcertificationid = $P{rptcertificationid}
-  AND rl.objid = $P{rptledgerid}
-  AND ( ( $P{year} > rc.fromyear AND $P{year} < rc.toyear)  or (($P{year} = rc.fromyear or $P{year} = rc.toyear) and  rc.toqtr <= $P{qtr}))
-GROUP BY rl.objid, rc.refno, rc.refdate, rc.fromyear, rc.toyear 
+select 
+    rl.objid as rptledgerid, 
+    rc.refno as orno,
+    rc.refdate as ordate,
+    sum(rc.basic + rc.basicint - rc.basicdisc + rc.sef + rc.sefint - rc.sefdisc ) as oramount,
+    sum(rc.basic) as basic,
+    sum(rc.basicdisc) as basicdisc,
+    sum(rc.basicint) as basicint,
+    sum(rc.sef) as sef,
+    sum(rc.sefdisc) as sefdisc,
+    sum(rc.sefint) as sefint,  
+    case when min(rc.fromyear) = max(rc.toyear) and min(rc.fromqtr) = 1 and max(rc.toqtr) = 4
+        then  'FULL ' + convert(varchar(4), rc.toyear)
+        else
+            convert(varchar(1),min(rc.fromqtr)) + 'Q,' + convert(varchar(4),rc.fromyear) + ' - ' + 
+            convert(varchar(1),max(rc.toqtr)) + 'Q,' + convert(varchar(4),rc.toyear) 
+    end as period
+from rptcertificationitem rci 
+    inner join rptledger rl on rci.refid = rl.objid 
+    inner join rptledger_credit rc on rl.objid = rc.rptledgerid
+where rci.rptcertificationid = $P{rptcertificationid}
+  and rl.objid = $P{rptledgerid}
+  and ( ( $P{year} > rc.fromyear and $P{year} < rc.toyear)  or (($P{year} = rc.fromyear or $P{year} = rc.toyear) and  rc.toqtr <= $P{qtr}))
+group by rl.objid, rc.refno, rc.refdate, rc.fromyear, rc.toyear 

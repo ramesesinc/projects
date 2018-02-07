@@ -15,7 +15,7 @@
 		<!-- USED FOR ONLINE -->
 		<field name="reader_objid" required="false"/>
 		<field name="reader_name" required="false" caption="ReaderName"/>
-		<field name="volume" required="true" caption="Volume"/>
+		<field name="volume" required="true" caption="Volume"  type="integer"/>
 
 		<field name="amount" type="decimal" caption="Amount" defaultValue="0"/>
 		<field name="amtpaid" type="decimal" caption="Amount Paid" defaultValue="0"/>

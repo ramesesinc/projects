@@ -32,6 +32,7 @@ public class MarketChangeActionModel extends CrudFormModel {
         }
         else if( txntype=="lastdatepaid") {
             entity.lastdatepaid = oldEntry.lastdatepaid;
+            entity.partialbalance = oldEntry.partialbalance;
         }
     }
 

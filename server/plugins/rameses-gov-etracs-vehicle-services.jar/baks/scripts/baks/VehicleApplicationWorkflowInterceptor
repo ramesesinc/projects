@@ -1,0 +1,77 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import enterprise.facts.*;
+import enterprise.utils.*;
+
+class VehicleApplicationWorkflowInterceptor {
+	
+	@DataContext('sys_user') 
+	def sysuser_db; 
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_application_info")
+	def appInfoEm;
+
+	@DataContext("vehicle_payment")
+	def appPaymentEm;
+
+	@DataContext('entityindividual') 
+	def individualEntityEm; 
+
+	@DataContext('vehicle_permit') 
+	def vpermit_db;
+
+	@Service("VehicleFranchiseService")
+	def franchiseSvc;
+
+	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }" )
+	public void afterOpen(def evt) {
+		def entity = evt.result;
+
+		throw new Exception("fire fire");
+
+        //LOAD INFOS
+        def vi = new VariableInfoUtil("vehicle_variable");
+        entity.infos = appInfoEm.find( [parentid: entity.objid]).orderBy( "sortorder" ).list();
+        entity.infos.each {
+        	vi.convertData( it );
+        };
+
+		//LOAD FEES
+		entity.fees = appFeeEm.find([parentid: entity.objid]).list();
+		entity.amount = 0;
+        if(entity.fees) {
+            entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
+        };
+
+        //LOAD PAYMENTS
+        appPaymentEm.debug = true;
+		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();
+
+		//LOAD COMPLETE USER INFO
+		def userinfo = sysuser_db.find([ objid: entity.filedby?.objid ]).first();
+		if ( userinfo )  {
+			def fullname = [userinfo.firstname, userinfo.middlename, userinfo.lastname].findAll{( it )}.join(' '); 
+			entity.filedby = [ objid: userinfo.objid, name: fullname, jobtitle: userinfo.jobtitle ]; 
+		}
+
+		//LOAD PERMITS IF ANY
+		entity.permit = vpermit_db.find([ appid: entity.objid ]).first();
+
+		//LOAD COMPLETE ENTITY INFO
+		def g = individualEntityEm.find( [objid: entity.owner.objid ] ).first();
+		if( g ) {
+			g.each { k,v->
+				if( !entity.owner.containsKey(k) ) entity.owner.put(k,v);
+			}
+		}
+
+	}	
+
+
+}

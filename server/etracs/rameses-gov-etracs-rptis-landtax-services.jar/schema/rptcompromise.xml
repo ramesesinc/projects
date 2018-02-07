@@ -86,6 +86,10 @@
 		<field name="sefintpaid" type="decimal" required="true" />
 		<field name="firecode" type="decimal" required="true" />
 		<field name="firecodepaid" type="decimal" required="true" />
+		<field name="sh" type="decimal" required="true" />
+		<field name="shpaid" type="decimal" required="true" />
+		<field name="shint" type="decimal" required="true" />
+		<field name="shintpaid" type="decimal" required="true" />
 		<field name="total" type="decimal" required="true" />
 		<field name="fullypaid" type="boolean" required="true" />
 	</element>
@@ -132,5 +136,7 @@
 		<field name="sef" required="true" type="decimal" />
 		<field name="sefint" required="true" type="decimal" />
 		<field name="firecode" required="true" type="decimal" />
+		<field name="sh" required="true" type="decimal" />
+		<field name="shint" required="true" type="decimal" />
 	</element>
 </schema>

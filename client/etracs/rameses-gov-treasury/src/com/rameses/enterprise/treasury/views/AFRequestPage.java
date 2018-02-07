@@ -35,8 +35,11 @@ public class AFRequestPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
@@ -56,11 +59,25 @@ public class AFRequestPage extends javax.swing.JPanel {
 
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel5.setCaption("Req Date");
-        xLabel5.setExpression("#{ entity.reqdate }");
-        xLabel5.setName("entity.reqdate"); // NOI18N
+        xLabel5.setExpression("#{ entity.dtfiled }");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 22));
         xLabel5.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel1.add(xLabel5);
+
+        xLookupField1.setCaption("Resp. Center");
+        xLookupField1.setExpression("#{ entity.respcenter.name }");
+        xLookupField1.setHandler("org:lookup");
+        xLookupField1.setName("entity.respcenter"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setVisibleWhen("#{ mode != 'read' }");
+        xFormPanel1.add(xLookupField1);
+
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel6.setCaption("Resp. Center");
+        xLabel6.setExpression("#{ entity.respcenter.name }");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 22));
+        xLabel6.setVisibleWhen("#{ mode == 'read' }");
+        xFormPanel1.add(xLabel6);
 
         xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -70,10 +87,16 @@ public class AFRequestPage extends javax.swing.JPanel {
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 22));
         xFormPanel2.add(xLabel3);
 
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel7.setCaption("Req Type");
+        xLabel7.setExpression("#{ entity.reqtype }");
+        xLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 22));
+        xFormPanel2.add(xLabel7);
+
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("Status");
         xLabel4.setExpression("#{ entity.state }");
-        xLabel4.setName("entity.reqdate"); // NOI18N
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 22));
         xLabel4.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel2.add(xLabel4);
@@ -93,10 +116,11 @@ public class AFRequestPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 53, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(xFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
@@ -184,9 +208,9 @@ public class AFRequestPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(14, 14, 14)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(29, 29, 29)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 384, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -200,6 +224,9 @@ public class AFRequestPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
     
     

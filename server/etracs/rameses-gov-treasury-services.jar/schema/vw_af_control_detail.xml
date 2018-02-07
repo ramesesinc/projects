@@ -4,27 +4,28 @@
 		<field name="controlid" /> 
 		<field name="indexno" type="integer"/> 
 		<field name="refid" /> 
+		<field name="refitemid" /> 
 		<field name="refno" /> 
 		<field name="reftype" /> 
 		<field name="refdate" type="timestamp"/> 
 		<field name="txndate" type="timestamp"/> 
 		<field name="txntype" /> 
-		<field name="receivedstartseries" type="integer"/> 
-		<field name="receivedendseries" type="integer"/> 
-		<field name="beginstartseries" type="integer"/> 
-		<field name="beginendseries" type="integer"/> 
-		<field name="issuedstartseries" type="integer"/> 
-		<field name="issuedendseries" type="integer"/> 
-		<field name="endingstartseries" type="integer"/> 
-		<field name="endingendseries" type="integer"/> 
-		<field name="qtyreceived" type="integer"/> 
-		<field name="qtybegin" type="integer"/> 
-		<field name="qtyissued" type="integer"/> 
-		<field name="qtyending" type="integer"/> 
-		<field name="qtycancelled" type="integer"/> 
-		<field name="remarks" /> 
+		<field name="receivedstartseries" type="integer" caption="Received Start"/> 
+		<field name="receivedendseries" type="integer" caption="Received End"/> 
+		<field name="beginstartseries" type="integer" caption="Begin Start"/> 
+		<field name="beginendseries" type="integer" caption="Begin End"/> 
+		<field name="issuedstartseries" type="integer" caption="Issued Start"/> 
+		<field name="issuedendseries" type="integer" caption="Issued End"/> 
+		<field name="endingstartseries" type="integer" caption="Ending Start"/> 
+		<field name="endingendseries" type="integer" caption="Ending End"/> 
+		<field name="qtyreceived" type="integer" caption="Received Qty"/> 
+		<field name="qtybegin" type="integer" caption="Begin Qty"/> 
+		<field name="qtyissued" type="integer" caption="Issued Qty"/> 
+		<field name="qtyending" type="integer" caption="Ending Qty"/> 
+		<field name="qtycancelled" type="integer" caption="Qty Cancelled"/> 
+		<field name="remarks" caption="Remarks"/> 
 		<field name="issuedto_objid" /> 
-		<field name="issuedto_name" /> 
+		<field name="issuedto_name" caption="Issued To"/> 
 		<field name="afid" /> 
 		<field name="unit" type="integer"/> 
 		<field name="formtype" /> 
@@ -40,5 +41,11 @@
 		<field name="cost" type="decimal"/> 
 		<field name="state" /> 
 		<field name="batchno" /> 
+
+		<field name="controlstate" /> 
+		<field name="startseries" /> 
+		<field name="endseries" /> 
+		<field name="currentseries" /> 
+		<field name="qtybalance" />
 	</element>
 </schema>

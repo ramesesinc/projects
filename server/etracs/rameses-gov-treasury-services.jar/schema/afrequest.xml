@@ -4,13 +4,16 @@
 		<field name="state" />
 		<field name="reqno" required="true"  indexed="true" searchable="true"/>
 		<field name="dtfiled" required="true"/>
-		
+		<field name="reqtype" required="true" />
 		<field name="requester_objid" required="true"/>
 		<field name="requester_name" required="true"  indexed="true" searchable="true"/>
 		<field name="requester_title" />
 		<field name="org_objid" required="true"/>
 		<field name="org_name" required="true"/>
 		<field name="vendor" />
+
+		<field name="respcenter_objid"/>
+		<field name="respcenter_name" />
 
 		<complex name="items" ref="afrequestitem" jointype="one-to-many">
 			<key field="objid" target="parentid" />

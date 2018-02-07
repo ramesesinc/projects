@@ -1,0 +1,582 @@
+import com.rameses.annotations.*
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+
+class BatchGR2Service
+{
+	@Env
+	def env
+
+	@DataContext('batchgr_items_forrevision')
+	def em_batchgr_items_forrevision
+
+	@DataContext('batchgr_log')
+	def em_batchgr_log 
+
+	@DataContext('batchgr_error')
+	def em_batchgr_error 
+
+	@ActiveDB('batchgr')
+	def em
+
+	@ActiveDB('batchgr_land')
+	def em_land
+
+	@ActiveDB('batchgr_bldg')
+	def em_bldg
+
+	@ActiveDB('batchgr_mach')
+	def em_mach
+
+	@ActiveDB('batchgr_planttree')
+	def em_planttree
+
+	@ActiveDB('batchgr_misc')
+	def em_misc
+    
+
+	@Service('GeneralRevisionService')
+	def grSvc
+
+	@Service('RPUService')
+	def rpuSvc 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@DataContext('faas_previous')
+	def em_faas_previous 
+
+
+	@ProxyMethod
+	public def getRyList(lguid, ry, rputype ) {
+		return grSvc.getRyList(lguid, ry, rputype )
+	}
+
+	@ProxyMethod
+	public void buildItemsForRevision( params ) {
+		params.barangayid = params.barangay.objid 
+		params.section = (params.section ? params.section : '%')
+		params.classid = (params.classification ? params.classification.objid : '%')
+		params.rputype = (params.rputype ? params.rputype : '%')
+		em.clearItemsForRevision(params)
+		em.insertItemsForRevision(params)
+	}
+
+
+	@ProxyMethod
+	public def getRevisedCount(params){
+		if (!params.rputype) params.rputype = '%'
+		validateParams(params)
+		return em.findRevisedCount(params)
+	}
+
+
+	@ProxyMethod
+	public void approveFaas(params) {
+		def prevfaas = params.faas 
+		try{
+			def fp = em_faas_previous.find([prevfaasid:prevfaas.objid]).first()
+			if (!fp) throw new Exception('Previous FAAS record for does not exist.')
+
+			def faas = faasSvc.openFaas([objid:fp.faasid])
+			faasSvc.approveFaas(faas)
+			em_batchgr_log.save([objid:prevfaas.objid])
+			em_batchgr_items_forrevision.find([objid:prevfaas.objid]).delete()
+			println 'Successfully revised FAAS ' + prevfaas.tdno  
+		}
+		catch(e){
+			e.printStackTrace()
+			if (params.continueonerror){
+				logError( prevfaas.objid, params.newry, e )
+				em_batchgr_log.delete([objid:prevfaas.objid])
+				em_batchgr_items_forrevision.find([objid:prevfaas.objid]).delete()
+			}
+			else{
+				throw e 
+			}
+		}
+	}
+
+
+	void validateParams(params){
+		if (!params.rputype) throw new Exception('Property Type must be specified.')
+		params.lguid = params.lgu.objid 
+		params.barangayid = params.barangay?.objid 
+		params.snewry = params.newry.toString()
+	}
+
+
+	@ProxyMethod
+	public void reviseRealProperties(params){
+		try{
+			println 'reviseRealProperties...'
+			validateParams(params)
+			em.insertRevisedRealProperties(params)
+		}
+		catch(e){
+			e.printStackTrace()
+			println 'ERROR: reviseRealProperties: ' + e.message 
+		}
+	}
+
+	@ProxyMethod
+	public void reviseRpus(params){
+		try{
+			println 'reviseRpus... ' + params.rputype 
+			validateParams(params)
+			em.insertRevisedRpus(params)
+		}
+		catch(e){
+			println 'ERROR: reviseRpus: ' + e.message 
+		}
+	}
+
+	@ProxyMethod
+	public void reviseFaases(params){
+		try{
+			println 'reviseFaases...'
+			validateParams(params)
+			em.insertRevisedFaases(params)
+		}
+		catch(e){
+			println 'ERROR: reviseFaases: ' + e.message 
+		}
+	}
+
+	@ProxyMethod
+	public void reviseFaasList(params){
+		try{
+			println 'reviseFaasList...'
+			validateParams(params)
+			em.insertRevisedFaasList(params)
+		}
+		catch(e){
+			println 'ERROR: reviseFaasList: ' + e.message 
+		}
+	}
+
+	@ProxyMethod
+	public void reviseFaasSignatories(params){
+		try{
+			println 'reviseFaasSignatories...'
+			params.appraisername = params.appraiser?.name 
+			params.appraisertitle = params.appraiser?.title 
+			params.appraiserdtsigned = params.appraiser?.dtsigned 
+			params.recommendername = params.recommender?.name 
+			params.recommendertitle = params.recommender?.title 
+			params.recommenderdtsigned = params.recommender?.dtsigned 
+			params.taxmappername = params.taxmapper?.name 
+			params.taxmappertitle = params.taxmapper?.title 
+			params.taxmapperdtsigned = params.taxmapper?.dtsigned 
+			params.approvername = params.approver?.name 
+			params.approvertitle = params.approver?.title 
+			params.approverdtsigned = params.approver?.dtsigned 
+			params.provapprovername = params.provapprover?.name 
+			params.provapprovertitle = params.provapprover?.title 
+			params.provapproverdtsigned = params.provapprover?.dtsigned 
+			validateParams(params)
+			em.insertRevisedSignatories(params)
+		}
+		catch(e){
+			println 'ERROR: reviseFaasSignatories: ' + e.message 
+		}
+	}
+
+	@ProxyMethod
+	public void reviseFaasPreviousList(params){
+		try{
+			println 'reviseFaasPreviousList...'
+			validateParams(params)
+			em.insertRevisedPreviousFaases(params)
+		}
+		catch(e){
+			println 'ERROR: reviseFaasSignatories: ' + e.message 
+		}
+	}
+
+
+
+
+
+	/*=======================================================
+	*
+	*  LAND SUPPORT 
+	*
+	=======================================================*/
+
+
+	@ProxyMethod
+	public void reviseLandRpus(params){
+		try{
+			println 'reviseLandRpus...'
+			validateParams(params)
+			em_land.insertRevisedLandRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseLandRpus: ' + e.message 		
+		}
+	}
+
+	@ProxyMethod
+	public void reviseLandAppraisals(params){
+		try{
+			println 'reviseLandAppraisals...'
+			validateParams(params)
+			em_land.insertRevisedLandDetails(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseLandAppraisals: ' + e.message 		
+		}
+	}
+
+
+	@ProxyMethod
+	public void revisePlantTreeAppraisals(params){
+		try{
+			println 'revisePlantTreeAppraisals...'
+			validateParams(params)
+			em_land.insertRevisedPlantTreeDetails(params)	
+		}
+		catch(e){
+			println 'ERROR: revisePlantTreeAppraisals: ' + e.message 		
+		}
+	}
+
+	@ProxyMethod
+	public void reviseLandAdjustments(params){
+		try{
+			println 'reviseLandAdjustments...'
+			validateParams(params)
+			em_land.insertRevisedLandAdjustments(params)	
+			em_land.insertRevisedLandAdjustmentParameters(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseLandAdjustments: ' + e.message 		
+		}
+	}
+
+
+
+
+	/*=======================================================
+	*
+	*  BUILDING SUPPORT 
+	*
+	=======================================================*/
+	@ProxyMethod
+	public void reviseBldgRpus(params){
+		try{
+			println 'reviseBldgRpus...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgRpus: ' + e.message 		
+		}
+	}
+
+
+	@ProxyMethod
+	public void reviseBldgStructures(params){
+		try{
+			println 'reviseBldgStructures...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgStructures(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgStructures: ' + e.message 		
+		}
+	}
+
+
+	@ProxyMethod
+	public void reviseBldgStructureTypes(params){
+		try{
+			println 'reviseBldgStructureTypes...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgStructuralTypes(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgStructureTypes: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgUses(params){
+		try{
+			println 'reviseBldgUses...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgUses(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgUses: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgFloors(params){
+		try{
+			println 'reviseBldgFloors...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgFloors(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgFloors: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgAdditionalItems(params){
+		try{
+			println 'reviseBldgAdditionalItems...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgAdditionalItems(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgAdditionalItems: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseBldgAdditionalItemParams(params){
+		try{
+			println 'reviseBldgAdditionalItemParams...'
+			validateParams(params)
+			em_bldg.insertRevisedBldgAdditionalItemParams(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseBldgAdditionalItemParams: ' + e.message 		
+		}
+	}	
+
+
+
+	/*=======================================================
+	*
+	*  MACHINERY SUPPORT 
+	*
+	=======================================================*/
+
+	@ProxyMethod
+	public void reviseMachRpus(params){
+		try{
+			println 'reviseMachRpus...'
+			validateParams(params)
+			em_mach.insertRevisedMachRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMachRpus: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMachUses(params){
+		try{
+			println 'reviseMachUses...'
+			validateParams(params)
+			em_mach.insertRevisedMachUses(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMachUses: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMachDetails(params){
+		try{
+			println 'reviseMachDetails...'
+			validateParams(params)
+			em_mach.insertRevisedMachDetails(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMachDetails: ' + e.message 		
+		}
+	}	
+
+
+
+
+	/*=======================================================
+	*
+	* PLANT/TREE SUPPORT 
+	*
+	=======================================================*/
+
+	@ProxyMethod
+	public void revisePlantTreeRpus(params){
+		try{
+			println 'revisePlantTreeRpus...'
+			validateParams(params)
+			em_planttree.insertRevisedPlantTreeRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: revisePlantTreeRpus: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void revisePlantTreeDetails(params){
+		try{
+			println 'revisePlantTreeDetails...'
+			validateParams(params)
+			em_planttree.insertRevisedPlantTreeDetails(params)	
+		}
+		catch(e){
+			println 'ERROR: revisePlantTreeDetails: ' + e.message 		
+		}
+	}	
+
+
+
+
+
+	/*=======================================================
+	*
+	* MISCELLANEOUS PROPERTY SUPPORT 
+	*
+	=======================================================*/
+
+	@ProxyMethod
+	public void reviseMiscRpus(params){
+		try{
+			println 'reviseMiscRpus...'
+			validateParams(params)
+			em_misc.insertRevisedMiscRpus(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMiscRpus: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMiscRpuItems(params){
+		try{
+			println 'reviseMiscRpuItems...'
+			validateParams(params)
+			em_misc.insertRevisedMiscRpuItems(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMiscRpuItems: ' + e.message 		
+		}
+	}	
+
+
+	@ProxyMethod
+	public void reviseMiscRpuItemParams(params){
+		try{
+			println 'reviseMiscRpuItemParams...'
+			validateParams(params)
+			em_misc.insertRevisedMiscRpuItemParams(params)	
+		}
+		catch(e){
+			println 'ERROR: reviseMiscRpuItemParams: ' + e.message 		
+		}
+	}	
+
+
+
+
+
+
+
+	@ProxyMethod
+	public List getFaasesForRevision(params) {
+		return em_batchgr_items_forrevision
+					.find([barangayid:params.barangay.objid])
+					.limit(params.count)
+					.orderBy('pin, suffix')
+					.list()
+	} 
+
+
+	@ProxyMethod
+	public def reviseFaas( info ) {
+		def retval = [success:0, error:0]
+		try {
+			def revisedfaasid = info.faas.objid + '-' + info.newry 
+			def faas = faasSvc.openFaas([objid:revisedfaasid])
+			faas.memoranda = info.memoranda 
+			faas.appraiser = info.appraiser 
+            faas.taxmapper = info.taxmapper 
+            faas.recommender = info.recommender 
+            faas.approver = info.approver 
+            faas.memoranda = info.memoranda
+            faas.effectivityyear = info.newry + 1 
+            rpuSvc.calculateAssessment(faas.rpu)
+            faasSvc.updateFaas(faas)
+			if (info.autoapprove){
+				faas = faasSvc.approveFaas(faas)
+			}
+			retval.success += 1
+			em_batchgr_log.create(info.faas)
+			println 'Successfully revised -> ' + faas.rpu.rputype + ' : ' +  faas.prevtdno 
+		}
+		catch ( e ) {
+			e.printStackTrace()
+			retval.error += 1
+			logError( info.faas.objid, info.newry, e ) 
+		}
+		finally{
+			em_batchgr_items_forrevision.find([objid:info.faas.objid]).delete()
+		}
+		return retval
+	}		
+
+
+	@ProxyMethod
+	public def getBatchGRErrors(  ) {
+		return em_batchgr_error.where('1=1')
+					.select('objid,newry,faas.tdno,faas.fullpin,faas.owner_name')
+					.orderBy('ry,faas.tdno')
+					.list()
+	}
+
+	@ProxyMethod
+	public def getErrorMessage( error ) {
+		def e = em_batchgr_error.find([objid:error.objid]).first()
+		if (e ) return e.msg 
+		return ''
+	}
+
+	void logError( faasid, newry, e ) {
+		def sw = null 
+		def pw = null 
+		try {
+			sw = new StringWriter()
+			pw = new PrintWriter(sw)
+			e.printStackTrace( pw)
+
+			def err = [:]
+			err.objid = faasid 
+			err.newry = newry 
+			err.msg = sw.toString()
+
+			em_batchgr_error.find([objid:faasid]).delete()
+			em_batchgr_error.create(err)
+		}
+		catch( ex ) {
+			ex.printStackTrace()
+			println 'Unable to Log Error for ' + faasid 
+		}
+		finally{
+			if( sw ) try{ sw.close() } catch( ex ) {}
+			if( pw ) try{ pw.close() } catch( ex ){}
+		}
+	}
+
+
+
+
+	
+}
+

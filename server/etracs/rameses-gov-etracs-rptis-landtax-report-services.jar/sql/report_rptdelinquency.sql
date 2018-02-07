@@ -202,20 +202,21 @@ ORDER BY barangay_name, idx
 [findLatestPayment]
 select x.*
 from (
-	select c.receiptno, c.receiptdate
-	from cashreceipt c 
-		inner join cashreceiptitem_rpt_online cro on c.objid = cro.rptreceiptid
-		left join cashreceipt_void cv on c.objid = cv.receiptid
-	where cro.rptledgerid = $P{rptledgerid}
-	and cv.objid is null 
-	and c.receiptdate < $P{dtgenerated}
+    select c.receiptno, c.receiptdate
+    from cashreceipt c 
+        inner join rptledger_payment rp on c.objid = rp.receiptid 
+        inner join rptledger_payment_item cro on rp.objid = cro.parentid
+        left join cashreceipt_void cv on c.objid = cv.receiptid
+    where rp.rptledgerid = $P{rptledgerid}
+    and cv.objid is null 
+    and c.receiptdate < $P{dtgenerated}
 
-	union 
+    union 
 
-	select refno as receiptno, refdate as receiptdate
-	from rptledger_credit 
-	where rptledgerid = $P{rptledgerid}
-	and refdate < $P{dtgenerated}
+    select refno as receiptno, refdate as receiptdate
+    from rptledger_credit 
+    where rptledgerid = $P{rptledgerid}
+    and refdate < $P{dtgenerated}
 )x
 order by x.receiptdate desc 
 

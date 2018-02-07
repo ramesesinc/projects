@@ -53,6 +53,7 @@
         <page name="forapproval" title="Transmittal (For Approval)">
             <transition caption="Close" to="end" mnemonic="c" icon="images/toolbars/cancel.png" />
             <transition caption="New" to="init" action="init" mnemonic="n" icon="images/toolbars/create.png"/>
+            <transition caption="Delete" to="delete"  action="delete" confirm="Delete record?"    mnemonic="d" icon="images/toolbars/trash.png"  visibleWhen="#{mode == 'read'}" role="RECORD"/>
             <transition caption="Approve" to="approved" action="approve" mnemonic="c" confirm="Approve?" visibleWhen="#{showForApprovalActions}"/>
         </page>
         

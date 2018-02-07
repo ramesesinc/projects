@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+        <invoker type="rptledger:form:formActions" 
+                 action="create" caption="Post Payment" target="popup" 
+                 visibleWhen="#{entity.state=='APPROVED'}" 
+                 role="LANDTAX" permission="rptledger.postpayment"/>        
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.CapturePaymentModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.CapturePaymentPage" />
+    </pages>
+</workunit>

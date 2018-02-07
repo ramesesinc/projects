@@ -1,0 +1,43 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+
+class LandTaxLGUAccountMappingInterceptor
+{
+	@ActiveDB('landtax_lgu_account_mapping')
+	def em 
+
+	@DataContext('landtax_lgu_account_mapping')
+	def landtax_lgu_account_mapping
+
+
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname=='landtax_lgu_account_mapping'}") 
+	public void getNodeList( evt ) {
+		def arg = evt.args[0]
+		def result = evt.result
+
+		em.getLgus().each{
+			result << [title: it.name, id:it.objid, orgclass:it.orgclass]
+		}
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'landtax_lgu_account_mapping' }")
+	public void getList(def evt) {
+		def o = evt.args[0];
+		if( !o.node?.id ) return;
+
+		def m   = [lguid:o.node.id];
+		def str = " lgu.objid = :lguid ";
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
+	}			
+}
+

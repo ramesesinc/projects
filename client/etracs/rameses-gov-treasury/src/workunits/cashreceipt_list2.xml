@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="cashreceipt" 
           allowCreate="false" allowEdit="false" allowDelete="false"
-          cols="formno,receiptno,txnmode,receiptdate,paidbyname,collector.name,collectiontype.name,amount,voided"
+          cols="formno,receiptno,txnmode,receiptdate,paidby,collector.name,collectiontype.name,amount,voided"
           orderBy="formno,receiptno">
     
     <invokers>
@@ -16,9 +16,45 @@
                  formTitle="Cash Receipt List"
                  role="SHARED,ADMIN" permission="cashreceipt.list" action="init"  />          
    </invokers>
-        
     
+   <code>
+    <![CDATA[   
+       
+    import com.rameses.rcp.annotations.*
+    import com.rameses.rcp.common.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.common.*
+    import com.rameses.seti2.models.*;   
+       
+    class CashReceiptList extends CrudListModel {
+    
+        def afTypes;
+
+        void afterInit() {
+            def m = [_schemaname: 'af' ];
+            m._limit = 100;
+            afTypes = queryService.getList(m)*.objid;
+        }
+
+        @PropertyChangeListener
+        def listener = [
+            "query.formno": { o->
+                reload();
+            }
+        ];
+        
+        def getCustomFilter() {
+            if(!query.formno) return null;
+            return [ "formno = :formno", [formno: query.formno] ];
+        }
+        
+    }
+    
+    ]]>
+       
+   </code>             
+     
     <pages>
-        <page name="queryform" template="com.rameses.enterprise.treasury.views.CashReceiptQueryFilter"/>
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.AFControlQueryPanel"/>
     </pages>        
 </workunit>

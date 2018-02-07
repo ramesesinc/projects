@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="RPTBillingLedger"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="612"
@@ -249,7 +250,7 @@
 						height="19"
 						key="subreport-1"/>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{RPTBillingLedgerItem}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["rptbillingledgeritem.jasper"]]></subreportExpression>
 				</subreport>
 				<staticText>
 					<reportElement
@@ -676,7 +677,7 @@
 						width="65"
 						height="13"
 						key="staticText-27">
-							<printWhenExpression><![CDATA[new Boolean($F{hastaxdifference}.booleanValue() == true)]]></printWhenExpression>
+							<printWhenExpression><![CDATA[$F{hastaxdifference} == true]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<textElement textAlignment="Left">

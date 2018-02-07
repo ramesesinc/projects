@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFReceiptInterceptor { 
+	
+	@Service("SequenceService") 
+	def seqSvc;
+
+	@Service("DateService") 
+	def dateSvc;
+
+	@DataContext("af_control")
+	def afcontrol;
+
+
+	@Env
+	def env;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'afreceipt' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.user = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
+		o.org = [objid:env.ORGID, name:env.ORGNAME];
+		o.controlno = "RRIS" + seqSvc.getNextFormattedSeries("RRIS");
+		o.txndate = dateSvc.getServerDate();
+		o.state = "DRAFT";
+	}
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'afreceipt' }")
+	public void beforeOpen( evt ) { 
+		def result = evt.result;
+		def scols = "receiptid,batchno,afid,startseries:{MIN(startseries)},endseries:{MAX(endseries)},startstub:{MIN(stubno)},endstub:{MAX(stubno)}"; 
+		def list = afcontrol.find([ receiptid: result.objid ] ).select( scols ).groupBy("receiptid,batchno,afid").list(); 
+		result.items.each { r->
+			r.items = list.findAll{ ac-> ac.afid == r.item.objid };
+			r.remarks = r.items.collect{ i-> i.startseries + "-" + i.endseries +";" }.join(","); 
+		}
+	}
+	
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'afreceipt' }")
+	public void getNodes( evt ) { 
+		def x = evt.args[0];
+		def result = evt.result; 
+		result << [ id:'open', title: 'Draft', state:'DRAFT' ];
+		result << [ id:'closed', title: 'Posted', state:'POSTED' ];
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'afreceipt' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+
+		//o.debug = true;
+		if( !o.node?.id ) return;
+
+		def str = " state = :state ";
+		def m = [ state: o.node.state ]; 
+
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		} 
+	}	
+
+
+}

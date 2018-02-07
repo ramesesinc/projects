@@ -235,9 +235,8 @@ public class FAASModel
     boolean getAllowEdit(){
         if ( getEntity().state == 'CURRENT' ) return false;
         if ( getEntity().state == 'CANCELLED' ) return false;
-        if ( mode == MODE_READ) return false;
-        if (getEntity().datacapture == 1 || getEntity().datacapture == true) return true;
         if (getEntity().originlguid != getOrgid()) return false;
+        if ( mode == MODE_READ) return false;
         return true;
     }
 
@@ -275,9 +274,17 @@ public class FAASModel
     }
     
     boolean getShowActions(){
+        def taskstate = getEntity()?.taskstate
         if (getEntity().state.matches('CURRENT|CANCELLED')) return false;
-        if (getEntity().taskstate && getEntity().taskstate.matches('assign.*')) return false;
-        if (getEntity().taskstate && !getEntity().taskstate.matches('receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) return false;
+        if (taskstate && taskstate.matches('assign.*')) return false;
+        if ('city'.equalsIgnoreCase(OsirisContext.env.ORGCLASS)){
+            if (taskstate && !taskstate.matches('receiver|appraiser.*|taxmapper.*|recommender')) 
+                return false;
+        }
+        else {
+            if (taskstate && !taskstate.matches('receiver|appraiser|provappraiser|taxmapper|provtaxmapper|recommender')) 
+                return false;
+        }
         if (OsirisContext.env.USERID != getEntity().assignee.objid) return false;
         if (mode != MODE_READ) return false;
         return true;

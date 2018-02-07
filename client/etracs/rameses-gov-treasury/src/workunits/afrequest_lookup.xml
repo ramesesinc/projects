@@ -2,14 +2,16 @@
     <invokers>
         <invoker type="afrequest_collection:lookup" caption="Lookup AF for ISSUE" 
                  action="init"
-                 customFilter="state='OPEN' AND itemclass='AF' AND reqtype='COLLECTION'"
+                 customFilter="state='OPEN' AND reqtype='COLLECTION'"
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
+                 hiddenCols="reqtype"
                  formTitle="Lookup Request List"/>
         
         <invoker type="afrequest_purchase:lookup" caption="Lookup AF Request" 
                  action="init"
-                 customFilter="state='OPEN' AND itemclass='AF' AND reqtype='PURCHASE'"
+                 customFilter="state='OPEN' AND reqtype='PURCHASE'"
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
+                 hiddenCols="reqtype"
                  formTitle="Lookup Request List"/>
     </invokers>
 </workunit>

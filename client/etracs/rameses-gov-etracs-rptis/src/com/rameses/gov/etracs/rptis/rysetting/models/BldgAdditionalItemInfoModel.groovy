@@ -40,7 +40,7 @@ public class BldgAdditionalItemInfoModel implements SubPage
     def searchtext;
     
     void searchAdditionalItems(){
-        additionalItems = service.searchAdditionalItems([searchtext:searchtext])
+        additionalItems = service.searchAdditionalItems([bldgrysettingid:entity.objid, searchtext:searchtext])
         additionalItemListHandler?.reload();
     }
     
@@ -56,6 +56,7 @@ public class BldgAdditionalItemInfoModel implements SubPage
         ]},
         onRemoveItem   : { item -> doRemoveAdditionalItem( item ) },
         fetchList      : { return additionalItems },
+        onOpenItem     : {item, colname -> openAdditionalItem()},
     ] as BasicListModel 
     
     
@@ -80,7 +81,7 @@ public class BldgAdditionalItemInfoModel implements SubPage
     }
     
     def openAdditionalItem() {
-        if( selectedAdditionalItem ){
+        if( selectedAdditionalItem && mode != 'read' ){
             return InvokerUtil.lookupOpener('bldgadditionalitem:open', [entity:selectedAdditionalItem, updateHandler:updateAdditionalItemHandler] )
         }
     }

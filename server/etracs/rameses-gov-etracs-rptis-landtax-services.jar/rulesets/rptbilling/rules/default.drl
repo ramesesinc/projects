@@ -13,7 +13,7 @@ rule "apply-incentive"
 	no-loop
 	when
 		INC : RPTIncentive($fromyear:fromyear, $toyear:toyear)
-		RLI : RPTLedgerItemFact (  rptledger != null, year >= $fromyear, year <= $toyear  )
+		RLI : RPTLedgerItemFact ( year >= $fromyear, year <= $toyear  )
 	then	
 		System.out.println("apply-incentive");
 		Map map = new HashMap();

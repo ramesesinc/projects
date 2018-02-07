@@ -1,9 +1,0 @@
-<workunit extends="rpt_wtemplates/MasterLookup.xml" 
-          schemaName="faastxnattributetype">
-    <invokers>
-        <invoker type="faastxnattributetype:lookup" 
-                 caption="Transaction Attribute Lookup" 
-                 action="init"
-                 height="500" width="700" />
-    </invokers>
-</workunit>

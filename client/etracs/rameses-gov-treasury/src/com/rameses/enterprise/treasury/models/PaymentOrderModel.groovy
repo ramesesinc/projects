@@ -9,7 +9,8 @@ import com.rameses.seti2.models.*
 class PaymentOrderModel extends CrudFormModel {
     
     void afterCreate() {
-        MsgBox.alert('edit');
+        //GENERAL COLLECTION must be system based
+        entity.collectiontype = [objid: 'GENERAL_COLLECTION'];
         entity.items = [];
     }
     
@@ -22,5 +23,8 @@ class PaymentOrderModel extends CrudFormModel {
         }
     ];
     
+    void afterSave() {
+        MsgBox.alert( "Order of payment number " + entity.objid );
+    }
     
 } 

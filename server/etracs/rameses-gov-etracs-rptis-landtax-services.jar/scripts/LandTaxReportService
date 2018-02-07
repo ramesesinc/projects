@@ -211,7 +211,7 @@ class LandTaxReportService
 		data.brgyshare = 0.0
 	}
 
-	/* this is temporary, yearly advance is not supported in cashreceiptitem_rpt_account */
+	/* this is temporary, yearly advance is not supported in rptledger_payment_share */
 	void buildShares(data, params){
 		def disposition = landtaxreport_collection.findAdvanceDispositionReport2( params );	
 		if ( disposition ) {

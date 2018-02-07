@@ -1,0 +1,91 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+
+
+/************************************************
+* This is the one called by the gdx or kiosk
+*************************************************/
+class OnlinePaymentService   {
+
+    @Service("EORService")
+    def eorSvc;  
+
+    @Service("PaymentOrderService")
+    def pmoSvc;  
+    
+    @DataContext("eor")
+    def eorEm; 
+
+
+    /***************************************************
+    * This must be overridden by discrminating txntype.
+    ****************************************************/
+    @ProxyMethod
+    public def getBilling( def o ) {
+        if(!o.txntype) return [status:1, message:'txntype is required'];
+        return [:];
+    }
+
+    @ProxyMethod
+    public def createPaymentOrder( def o ) {
+        if(!o.txntype) return [status:1, message:'txntype is required'];
+        if( !o.info ) 
+            throw new Exception("info is required in the arguments. Please override @Before OnlinePaymentService.createPaymentOrder and pass info");
+
+        def info = o.info;
+        def m = pmoSvc.create( info );
+
+        def result = [:];
+        result.status=0
+        result.paymentrefid=m.objid;
+        result.amount=m.amount;
+        result.txntype=m.txntype;
+        result.txntypename=m.txntypename;
+        result.controlno=m.controlno;
+        result.paidby=m.paidby;
+        result.particulars=m.particulars;
+
+        result.message=info.message;
+        result.email=info.email;
+        result.mobileno=info.mobileno;
+        result.phoneno=info.phoneno;
+        return result;
+    }
+
+    @ProxyMethod
+    public def postPayment( def o ) {
+        if(!o.txntype) return [status:1, message:'txntype is required'];
+        def po = pmoSvc.open( [objid: o.paymentrefid ] );
+        if (!po) throw new Exception('Payment Order No. ' + o.objid + ' does not exist or has already been processed.')
+        
+        if(o.tracedate instanceof String ) {
+            def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            po.tracedate = df.parse( o.tracedate );
+        }
+
+        def r = eorSvc.post( po );
+
+        def retval = [:];
+        retval.paymentrefid =  r.paymentrefid;
+        retval.receiptno = r.receiptno;
+        retval.receiptid = r.objid;
+        retval.receiptdate = r.receiptdate; 
+
+        //log the payment...
+        return retval;
+    }
+
+    @ProxyMethod
+    public def getReceipt( def o ) {
+        def m = [:];
+        if( o.receiptno ) m.receiptno = o.receiptno;
+        def rc = eorEm.find(m).first(1);
+        if(!rc) {
+            throw new Exception("Receipt " + o + " not found");
+        }
+        return rc;
+    }
+
+
+}

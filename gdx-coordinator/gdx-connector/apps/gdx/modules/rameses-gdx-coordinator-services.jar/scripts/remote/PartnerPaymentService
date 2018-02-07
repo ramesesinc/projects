@@ -1,0 +1,28 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class PartnerPaymentService  {
+
+    @Service(value="OnlinePaymentService", connection="local-etracs")
+    def svc;
+
+    
+
+    @ProxyMethod
+    public def getBilling( def o ) {
+        return svc.getBilling( o );
+    }
+
+	@ProxyMethod
+    public def createPaymentOrder( def o ) {
+        return svc.createPaymentOrder( o );
+    }
+
+	@ProxyMethod
+    public def getReceipt( def o ) {
+    	return svc.getReceipt( o );
+    }
+
+}

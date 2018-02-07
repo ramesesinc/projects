@@ -1,0 +1,80 @@
+import com.rameses.annotations.*;
+
+class PaymentPostingService {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@ProxyMethod 
+	public void post( def pmt ) {
+		//save first the xxx_payment. 
+		def emMap = [:];
+		def emLookup = { name ->
+			if( !emMap.containsKey(name)) {
+				emMap.put( name, em.lookup( name));
+			}
+			return emMap.get(name);
+		}
+		pmt.voided = 0;
+		def pmtEm = emLookup( pmt._schemaname );
+		pmtEm.create( pmt );
+
+		//save or update the reference
+		pmt.items.findAll{ it.reftype != null }.each {
+			def gb = emLookup( it.reftype );
+			//if there is a _new marker, then create this before saving
+			if( !it.refid || it.refid.matches("new|create") ) {
+				it.remove("refid");
+				gb.create( it );	
+			}
+			else {
+				//find first if it exists then save 
+				gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: it.amount] );
+			}			
+		}
+
+		//signal if there is an attached workflow
+		if( pmt._workflow ) {
+			taskSvc.signal( pmt._workflow );
+		}
+
+	}
+  
+	@ProxyMethod 
+	public def reversePayment( def pmt ) {
+		if(!pmt._schemaname ) 
+			throw new Exception("PaymentPostingService.reversePayment error. _schemaname is required");
+		if( !pmt.objid)
+			throw new Exception("PaymentPostingService.reversePayment. Payment objid is required");
+
+		def emMap = [:];
+		def emLookup = { name ->
+			if( !emMap.containsKey(name)) {
+				emMap.put( name, em.lookup( name));
+			}
+			return emMap.get(name);
+		}
+
+		//after create post the posting references
+		pmt.items.each {
+			def gb = emLookup( it.reftype );
+			//find first if it exists then save 
+			gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+		}
+
+		def pmtEm = emLookup( pmt._schemaname );
+		pmtEm.find( [ objid: pmt.objid ] ).update( [voided : 1 ] );
+
+		//signal if there is an attached workflow
+		if( pmt._workflow ) {
+			taskSvc.signal( pmt._workflow );
+		}
+		return pmt;
+	}
+
+
+
+}

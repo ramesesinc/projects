@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/treasury/common/templates/PaymentList.xml"
+          schemaName="waterworks_payment"
+          title="Payments">
+    <invokers>
+        <invoker type="waterworks_account:section" caption="Payments" 
+                 index="2" action="init" 
+                 parentkey="acctid"
+                 visibleWhen="#{mode=='read'}"  />
+        
+        <!-- List Actions -->
+        <invoker type="formActions" caption="Add New Entry" action="capturePayment"/> 
+    </invokers>
+</workunit>

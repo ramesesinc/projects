@@ -38,7 +38,7 @@ class LandTaxLedgerSupportService
     public def getRemoteLedgerMapping(ledger){
         def mapping = em_mapping.find([objid:ledger.objid]).first()
         if (!mapping){
-            def remoteSvc = getRemoteService('RPTLedgerRemoteService', ledger.faasid)
+            def remoteSvc = getRemoteService('RPTLedgerService', ledger.faasid)
             def remoteledger = remoteSvc.getLedgerForMapping(ledger)
             mapping = [:]
             mapping.objid = ledger.objid 
@@ -58,7 +58,7 @@ class LandTaxLedgerSupportService
         def org = orgSvc.open([objid:faas.lguid])
         if (!org) throw new Exception('Org ' + faas.lguid + ' does not exist or has already been deleted.')
         def orgcode = org.code.replaceAll('-', '')
-        return dynSvc.lookup(orgcode + 'GDX:' + servicename, 'remote-script-service')
+        return dynSvc.lookup(orgcode + ':' + servicename, 'remote-script-service')
     }
 
 

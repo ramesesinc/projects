@@ -20,6 +20,7 @@
           <invoker type="market_account:form:change" target="popup" role="ADMIN" 
             caption="Edit Extension Area" index="1" 
              action="initEdit" txntype="extarea"/> 
+          
         
     </invokers>
     

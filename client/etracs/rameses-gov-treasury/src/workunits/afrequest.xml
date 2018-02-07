@@ -8,9 +8,15 @@
                 target="popup" index="-10000" action="open"/>  
         
         <!-- Menu category -->
-        <invoker folderid="menucategory/treasury/collection" caption="Request Accountable Form" 
-                formTitle="Request AF For Collection"
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="AF Request (Collection)" 
+                formTitle="AF Request (Collection)"
                 role="COLLECTOR" action="create" target="window" index="10" reqtype="COLLECTION"/>  
+        
+        <invoker folderid="menucategory/treasury/af" 
+                 caption="AF Request (Purchase)" 
+                formTitle="AF Request (Purchase)"
+                role="AFO" action="create" target="window" index="10" reqtype="PURCHASE"/>   
         
     </invokers>
     

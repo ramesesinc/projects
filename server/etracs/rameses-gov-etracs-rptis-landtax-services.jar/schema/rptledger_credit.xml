@@ -1,6 +1,6 @@
 <schema>
     <element tablename="rptledger_credit">
-        <field name="objid" primary="true" />
+        <field name="objid" primary="true" prefix="RLC" />
         <field name="rptledgerid" required="true" />
         <field name="type" required="true" />
         <field name="refno" required="true" />

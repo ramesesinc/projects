@@ -17,6 +17,9 @@ public class RPTLedgerTaxSummaryFact
     Double sefint         
     Double sefdisc        
     Double firecode       
+    Double sh            
+    Double shint         
+    Double shdisc        
 
     public RPTLedgerTaxSummaryFact(){}
 
@@ -34,5 +37,8 @@ public class RPTLedgerTaxSummaryFact
         this.sefint = 0.0
         this.sefdisc = 0.0
         this.firecode = 0.0
+        this.sh = 0.0
+        this.shint = 0.0
+        this.shdisc = 0.0
     }
 }

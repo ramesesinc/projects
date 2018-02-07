@@ -187,17 +187,12 @@ class FAASService
 	@ProxyMethod
 	public def createFaas( faas ) {
 		checkTxnReference(faas)
-		if (!faas.ryordinanceno){
-			faas.ryordinanceno = var.gr_ordinance_no
-			faas.ryordinancedate = var.gr_ordinance_date
-		}
 		faas.originlguid = (faas.originlguid ? faas.originlguid : env.ORGID )
 		generateUniqueTdNo(faas)
 		updateNameInfo(faas)
 		createRealProperty(faas)
 		createRpu(faas)
 		updateFullPinInfo(faas)
-		updateRestrictionInfo(faas)
 		em_faas.create(faas)
 		saveSignatory(faas)
 		savePreviousFaases(faas)
@@ -228,7 +223,6 @@ class FAASService
 		updateFullPinInfo(faas)
 		updateRealProperty(faas)
 		updateRpu(faas)
-		updateRestrictionInfo(faas)
 		em_faas.save(faas)
 		savePreviousFaases( faas )
 		saveSignatory(faas)
@@ -806,7 +800,8 @@ class FAASService
 		if (faas.rpu.rputype != 'land'){
 			def landowner = em.findLandOwner([rpuid:faas.rpu.objid]);
 			if (landowner && faas.taxpayer.objid != landowner.objid){
-				def tokens = faas.rpu.fullpin.tokenize('-')
+				def fullpin = faas.rpu.fullpin.replace('(', '').replace(')','')
+				def tokens = fullpin.tokenize('-')
 				tokens[4] = '(' + tokens[4] + ')'
 				faas.fullpin = tokens.join('-')
 			}
@@ -814,13 +809,6 @@ class FAASService
 		if (faas.rp && faas.rp.claimno ){
 			if (faas.fullpin.indexOf(faas.rp.claimno) < 0)
 				faas.fullpin += '-' + faas.rp.claimno
-		}
-	}
-
-	void updateRestrictionInfo(faas){
-		faas?.restrictions?.each{
-			it.createdby = [objid:env.USERID, name:env.NAME]
-			it.dtcreated = dtSvc.serverDate
 		}
 	}
 

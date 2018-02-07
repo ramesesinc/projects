@@ -142,122 +142,73 @@ ORDER BY xr.receiptno;
 
 
 [generateRPTCollectionReport_standard]
-select 
-	t.classname,  min(t.special) as special , 
-	sum( basiccurrent ) as basiccurrent, sum( basicdisc ) as basicdisc, sum( basicprev ) as basicprev, 
-	sum( basiccurrentint ) as basiccurrentint, sum( basicprevint ) as basicprevint, sum( basicnet ) as basicnet, 
-	sum( sefcurrent ) as sefcurrent, sum( sefdisc ) as sefdisc, sum( sefprev ) as sefprev, 
-	sum( sefcurrentint ) as sefcurrentint, sum( sefprevint ) as sefprevint, sum( sefnet ) as sefnet, 
-	sum( netgrandtotal ) as netgrandtotal, sum( idlecurrent ) as idlecurrent, sum( idleprev ) as idleprev, 
-	sum( idledisc ) as idledisc, sum( idleint ) as idleint, sum( idlenet ) as idlenet,sum( levynet ) as levynet
-from ( 
-	SELECT  
-		pc.name as classname, pc.orderno, pc.special,  
-		case when ri.revperiod='current' then ri.basic else 0.0 end  as basiccurrent,
-		case when ri.revperiod='current' then ri.basicdisc else 0.0 end  as basicdisc,
-		case when ri.revperiod in ('previous', 'prior') then ri.basic else 0.0 end  as basicprev,
-		case when ri.revperiod='current' then ri.basicint else 0.0 end  as basiccurrentint,
-		case when ri.revperiod in ('previous', 'prior') then ri.basicint else 0.0 end  as basicprevint,
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint) else 0.0 end as basicnet, 
-		case when ri.revperiod='current' then ri.sef else 0.0 end  as sefcurrent,
-		case when ri.revperiod='current' then ri.sefdisc else 0.0 end  as sefdisc,
-		case when ri.revperiod in ('previous', 'prior') then ri.sef else 0.0 end  as sefprev,
-		case when ri.revperiod='current' then ri.sefint else 0.0 end  as sefcurrentint,
-		case when ri.revperiod in ('previous', 'prior') then ri.sefint else 0.0 end as sefprevint,
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.sef - ri.sefdisc + ri.sefint) else 0.0 end as sefnet,  
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint + ri.sef - ri.sefdisc + ri.sefint ) else 0.0 end as netgrandtotal, 
-		case when ri.revperiod='current' then ri.basicidle else 0.0 end  as idlecurrent,
-		case when ri.revperiod in ('previous', 'prior') then ri.basicidle else 0.0 end  as idleprev,
-		0.0 as idledisc, 0.0 as idleint, 
-		case when ri.revperiod in ('current', 'previous', 'prior') then ri.basicidle else 0.0 end as idlenet,
-		 0.0 as levynet
-	FROM cashreceipt cr 
-	    INNER JOIN cashreceiptitem_rpt_online ri ON cr.objid = ri.rptreceiptid 
-	    INNER JOIN rptledger rl ON ri.rptledgerid = rl.objid  
-        INNER JOIN propertyclassification pc ON rl.classification_objid = pc.objid 
-        INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
-	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
-	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
-		 and cv.objid is null  
+select  
+	pc.name as classname, pc.orderno, pc.special,  
+	sum(case when ri.revperiod='current' then ri.basic else 0.0 end)  as basiccurrent,
+	sum(case when ri.revperiod='current' then ri.basicdisc else 0.0 end)  as basicdisc,
+	sum(case when ri.revperiod in ('previous', 'prior') then ri.basic else 0.0 end)  as basicprev,
+	sum(case when ri.revperiod='current' then ri.basicint else 0.0 end)  as basiccurrentint,
+	sum(case when ri.revperiod in ('previous', 'prior') then ri.basicint else 0.0 end)  as basicprevint,
+	sum(case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint) else 0.0 end) as basicnet, 
+	sum(case when ri.revperiod='current' then ri.sef else 0.0 end)  as sefcurrent,
+	sum(case when ri.revperiod='current' then ri.sefdisc else 0.0 end)  as sefdisc,
+	sum(case when ri.revperiod in ('previous', 'prior') then ri.sef else 0.0 end)  as sefprev,
+	sum(case when ri.revperiod='current' then ri.sefint else 0.0 end)  as sefcurrentint,
+	sum(case when ri.revperiod in ('previous', 'prior') then ri.sefint else 0.0 end) as sefprevint,
+	sum(case when ri.revperiod in ('current', 'previous', 'prior') then (ri.sef - ri.sefdisc + ri.sefint) else 0.0 end) as sefnet,  
+	sum(case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint + ri.sef - ri.sefdisc + ri.sefint ) else 0.0 end) as netgrandtotal, 
+	sum(case when ri.revperiod='current' then ri.basicidle else 0.0 end)  as idlecurrent,
+	sum(case when ri.revperiod in ('previous', 'prior') then ri.basicidle else 0.0 end)  as idleprev,
+	sum(ri.basicidledisc) as idledisc, 
+	sum(ri.basicidleint) as idleint, 
+	sum(ri.basicidle - ri.basicidledisc + ri.basicidleint) as idlenet,
+	sum(case when ri.revperiod='current' then ri.sh else 0.0 end)  as shcurrent,
+	sum(case when ri.revperiod in ('previous', 'prior') then ri.sh else 0.0 end)  as shprev,
+	sum(ri.shdisc) as shdisc, 
+	sum(ri.shint) as shint, 
+	sum(ri.sh - ri.shdisc + ri.shint) as shnet,
+	 0.0 as levynet
+from cashreceipt cr 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+		inner join rptledger_payment_item ri on rp.objid = ri.parentid
+    inner join rptledger rl on rp.rptledgerid = rl.objid  
+  inner join propertyclassification pc on rl.classification_objid = pc.objid 
+  inner join remittance_cashreceipt rc on cr.objid = rc.objid
+    left join cashreceipt_void cv on cr.objid = cv.receiptid
+where cr.receiptdate between $p{fromdate} and $p{todate}
+	 and cv.objid is null  
+group by pc.name, pc.orderno, pc.special
+order by pc.orderno
 
-	union all 
-
-	SELECT  
-		pc.name as classname, pc.orderno, pc.special,  
-		case when ri.revperiod='current' then ri.basic else 0.0 end  as basiccurrent,
-		case when ri.revperiod='current' then ri.basicdisc else 0.0 end  as basicdisc,
-		case when ri.revperiod in ('previous', 'prior') then ri.basic else 0.0 end  as basicprev,
-		case when ri.revperiod='current' then ri.basicint else 0.0 end  as basiccurrentint,
-		case when ri.revperiod in ('previous', 'prior') then ri.basicint else 0.0 end  as basicprevint,
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint) else 0.0 end as basicnet, 
-		case when ri.revperiod='current' then ri.sef else 0.0 end  as sefcurrent,
-		case when ri.revperiod='current' then ri.sefdisc else 0.0 end  as sefdisc,
-		case when ri.revperiod in ('previous', 'prior') then ri.sef else 0.0 end  as sefprev,
-		case when ri.revperiod='current' then ri.sefint else 0.0 end  as sefcurrentint,
-		case when ri.revperiod in ('previous', 'prior') then ri.sefint else 0.0 end as sefprevint,
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.sef - ri.sefdisc + ri.sefint) else 0.0 end as sefnet,  
-		case when ri.revperiod in ('current', 'previous', 'prior') then (ri.basic - ri.basicdisc + ri.basicint + ri.sef - ri.sefdisc + ri.sefint ) else 0.0 end as netgrandtotal, 
-		case when ri.revperiod='current' then ri.basicidle else 0.0 end  as idlecurrent,
-		case when ri.revperiod in ('previous', 'prior') then ri.basicidle else 0.0 end  as idleprev,
-		0.0 as idledisc, 0.0 as idleint, 
-		case when ri.revperiod in ('current', 'previous', 'prior') then ri.basicidle else 0.0 end as idlenet,
-		0.0 as levynet
-	FROM cashreceipt cr 
-	    INNER JOIN cashreceiptitem_rpt_online ri ON cr.objid = ri.rptreceiptid 
-		INNER JOIN cashreceiptitem_rpt_noledger ril on ril.objid = ri.objid 
-		INNER JOIN propertyclassification pc ON ril.classification_objid = pc.objid
-        INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
-	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
-	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
-		 and cv.objid is null   
-) t 	
-group by t.classname
-ORDER BY min(t.orderno)  
 
 
 [generateRPTCollectionReport_advance]
-select 
-	t.classname,  min(t.special) as special , 
-	sum( basic)  as basic, sum( basicdisc ) as basicdisc, 
-	sum( sef)  as sef, sum( sefdisc ) as sefdisc, 
-	sum(basicnet) as basicnet, sum(sefnet ) as sefnet,
-	sum( netgrandtotal ) as netgrandtotal, sum(idle) as idle 
-from ( 
-	SELECT  
-		pc.name as classname, pc.orderno, pc.special,  
-		ri.basic, ri.basicdisc, ( ri.basic - ri.basicdisc ) as basicnet,
-		ri.sef, ri.sefdisc, (ri.sef - ri.sefdisc ) as sefnet,
-		( ri.basic - ri.basicdisc + ri.sef - ri.sefdisc + ri.basicidle ) as netgrandtotal , ri.basicidle as idle 
-	FROM cashreceipt cr 
-	    INNER JOIN cashreceiptitem_rpt_online ri ON cr.objid = ri.rptreceiptid 
-	    INNER JOIN rptledger rl ON ri.rptledgerid = rl.objid  
-        INNER JOIN propertyclassification pc ON rl.classification_objid = pc.objid 
-        INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
-	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
-	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
-		 and ri.revperiod = 'advance'
-		 and cv.objid is null   
-		
-	union all 
-
-	SELECT  
-		pc.name as classname, pc.orderno, pc.special,  
-		ri.basic, ri.basicdisc, ( ri.basic - ri.basicdisc ) as basicnet,
-		ri.sef, ri.sefdisc, (ri.sef - ri.sefdisc ) as sefnet,
-		( ri.basic - ri.basicdisc + ri.sef - ri.sefdisc + ri.basicidle) as netgrandtotal , ri.basicidle as idle 
-	FROM cashreceipt cr 
-	    INNER JOIN cashreceiptitem_rpt_online ri ON cr.objid = ri.rptreceiptid 
-		INNER JOIN cashreceiptitem_rpt_noledger ril on ril.objid = ri.objid 
-		INNER JOIN propertyclassification pc ON ril.classification_objid = pc.objid
-        INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
-	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
-	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
-		and ri.revperiod = 'advance'
-		and cv.objid is null   
-	 
- ) t 	
-group by t.classname
-ORDER BY min(t.orderno)  
+select  
+	pc.name as classname, pc.orderno, pc.special,  
+	sum(ri.basic) as basic, 
+	sum(ri.basicdisc) as basicdisc, 
+	sum(ri.basic - ri.basicdisc ) as basicnet,
+	sum(ri.sef) as sef, 
+	sum(ri.sefdisc) as sefdisc, 
+	sum(ri.sef - ri.sefdisc ) as sefnet,
+	sum(ri.basicidle - ri.basicidledisc) as idle,
+	sum(ri.sh - ri.shdisc) as sh,
+	sum(ri.basic - ri.basicdisc + 
+		ri.sef - ri.sefdisc + 
+	    ri.basicidle - ri.basicidledisc + 
+	    ri.sh - ri.shdisc) as netgrandtotal
+from cashreceipt cr 
+    inner join rptledger_payment rp on cr.objid = rp.receiptid 
+		inner join rptledger_payment_item ri on rp.objid = ri.parentid
+    inner join rptledger rl on rp.rptledgerid = rl.objid  
+    inner join propertyclassification pc on rl.classification_objid = pc.objid 
+    inner join remittance_cashreceipt rc on cr.objid = rc.objid
+    left join cashreceipt_void cv on cr.objid = cv.receiptid
+where cr.receiptdate between $P{fromdate} and $P{todate}
+	 and ri.revperiod = 'advance'
+	 and cv.objid is null   
+group by pc.name, pc.orderno, pc.special
+order by pc.orderno 
 
 
 [findCollectionDisposition_standard]
@@ -270,14 +221,15 @@ select
 	sum( brgysefshare ) as brgysefshare
 from ( 
 	SELECT  
-		case when ri.revtype in ('basic', 'basicint', 'basicidle') and ri.sharetype in ('province', 'city') then ri.amount else 0.0 end as provcitybasicshare,
-		case when ri.revtype in ('basic', 'basicint', 'basicidle')  and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munibasicshare,
-		case when ri.revtype in ('basic', 'basicint', 'basicidle')  and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgybasicshare,
+		case when ri.revtype in ('basic', 'basicint') and ri.sharetype in ('province', 'city') then ri.amount else 0.0 end as provcitybasicshare,
+		case when ri.revtype in ('basic', 'basicint')  and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munibasicshare,
+		case when ri.revtype in ('basic', 'basicint')  and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgybasicshare,
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('province', 'city') then ri.amount else 0.0 end as provcitysefshare,
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munisefshare,
-		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgysefshare 
+		0.0 as brgysefshare 
 	FROM cashreceipt cr 
-		INNER JOIN cashreceiptitem_rpt_account ri ON cr.objid = ri.rptreceiptid 
+		INNER JOIN rptledger_payment rp on cr.objid = rp.receiptid 
+		INNER JOIN rptledger_payment_share ri on rp.objid = ri.parentid
 	    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
 	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
@@ -296,14 +248,15 @@ select
 	sum( brgysefshare ) as brgysefshare
 from ( 
 	SELECT  
-		case when ri.revtype in ('basic', 'basicint', 'basicidle') and ri.sharetype in ('province', 'city') then ri.amount else 0.0 end as provcitybasicshare,
-		case when ri.revtype in ('basic', 'basicint', 'basicidle')  and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munibasicshare,
-		case when ri.revtype in ('basic', 'basicint', 'basicidle')  and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgybasicshare,
+		case when ri.revtype in ('basic', 'basicint') and ri.sharetype in ('province', 'city') then ri.amount else 0.0 end as provcitybasicshare,
+		case when ri.revtype in ('basic', 'basicint')  and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munibasicshare,
+		case when ri.revtype in ('basic', 'basicint')  and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgybasicshare,
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('province', 'city') then ri.amount else 0.0 end as provcitysefshare,
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munisefshare,
-		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('barangay') then ri.amount else 0.0 end as brgysefshare 
+		0.0 as brgysefshare 
 	FROM cashreceipt cr 
-		INNER JOIN cashreceiptitem_rpt_account ri ON cr.objid = ri.rptreceiptid 
+		INNER JOIN rptledger_payment rp on cr.objid = rp.receiptid 
+		INNER JOIN rptledger_payment_share ri on rp.objid = ri.parentid
 	    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
 	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 

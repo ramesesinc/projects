@@ -1,9 +1,9 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application_fee">
 		<field name="objid" primary="true" prefix="VAPPF"/>
-		<complex name="app" ref="vehicle_application" jointype="many-to-one" 
-			includefields="objid,appno,vehicletype,controlid" required="false">
-			<key field="appid" target="objid"/>
+		<complex name="parent" ref="vehicle_application" jointype="many-to-one" 
+			includefields="objid,appno,apptype,appyear,vehicletype,controlid" required="true">
+			<key field="parentid" target="objid"/>
 		</complex>	
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />

@@ -13,8 +13,19 @@ class AFRequestModel extends CrudFormModel {
     
     def selectedItem;
     
+    String printFormName = "afris";
+    
+    def getPrintFormData() {
+        def m = [:];
+        m.putAll( entity );
+        m.controlno = entity.reqno;
+        return m;
+    }
+    
     void afterCreate() {
         entity.state = 'DRAFT';
+        entity.reqtype = invoker.properties.reqtype;
+        entity.itemclass = 'AF';
         entity.items = [];
     }
     

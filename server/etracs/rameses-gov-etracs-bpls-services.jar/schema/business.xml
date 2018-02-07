@@ -31,6 +31,11 @@
 		<field name="permittype" required="true"/>
 		<field name="officetype"/>
 		<field name="nextrenewaldate"/>
+
+		<complex name="owner" ref="entity" jointype="many-to-one" required="false" 
+			includefields="mobileno,phoneno,email">
+			<key field="owner_objid" target="objid" />
+		</complex>	
 	</element>	
 	
 	<element name="business_appcount" tablename="business">

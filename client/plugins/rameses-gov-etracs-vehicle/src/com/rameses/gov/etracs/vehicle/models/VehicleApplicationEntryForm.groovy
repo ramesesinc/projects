@@ -22,6 +22,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     @FormTitle
     def formTitle;
     
+    @Binding
+    def binding;
+    
     def franchiseno;
     def ruleExecutor;
     def entity;
@@ -30,6 +33,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
     
     def apptypes = ["NEW","RENEW"];
     def appType;
+    int reqYear;
+    
+    def df = new java.text.SimpleDateFormat( "yyyy" );
     
     void setUp() {
         formTitle = workunit.info.workunit_properties.title;
@@ -54,6 +60,9 @@ public class VehicleApplicationEntryForm extends PageFlowController {
             if( entity.txnmode == "CAPTURE"  ) {
                 entity.apptype = o;
             }
+        },
+        "entity.appdate": { o->
+            entity.appyear = df.format( df.parse(o) ).toInteger();
         }
     ];
     
@@ -63,43 +72,34 @@ public class VehicleApplicationEntryForm extends PageFlowController {
         entity.franchiseno = franchiseno;
         entity = applicationService.init( entity );
         editmode = 'read';
+        if(entity.appyear) reqYear = entity.appyear;
     }
     
     void save() {
         entity = applicationService.create( entity );
     }
     
-    void assess() {
-        def p = [:];
-        p.putAll( entity );
-        p.defaultinfos = p.remove("infos");
-        def r = ruleExecutor.execute(p);
-        if( !r) {
-            throw new BreakException();
+    def assess() {
+        def m = [rulename : 'vehiclebilling'];
+        m.handler = { o->
+            if(!o) return;  
+            entity.fees = o.billitems;
+            entity.infos = o.infos;
+            entity.amount = o.amount;
+            entity.expirydate = o.expirydate;
+            if(o.franchise?.expirydate) {
+                entity.franchise.expirydate = o.franchise.expirydate;
+            }
+            entity.billexpirydate = entity.billexpirydate;
+            feeListModel.reloadAll();
+            infoListModel.reloadAll();
+            binding.refresh();
         }
-        entity.billexpirydate = r.duedate;
-        
-        if ( entity.fees == null ) {
-            entity.fees = []; 
-        } else { 
-            entity.fees.clear(); 
-        }
-        if ( entity.infos == null ) {
-            entity.infos = []; 
-        } else { 
-            entity.infos.clear(); 
-        }
-
-        if( r.infos ) entity.infos.addAll( r.infos );  
-        
-        if( r.items ) {
-            entity.fees.addAll( r.items );
-            entity.amount = entity.fees.sum{ it.amount };
-        }
-        feeListModel.reload();
-        infoListModel.reload();
+        m.params = [application: entity, franchise: entity.franchise];
+        m.defaultInfos = entity.infos;
+        return Inv.lookupOpener( "assessment", m );
     }
-        
+
     def feeListModel = [
         fetchList: { o->
             return entity.fees;

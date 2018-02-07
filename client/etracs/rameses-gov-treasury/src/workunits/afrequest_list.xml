@@ -3,6 +3,6 @@
         <invoker folderid="menucategory/treasury/af" caption="AF Requests" 
                  action="init"
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
-                 formTitle="AF Requests" role="AFO,COLLECTOR" index="1"/>
+                 formTitle="AF Requests" role="AFO" index="1"/>
     </invokers>
 </workunit>

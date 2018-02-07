@@ -20,9 +20,7 @@ public class CaptureConsumptionModel extends CrudFormModel {
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
-    def getParent() {
-        return caller.getMasterEntity();
-    }
+    def parent;
     
     boolean requires_recompute;
     def handler;

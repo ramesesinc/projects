@@ -280,6 +280,9 @@ class RPTCompromiseService {
 				it.sefintpaid = firstunpaiditem.sefintpaid
 				it.sefdisctaken = 0.0
 				it.firecodepaid = firstunpaiditem.firecodepaid
+				it.shpaid = firstunpaiditem.shpaid
+				it.shintpaid = firstunpaiditem.shintpaid
+				it.shdisctaken = 0.0
 				it.partialled = 1
 				it.fullypaid = 0
 				ledgerEm.update(it, 'ledgeritemqtrly')
@@ -295,6 +298,9 @@ class RPTCompromiseService {
 				it.sefintpaid = 0.0
 				it.sefdisctaken = 0.0
 				it.firecodepaid = 0.0
+				it.shpaid = 0.0
+				it.shintpaid = 0.0
+				it.shdisctaken = 0.0
 				it.partialled = 0
 				it.fullypaid = 0
 				ledgerEm.update(it, 'ledgeritemqtrly')
@@ -307,6 +313,7 @@ class RPTCompromiseService {
 			ledgeritem.basicidlepaid = partialleditems.basicidlepaid.sum()
 			ledgeritem.sefpaid = partialleditems.sefpaid.sum()
 			ledgeritem.firecodepaid = partialleditems.firecodepaid.sum()
+			ledgeritem.shpaid = partialleditems.shpaid.sum()
 			ledgeritem.fullypaid = 0
 			ledgerEm.update(ledgeritem, 'ledgeritem')
 		}
@@ -489,7 +496,9 @@ class RPTCompromiseService {
 		items.each{
 			it.objid = 'CI' + new java.rmi.server.UID()
 			it.rptcompromiseid = compromise.objid 
-			it.total = it.basic + it.basicint + it.basicidle + it.basicidleint + it.sef + it.sefint + it.firecode 
+			it.total = it.basic + it.basicint + it.basicidle + it.basicidleint
+			it.total += it.sef + it.sefint + it.firecode 
+			it.total += it.sh + it.shint 
 			it.payment = 0.0
 			it.fullypaid = false 
 		}
@@ -690,6 +699,11 @@ class RPTCompromiseService {
 			pmt.sefdisc      	= 0.0
 			pmt.sefnet          = pmt.sef + pmt.sefint 
 			pmt.firecode      	= compromise._items.firecode.sum()
+			pmt.sh          	= compromise._items.sh.sum() 
+			pmt.shint         	= compromise._items.shint.sum() 
+			pmt.shpartial      = 0.0
+			pmt.shdisc      	= 0.0
+			pmt.shnet          = pmt.sh + pmt.shint 
 			pmt.total           = pmt.basicnet + pmt.sefnet + pmt.basicidle + pmt.firecode 
 			pmt.voided          = false 
 			pmt.postedby        = env.NAME
@@ -775,6 +789,8 @@ class RPTCompromiseService {
 				item.basicidleintpaid = item.basicidleint
 				item.sefpaid = item.sef
 				item.sefintpaid = item.sefint
+				item.shpaid = item.sh
+				item.shintpaid = item.shint
 				item.payment += item.total 
 				item.fullypaid = true 
 			}
@@ -782,6 +798,7 @@ class RPTCompromiseService {
 				item.basicidledisc = 0.0
 				item.basicdisc = 0.0
 				item.sefdisc = 0.0
+				item.shdisc = 0.0
 				applyPartialPayment(compromise, item, partial)
 				break
 			}
@@ -797,14 +814,18 @@ class RPTCompromiseService {
 			basicidle 		: numSvc.round( partial * (item.basicidle / itemtotal) ),
 			basicidleint 	: numSvc.round( partial * (item.basicidleint / itemtotal) ),
 			sef 		: numSvc.round( partial * (item.sef / itemtotal) ),
+			sefint 		: numSvc.round( partial * (item.sefint / itemtotal) ),
+			sh 		: numSvc.round( partial * (item.sh / itemtotal) ),
 		]
-		partialmade.sefint 	= partial - (partialmade.basic + partialmade.basicint + partialmade.basicidle + partialmade.basicidleint + partialmade.sef )
+		partialmade.shint 	= partial - (partialmade.basic + partialmade.basicint + partialmade.basicidle + partialmade.basicidleint + partialmade.sef + partialmade.sefint + partialmade.sh)
 		item.basicpaid = partialmade.basic
 		item.basicintpaid = partialmade.basicint
 		item.basicidlepaid = partialmade.basicidle
 		item.basicidleintpaid = partialmade.basicidleint
 		item.sefpaid = partialmade.sef
 		item.sefintpaid = partialmade.sefint
+		item.shpaid = partialmade.sh
+		item.shintpaid = partialmade.shint
 		item.payment +=  partial 
 		item.fullypaid = false 
 	}	
@@ -820,14 +841,18 @@ class RPTCompromiseService {
 			basicidleadditional 	: numSvc.round( partial * (item.basicidle / itemtotal) ),
 			basicidleintadditional 	: numSvc.round( partial * (item.basicidleint / itemtotal) ),
 			sefadditional 		: numSvc.round( partial * (item.sef / itemtotal) ),
+			sefintadditional 		: numSvc.round( partial * (item.sefint / itemtotal) ),
+			shadditional 		: numSvc.round( partial * (item.sh / itemtotal) ),
 		]
-		additional.sefintadditional = partial - (additional.basicadditional + additional.basicintadditional + additional.basicidleadditional + additional.basicidleintadditional +additional.sefadditional )
+		additional.shintadditional = partial - (additional.basicadditional + additional.basicintadditional + additional.basicidleadditional + additional.basicidleintadditional +additional.sefadditional +additional.sefintadditional+additional.shadditional )
 		item.basic += additional.basicadditional
 		item.basicint += additional.basicintadditional
 		item.basicidle += additional.basicidleadditional
 		item.basicidleint += additional.basicidleintadditional
 		item.sef += additional.sefadditional
 		item.sefint += additional.sefintadditional
+		item.sh += additional.shadditional
+		item.shint += additional.shintadditional
 		item.total += partial 
 	}
 

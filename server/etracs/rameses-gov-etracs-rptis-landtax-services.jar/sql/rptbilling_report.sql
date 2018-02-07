@@ -58,11 +58,14 @@ from (
     sum(bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint) as sefnet,
     
     sum(bi.firecode - bi.firecodepaid) as firecode,
+
+    sum(bi.sh - bi.shpaid - bi.shdisc + bi.shint) as sh,
     
     sum( bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint +
       bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint + 
       bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc +
-      bi.firecode - bi.firecodepaid) as total,
+      bi.firecode - bi.firecodepaid +
+      bi.sh - bi.shpaid - bi.shdisc + bi.shint) as total,
     rl.barangayid,
     rli.taxdifference
   from rptbill b 
@@ -106,11 +109,14 @@ from (
     bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint as sefnet,
     
     bi.firecode - bi.firecodepaid as firecode,
+
+    bi.sh - bi.shpaid - bi.shdisc + bi.shint as sh,
     
     ( bi.basic - bi.basicpaid - bi.basicdisc + bi.basicint +
       bi.sef - bi.sefpaid - bi.sefdisc + bi.sefint + 
       bi.basicidle - bi.basicidlepaid + bi.basicidleint - bi.basicidledisc +
-      bi.firecode - bi.firecodepaid) as total,
+      bi.firecode - bi.firecodepaid + 
+      bi.sh - bi.shpaid - bi.shdisc + bi.shint ) as total,
     rl.barangayid,
     rli.taxdifference
   from rptbill b 

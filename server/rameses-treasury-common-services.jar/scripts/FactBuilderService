@@ -1,0 +1,19 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+public class FactBuilderService {
+	
+	@ProxyMethod
+	public FactBuilder getFacts(String rulename, def data) {
+		return new FactBuilder();
+	}
+
+}

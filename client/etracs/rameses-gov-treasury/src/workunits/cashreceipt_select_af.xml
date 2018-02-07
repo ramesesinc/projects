@@ -1,100 +1,10 @@
-<workunit>
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_control">
     <invokers>
-        <!--
-        <invoker folderid="/explorer/txn/treasury" caption="Manage Accountable Form" role="COLLECTOR" action="initList"/>
-        -->
-        
-        <invoker type="cashreceipt:select-afcontrol" caption="Select Accountable Form" target="popup"/>
-        <invoker type="cashreceipt-initial:formActions" caption="Accountable Forms" target="popup" action="init" />
-        
-        <!-- OWN TOOLBARS -->
-        <invoker type="formActions" caption="Close" action="_close" />
-        <invoker type="formActions" caption="Activate" action="activate"/>
-        <invoker type="formActions" caption="Deactivate" action="deactivate" />
+        <invoker type="cashreceipt:select-afcontrol" caption="Select Accountable Form" 
+                cols="currentseries,endseries,qtybalance,stubno"
+                 action="init"
+                 orderBy="stubno,currentseries"
+                 target="popup"/>
     </invokers>
-    
-    <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.enterprise.treasury.cashreceipt.*
-        
-        class  SelectAFController  {
-            
-            @Service("AFControlService")
-            def svc;
-
-            def entity;
-            def selectedItem;
-            String entityName = "cashreceipt:selectaf"
-            def list;
-            
-            String title = "Manage Accountable Forms";
-            
-            void init() {
-                if(!entity.formno)
-                    throw new Exception("Please select an accountable form first");
-            }
-            
-            void activate() {
-                if(selectedItem.active==1)
-                    throw new Exception("Entry is already active");
-                if( !entity.txnmode)
-                    throw new Exception("Please select mode first.  ");
-                if( selectedItem.txnmode != entity.txnmode)
-                    throw new Exception("Collection mode did not match on AF mode. ")
-                    
-                def z = [:];
-                z.objid = selectedItem.objid;
-                z.txnmode = entity.txnmode;
-                z.formno = entity.formno;
-                z.fund = selectedItem.fund 
-                svc.activateControl(z);
-                listModel.reload();    
-            }
-            
-            void deactivate() {
-                if(selectedItem.active==0)
-                    throw new Exception("Entry is not active");
-                svc.deactivateControl(selectedItem);
-                listModel.reload();
-            }
-
-            def listModel = [
-                fetchList: { o->
-                    list = svc.getAssigneeOpenList( entity );
-                    return list;
-                },
-                getContextMenu: { o,colName->
-                    def list = [];
-                    if(o.active==0) {
-                        list.add( [value:'Activate',id:'activate'] );
-                        list.add([value:'Assign',id:'assign']);    
-                    }    
-                    else{
-                        list.add([value:'Deactivate',id:'deactivate']);                    
-                    }
-                    return list;
-                },
-                callContextMenu: { o,m->
-                    if( m.id == "activate") activate();
-                    else if(m.id == "deactivate") deactivate();
-                    else if(m.id=="assign") {
-                        return assign();
-                    }   
-                }
-            ] as BasicListModel;
-            
-            
-        }
-        ]]>
-        
-    </code>
-    
-    <pages>
-        <page template="com.rameses.enterprise.treasury.af.SelectAFPage"/>
-    </pages>
-    
+    <code class="com.rameses.enterprise.treasury.models.SelectAFModel" />
 </workunit>

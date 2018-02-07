@@ -278,6 +278,7 @@ public class BillingCashReceiptPage extends javax.swing.JPanel {
 
         xButton3.setName("showPayOptions"); // NOI18N
         xButton3.setText("Pay Options");
+        xButton3.setVisibleWhen("#{ payOption!=null }");
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -291,7 +292,7 @@ public class BillingCashReceiptPage extends javax.swing.JPanel {
                 .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 513, Short.MAX_VALUE))
+                .add(0, 535, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

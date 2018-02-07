@@ -58,7 +58,16 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         if ( pfn ) return pfn; 
         return super.getSchemaName(); 
     }
-     
+    
+    def _payOption = null;
+    public String getPayOption() {
+        if(_payOption == null ) {
+            _payOption = invoker.properties.payOption;
+            if(!_payOption ) _payOption = workunit?.info?.workunit_properties?.payOption;
+        } 
+        return _payOption; 
+    }
+    
     public String getRulename() {
         String s = invoker.properties.rulename;
         if( s!=null ) {
@@ -72,31 +81,6 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         return "Details";
     }
 
-    public void loadPayOptions() {
-        def ivf = [
-            accept: { vv->
-                String vwhen = vv.properties.visibleWhen;
-                if(vwhen) {
-                    return ExpressionResolver.instance.evalBoolean( vwhen, [entity: entity] );
-                }
-                return true;
-            }
-        ] as InvokerFilter;
-        def list;
-        try {
-            list = Inv.lookupOpeners("simple_cashreceipt_payoption_type", [context: this])
-        }catch(e){;}
-        try {
-            def mlist = Inv.lookupOpeners(getContextName()+":cashreceipt_payoption_type", [context: this], ivf);
-            if(mlist) list += mlist;
-        }catch(e){;}
-        _payOptions = list;
-    }
-    
-    public List getPayOptions() {
-        return _payOptions;
-    }
-    
     void afterLoadInfo() {;}
     
     void loadInfo(def p) {
@@ -149,14 +133,16 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
     
+    
     def showPayOptions() {
-        if( getPayOptions()==null) return null;
+        if( amountSpecified ) 
+            throw new Exception("Please reset amount specified first to Pay All");
+        if( !getPayOption() ) return null;
         def m = [:];
-        m.payOptions = getPayOptions();
         m.onselect = { o->
-            loadInfo( [id: txnid, payment: o, action:'payoption'] );
+            loadInfo( [id: txnid, action:'payoption', payoption: o ] );
         }
-        return Inv.lookupOpener( "simple_cashreceipt_payoption", m);
+        return Inv.lookupOpener( getPayOption(), m);
     }
     
     void specifyPayAmount() {

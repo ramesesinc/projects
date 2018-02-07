@@ -1,4 +1,8 @@
 <workunit>
+    <invokers>
+        <invoker type="formActions" caption="Capture Payment" action="capturePayment" xvisibleWhen="#{ captureExist == true }"/> 
+    </invokers>
+     <!-- List Actions -->
     <code class="com.rameses.treasury.common.models.PaymentListModel" />
     <pages>
         <page template="com.rameses.treasury.common.views.PaymentListPage"/>

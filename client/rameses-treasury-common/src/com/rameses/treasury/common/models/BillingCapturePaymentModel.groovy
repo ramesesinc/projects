@@ -14,21 +14,24 @@ public class BillingCapturePaymentModel {
     @Invoker
     def invoker;
     
+    @Binding
+    def binding;  
+    
     @Service("BillingCapturePaymentService")
-    def capturePaymentSvc;
+    def billingSvc;
     
-     //we specify this so print detail will appear.
-    
-    def page = "initial";
-    def txntype;
-    def rulename;
-    def txnid;
-    def payOption;
+    def status;   
     def selectedItem;
-    def amount;
-    def entity = [:];
+    def txnid;
     
-    def _payOptions;
+    def entity = [:];
+    def billAmount = 0;
+    def miscAmount = 0;
+    
+    def miscList = [];
+    def billItemList = [];
+    
+    boolean amountSpecified = false;
     
     public String getTitle() {
         if( invoker.properties.formTitle ) {
@@ -38,8 +41,26 @@ public class BillingCapturePaymentModel {
             return invoker.caption;
         }
         return getContextName();
+     }
+    
+    def _payOption = null;
+    public String getPayOption() {
+        if(_payOption == null ) {
+            _payOption = invoker.properties.payOption;
+            if(!_payOption ) _payOption = workunit?.info?.workunit_properties?.payOption;
+        } 
+        return _payOption; 
     }
     
+    public String getRulename() {
+        String s = invoker.properties.rulename;
+        if( s!=null ) {
+            return s;
+        }
+        s = workunit?.info?.workunit_properties?.rulename;
+        if( s != null ) return s;
+    }
+
     public String getContextName() {
         def pfn = invoker.properties.contextName;
         if(pfn) return pfn;
@@ -47,83 +68,83 @@ public class BillingCapturePaymentModel {
         if ( pfn ) return pfn; 
         return super.getSchemaName(); 
     }
-     
-    public def init() {
-        txntype = invoker.properties.txntype;
-        if(!txntype) txntype = workunit?.info?.workunit_properties?.txntype;
-        if(!txntype) throw new Exception("Please specify txntype in workunit or invoker for Billing Capture Payment");
-        
-        rulename = invoker.properties.rulename;
-        if(!rulename) rulename = workunit?.info?.workunit_properties?.rulename;
-        if(!rulename) throw new Exception("Please specify rulename in workunit or invoker for Billing Capture Payment");
-        
-        page = "initial";
-        return page;
+    
+    
+    public String getDetails() {
+        return "Details";
     }
 
-    void loadItems( def p ) {
-        def b = capturePaymentSvc.getInfo( [id: txnid, txntype: txntype, rulename: rulename ] );
-        entity.billitems = b.billitems;
-        entity.amount = b.amount;
-    }
+    void afterLoadInfo() {;}
     
-    public def doNext() {
-        loadItems( [:] );
-        /*
+    void loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
-        def info = cashReceiptSvc.getInfo( p );
+        p.rulename = getRulename();
+        p.txntype = contextName;
+        def info = billingSvc.getInfo( p );
+        billItemList = [];
         entity.putAll(info);
         reloadItems(); 
-        afterLoadInfo();
-        loadPayOptions();
-        */
-        page = "entry";
-        return page;
+        //afterLoadInfo();
+        //loadPayOptions();
     }
     
-    
-    
-    /*
-    public void loadPayOptions() {
-        def ivf = [
-            accept: { vv->
-                String vwhen = vv.properties.visibleWhen;
-                if(vwhen) {
-                    return ExpressionResolver.instance.evalBoolean( vwhen, [entity: entity] );
-                }
-                return true;
-            }
-        ] as InvokerFilter;
-        def list;
-        try {
-            list = Inv.lookupOpeners("simple_cashreceipt_payoption_type", [context: this])
-        }catch(e){;}
-        try {
-            def mlist = Inv.lookupOpeners(getContextName()+":cashreceipt_payoption_type", [context: this], ivf);
-            if(mlist) list += mlist;
-        }catch(e){;}
-        _payOptions = list;
-    }
-    */
-    
-    public List getPayOptions() {
-        return _payOptions;
+    void reloadItems() {
+        entity.items = [];
+        entity.items.addAll( billItemList );
+        if( miscList ) {
+            entity.items.addAll( miscList );
+        }
+        itemListModel.reload();
+        miscListModel.reload();
+        if(binding) binding.refresh();
+        updateBalances();
     }
     
+    public void updateBalances() {
+        billAmount = NumberUtil.round( billItemList.sum{ it.amount } );
+        miscAmount = 0;
+        if( miscList ) {
+            miscAmount = NumberUtil.round( miscList.sum{ it.amount } );
+        }
+    }
+
+    void init() {
+        if(!txnid) {
+            def o = MsgBox.prompt("Enter Transaction No");
+            if(!o) throw new BreakException();
+            txnid = o;
+        }
+        loadInfo([id:txnid, action:'open']);
+    }
     
     def getTotalAmount() {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
     
-    def showPayOption() {
-        if( getPayOptions()==null) return null;
+    def showPayOptions() {
+        if( amountSpecified ) 
+            throw new Exception("Please reset amount specified first to Pay All");
+        if( !getPayOption() ) return null;
         def m = [:];
-        m.payOptions = getPayOptions();
         m.onselect = { o->
-            loadInfo( [id: txnid, payment: o, action:'payoption'] );
+            loadInfo( [id: txnid, action:'payoption', payoption: o ] );
         }
-        return Inv.lookupOpener( "simple_cashreceipt_payoption", m);
+        return Inv.lookupOpener( getPayOption(), m);
+    }
+    
+    void specifyPayAmount() {
+        def o = MsgBox.prompt("Enter Pay Amount");
+        if(!o) return null;
+        def p = [amtpaid: o, id:txnid, action:'open' ];
+        loadInfo( p );
+        amountSpecified = true;
+    }
+    
+    void payAll() {
+        def p = [id:txnid, action:'open' ];
+        loadInfo( p );
+        amountSpecified = false;
     }
     
     def resetPayOption() {
@@ -135,19 +156,50 @@ public class BillingCapturePaymentModel {
             throw new Exception("Amount must be equal to amount paid");
     }
     
-    void reloadItems() {
-        if(!entity.items) throw new Exception("There must be at least 1 item to pay");
-        entity.amount = NumberUtil.round( entity.items.sum{ it.amount } );  
-        updateBalances();
-        itemListModel.reload();
-    }
-     
     def itemListModel = [
         fetchList: { o->
             return entity.billitems;
-        },
-        
-    ] as EditorListModel;
+        }
+    ] as BasicListModel;
           
+    
+    def selectedMiscItem;
+    def getLookupItems() {
+        def n = contextName + "_miscitem:lookup";
+        try {
+            return InvokerUtil.lookupOpener( n, [ 
+                onselect:{ o-> 
+                    selectedMiscItem.item = o; 
+                    selectedMiscItem.amount = o.defaultvalue; 
+                } 
+            ]); 
+        }
+        catch(e) {
+            MsgBox.err( "No lookup handler found for " + n );
+        }
+    } 
+    
+    def miscListModel = [
+        fetchList: { o-> 
+            return miscList;
+        }, 
+        isColumnEditable: { o,colName ->
+            return (amountSpecified == false);
+        },
+        onAddItem: {o-> 
+            o.objid = 'RCTI' + new java.rmi.server.UID();
+            miscList << o; 
+            reloadItems();
+        },
+        onColumnUpdate: {o,name-> 
+            updateBalances();
+        },
+        onRemoveItem: { o->
+            if ( !MsgBox.confirm("You are about to remove this entry. Continue?")) return false;
+            miscList.remove( o );
+            reloadItems();
+            return true;
+        }        
+    ] as EditorListModel;
     
 }

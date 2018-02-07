@@ -7,7 +7,6 @@
                  parentkey="acctid"
                  visibleWhen="#{mode=='read'}"  />
         
-        <!-- List Actions -->
-        <invoker type="formActions" caption="Add New Entry" action="capturePayment"/> 
+       
     </invokers>
 </workunit>

@@ -1,6 +1,0 @@
-<workunit extends="com/rameses/treasury/common/templates/SingleBillingReport.xml" rulename="waterworksbilling">
-    <invoker type="waterworks_account:form:formActions" caption="Billing 2" index="-10" 
-            reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
-            visibleWhen="#{mode=='read'}"
-            action="preview"/>
-</workunit>

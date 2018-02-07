@@ -18,17 +18,11 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     @Service("BillingCashReceiptService")
     def cashReceiptSvc;
     
-     //we specify this so print detail will appear.
-    
-    @Binding
-    def binding;    
-    
     String entityName = "misc_cashreceipt"
     def prefix;
     def barcodeid;
 
     def status;   
-    def payOption;
     def selectedItem;
     def txnid;
     
@@ -38,7 +32,6 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     def miscList = [];
     def billItemList = [];
     
-    def _payOptions;
     boolean amountSpecified = false;
     
     public String getTitle() {

@@ -1,0 +1,15 @@
+"entity.*|file" [mode=='read'] {
+    enabled: false; 
+}
+"file.*" [mode=='read'] {
+    visible: false; 
+} 
+"filepath" [mode=='read'] {
+    visible: true; 
+}
+"entity.*|file" [mode=='create'] {
+    enabled: true; 
+} 
+"file" [mode=='create'] {
+    visible: true; 
+} 

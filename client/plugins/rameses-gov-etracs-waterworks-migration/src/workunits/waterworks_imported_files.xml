@@ -1,0 +1,23 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="waterworks_migration"  
+          cols="state,title,dtcreated,createdby.objid,createdby.name,totalrows,currentrow"
+          orderBy="dtcreated desc">
+    <invokers>
+        <invoker folderid="/home/waterworks/migration" caption="Imported Files" action="init" xrole="MASTER"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class WaterworksMigrationListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'createdby.objid' ) {
+            c.visible = false; 
+        } 
+    } 
+}    
+    ]]> 
+    </code>    
+</workunit>

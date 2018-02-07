@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_migration:create" caption="New Migration" action="create"/>
+        <invoker type="waterworks_migration:open" caption="Migration" action="open"/>
+        
+        <invoker type="formActions" caption="Cancel" action="doCancel" visibleWhen="#{mode=='create'}" immediate="true"/>
+        <invoker type="formActions" caption="Submit" action="doSubmit" visibleWhen="#{mode=='create'}" />
+
+        <invoker type="formActions" caption="Close" action="doClose" visibleWhen="#{mode=='read'}" immediate="true"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.MigrationModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.MigrationPage"/> 
+    </pages>
+</workunit>

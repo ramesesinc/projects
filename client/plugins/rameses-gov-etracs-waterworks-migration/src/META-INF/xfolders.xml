@@ -1,0 +1,7 @@
+<folders>
+    <folder id="home">
+        <folder id="waterworks" caption="Waterworks">
+            <folder id="migration" caption="Migration Tools" index="1000"/> 
+        </folder>
+    </folder>
+</folders>    

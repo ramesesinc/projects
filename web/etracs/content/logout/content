@@ -28,4 +28,4 @@
 	</td> 
 </tr>
 </table>
-<form id="form-logout" action="/actions/logout" method="post"></form>
+<form id="form-logout" action="${ATTRS.contextPath}/actions/logout" method="post"></form>

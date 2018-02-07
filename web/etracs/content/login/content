@@ -17,7 +17,7 @@
 	-moz-border-radius:4px;	
 }
 .login-splitter { 
-	background-image: url('/res/splitter.png'); 
+	background-image: url('${ATTRS.contextPath}/res/splitter.png'); 
 	background-repeat: repeat-y;
 	padding:5px; 
 }
@@ -35,7 +35,7 @@
 
 <table id="tblbox" cellpadding="0" cellspacing="0" border="0" valign="middle" align="center">
 <tr>
-	<td class="login-icon" valign="top"><img src="/res/lock.png" border="0"/></td>
+	<td class="login-icon" valign="top"><img src="${ATTRS.contextPath}/res/lock.png" border="0"/></td>
 	<td class="login-splitter">&nbsp;</td>
 	<td valign="top" style="padding-left:20px;height:300px;">
 		<p class="login-title">User Login</p>
@@ -45,7 +45,7 @@
 		<div class="login-ads">
 			Powered by <br/> 
 			<a href="http://www.ramesesinc.com" target="_blank">
-				<img src="/res/rameses.png" border="0" height="24"/>
+				<img src="${ATTRS.contextPath}/res/rameses.png" border="0" height="24"/>
 			</a> 		
 		</div>	
 	</td>

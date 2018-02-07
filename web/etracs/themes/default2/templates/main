@@ -32,12 +32,12 @@
 					<tr>
 						<td style="white-space:nowrap;width:10px;padding-right:5px;">
 							<a href="http://www.facebook.com/etracsorg" title="Visit Us on Facebook" style="text-decoration:none;border:none;">
-								<img src="/res/fb_logo.png" height="16" style="border:none;"/>
+								<img src="${ATTRS.contextPath}/res/fb_logo.png" height="16" style="border:none;"/>
 							</a>
 						</td>
 						<td style="white-space:nowrap;width:10px;padding-right:5px;"> 
 							<a href="http://twitter.com/etracsorg" title="Visit Us on Twitter" style="text-decoration:none;border:none;">
-								<img src="/res/twitter_logo.png" height="16" style="border:none;"/> 
+								<img src="${ATTRS.contextPath}/res/twitter_logo.png" height="16" style="border:none;"/> 
 							</a> 
 						</td>
 						<td> @navbar(folderid:['/'], class:'topmenu') </td>

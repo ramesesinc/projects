@@ -41,7 +41,7 @@
 	-moz-border-radius:4px;	
 }
 .login-splitter { 
-	background-image: url('/res/splitter.png'); 
+	background-image: url('${ATTRS.contextPath}/res/splitter.png'); 
 	background-repeat: repeat-y;
 	padding:5px; 
 }
@@ -92,7 +92,7 @@
 		<div class="login-ads">
 			Powered by <br/> 
 			<a href="http://www.ramesesinc.com" target="_blank">
-				<img src="/res/rameses.png" border="0" height="24"/>
+				<img src="${ATTRS.contextPath}/res/rameses.png" border="0" height="24"/>
 			</a> 		
 		</div>	
 	</td>

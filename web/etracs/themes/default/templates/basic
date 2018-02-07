@@ -30,6 +30,7 @@
 		<table class="master-content-panel" cellpadding="0" cellspacing="0" width="100%" height="100%" border="0">
 		<tr class="master-content-section">
 			<td class="master-content" valign="top">
+				@env()
 				${_content}
 			</td>
 		</tr>

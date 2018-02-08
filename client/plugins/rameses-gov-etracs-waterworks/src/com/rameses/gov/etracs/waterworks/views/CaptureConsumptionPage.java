@@ -36,6 +36,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
@@ -60,7 +61,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel5.setCaptionWidth(120);
 
         xIntegerField1.setCaption("Year");
-        xIntegerField1.setDisableWhen("#{mode=='read'}");
+        xIntegerField1.setDisableWhen("#{mode != 'create' }");
         xIntegerField1.setName("year"); // NOI18N
         xIntegerField1.setRequired(true);
         xFormPanel5.add(xIntegerField1);
@@ -70,9 +71,10 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xComboBox2.setDynamic(true);
         xComboBox2.setExpression("#{item.monthname} ");
         xComboBox2.setItems("monthList");
-        xComboBox2.setName("entity.billingcycle"); // NOI18N
+        xComboBox2.setName("billingcycle"); // NOI18N
         xComboBox2.setPreferredSize(new java.awt.Dimension(100, 20));
         xComboBox2.setRequired(true);
+        xComboBox2.setVisibleWhen("#{ mode == 'create' }");
         xComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xComboBox2ActionPerformed(evt);
@@ -80,10 +82,17 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         });
         xFormPanel5.add(xComboBox2);
 
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setCaption("Month");
+        xLabel1.setExpression("#{ entity.billingcycle.monthname }");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel1.setVisibleWhen("#{ mode != 'create' }");
+        xFormPanel5.add(xLabel1);
+
         xLabel13.setBackground(new java.awt.Color(245, 245, 245));
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel13.setCaption("Period From");
-        xLabel13.setDepends(new String[] {"entity.billingcycle"});
+        xLabel13.setDepends(new String[] {"billingcycle"});
         xLabel13.setExpression("#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod) : ''} ");
         xLabel13.setOpaque(true);
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -92,7 +101,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel21.setBackground(new java.awt.Color(245, 245, 245));
         xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel21.setCaption("Period To");
-        xLabel21.setDepends(new String[] {"entity.billingcycle"});
+        xLabel21.setDepends(new String[] {"billingcycle"});
         xLabel21.setExpression("#{entity.billingcycle.toperiod? dateFormatter.format( entity.billingcycle.toperiod) : ''} ");
         xLabel21.setOpaque(true);
         xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -101,7 +110,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel14.setBackground(new java.awt.Color(245, 245, 245));
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel14.setCaption("Reading Date");
-        xLabel14.setDepends(new String[] {"entity.billingcycle"});
+        xLabel14.setDepends(new String[] {"billingcycle"});
         xLabel14.setExpression("#{entity.billingcycle.readingdate? dateFormatter.format( entity.billingcycle.readingdate) : ''} ");
         xLabel14.setOpaque(true);
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -110,7 +119,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel18.setBackground(new java.awt.Color(245, 245, 245));
         xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel18.setCaption("Bill Date");
-        xLabel18.setDepends(new String[] {"entity.billingcycle"});
+        xLabel18.setDepends(new String[] {"billingcycle"});
         xLabel18.setExpression("#{entity.billingcycle.billdate? dateFormatter.format(entity.billingcycle.billdate) : ''} ");
         xLabel18.setOpaque(true);
         xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -119,7 +128,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel15.setBackground(new java.awt.Color(245, 245, 245));
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel15.setCaption("Due Date");
-        xLabel15.setDepends(new String[] {"entity.billingcycle"});
+        xLabel15.setDepends(new String[] {"billingcycle"});
         xLabel15.setExpression("#{entity.billingcycle.duedate? dateFormatter.format( entity.billingcycle.duedate) : ''} ");
         xLabel15.setOpaque(true);
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -128,7 +137,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel16.setBackground(new java.awt.Color(245, 245, 245));
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel16.setCaption("Disconnection Date");
-        xLabel16.setDepends(new String[] {"entity.billingcycle"});
+        xLabel16.setDepends(new String[] {"billingcycle"});
         xLabel16.setExpression("#{entity.billingcycle.disconnectiondate? dateFormatter.format( entity.billingcycle.disconnectiondate) : ''} ");
         xLabel16.setOpaque(true);
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -283,6 +292,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;

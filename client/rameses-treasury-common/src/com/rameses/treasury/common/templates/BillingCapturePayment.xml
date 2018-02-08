@@ -1,4 +1,5 @@
 <workunit>
+    <!--
     <invokers>
         <invoker type="formActions" action="_close" caption="Close" 
                  shortcut="ctrl Q" mnemonic="q" />
@@ -14,10 +15,13 @@
             icon="images/toolbars/save.png"  visibleWhen="#{ page == 'entry' }"/>
        
     </invokers>
+    -->
     <code class="com.rameses.treasury.common.models.BillingCapturePaymentModel" />
     <pages>
+        <!--
         <page name="initial" template="com.rameses.treasury.common.views.CapturePaymentInitialPage"/>
-        <page name="entry" template="com.rameses.treasury.common.views.CapturePaymentPage"/>
+        -->
+        <page name="default" template="com.rameses.treasury.common.views.BillingCapturePaymentPage"/>
     </pages>
     
 </workunit>

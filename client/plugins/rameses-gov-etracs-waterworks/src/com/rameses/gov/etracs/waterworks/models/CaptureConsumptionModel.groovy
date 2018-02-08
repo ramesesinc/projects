@@ -25,16 +25,19 @@ public class CaptureConsumptionModel extends CrudFormModel {
     boolean requires_recompute;
     def handler;
     int year;
+    def billingcycle;
     
     @PropertyChangeListener
     def listener = [
         "entity.(reading|prevreading)" : { o-> 
             requires_recompute = true; 
-            
             def curr = (entity.reading==null? 0 : entity.reading);
             def prev = (entity.prevreading==null? 0 : entity.prevreading);            
             entity.volume = curr - prev; 
             entity.amount = 0.0;
+        },
+        "billingcycle": { o->
+            entity.billingcycle = o;
         }
     ];
 

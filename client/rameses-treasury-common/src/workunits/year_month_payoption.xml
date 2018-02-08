@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/treasury/common/templates/YearMonthPayOption.xml">
+    <invokers>
+        <invoker type="year_month_payoption" caption="Select Year Month" target="popup" action="init" />
+    </invokers>
+</workunit>

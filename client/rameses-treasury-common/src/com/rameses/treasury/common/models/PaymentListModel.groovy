@@ -22,6 +22,18 @@ public class PaymentListModel extends CrudListModel {
         if ( _parentkey ) return _parentkey; 
         throw new Exception("Please indicate a parentkey")      
     }
+
+    public boolean isCaptureExist() {
+        try {
+            def op = Inv.lookupOpener(schemaName + ":create", [:] );
+            if( op ) return true;
+            return false;
+        }
+        catch(e) {
+            return false;
+        }
+    }
+    
     
     def getCustomFilter() {
         def arr = [];
@@ -35,8 +47,9 @@ public class PaymentListModel extends CrudListModel {
         return [arr.join(" AND "), p ]
     }
     
-    public void onOpenItem( def o, def colName ) {
+    public def open() {
         viewPayment();
+        return null;
     }
     
     void viewPayment() {

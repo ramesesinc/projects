@@ -44,9 +44,16 @@ class WaterworksSingleBillingInterceptor {
 		def p = evt.args[0];
 		def list = evt.result;
 
+		def arr = [];
+		def wp = [:];
+		if(p.params.payoption) {
+			arr << "((billingcycle.year * 12)+billingcycle.month) <= :yearmonth";
+			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
+		} 
+		arr << "amount - amtpaid > 0"
+			
 		def select = "year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid},reftype:{'waterworks_consumption'}"; 
-
-		def conList = wcEm.find([acctid: p.acctid]).select(select).where("amount - amtpaid > 0").list();
+		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).list();
 		list.addAll( conList );
 	}
 

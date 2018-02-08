@@ -1,0 +1,3 @@
+<workunit extends="com/rameses/treasury/common/templates/SingleBillingReport.xml">
+    <invoker type="waterworks_payment:create" caption="Capture Payment" action="init"/>
+</workunit>

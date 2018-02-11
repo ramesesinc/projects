@@ -1,8 +1,9 @@
 <schema adapter="waterworks">
-	<element tablename="waterworks_payment">
+	<element tablename="waterworks_payment" autopost="true">
 		<field name="objid" primary="true" prefix="WP"/>
-		<field name="acctid" required="false"/>
-		<field name="applicationid" required="false"/>
+		<field name="parentid" required="true"/>
+		<field name="parentschemaname" required="true"/>
+		<field name="rootid" required="true"/>
 		<field name="refno" required="true"/>
 		<field name="reftype" required="true"/>
 		<!-- soft link to refid like cashreceipt -->
@@ -14,5 +15,6 @@
 		<complex name="items" ref="waterworks_payment_item" jointype="one-to-many">
 			<key field="objid" target="parentid"/>
 		</complex>	
+		<field name="remarks" />
 	</element>
 </schema>

@@ -13,7 +13,7 @@ public class PaymentListModel extends CrudListModel {
     
     def selectedItem;
     
-    def _parentkey;
+    def _parentkey = "parentid";
     public String getParentkey() {
         if(_parentkey ) return _parentkey;
         _parentkey = invoker.properties.parentkey;

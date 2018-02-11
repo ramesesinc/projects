@@ -14,14 +14,9 @@ class SingleBillingService {
 	@Service("AssessmentBillingService")
 	def billingSvc;
 
-	@Service
+	@Service("SingleBillingHandler")
 	def self;
 
-	@ProxyMethod
-	public def getInfo(def o ) {return [:];}
-
-	@ProxyMethod
-	public def getBillItems( def o  ) {return [];}
 
 	@ProxyMethod
 	public def execute(  def pp ) {
@@ -36,6 +31,8 @@ class SingleBillingService {
 
 		if(!data.billitems)
 			throw new Exception("There must be at least one billitem in data billitems SingleBillingService.execute");
+
+		data.credititems = self.getCreditItems( m );	
 
 		def startgroup = "billing";
 		if( pp.startgroup ) rulegroup = p.rulegroup; 

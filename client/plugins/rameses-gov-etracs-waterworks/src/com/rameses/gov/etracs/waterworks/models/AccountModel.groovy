@@ -28,6 +28,7 @@ public class AccountModel extends CrudFormModel {
     
     void afterCreate() {
         entity.address = [:];
+        entity.attributes = [];
     }
 
     def assignStubout() {

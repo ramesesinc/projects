@@ -6,7 +6,16 @@ import vehicle.facts.*;
 import treasury.utils.*;
 import treasury.facts.*;
 
-class BillingPaymentHandler {
+class SingleBillingHandler {
+
+	@ProxyMethod
+	public def getInfo(def o ) {return [:];}
+
+	@ProxyMethod
+	public def getBillItems( def o  ) {return [];}
+
+	@ProxyMethod
+	public def getCreditItems( def o  ) {return [];}
 
 	@ProxyMethod
 	public def formatReceiptInfo( def info ) { 

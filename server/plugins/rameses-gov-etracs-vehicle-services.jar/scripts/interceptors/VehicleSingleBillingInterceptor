@@ -33,7 +33,7 @@ class VehicleSingleBillingInterceptor {
 	@DataContext("vehicle_payment")
 	def vehiclePmt;
 
-    @After(pattern="SingleBillingService.getInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+    @After(pattern="SingleBillingHandler.getInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
 	public void getInfo(def evt) {
 		def obj = evt.args[0];
 		def r = evt.result;
@@ -83,7 +83,7 @@ class VehicleSingleBillingInterceptor {
 	}
  
 
-    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' && args[0].txntype == 'vehicle_application' }" )
+    @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' && args[0].txntype == 'vehicle_application' }" )
 	public void getAppBillItems(def evt) {
 		def p = evt.args[0];
 		def list = evt.result;
@@ -92,7 +92,7 @@ class VehicleSingleBillingInterceptor {
 		list.addAll( res );
 	}
 
-    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[0].txntype == 'vehicle_franchise' }" )
+    @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[0].txntype == 'vehicle_franchise' }" )
 	public void getFranchiseBillItems(def evt) {
 		def r = evt.result;
 	}
@@ -111,7 +111,7 @@ class VehicleSingleBillingInterceptor {
     * CASH RECEIPT SPECFIC HANDLERS
 	********************************************/
 	//applicable for cash receipt billing
-	@After( pattern="BillingPaymentHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+	@After( pattern="SingleBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
 	public void formatCashReceipt(def evt ) {
 		def info = evt.args[0].params;
 		def res = evt.result;
@@ -129,7 +129,7 @@ class VehicleSingleBillingInterceptor {
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+	@After( pattern="SingleBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
 	public void getPostPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
@@ -139,7 +139,7 @@ class VehicleSingleBillingInterceptor {
 		result.items = e.billitems;
 	} 
 
-	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
@@ -151,13 +151,13 @@ class VehicleSingleBillingInterceptor {
 		}
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	@After( pattern="SingleBillingHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
 	public void getVoidPaymentInfo(def evt ) {
 		def result = evt.result;
 		result._schemaname = 'vehicle_payment';
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
 	public void getVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;

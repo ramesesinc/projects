@@ -32,15 +32,33 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         paymentPage1 = new com.rameses.treasury.common.components.PaymentPage();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         xFormPanel6.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel6.setCaptionWidth(120);
 
-        xDateField1.setCaption("Receipt Date");
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaption("Ref Type");
+        xComboBox1.setItems("refTypes");
+        xComboBox1.setName("entity.reftype"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox1.setRequired(true);
+        xFormPanel6.add(xComboBox1);
+
+        xTextField1.setCaption("Ref No");
+        xTextField1.setName("entity.refno"); // NOI18N
+        xTextField1.setRequired(true);
+        xTextField1.setStretchWidth(100);
+        xFormPanel6.add(xTextField1);
+
+        xDateField1.setCaption("Ref Date");
         xDateField1.setIndex(-1);
         xDateField1.setName("entity.refdate"); // NOI18N
         xDateField1.setOutputFormat("MMM-dd-yyyy");
@@ -48,17 +66,19 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
         xDateField1.setStretchWidth(100);
         xFormPanel6.add(xDateField1);
 
-        xTextField1.setCaption("Receipt Number");
-        xTextField1.setName("entity.refno"); // NOI18N
-        xTextField1.setRequired(true);
-        xTextField1.setStretchWidth(100);
-        xFormPanel6.add(xTextField1);
-
-        xDecimalField1.setCaption("Receipt Amount");
-        xDecimalField1.setName("entity.amount"); // NOI18N
+        xDecimalField1.setCaption("Ref Amount");
+        xDecimalField1.setName("amount"); // NOI18N
         xDecimalField1.setRequired(true);
         xDecimalField1.setStretchWidth(100);
         xFormPanel6.add(xDecimalField1);
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
+
+        xTextArea1.setCaption("Remarks");
+        xTextArea1.setName("entity.remarks"); // NOI18N
+        jScrollPane1.setViewportView(xTextArea1);
+
+        xFormPanel1.add(jScrollPane1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -67,7 +87,10 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(paymentPage1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -75,8 +98,10 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(paymentPage1, javax.swing.GroupLayout.PREFERRED_SIZE, 519, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -94,10 +119,14 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.treasury.common.components.PaymentPage paymentPage1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
+    private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

@@ -20,13 +20,17 @@ public class BillingCapturePaymentModel {
     @Service("BillingCapturePaymentService")
     def billingSvc;
     
+    def parent;
     def status;   
     def selectedItem;
     def txnid;
+    def amount;
+    def refid;
     
-    def entity = [:];
+    def entity = [reftype:'cashreceipt'];
     def billAmount = 0;
     def miscAmount = 0;
+    def refTypes = ["cashreceipt", "adjustment","creditpayment"];
     
     def miscList = [];
     def billItemList = [];
@@ -77,12 +81,18 @@ public class BillingCapturePaymentModel {
     void afterLoadInfo() {;}
     
     void loadInfo(def p) {
+        if( parent?.objid ) {
+            p.objid = parent.objid;
+        }
+        else {
+            p.txnid = txnid;
+        }
         p.collectiontype = entity.collectiontype;
-        p.billdate = entity.receiptdate;
+        p.billdate = entity.refdate;
         p.rulename = getRulename();
         p.txntype = contextName;
         def info = billingSvc.getInfo( p );
-        billItemList = [];
+        billItemList = info.billitems;
         entity.putAll(info);
         reloadItems(); 
         //afterLoadInfo();
@@ -102,20 +112,22 @@ public class BillingCapturePaymentModel {
     }
     
     public void updateBalances() {
-        billAmount = NumberUtil.round( billItemList.sum{ it.amount } );
+        billAmount = NumberUtil.round( billItemList.sum{ it.total } );
         miscAmount = 0;
         if( miscList ) {
             miscAmount = NumberUtil.round( miscList.sum{ it.amount } );
         }
+        entity.amount = billAmount + miscAmount;
     }
 
     void init() {
-        if(!txnid) {
+        def objid = parent?.objid;
+        if(!objid) {
             def o = MsgBox.prompt("Enter Transaction No");
             if(!o) throw new BreakException();
             txnid = o;
         }
-        loadInfo([id:txnid, action:'open']);
+        loadInfo([action:'open']);
     }
     
     def getTotalAmount() {
@@ -128,7 +140,7 @@ public class BillingCapturePaymentModel {
         if( !getPayOption() ) return null;
         def m = [:];
         m.onselect = { o->
-            loadInfo( [id: txnid, action:'payoption', payoption: o ] );
+            loadInfo( [action:'payoption', payoption: o ] );
         }
         return Inv.lookupOpener( getPayOption(), m);
     }
@@ -136,19 +148,19 @@ public class BillingCapturePaymentModel {
     void specifyPayAmount() {
         def o = MsgBox.prompt("Enter Pay Amount");
         if(!o) return null;
-        def p = [amtpaid: o, id:txnid, action:'open' ];
+        def p = [amtpaid: o, action:'open' ];
         loadInfo( p );
         amountSpecified = true;
     }
     
     void payAll() {
-        def p = [id:txnid, action:'open' ];
+        def p = [action:'open' ];
         loadInfo( p );
         amountSpecified = false;
     }
     
     def resetPayOption() {
-        loadInfo( [id: txnid] );
+        loadInfo( [:] );
     }
     
     public void validateBeforePost() {
@@ -201,5 +213,15 @@ public class BillingCapturePaymentModel {
             return true;
         }        
     ] as EditorListModel;
+    
+    public def save() {
+        if( entity.amount != amount )
+            throw new Exception("Amount must equal the total");
+        def t = MsgBox.confirm("Please ensure that all entries are correct. Proceed?") 
+        if(!t) return null;
+        if(refid) entity.refid = refid;
+        billingSvc.post( entity );
+        return "_close";
+    }
     
 }

@@ -10,36 +10,31 @@ import com.rameses.util.*;
 
 class WaterworksSingleBillingInterceptor {
 	
-	@Service('DateService')
-	def dateSvc; 
-
 	@DataContext('waterworks_account')
 	def acctEm; 
-
-	@DataContext('waterworks_payment')
-	def waterPmt; 
 
 	@DataContext("waterworks_consumption")
 	def wcEm;
 
-    @After(pattern="SingleBillingService.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+    @After(pattern="SingleBillingHandler.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getInfo(def evt) {
 		def obj = evt.args[0];
 		def r = evt.result;
 		def p = obj.params;
 		def acct = null;
 		if( p.objid ) {
-			acct = acctEm.find([objid:p.objid]).first();
+			acct = acctEm.find([objid:p.objid]).first(1);
 		}
 		else if( p.id ) {
-			acct = acctEm.find([acctno:p.id]).first();
+			acct = acctEm.find([acctno:p.id]).first(1);
 		}
 		if(!acct) throw new Exception("Waterworks Account not found");
 		r.putAll( acct );
 		r.acctid = acct.objid;
+
 	}
  
-    @After(pattern="SingleBillingService.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+    @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getWaterworksBillItems(def evt) {
 		def p = evt.args[0];
 		def list = evt.result;
@@ -70,6 +65,11 @@ class WaterworksSingleBillingInterceptor {
 			}
 		};
 		factBuilder.addBillItems( data.billitems ); 
+		if(data.attributes) {
+			data.attributes.each {
+				factBuilder.facts << new Attribute( it.attribute );
+			}
+		}
 	}
 
 	@After(pattern="SingleBillingService.execute",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
@@ -94,7 +94,7 @@ class WaterworksSingleBillingInterceptor {
     * CASH RECEIPT SPECFIC HANDLERS
 	********************************************/
 	//applicable for cash receipt billing
-	@After( pattern="BillingPaymentHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
+	@After( pattern="SingleBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
 	public void formatCashReceipt(def evt ) {
 		def info = evt.args[0].params;
 		def res = evt.result;
@@ -110,16 +110,17 @@ class WaterworksSingleBillingInterceptor {
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="BillingPaymentHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
+	@After( pattern="SingleBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
 	public void getPostPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
-		result._schemaname = 'waterworks_payment';
-		result.acctid =  e.acctid;
+		result.parentid =  e.acctid;
+		result.rootid =  e.acctid;
 		result.items = e.billitems;
+		result.parentschemaname = "waterworks_account";
 	} 
 
-	@After( pattern="BillingPaymentHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
+	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
@@ -128,16 +129,13 @@ class WaterworksSingleBillingInterceptor {
 			result.refid = p.txnid; 
 			result.taskid = p.taskid;
 			result.taskstate = 'payment';
+			result.payaction = "post"
+			result.voidaction = "return";
 		}
 	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'waterworks' }")
-	public void getVoidPaymentInfo(def evt ) {
-		def result = evt.result;
-		result._schemaname = 'waterworks_payment';
-	} 
 
-	@After( pattern="BillingPaymentHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks' }")
+	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks' }")
 	public void getVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;

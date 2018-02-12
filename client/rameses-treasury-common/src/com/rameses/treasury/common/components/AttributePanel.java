@@ -5,7 +5,6 @@
 package com.rameses.treasury.common.components;
 
 import com.rameses.common.ExpressionResolver;
-import com.rameses.rcp.common.MsgBox;
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 

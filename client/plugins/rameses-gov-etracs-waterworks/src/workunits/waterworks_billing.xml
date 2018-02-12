@@ -1,0 +1,31 @@
+<workunit rulename="waterworksbilling">
+    <invokers>
+        <invokers>
+            <invoker folderid="/home/waterworks" caption="Waterworks Billing" action="start" index="10" />
+        </invokers>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksBillingModel" />
+    
+    <pageflow>
+        <start>
+            <transition to="initial"/>
+        </start>
+        <page name="initial" title="Waterworks Billing Initial">
+            <transition to="processing" caption="Next" mnemonic="N"/>
+        </page>
+        <page name="processing" title="Processing Bill" action="processBill">
+            <transition name="cancel" to="end" caption="Cancel" mnemonic="B" visibleWhen="#{ false }"/>
+            <transition name="complete" to="view" caption="Complete" visibleWhen="#{ false }"/>
+        </page>
+        <page name="view" title="View Billing"> 
+            <transition to="end" caption="Close"/>
+        </page>
+        <end/>
+    </pageflow>        
+    
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.BillingInitialPage"/>
+        <page name="processing" template="com.rameses.treasury.common.views.ProcessingPage"/>
+        <page name="view" template="com.rameses.gov.etracs.waterworks.views.BillingViewPage"/>
+    </pages>
+</workunit>

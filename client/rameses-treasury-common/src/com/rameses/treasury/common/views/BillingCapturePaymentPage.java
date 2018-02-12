@@ -46,19 +46,25 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Ref Type");
+        xComboBox1.setDisableWhen("#{ entity.reftype.matches('creditpayment') }");
         xComboBox1.setItems("refTypes");
         xComboBox1.setName("entity.reftype"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox1.setRequired(true);
+        xComboBox1.setVisibleWhen("");
         xFormPanel6.add(xComboBox1);
 
         xTextField1.setCaption("Ref No");
         xTextField1.setName("entity.refno"); // NOI18N
+        xTextField1.setDepends(new String[] {"entity.reftype"});
         xTextField1.setRequired(true);
         xTextField1.setStretchWidth(100);
+        xTextField1.setVisibleWhen("#{ !entity.reftype.matches('creditpayment') }");
         xFormPanel6.add(xTextField1);
 
         xDateField1.setCaption("Ref Date");
+        xDateField1.setDepends(new String[] {"entity.reftype"});
+        xDateField1.setDisableWhen("#{ entity.reftype == 'creditpayment' }");
         xDateField1.setIndex(-1);
         xDateField1.setName("entity.refdate"); // NOI18N
         xDateField1.setOutputFormat("MMM-dd-yyyy");
@@ -67,6 +73,8 @@ public class BillingCapturePaymentPage extends javax.swing.JPanel {
         xFormPanel6.add(xDateField1);
 
         xDecimalField1.setCaption("Ref Amount");
+        xDecimalField1.setDepends(new String[] {"entity.reftype"});
+        xDecimalField1.setDisableWhen("#{ entity.reftype == 'creditpayment' }");
         xDecimalField1.setName("amount"); // NOI18N
         xDecimalField1.setRequired(true);
         xDecimalField1.setStretchWidth(100);

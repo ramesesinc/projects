@@ -35,7 +35,11 @@ public class BillingCapturePaymentModel {
     def miscList = [];
     def billItemList = [];
     
-    boolean amountSpecified = false;
+    def amtpaid = 0;
+    
+    boolean isAmountSpecified() {
+        return (amtpaid != 0 ); 
+    }
     
     public String getTitle() {
         if( invoker.properties.formTitle ) {
@@ -87,6 +91,7 @@ public class BillingCapturePaymentModel {
         else {
             p.txnid = txnid;
         }
+        if(amtpaid > 0 ) p.amtpaid = amtpaid;
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.refdate;
         p.rulename = getRulename();
@@ -94,6 +99,18 @@ public class BillingCapturePaymentModel {
         def info = billingSvc.getInfo( p );
         billItemList = info.billitems;
         entity.putAll(info);
+        entity.objid = null;
+        
+        //place this everytime billing is done.
+        if(amtpaid > 0 && entity.reftype == 'creditpayment' ) {
+            //remove credit in billitems that are more than the amount
+            def adv = entity.billitems.find{ it.txntype == 'credit' };
+            if( adv ) entity.billitems.remove( adv );
+            updateBalances();
+            amount = entity.amount;
+            amtpaid = entity.amount;
+        }
+        
         reloadItems(); 
         //afterLoadInfo();
         //loadPayOptions();
@@ -148,18 +165,19 @@ public class BillingCapturePaymentModel {
     void specifyPayAmount() {
         def o = MsgBox.prompt("Enter Pay Amount");
         if(!o) return null;
-        def p = [amtpaid: o, action:'open' ];
+        amtpaid = new BigDecimal(o);
+        def p = [action:'open' ];
         loadInfo( p );
-        amountSpecified = true;
     }
     
     void payAll() {
+        amtpaid = 0;
         def p = [action:'open' ];
         loadInfo( p );
-        amountSpecified = false;
     }
     
     def resetPayOption() {
+        amtpaid = 0;
         loadInfo( [:] );
     }
     
@@ -220,6 +238,7 @@ public class BillingCapturePaymentModel {
         def t = MsgBox.confirm("Please ensure that all entries are correct. Proceed?") 
         if(!t) return null;
         if(refid) entity.refid = refid;
+        
         billingSvc.post( entity );
         return "_close";
     }

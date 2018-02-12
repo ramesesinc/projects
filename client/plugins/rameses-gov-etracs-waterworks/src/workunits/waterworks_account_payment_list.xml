@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/treasury/common/templates/PaymentList.xml"
-          schemaName="waterworks_payment"
+          contextName="waterworks"
           title="Payments">
     <invokers>
         <invoker type="waterworks_account:section" caption="Payments" 

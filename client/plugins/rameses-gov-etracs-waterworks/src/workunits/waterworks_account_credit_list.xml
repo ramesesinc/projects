@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/treasury/common/templates/CreditList.xml"
-          schemaName="waterworks_credit"
+          contextName="waterworks"
           title="Credits">
     <invokers>
         <invoker type="waterworks_account:section" caption="Credits" 

@@ -13,6 +13,19 @@ public class PaymentListModel extends CrudListModel {
     
     def selectedItem;
     
+    public String getContextName() {
+        def pfn = invoker.properties.contextName;
+        if(pfn) return pfn;
+        pfn = workunit?.info?.workunit_properties?.contextName;
+        if ( pfn ) return pfn; 
+        return super.getSchemaName(); 
+    }
+    
+    public String getSchemaName() {
+        String s = super.getSchemaName();
+        if(!s) return getContextName() + "_payment";
+    }
+    
     def _parentkey = "parentid";
     public String getParentkey() {
         if(_parentkey ) return _parentkey;

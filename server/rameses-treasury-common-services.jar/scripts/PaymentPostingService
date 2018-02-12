@@ -15,6 +15,9 @@ class PaymentPostingService {
 	def billingHandler;
 
 
+	@Service("SequenceService")
+	def seqSvc;
+
 	void invokeWorkflow( def pmt, def action ) {
 		//check if there is workflow tasks
 		def taskInfo = billingHandler.getPaymentWorkflow(  pmt );
@@ -37,6 +40,10 @@ class PaymentPostingService {
 
 	@ProxyMethod 
 	public void post( def pmt ) {
+
+		if( pmt.reftype == "creditpayment") {
+			pmt.refno = "CP"+ seqSvc.getNextFormattedSeriesA( "creditpayment", 8 );
+		}
 
 		//save first the xxx_payment. 
 		def emMap = [:];
@@ -81,7 +88,11 @@ class PaymentPostingService {
 			crEm.create( p );
 		}
 
-
+		//if reftype is credit payment. we will update the xx_credit ledger
+		if( pmt.reftype == 'creditpayment' ) {
+			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
+			crEm.find( [objid: pmt.refid ]).update( [amtpaid: '{amtpaid + :amt}' ], [amt: pmt.amount ] );
+		}
 		invokeWorkflow( pmt, "pay" );
 	}
   

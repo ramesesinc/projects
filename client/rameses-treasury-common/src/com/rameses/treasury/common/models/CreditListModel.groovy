@@ -14,6 +14,19 @@ public class CreditListModel extends CrudListModel {
     
     def selectedItem;
     
+    public String getContextName() {
+        def pfn = invoker.properties.contextName;
+        if(pfn) return pfn;
+        pfn = workunit?.info?.workunit_properties?.contextName;
+        if ( pfn ) return pfn; 
+        return super.getSchemaName(); 
+    }
+    
+    public String getSchemaName() {
+        String s = super.getSchemaName();
+        if(!s) return getContextName() + "_credit";
+    }
+    
     def _parentkey = "parentid";
     public String getParentkey() {
         if(_parentkey ) return _parentkey;
@@ -61,7 +74,15 @@ public class CreditListModel extends CrudListModel {
     }
 
     def applyPayment() {
-        return Inv.lookupOpener( schemaName + ":create" , [parent: caller.entity ]  );
+        if(!selectedItem) throw new Exception("Please select an item");
+        def m = [:];
+        m.parent = [objid: caller.entity.objid ];
+        m.entity = [refid: selectedItem.objid, refdate: selectedItem.refdate, reftype: 'creditpayment' ];
+        m.amtpaid = selectedItem.amount - selectedItem.amtpaid;
+        m.amount = m.amtpaid;
+        String n = contextName + "_payment:create";
+        
+        return Inv.lookupOpener( n, m  );
     }
     
 

@@ -90,10 +90,6 @@ class BillingCapturePaymentService {
 		if( !pmt._schemaname ) 
 			throw new Exception("_schemaname is required in CashReceipt post payment. Please check if payment schema has an autopost='true'")
 
-		if( pmt.reftype == "creditpayment") {
-			pmt.refno = "CP"+ seqSvc.getNextFormattedSeriesA( "creditpayment", 8 );
-		}
-
 		//format the payment references
 		service.post( pmt );
 	}

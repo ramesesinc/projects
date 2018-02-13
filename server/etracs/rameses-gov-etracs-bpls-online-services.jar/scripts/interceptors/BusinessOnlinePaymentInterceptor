@@ -14,6 +14,8 @@ class BusinessOnlinePaymentInterceptor {
 	@Service("PersistenceService")
 	def persistenceSvc;	
 
+	@Service('BusinessPostPaymentService')
+	def postPaymentSvc;
 
 	@Service("NumberService")
 	def numSvc;
@@ -23,7 +25,7 @@ class BusinessOnlinePaymentInterceptor {
 		if(!app) {
 			throw new Exception("Cannot find business application no " + o.appno);
 		}	
-		if(!app.state.equalsIgnoreCase('payment')) {
+		if(!app.state.toString().toUpperCase().matches('PAYMENT|RELEASE|COMPLETED')) {
 			throw new Exception("Application is not in payment state");
 		}
 		def r = [:];
@@ -107,27 +109,28 @@ class BusinessOnlinePaymentInterceptor {
 	}
 
 	@Before(pattern="EORService.post", eval="#{args[0].txntype=='bpls'}")
-	public void postPayment( def evt ) { 
+	public void postPayment( evt ) { 
 		def o = evt.args[0];
 
 		def r = [:]
 		r.appno = o.refno;
-		if(o.info?.qtr) r.qtr = o.info.qtr;
+		if ( o.info?.qtr ) r.qtr = o.info.qtr; 
 
-		def z = generateBilling(r);
-		if( o.amount != z.amount ) 
-			throw new Exception("Amount is incorrect, pay order amount is " + o.amount + " bill amount is " + z.amount);
-
-		o.extinfo = [
-			businessid : z.app.business.objid,
-			applicationid : z.app.objid,
-			appyear : z.app.appyear,
-			taxfees  :z.taxfees,
-			expirydate : z.expirydate
-		];
-
-		o.items = z.items;
-
+		def z = generateBilling( r );
+		o.businessid = z.app.business.objid;
+		o.applicationid = z.app.objid;
+		o.appyear = z.app.appyear; 
+		o.taxfees = z.taxfees;
+		o.expirydate = z.expirydate; 
+		o.items = z.items; 
 	}
 
+	@After(pattern="EORService.post", eval="#{args[0].txntype=='bpls'}")
+	public void afterPostPayment( def evt ) { 
+		def o = evt.args[0]; 
+		def res = evt.result; 
+		o.receiptno = res.receiptno; 
+		o.receiptdate = res.receiptdate;
+		postPaymentSvc.postPayment( o ); 
+	} 
 }

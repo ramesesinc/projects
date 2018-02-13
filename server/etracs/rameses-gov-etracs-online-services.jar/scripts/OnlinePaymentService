@@ -17,23 +17,37 @@ class OnlinePaymentService   {
     @DataContext("eor")
     def eorEm; 
 
+    @Env 
+    def env; 
+
+    private void initEnv() {
+        env.USERID = 'E-PAYMENT'; 
+        env.FULLNAME = 'E-PAYMENT';
+        env.USERNAME = 'E-PAYMENT';
+    }
+
 
     /***************************************************
     * This must be overridden by discrminating txntype.
     ****************************************************/
     @ProxyMethod
-    public def getBilling( def o ) {
+    public def getBilling( def o ) { 
+        initEnv(); 
+        
         if(!o.txntype) return [status:1, message:'txntype is required'];
         return [:];
     }
 
     @ProxyMethod
     public def createPaymentOrder( def o ) {
+        initEnv();       
+
         if(!o.txntype) return [status:1, message:'txntype is required'];
         if( !o.info ) 
             throw new Exception("info is required in the arguments. Please override @Before OnlinePaymentService.createPaymentOrder and pass info");
 
         def info = o.info;
+        info.origin = o.origin;
         def m = pmoSvc.create( info );
 
         def result = [:];
@@ -55,7 +69,9 @@ class OnlinePaymentService   {
 
     @ProxyMethod
     public def postPayment( def o ) {
-        if(!o.txntype) return [status:1, message:'txntype is required'];
+        initEnv(); 
+
+        if (!o.txntype) return [status:1, message:'txntype is required'];
         def po = pmoSvc.open( [objid: o.paymentrefid ] );
         if (!po) throw new Exception('Payment Order No. ' + o.objid + ' does not exist or has already been processed.')
         
@@ -64,6 +80,10 @@ class OnlinePaymentService   {
             po.tracedate = df.parse( o.tracedate );
         }
 
+        po.paymentrefid = po.objid;
+        po.partnerid = o.partnerid;
+        po.tracedate = o.tracedate; 
+        po.traceid = o.traceid;
         def r = eorSvc.post( po );
 
         def retval = [:];
@@ -72,12 +92,16 @@ class OnlinePaymentService   {
         retval.receiptid = r.objid;
         retval.receiptdate = r.receiptdate; 
 
+        pmoSvc.removeEntity( po ); 
+
         //log the payment...
         return retval;
     }
 
     @ProxyMethod
     public def getReceipt( def o ) {
+        initEnv();        
+
         def m = [:];
         if( o.receiptno ) m.receiptno = o.receiptno;
         def rc = eorEm.find(m).first(1);
@@ -86,6 +110,4 @@ class OnlinePaymentService   {
         }
         return rc;
     }
-
-
 }

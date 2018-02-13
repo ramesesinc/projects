@@ -8,6 +8,9 @@ class EORService {
     @Env 
     def env 
 
+    @DataContext('eor')
+    def eorEm;
+
     @Service("DateService")
     def dateService
         
@@ -22,13 +25,14 @@ class EORService {
 
     @ProxyMethod
     public def post( def po ) {
+
         def itemAcctUtil = new ItemAccountUtil();
 
         if(!po.items)
             throw new Exception("Please provide items in EORService.post");      
         def svrDate = dateService.serverDate;
         def entity = [:];
-        entity.partnerid = po.partnercode;
+        entity.partnerid = po.partnerid;
         entity.receiptno = getNextEORNumber();
         entity.receiptdate = po.tracedate;
         entity.txndate = svrDate;
@@ -58,12 +62,14 @@ class EORService {
             it.item = a;
         }
         entity.sharing = po.sharing;
-        eorEm.create( entity );        
+        return eorEm.create( entity ); 
     }   
 
-    def getNextEORNumber() {
-        String prefix = 'EOR'+ orgSvc.getRoot() + dateService.getServerYear();
+    def getNextEORNumber() { 
+        def org = orgSvc.getRoot(); 
+        if ( !org?.objid ) throw new Exception('no available root org');  
+
+        String prefix = 'EOR'+ org.objid + dateService.getServerYear();
         return prefix + seqSvc.getNextFormattedSeriesA( prefix, 8 );
     }
-
 }

@@ -16,7 +16,7 @@
 		<!-- filipizen or kiosk -->
 		<field name="paymethod" required="true"/>
 		<field name="paymentrefid" required="true"/>
-		<field name="remittanceid" required="true"/>
+		<field name="remittanceid" />
 		<field name="remarks" required="true"/>
 		<field name="amount" required="true" type="decimal"/>
 
@@ -24,8 +24,8 @@
 			<key field="objid" target="parentid" />
 		</complex>	
 
-		<complex name="sharing" ref="eor_share" jointype="one-to-many" required="false">
+		<!--complex name="sharing" ref="eor_share" jointype="one-to-many" required="false">
 			<key field="objid" target="parentid" />
-		</complex>	
+		</complex-->	
 	</element>
 </schema>

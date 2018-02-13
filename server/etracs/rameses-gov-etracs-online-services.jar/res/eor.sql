@@ -18,8 +18,17 @@ CREATE TABLE `eor` (
   `remarks` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `amount` decimal(16,4) DEFAULT NULL,
   PRIMARY KEY (`objid`),
-  UNIQUE KEY `uix_eor_receiptno` (`receiptno`)
-) ENGINE=InnoDB ;
+  UNIQUE KEY `uix_eor_receiptno` (`receiptno`), 
+  KEY ix_receiptdate (receiptdate),
+  KEY ix_txndate (txndate),
+  key ix_partnerid (partnerid),
+  key ix_traceid (traceid),
+  key ix_refid (refid),
+  key ix_paidby (paidby),
+  key ix_payer_objid (payer_objid),
+  key ix_paymentrefid (paymentrefid),
+  key ix_remittanceid (remittanceid) 
+) ENGINE=InnoDB default charset utf8;
 
 
 CREATE TABLE `eor_item` (
@@ -33,10 +42,12 @@ CREATE TABLE `eor_item` (
   `item_fund_objid` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`objid`),
   KEY `fk_eoritem_eor` (`parentid`),
+  key ix_item_objid (item_objid),
+  key ix_item_fund_objid (item_fund_objid),
   CONSTRAINT `fk_eoritem_eor` FOREIGN KEY (`parentid`) REFERENCES `eor` (`objid`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB default charset utf8;
 
-eor_share CREATE TABLE `eor_share` (
+CREATE TABLE `eor_share` (
   `objid` varchar(50) NOT NULL,
   `parentid` varchar(50) DEFAULT NULL,
   `itemaccount_objid` varchar(50) DEFAULT NULL,
@@ -49,5 +60,7 @@ eor_share CREATE TABLE `eor_share` (
   `share` decimal(16,2) DEFAULT NULL,
   PRIMARY KEY (`objid`),
   KEY `fk_eorshare_eor` (`parentid`),
+  key ix_itemaccount_objid (itemaccount_objid),
+  key ix_shareaccount_objid (shareaccount_objid),
   CONSTRAINT `fk_eorshare_eor` FOREIGN KEY (`parentid`) REFERENCES `eor_share` (`objid`)
-) ENGINE=InnoDB; 
+) ENGINE=InnoDB default charset utf8; 

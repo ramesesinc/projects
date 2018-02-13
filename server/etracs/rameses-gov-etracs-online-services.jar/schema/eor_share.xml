@@ -1,6 +1,6 @@
 <schema adapter="eor">
 	<element tablename="eor_share">
-		<field name="objid" primary="true" prefix="EORSHR"//>
+		<field name="objid" primary="true" prefix="EORSHR"/>
 		<field name="parentid" required="true"/>
 		
 		<field name="itemaccount_objid" required="true"/>

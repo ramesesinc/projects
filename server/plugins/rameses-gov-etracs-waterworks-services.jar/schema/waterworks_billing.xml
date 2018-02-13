@@ -1,0 +1,17 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_billing">
+		<field name="objid" primary="true" prefix="WBILL" />
+		<field name="dtfiled"  type="date" required="true"/>
+		<field name="state" required="true" />
+		<field name="preparedby_objid" required="true"/>
+		<field name="preparedby_name" required="true"/>
+		<field name="year" required="true" />
+		<field name="month" required="true" />
+		<field name="sectorid" required="true" />
+		<field name="billingcycleid" required="true" />
+		<field name="dtposted" required="true" />
+		<field name="postedby_objid" required="true" />
+		<field name="postedby_name" required="true" />
+	</element>
+</schema>
+

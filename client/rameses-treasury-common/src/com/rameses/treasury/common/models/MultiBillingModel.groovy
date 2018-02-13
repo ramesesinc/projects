@@ -2,55 +2,64 @@ package com.rameses.treasury.common.models;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import com.rameses.util.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.seti2.models.*;
+import java.text.*;
+import java.util.concurrent.*;
+import com.rameses.treasury.common.models.*;
 
-public class MultiBillingModel {
+public abstract class MultiBillingModel extends PageFlowController {
     
-    @Binding
-    def binding;
+    private ExecutorService thread = Executors.newSingleThreadExecutor();
     
-    @Controller
-    def workunit;
-        
-    @Invoker
-    def invoker;
+    def query = [:];
     
-    //@Service("MultiBillingService")
-    //def cashReceiptSvc;
-    
-     //we specify this so print detail will appear.
-    
-    def page = "initial"
-    def status;
-    
-     public String getTitle() {
-        if( invoker.properties.formTitle ) {
-            return ExpressionResolver.getInstance().evalString(invoker.properties.formTitle,this);
-        }
-        if( invoker.caption ) {
-            return invoker.caption;
-        }
-        return getContextName();
-     }
-    
-     public String getContextName() {
-        def pfn = invoker.properties.contextName;
-        if(pfn) return pfn;
-        pfn = workunit?.info?.workunit_properties?.contextName;
-        if ( pfn ) return pfn; 
-        return super.getSchemaName(); 
-     }
+    abstract int getTotalcount();
+    abstract def fetchList( def o );
+    abstract void processEntry( def o );
 
-    def run() {
-        page = "processing";
-        return page;
+    void onComplete( def o ) {
+        def ou = super.signal( "complete" );
+        binding.fireNavigation( ou );
     }
     
-    void doFinish() {
-        page = "completed";
-        binding.fireNavigation(page);
+    int getCounter() {
+        return processor.counter;
     }
+
+    boolean isCancelled() {
+        return processor.cancelled;
+    }
+    
+    public void processBill() {
+        thread.submit(processor);
+    }
+
+    def processor = [
+        fetchList :  { o->
+            return fetchList( o );
+        },
+        process: { o->
+            binding.refresh( "message" );
+            processEntry(o);
+        },
+        onComplete : {
+            onComplete();
+        }
+    ] as AsyncProcessorModel;
+    
+    
+    public void cancel() {
+        boolean t = MsgBox.confirm("This will abort the existing process but can be resumed next time");
+        if(!t) return;
+        processor.cancel();
+    }
+    
+    public void resume() {
+        processor.resume();
+        thread.submit(processor);
+    }
+    
     
 }

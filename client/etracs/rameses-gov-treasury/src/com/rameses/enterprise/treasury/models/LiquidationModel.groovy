@@ -17,9 +17,9 @@ class LiquidationModel extends CrudFormModel {
     @Service("IncomeSummaryService")
     def incomeSvc;
     
-    @Caller 
-    def caller; 
-
+    @Service("DateService")
+    def dateService;
+    
     String title = "Liquidation";
     String schemaName = "liquidation";
     
@@ -43,6 +43,15 @@ class LiquidationModel extends CrudFormModel {
         return entity.objid;
     }
 
+    public void afterCreate() { 
+        entity.dtfiled = dateService.getServerDate();
+    }     
+
+    public def save() {
+        MsgBox.alert('saving');
+        entity = service.init(entity);  
+        return null;
+    }
     /*
     def getExtActions() {
         return InvokerUtil.lookupActions( "liquidation:formActions", [entity:entity] );
@@ -68,9 +77,6 @@ class LiquidationModel extends CrudFormModel {
         return InvokerUtil.lookupOpener( "liquidation:rcd", [entity:entity] );
     }
     
-    public void afterCreate() { 
-        entity = service.init();  
-    }     
 
     def fundListModel = [
         fetchList: {

@@ -1,0 +1,13 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_account_attribute">
+		<field name="objid" primary="true"  prefix="WACCATTR"/>
+
+		<complex name="parent" ref="waterworks_account" jointype="many-to-one" required="true" includefields="objid,acctno">
+			<key field="parentid" target="objid"/> 
+		</complex>
+
+		<complex name="attribute" ref="waterworks_attribute" jointype="many-to-one" includefields="title">
+			<key field="attribute_name" target="name"/> 
+		</complex>
+	</element>
+</schema>

@@ -39,7 +39,9 @@ class LiquidationService  {
 
 
 	@ProxyMethod
-	public def init() {
+	public def init(def pp) {
+		throw new Exception("dtfiled is " + pp.dtfiled );
+
 		/*if( ! toBoolean(var.allow_multiple_open_liquidation, true)) {
 			def ud = em.getUndepositedLiquidations([liquidatingofficerid: env.USERID] ) 
 			if(ud ) throw new Exception("There are still undeposited liquidations. ");	

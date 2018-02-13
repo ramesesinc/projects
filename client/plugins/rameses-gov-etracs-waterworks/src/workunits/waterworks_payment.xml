@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/treasury/common/templates/BillingCapturePayment.xml" rulename="waterworksbilling" 
           contextName="waterworks" payOption="year_month_payoption">
     <invokers>
-        <invoker type="waterworks_payment:create" action="init" target="popup"/> 
+        <invoker type="waterworks_payment:create" action="init" target="popup" caption="Capture Payment"/> 
         <!--
         <invoker type="formActions" caption="Cancel" action="cancel"/> 
         <invoker type="formActions" caption="Save" action="save"/> 

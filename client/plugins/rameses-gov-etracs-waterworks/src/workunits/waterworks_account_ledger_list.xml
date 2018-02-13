@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/treasury/common/templates/LedgerList.xml"
           schemaName="waterworks_consumption"
-          paymentSchemaName="waterworks_payment_item"
+          contextName="waterworks"
           title="Consumption Ledger"
           cols="billingcycle.year,billingcycle.month,prevreading,reading,volume,amount,amtpaid,balance" >
     <invokers>

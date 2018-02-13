@@ -22,13 +22,23 @@ public class LedgerListModel extends CrudListModel {
     def selectedPaymentItem;
     
     def _paymentSchemaName;
+    
+    public String getContextName() {
+        def pfn = invoker.properties.contextName;
+        if(pfn) return pfn;
+        pfn = workunit?.info?.workunit_properties?.contextName;
+        if ( pfn ) return pfn; 
+        return super.getSchemaName(); 
+    }
+    
     public String getPaymentSchemaName() {
         if(_paymentSchemaName ) return _paymentSchemaName;
         _paymentSchemaName = invoker.properties.paymentSchemaName;
         if(_paymentSchemaName) return _paymentSchemaName;
         _paymentSchemaName = workunit?.info?.workunit_properties?.paymentSchemaName;
         if ( _paymentSchemaName ) return _paymentSchemaName; 
-        throw new Exception("Please indicate a paymentSchemaName")      
+        _paymentSchemaName = getContextName() + "_payment_item";
+        return _paymentSchemaName;  
     }
     
     def _parentkey;

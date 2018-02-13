@@ -8,7 +8,7 @@ import treasury.facts.*;
 
 class BillingCashReceiptService {
 
-	@Service("BillingPaymentHandler")
+	@Service("SingleBillingHandler")
 	def self;
 
 	@Service("SingleBillingService")
@@ -67,26 +67,19 @@ class BillingCashReceiptService {
 		//get also the payment info. This will instruct the PostPaymentService regarding how to update the ledger
 		def payInfo = self.getPostPaymentInfo(  p );
 		if( payInfo ) {
-			if( !payInfo._schemaname  )
-				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error _schemaname is required");
+			
+			if( !payInfo.parentschemaname )
+				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error parentschemaname is required");	
 			if( !payInfo.items  )
 				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error items is required");
 			payInfo.items.each {
-				if(!it.item?.objid) throw new Exception( "CashReceiptBillingService.getItems getPostPaymentInfo error. item.objid is required in each item" );\
-				if(!it.reftype ) throw new Exception( "CashReceiptBillingService.getItems error. getPostPaymentInfo reftype  is required in " + it.item.title );
+				if(!it.item?.objid) throw new Exception( "CashReceiptBillingService.getItems getPostPaymentInfo error. item.objid is required in each item" );
+				if( !it.txntype?.matches('credit|misc')) {
+					if(!it.reftype ) throw new Exception( "CashReceiptBillingService.getItems error. getPostPaymentInfo reftype  is required in " + it.item.title );
+				}
 			}
 			payInfo.amount = p.amount;
 			p._postpayment = payInfo;
-		}
-
-		//check if there is workflow tasks
-		def taskInfo = self.getPaymentWorkflow(  p );
-		if( taskInfo ) {
-			if( !taskInfo.processname ) 
-				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error processname is required");
-			if( !taskInfo.refid )
-				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error refid is required");
-			p._workflow = taskInfo;		
 		}
 
 		return p;

@@ -1,0 +1,17 @@
+<workunit schemaName="waterworks_migration" allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker type="waterworks_migration:open"
+                 formTitle="Migration" 
+                 formId="#{entity.objid}"
+                 target="window"
+                 action="open" /> 
+                
+        <invoker type="formActions" caption="Post" action="doPost" visibleWhen="#{entity.state=='PENDING'}" /> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.MigrationOpenModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.MigrationPage"/> 
+    </pages>
+</workunit>

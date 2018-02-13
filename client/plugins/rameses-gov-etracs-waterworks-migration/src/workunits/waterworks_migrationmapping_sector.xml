@@ -1,0 +1,14 @@
+<workunit schemaName="waterworks_migrationmapping_sector">
+    <invokers>
+        <invoker type="waterworks_migrationmapping_sector:create" 
+                 caption="Sector Mapping" action="create" target="popup"/>
+        <invoker type="waterworks_migrationmapping_sector:open" 
+                 caption="Sector Mapping" action="open" target="popup"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.SectorMappingModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.SectorMappingPage"/> 
+    </pages>
+</workunit>

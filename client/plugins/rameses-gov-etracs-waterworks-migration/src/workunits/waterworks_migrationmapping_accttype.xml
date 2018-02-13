@@ -1,0 +1,14 @@
+<workunit schemaName="waterworks_migrationmapping_accttype">
+    <invokers>
+        <invoker type="waterworks_migrationmapping_accttype:create" 
+                 caption="AcctType Mapping" action="create" target="popup"/>
+        <invoker type="waterworks_migrationmapping_accttype:open" 
+                 caption="AcctType Mapping" action="open" target="popup"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.AcctTypeMappingModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.AcctTypeMappingPage"/> 
+    </pages>
+</workunit>

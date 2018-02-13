@@ -1,0 +1,23 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="waterworks_migrationmapping_sector"  
+          cols="objid,ref.code">
+    <invokers>
+        <invoker xfolderid="/home/waterworks/migration" caption="Sector Mapping" 
+                 action="init" xrole="MASTER" index="1"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[ 
+import com.rameses.seti2.models.*; 
+
+class WaterworksMigrationSectorMappingListModel extends CrudListModel {
+    
+    public void initColumn( def c ) {
+        if ( c.name == 'ref.code' ) {
+            c.caption = 'Sector'; 
+        } 
+    } 
+}    
+    ]]> 
+    </code>    
+</workunit>

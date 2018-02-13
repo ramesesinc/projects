@@ -5,6 +5,7 @@
 package test;
 
 import java.io.File;
+import java.util.Date;
 import junit.framework.TestCase;
 import jxl.Cell;
 import jxl.Sheet;
@@ -21,7 +22,6 @@ public class NewEmptyJUnitTest extends TestCase {
     }
 
     public void xtestMain() throws Exception { 
-        
         String filepath = "C:\\Users\\ramesesinc\\Desktop\\BILLING09-2017.xls";
         File file = new File( filepath ); 
         System.out.println("canonicalPath-> " + file.getCanonicalPath());
@@ -37,13 +37,9 @@ public class NewEmptyJUnitTest extends TestCase {
     }
     
     public void test2() throws Exception { 
-        String filepath = "C:\\Users\\ramesesinc\\Desktop\\BILLING09-2017.xls";
-        filepath = "C:\\TEMP\\etracs25-client-tester\\datafile.encoded";
-        File file = new File( filepath ); 
-        byte[] bytes = com.rameses.io.IOStream.toByteArray(file); 
-        System.out.println(new String(bytes));
+        String str = "2018-02-12 12:32:00.0";
         
-        Object o = new com.rameses.util.Base64Cipher().decode( new String(bytes));  
-        System.out.println( o );
+        Date dt = java.sql.Timestamp.valueOf( str );
+        System.out.println( dt );
     }    
 }

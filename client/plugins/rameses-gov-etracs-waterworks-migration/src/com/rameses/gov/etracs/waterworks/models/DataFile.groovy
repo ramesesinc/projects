@@ -48,18 +48,18 @@ public class DataFile {
             } 
         }
         if ( colfields.isEmpty() ) {
-            colfields << [ name: 'acctno', caption:'Account Number', type:'string' ];
-            colfields << [ name: 'acctname', caption:'Account Name', type:'string' ];
-            colfields << [ name: 'accttype', caption:'Account Type', type:'string' ];
+            colfields << [ name: 'acctno', caption:'Account Number', type:'string', required:true ];
+            colfields << [ name: 'acctname', caption:'Account Name', type:'string', required:true ];
+            colfields << [ name: 'accttype', caption:'Account Type', type:'string', required:true ];
             colfields << [ name: 'dtstarted', caption:'Date Started', type: 'date' ];
             colfields << [ name: 'address_text', caption:'Address', type: 'date' ];
-            colfields << [ name: 'prevreading', caption:'Previous Reading', type: 'integer' ];
-            colfields << [ name: 'currentreading', caption:'Current Reading', type: 'integer' ];
-            colfields << [ name: 'dtreading', caption:'Reading Date', type: 'date' ];
+            colfields << [ name: 'prevreading', caption:'Previous Reading', type: 'integer', required:true ];
+            colfields << [ name: 'currentreading', caption:'Current Reading', type: 'integer', required:true ];
+            colfields << [ name: 'dtreading', caption:'Reading Date', type: 'date', required:true ];
             colfields << [ name: 'meterno', caption:'Meter Number', type:'string' ];
             colfields << [ name: 'metersize', caption:'Meter Size', type:'string' ];
-            colfields << [ name: 'sectorcode', caption:'Sector', type:'string' ];
-            colfields << [ name: 'zonecode', caption:'Zone', type:'string' ];
+            colfields << [ name: 'sectorcode', caption:'Sector', type:'string', required:true ];
+            colfields << [ name: 'zonecode', caption:'Zone', type:'string', required:true ];
             colfields << [ name: 'stuboutcode', caption:'Stubout', type:'string' ];
         }
     } 
@@ -104,7 +104,8 @@ public class DataFile {
         colfields.each{ 
             Map dest = new HashMap(); 
             copyMap( it, dest ); 
-            map.colfields << dest;
+            map.colfields << dest; 
+            dest.remove('uploaded'); 
         }
         return map;
     }
@@ -118,5 +119,37 @@ public class DataFile {
                 dest.put(k, v); 
             }
         }
+    }
+    
+    public void read( options ) { 
+        for (int r=1; r<totalrows; r++) { 
+            def item = new LinkedHashMap();
+            try { 
+                item.indexno = r; 
+                colfields.each{ f-> 
+                    buildItem(r, f, item); 
+                } 
+            } catch(Throwable t) { 
+                item.haserror = true; 
+                item.errormessage = t.message; 
+            }
+            
+            if ( options.onbuildItem ) {
+                options.onbuildItem( item ); 
+            } 
+        } 
+    }
+    private void buildItem( rowindex, colfield, item ) {
+        def value = null; 
+        if ( colfield.cell?.index ) { 
+            def cell = sheet.getCell(colfield.cell.index, rowindex);
+            value = cell.contents; 
+        } 
+        if ( !value ) value = colfield.defaultvalue; 
+        if ( colfield.required && !value ) { 
+            throw new Exception(''+ colfield.caption +' is required in line number '+ rowindex); 
+        } 
+        
+        item.put( colfield.name, value ); 
     }
 }

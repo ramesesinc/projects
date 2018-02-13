@@ -1,0 +1,14 @@
+<workunit schemaName="waterworks_migrationmapping_metersize">
+    <invokers>
+        <invoker type="waterworks_migrationmapping_metersize:create" 
+                 caption="MeterSize Mapping" action="create" target="popup"/>
+        <invoker type="waterworks_migrationmapping_metersize:open" 
+                 caption="MeterSize Mapping" action="open" target="popup"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.MeterSizeMappingModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.MeterSizeMappingPage"/> 
+    </pages>
+</workunit>

@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_migration:unmapped:open" caption="Unmapped Items" action="init" target="popup"/>
+        
+        <invoker type="formActions" caption="Close" action="doClose"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.MigrationUnmappedDataModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.MigrationUnmappedDataPage"/> 
+    </pages>
+</workunit>

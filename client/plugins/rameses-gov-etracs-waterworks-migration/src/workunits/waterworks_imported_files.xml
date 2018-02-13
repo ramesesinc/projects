@@ -3,7 +3,8 @@
           cols="state,title,dtcreated,createdby.objid,createdby.name,totalrows,currentrow"
           orderBy="dtcreated desc">
     <invokers>
-        <invoker folderid="/home/waterworks/migration" caption="Imported Files" action="init" xrole="MASTER"/>
+        <invoker folderid="/home/waterworks/migration" caption="Imported Files" 
+                 action="init" xrole="MASTER"/>
     </invokers>
     
     <code>

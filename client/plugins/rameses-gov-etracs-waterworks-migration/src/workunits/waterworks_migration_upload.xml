@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_migration:upload" caption="Upload" action="init" target="popup"/>
+        
+        <invoker type="formActions" caption="Close" action="doClose" visibleWhen="#{mode.toString().matches('init|finish|error') == true}"/>
+                
+        <invoker type="formActions" caption="Stop" action="doStop" visibleWhen="#{mode=='upload'}"/>
+        <invoker type="formActions" caption="Start" action="doStart" visibleWhen="#{mode=='init'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.MigrationUploadModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.MigrationUploadPage"/> 
+    </pages>
+</workunit>

@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+
+class WaterworksMigrationItemInterceptor {
+	
+	@DataContext('waterworks_migrationitem') 
+	def waterworks_migrationitem; 
+
+	@DataContext('waterworks_migrationmeter') 
+	def waterworks_migrationmeter; 
+
+	@DataContext('waterworks_migrationconsumption') 
+	def waterworks_migrationconsumption; 
+
+	@Before ( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname=='waterworks_migration'}", index=100) 
+	public void removeItem( evt ) {
+		def param = evt.args[0]; 
+		if ( param.parentid ) {
+			waterworks_migrationmeter.find([ parentid: param.parentid ]).delete();	
+		}
+	} 
+
+	@Before ( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname=='waterworks_migrationitem'}") 
+	public void removeMeter( evt ) {
+		def param = evt.args[0]; 
+		if ( param.parentid ) { 
+			waterworks_migrationmeter.find([ parentid: param.parentid ]).delete();	
+		}
+	} 
+
+	@After ( pattern="PersistenceService.create", eval="#{args[0]._schemaname=='waterworks_migrationitem'}") 
+	public void afterCreate( evt ) { 
+		def res = evt.args[0]; 
+		if ( res.meterno && res.metersizeid ) {
+			def mm = waterworks_migrationmeter.find([ parentid: res.parentid, serialno: res.meterno ]).first();
+			if ( !mm?.objid ) {
+				mm = [serialno: res.meterno, sizeid: res.metersizeid, brand:'(none)', capacity:9999999, stocktype:'STOCK']; 
+				mm.parentid = res.parentid; 
+				mm = waterworks_migrationmeter.create( mm ); 
+			} 
+
+			waterworks_migrationitem.find([ objid: res.objid ]).update([ meterid: mm.objid ]); 
+		} 
+	} 
+}

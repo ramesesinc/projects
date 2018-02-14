@@ -1,0 +1,6 @@
+<schema adapter="waterworks">
+	<element tablename="migrationmapping_stubout">
+		<field name="objid" primary="true" /> 
+		<field name="refid" required="true" /> 
+	</element>
+</schema>

@@ -1,0 +1,14 @@
+<schema adapter="waterworks">
+	<element tablename="migration">
+		<field name="objid" primary="true" prefix="M"/> 
+		<field name="state" required="true" caption="Status"/> 
+		<field name="dtcreated" required="true" caption="DateCreated"/> 
+		<field name="createdby_objid" required="true" /> 
+		<field name="createdby_name" required="true" caption="CreatedBy"/> 
+		<field name="title" required="true" caption="Title"/> 
+		<field name="remarks" caption="Remarks"/> 
+		<field name="infodef" required="true"/> 
+		<field name="totalrows" required="true" caption="TotalRows"/> 
+		<field name="currentrow" required="true" caption="CurrentRow"/> 
+	</element>
+</schema>

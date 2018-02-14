@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="migrationbillingcycle">
+		<field name="objid" primary="true" prefix="MBC"/> 
+		<field name="parentid" required="true"/> 
+		<field name="sectorid" required="true"/> 
+		<field name="dtreading" required="true"/> 
+		<field name="billingcycleid" required="true"/> 
+	</element>
+</schema>

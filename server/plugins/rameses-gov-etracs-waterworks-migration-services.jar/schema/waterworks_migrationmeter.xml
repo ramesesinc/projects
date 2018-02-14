@@ -1,0 +1,12 @@
+<schema  adapter="waterworks">
+	<element tablename="migrationmeter">
+		<field name="objid" primary="true" prefix="MM"/> 
+		<field name="parentid" required="true" /> 
+		<field name="serialno" required="true"/> 
+		<field name="brand" required="true"/> 
+		<field name="capacity" required="true"/> 
+		<field name="stocktype" required="true"/> 
+		<field name="sizeid" /> 
+		<field name="sourcemeterid" /> 
+	</element>
+</schema>

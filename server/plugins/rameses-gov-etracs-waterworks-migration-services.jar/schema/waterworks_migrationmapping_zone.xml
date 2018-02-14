@@ -1,0 +1,15 @@
+<schema adapter="waterworks">
+	<element tablename="migrationmapping_zone">
+		<field name="objid" primary="true" prefix="MZ"/> 
+		<field name="sectorcode" required="true" caption="SectorCode"/> 
+		<field name="zonecode" required="true" caption="ZoneCode"/> 
+		
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false" includefields="objid,code">
+			<key field="sectorid" target="objid"/> 
+		</complex>
+
+		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" required="false" includefields="objid,description">
+			<key field="sectorzoneid" target="objid"/> 
+		</complex>
+	</element>
+</schema>

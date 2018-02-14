@@ -1,0 +1,21 @@
+import com.rameses.annotations.*;
+
+class WaterworksMigrationInterceptor {
+	
+	@DataContext('waterworks_migrationitem') 
+	def waterworks_migrationitem; 
+
+	@DataContext('waterworks_migrationmeter') 
+	def waterworks_migrationmeter; 
+
+	@DataContext('waterworks_migrationbillingcycle') 
+	def waterworks_migrationbillingcycle; 
+
+	@Before ( pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname=='waterworks_migration'}") 
+	public void beforeRemoveEntity( evt ) {
+		def param = evt.args[0]; 
+		waterworks_migrationitem.find([ parentid: param.objid ]).delete();
+		waterworks_migrationmeter.find([ parentid: param.objid ]).delete();
+		waterworks_migrationbillingcycle.find([ parentid: param.objid ]).delete();
+	}	
+}

@@ -1,0 +1,32 @@
+<schema  adapter="waterworks">
+	<element tablename="migrationitem">
+		<field name="objid" primary="true" prefix="MI"/> 
+		<field name="parentid" required="true"/> 
+		<field name="indexno" required="true" /> 
+		<field name="acctno" required="true" /> 
+		<field name="acctname" required="true"/> 
+		<field name="accttype" required="true"/> 
+		<field name="dtstarted" /> 
+		<field name="address_text" /> 
+		<field name="address_street" /> 
+		<field name="prevreading" /> 
+		<field name="currentreading" /> 
+		<field name="dtreading" /> 
+		<field name="meterno" /> 
+		<field name="metersize" /> 
+		<field name="sectorcode" /> 
+		<field name="stuboutcode" /> 
+		<field name="zonecode" /> 
+		<field name="haserror" /> 
+		<field name="errormessage" /> 
+		<field name="classificationid" /> 
+		<field name="meterid" /> 
+		<field name="metersizeid" /> 
+		<field name="sectorid" /> 
+		<field name="zoneid" /> 
+		<field name="stuboutid" /> 
+		<field name="stuboutnodeid" /> 
+		<field name="billingcycleid" /> 
+		<field name="sourceacctid" /> 
+	</element>
+</schema>

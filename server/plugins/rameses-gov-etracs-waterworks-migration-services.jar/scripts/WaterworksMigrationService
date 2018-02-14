@@ -1,0 +1,109 @@
+import com.rameses.annotations.*;
+
+class WaterworksMigrationService {
+
+	@DataContext('waterworks_migration') 
+	def mig_db; 
+	
+	@DataContext('waterworks_migrationitem') 
+	def migitem_db; 
+
+	@DataContext('waterworks_migrationmeter') 
+	def migmeter_db; 
+	
+	@DataContext('waterworks_migrationbillingcycle') 
+	def migbc_db; 
+	
+	@DataContext('waterworks_migrationconsumption') 
+	def migcon_db; 
+	
+	@ProxyMethod 
+	public def analyzeData( params ) {
+		if ( !params.migrationid ) throw new Exception('migrationid parameter is required'); 
+
+		def o = mig_db.find([ objid: params.migrationid ]).first(); 
+		if ( !o?.objid ) throw new Exception('migration record not found'); 
+
+		def res = [:];
+		def adb = migitem_db.find([ parentid: o.objid ]); 
+		res.noclassificationidcount = adb.where('classificationid is null').select('icount:{COUNT(*)}').first()?.icount; 
+
+		adb = migitem_db.find([ parentid: o.objid ]); 
+		adb.where('meterno is not null and meterid is null'); 
+		res.nometeridcount = adb.select('icount:{COUNT(*)}').first()?.icount; 
+
+		adb = migitem_db.find([ parentid: o.objid ]); 
+		adb.where('meterno is not null and metersizeid is null'); 
+		res.nometersizeidcount = adb.select('icount:{COUNT(*)}').first()?.icount; 
+
+		adb = migitem_db.find([ parentid: o.objid ]); 
+		res.nosectoridcount = adb.where('sectorid is null').select('icount:{COUNT(*)}').first()?.icount; 
+
+		adb = migitem_db.find([ parentid: o.objid ]); 
+		res.nozoneidcount = adb.where('zoneid is null').select('icount:{COUNT(*)}').first()?.icount; 
+
+		return res; 
+	}
+
+	@ProxyMethod 
+	public def getUnmappedData( params ) { 
+		if ( !params.migrationid ) throw new Exception('migrationid parameter is required');  
+		if ( !params.key ) throw new Exception('key parameter is required');  
+
+		params.parentid = params.migrationid; 
+
+		if ( params.key == 'classificationid') {
+			return migitem_db.getUnmappedClassifications( params ); 
+		} else if ( params.key == 'meterid') {
+			return migitem_db.getUnmappedMeters( params ); 
+		} else if ( params.key == 'metersizeid') {
+			return migitem_db.getUnmappedMeterSizes( params ); 
+		} else if ( params.key == 'sectorid') {
+			return migitem_db.getUnmappedSectors( params ); 
+		} else if ( params.key == 'zoneid') {
+			def list = migitem_db.getUnmappedSectorZones( params ); 
+			list.each{ 
+				it.value = 'Sector '+ it.sectorcode +' Zone '+ it.zonecode; 
+			} 
+		} 
+		return [];
+	} 
+
+	@ProxyMethod
+	public void initPost( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required');  
+
+		params.parentid = params.objid; 
+		migmeter_db.resolveMeters( params ); 
+
+		migcon_db.find([ parentid: params.parentid ]).delete(); 
+		migbc_db.find([ parentid: params.parentid ]).delete(); 
+		
+		migbc_db.getBuildBillingCycle( params ).each{
+			migbc_db.create( it );  
+		}
+
+		migitem_db.resolveBillingCycles( params ); 		
+		migitem_db.resolveAccountTypes( params ); 
+		migitem_db.resolveAccounts( params ); 
+
+	} 
+
+	@ProxyMethod
+	public def post( params ) {
+		if ( !params.objid ) throw new Exception('objid parameter is required');  
+
+		params.parentid = params.objid; 
+		params.migrationid = params.objid;
+
+		migmeter_db.insertMeters( params ); 
+		migitem_db.insertAccounts( params ); 
+
+		migcon_db.insertData( params ); 
+		migcon_db.resolveAllowed( params ); 
+		migcon_db.insertConsumptions( params ); 
+
+		mig_db.find([ objid: params.objid ]).update([ state: 'POSTED' ]); 
+		return mig_db.find([ objid: params.objid ]).first(); 
+	} 
+}

@@ -4,7 +4,7 @@
           orderBy="dtcreated desc">
     <invokers>
         <invoker folderid="/home/waterworks/migration" caption="Imported Files" 
-                 action="init" xrole="MASTER"/>
+                 action="init" role="ADMIN"/>
     </invokers>
     
     <code>

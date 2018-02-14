@@ -11,20 +11,22 @@ class MigrationUploadModel {
     def binding;
     
     def options;
-    def totalrows;
-    def currentrow;
     def initHandler;
     def stopHandler;
     def startHandler;
     
     def mode;
     boolean cancelled;
-    
+        
     void init() {
         mode = 'init';
         options = [:];
         options.refresh = { 
-            binding.refresh('progressvalue');  
+            Number totalrows = options.totalrows; 
+            Number currentrow = options.currentrow; 
+            Number num = (currentrow.doubleValue() / totalrows.doubleValue()) * 100.0; 
+            options.progressvalue = (''+ num.intValue() +'%'); 
+            binding.refresh('progressvalue|label'); 
         }
         options.finish = {
             mode = 'finish'; 
@@ -51,7 +53,7 @@ class MigrationUploadModel {
         } else if( mode == 'init' ) {
             return "Press Start to begin";
         } else if ( mode == 'upload' ) {
-            return "Uploading Data..."; 
+            return "Uploading Data...  ("+ options.currentrow +" of "+ options.totalrows +")"; 
         } else if ( mode == 'error' ) {
             return "Processed with errors..."; 
         } else if ( mode == 'finish' ) {

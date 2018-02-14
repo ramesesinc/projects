@@ -3,7 +3,7 @@
           cols="objid,ref.title">
     <invokers>
         <invoker folderid="/home/waterworks/migration" caption="MeterSize Mapping" 
-                 action="init" xrole="MASTER" index="1"/>
+                 action="init" role="ADMIN" index="1"/>
     </invokers>
     
     <code>

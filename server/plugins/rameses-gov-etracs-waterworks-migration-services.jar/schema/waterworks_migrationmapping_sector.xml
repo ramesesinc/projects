@@ -1,0 +1,9 @@
+<schema adapter="waterworks">
+	<element tablename="migrationmapping_sector">
+		<field name="objid" primary="true" caption="Code" visible="true"/> 
+
+		<complex name="ref" ref="waterworks_sector" jointype="many-to-one" required="false" includefields="objid,code">
+			<key field="refid" target="objid"/> 
+		</complex>
+	</element>
+</schema>

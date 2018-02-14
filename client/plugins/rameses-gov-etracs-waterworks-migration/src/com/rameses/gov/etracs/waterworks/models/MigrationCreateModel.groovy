@@ -61,6 +61,7 @@ class MigrationCreateModel {
             MsgBox.err( e );
         }
         
+        /*
         def fields = datafile.getColFields(); 
         fields.find{ it.name=='acctno' }.cell = [index:4, caption:"ACCTNO"];
         fields.find{ it.name=='acctname' }.cell = [index:5, caption:"NAME"];
@@ -72,7 +73,8 @@ class MigrationCreateModel {
         fields.find{ it.name=='metersize' }.defaultvalue = "0.5";
         fields.find{ it.name=='sectorcode' }.cell = [index:1, caption:"DISTNO"];
         fields.find{ it.name=='zonecode' }.cell = [index:2, caption:"PHASE"];
-        
+        */
+       
         fieldListHandler.reload(); 
     } 
     
@@ -211,21 +213,20 @@ class MigrationCreateModel {
     private void upload() {
         entity.currentrow = 0;
         entity.totalrows = validitemlist.size(); 
+        uploadOptions.totalrows = entity.totalrows;
         
         Number size = entity.totalrows; 
         for (int i=0; i<size.intValue(); i++) { 
             if ( uploadOptions.cancelled == true ) break;
             
             def item = validitemlist.get(i); 
-            if (item.uploaded.toString() == 'true') continue; 
+            if ( !"true".equals(item.uploaded.toString())) { 
+                item._schemaname = 'waterworks_migrationitem'; 
+                persistSvc.create( item ); 
+                item.uploaded = true; 
+            }
             
-            item._schemaname = 'waterworks_migrationitem'; 
-            persistSvc.create( item ); 
-            item.uploaded = true; 
-            
-            Number num = (i+1); 
-            num = (num.doubleValue() / size.doubleValue()) * 100.0; 
-            uploadOptions.progressvalue = (''+ num.intValue() +'%');
+            uploadOptions.currentrow = (i+1); 
             if ( uploadOptions.refresh ) {
                 uploadOptions.refresh(); 
             } 

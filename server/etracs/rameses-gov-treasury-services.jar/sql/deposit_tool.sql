@@ -1,7 +1,7 @@
 [unbindCashReceiptChecks]
 update 
 	deposit dep, liquidation_fund lf, 
-	cashreceiptpayment_noncash nc, cashreceipt_check cc  
+	cashreceiptpayment_noncash nc, paymentcheck cc  
 set 
 	cc.depositrefid = null 
 where 

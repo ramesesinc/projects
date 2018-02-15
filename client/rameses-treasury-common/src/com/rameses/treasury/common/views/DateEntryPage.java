@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.epayment.views;
+package com.rameses.treasury.common.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(FormPage.class)
-public class EORRemittanceInitialPage extends javax.swing.JPanel {
+public class DateEntryPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form EORRemittanceInitialPage
+     * Creates new form DateEntryPage
      */
-    public EORRemittanceInitialPage() {
+    public DateEntryPage() {
         initComponents();
     }
 
@@ -31,21 +31,10 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xDateField1 = new com.rameses.rcp.control.XDateField();
 
-        xFormPanel1.setCaption("Enter Date");
-
-        xComboBox1.setCaption("Partner");
-        xComboBox1.setItems("partnerList");
-        xComboBox1.setName("entity.partnerid"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xComboBox1.setRequired(true);
-        xFormPanel1.add(xComboBox1);
-
         xDateField1.setCaption("Enter Date");
-        xDateField1.setName("entity.controldate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xDateField1.setName("date"); // NOI18N
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
@@ -54,20 +43,19 @@ public class EORRemittanceInitialPage extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(327, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(165, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables

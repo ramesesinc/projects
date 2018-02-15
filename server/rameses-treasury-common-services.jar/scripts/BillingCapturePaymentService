@@ -17,8 +17,6 @@ class BillingCapturePaymentService {
 	@Service("PaymentPostingService")
 	def service;
 
-	@Service("SequenceService")
-	def seqSvc;
 
 	@PersistenceContext
 	def db;
@@ -85,6 +83,7 @@ class BillingCapturePaymentService {
 
 	@ProxyMethod
 	public def post( def pmt ) {
+
 		if(!pmt.txnmode) pmt.txnmode = 'CAPTURE';
 		pmt._schemaname = findPaymentSchema( pmt )?.name
 		if( !pmt._schemaname ) 

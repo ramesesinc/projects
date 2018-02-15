@@ -13,15 +13,18 @@ public abstract class MultiBillingModel extends PageFlowController {
     
     private ExecutorService thread = Executors.newSingleThreadExecutor();
     
-    def query = [:];
+    int totalcount;
     
-    abstract int getTotalcount();
     abstract def fetchList( def o );
     abstract void processEntry( def o );
 
     void onComplete( def o ) {
         def ou = super.signal( "complete" );
         binding.fireNavigation( ou );
+    }
+    
+    int getTotalCount() {
+        return processor.totalcount;
     }
     
     int getCounter() {
@@ -37,8 +40,14 @@ public abstract class MultiBillingModel extends PageFlowController {
     }
 
     def processor = [
+        onStart: {
+            onStart();
+        },
         fetchList :  { o->
             return fetchList( o );
+        },
+        onBatchEnd: { batchno -> 
+            
         },
         process: { o->
             binding.refresh( "message" );

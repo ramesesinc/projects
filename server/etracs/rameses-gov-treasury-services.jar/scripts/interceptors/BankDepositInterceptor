@@ -14,7 +14,7 @@ class BankDepositInterceptor {
 	@DataContext("bankdeposit")
 	def bnkdep_db;
 
-	@DataContext("cashreceipt_check")
+	@DataContext("paymentcheck")
 	def chk_db;
 
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'bankdeposit' }")

@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="eor" allowCreate="false" allowEdit="false" allowDelete="false">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="eor" allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker folderid="/explorer/master/epayment" caption="EOR List" xrole="MASTER" action="init" 
                  allowEdit="true" allowCreate="true"/>

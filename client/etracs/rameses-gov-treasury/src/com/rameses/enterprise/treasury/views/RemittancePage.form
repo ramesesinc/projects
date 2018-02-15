@@ -79,10 +79,10 @@
                   </Border>
                 </Property>
                 <Property name="caption" type="java.lang.String" value="Control No"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.txnno}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
+                <Property name="text" type="java.lang.String" value="#{entity.controlno}"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
@@ -94,8 +94,8 @@
                     </LineBorder>
                   </Border>
                 </Property>
-                <Property name="caption" type="java.lang.String" value="Remittance Date"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.remittancedate}"/>
+                <Property name="caption" type="java.lang.String" value="Control Date"/>
+                <Property name="expression" type="java.lang.String" value="#{entity.controldate}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>

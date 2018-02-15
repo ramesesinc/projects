@@ -1,6 +1,6 @@
 <schema>
 
-	<element  tablename="cashreceipt_check">
+	<element  tablename="paymentcheck">
 		<field name="objid" primary="true" prefix="CHKPMT"/>	
 		<field name="state" required="true" defaultValue="PENDING"/>	
 

@@ -5,8 +5,8 @@
                  formTitle="Remittances" 
                  action="init" role="SHARED,CASHIER,LIQUIDATING_OFFICER,COLLECTOR" 
                  permission="remittance.view" tag="all" index="10" 
-                 cols="txnno,remittancedate,collector.name,totalcash,totalcheck,totalcr,amount,liquidatingofficer.name"
-                 hiddenCols="state" orderBy="remittancedate DESC"/>
+                 cols="controlno,controldate,collector.name,totalcash,totalcheck,totalcr,amount,liquidatingofficer.name"
+                 hiddenCols="state" orderBy="controldate DESC"/>
         
         <invoker type="quick_launcher" code="REMS" caption="Remittances" 
                  action="init" role="SHARED,CASHIER,LIQUIDATING_OFFICER,COLLECTOR" 
@@ -16,8 +16,8 @@
 
         <invoker type="remittance:for_approval" caption="Remittances" 
                  action="initForApproval" role="LIQUIDATING_OFFICER" 
-                 cols="txnno,remittancedate,collector.name,totalcash,totalcheck,totalcr,amount,liquidatingofficer.name"
-                 hiddenCols="state" orderBy="remittancedate DESC"/>        
+                 cols="controlno,controldate,collector.name,totalcash,totalcheck,totalcr,amount,liquidatingofficer.name"
+                 hiddenCols="state" orderBy="controldate DESC"/>        
                  
         <!-- ACTIONS --> 
         <invoker type="listActions" caption="Liquidate" action="liquidate" role="LIQUIDATING_OFFICER" />

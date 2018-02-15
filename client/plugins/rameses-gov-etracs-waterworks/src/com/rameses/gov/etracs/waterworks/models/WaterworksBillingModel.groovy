@@ -14,38 +14,22 @@ public class WaterworksBillingModel extends MultiBillingModel {
     @Service("DateService")
     def dateSvc;
     
-    def list = [];
-    
-    int getTotalcount() {
-        return list.size();
-    }
-    
-    public def start() {
-        def s = super.start();
-        query.year = dateSvc.getServerYear();
-        query.month = dateSvc.getServerMonth(); 
-         int i = 0;  
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        list << "data"+(i++);
-        return s;
+    public void afterCreate() {
+        entity.year = dateSvc.getServerYear();
+        entity.month = dateSvc.getServerMonth(); 
     }
 
     public def fetchList( def o ) {
-        return list;
+        o._schemaname = 'waterworks_billing_account';
+        o.findBy = [parentid: entity.objid, state: 'DRAFT' ];
+        return queryService.getList( o );
     }
     
     public void processEntry( def o ) {
-        list.remove(o);
-        Thread.sleep( 2000 );
+        def m = [_schemaname: 'waterworks_billing_account' ];
+        m.findBy =[objid:o.objid];
+        m.state = 'PROCESSING';
+        persistenceService.update( m );
     }
     
     

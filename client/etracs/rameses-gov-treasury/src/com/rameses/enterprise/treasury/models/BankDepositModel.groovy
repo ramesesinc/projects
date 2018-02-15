@@ -37,7 +37,7 @@ class BankDepositModel extends CrudFormModel {
             checkModel.reload();
             binding.refresh("entity.totalcheck");
         }
-        return Inv.lookupOpener("cashreceipt_check_undeposited:lookup", [onselect:h]);
+        return Inv.lookupOpener("paymentcheck_undeposited:lookup", [onselect:h]);
     }
     
     void removeCheck() {

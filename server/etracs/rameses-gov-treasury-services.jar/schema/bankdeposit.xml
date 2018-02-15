@@ -18,7 +18,7 @@
 		<field name="validationno" /> 
 		<field name="validationdate" /> 
 
-		<complex name="checks" ref="cashreceipt_check" jointype="one-to-many">
+		<complex name="checks" ref="paymentcheck" jointype="one-to-many">
 			<key field="objid" target="bankdepositid" />
 		</complex> 
 	</element>

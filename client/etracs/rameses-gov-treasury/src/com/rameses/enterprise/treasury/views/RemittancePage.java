@@ -52,13 +52,13 @@ public class RemittancePage extends javax.swing.JPanel {
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Control No");
-        xLabel1.setExpression("#{entity.txnno}");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel1.setText("#{entity.controlno}");
         formPanel3.add(xLabel1);
 
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel5.setCaption("Remittance Date");
-        xLabel5.setExpression("#{entity.remittancedate}");
+        xLabel5.setCaption("Control Date");
+        xLabel5.setExpression("#{entity.controldate}");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel3.add(xLabel5);
 

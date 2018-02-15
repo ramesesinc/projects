@@ -1,9 +1,9 @@
-<workunit schemaName="cashreceipt_check" allowCreate="false" allowEdit="false" cols="refno,refdate,amount">
+<workunit schemaName="paymentcheck" allowCreate="false" allowEdit="false" cols="refno,refdate,amount">
     <invokers>
        
-        <invoker type="cashreceipt_check:open" caption="Check Payment" 
+        <invoker type="paymentcheck:open" caption="Check Payment" 
                  action="open" index="10" target="popup"/>
-        <invoker type="cashreceipt_check:create" caption="New Check Payments" 
+        <invoker type="paymentcheck:create" caption="New Check Payments" 
                  action="create" index="10" target="popup"/>
         
     </invokers>

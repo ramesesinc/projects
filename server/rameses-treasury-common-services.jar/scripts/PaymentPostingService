@@ -132,7 +132,6 @@ class PaymentPostingService {
 		return pmt;
 	}
 
-
 	/*
 	def wf = voidHandler.getVoidPaymentWorkflow( pmt );
 		if(wf) { 

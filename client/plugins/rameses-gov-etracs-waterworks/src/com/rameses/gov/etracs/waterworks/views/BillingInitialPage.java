@@ -36,21 +36,21 @@ public class BillingInitialPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
 
         xIntegerField1.setCaption("Year");
-        xIntegerField1.setName("query.year"); // NOI18N
+        xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
 
         monthList1.setCaption("Month");
-        monthList1.setName("query.month"); // NOI18N
+        monthList1.setName("entity.month"); // NOI18N
         monthList1.setPreferredSize(new java.awt.Dimension(0, 20));
         monthList1.setRequired(true);
         xFormPanel1.add(monthList1);
 
         xLookupField1.setCaption("Sector");
-        xLookupField1.setExpression("#{ query.sector.code }");
+        xLookupField1.setExpression("#{ entity.sector.code }");
         xLookupField1.setHandler("waterworks_sector:lookup");
-        xLookupField1.setName("query.sector"); // NOI18N
+        xLookupField1.setName("entity.sector"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 

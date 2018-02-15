@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="cashreceipt_check" allowCreate="false"
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="paymentcheck" allowCreate="true"
     cols="refno,receivedfrom,refdate,bank.name,amount,balance">
     <invokers>
         <invoker folderid="menucategory/treasury/monitor" caption="Check Payments" action="init" 

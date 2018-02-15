@@ -1,6 +1,6 @@
 [bindCashReceipChecks]
 update 
-	liquidation_fund lf, deposit dep, cashreceiptpayment_noncash nc, cashreceipt_check cc 
+	liquidation_fund lf, deposit dep, cashreceiptpayment_noncash nc, paymentcheck cc 
 set 
 	cc.depositid = lf.depositid 
 where 
@@ -37,7 +37,7 @@ group by cm.bankaccount_objid
 
 [unbindCashReceiptChecksByLiquidationFund]
 update 
-	liquidation_fund lf, cashreceiptpayment_noncash nc, cashreceipt_check cc  
+	liquidation_fund lf, cashreceiptpayment_noncash nc, paymentcheck cc  
 set 
 	cc.depositid = null 
 where 

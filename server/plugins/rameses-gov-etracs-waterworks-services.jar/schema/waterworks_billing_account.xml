@@ -6,8 +6,9 @@
 		<complex name="account" ref="waterworks_account" jointype="many-to-one" includefields="acctname"> 
 			<key field="acctid" target="objid" />
 		</complex>
-		<field name="readingdate" required="true" type="timestamp"/>
+		<field name="prevreadingdate" required="true" type="timestamp"/>
 		<field name="prevreading" required="true" type="integer"/>
+		<field name="readingdate" required="true" type="timestamp"/>
 		<field name="reading" required="true" type="integer"/>
 		<field name="reader_objid" required="true" />
 		<field name="reader_name" required="true"/>
@@ -15,5 +16,8 @@
 		<field name="surcharge" required="true" type="decimal"/>
 		<field name="interest" required="true" type="decimal"/>
 		<field name="credit" required="true" type="decimal"/>
+
+		<field name="prevyear" required="true" type="integer"/>
+		<field name="prevmonth" required="true" type="integer"/>
 	</element>
 </schema>

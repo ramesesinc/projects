@@ -1,7 +1,9 @@
 <workunit schemaName="remittance" allowCreate="false" allowEdit="false" allowDelete="false">
      
     <invokers>
+        <!--
         <invoker type="remittance:create" caption="Remittance" action="create" target="window" />
+        -->
         <invoker type="remittance:open" caption="Remittance" action="open" target="popup" />
         
         <invoker type="quick_launcher" code="REM" caption="Remittance" action="create" target="window" role="COLLECTOR"/>
@@ -32,10 +34,6 @@
         <invoker type="formActions" caption="Reports" name="popupReports" visibleWhen="#{canPrintReport == true}" category="remittance:reports" />
         <invoker type="formActions" caption="View Breakdown" action="viewBreakdown" />
         
-        
-        <invoker folderid="menucategory/treasury/collection" caption="Remit" formTitle="New Remittance" action="create" 
-                 role="COLLECTOR" target="window" />
-
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />

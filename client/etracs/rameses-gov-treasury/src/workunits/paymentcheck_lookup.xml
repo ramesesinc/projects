@@ -1,13 +1,13 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="cashreceipt_check" allowDelete="false">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="paymentcheck" allowDelete="false">
     <invokers>
        
-        <invoker type="cashreceipt_check_split:lookup" caption="Lookup Cash Receipt" 
+        <invoker type="paymentcheck_split:lookup" caption="Lookup Cash Receipt" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,balance"
                  hiddenCols="bank.objid"
                     customFilter=" amount - amtused > 0 "/>
         
-        <invoker type="cashreceipt_check_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
+        <invoker type="paymentcheck_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,amount"
                  hiddenCols="bank.objid" multiSelect="true"

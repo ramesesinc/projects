@@ -2,7 +2,7 @@ import com.rameses.annotations.*;
 
 class CashReceiptCheckListInterceptor {
 
-	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'cashreceipt_check' }")
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'paymentcheck' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
@@ -10,7 +10,7 @@ class CashReceiptCheckListInterceptor {
 		result << [ id:'deposited', title: 'Deposited Checks' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashreceipt_check' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'paymentcheck' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 

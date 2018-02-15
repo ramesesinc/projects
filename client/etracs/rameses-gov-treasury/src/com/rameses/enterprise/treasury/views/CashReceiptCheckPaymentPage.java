@@ -142,7 +142,7 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xLookupField3.setCaption("Search Check");
         xLookupField3.setExpression("#{check.refno}");
         xLookupField3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xLookupField3.setHandler("cashreceipt_check_split:lookup");
+        xLookupField3.setHandler("paymentcheck_split:lookup");
         xLookupField3.setName("check"); // NOI18N
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLookupField3);

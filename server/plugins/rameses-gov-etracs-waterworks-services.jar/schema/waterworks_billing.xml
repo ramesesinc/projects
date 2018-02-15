@@ -1,17 +1,20 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_billing">
 		<field name="objid" primary="true" prefix="WBILL" />
-		<field name="dtfiled"  type="date" required="true"/>
+		<field name="dtcreated"  type="date" required="true" caption="Date Created"/>
 		<field name="state" required="true" />
-		<field name="preparedby_objid" required="true"/>
-		<field name="preparedby_name" required="true"/>
+		<field name="createdby_objid" required="true"/>
+		<field name="createdby_name" required="true" caption="Prepared By"/>
 		<field name="year" required="true" />
 		<field name="month" required="true" />
-		<field name="sectorid" required="true" />
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" includefields="code">
+			<key field="sectorid" target="objid" />
+		</complex>
 		<field name="billingcycleid" required="true" />
-		<field name="dtposted" required="true" />
-		<field name="postedby_objid" required="true" />
-		<field name="postedby_name" required="true" />
+		<field name="dtposted"  />
+		<field name="postedby_objid"  />
+		<field name="postedby_name"  />
+		<field name="monthname" expr="MONTH_ARRAY( month )" caption="Month"/>
 	</element>
 </schema>
 

@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="liquidation">
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" 
+                 caption="Liquidations" 
+                 windowTitle="Liquidations"
+                 formTitle="Liquidations"
+                 cols="controlno,controldate,liquidatingofficer.name,amount,state"
+                 action="init" target="window" index="10"/>
+    </invokers>
+</workunit>

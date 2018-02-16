@@ -14,6 +14,9 @@ class RemittanceService  {
 	@Service("CashBreakdownSummaryService")
 	def cashBreakdownSvc;
 
+	@Service("SequenceService")
+	def seqSvc;
+
 	@DataContext("cashreceipt")
 	def cashReceiptEm;
 
@@ -94,6 +97,25 @@ class RemittanceService  {
 
 		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd ] );
 	}	
+
+	@ProxyMethod
+	public def post( def o ) {
+		//check total breakdown before submitting
+		def z = remEm.find( [objid: o.objid ] ).select("totalcash,cashbreakdown").first();
+		if( z.totalcash > 0 && !z.cashbreakdown )
+			throw new Exception("Please ensure cash breakdown in each remittance fund is correct ");
+
+		if( z.cashbreakdown ) {
+			if( z.totalcash != z.cashbreakdown.sum{it.amount}  )
+				throw new Exception("Cash breakdown does not match total cash");	
+		}
+
+		o.controlno = 'REM-'+env.USER;
+		o.state = 'POSTED';
+		remEm.find( [objid: o.objid ] ).update( o );
+
+		//update also each remittance fund to fund
+	}
 
 
 }

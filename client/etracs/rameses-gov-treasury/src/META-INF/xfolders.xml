@@ -47,7 +47,6 @@
             <folder id="cashreceipt" caption="Cash Receipt" index="1" icon="home/icons/cashreceipt.png"/>
             <folder id="collection" caption="Collection" index="1" icon="home/icons/collection.png"/>
             <folder id="remittance" caption="Remittance" index="2" icon="home/icons/remittance.png"/>
-            <folder id="liquidation" caption="Liquidation" index="3" icon="home/icons/liquidation.png"/>
             <folder id="deposit" caption="Remittance / Deposit" index="3" icon="home/icons/deposit.png"/>
             <folder id="mgmt" caption="Management" index="4" icon="home/icons/postledger.png"/>
         </folder>

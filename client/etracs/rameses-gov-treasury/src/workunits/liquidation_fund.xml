@@ -1,0 +1,17 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="liquidation_fund">
+    <invokers>
+        <invoker type="liquidation_fund:open" 
+                 caption="Liquidation Fund" 
+                windowTitle="Liquidation Fund"
+                 formTitle="Liquidation Fund"
+                 action="open" target="popup" 
+                 index="10"/>
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.RemittanceFundModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.RemittanceLiquidationFundPage" />
+   </pages>
+   
+</workunit>

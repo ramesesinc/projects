@@ -1,0 +1,10 @@
+"entity.cashbreakdown" [ entity.totalcash == 0  ] {
+    enabled: false;
+}
+"entity.cashbreakdown" [ entity.totalcash != 0  ] {
+    enabled: true;
+}
+
+"entity.cashbreakdown" [ editable == false  ] {
+    enabled: false;
+}

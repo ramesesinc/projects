@@ -1,48 +1,55 @@
 package com.rameses.enterprise.treasury.models;
 
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
-        
-public class RemittanceFundModel extends CashBreakdownModel  {
-    
+import com.rameses.rcp.framework.ValidatorException;
+
+class RemittanceFundModel extends CrudFormModel {
+
     @Service("RemittanceService")
     def service;
     
-    String schemaName = "remittance_fund";
+   boolean showCashBreakdown = true;
+   boolean showCreditMemos = true;
     
-    public def getChecks() {
-        return entity.payments.findAll{ it.reftype == 'CHECK' };
+   def checkList = [];
+   def creditMemoList = [];
+    
+   void afterOpen() {
+        //build summaryList
+        def m = [_schemaname: 'cashreceiptpayment_noncash' ];
+        m.findBy = [ remittancefundid: entity.objid ];
+        def list = queryService.getList( m );
+
+        checkList = list.findAll{ it.reftype == 'CHECK' };
+        creditMemoList = list.findAll{ it.reftype != 'CHECK' };
+        if( entity.totalcheck + entity.totalcash == 0 ) showCashBreakdown = false;
+        if( entity.totalcr == 0 ) showCreditMemos = false;
     }
     
-    public def getCreditMemos() {
-        return entity.payments.findAll{ it.reftype != 'CHECK' };
+    def checkModel = [
+        fetchList: {o ->
+            return checkList;
+        }
+    ] as BasicListModel; 
+    
+    def creditMemoModel = [
+        fetchList: {o -> 
+            return creditMemoList;
+        }
+    ] as BasicListModel;
+    
+    def doCancel() {
+        return "_close";
     }
     
-    public void afterOpen() {
-        super.afterOpen();
-        editable = entity.remittance?.state == 'DRAFT';
+    def doOk() {
+        def m = [objid:entity.objid, remittanceid:entity.remittanceid, cashbreakdown:entity.cashbreakdown ];
+        service.updateRemittanceFundBreakdown( m )
+        return "_close";
     }
     
-    public void afterUpdate() {
-        service.updateCashBreakdown([objid:entity.objid, cashbreakdown: entity.cashbreakdown ] );
-        caller?.caller?.reload();
-    }
-    
-    boolean isViewReportAllowed() { 
-        def state = entity.remittance?.state; 
-        if ( state.toString().toUpperCase() == 'DRAFT' ) {
-            return false; 
-        } 
-        return super.isViewReportAllowed(); 
-    } 
-    
-    def getPrintFormData() { 
-        return service.openForReport([ 
-            objid  : entity.remittanceid, 
-            fundid : entity.fund.objid 
-        ]); 
-    } 
-} 
+}    

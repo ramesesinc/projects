@@ -3,10 +3,10 @@
 	<element tablename="bankdeposit">
 		<field name="objid" primary="true" prefix="BNKDEP"/>
 		<field name="depositid" required="true"/> 
-		<field name="depositedby_objid" required="true"/> 
-		<field name="depositedby_name" required="true"/> 
+		<field name="createdby_objid" required="true"/> 
+		<field name="createdby_name" required="true"/> 
 		 
-		<field name="depositdate" required="true" type="date"/>
+		<field name="dtcreated" required="true" type="date"/>
 
 		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.name" required="false">
 			<key field="bankaccountid" target="objid"/>

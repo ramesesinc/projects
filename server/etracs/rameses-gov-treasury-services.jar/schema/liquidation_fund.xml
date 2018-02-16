@@ -1,23 +1,20 @@
 <schema>
 
 	<element  tablename="liquidation_fund">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="LIQFND"/>
 		<field name="controlno" />
 		<field name="liquidationid" required="true"/>
 		<field name="fund_objid" required="true"/>
 		<field name="fund_title" required="true"/>
-		<field name="cashier_objid" />
-		<field name="cashier_name" />
 		<field name="amount" type="decimal"/>
 
 		<field name="totalcash" type="decimal"/>
 		<field name="totalcheck" type="decimal"/>
 		<field name="totalcr" type="decimal"/>
-		<field name="depositid" />
 		
 		<complex name="cashbreakdown" serializer="default" type="list" />
 
-		<complex name="liquidation" ref="liquidation" jointype="many-to-one" includefields="objid,txnno,dtposted,state">
+		<complex name="liquidation" ref="liquidation" jointype="many-to-one" includefields="objid,controlno,controldate,state">
 			<key field="liquidationid" target="objid" />
 		</complex>	
 
@@ -25,9 +22,6 @@
 			<key field="fund_objid" target="objid" />
 		</complex>  
 
-		<complex name="payments" ref="cashreceiptpayment_noncash" jointype="one-to-many">
-			<key field="objid" target="liquidationfundid"/> 
-		</complex> 
 
 	</element>
 

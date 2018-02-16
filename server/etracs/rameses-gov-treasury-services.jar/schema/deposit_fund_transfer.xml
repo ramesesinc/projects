@@ -1,0 +1,27 @@
+<schema>
+	<element  tablename="deposit_fund_transfer" >
+		<field name="objid" primary="true" prefix="DEP_FUND_TRANSFER" />
+		<field name="fromadviceid" required="true" />
+		<field name="toadviceid" required="true" />
+
+		<!-- The depositid is for fromadviceid -->
+		<field name="depositid" required="true" />
+		<field name="frombankacctid" required="true" />
+		<field name="tobankacctid" required="true" />
+
+		<complex name="frombankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.name" required="false">
+			<key field="frombankacctid" target="objid"/>
+		</complex>
+
+		<complex name="tobankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.name" required="false">
+			<key field="tobankacctid" target="objid"/>
+		</complex>
+
+		<field name="amount" required="true" />
+		<field name="validation_refno" required="true" />
+		<field name="validation_refdfate" required="true" />
+		<field name="postedby_objid" required="true" />
+		<field name="postedby_name" required="true" />
+		<field name="dtposted" required="true" />
+	</element>
+</schema>

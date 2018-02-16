@@ -1,0 +1,30 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+/*****************************************************
+* This accepts a list and returns a sum of qty
+*
+******************************************************/
+class CashBreakdownSummaryService  {
+
+	@ProxyMethod
+	public def summarize( def list ) {
+		def newList = [];
+
+		def bdList = [];
+		list.each {
+			bdList.addAll( it );
+		}
+		
+		def gp = bdList.groupBy{ [caption: it.caption, denomination: it.denomination ] };
+		gp.each { k,v->
+			k.qty = v.sum{ it.qty };
+			k.amount = v.sum{ it.amount };
+			newList << k;
+		}
+		return newList;
+	}
+
+	
+}

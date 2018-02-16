@@ -4,6 +4,11 @@
 		<field name="objid" primary="true"/>
 		<field name="remittanceid" required="true"/>
 		<field name="controlid" required="true"/>
+
+		<complex name="afcontrol" ref="af_control" jointype="many-to-one" includefields="afid">
+			<key field="controlid" target="objid"/>
+		</complex>
+			
 		<field name="receivedstartseries" />
 		<field name="receivedendseries" />
 		<field name="beginstartseries" />

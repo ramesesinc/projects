@@ -17,6 +17,7 @@
 		<!-- amount issued. If this becomes equal to amount then this check is already closed. This starts at 0 --> 
 		<field name="amtused" required="true" type="decimal" defaultValue="0"/>	
 
+		<field name="adviceid" />
 		<field name="bankdepositid" />
 		<complex name="items" ref="cashreceiptpayment_noncash" jointype="one-to-many" orderBy="refdate,refno" required="false">
 			<key field="objid" target="refid" />

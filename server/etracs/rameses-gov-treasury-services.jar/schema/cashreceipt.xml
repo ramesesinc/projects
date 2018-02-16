@@ -43,7 +43,7 @@
 		<field name="subcollector_name" indexed="true"/>
 		<field name="subcollector_title" />
 
-		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid">
+		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid,reason">
 			<key field="objid" target="receiptid" />
 		</complex> 
 

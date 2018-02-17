@@ -1,11 +1,11 @@
 <schema>
 	<element  tablename="deposit_fund_transfer" >
 		<field name="objid" primary="true" prefix="DEP_FUND_TRANSFER" />
-		<field name="fromadviceid" required="true" />
-		<field name="toadviceid" required="true" />
+		<field name="fromfundid" required="true" />
+		<field name="tofundid" required="true" />
 
 		<!-- The depositid is for fromadviceid -->
-		<field name="depositid" required="true" />
+		<field name="depositfundid" required="true" />
 		<field name="frombankacctid" required="true" />
 		<field name="tobankacctid" required="true" />
 

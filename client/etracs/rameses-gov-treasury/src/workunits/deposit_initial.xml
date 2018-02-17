@@ -1,0 +1,17 @@
+<workunit schemaName="deposit">
+    <invokers>
+        <invoker folderid="menucategory/treasury/deposit" 
+                 caption="Deposit" 
+                 windowTitle="Deposit"
+                 formTitle="Deposit"
+                 action="init" />
+        
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositInitialModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.DepositInitialPage" />
+   </pages>
+   
+</workunit>

@@ -1,0 +1,20 @@
+<schema>
+	<element  tablename="deposit_fund" >
+		<!-- objid should  liquidationfund objid -->
+		<field name="objid" primary="true" />
+		<field name="state" required="true"/>
+
+		<!-- this value will be blank in the start -->
+		<field name="depositid" required="true"/>
+		<field name="refno" required="true"/>
+		<field name="refdate" required="true"/>
+		<field name="reftype" required="true"/>
+		<field name="fundid" required="true"/>
+
+		<complex name="fund" ref="fund" jointype="many-to-one">
+			<key field="fundid" target="objid" />
+		</complex>	
+		<field name="totalcash" required="true"/>
+		<field name="totalcheck" required="true"/>
+	</element>
+</schema>

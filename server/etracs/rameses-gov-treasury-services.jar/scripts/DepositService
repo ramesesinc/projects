@@ -1,0 +1,43 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class DepositService  {
+
+
+	@DataContext("deposit")
+	def depositEm;
+
+	@DataContext("deposit_fund_check")
+	def depositFundCheckEm;
+
+
+	@ProxyMethod
+	public def getSplitChecks(def o) {
+		def z = [liquidationid: o.objid ];
+		def list = depositEm.getSplitChecks(z);
+		def newList = [];
+		list.groupBy{ it.check }.each { k,v->
+			k.funds = v*.fund;
+			newList << k;
+		}
+		return newList;
+	}
+
+	@ProxyMethod
+	public def submitForDeposit(def o ) {
+		def z = [liquidationid: o.objid ];
+		//insert checks for deposit
+		depositEm.insertDepositFund( z );
+		depositEm.insertDepositFundCheck( z );
+
+		//insert selected assigned checks to funds
+		if(o.splitchecks ) {
+			o.splitchecks.each {
+				depositFundCheckEm.create( it );
+			}
+		}
+		depositEm.insertForDepositFundTransfer( z );
+	}
+
+}

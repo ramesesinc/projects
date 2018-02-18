@@ -72,40 +72,6 @@ class LiquidationService  {
 		return m;
 	}
 
-	/*
-	@ProxyMethod
-	public void updateRemittanceFundBreakdown( def m ) {
-		if(!m.objid) throw new Exception("objid is required");
-		if(!m.cashbreakdown) throw new Exception("breakdown is required");
-		if(!m.remittanceid ) throw new Exception("remittanceid is required");
-
-		def bd = m.cashbreakdown.findAll{ it.qty > 0 };
-		rfEm.find( [objid: m.objid] ).update( [cashbreakdown: bd ] );
-
-		def list = rfEm.select("cashbreakdown").find( [remittanceid: m.remittanceid ] ).list()*.cashbreakdown;
-		bd = cashBreakdownSvc.summarize( list );
-
-		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd ] );
-	}	
-
-	@ProxyMethod
-	public def post( def o ) {
-		//check total breakdown before submitting
-		def z = remEm.find( [objid: o.objid ] ).select("totalcash,cashbreakdown").first();
-		if( z.totalcash > 0 && !z.cashbreakdown )
-			throw new Exception("Please ensure cash breakdown in each remittance fund is correct ");
-
-		if( z.cashbreakdown ) {
-			if( z.totalcash != z.cashbreakdown.sum{it.amount}  )
-				throw new Exception("Cash breakdown does not match total cash");	
-		}
-
-		o.controlno = 'REM-'+env.USER;
-		o.state = 'POSTED';
-		remEm.find( [objid: o.objid ] ).update( o );
-
-		//update also each remittance fund to fund
-	}
-	*/
+	
 
 }

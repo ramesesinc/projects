@@ -24,6 +24,11 @@
 		</complex>	
 
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
+
+		<complex name="depositfund" ref="deposit_fund_check" jointype="many-to-one" includefields="objid">
+			<key field="objid" target="objid" />
+		</complex>	
+
 	</element>
 
 </schema>

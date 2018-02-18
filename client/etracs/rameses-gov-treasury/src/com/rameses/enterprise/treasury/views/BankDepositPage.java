@@ -140,7 +140,8 @@ public class BankDepositPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("checkModel");
+        xDataTable1.setHandler("checkListModel");
+        xDataTable1.setId("checkListModel");
         xDataTable1.setName("selectedCheck"); // NOI18N
 
         xFormPanel2.setCaptionWidth(150);

@@ -38,6 +38,7 @@ public class DepositInitialPage extends javax.swing.JPanel {
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Select Fund");
+        xComboBox1.setDynamic(true);
         xComboBox1.setExpression("#{ item.title }");
         xComboBox1.setItems("fundList");
         xComboBox1.setName("fund"); // NOI18N
@@ -45,9 +46,9 @@ public class DepositInitialPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox1);
 
         xButton1.setDepends(new String[] {"fund"});
-        xButton1.setName("submitForLiquidation"); // NOI18N
+        xButton1.setName("submitForDeposit"); // NOI18N
         xButton1.setText("Deposit");
-        xButton1.setVisibleWhen("#{ controldate != null }");
+        xButton1.setVisibleWhen("#{fundList.size() > 0  }");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -164,7 +165,6 @@ public class DepositInitialPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setHandler("depositFundListHandler");
-        xDataTable1.setId("depositFundListHandler");
         xDataTable1.setImmediate(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

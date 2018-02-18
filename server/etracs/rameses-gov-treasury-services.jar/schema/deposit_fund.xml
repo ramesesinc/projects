@@ -11,10 +11,13 @@
 		<field name="reftype" required="true"/>
 		<field name="fundid" required="true"/>
 
+		<!-- we need this for querying in deposit initial -->
 		<complex name="fund" ref="fund" jointype="many-to-one">
 			<key field="fundid" target="objid" />
-		</complex>	
+		</complex>
+
 		<field name="totalcash" required="true"/>
 		<field name="totalcheck" required="true"/>
+		<field name="amount" expr="totalcash+totalcheck"/>
 	</element>
 </schema>

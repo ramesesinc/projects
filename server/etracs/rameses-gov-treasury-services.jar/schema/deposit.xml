@@ -1,5 +1,26 @@
 <schema>
 	<element  tablename="deposit" >
-		<field name="objid" primary="true" />
+		<field name="objid" primary="true" prefix="DEP"/>
+		<field name="state" required="true" />
+		<field name="controlno" required="true" />
+		<field name="controldate" required="true" type="date"/>
+		<field name="fundid" required="true" />
+		<field name="totalcash" required="true" type="decimal" />
+		<field name="totalcashdeposited" required="true" type="decimal"  />
+		<field name="totalcheck" required="true" type="decimal"  />
+		<field name="totalcheckdeposited" required="true" type="decimal" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="postedby_objid" />
+		<field name="postedby_name" />
+		<field name="dtposted" />
+
+		<complex name="fund" ref="fund" jointype="many-to-one">
+			<key field="fundid" target="objid" />
+		</complex>
+
+		<field name="amount" expr="totalcash+totalcheck" type="decimal" />
+
 	</element>
 </schema>

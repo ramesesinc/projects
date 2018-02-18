@@ -13,7 +13,16 @@
                  hiddenCols="bank.objid" multiSelect="true"
                     customFilter=" bankdepositid IS NULL "/>
         
-        
+         <invoker type="paymentcheck:depositfund:lookup" caption="Lookup Undeposited Cash Receipt" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                    customFilter=" bankdepositid IS NULL "/>
     </invokers>
     
+    <code>
+        class PaymentCheckLookup extends com.rameses.seti2.models.CrudLookupModel {
+        
+        }
+    </code>    
 </workunit>

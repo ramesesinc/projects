@@ -4,13 +4,21 @@ import java.rmi.server.*;
 
 class DepositService  {
 
+	@Service("DateService")
+	def dateSvc;
+
 
 	@DataContext("deposit")
 	def depositEm;
 
+	@DataContext("deposit_fund")
+	def depositFundEm;
+
 	@DataContext("deposit_fund_check")
 	def depositFundCheckEm;
 
+	@Env
+	def env;
 
 	@ProxyMethod
 	public def getSplitChecks(def o) {
@@ -39,5 +47,33 @@ class DepositService  {
 		}
 		depositEm.insertForDepositFundTransfer( z );
 	}
+
+	@ProxyMethod
+	public def create( def o ) {
+		if(!o.items)
+			throw new Exception("Please select at least one item");
+
+		def m = [:];
+		m.state = "OPEN"
+		m.controlno = 'TMP-DEP-'+env.USERID;
+		m.controldate = dateSvc.getBasicServerDate(); 
+		m.fundid = o.fundid;
+		m.totalcash = 0;
+		m.totalcashdeposited = 0; 
+		m.totalcheck = 0;
+		m.totalcheckdeposited = 0; 
+		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.dtcreated = dateSvc.getServerDate();		
+		m = depositEm.create( m );
+		
+		depositFundEm.where( ''' objid IN ${items} ''').vars( "items", "('" + o.items.join("','") + "')" ).update( [depositid: m.objid ]);
+		//update totals
+
+		def z = depositFundEm.find( [depositid: m.objid] ).select( "totalcash:{SUM(totalcash)},totalcheck:{SUM(totalcheck)}" ).groupBy("depositid").first();
+		depositEm.find( [objid: m.objid ]).update(z);
+	}
+
+
+
 
 }

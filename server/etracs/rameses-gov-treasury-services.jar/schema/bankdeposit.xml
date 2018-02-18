@@ -6,7 +6,8 @@
 		<field name="createdby_objid" required="true"/> 
 		<field name="createdby_name" required="true"/> 
 		 
-		<field name="dtcreated" required="true" type="date"/>
+		<field name="depositdate" required="true" type="date"/>
+		<field name="dtcreated" required="true" type="timestamp"/>
 
 		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.name" required="false">
 			<key field="bankaccountid" target="objid"/>
@@ -15,8 +16,8 @@
 		<field name="totalcash" required="true"  type="decimal"/> 
 		<field name="totalcheck" required="true"  type="decimal"/> 
 		<complex name="cashbreakdown" serializer="default" type="list"/> 
-		<field name="validationno" /> 
-		<field name="validationdate" /> 
+		<field name="validation_refno" /> 
+		<field name="validation_refdate" /> 
 
 		<complex name="checks" ref="paymentcheck" jointype="one-to-many">
 			<key field="objid" target="bankdepositid" />

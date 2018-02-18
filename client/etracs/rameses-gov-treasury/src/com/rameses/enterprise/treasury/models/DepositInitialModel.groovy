@@ -14,6 +14,7 @@ class DepositInitialModel extends CrudListModel {
     
     def fund;
     def fundList;
+    def selectedList = new HashSet();
     
     def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
     
@@ -29,7 +30,10 @@ class DepositInitialModel extends CrudListModel {
         m.select = "fund.objid,fund.title";
         m.where = ["depositid IS NULL"];
         m.groupBy = "fund.objid,fund.title";
-        fundList  = queryService.getList(m)*.fund;
+        def lst  = queryService.getList(m);
+        if(lst) {
+            fundList = lst*.fund;
+        }
     }
     
     void afterInit() {
@@ -50,11 +54,27 @@ class DepositInitialModel extends CrudListModel {
             def op = Inv.lookupOpener("deposit_fund:open", [entity: o] );
             op.target = "popup";
             return op;
+        },
+        onColumnUpdate: { o, colName ->
+            if( o.selected == true ) {
+                selectedList << o.objid;
+            }
+            else {
+                selectedList.remove(o.objid);
+            }
         }
-    ] as BasicListModel;
+    ] as EditorListModel;
     
     def submitForDeposit() {
-       MsgBox.alert('submit fo deposit');
+        def p = MsgBox.confirm("You are about to create a deposit for the selected items. Proceed?");
+        if(!p) return null;
+        def m = [:]
+        m.fundid = fund.objid;
+        m.items = selectedList;
+        depositSvc.create( m );
+        MsgBox.alert('create success');
+        buildFundList();
+        depositFundListHandler.reload();
     }
 
     

@@ -1,11 +1,12 @@
 [insertDepositFund]
 INSERT INTO deposit_fund 
-( objid,depositid,state,controlno,controldate,fundid,totalcash,totalcheck, totalcashdeposited, totalcheckdeposited )
+( objid,depositid,state,controlno,controldate,fundid, amount, totalcash,totalcheck,totalchecktodeposit )
 SELECT 
 CONCAT('DEPFUND', UUID()), a.depositid,  'OPEN', CONCAT(a.controlno, a.fundcode), a.controldate, a.fundid,  
-totalcash, 0, 0, 0 
+amount, 0 AS totalcash, 0 AS totalcheck, 0 AS totalchecktodeposit
 FROM (
-	SELECT l.depositid, d.controlno, f.code AS fundcode, d.controldate, lf.fund_objid AS fundid, SUM(lf.totalcash) AS totalcash 
+	SELECT l.depositid, d.controlno, f.code AS fundcode, d.controldate, lf.fund_objid AS fundid, 
+	SUM( lf.totalcash + lf.totalcheck) AS amount 
 	FROM liquidation_fund lf
 	INNER JOIN liquidation l ON lf.liquidationid = l.objid 
 	INNER JOIN deposit d ON l.depositid = d.objid
@@ -53,12 +54,20 @@ SET depositfundid = (
 )
 WHERE depositid = $P{depositid}
 
-
-[updateCheckByFundTotals]
+[updateDepositFundTotalCheckToDeposit]
 UPDATE deposit_fund 
-SET totalcheck = (
-    SELECT SUM(pc.amount) 
-    FROM paymentcheck pc
-    WHERE pc.depositfundid = deposit_fund.objid 
+SET totalchecktodeposit = (
+	SELECT CASE WHEN a.amount IS NULL THEN 0 ELSE a.amount END  
+	FROM 
+    (
+    	SELECT SUM(pc.amount) AS amount, pc.depositfundid 
+    	FROM paymentcheck pc
+    	WHERE pc.depositid = $P{depositid}
+    	GROUP BY pc.depositfundid 
+    ) a
+    WHERE a.depositfundid = deposit_fund.objid
 )
 WHERE depositid = $P{depositid}
+
+
+

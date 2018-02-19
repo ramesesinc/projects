@@ -9,13 +9,18 @@ import com.rameses.seti2.models.*;
 
 class BankDepositModel extends CrudFormModel {
 
-   def depositid; 
+    @Service("BankDepositService")
+    def bankDepositSvc;
+    
+   def depositfundid; 
    def fundid;
    def amount;
    boolean editable = true;
+   def selectedItems = []; 
+   def selectedCheck;
     
    void afterCreate() {
-       entity.depositid = depositid;
+       entity.depositfundid = depositfundid;
        entity.fundid = fundid;
        entity.amount = amount;
        entity.totalcash = 0;
@@ -31,7 +36,7 @@ class BankDepositModel extends CrudFormModel {
        return Inv.lookupOpener("bankaccount:lookup", [fundid: fundid, onselect: h] );
    } 
     
-   def checkList = [
+   def checkListModel = [
         fetchList: { o->
             def m = [_schemaname:'paymentcheck'];
             m.findBy = [bankdepositid: entity.objid];
@@ -46,13 +51,41 @@ class BankDepositModel extends CrudFormModel {
     
     def addCheck() {
         def h = { o->
-            MsgBox.alert(o);
+            def p = [bankdepositid: entity.objid];
+            p.items = o.collect{ it.objid };
+            def z = bankDepositSvc.updateCheckBankDeposit( p );
+            entity.totalcheck = z.totalcheck;
+            binding.refresh("entity.totalcheck");
+            checkListModel.reload();
         }
-        Inv.lookupOpener( "paymentcheck:depositfund:lookup", [multiSelect: true, onselect: h] );
+        def p = [multiSelect: true, onselect: h];
+        p.put( "query.depositfundid", entity.depositfundid );
+        return Inv.lookupOpener( "paymentcheck:depositfund:lookup", p );
     }
     
     def removeCheck() {
-        
+        if(!selectedCheck) throw new Exception("Select a check to remove");
+        def p = [bankdepositid: entity.objid];
+        p.items = [ selectedCheck.objid ];
+        def z = bankDepositSvc.removeCheckBankDeposit( p );
+        entity.totalcheck = z.totalcheck;
+        binding.refresh("entity.totalcheck");
+    }
+    
+    def updateCash() {
+        def p = [:];
+        p.handler = { o->
+            def m = [bankdepositid: entity.objid];
+            m.totalcash = o.total;
+            m.cashbreakdown = o.cashbreakdown;
+            m = bankDepositSvc.updateCash( m );
+            entity.totalcash = m.totalcash;
+            entity.cashbreakdown = m.cashbreakdown;
+            binding.refresh();
+        }
+        p.cashbreakdown = entity.cashbreakdown;
+        p.total = entity.totalcash;
+        return Inv.lookupOpener( "cashbreakdown", p );
     }
     
     def doCancel() {

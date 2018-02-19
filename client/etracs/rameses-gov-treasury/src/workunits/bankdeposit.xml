@@ -14,6 +14,8 @@
                  formTitle="Bank Deposit"
                  action="open" target="popup" 
                  />
+        
+        <invoker type="formActions" caption="Print" action="print"/>
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.BankDepositModel" />

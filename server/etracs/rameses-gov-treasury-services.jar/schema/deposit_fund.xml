@@ -15,8 +15,12 @@
 			<key field="fundid" target="objid" />
 		</complex>
 
-		<field name="totalcash" required="true"/>
-		<field name="totalcheck" required="true"/>
-		<field name="amount" expr="totalcash+totalcheck"/>
+		<!-- total cash and total checks are updated when deposited -->
+		<field name="totalcash" required="true"  type="decimal"/>
+		<field name="totalcheck" required="true"  type="decimal"/>
+		<field name="amount" required="true" type="decimal"/>
+		<field name="totalchecktodeposit" required="true" type="decimal"/>
+
+		<field name="balance" expr="amount - (totalcash+totalcheck)"  type="decimal"/>
 	</element>
 </schema>

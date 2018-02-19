@@ -16,19 +16,19 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel4" min="-2" pref="504" max="-2" attributes="0"/>
-              <EmptySpace pref="416" max="32767" attributes="0"/>
+              <Component id="xFormPanel4" min="-2" pref="372" max="-2" attributes="0"/>
+              <EmptySpace pref="49" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-              <Component id="xFormPanel4" min="-2" pref="72" max="-2" attributes="0"/>
-              <EmptySpace pref="499" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+              <Component id="xFormPanel4" min="-2" pref="86" max="-2" attributes="0"/>
+              <EmptySpace pref="66" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -39,13 +39,11 @@
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
       <SubComponents>
-        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Bank Account"/>
+            <Property name="caption" type="java.lang.String" value="Validation Ref No"/>
+            <Property name="name" type="java.lang.String" value="refno" noResource="true"/>
             <Property name="captionWidth" type="int" value="120"/>
-            <Property name="expression" type="java.lang.String" value="#{ entity.bankaccount.code } #{ entity.bankaccount.bank.name } "/>
-            <Property name="handler" type="java.lang.String" value="bankAccountLookup"/>
-            <Property name="name" type="java.lang.String" value="entity.bankaccount" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
@@ -54,19 +52,11 @@
         </Component>
         <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Deposit Date"/>
+            <Property name="caption" type="java.lang.String" value="Validation Ref Date"/>
             <Property name="captionWidth" type="int" value="120"/>
-            <Property name="name" type="java.lang.String" value="entity.depositdate" noResource="true"/>
-            <Property name="required" type="boolean" value="true"/>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Amount  to deposit"/>
-            <Property name="captionWidth" type="int" value="120"/>
-            <Property name="name" type="java.lang.String" value="entity.amount" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="refdate" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[150, 20]"/>
+              <Dimension value="[0, 20]"/>
             </Property>
             <Property name="required" type="boolean" value="true"/>
           </Properties>

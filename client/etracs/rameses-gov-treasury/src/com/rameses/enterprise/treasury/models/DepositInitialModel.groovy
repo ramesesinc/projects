@@ -14,6 +14,7 @@ class DepositInitialModel extends CrudListModel {
     
     def selectedList = new HashSet();
     def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    def amount = 0;
     
     def liquidationListModel = [
         fetchList: { o->
@@ -30,9 +31,11 @@ class DepositInitialModel extends CrudListModel {
         onColumnUpdate: { o, colName ->
             if( o.selected == true ) {
                 selectedList << o.objid;
+                amount += o.totalcash + o.totalcheck;
             }
             else {
                 selectedList.remove(o.objid);
+                amount -= (o.totalcash + o.totalcheck)
             }
         }
     ] as EditorListModel;
@@ -43,6 +46,7 @@ class DepositInitialModel extends CrudListModel {
         def p = MsgBox.confirm("You are about to create a deposit for the selected items. Proceed?");
         if(!p) return null;
         def m = [:]
+        m.amount = amount;
         m.items = selectedList;
         depositSvc.create( m );
         liquidationListModel.reload();

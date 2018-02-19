@@ -4,7 +4,7 @@
                  caption="Deposits" 
                  windowTitle="Deposits"
                  formTitle="Deposits"
-                 cols="controlno,controldate,totalcash,totalcheck,amount,state"
+                 cols="controlno,controldate,amount,totalcash,totalcheck,state"
                  action="init" target="window" index="10"/>
     </invokers>
 </workunit>

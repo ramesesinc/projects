@@ -5,7 +5,7 @@
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,balance"
                  hiddenCols="bank.objid"
-                    customFilter=" amount - amtused > 0 "/>
+                    customFilter=" amount - amtused > 0 AND depositid IS NULL"/>
         
         <invoker type="paymentcheck_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
                  action="init" index="10" target="popup" 
@@ -17,12 +17,6 @@
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,amount"
                  hiddenCols="bank.objid" multiSelect="true"
-                    customFilter=" bankdepositid IS NULL "/>
+                 customFilter=" bankdepositid IS NULL AND depositfundid = :depositfundid"/>
     </invokers>
-    
-    <code>
-        class PaymentCheckLookup extends com.rameses.seti2.models.CrudLookupModel {
-        
-        }
-    </code>    
 </workunit>

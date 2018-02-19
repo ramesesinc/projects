@@ -37,8 +37,6 @@ public class DepositPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -62,7 +60,7 @@ public class DepositPage extends javax.swing.JPanel {
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("State");
         xLabel4.setExpression("#{ entity.state }");
-        xLabel4.setPreferredSize(new java.awt.Dimension(100, 18));
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel1.add(xLabel4);
 
         xFormPanel2.setCaptionWidth(120);
@@ -73,20 +71,6 @@ public class DepositPage extends javax.swing.JPanel {
         xLabel5.setExpression("#{ entity.amount }");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel2.add(xLabel5);
-
-        xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaption("Total Cash");
-        xLabel6.setExpression("#{ entity.totalcash }");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xLabel6);
-
-        xLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel9.setCaption("Total Check");
-        xLabel9.setExpression("#{ entity.totalcheck }");
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xLabel9);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -158,6 +142,21 @@ public class DepositPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "amount"}
+                , new Object[]{"caption", "Amount To Deposit"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "totalcash"}
                 , new Object[]{"caption", "Total Cash"}
                 , new Object[]{"width", 100}
@@ -188,8 +187,8 @@ public class DepositPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "amount"}
-                , new Object[]{"caption", "Amount"}
+                new Object[]{"name", "balance"}
+                , new Object[]{"caption", "Balance"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -257,7 +256,6 @@ public class DepositPage extends javax.swing.JPanel {
         });
         xDataTable3.setDynamic(true);
         xDataTable3.setHandler("fundTransferListModel");
-        xDataTable3.setId("fundTransferListModel");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -446,8 +444,6 @@ public class DepositPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

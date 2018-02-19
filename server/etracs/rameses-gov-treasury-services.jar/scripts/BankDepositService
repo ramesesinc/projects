@@ -1,0 +1,46 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class BankDepositService  {
+
+	@DataContext("bankdeposit")
+	def bankDepositEm;
+
+	@DataContext("paymentcheck")
+	def paymentCheckEm;
+
+	@ProxyMethod
+	public def updateCheckBankDeposit( def o ) {
+		if(!o.bankdepositid) throw new Exception("BankDepositService.updateCheckBankDeposit error. bankdepositid is required");
+		if(!o.items) throw new Exception("BankDepositService.updateCheckBankDeposit error. items is required");
+		o.items.each {
+			paymentCheckEm.find([objid: it]).update( [ bankdepositid: o.bankdepositid ]);
+		}
+		def totalCheck = paymentCheckEm.find( [bankdepositid: o.bankdepositid ] ).select("t:{SUM(amount)}").groupBy("bankdepositid").val();
+		bankDepositEm.find( [objid: o.bankdepositid]).update([totalcheck: totalCheck]);
+		return [totalcheck: totalCheck];
+	}
+
+	@ProxyMethod
+	public def removeCheckBankDeposit( def o ) {
+		if(!o.items) throw new Exception("BankDepositService.updateCheckBankDeposit error. items is required");
+		o.items.each {
+			paymentCheckEm.find([objid: it]).update( [ bankdepositid: "{NULL}" ]);
+		}
+		def totalCheck = paymentCheckEm.find( [bankdepositid: o.bankdepositid ] ).select("t:{SUM(amount)}").groupBy("bankdepositid").val();
+		bankDepositEm.find( [objid: o.bankdepositid]).update([totalcheck: totalCheck]);
+		return [totalcheck: totalCheck];
+	}
+
+	@ProxyMethod
+	public def updateCash( def o ) {
+		if(!o.bankdepositid) throw new Exception("BankDepositService.updateCash error. bankdepositid is required");
+		if(!o.cashbreakdown) throw new Exception("BankDepositService.updateCash error. cashbreakdown is required");
+		if(!o.totalcash) throw new Exception("BankDepositService.updateCash error. totalcash is required");
+
+		bankDepositEm.find( [objid: o.depositid] ).update(  [totalcash:o.totalcash, cashbreakdown:o.cashbreakdown]);
+		return o;
+	}
+
+}

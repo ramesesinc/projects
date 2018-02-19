@@ -4,8 +4,6 @@
 		<field name="state" required="true" />
 		<field name="controlno" required="true" />
 		<field name="controldate" required="true" type="date"/>
-		<field name="totalcash" required="true" type="decimal" />
-		<field name="totalcheck" required="true" type="decimal"  />
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 		<field name="dtcreated" required="true" />
@@ -13,7 +11,8 @@
 		<field name="postedby_name" />
 		<field name="dtposted" />
 
-		<field name="amount" expr="totalcash+totalcheck" type="decimal" />
+		
+		<field name="amount"  type="decimal" />
 
 	</element>
 </schema>

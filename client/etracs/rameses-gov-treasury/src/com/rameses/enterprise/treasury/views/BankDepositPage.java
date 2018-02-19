@@ -4,14 +4,14 @@
  */
 package com.rameses.enterprise.treasury.views;
 
-import com.rameses.osiris2.themes.OKCancelPage;
+import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(OKCancelPage.class)
+@Template(FormPage.class)
 public class BankDepositPage extends javax.swing.JPanel {
 
     /**
@@ -40,6 +40,7 @@ public class BankDepositPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         cashDenomination1 = new com.rameses.enterprise.treasury.components.CashDenomination();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xButton3 = new com.rameses.rcp.control.XButton();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
@@ -141,7 +142,6 @@ public class BankDepositPage extends javax.swing.JPanel {
         });
         xDataTable1.setDynamic(true);
         xDataTable1.setHandler("checkListModel");
-        xDataTable1.setId("checkListModel");
         xDataTable1.setName("selectedCheck"); // NOI18N
 
         xFormPanel2.setCaptionWidth(150);
@@ -155,11 +155,12 @@ public class BankDepositPage extends javax.swing.JPanel {
         xFormPanel2.add(xDecimalField5);
 
         xDecimalField9.setCaption("Total Cash");
+        xDecimalField9.setCaptionWidth(70);
         xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField9.setEnabled(false);
         xDecimalField9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xDecimalField9.setName("entity.totalcash"); // NOI18N
-        xDecimalField9.setPreferredSize(new java.awt.Dimension(150, 23));
+        xDecimalField9.setPreferredSize(new java.awt.Dimension(100, 23));
         xFormPanel3.add(xDecimalField9);
 
         xButton1.setImmediate(true);
@@ -172,6 +173,7 @@ public class BankDepositPage extends javax.swing.JPanel {
         jPanel2.setBorder(xTitledBorder2);
 
         cashDenomination1.setAmountField("entity.totalcash");
+        cashDenomination1.setEnabled(false);
         cashDenomination1.setName("entity.cashbreakdown"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -196,6 +198,11 @@ public class BankDepositPage extends javax.swing.JPanel {
         xButton2.setText("Remove Check");
         xButton2.setVisibleWhen("#{ editable == true }");
 
+        xButton3.setImmediate(true);
+        xButton3.setName("updateCash"); // NOI18N
+        xButton3.setText("Update Cash");
+        xButton3.setVisibleWhen("#{ editable == true }");
+
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
         xPanel2Layout.setHorizontalGroup(
@@ -208,12 +215,15 @@ public class BankDepositPage extends javax.swing.JPanel {
                         .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                         .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(xPanel2Layout.createSequentialGroup()
+                        .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         xPanel2Layout.setVerticalGroup(
@@ -225,11 +235,12 @@ public class BankDepositPage extends javax.swing.JPanel {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(23, 23, 23))
         );
 
@@ -259,7 +270,7 @@ public class BankDepositPage extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 832, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 38, Short.MAX_VALUE))
+                        .addGap(0, 78, Short.MAX_VALUE))
                     .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -278,6 +289,7 @@ public class BankDepositPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;

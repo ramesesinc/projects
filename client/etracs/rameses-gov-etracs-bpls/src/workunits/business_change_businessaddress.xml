@@ -1,9 +1,9 @@
 <workunit>
     <invokers>
-        <invoker type="business:change" caption="Change Business Address" target="popup"
-                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="3" action="initChange"/>
-        <invoker type="business:change" caption="Transfer Business Address" target="popup"
-                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="4" action="initTransfer"/>
+        <invoker type="business:change" caption="Change Business Address" action="initChange" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changeaddress" index="3" target="popup"/>
+        <invoker type="business:change" caption="Transfer Business Address" action="initTransfer" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changeaddress" index="4" target="popup"/>
     </invokers>
     
     <code>

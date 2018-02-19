@@ -9,12 +9,13 @@
             expr="#{!barcodeid.contains('-')}"/>
         
         <invoker type="formActions" caption="Close" action="_close" />
-        <invoker type="formActions" caption="Edit" action="showEditMenu" icon="images/toolbars/edit.png"/> 
+        <invoker type="formActions" caption="Edit" action="showEditMenu" visibleWhen="#{allowShowEditMenu == true}" icon="images/toolbars/edit.png"/> 
         <invoker type="formActions" caption="View Owner" action="showOwner" immediate="true" /> 
         <invoker type="formActions" caption="Send SMS" action="createSMS" immediate="true" /> 
         
         <!-- USE FOR SECURITY CHECK --> 
-        <invoker type="business:admin:securitycheck" role="ADMIN" index="-9999"/>  
+        <invoker type="business:admin:securitycheck" role="ADMIN" index="-9999"/> 
+        <invoker type="business:showeditmenu" role="BUSINESSINFO,ASSESSOR"/>
     </invokers>
     
     <code>
@@ -50,6 +51,7 @@ class  BusinessInfoController {
     def barcodeid;
     def startstep;
     
+    def menuInvokers = Inv.lookup('business:showeditmenu'); 
     
     def openByBIN() {
         MsgBox.alert( 'open business by BIN '+barcodeid ); 
@@ -80,11 +82,15 @@ class  BusinessInfoController {
         MsgBox.alert( currentSection.name );
     }
     
+    boolean isAllowShowEditMenu() { 
+        return ( menuInvokers ? true : false ); 
+    } 
+
     def showEditMenu() {
-        def h = { t->
-            if(t) open();
+        def h = { t-> 
+            if (t) open(); 
             binding.refresh();
-        }
+        } 
         def list = Inv.lookupOpeners( "business:change", [entity:entity, handler:h] );
         def pop = new PopupMenuOpener();
         list.each {

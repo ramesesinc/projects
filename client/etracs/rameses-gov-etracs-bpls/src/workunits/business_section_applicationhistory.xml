@@ -33,6 +33,9 @@ class  BusinessApplicationHistory  {
 
     @Binding
     def binding;
+    
+    @Script("BusinessInfoUtil")
+    def appinfo;
 
     String title = "Application History";
     def entityName = "business_application_history";

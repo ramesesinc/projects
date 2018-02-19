@@ -18,6 +18,9 @@ class MigrationCreateModel {
     @Binding 
     def binding;
     
+    @Script('ReportPeriod')
+    def reportPeriod;
+    
     def base64 = new com.rameses.util.Base64Cipher();
     
     def entity, stepname;
@@ -61,7 +64,7 @@ class MigrationCreateModel {
             MsgBox.err( e );
         }
         
-        /*
+        //*
         def fields = datafile.getColFields(); 
         fields.find{ it.name=='acctno' }.cell = [index:4, caption:"ACCTNO"];
         fields.find{ it.name=='acctname' }.cell = [index:5, caption:"NAME"];
@@ -73,7 +76,7 @@ class MigrationCreateModel {
         fields.find{ it.name=='metersize' }.defaultvalue = "0.5";
         fields.find{ it.name=='sectorcode' }.cell = [index:1, caption:"DISTNO"];
         fields.find{ it.name=='zonecode' }.cell = [index:2, caption:"PHASE"];
-        */
+        //*/
        
         fieldListHandler.reload(); 
     } 
@@ -132,6 +135,9 @@ class MigrationCreateModel {
         
         def options = [:]; 
         options.onbuildItem = { o-> 
+            o.billyear = entity.billyear;
+            o.billmonth = entity.billmonth;
+            
             if ( o.accttype ) { 
                 def a = accttypelist.find{ it.objid==o.accttype }
                 o.classificationid = a?.refid; 
@@ -145,8 +151,18 @@ class MigrationCreateModel {
                 o.sectorid = a?.sector?.objid; 
                 o.zoneid = a?.zone?.objid; 
             } 
+            
+            if ( o.sectorid ) { 
+                def findBy = [sectorid: o.sectorid, year: entity.billyear, month: entity.billmonth]; 
+                def wbc = persistSvc.read([_schemaname: 'waterworks_billing_cycle', findBy: findBy]); 
+                if ( !wbc ) throw new Exception('No available billing cycle for the following: Sector='+ o.sectorid +', Year='+ o.billyear +', Month='+ o.billmonth ); 
+                
+                o.billingcycleid = wbc.objid; 
+            } 
+            
             o.parentid = entity.objid; 
             o.objid = entity.objid.toString() +'-'+ o.indexno; 
+            
             if ( o.haserror ) {
                 erroritemlist << o; 
                 

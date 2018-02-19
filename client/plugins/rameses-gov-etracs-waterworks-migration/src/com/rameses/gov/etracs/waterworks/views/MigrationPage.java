@@ -38,6 +38,9 @@ public class MigrationPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
@@ -71,15 +74,41 @@ public class MigrationPage extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 50));
 
         xTextArea1.setCaption("Remarks");
+        xTextArea1.setCellPadding(new java.awt.Insets(0, 0, 5, 0));
         xTextArea1.setName("entity.remarks"); // NOI18N
         xTextArea1.setPreferredSize(new java.awt.Dimension(75, 50));
         jScrollPane1.setViewportView(xTextArea1);
 
         xFormPanel1.add(jScrollPane1);
 
+        xFormPanel2.setCaption("Billing Period");
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 21));
+
+        xIntegerField3.setCaption("Bill Year");
+        xIntegerField3.setName("entity.billyear"); // NOI18N
+        xIntegerField3.setPreferredSize(new java.awt.Dimension(100, 21));
+        xIntegerField3.setRequired(true);
+        xIntegerField3.setShowCaption(false);
+        xFormPanel2.add(xIntegerField3);
+
+        xComboBox1.setCaption("Bill Month");
+        xComboBox1.setExpression("#{item.title}");
+        xComboBox1.setItemKey("index");
+        xComboBox1.setItems("reportPeriod.months");
+        xComboBox1.setName("entity.billmonth"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 21));
+        xComboBox1.setRequired(true);
+        xComboBox1.setShowCaption(false);
+        xFormPanel2.add(xComboBox1);
+
+        xFormPanel1.add(xFormPanel2);
+
         xTextField3.setCaption("Status");
         xTextField3.setName("entity.state"); // NOI18N
-        xTextField3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xTextField3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xTextField3.setFontStyle("font-weight:bold; ");
         xTextField3.setForeground(new java.awt.Color(102, 102, 102));
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 21));
@@ -244,11 +273,14 @@ public class MigrationPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XHtmlView xHtmlView1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
+    private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;

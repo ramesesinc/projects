@@ -55,7 +55,8 @@ public class DataFile {
             colfields << [ name: 'address_text', caption:'Address', type: 'date' ];
             colfields << [ name: 'prevreading', caption:'Previous Reading', type: 'integer', required:true ];
             colfields << [ name: 'currentreading', caption:'Current Reading', type: 'integer', required:true ];
-            colfields << [ name: 'dtreading', caption:'Reading Date', type: 'date', required:true ];
+            colfields << [ name: 'dtreading', caption:'Reading Date', type: 'date' ];
+            colfields << [ name: 'amount', caption:'Amount', type: 'decimal', required:true, defaultvalue:0.0 ];
             colfields << [ name: 'meterno', caption:'Meter Number', type:'string' ];
             colfields << [ name: 'metersize', caption:'Meter Size', type:'string' ];
             colfields << [ name: 'sectorcode', caption:'Sector', type:'string', required:true ];

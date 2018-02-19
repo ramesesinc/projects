@@ -13,6 +13,9 @@ class MigrationOpenModel extends com.rameses.seti2.models.CrudFormModel {
     @Binding 
     def binding;
     
+    @Script('ReportPeriod')
+    def reportPeriod;
+    
     def file, datafile, html;
     
     void afterOpen() {

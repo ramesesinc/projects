@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="deposit_fund">
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" 
+                 caption="Deposit Fund" 
+                 windowTitle="Deposit Fund"
+                 formTitle="Deposit Fund"
+                 cols="controlno,controldate,fund.title,amount,state"
+                 action="init" target="window" index="10"/>
+    </invokers>
+</workunit>

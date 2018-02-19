@@ -17,18 +17,23 @@
 		<!-- amount issued. If this becomes equal to amount then this check is already closed. This starts at 0 --> 
 		<field name="amtused" required="true" type="decimal" defaultValue="0"/>	
 
-		<field name="adviceid" />
+		<!-- these fields refer to deposit -->
+		<field name="depositid" />
+		<field name="depositfundid" />
 		<field name="bankdepositid" />
+
 		<complex name="items" ref="cashreceiptpayment_noncash" jointype="one-to-many" orderBy="refdate,refno" required="false">
 			<key field="objid" target="refid" />
 		</complex>	
 
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
 
-		<complex name="depositfund" ref="deposit_fund_check" jointype="many-to-one" includefields="objid">
-			<key field="objid" target="objid" />
+		<complex name="depositfund" ref="deposit_fund" includefields="fund.*" jointype="many-to-one" required="false">
+			<key field="depositfundid" target="objid" />
 		</complex>	
 
 	</element>
+
+
 
 </schema>

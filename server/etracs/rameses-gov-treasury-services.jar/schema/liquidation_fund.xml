@@ -22,6 +22,7 @@
 			<key field="fund_objid" target="objid" />
 		</complex>  
 
+		<field name="depositfundid" />
 
 	</element>
 

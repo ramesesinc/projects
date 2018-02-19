@@ -7,29 +7,38 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
 
-class DepositModel extends CrudFormModel {
+class DepositFundModel extends CrudFormModel {
 
     @Service("DepositService")
     def depositSvc;    
-        
-    def depositFundList = [
+
+    def bankDepositList = [
         fetchList: { o->
-            def m = [_schemaname: 'deposit_fund' ];
+            def m = [_schemaname: 'bankdeposit' ];
             m.where = ["depositid = :depositid", [depositid:entity.objid] ];
             def list = queryService.getList( m );
             return list;
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("deposit_fund:open", [entity: o] );
+            def op = Inv.lookupOpener("bankdeposit:open", [entity: o] );
             op.target = "popup";
             return op;
         }
     ] as BasicListModel;
+
+    def addBankDeposit() {
+        def h = {
+            MsgBox.alert('saved deposit');
+        } 
+        def amt = (entity.totalcash + entity.totalcheck) - ( entity.totalcashdeposited +entity.totalcheckdeposited );
+        return Inv.lookupOpener("bankdeposit:create", [depositid: entity.objid, fundid: entity.fundid, amount: amt, handler: h ] )
+    }
+
     
     def checkListModel = [
         fetchList: { o->
             def m = [_schemaname: 'paymentcheck' ];
-            m.where = ["depositid = :depositid", [depositid:entity.objid] ];
+            m.where = ["depositfundid = :depositfundid", [depositfundid:entity.objid] ];
             def list = queryService.getList( m );
             return list;
         },
@@ -40,39 +49,14 @@ class DepositModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-     def fundTransferListModel = [
-        fetchList: { o->
-            def m = [_schemaname: 'deposit_fund_transfer' ];
-            m.where = ["depositid = :depositid", [depositid:entity.objid] ];
-            def list = queryService.getList( m );
-            return list;
-        }
-    ] as BasicListModel;
-    
-    def getChecksWithoutFund() {
-        def m = [_schemaname: "paymentcheck"];
-        m.findBy = [depositid: entity.objid ];
-        m.where = ["depositfundid IS NULL"];
-        return queryService.getList( m );
-    }
-    
     def post() {
-        //check first if there are checks with no funds
-        def list = getChecksWithoutFund();
-        if( list ) {
-            boolean pass = false;
-            def h = { 
-                //pass = true;
-            }
-            Modal.show( "deposit_check_select_fund", [list: list, depositid: entity.objid, handler : h]);
-            if( !pass ) return null;
-        }        
-        
         def p = MsgBox.confirm("You are about to post this deposit. Proceed?");
         if(!p) return null;
         def m = [objid: entity.objid]
         depositSvc.post( m );
         MsgBox.alert('post success');
     }
+    
+    
     
 }    

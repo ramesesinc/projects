@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="eor_remittance">
     <invokers>
         <invoker folderid="menucategory/treasury/epayment" 
-            cols="state,afid,dtfiled,startseries,endseries,currentseries,stubno,qtybalance,qtyissued,active,txnmode,fund.title,assignee.name,owner.name"
+            cols="controlno,controldate,partnerid,amount,state"
             caption="Remittance" 
             action="init"
             formTitle="EOR Remittances" />

@@ -23,7 +23,7 @@
     
     <folder id="menucategory">
         <folder id="treasury" caption="Treasury">
-            <folder id="epayment" caption="E-Payment" index="0" />
+            <folder id="epayment" caption="E-Payment" index="0" icon="home/icons/epayment.png" />
         </folder>
     </folder>
     

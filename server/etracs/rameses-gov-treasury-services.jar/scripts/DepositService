@@ -11,15 +11,79 @@ class DepositService  {
 	@DataContext("deposit")
 	def depositEm;
 
+	@DataContext("liquidation")
+	def liqEm;
+
 	@DataContext("deposit_fund")
 	def depositFundEm;
 
-	@DataContext("deposit_fund_check")
-	def depositFundCheckEm;
+	@DataContext("deposit_fund_transfer")
+	def depositFundTransferEm;
+
+	@DataContext("paymentcheck")
+	def checkEm;
 
 	@Env
 	def env;
 
+	@ProxyMethod
+	public def create( def o ) {
+		if(!o.items)
+			throw new Exception("Please select at least one item");
+
+		/*
+	    UPDATED TABLES :
+	        deposit, liquidation, deposit_fund, liquidation_fund, paymentcheck
+		*/
+		def m = [:];
+		m.state = "OPEN"
+		m.controlno = 'TMP-DEP-'+env.USERID;
+		m.controldate = dateSvc.getBasicServerDate(); 
+		m.fundid = o.fundid;
+		m.totalcash = 0;
+		m.totalcashdeposited = 0; 
+		m.totalcheck = 0;
+		m.totalcheckdeposited = 0; 
+		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.dtcreated = dateSvc.getServerDate();		
+		m = depositEm.create( m );
+
+		liqEm.where( ''' objid IN (${ids}) ''' ).vars( "ids",  "'" + o.items.join("','") + "'" ).update( [depositid: m.objid ] );
+		def z = [ depositid: m.objid ];
+		depositEm.insertDepositFund( z );
+		depositEm.updateLiquidationFundDepositFund( z );
+		depositEm.updatePaymentCheckDepositId( z );
+		depositEm.updatePaymentCheckDepositFundId( z );
+		depositEm.updateCheckByFundTotals( z );
+
+		def u = depositFundEm.find( [depositid: m.objid] ).select( "totalcash:{SUM(totalcash)}").groupBy("depositid").first();
+		def u1 = checkEm.find(  [depositid: m.objid ] ).select( "totalcheck:{SUM(amount)}").groupBy("depositid").first();
+		u.putAll( u1 ); 
+		depositEm.find( [objid: m.objid ]).update( u );	
+
+		return m;
+	}
+
+	@ProxyMethod
+	public def updatePaymentCheckFund(def o ) {
+		println "depositid " + o.depositid;
+		o.checks.each {
+			def dfid = depositFundEm.find( [depositid: o.depositid, fundid: it.fundid ] ).select("objid").val();
+			checkEm.find( [objid: it.objid ] ).update( [depositfundid: dfid ] );
+		};
+
+		o.fundtransfers.each {
+			def z = [depositid: o.depositid ]
+			z.fromfund = it.fromfund;
+			z.tofund = it.tofund;
+			z.amount = it.amount;
+			z.amtused = 0;
+			depositFundTransferEm.create( z );
+		}
+		return [:];	
+	}
+
+	/*
 	@ProxyMethod
 	public def getSplitChecks(def o) {
 		def z = [liquidationid: o.objid ];
@@ -47,33 +111,6 @@ class DepositService  {
 		}
 		depositEm.insertForDepositFundTransfer( z );
 	}
-
-	@ProxyMethod
-	public def create( def o ) {
-		if(!o.items)
-			throw new Exception("Please select at least one item");
-
-		def m = [:];
-		m.state = "OPEN"
-		m.controlno = 'TMP-DEP-'+env.USERID;
-		m.controldate = dateSvc.getBasicServerDate(); 
-		m.fundid = o.fundid;
-		m.totalcash = 0;
-		m.totalcashdeposited = 0; 
-		m.totalcheck = 0;
-		m.totalcheckdeposited = 0; 
-		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
-		m.dtcreated = dateSvc.getServerDate();		
-		m = depositEm.create( m );
-		
-		depositFundEm.where( ''' objid IN ${items} ''').vars( "items", "('" + o.items.join("','") + "')" ).update( [depositid: m.objid ]);
-		//update totals
-
-		def z = depositFundEm.find( [depositid: m.objid] ).select( "totalcash:{SUM(totalcash)},totalcheck:{SUM(totalcheck)}" ).groupBy("depositid").first();
-		depositEm.find( [objid: m.objid ]).update(z);
-	}
-
-
-
+	*/
 
 }

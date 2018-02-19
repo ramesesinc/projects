@@ -12,6 +12,7 @@
 
 		<field name="remittancefundid"/>
 		<field name="liquidationfundid"/>
+		<field name="depositfundid"/>
 
 		<complex name="receipt" ref="cashreceipt" jointype="many-to-one"  
 			includefields="receiptno,receiptdate,collector.name" required="false">

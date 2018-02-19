@@ -45,19 +45,5 @@ class LiquidationModel extends CrudFormModel {
         liqSvc.post( entity );
     }
 
-    def submitForDeposit() {
-        def e = [objid: entity.objid ]
-        def list = depositSvc.getSplitChecks( e );
-        if( list ) {
-            boolean pass = false;
-            def h = { o->
-                e.splitchecks = o;
-                pass = true;
-            }
-            Modal.show( "deposit_check_select_fund", [list: list, handler : h]);
-            if( !pass ) return null;
-        }
-        depositSvc.submitForDeposit( e );
-    }
     
 }    

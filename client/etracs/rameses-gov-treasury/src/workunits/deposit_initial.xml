@@ -1,10 +1,11 @@
 <workunit schemaName="deposit">
     <invokers>
-        <invoker folderid="menucategory/treasury/deposit" 
-                 caption="Deposit" 
+        <invoker folderid="menucategory/treasury/remittance" 
+                 caption="Prepare Deposit" 
                  windowTitle="Deposit"
                  formTitle="Deposit"
-                 action="init" />
+                 action="init" 
+                 index="50" />
         
     </invokers>
    

@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="remittance"
+		 name="remittance_fund"
 
 		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
@@ -45,9 +45,9 @@
 	<field name="payments" class="java.lang.Object"/>
 	<field name="collector.name" class="java.lang.String"/>
 	<field name="remittedforms" class="java.lang.Object"/>
-	<field name="txnno" class="java.lang.String"/>
+	<field name="controlno" class="java.lang.String"/>
 	<field name="liquidatingofficer.name" class="java.lang.String"/>
-	<field name="remittancedate" class="java.util.Date"/>
+	<field name="controldate" class="java.util.Date"/>
 	<field name="amountinwords" class="java.lang.String"/>
 	<field name="amount" class="java.math.BigDecimal"/>
 	<field name="liquidatingofficer.title" class="java.lang.String"/>
@@ -61,6 +61,7 @@
 	<field name="cashbreakdown" class="java.lang.Object"/>
 	<field name="collector.signature.image" class="java.lang.Object"/>
 	<field name="liquidatingofficer.signature.image" class="java.lang.Object"/>
+	<field name="fund.title" class="java.lang.String"/>
 
 
 		<group  name="TYPE_GROUP" >
@@ -597,7 +598,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" isStyledText="true" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["No.    <style isBold=\"true\"> "+ $F{txnno} +" </style>"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["No.    <style isBold=\"true\"> "+ $F{controlno} +" </style>"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -617,7 +618,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{remittancedate}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{controldate}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -719,6 +720,19 @@
 </graphicElement>
 					<imageExpression class="java.lang.String"><![CDATA["classpath://images/lgu-logo.png"]]></imageExpression>
 				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="434"
+						y="73"
+						width="100"
+						height="20"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{fund.title}]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>
@@ -1075,7 +1089,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{remittancedate}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{controldate}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="dd-MMM-yy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1096,7 +1110,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{remittancedate}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{controldate}]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement

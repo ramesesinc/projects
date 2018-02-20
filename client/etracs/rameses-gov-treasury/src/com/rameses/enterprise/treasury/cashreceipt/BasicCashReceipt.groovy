@@ -92,31 +92,26 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
     
-    def rProcessor = new RuleProcessor( { params-> collectionRuleService.execute(params) } );
+    
+    //def rProcessor = new RuleProcessor( { params-> collectionRuleService.execute(params) } );
+    
     void fireRules() {
+        def params = [billdate:entity.receiptdate];
         boolean pass = false;
-        def params = [:];
         def h = { o->
             params.collectiongroup = o;
             pass = true;
         }
         Modal.show("collectiongroup:lookup", [onselect:h]);
-        if( pass ) {
-            def result = rProcessor.execute( params );
-            if(!result?.billitems) {
-                 throw new Exception("No results fired");
-            }
-            else {
-                result.billitems.each { itm->
-                    entity.items << [item: itm.item, amount: itm.amount, remarks:itm.remarks];
-                }
-                itemListModel.reload();
-                updateBalances();
-            }
-
+        if(!pass) return;
+        def h1 = { x->
+            MsgBox.alert("see result " + x);
         }
+        def op = Inv.lookupOpener("assessment", [rulename:"collection", params: params, handler: h1 ] );
+        Modal.show( op );
     }
     
+   
     void viewSharing() {
         def sharing = entity.sharing; 
         if (!sharing) sharing = sharingSvc.execute( entity ); 

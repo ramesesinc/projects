@@ -64,6 +64,7 @@ public class AssessmentBillingService {
 			}
 		};
 
+
 		if( data.amtpaid ) {
 			def amt = new BigDecimal( data.amtpaid + "" );
 			facts << new treasury.facts.Payment( amount: amt );
@@ -78,6 +79,7 @@ public class AssessmentBillingService {
 			if( ctx.result.askinfos ) return false;
 			return true;
 		};
+
 
 		def res = ruleSvc.execute( rulename, facts, null, hdlr );
 		if(!started) throw new Exception("No rules fired. Ruelgroup " +  params.startgroup + " does not exist" ); 

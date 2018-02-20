@@ -80,6 +80,13 @@ public class AssessmentRuleService {
 			facts << new treasury.facts.SystemDate(svrDate);
 		};
 
+		//add collection group if any
+		if( data.collectiongroup ) {
+			def cg = data.collectiongroup;
+			facts << new treasury.facts.CollectionGroup( objid:cg.objid, name: cg.name );
+		}
+
+
 		//********************************************************************
 		// build the context
 		//********************************************************************

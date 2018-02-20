@@ -111,10 +111,9 @@ class RemittanceService  {
 		}
 
 		o.controlno = 'REM-'+env.USER;
-		o.state = 'POSTED';
+		o.state = 'OPEN';
 		remEm.find( [objid: o.objid ] ).update( o );
-
-		//update also each remittance fund to fund
+		return o;
 	}
 
 

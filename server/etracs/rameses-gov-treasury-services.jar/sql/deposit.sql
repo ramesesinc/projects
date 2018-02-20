@@ -1,9 +1,9 @@
 [insertDepositFund]
 INSERT INTO deposit_fund 
-( objid,depositid,state,controlno,controldate,fundid, amount, totalcash,totalcheck,totalchecktodeposit )
+( objid,depositid,state,controlno,controldate,fundid, amount, totalcash,totalcheck,checktodeposit,cashtodeposit )
 SELECT 
 CONCAT('DEPFUND', UUID()), a.depositid,  'OPEN', CONCAT(a.controlno, a.fundcode), a.controldate, a.fundid,  
-amount, 0 AS totalcash, 0 AS totalcheck, 0 AS totalchecktodeposit
+amount, 0, 0, 0, 0 
 FROM (
 	SELECT l.depositid, d.controlno, f.code AS fundcode, d.controldate, lf.fund_objid AS fundid, 
 	SUM( lf.totalcash + lf.totalcheck) AS amount 

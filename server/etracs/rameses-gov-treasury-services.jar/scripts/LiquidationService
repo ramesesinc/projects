@@ -61,6 +61,7 @@ class LiquidationService  {
 		//totals in liquidation
 		def u = [cashbreakdown: [], totalcash:0, totalcheck:0, totalcr: 0, amount:0 ];
 		def remList = remEm.find( z ).list().each {
+			u.amount += it.amount;
 			u.totalcash += it.totalcash;
 			u.totalcheck += it.totalcheck;
 			u.totalcr += it.totalcr;

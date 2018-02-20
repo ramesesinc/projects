@@ -41,10 +41,12 @@ class DepositService  {
 		m.controlno = 'TMP-DEP-'+env.USERID;
 		m.controldate = dateSvc.getBasicServerDate(); 
 		m.fundid = o.fundid;
-		m.amount = new BigDecimal( o.amount + "" );
+		m.amount = 0;
+		m.totalcash = 0;
+		m.totalcheck = 0;
 
 		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
-		m.dtcreated = dateSvc.getServerDate();		
+		m.dtcreated = dateSvc.getServerDate();	
 		m = depositEm.create( m );
 
 		liqEm.where( ''' objid IN (${ids}) ''' ).vars( "ids",  "'" + o.items.join("','") + "'" ).update( [depositid: m.objid ] );
@@ -53,8 +55,11 @@ class DepositService  {
 
 		depositEm.updateLiquidationFundDepositFund( z );
 		depositEm.updatePaymentCheckDepositId( z );
-		depositEm.updatePaymentCheckDepositFundId( z );
-		depositEm.updateDepositFundTotalCheckToDeposit(z);
+		//depositEm.updatePaymentCheckDepositFundId( z );
+		//depositEm.updateDepositFundTotalCheckToDeposit(z);
+
+		def u = liqEm.find( z ).select('amount:{SUM(amount)},totalcash:{SUM(totalcash)},totalcheck:{SUM(totalcheck)}').first(); 
+		depositEm.find([ objid: m.objid ]).update( u );  
 		return m;
 	}
 

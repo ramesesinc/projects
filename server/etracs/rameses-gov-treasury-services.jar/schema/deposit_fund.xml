@@ -19,7 +19,9 @@
 		<field name="totalcash" required="true"  type="decimal"/>
 		<field name="totalcheck" required="true"  type="decimal"/>
 		<field name="amount" required="true" type="decimal"/>
-		<field name="totalchecktodeposit" required="true" type="decimal"/>
+		
+		<field name="cashtodeposit" required="true" type="decimal"/>
+		<field name="checktodeposit" required="true" type="decimal"/>
 
 		<field name="balance" expr="amount - (totalcash+totalcheck)"  type="decimal"/>
 	</element>

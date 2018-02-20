@@ -12,7 +12,9 @@
 		<field name="dtposted" />
 
 		
-		<field name="amount"  type="decimal" />
+		<field name="amount"  type="decimal" required="true" />
+		<field name="totalcash"  type="decimal" required="true" />
+		<field name="totalcheck"  type="decimal" required="true" />
 
 	</element>
 </schema>

@@ -46,6 +46,11 @@ class RemittanceModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    
+    void remit() {
+        if ( MsgBox.confirm('You are about to submit this for liquidation. Proceed?')) {
+            entity = remSvc.post( entity ); 
+        }
+        
+    }
     
 }    

@@ -1,0 +1,24 @@
+<workunit schemaName="depositvoucher">
+    <invokers>
+        <invoker folderid="menucategory/treasury/remittance" 
+                 caption="Prepare Deposit" 
+                 windowTitle="Deposit"
+                 formTitle="Deposit"
+                 action="init" 
+                 index="50" />
+        
+        <invoker type="depositvoucher:create" 
+                 caption="New Deposit Voucher" 
+                 windowTitle="New Deposit Voucher"
+                 formTitle="New Deposit Voucher"
+                 action="init" 
+                 index="50" />
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositVoucherInitialModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.DepositVoucherInitialPage" />
+   </pages>
+   
+</workunit>

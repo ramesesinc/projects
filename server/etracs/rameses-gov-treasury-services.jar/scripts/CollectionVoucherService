@@ -1,0 +1,84 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class CollectionVoucherService  {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("CashBreakdownSummaryService")
+	def cashBreakdownSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@DataContext("remittance")
+	def remEm;
+
+	@DataContext("remittance_fund")
+	def remFundEm;
+
+	@DataContext("collectionvoucher")
+	def cvEm;
+
+	@DataContext("collectionvoucher_fund")
+	def cvFundEm;
+
+	@ProxyMethod
+	public def create( def pp ) {
+		//search if there is at least one for posting
+		def cnt = remEm.where("state='POSTED' AND collectionvoucherid IS NULL").select("x:{COUNT(*)}").val();
+		if(cnt==0) throw new Exception("There are no remittances found that are POSTED within this date");
+
+		def m = [:];
+		m.controlno = 'TMP-LIQ-'+env.USERID;
+		m.controldate = dateSvc.getBasicServerDate();
+		m.dtposted = dateSvc.getServerDate();
+		m.state = "OPEN";
+		m.amount = 0;
+		m.totalcash = 0;
+		m.totalcheck=0;
+		m.totalcr = 0;
+		m.cashbreakdown = [];
+		m.liquidatingofficer = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		m = cvEm.create( m );
+
+		//update the collection voucher id for each remittance
+		remEm.where("state='POSTED' AND collectionvoucherid IS NULL").update( [collectionvoucherid: m.objid ]);
+
+		def z = [collectionvoucherid: m.objid]
+		cvEm.insertCollectionVoucherFund( z );
+
+		//update cash breakdown totals in each collection fund
+		def lfList = cvFundEm.find( [ parentid: m.objid ] ).list();
+
+		lfList.each {
+			def cc = [cvid: it.parentid, fundid: it.fund.objid]
+			def subList = remFundEm.select("cashbreakdown").where( "remittance.collectionvoucherid=:cvid AND fund.objid=:fundid" , cc).list()*.cashbreakdown;
+			def bd = cashBreakdownSvc.summarize( subList );
+			cvFundEm.find( [objid: it.objid] ).update( [cashbreakdown: bd ]);
+		}
+
+		//totals in collection
+		def u = [cashbreakdown: [], totalcash:0, totalcheck:0, totalcr: 0, amount:0 ];
+		def remList = remEm.find( z ).list().each {
+			u.amount += it.amount;
+			u.totalcash += it.totalcash;
+			u.totalcheck += it.totalcheck;
+			u.totalcr += it.totalcr;
+			u.cashbreakdown << it.cashbreakdown;
+		};
+		if(u.totalcash == 0 ) throw new Exception("Total cash is zero");
+		u.cashbreakdown = cashBreakdownSvc.summarize( u.cashbreakdown );
+		cvEm.find( [objid: m.objid ] ).update( u );
+
+		return m;
+	}
+
+	
+
+}

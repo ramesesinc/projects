@@ -47,7 +47,7 @@
       <SubComponents>
         <Component class="com.rameses.enterprise.treasury.components.CashDenomination" name="cashDenomination1">
           <Properties>
-            <Property name="amountField" type="java.lang.String" value="totalcash"/>
+            <Property name="amountField" type="java.lang.String" value="total"/>
             <Property name="name" type="java.lang.String" value="cashbreakdown" noResource="true"/>
           </Properties>
           <Constraints>

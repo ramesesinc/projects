@@ -29,6 +29,12 @@ class RemittanceService  {
 	@DataContext("cashreceiptpayment_noncash")
 	def ncEm;
 
+	@Service('ControlService') 
+	def controlSvc;
+
+	@Service("Var")
+	def var;
+
 	@ProxyMethod
 	public def create( def pp ) {
 		def o = pp.items;
@@ -63,17 +69,19 @@ class RemittanceService  {
 		def z = [remittanceid: m.objid]
 		remEm.insertRemittanceAF( z );
 		remEm.insertRemittanceFund( z );
-		remEm.updateNonCashPayment( z );
 
 		def clist = rfEm.find( z ).list();
 		clist.each {
+			def ppp = [remittanceid: it.remittanceid , fundid: it.fund.objid ];
+
 			def u = [:];
 			u.amount = it.amount;
-			u.totalcheck = ncEm.find( [remittancefundid: it.objid ]).select( "amount:{SUM(amount)}").where("reftype = 'CHECK' ").val();
+			u.totalcheck = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND reftype = 'CHECK' ", ppp ).val();
 			if(!u.totalcheck) u.totalcheck = 0;
-			u.totalcr = ncEm.find( [remittancefundid: it.objid ]).select( "amount:{SUM(amount)}").where(" NOT( reftype = 'CHECK') ").val();
+
+			u.totalcr = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND NOT(reftype = 'CHECK') ", ppp ).val();
 			if(!u.totalcr ) u.totalcr = 0;
-			u.totalcash = u.amount - u.totalcheck - u.totalcr;
+
 			rfEm.find( [objid: it.objid ] ).update( u );
 		}
 
@@ -84,36 +92,49 @@ class RemittanceService  {
 	}
 
 	@ProxyMethod
-	public void updateRemittanceFundBreakdown( def m ) {
+	public void updateCash( def m ) {
 		if(!m.objid) throw new Exception("objid is required");
 		if(!m.cashbreakdown) throw new Exception("breakdown is required");
 		if(!m.remittanceid ) throw new Exception("remittanceid is required");
+		if(!m.totalcash ) throw new Exception("totalcash is required");
 
 		def bd = m.cashbreakdown.findAll{ it.qty > 0 };
-		rfEm.find( [objid: m.objid] ).update( [cashbreakdown: bd ] );
+		rfEm.find( [objid: m.objid] ).update( [cashbreakdown: bd, totalcash: m.totalcash ] );
 
 		def list = rfEm.select("cashbreakdown").find( [remittanceid: m.remittanceid ] ).list()*.cashbreakdown;
 		bd = cashBreakdownSvc.summarize( list );
 
-		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd ] );
+		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd, totalcash: m.totalcash ] );
 	}	
 
 	@ProxyMethod
-	public def post( def o ) {
+	public def submitForLiquidation( def o ) {
 		//check total breakdown before submitting
-		def z = remEm.find( [objid: o.objid ] ).select("totalcash,cashbreakdown").first();
-		if( z.totalcash > 0 && !z.cashbreakdown )
-			throw new Exception("Please ensure cash breakdown in each remittance fund is correct ");
+		def z = rfEm.select("objid").find( [remittanceid: o.objid ] ).where(" (amount - (totalcash+totalcheck+totalcr)) > 0 ").first();
+		if( z ) 
+			throw new Exception("Please ensure that all balances must be equal to 0. Please check there may be items that do not have a cash breakdown");
 
-		if( z.cashbreakdown ) {
-			if( z.totalcash != z.cashbreakdown.sum{it.amount}  )
-				throw new Exception("Cash breakdown does not match total cash");	
+		def m = [:];	
+		m.dtposted = dateSvc.getServerDate(); 
+		if ( o.controlno.toString().toUpperCase().startsWith("REM")) {
+			// do nothing, we will use the same transaction number 
+		} else {
+			def txncode = [ "REM", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
+			m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtposted, format: var.remittance_format, sequenceid_format: var.remittance_sequenceid_format ]); 
 		}
 
-		o.controlno = 'REM-'+env.USER;
+		if ( o.collector?.signature ) m.collector = [signature: o.collector.signature]; 
+		m.state = 'OPEN';
+		remEm.find( [objid: o.objid ] ).update( m );
+
 		o.state = 'OPEN';
-		remEm.find( [objid: o.objid ] ).update( o );
+
 		return o;
+	}
+
+	@ProxyMethod
+	public void acceptForLiquidation( def o ) {
+		remEm.find( [objid: o.objid ] ).update( [ state: 'POSTED' ] );
 	}
 
 

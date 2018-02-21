@@ -26,19 +26,4 @@ SELECT
 objid, remittanceid, controlno, fund_objid,fund_title, amount, 0, 0, 0, '[]'
 FROM cashreceipt_fund_summary WHERE remittanceid =  $P{remittanceid} 
 
-[updateNonCashPayment]
-UPDATE cashreceiptpayment_noncash 
-SET remittancefundid = ( 
-    SELECT rf.objid  
-    FROM remittance_fund rf 
-    INNER JOIN cashreceipt cr ON rf.remittanceid = cr.remittanceid 
-    WHERE rf.remittanceid = $P{remittanceid} 
-    AND cr.objid = cashreceiptpayment_noncash.receiptid 
-    AND rf.fund_objid = cashreceiptpayment_noncash.fund_objid  
-)
-WHERE receiptid IN ( 
-  SELECT objid FROM cashreceipt WHERE remittanceid = $P{remittanceid}
-)
-
-
 

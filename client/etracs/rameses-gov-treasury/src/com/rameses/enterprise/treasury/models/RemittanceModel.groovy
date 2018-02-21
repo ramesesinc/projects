@@ -12,65 +12,87 @@ class RemittanceModel extends CrudFormModel {
     @Service("RemittanceService")
     def remSvc;    
     
-    def summaryList;
-    def fundList = [];
-    def checkList = [];
+    //this is passed 
+    def handler;
+    def selectedFund;
+    def selectedAf;
     
-    void afterOpen() {
-        //build summaryList
-        def m = [_schemaname: 'remittance_af' ];
-        m.findBy = [ remittanceid: entity.objid ];
-        summaryList = queryService.getList( m );
-        
-        //list of voided
-        m = [_schemaname: 'remittance_fund' ];
-        m.findBy = [ remittanceid: entity.objid ];
-        fundList = queryService.getList( m );
-        entity.amount = fundList.sum{ it.amount };
-        
-        def m1 = [_schemaname: 'cashreceiptpayment_noncash' ];
-        m1.select = "refno,reftype,refdate,amount:{SUM(amount)}";
-        m1.groupBy = "refno,reftype,refdate";
-        m1.where = [ "remittancefund.remittanceid = :rid", [rid: entity.objid ]];
-        checkList = queryService.getList( m1 );
-        entity.totalnoncash = entity.totalcheck + entity.totalcr;
+    def fundSummaryHandler = [
+        fetchList: { o->
+            def m = [_schemaname: 'remittance_fund' ];
+            m.findBy = [ remittanceid: entity.objid ];
+            return queryService.getList( m );
+        },
+        onOpenItem: {o,col->
+            return viewFundEntry();
+        }
+    ] as BasicListModel;
+    
+    def viewFundEntry() {
+        if(!selectedFund) throw new Exception("Please select a fund");
+        return Inv.lookupOpener("remittance_fund:open", [entity : selectedFund]  );
+    }
+    
+    def updateCash() {
+        if(!selectedFund) throw new Exception("Please select a fund");
+        if(selectedFund.balance == 0 && selectedFund.totalcash==0 ) 
+            throw new Exception("There is no cash remittance for selected item");
+        def total = selectedFund.amount - (selectedFund.totalcheck + selectedFund.totalcr);
+        def p = [total: total, cashbreakdown: entity.cashbreakdown ];
+        p.handler = { o->
+            def u = [objid:selectedFund.objid, remittanceid: entity.objid, totalcash: o.total, cashbreakdown: o.cashbreakdown ]; 
+            remSvc.updateCash( u );
+            fundSummaryHandler.reload();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("cashbreakdown", p );
     }
     
     def afSummaryHandler = [
         fetchList: { o->
-            return summaryList;
+           def m = [_schemaname: 'remittance_af' ];
+           m.findBy = [ remittanceid: entity.objid ];
+           return queryService.getList( m );
         },
         onOpenItem: {o,col->
-            def p = [:];
-            p.put( "query.afcontrolid", o.controlid );
-            p.put( "query.fromseries", o.issuedstartseries );
-            p.put( "query.toseries", o.issuedendseries );
-            return Inv.lookupOpener("cashreceipt_list:afseries", p );
+            return viewReceipts();
         }
     ] as BasicListModel;
     
-    def fundSummaryHandler = [
-        fetchList: { o->
-            return fundList;
-        },
-        onOpenItem: {o,col->
-            return Inv.lookupOpener("remittance_fund:open", [entity: o] );
-        }
-    ] as BasicListModel;
+    def viewReceipts() {
+        if(!selectedAf) throw new Exception("Please select an entry");  
+        def o = selectedAf;
+        def p = [:];
+        p.put( "query.afcontrolid", o.controlid );
+        p.put( "query.fromseries", o.issuedstartseries );
+        p.put( "query.toseries", o.issuedendseries );
+        return Inv.lookupOpener("cashreceipt_list:afseries", p );
+    }
     
     def checkModel = [
         fetchList: { o->
-            return checkList;
+            def m = [_schemaname: 'cashreceiptpayment_noncash' ];
+            m.select = "refno,reftype,refdate,amount:{SUM(amount)}";
+            m.groupBy = "refno,reftype,refdate";
+            m.where = [ "receipt.remittanceid = :rid", [rid: entity.objid ]];
+            return queryService.getList( m );
         }
     ] as BasicListModel;
     
+    //for printing
     def getPrintFormData() {
+        entity.totalnoncash = entity.totalcheck + entity.totalcr;
         return entity;
     } 
     
+    def openPreview() {
+        open();
+        return preview("remittance:form_report");
+    }
+    
     void remit() {
         if ( MsgBox.confirm('You are about to submit this for liquidation. Proceed?')) {
-            entity = remSvc.post( entity ); 
+            entity = remSvc.submitForLiquidation( entity ); 
         }
     }
     

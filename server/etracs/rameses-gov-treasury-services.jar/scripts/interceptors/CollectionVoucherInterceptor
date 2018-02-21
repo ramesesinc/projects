@@ -1,21 +1,20 @@
 import com.rameses.annotations.*;
 
-class RemittanceInterceptor {
+class CollectionVoucherInterceptor {
 
 	@Service("NumberService")
 	def numSvc;
 
 	
-	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'remittance' }")
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectionvoucher' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result;
-		result << [  title: 'Draft', state:'DRAFT' ];
 		result << [  title: 'Open', state:'OPEN' ];
 		result << [  title: 'Posted', state:'POSTED' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'remittance' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectionvoucher' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 
@@ -33,15 +32,16 @@ class RemittanceInterceptor {
 		} 
 	}	
 
-	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'remittance' }" )
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'collectionvoucher' }" )
 	public void afterRead(def evt) {
 		def p = evt.result;
-
+		/*
 		if( p.amount < 1 ) { 
 			def amount = Long.parseLong( p.amount.toString().split("\\.")[1] )
 			p.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS";
 		} else {
 			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
 		}
+		*/
 	}
 }

@@ -21,22 +21,17 @@ public class CashBreakdownModel extends CrudFormModel {
     }
     
     def doOk() {
-        /*
         def numformat = new java.text.DecimalFormat('0.00');          
-        def ntotalcash = new java.math.BigDecimal( numformat.format( entity.totalcash ));
+        def ntotalcash = new java.math.BigDecimal( numformat.format( total ));
         
         def breakdown = 0.0;
-        if( entity.cashbreakdown ) {
-            breakdown = entity.cashbreakdown.sum{ it.amount } 
+        if( cashbreakdown ) {
+            breakdown = cashbreakdown.sum{ it.amount } 
             breakdown = new java.math.BigDecimal( numformat.format( breakdown )); 
         }
-        
         def diff = ( ntotalcash - breakdown );
         if ( diff != 0 ) throw new Exception("Cash breakdown must equal total cash");
-        
-        afterUpdate();
-        */
-       handler( [total:total, cashbreakdown: cashbreakdown ] );
+        handler( [total:total, cashbreakdown: cashbreakdown ] );
         return "_close";
     }
     

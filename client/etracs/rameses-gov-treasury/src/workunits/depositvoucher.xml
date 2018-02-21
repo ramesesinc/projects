@@ -1,0 +1,20 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositvoucher">
+    <invokers>
+        <invoker type="depositvoucher:open" 
+                 caption="Deposit Voucher" 
+                 windowTitle="Deposit Voucher"
+                 formTitle="Deposit Vocuher"
+                 action="open" target="window" 
+                 index="10"/>
+        
+        <!-- Buttons -->
+        <invoker type="formActions" caption="Post" action="post"/>
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositVoucherModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.DepositVoucherPage" />
+   </pages>
+   
+</workunit>

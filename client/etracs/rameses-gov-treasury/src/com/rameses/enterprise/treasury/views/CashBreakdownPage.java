@@ -38,7 +38,7 @@ public class CashBreakdownPage extends javax.swing.JPanel {
         jPanel1.setBorder(xTitledBorder1);
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        cashDenomination1.setAmountField("totalcash");
+        cashDenomination1.setAmountField("total");
         cashDenomination1.setName("cashbreakdown"); // NOI18N
         jPanel1.add(cashDenomination1, java.awt.BorderLayout.CENTER);
 

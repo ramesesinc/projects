@@ -1,0 +1,18 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="collectionvoucher_fund" 
+          allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker type="collectionvoucher_fund:open" 
+                 caption="Collection Voucher Fund" 
+                windowTitle="Collection Voucher Fund"
+                 formTitle="Collection Voucher Fund"
+                 action="open" target="popup" 
+                 index="10"/>
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.CollectionVoucherFundModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.RemittanceFundPage" />
+   </pages>
+   
+</workunit>

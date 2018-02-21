@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="depositvoucher_fund">
+    <invokers>
+        <invoker folderid="menucategory/treasury/remittance" 
+                 caption="Deposit Voucher For Deposit" 
+                 windowTitle="Deposit Voucher For Deposit"
+                 formTitle="Deposit Voucher For Deposit"
+                 cols="controlno,controldate,fund.title,amount,state"
+                 action="init" target="window" index="51"/>
+    </invokers>
+</workunit>

@@ -22,10 +22,10 @@
 		<complex name="cashbreakdown" required="true" serializer="default" type="list"/>
 		<field name="remarks" />
 
-		<field name="liquidationid"/>
+		<field name="collectionvoucherid"/>
 		
-		<complex name="liquidation" ref="liquidation" jointype="many-to-one" includefields="controlno,controldate,state" required="false">
-			<key field="liquidationid" target="objid" />
+		<complex name="collection" ref="collectionvoucher" jointype="many-to-one" includefields="controlno,controldate,state" required="false">
+			<key field="collectionvoucherid" target="objid" />
 		</complex>			
 	</element>
 </schema>

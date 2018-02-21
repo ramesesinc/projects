@@ -1,0 +1,67 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class DepositVoucherService  {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("collectionvoucher")
+	def cvEm;
+
+	@DataContext("depositvoucher")
+	def depositEm;
+
+
+	@ProxyMethod
+	public def create( def o ) {
+		if(!o.items)
+			throw new Exception("Please select at least one item " + o.amount );
+		/*
+	    UPDATED TABLES :
+	        depositvoucher, collection, deposit_fund, collection_fund, paymentcheck
+		*/
+		def m = [:];
+		m.state = "OPEN"
+		m.controlno = 'TMP-DEP-'+env.USERID;
+		m.controldate = dateSvc.getBasicServerDate(); 
+		m.amount = o.items.sum{ it.amount };
+		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.dtcreated = dateSvc.getServerDate();	
+		m = depositEm.create( m );
+
+		cvEm.where( ''' objid IN (${ids}) ''' ).vars( "ids",  "'" + o.items*.objid.join("','") + "'" ).update( [depositvoucherid: m.objid ] );
+		def z = [ depositvoucherid: m.objid ];
+		depositEm.insertDepositFund( z );
+		depositEm.updatePaymentCheckDepositId( z );
+		depositEm.updatePaymentCheckDefaultFund( z );
+		depositEm.updateFundCheckTotal( z );
+		depositEm.cleanUpNullTotals( z );
+		return m;
+	}
+
+	/*
+	@ProxyMethod
+	public def updatePaymentCheckFund(def o ) {
+		o.checks.each {
+			def dfid = depositFundEm.find( [depositid: o.depositid, fundid: it.fundid ] ).select("objid").val();
+			checkEm.find( [objid: it.objid ] ).update( [depositfundid: dfid ] );
+		};
+		o.fundtransfers.each {
+			def z = [depositid: o.depositid ]
+			z.fromfund = it.fromfund;
+			z.tofund = it.tofund;
+			z.amount = it.amount;
+			z.amtused = 0;
+			depositFundTransferEm.create( z );
+		}
+		depositEm.updateDepositFundTotalCheckToDeposit( [ depositid:  o.depositid  ]);
+		return [:];	
+	}
+	*/
+
+}

@@ -18,9 +18,9 @@
 		<field name="amtused" required="true" type="decimal" defaultValue="0"/>	
 
 		<!-- these fields refer to deposit -->
-		<field name="depositid" />
-		<field name="depositfundid" />
-		<field name="bankdepositid" />
+		<field name="depositvoucherid" />
+		<field name="fundid" />
+		<field name="depositslipid" />
 
 		<complex name="items" ref="cashreceiptpayment_noncash" jointype="one-to-many" orderBy="refdate,refno" required="false">
 			<key field="objid" target="refid" />
@@ -28,9 +28,6 @@
 
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
 
-		<complex name="depositfund" ref="deposit_fund" includefields="fund.*" jointype="many-to-one" required="false">
-			<key field="depositfundid" target="objid" />
-		</complex>	
 
 	</element>
 

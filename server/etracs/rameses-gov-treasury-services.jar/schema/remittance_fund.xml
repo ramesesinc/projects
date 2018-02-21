@@ -11,17 +11,10 @@
 		<field name="totalcr"  type="decimal"/>
 		<complex name="cashbreakdown"  serializer="default" type="list" />
 
-		<complex name="remittance" ref="remittance" jointype="many-to-one" includefields="txnno,state,remittancedate,collector.name">
+		<field name="balance" expr="amount - (totalcash+totalcheck+totalcr)" type="decimal" />
+
+		<complex name="remittance" ref="remittance" jointype="many-to-one" includefields="controlno,state,remittancedate,collector.name,collectionvoucherid">
 			<key field="remittanceid" target="objid" />		
 		</complex> 
-
-		<complex name="liquidationfund" ref="liquidation_fund" jointype="many-to-one" includefields="controlno,dtposted,liquidatingofficer.name" required="false">
-			<key field="liquidationfundid" target="objid" />
-		</complex>
-
-		<complex name="payments" ref="cashreceiptpayment_noncash" jointype="one-to-many">
-			<key field="objid" target="remittancefundid"/> 
-		</complex> 
-
 	</element>
 </schema>	

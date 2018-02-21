@@ -12,7 +12,7 @@ class DepositSlipModel extends CrudFormModel {
     @Service("DepositService")
     def depositSvc;
     
-    def depositid;
+    def depositvoucherid;
     def fundid; 
     def amount;
     boolean editable = true;
@@ -20,7 +20,7 @@ class DepositSlipModel extends CrudFormModel {
     def selectedCheck;
 
     void afterCreate() {
-       entity.depositid = depositid;
+       entity.depositvoucherid = depositvoucherid;
        entity.fundid = fundid;
        entity.amount = amount;
        entity.totalcash = 0;
@@ -39,7 +39,7 @@ class DepositSlipModel extends CrudFormModel {
    def checkListModel = [
         fetchList: { o->
             def m = [_schemaname:'paymentcheck'];
-            m.findBy = [bankdepositid: entity.objid];
+            m.findBy = [depositslipid: entity.objid];
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
@@ -51,7 +51,7 @@ class DepositSlipModel extends CrudFormModel {
     
     def addCheck() {
         def h = { o->
-            def p = [bankdepositid: entity.objid];
+            def p = [depositslipid: entity.objid];
             p.items = o.collect{ it.objid };
             def z = bankDepositSvc.updateCheckBankDeposit( p );
             entity.totalcheck = z.totalcheck;
@@ -65,7 +65,7 @@ class DepositSlipModel extends CrudFormModel {
     
     def removeCheck() {
         if(!selectedCheck) throw new Exception("Select a check to remove");
-        def p = [bankdepositid: entity.objid];
+        def p = [depositslipid: entity.objid];
         p.items = [ selectedCheck.objid ];
         def z = bankDepositSvc.removeCheckBankDeposit( p );
         entity.totalcheck = z.totalcheck;
@@ -75,7 +75,7 @@ class DepositSlipModel extends CrudFormModel {
     def updateCash() {
         def p = [:];
         p.handler = { o->
-            def m = [bankdepositid: entity.objid];
+            def m = [depositslipid: entity.objid];
             m.totalcash = o.total;
             m.cashbreakdown = o.cashbreakdown;
             m = bankDepositSvc.updateCash( m );

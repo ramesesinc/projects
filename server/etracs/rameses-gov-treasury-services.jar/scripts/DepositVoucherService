@@ -16,6 +16,8 @@ class DepositVoucherService  {
 	@DataContext("depositvoucher")
 	def depositEm;
 
+	@DataContext("paymentcheck")
+	def paymentCheckEm;
 
 	@ProxyMethod
 	public def create( def o ) {
@@ -44,24 +46,18 @@ class DepositVoucherService  {
 		return m;
 	}
 
-	/*
-	@ProxyMethod
-	public def updatePaymentCheckFund(def o ) {
-		o.checks.each {
-			def dfid = depositFundEm.find( [depositid: o.depositid, fundid: it.fundid ] ).select("objid").val();
-			checkEm.find( [objid: it.objid ] ).update( [depositfundid: dfid ] );
-		};
-		o.fundtransfers.each {
-			def z = [depositid: o.depositid ]
-			z.fromfund = it.fromfund;
-			z.tofund = it.tofund;
-			z.amount = it.amount;
-			z.amtused = 0;
-			depositFundTransferEm.create( z );
+
+	public void updatePaymentCheckFund( def o ) {
+		if(!o.items) throw new Exception( "items is required");
+		if(!o.fundid) throw new Exception( "fundid is required");
+		if(!o.depositvoucherid) throw new Exception( "depositvoucherid is required");
+		o.items.each {
+			paymentCheckEm.find([ objid:it.objid ]).update( [fundid: o.fundid] );
 		}
-		depositEm.updateDepositFundTotalCheckToDeposit( [ depositid:  o.depositid  ]);
-		return [:];	
+		def z = [ depositvoucherid: o.depositvoucherid ];
+		depositEm.updateFundCheckTotal( z );
+		depositEm.cleanUpNullTotals( z );
 	}
-	*/
+
 
 }

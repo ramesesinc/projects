@@ -7,42 +7,49 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
 
-class DepositFundModel extends CrudFormModel {
+class DepositVoucherFundModel extends CrudFormModel {
 
-    @Service("DepositService")
+    @Service("DepositVoucherService")
     def depositSvc;    
     
-    def selectedBankDeposit;
+    def selectedDepositSlip;
+    def selectedCheck;
 
-    def bankDepositList = [
+    def depositSlipList = [
         fetchList: { o->
-            def m = [_schemaname: 'bankdeposit' ];
-            m.where = ["depositfundid = :depositfundid", [depositfundid:entity.objid] ];
+            def p = [depositvoucherid:entity.parentid, fundid: entity.fund.objid ];
+            def m = [_schemaname: 'depositslip' ];
+            m.where = ["depositvoucherid = :depositvoucherid AND fund.objid=:fundid" , p ];
             def list = queryService.getList( m );
             return list;
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("bankdeposit:open", [entity: o] );
-            op.target = "popup";
-            return op;
+            return viewDepositSlip();
         }
     ] as BasicListModel;
 
-    def addBankDeposit() {
+    def viewDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        def op = Inv.lookupOpener("depositslip:open", [entity: selectedDepositSlip] );
+        op.target = "popup";
+        return op;
+    }
+    
+    def addDepositSlip() {
         def h = {
             MsgBox.alert('saved deposit');
         } 
         def amt = entity.amount - ( entity.totalcheck + entity.totalcash );
-        return Inv.lookupOpener("bankdeposit:create", [depositfundid: entity.objid, fundid: entity.fundid, amount: amt, handler: h ] )
+        return Inv.lookupOpener("depositslip:create", [depositvoucherid: entity.parentid, fundid: entity.fund.objid, amount: amt, handler: h ] )
     }
     
     def validateDeposit() {
-        if( !selectedBankDeposit ) throw new Exception("Please choose a bank deposit entry");
-        if( selectedBankDeposit.totalcash + selectedBankDeposit.totalcheck )
+        if( !selectedDepositSlip ) throw new Exception("Please choose a bank deposit entry");
+        if( selectedDepositSlip.totalcash + selectedDepositSlip.totalcheck )
             throw new Exception("Please make sure the amount is equal to total cash + total check");
         def h = { o->
-            def m = [_schemaname: "bankdeposit"];
-            m.findBy = [objid: selectedBankDeposit.objid ];
+            def m = [_schemaname: "depositslip"];
+            m.findBy = [objid: selectedDepositSlip.objid ];
             m.validation = o;
             m.update( m );
             bankDepositList.reload();
@@ -53,9 +60,8 @@ class DepositFundModel extends CrudFormModel {
     def checkListModel = [
         fetchList: { o->
             def m = [_schemaname: 'paymentcheck' ];
-            m.where = ["depositfundid = :depositfundid", [depositfundid:entity.objid] ];
-            def list = queryService.getList( m );
-            return list;
+            m.where = ["depositvoucherid = :depositvoucherid AND fundid=:fundid", [depositvoucherid:entity.parentid, fundid: entity.fund.objid] ];
+            return queryService.getList( m );
         },
         onOpenItem: {o,col->
             def op = Inv.lookupOpener("paymentcheck:open", [entity: o] );
@@ -64,5 +70,26 @@ class DepositFundModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
+    def addCheck() {
+        def p = [:]; 
+        p.put("query.depositvoucherid", entity.parentid );
+        p.onselect = { o->
+            def m = [depositvoucherid: entity.parentid, fundid: entity.fund.objid ];
+            m.items = o.collect{ [objid: it.objid] };
+            depositSvc.updatePaymentCheckFund( m );
+            checkListModel.reload();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("paymentcheck:depositvoucher_fund:lookup", p );
+    }
+    
+    def removeCheck() {
+        if( !selectedCheck) throw new Exception("Please select a check");
+        def m = [depositvoucherid: entity.parentid, fundid: "{NULL}" ];
+        m.items = [ [objid: selectedCheck.objid] ];
+        depositSvc.updatePaymentCheckFund( m );
+        checkListModel.reload();
+        binding.refresh();
+    }
     
 }    

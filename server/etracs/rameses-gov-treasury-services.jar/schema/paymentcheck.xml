@@ -29,6 +29,9 @@
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
 
 
+		<complex name="fund" ref="fund" jointype="many-to-one" required="false">
+			<key field="fundid" target="objid" />
+		</complex>
 	</element>
 
 

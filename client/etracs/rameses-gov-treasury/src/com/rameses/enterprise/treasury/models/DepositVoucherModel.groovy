@@ -74,6 +74,20 @@ class DepositVoucherModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
+    def depositSlipListModel = [
+        fetchList: { o->
+            def m = [_schemaname: 'depositslip' ];
+            m.where = ["depositvoucherid = :depositvoucherid", [depositvoucherid:entity.objid] ];
+            def list = queryService.getList( m );
+            return list;
+        },
+        onOpenItem: {o,col->
+            def op = Inv.lookupOpener("depositslip:open", [entity: o] );
+            op.target = "popup";
+            return op;
+        }
+    ] as BasicListModel;
+    
     
     /*
     def getChecksWithoutFund() {

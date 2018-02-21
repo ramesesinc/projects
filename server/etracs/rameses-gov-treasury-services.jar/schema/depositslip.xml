@@ -2,7 +2,8 @@
 	
 	<element tablename="depositslip">
 		<field name="objid" primary="true" prefix="BNKDEP"/>
-		<field name="depositfundid" required="true"/> 
+		<field name="depositvoucherid" required="true"/> 
+		<field name="fundid" required="true"/> 
 		<field name="createdby_objid" required="true"/> 
 		<field name="createdby_name" required="true"/> 
 		 
@@ -19,9 +20,10 @@
 		<field name="validation_refno" /> 
 		<field name="validation_refdate" /> 
 
-		<complex name="checks" ref="paymentcheck" jointype="one-to-many">
-			<key field="objid" target="depositslipid" />
-		</complex> 
+		<complex name="fund" ref="fund" jointype="many-to-one" required="false">
+			<key field="fundid" target="objid" />
+		</complex>
+
 	</element>
 
 </schema>

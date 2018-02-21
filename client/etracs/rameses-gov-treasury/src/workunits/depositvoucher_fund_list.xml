@@ -5,6 +5,6 @@
                  windowTitle="Deposit Voucher For Deposit"
                  formTitle="Deposit Voucher For Deposit"
                  cols="controlno,controldate,fund.title,amount,state"
-                 action="init" target="window" index="51"/>
+                 action="init" target="window" index="101"/>
     </invokers>
 </workunit>

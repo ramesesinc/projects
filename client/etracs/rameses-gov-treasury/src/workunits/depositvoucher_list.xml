@@ -5,7 +5,7 @@
                  windowTitle="Deposit  Vouchers"
                  formTitle="Deposit  Vouchers"
                  cols="controlno,controldate,amount,state"
-                 action="init" target="window" index="52"/>
+                 action="init" target="window" index="51"/>
 
         <!-- actions -->
         <invoker type="listActions" caption="New Deposit Voucher" action="create" role="LIQUIDATING_OFFICER"/>

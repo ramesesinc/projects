@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="bankdeposit">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositslip">
     <invokers>
         
    <invoker type="depositslip:create" 

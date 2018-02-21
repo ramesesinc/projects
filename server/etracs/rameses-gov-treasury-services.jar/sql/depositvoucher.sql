@@ -43,7 +43,7 @@ WHERE depositvoucherid = $P{depositvoucherid}
 
 [updateFundCheckTotal]
 UPDATE depositvoucher_fund
-    SET totalcheck = (
+    SET checktodeposit = (
 		SELECT SUM(pc.amount) 
 		FROM paymentcheck pc
         WHERE pc.depositvoucherid = depositvoucher_fund.parentid 
@@ -53,5 +53,5 @@ WHERE parentid = $P{depositvoucherid}
 
 [cleanUpNullTotals]
 UPDATE depositvoucher_fund SET 
-    totalcheck = CASE WHEN totalcheck IS NULL THEN 0 ELSE totalcheck END
+    checktodeposit = CASE WHEN checktodeposit IS NULL THEN 0 ELSE checktodeposit END
 WHERE parentid = $P{depositvoucherid}

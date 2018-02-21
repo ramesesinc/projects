@@ -25,9 +25,10 @@ class BusinessOnlineWorkflowInterceptor {
 
 	private def generateBilling( def app ) {
 		def r = [:];
-        	r.app = [apptype:app.apptype, appyear:app.appyear, dtfiled:app.dtfiled, appno:app.appno]; 
-        	r.billdate = dateSvc.getBasicServerDate();
-        	r.applicationid = app.objid;
+    	r.app = [apptype:app.apptype, appyear:app.appyear, dtfiled:app.dtfiled, appno:app.appno]; 
+    	r.billdate = dateSvc.getBasicServerDate();
+    	r.applicationid = app.objid;
+
 		def z = svc.getBillingForPayment( r ); 
         z.amount = numSvc.round( z.totals.total );
 		return z;
@@ -50,9 +51,18 @@ class BusinessOnlineWorkflowInterceptor {
 			m.txntype = 'bpls';
 			m.action = 'bill';
 			m.mobileno = mobileno;
-			notifierSvc.sendSMS( m )
+			self.sendSMS( m ); 
 		}
 	}
 
-
+	@Async 
+	@ProxyMethod(local=true) 
+	void sendSMS( m ) { 
+		try { 
+			notifierSvc.sendSMS( m ); 
+		} catch(Throwable t) { 
+			println 'failed to send SMS caused by '+ t.message; 
+			t.printStackTrace(); 
+		} 
+	} 
 }

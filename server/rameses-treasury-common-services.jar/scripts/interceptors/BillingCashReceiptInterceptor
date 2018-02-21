@@ -27,6 +27,8 @@ public class BillingReceiptInterceptor {
 		def pmtName = receipt.collectiontype?.handler + "_payment";
 		def schema = null; 
 		try { schema = db.schemaManager.getElement( pmtName ); } catch(ign) {;} 
+		if ( !schema ) return null; 
+		
 		if( schema.properties.autopost == "true" ) {
 			return schema;
 		}	

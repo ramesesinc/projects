@@ -47,7 +47,7 @@ class AFTxnService  {
 	@ProxyMethod
 	public void addBatch( def o ) { 
 		def txndate = dateSvc.getServerDate();
-		def afi = aftxnItem.find([objid: o.refitemid] ).select("objid,item.objid,unit,qtyserved,qty,txntype,parent.*,afunit.*").first();
+		def afi = aftxnItem.find([objid: o.refitemid] ).select("objid,item.objid,unit,qtyserved,qty,txntype,cost,parent.*,afunit.*").first();
 
 		if( (afi.qtyserved + o.qty) > afi.qty )
 			throw new Exception("qty specified must not exceed the unserved qty");

@@ -42,6 +42,13 @@ class RemittanceFundModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
+    
+    def getPrintFormData() {
+        entity.totalnoncash = entity.totalcheck + entity.totalcr;
+        return entity;
+    } 
+    
+    
     def doCancel() {
         return "_close";
     }

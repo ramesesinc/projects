@@ -1,15 +1,15 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
           schemaName="cashreceipt"
-          cols="receiptno,receiptdate,stub,paidby,amount,voided,collector.name" 
+          cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name" 
           allowCreate="false" allowDelete="false" orderBy="receiptno,receiptdate">
     
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" caption="Cash Receipts List" action="init"
                  role="SHARED" />
         
-        <invoker type="cashreceipt_list:unremitted" caption="Cash Receipt List" action="init" 
-                 customFilter="remittanceid IS NULL"
-                 target="popup"/>
+        <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
+                 customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
+                 target="popup" width="1024"/>
    </invokers>
       
 </workunit>

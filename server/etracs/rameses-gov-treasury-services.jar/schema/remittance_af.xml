@@ -5,7 +5,7 @@
 		<field name="remittanceid" required="true"/>
 		<field name="controlid" required="true"/>
 
-		<complex name="afcontrol" ref="af_control" jointype="many-to-one" includefields="afid">
+		<complex name="afcontrol" ref="af_control" jointype="many-to-one" includefields="afid,stubno">
 			<key field="controlid" target="objid"/>
 		</complex>
 			

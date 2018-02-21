@@ -1,0 +1,60 @@
+import com.rameses.annotations.*;
+
+class RemittanceInterceptor {
+
+	@Service("NumberService")
+	def numSvc;
+
+	/*
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'remittance' }")
+	public void getNodes( evt ) { 
+		def x = evt.args[0];
+		def result = evt.result;
+		if( x._tag == "AFO" ) {
+			result << [  title: 'Open', state:'OPEN' ];
+			result << [  title: 'Issued', state:'ISSUED' ];
+			result << [  title: 'Sold', state:'SOLD' ];
+			result << [  title: 'Consumed', state:'CLOSED' ];
+			result << [  title: 'Cancelled', state:'CANCELLED' ];
+			result << [  title: 'Processing', state:'PROCESSING' ];
+		} 
+		else if( x._tag == 'COLLECTION' ) {
+			result << [  title: 'Open', state:'ISSUED' ];
+			result << [  title: 'Consumed', state:'CONSUMED' ];
+			result << [  title: 'Cancelled', state:'CANCELLED' ];
+		}
+	}
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'remittance' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+
+		if( !o.node?.state ) return;
+
+		//o.debug = true;
+		def str = "";
+		def m = [:]; 
+
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		} 
+	}	
+	*/
+
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'remittance' }" )
+	public void afterRead(def evt) {
+		def p = evt.args[0];
+
+		if( p.amount < 1 ) { 
+			def amount = Long.parseLong( p.amount.toString().split("\\.")[1] )
+			p.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS";
+		} else 
+			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
+
+	}
+}

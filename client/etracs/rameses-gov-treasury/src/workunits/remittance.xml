@@ -1,4 +1,5 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="remittance">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="remittance" 
+          allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker type="remittance:open" 
                  caption="Remittance" 

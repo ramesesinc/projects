@@ -4,15 +4,15 @@
  */
 package com.rameses.enterprise.treasury.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
 @StyleSheet
 public class RemittanceFundPage extends javax.swing.JPanel {
 

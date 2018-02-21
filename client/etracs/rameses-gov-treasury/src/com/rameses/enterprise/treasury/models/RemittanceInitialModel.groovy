@@ -41,7 +41,11 @@ class RemittanceInitialModel extends CrudListModel {
             return summaryList;
         },
         onOpenItem: {o,col->
-            return Inv.lookupOpener("cashreceipt_list:unremitted", [entity: o] );
+            def p = [:];
+            p.put( "query.afcontrolid", o.afcontrolid );
+            p.put( "query.fromseries", o.fromseries );
+            p.put( "query.toseries", o.toseries );
+            return Inv.lookupOpener("cashreceipt_list:afseries", p );
         }
     ] as BasicListModel;
     

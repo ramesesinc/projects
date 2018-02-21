@@ -33,9 +33,9 @@ class AFTxnInterceptor {
 		o.user = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
 		o.org = [objid:env.ORGID, name:env.ORGNAME];
 		o.controlno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
-		o.dtfiled = dateSvc.serverDate;
 		o.state = "DRAFT";
 		o.txndate = dateSvc.serverDate;
+		if ( !o.dtfiled ) o.dtfiled = o.txndate; 
 
 		if( o.request ) {
 			afReq.find( [objid: o.request.objid ]).update( [state:'CLOSED']);
@@ -72,8 +72,4 @@ class AFTxnInterceptor {
 			r.remarks = r.items.collect{ i-> i.startseries + "-" + i.endseries +";" }.join(","); 
 		}
 	}
-
-
-
-
 }

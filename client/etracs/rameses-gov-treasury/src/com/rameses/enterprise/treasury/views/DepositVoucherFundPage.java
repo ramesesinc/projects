@@ -215,6 +215,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
+        xDataTable2.setDynamic(true);
         xDataTable2.setHandler("depositSlipList");
         xDataTable2.setName("selectedDepositSlip"); // NOI18N
 

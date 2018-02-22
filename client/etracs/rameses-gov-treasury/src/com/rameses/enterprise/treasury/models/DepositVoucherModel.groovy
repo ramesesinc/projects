@@ -49,15 +49,54 @@ class DepositVoucherModel extends CrudFormModel {
     
     def assignCheck() {
         if(!selectedFund) throw new Exception("Please select a fund");
-        MsgBox.alert( 'assign check');
+        def p = [:]; 
+        p.put("query.depositvoucherid", entity.objid );
+        p.onselect = { o->
+            def m = [depositvoucherid: entity.objid, fundid: selectedFund.fund.objid ];
+            m.items = o.collect{ [objid: it.objid] };
+            depositSvc.updateCheckToDeposit( m );
+            depositFundList.reload();
+        }
+        return Inv.lookupOpener("paymentcheck:undeposited:withoutfund:lookup", p );        
+    }
+    
+    def unassignCheck() {
+        if(!selectedFund) throw new Exception("Please select a fund");
+        def p = [:]; 
+        p.put("query.depositvoucherid", entity.objid );
+        p.put("query.fundid", selectedFund.fund.objid );
+        p.onselect = { o->
+            def m = [depositvoucherid: entity.objid, fundid: "{NULL}" ];
+            m.items = o.collect{ [objid: it.objid] };
+            depositSvc.updateCheckToDeposit( m );
+            checkListModel.reload();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("paymentcheck:undeposited:withfund:lookup", p );
     }
     
     def assignCash() {
         if(!selectedFund) throw new Exception("Please select a fund");
         def h= { o->
-             MsgBox.alert(o);
+            def m = [depositvoucherid: entity.objid, fundid: selectedFund.fund.objid ];
+            m.totalcash = o;
+            depositSvc.updateCashToDeposit( m );
+            checkListModel.reload();
+            binding.refresh();
         }
         return Inv.lookupOpener("decimal:prompt", [value: selectedFund.totalcash, title:'Enter amount', handler: h ]);
+    }
+    
+    def assignCashier() {
+        if(!selectedFund) throw new Exception("Please select a fund");
+        def h= { o->
+            def m = [depositvoucherid: entity.objid, fundid: selectedFund.fund.objid ];
+            m.cashier = o;
+            depositSvc.assignCashier( m );
+            checkListModel.reload();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("cashier:lookup", [handler: h ]);
     }
     
     def checkListModel = [
@@ -88,34 +127,16 @@ class DepositVoucherModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    
-    /*
-    def getChecksWithoutFund() {
-        def m = [_schemaname: "paymentcheck"];
-        m.findBy = [depositid: entity.objid ];
-        m.where = ["depositfundid IS NULL"];
-        return queryService.getList( m );
+    public void submitForDeposit() {
+        if(! MsgBox.confirm("You are about to submit this for deposit. Continue?")) return;
+        def m = depositSvc.submitForDeposit( [objid: entity.objid ] );
+        entity.state = m.state;
     }
-    */
-    
-    /*
-    def post() {
-        //check first if there are checks with no funds
-        def list = getChecksWithoutFund();
-        if( list ) {
-            boolean pass = false;
-            def h = { 
-                //pass = true;
-            }
-            Modal.show( "deposit_check_select_fund", [list: list, depositid: entity.objid, handler : h]);
-            if( !pass ) return null;
-        }        
-        
-        def p = MsgBox.confirm("You are about to post this deposit. Proceed?");
-        if(!p) return null;
-        def m = [objid: entity.objid]
-        depositSvc.post( m );
-        MsgBox.alert('post success');
+
+    public void post() {
+        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
+        def m = depositSvc.post( [objid: entity.objid ] );
+        entity.state = m.state;
     }
-    */
+
 }    

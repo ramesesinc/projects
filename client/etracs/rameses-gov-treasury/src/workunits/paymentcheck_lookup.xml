@@ -23,10 +23,16 @@
          -->
          
          <!-- used in DepositVoucherFudModel -->
-         <invoker type="paymentcheck:depositvoucher_fund:lookup" caption="Lookup Cash Receipt (Without Fund)" 
+         <invoker type="paymentcheck:undeposited:withoutfund:lookup" caption="Lookup Check Payments (Without Fund)" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,amount"
                  hiddenCols="bank.objid" multiSelect="true"
                  customFilter=" depositvoucherid = :depositvoucherid AND fundid IS NULL AND  depositslipid IS NULL "/>
+         
+         <invoker type="paymentcheck:undeposited:withfund:lookup" caption="Lookup Payment Checks" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 customFilter=" depositvoucherid = :depositvoucherid AND fundid = :fundid AND  depositslipid IS NULL "/>
     </invokers>
 </workunit>

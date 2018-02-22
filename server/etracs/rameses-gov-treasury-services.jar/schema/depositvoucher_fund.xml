@@ -22,6 +22,12 @@
 		<field name="cashtodeposit" required="true" type="decimal"/>
 		<field name="checktodeposit" required="true" type="decimal"/>
 
-		<field name="balance" expr="amount-(totalcash+totalcheck)"  type="decimal"/>
+		<field name="todepositbalance" expr="amount-(cashtodeposit+checktodeposit)"  type="decimal"/>
+		<field name="undepositedbalance" expr="amount-(totalcash+totalcheck)"  type="decimal"/>
+
+		<field name="cashier_objid" />
+		<field name="cashier_name" />
+		<field name="cashier_title" />
+
 	</element>
 </schema>

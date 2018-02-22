@@ -76,20 +76,25 @@ class DepositVoucherFundModel extends CrudFormModel {
         p.onselect = { o->
             def m = [depositvoucherid: entity.parentid, fundid: entity.fund.objid ];
             m.items = o.collect{ [objid: it.objid] };
-            depositSvc.updatePaymentCheckFund( m );
+            depositSvc.updateCheckToDeposit( m );
             checkListModel.reload();
             binding.refresh();
         }
-        return Inv.lookupOpener("paymentcheck:depositvoucher_fund:lookup", p );
+        return Inv.lookupOpener("paymentcheck:undeposited:withoutfund:lookup", p );
     }
     
     def removeCheck() {
-        if( !selectedCheck) throw new Exception("Please select a check");
-        def m = [depositvoucherid: entity.parentid, fundid: "{NULL}" ];
-        m.items = [ [objid: selectedCheck.objid] ];
-        depositSvc.updatePaymentCheckFund( m );
-        checkListModel.reload();
-        binding.refresh();
+        def p = [:]; 
+        p.put("query.depositvoucherid", entity.parentid );
+        p.put("query.fundid", entity.fund.objid );
+        p.onselect = { o->
+            def m = [depositvoucherid: entity.parentid, fundid: "{NULL}" ];
+            m.items = o.collect{ [objid: it.objid] };
+            depositSvc.updateCheckToDeposit( m );
+            checkListModel.reload();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("paymentcheck:undeposited:withfund:lookup", p );
     }
     
 }    

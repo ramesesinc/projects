@@ -16,8 +16,9 @@
                  action="open" target="popup" 
                  />
         
-        <invoker type="formActions" caption="Approve" action="print" visibleWhen="#{entity.state == 'DRAFT' &amp;&amp; mode!='create' }"/>
+        <invoker type="formActions" caption="Approve" action="approve" visibleWhen="#{entity.state == 'DRAFT' &amp;&amp; mode!='create' }"/>
         <invoker type="formActions" caption="Print" action="print" visibleWhen="#{entity.state == 'APPROVED' }"/>
+        <invoker type="formActions" caption="Validate" action="validate" visibleWhen="#{entity.state == 'APPROVED' }"/>
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.DepositSlipModel" />

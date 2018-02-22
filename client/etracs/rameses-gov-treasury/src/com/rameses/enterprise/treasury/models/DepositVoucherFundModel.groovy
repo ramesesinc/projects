@@ -12,6 +12,9 @@ class DepositVoucherFundModel extends CrudFormModel {
     @Service("DepositVoucherService")
     def depositSvc;    
     
+    @Service("DepositSlipService")
+    def depositSlipSvc;  
+    
     def selectedDepositSlip;
     def selectedCheck;
 
@@ -32,7 +35,6 @@ class DepositVoucherFundModel extends CrudFormModel {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
         def p = [:];
         p.entity = selectedDepositSlip;
-        p.cashtodeposit = entity.cashtodeposit - entity.totalcash;
         p.handler = {
             open();
             binding.refresh();
@@ -45,13 +47,20 @@ class DepositVoucherFundModel extends CrudFormModel {
     def addDepositSlip() {
         def amt = entity.amount - ( entity.totalcheck + entity.totalcash );
         def p = [depositvoucherid: entity.parentid, fundid: entity.fund.objid, amount: amt ];
-        p.cashtodeposit = entity.cashtodeposit - entity.totalcash; 
         p.handler = {
             open();
             binding.refresh();
         }
         return Inv.lookupOpener("depositslip:create", p );
     }
+    
+    void removeDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        depositSlipSvc.removeDepositSlip( selectedDepositSlip );
+        open();
+        binding.refresh();
+    }
+    
     
     def validateDeposit() {
         if( !selectedDepositSlip ) throw new Exception("Please choose a bank deposit entry");

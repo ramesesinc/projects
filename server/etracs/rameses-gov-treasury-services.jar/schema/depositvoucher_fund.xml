@@ -22,12 +22,14 @@
 		<field name="cashtodeposit" required="true" type="decimal"/>
 		<field name="checktodeposit" required="true" type="decimal"/>
 
-		<field name="todepositbalance" expr="amount-(cashtodeposit+checktodeposit)"  type="decimal"/>
-		<field name="undepositedbalance" expr="amount-(totalcash+totalcheck)"  type="decimal"/>
-
+		
 		<field name="cashier_objid" />
 		<field name="cashier_name" />
 		<field name="cashier_title" />
+
+		<complex name="parent" ref="depositvoucher" jointype="many-to-one" includefields="controldate,state">
+			<key field="parentid" target="objid"/>
+		</complex>	
 
 	</element>
 </schema>

@@ -1,6 +1,6 @@
 import com.rameses.annotations.*;
 
-class CashReceiptCheckListInterceptor {
+class PaymentCheckListInterceptor {
 
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'paymentcheck' }")
 	public void getNodes( evt ) { 
@@ -22,11 +22,11 @@ class CashReceiptCheckListInterceptor {
 
 		switch(o.node.id) {
 			case "undposited":
-				str = "bankdepositid IS NULL";
+				str = "depositslipid IS NULL";
 				break;
 
 			case "deposited":
-				str = "NOT( bankdepositid IS NULL )";
+				str = "NOT( depositslipid IS NULL )";
 				break;
 		}
 

@@ -84,7 +84,8 @@ class DepositVoucherModel extends CrudFormModel {
             checkListModel.reload();
             binding.refresh();
         }
-        return Inv.lookupOpener("decimal:prompt", [value: selectedFund.totalcash, title:'Enter amount', handler: h ]);
+        def amt = selectedFund.amount - selectedFund.checktodeposit;
+        return Inv.lookupOpener("decimal:prompt", [value: amt, title:'Enter amount', handler: h ]);
     }
     
     def assignCashier() {
@@ -96,7 +97,7 @@ class DepositVoucherModel extends CrudFormModel {
             checkListModel.reload();
             binding.refresh();
         }
-        return Inv.lookupOpener("cashier:lookup", [handler: h ]);
+        return Inv.lookupOpener("cashier:lookup", [onselect: h ]);
     }
     
     def checkListModel = [

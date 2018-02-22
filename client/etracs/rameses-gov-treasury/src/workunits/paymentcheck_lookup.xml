@@ -1,11 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="paymentcheck" allowDelete="false"
-           allowCreate="false" allowOpen="false">
+           allowOpen="false">
     <invokers>
        
         <invoker type="paymentcheck_split:lookup" caption="Lookup Cash Receipt" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,balance"
-                 hiddenCols="bank.objid"
+                 hiddenCols="bank.objid" allowCreate="true" 
                     customFilter=" amount - amtused > 0 AND depositvoucherid IS NULL"/>
         
         <invoker type="paymentcheck_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
@@ -27,12 +27,14 @@
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,amount"
                  hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
                  customFilter=" depositvoucherid = :depositvoucherid AND fundid IS NULL AND  depositslipid IS NULL "/>
          
          <invoker type="paymentcheck:undeposited:withfund:lookup" caption="Lookup Payment Checks" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,amount"
                  hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
                  customFilter=" depositvoucherid = :depositvoucherid AND fundid = :fundid AND  depositslipid IS NULL "/>
     </invokers>
 </workunit>

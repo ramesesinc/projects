@@ -6,13 +6,13 @@
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,balance"
                  hiddenCols="bank.objid"
-                    customFilter=" amount - amtused > 0 AND depositid IS NULL"/>
+                    customFilter=" amount - amtused > 0 AND depositvoucherid IS NULL"/>
         
         <invoker type="paymentcheck_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,amount"
                  hiddenCols="bank.objid" multiSelect="true"
-                    customFilter=" bankdepositid IS NULL "/>
+                    customFilter=" depositslipid IS NULL "/>
         
         <!--
          <invoker type="paymentcheck:depositfund:lookup" caption="Lookup Undeposited Cash Receipt" 

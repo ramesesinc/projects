@@ -166,7 +166,7 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xButton1.setImmediate(true);
         xButton1.setName("addCheck"); // NOI18N
         xButton1.setText("Add Check");
-        xButton1.setVisibleWhen("#{ editable == true }");
+        xButton1.setVisibleWhen("#{ entity.state == 'DRAFT' }");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Cash Breakdown");
@@ -196,12 +196,12 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xButton2.setImmediate(true);
         xButton2.setName("removeCheck"); // NOI18N
         xButton2.setText("Remove Check");
-        xButton2.setVisibleWhen("#{ editable == true }");
+        xButton2.setVisibleWhen("#{ entity.state == 'DRAFT' }");
 
         xButton3.setImmediate(true);
         xButton3.setName("updateCash"); // NOI18N
         xButton3.setText("Update Cash");
-        xButton3.setVisibleWhen("#{ editable == true }");
+        xButton3.setVisibleWhen("#{ entity.state == 'DRAFT' }");
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);

@@ -160,7 +160,7 @@
             <Property name="immediate" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="addCheck" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Add Check"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ editable == true }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.state == &apos;DRAFT&apos; }"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel2">
@@ -207,7 +207,7 @@
             <Property name="immediate" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="removeCheck" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Remove Check"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ editable == true }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.state == &apos;DRAFT&apos; }"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XButton" name="xButton3">
@@ -215,7 +215,7 @@
             <Property name="immediate" type="boolean" value="true"/>
             <Property name="name" type="java.lang.String" value="updateCash" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Update Cash"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ editable == true }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.state == &apos;DRAFT&apos; }"/>
           </Properties>
         </Component>
       </SubComponents>

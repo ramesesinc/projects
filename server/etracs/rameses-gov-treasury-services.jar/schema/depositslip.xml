@@ -3,6 +3,8 @@
 	<element tablename="depositslip">
 		<field name="objid" primary="true" prefix="BNKDEP"/>
 		<field name="depositvoucherid" required="true"/> 
+
+		<field name="state" required="true" defaultvalue="DRAFT"/> 
 		<field name="fundid" required="true"/> 
 		<field name="createdby_objid" required="true"/> 
 		<field name="createdby_name" required="true"/> 

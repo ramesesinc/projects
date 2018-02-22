@@ -36,5 +36,21 @@
                  hiddenCols="bank.objid" multiSelect="true"
                  allowCreate="false" 
                  customFilter=" depositvoucherid = :depositvoucherid AND fundid = :fundid AND  depositslipid IS NULL "/>
+         
+         <!-- check for deposit -->
+         <invoker type="paymentcheck:undeposited:withoutdepositslip:lookup" caption="Lookup Payment Checks For Deposit" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
+                 customFilter=" depositvoucherid = :depositvoucherid AND fundid = :fundid AND depositslipid IS NULL "/>
+
+         <invoker type="paymentcheck:undeposited:withdepositslip:lookup" caption="Lookup Payment Checks" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
+                 customFilter="  depositslipid = :depositslipid "/>
+
     </invokers>
 </workunit>

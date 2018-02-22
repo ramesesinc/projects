@@ -5,42 +5,46 @@ import java.rmi.server.*;
 class DepositSlipService  {
 
 	@DataContext("depositslip")
-	def bankDepositEm;
+	def depositSlipEm;
 
 	@DataContext("paymentcheck")
 	def paymentCheckEm;
 
 	@ProxyMethod
-	public def updateCheckBankDeposit( def o ) {
-		if(!o.bankdepositid) throw new Exception("BankDepositService.updateCheckBankDeposit error. bankdepositid is required");
-		if(!o.items) throw new Exception("BankDepositService.updateCheckBankDeposit error. items is required");
+	public def updateCheckTotal( def o ) {
+		if(!o.items) throw new Exception( "items is required");
+		if(!o.depositslipid) throw new Exception( "depositslipid is required");
 		o.items.each {
-			paymentCheckEm.find([objid: it]).update( [ bankdepositid: o.bankdepositid ]);
+			paymentCheckEm.find([ objid:it.objid ]).update( [depositslipid: o.depositslipid ] );
 		}
-		def totalCheck = paymentCheckEm.find( [bankdepositid: o.bankdepositid ] ).select("t:{SUM(amount)}").groupBy("bankdepositid").val();
-		bankDepositEm.find( [objid: o.bankdepositid]).update([totalcheck: totalCheck]);
-		return [totalcheck: totalCheck];
+		def z = [ depositslipid: o.depositslipid ];
+		depositSlipEm.updateCheckTotal( z );
+		depositSlipEm.cleanUpNullTotals( z );
+		def c = depositSlipEm.find( [objid: o.depositslipid ]).first();
+		depositSlipEm.updateFundCheckTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
+		return c;
 	}
 
 	@ProxyMethod
-	public def removeCheckBankDeposit( def o ) {
-		if(!o.items) throw new Exception("BankDepositService.updateCheckBankDeposit error. items is required");
+	public def removeCheck( def o ) {
+		if(!o.items) throw new Exception( "items is required");
+		if(!o.depositslipid) throw new Exception( "depositslipid is required");
 		o.items.each {
-			paymentCheckEm.find([objid: it]).update( [ bankdepositid: "{NULL}" ]);
+			paymentCheckEm.find([ objid:it.objid ]).update( [depositslipid: "{NULL}" ] );
 		}
-		def totalCheck = paymentCheckEm.find( [bankdepositid: o.bankdepositid ] ).select("t:{SUM(amount)}").groupBy("bankdepositid").val();
-		bankDepositEm.find( [objid: o.bankdepositid]).update([totalcheck: totalCheck]);
-		return [totalcheck: totalCheck];
+		def z = [ depositslipid: o.depositslipid ];
+		depositSlipEm.updateCheckTotal( z );
+		depositSlipEm.cleanUpNullTotals( z );
+		def c = depositSlipEm.find( [objid: o.depositslipid ]).first();
+		depositSlipEm.updateFundCheckTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
+		return c;
 	}
 
 	@ProxyMethod
-	public def updateCash( def o ) {
-		if(!o.bankdepositid) throw new Exception("BankDepositService.updateCash error. bankdepositid is required");
-		if(!o.cashbreakdown) throw new Exception("BankDepositService.updateCash error. cashbreakdown is required");
-		if(!o.totalcash) throw new Exception("BankDepositService.updateCash error. totalcash is required");
-
-		bankDepositEm.find( [objid: o.depositid] ).update(  [totalcash:o.totalcash, cashbreakdown:o.cashbreakdown]);
-		return o;
+	public void updateCashTotal( def o ) {
+		if(!o.depositslipid) throw new Exception( "depositslipid is required");
+		if(!o.containsKey('totalcash')) throw new Exception( "totalcash is required");
+		depositSlipEm.find( [objid: o.depositslipid ]).update( [totalcash: o.totalcash ] );
 	}
 
 }

@@ -30,17 +30,27 @@ class DepositVoucherFundModel extends CrudFormModel {
 
     def viewDepositSlip() {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        def op = Inv.lookupOpener("depositslip:open", [entity: selectedDepositSlip] );
+        def p = [:];
+        p.entity = selectedDepositSlip;
+        p.cashtodeposit = entity.cashtodeposit - entity.totalcash;
+        p.handler = {
+            open();
+            binding.refresh();
+        }
+        def op = Inv.lookupOpener("depositslip:open", p );
         op.target = "popup";
         return op;
     }
     
     def addDepositSlip() {
-        def h = {
-            MsgBox.alert('saved deposit');
-        } 
         def amt = entity.amount - ( entity.totalcheck + entity.totalcash );
-        return Inv.lookupOpener("depositslip:create", [depositvoucherid: entity.parentid, fundid: entity.fund.objid, amount: amt, handler: h ] )
+        def p = [depositvoucherid: entity.parentid, fundid: entity.fund.objid, amount: amt ];
+        p.cashtodeposit = entity.cashtodeposit - entity.totalcash; 
+        p.handler = {
+            open();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("depositslip:create", p );
     }
     
     def validateDeposit() {
@@ -70,6 +80,9 @@ class DepositVoucherFundModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
+    
+    
+    /*
     def addCheck() {
         def p = [:]; 
         p.put("query.depositvoucherid", entity.parentid );
@@ -96,5 +109,5 @@ class DepositVoucherFundModel extends CrudFormModel {
         }
         return Inv.lookupOpener("paymentcheck:undeposited:withfund:lookup", p );
     }
-    
+    */
 }    

@@ -1,4 +1,5 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositvoucher_fund" allowCreate="true" allowEdit="false">
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositvoucher_fund" 
+            allowCreate="false" allowEdit="false">
     <invokers>
         <invoker type="depositvoucher_fund:open" 
                  caption="Deposit Voucher Fund" 

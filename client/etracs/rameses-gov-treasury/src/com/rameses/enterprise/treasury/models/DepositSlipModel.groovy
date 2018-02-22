@@ -9,17 +9,23 @@ import com.rameses.seti2.models.*;
 
 class DepositSlipModel extends CrudFormModel {
 
-    @Service("DepositService")
-    def depositSvc;
+    @Service("DepositSlipService")
+    def depositSlipSvc;
+    
+    def amount;
+    def cashtodeposit;
+    def checktodeposit;
+    def handler;
     
     def depositvoucherid;
     def fundid; 
-    def amount;
+    
     boolean editable = true;
     def selectedItems = []; 
     def selectedCheck;
 
     void afterCreate() {
+       entity.state = "DRAFT";
        entity.depositvoucherid = depositvoucherid;
        entity.fundid = fundid;
        entity.amount = amount;
@@ -27,6 +33,12 @@ class DepositSlipModel extends CrudFormModel {
        entity.totalcheck = 0;
        entity.cashbreakdown = [];
     } 
+    
+    public void beforeSave(def mode){
+        if(mode == "create") {
+            if( amount < entity.amount ) throw new Exception("Amount must be less than amount to deposit");
+        }
+    }
     
     def getBankAccountLookup() {
        def h = { o->
@@ -43,7 +55,7 @@ class DepositSlipModel extends CrudFormModel {
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("checkpayment:open", [entity: o] );
+            def op = Inv.lookupOpener("paymentcheck:open", [entity: o] );
             op.target = "popup";
             return op;
         }
@@ -52,24 +64,27 @@ class DepositSlipModel extends CrudFormModel {
     def addCheck() {
         def h = { o->
             def p = [depositslipid: entity.objid];
-            p.items = o.collect{ it.objid };
-            def z = bankDepositSvc.updateCheckBankDeposit( p );
+            p.items = o.collect{ [objid: it.objid ] };
+            def z = depositSlipSvc.updateCheckTotal( p );
             entity.totalcheck = z.totalcheck;
             binding.refresh("entity.totalcheck");
             checkListModel.reload();
+            handler();
         }
         def p = [multiSelect: true, onselect: h];
-        p.put( "query.depositfundid", entity.depositfundid );
-        return Inv.lookupOpener( "paymentcheck:depositfund:lookup", p );
+        p.put( "query.depositvoucherid", entity.depositvoucherid );
+        p.put( "query.fundid", entity.fundid );
+        return Inv.lookupOpener( "paymentcheck:undeposited:withoutdepositslip:lookup", p );
     }
     
     def removeCheck() {
         if(!selectedCheck) throw new Exception("Select a check to remove");
         def p = [depositslipid: entity.objid];
-        p.items = [ selectedCheck.objid ];
-        def z = bankDepositSvc.removeCheckBankDeposit( p );
+        p.items = [ [objid: selectedCheck.objid] ];
+        def z = depositSlipSvc.removeCheck( p );
         entity.totalcheck = z.totalcheck;
         binding.refresh("entity.totalcheck");
+        handler();
     }
     
     def updateCash() {
@@ -82,14 +97,13 @@ class DepositSlipModel extends CrudFormModel {
             entity.totalcash = m.totalcash;
             entity.cashbreakdown = m.cashbreakdown;
             binding.refresh();
+            handler();
         }
         p.cashbreakdown = entity.cashbreakdown;
-        p.total = entity.totalcash;
+        p.total = cashtodeposit;
+        MsgBox.alert( 'cash to deposit ' + cashtodeposit);
         return Inv.lookupOpener( "cashbreakdown", p );
     }
     
-    def doCancel() {
-        return "_close";
-    }
     
 }    

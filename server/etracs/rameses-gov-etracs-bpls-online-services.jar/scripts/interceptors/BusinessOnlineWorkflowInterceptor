@@ -5,7 +5,7 @@ class BusinessOnlineWorkflowInterceptor {
 	@DataContext("business_application")
 	def appEm;
 
-	@Service(value="PartnerNotificationService", connection="gdx-service")
+	@Service(value="PartnerNotificationService", connection="gdx_proxy")
 	def notifierSvc;
 
 	@Service("OrgService")

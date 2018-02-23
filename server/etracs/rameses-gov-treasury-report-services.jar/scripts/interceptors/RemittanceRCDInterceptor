@@ -1,0 +1,50 @@
+import com.rameses.annotations.*;
+
+class RemittanceRCDInterceptor {
+
+	@DataContext('remittance')
+	def rem_em; 
+	
+	@ActiveDB('rcd_report') 
+	def rcd_em; 
+
+	@After(pattern="RemittanceService.getReportData")
+	void getReportData( evt ) { 
+		def result = evt.result; 
+		def p = [ remittanceid: result.objid ]; 
+		result.collectiontype = rcd_em.getCollectionTypes( p ); 
+		result.collectiontype.each { 
+			if ( it.formtype != 'serial' ) { 
+				it.formno = it.formno.toString() +' STUB #' + it.stubno; 
+			} 
+		} 
+
+		result.collectionsummaries = rcd_em.getCollectionSummaries( p ); 
+		result.collectionsummaries.each {
+			it.particulars = 'AF#'+ it.formno.toString() +':'+ it.collectiontypetitle +'-'+ it.fundtitle; 
+		}
+
+		result.payments = rcd_em.getOtherPayments( p ); 
+		resolveCompatibility( result ); 
+	} 
+
+	private void resolveCompatibility( result ) {
+		// 
+		// to support older report 
+		// 
+		result.otherpayments = result.payments; 
+
+		def reminfo = rem_em.find([ objid: result.objid ]).select('cashbreakdown').first(); 
+		if ( reminfo.cashbreakdown ) {
+			def denoms = [ 1000, 500, 200, 100, 50, 20, 10, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01 ]; 
+			denoms.each{ d-> 
+				def dd = reminfo.cashbreakdown.find{( it.denomination == d )} 
+				if ( dd ) {
+					def str = d.toString().replace('.',''); 
+					result.put("dqty"+ str, dd.qty ); 
+					result.put("damt"+ str, dd.amount); 
+				}
+			}
+		}
+	}
+} 

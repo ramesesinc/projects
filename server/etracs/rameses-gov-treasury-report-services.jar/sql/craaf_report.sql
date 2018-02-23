@@ -105,7 +105,7 @@ from (
           group by afd.controlid, afc.endseries  
 
         )tmp1 
-        group by tmp1.controlid, tmp1.endseries  
+        group by tmp1.controlid 
 
       )tmp2 
 

@@ -137,5 +137,8 @@ class RemittanceService  {
 		remEm.find( [objid: o.objid ] ).update( [ state: 'POSTED' ] );
 	}
 
-
+	@ProxyMethod 
+	public def getReportData( params ) { 
+		return params; 
+	} 
 }

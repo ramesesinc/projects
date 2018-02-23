@@ -44,12 +44,33 @@ class DepositSlipService  {
 	public void updateCash( def o ) {
 		if(!o.depositslipid) throw new Exception( "depositslipid is required");
 		if(!o.containsKey('totalcash')) throw new Exception( "totalcash is required");
-		def u =  [totalcash: o.totalcash ] ; 
-		if ( o.cashbreakdown ) u.cashbreakdown = o.cashbreakdown; 
-		depositSlipEm.find( [objid: o.depositslipid ]).update( u );
+		if(!o.cashbreakdown) throw new Exception( "cash breakdown is required");
 
+		def u = [totalcash: o.totalcash, cashbreakdown: o.cashbreakdown ];
+		depositSlipEm.find( [objid: o.depositslipid ]).update( u );
 		def c = depositSlipEm.find( [objid: o.depositslipid ]).first();
 		depositSlipEm.updateFundCashTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
+	}
+
+	@ProxyMethod
+	public void removeDepositSlip( def o ) {
+		def c = depositSlipEm.find( [objid: o.objid ]).first();
+		depositSlipEm.find([objid: c.objid]).delete();
+		depositSlipEm.updateFundCheckTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
+		depositSlipEm.updateFundCashTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
+		depositSlipEm.cleanUpNullFundTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] )
+	}
+
+	@ProxyMethod
+	public void approve( def o ) {
+		depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ]);
+	}
+
+	@ProxyMethod
+	public void validate( def o ) {
+		if(!o.objid) throw new Exception( "objid is required");
+		if(!o.validation) throw new Exception( "validation is required");
+		depositSlipEm.find([objid: o.objid]).update( [state: 'VALIDATED', validation: o.validation ]);
 	}
 
 }

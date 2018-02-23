@@ -79,9 +79,15 @@ class DepositVoucherService  {
 		if(!o.fundid) throw new Exception( "fundid is required");
 		if(!o.depositvoucherid) throw new Exception( "depositvoucherid is required");
 		if(!o.containsKey('cashier') ) throw new Exception( "cashier is required");
-		depositFundEm.debug = true;
 		depositFundEm.find( [parentid: o.depositvoucherid, fundid: o.fundid ]).update( [cashier: o.cashier ] );
 	}
+
+	@ProxyMethod
+	public void removeDepositSlip( def o ) {
+		depositSlipEm.find([objid: o.objid]).delete();
+		
+	}
+
 
 	@ProxyMethod
 	public def submitForDeposit( def o ) {

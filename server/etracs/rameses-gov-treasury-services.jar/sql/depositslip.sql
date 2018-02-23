@@ -33,3 +33,19 @@ UPDATE depositvoucher_fund
    )
 WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}  
 
+[updateFundCashTotals]
+UPDATE depositvoucher_fund 
+   SET totalcash = (
+      SELECT SUM( ds.totalcash )
+      FROM depositslip ds 
+      WHERE ds.depositvoucherid = depositvoucher_fund.parentid 
+      AND ds.fundid = depositvoucher_fund.fundid 
+   )
+WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}  
+
+[cleanUpNullFundTotals]
+UPDATE depositvoucher_fund 
+SET 
+    totalcheck = CASE WHEN totalcheck IS NULL THEN 0 ELSE totalcheck END,
+    totalcash = CASE WHEN totalcash IS NULL THEN 0 ELSE totalcash END
+WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}

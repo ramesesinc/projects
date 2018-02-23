@@ -6,17 +6,13 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-
 class DepositSlipModel extends CrudFormModel {
 
     @Service("DepositSlipService")
     def depositSlipSvc;
     
     def amount;
-    def cashtodeposit;
-    def checktodeposit;
     def handler;
-    
     def depositvoucherid;
     def fundid; 
     
@@ -87,6 +83,10 @@ class DepositSlipModel extends CrudFormModel {
         handler();
     }
     
+    def getCashToDeposit() {
+        return entity.amount - entity.totalcheck;
+    }
+    
     def updateCash() {
         def p = [:];
         p.handler = { o->
@@ -94,13 +94,31 @@ class DepositSlipModel extends CrudFormModel {
             m.totalcash = o.total;
             m.cashbreakdown = o.cashbreakdown;
             depositSlipSvc.updateCash( m );
+            entity.totalcash = m.totalcash;
+            entity.cashbreakdown = m.cashbreakdown;
             binding.refresh();
             handler();
         }
         p.cashbreakdown = entity.cashbreakdown;
-        p.total = cashtodeposit;
+        p.total = getCashToDeposit();
         return Inv.lookupOpener( "cashbreakdown", p );
     }
     
+    void approve() {
+        depositSlipSvc.approve( [objid: entity.objid ] );
+        entity.state = 'APPROVED'
+    }
     
+    def validate() {
+        def h = { o->
+            def m = [objid: entity.objid ];
+            m.validation = [refno: o.refno, refdate: o.refdate ];
+            depositSlipSvc.validate( m );
+            entity.state = 'VALIDATED'
+            entity.validation = m.validation;
+            binding.refresh();
+            handler();
+        }    
+        return Inv.lookupOpener("deposit_validation", [ handler: h ] );
+    }
 }    

@@ -1,18 +1,17 @@
 <workunit schemaName="collectionvoucher">
     <invokers>
-        <!--
+       
         <invoker folderid="menucategory/treasury/remittance" 
-                 caption="New Collection Voucher" 
-                 windowTitle="New Collection Voucher"
-                 formTitle="New Collection Voucher"
-                 action="init" index="30"/>
-        -->
+                 caption="Prepare Collection Voucher" 
+                 windowTitle="Prepare Collection Voucher"
+                 formTitle="Prepare Collection Voucher"
+                 action="init" index="30" role="LIQUIDATING_OFFICER"/>
         
         <invoker type="collectionvoucher:create" 
                  caption="New Collection Voucher" 
                  windowTitle="New Collection Voucher"
                  formTitle="New Collection Voucher"
-                 action="init" index="30"/>
+                 action="init" index="30" role="LIQUIDATING_OFFICER"/>
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.CollectionVoucherInitialModel" />

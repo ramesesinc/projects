@@ -1,13 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="collectionvoucher" allowCreate="false">
     <invokers>
         <invoker folderid="menucategory/treasury/remittance" 
-                 caption="Collection Vouchers" 
+                 caption="View Collection Vouchers" 
                  windowTitle="Collection Vouchers"
                  formTitle="Collection Vouchers"
                  cols="controlno,controldate,liquidatingofficer.name,amount,state"
-                 action="init" target="window" index="32"/>
+                 action="init" target="window" index="32" role="LIQUIDATING_OFFICER"/>
         
-        <!-- actions -->
-        <invoker type="listActions" caption="Add New Voucher" action="create" role="LIQUIDATING_OFFICER"/>
-    </invokers>
+   </invokers>
 </workunit>

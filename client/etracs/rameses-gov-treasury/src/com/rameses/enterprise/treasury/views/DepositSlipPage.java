@@ -4,14 +4,14 @@
  */
 package com.rameses.enterprise.treasury.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
 public class DepositSlipPage extends javax.swing.JPanel {
 
     /**
@@ -250,7 +250,6 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xLookupField2.setCaptionWidth(120);
         xLookupField2.setExpression("#{ entity.bankaccount.code } #{ entity.bankaccount.bank.name } ");
         xLookupField2.setHandler("bankAccountLookup");
-        xLookupField2.setName("#{entity.bankaccount.title}"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLookupField2);
 

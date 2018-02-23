@@ -41,10 +41,15 @@ class DepositSlipService  {
 	}
 
 	@ProxyMethod
-	public void updateCashTotal( def o ) {
+	public void updateCash( def o ) {
 		if(!o.depositslipid) throw new Exception( "depositslipid is required");
 		if(!o.containsKey('totalcash')) throw new Exception( "totalcash is required");
-		depositSlipEm.find( [objid: o.depositslipid ]).update( [totalcash: o.totalcash ] );
+		def u =  [totalcash: o.totalcash ] ; 
+		if ( o.cashbreakdown ) u.cashbreakdown = o.cashbreakdown; 
+		depositSlipEm.find( [objid: o.depositslipid ]).update( u );
+
+		def c = depositSlipEm.find( [objid: o.depositslipid ]).first();
+		depositSlipEm.updateFundCashTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
 	}
 
 }

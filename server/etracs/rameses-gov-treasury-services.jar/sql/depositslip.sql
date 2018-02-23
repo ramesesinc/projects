@@ -16,7 +16,17 @@ WHERE objid = $P{depositslipid}
 [updateFundCheckTotals]
 UPDATE depositvoucher_fund 
    SET totalcheck = (
-   		SELECT SUM( ds.totalcheck )
+      SELECT SUM( ds.totalcheck )
+      FROM depositslip ds 
+      WHERE ds.depositvoucherid = depositvoucher_fund.parentid 
+      AND ds.fundid = depositvoucher_fund.fundid 
+   )
+WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}  
+
+[updateFundCashTotals]
+UPDATE depositvoucher_fund 
+   SET totalcash = (
+   		SELECT SUM( ds.totalcash )
    		FROM depositslip ds 
    		WHERE ds.depositvoucherid = depositvoucher_fund.parentid 
    		AND ds.fundid = depositvoucher_fund.fundid 

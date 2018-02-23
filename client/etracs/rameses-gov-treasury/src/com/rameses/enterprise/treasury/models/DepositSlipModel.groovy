@@ -93,15 +93,12 @@ class DepositSlipModel extends CrudFormModel {
             def m = [depositslipid: entity.objid];
             m.totalcash = o.total;
             m.cashbreakdown = o.cashbreakdown;
-            m = bankDepositSvc.updateCash( m );
-            entity.totalcash = m.totalcash;
-            entity.cashbreakdown = m.cashbreakdown;
+            depositSlipSvc.updateCash( m );
             binding.refresh();
             handler();
         }
         p.cashbreakdown = entity.cashbreakdown;
         p.total = cashtodeposit;
-        MsgBox.alert( 'cash to deposit ' + cashtodeposit);
         return Inv.lookupOpener( "cashbreakdown", p );
     }
     

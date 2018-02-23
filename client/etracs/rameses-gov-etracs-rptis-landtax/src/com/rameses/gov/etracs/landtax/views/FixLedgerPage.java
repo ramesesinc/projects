@@ -43,12 +43,9 @@ public class FixLedgerPage extends javax.swing.JPanel {
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField4 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField6 = new com.rameses.rcp.control.XDecimalField();
+        xButton2 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
@@ -104,7 +101,7 @@ public class FixLedgerPage extends javax.swing.JPanel {
 
         xButton1.setDefaultCommand(true);
         xButton1.setName("fixLedger"); // NOI18N
-        xButton1.setText("Fix Ledger");
+        xButton1.setText("Update");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setPadding(new java.awt.Insets(25, 10, 10, 10));
@@ -132,16 +129,6 @@ public class FixLedgerPage extends javax.swing.JPanel {
         xDecimalField1.setRequired(true);
         xFormPanel3.add(xDecimalField1);
 
-        xDecimalField2.setCaption("Discount");
-        xDecimalField2.setName("info.basicdisctaken"); // NOI18N
-        xDecimalField2.setRequired(true);
-        xFormPanel3.add(xDecimalField2);
-
-        xDecimalField3.setCaption("Penalty");
-        xDecimalField3.setName("info.basicintpaid"); // NOI18N
-        xDecimalField3.setRequired(true);
-        xFormPanel3.add(xDecimalField3);
-
         xFormPanel5.add(xFormPanel3);
 
         xFormPanel4.setCaptionWidth(100);
@@ -153,21 +140,13 @@ public class FixLedgerPage extends javax.swing.JPanel {
         xDecimalField4.setRequired(true);
         xFormPanel4.add(xDecimalField4);
 
-        xDecimalField5.setCaption("Discount");
-        xDecimalField5.setDepends(new String[] {"info.basicdisctaken"});
-        xDecimalField5.setName("info.sefdisctaken"); // NOI18N
-        xDecimalField5.setRequired(true);
-        xFormPanel4.add(xDecimalField5);
-
-        xDecimalField6.setCaption("Penalty");
-        xDecimalField6.setDepends(new String[] {"info.basicintpaid"});
-        xDecimalField6.setName("info.sefintpaid"); // NOI18N
-        xDecimalField6.setRequired(true);
-        xFormPanel4.add(xDecimalField6);
-
         xFormPanel5.add(xFormPanel4);
 
         xFormPanel2.add(xFormPanel5);
+
+        xButton2.setAccelerator("_close");
+        xButton2.setName("_close"); // NOI18N
+        xButton2.setText("Cancel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -176,7 +155,10 @@ public class FixLedgerPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -189,22 +171,21 @@ public class FixLedgerPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
-    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XDecimalField xDecimalField4;
-    private com.rameses.rcp.control.XDecimalField xDecimalField5;
-    private com.rameses.rcp.control.XDecimalField xDecimalField6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;

@@ -54,9 +54,9 @@ from (
     inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
     inner join cashreceipt cr on rc.objid = cr.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid
-    inner join rptledger_payment_item cri on rp.objid = cri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid
+    inner join vw_rptpayment_item cri on rp.objid = cri.parentid
+    inner join rptledger rl on rp.refid = rl.objid 
     inner join barangay b on rl.barangayid = b.objid 
     left join district d on b.parentid = d.objid 
     left join city c on d.parentid = c.objid 
@@ -114,9 +114,9 @@ from (
     inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
     inner join cashreceipt cr on rc.objid = cr.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid
-    inner join rptledger_payment_item cri on rp.objid = cri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid
+    inner join vw_rptpayment_item cri on rp.objid = cri.parentid
+    inner join rptledger rl on rp.refid = rl.objid 
     inner join barangay b on rl.barangayid = b.objid 
     left join district d on b.parentid = d.objid 
     left join city c on d.parentid = c.objid 
@@ -190,9 +190,9 @@ from (
     inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
     inner join cashreceipt cr on rc.objid = cr.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid
-    inner join rptledger_payment_item cri on rp.objid = cri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid
+    inner join vw_rptpayment_item cri on rp.objid = cri.parentid
+    inner join rptledger rl on rp.refid = rl.objid 
     inner join barangay b on rl.barangayid = b.objid 
     left join district d on b.parentid = d.objid 
     left join city c on d.parentid = c.objid 
@@ -250,9 +250,9 @@ from (
     inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
     inner join cashreceipt cr on rc.objid = cr.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid
-    inner join rptledger_payment_item cri on rp.objid = cri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid
+    inner join vw_rptpayment_item cri on rp.objid = cri.parentid
+    inner join rptledger rl on rp.refid = rl.objid 
     inner join barangay b on rl.barangayid = b.objid 
     left join district d on b.parentid = d.objid 
     left join city c on d.parentid = c.objid 
@@ -278,9 +278,9 @@ select
     inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
     inner join cashreceipt cr on rc.objid = cr.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid
-    inner join rptledger_payment_item cri on rp.objid = cri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid 
+    inner join rptpayment rp on cr.objid = rp.receiptid
+    inner join vw_rptpayment_item cri on rp.objid = cri.parentid
+    inner join rptledger rl on rp.refid = rl.objid 
     inner join barangay b on rl.barangayid = b.objid 
     left join district d on b.parentid = d.objid 
     left join city c on d.parentid = c.objid 
@@ -321,9 +321,9 @@ select
     cri.sef - cri.sefdisc + cri.sefint + 
     cri.sh - cri.shdisc + cri.shint + 
     cri.firecode) as total
-from rptledger_payment rp
-  inner join rptledger_payment_item cri on rp.objid = cri.parentid
-  inner join rptledger rl on rp.rptledgerid = rl.objid 
+from rptpayment rp
+  inner join vw_rptpayment_item cri on rp.objid = cri.parentid
+  inner join rptledger rl on rp.refid = rl.objid 
   inner join barangay b on b.objid = rl.barangayid 
 where rp.receiptid=$P{objid}
 order by b.name, rl.tdno, rl.cadastrallotno, cri.year, cri.qtr

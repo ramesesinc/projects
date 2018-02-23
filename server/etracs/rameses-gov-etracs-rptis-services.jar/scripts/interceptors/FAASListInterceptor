@@ -13,7 +13,12 @@ class FAASListInterceptor
 	@After(pattern="FAASService.(createFaas|initOnlineTransaction|initNewDiscovery)", index=10000)
 	void afterCreateFaas(evt){
 		def faas = evt.result
-		em.insertFaasList(faas)
+		try{
+			em.insertFaasList(faas)
+		}
+		catch(Exception ex){
+			em.updateFaasList(faas)
+		}
 	}
 
 	@After(pattern="FAASService.(updateFaas|updateFaasOnly|submitForApproval|disapproveFaas|approveFaas)", index=10000)

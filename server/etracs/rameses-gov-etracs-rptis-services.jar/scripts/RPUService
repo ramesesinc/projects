@@ -266,12 +266,26 @@ class RPUService
             if (!landrpu) 
                 throw new Exception('Land RPU does not exist.')
 
-            def faas = em_faas.find([rpuid:landrpu.objid]).first()
+            def landfaas = em_faas.find([rpuid:landrpu.objid]).first()
 
-            if (!faas) 
-                    throw new Exception('Land FAAS does not exist.')
-            
-            if (faas.state == STATE_INTERIM)
+            if (!landfaas){
+                def impfaas = em.findImprovementByRpuId(rpu)
+                landfaas = em.findLandFaasByPin(impfaas)
+                if (landfaas){
+                    rpu.landrpuid = landfaas.rpuid 
+                    if (rpu.rputype == RPUTYPE_BLDG) em.updateBldgLandRpuId(rpu)
+                    else if (rpu.rputype == RPUTYPE_MACH) em.updateMachLandRpuId(rpu)
+                    else if (rpu.rputype == RPUTYPE_MISC) em.updateMiscLandRpuId(rpu)
+                    else if (rpu.rputype == RPUTYPE_PLANTTREE) em.updatePlantTreeLandRpuId(rpu)
+                    em_faas.find([objid:impfaas.objid]).update([realpropertyid:landfaas.realpropertyid])
+                }
+            }
+
+            if (!landfaas) {
+                throw new Exception('Land FAAS does not exist.')
+            }
+
+            if (landfaas.state == STATE_INTERIM)
                 throw new Exception('Land FAAS is not yet current.')
         }
     }

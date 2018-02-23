@@ -16,7 +16,7 @@ class RPTLedgerModel extends CrudFormModel
     
     void approve(){
         if (MsgBox.confirm('Approve')){
-            svc.approveLedger(entity);
+            svc.approve(entity);
             reloadEntity();
             refreshSections();
         }

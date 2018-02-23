@@ -82,7 +82,7 @@ class MunicipalityRPTTransmittalImportFAASInterceptor
 	}
 
 
-	@After(pattern='RPTTransmittalImportService.importData', eval="#{'faas'.equalsIgnoreCase(args[0].filetype) && 'FORAPPROVAL'.equalsIgnoreCase(args[0].type)}")
+	@After(pattern='RPTTransmittalImportService.importData', eval="#{'faas'.equalsIgnoreCase(args[0].filetype) && 'FORAPPROVAL'.equalsIgnoreCase(args[0].type) && args[0].state!='APPROVED'}")
 	public void postForApproval(evt){
 		def faasdata = evt.args[1].faasdata 
 		def transmittalitem = evt.args[1].transmittalitem

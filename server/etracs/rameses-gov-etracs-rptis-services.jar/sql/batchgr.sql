@@ -109,7 +109,7 @@ insert into realproperty(
   lguid,
   stewardshipno
 )
-select 
+select distinct 
   concat(replace(rp.objid, concat('-',rp.ry), ''), concat('-', $P{newry})) as objid,
   'INTERIM' as state,
   rp.autonumber,
@@ -171,7 +171,7 @@ insert into rpu(
   reclassed,
   stewardparentrpumasterid
 )
-select 
+select distinct 
   concat(replace(r.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
   'INTERIM' as state,
   (select objid from realproperty where objid = concat(replace(r.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry}))) as realpropertyid,

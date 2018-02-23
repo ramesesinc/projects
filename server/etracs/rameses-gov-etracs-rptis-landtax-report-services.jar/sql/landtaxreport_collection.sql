@@ -35,9 +35,9 @@ from remittance rem
   inner join liquidation liq on liqr.liquidationid = liq.objid
   inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
   inner join cashreceipt cr on remc.objid = cr.objid 
-  inner join rptledger_payment rp on cr.objid = rp.receiptid 
-  inner join rptledger_payment_item ri on rp.objid = ri.parentid
-  left join rptledger rl ON rp.rptledgerid = rl.objid  
+  inner join rptpayment rp on cr.objid = rp.receiptid 
+  inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+  left join rptledger rl ON rp.refid = rl.objid  
   left join propertyclassification pc ON rl.classification_objid = pc.objid 
 where ${filter} 
   and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
@@ -65,9 +65,9 @@ from remittance rem
   inner join liquidation liq on liqr.liquidationid = liq.objid
   inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
   inner join cashreceipt cr on remc.objid = cr.objid 
-  inner join rptledger_payment rp on cr.objid = rp.receiptid 
-  inner join rptledger_payment_item ri on rp.objid = ri.parentid
-  inner join rptledger rl ON rp.rptledgerid = rl.objid  
+  inner join rptpayment rp on cr.objid = rp.receiptid 
+  inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+  inner join rptledger rl ON rp.refid = rl.objid  
   inner join propertyclassification pc ON rl.classification_objid = pc.objid 
 where ${filter}  
   and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
@@ -98,8 +98,8 @@ from (
     inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid 
-    inner join rptledger_payment_share ri on rp.objid = ri.parentid
+    inner join rptpayment rp on cr.objid = rp.receiptid 
+    inner join rptpayment_share ri on rp.objid = ri.parentid
   where ${filter}  
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid) 
     and ri.revperiod != 'advance' 
@@ -127,8 +127,8 @@ from (
     inner join liquidation liq on liqr.liquidationid = liq.objid
     inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
     inner join cashreceipt cr on remc.objid = cr.objid 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid 
-    inner join rptledger_payment_share ri on rp.objid = ri.parentid
+    inner join rptpayment rp on cr.objid = rp.receiptid 
+    inner join rptpayment_share ri on rp.objid = ri.parentid
   where ${filter}  
     and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid)
     and ri.revperiod = 'advance' 
@@ -149,8 +149,8 @@ from remittance rem
   inner join liquidation liq on liqr.liquidationid = liq.objid
   inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
   inner join cashreceipt cr on remc.objid = cr.objid 
-  inner join rptledger_payment rp on cr.objid = rp.receiptid 
-  inner join rptledger_payment_item ri on rp.objid = ri.parentid
+  inner join rptpayment rp on cr.objid = rp.receiptid 
+  inner join vw_rptpayment_item ri on rp.objid = ri.parentid
 where ${filter}  
   and cr.objid not in (select receiptid from cashreceipt_void where receiptid=cr.objid)
   and ri.revperiod = 'advance' 

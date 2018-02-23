@@ -36,7 +36,7 @@ class ProvinceRPTLedgerService
 				em_credit.save(it)
 			}
 		}
-		ledgerSvc.updateLedger(remoteledger)
+		ledgerSvc.update(remoteledger)
 		supportSvc.fixLedger(remoteledger)
 	}	
 

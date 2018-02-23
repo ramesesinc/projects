@@ -75,3 +75,65 @@ WHERE f.realpropertyid = $P{realpropertyid}
 [findLandRySetting]
 select objid from landrysetting where ry = $P{ry}
 
+
+
+[findImprovementByRpuId]
+select f.objid, f.rpuid, f.realpropertyid, f.fullpin, rp.pin, rp.ry 
+from faas f 
+inner join bldgrpu br on f.rpuid = br.objid 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.rpuid = $P{objid}
+
+union 
+
+select f.objid, f.rpuid, f.realpropertyid, f.fullpin, rp.pin, rp.ry 
+from faas f 
+inner join machrpu br on f.rpuid = br.objid 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.rpuid = $P{objid}
+
+union 
+
+select f.objid, f.rpuid, f.realpropertyid, f.fullpin, rp.pin, rp.ry 
+from faas f 
+inner join miscrpu br on f.rpuid = br.objid 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.rpuid = $P{objid}
+
+union 
+
+select f.objid, f.rpuid, f.realpropertyid, f.fullpin, rp.pin, rp.ry 
+from faas f 
+inner join planttreerpu br on f.rpuid = br.objid 
+inner join realproperty rp on f.realpropertyid = rp.objid 
+where f.rpuid = $P{objid}
+
+
+[findLandFaasByPin]
+select f.objid, f.rpuid, f.realpropertyid 
+from realproperty rp 
+inner join faas f on rp.objid = f.realpropertyid
+inner join rpu r on f.rpuid = r.objid 
+where rp.pin = $P{pin} and rp.ry = $P{ry}
+and r.rputype = 'land'
+
+
+[updateBldgLandRpuId]
+update bldgrpu set 
+	landrpuid = $P{landrpuid}
+where objid = $P{objid}	
+
+[updateMachLandRpuId]
+update machrpu set 
+	landrpuid = $P{landrpuid}
+where objid = $P{objid}	
+
+[updateMiscLandRpuId]
+update miscrpu set 
+	landrpuid = $P{landrpuid}
+where objid = $P{objid}	
+
+[updatePlantTreeLandRpuId]
+update planttreerpu set 
+	landrpuid = $P{landrpuid}
+where objid = $P{objid}	

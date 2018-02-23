@@ -42,14 +42,14 @@ class RPTReceiptCompromiseService
 	@DataContext('rptcompromise')
 	def em_compromise
 
-	@DataContext('rptledger_payment')
-	def em_rptledger_payment
+	@DataContext('rptpayment')
+	def em_rptpayment
 
-	@DataContext('rptledger_payment_item')
-	def em_rptledger_payment_item
+	@DataContext('rptpayment_item')
+	def em_rptpayment_item
 
-	@DataContext('rptledger_payment_share')
-	def em_rptledger_payment_share
+	@DataContext('rptpayment_share')
+	def em_rptpayment_share
 
 
 
@@ -151,7 +151,7 @@ class RPTReceiptCompromiseService
 		pmt.toqtr = receipt.paiditems.last().qtr 
 		pmt.amount = receipt.amount 
 		pmt.voided = false
-		em_rptledger_payment.create(pmt)
+		em_rptpayment.create(pmt)
 		return pmt 
 	}
 
@@ -167,7 +167,7 @@ class RPTReceiptCompromiseService
 		receipt.taxes.each {
 			it.parentid = ledgerpmt.objid 
 			it.rptreceiptid = receipt.objid 
-			em_rptledger_payment_share.create(it)
+			em_rptpayment_share.create(it)
 		}
 
 	}
@@ -176,7 +176,7 @@ class RPTReceiptCompromiseService
 	void postPaidItems(receipt){
 		receipt.paiditems.each{ item ->
 			buildPaidItemInfo(receipt, item)
-			em_rptledger_payment_item.create(item)
+			em_rptpayment_item.create(item)
 			em.create(item, 'rptcompromise_item_credit')
 
 			if (item.fullypaid == 1 || item.fullypaid == true )
@@ -263,7 +263,7 @@ class RPTReceiptCompromiseService
 		em.voidInstallmentCredits(compromise)
 		em.deleteVoidedItemCredit(compromise)
 		em.deleteVoidedCredit(compromise)
-		em_rptledger_payment.find([receiptid:receipt.objid]).update([voided:true])
+		em_rptpayment.find([receiptid:receipt.objid]).update([voided:true])
 
 	}
 
@@ -467,7 +467,7 @@ class RPTReceiptCompromiseService
 		buildCreditAndTaxItems(receipt)
 		receipt.paiditems.each{ item ->
 			buildPaidItemInfo(receipt, item)
-			em_rptledger_payment_item.create(item)
+			em_rptpayment_item.create(item)
 			if (item.fullypaid == 1 || item.fullypaid == true )
 				em.fullyPaidCompromiseItem(item)
 			else 

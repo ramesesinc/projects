@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptpartialpayment:open" action="init" caption="Partial Payment" target="popup" />
+    </invokers>
+<code class="com.rameses.gov.etracs.landtax.models.CashReceiptPartialModel">
+</code>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.CashReceiptPartialPage"/>
+    </pages>
+</workunit>

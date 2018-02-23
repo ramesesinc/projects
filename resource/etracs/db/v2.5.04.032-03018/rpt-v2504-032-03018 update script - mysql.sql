@@ -397,6 +397,7 @@ left join cashreceipt_void cv on c.objid = cv.receiptid
 where cv.objid is null ;
 
 
+
 insert into rptledger_payment_share(
   objid,
   parentid,
@@ -407,20 +408,35 @@ insert into rptledger_payment_share(
   sharetype,
   discount
 )
-select
-  cra.objid,
-  concat(cra.rptledgerid, '-', cra.rptreceiptid) as parentid,
-  cra.revperiod,
-  cra.revtype,
-  cra.item_objid,
-  cra.amount,
-  cra.sharetype,
-  cra.discount
-from cashreceipt_rpt cr 
-inner join cashreceipt c on cr.objid = c.objid 
-inner join cashreceiptitem_rpt_account cra on c.objid = cra.rptreceiptid 
-left join cashreceipt_void cv on c.objid = cv.receiptid 
-where cv.objid is null ;
+select 
+  x.objid,
+  x.parentid,
+  x.revperiod,
+  x.revtype,
+  x.item_objid,
+  x.amount,
+  x.sharetype,
+  x.discount
+from (
+  select
+    cra.objid,
+    concat(cra.rptledgerid, '-', cra.rptreceiptid) as parentid,
+    cra.revperiod,
+    cra.revtype,
+    cra.item_objid,
+    cra.amount,
+    cra.sharetype,
+    cra.discount
+  from cashreceipt_rpt cr 
+  inner join cashreceipt c on cr.objid = c.objid 
+  inner join cashreceiptitem_rpt_account cra on c.objid = cra.rptreceiptid 
+  left join cashreceipt_void cv on c.objid = cv.receiptid 
+  where cv.objid is null 
+    and cra.rptledgerid is not null 
+    and exists(select * from rptledger where objid = cra.rptledgerid)
+    and not exists(select * from rptledger_payment_share where objid = cra.objid)
+) x 
+where exists(select * from rptledger_payment where objid= x.parentid);
 
 
 insert into rptledger_payment(

@@ -76,6 +76,8 @@ class RPTUtilityService
 		info.barangay = landfaas.barangay 
 		info.barangayid = info.barangay.objid
 		info.barangayname = info.barangay.name 
+		info.landrpuid =landfaas.rpuid 
+
 
 		if('bldg' == info.rputype)
 			em.modifyBldgLandRpu(info)

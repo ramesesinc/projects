@@ -9,11 +9,6 @@
                 role="ADMIN" depends="selectedLedgerItem" />
             
         <invoker type="itemActions" 
-                 action="editLedgerItem" caption="Edit" 
-                 visibleWhen="#{entity.state=='APPROVED' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.taxdifference == 1}"  
-                role="ADMIN" mnemonic="e" depends="selectedItem" />
-            
-        <invoker type="itemActions" 
                  action="deleteLedgerItem" caption="Delete" 
                  visibleWhen="#{entity.state=='APPROVED' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.taxdifference == 1}"  
                  role="ADMIN" mnemonic="d" depends="selectedItem" />

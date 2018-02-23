@@ -1,0 +1,93 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+import rptis.landtax.facts.*;
+import rptis.landtax.actions.*;
+
+
+public class RPTLedgerRuleService
+{
+	@Resource('RuleService')
+	def ruleSvc
+
+	@Service('DateService')
+	def dtSvc
+
+	@Service('NumberService')
+	def numSvc
+
+	@Service('RPTUtil')
+	def util 
+
+	@ActiveDB('rule')
+	def ruleDB
+
+	@Service('RPTLedgerService')
+	def ledgerSvc 
+
+
+	def RULESET 			= 'rptledger'
+	def FACT_PACKAGE 		= 'rptledger.'
+	
+
+	@ProxyMethod 
+	public def buildItems(ledger, yr){
+		def request = buildRequest(ledger, yr);
+		executeRules(request)
+		return request.items 
+	}
+
+	void executeRules(request){
+		def grps = ruleDB.getRulegroups( [ruleset: RULESET] );
+		grps.each{g ->
+			ruleSvc.execute( RULESET, request.facts, request.actions, g.name);
+		}
+	}
+
+	def buildRequest(ledger, yr){
+		util.required('Ledger faases', ledger.faases)
+		util.required('year', yr)
+		def request = [items:[]]
+		request.facts = buildFacts(ledger, yr)
+		request.actions = buildActions(ledger, request)
+		return request
+	}
+
+	def buildFacts(ledger, yr){
+		def currdate = dtSvc.serverDate
+		def facts = []
+		facts << new CurrentDate(currdate)
+		facts << new EffectiveDate(currdate)
+		facts << new RPTLedgerFact(ledger)
+		ledger.faases.each{faas ->
+			def item = [:]
+			item.objid = faas.objid 
+			item.classification = faas.classification
+			item.actualuse = faas.actualuse
+			item.rputype = ledger.rputype 
+			item.txntype = faas.txntype.objid 
+		    item.year = yr 
+		    item.av = faas.assessedvalue
+		    item.basicav = item.av 
+		    item.sefav = item.av 
+		    item.taxdifference = faas.taxdifference 
+
+		    ledgerSvc.calcLedgerItemAssessedValue(item)
+
+		    item.classification = new Classification(faas.classification)
+			item.actualuse = new Classification(faas.actualuse)
+		    facts << new AssessedValue(item)
+		}
+		return facts
+	}
+
+	def buildActions(ledger, request){
+		def actions = new RuleAction();
+		actions.addCommand('add-basic', new AddBasic(request:request))
+		actions.addCommand('add-sef', new AddSef(request:request))
+		actions.addCommand('add-firecode', new AddFireCode(request:request))
+		actions.addCommand('calc-tax', new CalcTax(numSvc:numSvc))
+		return actions 
+	}
+}

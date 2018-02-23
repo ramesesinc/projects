@@ -6,3 +6,13 @@
 	add sys_var: 
 		- rpu_misc_suffix_allow_1001_1999
 		- rpu_misc_suffix_allow_5001_5999
+
+* GR: carry over sketch
+    add sys_var option "gr_carry_over_sketch"		
+
+
+* LANDTAX
+
+	- move af56 reports folder from 
+		"com.rameses.gov.etracs.rpt.collection.ui" to 
+		"com.rameses.gov.etracs.landtax.reports"

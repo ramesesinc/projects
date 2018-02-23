@@ -276,6 +276,40 @@ from faas f
 go 	
 
 
+insert into faas_previous(
+	objid,
+	faasid,
+	prevfaasid,
+	prevrpuid,
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+)
+select 
+	objid,
+	objid as faasid,
+	null as prevfaasid,
+	null as prevrpuid, 
+	prevtdno,
+	prevpin,
+	prevowner,
+	prevadministrator,
+	prevav,
+	prevmv,
+	prevareasqm,
+	prevareaha,
+	preveffectivity
+from faas f 
+where datacapture =  0
+and not exists(select * from previousfaas where faasid = f.objid) 
+and not exists(select * from faas_previous where faasid = f.objid) 
+go 
 
 
 

@@ -8,7 +8,7 @@ import com.rameses.seti2.models.*;
 
 class RPTLedgerPaymentModel
 {
-    @Service('RPTLedgerService')
+    @Service('RPTLedgerPaymentService')
     def svc; 
     
     def entity;

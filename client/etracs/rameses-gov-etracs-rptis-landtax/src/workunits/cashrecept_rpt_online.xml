@@ -1,0 +1,16 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:rpt" action="init" />
+        <invoker type="formActions" action="printDetail" immediate="true" caption="Print Detail" visibleWhen="#{completed == true &amp;&amp; entity.voided == false}" mnemonic="d"/>
+        <invoker type="cashreceipt:barcode:56001" action="initBarcode" caption="Realty Tax Collection (Barcode)"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.CashReceiptModel" >
+    </code>
+    
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.landtax.views.CashReceiptInitPage" />
+        <page name="main" template="com.rameses.gov.etracs.landtax.views.CashReceiptPage" />
+    </pages>
+    
+</workunit>

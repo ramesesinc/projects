@@ -4,41 +4,21 @@ import java.math.*;
 
 public class RPTLedgerTaxSummaryFact 
 {
-    String  objid          
-    RPTLedgerFact rptledger      
+    RPTLedgerFact ledger 
+    String  revtype
     String  revperiod      
-    Double basic          
-    Double basicint       
-    Double basicdisc      
-    Double basicidle      
-    Double basicidledisc
-    Double basicidleint      
-    Double sef            
-    Double sefint         
-    Double sefdisc        
-    Double firecode       
-    Double sh            
-    Double shint         
-    Double shdisc        
-
+    Double amount          
+    Double interest
+    Double discount
+    
     public RPTLedgerTaxSummaryFact(){}
 
-    public RPTLedgerTaxSummaryFact(params){
-        this.objid = params.var.key 
-        this.rptledger = params.rptledgeritem.rptledger 
-        this.revperiod = params.revperiod 
-        this.basic  = 0.0
-        this.basicint = 0.0
-        this.basicdisc = 0.0
-        this.basicidle = 0.0 
-        this.basicidledisc = 0.0 
-        this.basicidleint = 0.0 
-        this.sef = 0.0
-        this.sefint = 0.0
-        this.sefdisc = 0.0
-        this.firecode = 0.0
-        this.sh = 0.0
-        this.shint = 0.0
-        this.shdisc = 0.0
+    public RPTLedgerTaxSummaryFact(item){
+        this.ledger = item.ledger
+        this.revtype = item.revtype 
+        this.revperiod = item.revperiod 
+        this.amount  = 0.0
+        this.interest = 0.0
+        this.discount = 0.0
     }
 }

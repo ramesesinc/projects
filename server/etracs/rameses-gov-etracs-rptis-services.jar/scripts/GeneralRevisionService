@@ -156,8 +156,13 @@ class GeneralRevisionService
 			param.newrefid = faas.objid
 			param.prevrefid = faas.previousfaases[0].prevfaasid
 			param.ry = faas.rpu.ry 
-			em_dbimage.insertPreviousSketch(param)
-			em_dbimage.insertPreviousSketchItems(param)
+			try{
+				em_dbimage.insertPreviousSketch(param)
+				em_dbimage.insertPreviousSketchItems(param)
+			}
+			catch(e){
+				//ignore 
+			}
 		}
 	}
 

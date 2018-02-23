@@ -1,0 +1,7 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt-form:56" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.CashReceiptForm56Model">
+    </code>
+</workunit>

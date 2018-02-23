@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService" tag="rptledger">
+    <invokers>
+        <invoker folderid="/explorer/rulemgmt/landtax" caption="Ledger Rules" action="init" index="40" role="LANDTAX"/>
+    </invokers>
+</workunit>

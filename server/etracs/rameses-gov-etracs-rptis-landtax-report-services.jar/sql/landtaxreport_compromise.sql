@@ -24,8 +24,8 @@ select
   sum(cro.basicint + cro.sefint + cro.basicidleint + cro.shint) as penalty 
 from rptledger_compromise rc 
   inner join cashreceipt cr on rc.downpaymentreceiptid = cr.objid
-  inner join rptledger_payment rp on cr.objid = rp.receiptid 
-  inner join rptledger_payment_item cro on rp.objid = cro.parentid
+  inner join rptpayment rp on cr.objid = rp.receiptid 
+  inner join vw_rptpayment_item cro on rp.objid = cro.parentid
 where rc.objid = $P{objid}
 group by cr.receiptno, cr.receiptdate
 
@@ -45,8 +45,8 @@ select
   sum(cro.basicint + cro.sefint + cro.basicidleint + cro.shint) as penalty 
 from rptledger_compromise rc 
   inner join cashreceipt cr on rc.cypaymentreceiptid = cr.objid
-  inner join rptledger_payment rp on cr.objid = rp.receiptid 
-  inner join rptledger_payment_item cro on rp.objid = cro.parentid
+  inner join rptpayment rp on cr.objid = rp.receiptid 
+  inner join vw_rptpayment_item cro on rp.objid = cro.parentid
 where rc.objid = $P{objid}
 group by cr.receiptno, cr.receiptdate 
 

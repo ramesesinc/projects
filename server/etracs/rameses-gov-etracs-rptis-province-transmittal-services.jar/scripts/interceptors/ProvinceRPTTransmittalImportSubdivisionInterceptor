@@ -23,7 +23,7 @@ class ProvinceRPTTransmittalImportFAASInterceptor
 		def transmittalitem = evt.args[1].transmittalitem
 
 		try{
-			provSvc.postSubdivisionForApproval(subdivisiondata)
+			provSvc.postTransmittalForApproval(subdivisiondata)
 			transmittalitem.status = 'FORAPPROVAL'
 			importSvc.log(transmittalitem)
 		}

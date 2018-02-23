@@ -52,3 +52,23 @@ FROM rpu_assessment ba
   INNER JOIN planttreeassesslevel bal ON ba.actualuse_objid = bal.objid 
   INNER JOIN propertyclassification pc ON ba.classification_objid = pc.objid 
 WHERE ba.rpuid = $P{objid}
+
+
+[findFaasByRpu]
+select objid, rpuid, realpropertyid 
+from faas 
+where rpuid = $P{objid}
+and state <> 'CANCELLED'
+order by state DESC 
+
+[findLandFaasByRealProperty]
+select f.objid, f.rpuid, f.realpropertyid 
+from faas f 
+inner join rpu r on f.rpuid = r.objid 
+where f.realpropertyid = $P{realpropertyid}
+and f.state <> 'CANCELLED'
+and r.rputype = 'land';
+
+
+[findRpu]
+select * from planttreerpu where objid = $P{rpuid}

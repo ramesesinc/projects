@@ -1,0 +1,18 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositvoucher_fund" 
+            allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker type="depositvoucher_fund:open" 
+                 caption="Deposit Voucher Fund" 
+                 windowTitle="Deposit Voucher Fund"
+                 formTitle="Deposit Voucher Fund"
+                 action="open" target="window" 
+                 index="10"/>
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositVoucherFundModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.DepositVoucherFundPage" />
+   </pages>
+   
+</workunit>

@@ -1,14 +1,18 @@
-<workunit allowCreate="false" allowEdit="false" allowDelete="false" schemaName="remittance_fund">
-    
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="remittance_fund" 
+          allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
-        <invoker type="remittance_fund:open" caption="Remittance" action="open" target="popup" />
-        <invoker type="remittance_fund:open" caption="Submit" action="open" target="popup" />
+        <invoker type="remittance_fund:open" 
+                 caption="Remittance Fund" 
+                windowTitle="Remittance Fund"
+                 formTitle="Remittance Fund"
+                 action="open" target="popup" 
+                 index="10"/>
     </invokers>
    
-    <code class="com.rameses.enterprise.treasury.models.RemittanceFundModel" />
-    
-    <pages>
-        <page template="com.rameses.enterprise.treasury.views.RemittanceFundPage" />
-    </pages> 
-       
+   <code class="com.rameses.enterprise.treasury.models.RemittanceFundModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.RemittanceFundPage" />
+   </pages>
+   
 </workunit>

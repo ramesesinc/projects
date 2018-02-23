@@ -98,13 +98,15 @@ class AFControlService  {
 
 	@ProxyMethod
 	public void changeMode( p ) { 
+		throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
+
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
 
 		def o = em.find([ objid: p.objid ]).first(); 
 		if ( !o ) return; 
 
 		if ( o.active == 1 ) {
-			em.debug = true;
+			//em.debug = true;
 			def sqlparam = [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode];
 			def list = em.where('owner.objid= :ownerid and afid= :afid and txnmode= :txnmode and active=1', sqlparam).list(0,2);
 			if ( list.size() > 1 ) em.find([ objid: p.objid ]).update([ active: 0]); 

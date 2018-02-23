@@ -1,0 +1,55 @@
+<folders>
+    <folder id="explorer">
+        <folder id="master" caption="Master">
+            <folder id="treasury" caption="Treasury">
+                <folder id="util" caption="Utility"/>
+            </folder>
+        </folder>
+        <folder id="txn" caption="Transaction">
+            <folder id="treasury" caption="Treasury">
+                <folder id="monitoring" caption="Monitoring"/> 
+                <folder id="reports" caption="Reports"/>
+                <folder id="tools" caption="Tools"/> 
+            </folder>
+        </folder>
+        <folder id="report" caption="Report">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+        <folder id="rulemgmt" caption="Rule Management">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+    </folder>
+    <folder id="menu">
+        <folder id="txn" caption="Transaction">
+            <folder id="treasury" caption="Treasury">
+                <folder id="af" caption="Accountable Forms"/>
+            </folder>    
+        </folder>
+        <folder id="report" caption="Report">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+    </folder>
+    <!--
+    <folder id="home">
+        <folder id="treasury" caption="Treasury 2" icon="home/icons/treasury.png">
+            <folder id="af" caption="Accountable Forms"/>
+            <folder id="remittance" caption="Remittance"/>
+            <folder id="liquidation" caption="Liquidation"/>
+            <folder id="deposit" caption="Deposit"/>
+        </folder>    
+        <folder id="collection" caption="Collection" icon="home/icons/collection.png"/>
+        <folder id="cashmgmt" caption="Cash Management"/>
+    </folder>   
+    -->
+    <folder id="menucategory">
+        <folder id="treasury" caption="Treasury">
+            <folder id="af" caption="Accountable Forms" index="0" icon="home/icons/af.png"/>
+            <folder id="cashreceipt" caption="Cash Receipt" index="1" icon="home/icons/cashreceipt.png"/>
+            <folder id="collection" caption="Collection" index="1" icon="home/icons/collection.png"/>
+            <folder id="remittance" caption="Remittance" index="2" icon="home/icons/remittance.png"/>
+            <folder id="liquidation" caption="Liquidation" index="3" icon="home/icons/liquidation.png"/>
+            <folder id="deposit" caption="Remittance / Deposit" index="3" icon="home/icons/deposit.png"/>
+            <folder id="monitor" caption="Monitoring" index="4" icon="home/icons/postledger.png"/>
+        </folder>
+    </folder>
+</folders>

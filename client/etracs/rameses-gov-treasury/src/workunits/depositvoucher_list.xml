@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="depositvoucher" allowCreate="false">
+    <invokers>
+        <invoker folderid="menucategory/treasury/remittance" 
+                 caption="View Deposit Vouchers" 
+                 windowTitle="Deposit  Vouchers"
+                 formTitle="Deposit  Vouchers"
+                 cols="controlno,controldate,amount,state"
+                 action="init" target="window" index="51"/>
+    </invokers>
+</workunit>

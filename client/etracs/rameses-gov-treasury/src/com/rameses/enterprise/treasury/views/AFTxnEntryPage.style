@@ -1,0 +1,15 @@
+"itemListHandler:item.*" [ withrequest == true ]{
+    editable:false;
+}
+
+"itemListHandler:item.*" [ withrequest == false ]{
+    editable:true;
+}
+
+"entity.(issueto|respcenter).*" [ entity.txntype.matches('ISSUE|FORWARD|TRANSFER') ]{
+    visible:true;
+}
+
+"entity.(issueto|respcenter).*" [ !entity.txntype.matches('ISSUE|FORWARD|TRANSFER') ]{
+    visible:false;
+}

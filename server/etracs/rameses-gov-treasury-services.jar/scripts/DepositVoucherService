@@ -1,0 +1,123 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class DepositVoucherService  {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("collectionvoucher")
+	def cvEm;
+
+	@DataContext("depositvoucher")
+	def depositEm;
+
+	@DataContext("paymentcheck")
+	def paymentCheckEm;
+
+	@DataContext("depositvoucher_fund")
+	def depositFundEm;
+
+	@DataContext("depositslip")
+	def depositSlipEm;
+
+	@ProxyMethod
+	public def create( def o ) {
+		if(!o.items)
+			throw new Exception("Please select at least one item " + o.amount );
+		/*
+	    UPDATED TABLES :
+	        depositvoucher, collection, deposit_fund, collection_fund, paymentcheck
+		*/
+		def m = [:];
+		m.state = "OPEN"
+		m.controlno = 'TMP-DEP-'+env.USERID;
+		m.controldate = dateSvc.getBasicServerDate(); 
+		m.amount = o.items.sum{ it.amount };
+		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.dtcreated = dateSvc.getServerDate();	
+		m = depositEm.create( m );
+
+		cvEm.where( ''' objid IN (${ids}) ''' ).vars( "ids",  "'" + o.items*.objid.join("','") + "'" ).update( [depositvoucherid: m.objid ] );
+		def z = [ depositvoucherid: m.objid ];
+		depositEm.insertDepositFund( z );
+		depositEm.updatePaymentCheckDepositId( z );
+		depositEm.updatePaymentCheckDefaultFund( z );
+		depositEm.updateFundCheckTotal( z );
+		depositEm.cleanUpNullTotals( z );
+		return m;
+	}
+
+
+	@ProxyMethod
+	public void updateCheckToDeposit( def o ) {
+		if(!o.items) throw new Exception( "items is required");
+		if(!o.fundid) throw new Exception( "fundid is required");
+		if(!o.depositvoucherid) throw new Exception( "depositvoucherid is required");
+		o.items.each {
+			paymentCheckEm.find([ objid:it.objid ]).update( [fundid: o.fundid] );
+		}
+		def z = [ depositvoucherid: o.depositvoucherid ];
+		depositEm.updateFundCheckTotal( z );
+		depositEm.cleanUpNullTotals( z );
+	}
+
+	@ProxyMethod
+	public void updateCashToDeposit( def o ) {
+		if(!o.fundid) throw new Exception( "fundid is required");
+		if(!o.depositvoucherid) throw new Exception( "depositvoucherid is required");
+		if(!o.containsKey('totalcash')) throw new Exception( "totalcash is required");
+		depositFundEm.find( [parentid: o.depositvoucherid, fundid: o.fundid ]).update( [cashtodeposit: o.totalcash ] );
+	}
+
+	@ProxyMethod
+	public void assignCashier( def o ) {
+		if(!o.fundid) throw new Exception( "fundid is required");
+		if(!o.depositvoucherid) throw new Exception( "depositvoucherid is required");
+		if(!o.containsKey('cashier') ) throw new Exception( "cashier is required");
+		depositFundEm.find( [parentid: o.depositvoucherid, fundid: o.fundid ]).update( [cashier: o.cashier ] );
+	}
+
+	@ProxyMethod
+	public void removeDepositSlip( def o ) {
+		depositSlipEm.find([objid: o.objid]).delete();
+		
+	}
+
+
+	@ProxyMethod
+	public def submitForDeposit( def o ) {
+		if(!o.objid) throw new Exception( "objid is required");
+
+		//ensure there are no check payments unassigned
+		def z = paymentCheckEm.find( [depositvoucherid: o.objid ]).where( " fundid IS NULL ").first();
+		if( z ) throw new Exception("All checks associated with this voucher must be assigned to a fund to deposit");
+
+		z = depositFundEm.find( [parentid: o.objid ]).select("objid").where( "( amount - (cashtodeposit+checktodeposit)) <> 0").first();
+		if( z ) throw new Exception( "All amount must equal checks and cash to deposit" );
+
+		z = depositFundEm.find( [parentid: o.objid ]).select("objid").where( " cashier.objid IS NULL ").first();
+		if( z ) throw new Exception( "All funds must be assigned to a cashier");
+
+		depositEm.find( [objid: o.objid ]).update( [state: 'FOR_DEPOSIT' ] );
+		return [state:'FOR_DEPOSIT'];
+	}
+
+	@ProxyMethod
+	public def post( def o ) {
+		if(!o.objid) throw new Exception( "objid is required");
+		def z = depositFundEm.find( [parentid: o.objid ]).select("objid").where( "( amount - (totalcash+totalcheck)) <> 0").first();
+		if(z) throw new Exception("Total Amount must be equal to total checks and total cash deposited");
+
+		z = depositSlipEm.find( [depositvoucherid: o.objid ] ).where( " validation.refno IS NULL ").first();
+		if(z ) throw new Exception("All deposit slips must be validated");
+		depositEm.find( [objid: o.objid ]).update( [state: 'POSTED' ] );
+		return [state:'POSTED'];
+	}
+
+
+}

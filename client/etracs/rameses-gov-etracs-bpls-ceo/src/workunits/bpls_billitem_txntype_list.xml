@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="business_billitem_txntype">
+    <invokers>
+          <invoker folderid="/explorer/master/bpls" caption="Business Fee Types" action="init"
+                 target="window" role="MASTER" permission="business_billitem_txntype.view" 
+                 cols="title,feetype,account.code,account.title"/>
+    </invokers>
+</workunit>

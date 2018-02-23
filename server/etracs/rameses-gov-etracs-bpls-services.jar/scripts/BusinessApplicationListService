@@ -39,6 +39,7 @@ public class BusinessApplicationListService extends ActiveCrudListService {
 	public def getColumns(o) {
 		def cols = [];
 		cols <<	[name:'appno', caption:'App No', width:130, resizable:true];
+		cols <<	[name:'apptype', caption:'App Type', width:130, resizable:true];
 		cols <<	[name:'business.businessname', caption:'Business Name'];
 		cols <<	[name:'business.address.text', caption:'Business Address'];
 		cols <<	[name:'business.owner.name', caption:'Owner'];

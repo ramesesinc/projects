@@ -1,0 +1,172 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import vehicle.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
+class VehicleSingleBillingInterceptor {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_franchise_fee")
+	def franFeeEm;
+
+	@DataContext("vehicle_payment")
+	def vehiclePmt;
+
+    @After(pattern="SingleBillingHandler.getInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void getInfo(def evt) {
+		def obj = evt.args[0];
+		def r = evt.result;
+
+		def p = obj.params;
+
+		def app = null;
+		def fran = null;
+		def errkey = null;
+
+		if( p.objid ) {
+			errkey = p.objid;
+			app = appEm.find( [objid: p.objid ] ).first();
+			if(!app) fran = franchiseEm.find( [objid: p.objid ] ).first();
+		}
+		else if( p.id ) {
+			errkey = p.id; 
+			app = appEm.find( [appno: p.id ] ).first();
+			if(!app) fran = franchiseEm.find( [controlno: p.id ] ).first();
+		}
+
+		if(!app && !fran) throw new Exception("Vehicle billing not found with key " + errkey);
+
+		def controlid;
+		def vehicletype;
+
+		if(app) {
+			controlid = app.controlid;
+			vehicletype = app.vehicletype;
+			r.txntype = "vehicle_application";	
+			r.txnid = app.objid;
+			r.application = app;
+			r.franchise = app.franchise;
+			r.taskid = app.taskid;
+			r.controlid = controlid;
+		}
+		else {
+			controlid = fran.objid;
+			vehicletype = fran.vehicletype;
+			r.txntype = "vehicle_franchise";	 
+			r.txnid = controlid;
+			r.franchise = fran;
+			r.controlid = controlid;
+		}
+		def db = em.lookup( "vehicle_franchise_" + vehicletype );
+		r.franchise.putAll( db.find([objid: controlid]).first() );
+	}
+ 
+
+    @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' && args[0].txntype == 'vehicle_application' }" )
+	public void getAppBillItems(def evt) {
+		def p = evt.args[0];
+		def list = evt.result;
+		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount:{amount-amtpaid},parentid";
+		def res = appFeeEm.select(select).where( "parentid = :parentid AND amount - amtpaid > 0", [parentid: p.application.objid] ).list();
+		list.addAll( res );
+	}
+
+    @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0] == 'vehiclebilling' && args[0].txntype == 'vehicle_franchise' }" )
+	public void getFranchiseBillItems(def evt) {
+		def r = evt.result;
+	}
+
+	@After(pattern="SingleBillingService.execute",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void afterBilling(def evt) {
+		def r = evt.result;
+		r.putAll( r.remove("franchise") );
+		def app = r.application;
+		r.billitems.each {
+			it.parent = app;
+		}		
+	}
+
+	/*******************************************
+    * CASH RECEIPT SPECFIC HANDLERS
+	********************************************/
+	//applicable for cash receipt billing
+	@After( pattern="SingleBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+	public void formatCashReceipt(def evt ) {
+		def info = evt.args[0].params;
+		def res = evt.result;
+		
+		res.payer = info.owner;
+		res.paidby = info.owner.name + " (" + info.controlno + ")";
+		res.paidbyaddress = info.owner.address.text;
+		res.txnid = info.txnid;
+		res.taskid = info.taskid;
+		res.appid = info.application?.objid;
+		res.franchiseid = info.controlid;
+	} 
+
+
+	/***********************************************************
+    * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
+	************************************************************/
+	@After( pattern="SingleBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+	public void getPostPaymentInfo(def evt ) {
+		def e = evt.args[0];
+		def result = evt.result;
+		result._schemaname = 'vehicle_payment';
+		result.appid =  e.appid
+		result.franchiseid = e.franchiseid 
+		result.items = e.billitems;
+	} 
+
+	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	public void getWorkflowTask(def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		if( p.taskid != null ) {
+			result.processname = 'vehicle_application';
+			result.refid = p.txnid; 
+			result.taskid = p.taskid;
+			result.taskstate = 'payment';
+		}
+	} 
+
+	@After( pattern="SingleBillingHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	public void getVoidPaymentInfo(def evt ) {
+		def result = evt.result;
+		result._schemaname = 'vehicle_payment';
+	} 
+
+	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	public void getVoidWorkflowTask(def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		if( p.application?.taskid ) {
+	 		result.taskid = p.application?.taskid;
+			result.processname = 'vehicle_application';
+			result.refid = p.appid;
+			result.action = 'return';
+		}
+	} 
+
+}

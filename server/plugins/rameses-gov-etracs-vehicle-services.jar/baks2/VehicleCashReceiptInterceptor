@@ -1,0 +1,104 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+
+class VehicleCashReceiptInterceptor {
+	
+	@Service("VehiclePaymentService")
+	def pmtSvc;
+
+	@DataContext(dynamic=true)
+	def em;
+
+
+	@DataContext("vehicle_payment")
+	def pmtEm;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Env
+	def env;
+
+	@After(pattern="CashReceiptBarcodeService.findPrefix")
+	public void findBarcodePrefix(def evt) {
+		def result = evt.result;
+		def a = evt.args[0];
+		//search the database 
+		def z = appEm.find( [appno: a.barcodeid ] ).exists();
+		if(z) {
+			result.prefix = '51010';
+		}
+	}	
+
+
+	@After(pattern="CashReceiptService.post1", eval="#{args[0].collectiontype?.handler == 'vehicle'}")
+	public void postPayment(def evt) {
+
+		def r = evt.args[0];
+		def t = evt.result;
+		if(!r.info.appid)
+			throw new Exception("Error Vehicle CashReceiptService.post. appid is not found");
+
+		def m = [:];
+		m.appid = r.info.appid;
+
+		m.franchiseid = r.info.franchiseid;
+		m.refno = r.receiptno;		
+		m.refid = r.objid;		
+		m.reftype = "cashreceipt";		
+		m.refdate = r.receiptdate;
+		m.txndate = t.txndate;
+		m.amount = r.amount;
+		m.txnmode = 'ONLINE';
+		m.voided = 0;
+		m.items = [];
+		r.items.findAll{it.refid!=null}.each {
+			it.parent = [objid: m.objid];
+			if(!it.discount) it.discount = 0;
+			if(!it.surcharge) it.surcharge = 0;
+			if(!it.interest) it.interest = 0;
+			if( it.ledgertype == 'application') {
+				it.apprefid = it.refid;
+			}
+			else {
+				it.franchiserefid = it.refid;
+			}
+			m.items << it;
+		}
+		pmtSvc.post( m );
+
+		if(r.info.appid ) {
+			//search first if there is a task associated. otherwise do not fire
+			def taskid = appEm.select("taskid").find([objid: r.info.appid]).val();
+			if(taskid ) {
+				def pp = [:];
+				pp.processname = "vehicle_application";
+				pp.refid = 	r.info.appid;
+				pp.taskstate = 'payment';
+				taskSvc.signal( pp );
+			}
+		}
+	}
+
+	@After(pattern="CashReceiptVoidService.post1",index=0,eval="#{result.receipt.collectiontype.handler=='vehicle'}")
+	public void voidPayment(def evt) {
+		def r = evt.args[0].receipt;
+
+		//find to reverse the payment.
+		def pmt = pmtEm.find( [refid: r.objid] ).first();
+		pmtSvc.postVoid( [objid: pmt.objid]); 
+
+		def app = appEm.find([ objid: pmt.appid ]).first(); 
+
+		def pp = [:];
+		pp.processname = "vehicle_application";
+		pp.refid = 	pmt.appid;
+		pp.action = 'voidpayment';
+		pp.taskid = app.taskid; 
+		taskSvc.signal( pp );
+	}
+
+}

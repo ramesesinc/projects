@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+<workunit extends="com/rameses/treasury/common/templates/SingleBillingReport.xml" rulename="vehiclebilling">
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleReportForm"/>
 </workunit>
 

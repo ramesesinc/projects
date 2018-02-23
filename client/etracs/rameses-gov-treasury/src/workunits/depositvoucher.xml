@@ -1,0 +1,24 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositvoucher" 
+            allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker type="depositvoucher:open" 
+                 caption="Deposit Voucher" 
+                 windowTitle="Deposit Voucher"
+                 formTitle="Deposit Vocuher"
+                 action="open" target="window" 
+                 index="10"/>
+        
+        <!-- Buttons -->
+        <invoker type="formActions" caption="Submit to Cashier" action="submitForDeposit" 
+                 visibleWhen="#{entity.state == 'OPEN' }"/>
+        <invoker type="formActions" caption="Post" action="post" 
+                 visibleWhen="#{entity.state == 'FOR_DEPOSIT' }" />
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositVoucherModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.DepositVoucherPage" />
+   </pages>
+   
+</workunit>

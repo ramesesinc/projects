@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+class SingleBillingService {
+	
+	@Service("AssessmentBillingService")
+	def billingSvc;
+
+	@Service("SingleBillingHandler")
+	def self;
+
+
+	@ProxyMethod
+	public def execute(  def pp ) {
+		if( !pp.rulename ) throw new Exception("SingleBillingService error. rulename is required");
+		if( !pp.params ) throw new Exception("SingleBillingService error. params is required");
+
+		String rulename = pp.rulename;
+		def m = [rulename:rulename, params: pp.params];
+		def data = self.getInfo( m ); 
+		m.putAll( data );
+		data.billitems = self.getBillItems( m );
+
+		if(!data.billitems)
+			throw new Exception("There must be at least one billitem in data billitems SingleBillingService.execute");
+
+		data.credititems = self.getCreditItems( m );	
+
+		def startgroup = "billing";
+		if( pp.startgroup ) rulegroup = p.rulegroup; 
+
+		def rp = [:]
+		rp.putAll( pp.params );
+		rp.putAll( data );
+		
+		def r = billingSvc.execute( [rulename: rulename, startgroup: startgroup, params: rp ] ); 
+		def result = [:];
+		result.putAll( data );
+		result.putAll( r ); 
+		result.amount = result.billitems.sum{ it.amount };
+		return result;
+	}
+
+
+}

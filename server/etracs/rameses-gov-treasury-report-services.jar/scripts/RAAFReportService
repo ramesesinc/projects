@@ -2,8 +2,8 @@ import com.rameses.annotations.*;
 import com.rameses.common.*
 import com.rameses.util.*
 
-class RAAFReportService  
-{ 
+class RAAFReportService { 
+
 	@ActiveDB('raaf_report')
 	def adb; 
  
@@ -31,7 +31,92 @@ class RAAFReportService
 		def items = adb.getReportData([startdate: startdate, enddate: enddate, collectorid: collectorid]); 
 		if ( !items ) throw new Exception('No record(s) found                  ');
 
-		buildRAAF( items, false ); 
+		items.eachWithIndex{ o,idx-> o.lineno = idx; }
+
+		def unissuedlist = items.findAll{( it.qtyissued==0 )} 
+		items.removeAll( unissuedlist ); 
+
+		items.findAll{ it.formtype != 'serial' }.each{
+			it.beginstartseries = it.beginendseries = null; 
+			it.issuedstartseries = it.issuedendseries = null; 
+			it.endingstartseries = it.endingendseries = null; 
+			it.receivedstartseries = it.receivedendseries = null; 
+		}
+
+		def groupindex = 1000; 
+		def serials = unissuedlist.findAll{ it.formtype == 'serial' } 
+		unissuedlist.removeAll( serials ); 
+
+		serials.groupBy{[ ownerid: it.ownerid, formno: it.formno, prefix: it.prefix, suffix: it.suffix ]}.each{ k,v-> 
+			v.sort{ it.startseries } 
+
+			def nextseries = 0; 
+			v.each{ vo-> 
+				if ( vo.startseries == nextseries ) {
+					vo.groupindex = groupindex;  
+				} else {
+					vo.groupindex = groupindex + 1; 
+				} 
+				groupindex = vo.groupindex; 
+				nextseries = vo.nextseries; 
+			} 
+
+			v.groupBy{ it.groupindex }.each{ kk,vv-> 
+				def fo = vv.first(); 
+				def receivedstartseries = vv.collect{ it.receivedstartseries }.findAll{( it )}.min{( it )}
+				def receivedendseries = vv.collect{ it.receivedendseries }.findAll{( it )}.max{( it )}
+				def endingstartseries = vv.collect{ it.endingstartseries }.findAll{( it )}.min{( it )}
+				def endingendseries = vv.collect{ it.endingendseries }.findAll{( it )}.min{( it )}
+				def beginstartseries = vv.collect{ it.beginstartseries }.findAll{( it )}.min{( it )}
+				def beginendseries = vv.collect{ it.beginendseries }.findAll{( it )}.min{( it )}
+
+				fo.qtyreceived = vv.findAll{( it.qtyreceived > 0 )}.sum{ it.qtyreceived } 
+				if ( fo.qtyreceived == null ) fo.qtyreceived = 0; 
+
+				fo.qtyending = vv.findAll{( it.qtyending > 0 )}.sum{ it.qtyending } 
+				if ( fo.qtyending == null ) fo.qtyending = 0; 
+
+				fo.qtybegin = vv.findAll{( it.qtybegin > 0 )}.sum{ it.qtybegin } 
+				if ( fo.qtybegin == null ) fo.qtybegin = 0; 
+
+				fo.receivedstartseries = receivedstartseries; 
+				fo.receivedendseries = receivedendseries; 
+				fo.beginstartseries = beginstartseries; 
+				fo.beginendseries = beginendseries; 
+
+				def e1 = [ receivedstartseries, beginstartseries ].findAll{( it )}.min{( it )} 
+				def e2 = [ receivedendseries, beginendseries ].findAll{( it )}.max{( it )} 
+				fo.endingstartseries = ( e1 ? e1 : endingstartseries ); 
+				fo.endingendseries = ( e2 ? e2 : endingendseries ); 
+				items << fo; 
+			} 
+		} 
+		serials.clear(); 
+
+		unissuedlist.groupBy{[ ownerid: it.ownerid, formno: it.formno, prefix: it.prefix, suffix: it.suffix ]}.each{ k,v-> 
+			def fo = v.first(); 
+			def qtyreceived = 0; def qtyending = 0; def qtybegin = 0; 
+			v.each{
+				if ( it.qtyreceived > 0 ) qtyreceived += it.qtyreceived; 
+				if ( it.qtyending > 0 ) qtyending += it.qtyending; 
+				if ( it.qtybegin > 0 ) qtybegin += it.qtybegin; 
+			} 
+			fo.qtyreceived = qtyreceived;
+			fo.qtyending = qtyending; 
+			fo.qtybegin = qtybegin; 
+			fo.receivedstartseries = fo.receivedendseries = null; 
+			fo.endingstartseries = fo.endingendseries = null; 
+			fo.beginstartseries = fo.beginendseries = null; 
+			items << fo; 
+		} 
+		unissuedlist.clear(); 
+		items.sort{ it.lineno } 	
+		items.each{
+			it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null); 
+			it.qtybegin = (it.qtybegin ? it.qtybegin : null); 
+			it.qtyissued = (it.qtyissued ? it.qtyissued : null); 
+			it.qtyending = (it.qtyending ? it.qtyending : null); 
+		}
 
 		def data = [:]
 		data.items = items;
@@ -44,23 +129,12 @@ class RAAFReportService
 	} 
 
 	@ProxyMethod
-	public def getRAAFByRemittance( params ) { 	
+	public def getRAAFByRemittance( params ) { 
 		if ( !params.remittanceid ) throw new Exception('remittanceid parameter is required');
 		if ( !params.formno ) params.formno = '%';
 
-		def items = adb.getReportDataByRemittance([ remittanceid: params.remittanceid, formno: params.formno ]);  
-		items.eachWithIndex{ o,idx-> o.sortindex = idx; } 
-
-		def unuseditems = items.findAll{ it.qtyissued==0 } 
-		items.removeAll( unuseditems ); 
-		unuseditems = merge( unuseditems ); 
-		items.addAll( unuseditems ); 
-		items.each{
-			it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null); 
-			it.qtybegin = (it.qtybegin ? it.qtybegin : null); 
-			it.qtyissued = (it.qtyissued ? it.qtyissued : null); 
-			it.qtyending = (it.qtyending ? it.qtyending : null); 
-		}
+		def items = adb.getReportDataByRef([ refid: params.remittanceid, formno: params.formno ]);  
+		buildRAAF( items, true ); 
 		return items; 
 	} 
 
@@ -95,7 +169,7 @@ class RAAFReportService
 			} 
 			if ( it.endingstartseries>0 && it.endingendseries>0 ) {
 				it.qtyending = (it.endingendseries-it.endingstartseries)+1; 
-			}			
+			} 
 
 			if ( it.formtype=='cashticket' ) {
 				def denomination = (it.denomination? it.denomination: 1) * 1.0;
@@ -109,6 +183,11 @@ class RAAFReportService
 				it.issuedstartseries = it.issuedendseries = null; 
 				it.endingstartseries = it.endingendseries = null; 
 				if ( it.stubno  ) it.afid = (''+ it.afid +'  #'+ it.stubno);
+			} 
+
+			if ( it.qtyissued > 0 && it.qtycancelled > 0 )	{
+				it.qtyissued -= it.qtycancelled; 
+				it.qtyissued = ( it.qtyissued > 0 ? it.qtyissued : 0 ); 
 			} 
 
 			it.receivedstartseries = (Integer) it.receivedstartseries;
@@ -125,6 +204,10 @@ class RAAFReportService
 			it.qtyending = (Integer) it.qtyending;
 			
 			if ( it.serieslength > 0 ) it.pattern = '0'*it.serieslength; 
+			if ( !it.qtybegin ) it.qtybegin = it.beginstartseries = it.beginendseries = null; 
+			if ( !it.qtyissued ) it.qtyissued = it.issuedstartseries = it.issuedendseries = null; 
+			if ( !it.qtyending ) it.qtyending = it.endingstartseries = it.endingendseries = null; 
+			if ( !it.qtyreceived ) it.qtyreceived = it.receivedstartseries = it.receivedendseries = null; 
 		}
 
 		boolean splitAF = varSvc.getProperty('rcd_split_unissued_accountable_form', 0).toString().equals("1");  
@@ -241,66 +324,4 @@ class RAAFReportService
 		targetlist << o; 
 		list.clear(); 
 	} 
-
-	def merge( afitems ) { 
-		def result = []; 
-		if(!afitems) return result; 
-
-		def groups = afitems.groupBy{ it.formtype } 
-		groups.serial?.groupBy{ it.formno }.each{ k,v-> 
-			v.sort{ it.afstartseries }  
-			def mergeindex = 0; 
-			def prevseries = v.first().afstartseries;
-			v.each{
-				if ( it.afstartseries == prevseries ) {
-					it.mergeindex = mergeindex; 
-				} else {
-					mergeindex += 1; 
-					it.mergeindex = mergeindex; 
-				} 
-				prevseries = it.afnextseries; 				
-			} 
-			v.groupBy{ it.mergeindex }.each{ kk,vv-> 
-				def a = vv.first(); 
-				def es = vv.max{( it.receivedendseries ? it.receivedendseries : 0 )}?.receivedendseries; 
-				def ss = vv.min{( it.receivedstartseries ? it.receivedstartseries : 0 )}?.receivedstartseries; 
-				a.receivedstartseries = (ss > 0 ? ss : null); 
-				a.receivedendseries   = (es > 0 ? es : null); 
-				if ( ss > 0 ) { 
-					a.qtyreceived = (a.receivedendseries - a.receivedstartseries)+1; 
-				}
-				es = vv.max{( it.beginendseries ? it.beginendseries : 0 )}?.beginendseries; 
-				ss = vv.min{( it.beginstartseries ? it.beginstartseries : 0 )}?.beginstartseries; 
-				a.beginendseries   = (es > 0 ? es : null); 
-				a.beginstartseries = (ss > 0 ? ss : null); 
-				if ( ss > 0 ) { 
-					a.qtybegin = (a.beginendseries - a.beginstartseries)+1; 
-				}
-				es = vv.max{( it.endingendseries ? it.endingendseries : 0 )}?.endingendseries; 
-				ss = vv.min{( it.endingstartseries ? it.endingstartseries : 0 )}?.endingstartseries; 				
-				a.endingendseries   = (es > 0 ? es : null); 
-				a.endingstartseries = (ss > 0 ? ss : null); 
-				if ( ss > 0 ) { 
-					a.qtyending = (a.endingendseries - a.endingstartseries)+1; 
-				} 
-				result << a; 			
-			} 
-		}
-
-		groups.cashticket?.groupBy{ it.formno }.each{ k,v-> 
-			def a = v.first(); 
-			a.qtyreceived = v.sum{( it.qtyreceived ? it.qtyreceived : 0 )}
-			a.qtybegin = v.sum{( it.qtybegin ? it.qtybegin : 0 )}
-			a.qtyissued = v.sum{( it.qtyissued ? it.qtyissued : 0 )}
-			a.qtyending = v.sum{( it.qtyending ? it.qtyending : 0 )}
-
-			a.receivedstartseries = a.receivedendseries = null; 
-			a.beginstartseries = a.beginendseries = null; 
-			a.issuedstartseries = a.issuedendseries = null; 
-			a.endingstartseries = a.endingendseries = null; 
-			result << a; 
-		}
-
-		return result; 
-	}
 }

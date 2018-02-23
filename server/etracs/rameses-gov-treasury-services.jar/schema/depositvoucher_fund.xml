@@ -1,0 +1,35 @@
+<schema>
+	<element  tablename="depositvoucher_fund" >
+		<!-- objid should  collectionfund objid -->
+		<field name="objid" primary="true" />
+		<field name="state" required="true"/>
+
+		<!-- this value will be blank in the start -->
+		<field name="parentid" required="true"/>
+		<field name="controlno" required="true"/>
+		<field name="fundid" required="true"/>
+
+		<!-- we need this for querying in deposit initial -->
+		<complex name="fund" ref="fund" jointype="many-to-one">
+			<key field="fundid" target="objid" />
+		</complex>
+
+		<!-- total cash and total checks are updated when deposited -->
+		<field name="amount" required="true" type="decimal"/>
+		<field name="totalcash" required="true"  type="decimal"/>
+		<field name="totalcheck" required="true"  type="decimal"/>
+		
+		<field name="cashtodeposit" required="true" type="decimal"/>
+		<field name="checktodeposit" required="true" type="decimal"/>
+
+		
+		<field name="cashier_objid" />
+		<field name="cashier_name" />
+		<field name="cashier_title" />
+
+		<complex name="parent" ref="depositvoucher" jointype="many-to-one" includefields="controldate,state">
+			<key field="parentid" target="objid"/>
+		</complex>	
+
+	</element>
+</schema>

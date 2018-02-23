@@ -44,6 +44,7 @@ public class ApplicationFormPage extends javax.swing.JPanel implements UIContent
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
         jPanel5 = new javax.swing.JPanel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -111,6 +112,12 @@ public class ApplicationFormPage extends javax.swing.JPanel implements UIContent
         xLabel10.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel5.add(xLabel10);
 
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel11.setCaption("Franchise Expiry Date");
+        xLabel11.setExpression("#{entity.franchise.expirydate}");
+        xLabel11.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel5.add(xLabel11);
+
         jPanel5.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -132,7 +139,7 @@ public class ApplicationFormPage extends javax.swing.JPanel implements UIContent
                 .addContainerGap()
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -451,6 +458,7 @@ public class ApplicationFormPage extends javax.swing.JPanel implements UIContent
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XLabel xLabel10;
+    private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;

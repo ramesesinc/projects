@@ -46,10 +46,10 @@ public class BankPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xTextField5 = new com.rameses.rcp.control.XTextField();
-        xTextField6 = new com.rameses.rcp.control.XTextField();
-        xTextField7 = new com.rameses.rcp.control.XTextField();
-        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
 
         xTabbedPane1.setItems("sections");
 
@@ -156,33 +156,33 @@ public class BankPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Deposit Slip Report Format");
         jPanel3.setBorder(xTitledBorder1);
 
-        xTextField5.setCaption("Cash");
-        xTextField5.setCaptionWidth(110);
-        xTextField5.setName("entity.cashreport"); // NOI18N
-        xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField5.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField5);
+        xComboBox2.setCaption("Cash ");
+        xComboBox2.setCaptionWidth(110);
+        xComboBox2.setItems("cashReportList");
+        xComboBox2.setName("entity.cashreport"); // NOI18N
+        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xComboBox2);
 
-        xTextField6.setCaption("Cash Breakdown");
-        xTextField6.setCaptionWidth(110);
-        xTextField6.setName("entity.cashbreakdownreport"); // NOI18N
-        xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField6.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField6);
+        xComboBox3.setCaption("Cash Breakdown");
+        xComboBox3.setCaptionWidth(110);
+        xComboBox3.setItems("cashBreakdownReportList");
+        xComboBox3.setName("entity.cashbreakdownreport"); // NOI18N
+        xComboBox3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xComboBox3);
 
-        xTextField7.setCaption("Check");
-        xTextField7.setCaptionWidth(110);
-        xTextField7.setName("entity.checkreport"); // NOI18N
-        xTextField7.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField7.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField7);
+        xComboBox4.setCaption("Check");
+        xComboBox4.setCaptionWidth(110);
+        xComboBox4.setItems("checkReportList");
+        xComboBox4.setName("entity.checkreport"); // NOI18N
+        xComboBox4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xComboBox4);
 
-        xTextField8.setCaption("Check Breakdown");
-        xTextField8.setCaptionWidth(110);
-        xTextField8.setName("entity.checkbreakdownreport"); // NOI18N
-        xTextField8.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField8.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
-        xFormPanel2.add(xTextField8);
+        xComboBox5.setCaption("Cash Breakdown");
+        xComboBox5.setCaptionWidth(110);
+        xComboBox5.setItems("checkBreakdownReportList");
+        xComboBox5.setName("entity.checkbreakdownreport"); // NOI18N
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xComboBox5);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -190,14 +190,14 @@ public class BankPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(153, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -215,7 +215,7 @@ public class BankPage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("Print Options", jPanel2);
@@ -243,6 +243,10 @@ public class BankPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
@@ -252,9 +256,5 @@ public class BankPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
-    private com.rameses.rcp.control.XTextField xTextField5;
-    private com.rameses.rcp.control.XTextField xTextField6;
-    private com.rameses.rcp.control.XTextField xTextField7;
-    private com.rameses.rcp.control.XTextField xTextField8;
     // End of variables declaration//GEN-END:variables
 }

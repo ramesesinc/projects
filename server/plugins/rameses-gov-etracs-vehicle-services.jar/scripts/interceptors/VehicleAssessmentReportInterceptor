@@ -1,0 +1,62 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+/**************************************************************************************
+* This interceptor is for printing of assessment 
+***************************************************************************************/
+class VehicleAssessmentReportInterceptor {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@Service("VehicleBillingService")
+	def billingSvc;
+
+	void processBilling( def entity ) {
+		def facts = [];
+		def itemAcct = new ItemAccountUtil();
+		entity.fees.each {
+			try {
+				def bi = new BillItem();
+				bi.parentid = entity.objid;
+				bi.account = itemAcct.createAccountFact( it.item );
+				bi.amount = it.amount;
+				facts << bi;
+			}
+			catch(e) {;}
+		};
+		if(facts) {
+			facts << new VehicleApplication( entity );
+			facts << new VehicleFranchise( entity.franchise );
+			if(entity.dtapproved) {
+				facts << new BillDate( entity.dtapproved );
+			}; 
+			def res = billingSvc.execute( facts );
+			entity.fees = res.billitems;
+		}	
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_assessment' }")
+	public void getData(def evt) {
+		def params = evt.args[0];
+		def result = evt.result;
+		def p = params.parameters;
+		def db = em.lookup( "vehicle_application_" + p.vehicletype );
+		def app = db.find( [objid: p.objid ]).first(1);
+		
+		app.fees = appFeeEm.find( [parentid: p.objid ] ).select("objid,item.*,amount").list();
+		processBilling( app );
+		app.amount = app.fees.sum{ it.amount };
+		result.data = app;
+	}
+
+
+}

@@ -10,15 +10,15 @@ class AFControlListInterceptor {
 		def x = evt.args[0];
 		def result = evt.result;
 		if( x._tag == "AFO" ) {
-			result << [  title: 'Draft', state:'DRAFT' ];
 			result << [  title: 'Open', state:'OPEN' ];
 			result << [  title: 'Issued', state:'ISSUED' ];
 			result << [  title: 'Sold', state:'SOLD' ];
 			result << [  title: 'Consumed', state:'CLOSED' ];
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
+			result << [  title: 'Processing', state:'PROCESSING' ];
 		} 
 		else if( x._tag == 'COLLECTION' ) {
-			result << [  title: 'Open', state:'ACTIVE' ];
+			result << [  title: 'Open', state:'ISSUED' ];
 			result << [  title: 'Consumed', state:'CONSUMED' ];
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
 		}
@@ -34,30 +34,20 @@ class AFControlListInterceptor {
 		def str = "";
 		def m = [:]; 
 
-		if( o.node.state == 'DRAFT' ) {
-			str = " state = 'DRAFT' ";		
-		}
-		else if( o.node.state == 'OPEN' ) {
-			str = " state = 'OPEN' ";
+		if(o.node.state == 'PROCESSING') {
+			str = " lockid = 'PROCESSING' ";
 		}
 		else if( o.node.state == 'ISSUED' ) {
-			str = " state = 'ISSUED' ";
-		}
-		else if( o.node.state == 'SOLD' ) {
-			str = " state = 'SOLD' ";
-		}
-		else if( o.node.state == 'ACTIVE' ) {
-			str = " state='ISSUED' AND currentseries < endseries ";
+			str = " state='ISSUED' AND currentseries < endseries AND lockid IS NULL";
 		}
 		else if( o.node.state == 'CONSUMED' ) {
-			str = " currentseries >= endseries ";
+			str = " currentseries >= endseries AND lockid IS NULL ";
 		}
-		else if( o.node.state == 'CLOSED' ) {
-			str = " state = 'CLOSED' ";
+		else {
+			str = " state = :state AND lockid IS NULL";
+			m.state = o.node.state;
 		}
-		else  {
-			str = " state = 'CANCELLED' ";
-		};
+		
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

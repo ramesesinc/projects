@@ -4,7 +4,7 @@
 		<field name="state" required="true" />
 		<field name="txndate" required="true"  type="timestamp"/>
 		<field name="receiptno" required="true" searchable="true" indexed="true" caption="Receipt No"/>
-		<field name="receiptdate" required="true" caption="Receipt Date" indexed="true"/>
+		<field name="receiptdate" required="true" caption="Receipt Date" indexed="true" type="date"/>
 		<field name="txnmode" required="true" indexed="true" caption="Txn Mode"/>
 		<field name="payer_objid"  />
 		<field name="payer_name"  caption="Payer" searchable="true"  indexed="true"/>
@@ -43,7 +43,7 @@
 		<field name="subcollector_name" indexed="true"/>
 		<field name="subcollector_title" />
 
-		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid">
+		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid,reason">
 			<key field="objid" target="receiptid" />
 		</complex> 
 

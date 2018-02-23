@@ -1,176 +1,99 @@
 package com.rameses.enterprise.treasury.models;
 
-import com.rameses.osiris2.common.*;
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
-import java.rmi.server.*;
 import com.rameses.osiris2.client.*;
-import com.rameses.util.*;
-import javax.swing.*;
-import com.rameses.io.*;
+import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import com.rameses.rcp.framework.ValidatorException;
 
-class RemittanceModel  extends CrudFormModel { 
+class RemittanceModel extends CrudFormModel {
 
     @Service("RemittanceService")
-    def service;
-
-    @Service("RemittanceImportExportService")
-    def exportSvc;
-
-    final def numFormatter = new java.text.DecimalFormat("#,##0.00"); 
+    def remSvc;    
     
+    //this is passed 
+    def handler;
     def selectedFund;
-    def remittancedate;
-    boolean captureMode = false;
-    String schemaName = "remittance";
+    def selectedAf;
     
-    @FormTitle
-    public String getTitle() {
-        if( captureMode ) {
-            return "Capture Remittance";
-        } 
-        else if( entity?.state.toString().equalsIgnoreCase('DRAFT') ) {
-            return "New Remittance"; 
-        } 
-        else { 
-            return "Remittance " + entity.txnno;
-        } 
-    }
-
-    @FormId
-    public String getFormId() {
-        return entity.objid;
-    }
-
-    public void afterCreate() { 
-        entity = service.init([ remittancedate: remittancedate ]);  
-        mode = "read";
-    } 
-
-    def capture() { 
-        captureMode = true; 
-        return "capture"; 
-    }    
-    
-    boolean isViewReportAllowed() { 
-        if ( entity.state.toString().toUpperCase() == 'DRAFT' ) {
-            return false; 
-        } 
-        return super.isViewReportAllowed(); 
-    } 
-
-    
-    boolean isCanPrintReport() { 
-        return ( entity.state != 'DRAFT' ); 
-    } 
-    
-    def getPrintFormData() {  
-        return service.openForReport([ objid:entity.objid ]); 
-    } 
-        
-    def popupReports(def inv) {
-        def popupMenu = new PopupMenuOpener();
-        def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:entity] );
-        list.each{
-            popupMenu.add( it );
+    def fundSummaryHandler = [
+        fetchList: { o->
+            def m = [_schemaname: 'remittance_fund' ];
+            m.findBy = [ remittanceid: entity.objid ];
+            return queryService.getList( m );
+        },
+        onOpenItem: {o,col->
+            return viewFundEntry();
         }
-        return popupMenu;
+    ] as BasicListModel;
+    
+    def viewFundEntry() {
+        if(!selectedFund) throw new Exception("Please select a fund");
+        return Inv.lookupOpener("remittance_fund:open", [entity : selectedFund]  );
     }
-        
-    def delete() { 
-        if (MsgBox.confirm("You are about to delete this transaction. Proceed?")) {
-            persistenceSvc.removeEntity([ _schemaname:schemaName, objid: entity.objid ]); 
-            try { 
-                return "_close"; 
-            } finally {
-                try {
-                    if (caller) caller?.reload(); 
-                } catch(Throwable t){;}
-            }
-        } 
-        return null; 
+    
+    def updateCash() {
+        if(!selectedFund) throw new Exception("Please select a fund");
+        if(selectedFund.balance == 0 && selectedFund.totalcash==0 ) 
+            throw new Exception("There is no cash remittance for selected item");
+        def total = selectedFund.amount - (selectedFund.totalcheck + selectedFund.totalcr);
+        def p = [total: total, cashbreakdown: entity.cashbreakdown ];
+        p.handler = { o->
+            def u = [objid:selectedFund.objid, remittanceid: entity.objid, totalcash: o.total, cashbreakdown: o.cashbreakdown ]; 
+            remSvc.updateCash( u );
+            fundSummaryHandler.reload();
+            binding.refresh();
+        }
+        return Inv.lookupOpener("cashbreakdown", p );
+    }
+    
+    def afSummaryHandler = [
+        fetchList: { o->
+           def m = [_schemaname: 'remittance_af' ];
+           m.findBy = [ remittanceid: entity.objid ];
+           return queryService.getList( m );
+        },
+        onOpenItem: {o,col->
+            return viewReceipts();
+        }
+    ] as BasicListModel;
+    
+    def viewReceipts() {
+        if(!selectedAf) throw new Exception("Please select an entry");  
+        def o = selectedAf;
+        def p = [:];
+        p.put( "query.afcontrolid", o.controlid );
+        p.put( "query.fromseries", o.issuedstartseries );
+        p.put( "query.toseries", o.issuedendseries );
+        return Inv.lookupOpener("cashreceipt_list:afseries", p );
+    }
+    
+    def checkModel = [
+        fetchList: { o->
+            def m = [_schemaname: 'cashreceiptpayment_noncash' ];
+            m.select = "refno,reftype,refdate,amount:{SUM(amount)}";
+            m.groupBy = "refno,reftype,refdate";
+            m.where = [ "receipt.remittanceid = :rid", [rid: entity.objid ]];
+            return queryService.getList( m );
+        }
+    ] as BasicListModel;
+    
+    //for printing
+    def getPrintFormData() {
+        entity.totalnoncash = entity.totalcheck + entity.totalcr;
+        return entity;
     } 
-
-    //MAIN BREAKDOWN
-    def viewBreakdown() {
-        def h = [
-            getChecks: {
-                return  service.getRemittanceChecks([remittanceid: entity.objid]);
-            },
-            getCreditMemos: {
-                return service.getRemittanceCreditMemos([remittanceid: entity.objid]);   
-            }
-        ]   
-        return Inv.lookupOpener( "cashbreakdown", [entity:entity, handler: h ]);
+    
+    def openPreview() {
+        open();
+        return preview("remittance:form_report");
     }
     
-   
-    def submit() {
-        boolean pass = false;
-        service.validateBreakdown([objid:entity.objid]);
-        
-        try {
-            def h = { sig->
-               pass = true;
-               if( !entity.collector ) entity.collector = [:];
-               entity.collector.signature = sig;
-            }
-            if ( com.rameses.rcp.sigid.SigIdDeviceManager.getProvider()?.test()) {
-                def msg = "You are about to submit this remittance.Please ensure the entries are correct";
-                Modal.show("verify_submit_with_signature", [handler: h, message: msg ]);
-            }
-        } catch( Throwable t ) {
-            pass = MsgBox.confirm("You are about to post this transaction. Proceed?"); 
-        } 
-        
-        if( pass ) { 
-            def o = service.post([ 
-                remittanceid: entity.objid, 
-                collector: entity.collector, 
-                cashbreakdown: entity.cashbreakdown                 
-            ]);
-
-            entity.txnno = o.txnno; 
-            entity.state = o.state; 
-            MsgBox.alert("Posting successful. Control No " + entity.txnno); 
-
-            try { 
-                return "_close"; 
-            } finally {
-                try {
-                    if (caller) caller?.reload(); 
-                } catch(Throwable t){;}
-            }
-        } 
-        return null; 
-    }
-
-    def approve() {
-        boolean pass = MsgBox.confirm("You are about to accept this remittance. Proceed?");
-        if ( pass ) { 
-            service.approve([ objid:entity.objid ]); 
-            try { 
-                return "_close"; 
-            } finally {
-                try {
-                    if (caller) caller?.reload(); 
-                } catch(Throwable t){;}
-            }
-        } 
-        return null;
+    void remit() {
+        if ( MsgBox.confirm('You are about to submit this for liquidation. Proceed?')) {
+            entity = remSvc.submitForLiquidation( entity ); 
+        }
     }
     
-    void disapprove() {
-        boolean pass = MsgBox.confirm("You are about to reverse the approval of this remittance. Proceed?");
-        if ( pass ) { 
-            def res = service.disapprove([ objid:entity.objid ]);
-            try {
-                if (caller) caller?.reload(); 
-            } catch(Throwable t){;}
-
-            entity.state = res.state; 
-            entity.liquidatingofficer = res.liquidatingofficer; 
-        } 
-    }     
-} 
+}    

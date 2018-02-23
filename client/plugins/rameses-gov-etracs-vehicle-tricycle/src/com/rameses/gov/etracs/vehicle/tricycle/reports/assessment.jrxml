@@ -44,7 +44,7 @@
 	<parameter name="PARENTLGUFORMALNAME" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="appno" class="java.lang.String"/>
-	<field name="dtfiled" class="java.util.Date"/>
+	<field name="dtapproved" class="java.util.Date"/>
 	<field name="owner.name" class="java.lang.String"/>
 	<field name="txntype" class="java.lang.String"/>
 	<field name="barcode" class="java.lang.String"/>
@@ -188,7 +188,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtfiled}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{dtapproved}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -403,7 +403,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["ASSESSMENT RECORD"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["MTOP ASSESSMENT RECORD"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

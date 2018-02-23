@@ -1,7 +1,0 @@
-"entity.payer|entity.paid.*"[ barcodeid !=null ] {
-    enabled: false;
-}
-
-"entity.payer|entity.paid.*"[ barcodeid ==null ] {
-    enabled: true;
-}

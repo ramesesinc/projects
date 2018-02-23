@@ -1,4 +1,4 @@
-<workunit extends="wtemplates/enterprise/treasury/BasicCashReceiptController.xml">
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
     <invokers>
         <invoker type="collectiontype:handler" caption="Miscellaneous" name="misc" index="-1"  />
         <invoker type="cashreceipt:misc" action="init" caption="Issue Receipt"/>

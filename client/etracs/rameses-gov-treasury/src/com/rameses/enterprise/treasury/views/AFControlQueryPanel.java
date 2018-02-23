@@ -28,11 +28,14 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
 
         setLayout(new java.awt.BorderLayout());
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(50);
+        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xComboBox1.setCaption("AF ");
@@ -41,10 +44,30 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(95, 20));
         xFormPanel1.add(xComboBox1);
 
+        xLookupField1.setCaption("Issued To");
+        xLookupField1.setCaptionWidth(70);
+        xLookupField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xLookupField1.setExpression("#{ query.issuedto.name }");
+        xLookupField1.setHandler("collector:lookup");
+        xLookupField1.setName("query.issuedto"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xLookupField1);
+
+        xLookupField2.setCaption("Resp. Center");
+        xLookupField2.setCaptionWidth(90);
+        xLookupField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xLookupField2.setExpression("#{ query.respcenter.name }");
+        xLookupField2.setHandler("org:lookup");
+        xLookupField2.setName("query.respcenter"); // NOI18N
+        xLookupField2.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xLookupField2);
+
         add(xFormPanel1, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     // End of variables declaration//GEN-END:variables
 }

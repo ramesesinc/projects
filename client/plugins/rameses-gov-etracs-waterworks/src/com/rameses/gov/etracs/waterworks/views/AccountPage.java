@@ -43,11 +43,6 @@ public class AccountPage extends javax.swing.JPanel {
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         localAddressPanel1 = new com.rameses.etracs.common.LocalAddressPanel();
-        jPanel4 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel20 = new com.rameses.rcp.control.XLabel();
-        xButton3 = new com.rameses.rcp.control.XButton();
         jPanel5 = new javax.swing.JPanel();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
@@ -57,15 +52,14 @@ public class AccountPage extends javax.swing.JPanel {
         xPanel4 = new com.rameses.rcp.control.XPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDateField7 = new com.rameses.rcp.control.XDateField();
-        xLabel22 = new com.rameses.rcp.control.XLabel();
         xLabel23 = new com.rameses.rcp.control.XLabel();
-        xLabel13 = new com.rameses.rcp.control.XLabel();
-        xLabel21 = new com.rameses.rcp.control.XLabel();
-        xLabel14 = new com.rameses.rcp.control.XLabel();
-        xLabel18 = new com.rameses.rcp.control.XLabel();
-        xLabel15 = new com.rameses.rcp.control.XLabel();
-        xLabel16 = new com.rameses.rcp.control.XLabel();
         xLabel24 = new com.rameses.rcp.control.XLabel();
+        attributePanel1 = new com.rameses.treasury.common.components.AttributePanel();
+        jPanel4 = new javax.swing.JPanel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel20 = new com.rameses.rcp.control.XLabel();
+        xButton3 = new com.rameses.rcp.control.XButton();
 
         xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
@@ -160,64 +154,14 @@ public class AccountPage extends javax.swing.JPanel {
             xPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel3Layout.createSequentialGroup()
                 .addComponent(localAddressPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(0, 54, Short.MAX_VALUE))
         );
 
         jPanel1.add(xPanel3);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Stubout Information");
-        jPanel4.setBorder(xTitledBorder3);
-
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel2.setCaptionWidth(110);
-
-        xLabel6.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel6.setCaption("Stubout");
-        xLabel6.setExpression("#{entity.stubout.code}");
-        xLabel6.setOpaque(true);
-        xLabel6.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel2.add(xLabel6);
-
-        xLabel20.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel20.setCaption("Node Index");
-        xLabel20.setExpression("#{entity.stuboutnode.indexno}");
-        xLabel20.setOpaque(true);
-        xLabel20.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel2.add(xLabel20);
-
-        xButton3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xButton3.setImmediate(true);
-        xButton3.setName("assignStubout"); // NOI18N
-        xButton3.setShowCaption(false);
-        xButton3.setText("Assign Stubout");
-        xButton3.setVisibleWhen("#{mode == 'create'}");
-        xFormPanel2.add(xButton3);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel1.add(jPanel4);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder4.setTitle("Meter Information");
-        jPanel5.setBorder(xTitledBorder4);
+        xTitledBorder3.setTitle("Meter Information");
+        jPanel5.setBorder(xTitledBorder3);
 
         xFormPanel5.setCaptionWidth(120);
 
@@ -274,9 +218,9 @@ public class AccountPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder5 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder5.setTitle("Billing Cycle Information");
-        xPanel4.setBorder(xTitledBorder5);
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder4.setTitle("Reading Information");
+        xPanel4.setBorder(xTitledBorder4);
 
         xFormPanel4.setCaptionWidth(120);
 
@@ -286,73 +230,17 @@ public class AccountPage extends javax.swing.JPanel {
         xDateField7.setRequired(true);
         xFormPanel4.add(xDateField7);
 
-        xLabel22.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel22.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel22.setCaption("Year");
-        xLabel22.setExpression("#{entity.billingcycle.year}");
-        xLabel22.setOpaque(true);
-        xLabel22.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel22);
-
         xLabel23.setBackground(new java.awt.Color(245, 245, 245));
         xLabel23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel23.setCaption("Month");
-        xLabel23.setExpression("#{entity.billingcycle.monthname}");
+        xLabel23.setCaption("Last Reading Date");
+        xLabel23.setExpression("#{entity.lastdateread}");
         xLabel23.setOpaque(true);
         xLabel23.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel4.add(xLabel23);
 
-        xLabel13.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel13.setCaption("Period From");
-        xLabel13.setExpression("#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod): ''}");
-        xLabel13.setOpaque(true);
-        xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel13);
-
-        xLabel21.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel21.setCaption("Period To");
-        xLabel21.setExpression("#{entity.billingcycle.toperiod? dateFormatter.format( entity.billingcycle.toperiod) : ''} ");
-        xLabel21.setOpaque(true);
-        xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel21);
-
-        xLabel14.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel14.setCaption("Reading Date");
-        xLabel14.setExpression("#{entity.billingcycle.readingdate? dateFormatter.format( entity.billingcycle.readingdate) : ''} ");
-        xLabel14.setOpaque(true);
-        xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel14);
-
-        xLabel18.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel18.setCaption("Bill Date");
-        xLabel18.setExpression("#{entity.billingcycle.billdate? dateFormatter.format( entity.billingcycle.billdate) : ''} ");
-        xLabel18.setOpaque(true);
-        xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel18);
-
-        xLabel15.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel15.setCaption("Due Date");
-        xLabel15.setExpression("#{entity.billingcycle.duedate? dateFormatter.format( entity.billingcycle.duedate) : ''} ");
-        xLabel15.setOpaque(true);
-        xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel15);
-
-        xLabel16.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel16.setCaption("Disconnection Date");
-        xLabel16.setExpression("#{entity.billingcycle.disconnectiondate? dateFormatter.format( entity.billingcycle.disconnectiondate) : ''} ");
-        xLabel16.setOpaque(true);
-        xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xLabel16);
-
         xLabel24.setBackground(new java.awt.Color(245, 245, 245));
         xLabel24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel24.setCaption("Current Reading");
+        xLabel24.setCaption("Last Reading");
         xLabel24.setExpression("#{entity.currentreading==null ? '' : entity.currentreading}");
         xLabel24.setOpaque(true);
         xLabel24.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -364,14 +252,70 @@ public class AccountPage extends javax.swing.JPanel {
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel4Layout.setVerticalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder5 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder5.setTitle("Attributes");
+        attributePanel1.setBorder(xTitledBorder5);
+        attributePanel1.setLookupHandler("waterworks_attribute:lookup");
+        attributePanel1.setName("entity.attributes"); // NOI18N
+        attributePanel1.setParentname("entity");
+        attributePanel1.setSchemaname("waterworks_account_attribute");
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder6 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder6.setTitle("Stubout Information");
+        jPanel4.setBorder(xTitledBorder6);
+
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(110);
+
+        xLabel6.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel6.setCaption("Stubout");
+        xLabel6.setExpression("#{entity.stubout.code}");
+        xLabel6.setOpaque(true);
+        xLabel6.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel2.add(xLabel6);
+
+        xLabel20.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel20.setCaption("Node Index");
+        xLabel20.setExpression("#{entity.stuboutnode.indexno}");
+        xLabel20.setOpaque(true);
+        xLabel20.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel2.add(xLabel20);
+
+        xButton3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xButton3.setImmediate(true);
+        xButton3.setName("assignStubout"); // NOI18N
+        xButton3.setShowCaption(false);
+        xButton3.setText("Assign Stubout");
+        xButton3.setVisibleWhen("#{mode == 'create'}");
+        xFormPanel2.add(xButton3);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -380,24 +324,32 @@ public class AccountPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 514, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(126, Short.MAX_VALUE))
+                    .addComponent(attributePanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(190, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(attributePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Information", jPanel2);
@@ -406,15 +358,16 @@ public class AccountPage extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 995, Short.MAX_VALUE)
+            .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1059, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+            .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.treasury.common.components.AttributePanel attributePanel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -430,16 +383,9 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
-    private com.rameses.rcp.control.XLabel xLabel13;
-    private com.rameses.rcp.control.XLabel xLabel14;
-    private com.rameses.rcp.control.XLabel xLabel15;
-    private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel17;
-    private com.rameses.rcp.control.XLabel xLabel18;
     private com.rameses.rcp.control.XLabel xLabel19;
     private com.rameses.rcp.control.XLabel xLabel20;
-    private com.rameses.rcp.control.XLabel xLabel21;
-    private com.rameses.rcp.control.XLabel xLabel22;
     private com.rameses.rcp.control.XLabel xLabel23;
     private com.rameses.rcp.control.XLabel xLabel24;
     private com.rameses.rcp.control.XLabel xLabel6;

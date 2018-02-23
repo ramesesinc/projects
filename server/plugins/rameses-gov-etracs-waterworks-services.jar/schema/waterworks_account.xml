@@ -68,6 +68,10 @@
 
 		<field name="barcode" expr="CONCAT('51030:',acctno)"/>
 		<field name="lastbilldate" type="date"/>
+
+		<complex name="attributes" ref="waterworks_account_attribute" jointype="one-to-many" required="false">
+			<key field="objid" target="parentid"/> 
+		</complex>
 	</element>
 
 </schema>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1030</x>
+      <y>390</y>
+      <w>180</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+post</panel_attributes>
+    <additional_attributes>160;30;30;90</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>410</x>
+      <y>0</y>
+      <w>240</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>/SingleBillingInterceptor/
+--
+getInfo
+getBillItems
+execute (after)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>80</x>
+      <y>120</y>
+      <w>240</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>/SingleBillingService/
+--
+/getInfo*/
+/getBillItems*/
+execute
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>160</x>
+      <y>570</y>
+      <w>520</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>xx_payment
+--
+objid
+parentid - link to immediate parent like an application
+parentschema - link to type of parent (e.g. application or franchise)
+rootid - link to main ledger or account
+refno - receipt no. or any payment reference  
+refdate 
+reftype - type of reference (cashreceipt, etc)
+refid
+amount
+particulars
+&lt;&lt;custom_fields&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>950</x>
+      <y>480</y>
+      <w>200</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>CashReceiptServiceInterceptor
+--
+add refno,reftype,refdate,refid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>290</x>
+      <y>30</y>
+      <w>140</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+</panel_attributes>
+    <additional_attributes>30;130;120;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>700</x>
+      <y>110</y>
+      <w>260</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>BillingCashReceiptService
+--
+/formatReceiptInfo*/
+/getPostPaymentInfo*/
+/getWorkflowTask*/
+--
+getInfo
+getItems</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>290</x>
+      <y>150</y>
+      <w>430</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>30;30;410;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>640</x>
+      <y>240</y>
+      <w>100</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>80;30;30;220</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>490</x>
+      <y>290</y>
+      <w>150</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>30;30;130;170</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>920</x>
+      <y>330</y>
+      <w>176</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+args.payment!=null</panel_attributes>
+    <additional_attributes>70;30;110;150</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>650</x>
+      <y>600</y>
+      <w>150</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+items</panel_attributes>
+    <additional_attributes>30;40;130;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>590</x>
+      <y>460</y>
+      <w>200</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>BillingCashReceiptModel
+--
+handler: </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>450</x>
+      <y>270</y>
+      <w>100</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>custom
+screen</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>870</x>
+      <y>310</y>
+      <w>200</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>CashReceiptService
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>490</y>
+      <w>326</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/methods marked with * must be overriden/
+</panel_attributes>
+    <additional_attributes>40;50;300;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>710</x>
+      <y>660</y>
+      <w>230</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>xx_paymentitem
+--
+objid
+parentid
+item_objid
+item_title
+particulars
+postingrefid
+postingreftype 
+amount
+surcharge
+interest
+discount
+&lt;&lt;custom fields&gt;&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>670</x>
+      <y>330</y>
+      <w>240</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+post</panel_attributes>
+    <additional_attributes>220;30;30;130</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1140</x>
+      <y>370</y>
+      <w>200</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>PostPaymentService
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

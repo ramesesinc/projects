@@ -1,0 +1,48 @@
+import com.rameses.annotations.*
+
+class OnlinePaymentResolverService {
+
+	@Service(value='PartnerPaymentService', connection='gdx_proxy') 
+	def paymentProxySvc; 
+
+	@DataContext('paymentorder')
+	def po_db;
+
+	@Service 
+	def self; 
+
+    @ProxyMethod
+    public void resolve( params ) { 
+    	params.start = 0; 
+    	params.limit = 10; 
+    	self.resolveImpl( params ); 
+    } 
+
+    @Async 
+    @ProxyMethod 
+    public void resolveImpl( params ) {
+    	def start = (params.start ? params.start : 0);
+    	def limit = (params.limit ? params.limit : 10); 
+    	def items = po_db.find([ origin:'filipizen' ]).list( start, limit+1 ); 
+    	if ( items ) resolveItems( items, start, limit ); 
+    }
+
+    private void resolveItems( items, start, limit ) { 
+    	if ( !items ) return;
+
+    	def itemsize = items.size(); 
+    	boolean hasmore = (itemsize > limit); 
+    	items.each{ o-> 
+    		try {
+    			o.paymentrefid = o.objid; 
+    			o.orgcode = o.locationid; 
+    			paymentProxySvc.resolve( o ); 
+   			} catch(Throwable t) { 
+   				t.printStackTrace(); 
+   			} 
+    	}
+    	if ( hasmore ) {
+    		self.resolveImpl([ start: (start+limit), limit: limit ]); 
+    	}
+    } 
+}

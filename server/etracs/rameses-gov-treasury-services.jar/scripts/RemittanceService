@@ -1,379 +1,141 @@
 import com.rameses.annotations.*;
-import com.rameses.common.*;
 import com.rameses.util.*;
+import java.rmi.server.*;
 
 class RemittanceService  {
+
 
 	@Env
 	def env;
 
-	@Service 
-	def self; 
+	@Service("DateService")
+	def dateSvc;
 
-	@Service('PersistenceService') 
-	def persistSvc; 
+	@Service("CashBreakdownSummaryService")
+	def cashBreakdownSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@DataContext("cashreceipt")
+	def cashReceiptEm;
+
+	@DataContext("remittance")
+	def remEm;
+
+	@DataContext("remittance_fund")
+	def rfEm;
+
+	@DataContext("cashreceiptpayment_noncash")
+	def ncEm;
 
 	@Service('ControlService') 
 	def controlSvc;
 
-	@Service("DateService")
-	def dateSvc;
-
-	@Service("NumberService")
-	def numSvc;	
-
 	@Service("Var")
 	def var;
 
-	@ActiveDB("remittance_tool")
-	def remittance_tool; 
-
-	@DataContext("remittance")
-	def remdb;
-
-	@DataContext("remittance_fund")
-	def remf_db;
-
-	@DataContext("remittance_af")
-	def remaf_db;
-
-	@DataContext("remittance_noncashpayment")
-	def rem_noncash;
-
-	@DataContext("af_control")
-	def afc_db;
-
-	@DataContext('cashreceipt') 
-	def cashreceipt_db;
-
-	@ActiveDB('remittance_rcd') 
-	def rcd_db;
-
 	@ProxyMethod
-	public def init( param ) { 
-		boolean split_txn = (var.remittance_split_transaction.toString().matches('false|0') ? false : true); 
+	public def create( def pp ) {
+		def o = pp.items;
 
-		def temptxnno = com.rameses.util.Encoder.MD5.encode( env.USERID ); 
-		def draftdata = remdb.find([ txnno: temptxnno ]).first(); 
-		if ( draftdata ) throw new Exception("""  
-			You still have a DRAFT remittance that was previously created.  
-		""");
-
-
-		def rundate = dateSvc.getServerDate(); 
-		def remittanceid = "REM" + new java.rmi.server.UID(); 
-		def o = [ objid: remittanceid, state:'DRAFT', txnno: temptxnno, dtposted: rundate ]; 
-		o.collector = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
-		o.amount = o.totalcash = o.totalcheck = o.totalcr = 0.0; 
-		o.cashbreakdown = []; 
-
-		boolean offlineMode = ( param.remittancedate ? true : false ); 
-		if ( offlineMode ) { 
-			def dt = null; 
-			if ( param.remittancedate instanceof Date ) {
-				dt = param.remittancedate;  
-			} else {
-				dt = new java.text.SimpleDateFormat('yyyy-MM-dd').parse( param.remittancedate.toString());  
-			} 
-
-			o.remittancedate = new java.sql.Date( dt.time );  
-
-		} else { 
-			o.remittancedate = new java.sql.Date( rundate.time ); 
-		} 
-
-		remdb.create( o );  
-
-		def info = [ remittanceid: remittanceid, collectorid: env.USERID ];
-		if ( split_txn ) {
-			info.txndate = getMonthFirstDate( o.remittancedate ); 
-			remdb.updateSerialReceipts( info );  
-			remdb.updateNonSerialReceipts( info );  
-			def test = cashreceipt_db.find([ remittanceid: remittanceid ]).first(); 
-			if ( test ) { 
-				o.endofmonth = true; 
-				o.message = "End of the month remittance only. Please remit again for the remaining collection."; 
-				o.remittancedate = new java.sql.Date( dateSvc.add( info.txndate, "-1d" ).time );  
-				o._txndate = o.remittancedate; 
-			} 
-		} 
-		
-		if ( !o.endofmonth ) { 
-			if ( offlineMode ) { 
-				info.txndate = dateSvc.add( o.remittancedate, "1d" ); 
-				o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', o.remittancedate ); 				
-			} else { 
-				info.txndate = rundate; 
-				o._txndate = dateSvc.format('yyyy-MM-dd HH:mm:ss', info.txndate ); 		
-			} 
-
-			remdb.updateSerialReceipts( info ); 
-			remdb.updateNonSerialReceipts( info ); 
-		} 
-
-		o.items = remdb.getBuildReceiptSummary( info ); 
-		if ( !o.items ) throw new Exception("No collections to be remitted.   "); 
-
-		remdb.find([ objid: o.objid ]).update([ remittancedate: o.remittancedate ]);
-
-		remdb.insertNonCashPayment( info ); 
-		remdb.insertFundSummary( info ); 
-		remdb.updateNonCashReceiptPayment( info ); 
-
-		o.amount = 0.0;
-		o.totalcr = 0.0;
-		o.totalcash = 0.0;
-		o.totalcheck = 0.0;
-		remf_db.find([ remittanceid: remittanceid ]).list().each{
-			o.amount += it.amount;
-			o.totalcr += it.totalcr;
-			o.totalcash += it.totalcash;
-			o.totalcheck += it.totalcheck;
+		def buff = new StringBuilder();
+		o.findAll{ it.formtype == "serial" && ( it.qty != (it.toseries - it.fromseries + 1 ))  }.each {
+			buff.append( it.formno + " " + it.stubno + " " + it.fromseries + " " + it.toseries );
 		}
-		remdb.find([ objid: remittanceid ]).update([ 
-			amount: o.amount, totalcash: o.totalcash, 
-			totalcheck: o.totalcheck, totalcr: o.totalcr 
-		]); 
+		def str = buff.toString();
+		if(str ) throw new Exception("Mismatch qty with series. Please check the ff: \n" + str );
 
-		o.checks = remdb.getNonCashPayments( info );
+		def m = [:];
+		m.controlno = 'TMP-REM-'+env.USERID;
+		m.controldate = dateSvc.getBasicServerDate();
+		m.dtposted = dateSvc.getServerDate();
+		m.state = "DRAFT";
+		m.totalcash = 0;
+		m.totalcheck=0;
+		m.totalcr = 0;
+		m.cashbreakdown = [];
+		m.collector = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		m.amount = 0;
+		m = remEm.create( m );
 
-		return o; 
-	} 
+		def scond = "collector.objid = :userid AND series BETWEEN :fromseries AND :toseries";
+		o.each {
+			//update also remittance_fund
+			def p = [userid: env.USERID, fromseries: it.fromseries, toseries: it.toseries ];
+			cashReceiptEm.find( [controlid: it.afcontrolid ] ).where(scond, p).update( [remittanceid: m.objid] );
+		}
 
- 	@ProxyMethod
-    public void updateCashBreakdown( o ) { 
-        def m = remf_db.find([ objid: o.objid ]).select('objid,remittanceid').first(); 
-        if ( !m ) return;
+		def z = [remittanceid: m.objid]
+		remEm.insertRemittanceAF( z );
+		remEm.insertRemittanceFund( z );
 
-        remf_db.find([ objid: m.objid ]).update([ cashbreakdown: o.cashbreakdown ]);  
+		def clist = rfEm.find( z ).list();
+		clist.each {
+			def ppp = [remittanceid: it.remittanceid , fundid: it.fund.objid ];
 
-		def totalcbd = summarizeFundCashbreakdown( m.remittanceid ); 
-		remdb.find([ objid: m.remittanceid ]).update([ cashbreakdown: totalcbd ]);
-    } 
+			def u = [:];
+			u.amount = it.amount;
+			u.totalcheck = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND reftype = 'CHECK' ", ppp ).val();
+			if(!u.totalcheck) u.totalcheck = 0;
 
-    private def summarizeFundCashbreakdown( remittanceid ) {
-        def arr = [];
-        def cblist = remf_db.find([ remittanceid: remittanceid ]).select("cashbreakdown").where(" totalcash > 0 ").list();
-        cblist.each { 
-        	if ( it.cashbreakdown ) arr.addAll( it.cashbreakdown ); 
-        }
+			u.totalcr = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND NOT(reftype = 'CHECK') ", ppp ).val();
+			if(!u.totalcr ) u.totalcr = 0;
 
-        def newarr = [];
-        arr.groupBy{ it.denomination }.each { k,v->
-        	newarr << [ caption:k, denomination:k, qty: v.sum{it.qty}, amount: v.sum{it.amount} ];	
-        }
-        return newarr; 
-    }
+			rfEm.find( [objid: it.objid ] ).update( u );
+		}
 
-	@ProxyMethod
-	public void validateBreakdown( def o ) {
-		// check cashbreakdown per fund 
-        def cblist = remf_db.find([ remittanceid: o.objid ]).select("cashbreakdown,fund.*").where(" totalcash > 0 ").list();
-		cblist.each {
-            if(it.totalcash >0 && ( it.cashbreakdown?.sum{c->c.amount}!=it.totalcash)  )
-                throw new Exception("Cashbreakdown for "+it.fund.title + " must be exact ");
-        }
+		def t = rfEm.find( z ).select( "totalcash:{SUM(totalcash)},totalcheck:{SUM(totalcheck)},totalcr:{SUM(totalcr)},amount:{SUM(amount)}" ).first();
+		remEm.find( [objid: m.objid]).update(t);
+		//update total check and total 
+		return m;
 	}
 
-	@ProxyMethod 
-	public def post( param ) { 
-		if ( !param.remittanceid ) throw new Exception("remittanceid parameter is required"); 
+	@ProxyMethod
+	public void updateCash( def m ) {
+		if(!m.objid) throw new Exception("objid is required");
+		if(!m.cashbreakdown) throw new Exception("breakdown is required");
+		if(!m.remittanceid ) throw new Exception("remittanceid is required");
+		if(!m.totalcash ) throw new Exception("totalcash is required");
 
-		def o = remdb.find([ objid: param.remittanceid ]).first(); 
-		if ( !o ) throw new Exception('Remittance record does not exist.');
-		if ( o.state != 'DRAFT' ) throw new Exception("Remittance record is no longer in DRAFT mode");
+		def bd = m.cashbreakdown.findAll{ it.qty > 0 };
+		rfEm.find( [objid: m.objid] ).update( [cashbreakdown: bd, totalcash: m.totalcash ] );
 
-		// check cashbreakdown per fund 
-        def cblist = remf_db.find([ remittanceid: o.objid ]).select("totalcash,cashbreakdown,fund.*").where(" totalcash > 0 ").list();
-        cblist.each { 
-        	def amt = it.cashbreakdown?.sum{( it.amount ? it.amount: 0.0 )} 
-        	if ( !amt ) throw new Exception('Please specify a cashbreakdown for fund '+ it.fund.title ); 
+		def list = rfEm.select("cashbreakdown").find( [remittanceid: m.remittanceid ] ).list()*.cashbreakdown;
+		bd = cashBreakdownSvc.summarize( list );
 
-        	def diff = (it.totalcash - amt);
-	        if( diff  > 0.01 )
-	            throw new Exception("Cash to remit is insufficient. Please review your collection for " + it.fund.title);
-	        if( diff < -0.01 )
-	            throw new Exception("Please review your collection. You have over declared the cash breakdown for " + it.fund.title);
-        }
+		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd, totalcash: m.totalcash ] );
+	}	
 
-		param.cashbreakdown = summarizeFundCashbreakdown( o.objid ); 
+	@ProxyMethod
+	public def submitForLiquidation( def o ) {
+		//check total breakdown before submitting
+		def z = rfEm.select("objid").find( [remittanceid: o.objid ] ).where(" (amount - (totalcash+totalcheck+totalcr)) > 0 ").first();
+		if( z ) 
+			throw new Exception("Please ensure that all balances must be equal to 0. Please check there may be items that do not have a cash breakdown");
 
-		o.state = 'OPEN'; 
-		o.dtposted = dateSvc.getServerDate(); 
-		if ( o.txnno.toString().toUpperCase().startsWith("REM")) {
+		def m = [:];	
+		m.dtposted = dateSvc.getServerDate(); 
+		if ( o.controlno.toString().toUpperCase().startsWith("REM")) {
 			// do nothing, we will use the same transaction number 
 		} else {
 			def txncode = [ "REM", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
-			o.txnno = controlSvc.formatTxnno([ txncode: txncode, txndate: o.dtposted, format: var.remittance_format, sequenceid_format: var.remittance_sequenceid_format ]); 
+			m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtposted, format: var.remittance_format, sequenceid_format: var.remittance_sequenceid_format ]); 
 		}
 
-		if ( !o.collector ) o.collector = [:];
-		if ( param.collector?.signature ) o.collector.signature = param.collector.signature; 
+		if ( o.collector?.signature ) m.collector = [signature: o.collector.signature]; 
+		m.state = 'OPEN';
+		remEm.find( [objid: o.objid ] ).update( m );
 
-		remdb.find([ objid: param.remittanceid ]).update([ 
-			txnno: o.txnno, state: o.state, dtposted: o.dtposted, 
-			cashbreakdown: param.cashbreakdown, collector: o.collector 
-		]); 
-		remdb.updateFundControlNo([ remittanceid: param.remittanceid ]); 
-		return o; 
-	} 
+		o.state = 'OPEN';
 
-
-    @ProxyMethod 
-    public void revert( params ) {
-    	if ( !params.objid ) throw new Exception('objid parameter is required'); 
-
-    	params.remittanceid = params.objid; 
-    	def o = remittance_tool.findRemittance( params ); 
-    	if ( o?.liquidated > 0 ) 
-    		throw new Exception('This transaction has already been liquidated. Cannot revert remittance'); 
-
-		remittance_tool.revertCashReceiptNonCashPayments( params ); 
-		remittance_tool.revertCashReceipts( params ); 
-
-    	remittance_tool.removeFunds( params ); 
-    	remittance_tool.removeAFs( params ); 
-    	remittance_tool.removeCashReceipts( params ); 
-    	remittance_tool.removeCreditMemoPayments( params ); 
-    	remittance_tool.removeNonCashPayments( params ); 
-    	remittance_tool.removeRemittance( params ); 
-    } 
-
-    @ProxyMethod
-    public void approve( o ) { 
-    	def m = [ state: 'APPROVED' ]; 
-    	m.liquidatingofficer = [ objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE ]; 
-    	if ( !m.liquidatingofficer.objid ) 
-    		throw new Exception('liquidatingofficer field is required');  
-
-    	remdb.find([ objid : o.objid ]).update( m ); 
-    } 
-
-    @ProxyMethod
-    public def disapprove( params ) { 
-    	def o = remdb.find([ objid : params.objid ]).first(); 
-    	if ( !o ) return; 
-
-    	if ( !o.state.toString().equalsIgnoreCase('APPROVED')) 
-    		throw new Exception('This transaction is no longer in APPROVED mode');
-
-    	o.state = 'OPEN'; 
-    	o.liquidatingofficer = [:]; 
-    	
-		remdb.find([ objid : params.objid ]).update([ 
-			liquidatingofficer : [ objid:'{NULL}', name:'{NULL}', title:'{NULL}' ], 
-			state: o.state 
-		]); 
-		return o; 
-    } 
-
-
-    @ProxyMethod 
-    public def openForReport( params ) { 
-    	if ( !params.objid ) throw new Exception('objid parameter is required');  
-
-    	def o = null; 
-    	boolean hasfund = false; 
-    	if ( params.fundid ) { 
-    		def rfo = remf_db.find([ remittanceid: params.objid, 'fund.objid': params.fundid ]).select('objid').first(); 
-    		if ( !rfo ) throw new Exception('Remittance fund record does not exist'); 
-
-    		hasfund = true; 
-
-    		def findBy = [ objid: rfo.objid ]; 
-    		o = persistSvc.read([ _schemaname: 'remittance_fund', objid: findBy.objid, findBy: findBy ]); 
-
-    		def ro = remdb.find([ objid: params.objid ]).first(); 
-    		o.txnno = ro.txnno; 
-    		o.dtposted = ro.dtposted; 
-    		o.collector = ro.collector; 
-    		o.remittancedate = ro.remittancedate;
-    		o.liquidatingofficer = ro.liquidatingofficer; 
-
-    	} else { 
-	    	def findBy = [ objid: params.objid ]; 
-	    	o = persistSvc.read([ _schemaname: 'remittance', objid: findBy.objid, findBy: findBy ]); 
-	    	if ( !o ) throw new Exception('Remittance record does not exist'); 
-
-	    	params.fundid = '%'; 
-    	} 
-
-		params.remittanceid = params.objid; 
-
-    	def totalcr = (o.totalcr ? o.totalcr : 0.0); 
-    	def totalcheck = (o.totalcheck ? o.totalcheck : 0.0); 
-    	o.totalnoncash = totalcheck + totalcr; 
-
-    	def m = [ remittanceid: params.remittanceid, fundid: params.fundid, afid:'%' ]; 
-    	o.collectiontype = rcd_db.getReceiptForms( m ); 
-    	o.collectionsummaries = rcd_db.getCollectionSummaries( m ); 
-    	o.remittedforms = rcd_db.getAFSerials( m ); 
-    	if ( hasfund ) {
-    		o.remittedforms.findAll{ it.qtyissued > 0 }.each{
-    			it.qtyissued = it.issuecount; 
-    			if ( !it.qtyissued ) it.allowremove = true; 
-    		} 
-    	}
-    	o.remittedforms.removeAll( o.remittedforms.findAll{( it.allowremove==true )} ); 
-    	o.remittedforms.each{  
-    		it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null);
-    		it.qtybegin = (it.qtybegin ? it.qtybegin : null);
-    		it.qtyissued = (it.qtyissued ? it.qtyissued : null);
-    		it.qtyending = (it.qtyending ? it.qtyending : null);
-    	}
-
-    	o.nonserialremittances = rcd_db.getAFNonSerials( m ); 
-    	if ( hasfund ) {
-    		o.nonserialremittances.findAll{ it.qtyissued > 0 }.each{
-    			it.qtyissued = it.issuecount; 
-    			if ( !it.qtyissued ) it.allowremove = true; 
-    		} 
-    	} 
-		o.nonserialremittances.removeAll( o.nonserialremittances.findAll{( it.allowremove==true )} ); 
-    	o.nonserialremittances.each{ 
-    		it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null);
-    		it.qtybegin = (it.qtybegin ? it.qtybegin : null);
-    		it.qtyissued = (it.qtyissued ? it.qtyissued : null);
-    		it.qtyending = (it.qtyending ? it.qtyending : null);
-    	}
-
-    	o.payments = rcd_db.getPayments( m ); 
-    	
-    	def denominations = [1000.0, 500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0, 1.0, 0.50, 0.25, 0.10, 0.05, 0.01]; 
-    	def cblist = denominations.collect{[ denomination: it, qty: null, amount: null ]} 
-    	o.cashbreakdown.each{ cb-> 
-    		def fo = cblist.find{ it.denomination==cb.denomination } 
-    		if ( fo ) {
-    			fo.qty = ( cb.qty ? cb.qty : null ); 
-    			fo.amount = (cb.amount ? cb.amount : null); 
-    		} 
-    	} 
-    	o.cashbreakdown = cblist; 
-    	o.amountinwords = numberToWords( o.amount ); 
-    	return o;  
-    }
-
-
-	private def getMonthFirstDate( dt ) {
-        def cal = Calendar.getInstance();
-        cal.setTime ( dt ); 
-        cal.set( Calendar.DAY_OF_MONTH, 1 );
-        return new java.sql.Date( cal.timeInMillis ); 
-    }  
-
-	private def numberToWords( Number value ) { 
-		if ( value == null ) return null; 
-
-		def formatter = new java.text.DecimalFormat("0.00"); 
-		def amount = formatter.parse( formatter.format( value )); 
-		if ( amount < 1 ) { 
-			amount = Long.parseLong( amount.toString().split("\\.")[1] ); 
-			return numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS"; 
-		} else { 
-			def str = numSvc.doubleToWords( amount ).toUpperCase(); 
-			if ( amount > 1 ) return str+" PESOS ONLY"; 
-
-			return str+" PESO ONLY"; 
-		} 
+		return o;
 	}
+
+	@ProxyMethod
+	public void acceptForLiquidation( def o ) {
+		remEm.find( [objid: o.objid ] ).update( [ state: 'POSTED' ] );
+	}
+
+
 }

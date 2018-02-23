@@ -1,12 +1,15 @@
 import com.rameses.annotations.*
 import com.rameses.util.*
 import com.rameses.common.*
-import com.rameses.services.extended.*
+import treasury.utils.*;
 
 class EORService {
 
     @Env 
     def env 
+
+    @DataContext('eor')
+    def eorEm;
 
     @Service("DateService")
     def dateService
@@ -14,149 +17,59 @@ class EORService {
     @Service("NumberService")
     def numSvc  
 
-    @Service('CashReceiptService')
-    def cashreceiptSvc 
-
-    @DataContext("af_control")
-    def afControl 
-
     @Service('OrgService')
     def orgSvc 
 
-    @DataContext("paymentpartner")
-    def paymentpartner 
-
-    @Service('PersistenceService')
-    def persistenceSvc 
-    
-    @Service("PaymentOrderService")
-    def pmoSvc;   
-
-    @DataContext("itemaccount")
-    def itemAcctEm;
+    @Service("SequenceService")
+    def seqSvc;
 
     @ProxyMethod
     public def post( def po ) {
+
+        def itemAcctUtil = new ItemAccountUtil();
+
         if(!po.items)
             throw new Exception("Please provide items in EORService.post");      
         def svrDate = dateService.serverDate;
         def entity = [:];
-        entity.putAll( getNextEORNumber() );
-        entity.state = 'POSTED'
-        entity.txnmode = 'ONLINE'
-        entity.txntype = 'eor'
-        entity.payer = po.payer
-        entity.paidby = po.paidby
-        entity.paidbyaddress = po.paidbyaddress
-        entity.amount = numSvc.round( po.amount )
+        entity.partnerid = po.partnerid;
+        entity.receiptno = getNextEORNumber();
         entity.receiptdate = po.tracedate;
         entity.txndate = svrDate;
-        entity.org = orgSvc.getRoot()
-        entity.collector = getCollector()
-        entity.user = [objid: 'EOR', name:'EOR']
-        entity.totalcash = 0
-        entity.totalnoncash = entity.amount
-        entity.balancedue = 0
-        entity.cashchange = 0
-        entity.totalcredit = 0
-        entity.collectiontype = po.collectiontype;
+        entity.state = 'POSTED';
+        entity.txntype = po.txntype;
+
+        entity.tracedate = po.tracedate;
+        entity.traceid = po.traceid;
+
+        entity.paidby = po.paidby; 
+        entity.paidbyaddress = po.paidbyaddress;
+        entity.payer = po.payer;
+        entity.remarks = po.particulars; 
+        entity.refid = po.refid;
+        entity.paymentrefid = po.paymentrefid;
+        entity.amount = po.amount;
+        entity.remarks = po.particulars;
+
+        entity.paymethod = po.origin; 
+
+        if(!entity.paymentrefid)
+            throw new Exception("entity.paymentrefid is null");
+
         entity.items = po.items; 
-
-        entity._paymentorderid = po.paymentrefid;
-
-        if(!entity._paymentorderid)
-            throw new Exception("entity._paymentorderid is null");
-        
-        if( po.extinfo ) {
-            entity.putAll( po.extinfo ); 
-        }    
-
-        if( !env.USERID ) {
-            env.USERID = 'SYSTEM';
-            env.USERNAME = 'SYSTEM';
-            env.FULLNAME = 'SYSTEM';
-            env.JOBTITLE = 'SYSTEM';
-            env.ORGID = orgSvc.getRoot();
-        }
-
-        postCreditMemo( po, entity );
-        cashreceiptSvc.post(entity);
-    }   
-
-    void postCreditMemo( def po, def entity ){
-        def pp = paymentpartner.find([ code:po.partnercode ]).first()
-        def cm = [_schemaname:'creditmemo']
-        cm.objid = 'CME' + new java.rmi.server.UID()
-        cm.state = 'OPEN';
-        cm.controlno = po.traceid;
-        cm.payer = [:]
-        cm.payer.objid = po.payer?.objid  
-        cm.payer.name = po.paidby 
-        cm.payer.address = [text:po.paidbyaddress]
-        cm.refdate = po.tracedate;
-        cm.refno = po.traceid;
-        cm.amount = po.amount 
-        cm.particulars = po.particulars 
-        cm.bankaccount = pp.bankaccount 
-        cm.type = 'EOR'
-        persistenceSvc.create(cm);
-
-        //Add payment items
-        //Group Item accounts by fund for payment items
-        //correct first all items that has no fund just in case there is none;
         entity.items.findAll{ !it.item.fund?.objid }.each {
-            def a = itemAcctEm.find( [objid: it.item.objid ] ).first();
+            def a = itemAcctUtil.lookup( it.item.objid );
             it.item = a;
         }
+        entity.sharing = po.sharing;
+        return eorEm.create( entity ); 
+    }   
 
-        entity.paymentitems = [];
-        def fundGroup = entity.items.groupBy{ it.item.fund };
-        fundGroup.each { k,v->
-            def pmi = [:];
-            pmi.refid = cm.objid;
-            pmi.refno = po.traceid;
-            pmi.refdate = po.tracedate;
-            pmi.reftype = 'EOR';
-            pmi.amount = numSvc.round( v.sum{ it.amount } );
-            pmi.fund = k;
-            entity.paymentitems << pmi;
-        }
+    def getNextEORNumber() { 
+        def org = orgSvc.getRoot(); 
+        if ( !org?.objid ) throw new Exception('no available root org');  
+
+        String prefix = 'EOR'+ org.objid + dateService.getServerYear();
+        return prefix + seqSvc.getNextFormattedSeriesA( prefix, 8 );
     }
-
-    def getControl( def afControlId ) {
-        def ac = afControl.find( [objid: afControlId ]).first()
-        if(!ac) {
-            ac = [objid:afControlId]
-            ac.afid = 'EOR'
-            ac.startseries = 1
-            ac.endseries = 999999999
-            ac.currentseries = 1;
-            ac.currentindexno = 0;
-            ac.batchno = 0;
-            ac.state = 'ISSUED';
-            ac.unit = 'PC';
-            ac.stubno = 1
-            ac.active = 1
-            ac.txnmode = 'ONLINE';
-            ac.dtfiled = dateService.getServerDate();
-            ac.owner =  getCollector()
-            ac.assignee = ac.owner
-            afControl.create(ac)
-        }
-        return ac
-    }
-
-    def getCollector(){
-        return [objid: 'EOR', name:'EOR', title:'EOR', txncode:'EOR']
-    }
-
-    def getNextEORNumber() {
-        String afControlId = 'EOR'+ dateService.getServerYear()
-        def ac = getControl(afControlId)
-        int series = ac.currentseries
-        afControl.find( [objid: afControlId] ).update( [currentseries: series + 1] );
-        def rctno = afControlId + '-' + (series+"").padLeft(9, "0");
-        return [series: series, receiptno: rctno, formno:'EOR', formtype:'eor', controlid: afControlId, stub: 1 ] 
-    }
-
 }

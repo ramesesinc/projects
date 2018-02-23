@@ -4,7 +4,7 @@
           allowDelete="false" allowNotify="true">
     <invokers>
         <invoker folderid="/home/vehicle/tricycle" action="init" index="-1"
-            cols="franchise.controlno,appno,apptype,appdate,owner.name,plateno,engineno,bodyno,task.state,task.startdate,task.assignee.name" 
+            cols="franchise.controlno,appno,apptype,txnmode,appdate,owner.name,plateno,engineno,bodyno,task.state,task.startdate,task.assignee.name" 
             caption="MTOP Application List" 
             role="INFO,SHARED"/>
     </invokers>

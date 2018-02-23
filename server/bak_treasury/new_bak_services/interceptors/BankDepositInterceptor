@@ -1,0 +1,59 @@
+import com.rameses.annotations.*;
+
+class BankDepositInterceptor {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("deposit")
+	def dep_db;
+
+	@DataContext("bankdeposit")
+	def bnkdep_db;
+
+	@DataContext("paymentcheck")
+	def chk_db;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'bankdeposit' }")
+	public void beforeCreate( evt ) { 
+		def bd = evt.args[0];
+        bd.totalcheck = 0 ;
+        bd.totalcash = 0;
+        bd.amount = 0;
+        bd.depositedby = [ objid: env.USERID, name: env.FULLNAME ]; 
+		bd.depositdate = dateSvc.getBasicServerDate();
+		bd.cashbreakdown = [];
+	}
+
+	@After(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'bankdeposit' }")
+	public void afterUpdate( evt ) { 
+		def bd = evt.args[0];
+		
+		//find the amount of the deposit
+		def dep = dep_db.find([objid: bd.depositid ] ).select("amount").first();
+
+
+		def bb = bnkdep_db.find([depositid: bd.depositid ]).select("amount:{SUM(amount)}").first();
+		if( bb.amount > dep.amount ) {
+			throw new Exception("Total amount deposited must be less than amount for deposit")
+		};
+
+		//update the checks
+		bd.checks.each {
+			chk_db.find( [objid: it.objid ] ).update( [bankdepositid: bd.objid ] );
+		}
+
+		if(bd.removedchecks) {
+			bd.removedchecks.each {
+				chk_db.find( [objid: it.objid ] ).update( [bankdepositid: "{NULL}" ] );
+			}
+		}
+
+		dep_db.find([objid:bd.depositid ]).update( [amountdeposited: bb.amount ] );
+	}
+		
+
+}

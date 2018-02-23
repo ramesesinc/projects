@@ -1,8 +1,8 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application_info">
 		<field name="objid" primary="true" prefix="VAPPI"/>
-		<complex name="app" ref="vehicle_application" jointype="many-to-one" includefields="appno" required="false">
-			<key field="appid" target="objid"/>
+		<complex name="parent" ref="vehicle_application" jointype="many-to-one" includefields="appno" required="true">
+			<key field="parentid" target="objid"/>
 		</complex>	
 		<field name="name" />
 		<field name="stringvalue" />
@@ -14,8 +14,14 @@
 		<field name="lookup_objid" />
 		<field name="lookup_title" />
 		<complex name="objvalue" required="false" serializer="default"/>
-		<field name="sortorder" />	
+		<field name="sortorder" />
+
+		<complex name="variable" ref="vehicle_variable" jointype="many-to-one" required="false" includefields="datatype,caption,arrayvalues,category,sortorder">
+			<key field="name" target="objid" />
+		</complex> 	
 	</element>
+
+
 </schema>
 
 

@@ -53,8 +53,10 @@ public class VehicleApplicationForm extends WorkflowTaskModel {
         fetchList : {
             return entity.payments;
         },
-        onOpenItem: { o->
-            return Inv.lookupOpener( "cashreceiptinfo:open", [entity: [objid:o.refid] ] );
+        onOpenItem: { o,colName ->
+            def op = Inv.lookupOpener( "cashreceiptinfo:open", [entity: [objid:o.refid] ] );
+            op.target = 'popup';
+            return op;
         }
     ] as BasicListModel;
     

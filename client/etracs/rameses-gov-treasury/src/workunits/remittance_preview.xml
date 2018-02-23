@@ -1,0 +1,31 @@
+<workunit extends="workunits/form_report.xml">
+    <invokers>
+        <invoker type="remittance:form_report" caption="Remittance" action="view" target="popup"
+                height="800" width="1024"/>
+        <invoker type="formActions" caption="Accept" action="accept" index="100" visibleWhen="#{ reportData.state == 'OPEN' }"/>
+        <invoker type="formActions" caption="Send Back" action="sendBack" index="100" visibleWhen="#{ reportData.state == 'OPEN' }"/>
+    </invokers>
+    <code>
+        import com.rameses.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+       
+        //This is not a standlone report. It is called from RemittanceModel
+        class RemittanceReport extends com.rameses.seti2.models.SimpleFormReportModel {
+            
+            @Service("RemittanceService")
+            def service;
+        
+            @Caller
+            def caller;
+        
+            def accept() {
+                service.acceptForLiquidation( [objid: reportData.objid ] );
+                return "_close"
+            }
+        
+        }
+    </code>
+</workunit>  

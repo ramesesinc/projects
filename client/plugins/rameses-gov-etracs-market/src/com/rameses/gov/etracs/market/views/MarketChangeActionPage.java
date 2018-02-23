@@ -59,6 +59,7 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xPanel6 = new com.rameses.rcp.control.XPanel();
         xFormPanel7 = new com.rameses.rcp.control.XFormPanel();
         xDateField5 = new com.rameses.rcp.control.XDateField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
@@ -271,6 +272,10 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
         xDateField5.setRequired(true);
         xFormPanel7.add(xDateField5);
 
+        xDecimalField3.setCaption("Partial Balance");
+        xDecimalField3.setName("entity.partialbalance"); // NOI18N
+        xFormPanel7.add(xDecimalField3);
+
         javax.swing.GroupLayout xPanel6Layout = new javax.swing.GroupLayout(xPanel6);
         xPanel6.setLayout(xPanel6Layout);
         xPanel6Layout.setHorizontalGroup(
@@ -317,6 +322,7 @@ public class MarketChangeActionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField5;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;

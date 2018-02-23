@@ -1,7 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="paymentpartner">
-    <invokers>
-        <invoker folderid="/explorer/master/accounting" caption="Payment Partner" role="MASTER" 
-                 cols="code,name,receivableaccount.title"
-                 action="init"/>
-   </invokers>
-</workunit>

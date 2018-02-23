@@ -1,0 +1,2044 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.0">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1016</x>
+      <y>2880</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;152;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1120</x>
+      <y>3328</y>
+      <w>72</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+update</panel_attributes>
+    <additional_attributes>32;24;48;232</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>808</x>
+      <y>3056</y>
+      <w>168</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>deposit_advice
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>624</x>
+      <y>4120</y>
+      <w>168</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>bankdeposit
+--
+objid
+depositid
+state
+createdby_objid
+createdby_name
+dtcreated
+bankacctid
+totalcash
+totalcheck
+amount
+validation_refno
+validation_refdate
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>600</x>
+      <y>3888</y>
+      <w>78</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+submit</panel_attributes>
+    <additional_attributes>56;24;32;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>896</x>
+      <y>144</y>
+      <w>160</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>cash_summary
+--
+objid
+refid
+reftype
+refdate
+refno
+reftype
+year
+month
+qtr
+fundid
+acctid
+orgid
+dr
+cr
+jevid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1016</x>
+      <y>1000</y>
+      <w>144</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>EORRemittance
+--
+reftype : eor_remittance
+refdate: controldate
+refno: controlno
+refid: objid
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>456</x>
+      <y>3768</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>QueryService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>888</x>
+      <y>1840</y>
+      <w>232</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>RemittanceService.post
+--
+generate final remittance no
+update remittance status to POSTED
+add detail in afcontrol</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1208</x>
+      <y>2152</y>
+      <w>64</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;48;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>400</x>
+      <y>4584</y>
+      <w>152</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+post</panel_attributes>
+    <additional_attributes>24;24;136;168</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1664</x>
+      <y>1280</y>
+      <w>130</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+depositvoucherid</panel_attributes>
+    <additional_attributes>64;24;72;232</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1128</x>
+      <y>1272</y>
+      <w>106</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+remittanceid</panel_attributes>
+    <additional_attributes>32;24;88;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1120</x>
+      <y>856</y>
+      <w>160</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>144;32;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>640</x>
+      <y>1824</y>
+      <w>232</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>RemittanceService.create
+--
+create remittance (temporary remittance mo)
+update cashreceipt remittanceid
+update cashreceiptpayment_noncash remittanceid
+create remittance_af
+create remittance_fund
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1112</x>
+      <y>3560</y>
+      <w>176</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>remittance_fund
+bg=green
+--
+info
+cashreceiptpayment_noncash</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1280</x>
+      <y>1504</y>
+      <w>112</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>paymentcheck</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1360</x>
+      <y>2936</y>
+      <w>208</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceiptpayment_noncash</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>136</x>
+      <y>4176</y>
+      <w>240</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+depositid</panel_attributes>
+    <additional_attributes>224;24;24;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>888</x>
+      <y>688</y>
+      <w>144</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>cash_for_deposit
+--
+refid
+reftype: liquidation
+fundid
+amount
+depositid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>256</x>
+      <y>4672</y>
+      <w>144</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>CashForDepositListModel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>640</x>
+      <y>3512</y>
+      <w>70</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+remit</panel_attributes>
+    <additional_attributes>32;24;40;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>952</x>
+      <y>2104</y>
+      <w>224</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+remittanceid</panel_attributes>
+    <additional_attributes>24;24;208;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>864</x>
+      <y>3488</y>
+      <w>144</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>RemittanceModel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>608</x>
+      <y>4704</y>
+      <w>136</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+addBankDeposit</panel_attributes>
+    <additional_attributes>120;24;24;104</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>856</x>
+      <y>1712</y>
+      <w>192</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+add</panel_attributes>
+    <additional_attributes>176;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>856</x>
+      <y>1592</y>
+      <w>40</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>24;24;24;200</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>456</x>
+      <y>4752</y>
+      <w>176</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>deposit
+bg=green
+--
+general info
+references (cash for deposit list)
+bank deposits
+fund transfers</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>776</x>
+      <y>3784</y>
+      <w>168</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+post</panel_attributes>
+    <additional_attributes>24;24;152;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>816</x>
+      <y>1592</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_:RemittanceService_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>632</x>
+      <y>3608</y>
+      <w>200</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>collection_for_remittance
+bg=green
+--
+unremitted
+remitted
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1056</x>
+      <y>1272</y>
+      <w>106</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+remittanceid</panel_attributes>
+    <additional_attributes>72;24;48;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>16</x>
+      <y>4088</y>
+      <w>168</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>deposit_advice
+--
+objid
+state
+refid
+refno
+refdate
+reftype
+fundid
+totalcash
+totalcheck</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1160</x>
+      <y>1224</y>
+      <w>216</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+collectionvoucherid</panel_attributes>
+    <additional_attributes>200;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1056</x>
+      <y>1360</y>
+      <w>104</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>remittance_fund</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>680</x>
+      <y>3320</y>
+      <w>88</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+create</panel_attributes>
+    <additional_attributes>72;24;24;176</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>816</x>
+      <y>1448</y>
+      <w>96</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceipt_share</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>4584</y>
+      <w>96</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+getList</panel_attributes>
+    <additional_attributes>24;24;80;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>632</x>
+      <y>3496</y>
+      <w>176</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>CollectionForRemittanceModel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1136</x>
+      <y>1040</y>
+      <w>112</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>96;40;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1088</x>
+      <y>2968</y>
+      <w>168</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>liquidation_fund
+--
+objid
+controlno
+liquidationid
+fund_objid
+fund_title
+amount
+totalcash
+totalcheck
+totalcr
+cashbreakdown</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1112</x>
+      <y>1464</y>
+      <w>184</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+refid
+</panel_attributes>
+    <additional_attributes>168;48;24;32</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>608</x>
+      <y>4808</y>
+      <w>192</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+addFundTransfer</panel_attributes>
+    <additional_attributes>176;48;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1344</x>
+      <y>1312</y>
+      <w>176</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>collectionvoucher_fund
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>4120</y>
+      <w>216</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+depositid</panel_attributes>
+    <additional_attributes>200;48;24;32</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1264</x>
+      <y>440</y>
+      <w>272</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>bank_summary
+--
+source: cashreceiptpayment_noncash
+fields: creditmemo.bankaccount.acctid, 
+    creditmemo.bankaccount.fund, totalcr
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>664</x>
+      <y>3784</y>
+      <w>112</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+create</panel_attributes>
+    <additional_attributes>96;24;24;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>536</x>
+      <y>4832</y>
+      <w>154</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+addFundTransferNote</panel_attributes>
+    <additional_attributes>80;96;80;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1128</x>
+      <y>0</y>
+      <w>232</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>jev
+--
+jevno
+refid
+reftype (liquidation,deposit,eor_remittance)
+amount 
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>544</x>
+      <y>3312</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>QueryService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>712</x>
+      <y>3776</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>LiquidationService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>896</x>
+      <y>1272</y>
+      <w>240</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+remittanceid</panel_attributes>
+    <additional_attributes>224;24;24;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>504</x>
+      <y>4104</y>
+      <w>136</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+depositid</panel_attributes>
+    <additional_attributes>24;24;120;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1080</x>
+      <y>3592</y>
+      <w>120</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+openItem</panel_attributes>
+    <additional_attributes>104;24;24;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>784</x>
+      <y>4824</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>fundtransfer
+bg=green
+--
+general info
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>1080</x>
+      <y>3848</y>
+      <w>192</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>liquidation_fund
+bg=green
+--
+info
+cashreceiptpayment_noncash</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1264</x>
+      <y>776</y>
+      <w>312</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>cash_summary
+--
+source: liquidation_fund
+fields: fund
+   amount * -1
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>2280</y>
+      <w>106</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+remittanceid</panel_attributes>
+    <additional_attributes>80;24;32;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1608</x>
+      <y>1280</y>
+      <w>86</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+parentid</panel_attributes>
+    <additional_attributes>64;24;24;152</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>968</x>
+      <y>3664</y>
+      <w>192</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>remittance
+bg=green
+--
+remittance_fund
+cashreceipt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>496</x>
+      <y>3776</y>
+      <w>88</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+getList</panel_attributes>
+    <additional_attributes>24;24;72;176</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1024</x>
+      <y>2224</y>
+      <w>152</w>
+      <h>208</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+remittancefundid</panel_attributes>
+    <additional_attributes>24;192;136;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1136</x>
+      <y>976</y>
+      <w>112</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>96;24;24;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1232</x>
+      <y>960</y>
+      <w>248</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>bank_summary
+--
+source: eor_remittance_fund
+fields: acctid, amount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>216</x>
+      <y>4688</y>
+      <w>112</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+deposit</panel_attributes>
+    <additional_attributes>96;24;24;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>40</x>
+      <y>4336</y>
+      <w>168</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>fund_transfer_advice
+--
+objid
+amount
+frombankaccountid
+tobankaccountid
+validation_refno
+validation_refdate
+postedby_objid
+postedby_name
+dtposted
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1248</x>
+      <y>2800</y>
+      <w>72</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;56;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>912</x>
+      <y>3960</y>
+      <w>192</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>liquidation
+bg=green
+--
+general info
+fund summary
+cashreceipt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>896</x>
+      <y>3504</y>
+      <w>168</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+submit</panel_attributes>
+    <additional_attributes>24;24;152;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>840</x>
+      <y>1360</y>
+      <w>88</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>72;24;24;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>888</x>
+      <y>2960</y>
+      <w>66</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+refid</panel_attributes>
+    <additional_attributes>32;24;40;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>904</x>
+      <y>2280</y>
+      <w>106</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+remittanceid</panel_attributes>
+    <additional_attributes>32;24;80;136</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1360</x>
+      <y>1232</y>
+      <w>86</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+parentid</panel_attributes>
+    <additional_attributes>56;24;32;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>944</x>
+      <y>1480</y>
+      <w>192</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceiptpayment_noncash</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1176</x>
+      <y>1360</y>
+      <w>104</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>remittance_af</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>920</x>
+      <y>2416</y>
+      <w>208</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>remittance_fund
+--
+objid
+controlno
+fund_objid
+fund_title
+amount
+totalcash
+totalcheck
+totalcr
+cashbreakdown
+liquidationfundid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1304</x>
+      <y>520</y>
+      <w>264</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>payable_summary
+--
+source: cashreceipt_share
+fields: acctid, refitem.objid, refitem.fund, share
+group: acctid, refitem.objid, refitem.fund
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1080</x>
+      <y>480</y>
+      <w>64</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>24;24;48;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1232</x>
+      <y>2936</y>
+      <w>184</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+liquidationfundid</panel_attributes>
+    <additional_attributes>24;80;168;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1368</x>
+      <y>1480</y>
+      <w>336</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+depositslipid</panel_attributes>
+    <additional_attributes>320;48;24;32</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1432</x>
+      <y>144</y>
+      <w>176</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>income_summary
+--
+objid
+refid
+reftype
+refdate
+refno
+reftype
+year
+month
+qtr
+fundid
+orgid
+acctid
+amount
+jevid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1072</x>
+      <y>144</y>
+      <w>160</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>bankaccount_summary
+--
+objid
+refid
+reftype
+refdate
+refno
+reftype
+year
+month
+qtr
+fundid
+orgid
+acctid
+dr
+cr
+jevid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>1088</x>
+      <y>3320</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>PersistenceService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1000</x>
+      <y>816</y>
+      <w>144</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>Deposit
+--
+reftype : deposit
+refdate: controldate
+refno: controlno
+refid: objid
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1064</x>
+      <y>3768</y>
+      <w>104</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+update</panel_attributes>
+    <additional_attributes>24;24;88;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1032</x>
+      <y>560</y>
+      <w>144</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>Liquidation
+--
+reftype : liquidation
+refdate: controldate
+refno: controlno
+refid: objid
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>600</x>
+      <y>3872</y>
+      <w>176</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>RemittanceListModel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>152</x>
+      <y>4752</y>
+      <w>184</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>cash_for_deposit_list
+bg=green
+--
+open
+closed</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1232</x>
+      <y>1040</y>
+      <w>248</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>payable_summary
+--
+source: eor_share
+fields: acctid, refitem.objid, refitem.fund, share
+group: acctid, refitem.objid, refitem.fund
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>864</x>
+      <y>1360</y>
+      <w>80</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceipt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>136</x>
+      <y>4576</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>QueryService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>984</x>
+      <y>1592</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_:AFInventoryService_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>304</x>
+      <y>4584</y>
+      <w>88</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+create</panel_attributes>
+    <additional_attributes>72;24;24;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>728</x>
+      <y>4696</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>bankdeposit
+bg=green
+--
+general info
+checks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1496</x>
+      <y>1224</y>
+      <w>136</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+depositvoucherid</panel_attributes>
+    <additional_attributes>120;64;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1040</x>
+      <y>3888</y>
+      <w>144</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+openItem</panel_attributes>
+    <additional_attributes>128;24;24;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>608</x>
+      <y>3320</y>
+      <w>78</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+getList</panel_attributes>
+    <additional_attributes>24;24;56;176</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>768</x>
+      <y>2760</y>
+      <w>272</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>liquidation
+--
+objid
+state
+controlno
+controldate
+dtposted
+liquidatingofficer_objid
+liquidatingofficer_name
+liquidatingofficer_title
+liquidatingofficer_signature
+amount
+totalcash
+totalcheck
+cashbreakdown
+totalcr</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1336</x>
+      <y>24</y>
+      <w>72</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;56;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1152</x>
+      <y>536</y>
+      <w>168</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>152;24;24;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1248</x>
+      <y>2864</y>
+      <w>168</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>remittance_fund</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1160</x>
+      <y>2152</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceipt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1232</x>
+      <y>1120</y>
+      <w>248</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>income_summary
+--
+source: eor_item
+fields: item.objid, item.fund, amount
+group: item.objid, item.fund
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>768</x>
+      <y>1360</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>112;24;24;48</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>776</x>
+      <y>4608</y>
+      <w>136</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+create/update</panel_attributes>
+    <additional_attributes>120;24;24;88</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1160</x>
+      <y>2232</y>
+      <w>208</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceiptpayment_noncash</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1120</x>
+      <y>792</y>
+      <w>160</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>144;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>560</x>
+      <y>4928</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>fundtransfer_note
+bg=green
+--
+general info
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>528</x>
+      <y>3952</y>
+      <w>184</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>remittance_list
+bg=green
+--
+open
+approved
+liquidated
+hold
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>744</x>
+      <y>1408</y>
+      <w>96</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>cashreceiptitem</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>920</x>
+      <y>1352</y>
+      <w>112</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+receiptid</panel_attributes>
+    <additional_attributes>24;24;96;128</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1264</x>
+      <y>856</y>
+      <w>312</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>bank_summary
+--
+source: bankdeposit
+fields: bankaccount.acctid, bankaccount.fundid, amount
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1056</x>
+      <y>432</y>
+      <w>184</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>cash_summary
+--
+source: liquidation_fund
+fields: totalcash + totalcheck, fund
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1296</x>
+      <y>600</y>
+      <w>280</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>income_summary
+--
+source: cashreceiptitem
+fields: item.objid, item.fund, amount
+group: item.objid, item.fund
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>848</x>
+      <y>4608</y>
+      <w>114</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+create/update</panel_attributes>
+    <additional_attributes>80;24;48;216</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>712</x>
+      <y>3312</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>RemittanceService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>4240</y>
+      <w>108</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+fromadviceid</panel_attributes>
+    <additional_attributes>48;24;72;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>936</x>
+      <y>600</y>
+      <w>112</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+</panel_attributes>
+    <additional_attributes>24;88;24;24;96;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1248</x>
+      <y>144</y>
+      <w>176</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>payable_summary
+--
+objid
+refid
+reftype
+refdate
+refno
+reftype
+year
+month
+qtr
+fundid
+orgid
+acctid
+amount
+jevid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>1016</x>
+      <y>3760</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>PersistenceService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1184</x>
+      <y>2800</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>remittance</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1008</x>
+      <y>1592</y>
+      <w>40</w>
+      <h>272</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>24;24;24;256</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>328</x>
+      <y>4576</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>DepositService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1016</x>
+      <y>2784</y>
+      <w>184</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+liquidationid</panel_attributes>
+    <additional_attributes>24;64;168;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1688</x>
+      <y>1512</y>
+      <w>104</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>depositslip
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1152</x>
+      <y>592</y>
+      <w>160</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>144;40;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1616</x>
+      <y>1280</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>depositvoucher</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>432</x>
+      <y>4312</y>
+      <w>248</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+bankdepositid</panel_attributes>
+    <additional_attributes>232;24;24;136</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>776</x>
+      <y>1688</y>
+      <w>120</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+post</panel_attributes>
+    <additional_attributes>104;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>880</x>
+      <y>4600</y>
+      <w>152</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>PersistenceService
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>360</x>
+      <y>4080</y>
+      <w>168</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>deposit
+--
+objid
+controlno
+controldate
+fundid
+totalcash
+totalcashdeposited
+totalcheck
+totalcheckdeposited
+createdby_objid
+createdby_name
+dtcreated
+postedby_objid
+postby_name
+dtposted</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1584</x>
+      <y>1432</y>
+      <w>120</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>depositvoucher_fund
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1328</x>
+      <y>1280</y>
+      <w>320</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+depositvoucherid</panel_attributes>
+    <additional_attributes>304;24;24;224</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>776</x>
+      <y>1616</y>
+      <w>120</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+create</panel_attributes>
+    <additional_attributes>104;40;24;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>4208</y>
+      <w>304</w>
+      <h>256</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+adviceid</panel_attributes>
+    <additional_attributes>24;24;288;240</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1392</x>
+      <y>24</y>
+      <w>216</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>jevitem (view)
+--
+cash_summary 
+bank_summary
+payable_summary
+income_summary
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>880</x>
+      <y>3880</y>
+      <w>144</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>LiquidationModel</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1136</x>
+      <y>1040</y>
+      <w>112</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>96;120;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1360</x>
+      <y>1232</y>
+      <w>160</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>collectionvoucher</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>2016</y>
+      <w>216</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>remittance
+--
+objid
+state
+controlno
+controldate
+dtposted
+collector_objid
+collector_name
+collector_title
+liquidatingofficer_objid
+liquidatingofficer_name
+liquidatingofficer_title
+liquidatingofficer_signature
+amount
+totalcash
+totalcheck
+cashbreakdown
+remarks
+collector_signature
+liquidationid
+totalcr</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>400</x>
+      <y>4448</y>
+      <w>120</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>paymentcheck
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1136</x>
+      <y>488</y>
+      <w>168</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+</panel_attributes>
+    <additional_attributes>152;24;24;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>792</x>
+      <y>3320</y>
+      <w>144</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+post</panel_attributes>
+    <additional_attributes>24;24;128;168</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>608</x>
+      <y>2400</y>
+      <w>208</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>remittance_af
+--
+objid
+controlid
+receivedstartseries
+receivedendseries
+beginstartseries
+beginendseries
+issuedstartseries
+issuedendseries
+endingstartseries
+endingendseries
+qtyreceived
+qtybegin
+qtyissued
+qtyending
+qtycancelled
+remarks</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>80</x>
+      <y>4240</y>
+      <w>96</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+toadviceid</panel_attributes>
+    <additional_attributes>72;24;32;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>944</x>
+      <y>3896</y>
+      <w>78</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+submit</panel_attributes>
+    <additional_attributes>24;24;56;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1200</x>
+      <y>2864</y>
+      <w>126</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+liquidationfundid</panel_attributes>
+    <additional_attributes>24;104;104;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1104</x>
+      <y>1272</y>
+      <w>80</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>remittance</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

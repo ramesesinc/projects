@@ -76,7 +76,7 @@
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Year"/>
-                <Property name="disableWhen" type="java.lang.String" value="#{mode==&apos;read&apos;}"/>
+                <Property name="disableWhen" type="java.lang.String" value="#{mode != &apos;create&apos; }"/>
                 <Property name="name" type="java.lang.String" value="year" noResource="true"/>
                 <Property name="required" type="boolean" value="true"/>
               </Properties>
@@ -92,15 +92,33 @@
                 <Property name="dynamic" type="boolean" value="true"/>
                 <Property name="expression" type="java.lang.String" value="#{item.monthname} "/>
                 <Property name="items" type="java.lang.String" value="monthList"/>
-                <Property name="name" type="java.lang.String" value="entity.billingcycle" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="billingcycle" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[100, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
+                <Property name="visibleWhen" type="java.lang.String" value="#{ mode == &apos;create&apos; }"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xComboBox2ActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="99" green="99" red="99" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="caption" type="java.lang.String" value="Month"/>
+                <Property name="expression" type="java.lang.String" value="#{ entity.billingcycle.monthname }"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
+                <Property name="visibleWhen" type="java.lang.String" value="#{ mode != &apos;create&apos; }"/>
+              </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XLabel" name="xLabel13">
               <Properties>
@@ -117,7 +135,7 @@
                 <Property name="caption" type="java.lang.String" value="Period From"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="entity.billingcycle"/>
+                    <StringItem index="0" value="billingcycle"/>
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.billingcycle.fromperiod? dateFormatter.format( entity.billingcycle.fromperiod) : &apos;&apos;} "/>
@@ -142,7 +160,7 @@
                 <Property name="caption" type="java.lang.String" value="Period To"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="entity.billingcycle"/>
+                    <StringItem index="0" value="billingcycle"/>
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.billingcycle.toperiod? dateFormatter.format( entity.billingcycle.toperiod) : &apos;&apos;} "/>
@@ -167,7 +185,7 @@
                 <Property name="caption" type="java.lang.String" value="Reading Date"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="entity.billingcycle"/>
+                    <StringItem index="0" value="billingcycle"/>
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.billingcycle.readingdate? dateFormatter.format( entity.billingcycle.readingdate) : &apos;&apos;} "/>
@@ -192,7 +210,7 @@
                 <Property name="caption" type="java.lang.String" value="Bill Date"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="entity.billingcycle"/>
+                    <StringItem index="0" value="billingcycle"/>
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.billingcycle.billdate? dateFormatter.format(entity.billingcycle.billdate) : &apos;&apos;} "/>
@@ -217,7 +235,7 @@
                 <Property name="caption" type="java.lang.String" value="Due Date"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="entity.billingcycle"/>
+                    <StringItem index="0" value="billingcycle"/>
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.billingcycle.duedate? dateFormatter.format( entity.billingcycle.duedate) : &apos;&apos;} "/>
@@ -242,7 +260,7 @@
                 <Property name="caption" type="java.lang.String" value="Disconnection Date"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="entity.billingcycle"/>
+                    <StringItem index="0" value="billingcycle"/>
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{entity.billingcycle.disconnectiondate? dateFormatter.format( entity.billingcycle.disconnectiondate) : &apos;&apos;} "/>

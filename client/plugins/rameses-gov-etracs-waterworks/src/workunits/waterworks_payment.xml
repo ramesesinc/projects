@@ -1,14 +1,16 @@
-<workunit>
+<workunit extends="com/rameses/treasury/common/templates/BillingCapturePayment.xml" rulename="waterworksbilling" 
+          contextName="waterworks" payOption="year_month_payoption">
     <invokers>
-        <invoker type="waterworks_payment:list:listActions" 
-                 caption="Capture Payment" action="init" target="popup" 
-                 shortcut="ctrl 1" mnemonic="C"/> 
-        
+        <invoker type="waterworks_payment:create" action="init" target="popup" caption="Capture Payment"/> 
+        <!--
         <invoker type="formActions" caption="Cancel" action="cancel"/> 
         <invoker type="formActions" caption="Save" action="save"/> 
+        -->
     </invokers>
+    <!--
     <code class="com.rameses.gov.etracs.waterworks.models.WaterworksCapturePayment" />
     <pages>
         <page name="com.rameses.gov.etracs.waterworks.views.CapturePaymentPage"/> 
     </pages>
+    -->
 </workunit> 

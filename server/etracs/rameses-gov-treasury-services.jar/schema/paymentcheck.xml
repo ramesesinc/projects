@@ -1,0 +1,39 @@
+<schema>
+
+	<element  tablename="paymentcheck">
+		<field name="objid" primary="true" prefix="CHKPMT"/>	
+		<field name="state" required="true" defaultValue="PENDING"/>	
+
+		<complex name="bank" ref="bank" jointype="many-to-one" required="true" includefields="objid,name">
+			<key field="bankid" target="objid" />
+		</complex>	
+
+		<field name="refno" required="true" searchable="true"/>	
+		<field name="refdate" required="true" />
+		<field name="amount" required="true" type="decimal"/>	
+		<field name="bank_name" required="true" />
+		<field name="receivedfrom" required="true" />
+		
+		<!-- amount issued. If this becomes equal to amount then this check is already closed. This starts at 0 --> 
+		<field name="amtused" required="true" type="decimal" defaultValue="0"/>	
+
+		<!-- these fields refer to deposit -->
+		<field name="depositvoucherid" />
+		<field name="fundid" />
+		<field name="depositslipid" />
+
+		<complex name="items" ref="cashreceiptpayment_noncash" jointype="one-to-many" orderBy="refdate,refno" required="false">
+			<key field="objid" target="refid" />
+		</complex>	
+
+		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
+
+
+		<complex name="fund" ref="fund" jointype="many-to-one" required="false">
+			<key field="fundid" target="objid" />
+		</complex>
+	</element>
+
+
+
+</schema>

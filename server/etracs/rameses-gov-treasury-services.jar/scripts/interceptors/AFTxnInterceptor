@@ -1,0 +1,75 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class AFTxnInterceptor { 
+	
+	@Service("SequenceService") 
+	def seqSvc;
+
+	@Service("DateService") 
+	def dateSvc;
+
+	@DataContext("af_control")
+	def afcontrol;
+
+	@DataContext("af_control_detail")
+	def afcd;
+
+	@DataContext("afrequest")
+	def afReq;
+
+	@DataContext("aftxnitem")
+	def aftxnItem;
+
+	@Env
+	def env;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'aftxn' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.user = [objid:env.USERID, name:env.FULLNAME, title:env.JOBTITLE];
+		o.org = [objid:env.ORGID, name:env.ORGNAME];
+		o.controlno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
+		o.state = "DRAFT";
+		o.txndate = dateSvc.serverDate;
+		if ( !o.dtfiled ) o.dtfiled = o.txndate; 
+
+		if( o.request ) {
+			afReq.find( [objid: o.request.objid ]).update( [state:'CLOSED']);
+		}
+		o.items?.each {
+			it.qtyserved = 0;
+		}
+	}	
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'aftxn' && args[0].txntype == 'ISSUE' }")
+	public void afterCreateIssue( evt ) { 
+		def o = evt.result;
+	}	
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'aftxn' }")
+	public void afterOpen( evt ) { 
+		def result = evt.result;
+
+		def scols1 = "parent.batchno,parent.prefix,parent.suffix"
+		def scols2 = ",startseries:{MIN(parent.startseries)},endseries:{MAX(parent.endseries)},startstub:{MIN(parent.stubno)},endstub:{MAX(parent.stubno)}"; 
+		def list = 
+		result.items.each { r->
+			r.items = afcd.find( [refitemid: r.objid ] ).select( scols1 + scols2 ).groupBy( scols1 ).list().collect{
+				[ 
+					batchno: it.parent.batchno, 
+					prefix: it.parent.prefix,
+					suffix: it.parent.suffix,
+					startseries: it.startseries, 
+					endseries: it.endseries, 
+					startstub:it.startstub, 
+					endstub:it.endstub  
+				]
+			};
+			r.remarks = r.items.collect{ i-> i.startseries + "-" + i.endseries +";" }.join(","); 
+		}
+	}
+}

@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/treasury/common/templates/MultiBilling.xml">
+    <invokers>
+           <invoker folderid="/home/vehicle/tricycle" caption="Multi Billing"   srole="ADMIN"/>
+    </invokers>             
+  
+</workunit>

@@ -1,0 +1,143 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import vehicle.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import treasury.utils.*;
+
+import com.rameses.util.*;
+
+/**********************************************************
+* This service handles computation of what fees to charge 
+***********************************************************/
+class VehicleCashReceiptService {
+	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_franchise_fee")
+	def franFeeEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@Service("VehicleBillingService")
+	def billingSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	private void buildSpecificAppFee( def appid, def facts, def buildBillItem ) {
+		def list = appFeeEm.where( "app.objid = :appid AND amount - amtpaid > 0", [appid: appid] ).list();
+		list.each {
+			it.ledgertype = "vehicle_application";
+			facts << buildBillItem(it);
+		}
+	}
+
+	private void buildLateRenewalFees( String controlid, def facts, def buildBillItem ) {
+		def list = appFeeEm.where( "app.controlid = :controlid AND app.apptype='LATE_RENEWAL' AND amount - amtpaid > 0", [controlid: controlid] ).list();
+		list.each {
+			it.ledgertype = "vehicle_application";
+			facts << buildBillItem( it );
+		}
+	}
+
+	private void buildCurrentAppFees( def controlid, def facts, def buildBillItem ) {
+		def list = appFeeEm.where( "app.controlid = :controlid AND NOT(app.apptype='LATE_RENEWAL') AND amount - amtpaid > 0", [controlid: controlid] ).list();
+		list.each {
+			it.ledgertype = "vehicle_application";
+			facts << buildBillItem(it);
+		}
+	}
+
+	private void buildOtherFees( def controlid, def facts, def builder ) {
+		def list  = franFeeEm.find( [parentid: controlid]  ).where("amount - amtpaid > 0").list();
+		list.each {
+			it.ledgertype = "vehicle_franchise";
+			facts << buildBillItem(it);
+		}
+	}
+
+	@ProxyMethod
+	public def getInfo( def o ) {
+		if(!o.id) throw new Exception("id is required in VehicleCashReceiptService.getInfo");
+		o.id = o.id.trim();
+		
+		/*************************************************************
+		* Determine first if code requested is appno or franchise no
+		**************************************************************/
+		def controlid = null;
+		def app = null;
+		def fran = franchiseEm.find( [controlno: o.id] ).first();
+		if(!fran) {
+			app = appEm.find( [appno: o.id ] ).first();
+			if(!app) throw new Exception("Ref id " + o.id + " not found in franchise or vehicle application");
+			if(app.task && app.task.state != 'payment')
+				throw new Exception("This application is not yet ready for payment");
+		}
+
+		//this is the new routine. billitem collector
+		def newfacts = [];
+		def itemAcct = new ItemAccountUtil();
+		def buildBillItem = { oo ->
+			def bi = new BillItem();
+			bi.billrefid = ( oo.appid !=null ) ? oo.appid : oo.parentid;
+			bi.refid = oo.objid;
+			bi.account = itemAcct.createAccountFact( oo.item );
+			bi.ledgertype = oo.ledgertype;
+			bi.amount = oo.amount - oo.amtpaid;
+			return bi;
+		}
+		if( fran ) {
+			buildLateRenewalFees( controlid, newfacts, buildBillItem );
+			buildCurrentAppFees( controlid, newfacts, buildBillItem );
+			buildOtherFees( controlid, newfacts, buildBillItem );
+		}
+		else {
+			buildSpecificAppFee( controlid, newfacts, buildBillItem )
+		}
+
+		if(!newfacts)
+			throw new Exception("Not unpaid fees found");
+
+		/*************************************************************************
+		* RUN BILLING ROUTINE TO CALCULATE SURCHARGE AND INTEREST
+		**************************************************************************/
+		app.billitems = billitems;
+		app.payment = o.payment;
+		//app.billdate = o.receiptdate;
+		def res = billingSvc.process(app);
+
+		/*************************************************************************
+		* PACKAGE THE RESULT
+		**************************************************************************/
+		def entity = [:];
+		entity.info = [appid: app.objid, franchiseid: app.controlid, vehicletype: app.vehicletype ] ;
+
+		//if there is already an owner in the franchise, use that. If there is no owner yet like NEW, then use app.owner
+		if(fran.owner?.objid ) {
+			entity.payer = fran.owner
+			entity.paidby = fran.owner.name;
+			entity.paidbyaddress = fran.owner.address?.text; 	
+		}
+		else {
+			entity.payer = app.owner
+			entity.paidby = app.owner.name;
+			entity.paidbyaddress = app.owner.address?.text; 	
+		}
+		entity.particulars = fran.controlno;
+		entity.remarks = "Franchise No." + fran.controlno;
+		entity.items = res.billitems;
+
+		//add flags
+		entity.payment = [_schemaname: "vehicle_payment"];
+		entity._workflow = "vehicle_workflow";
+		return entity;
+	}
+
+}

@@ -6,68 +6,32 @@ import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.seti2.models.*;
         
-public abstract class CashBreakdownModel extends CrudFormModel {
+public class CashBreakdownModel extends CrudFormModel {
     
     def total = 0;
     def cashremaining = 0;
+    def cashbreakdown = [];
     boolean editable = true;
+    def handler;
     
-    boolean showCreditMemos = true;
-    boolean showCashBreakdown = true;
-    
-    def checkslist;
-    def creditmemolist;
-    
-    abstract def getChecks();
-    abstract def getCreditMemos();
-    void afterUpdate() {}
-    
-    //we must override this so it will not create style rules
-    public void buildStyleRules() {
-        //do nothing
+    void init() {
+        def arr = [];
+        arr.addAll( cashbreakdown );
+        cashbreakdown = arr;
     }
-    
-    void afterOpen() {
-        if(entity.totalcash == null) entity.totalcash = 0;
-        if( entity.cashbreakdown == null ) entity.cashbreakdown = [];
-        checkslist = getChecks();
-        creditmemolist = getCreditMemos();
-        if( !creditmemolist ) {
-            showCreditMemos = false;
-        }
-        if( entity.totalcash <=0 && !checkslist  ) {
-            showCashBreakdown = false;
-        }
-    }
-
-    def checkModel = [
-        fetchList: { o->
-            return checkslist;
-        }
-    ] as BasicListModel;
-
-    def creditMemoModel = [
-        fetchList: { o->
-            return creditmemolist;
-        }
-    ] as BasicListModel;
     
     def doOk() {
-        if(!editable) return "_close";
-
         def numformat = new java.text.DecimalFormat('0.00');          
-        def ntotalcash = new java.math.BigDecimal( numformat.format( entity.totalcash ));
+        def ntotalcash = new java.math.BigDecimal( numformat.format( total ));
         
         def breakdown = 0.0;
-        if( entity.cashbreakdown ) {
-            breakdown = entity.cashbreakdown.sum{ it.amount } 
+        if( cashbreakdown ) {
+            breakdown = cashbreakdown.sum{ it.amount } 
             breakdown = new java.math.BigDecimal( numformat.format( breakdown )); 
         }
-        
         def diff = ( ntotalcash - breakdown );
         if ( diff != 0 ) throw new Exception("Cash breakdown must equal total cash");
-        
-        afterUpdate();
+        handler( [total:total, cashbreakdown: cashbreakdown ] );
         return "_close";
     }
     

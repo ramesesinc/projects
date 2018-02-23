@@ -1,0 +1,28 @@
+<workunit schemaName="remittance">
+     
+    <invokers>
+        <invoker folderid="menucategory/treasury/collection" caption="Remit" formTitle="New Remittance" action="start" 
+                 role="COLLECTOR" target="window" />        
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.RemittanceNewModel" />
+
+    <pageflow>
+        <start>
+            <transition to="initial" />
+        </start>
+        <page name="initial" title="Remittance Initial Page">
+            <transition to="view" caption="Next" action="saveNew" confirm="You are about to save this remittance. Proceed"/>
+        </page>
+        <page name="view" title="Remittance View">
+            <transition to="" caption="Next" />
+        </page>
+        <end/>
+    </pageflow>
+       
+    <pages>
+        <page name="initial" template="com.rameses.enterprise.treasury.views.RemittanceInitialPage" />
+        <page name="capture" template="com.rameses.enterprise.treasury.views.RemittanceViewPage" />
+    </pages> 
+       
+</workunit>

@@ -1,0 +1,129 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+/***************************************************************
+* This is a generic way of computing assessments and billing 
+* immediately
+***************************************************************/
+public class AssessmentService {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	/*********************************************************
+	* first parameter is the ruleName
+	* second parameter is the raw data sent 
+	* third parameter are factBuilder
+	* fourth parameter is the resultBuilder
+	**********************************************************/
+	@ProxyMethod
+	public def execute( def ruleNames, def vfacts ) {
+
+		def facts = [];
+
+		facts.addAll( vfacts );
+
+		if( !facts.find{ it.class == treasury.facts.SystemDate.class } ) {
+			def svrDate = dateSvc.getServerDate();
+			facts << new treasury.facts.SystemDate(svrDate);
+		};
+
+		if( !facts.find{ it.class == treasury.facts.BillDate.class } ) {
+			def svrDate = dateSvc.getServerDate();
+			facts << new treasury.facts.BillDate(svrDate);
+		};
+
+		//********************************************************************
+		// build the context
+		//********************************************************************
+		def ctx = RuleExecutionContext.currentContext;
+		if( ctx == null ) {
+			ctx = new RuleExecutionContext(facts);
+		};
+		
+		//********************************************************************
+		// handler to break the rule in case there are askinfos
+		//********************************************************************
+		def hdlr = { grpname ->
+			if( ctx.result.askinfos ) return false;
+			return true;
+		};
+
+		def res = ruleSvc.execute( ruleName, facts, null, hdlr );
+
+		def result = [:];
+		if( res.askinfos ) {
+			return [askinfos : res.askinfos.collect{ it.toMap() } ];
+		}
+
+		//proceed with billing...
+
+
+		def billitems = facts.findAll{ it instanceof AbstractBillItem };
+
+		if( billitems ) {
+			result.billitems = billitems.collect{ it.toMap() };
+		}
+		if( res.infos ) {
+			def infos = res.remove("infos");
+			result.infos = infos;
+		}
+		if( res.requirements ) {
+			def reqs = res.remove("requirements");
+			result.requirements = regs.collect{ it.toMap() };	
+		}
+		if( res.sharing ) {
+			def si = res.remove("sharing");
+			result.sharing = si.collect{ it.toMap() };	
+
+			result.sharing.groupBy{ it.refaccount }.each{ k,v-> 
+				def totalShare = 0;
+				v.each { ss->
+					totalShare += ss.share;	
+				}
+				if(totalShare!=100) {
+					throw new Exception("Error in sharing for account "+ k.title +". Total share must be equal to 100%. Please check your sharing rules");
+				}	
+			}
+			//check if sharing is 100%
+		}
+
+		if( resultHandler ) {
+			res.each { k,v->
+				ResultKeyValue obj = resultHandler.getKeyValue(k,v);
+				if( obj != null ) {
+					result.put( obj.key, obj.value );
+				}
+			};
+
+			//loop also the facts
+			facts.each { f->
+				ResultKeyValue obj = resultHandler.getFactKeyValue( f );
+				if(obj != null ) {
+					result.put( obj.key, obj.value );	
+				}
+			};
+		}
+		else {
+			//return other results not mentioned
+			res.each { k,v->
+				result.put( k,v );
+			}
+		}
+
+		return result;
+	}
+
+
+}

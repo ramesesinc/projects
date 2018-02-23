@@ -92,7 +92,7 @@ class LandtaxOnlinePaymentInterceptor
 	}
 
 
-	@Before(pattern="EORService.post", eval="#{args[0].txntype=='rptonline'}")
+	@Before(pattern="EORService.post", eval="#{args[0].txntype.matches('rptonline|rptcol')}")
 	public void postPayment( def evt ) { 
 		def po = evt.args[0]
 

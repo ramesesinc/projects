@@ -1,33 +1,8 @@
-<workunit extends="wtemplates/SimpleReportController.xml">
+<workunit extends="com/rameses/treasury/common/templates/SingleBillingReport.xml" rulename="waterworksbilling">
     <invokers>
-        <invoker xtype="waterworks_account:form:formActions" 
-                 caption="Preview Bill" 
-                 action="preview" target="popup" 
-                 visibleWhen="#{mode=='read'}"
-                />
+        <invoker type="waterworks_account:form:formActions" caption="Billing" index="-10" 
+                reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
+                visibleWhen="#{mode=='read'}"
+                action="preview"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.reports.*;
-        
-        class WaterworksAccountBill extends ReportController {
-        
-            @Service("WaterworksAccountBillingService")
-            def billSvc;
-
-            def entity;
-            def title = 'Water Bill'; 
-
-            String reportName = "com/rameses/gov/etracs/waterworks/reports/billing2/WaterBill.jasper";
-
-            public def getReportData() {
-                return billSvc.getBilling([acctid: entity.objid]);
-            }
-      }
-      ]]>        
-    </code>    
 </workunit>

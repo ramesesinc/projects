@@ -17,6 +17,9 @@
        
        <invoker type="cashaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH"/>
+       
+       <invoker type="revenueitem:lookup" caption="Lookup Revenue" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="REVENUE"/>
     </invokers> 
    
     <code>

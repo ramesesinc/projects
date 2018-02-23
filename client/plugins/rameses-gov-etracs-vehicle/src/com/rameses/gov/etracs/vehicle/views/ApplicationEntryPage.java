@@ -39,10 +39,8 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField3 = new com.rameses.rcp.control.XDateField();
-        xDateField4 = new com.rameses.rcp.control.XDateField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
@@ -51,8 +49,6 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         barangayLookup1 = new com.rameses.etracs.components.BarangayLookup();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         jPanel5 = new javax.swing.JPanel();
-
-        jPanel1.setLayout(new java.awt.CardLayout());
 
         xFormPanel3.setCaptionWidth(150);
 
@@ -84,12 +80,6 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         xDateField3.setVisibleWhen("#{ entity.txnmode == 'CAPTURE' }");
         xFormPanel3.add(xDateField3);
 
-        xDateField4.setCaption("Franchise Expiry Date");
-        xDateField4.setName("entity.expirydate"); // NOI18N
-        xDateField4.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDateField4.setVisibleWhen("#{ entity.txnmode == 'CAPTURE' }");
-        xFormPanel3.add(xDateField4);
-
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("App Type");
         xLabel2.setExpression("#{entity.apptype}");
@@ -104,11 +94,6 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         xComboBox1.setRequired(true);
         xComboBox1.setVisibleWhen("#{ entity.txnmode == 'CAPTURE'  }");
         xFormPanel3.add(xComboBox1);
-
-        xIntegerField1.setCaption("App Year");
-        xIntegerField1.setName("entity.appyear"); // NOI18N
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel3.add(xIntegerField1);
 
         xDateField1.setCaption("App date");
         xDateField1.setName("entity.appdate"); // NOI18N
@@ -156,7 +141,16 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField1);
 
-        jPanel1.add(xFormPanel3, "card3");
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xFormPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 900, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xFormPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        );
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -167,8 +161,10 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
-                    .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE))
+                    .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 930, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -176,7 +172,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
             .add(layout.createSequentialGroup()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -194,9 +190,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel implements UIConten
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField3;
-    private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;

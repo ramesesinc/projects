@@ -54,19 +54,27 @@ class VehicleApplicationService {
 		def txntype = o.vehicletype?.toUpperCase();
 		String prefix = "V" + txntype[0] + o.appyear;
 		o.appno =  prefix + seqSvc.getNextFormattedSeries( prefix );
+
 		o.dtfiled = svrDate;
 		o.filedby = [objid: env.USERID, name: env.FULLNAME];
 
+		//this is impt. because this will act as the billing date when printing the original assessment. 
+		o.dtapproved = svrDate;
+
 		//check fees. do not persist surcharge, interest or discount.
 		if(o.fees) {
-			o.fees = o.fees.findAll{ !it.txntype.matches('surcharge|interest|discount') }
+			o.fees.findAll{ !it.txntype }.each { it.txntype = 'FEE' };
+			o.fees = o.fees.findAll{ !it.txntype?.matches('surcharge|interest|discount') }
+			o.fees.each { it.parent = o }
 		};
 		if(o.infos) {
 			def vi = new VariableInfoUtil("vehicle_variable");
 			o.infos.each {
 				vi.fixData( it, it.datatype, it.value );
+				it.parent = o;
 			}
 		}
+
 		def appEm = em.lookup( "vehicle_application_"+o.vehicletype )
 		return appEm.create(o);
 	}

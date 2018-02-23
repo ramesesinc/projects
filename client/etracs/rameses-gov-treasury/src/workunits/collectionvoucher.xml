@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="collectionvoucher" 
+          allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker type="collectionvoucher:open" 
+                 caption="Collection Voucher" 
+                 windowTitle="Collection Voucher"
+                 formTitle="Collection Voucher"
+                 action="open" target="window" 
+                 index="10"/>
+        
+        <!-- Buttons -->
+        <invoker type="formActions" caption="Post" action="post"/>
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.CollectionVoucherModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.CollectionVoucherPage" />
+   </pages>
+   
+</workunit>

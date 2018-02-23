@@ -1,8 +1,0 @@
-<!-- REQUISITION ISSUE SLIP -->
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="afir" allowDelete="false">
-    <invokers>
-        <invoker folderid="menucategory/treasury/af" caption="AF Issue/Receipt List" 
-                 formTitle="IRAF List" action="init" role="AFO"
-                 cols="controlno,dtissued,issueto.name,txntype,state" orderBy="controlno"/>
-    </invokers>
-</workunit> 

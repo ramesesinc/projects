@@ -17,8 +17,7 @@ SELECT
 	va.owner_address_objid,
 	va.owner_address_text,
 	va.barangay_objid,
-	va.barangay_name,
-	va.billexpirydate
+	va.barangay_name
 FROM vehicle_franchise vf 
 LEFT JOIN  vehicle_application_tricycle vat ON vf.appid=vat.objid
 LEFT JOIN vehicle_application va ON vat.objid=va.objid

@@ -1,0 +1,19 @@
+<workunit schemaName="unremitted_cashreceipt_af_summary">
+    <invokers>
+        <invoker folderid="menucategory/treasury/remittance" 
+                 caption="Remit Cash Receipts" 
+                 windowTitle="Cash Receipt Remittance"
+                 formTitle="Cash Receipt Remittance"
+                 action="init" target="window" role="COLLECTOR" index="10"/>
+        
+        <!-- Buttons -->
+        <invoker type="formActions" caption="Submit for Remittance" action="submitForRemittance"/>
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.RemittanceInitialModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.RemittanceInitialPage" />
+   </pages>
+   
+</workunit>

@@ -1,7 +1,7 @@
 <schema>
 
 	<element  tablename="collectionvoucher_fund">
-		<field name="objid" primary="true" prefix="COLV"/>
+		<field name="objid" primary="true" prefix="CVF"/>
 		<field name="controlno" />
 		<field name="parentid" required="true"/>
 		<field name="fund_objid" required="true"/>

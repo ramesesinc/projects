@@ -19,4 +19,7 @@ public class EORRemittanceInitialModel  {
         }
     ] as BasicListModel;
 
+    
+    
+    
 }

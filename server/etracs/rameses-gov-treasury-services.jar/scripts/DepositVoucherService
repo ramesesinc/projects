@@ -82,12 +82,7 @@ class DepositVoucherService  {
 		depositFundEm.find( [parentid: o.depositvoucherid, fundid: o.fundid ]).update( [cashier: o.cashier ] );
 	}
 
-	@ProxyMethod
-	public void removeDepositSlip( def o ) {
-		depositSlipEm.find([objid: o.objid]).delete();
-		
-	}
-
+	
 
 	@ProxyMethod
 	public def submitForDeposit( def o ) {

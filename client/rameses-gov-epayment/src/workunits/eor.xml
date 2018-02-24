@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="eor" allowEdit="false" allowCreate="false">
     <invokers>
-        <invoker type="eor:open" caption="EOR" action="open"/>
+        <invoker type="eor:open" caption="EOR" action="open" target="popup"/>
    </invokers>
     <pages>
         <page template="com.rameses.gov.epayment.views.EORPage" />

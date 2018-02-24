@@ -5,7 +5,6 @@
                 allowCreate="false" 
                 allowOpen="false" 
                 caption="Sub Accounts" 
-                visibleWhen="#{ mode == 'read' }" 
                 action="init"/> 
 
         <invoker type="formActions" caption="Add" action="addSub" 

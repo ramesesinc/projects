@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*; 
 
-class CashReceiptCheckModel extends CrudFormModel { 
+class PaymentCheckModel extends CrudFormModel { 
 
     
 } 

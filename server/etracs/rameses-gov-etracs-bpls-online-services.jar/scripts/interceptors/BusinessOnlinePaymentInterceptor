@@ -89,7 +89,6 @@ class BusinessOnlinePaymentInterceptor {
 		m.payer = z.app.business.owner;
 		m.paidby = z.app.tradename;
 		m.paidbyaddress = z.app.businessaddress;
-		m.collectiontype = [objid:'BUSINESS_COLLECTION'];
 		m.particulars = 'Business Permit';
 		m.refid = z.app.objid;
 		m.refno = o.appno;
@@ -97,6 +96,7 @@ class BusinessOnlinePaymentInterceptor {
 		m.amount = z.amount;
 		m.txntype = 'bpls';
 		m.txntypename = 'Business Permit';
+		m.expirydate = z.expirydate;
 
 		//retrieve the contactinfo
 		def contact = [:];

@@ -8,17 +8,20 @@ import com.rameses.common.*
 *************************************************/
 class OnlinePaymentService   {
 
-    @Service("EORService")
-    def eorSvc;  
-
-    @Service("PaymentOrderService")
-    def pmoSvc;  
-    
     @DataContext("eor")
     def eorEm; 
 
+    @DataContext("eor_paymentorder")
+    def poEm; 
+
     @Env 
     def env; 
+
+    @Service("EORService")
+    def eorSvc;  
+
+    @Service('PersistenceService')
+    def persistenceSvc; 
 
     private void initEnv() {
         env.USERID = 'E-PAYMENT'; 
@@ -46,9 +49,10 @@ class OnlinePaymentService   {
         if( !o.info ) 
             throw new Exception("info is required in the arguments. Please override @Before OnlinePaymentService.createPaymentOrder and pass info");
 
-        def info = o.info;
-        info.origin = o.origin;
-        def m = pmoSvc.create( info );
+        def info = o.info; 
+        info.origin = o.origin;  
+        info._schemaname = 'eor_paymentorder'; 
+        def m = persistenceSvc.create( info ); 
 
         def result = [:];
         result.status=0
@@ -72,7 +76,7 @@ class OnlinePaymentService   {
         initEnv(); 
 
         if (!o.txntype) return [status:1, message:'txntype is required'];
-        def po = pmoSvc.open( [objid: o.paymentrefid ] );
+        def po = poEm.find([ objid: o.paymentrefid ]).first();
         if (!po) throw new Exception('Payment Order No. ' + o.objid + ' does not exist or has already been processed.')
         
         if(o.tracedate instanceof String ) {
@@ -92,7 +96,7 @@ class OnlinePaymentService   {
         retval.receiptid = r.objid;
         retval.receiptdate = r.receiptdate; 
 
-        pmoSvc.removeEntity( po ); 
+        poEm.find([ objid: po.objid ]).delete();
 
         //log the payment...
         return retval;
@@ -109,5 +113,5 @@ class OnlinePaymentService   {
             throw new Exception("Receipt " + o + " not found");
         }
         return rc;
-    }
+    } 
 }

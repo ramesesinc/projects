@@ -23,7 +23,15 @@ class ItemAccountListInterceptor {
 
 		def str = "type = :type";
 		def m = [type: o.node.type];
-		o.where = [str, m];
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
 	}	
 
 }

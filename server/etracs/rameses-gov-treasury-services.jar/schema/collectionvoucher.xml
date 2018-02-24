@@ -1,6 +1,6 @@
 <schema>
 	<element  tablename="collectionvoucher" >
-		<field name="objid" primary="true" prefix="LIQ"/>
+		<field name="objid" primary="true" prefix="CV"/>
 		<field name="state" required="true"/>
 		<field name="controlno" required="true" searchable="true"/>
 		<field name="controldate" required="true" type="date"/>

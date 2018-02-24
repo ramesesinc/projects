@@ -44,4 +44,9 @@ class PaymentOrderService {
 		po._schemaname = 'paymentorder';
 		return persistenceSvc.read(po);	
 	}
+
+	@ProxyMethod
+	public void removeEntity(def po) {
+		pmt.find([ objid: po.objid ]).delete();
+	}	
 }

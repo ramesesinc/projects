@@ -102,7 +102,7 @@ class CRAAFReportService {
 		} 
 		serials.clear(); 
 
-		unissuedlist.groupBy{[ ownerid: it.ownerid, formno: it.formno ]}.each{ k,v-> 
+		unissuedlist.groupBy{[ ownerid: it.ownerid, formno: it.formno, prefix: it.prefix, suffix: it.suffix ]}.each{ k,v-> 
 			def fo = v.first(); 
 			def qtyreceived = 0; def qtyending = 0; def qtybegin = 0; 
 			v.each{

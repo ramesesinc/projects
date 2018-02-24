@@ -9,7 +9,7 @@ import com.rameses.seti2.models.*;
 class ItemAccountModel extends CrudFormModel {
     
     boolean isAllowApprove() {
-         return ( mode=='read' && entity.state.toString().matches('DRAFT|ACTIVE') ); 
+         return ( mode=='read' && !entity.state.toString().matches('APPROVED') ); 
     }
     boolean isAllowDisapprove() {
          return ( mode=='read' && entity.state.toString().matches('APPROVED') ); 

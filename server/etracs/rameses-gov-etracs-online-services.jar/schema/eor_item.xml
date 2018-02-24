@@ -8,5 +8,7 @@
 		<field name="amount" required="true"/>
 		<field name="remarks" />
 		<field name="item_fund_objid" required="true"/>
+		<field name="item_fund_code" />
+		<field name="item_fund_title" required="true"/>
 	</element>
 </schema>

@@ -9,7 +9,7 @@
                  index="10"/>
         
         <!-- Buttons -->
-        <invoker type="formActions" caption="Post" action="post"/>
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{entity.state == 'OPEN'}"/>
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.CollectionVoucherModel" />

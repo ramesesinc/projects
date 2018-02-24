@@ -26,7 +26,10 @@ class SubItemAccountModel extends CrudListModel {
     }
 
     void addSub() { 
-        if ( caller && !caller.allowApprove ) return; 
+        if ( caller && !caller.allowApprove ) {
+            MsgBox.alert( 'Main account must be approved first ');
+            return;
+        }; 
         
         def h = { arr-> 
             def sname = 'itemaccount'; 

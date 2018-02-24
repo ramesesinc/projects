@@ -22,7 +22,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" max="32767" attributes="0"/>
+              <Component id="xTabbedPane1" pref="644" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -31,14 +31,17 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" pref="462" max="32767" attributes="0"/>
+              <Component id="xTabbedPane1" pref="462" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
+    <Container class="com.rameses.rcp.control.XTabbedPane" name="xTabbedPane1">
+      <Properties>
+        <Property name="items" type="java.lang.String" value="sections"/>
+      </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
@@ -54,7 +57,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xFormPanel1" pref="619" max="32767" attributes="1"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -175,6 +178,7 @@
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 20]"/>
                     </Property>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.parentid != null }"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField3">
@@ -187,6 +191,7 @@
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 20]"/>
                     </Property>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.parentid != null }"/>
                   </Properties>
                 </Component>
               </SubComponents>

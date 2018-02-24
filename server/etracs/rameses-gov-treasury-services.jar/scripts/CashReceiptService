@@ -39,9 +39,6 @@ class CashReceiptService  {
 	@Service('PersistenceService')
 	def persistence 
 	
-   	@Service("RevenueSharingService")
-   	def sharingSvc;
-
    	@DataContext("cashreceiptpayment_noncash")
    	def cashRctPmt;
 
@@ -112,16 +109,7 @@ class CashReceiptService  {
 			throw new Exception('A data problem is encountered during validation of Receipt No. ' + p.receiptno + '.\nThe Receipt Amount is not equal to item amount total.\nClose the form and recreate the transaction to correct the problem.')
 		} 
 
-		/***************************************************************
-		//do the sharing here. Just proceed if there are errors 
-		****************************************************************/
-		try {
-			def sharing = sharingSvc.execute( p );
-			if(sharing) p.sharing = sharing;
-		}
-		catch(e) {
-			println "Error executing sharing rule service. " + e.message;
-		}
+		
 		
 		/***************************************************************
 		//additional code on checks 

@@ -12,31 +12,34 @@ class AddRevenueShare implements RuleActionHandler  {
 
 	public void execute(def params, def drools) {
 
-		def refacct = params.refaccount;
-		def payableacct = params.payableaccount;
-		def share = Integer.parseInt( params.share ); 
+		def refitem = params.refitem;
+		def payableaccount = params.payableaccount;
+
 		def amt = params.amount.decimalValue;
 
-		if( refacct ==null && payableacct==null)
-			throw new Exception("Error in AddRevenueShare action. Please indicate a ref account or a payable account. Check the rules");
 
+		if( refitem ==null && payableaccount ==null)
+			throw new Exception("Error in AddRevenueShare action. Please indicate a ref item and payable item. Check the rules");
+
+			
 		def ct = RuleExecutionContext.getCurrentContext();
 		def rs = new RevenueShare();
+		
 
-		if(refacct?.key!=null && refacct?.key!='null') {
-			rs.refaccount = ct.env.acctUtil.createAccountFact( [objid: refacct.key] );
-		};	
-		if(payableacct?.key!=null && payableacct?.key!='null') {
-			rs.payableaccount = ct.env.acctUtil.createAccountFact( [objid: payableacct.key] );
+		if(refitem.account.objid!=null && refitem.account?.objid!='null') {
+			rs.refitem = ct.env.acctUtil.createAccountFact( [objid: refitem.account.objid] );
+		};
+		
+		if(payableaccount?.key!=null && payableaccount?.key!='null') {
+			rs.payableitem = ct.env.acctUtil.createAccountFact( [objid: payableaccount.key] );
 		}
-		rs.amount  = amt;
-		rs.share = share;
 
-		if (!ct.result.sharing){
+		rs.amount  = amt;
+		if (!ct.result.sharing) {
 			ct.result.sharing = []
 		}
 		ct.facts << rs;
-		ct.result.sharing << rs 
+		
 	}
 
 }

@@ -6,30 +6,20 @@ package treasury.facts;
 
 class RevenueShare {
 	
-
-	Account refaccount;
-	Account payableaccount;
+	Account refitem;
+	Account payableitem;
 	double amount;
-	double share;
 
 	public Map toMap() {
 		def m = [:];
-		m.refaccount = refaccount.toMap();
-		if( payableaccount) {
-			m.payableaccount = payableaccount.toMap();
-		}	
+		m.refitem = refitem.toMap();
+		m.payableitem = payableitem.toMap();
 		m.amount = amount;
-		m.share = share;
 		return m;
 	}
 
 	public int hashCode() {
-		if( payableaccount ) {
-			return (refaccount.hashCode() + "" + payableaccount.hashCode()).hashCode();
-		}
-		else {
-			return refaccount.hashCode();
-		}
+		return (refitem.hashCode() + "" + payableitem.hashCode()).hashCode();
 	}
 
 	public boolean equals( def o ) {

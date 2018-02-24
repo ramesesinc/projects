@@ -26,7 +26,7 @@ class SubItemAccountModel extends CrudListModel {
     }
 
     void addSub() { 
-        if ( caller && !caller.allowApprove ) {
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
             MsgBox.alert( 'Main account must be approved first ');
             return;
         }; 
@@ -41,8 +41,8 @@ class SubItemAccountModel extends CrudListModel {
                 arr.each {o-> 
                     if ( !o ) return; 
                     if ( orgs.contains( o.objid )) return; 
-
                     def item = [ _schemaname: sname ];
+                    item.objid = caller.entity.objid + ":" + o.objid;
                     item.org = o;
                     item.parentid = caller.entity.objid;
                     item.code = caller.entity.code + "-" + o.code;
@@ -61,7 +61,11 @@ class SubItemAccountModel extends CrudListModel {
     } 
 
     void removeSub() {
-        if ( caller && !caller.allowApprove ) return; 
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
+            MsgBox.alert( 'Main account must be approved first ');
+            return;
+        }; 
+
         def values = listHandler.getSelectedValue(); 
         if ( !values ) return; 
         
@@ -81,13 +85,17 @@ class SubItemAccountModel extends CrudListModel {
     }
     
     void doSelectAll() {
-        if ( caller && !caller.allowApprove ) return; 
-        
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
+            MsgBox.alert( 'Main account must be approved first ');
+            return;
+        }; 
         listHandler.selectAll(); 
     } 
     void doDeselectAll() {
-        if ( caller && !caller.allowApprove ) return; 
-        
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
+            MsgBox.alert( 'Main account must be approved first ');
+            return;
+        }; 
         listHandler.deselectAll(); 
     }     
 }

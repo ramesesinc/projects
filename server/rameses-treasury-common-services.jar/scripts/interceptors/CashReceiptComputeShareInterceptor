@@ -1,0 +1,39 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+public class CashReceiptComputeShareInterceptor {
+	
+	@Service("RevenueSharingService")
+   	def sharingSvc;
+
+	@Before(pattern="CashReceiptService.post",  index=50)
+	public void computeShare(def evt) {
+		def p = evt.args[0];
+		
+
+		/***************************************************************
+		//do the sharing here. Just proceed if there are errors 
+		****************************************************************/
+		try {
+			def sharing = sharingSvc.execute( p );
+			if(sharing) {
+				if(!p.sharing) p.sharing = [];
+				p.sharing.addAll( sharing );
+			}	
+		}
+		catch(e) {
+			throw e;
+			println "Error executing sharing rule service. " + e.message;
+		}
+	}
+
+
+}

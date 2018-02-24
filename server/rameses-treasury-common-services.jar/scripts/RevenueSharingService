@@ -12,7 +12,7 @@ import enterprise.facts.Org;
 
 class RevenueSharingService  {
 
-	@Service("AssessmentRuleService")
+	@Service("RuleExecutorService")
 	def ruleSvc;
 
 	@DataContext('sys_org') 
@@ -20,20 +20,28 @@ class RevenueSharingService  {
 
 	@ProxyMethod
 	public def execute( def rct ) {
-		def data = [billitems:[]];
-		rct.items.each {
-			data.billitems << [ item: it.item, amount: it.amount, remarks: it.remarks  ];
-		}
-
 		def ruleFact = new FactBuilder();
 		ruleFact.facts << new CashReceipt( orgid: rct.org?.objid, receiptdate: rct.receiptdate ); 
 
 		def org = sys_org.find([ objid: rct.org.objid ]).first(); 
 		ruleFact.facts << new Org( orgid: org.objid, type: org.orgclass, root: (org.root==1)); 
+		def facts = ruleFact.facts;
 
-		def res = ruleSvc.execute("revenuesharing", data, ruleFact, null );
-		if(!res.sharing) return [];
-		return res.sharing;
+		ruleFact.addBillItems( rct.items );
+
+		def ctx = RuleExecutionContext.currentContext;
+		if( ctx == null ) { ctx = new RuleExecutionContext(facts); };
+		if(!ctx.env.acctUtil) ctx.env.acctUtil = new ItemAccountUtil();
+
+		ruleSvc.execute( "revenuesharing", facts, null, null );
+		
+		def resultList = [];
+		def shareList = facts.findAll{ it instanceof RevenueShare };
+		shareList.each {
+			resultList << it.toMap();
+		}
+
+		return resultList;
 	}
 
 

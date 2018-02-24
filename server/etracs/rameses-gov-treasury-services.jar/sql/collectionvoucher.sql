@@ -14,29 +14,35 @@ GROUP BY rf.fund_objid,  f.code, rf.fund_title
 
 
 [postToCashTreasury]
+INSERT INTO cash_ledger 
+(objid,refid,refno,refdate,reftype,fundid,dr,cr)
 SELECT 
     cvf.objid,
+    cv.objid AS refid,
     cv.controlno AS refno, 
     cv.controldate AS refdate,
-    cv.objid AS refid,
     'collectionvoucher' AS reftype,
     cvf.fund_objid AS fundid, 
-    SUM(cvf.totalcash+cvf.totalcheck) AS amount 
+    SUM(cvf.totalcash+cvf.totalcheck) AS amount,
+    0 
 FROM collectionvoucher_fund cvf
 INNER JOIN collectionvoucher cv ON cv.objid=cvf.parentid
 WHERE cvf.parentid = $P{collectionvoucherid}
 GROUP BY cvf.objid,cvf.controlno,cv.controldate,cvf.fund_objid
 
 [postToBankAccount]
+INSERT INTO bankaccount_ledger
+(objid,bankacctid,refid,refno,reftype,refdate,fundid,dr,cr)
 SELECT  
     UUID() AS objid,
-    ccv.controlno AS refno,
+    cm.bankaccount_objid,
     ccv.objid AS refid,
-    ccv.controldate AS refdate,
+    ccv.controlno AS refno,
     'collectionvoucher' AS reftype,
-    cm.bankaccount_objid, 
+    ccv.controldate AS refdate,
     nc.fund_objid,
-    SUM(nc.amount) AS amount
+    SUM(nc.amount) AS amount,
+    0
 FROM 
    cashreceiptpayment_noncash nc
  INNER JOIN cashreceipt c ON nc.receiptid=c.objid

@@ -80,12 +80,19 @@ class RemittanceModel extends CrudFormModel {
     ] as BasicListModel;
     
     //for printing
-    def getPrintFormData() {
-        entity.totalnoncash = entity.totalcheck + entity.totalcr;
-        return entity;
+    def getPrintFormData() { 
+        def rdata = remSvc.getReportData([ objid: entity.objid ]); 
+        if ( rdata ) { 
+            rdata.putAll( entity ); 
+            rdata.totalnoncash = rdata.totalcheck + rdata.totalcr;
+            rdata.remittancedate = rdata.controldate;
+            rdata.txnno = rdata.controlno; 
+        }         
+        return rdata;
     } 
     
     def openPreview() {
+        println 'open preview';
         open();
         return preview("remittance:form_report");
     }

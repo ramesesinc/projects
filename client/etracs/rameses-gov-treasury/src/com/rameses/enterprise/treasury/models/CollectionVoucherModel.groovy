@@ -57,8 +57,9 @@ class CollectionVoucherModel extends CrudFormModel {
     }
     
     def post() {
-        if(!MsgBox.comfirm("You are about to post this transaction. Proceed?")) return null;
-        collSvc.post( entity );
+        if(!MsgBox.confirm("You are about to post this transaction. Proceed?")) return null;
+        def o = collSvc.post( entity );
+        if ( o ) entity.state = o.state;
     }
 
    

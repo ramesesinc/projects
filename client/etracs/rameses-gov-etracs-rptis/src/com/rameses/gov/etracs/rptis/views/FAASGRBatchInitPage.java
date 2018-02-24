@@ -43,6 +43,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xFormPanel11 = new com.rameses.rcp.control.XFormPanel();
         formPanel4 = new com.rameses.rcp.util.FormPanel();
@@ -175,13 +176,26 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
         });
         formPanel1.add(xCheckBox1);
 
+        xCheckBox4.setCaption("Check Duplicate?");
+        xCheckBox4.setCaptionWidth(140);
+        xCheckBox4.setName("params.checkduplicate"); // NOI18N
+        xCheckBox4.setPreferredSize(new java.awt.Dimension(0, 23));
+        xCheckBox4.setShowCaption(false);
+        xCheckBox4.setText("Check Duplicate?");
+        xCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox4ActionPerformed(evt);
+            }
+        });
+        formPanel1.add(xCheckBox4);
+
         xCheckBox3.setCaption("Re-initialize Item for Revision");
         xCheckBox3.setCaptionWidth(140);
         xCheckBox3.setDepends(new String[] {"params.autoapprove"});
         xCheckBox3.setName("params.continueonerror"); // NOI18N
         xCheckBox3.setPreferredSize(new java.awt.Dimension(0, 20));
         xCheckBox3.setShowCaption(false);
-        xCheckBox3.setText(" Continue on error?");
+        xCheckBox3.setText("Continue on error?");
         xCheckBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xCheckBox3ActionPerformed(evt);
@@ -323,10 +337,10 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xFormPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(439, Short.MAX_VALUE)
+                    .addContainerGap(460, Short.MAX_VALUE)
                     .add(xPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(38, 38, 38)))
         );
@@ -343,6 +357,10 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private void xCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_xCheckBox3ActionPerformed
+
+    private void xCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xCheckBox4ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -355,6 +373,7 @@ public class FAASGRBatchInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
+    private com.rameses.rcp.control.XCheckBox xCheckBox4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;

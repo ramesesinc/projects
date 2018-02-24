@@ -9,8 +9,11 @@ class ProvinceSubdivisionRemoteService
 	@Service('NotificationService')
 	def notificationService
 
-	@Service('SubdivisionSupport2Service')
+	@Service('SubdivisionSupportService')
 	def supportSvc
+
+	@Service('SubdivisionSupport2Service')
+	def support2Svc
 
 	@Service('SubdivisionWorkflowService')
 	def workflowSvc
@@ -20,8 +23,20 @@ class ProvinceSubdivisionRemoteService
 
 
 	@ProxyMethod
-	public void postSubdivisionForApproval(subdivision){
+	public void postTransmittalForApproval(subdivision){
 		supportSvc.postSubdivisionData(subdivision)
+		def currtask = em_subdivision_task.select('objid').where('refid = :objid and enddate is null', subdivision).first()
+		if (!subdivision._resubmitted || !currtask){
+			workflowSvc.start([refid:subdivision.objid, data:subdivision])
+			notifyGroup(subdivision)
+		}
+		println 'Transmittal subdivision has been successfully created.'
+	}
+
+
+	@ProxyMethod
+	public void postSubdivisionForApproval(subdivision){
+		support2Svc.postSubdivisionData(subdivision)
 		def currtask = em_subdivision_task.select('objid').where('refid = :objid and enddate is null', subdivision).first()
 		if (!subdivision._resubmitted || !currtask){
 			workflowSvc.start([refid:subdivision.objid, data:subdivision])
@@ -32,27 +47,27 @@ class ProvinceSubdivisionRemoteService
 
 	@ProxyMethod
 	public void postExaminations(data) {
-		supportSvc.postExaminations(data)
+		support2Svc.postExaminations(data)
 	}
 
 	@ProxyMethod
 	public void postRequirements(data) {
-		supportSvc.postRequirements(data)
+		support2Svc.postRequirements(data)
 	}
 
 	@ProxyMethod
 	public void postRequirement(data) {
-		supportSvc.postRequirement(data)
+		support2Svc.postRequirement(data)
 	}
 
 	@ProxyMethod
 	public void postFaasData(faas) {
-		supportSvc.postFaasData(faas)	
+		support2Svc.postFaasData(faas)	
 	}
 
 
 	public void repostSubdivisionRequirements(reqdata){
-		supportSvc.repostSubdivisionRequirements(reqdata)
+		support2Svc.repostSubdivisionRequirements(reqdata)
 	}
 
 

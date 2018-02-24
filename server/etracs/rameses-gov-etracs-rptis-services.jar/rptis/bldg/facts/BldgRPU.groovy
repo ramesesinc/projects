@@ -31,6 +31,7 @@ public class BldgRPU
     String      bldgclass
     Boolean     predominant
     Boolean     fixrate
+    String      cdurating 
 
     //data reference
     def entity 
@@ -57,6 +58,7 @@ public class BldgRPU
         this.assesslevel        = rpu.assesslevel
         this.condominium        = rpu.condominium
         this.bldgclass          = rpu.bldgclass
+        this.cdurating          = rpu.cdurating 
 
         setTotalareaha(0.0)
         setTotalareasqm(0.0)

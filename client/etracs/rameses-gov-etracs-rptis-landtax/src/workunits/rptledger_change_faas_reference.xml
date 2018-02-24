@@ -6,7 +6,7 @@
                 visibleWhen="#{entity.state=='APPROVED'}" index="50001"/>        
         
             <invoker type="formActions" action="_close" caption="Cancel" immediate="true"  mnemonic="c"/>
-            <invoker type="formActions" action="changeReference" caption="Post" mnemonic="p"/>
+            <invoker type="formActions" action="changeReference" caption="Update" mnemonic="u"/>
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.ChangeFaasReferenceModel" />
     <pages>

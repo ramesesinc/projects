@@ -67,7 +67,6 @@ class RemittanceService  {
 		}
 
 		def z = [remittanceid: m.objid]
-		remEm.insertRemittanceAF( z );
 		remEm.insertRemittanceFund( z );
 
 		def clist = rfEm.find( z ).list();

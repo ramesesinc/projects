@@ -173,5 +173,13 @@ class FAASChangeInfoInterceptor
 		reqSvc.save(changeinfo.requirement)
 		supportSvc.saveImageData(changeinfo)
 	}	
+
+	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_signatories'}")
+	public void updateSignatories(evt){
+		def changeinfo = evt.result
+		def signatory = changeinfo.newinfo
+		signatory.objid = signatory.faasid
+		faasSvc.saveSignatory(signatory)
+	}	
 }
 

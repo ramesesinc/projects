@@ -166,19 +166,33 @@ class RPTUtil
         return len;
     }
     
+    static def getSuffixes(rputype){
+        def suffixes = []
+        if ('land' == rputype){
+            suffixes << [from:0, to:0]
+        }
+        else if ('bldg' == rputype){
+            suffixes << [from:1001, to:1999]
+        }
+        else if ('mach' == rputype){
+            suffixes << [from:2001, to:2999]
+        }
+        else if ('planttree' == rputype){
+            suffixes << [from:3001, to:6999]
+        }
+        else if ('misc' == rputype){
+            suffixes << [from:1001, to:1999]
+            suffixes << [from:5001, to:5999]
+            suffixes << [from:7001, to:7999]
+        }
+        else{
+            throw new Exception('Suffixes are not defined for RPU type ' + rputype + '.')
+        }
+        return suffixes 
+    }
+    
     static boolean validSuffix(entity){
-        def valid = false;
-        if (entity.rputype == 'land')
-        valid = true;
-        else if (entity.rputype == 'bldg' && entity.suffix >= 1001 && entity.suffix <= 1999)
-        valid = true;
-        else if (entity.rputype == 'mach' && entity.suffix >= 2001 && entity.suffix <= 2999)
-        valid = true;
-        else if (entity.rputype == 'planttree' && entity.suffix >= 3001 && entity.suffix <= 4999)
-        valid = true;
-        else if (entity.rputype == 'misc' && ((entity.suffix >= 5001 && entity.suffix <= 5999) || (entity.suffix >= 7001 && entity.suffix <= 7999)))
-        valid = true;
-        
-        return valid;
+        def suffixes = getSuffixes(entity.rputype)
+        return suffixes.find{ entity.suffix >= it.from && entity.suffix <= it.to } != null
     }
 }

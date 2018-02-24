@@ -39,13 +39,12 @@ rule "initial-bmv"
 end
 
 
-
 rule "calc-landvalue-adj"
 	agenda-group "AFTER-BASEMARKETVALUE"
 	salience 500000
 	no-loop
 	when
-		LD   : LandDetail($classificationid:classificationid)
+		LD   : LandDetail($classificationid:classificationid, taxable == true)
 		ADJ  : LandAdjustment(type == 'LV', appliedtolist contains $classificationid)
 	then	
 		Map bindings = new HashMap();

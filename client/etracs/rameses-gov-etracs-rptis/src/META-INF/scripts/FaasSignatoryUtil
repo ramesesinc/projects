@@ -1,0 +1,77 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+
+public class FaasSignatoryUtil 
+{   
+    @Caller 
+    def caller;
+
+    def getLookupAppraiser(){
+        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
+            doctype : 'RPTAPPRAISER',
+            onselect : { 
+                if (!caller.entity.appraiser) 
+                    caller.entity.appraiser = [:]
+                caller.entity.appraiser.putAll(it)
+            },
+            onempty  : {clearSignatory(caller.entity.appraiser)},
+        ])
+        
+    }
+    
+    def getLookupRecommender(){
+        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
+            doctype : 'RPTRECOMMENDER',
+            onselect : { 
+                if ( !caller.entity.recommender )
+                    caller.entity.recommender = [:]
+                caller.entity.recommender.putAll(it) 
+            },
+            onempty  : { clearSignatory(caller.entity.recommender)},
+        ])
+        
+    }
+    
+    def getLookupTaxmapper(){
+        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
+            doctype : 'RPTTAXMAPPER',
+            onselect : { 
+                if (!caller.entity.taxmapper)
+                    caller.entity.taxmapper = [:]
+                caller.entity.taxmapper.putAll(it) 
+            },
+            onempty  : { clearSignatory(caller.entity.taxmapper) },
+        ])
+        
+    }
+    
+    def getLookupApprover(){
+        return InvokerUtil.lookupOpener('txnsignatory:lookup',[
+            doctype : 'RPTAPPROVER',
+            onselect : { 
+                if (!caller.entity.approver)
+                    caller.entity.approver = [:]
+                caller.entity.approver.putAll(it)
+            },
+            onempty  : { clearSignatory(caller.entity.approver)},
+        ])
+        
+    }
+    
+    void clearSignatory(signatory){
+        if (signatory){
+            signatory.personnelid = null;
+            signatory.name = null;
+            signatory.title = null;
+        }
+    }    
+
+    def clone(signatory){
+        def s = [:]
+        signatory.each{k,v -> s[k] = v}
+        return s;
+    }
+    
+}

@@ -1,0 +1,5 @@
+* LANDTAX
+
+	- Modified realty tax billing and collection using in-memory computation
+	  to minimize database contention that often resulted in deadlock
+	  

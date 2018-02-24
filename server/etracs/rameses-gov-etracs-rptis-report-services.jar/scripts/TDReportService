@@ -117,15 +117,36 @@ class TDReportService
 		return td 
 	}
 
+
+
 	def getPreviousInfo(list, fieldname){
+		return getPreviousInfo(list, fieldname, null)
+	}
+
+	def getPreviousInfo(list, fieldname, pattern){
 		def info = ''
 		list[fieldname].unique().each{
 			if (it){
 				if (info) info += ' / '
-				info += it 
+				if (pattern && it.matches('^[+-]?\\d*.?\\d+$')){
+					//valid number 
+					info += formatNumber(pattern, it)
+				}
+				else{
+					info += it 
+				}
 			}
 		}
 		return info 
+	}
+
+	def formatNumber(pattern, sval){
+		try{
+			return numberSvc.format(pattern, new BigDecimal(sval))
+		}
+		catch(Exception ex){
+			return sval
+		}
 	}
 
 	void buildPreviousInfo(faas){
@@ -134,10 +155,10 @@ class TDReportService
 		faas.prevpin = getPreviousInfo(list, 'prevpin')
 		faas.prevowner = getPreviousInfo(list, 'prevowner')
 		faas.prevadministrator = getPreviousInfo(list, 'prevadministrator')
-		faas.prevav = getPreviousInfo(list, 'prevav')
-		faas.prevmv = getPreviousInfo(list, 'prevmv')
-		faas.prevareasqm = getPreviousInfo(list, 'prevareasqm')
-		faas.prevareaha = getPreviousInfo(list, 'prevareaha')
+		faas.prevav = getPreviousInfo(list, 'prevav', '#,##0.00')
+		faas.prevmv = getPreviousInfo(list, 'prevmv', '#,##0.00')
+		faas.prevareasqm = getPreviousInfo(list, 'prevareasqm', '#,##0.00')
+		faas.prevareaha = getPreviousInfo(list, 'prevareaha', '#,##0.000000')
 		faas.preveffectivity = getPreviousInfo(list, 'preveffectivity')
 	}
 

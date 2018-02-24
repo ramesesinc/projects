@@ -51,3 +51,17 @@ where c.remittanceid = $P{remittanceid}
 	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
 group by pc.bank_name, nc.reftype, nc.particulars 
 order by pc.bank_name, min(nc.refdate), sum(nc.amount) 
+
+[getRemittedAFs]
+select tmp1.* 
+from ( 
+	select remaf.*, 
+		af.formtype, afc.afid as formno, af.serieslength, af.denomination, afc.stubno, 
+		afc.prefix, afc.suffix, afc.startseries, afc.endseries, afc.endseries+1 as nextseries, 
+		(case when af.formtype = 'serial' then 0 else 1 end) as formindex 
+	from remittance_af remaf 
+		inner join af_control afc on afc.objid = remaf.controlid 
+		inner join af on af.objid = afc.afid 
+	where remaf.remittanceid = $P{remittanceid} 
+)tmp1
+order by tmp1.formindex, tmp1.formno, tmp1.startseries 

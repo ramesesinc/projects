@@ -1,290 +1,163 @@
 import com.rameses.annotations.* 
+import com.rameses.services.extended.*
 
 class LandtaxOnlinePaymentInterceptor 
 {
 	@Env
 	def env 
 
-	@Service('DateService')
-    def dtSvc 
-
-    @Service('RPTBillingService')
+	@Service('RPTBillingService')
     def billSvc
-
-    @Service('RPTBillingReportService')
-    def billReportSvc 
-
-    @Service('RPTUtil')
-    def util
-
-    @Service('QueryService')
-    def query 
-
-    @Service('NumberService')
-    def numSvc 
-
-    def BARCODE_KEY = '56001'
-
-    @DataContext('rptbill')
-    def em_rptbill 
-
-    @DataContext('rptbill_ledger')
-    def em_rptbill_ledger  
-
-    @ActiveDB('landtax_online_billing')
-    def em_online_billing 
-
-    @Service('RPTReceiptService')
-    def receiptSvc 
 
     @DataContext('entity')
     def em_entity 
 
+    @Service('RPTLedgerPostPaymentService')
+    def postPaymentSvc
 
-	@After(pattern="OnlinePaymentService.getBilling", eval="#{args[0].txntype=='rptcol'}")
-	public void fetchBilling( def evt ) { 
-		def params = evt.args[0]
-		def result = evt.result 
-
-		def bill = em_rptbill.find([barcode:params.refno]).first()
-		if (bill){
-			bill = getBillingByBillNo(params)
-		}
-		else {
-			bill = generateBilling(params)
-		}
-
-        buildOnlineBillInfo(bill)
-        result.billid = bill.billid
-        result.amount = bill.amount
-        result.info = bill  
-	}
+    def BARCODE_PREFIX = '56001:'
 
 
-	@Before(pattern="OnlinePaymentService.createPaymentOrder", eval="#{args[0].txntype=='rptcol'}")
-	public void createPaymentOrder( def evt ) { 
-		def params = evt.args[0]
 
-		def bill = em_rptbill.find([barcode:params.refno]).first()
-		if (!bill) throw new Exception('Bill No. ' + params.refno + ' does not exist.')
-		bill = getBillingByBillNo(params)
+    @After(pattern="OnlinePaymentService.getBilling", eval="#{args[0].txntype=='rptcol'}")
+    public void afterBilling( def evt ) { 
+        def params = evt.args[0]
+        def result = evt.result 
 
-		def po = [:]
-		po.payer = bill.taxpayer 
-		po.paidby = bill.taxpayer.name 
-		po.paidbyaddress = bill.taxpayer.address 
-		po.collectiontype = [objid:'RPT_COL']
-		po.particulars = 'Tax Payment of Bill No. ' + bill.barcode + '. Period Covered: ' + bill.billperiod
-		po.refid = bill.objid 
-		po.refno = bill.barcode 
-		po.amount = bill.amount 
-		po.info = [:]
-		po.txntype = 'rptonline'
-		po.txntypename = 'Real Property Tax'
+        def bill = getBilling(params)
+        def rptledger = bill.rptledger
 
-		//retrieve contact info 
-		def contact = em_entity.select('mobileno,phoneno,email').find([objid:bill.taxpayer.objid]).first()
-		if (contact){
-			po.putAll(contact)
-		}
-
-		params.info = po 
-	}
-
-
-	@Before(pattern="EORService.post", eval="#{args[0].txntype.matches('rptonline|rptcol')}")
-	public void postPayment( def evt ) { 
-		def po = evt.args[0]
-
-		def bill = em_rptbill.find([objid:po.refid]).first()
-		if (!bill) throw new Exception('Bill does not exist or has already been deleted.')
-
-		def params = [refno:bill.barcode, showdetails:false]
-		bill = getBillingByBillNo(params)
-
-		if (po.amount != bill.amount)
-			throw new Exception('Amount is incorrect. Payment Order amount is ' + params.amount + ' while Bill amount is ' + bill.amount )
-
-	    def rct = [:]
-	    rct.billid = po.refid 
-	    rct.receiptdate = po.txndate 
-	    rct.amount = po.amount
-	    rct.rptitems = receiptSvc.getItemsForPayment(bill)
-        po.items = receiptSvc.getSummarizedItems(rct)
-
-        po.extinfo = [
-        	txntype  : 'rptonline',
-			billid   : po.refid,
-	        bill     : em_rptbill.find([objid:po.billid]).first(),
-	        rptitems : receiptSvc.getItemsForPayment(bill),
+        def data = [:]
+        data.info = [
+            billid: bill.objid,
+            billno: bill.barcode,
+            billdate: bill.billdate,
+            billtoyear: bill.billtoyear,
+            billtoqtr: bill.billtoqtr,
+            billperiod: buildPeriod(rptledger),
+            rptledgerid: rptledger.objid,
+            taxpayer: rptledger.taxpayer,
+            tdno: rptledger.tdno, 
+            fullpin: rptledger.fullpin, 
+            rputype: rptledger.rputype, 
+            administrator: rptledger.administrator, 
+            totalareasqm: rptledger.totalareasqm, 
+            totals: bill.totals,
+            items: rptledger.items,
+            amount: bill.totals.total,
+            fromyear: rptledger.fromyear,
+            fromqtr: rptledger.fromqtr,
+            toyear: rptledger.toyear,
+            toqtr: rptledger.toqtr,
         ]
-	}
-
-
-    def buildOnlineBillInfo(bill){
-    	bill.billno = bill.barcode 
-        bill.txntype = 'rptcol'
-        bill.txntypename = 'Real Property Tax'
-        bill.particulars = 'Tax Payment of TD No. ' + bill.tdno + '. Period Covered: ' + bill.billperiod
+        data.amount = bill.totals.total 
+        result.putAll(data)
     }
 
 
-    def initBill(params){
-        def ledger = params.ledger 
-        def bill = billSvc.initBill(ledger.objid)
+    @Before(pattern="OnlinePaymentService.createPaymentOrder", eval="#{args[0].txntype=='rptcol'}")
+    public void createPaymentOrder( def evt ) { 
+        def po = evt.args[0]
 
-        if (params.billtoyear != null) {
-            params.billtoyear = util.toInteger(params.billtoyear)
-            params.billtoqtr = util.toInteger(params.billtoqtr)
+        def bill = getBilling(po)
+        def rptledger = bill.rptledger
 
-            if (params.billtoyear < ledger.lastyearpaid)
-                throw new Exception('Bill to year must be greater than or equal to ' + ledger.lastyearpaid + '.')
+        def data = [:]
+        data.payer = rptledger.taxpayer 
+        data.paidby = rptledger.taxpayer.name 
+        data.paidbyaddress = (rptledger.taxpayer.address instanceof String ? rptledger.taxpayer.address : rptledger.taxpayer.address.text)
+        data.collectiontype = [objid:'RPT_COLLECTION']
+        data.particulars = 'Real Property Tax'
+        data.refid = rptledger.objid 
+        data.refno = rptledger.tdno 
+        data.amount = bill.totals.total
+        data.txntype = 'rptcol'
+        data.txntypename = 'Real Property Tax'
 
-            if (params.billtoyear == ledger.lastyearpaid){
-                if (params.billtoqtr < ledger.lastqtrpaid)
-                    throw new Exception('Bill to quarter must be greater than or equal to ' + (ledger.lastqtrpaid + 1) + '.')
-            }
+        def contact = em_entity.select('mobileno,phoneno,email').find([objid:rptledger.taxpayer.objid]).first()
+        data.putAll(contact)
 
-            bill.billtoyear =params.billtoyear  
-            bill.billtoqtr =params.billtoqtr  
+        data.info = [billid:bill.objid, barcode:bill.barcode, rptledgerid:rptledger.objid]
+
+        po.info = data 
+    }
+
+
+    @Before(pattern="EORService.post", eval="#{args[0].txntype=='rptcol'}")
+    public void postPayment( evt ) { 
+        def eor = evt.args[0]
+        def bill = getBilling([refno:eor.info.barcode])
+        eor.rptledger = bill.rptledger 
+        eor.items = []
+        bill.rptledger.shares.each{
+            def item = [:]
+            item.parentid = eor.objid 
+            item.item = it.item 
+            item.amount = it.amount 
+            item.remarks = it.remarks
+            eor.items << item 
         }
+    }    
 
+    @After(pattern="EORService.post", eval="#{args[0].txntype=='rptcol'}")
+    public void afterPostPayment( def evt ) { 
+        def eor = evt.args[0] 
+        def res = evt.result 
+        eor.receiptno = res.receiptno 
+        eor.receiptdate = res.receiptdate
+        postPaymentSvc.postPayment(eor) 
+    }     
+
+
+    def getBilling(params){
+        def bill = [:]
+        if (!env.ORGID) env.ORGID = params.orgcode 
+
+        if (params.refno.startsWith(BARCODE_PREFIX)){
+            params.barcodeid = params.refno 
+            bill = billSvc.getBillByBarcode(params)
+            bill._forpayment = true
+            bill = billSvc.generateBill(bill)
+        }
+        else{
+            params.tdno = params.refno 
+            if (params.billtoyear) params.billtoyear = toInt(params.billtoyear)
+            if (params.billtoqtr) params.billtoqtr = toInt(params.billtoqtr)
+            bill = billSvc.generateBillByTdNo(params)
+        }
+        bill.rptledger = bill.remove('ledgers')[0]
         return bill 
     }
 
 
-    def generateBilling(params){
-    	// used by barcode generation
-    	env.ORGID = params.orgcode 
-
-        params.ledger = validateLedger(params)
-        def bill = initBill(params)
-        bill = billSvc.generateBill(bill)
-        bill.rptledger.remove('faases')
-
-        def b = [objid:bill.billid]
-        b.dtposted = bill.dtposted 
-        b.barcode = bill.barcode
-        b.billdate = dtSvc.serverDate
-        b.rptledgerid = bill.rptledgerid 
-        b.billtoyear = bill.billtoyear 
-        b.billtoqtr = bill.billtoqtr 
-        b.taxpayer = bill.taxpayer
-        b.validuntil = dtSvc.format('yyyy-MM-dd', bill.validuntil)
-        b.expirydate = dtSvc.format('yyyy-MM-dd', bill.validuntil)
-        b.lastyearpaid = bill.rptledger.lastyearpaid
-        b.lastqtrpaid = bill.rptledger.lastqtrpaid
-        buildPeriod(b)
-
-        def billedledger = billReportSvc.getBilledLedger(bill)
-
-        if (params.showdetails){
-        	b.items = billedledger.items 
+    def buildPeriod(rptledger){
+        def period = ''
+        if (rptledger.fromyear == rptledger.toyear && rptledger.fromqtr == 1 && rptledger.toqtr == 4){
+            period = '' + rptledger.fromyear 
+        } 
+        else if (rptledger.fromyear == rptledger.toyear && rptledger.fromqtr == rptledger.toqtr){
+            period = rptledger.fromqtr + 'Q, ' + rptledger.fromyear 
+        }
+        else if (rptledger.fromyear == rptledger.toyear){
+            period = rptledger.fromqtr + '' + rptledger.toqtr +  'Q, ' + rptledger.fromyear 
+        }
+        else if (rptledger.fromqtr == 1 && rptledger.toqtr == 4){
+            period = 'FULL ' + rptledger.fromyear + ' - ' + rptledger.toyear
+        }
+        else {
+            period = rptledger.fromqtr + 'Q, ' + rptledger.fromyear + ' - ' + rptledger.toqtr + 'Q, ' + rptledger.toyear
         }
 
-        b.amount = billedledger.total 
-        if (b.amount <= 0.0) {
-            def msg = 'A problem was encountered when generating the bill.\n'
-            msg += 'Please proceed to Land Tax Office for assistance.'
-            throw new Exception(msg)
-        }
-        return b
+        return period
     }
 
-
-    void buildPeriod(bill){
-        bill.fromyear = (bill.lastqtrpaid == 4 ? bill.lastyearpaid + 1 : bill.lastyearpaid)
-        bill.fromqtr = (bill.lastqtrpaid == 4 ? 1 : bill.lastqtrpaid + 1)
-        bill.toyear = bill.billtoyear 
-        bill.toqtr = bill.billtoqtr 
-
-        if (bill.fromyear == bill.toyear && bill.fromqtr == 1 && bill.toqtr == 4)
-            bill.billperiod = bill.toyear
-        else if (bill.fromyear == bill.toyear && bill.fromqtr == bill.toqtr)
-            bill.billperiod = bill.fromqtr + 'Q, ' + bill.toyear
-        else if (bill.fromyear == bill.toyear)
-            bill.billperiod = bill.fromqtr + '' + bill.toqtr + 'Q, ' + bill.toyear 
-        else if (bill.fromqtr == 1 && bill.toqtr == 4)
-            bill.billperiod = bill.fromyear + '-' + bill.toyear 
-        else if (bill.fromqtr == 1 && bill.toqtr != 4)
-            bill.billperiod = bill.fromyear + '-' + bill.toqtr + 'Q,' + bill.toyear 
-        else if (bill.fromqtr != 1 && bill.toqtr == 4)
-            bill.billperiod = bill.fromqtr + 'Q,' + bill.fromyear + '-' + bill.toyear
-        else 
-            bill.billperiod = bill.fromqtr + 'Q,' + bill.fromyear + '-' + bill.toqtr + 'Q,' + bill.toyear
+    int toInt(val){
+        if (val instanceof Integer) return val 
+        try{
+            return new BigDecimal(val+'').intValue()
+        }
+        catch(e){
+            return 0 
+        }
     }
-
-
-    def validateLedger(params){
-    	params.tdno = params.refno 
-
-        if (!params.tdno) 
-            throw new Exception('TD No. is required.')
-
-        def msg = null
-
-        def q = [_schemaname:'rptledger']
-        q.findBy = [tdno:params.tdno]
-        def ledger = query.findFirst(q)
-
-        if (!ledger) {
-            msg = 'TD No. ' + params.tdno + ' does not exist.\n'
-            msg += 'Verify that the you enter it correctly and submit again.' 
-            throw new Exception(msg)
-        }
-
-        if ('CANCELLED'.equalsIgnoreCase(ledger.state)){
-            msg = 'Ledger has already been cancelled.\n'
-            msg += 'Please proceed to the Land Tax Office for assistance.'
-            throw new Exception(msg)
-        }
-
-        if (util.isTrue(ledger.undercompromise)){
-            msg = 'Ledger is under compromised.\n'
-            msg += 'Please proceed to the Land Tax Office for assistance.'
-            throw new Exception(msg)   
-        }
-        return ledger 
-    }
-
-
-	def getBillingByBillNo( params ) {
-		params.billno = params.refno 
-        def bill = getValidatedBill(params)
-        bill.amount = em_online_billing.findBillTotal(bill)?.amount 
-        if (!bill.amount) throw new Exception('Bill No. ' + params.billno + ' does not exist or has already been paid.')
-        
-        bill.billid = bill.objid 
-        bill.billdate = dtSvc.serverDate
-        bill.validuntil = bill.expirydate - 1 
-        bill.billperiod = bill.billtoyear  
-        if (bill.billtoqtr != 4){
-        	bill.billperiod = bill.billtoqtr + 'Q - ' + bill.billtoyear  
-        }
-        return bill 
-    }
-
-    def getValidatedBill(params){
-        if (!params.billno) 
-            throw new Exception('Bill No. is required.')
-
-        def bill = em_rptbill.find([barcode:params.billno]).first()
-        if (!bill){
-            bill = em_rptbill.find([barcode:BARCODE_KEY +':'+params.billno]).first()
-        }
-        if (!bill)
-            throw new Exception('Bill No. ' + params.billno + ' does not exist or has already been paid.')
-
-        if (bill.expirydate < dtSvc.serverDate)
-            throw new Exception('Bill No. ' + params.billno + ' has already expired.')
-
-        //make sure it has items, other if none, the bill has already been paid
-        def data = em_rptbill_ledger.select('count:{count(*)}').find([billid:bill.objid]).first()
-        if (data.count == 0)
-            throw new Exception('Bill No. ' + params.billno + 'has already been paid.')
-
-        return bill 
-    }
-
-
 }

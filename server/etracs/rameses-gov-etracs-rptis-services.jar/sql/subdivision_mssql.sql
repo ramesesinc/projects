@@ -550,8 +550,27 @@ SELECT
 	f.objid AS prevfaasid,
 	r.objid AS prevrpuid, 
 	r.rputype,
-	rl.state AS ledgerstate
+	f.realpropertyid,
+	rl.state AS ledgerstate,
+	(
+		select landrpuid from bldgrpu where objid = r.objid
+		union 
+		select landrpuid from machrpu where objid = r.objid
+		union 
+		select landrpuid from miscrpu where objid = r.objid
+		union 
+		select landrpuid from planttreerpu where objid = r.objid
+	) as landrpuid 
 FROM faas f
 	INNER JOIN rpu r ON f.rpuid = r.objid 
 	LEFT JOIN rptledger rl ON f.objid = rl.faasid 
 WHERE f.objid = $P{faasid}
+
+
+[findLandRpuByRealProperty]
+select r.objid 
+from faas f
+inner join rpu r on f.rpuid = r.objid 
+where f.realpropertyid = $P{realpropertyid} 
+and r.rputype = 'land'
+and f.state <> 'cancelled'

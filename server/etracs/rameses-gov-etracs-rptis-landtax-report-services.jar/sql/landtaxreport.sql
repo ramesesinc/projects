@@ -169,12 +169,12 @@ select
 	sum(ri.sh - ri.shdisc + ri.shint) as shnet,
 	 0.0 as levynet
 from cashreceipt cr 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid 
-		inner join rptledger_payment_item ri on rp.objid = ri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid  
-  inner join propertyclassification pc on rl.classification_objid = pc.objid 
-  inner join remittance_cashreceipt rc on cr.objid = rc.objid
-    left join cashreceipt_void cv on cr.objid = cv.receiptid
+	inner join rptpayment rp on cr.objid = rp.receiptid 
+	inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+	inner join rptledger rl on rp.refid = rl.objid  
+	inner join propertyclassification pc on rl.classification_objid = pc.objid 
+	inner join remittance_cashreceipt rc on cr.objid = rc.objid
+	left join cashreceipt_void cv on cr.objid = cv.receiptid
 where cr.receiptdate between $p{fromdate} and $p{todate}
 	 and cv.objid is null  
 group by pc.name, pc.orderno, pc.special
@@ -198,12 +198,12 @@ select
 	    ri.basicidle - ri.basicidledisc + 
 	    ri.sh - ri.shdisc) as netgrandtotal
 from cashreceipt cr 
-    inner join rptledger_payment rp on cr.objid = rp.receiptid 
-		inner join rptledger_payment_item ri on rp.objid = ri.parentid
-    inner join rptledger rl on rp.rptledgerid = rl.objid  
-    inner join propertyclassification pc on rl.classification_objid = pc.objid 
-    inner join remittance_cashreceipt rc on cr.objid = rc.objid
-    left join cashreceipt_void cv on cr.objid = cv.receiptid
+	inner join rptpayment rp on cr.objid = rp.receiptid 
+	inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+	inner join rptledger rl on rp.refid = rl.objid  
+	inner join propertyclassification pc on rl.classification_objid = pc.objid 
+	inner join remittance_cashreceipt rc on cr.objid = rc.objid
+	left join cashreceipt_void cv on cr.objid = cv.receiptid
 where cr.receiptdate between $P{fromdate} and $P{todate}
 	 and ri.revperiod = 'advance'
 	 and cv.objid is null   
@@ -228,8 +228,8 @@ from (
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munisefshare,
 		0.0 as brgysefshare 
 	FROM cashreceipt cr 
-		INNER JOIN rptledger_payment rp on cr.objid = rp.receiptid 
-		INNER JOIN rptledger_payment_share ri on rp.objid = ri.parentid
+		INNER JOIN rptpayment rp on cr.objid = rp.receiptid 
+		INNER JOIN rptpayment_share ri on rp.objid = ri.parentid
 	    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
 	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 
@@ -255,8 +255,8 @@ from (
 		case when ri.revtype in ('sef', 'sefint') and ri.sharetype in ('municipality') then ri.amount else 0.0 end as munisefshare,
 		0.0 as brgysefshare 
 	FROM cashreceipt cr 
-		INNER JOIN rptledger_payment rp on cr.objid = rp.receiptid 
-		INNER JOIN rptledger_payment_share ri on rp.objid = ri.parentid
+		INNER JOIN rptpayment rp on cr.objid = rp.receiptid 
+		INNER JOIN rptpayment_share ri on rp.objid = ri.parentid
 	    INNER JOIN remittance_cashreceipt rc ON cr.objid = rc.objid
 	    LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 	where cr.receiptdate BETWEEN $P{fromdate} AND $P{todate} 

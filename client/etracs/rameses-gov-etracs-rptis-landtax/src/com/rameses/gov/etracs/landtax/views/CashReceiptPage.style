@@ -1,0 +1,37 @@
+"ledger|barcode" [mode == 'create']{
+    visible:true;
+    requestFocus:true;
+}
+
+"ledger|barcode" [mode != 'create']{
+    visible:false;
+}
+
+
+"fullPayment|partialPayment" [selectedItem != null] {
+    enabled:true;
+}
+
+"fullPayment" [selectedItem?.partialled == true || selectedItem?.partialled == 1]{
+    enabled:true;
+}
+
+"fullPayment" [selectedItem?.partialled == false || selectedItem?.partialled == 0]{
+    enabled:false;
+}
+
+"partialPayment" [selectedItem?.partialled == false || selectedItem?.partialled == 0]{
+    enabled:true;
+}
+
+
+"partialPayment" [selectedItem?.partialled == true || selectedItem?.partialled == 1]{
+    enabled:false;
+}
+
+
+
+"fullPayment|partialPayment" [selectedItem == null] {
+    enabled:false;
+}
+

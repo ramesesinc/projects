@@ -159,6 +159,7 @@ public class BldgAssessmentRuleService
 		actions.addCommand( "add-assessment-info", new AddAssessmentInfo( request:request, NS:numSvc));
 		actions.addCommand( "calc-assess-level", new CalcAssessLevel( request:request, bldgSettingSvc:bldgSettingSvc));
 		actions.addCommand( "calc-assess-value", new CalcAssessValue( request:request));
+		actions.addCommand( "recalc-rpu-totalmv", new CalcTotalRPUMarketValue( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpu-totalav", new CalcTotalRPUAssessValue( request:request, NS:numSvc));
 		actions.addCommand( "recalc-rpuassessment", new CalcRPUAssessValue( request:request, NS:numSvc));
 		return actions;

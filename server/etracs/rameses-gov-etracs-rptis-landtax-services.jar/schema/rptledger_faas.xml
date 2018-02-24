@@ -18,15 +18,15 @@
         <field name="toqtr" required="true" type="integer" />
         <field name="assessedvalue" required="true" type="decimal" />
         <field name="systemcreated" required="true" type="boolean" />
-        <complex name="txntype" ref="faas_txntype" jointype="many-to-one"
+        <complex name="txntype" ref="faas_txntype" jointype="many-to-one" required="false" 
             includefields="name">
             <key field="txntype_objid" target="objid" />
         </complex>
-        <complex name="classification" ref="propertyclassification" jointype="many-to-one"
+        <complex name="classification" ref="propertyclassification" jointype="many-to-one"  required="false" 
             includefields="code,name">
             <key field="classification_objid" target="objid" />
         </complex>
-        <complex name="actualuse" ref="propertyclassification" jointype="many-to-one"
+        <complex name="actualuse" ref="propertyclassification" jointype="many-to-one"  required="false" 
             includefields="code,name">
             <key field="actualuse_objid" target="objid" />
         </complex>

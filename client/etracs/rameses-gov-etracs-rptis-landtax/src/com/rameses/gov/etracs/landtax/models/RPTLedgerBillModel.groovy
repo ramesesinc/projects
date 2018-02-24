@@ -32,41 +32,31 @@ class RPTLedgerBillModel
     ]
         
     def entity;
-    def billtoyear;
-    def billtoqtr;
-    def advancebill = false;
-    def billdate;
+    def bill;
     def qtrs = [1,2,3,4];
-        
+    
+    def getEntityContext(){
+        if (entity){
+            return entity;
+        }
+        return caller.selectedItem;
+    }
+    
     def init(){
-        billtoyear = dtSvc.getServerYear();
-        billtoqtr = 4;
+        bill = billSvc.initBill();
+        bill.taxpayer = entityContext.taxpayer;
+        bill.ledgers << [objid: entityContext.objid, bill:true];
         return 'init';
     }
         
-    def initBill(){
-        if (!entity)
-            entity = caller.selectedItem;
-    
-        def bill = billSvc.initBill(entity.objid);
-        bill.billtoyear = billtoyear;
-        bill.billtoqtr = billtoqtr;
-        bill.taxpayer = entity.taxpayer;    
-        bill.advancebill = advancebill;
-        bill.billdate = billdate;
-        return bill;
-    }
-        
     def preview(){
-        def bill = initBill()
-        def inv = InvokerUtil.lookupOpener('rptbill:previewSingleBill', [bill:bill, caller:this, showBack:false])
+        def inv = InvokerUtil.lookupOpener('bill:rptledger:preview', [bill:bill, caller:this])
         inv.target = 'self';
         return inv;
     }
         
     def print(){
-        def bill = initBill()
-        return InvokerUtil.lookupOpener('rptbill:printSingleBill', [bill:bill, caller:this, showBack:false])
+        return InvokerUtil.lookupOpener('bill:rptledger:print', [bill:bill, caller:this])
     }        
 
 }    

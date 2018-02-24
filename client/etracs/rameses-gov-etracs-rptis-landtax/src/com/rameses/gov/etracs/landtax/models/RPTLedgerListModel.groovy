@@ -10,7 +10,7 @@ class RPTLedgerListModel extends CrudListModel
         return false;
     }
     
-    public def fetchNodeList(def m) {
+    public def getStates() {
         return [
             [id:null, title:'ALL'],
             [id:'PENDING', title:'PENDING'],

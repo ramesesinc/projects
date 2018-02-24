@@ -11,128 +11,53 @@ where rl.objid = $P{objid}
 
 
 [getLedgerCredits]
-SELECT t.*
-FROM (
-    SELECT 
-        rc.objid AS rptreceiptid,
-        rc.refno,
-        rc.refdate ,
-        rc.collector as collector_name, 
-        rc.paidby_name,
-        rc.fromyear,
-        rc.fromqtr,
-        rc.toyear, 
-        rc.toqtr,
-        rc.basic,
-        rc.basicint,
-        rc.basicdisc,
-        rc.basicidle,
-        rc.sef,
-        rc.sefint,
-        rc.sefdisc,
-        rc.firecode,
-        0 as sh, 
-        rc.amount,
-        rc.type AS mode,
-        0 as partialled,
-        rl.tdno, 
-        rl.totalav AS assessedvalue
-    FROM rptledger rl 
-            inner join rptledger_credit rc on rl.objid = rc.rptledgerid
-    WHERE rc.rptledgerid = $P{objid}
-        and rc.type <> 'COMPROMISE'
-
-    UNION ALL
+select 
+    rp.receiptno as refno,
+    rp.receiptdate as refdate,
+    case when cr.collector_name is null then rp.postedby else cr.collector_name end as collector_name,
+    case when cr.paidby is null then rp.paidby_name else cr.paidby end as paidby_name,
+    rp.fromyear,
+    rp.fromqtr,
+    rp.toyear,
+    rp.toqtr,
+    rp.type as mode,
+    rpi.partialled,
+    rlf.tdno,
+    rlf.assessedvalue,
+    sum(rpi.basic) as basic,
+    sum(rpi.basicint) as basicint,
+    sum(rpi.basicdisc) as basicdisc,
+    sum(rpi.basicidle - rpi.basicidledisc + rpi.basicidleint) as basicidle,
+    sum(rpi.sef) as sef,
+    sum(rpi.sefint) as sefint,
+    sum(rpi.sefdisc) as sefdisc,
+    sum(rpi.firecode) as firecode,
+    sum(rpi.sh - rpi.shdisc + rpi.shint) as sh,
+    sum(rpi.basic+ rpi.basicint - rpi.basicdisc + 
+        rpi.basicidle - rpi.basicidledisc + rpi.basicidleint +
+        rpi.sef + rpi.sefint - rpi.sefdisc + 
+        rpi.sh + rpi.shint - rpi.shdisc + rpi.firecode) as amount
+from rptpayment rp 
+    inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
+    inner join rptledger rl on rp.refid = rl.objid 
+    left join rptledgerfaas rlf on rpi.rptledgerfaasid = rlf.objid 
+    left join cashreceipt cr on rp.receiptid = cr.objid 
+    left join cashreceipt_void cv on cr.objid = cv.receiptid 
+where rp.refid = $P{objid}
+    and cv.objid is null    
+group by 
+    rp.receiptno,
+    rp.receiptdate,
+    cr.collector_name,
+    cr.paidby,
+    rp.fromyear,
+    rp.fromqtr,
+    rp.toyear,
+    rp.toqtr,
+    rp.type,
+    rpi.partialled,
+    rlf.tdno,
+    rlf.assessedvalue,
+    rp.postedby,
+    rp.paidby_name
     
-    SELECT 
-        cr.objid AS rptreceiptid, 
-        cr.receiptno AS refno,
-        cr.receiptdate AS refdate,
-        cr.collector_name,
-        cr.paidby AS paidby_name,
-        cri.year AS fromyear,
-        rp.fromqtr,
-        cri.year AS toyear,
-        rp.toqtr,
-        cri.basic AS basic,
-        cri.basicint AS basicint,
-        cri.basicdisc AS basicdisc,
-        cri.basicidle- cri.basicidledisc + cri.basicidleint AS basicidle,
-        cri.sef AS sef,
-        cri.sefint AS sefint,
-        cri.sefdisc AS sefdisc,
-        cri.firecode AS firecode,
-        cri.sh - cri.shdisc + cri.shint AS sh,
-        (cri.basic+ cri.basicint - cri.basicdisc + 
-          cri.basicidle - cri.basicidledisc + cri.basicidleint +
-          cri.sef + cri.sefint - cri.sefdisc + 
-          cri.sh + cri.shint - cri.shdisc + cri.firecode) AS amount,
-        crr.txntype AS mode,
-        cri.partialled,
-        case when rlf.tdno is null then (select tdno from rptledgerfaas where rptledgerid = rl.objid and cri.year >= fromyear and (cri.year <= toyear or toyear = 0)) else rlf.tdno end as tdno, 
-        case when rlf.tdno is null then (select assessedvalue from rptledgerfaas where rptledgerid = rl.objid and cri.year >= fromyear and (cri.year <= toyear or toyear = 0)) else rlf.assessedvalue end as assessedvalue
-    FROM cashreceipt_rpt crr
-        INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
-        inner join rptledger_payment rp on cr.objid = rp.receiptid 
-        inner join rptledger_payment_item cri on rp.objid = cri.parentid
-        LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-        LEFT JOIN rptledger rl ON rp.rptledgerid = rl.objid 
-        LEFT JOIN rptledgerfaas rlf on cri.rptledgerfaasid = rlf.objid 
-    WHERE rp.rptledgerid = $P{objid}
-        AND cv.objid IS NULL    
-    AND cri.partialled = 1 
-
-    UNION ALL 
-
-    SELECT 
-        cr.objid AS rptreceiptid, 
-        cr.receiptno AS refno,
-        cr.receiptdate AS refdate,
-        cr.collector_name,
-        cr.paidby AS paidby_name,
-        min(cri.year) AS fromyear,
-        min(rp.fromqtr) AS fromqtr,
-        max(cri.year) AS toyear,
-        max(rp.toqtr) as toqtr,
-        sum(cri.basic) AS basic,
-        sum(cri.basicint) AS basicint,
-        sum(cri.basicdisc) AS basicdisc,
-        sum(cri.basicidle- cri.basicidledisc + cri.basicidleint) AS basicidle,
-        sum(cri.sef) AS sef,
-        sum(cri.sefint) AS sefint,
-        sum(cri.sefdisc) AS sefdisc,
-        sum(cri.firecode) AS firecode,
-        sum(cri.sh- cri.shdisc + cri.shint) AS sh,
-        sum(cri.basic+ cri.basicint - cri.basicdisc + 
-          cri.basicidle - cri.basicidledisc + cri.basicidleint +
-          cri.sef + cri.sefint - cri.sefdisc + 
-          cri.sh + cri.shint - cri.shdisc + cri.firecode) AS amount,
-        crr.txntype AS mode,
-        cri.partialled,
-        case when rlf.tdno is null then (select tdno from rptledgerfaas where rptledgerid = rl.objid and cri.year >= fromyear and (cri.year <= toyear or toyear = 0)) else rlf.tdno end as tdno, 
-        case when rlf.tdno is null then (select assessedvalue from rptledgerfaas where rptledgerid = rl.objid and cri.year >= fromyear and (cri.year <= toyear or toyear = 0)) else rlf.assessedvalue end as assessedvalue
-    FROM cashreceipt_rpt crr
-        INNER JOIN cashreceipt cr ON crr.objid = cr.objid 
-        inner join rptledger_payment rp on cr.objid = rp.receiptid 
-        inner join rptledger_payment_item cri on rp.objid = cri.parentid
-        LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid 
-        left JOIN rptledger rl ON rp.rptledgerid = rl.objid 
-        left JOIN rptledgerfaas rlf on cri.rptledgerfaasid = rlf.objid 
-    WHERE rp.rptledgerid = $P{objid}
-        AND cv.objid IS NULL
-        AND cri.partialled = 0  
-    group by 
-        cr.objid,
-        cr.receiptno,
-        cr.receiptdate,
-        cr.paidby,
-        crr.txntype,
-        cri.year, 
-        cri.partialled,
-        rl.objid, 
-        rlf.tdno, 
-        rlf.assessedvalue,
-        cr.collector_name
-) t
-ORDER BY t.refdate desc, t.fromyear desc, t.fromqtr desc 
-

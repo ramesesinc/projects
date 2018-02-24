@@ -13,6 +13,9 @@ class BldgRPUService
 	@Service('BldgRYSettingLookupService')
 	def bldgSettingSvc 
 
+	@DataContext('bldgrpu')
+	def em_bldgrpu
+
 	@DataContext('structure')
 	def em_structure
 
@@ -70,7 +73,7 @@ class BldgRPUService
 	@ProxyMethod
 	public def createBldgRpu( rpu ) {
 		checkFloorInfo(rpu)
-		em.create(rpu)
+		em_bldgrpu.save(rpu)
 		saveStructures(rpu)
 		saveStructuralTypes(rpu.structuraltypes)
 		saveBldgLands(rpu)
@@ -81,7 +84,7 @@ class BldgRPUService
 	@ProxyMethod
 	public def updateBldgRpu(rpu) { 
 		checkFloorInfo(rpu)
-		em.updateImmediate(rpu)
+		em_bldgrpu.save(rpu)
 		saveStructures(rpu)
 		saveStructuralTypes(rpu.structuraltypes)
 		saveBldgLands(rpu)

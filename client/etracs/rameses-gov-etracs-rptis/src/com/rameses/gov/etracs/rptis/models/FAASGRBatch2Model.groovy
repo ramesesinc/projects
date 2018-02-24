@@ -48,6 +48,7 @@ public class FAASGRBatch2Model
             autoapprove : false,
             interval    : 50,
             continueonerror: true,
+            checkduplicate : false,
         ]
         lgus = lguSvc.getLgus();
     }         

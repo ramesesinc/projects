@@ -12,9 +12,9 @@ from (
         sh + shint - shdisc ) as amount 
     from cashreceipt c
         inner join cashreceipt_rpt cr on c.objid = cr.objid 
-        inner join rptledger_payment rp on cr.objid = rp.receiptid 
-        inner join rptledger_payment_item cro on rp.objid = cro.parentid
-        inner join rptledger rl on rp.rptledgerid = rl.objid 
+        inner join rptpayment rp on cr.objid = rp.receiptid 
+        inner join vw_rptpayment_item cro on rp.objid = cro.parentid
+        inner join rptledger rl on rp.refid = rl.objid 
         inner join remittance_cashreceipt rc on c.objid = rc.objid
         inner join liquidation_remittance lr on rc.remittanceid = lr.objid
         inner join liquidation l on lr.liquidationid = l.objid 
@@ -45,9 +45,9 @@ from (
         basicidle + basicidleint - basicidledisc) as amount 
     from cashreceipt c
         inner join cashreceipt_rpt cr on c.objid = cr.objid
-        inner join rptledger_payment rp on cr.objid = rp.receiptid 
-        inner join rptledger_payment_item cro on rp.objid = cro.parentid
-        inner join rptledger rl on rp.rptledgerid = rl.objid 
+        inner join rptpayment rp on cr.objid = rp.receiptid 
+        inner join vw_rptpayment_item cro on rp.objid = cro.parentid
+        inner join rptledger rl on rp.refid = rl.objid 
         inner join remittance_cashreceipt rc on c.objid = rc.objid
         inner join liquidation_remittance lr on rc.remittanceid = lr.objid
         inner join liquidation l on lr.liquidationid = l.objid 

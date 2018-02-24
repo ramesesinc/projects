@@ -39,7 +39,8 @@ public class BldgTypeInfoPage extends javax.swing.JPanel {
         jPanel8 = new javax.swing.JPanel();
         formPanel3 = new com.rameses.rcp.util.FormPanel();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
-        xDataTable5 = new com.rameses.rcp.control.XDataTable();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xSubFormPanel2 = new com.rameses.rcp.control.XSubFormPanel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -87,7 +88,7 @@ public class BldgTypeInfoPage extends javax.swing.JPanel {
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 304, Short.MAX_VALUE)
+            .add(0, 320, Short.MAX_VALUE)
         );
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
@@ -107,23 +108,41 @@ public class BldgTypeInfoPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane2.addTab("Kind of Buildings and Unit Value", jPanel4);
 
+        formPanel3.setCaptionWidth(130);
+
         xNumberField2.setCaption("Residual Rate (%)");
-        xNumberField2.setCaptionWidth(120);
-        xNumberField2.setDepends(new String[] {"selectedBldgType"});
         xNumberField2.setName("selectedBldgType.residualrate"); // NOI18N
-        xNumberField2.setPreferredSize(new java.awt.Dimension(50, 19));
+        xNumberField2.setDepends(new String[] {"selectedBldgType"});
+        xNumberField2.setPreferredSize(new java.awt.Dimension(100, 19));
         xNumberField2.setRequired(true);
         formPanel3.add(xNumberField2);
 
-        xDataTable5.setDepends(new String[] {"selectedBldgType"});
-        xDataTable5.setHandler("depreciationListHandler");
-        xDataTable5.setName("selectedDepreciation"); // NOI18N
+        xCheckBox1.setDepends(new String[] {"selectedBldgType"});
+        xCheckBox1.setName("selectedBldgType.usecdu"); // NOI18N
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText(" Use CDU Depreciation Rating?");
+        formPanel3.add(xCheckBox1);
+
+        xSubFormPanel2.setDepends(new String[] {"selectedBldgType", "selectedBldgType.usecdu"});
+        xSubFormPanel2.setDynamic(true);
+        xSubFormPanel2.setHandler("depreciationHandler");
+
+        org.jdesktop.layout.GroupLayout xSubFormPanel2Layout = new org.jdesktop.layout.GroupLayout(xSubFormPanel2);
+        xSubFormPanel2.setLayout(xSubFormPanel2Layout);
+        xSubFormPanel2Layout.setHorizontalGroup(
+            xSubFormPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 386, Short.MAX_VALUE)
+        );
+        xSubFormPanel2Layout.setVerticalGroup(
+            xSubFormPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 288, Short.MAX_VALUE)
+        );
 
         org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -133,16 +152,16 @@ public class BldgTypeInfoPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
-                    .add(xDataTable5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 384, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(xSubFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 62, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                .add(xSubFormPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -180,11 +199,12 @@ public class BldgTypeInfoPage extends javax.swing.JPanel {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable3;
-    private com.rameses.rcp.control.XDataTable xDataTable5;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
+    private com.rameses.rcp.control.XSubFormPanel xSubFormPanel2;
     // End of variables declaration//GEN-END:variables
     
 }

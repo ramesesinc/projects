@@ -1,0 +1,11 @@
+/* v2.5.04.032-03020 */
+
+- TREAURY
+
+- BPLS 
+		
+- ASSESSOR	
+	- Building assessment CDU Rating depreciation support
+
+- LANDTAX
+	

@@ -7,9 +7,6 @@ import com.rameses.osiris2.client.*
 
 public class RPTLedgerManualModel extends RPTLedgerModel
 {
-    @Service("RPTLedgerManualService")
-    def svc;
-    
     @Service('LGUService')
     def lguSvc;
     

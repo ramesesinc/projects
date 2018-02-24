@@ -22,6 +22,7 @@ public class FixLedgerModel
     String title = 'Fix Ledger Information'
     
     def info = [:]
+    def quarters = [1,2,3,4];
     
     @PropertyChangeListener
     def listener = [
@@ -39,29 +40,20 @@ public class FixLedgerModel
         info.prevtdno = entity.prevtdno;
         info.fullpin = entity.fullpin;
         info.taxable = entity.taxable;
-        info.putAll(svc.getPartialPayment(info))
+        info.basicpaid = 0;
+        info.sefpaid = 0;
     }
     
     
     def fixLedger(){
         if (MsgBox.confirm('Fix this Ledger?')){
-            computePartialAmount()
             svc.fixLedger(info)
             caller.reloadEntity();
             caller.refreshSections();
             return '_close'
         }
     }
-    
-    void computePartialAmount(){
-        info.partial = info.basicpaid + info.basicintpaid + info.basicdisctaken +
-                        info.sefpaid + info.sefintpaid + info.sefdisctaken;
-    }
-    
-    def getQuarters(){
-        return [1,2,3,4]
-    }
-    
+        
     def getPartialperiod(){
         def year = info.lastqtrpaid == 4 ? info.lastyearpaid + 1 : info.lastyearpaid
         def qtr = info.lastqtrpaid == 4 ? 1 : info.lastqtrpaid + 1

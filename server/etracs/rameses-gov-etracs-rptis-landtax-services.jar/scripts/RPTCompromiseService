@@ -9,6 +9,12 @@ class RPTCompromiseService {
 
 	@ActiveDB('rptledger')
 	def ledgerEm 
+
+	@DataContext('rptledger_item')
+	def em_rptledger_item
+
+	@DataContext('rptledger_item_qtrly')
+	def em_rptledger_item_qtrly
 	
 	@Env
 	def env 
@@ -285,7 +291,7 @@ class RPTCompromiseService {
 				it.shdisctaken = 0.0
 				it.partialled = 1
 				it.fullypaid = 0
-				ledgerEm.update(it, 'ledgeritemqtrly')
+				em_rptledger_item_qtrly.update(it)
 			}
 			else if (it.qtr > firstunpaiditem.qtr){
 				it.basicpaid = 0.0
@@ -303,7 +309,7 @@ class RPTCompromiseService {
 				it.shdisctaken = 0.0
 				it.partialled = 0
 				it.fullypaid = 0
-				ledgerEm.update(it, 'ledgeritemqtrly')
+				em_rptledger_item_qtrly.update(it)
 			}
 		}
 
@@ -315,7 +321,7 @@ class RPTCompromiseService {
 			ledgeritem.firecodepaid = partialleditems.firecodepaid.sum()
 			ledgeritem.shpaid = partialleditems.shpaid.sum()
 			ledgeritem.fullypaid = 0
-			ledgerEm.update(ledgeritem, 'ledgeritem')
+			em_rptledger_item.update(ledgeritem)
 		}
 	}
 

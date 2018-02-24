@@ -64,6 +64,10 @@ class PlantTreeRPUService
     @ProxyMethod
     public def openPlantTreeRpu( objid ) {
         def rpu = em.read([objid:objid])
+        if (!rpu){
+            resolveLandRpu(objid)
+            rpu = em.read([objid:objid])
+        }
         if (!rpu) {
             throw new Exception('Plant/Tree RPU does not exists or has been deleted.')
         }
@@ -138,5 +142,27 @@ class PlantTreeRPUService
     	rpu._planttrees?.each{
     		em.delete(it,SCHEMA_DETAIL)
     	}
+    }
+
+    void resolveLandRpu(objid){
+        def faas = em.findFaasByRpu([objid:objid])
+        if (!faas) return
+
+        def landfaas = em.findLandFaasByRealProperty(faas)
+        if (!landfaas) return
+
+        def rpu = em.findRpu(faas)
+        if (!rpu){
+            rpu = [:]
+            rpu.objid = objid 
+            rpu.productive = 0
+            rpu.nonproductive = 0 
+            rpu.landrpuid = landfaas.rpuid 
+            em.create(rpu, 'planttreerpu')
+        }
+        else {
+            rpu.landrpuid = landfaas.rpuid 
+            em.update(rpu, 'planttreerpu')   
+        }
     }
 }

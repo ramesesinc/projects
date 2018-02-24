@@ -10,6 +10,8 @@ public class CalcAssessLevel implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def assessment = params.assessment
+		def mv = (params.marketvalue != null ? params.marketvalue.getDecimalValue() : assessment.marketvalue) 
+		
 		
 		def lvl = bldgSettingSvc.lookupBldgAssessLevelById(assessment.actualuseid)
 		
@@ -17,7 +19,7 @@ public class CalcAssessLevel implements RuleActionHandler {
 			assessment.assesslevel = lvl.rate 
 		}
 		else {
-			def range = bldgSettingSvc.lookupAssessLevelFromRange(lvl.objid, assessment.marketvalue)
+			def range = bldgSettingSvc.lookupAssessLevelFromRange(lvl.objid, mv)
 			assessment.assesslevel = 0.0 
 	        if( range ) {
 	            assessment.assesslevel = range.rate 

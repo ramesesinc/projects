@@ -14,7 +14,7 @@ select
     sum(rrd.sefdisc) as sefdisc,
     sum(rrd.sefint) as sefint,
     sum(rrd.basic - rrd.basicdisc + rrd.basicint + rrd.sef - rrd.sefdisc + rrd.sefint) as total 
-from report_rptdelinquency rrd 
+from vw_landtax_report_rptdelinquency rrd 
     inner join rptledger rl on rrd.rptledgerid = rl.objid 
     inner join barangay b on rl.barangayid = b.objid 
 where rl.classification_objid like $P{classid}

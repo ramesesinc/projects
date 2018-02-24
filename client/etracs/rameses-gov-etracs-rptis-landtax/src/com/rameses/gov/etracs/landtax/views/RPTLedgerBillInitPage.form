@@ -49,7 +49,7 @@
         <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Year to Bill"/>
-            <Property name="name" type="java.lang.String" value="billtoyear" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="bill.billtoyear" noResource="true"/>
             <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
@@ -58,7 +58,7 @@
             <Property name="allowNull" type="boolean" value="false"/>
             <Property name="caption" type="java.lang.String" value="Qtr to Bill"/>
             <Property name="items" type="java.lang.String" value="qtrs"/>
-            <Property name="name" type="java.lang.String" value="billtoqtr" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="bill.billtoqtr" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[100, 20]"/>
             </Property>
@@ -100,7 +100,7 @@
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 0, 0, 0]"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="advancebill" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="bill.advancebill" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Is Advance Billing?"/>
           </Properties>
         </Component>
@@ -116,7 +116,7 @@
                 <StringItem index="0" value="advancebill"/>
               </StringArray>
             </Property>
-            <Property name="name" type="java.lang.String" value="billdate" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="bill.billdate" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[100, 19]"/>
             </Property>

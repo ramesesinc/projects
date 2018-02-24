@@ -19,6 +19,8 @@ class UnpostedLedgerModel
     def faas;
     String title = 'Create Unposted Ledger';
     
+    def entity;
+    
     def getLookupFaas(){
         return Inv.lookupOpener('faas:lookup', [
             onselect : {
@@ -35,11 +37,16 @@ class UnpostedLedgerModel
     
     def create(){
         if (MsgBox.confirm("Create ledger?")){
-            def ledger = svc.createLedger(faas)
+            entity = svc.createLedger(faas)
             faas = null
             binding.refresh('.*');
-            return Inv.lookupOpener('rptledger:open', [entity:ledger]);
+            return Inv.lookupOpener('rptledger:open', [entity:entity]);
         }
+        return null;
+    }
+    
+    public def getSelectedItem(){
+        return entity;
     }
     
 }

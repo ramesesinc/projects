@@ -15,20 +15,23 @@ class RPTLedgerService
     @Service('DateService')
     def dtSvc
 
-    @Service('NumberService')
-    def numSvc 
+    @Service('Var')
+    def var
+
+    @Service('LGUService')
+    def lguSvc 
 
     @Service('RPTUtil')
     def util
 
-    @Service('RPTBillingService')
-    def billingSvc 
+    @Service('NumberService')
+    def numSvc 
 
     @Service('FAASService')
     def faasSvc
 
-    @ActiveDB('rptledger') 
-    def em
+    @Service('RPTLedgerRuleService')
+    def ruleSvc 
 
     @DataContext('rptledger')
     def em_rptledger
@@ -39,23 +42,8 @@ class RPTLedgerService
     @DataContext('rptledger_item')
     def em_rptledger_item
 
-    @DataContext('rptledger_item_qtrly')
-    def em_rptledger_item_qtrly
-
-    @DataContext('rptledger_payment')
-    def em_rptledger_payment
-
-    @DataContext('rptledger_payment_item')
-    def em_rptledger_payment_item
-
-    @DataContext('rptledger_payment_share')
-    def em_rptledger_payment_share
-
     @DataContext('rptledger_subledger')
     def em_rptledger_subledger
-
-    @DataContext('rptledger_credit')
-    def em_rptledger_credit
 
     @DataContext('faas_restriction')
     def em_faas_restriction
@@ -69,37 +57,11 @@ class RPTLedgerService
     @DataContext('rptbill_ledger')
     def em_rptbill_ledger
 
-       
+    @DataContext('rptpayment')
+    def em_rptpayment
 
-    @ProxyMethod
-    public def createLedger( ledger ) {
-        def exist = em_rptledger.find([objid:ledger.objid]).first()
-        if(exist) return em_rptledger.read(ledger) 
-        ledger.advancebill = false;
-        em_rptledger.create(ledger)
-        em_faas_restriction.find([parent_objid:ledger.faasid]).update([ledger_objid:ledger.objid])
-        return ledger 
-    }
-
-    @ProxyMethod
-    public def updateLedger( ledger ) {
-        ledger.advancebill = false;
-        ledger.nextbilldate = null;
-        ledger.taxable = util.toBoolean(ledger.taxable, true)
-        em_rptledger.update(ledger)
-        return ledger 
-    }    
-
-
-    @ProxyMethod
-    public void deleteLedger( ledger ) {
-        em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_item_qtrly.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_item.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_payment.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_credit.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_faas.find([rptledgerid:ledger.objid]).delete() 
-    }
+    @DataContext('rptpayment_item')
+    def em_rptpayment_item
 
 
     @ProxyMethod
@@ -108,58 +70,55 @@ class RPTLedgerService
             throw new Exception('PIN is invalid. It must start with ' + ledger.barangay.pin + '.')
         
         ledger.state = 'PENDING'
-        ledger.classification = ledger.classification
         ledger.classcode = ledger.classification.code 
         ledger.barangayid = ledger.barangay.objid 
+        ledger.lguid = getLguId(ledger.barangayid)
         ledger.owner = ledger.taxpayer
         ledger.taxpayer.address = ledger.taxpayer.address.text 
         ledger.faases = []
-        ledger.faases << [
-            objid       : 'RF' + new java.rmi.server.UID(),
-            state       : 'APPROVED',
-            rptledgerid : ledger.objid, 
-            faasid      : null,
-            tdno        : ledger.tdno, 
-            txntype     : ledger.txntype,
-            classification  : ledger.classification,
-            actualuse       : ledger.classification,
-            taxable         : ledger.taxable,
-            idleland         : ledger.idleland,
-            reclassed       : false,
-            backtax         : ledger.backtax, 
-            fromyear        : ledger.effectivityyear, 
-            fromqtr         : ledger.effectivityqtr, 
-            toyear          : 0,
-            toqtr           : 0,
-            assessedvalue   : ledger.totalav,
-            systemcreated   : true,
-        ]
+        ledger.faases << createLedgerFaas(ledger, createFaasFromLedger(ledger))
     }    
 
     @ProxyMethod
-    public def postNewLedger(faas){
-        def ledger = em_rptledger.find([tdno:faas.tdno]).first()
-        if (!ledger || (ledger.faasid && ledger.faasid != faas.objid )){
-            ledger = createLedgerInfo(faas)
-            createLedger(ledger)
-            if (! util.isTrue(faas.datacapture)){
-                approveLedger(ledger)
-            }
-        }
-        else{
-            em_rptledger.find([objid:ledger.objid]).update([faasid:faas.objid])
-        }
+    public def create( ledger ) {
+        def exist = em_rptledger.find([objid:ledger.objid]).first()
+        if(exist) return em_rptledger.read(ledger) 
+        em_rptledger.create(ledger)
+        em_faas_restriction.find([parent_objid:ledger.faasid]).update([ledger_objid:ledger.objid])
         return ledger 
     }
 
+    @ProxyMethod
+    public def update( ledger ) {
+        ledger.nextbilldate = null;
+        em_rptledger.update(ledger)
+        return ledger 
+    }    
 
     @ProxyMethod
-    public def approveLedger( entity ) {
+    public def open( ledger ) {
+        ledger = em_rptledger.read(ledger)
+        if (!ledger) throw new Exception('Ledger does not exists.')
+        ledger.subledger = em_rptledger_subledger.find([objid:ledger.objid]).first()
+        ledger.subacctno = ledger.subledger?.subacctno
+        ledger.parent = ledger.subledger?.parent
+        return ledger 
+    }        
+
+    @ProxyMethod
+    public void delete( ledger ) {
+        em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete() 
+        em_rptledger_item.find([parentid:ledger.objid]).delete() 
+    }
+
+    @ProxyMethod
+    public def approve(entity) {
         def old = em_rptledger.find([objid:entity.objid]).first()
         if (!old) throw new Exception('Ledger does not exist or has already been deleted.')
         if (old.state == 'APPROVED') throw new Exception('Ledger has already been approved.')
         if (old.state == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
 
+        if (!entity.faases) throw new Exception('Ledger History must be specified.')
         def firstfaas = entity.faases.first()
         def lastfaas = entity.faases.last()
 
@@ -168,7 +127,6 @@ class RPTLedgerService
         info.lastyearpaid     = (lastfaas.fromqtr == 1 ? lastfaas.fromyear - 1 : lastfaas.fromyear)
         info.lastqtrpaid      = (lastfaas.fromqtr == 1 ?  4 : lastfaas.fromqtr - 1)
         info.nextbilldate     = null
-        info.advancebill      = false
         entity.putAll(info)
 
         em_rptledger.find([objid:entity.objid]).update(info)
@@ -177,157 +135,34 @@ class RPTLedgerService
         return entity 
     }
 
-
     @ProxyMethod
-    public def getLedgerItems( entity ) {
-        return em_rptledger_item.find([rptledgerid:entity.objid]).orderBy('year desc').list()
-    }    
-
-    @ProxyMethod
-    public def getPayments(entity) {
-        def list = em_rptledger_payment.find([rptledgerid:entity.objid]).orderBy('receiptdate desc,fromyear desc,fromqtr desc').list()
-        list.each{
-            it.partialled = em_rptledger_payment_item.select('objid')
-                                    .find([parentid:it.objid, partialled:1])
-                                    .first() != null
-        }
-        return list 
-    }
-
-    @ProxyMethod
-    public def getPaymentDetails( payment ) {
-        def data = [:]    
-        data.items = em_rptledger_payment_item.find([parentid:payment.objid]).orderBy('year desc,qtr desc').list()
-        data.shares = em_rptledger_payment_share.find([parentid:payment.objid]).orderBy('sharetype,revperiod,revtype').list()
-        return data 
-    }
-
-
-    @ProxyMethod
-    public void removeRestriction( restriction ) {
-        em_faas_restriction.delete(restriction);
-    }
-
-    @ProxyMethod
-    public def getRestrictions( entity ) {
-        return em_faas_restriction.find(['ledger.objid':entity.objid]).orderBy('txndate').list() 
-    }
-
-    @ProxyMethod
-    public def postLedgerItemsUptoYear( ledger, toyear ) {
-        postLedgerItems(ledger, toyear)
-    }
-
-    @ProxyMethod
-    public void postLedgerItems( ledger, toyear ) {
-        ledger.ledgerfaases = getTaxableLedgerFaases(ledger)
-
-        def startyear = (ledger.lastqtrpaid == 4 ? ledger.lastyearpaid + 1 : ledger.lastyearpaid)
-        for (int yr = startyear; yr <= toyear; yr++){
-            def item = em_rptledger_item.select('objid, year').find([rptledgerid:ledger.objid, year:yr]).first()
-            if (!item){
-                postLedgerItem(ledger, yr)
+    public def postNewLedger(faas){
+        def ledgers = em_rptledger.find([tdno:faas.tdno]).list()
+        def ledger = null
+        if (!checkFaasHasLedger(faas, ledgers)){
+            ledger = createLedgerInfo(faas)
+            create(ledger)
+            if (!util.isTrue(faas.datacapture)){
+                approve(ledger)
             }
         }
-
-        //delete qtrlyitem less than startqtr 
-        def startqtr = (ledger.lastqtrpaid == 4 ? 1 : ledger.lastqtrpaid + 1)
-        def p = [objid:ledger.objid, startyear:startyear, startqtr:startqtr]
-        em_rptledger_item_qtrly.where('rptledgerid = :objid and year < :startyear and fullypaid = 1', p).delete()
+        return ledger 
     }
 
-    /* temporary hack: intercepted to adjust av, such as, staggered application */
     @ProxyMethod
-    public def calcLedgerItemAssessedValue(params){
-        return params
+    public def saveLedgerItem( item ) {
+        def ledgerfaas = item.ledgerfaas 
+        ledgerfaas.assessedvalue = item.av
+        ledgerfaas.taxdifference = item.taxdifference
+        def ledger = em_rptledger.find([objid:ledgerfaas.rptledgerid]).first() 
+        ledger.faases = [ledgerfaas]
+        postLedgerItem(ledger, item.year)
     }    
 
 
-
     @ProxyMethod
-    public def getSubLedgers( entity ) {
-        return em_rptledger_subledger.find(['parent.objid':entity.objid]).orderBy('subacctno').list()
-    }
-
-
-    @ProxyMethod
-    public def createSubLedger( subledger ) {
-        createLedger(subledger);
-        em_rptledger_subledger.create(subledger)
-    }
-
-
-    @ProxyMethod
-    public def updateSubLedger( subledger ) {
-        em_rptledger_faas.find([rptledgerid:subledger.objid]).delete()
-        em_rptledger.update(subledger)
-        em_rptledger_subledger.update(subledger)
-    }    
-
-    @ProxyMethod
-    public def approveSubLedger( subledger ) {
-        def ledger = em_rptledger.read(subledger)
-        approveLedger(ledger)
-        subledger = em_rptledger_subledger.read(subledger)
-        subledger.state = subledger.rptledger.state
-        return subledger
-    }
-
-
-    @ProxyMethod
-    public void deleteSubLedger(subledger ) {
-        em_rptledger_item_qtrly.find([rptledgerid:subledger.objid]).delete()
-        em_rptledger_item.find([rptledgerid:subledger.objid]).delete()
-        em_rptledger_faas.find([rptledgerid:subledger.objid]).delete()
-        em_rptledger_subledger.find([objid:subledger.objid]).delete() 
-        em_rptledger.delete(subledger)
-    }
-
-    @ProxyMethod
-    public void clearNextBillDateByLedger( ledgerid ) {
-        em_rptledger.find([objid:ledgerid]).update([nextbilldate:null])
-        
-    }
-
-    @ProxyMethod
-    public void clearNextBillDate() {
-        em_rptledger.where('1=1').update([nextbilldate:null])
-    }
-
-
-
-    @ProxyMethod
-    public def fixLedgerFaas(ledgerfaas){
-        em_rptledger_faas.save(ledgerfaas)
-
-        //update the ledgeritem AV values with the new AV
-        def info = [:]
-        info.av = ledgerfaas.assessedvalue
-        info.basicav = ledgerfaas.assessedvalue
-        info.sefav = ledgerfaas.assessedvalue
-        em_rptledger_item.find([rptledgerfaasid:ledgerfaas.objid,fullypaid:0]).update(info)
-
-        //update the ledgeritem_qtrly AV values with the new AV
-        def av = ledgerfaas.assessedvalue
-        def qtrlyvalue = computeQtrlyValues(av, av, av)
-
-        em.getAffectedQtrlyItemsByLedgerFaas(ledgerfaas).each{
-            if (it.qtr == 4) {
-                it.av = qtrlyvalue.av4thqtr
-                it.basicav = qtrlyvalue.basicav4thqtr
-                it.sefav = qtrlyvalue.sefav4thqtr
-            }
-            else {
-                it.av = qtrlyvalue.avqtrly
-                it.basicav = qtrlyvalue.basicavqtrly
-                it.sefav = qtrlyvalue.sefavqtrly
-            }
-            em_rptledger_item_qtrly.save(it)
-        }
-
-        //reset ledger nextbilldate
-        em_rptledger.find([objid:ledgerfaas.rptledgerid]).update([nextbilldate:null])
-        generateLedgerBill([objid:ledgerfaas.rptledgerid])
+    public def removeLedgerItem( ledgeritem ) {
+        em_rptledger_item.delete(ledgeritem)
     }
 
     @ProxyMethod
@@ -345,98 +180,82 @@ class RPTLedgerService
         em_rptledger_faas.save(ledgerfaas)
         updateLedgerInfoFromNewRevision(ledgerfaas)
         return ledgerfaas   
-    }    
+    }   
+
+
 
 
     @ProxyMethod
-    public def removeLedgerItem( ledgeritem ) {
-        em_rptledger_item_qtrly.find([parentid:ledgeritem.objid]).delete()
-        em_rptledger_item.delete(ledgeritem)
-        em_rptledger.find([objid:ledgeritem.rptledgerid]).update([nextbilldate:null])
+    public void postLedgerItemsForBilling( ledger, toyear ) {
+        ledger = open(ledger)
+        if (!ledger) throw new Exception('Ledger does not exist or has already been deleted.')
+        postLedgerItems(ledger, toyear)
     }
 
-    @ProxyMethod
-    public def saveLedgerItem( item ) {
-        item.basicav = item.av 
-        item.sefav = item.av 
-        item.classification = item.ledgerfaas.classification
-        item.actualuse =  (item.ledgerfaas.actualuse?.objid ? item.ledgerfaas.actualuse : item.ledgerfaas.classification)
-        item.basic = 0.0
-        item.basicpaid = 0.0
-        item.basicint = 0.0
-        item.basicintpaid = 0.0
-        item.basicdisc = 0.0
-        item.basicdisctaken = 0.0
-        item.basicidle = 0.0
-        item.basicidlepaid = 0.0
-        item.basicidledisc = 0.0
-        item.basicidledisctaken = 0.0
-        item.basicidleint = 0.0
-        item.basicidleintpaid = 0.0
-        item.sef = 0.0
-        item.sefpaid = 0.0
-        item.sefint = 0.0
-        item.sefintpaid = 0.0
-        item.sefdisc = 0.0
-        item.sefdisctaken = 0.0
-        item.firecode = 0.0
-        item.firecodepaid = 0.0
-        item.sh = 0.0
-        item.shdisc = 0.0
-        item.shpaid = 0.0
-        item.shint = 0.0
-        item.partialled = 0
-        item.taxdifference = (item.taxdifference == 1)
-        item.qtrly = 0
-        em_rptledger_item.save(item)
-        createLedgerItemQtrlyData(item)
-
-        // reset billing and recalculate 
-        em_rptledger.find([objid:item.rptledgerid]).update([nextbilldate:null])
-        generateLedgerBill([objid:item.rptledgerid])
-    }    
-
-
 
     @ProxyMethod
-    public def updateState(ledger){
-        em_rptledger.find([objid:ledger.objid]).update([state:ledger.state])
-        em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_item_qtrly.find([rptledgerid:ledger.objid]).delete() 
-        em_rptledger_item.find([rptledgerid:ledger.objid]).delete() 
-        ledger._remarks = 'New State: ' + ledger.state 
-        return ledger 
-    }
-
-    @ProxyMethod
-    public def updateFaasReference(ledger, newfaas){
-        def prevtdno = ledger.tdno 
-        validateNewFaasReference(ledger, newfaas)
-        newfaas = faasSvc.openFaas(newfaas)
-        updateLedgerFaasInfo(newfaas, ledger)
-        ledger._remarks = 'Previous TD No.: ' + prevtdno  + '  ->  New TD No.: ' + newfaas.tdno 
-        return ledger
-    }
-
-    @ProxyMethod
-    public def getPartialPayment(ledger) {
-        def flds = 'basicpaid,basicdisc,basicint,sefpaid,sefdisc,sefint,firecodepaid,'
-        flds += 'basicidlepaid,basicidledisc,basicidleint,shpaid,shdisc,shint'
-        def p = em_rptledger_item_qtrly.select(flds)
-                    .find([rptledgerid:ledger.objid, partialled:1])
-                    .first()
-
-        if (!p) {
-            p = [
-                basicpaid:0.0, sefpaid:0.0, basicidlepaid:0.0,firecodepaid:0
-            ]
+    public void postLedgerItems( ledger, toyear ) {
+        def faashistory = null;
+        def startyear = (ledger.lastqtrpaid == 4 ? ledger.lastyearpaid + 1 : ledger.lastyearpaid)
+        for (int yr = startyear; yr <= toyear; yr++){
+            if (!checkLedgerItemPosted(ledger, yr)){
+                if (!faashistory){
+                    faashistory = getTaxableFaases(ledger)
+                }
+                ledger.faases = faashistory.findAll{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) }
+                if (!ledger.faases) throw new Exception('No FAAS history defined for the year ' + yr + '.')
+                postLedgerItem(ledger, yr)
+            }
         }
-        p.basicdisctaken = 0
-        p.basicintpaid = 0 
-        p.sefdisctaken = 0
-        p.sefintpaid = 0
-        return p
     }
+
+
+    @ProxyMethod
+    public def getLedgerEntries( entity ) {
+        return em_rptledger_item.find([parentid:entity.objid]).orderBy('year, priority, revtype').list()
+    }    
+
+
+    @ProxyMethod
+    public def getLedgerEntriesForBilling(bill) {
+        def params = [:]
+        params.parentid = bill.rptledger.objid
+        params.billtoyear = bill.billtoyear 
+        return em_rptledger_item.where('parentid = :parentid and year <= :billtoyear', params) 
+                                .orderBy('year, priority, revtype')
+                                .list() 
+    }    
+
+
+    @ProxyMethod
+    public def getTaxableFaases(ledger){
+        return em_rptledger_faas.find([rptledgerid:ledger.objid,state:'APPROVED',taxable:true])
+                                .orderBy('fromyear,fromqtr')
+                                .list()
+    }
+
+    
+    @ProxyMethod
+    public def getSubLedgers( entity ) {
+        return em_rptledger_subledger.find(['parent.objid':entity.objid]).orderBy('subacctno').list()
+    }
+
+    @ProxyMethod
+    public def getRestrictions( entity ) {
+        return em_faas_restriction.find(['ledger.objid':entity.objid]).orderBy('txndate').list() 
+    }
+
+    @ProxyMethod
+    public void removeRestriction( restriction ) {
+        em_faas_restriction.delete(restriction);
+    }
+
+    /* intercepted to adjust av, such as, staggered application */
+    @ProxyMethod
+    public def calcLedgerItemAssessedValue(params){
+        return params
+    }        
+
 
     @ProxyMethod
     public def fixLedger( info ) {
@@ -444,54 +263,51 @@ class RPTLedgerService
         util.required('TD No.', info.tdno)
         util.required('PIN', info.fullpin)
         util.required('Taxpayer', info.taxpayer)
-        info.rptledgerid = info.objid 
 
         //update ledger info 
-        em_rptledger.find([objid:info.objid]).update([
-            taxpayer        : info.taxpayer,
-            owner           : info.taxpayer,
-            tdno            : info.tdno, 
-            lastyearpaid    : info.lastyearpaid,
-            lastqtrpaid     : info.lastqtrpaid,
-            taxable         : info.taxable,
-            nextbilldate    : null
-        ])
+        def ledger = em_rptledger.find([objid:info.objid]).first()
+        if (!ledger) throw new Exception('Ledger does not exist or has already been deleted.')
 
-        // clear ledgeritems 
-        em_rptledger_item_qtrly.find([rptledgerid:info.rptledgerid]).delete()
-        em_rptledger_item.find([rptledgerid:info.rptledgerid]).delete()
+        ledger.taxpayer       = info.taxpayer
+        ledger.owner          = info.taxpayer
+        ledger.tdno           = info.tdno 
+        ledger.lastyearpaid   = info.lastyearpaid
+        ledger.lastqtrpaid    = info.lastqtrpaid
+        ledger.taxable        = info.taxable
+        ledger.nextbilldate   = null
+        em_rptledger.update(ledger)
 
-        // generate new bill and apply any partial payment
-        generateLedgerBill(info)
-        updatePartialPaymentInfo(info)
-        
+        // post new ledger items
+        em_rptledger_item.find([parentid:info.objid, taxdifference:false]).delete()
+        postLedgerItems(ledger, dtSvc.serverYear )
+        applyPartialPayment(info)
+
         info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 
+        info._remarks += ' Partial Basic: ' + info.basicpaid 
+        info._remarks += ' Partial SEF: ' + info.sefpaid
         return info 
     }    
 
-    void updatePartialPaymentInfo(info){
-        if (info.partial <= 0) return 
 
-        //update qtrly partial payment 
-        def qtrlyitem = em_rptledger_item_qtrly.find([rptledgerid:info.objid, year:info.partialledyear, qtr:info.partialledqtr]).first()
-        if (!qtrlyitem) throw new Exception('Quarterly Ledger Item does not exist.')
-        if (info.basicpaid > qtrlyitem.basic) throw new Exception('Partial for Basic must not exceed ' + numSvc.format('#,##0.00', qtrlyitem.basic) + '.')
-        if (info.sefpaid > qtrlyitem.sef) throw new Exception('Partial for SEF must not exceed ' + numSvc.format('#,##0.00', qtrlyitem.sef) + '.')
-        qtrlyitem.basicpaid = info.basicpaid         
-        qtrlyitem.sefpaid = info.sefpaid         
-        em_rptledger_item_qtrly.update(qtrlyitem)
-
-        // update ledgeritem partial payment
-        def ledgeritem = em_rptledger_item.find([rptledgerid:info.objid, year:info.partialledyear]).first() 
-        ledgeritem.basicpaid = info.basicpaid 
-        ledgeritem.sefpaid = info.sefpaid 
-        em_rptledger_item.update(ledgeritem)
-
-        // reset billing and recalculate 
-        info.partial = 0
-        em_rptledger.find([objid:info.objid]).update([nextbilldate:null])
-        generateLedgerBill(info)
+    @ProxyMethod
+    public def updateState(ledger){
+        em_rptledger.find([objid:ledger.objid]).update([state:ledger.state])
+        em_rptledger_item.find([parentid:ledger.objid]).delete() 
+        em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete() 
+        ledger._remarks = 'New State: ' + ledger.state 
+        return ledger 
     }
+
+    @ProxyMethod
+    public def updateFaasReference(ledger, newfaas){
+        def prevtdno = ledger.tdno 
+        deletePendingLedger(newfaas)
+        validateNewFaasReference(ledger, newfaas)
+        newfaas = faasSvc.openFaas(newfaas)
+        updateLedgerInfo(newfaas, ledger)
+        ledger._remarks = 'Previous TD No.: ' + prevtdno  + '  ->  New TD No.: ' + newfaas.tdno 
+        return ledger
+    }    
 
     @ProxyMethod
     public def checkLedgerApprovedState(faasid){
@@ -504,10 +320,9 @@ class RPTLedgerService
             throw new Exception('Ledger is still pending.')
     }
 
-
     @ProxyMethod
     public void checkLedgerBalance(faasid){
-        def ledger = em.findApprovedLedgerByFaasId([faasid:faasid])
+        def ledger = em_rptledger.find([faasid:faasid]).first() 
         if (!ledger)
             throw new Exception('Ledger does not exist or has already been deleted.')
 
@@ -521,63 +336,7 @@ class RPTLedgerService
         else {
             em_rptledger.find([objid:ledger.objid]).update([toyear:dtSvc.serverYear, toqtr:4, nextbilldate:null])
         }
-    }    
-
-    @ProxyMethod
-    public void postPayment( payment ) {
-        payment.dtposted = dtSvc.serverDate 
-        payment.postedby = env.NAME
-        payment.postedbytitle = env.JOBTITLE
-        payment.voided = false 
-        payment.rptledger = [objid:payment.rptledgerid]
-        def len = payment.paidby.name.length()
-        if (len > 100 ) len = 100
-        payment.paidby = payment.paidby
-        em_rptledger_payment.create(payment)
-
-        if (payment.fromyear < payment.toyear){
-            //delete items less than toyear 
-            em_rptledger_item_qtrly.where('rptledgerid = :rptledgerid and year < :toyear ', payment).delete()
-            em_rptledger_item.where('rptledgerid = :rptledgerid and year < :toyear ', payment).delete()
-        }
-        
-        if (payment.toqtr == 4){
-            //to year is fully paid, delete items 
-            em_rptledger_item_qtrly.where('rptledgerid = :rptledgerid and year = :toyear ', payment).delete()
-            em_rptledger_item.where('rptledgerid = :rptledgerid and year = :toyear ', payment).delete()
-        }
-        else {
-            //not fully paid 
-            def qtrlyitems = em_rptledger_item_qtrly.where('rptledgerid = :rptledgerid and year = :toyear and qtr <= :toqtr', payment).list() 
-            if (qtrlyitems){
-                qtrlyitems.each{
-                    it.fullypaid = true 
-                    it.partialled = false
-                    it.basicpaid = it.basic 
-                    it.basicidlepaid = it.basicidle 
-                    it.sefpaid = it.sef 
-                    it.firecodepaid = it.firecode 
-                    em_rptledger_item_qtrly.update(it)
-                }
-                em_rptledger_item.find([objid:qtrlyitems[0].parentid]).update([
-                        fullypaid : 0,
-                        basicpaid : qtrlyitems.basicpaid.sum(),
-                        basicidlepaid : qtrlyitems.basicidlepaid.sum(),
-                        sefpaid : qtrlyitems.sefpaid.sum(),
-                        firecodepaid : qtrlyitems.firecodepaid.sum(),
-                ])
-            }
-        }
-
-        //reset and recalc bill 
-        em_rptledger.find([objid:payment.rptledgerid]).update([
-                nextbilldate    : null,
-                lastyearpaid    : payment.toyear,
-                lastqtrpaid     : payment.toqtr
-            ])
-
-        generateLedgerBill([objid:payment.rptledgerid])
-    }
+    }       
 
     @ProxyMethod
     public void postLedgerFaasData(faas){
@@ -588,77 +347,29 @@ class RPTLedgerService
         }
         if (ledger){
             ledger.faasid = faas.objid 
-            updateLedger(ledger)
+            ledger.advancebill = false 
+            ledger.nextbilldate = null 
+            ledger.taxable = util.toBoolean(ledger.taxable, true)
+            em_rptledger.update(ledger)
             def ledgerfaas = createLedgerFaas(ledger, faas)
             postLedgerFaas(ledgerfaas) 
-            postTaxDifference(ledger, ledgerfaas, faas)
+            postTaxDifference(ledger, faas)
             updateLedgerFaasInfo(faas, ledger)
         }
+    }    
+
+    @ProxyMethod
+    public void postPayment( payment ) {
+        payment.dtposted = dtSvc.serverDate 
+        payment.postedby = env.NAME
+        payment.postedbytitle = env.JOBTITLE
+        payment.voided = false 
+        payment.rptledger = [objid:payment.refid]
+        em_rptpayment.create(payment)
+        postPaymentItems(payment)
+        updatePaidLedgerItems(payment)
+        em_rptledger.find([objid:payment.refid]).update([lastyearpaid:payment.toyear, lastqtrpaid:payment.toqtr])
     }
-
-
-    void postTaxDifference(ledger, ledgerfaas, faas){
-        if (ledger.lastyearpaid < faas.effectivityyear)
-            return
-
-        //post tax difference 
-        def params = [
-            rptledgerid:ledger.objid, 
-            effectivityyear:faas.effectivityyear,
-            effectivityqtr : faas.effectivityqtr,
-            currentav : faas.rpu.totalav,
-            toyear : (faas.effectivityqtr == 1 ? faas.effectivityyear - 1 : faas.effectivityyear), 
-            toqtr : (faas.effectivityqtr == 1 ? 4 : faas.effectivityqtr - 1), 
-        ]
-
-        
-        //get items with tax differences
-        def taxdiffitems = em.getLedgerItemsWithTaxDifference(params)
-
-        taxdiffitems.each{
-            it.objid = 'RLI' + new java.rmi.server.UID() 
-            it.rptledgerfaasid = ledgerfaas.objid 
-            it.av = it.avdifference 
-            it.basicav = it.avdifference 
-            it.sefav = it.avdifference 
-            it.qtrly = 0
-            it.fullypaid = 0 
-            it.remarks = 'Tax Difference for ' + it.year 
-            it.taxdifference = 1
-            it.basic           = 0.0
-            it.basicpaid       = 0.0
-            it.basicint        = 0.0
-            it.basicintpaid    = 0.0
-            it.basicdisc       = 0.0
-            it.basicdisctaken  = 0.0
-            it.basicidle       = 0.0
-            it.basicidlepaid   = 0.0
-            it.basicidledisc   = 0.0
-            it.basicidledisctaken = 0.0
-            it.basicidleint       = 0.0
-            it.basicidleintpaid   = 0.0
-            it.sef             = 0.0
-            it.sefpaid         = 0.0
-            it.sefint          = 0.0
-            it.sefintpaid      = 0.0
-            it.sefdisc         = 0.0
-            it.sefdisctaken    = 0.0
-            it.firecode        = 0.0
-            it.firecodepaid    = 0.0
-            it.sh             = 0.0
-            it.shpaid         = 0.0
-            it.shint          = 0.0
-            it.shintpaid      = 0.0
-            it.shdisc         = 0.0
-            it.shdisctaken    = 0.0
-            it.partialled      = 0
-            em_rptledger_item.create(it, SCHEMA_ITEM)
-        }
-
-        // update last year and qtr paid, reset nextbilldate
-        em_rptledger.find([objid:ledger.objid]).update([lastyearpaid:params.toyear, lastqtrpaid:params.toqtr, nextbilldate:null])
-    }
-
 
     @ProxyMethod
     public def postLedgerFaas( ledgerfaas ) {
@@ -666,7 +377,7 @@ class RPTLedgerService
         def latestledgerfaas = ledgerfaases.first()
         if (latestledgerfaas) {
             if (latestledgerfaas.fromyear == ledgerfaas.fromyear && latestledgerfaas.fromqtr == ledgerfaas.fromqtr){
-                latestledgerfaas.state = STATE_CANCELLED 
+                latestledgerfaas.state = 'CANCELLED' 
                 latestledgerfaas.toyear = latestledgerfaas.fromyear 
             }
             else {
@@ -676,148 +387,73 @@ class RPTLedgerService
             em_rptledger_faas.save(latestledgerfaas)
         }
         em_rptledger_faas.save(ledgerfaas)
-    }    
-
-
-
-    void updateLedgerInfoFromNewRevision(ledgerfaas){
-        def info = [
-            fullpin     : ledgerfaas.fullpin,
-            tdno        : ledgerfaas.tdno, 
-            txntype     : ledgerfaas.txntype, 
-            classification : ledgerfaas.classification,
-            classcode      : ledgerfaas.classification.code,
-            totalav        : ledgerfaas.assessedvalue, 
-            taxable         : ledgerfaas.taxable 
-        ]
-        em_rptledger.find([objid:ledgerfaas.rptledgerid]).update(info)
-    }
-
-
-    void generateLedgerBill(info){
-        try{
-            def cy = dtSvc.serverYear 
-            def bill = billingSvc.initBill(info.objid)
-            if (info.partial > 0 && info.lastyearpaid >= cy){
-                bill.billtoyear = cy + 1 
-            }
-            billingSvc.generateBill(bill)
-        }
-        catch(e){
-            println 'generateLedgerBill [ERROR]: ' + e.message 
-        }
-    }
-
+    }        
 
 
     @ProxyMethod
-    public def getTaxableLedgerFaases(ledger){
-        return em_rptledger_faas.find([rptledgerid:ledger.objid,state:'APPROVED',taxable:true])
-                                .orderBy('fromyear,fromqtr')
-                                .list()
+    public def createSubLedger( subledger ) {
+        create(subledger);
+        em_rptledger_subledger.create(subledger)
     }
 
-
-    void postLedgerItem(ledger, yr){
-        def ledgerfaases = ledger.ledgerfaases.findAll{
-                if (yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0))
-                    return true 
-                return false 
-            }
-
-        ledgerfaases.each{ledgerfaas->
-            def params = [
-                ledger      : ledger, 
-                ledgerfaas  : ledgerfaas, 
-                yr          : yr, 
-                av          : ledgerfaas.assessedvalue, 
-                basicav     : ledgerfaas.assessedvalue, 
-                sefav       : ledgerfaas.assessedvalue, 
-                classification   : ledgerfaas.classification,
-                actualuse   : (ledgerfaas.actualuse?.objid ? ledgerfaas.actualuse : ledgerfaas.classification),
-            ]
-
-            // if no item for this yr and actualuse
-            // create the item and qtrlyitem based on the recalculated "capping" av
-            def olditem = em_rptledger_item.find([objid:ledger.objid, year:yr, 'actualuse.objid':params.actualuse.objid]).first()
-            if (!olditem){
-                //allow interceptors to adjust av based on capping
-                self.calcLedgerItemAssessedValue(params)
-
-                def item = createLedgerItemData(ledger, ledgerfaas, params, yr)
-                createLedgerItemQtrlyData(item)
-            }
-        }        
+    @ProxyMethod
+    public void deleteSubLedger(subledger ) {
+        em_rptledger_item_qtrly.find([rptledgerid:subledger.objid]).delete()
+        em_rptledger_item.find([rptledgerid:subledger.objid]).delete()
+        em_rptledger_faas.find([rptledgerid:subledger.objid]).delete()
+        em_rptledger_subledger.find([objid:subledger.objid]).delete() 
+        em_rptledger.delete(subledger)
     }
 
-    def createLedgerItemData(ledger, ledgerfaas, params, yr){
-        def item = [
-            objid           : 'RLI' + new java.rmi.server.UID(), 
-            rptledgerid     : ledger.objid, 
-            rptledgerfaasid : ledgerfaas.objid, 
-            av              : params.av, 
-            basicav         : params.basicav,
-            sefav           : params.sefav,
-            taxdifference   : 0,
-            classification  : params.classification,
-            actualuse       : params.actualuse,
-            remarks         : (params.av != ledgerfaas.assessedvalue ? 'Staggered AV' : 'Annual Receivable'),
-            year            : yr, 
-            basic           : 0.0,
-            basicpaid       : 0.0,
-            basicint        : 0.0,
-            basicdisc       : 0.0,
-            basicidle       : 0.0,
-            basicidlepaid   : 0.0,
-            basicidledisc   : 0.0,
-            basicidleint    : 0.0,
-            sef             : 0.0,
-            sefpaid         : 0.0,
-            sefint          : 0.0,
-            sefdisc         : 0.0,
-            firecode        : 0.0,
-            firecodepaid    : 0.0,
-            sh             : 0.0,
-            shpaid         : 0.0,
-            shint          : 0.0,
-            shdisc         : 0.0,
-            partialled      : 0,
-            qtrly           : 0,
-            fullypaid       : 0,
-        ]
-        em_rptledger_item.save(item)
-        return item
+    @ProxyMethod
+    public def updateSubLedger( subledger ) {
+        em_rptledger_faas.find([rptledgerid:subledger.objid]).delete()
+        em_rptledger.update(subledger)
+        em_rptledger_subledger.update(subledger)
+    }  
+
+    @ProxyMethod
+    public def approveSubLedger( subledger ) {
+        def ledger = em_rptledger.read(subledger)
+        approve(ledger)
+        subledger = em_rptledger_subledger.read(subledger)
+        subledger.state = subledger.rptledger.state
+        return subledger
     }    
 
-    def computeQtrlyValues(av, basicav, sefav){
-        def value = [:]
-        value.avqtrly = numSvc.round( av / 4)
-        value.av4thqtr = av - (value.avqtrly * 3)
-        value.basicavqtrly = numSvc.round( basicav / 4)
-        value.basicav4thqtr = basicav - (value.basicavqtrly * 3)
-        value.sefavqtrly = numSvc.round( sefav / 4)
-        value.sefav4thqtr = sefav - (value.sefavqtrly * 3)
-        return value 
-    }
-
-    void createLedgerItemQtrlyData(item){
-        def qtrlyvalue = computeQtrlyValues(item.av, item.basicav, item.sefav)
-
-        for(int qtr=1; qtr<=4; qtr++ ){
-            def itemid = item.objid 
-            def qtritem = [itemid:itemid]
-            qtritem.putAll(item)
-            qtritem.objid = itemid + '-' + qtr 
-            qtritem.parentid = itemid 
-            qtritem.qtr = qtr 
-            qtritem.av = (qtr == 4 ? qtrlyvalue.av4thqtr : qtrlyvalue.avqtrly)
-            qtritem.basicav = (qtr == 4 ? qtrlyvalue.basicav4thqtr : qtrlyvalue.basicavqtrly)
-            qtritem.sefav = (qtr == 4 ? qtrlyvalue.sefav4thqtr : qtrlyvalue.sefavqtrly)
-            qtritem.fullypaid = 0
-            em_rptledger_item_qtrly.save(qtritem)
+    @ProxyMethod
+    public void reconcileManualLedger(faas, manualledger){
+        faas.putAll(faasSvc.openFaas(faas))
+        if (manualledger.previousfaases){
+            faas.previousfaases = manualledger.previousfaases
+            updateLedgerFaasInfo(faas, manualledger)
+            postLedgerFaasData(faas)
+        }
+        else if (util.isTrue(faas.datacapture)){
+            updateLedgerFaasInfo(faas, manualledger)
+        }
+        else{
+            def ledgerfaas = em_rptledger_faas.find([rptledgerid:manualledger.objid, tdno:faas.tdno]).first()
+            if (!ledgerfaas){
+                postLedgerFaasData(faas)
+            }
+            else{
+                updateLedgerFaasInfo(faas, manualledger)
+            }
         }
     }    
 
+    @ProxyMethod
+    public def getLedgerByFaasId(faasid){
+        return em_rptledger.find([faasid:faasid]).first()
+    }
+
+
+    /*=============================================================
+    *
+    * SUPPORT METHODS 
+    *
+    =============================================================*/
 
     def createLedgerInfo(faas){
         faas.rp = em_realproperty.find([objid:faas.rp.objid]).first()
@@ -825,19 +461,11 @@ class RPTLedgerService
             objid                   : faas.objid,
             state                   : 'PENDING',
             faasid                  : faas.objid,
-            basic                   : 0.0,
-            basicint                : 0.0,
-            basicdisc               : 0.0,
-            basiccredit             : 0.0,
-            sef                     : 0.0,
-            sefint                  : 0.0,
-            sefdisc                 : 0.0,
-            sefcredit               : 0.0,
-            nextbilldate            : null, 
             lastyearpaid            : 0,
             lastqtrpaid             : 0,
             idleland                : faas.rpu.idleland,
             faases                  : [],
+            lguid                   : faas.lguid,
             barangayid              : faas.rp.barangay.objid,
             taxpayer                : faas.taxpayer,
             owner                   : faas.owner,
@@ -877,7 +505,6 @@ class RPTLedgerService
         return ledger 
     }    
 
-
     def createLedgerFaas(ledger, faas){
         return [
             objid             : faas.objid,
@@ -890,16 +517,97 @@ class RPTLedgerService
             actualuse         : faas.rpu.classification,
             taxable           : util.toBoolean(faas.rpu.taxable, true),
             backtax           : (faas.backtaxyrs > 0 ),
+            idleland          : util.toBoolean(faas.rpu.idleland, false), 
+            reclassed         : util.toBoolean(faas.rpu.reclassed, false),
             fromyear          : faas.effectivityyear,
             fromqtr           : faas.effectivityqtr,
             toyear            : 0,
-            idleland          : (faas.rpu.idleland ? 1 : 0),
             toqtr             : 0,
             assessedvalue     : faas.rpu.totalav,
             systemcreated     : true,
-            reclassed         : util.toBoolean(faas.rpu.reclassed, false),
         ]
     }
+
+    def createFaasFromLedger(ledger){
+        def faas = [rpu:[:]]
+        faas.tdno = ledger.tdno 
+        faas.txntype = ledger.txntype
+        faas.effectivityyear = ledger.effectivityyear
+        faas.effectivityqtr = ledger.effectivityqtr
+        faas.rpu.classification  = ledger.classification 
+        faas.rpu.taxable = ledger.taxable 
+        faas.rpu.idleland = ledger.idleland 
+        faas.rpu.totalav = ledger.totalav
+        faas.lguid = getLguId(ledger.barangayid)
+        return faas 
+    }
+
+
+    void postLedgerItem(ledger, yr){
+        def items = ruleSvc.buildItems(ledger, yr)
+        items.each{
+            it.parentid = ledger.objid
+            def exist = em_rptledger_item.select('objid')
+                        .find([parentid:ledger.objid, year:yr, revtype:it.revtype, taxdifference:it.taxdifference])
+                        .first()
+            if (exist){
+                exist.amount = it.amount
+                em_rptledger_item.update(exist)
+            }
+            else{
+                em_rptledger_item.create(it)
+            }
+        }
+    }
+
+    def getLguId(barangayid){
+        def brgy = lguSvc.lookupBarangayById(barangayid)
+        if (brgy.munidistrict.orgclass.equalsIgnoreCase('municipality')){
+            return brgy.munidistrict.objid 
+        }
+        else{
+            return brgy.provcity.objid 
+        }
+    }
+
+    boolean checkLedgerItemPosted(ledger,yr){
+        if (util.isTrue(var.landtax_check_posted_ledger_items)){
+            return em_rptledger_item.select('objid, year')
+                            .find([parentid:ledger.objid, year:yr, taxdifference:0])
+                            .first() != null 
+        }
+        return false 
+    }
+
+    boolean checkFaasHasLedger(faas, ledgers){
+        return ledgers.find{it.faasid == faas.objid} != null 
+    }
+
+    void applyPartialPayment(info){
+        def param =[:]
+        param.parentid = info.objid 
+        param.year = (info.lastqtrpaid == 4 ? info.lastyearpaid + 1 : info.lastyearpaid)
+        def where = ''' parentid = :parentid and year = :year and revtype in ('basic', 'sef') and taxdifference = 0 '''
+        def items = em_rptledger_item.select('objid,revtype,amount').where(where, param).list()
+
+        items.each{
+            def partialamt = 0.0 
+            if (it.revtype == 'basic') {
+                partialamt = info.basicpaid 
+            }
+            else if (it.revtype == 'sef'){
+                partialamt = info.sefpaid 
+            }
+            updatePartialledItem(info, it, partialamt )
+        }
+    }
+
+    void updatePartialledItem(info, item, partialamt ){
+        def qtrs = (info.lastqtrpaid == 4 ? 0 : info.lastqtrpaid) 
+        def amtpaid = partialamt + numSvc.round(item.amount / 4) * qtrs
+        em_rptledger_item.find([objid:item.objid]).update([amtpaid:amtpaid])
+    }
+
 
     void validateNewFaasReference(ledger, faas){
         if (faas.state != 'CURRENT')
@@ -912,7 +620,79 @@ class RPTLedgerService
         if(existing && ledger.objid != existing.objid){
             throw new Exception('FAAS is already referenced by Ledger with TD No. ' + existing.tdno + '.')
         }
+    }    
+
+    void updateLedgerInfo(faas, ledger){
+        def oldtdno = ledger.tdno 
+
+        faas.rp = em_realproperty.find([objid:faas.rp.objid]).first()
+        ledger.faasid          = faas.objid 
+        ledger.taxpayer        = faas.taxpayer
+        ledger.owner           = faas.owner
+        ledger.administrator   = faas.administrator
+        ledger.fullpin         = faas.fullpin
+        ledger.tdno            = faas.tdno
+        ledger.cadastrallotno  = faas.rp.cadastrallotno
+        ledger.blockno         = faas.rp.blockno
+        ledger.rputype         = faas.rpu.rputype
+        ledger.txntype         = faas.txntype
+        ledger.classcode       = faas.rpu.classification.code
+        ledger.classification  = faas.rpu.classification
+        ledger.totalav         = faas.rpu.totalav
+        ledger.totalmv         = faas.rpu.totalmv
+        ledger.totalareaha     = faas.rpu.totalareaha
+        ledger.taxable         = util.toBoolean(faas.rpu.taxable, true)
+        ledger.prevtdno        = faas.prevtdno
+        ledger.titleno         = faas.titleno
+        ledger.advancebill     = false;
+        ledger.nextbilldate    = null;
+        em_rptledger.find([objid:ledger.objid]).update(ledger)
+
+        def ledgerfaas = em_rptledger_faas.find([rptledgerid:ledger.objid,tdno:oldtdno]).first()
+        if (ledgerfaas){
+            ledgerfaas.faasid = faas.objid 
+            ledgerfaas.tdno = faas.tdno 
+            ledgerfaas.txntype = faas.txntype 
+            ledgerfaas.classification = faas.rpu.classification 
+            ledgerfaas.actualuse = faas.rpu.classification 
+            ledgerfaas.assessedvalue = faas.rpu.totalav 
+            em_rptledger_faas.update(ledgerfaas)
+        }
+
+    }    
+
+    void deletePendingLedger(newfaas){
+        def ledger = em_rptledger.select('objid').find([faasid:newfaas.objid,state:'PENDING']).first()
+        if (ledger){
+            em_rptbill_ledger.find([rptledgerid:ledger.objid]).delete()
+            em_rptledger_faas.find([rptledgerid:ledger.objid]).delete()
+            em_rptledger_item.find([parentid:ledger.objid]).delete()
+            em_rptledger.find([objid:ledger.objid]).delete()
+        }
     }
+
+    void postTaxDifference(ledger, faas){
+        if (ledger.lastyearpaid < faas.effectivityyear)
+            return
+
+        def currfaas = em_rptledger_faas.find([rptledgerid: ledger.objid, fromyear:faas.effectivityyear]).first();
+        def prevfaas = em_rptledger_faas.find([rptledgerid: ledger.objid, toyear:faas.effectivityyear - 1]).first();
+        if (!prevfaas) {
+            return
+        }
+
+        def avdifference = faas.rpu.totalav - prevfaas.assessedvalue
+        if (avdifference < 0){
+            return
+        }
+
+        for (int yr = faas.effectivityyear; yr <= ledger.lastyearpaid; yr++){
+            currfaas.assessedvalue = avdifference
+            currfaas.taxdifference = true 
+            ledger.faases = [currfaas]
+            postLedgerItem(ledger, yr)
+        }
+    }    
 
     void updateLedgerFaasInfo(faas, ledger){
         faas.rp = em_realproperty.find([objid:faas.rp.objid]).first()
@@ -937,8 +717,99 @@ class RPTLedgerService
         ledger.advancebill     = false;
         ledger.nextbilldate    = null;
         em_rptledger.find([objid:ledger.objid]).update(ledger)
-    }    
+    } 
 
+    void updatePaidLedgerItems(payment){
+        if (payment.toqtr == 4){
+            em_rptledger_item.where('parentid = :refid and year <= :toyear ', payment).delete()
+        } else {
+            em_rptledger_item.where('parentid = :refid and year < :toyear ', payment).delete()
+
+            //update amtpaid based on paidqtr
+            // amtpaid = (item.amount / 4) * paidqtr
+            def items = em_rptledger_item.find([parentid:payment.refid, year:payment.toyear]).list()
+            items.each{item-> 
+                def qtrlyamt = numSvc.round(item.amount / 4)
+                def amtpaid =  numSvc.round( qtrlyamt* payment.toqtr)
+                em_rptledger_item.find([objid:item.objid]).update([amtpaid:amtpaid])
+            }
+        }
+    }
+
+    void postPaymentItems(payment){
+        payment.ledger = em_rptledger.read([objid:payment.refid])
+        payment._pdate = dtSvc.parseDate(payment.receiptdate, null )
+        if (payment.fromyear == payment.toyear && payment.fromqtr == 1 && payment.toqtr == 4){
+            createPaymentItem(payment, 'basic', payment.fromyear, null, false)
+            createPaymentItem(payment, 'sef', payment.fromyear, null, false)
+            createPaymentItem(payment, 'firecode', payment.fromyear, null, false)    
+        }
+        else if (payment.fromyear == payment.toyear && payment.fromqtr == payment.toqtr ){
+            createPaymentItem(payment, 'basic', payment.fromyear, payment.fromqtr, false)
+            createPaymentItem(payment, 'sef', payment.fromyear, payment.fromqtr, false)
+            createPaymentItem(payment, 'firecode', payment.fromyear, payment.fromqtr, false)    
+        }
+        else if (payment.fromyear != payment.toyear && payment.fromqtr == 1 && payment.toqtr == 4){
+            createPaymentItem(payment, 'basic', payment.fromyear, null, true)
+            createPaymentItem(payment, 'sef', payment.fromyear, null, true)
+            createPaymentItem(payment, 'firecode', payment.fromyear, null, true)    
+            createPaymentItem(payment, 'basic', payment.toyear, null, false)
+            createPaymentItem(payment, 'sef', payment.toyear, null, false)
+            createPaymentItem(payment, 'firecode', payment.toyear, null, false)    
+        }
+        else {
+            createPaymentItem(payment, 'basic', payment.fromyear, payment.fromqtr, true)
+            createPaymentItem(payment, 'sef', payment.fromyear, payment.fromqtr, true)
+            createPaymentItem(payment, 'firecode', payment.fromyear, payment.fromqtr, true)
+            createPaymentItem(payment, 'basic', payment.toyear, payment.toqtr, false)
+            createPaymentItem(payment, 'sef', payment.toyear, payment.toqtr, false)
+            createPaymentItem(payment, 'firecode', payment.toyear, payment.toqtr, false)
+        }
+    }
+
+    void createPaymentItem(payment, revtype, yr, qtr, zeroAmount){
+        def item = [:]
+        item.parentid = payment.objid 
+        item.rptledgerfaasid = payment.ledger.faases.find{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) && it.state != 'CANCELLED' }?.objid
+        item.year = yr 
+        item.qtr = qtr 
+        item.revtype = revtype 
+        item.partialled = false 
+
+        if (zeroAmount){
+            item.amount = 0
+            item.interest = 0
+            item.discount = 0
+        } else {
+            item.amount = (payment[revtype] ? payment[revtype] : 0)
+            item.interest = (payment[revtype+'int'] ? payment[revtype+'int'] : 0)
+            item.discount = (payment[revtype+'disc'] ? payment[revtype+'disc'] : 0)
+        }
+        item.total = item.amount + item.interest - item.discount 
+
+        if (yr < payment._pdate.year){
+            item.revperiod = 'previous'
+        } else if (yr == payment._pdate.year){
+            item.revperiod = 'current'
+        } else {
+            item.revperiod = 'advance'
+        }
+        
+        em_rptpayment_item.create(item)
+    }
+
+    void updateLedgerInfoFromNewRevision(ledgerfaas){
+        def info = [
+            fullpin     : ledgerfaas.fullpin,
+            tdno        : ledgerfaas.tdno, 
+            txntype     : ledgerfaas.txntype, 
+            classification : ledgerfaas.classification,
+            classcode      : ledgerfaas.classification.code,
+            totalav        : ledgerfaas.assessedvalue, 
+            taxable         : ledgerfaas.taxable 
+        ]
+        em_rptledger.find([objid:ledgerfaas.rptledgerid]).update(info)
+    }
 }
 
 

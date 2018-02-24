@@ -19,7 +19,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'planttree'
 and r.ry < $P{newry}  
-and not exists(select * from planttreerpu where objid = concat(replace(p.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 [insertRevisedPlantTreeDetails]
@@ -69,4 +69,5 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'planttree'
 and r.ry < $P{newry}  
-and not exists(select * from planttreedetail where objid = concat(replace(p.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
+

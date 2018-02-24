@@ -39,7 +39,11 @@ public class BldgTypeInfoModel implements SubPage
     def listener = [
         'selectedBldgType.residualrate' : {
             service.saveBldgType(selectedBldgType);
-        }
+        },
+        'selectedBldgType.usecdu' : {
+            service.saveBldgType(selectedBldgType);
+            initDepreciationHandler()
+        },
     ]
     
     def bldgTypes = [] 
@@ -49,6 +53,7 @@ public class BldgTypeInfoModel implements SubPage
         this.selectedBldgType = selectedBldgType
         baseValueType = selectedBldgType?.basevaluetype
         initBaseValueHandler()
+        initDepreciationHandler()
         binding.refresh('baseValueType') 
         
         depreciations = service.getDepreciations(selectedBldgType)
@@ -100,55 +105,11 @@ public class BldgTypeInfoModel implements SubPage
     * Depreciation Support
     *
     ---------------------------------------------------------------------*/
-    def selectedDepreciation;
-    def depreciations = []
-
-    def allowDepreciationColumnEdit = { item ->
-        if( ! selectedBldgType ) return false
-        if( ! selectedBldgType.objid ) return false 
-        if( item.isnew ) return true
-        if( isFirstItem( depreciations ) ) return true
-        return isLastItem( depreciations, item )
-    } as Map
-
-
-    def depreciationListHandler = [
-        createItem : { return createDepreciation() },
-        getRows    : { return (depreciations.size() <= 10 ? 10 : depreciations.size()+1)},
-        getColumns : { return [
-            new Column(name:'agefrom', caption:'Age From', type:'integer'),
-            new Column(name:'ageto', caption:'Age To', type:'integer', editable:true, editableWhen:'#{allowDepreciationColumnEdit[item]}' ),
-            new Column(name:'rate', caption:'Rate*', type:'decimal', format:'0.000000', editable:true ),
-        ]},
-                
-        validate     : { li -> 
-            def item = li.item 
-            def lastItem = null 
-            if( depreciations ) {
-                lastItem = depreciations.get( depreciations.size() - 1 )
-            }
-            if( ! item.agefrom ) {
-                item.agefrom = (lastItem ? lastItem.ageto + 1 : 1)
-            }
-
-            if( item.ageto < item.agefrom && item.ageto != 0  ) throw new Exception('Age To must be greater than Age From.')
-            validateRate( item.rate )
-            service.saveDepreciation(item)
-        },
-                
-        onAddItem    : { item -> depreciations.add( item )  },
-                
-        onRemoveItem   : { item -> 
-            if(MsgBox.confirm('Delete selected item?')  && isLastItem( depreciations, item )) {
-                service.deleteDepreciation( item )
-                depreciations.remove( item );
-                return true;
-            }
-            return false;
-        },
-                
-        fetchList    : { return depreciations  },
-    ] as EditorListModel
+    def depreciationHandler
+    
+    void initDepreciationHandler() {
+        depreciationHandler = Inv.lookupOpener('bldgtype:depreciation',[bldgType:selectedBldgType, mode:mode, service:service])
+    }
     
     
     /*---------------------------------------------------------------------

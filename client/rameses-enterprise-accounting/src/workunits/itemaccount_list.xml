@@ -1,9 +1,9 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="itemaccount"
+          schemaName="itemaccount" 
           cols="code,title,type,fund.code,fund.title,state,org.code,org.name">
     <invokers>
         <invoker folderid="/explorer/master/accounting" caption="Item Accounts" 
                  action="init" role="MASTER" permission="itemaccount.view" 
-                 xcustomFilter="parentid IS NULL"/> 
+                 customFilter="parentid IS NULL"/> 
    </invokers>
 </workunit>

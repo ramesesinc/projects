@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="bldgtype:depreciation" action="init" caption="Building Depreciation" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.rptis.rysetting.models.BldgTypeDepreciationModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.rysetting.views.BldgTypeDepreciationPage"/>
+    </pages>
+</workunit>

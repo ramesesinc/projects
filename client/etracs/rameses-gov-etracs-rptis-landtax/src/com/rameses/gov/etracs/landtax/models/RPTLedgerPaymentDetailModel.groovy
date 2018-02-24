@@ -8,7 +8,7 @@ import com.rameses.seti2.models.*;
 
 class RPTLedgerPaymentDetailModel
 {
-    @Service('RPTLedgerService')
+    @Service('RPTLedgerPaymentService')
     def svc; 
     
     String title = 'Payment Details'

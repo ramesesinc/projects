@@ -13,8 +13,11 @@ class RPTReceiptUtilService
 	@DataContext('cashreceiptitem')
 	def em_cashreceiptitem
 
-	@DataContext('cashreceiptrpt_item_account')
-	def em_cashreceiptrpt_item_account
+	@DataContext('rptpayment')
+	def em_rptpayment
+
+	@DataContext('rptpayment_share')
+	def em_rptpayment_share
 
 
 	@ProxyMethod
@@ -30,23 +33,26 @@ class RPTReceiptUtilService
 		if (!unpostedlist) throw new Exception('There are no unposted shares for this period.')
 
 		unpostedlist.each{rct ->
+			em_rptpayment_share.find([parentid:rct.paymentid]).delete()
+
 			em_cashreceiptitem.find([receiptid:rct.objid]).list().each{item ->
-				def share = createShare(rct, item)
-				if (share){
-					em_cashreceiptrpt_item_account.save(share)
-				}
+				createShare(rct, item)
 			}
 		}
 	}
 
 
-	def createShare(rct, item){
+	void createShare(rct, item){
 		def share = em.findShareAccount([itemid:item.item.objid])
-		if (!share) return null 
+		if (!share) throw new Exception('Share account ' + item.item.objid + ' does not exist.')
+
 		share.putAll(item) 
 		share.rptledgerid = rct.rptledgerid
+		share.parentid = rct.paymentid
 		share.rptreceiptid = rct.objid 
 		share.discount = 0.0 
-		return share 
+		if (!em_rptpayment_share.find([objid:item.objid]).first()){
+			em_rptpayment_share.create(share)
+		}
 	}
 }

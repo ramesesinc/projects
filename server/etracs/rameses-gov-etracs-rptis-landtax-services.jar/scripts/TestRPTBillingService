@@ -1,0 +1,50 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+import com.rameses.rules.common.*;
+import com.rameses.util.*;
+import com.rameses.services.extended.*;
+import rptis.landtax.facts.*;
+import rptis.landtax.actions.*;
+
+
+public class TestRPTBillingService
+{
+
+	@Service('RPTLedgerService')
+	def ledgerSvc
+
+	@Service('RPTBillingService')
+	def billingSvc 
+
+	@Service('RPTUtil')
+	def util
+
+	@Service("LOVService")
+    def LOV
+
+
+    @ProxyMethod 
+    public def testLov(){
+    	return LOV.RPT_BILLING_REVENUE_TYPES*.key
+    }
+
+
+	@ProxyMethod
+	public def testGenerateBill(params){
+		util.required('ledgerid', params.ledgerid)
+		
+		def bill = billingSvc.initBill()
+		bill.ledgers << [objid: 'RLM-650b8a7a:161455342c5:-7e54']
+		// bill.ledgers << [objid:'RLM-dab3f4f:16159a5a71c:-7719']
+
+		if (params.billtoyear) bill.billtoyear = Integer.parseInt(params.billtoyear)
+		if (params.billtoqtr) bill.billtoqtr = Integer.parseInt(params.billtoqtr)
+		bill.billto = [objid:'IND7cfca6b3:15aac60615a:-792e', name:'JUAN', address:'cebu']
+		bill.taxpayer = [objid:'IND7cfca6b3:15aac60615a:-792e', name:'JUAN', address:'cebu']
+		bill.postedby = 'system'
+		bill.postedbytitle = 'system'
+		bill._forpayment = true
+		bill = billingSvc.generateBill(bill)
+		return bill 
+	}
+}

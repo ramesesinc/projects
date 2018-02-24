@@ -2,11 +2,11 @@
 <workunit>
     <invokers>
         <invoker type="faas:change_faas_sketch" action="init" 
-                 caption="Change FAAS Sketch" 
+                 caption="FAAS Sketch" 
                  actiontype="change_faas_sketch"/>
         
         <invoker type="faas:changeinfo" action="initChangeInfo" 
-            caption="Change FAAS Sketch" target="popup"  
+            caption="FAAS Sketch" target="popup"  
             role="ADMIN" permission="faas.change_faas_sketch" index="6" 
             actiontype="change_faas_sketch"/>
         

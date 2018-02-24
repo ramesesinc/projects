@@ -109,7 +109,7 @@ insert into realproperty(
   lguid,
   stewardshipno
 )
-select 
+select distinct 
   concat(replace(rp.objid, concat('-',rp.ry), ''), concat('-', $P{newry})) as objid,
   'INTERIM' as state,
   rp.autonumber,
@@ -141,7 +141,8 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-and not exists(select objid from realproperty where objid = concat(replace(rp.objid, concat('-',rp.ry), ''), concat('-', $P{newry})))
+${filter}
+
 
 
 [insertRevisedRpus]
@@ -170,7 +171,7 @@ insert into rpu(
   reclassed,
   stewardparentrpumasterid
 )
-select 
+select distinct 
   concat(replace(r.objid, concat('-',r.ry), ''), concat('-', $P{newry})) as objid,
   'INTERIM' as state,
   (select objid from realproperty where objid = concat(replace(r.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry}))) as realpropertyid,
@@ -202,7 +203,8 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-and not exists(select objid from rpu where objid = concat(replace(r.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
+
 
 
 [insertRevisedFaases]
@@ -285,7 +287,7 @@ select
   0 as month,
   0 as day,
   f.prevadministrator,
-  f.originlguid,
+  $P{originlguid} as originlguid,
   f.parentfaasid
 from faas f 
   inner join realproperty rp on f.realpropertyid = rp.objid
@@ -295,7 +297,9 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-and not exists(select objid from faas where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+and exists(select * from realproperty where objid = concat(replace(f.realpropertyid, concat('-',r.ry), ''), concat('-', $P{newry})))
+and exists(select * from rpu where objid = concat(replace(f.rpuid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 [insertRevisedFaasList]
@@ -394,8 +398,7 @@ from faas f
 where rp.barangayid = $P{barangayid}
 and r.rputype = $P{rputype}
 and r.ry = $P{newry}
-and not exists(select objid from faas_list where objid = f.objid )
-
+${filter}
 
 
 
@@ -437,7 +440,8 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-and not exists(select objid from faas_signatory where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+and exists(select objid from faas where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 [insertRevisedPreviousFaases]
@@ -478,7 +482,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = $P{rputype}
 and r.ry < $P{newry}
-and not exists(select objid from faas_previous where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 

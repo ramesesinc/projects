@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/landtax" action="init"  caption="Generate Tax Bill"
-            role="LANDTAX" permission="rptbilling.create" index="101"/>
+        <invoker folderid="/explorer/txn/landtax" 
+                 action="init"  caption="Generate Tax Bill"
+                 role="LANDTAX" permission="rptbilling.create" 
+                 index="101"/>
         
-        <invoker folderid="/home/landtax" action="init"  caption="Generate Tax Bill"
-            role="LANDTAX" permission="rptbilling.create" index="10" />
+        <invoker folderid="/home/landtax" 
+                 action="init"  caption="Generate Tax Bill"
+                 role="LANDTAX" permission="rptbilling.create" 
+                 index="10" />
             
-        <invoker type="quick_launcher" code="RPTBILL" action="init"  caption="Generate Tax Bill"  
-            role="LANDTAX" permission="rptbilling.create" />
-            
-        <invoker type="rptbill:print" action="previewBill"  caption="Real Property Tax Bill" target="popup" />
-        <invoker type="rptbill:printSingleBill" action="printSingleBill"  caption="Real Property Tax Bill" target="process"/>
-        <invoker type="rptbill:previewSingleBill" action="previewSingleBill"  caption="Real Property Tax Bill" target="popup" />
+        <invoker type="quick_launcher" 
+                 code="RPTBILL" action="init"  caption="Generate Tax Bill"  
+                role="LANDTAX" permission="rptbilling.create" />
         
         
-        <invoker type="rptbill:batch" caption="Batch Real Property Tax Bill" action="initBatch" />
-        
+        <invoker type="rptbill:preview" action="preview"  caption="Real Property Tax Bill" target="popup" />
+        <invoker type="rptbill:print" action="print"  caption="Real Property Tax Bill" target="popup" />
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
-        <!-- 
-        <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" icon="images/toolbars/print.ping" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
-        -->
-        <invoker type="formActions" action="preview" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
+        <invoker type="formActions" action="doPreview" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
+        <invoker type="formActions" action="doPrint" caption="Print" shortcut="ctrl P" mnemonic="v" icon="images/toolbars/preview.png" visibleWhen="#{mode=='init' &amp;&amp; processing == false}"/>
         <invoker type="formActions" action="doCancel" caption="Cancel" immediate="true" visibleWhen="#{processing==true}"/>
         
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='view'}"/>
-        <invoker type="formActions" action="back" caption="Back" shortcut="ctrl b" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{mode=='view' &amp;&amp; showBack==true}"/>
+        <invoker type="reportActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" visibleWhen="#{mode=='view'}"/>
+        <invoker type="reportActions" action="back" caption="Back" shortcut="ctrl b" mnemonic="b" icon="images/toolbars/back.png" visibleWhen="#{mode=='view' &amp;&amp; showBack==true}"/>
     </invokers>
     
-    <code class="com.rameses.gov.etracs.rpt.landtax.billing.ui.RPTBillingController">
+    <code class="com.rameses.gov.etracs.landtax.models.RPTBillingModel">
     </code>
     
     <pages>
-        <page template="com.rameses.gov.etracs.rpt.landtax.billing.ui.RPTBillingPage" />
-        <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage"/>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTBillingPage" />
+        <page name="report" template="com.rameses.osiris2.reports.templates.ReportViewPage"/>
     </pages>
 </workunit>

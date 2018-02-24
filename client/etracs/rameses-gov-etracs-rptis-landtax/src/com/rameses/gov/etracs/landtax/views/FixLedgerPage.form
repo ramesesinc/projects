@@ -19,7 +19,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="xFormPanel2" alignment="1" min="-2" pref="447" max="-2" attributes="0"/>
                   <Component id="xFormPanel1" min="-2" pref="447" max="-2" attributes="1"/>
               </Group>
@@ -35,8 +39,11 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="xFormPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="34" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -135,7 +142,7 @@
       <Properties>
         <Property name="defaultCommand" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="fixLedger" noResource="true"/>
-        <Property name="text" type="java.lang.String" value="Fix Ledger"/>
+        <Property name="text" type="java.lang.String" value="Update"/>
       </Properties>
     </Component>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
@@ -196,20 +203,6 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField2">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Discount"/>
-                    <Property name="name" type="java.lang.String" value="info.basicdisctaken" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Penalty"/>
-                    <Property name="name" type="java.lang.String" value="info.basicintpaid" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
             <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel4">
@@ -230,35 +223,18 @@
                     <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField5">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Discount"/>
-                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-                      <StringArray count="1">
-                        <StringItem index="0" value="info.basicdisctaken"/>
-                      </StringArray>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="info.sefdisctaken" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField6">
-                  <Properties>
-                    <Property name="caption" type="java.lang.String" value="Penalty"/>
-                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-                      <StringArray count="1">
-                        <StringItem index="0" value="info.basicintpaid"/>
-                      </StringArray>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="info.sefintpaid" noResource="true"/>
-                    <Property name="required" type="boolean" value="true"/>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
           </SubComponents>
         </Container>
       </SubComponents>
     </Container>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+      <Properties>
+        <Property name="accelerator" type="java.lang.String" value="_close"/>
+        <Property name="name" type="java.lang.String" value="_close" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

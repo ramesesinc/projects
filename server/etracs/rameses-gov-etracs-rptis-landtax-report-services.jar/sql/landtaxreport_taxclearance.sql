@@ -85,8 +85,8 @@ select
     end as period
 from rptcertificationitem rci 
     inner join rptledger rl on rci.refid = rl.objid 
-    inner join rptledger_payment rp on rl.objid = rp.rptledgerid
-    inner join rptledger_payment_item ri on rp.objid = ri.parentid
+    inner join rptpayment rp on rl.objid = rp.refid
+    inner join vw_rptpayment_item ri on rp.objid = ri.parentid
     inner join cashreceipt xr on rp.receiptid = xr.objid 
     left join cashreceipt_void cv on xr.objid = cv.receiptid 
 where rci.rptcertificationid = $P{rptcertificationid}

@@ -1,0 +1,8 @@
+package rptledger;
+
+import rptis.landtax.facts.*;
+import java.util.*;
+import com.rameses.rules.common.*;
+
+global RuleAction action;
+

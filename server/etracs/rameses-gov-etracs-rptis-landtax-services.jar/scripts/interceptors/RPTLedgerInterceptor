@@ -37,9 +37,6 @@ class RPTLedgerInterceptor
     @DataContext('rptledger_item')
     def em_ledger_item
 
-    @DataContext('rptledger_item_qtrly')
-    def em_ledger_item_qtrly
-
     @DataContext('faas')
     def em_faas
 
@@ -56,7 +53,7 @@ class RPTLedgerInterceptor
 	def STATE_APPROVED  = 'APPROVED'
 
 
-    @After(pattern="RPTLedgerService.(createLedger|createSubLedger|updateLedger|updateSubLedger|approveLedger|fixLedger|updateState|updateFaasReference)") 
+    @After(pattern="RPTLedgerService.(create|createSubLedger|update|updateSubLedger|approve|fixLedger|updateState|updateFaasReference)") 
     public void logActions( evt ) {
         def ledger = evt.result 
         logSvc.logA( evt.methodName, 'RPTLEDGER', ledger.objid, ledger._remarks)
@@ -71,10 +68,10 @@ class RPTLedgerInterceptor
     @Before(pattern="PersistenceService.removeEntity", eval="args[0]._schemaname=='rptledger'") 
     public void deleteManualLedger( evt ) {
         def ledger = evt.args[0] 
-        svc.deleteLedger(ledger)
+        svc.delete(ledger)
     }
 
-	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{!env.ORGCLASS?.equalsIgnoreCase('province')}")
+	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && !env?.ORGCLASS?.equalsIgnoreCase('province')}")
 	public void postFaasToRPTLedger(evt){
         def faas = evt.result 
         if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
@@ -94,7 +91,7 @@ class RPTLedgerInterceptor
         }       
 	}
 
-    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env.ORGCLASS?.equalsIgnoreCase('province')}")
+    @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && env?.ORGCLASS?.equalsIgnoreCase('province')}")
     public void postToProvinceLedger(evt){
         def faas = evt.result 
 
@@ -148,7 +145,7 @@ class RPTLedgerInterceptor
         
         //cancel original entry and cutoff toyear and to qtr 
         def orig = em_ledger_faas.where('faasid = :faasid and state = :state', [faasid:changeinfo.faasid, state:'APPROVED']).first()
-        if (!orig) return 
+        if (!orig) return
 
         orig.state = 'CANCELLED'
         orig.toyear = em_faas.select('effectivityyear').find([objid:changeinfo.faasid]).first().effectivityyear
@@ -160,9 +157,19 @@ class RPTLedgerInterceptor
         em_ledger_faas.create(rlf)
 
         //reset ledger billing 
-        em_ledger.update([objid:orig.rptledgerid, nextbilldate:null])
+        def newrpu = changeinfo.newinfo
+        def ledgerinfo = [:]
+        ledgerinfo.objid = orig.rptledgerid
+        ledgerinfo.nextbilldate = null 
+        ledgerinfo.totalmv = newrpu.totalmv 
+        ledgerinfo.totalav = newrpu.totalav 
+        ledgerinfo.totalareaha = newrpu.totalareaha 
+        ledgerinfo.classification = newrpu.classification 
+        if (newrpu.classification?.code){
+            ledgerinfo.classcode = newrpu.classification?.code 
+        }
+        em_ledger.update(ledgerinfo)
         em_bill_ledger.find([rptledgerid:orig.rptledgerid]).delete()
-        em_ledger_item_qtrly.find([rptledgerid:orig.rptledgerid]).delete()
         em_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
     }   
 

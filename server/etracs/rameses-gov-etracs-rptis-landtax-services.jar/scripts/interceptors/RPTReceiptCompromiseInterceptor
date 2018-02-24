@@ -17,9 +17,10 @@ class RPTReceiptCompromiseInterceptor
 	@After(pattern="CashReceiptService.open", eval="#{result.formno.matches('56|5156')}", index=100) 
 	public void interceptOpenReceipt( evt ) {
 		def receipt = evt.result
-		svc.open(receipt)
-		if (receipt.txntype == 'rptcompromise'){
-			if ( ! receipt._items )
+		if (receipt.txntype == 'compromise'){
+			//TODO:
+			svc.open(receipt)
+			if (!receipt._items )
 				receipt._items = []
 			receipt._items += svc.getItemsForPrinting(receipt)
 			receipt.itemcount = receipt._items.size()

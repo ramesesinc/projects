@@ -6,5 +6,13 @@
         <field name="agefrom" required="true"  type="integer" />
         <field name="ageto" required="true"  type="integer" />
 		<field name="rate" required="true"  type="decimal" />
+		<field name="excellent" type="decimal" />
+		<field name="verygood" type="decimal" />
+		<field name="good" type="decimal" />
+		<field name="average" type="decimal" />
+		<field name="fair" type="decimal" />
+		<field name="poor" type="decimal" />
+		<field name="verypoor" type="decimal" />
+		<field name="unsound" type="decimal" />
     </element>
 </schema>

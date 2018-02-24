@@ -43,7 +43,9 @@ public class CapturePaymentModel
         payment = [
             objid       : 'RP' + new UID(),
             type        : 'capture',
-            rptledgerid : entity.objid,
+            receiptid   : null, 
+            refid       : entity.objid,
+            reftype     : 'rptledger',
             fromyear    : fromyear, 
             fromqtr     : fromqtr, 
             toyear      : fromyear,

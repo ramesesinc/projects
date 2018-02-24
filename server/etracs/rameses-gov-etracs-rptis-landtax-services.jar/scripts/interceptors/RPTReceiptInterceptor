@@ -7,64 +7,40 @@ class RPTReceiptInterceptor
 	@Service('RPTReceiptService')
 	def svc 
 
-	@Service('Var')
-	def var 
+	@Service('NumberService')
+	def numSvc
 
 	@Service('RPTUtil')
 	def util
 
 
-	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler == 'rpt'}") 
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler.matches('rpt|rptmanual|rptbatch')}") 
 	public void interceptOpenReceipt( evt ) {
 		def receipt = evt.result; 
 		svc.open(receipt) 
-
-		if (receipt.txntype.matches('rptonline|rptmanual')){
-			if (!receipt._items) receipt._items = []
-
-			receipt._items = svc.getItemsForPrinting(receipt)
-			util.buildPeriodCovered(receipt._items)
-			receipt.itemcount = receipt._items.size()
-			if(receipt.itemcount > 0) addLGUInfo(receipt) 
-		} 
+		svc.formatReceiptForPrinting(receipt)
 	}
 
 
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 
-	public void interceptBeforePostReceipt( evt ) {
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rpt|rptmanual|rptbatch')}") 
+	public void beforePostReceipt( evt ) {
 		def receipt = evt.args[0]
-		receipt.items = svc.getSummarizedItems(receipt); 
+		receipt.amount = numSvc.round(receipt.amount)
+		receipt.items = svc.getCashReceiptItems(receipt); 
 	}
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].txntype.toString().matches('rptonline|rptmanual')}") 
-	public void interceptPostReceipt( evt ) {
+	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rpt|rptmanual|rptbatch')}") 
+	public void afterPostReceipt( evt ) {
 		def receipt = evt.result
-		svc.createReceipt(receipt)
-		receipt._items = svc.getItemsForPrinting(receipt)
-		util.buildPeriodCovered(receipt._items)
-		receipt.itemcount = receipt._items.size()
-		receipt.rptitems = null
-		if(receipt.itemcount > 0) addLGUInfo(receipt)
+		svc.create(receipt)
+		svc.formatReceiptForPrinting(receipt)
 	}
 
-	@After(pattern="CashReceiptVoidService.post", eval="#{args[0].receipt.txntype.toString().matches('rptonline|rptmanual')}") 
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.collectiontype?.handler.matches('rpt|rptmanual|rptbatch')}") 
 	public void interceptVoidReceipt( evt ) {
 		svc.voidReceipt(evt.result.receipt)
 	}
 
-	void addLGUInfo( receipt ) {
-		if("province".equalsIgnoreCase(var.lgu_type)) {
-			receipt.lguname = receipt._items.collect{[munidistrict: it.munidistrict]}.unique{it.munidistrict}*.munidistrict.join('/')
-			receipt.parentlguname = receipt._items[0].provcity 
-		} else if ("city".equalsIgnoreCase(var.lgu_type)) { 
-			def i = receipt._items[0]
-			receipt.lguname = i.provcity  
-		} else {
-			def i = receipt._items[0]
-			receipt.lguname = i.munidistrict
-			receipt.parentlguname = i.provcity 
-		}
-	}
 
 }
 

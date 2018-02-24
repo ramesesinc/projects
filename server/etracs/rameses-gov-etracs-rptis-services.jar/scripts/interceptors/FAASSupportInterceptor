@@ -10,12 +10,6 @@ class FAASSupportInterceptor
 	@ActiveDB('faas_support')
 	def em 
 
-	@ActiveDB('landrysetting')
-	def landSettingEm
-
-	@ActiveDB('planttreerysetting')
-	def planttreeSettingEm
-
 	@ActiveDB('planttree')
 	def plantTreeEm	
 
@@ -24,6 +18,22 @@ class FAASSupportInterceptor
 
     @Service('SequenceService')
     def seqSvc 	
+
+
+	@DataContext('landspecificclass')
+    def em_landspecificclass
+
+    @DataContext('rysetting_land_specificclass')
+    def em_rysetting_land_specificclass
+
+    @DataContext('rysetting_land_subclass')
+    def em_rysetting_land_subclass
+
+	@DataContext('rysetting_land_adjustmenttype')
+    def em_rysetting_land_adjustmenttype
+
+    @DataContext('rysetting_planttree_unitvalue')
+    def em_rysetting_planttree_unitvalue
 
 	
 	@Before(pattern="FAASSupportService.saveFaasData") 
@@ -78,19 +88,20 @@ class FAASSupportInterceptor
 		ld.specificclass.ry = faas.rpu.ry 
 		ld.specificclass.lguid = faas.lguid
 		ld.specificclass.classcode = ld.specificclass.classification.code
-
 		def spc = em.findSpecificClassById(ld.specificclass)
 		if (!spc){
 			def landrysetting = em.findLandRySetting(ld.specificclass)
 			try{
 				ld.specificclass.landrysettingid = landrysetting.objid
 				ld.specificclass.classification.objid = landrysetting.classid
-				landSettingEm.create(ld.specificclass, 'lcuvspecificclass')
+				ld.specificclass.classification.objid = landrysetting.classid
+				ld.specificclass.classification.objid = landrysetting.classid
+				em_rysetting_land_specificclass.create(ld.specificclass)
 			}
 			catch(e){
 				ld.specificclass.code += '-'
 				ld.specificclass.name += '-'
-				landSettingEm.create(ld.specificclass, 'lcuvspecificclass')
+				em_rysetting_land_specificclass.create(ld.specificclass)
 			}
 		}
 		else{
@@ -107,12 +118,12 @@ class FAASSupportInterceptor
 			try{
 				ld.subclass.landrysettingid = ld.specificclass.landrysettingid 
 				ld.subclass.specificclass = ld.specificclass
-				landSettingEm.create(ld.subclass, 'lcuvsubclass')
+				em_rysetting_land_subclass.create(ld.subclass)
 			}
 			catch(e){
 				ld.subclass.code += '-'
 				ld.subclass.name += '-'
-				landSettingEm.create(ld.subclass, 'lcuvsubclass')
+				em_rysetting_land_subclass.create(ld.subclass)
 			}
 		}
 	}
@@ -124,12 +135,12 @@ class FAASSupportInterceptor
 			adj.adjustmenttype.landrysettingid = rysetting.objid 
 			adj.adjustmenttype.appliedto = faas.rpu.classification.name
 			try{
-				landSettingEm.create(adj.adjustmenttype, 'landadjustmenttype')
+				em_rysetting_land_adjustmenttype.create(adj.adjustmenttype)
 			}
 			catch(e){
 				adj.adjustmenttype.code += '-'
 				adj.adjustmenttype.name += '-'
-				landSettingEm.create(adj.adjustmenttype, 'landadjustmenttype')
+				em_rysetting_land_adjustmenttype.create(adj.adjustmenttype)
 			}
 		}
 	}
@@ -161,14 +172,12 @@ class FAASSupportInterceptor
 				def rysetting = em.findPlantTreeRySetting([ry:faas.rpu.ry, lguid:faas.lguid])
 				pt.planttreeunitvalue.planttree = pt.planttree
 				pt.planttreeunitvalue.planttreerysettingid = rysetting.objid
-				planttreeSettingEm.create(pt.planttreeunitvalue, 'planttreeunitvalue')
+				em_rysetting_planttree_unitvalue.create(pt.planttreeunitvalue)
 			}
 			catch(e){
-				println '='*50 
-				println e.message
 				pt.planttreeunitvalue.code += '-'
 				pt.planttreeunitvalue.name += '-'
-				planttreeSettingEm.create(pt.planttreeunitvalue, 'planttreeunitvalue')
+				em_rysetting_planttree_unitvalue.create(pt.planttreeunitvalue)
 			}
 		}
 	}

@@ -15,9 +15,9 @@ from remittance rem
   inner join liquidation liq on liqr.liquidationid = liq.objid
   inner join remittance_cashreceipt remc on rem.objid = remc.remittanceid 
   inner join cashreceipt cr on remc.objid = cr.objid 
-  inner join rptledger_payment rp on cr.objid = rp.receiptid 
-  inner join rptledger_payment_item ri on rp.objid = ri.parentid
-  inner join rptledger rl ON rp.rptledgerid = rl.objid  
+  inner join rptpayment rp on cr.objid = rp.receiptid 
+  inner join vw_rptpayment_item ri on rp.objid = ri.parentid
+  inner join rptledger rl ON rp.refid = rl.objid  
   inner join barangay b on rl.barangayid = b.objid 
 where ${filter} 
     and rl.classification_objid = $P{classid}

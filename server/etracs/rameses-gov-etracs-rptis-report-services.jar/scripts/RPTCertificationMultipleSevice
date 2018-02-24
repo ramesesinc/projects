@@ -35,12 +35,38 @@ class RPTCertificationMultipleService
 	def getMultipleItems(cert){
 		def items = em.getMultipleItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
-			it.description = it.cadastrallotno
-			if (it.rputype == 'bldg')
-				it.description = 'Type ' + em.getBldgTypes(it).code.join('/')
+			buildDescription(it)
 		}
 		if (!items) 
 			throw new Exception('There are no land properties registered for this taxpayer.')
 		return items 
+	}
+
+	void buildDescription(item){
+		def infos = []
+		if ('bldg'.equalsIgnoreCase(item.rputype)){
+			infos = em.getBldgInfos(item).each{bi-> bi.info = bi.bldgtype + ' - ' + bi.bldgkind.name}
+			if (infos){
+				item.description = infos.info.join(',')
+			}
+		}
+		else if ('mach'.equalsIgnoreCase(item.rputype)){
+			infos = em.getMachInfos(item)
+			if (infos){
+				item.description = infos.machine.name.join(',')
+			}
+		}
+		else if ('planttree'.equalsIgnoreCase(item.rputype)){
+			infos = em.getPlantTreeInfos(item)
+			if (infos){
+				item.description = infos.planttree.name.join(',')
+			}
+		}
+		else if ('misc'.equalsIgnoreCase(item.rputype)){
+			infos = em.getMiscInfos(item)
+			if (infos){
+				item.description = infos.miscitem.name.join(',')
+			}
+		}
 	}
 }

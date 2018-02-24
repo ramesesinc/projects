@@ -45,6 +45,15 @@ class GeneralRevisionService
 	@DataContext('batchgr_log')
 	def em_batchgr_log 
 
+	@ActiveDB(value='dbimage', adapter="image")
+	def em_dbimage 
+
+	@Service('RPTRequirementRuleService')
+    def ruleSvc
+    
+    @Service('RPTRequirementService')
+    def reqSvc
+
 
 
 	@ProxyMethod
@@ -88,7 +97,34 @@ class GeneralRevisionService
 		if (!faas.memoranda) faas.memoranda = var.gr_default_memoranda
 		buildDefaultSignatories(faas, info)
 		rpuSvc.reviseRpu(faas.rpu)
+		insertSketch(faas)
+		buildRequirements(faas)
 		return faas 
+	}
+
+	void buildRequirements(faas){
+		def requirements = ruleSvc.getRequirements([
+			txntype 		: faas.txntype,
+			txntypemode 	: '',
+			attributes		: [],
+			rputype    		: faas.rpu.rputype, 
+			classificationid : faas.rpu.classification?.objid,
+		])
+
+		requirements.unique().each{
+			reqSvc.create([
+				objid  				: 'R' + new java.rmi.server.UID(),
+				requirementtypeid 	: it.objid,
+				handler 			: it.handler,
+				refid 				: faas.objid,
+				value_objid 		: null,
+				value_txnno			: null,
+				value_txndate 		: null,
+				value_txnamount 	: 0.0,
+				value_remarks 		: null,
+				complied 			: 0,
+			])
+		}
 	}
 
 	void buildDefaultSignatories(faas, info){
@@ -113,6 +149,22 @@ class GeneralRevisionService
 		return entity 
 	}	
 
+
+	void insertSketch(faas){
+		if (utilSvc.isTrue(var.gr_carry_over_sketch)){
+			def param = [:]
+			param.newrefid = faas.objid
+			param.prevrefid = faas.previousfaases[0].prevfaasid
+			param.ry = faas.rpu.ry 
+			try{
+				em_dbimage.insertPreviousSketch(param)
+				em_dbimage.insertPreviousSketchItems(param)
+			}
+			catch(e){
+				//ignore 
+			}
+		}
+	}
 
 	/*--------------------------------------------------------
 	*

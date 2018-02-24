@@ -195,6 +195,8 @@ public class RealPropertyController
     
                 
     void buildPin(){       
+        entity.rputype = 'land';
+        entity.suffix = 0;
         RPTUtil.buildPin(entity, varSvc);
         binding?.refresh('entity.pin');
     }

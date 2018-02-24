@@ -28,6 +28,7 @@
 		<field name="condocerttitle" />
 		<field name="dtcertcompletion" />
 		<field name="dtcertoccupancy" />
+		<field name="cdurating" />
 	</element>
 
 	<element name="structure" tablename="bldgstructure">

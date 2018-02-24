@@ -9,20 +9,33 @@ import rptis.landtax.actions.*;
 
 public class RPTBillingService
 {
-	@ActiveDB('rptbill')
-	def em 
-
-	@ActiveDB("rule")
-	def ruleDB;
-
 	@Env
 	def env
 
-	@Service('RPTUtil')
-	def util
+	@ActiveDB('rptbill')
+	def em 
+
+	@DataContext('rptledger')
+	def em_rptledger
+
+	@DataContext('rptbill')
+	def em_rptbill
+
+	@DataContext('rptbill_ledger')
+	def em_rptbill_ledger
+
+	@DataContext('rptledger_item')
+	def em_rptledger_item
+
+	@DataContext('collectiontype')
+	def em_collectiontype
+
 
 	@Service('Var')
 	def var 
+
+	@Service('RPTUtil')
+	def util
 
 	@Service('DateService')
 	def dtSvc 
@@ -36,308 +49,192 @@ public class RPTBillingService
 	@Service('RPTLedgerService')
 	def ledgerSvc 
 
-	@Resource("RuleService")
-	def ruleSvc;
-
-	@DataContext('faas_restriction')
-	def em_faas_restriction;
-
-	@DataContext('itemaccount')
-	def em_itemaccount;
-
-	@DataContext('rptbill')
-	def em_rptbill;
-
-	@DataContext('rptbill_ledger')
-	def em_rptbill_ledger;
-
-	@DataContext('rptledger_item')
-	def em_rptledger_item;
-
-	@DataContext('rptledger_item_qtrly')
-	def em_rptledger_item_qtrly;
-
-	@Service('RPTBillingRuleUtilService')
-	def ruleUtilSvc 
+	@Service('RPTBillingRuleService')
+	def ruleSvc
 
 
+	
 	def RULESET 			= 'rptbilling'
 	def FACT_PACKAGE 		= 'rptbilling.'
 	def MAX_ADVANCE_YEARS 	= 3 
+	def BARCODE_KEY 		= '56001'
+
 	
-	def SCHEMA_BILL_LEDGER 	= 'rptbill_ledger'
-	def SCHEMA_BILL_ITEM 	= 'rptbill_item'
-	def SCHEMA_BILL_ACCT 	= 'rptbill_account'
-
-	def BARCODE_PREFIX 		= '56001:'
-
+	@ProxyMethod
+	public def initBill() {
+		return initBill([_generate_barcode:true])
+	}
 
 	@ProxyMethod
-	public def initBill(ledgerid){
+	public def initBill(params) {
 		def pdate = dtSvc.parseCurrentDate()
 		def objid = 'RB' + new java.rmi.server.UID()
-		return [
-			objid 				: objid,
-			billid 				: objid,
-			billtoyear 			: pdate.year,
-			billtoqtr			: 4,
-			advancebill			: false,
-			fullpayment    		: true,
-            qtrlypaymentavailed : false, 
-            advancepayment      : false,
-            currentdate 		: pdate.date,
-            cy 					: pdate.year,
-            rptledgerid 		: ledgerid,
-            barcode 			: generateBarcode()
-		]
-	}
-
-
-	@ProxyMethod
-	public def generateBill( bill ) {
-		util.required('Ledger to bill', bill.rptledgerid )
-
-		bill.rptledger = em.findOpenLedgerById(bill)
-        if (!bill.rptledger) throw new Exception('Ledger is fully paid or is exempted.')
-
-		validateAndSetBillParam(bill)
-
-        if (bill.rptledger.recalcbill == 1 || bill.forcerecalcbill == 1){
-        	println 'Recalculating ledger -> ' + bill.rptledger.tdno 
-        	def cy = dtSvc.serverYear 
-	        def endyear = ( bill.billtoyear < cy ? cy : bill.billtoyear)
-	        ledgerSvc.postLedgerItemsUptoYear(bill.rptledger, endyear)
-	        executeRules(bill)
-        	updateNextBillDate(bill)
+		def bill = [:]
+		bill.objid = objid 
+		bill.billid = objid 
+		bill.billtoyear = pdate.year
+		bill.billtoqtr = 4
+		bill.ledgers = []
+        bill.totals = [:]
+		bill.advancebill = false
+        bill.currentdate = pdate.date
+        bill.cy = pdate.year
+        bill.cqtr = pdate.qtr
+        bill.cmonth = pdate.month
+        if (!params._generate_barcode || params._generate_barcode == true){
+        	bill.barcode = generateBarcode(bill)
         }
-    	saveBill(bill)
-		return bill
-	}
-
-	void executeRules(bill){
-		calculateTaxDues(bill)
-		calculatePenaltyDiscount(bill)
-	}
-
-
-	void calculateTaxDues(bill){
-		bill.incentives = em.getIncentivesByLedgerId(bill)
-		bill.items = em.getItemsForTaxComputation(bill)
-		def request = ruleUtilSvc.buildRequest(bill)
-		def grps = ['TAX','AFTER_TAX','IDLE_LAND','AFTER_IDLE_LAND','SUMMARY']
-		grps.each{g ->
-			ruleSvc.execute( RULESET, request.facts, request.actions, g);
-		}
-		saveBillItems(bill, request)
-	}
-
-	void calculatePenaltyDiscount(bill){
-		bill.items = em.getItemsForPenaltyDiscount(bill)
-		def request = ruleUtilSvc.buildRequest(bill)
-		def grps = ['INIT','PENALTY','AFTER_PENALTY','DISCOUNT','AFTER_DISCOUNT','SUMMARY']
-		grps.each{g ->
-			ruleSvc.execute( RULESET, request.facts, request.actions, g);
-		}
-		saveBillItems(bill, request)
-	}
-
-	void saveBillItems(bill, request){
-		bill.items = []
-		def itemfacts = request.facts.findAll{it instanceof RPTLedgerItemFact}
-		def items = []
-		itemfacts.each{
-			it.recalcQtrlyItems()
-			items << it.toMap()
-		}
-
-		if (util.toBoolean(bill._commit, true) == true){
-			items.each{
-				if (it.parentid){
-					em_rptledger_item_qtrly.find([objid:it.objid]).update(it)
-					bill.items << it 
-				}
-				else {
-					em_rptledger_item.find([objid:it.objid]).update(it)
-					it.qtrlyitems.each{qi->
-						em_rptledger_item_qtrly.find([objid:qi.objid]).update(qi)
-						bill.items << qi 
-					}	
-					if (it.qtr != 1){
-						//qtrly items has payment or is less than 4 qtrs 
-						//update item totals only
-						updateLedgerItemTotals(it.objid, it.qtrlyitems, false)
-					}
-				}
-			}
-			//for qtrlyitems, update rptledgeritem info 
-			def m = items.findAll{it.parentid != null}.groupBy{it.parentid}
-			m.each{k,v ->
-				updateLedgerItemTotals(k, v, true)
-			}
-		}
-	}
-
-	void updateLedgerItemTotals(k, list, qtrly){
-		def m = [:]
-		m.objid = k 
-		m.revperiod = list.first().revperiod
-		m.basic = list.basic.sum()
-		m.basicint = list.basicint.sum()
-		m.basicdisc = list.basicdisc.sum()
-		m.basicidle = list.basicidle.sum()
-		m.basicidleint = list.basicidleint.sum()
-		m.basicidledisc = list.basicidledisc.sum()
-		m.sef = list.sef.sum()
-		m.sefint = list.sefint.sum()
-		m.sefdisc = list.sefdisc.sum()
-		m.firecode = list.firecode.sum()
-		m.sh = list.sh.sum()
-		m.shint = list.shint.sum()
-		m.shdisc = list.shdisc.sum()
-		m.qtrly = qtrly 
-		em_rptledger_item.find([objid:m.objid]).update(m)
-	}
-
-	void updateNextBillDate(bill){
-		bill.nextbilldate = getExpiryDate(bill)
-	    em.updateLedgerNextBillDate(bill)
-	}
-
-	def getExpiryDate(bill) { 
-		def dt = dtSvc.parseDate(bill.billdate,null);
-
-		//check in database if there is qtr deadline overrides
-		def qtr_deadline = em.findExpiry([qtr:dt.qtr, year:dt.year, date:dt.date])
-		
-		//check discount, interest overrides
-		def expirydate = null;
-		def expirytype = null;
-
-		if( ! qtr_deadline ) {
-			qtr_deadline = [
-				expirydate : dtSvc.getQtrEndDate(dt.qtr, dt.year),
-				expirytype : 'QTRDUEDATE',
-			]
-		}
-
-		qtr_deadline.expirydate = dtSvc.add(qtr_deadline.expirydate, '1d');
-		expirytype = qtr_deadline.expirytype;
-
-		//check discount first
-		if(expirytype?.equalsIgnoreCase("DISCOUNT")) {
-			return qtr_deadline.expirydate;
-		}
-
-		//if billtoyear > server year (advance payment) 
-		// expiry is end of jan next year
-		if (bill.billtoyear > dt.year){
-			return dtSvc.parse('yyyy-MM-dd',  (dt.year + 1) + '-01-01')
-		}
-
-		//if there are arrears, expiry is first day of next month
-		if (bill.rptledger.lastyearpaid <= dt.year){
-			return dtSvc.add(dtSvc.getMonthEndDate(dt.date), '1d')
-		}
-
-
-		//check for interest overrides
-		if( expirytype?.equalsIgnoreCase("INTEREST")) {
-			return qtr_deadline.expirydate;
-		}
-		
-		if( qtr_deadline ) {
-			return qtr_deadline.expirydate;
-		}	
-		else {
-			return dtSvc.add(dtSvc.getMonthEndDate(dt.date), '1d')
-		} 
-	}
-
-	void saveBill(bill){
-		if (!bill.barcode) 
-			bill.barcode = generateBarcode()
-
-		bill.postedby = (env.FULLNAME ? env.FULLNAME : 'system')
-		bill.postedbytitle = (env.JOBTITLE ? env.JOBTITLE  : 'system')
-		bill.dtposted = dtSvc.serverDate
-
-		if (bill.rptledger.taxpayer)
-			bill.taxpayer = bill.rptledger.taxpayer 
-
-		bill.rptledger.billid = bill.objid 
-		bill.rptledger.rptledgerid = bill.rptledger.objid 
-		bill.rptledger.updateflag = bill.rptledger.updateflag 
-
-		bill.expirydate = getExpiryDate(bill)
-	    bill.validuntil = dtSvc.add(bill.expirydate, '-1d')
-		em.save(bill)
-		em.save(bill.rptledger, SCHEMA_BILL_LEDGER)
-		bill.items = em.getBillLedgerItems(bill)
-	}
-
-
-	@ProxyMethod
-	public def findOpenLedgerByBill(bill){
-		return em.findOpenLedgerById(bill)
+        bill.maxadvanceyear = getMaxAdvanceYear()
+        return bill 
 	}
 
 	@ProxyMethod
-	public def generateBillByLedger(ledger){
-		def bill = initBill(ledger.objid)
-		bill.billdate = dtSvc.serverDate
-		bill.forcerecalcbill = 1
-		return generateBill(bill)
-	}
+	public def getBillByBarcode(params){
+		if (!params.barcodeid.startsWith(BARCODE_KEY)){
+			params.barcodeid = BARCODE_KEY + ':' + params.barcodeid 
+		}
 
-	@ProxyMethod
-	public def getBillByBarcode(param){
-		def bill= em_rptbill.find([barcode:param.barcodeid]).first() 
-		if (!bill) 
+		params.barcode = params.barcodeid 
+
+		if (!params.barcode) {
+			throw new Exception('barcode must be specified.')
+		}
+
+		def bill = em_rptbill.find([barcode:params.barcode]).first() 
+
+		if (!bill) {
 			throw new Exception('Invalid barcode or associated bill has already expired.')
-		if (bill.expirydate <= dtSvc.serverDate) 
+		}
+
+		if (bill.expirydate <= dtSvc.serverDate) {
 			throw new Exception('Bill has already expired.')
-		bill.collectiontype = em.findCollectionTypeByBarcodeKey(param)
-		if (!bill.collectiontype) 
-			throw new Exception('Collection Type is not defined for barcode key ' + param.barcodekey + '.')
-		bill.ledgers = em_rptbill_ledger.find([billid:bill.objid]).list().each{ it.objid = it.rptledgerid }
+		}
+
+		bill.collectiontype = em_collectiontype.find([formno:'56', barcodekey:BARCODE_KEY]).first()
+		if (!bill.collectiontype) {
+			throw new Exception('Collection Type is not defined for barcode key ' + BARCODE_KEY + '.')
+		}
+
+		def pdate = dtSvc.parseCurrentDate()
+		bill.currentdate = pdate.date 
+        bill.cy = pdate.year
+        bill.cqtr = pdate.qtr
+        bill.cmonth = pdate.month
+        bill.maxadvanceyear = getMaxAdvanceYear()
+        bill.totals = [:]
+        bill.ledgers = em_rptbill_ledger.select('objid:{rptledgerid}').find([billid:bill.objid]).list()
+        if (!bill.ledgers) {
+        	throw new Exception('There are no unpaid ledgers for this bill.')
+        }
 		return bill 
 	}	
 
 
-	def generateBarcode(){
-		def cy = dtSvc.serverYear.toString()[-2..-1]
-		def lguid = '000'
-		if (env){
-			if (env.ORGID){
-				lguid = env.ORGID.replaceAll('-', '')
-			}
-		}
-		return lguid + cy + seqSvc.getNextFormattedSeriesA('RPTBILL-' + cy,7)
+	@Async
+	@ProxyMethod
+	public def generateBillAsync(bill) {
+		return generateBill(bill)
 	}
 
-	
 	@ProxyMethod
-	public void validateAndSetBillParam(bill){
-		def pdate = dtSvc.parseCurrentDate()
+	public def generateBillByTdNo(params){
+		def ledger = em_rptledger.find([tdno:params.tdno]).first() 
+		if (!ledger) throw new Exception('Invalid TD No.')
 
-		bill.forcerecalcbill = 0
-		bill.curryear = pdate.year 
-		
-		if (bill.billdate == null) {
-			bill.billdate = pdate.date 
-		}
-		else{
-			bill.billdate = dtSvc.parse('yyyy-MM-dd', bill.billdate)
-			def scurrdate = dtSvc.parse('yyyy-MM-dd', dtSvc.format('yyyy-MM-dd', pdate.date))
-			def sbilldate = dtSvc.parse('yyyy-MM-dd', dtSvc.format('yyyy-MM-dd', bill.billdate))
-			if( sbilldate != scurrdate){
-				bill.forcerecalcbill = 1
+		def bill = initBill()
+		if (params.billtoyear) bill.billtoyear = params.billtoyear
+		if (params.billtoqtr) bill.billtoqtr = params.billtoqtr
+		bill.taxpayer = ledger.taxpayer 
+		bill.ledgers = [[objid:ledger.objid]]
+		bill._forpayment = true 
+		return  generateBill(bill)
+	}
+
+
+	@ProxyMethod
+	public def generateBill(bill) {
+		if (!bill.ledgers) throw new Exception('Ledgers must be specified.')
+		if (!bill.billtoyear) throw new Exception('Bill to Year must be specified.')
+		if (!bill.billtoqtr) throw new Exception('Bill to Quarter must be specified.')
+
+		def ledgersforbilling = bill.remove('ledgers')
+		def tmpbill = bill.clone()
+		bill.ledgers = []
+
+		ledgersforbilling.each{ledger ->
+			try{
+				tmpbill.rptledgerid = ledger.objid 
+				tmpbill.rptledger = em.findOpenLedger(tmpbill)
+				println 'Recalculating ledger : ' + tmpbill.rptledger?.tdno 
+				validateAndSetBill(tmpbill)
+		        def endyear = ( tmpbill.billtoyear < tmpbill.cy ? tmpbill.cy : tmpbill.billtoyear)
+		        ledgerSvc.postLedgerItemsForBilling(tmpbill.rptledger, tmpbill.billtoyear)
+		        tmpbill.items = ledgerSvc.getLedgerEntriesForBilling(tmpbill)
+		        tmpbill = ruleSvc.getBilling(tmpbill)
+				bill.expirydate = tmpbill.expirydate
+				bill.billdate = tmpbill.billdate
+				aggregateBill(bill, tmpbill)
+			}
+			catch(e){
+				println 'generateBill [ERROR] ' + e.message
 			}
 		}
-		bill.billyear = dtSvc.getYear(bill.billdate)
+		saveBill(bill)
+		return bill 
+	}
 
-		util.required('Bill To Year', bill.billtoyear)
-		util.required('Bill To Qtr', bill.billtoqtr)
+
+	@ProxyMethod
+	public def getOpenLedgers(bill){
+		if (!bill.taxpayer) throw new Exception('Taxpayer must be specified.')
+		if (!bill.billtoyear) throw new Exception('Bill to year must be specified.')
+		if (!bill.billtoqtr) throw new Exception('Bill to quarter must be specified.')
+		bill.taxpayerid = bill.taxpayer.objid 
+		bill.rptledgerid = (bill.rptledgerid ? bill.rptledgerid : '%')
+		bill.barangayid = (bill.barangay ? bill.barangay.objid : '%')
+		bill.rputype = (bill.rputype ? bill.rputype : '%')
+		return em.getBilledLedgers(bill)
+	}	
+
+	@ProxyMethod
+	public def getMaxAdvanceYear(){
+		def max_year = var.landtax_collection_max_advance_years_allowed
+		if (max_year) {
+			try{
+				return new java.math.BigDecimal(max_year.toString()).intValue() 
+			}
+			catch(e){
+				; 
+			}
+		}
+		return MAX_ADVANCE_YEARS;
+	}
+
+
+	@ProxyMethod
+	public def getShares(bill){
+		return ruleSvc.getShares(bill)
+	}
+	
+
+
+	/*=====================================================
+	*
+	* SUPPORT METHODS 
+	*
+	=====================================================*/
+	void validateAndSetBill(bill){
+		if (!bill.rptledger) {
+			throw new Exception('Ledger is fully paid or is exempted.')
+		}
+
+		bill.rptledgerid = bill.rptledger.objid
+		if (!bill.billdate) {
+			bill.billdate = bill.currentdate
+		}
+		else {
+			bill.billdate = dtSvc.parse('yyyy-MM-dd',bill.billdate) 
+		}
 
 		if (bill.billtoyear < bill.rptledger.lastyearpaid)
 			throw new Exception('Bill To Year must be greater than or equal to Last Year Paid.')
@@ -346,13 +243,12 @@ public class RPTBillingService
 			throw new Exception('Bill To Qtr must be greater than Last Qtr Paid.')
 		
 
-		def maxbilltoyear = pdate.year + getMaxAllowedAdvanceYear()
-		if (bill.billtoyear > maxbilltoyear){
-			throw new Exception('Bill To Year must not exceed year ' +  maxbilltoyear + '.')
+		if (bill.billtoyear > bill.cy + getMaxAdvanceYear()){
+			throw new Exception('Bill To Year must not exceed year ' +  bill.maxbilltoyear + '.')
 		}
 
 		if (bill.advancepayment){
-			if (bill.billtoyear < pdate.year )
+			if (bill.billtoyear < bill.cy)
 				throw new Exception('Advance Year must be greater than current year.')
 		}
 		else if (bill.advancebill){
@@ -360,324 +256,189 @@ public class RPTBillingService
 				throw new Exception('Advance Billing Date must be greater than current date.')
 		}
 		
-		if (bill.advancebill && bill.billdate <= (pdate.date - 1 ))
+		if (bill.advancebill && bill.billdate <= (bill.currentdate - 1 ))
             throw new Exception('Advance Billing Date must be greater than current date.')
-
-        if (bill.billtoyear > pdate.year){
-        	bill.forcerecalcbill = 1 
-        }
-
-        if (util.isTrue(var.landtax_bill_force_recalc)){
-        	bill.forcerecalcbill = 1 	
-        }
-	}
-
-
-	@ProxyMethod
-	public def buildShares(receipt){
-		def shares = []
-		receipt.rptitems.each{ledger ->
-			def bill = receipt.bill 
-			bill.rptledgerid = ledger.objid 
-			def request = ruleUtilSvc.buildShareRequest(bill, ledger)
-			def grps = ['SUMMARY', 'BRGY_SHARE', 'LGU_SHARE', 'PROV_SHARE']
-			grps.each{g ->
-				ruleSvc.execute( RULESET, request.facts, request.actions, g);
-			}
-			request.bill.taxes.each{
-				it.objid = 'CRA' + new java.rmi.server.UID()
-				it.receiptid = receipt.objid 
-			}
-			shares.addAll(request.bill.taxes)
-		}
-		return shares.findAll{it.amount > 0}
 	}	
 
 
-	@ProxyMethod
-	public def loadProperties(bill){
-		bill.billdate = dtSvc.serverDate
-		if (!bill.taxpayer) throw new Exception('Taxpayer is required.')
-		bill.taxpayerid = bill.taxpayer.objid
-		return  em.getBilledLedgers(buildParams(bill))
-	}	
-
-
-	/*========================================================
-	*
-	* NOTE: billing is now by ledger
-	*
-	========================================================*/
-	@ProxyMethod
-	public def buildParams(bill){
-		def cdate = dtSvc.parseCurrentDate()
-		if (!bill.billdate)
-			bill.billdate = dtSvc.serverDate
-		def pdate = dtSvc.parseDate(bill.billdate, null)
-		def params = [
-			rptledgerid : bill.rptledgerid,
-			taxpayerid : bill.taxpayerid,
-			billtoyear  : bill.billtoyear, 
-			billtoqtr   : bill.billtoqtr,
-			toyear  	: bill.billtoyear, 
-			toqtr   	: bill.billtoqtr, 
-			currdate    : cdate.date,
-			currentyr   : cdate.year,
-			currentqtr  : cdate.qtr,
-			nextbilldate : bill.expirydate,
-			billdate   : pdate.date,
-			billyear   : pdate.year,
-			billqtr    : pdate.qtr,
-			rputype    : bill.rputype, 
-			forpayment : 0,
-			billid 		: bill.objid,
-		]
-		if (bill.rptledgerid) {
-			params.filters = ' rl.objid = $P{rptledgerid}'
-			params.ppfilters = ' rl.objid = $P{rptledgerid}'
+	def generateBarcode(bill){
+		def cy = bill.cy.toString()[-2..-1]
+		def lguid = '000'
+		if (env){
+			if (env.ORGID){
+				lguid = env.ORGID.replaceAll('-', '')
+			}
 		}
-		else {
-			params.filters = ' rl.taxpayer_objid = $P{taxpayerid} '
-			params.ppfilters = ' pp.taxpayer_objid = $P{taxpayerid} '
-		}
-		if (bill.rputype ){
-			params.filters += ' AND rl.rputype = $P{rputype} '
-			params.ppfilters += ' AND rl.rputype = $P{rputype} '
-		}
-
-		if (bill.barangay){
-			params.barangayid = bill.barangay.objid 
-			params.filters += ' AND rl.barangayid = $P{barangayid}'
-			params.ppfilters += ' AND rl.barangayid = $P{barangayid}'
-		}
-
-		//TODO: temp hack since datasource for MSSQL does not reliably 
-		// support order by with limit 
-		params.mssqlcountfilter = ''
-		params.mysqlcountfilter = ''
-		if (bill.payoption && bill.payoption == 'bycount' && bill.itemcount > 0){
-			params.mssqlcountfilter = ' TOP ' + bill.itemcount
-			params.mysqlcountfilter = ' LIMIT ' + bill.itemcount 
-		}
-		return params
+		return BARCODE_KEY + ':' + lguid + cy + seqSvc.getNextFormattedSeriesA('RPTBILL-' + cy,7)
 	}
 
-	@ProxyMethod
-	public def getMaxAdvanceYear(  ) {
-		return dtSvc.serverYear + 3;
-	}
-
-	def getMaxAllowedAdvanceYear(){
-		def max_year = var.landtax_collection_max_advance_years_allowed
-		if (!max_year) max_year = '3'
-		try{
-			return new java.math.BigDecimal(max_year.toString()).intValue() 
+	void saveBill(bill){
+		if (bill.totals.total <= 0.0){
+			throw new Exception('There are no unpaid items found.')
 		}
-		catch(e){
-			return 3;
+		if (bill._save == false) {
+			return
+		}
+
+		if (!bill.billto && bill.taxpayer){
+			bill.billto = [:]
+			bill.billto.objid = bill.taxpayer.objid
+			bill.billto.name = bill.taxpayer.name
+			if (!(bill.taxpayer.address instanceof String)){
+				bill.billto.address = bill.taxpayer.address.text
+			} else{
+				bill.billto.address = bill.taxpayer.address
+			}
+		}
+		if (!bill.postedby){
+			bill.postedby = (env.FULLNAME ? env.FULLNAME : 'system') 
+			bill.postedbytitle = (env.FULLNAME ? env.FULLNAME : 'system') 
+		}
+		bill.taxpayer = bill.billto
+		bill.dtposted = bill.currentdate
+		bill.validuntil = bill.expirydate - 1
+		em_rptbill.save(bill)
+		em_rptbill_ledger.find([billid:bill.objid]).delete()
+		bill.ledgers.collect{[billid:bill.objid, rptledgerid:it.objid]}.each{bl->
+			em_rptbill_ledger.save(bl)
 		}
 	}
 
-	@ProxyMethod
-	public def buildBillFromBarcode(barcode){
-		def xbill = getBillByBarcode(barcode)
-		em_rptbill_ledger.find([billid:xbill.objid]).list().each{
-			xbill.rptledgerid = it.rptledgerid 
-			generateBill(xbill)
+	void aggregateBill(bill, tmpbill){
+		if (!tmpbill.items) return;
+		
+		def rptledger = tmpbill.rptledger
+		rptledger.items = buildItemsForReport(tmpbill)
+		if (bill._forpayment && bill._forpayment == true){
+        	rptledger.pay = true
+        	rptledger.postingitems = buildPostingItems(tmpbill)
+        	rptledger.shares = tmpbill.shares
+        	def itemsTotal = numSvc.roundA(rptledger.items.sum{ (it.total ? it.total : 0) }, 2)
+        	def postItemsTotal = numSvc.roundA(rptledger.postingitems.sum{ (it.total ? it.total : 0) }, 2)
+        	def sharesTotal = numSvc.roundA(rptledger.shares.sum{ (it.amount ? it.amount : 0) }, 2)
+        	
+        	if (itemsTotal != postItemsTotal && itemsTotal != sharesTotal){
+        		throw new Exception('There is discrepancy in items and shares total.\nPlease verify rules.')
+        	}
 		}
-		return xbill
+
+		rptledger.hastaxdifference = tmpbill.items.find{ util.isTrue(it.taxdifference)} != null 
+		rptledger.partialled = false
+		rptledger.fromyear = (rptledger.lastqtrpaid == 4 ? rptledger.lastyearpaid + 1 : rptledger.lastyearpaid)
+		rptledger.fromqtr = (rptledger.lastqtrpaid == 4 ? 1 : rptledger.lastqtrpaid + 1)
+		rptledger.toyear = tmpbill.billtoyear
+		rptledger.toqtr = tmpbill.billtoqtr
+		rptledger.total = rptledger.items.total.sum()
+
+		tmpbill.remove('items')
+		bill.ledgers << tmpbill.rptledger 
+		tmpbill.totals.each{k,v ->
+			if (!bill.totals[k]){
+				bill.totals[k] = 0
+			}
+			bill.totals[k] = numSvc.round(bill.totals[k] + v)
+		}
+	}
+
+	def buildPostingItems(bill){
+		def items = []
+		bill.items.each{
+			items << [
+				itemid: it.objid,
+				rptledgerfaasid: it.rptledgerfaasid,
+				revtype: it.revtype,
+				revperiod: it.revperiod,
+				year: it.year,
+				qtr: (it.qtr ? it.qtr : null),
+				amount: it.amtdue,
+				interest: it.interest,
+				discount: it.discount,
+				partialled: it.partialled,
+				priority: it.priority,
+				total: it.amtdue + it.interest - it.discount
+			]
+		}
+		return items.sort{a,b -> 
+			def akey = a.year + ':' + a.qtr + ':' + a.priority 
+			def bkey = b.year + ':' + b.qtr + ':' + b.priority 
+			return akey <=> bkey
+		} 
 	}
 
 
-	@ProxyMethod
-	public void mergeBillBarcode(bill, barcode){
-		if (!em_rptbill.find([objid:bill.objid]).first()){
-
-			bill.dtposted = dtSvc.serverDate
-			bill.expirydate = dtSvc.getMonthEndDate(bill.dtposted)
-			bill.postedby = env.FULLNAME
-			bill.postedbytitle = env.JOBTITLE
-			bill.taxpayer.address = bill.taxpayer.address.text
-			em_rptbill.create(bill)
+	def buildItemsForReport(bill){
+		bill.totals = [total:0.0]
+		def items = []
+		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + '-' + it.priority}
+		groups.each{k, list ->
+			def first = list.first() 
+			def item = [:]
+			item.year = first.year 
+			item.qtr = first.qtr 
+			item.originalav = first.rptledgerfaas.assessedvalue 
+			item.taxdifference = first.taxdifference
+			item.period = buildPeriod(list)
+			item.total = 0.0 
+			item.flag = ''
+			list.each{
+				item[it.revtype] = numSvc.round(it.amtdue)
+				item[it.revtype+'int'] = numSvc.round(it.interest)
+				item[it.revtype+'disc'] = numSvc.round(it.discount)
+				item[it.revtype+'net'] = numSvc.round(it.amtdue - it.discount + it.interest)
+				item[it.revtype+'dp'] = numSvc.round(it.interest - it.discount)
+				item.total = numSvc.round(item.total + item[it.revtype+'net'])
+				if (!item.flag && !it.revtype.matches('basic|sef')) {
+					item.flag = '*'
+				}
+				calcBillTotals(it.revtype, bill, item)
+			}
+			if (item.taxdifference){
+				item.flag = '*'
+			}
+			items << item
 		}
-
-		def xbill = getBillByBarcode(barcode)
-		em.mergeBillLedger([
-			billid  	: bill.objid,
-			newbillid   : xbill.objid 
-		])
-
-		em_rptbill_ledger.find([billid:bill.objid]).list().each{
-			bill.rptledgerid = it.rptledgerid 
-			generateBill(bill)
+		items.sort{a, b ->
+			def ayrq = a.year + '-' + (a.qtr ? a.qtr : 0)
+			def byrq = b.year + '-' + (b.qtr ? b.qtr : 0)
+			return ayrq <=> byrq
 		}
+		return items
 	}
 
-
-	@ProxyMethod
-	public def applyPartialPayment(partial, ledger) {
-		def items = ledger.items 
-		def partialpmt = partial.amount
-		def item = null
-		def partialled = false;
-
-		def _items = []
-		int idx = 0
-		for(; idx <items.size(); idx++){
-			item = items[idx]
-			
-			if (partialpmt >= item.total){
-				partialpmt -= item.total
-				item.partialled = false 
-				_items << item 
+	def buildPeriod(list){
+		def period = list.first().year 
+		def minqtr = list.qtr.min()
+		def maxqtr = list.qtr.max()
+		if ((minqtr && minqtr != 1) || (maxqtr && maxqtr != 4)){
+			if (minqtr == maxqtr){
+				period += '-' + minqtr 
 			}
 			else {
-				partialled = true;
-
-				partialpmt = applyPartialFireCode(item, partialpmt)
-				partialpmt = applyPartialBasicIdle(item, partialpmt)
-				partialpmt = applyPartialSh(item, partialpmt)
-
-				//apply partial to basic and sef
-				//distribute evenly 
-				if (partialpmt == 0.0 ){
-					item.basic 		= 0.0
-					item.basicdisc 	= 0.0
-					item.basicint 	= 0.0
-					item.sef 		= 0.0
-					item.sefdisc 	= 0.0
-					item.sefint 	= 0.0
-				}
-				else {
-					def netbasic 		= item.basic - item.basicdisc + item.basicint 
-					def netsef 			= item.sef - item.sefdisc + item.sefint 
-					def linetotal 		= netbasic + netsef 
-
-					def partialpmtbasic    = numSvc.roundA(partialpmt * netbasic / linetotal, 2);
-					def partialpmtsef      = numSvc.roundA(partialpmt - partialpmtbasic, 2);
-					def basicdiscrate    = item.basicdisc / item.basic
-					def sefdiscrate    = item.sefdisc / item.sef
-
-					def partialbasic     = numSvc.round(  partialpmtbasic * item.basic  / netbasic )
-					def partialbasicint  = numSvc.round(  partialpmtbasic * item.basicint / netbasic )
-					def partialbasicdisc = numSvc.round(  partialbasic * basicdiscrate )
-
-					def partialsef     	= numSvc.round(  partialpmtsef * item.sef  / netsef )
-					def partialsefint  	= numSvc.round(  partialpmtsef * item.sefint / netsef )
-					def partialsefdisc = numSvc.round(  partialsef * sefdiscrate )
-
-					item.basic 		= partialbasic 
-					item.basicdisc 	= numSvc.round( item.basic * basicdiscrate)
-					item.basicint 	= partialbasicint
-					item.sef 		= partialsef 
-					item.sefdisc 	= numSvc.round( item.sef * sefdiscrate)
-					item.sefint 	= partialsefint
-				}
-
-				item.basicnet 		= item.basic - item.basicdisc + item.basicint
-				item.sefnet 		= item.sef - item.sefdisc + item.sefint
-				item.totalbasicsef 	= item.basicnet + item.sefnet
-				item.total = item.totalbasicsef + item.firecode + (item.basicidle - item.basicidledisc + item.basicidleint)
-				item.total += item.basicidle - item.basicidledisc + item.basicidleint
-				item.total += item.sh - item.shdisc + item.shint
-				item.partialled = true
-				_items << item 
-				break 
+				period += '-' + minqtr + '' + maxqtr
 			}
 		}
-		
-		ledger.items = _items 
-		ledger.toyear = ledger.items.last().year
-		ledger.toqtr = ledger.items.last().qtr
-		ledger.totalbasic = ledger.items.basicnet.sum()
-		ledger.totalsef = ledger.items.sefnet.sum()
-		ledger.totalfirecode = ledger.items.firecode.sum()
-		ledger.totalbasicidle = ledger.items.sum{ it.basicidle - it.basicidledisc + it.basicidleint }
-		ledger.totalsh = ledger.items.sum{ it.sh - it.shdisc + it.shint }
-		ledger.totalgeneral = ledger.totalbasic + ledger.totalfirecode + ledger.totalbasicidle + ledger.totalsh
-		ledger.amount = ledger.totalgeneral + ledger.totalsef 
-		ledger.partialled = true
-		ledger.pay = true 
-		return 	ledger 
+		return period 
 	}
 
-	def applyPartialFireCode(item, partialpmt){
-		if (partialpmt == 0){
-			item.firecode = 0.0 
-		}
-		else if (item.firecode > 0){
-			if (partialpmt >= item.firecode){
-				partialpmt -= item.firecode 
+	void calcBillTotals(revtype, bill, item){
+		def keys = [revtype]
+		keys << revtype + 'int'
+		keys << revtype + 'disc'
+		keys << revtype + 'net'
+		keys << revtype + 'dp'
+
+		if (!bill.totals[revtype]){
+			keys.each{
+				bill.totals[it] = 0.0
 			}
-			else{
-				item.firecode = partialpmt
-				partialpmt = 0.0 
-			}
 		}
-		return partialpmt
+
+		keys.each{
+			bill.totals[it] += item[it]
+		}
+		bill.totals.total += item[revtype+'net']
 	}
 
-	def applyPartialBasicIdle(item, partialpmt){
-		def idletaxtotal = item.basicidle + item.basicidleint - item.basicidledisc
-		if (partialpmt == 0){
-			item.basicidle 		= 0
-			item.basicidledisc 	= 0
-			item.basicidleint 	= 0
-		}
-		else if (idletaxtotal > 0){
-			if (partialpmt >= idletaxtotal){
-				partialpmt -= idletaxtotal
-			}
-			else{
-				def partialbasicidle     	= numSvc.round(  partialpmt * (item.basicidle - item.basicidledisc) / idletaxtotal )
-				def partialbasicidleint  	= numSvc.round(  partialpmt * item.basicidleint / idletaxtotal )
-				def partialbasicidledisc 	= numSvc.round(  partialpmt * item.basicidledisc / idletaxtotal )
 
-				item.basicidle 		= partialbasicidle + partialbasicidledisc
-				item.basicidledisc 	= partialbasicidledisc
-				item.basicidleint 	= partialbasicidleint
-				partialpmt = 0.0
-			}
-		}
-		return partialpmt
-	}
-
-	def applyPartialSh(item, partialpmt){
-		def shtotaltax = item.sh + item.shint - item.shdisc
-		if (partialpmt == 0){
-			item.sh 	= 0
-			item.shdisc = 0
-			item.shint 	= 0
-		}
-		else if (shtotaltax > 0){
-			if (partialpmt >= shtotaltax){
-				partialpmt -= shtotaltax
-			}
-			else{
-				def partialsh     	= numSvc.round(  partialpmt * (item.sh - item.shdisc) / shtotaltax )
-				def partialshint  	= numSvc.round(  partialpmt * item.shint / shtotaltax )
-				def partialshdisc 	= numSvc.round(  partialpmt * item.shdisc / shtotaltax )
-
-				item.sh 	= partialsh + partialshdisc
-				item.shdisc = partialshdisc
-				item.shint 	= partialshint
-				partialpmt  = 0.0
-			}
-		}
-		return partialpmt
-	}
-
-	@ProxyMethod
-	public void checkRestrictions( ledgerid ) {
-		
-	}
-
-	@ProxyMethod
-	public void deletePendingPaymentOrderBills(ledger){
-		em.getPaidLedgerBills(ledger).each{bill ->
-			em.deleteRptBillLedger(bill)
-			em.deleteRptBill(bill)
-		}
-	}
-
+	
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workunit 
+<workunit schemaName="rptledger"
     title="Realty Tax Ledger (#{entity.state})"
     allowEdit="#{entity.state=='PENDING'}"
     allowCreate="false"

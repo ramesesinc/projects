@@ -196,6 +196,7 @@ class SubdivisionService
     @ProxyMethod
     public void undoCancelledImprovement(cancelledimprovement) {
         def arpu = em.findAffectedRpuById(cancelledimprovement)
+        resolveLandRpu(arpu)
         def subdivision = openSubdivision(cancelledimprovement.parentid)
         createAffectedRpu(subdivision, arpu)
         cancelledimprovementDb.delete([objid:cancelledimprovement.objid])
@@ -239,6 +240,7 @@ class SubdivisionService
     void createAffectedRpu(subdivision, arpu){
         txnRef.insertRef(arpu.prevfaasid, subdivision.objid, 'FAAS is currently referenced by Subdivision No. ' + subdivision.txnno + '.')
         def rpu = rpuSvc.openRpu([objid:arpu.prevrpuid])
+        if (!rpu.landrpuid) rpu.landrpuid = arpu.landrpuid
         rpuSvc.generateNewIds(rpu)
         rpu.ry  = subdivision.ry 
         rpuSvc.createRpu(rpu)
@@ -736,6 +738,13 @@ class SubdivisionService
             cancelledbytdnos    : cancelledbytdnos,
         ]
         faasSvc.cancelFaas(params)
+    }
+
+    void resolveLandRpu(arpu){
+        if (!arpu.landrpuid) {
+            def landrpu = em.findLandRpuByRealProperty(arpu)
+            arpu.landrpuid = landrpu?.objid 
+        }
     }
 }
 

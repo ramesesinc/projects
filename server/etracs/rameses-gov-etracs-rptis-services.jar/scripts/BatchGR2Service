@@ -102,9 +102,17 @@ class BatchGR2Service
 
 	void validateParams(params){
 		if (!params.rputype) throw new Exception('Property Type must be specified.')
+		params.originlguid = env.ORGID 
 		params.lguid = params.lgu.objid 
 		params.barangayid = params.barangay?.objid 
 		params.snewry = params.newry.toString()
+
+		params.commentstart = ''
+		params.commentend = ''
+		if (!params.checkduplicate){
+			params.commentstart = '/* '
+			params.commentend = ' */'
+		}
 	}
 
 
@@ -113,6 +121,9 @@ class BatchGR2Service
 		try{
 			println 'reviseRealProperties...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select objid from realproperty where objid = concat(replace(rp.objid, concat('-',rp.ry), ''), concat('-', $P{newry})))
+			''')
 			em.insertRevisedRealProperties(params)
 		}
 		catch(e){
@@ -126,6 +137,9 @@ class BatchGR2Service
 		try{
 			println 'reviseRpus... ' + params.rputype 
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select objid from rpu where objid = concat(replace(r.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em.insertRevisedRpus(params)
 		}
 		catch(e){
@@ -138,6 +152,9 @@ class BatchGR2Service
 		try{
 			println 'reviseFaases...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select objid from faas where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em.insertRevisedFaases(params)
 		}
 		catch(e){
@@ -150,6 +167,9 @@ class BatchGR2Service
 		try{
 			println 'reviseFaasList...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select objid from faas_list where objid = f.objid )
+			''')
 			em.insertRevisedFaasList(params)
 		}
 		catch(e){
@@ -177,6 +197,9 @@ class BatchGR2Service
 			params.provapprovertitle = params.provapprover?.title 
 			params.provapproverdtsigned = params.provapprover?.dtsigned 
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select objid from faas_signatory where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em.insertRevisedSignatories(params)
 		}
 		catch(e){
@@ -189,6 +212,9 @@ class BatchGR2Service
 		try{
 			println 'reviseFaasPreviousList...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select objid from faas_previous where objid = concat(replace(f.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em.insertRevisedPreviousFaases(params)
 		}
 		catch(e){
@@ -212,6 +238,9 @@ class BatchGR2Service
 		try{
 			println 'reviseLandRpus...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from landrpu where objid = concat(replace(lr.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_land.insertRevisedLandRpus(params)	
 		}
 		catch(e){
@@ -224,6 +253,9 @@ class BatchGR2Service
 		try{
 			println 'reviseLandAppraisals...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from landdetail where objid = concat(replace(ld.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_land.insertRevisedLandDetails(params)	
 		}
 		catch(e){
@@ -237,6 +269,9 @@ class BatchGR2Service
 		try{
 			println 'revisePlantTreeAppraisals...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from planttreedetail where objid = concat(replace(ptd.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_land.insertRevisedPlantTreeDetails(params)	
 		}
 		catch(e){
@@ -249,7 +284,14 @@ class BatchGR2Service
 		try{
 			println 'reviseLandAdjustments...'
 			validateParams(params)
+			buildFilter(params, ''' 
+				and not exists(select * from landadjustment where objid = concat(replace(la.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
+
 			em_land.insertRevisedLandAdjustments(params)	
+			buildFilter(params, '''
+				and not exists(select * from landadjustmentparameter where objid = concat(replace(la.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_land.insertRevisedLandAdjustmentParameters(params)	
 		}
 		catch(e){
@@ -270,6 +312,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgRpus...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldgrpu where objid = concat(replace(br.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_bldg.insertRevisedBldgRpus(params)	
 		}
 		catch(e){
@@ -283,6 +328,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgStructures...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldgstructure where objid = concat(replace(bs.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_bldg.insertRevisedBldgStructures(params)	
 		}
 		catch(e){
@@ -296,6 +344,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgStructureTypes...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldgrpu_structuraltype where objid = concat(replace(bs.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_bldg.insertRevisedBldgStructuralTypes(params)	
 		}
 		catch(e){
@@ -309,6 +360,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgUses...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldguse where objid = concat(replace(bu.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_bldg.insertRevisedBldgUses(params)	
 		}
 		catch(e){
@@ -322,6 +376,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgFloors...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldgfloor where objid = concat(replace(bf.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_bldg.insertRevisedBldgFloors(params)	
 		}
 		catch(e){
@@ -335,6 +392,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgAdditionalItems...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldgflooradditional where objid = concat(replace(bfa.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')
 			em_bldg.insertRevisedBldgAdditionalItems(params)	
 		}
 		catch(e){
@@ -348,6 +408,9 @@ class BatchGR2Service
 		try{
 			println 'reviseBldgAdditionalItemParams...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from bldgflooradditionalparam where objid = concat(replace(bfa.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_bldg.insertRevisedBldgAdditionalItemParams(params)	
 		}
 		catch(e){
@@ -368,6 +431,9 @@ class BatchGR2Service
 		try{
 			println 'reviseMachRpus...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from machrpu where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_mach.insertRevisedMachRpus(params)	
 		}
 		catch(e){
@@ -381,6 +447,9 @@ class BatchGR2Service
 		try{
 			println 'reviseMachUses...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from machuse where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_mach.insertRevisedMachUses(params)	
 		}
 		catch(e){
@@ -394,6 +463,9 @@ class BatchGR2Service
 		try{
 			println 'reviseMachDetails...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from machdetail where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_mach.insertRevisedMachDetails(params)	
 		}
 		catch(e){
@@ -415,6 +487,9 @@ class BatchGR2Service
 		try{
 			println 'revisePlantTreeRpus...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from planttreerpu where objid = concat(replace(p.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_planttree.insertRevisedPlantTreeRpus(params)	
 		}
 		catch(e){
@@ -428,6 +503,9 @@ class BatchGR2Service
 		try{
 			println 'revisePlantTreeDetails...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from planttreedetail where objid = concat(replace(p.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_planttree.insertRevisedPlantTreeDetails(params)	
 		}
 		catch(e){
@@ -450,6 +528,9 @@ class BatchGR2Service
 		try{
 			println 'reviseMiscRpus...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from miscrpu where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_misc.insertRevisedMiscRpus(params)	
 		}
 		catch(e){
@@ -463,6 +544,9 @@ class BatchGR2Service
 		try{
 			println 'reviseMiscRpuItems...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from miscrpuitem where objid = concat(replace(m.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_misc.insertRevisedMiscRpuItems(params)	
 		}
 		catch(e){
@@ -476,6 +560,9 @@ class BatchGR2Service
 		try{
 			println 'reviseMiscRpuItemParams...'
 			validateParams(params)
+			buildFilter(params, '''
+				and not exists(select * from miscrpuitem_rptparameter where miscrpuitemid = concat(replace(m.miscrpuitemid, concat('-',r.ry), ''), concat('-', $P{newry})))
+			''')			
 			em_misc.insertRevisedMiscRpuItemParams(params)	
 		}
 		catch(e){
@@ -576,6 +663,12 @@ class BatchGR2Service
 
 
 
+	void buildFilter(params, filter){
+		params.filter = ''
+		if (params.checkduplicate){
+			params.filter = filter 
+		}
+	}
 
 	
 }

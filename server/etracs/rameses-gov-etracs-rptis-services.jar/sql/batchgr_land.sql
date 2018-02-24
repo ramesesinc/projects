@@ -37,8 +37,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
-and not exists(select * from landrpu where objid = concat(replace(lr.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
-
+${filter}
 
 
 [insertRevisedLandDetails]
@@ -100,8 +99,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
-and not exists(select * from landdetail where objid = concat(replace(ld.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
-
+${filter}
 
 
 [insertRevisedPlantTreeDetails]
@@ -151,7 +149,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
-and not exists(select * from planttreedetail where objid = concat(replace(ptd.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 
 
 [insertRevisedLandAdjustments]
@@ -187,8 +185,7 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
-and not exists(select * from landadjustment where objid = concat(replace(la.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
-
+${filter}
 
 
 
@@ -217,5 +214,5 @@ where rp.barangayid = $P{barangayid}
 and f.state = 'current'
 and r.rputype = 'land'
 and r.ry < $P{newry}
-and not exists(select * from landadjustmentparameter where objid = concat(replace(la.objid, concat('-',r.ry), ''), concat('-', $P{newry})))
+${filter}
 

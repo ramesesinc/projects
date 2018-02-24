@@ -19,7 +19,6 @@ class RPTLedgerSubLedgerModel
     def subledgers;
     
     void init(){
-        subledgers = svc.getSubLedgers([objid:entity.objid]);
         calcTotals();
     }
     def listHandler = [
@@ -43,9 +42,11 @@ class RPTLedgerSubLedgerModel
         if (totalSubledgerSqm >= entity.totalareasqm)
             throw new Exception('Subledger is no longer allowed.\nMain Ledger area has totally been allocated.')
             
+        calcTotals();
+        
         return InvokerUtil.lookupOpener('rptsubledger:create', [
                 ledger            : entity,
-                totalSubledgerArea : totalSubledgerSqm, 
+                totalSubledgerAreaSqm : totalSubledgerSqm, 
                 totalSubledgerMV   : totalSubledgerMV, 
                 totalSubledgerAV   : totalSubledgerAV, 
                 
@@ -58,13 +59,14 @@ class RPTLedgerSubLedgerModel
     }
     
     def openSubLedger(){
+        calcTotals();
+        
         return InvokerUtil.lookupOpener('rptsubledger:open', [
                 ledger              : entity,
-                totalSubledgerArea   : totalSubledgerSqm, 
+                totalSubledgerAreaSqm   : totalSubledgerSqm, 
                 totalSubledgerMV     : totalSubledgerMV, 
                 totalSubledgerAV     : totalSubledgerAV, 
                 entity               : selectedItem,
-                //entity              : svc.openLedger(selectedSubLedger),
                 onupdate  : {
                     selectedItem.putAll(it)
                     listHandler.load();
@@ -84,6 +86,9 @@ class RPTLedgerSubLedgerModel
     }
     
     void calcTotals(){
+        subledgers = svc.getSubLedgers([objid:entity.objid]);
+        listHandler?.reload();
+        
         totalSubledgerSqm = 0.0;
         totalSubledgerMV = 0.0;
         totalSubledgerAV = 0.0;
@@ -93,9 +98,9 @@ class RPTLedgerSubLedgerModel
         }
         
         if (subledgers) {
-            totalSubledgerSqm = subledgers.totalareasqm.sum();
-            totalSubledgerMV = subledgers.totalmv.sum();
-            totalSubledgerAV = subledgers.totalav.sum();
+            totalSubledgerSqm = subledgers.rptledger.totalareasqm.sum();
+            totalSubledgerMV = subledgers.rptledger.totalmv.sum();
+            totalSubledgerAV = subledgers.rptledger.totalav.sum();
             subledgerCount = subledgers.size();
         }
         binding?.refresh('totalSubledger.*|subledgerCount');

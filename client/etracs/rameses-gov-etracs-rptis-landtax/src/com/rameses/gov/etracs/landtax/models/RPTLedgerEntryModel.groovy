@@ -15,11 +15,11 @@ class RPTLedgerEntryModel
     def selectedItem;
     def entries;
     def faases;
+    def ledger
     
     void init(){
-        def ledger = [objid:entity.objid]
-        entries = svc.getLedgerItems(ledger);
-        faases = svc.getTaxableLedgerFaases(ledger);
+        ledger = [objid:entity.objid]
+        entries = svc.getLedgerEntries(ledger);
     }
     
     void refresh(){
@@ -39,6 +39,8 @@ class RPTLedgerEntryModel
     
     
     def addLedgerItem(){
+        loadTaxableFaases();
+        
         return InvokerUtil.lookupOpener('rptledgeritem:create', [
             svc         : svc,
             entity      : entity, 
@@ -47,17 +49,6 @@ class RPTLedgerEntryModel
         ] )
     }
     
-    def editLedgerItem(){
-        return InvokerUtil.lookupOpener('rptledgeritem:edit', [
-            svc         : svc,
-            entity      : entity, 
-            item        : selectedItem,
-            faases      : faases,
-            
-            onupdate : { refresh() }
-        ] )
-    }
-       
     void deleteLedgerItem(){
         if (!selectedItem) return;
         if (selectedItem.taxdifference == false){
@@ -66,6 +57,12 @@ class RPTLedgerEntryModel
         if (MsgBox.confirm('Delete selected item?')){
             svc.removeLedgerItem(selectedItem);
             refresh();
+        }
+    }
+    
+    void loadTaxableFaases(){
+        if (!faases){
+            faases = svc.getTaxableFaases(ledger);
         }
     }
 }

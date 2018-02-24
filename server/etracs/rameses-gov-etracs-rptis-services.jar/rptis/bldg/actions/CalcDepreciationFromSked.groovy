@@ -10,6 +10,7 @@ public class CalcDepreciationFromSked implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
 		def bs = params.bldgstructure
+		def cdurating = params.cdurating 
 
 		if ( bs.entity.bldgtype && bs.entity.bldgtype.objid ){
 			def depreciations = bldgSettingSvc.getDepreciations(bs.entity.bldgtype?.objid)
@@ -23,11 +24,14 @@ public class CalcDepreciationFromSked implements RuleActionHandler {
 				int effectiveage = bs.rpu.effectiveage 
 		        if( effectiveage > 0 )  {
 		            for ( sked in depreciations ) {
+		            	def rate = (cdurating ? sked[cdurating] : sked.rate )
+		        		if (rate == null) rate = 0.0 
+
 		                if( sked.ageto != 0 && sked.ageto <= effectiveage ) {
-							depreciationrate += (sked.ageto - sked.agefrom + 1) * sked.rate
+							depreciationrate += (sked.ageto - sked.agefrom + 1) * rate
 						}
 						else {
-							depreciationrate += (effectiveage - sked.agefrom + 1) * sked.rate
+							depreciationrate += (effectiveage - sked.agefrom + 1) * rate
 							break
 						}
 					}

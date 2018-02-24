@@ -4,6 +4,9 @@ import com.rameses.services.extended.*;
 
 class BatchGR2Interceptor
 {
+	@Service('Var')
+	def var 
+
 	@Service('RPUService')
 	def rpuSvc 
 
@@ -24,6 +27,9 @@ class BatchGR2Interceptor
 
 	@Service('RPTUtil')
 	def util
+
+	@ActiveDB(value='dbimage', adapter="image")
+	def em_dbimage 
 
 	@DataContext('batchgr_items_forrevision')
 	def em_batchgr_items_forrevision
@@ -83,6 +89,7 @@ class BatchGR2Interceptor
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
 			buildRequirements(faas)
+			insertSketch(faas)
 		}
 
 	}
@@ -106,6 +113,7 @@ class BatchGR2Interceptor
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
 			buildRequirements(faas)
+			insertSketch(faas)
 		}
 
 	}
@@ -130,6 +138,7 @@ class BatchGR2Interceptor
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
 			buildRequirements(faas)
+			insertSketch(faas)
 		}
 
 	}
@@ -153,6 +162,7 @@ class BatchGR2Interceptor
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
 			buildRequirements(faas)
+			insertSketch(faas)
 		}
 
 	}
@@ -176,6 +186,7 @@ class BatchGR2Interceptor
 			em_batchgr_log.create(gritem)
 			em_batchgr_items_forrevision.delete(gritem)
 			buildRequirements(faas)
+			insertSketch(faas)
 		}
 
 	}
@@ -190,8 +201,6 @@ class BatchGR2Interceptor
 			classificationid : faas.rpu.classification?.objid,
 		])
 
-		println 'requirements -> ' + requirements
-
 		requirements.unique().each{
 			reqSvc.create([
 				objid  				: 'R' + new java.rmi.server.UID(),
@@ -205,6 +214,17 @@ class BatchGR2Interceptor
 				value_remarks 		: null,
 				complied 			: 0,
 			])
+		}
+	}
+
+	void insertSketch(faas){
+		if (util.isTrue(var.gr_carry_over_sketch)){
+			def param = [:]
+			param.newrefid = faas.objid
+			param.prevrefid = faas.previousfaases[0].prevfaasid
+			param.ry = faas.rpu.ry 
+			em_dbimage.insertPreviousSketch(param)
+			em_dbimage.insertPreviousSketchItems(param)
 		}
 	}
 }

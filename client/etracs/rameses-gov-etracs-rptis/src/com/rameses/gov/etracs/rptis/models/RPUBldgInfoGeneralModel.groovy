@@ -16,7 +16,7 @@ class RPUBldgInfoGeneralModel extends SubPageModel
     
     @PropertyChangeListener
     def listener = [
-        'entity.rpu.(hasswornamount|swornamount|useswornamount|effectiveage|dtoccupied|dtcompleted|depreciation)':{
+        'entity.rpu.(hasswornamount|swornamount|useswornamount|effectiveage|dtoccupied|dtcompleted|depreciation|cdurating)':{
             if (!entity.rpu.hasswornamount){
                 entity.rpu.swornamount = 0.0;
                 entity.rpu.useswornamount = false;
@@ -45,6 +45,10 @@ class RPUBldgInfoGeneralModel extends SubPageModel
         def autodepreciate = varSvc.get('bldg_rpu_auto_depreciate')
         if (autodepreciate == null) autodepreciate = true;
         return RPTUtil.isTrue(autodepreciate);
+    }
+    
+    def getCduRatings(){
+        LOV.BLDG_CDU_RATING*.key
     }
    
 }    

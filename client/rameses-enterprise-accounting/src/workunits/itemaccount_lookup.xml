@@ -43,7 +43,6 @@
                     s << "fund.objid = :fundid";
                     parm.fundid = fundid;
                 }
-                
                 if(tag) {
                     if ( tag == 'MAIN' ) {
                         s << " parentid IS NULL and state='APPROVED' AND type NOT IN ('CASH','CASH_IN_BANK') ";
@@ -53,6 +52,11 @@
                         parm.atype = tag;
                     } 
                 }
+
+                if(tag == "REVENUE" ) {
+                    s << "parentid IS NULL ";
+                }
+                                                
                 return [s.join(" AND "), parm ];
             }
         

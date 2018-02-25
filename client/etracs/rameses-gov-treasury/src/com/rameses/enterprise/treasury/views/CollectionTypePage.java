@@ -46,6 +46,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xSuggest1 = new com.rameses.rcp.control.XSuggest();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xLookupField3 = new com.rameses.rcp.control.XLookupField();
 
         xTabbedPane1.setItems("sections");
 
@@ -140,10 +141,10 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xFormPanel1.add(xSuggest1);
 
         xLabel2.setCellPadding(new java.awt.Insets(10, 0, 5, 0));
-        xLabel2.setExpression("Specify if this collection type is applicable only to the ff. fund:");
         xLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         xLabel2.setPadding(new java.awt.Insets(1, 0, 1, 1));
         xLabel2.setShowCaption(false);
+        xLabel2.setText("Specify if this collection type is applicable only to the ff. fund and org:");
         xFormPanel1.add(xLabel2);
 
         xLookupField2.setCaption("          Fund");
@@ -152,6 +153,13 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xLookupField2.setName("entity.fund"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLookupField2);
+
+        xLookupField3.setCaption("          Org");
+        xLookupField3.setExpression("#{item.objid} #{item.name}");
+        xLookupField3.setHandler("org:lookup");
+        xLookupField3.setName("entity.org"); // NOI18N
+        xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
+        xFormPanel1.add(xLookupField3);
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -210,6 +218,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XLookupField xLookupField3;
     private com.rameses.rcp.control.XSuggest xSuggest1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;

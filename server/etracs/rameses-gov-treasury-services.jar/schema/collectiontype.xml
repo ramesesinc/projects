@@ -23,7 +23,7 @@
 		</complex>	
 
 		<complex name="org" ref="sys_org" jointype="many-to-one" required="false" 
-			includefields="objid,name,orgclass">
+			includefields="objid,code,name,orgclass">
 			<key field="org_objid" target="objid"/>		
 		</complex> 
 	</element>

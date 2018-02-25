@@ -18,6 +18,8 @@ class CollectionTypeService extends ActiveCrudListService {
 	@Env
 	def env; 
 
+	@DataContext("collectiontype")
+	def collectionTypeEm;
 
 	@ProxyMethod
 	public def getColumns( def o ) {
@@ -84,26 +86,41 @@ class CollectionTypeService extends ActiveCrudListService {
 		return em.findAllByFormNo( params ); 
 	}
 
+	def getCollectionTypeList( def o, boolean online ) {
+		def parms = [:];
+		def whereList = [];
+		if( !env.CLIENTCODE ) {
+			whereList << "org.objid IS NULL";
+		}
+		else {
+			whereList << "org.code = :org"
+			parms.org = env.CLIENTCODE;
+		}
+		if( o.formtype) {
+			whereList << "formno = :formno";
+			parms.formno = o.formtype;
+		}
+		if( online ) {
+			whereList << "allowonline = 1";
+		}
+		else {
+			whereList << "allowoffline = 1";
+		}
+		def list = collectionTypeEm.where( whereList.join( " AND "), parms ).list();
+		list.each {
+			it.formtype = it.af.formtype;
+		}
+		return list;
+	}
+
 	@ProxyMethod
 	public def getOnlineCollectionTypes(def o) {
-		def params = [orgcode: env.ORGCODE, clientcode: env.CLIENTCODE]; 
-		params.filter = '';
-		if( o.formtype ) {
-			params.formtype = o.formtype;
-			params.filter = ''' AND ct.formno =$P{formtype} ''';
-		}
-		return em.getOnlineCollectionTypes(params); 
+		return getCollectionTypeList( o, true );
 	}	
 
 	@ProxyMethod
 	public def getOfflineCollectionTypes(def o) {
-		def params = [orgcode: env.ORGCODE, clientcode: env.CLIENTCODE]; 
-		params.filter = '';
-		if( o.formtype ) {
-			params.formtype = o.formtype;
-			params.filter = ''' AND ct.formno =$P{formtype} ''';
-		}
-		return em.getOfflineCollectionTypes( params ); 
+		return getCollectionTypeList( o, false );
 	} 
 
 	@ProxyMethod

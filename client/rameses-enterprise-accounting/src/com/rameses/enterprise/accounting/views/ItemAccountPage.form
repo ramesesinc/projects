@@ -83,11 +83,17 @@
                 </Property>
               </Properties>
               <SubComponents>
+                <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Status"/>
+                    <Property name="expression" type="java.lang.String" value="#{ entity.state }"/>
+                  </Properties>
+                </Component>
                 <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Acct Code"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="name" type="java.lang.String" value="entity.code" noResource="true"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="required" type="boolean" value="true"/>
                     <Property name="spaceChar" type="char" value="_"/>
                     <Property name="stretchWidth" type="int" value="100"/>
@@ -178,7 +184,6 @@
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 20]"/>
                     </Property>
-                    <Property name="visibleWhen" type="java.lang.String" value="#{ entity.parentid != null }"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField3">

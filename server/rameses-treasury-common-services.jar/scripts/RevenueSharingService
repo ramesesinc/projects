@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import treasury.utils.*;
+
+
+
+class RevenueSharingService  {
+
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("FactBuilderService")
+	def factSvc;
+
+	@ProxyMethod
+	public def execute( def rct ) {
+		def factBuilder = factSvc.getFacts( "revenuesharing", rct );
+
+		def facts = factBuilder.facts;
+		if(!facts) throw new Exception("There should be at least one fact in RuleProcessorService" );
+
+		def ctx = RuleExecutionContext.currentContext;
+		if( ctx == null ) { ctx = new RuleExecutionContext(facts); };
+		if(!ctx.env.acctUtil) ctx.env.acctUtil = new ItemAccountUtil();
+
+		ruleSvc.execute( "revenuesharing", facts, null, null );
+		
+		def resultList = [];
+		def shareList = facts.findAll{ it instanceof RevenueShare };
+		shareList.each {
+			resultList << it.toMap();
+		}
+
+		return resultList;
+	}
+
+
+
+}

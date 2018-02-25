@@ -53,7 +53,7 @@
                     } 
                 }
 
-                if(tag == "REVENUE" ) {
+                if(tag.matches("REVENUE|PAYABLE") ) {
                     s << "parentid IS NULL ";
                 }
                                                 

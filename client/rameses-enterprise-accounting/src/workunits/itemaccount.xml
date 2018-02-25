@@ -6,9 +6,9 @@
                  role="MASTER" permission="itemaccount.read" target="popup"/>
 
         <invoker type="formActions" caption="Approve" action="approve" 
-                 role="MASTER" permission="itemaccount.update" visibleWhen="#{allowApprove==true}"/> 
+                 role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'APPROVED' }"/> 
         <invoker type="formActions" caption="Disapprove" action="disapprove" 
-                 role="MASTER" permission="itemaccount.update" visibleWhen="#{allowDisapprove==true}"/>  
+                 role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'APPROVED' }"/>  
     </invokers> 
    
     <code class="com.rameses.enterprise.accounting.models.ItemAccountModel" />

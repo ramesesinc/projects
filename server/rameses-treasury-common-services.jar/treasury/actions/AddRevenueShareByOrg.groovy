@@ -10,35 +10,33 @@ class AddRevenueShareByOrg implements RuleActionHandler  {
 
 	public void execute(def params, def drools) {
 
-		def refacct = params.refaccount;
-		def payableacct = params.payableparentaccount;
-		def share = Integer.parseInt( params.share );
+		def refitem = params.refitem;
+		def payableaccount = params.payableaccount;
 		def amt = params.amount.decimalValue;
 		def org = params.org;
 
-		println ' share by org -> ' + org.orgid; 
+		if( refitem ==null || payableaccount ==null || org == null )
+			throw new Exception("Error in AddRevenueShare action. Please indicate a ref item, payableaccount and org. Check the rules");
 
-		if( refacct ==null && payableacct==null)
-			throw new Exception("Error in AddRevenueShareByOrg action. Please indicate a ref account or a payable parent account. Check the rules");
-
+			
 		def ct = RuleExecutionContext.getCurrentContext();
 		def rs = new RevenueShare();
-
-		if ( refacct?.key!=null && refacct?.key!='null' ) {
-			rs.refaccount = ct.env.acctUtil.createAccountFact( [objid: refacct.key] );
-		} 
-		if ( payableacct?.key != null && payableacct?.key!='null' ) {
-			rs.payableaccount = ct.env.acctUtil.createAccountFactByOrg( payableacct.key, org.orgid ); 
-			if ( !rs.payableaccount ) throw new Exception('There is no payable account with parent '+ payableacct.value + ' org '+ org.orgid);
+		
+		if(refitem.account.objid!=null && refitem.account?.objid!='null') {
+			rs.refitem = ct.env.acctUtil.createAccountFact( [objid: refitem.account.objid] );
+		};
+		
+		if ( payableaccount?.key != null && payableaccount?.key!='null' ) {
+			rs.payableitem = ct.env.acctUtil.createAccountFactByOrg( payableaccount.key, org.orgid ); 
+			if ( !rs.payableitem ) throw new Exception('There is no payable account with parent '+ payableaccount.value + ' org '+ org.orgid);
 		}
-		rs.amount  = amt;
-		rs.share = share;
 
-		if (!ct.result.sharing){
+		rs.amount  = amt;
+
+		if (!ct.result.sharing) {
 			ct.result.sharing = []
 		}
 		ct.facts << rs;
-		ct.result.sharing << rs 
 	}
 
 }

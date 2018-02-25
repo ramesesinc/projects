@@ -4,6 +4,7 @@ import com.rameses.rules.common.*;
 import com.rameses.osiris3.common.*;
 import com.rameses.util.*;
 import treasury.facts.*;
+import enterprise.facts.*;
 
 public class BillItemProvider {
 	
@@ -25,7 +26,12 @@ public class BillItemProvider {
 		info.refid = v.refid;
 		info.reftype = v.reftype;
 		if( acct ) {
-			info.account = new Account( objid: acct.objid, code: acct.code, title: acct.title, fund: f);	
+			def ac = new Account( objid: acct.objid, code: acct.code, title: acct.title, fund: f);
+			if( acct.parentaccount?.objid ) {
+				def pac = acct.parentaccount;
+				ac.parentaccount = new Account( objid: pac.objid, code: pac.code, title: pac.title, fund: f);
+			}
+			info.account = ac;
 		}
 		info.txntype = v.txntype;
 		info.amount = v.amount;

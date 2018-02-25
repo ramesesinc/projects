@@ -34,6 +34,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -54,9 +55,13 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setPadding(new java.awt.Insets(10, 5, 5, 5));
 
+        xLabel2.setCaption("Status");
+        xLabel2.setExpression("#{ entity.state }");
+        xFormPanel1.add(xLabel2);
+
         xTextField1.setCaption("Acct Code");
-        xTextField1.setEnabled(false);
         xTextField1.setName("entity.code"); // NOI18N
+        xTextField1.setEnabled(false);
         xTextField1.setRequired(true);
         xTextField1.setSpaceChar('_');
         xTextField1.setStretchWidth(100);
@@ -111,7 +116,6 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField1.setHandler("org:lookup");
         xLookupField1.setName("entity.org"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField1.setVisibleWhen("#{ entity.parentid != null }");
         xFormPanel1.add(xLookupField1);
 
         xLookupField3.setCaption("Parent Account");
@@ -236,6 +240,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;

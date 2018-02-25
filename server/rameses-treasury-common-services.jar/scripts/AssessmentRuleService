@@ -49,7 +49,7 @@ public class AssessmentRuleService {
 				facts <<  variableInfoUtil.createFact(info) ;
 			}
 		};
-
+		
 		if( data.billitems ) {
 			data.billitems.each { bi ->
 				def ac = [:];
@@ -123,21 +123,6 @@ public class AssessmentRuleService {
 		if( res.requirements ) {
 			def reqs = res.remove("requirements");
 			result.requirements = regs.collect{ it.toMap() };	
-		}
-		if( res.sharing ) {
-			def si = res.remove("sharing");
-			result.sharing = si.collect{ it.toMap() };	
-
-			result.sharing.groupBy{ it.refaccount }.each{ k,v-> 
-				def totalShare = 0;
-				v.each { ss->
-					totalShare += ss.share;	
-				}
-				if(totalShare!=100) {
-					throw new Exception("Error in sharing for account "+ k.title +". Total share must be equal to 100%. Please check your sharing rules");
-				}	
-			}
-			//check if sharing is 100%
 		}
 
 		if( resultHandler ) {

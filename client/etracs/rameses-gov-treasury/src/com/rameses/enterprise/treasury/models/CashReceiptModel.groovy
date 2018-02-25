@@ -14,6 +14,7 @@ class CashReceiptModel extends CrudFormModel {
     
     def report;     
     
+    
     def reprint() {
         if ( !verifyReprint() ) { 
             MsgBox.alert('Invalid security code'); 

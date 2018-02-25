@@ -10,7 +10,7 @@
 		<field name="fundid" required="true"/>
 
 		<!-- we need this for querying in deposit initial -->
-		<complex name="fund" ref="fund" jointype="many-to-one">
+		<complex name="fund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
 			<key field="fundid" target="objid" />
 		</complex>
 

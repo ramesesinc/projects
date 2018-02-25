@@ -109,31 +109,36 @@ class RemittanceService  {
 	@ProxyMethod
 	public def submitForLiquidation( def o ) {
 		//check total breakdown before submitting
-		def z = rfEm.select("objid").find( [remittanceid: o.objid ] ).where(" (amount - (totalcash+totalcheck+totalcr)) > 0 ").first();
-		if( z ) 
-			throw new Exception("Please ensure that all balances must be equal to 0. Please check there may be items that do not have a cash breakdown");
+		def z = rfEm.select("objid").find([ remittanceid: o.objid ]).where(" (amount - (totalcash+totalcheck+totalcr)) > 0 ").first();
+		if ( z ) throw new Exception("Please ensure that all balances must be equal to 0. Please check there may be items that do not have a cash breakdown");
 
-		def m = [:];	
+		def m = [ state: 'OPEN' ];	
 		m.dtposted = dateSvc.getServerDate(); 
+
 		if ( o.controlno.toString().toUpperCase().startsWith("REM")) {
 			// do nothing, we will use the same transaction number 
 		} else {
 			def txncode = [ "REM", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
 			m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtposted, format: var.remittance_format, sequenceid_format: var.remittance_sequenceid_format ]); 
-		}
+
+			rfEm.find([ remittanceid: o.objid ]).select('objid,fund.code').list().each{ 
+				def txnno = m.controlno + (it.fund?.code ? ('-'+it.fund.code) : ""); 
+				rfEm.find([ objid: it.objid ]).update([ controlno: txnno ]); 
+			} 
+		} 
 
 		if ( o.collector?.signature ) m.collector = [signature: o.collector.signature]; 
-		m.state = 'OPEN';
+
 		remEm.find( [objid: o.objid ] ).update( m );
-
-		o.state = 'OPEN';
-
+		o.putAll( m ); 
 		return o;
 	}
 
 	@ProxyMethod
-	public void acceptForLiquidation( def o ) {
-		remEm.find( [objid: o.objid ] ).update( [ state: 'POSTED' ] );
+	public void acceptForLiquidation( param ) { 
+		def m = [ state: 'POSTED']; 
+		m.liquidatingofficer = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		remEm.find([ objid: param.objid ]).update( m); 
 	}
 
 	@ProxyMethod 

@@ -18,6 +18,15 @@ class CollectionVoucherModel extends CrudFormModel {
     def selectedRemittance;
     def selectedFund;
     
+    def numformat = new java.text.DecimalFormat("#,##0.00"); 
+    
+    def getFormattedAmount() {
+        if ( !(entity.amount instanceof Number )) {
+            entity.amount = 0.0; 
+        } 
+        return numformat.format( entity.amount );  
+    }
+    
     def remittanceListHandler = [
         fetchList: { o->
             def m = [_schemaname:'remittance'];
@@ -59,9 +68,8 @@ class CollectionVoucherModel extends CrudFormModel {
     def post() {
         if(!MsgBox.confirm("You are about to post this transaction. Proceed?")) return null;
         def o = collSvc.post( entity );
-        if ( o ) entity.state = o.state;
+        if ( o ) entity.putAll( o );  
+        
+        fundSummaryHandler.reload(); 
     }
-
-   
-    
-}    
+} 

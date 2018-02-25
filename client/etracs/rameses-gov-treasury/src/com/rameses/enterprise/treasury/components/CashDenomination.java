@@ -49,10 +49,11 @@ public class CashDenomination extends XComponentPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel11 = new com.rameses.rcp.control.XFormPanel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         xFormPanel12 = new com.rameses.rcp.control.XFormPanel();
         int1000 = new com.rameses.rcp.control.XIntegerField();
         int500 = new com.rameses.rcp.control.XIntegerField();
@@ -83,63 +84,77 @@ public class CashDenomination extends XComponentPanel {
         xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        formfooter = new com.rameses.rcp.control.XFormPanel();
+        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel11 = new com.rameses.rcp.control.XLabel();
 
-        xLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel10.setCaption("Total Breakdown");
-        xLabel10.setCaptionWidth(100);
-        xLabel10.setDepends(new String[] {"qty1"});
-        xLabel10.setExpression("#{total}");
-        xLabel10.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel11.add(xLabel10);
+        setLayout(new java.awt.BorderLayout());
 
-        xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel11.setCaption("Cash Remaining");
-        xLabel11.setCaptionWidth(100);
-        xLabel11.setDepends(new String[] {"qty1"});
-        xLabel11.setExpression("#{cashremaining}");
-        xLabel11.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel11.add(xLabel11);
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setOpaque(false);
+        jPanel1.setPreferredSize(new java.awt.Dimension(246, 350));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Qty");
+        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 0, 20));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Totals");
+        jLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 0, 0));
+
+        xFormPanel12.setPadding(new java.awt.Insets(0, 0, 5, 0));
 
         int1000.setCaption("1000");
+        int1000.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int1000.setCaptionWidth(60);
+        int1000.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int1000.setName("qty1000"); // NOI18N
-        int1000.setPreferredSize(new java.awt.Dimension(60, 20));
+        int1000.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int1000);
 
-        int500.setCaption("500");
+        int500.setCaption(" 500");
+        int500.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int500.setCaptionWidth(60);
+        int500.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int500.setName("qty500"); // NOI18N
-        int500.setPreferredSize(new java.awt.Dimension(60, 20));
+        int500.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int500);
 
-        int200.setCaption("200");
+        int200.setCaption(" 200");
+        int200.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int200.setCaptionWidth(60);
+        int200.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int200.setName("qty200"); // NOI18N
-        int200.setPreferredSize(new java.awt.Dimension(60, 20));
+        int200.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int200);
 
-        int100.setCaption("100");
+        int100.setCaption(" 100");
+        int100.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int100.setCaptionWidth(60);
+        int100.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int100.setName("qty100"); // NOI18N
-        int100.setPreferredSize(new java.awt.Dimension(60, 20));
+        int100.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int100);
 
-        int50.setCaption("50");
+        int50.setCaption("  50");
+        int50.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int50.setCaptionWidth(60);
+        int50.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int50.setName("qty50"); // NOI18N
-        int50.setPreferredSize(new java.awt.Dimension(60, 20));
+        int50.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int50);
 
-        int20.setCaption("20");
+        int20.setCaption("  20");
+        int20.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int20.setCaptionWidth(60);
+        int20.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int20.setName("qty20"); // NOI18N
-        int20.setPreferredSize(new java.awt.Dimension(60, 20));
+        int20.setPreferredSize(new java.awt.Dimension(0, 20));
         int20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 int20ActionPerformed(evt);
@@ -147,58 +162,77 @@ public class CashDenomination extends XComponentPanel {
         });
         xFormPanel12.add(int20);
 
-        int10.setCaption("10");
+        int10.setCaption("  10");
+        int10.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int10.setCaptionWidth(60);
+        int10.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int10.setName("qty10"); // NOI18N
-        int10.setPreferredSize(new java.awt.Dimension(60, 20));
+        int10.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int10);
 
-        int5.setCaption("5");
+        int5.setCaption("   5");
+        int5.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int5.setCaptionWidth(60);
+        int5.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int5.setName("qty5"); // NOI18N
-        int5.setPreferredSize(new java.awt.Dimension(60, 20));
+        int5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int5);
 
-        int1.setCaption("1");
+        int1.setCaption("   1");
+        int1.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int1.setCaptionWidth(60);
+        int1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         int1.setName("qty1"); // NOI18N
-        int1.setPreferredSize(new java.awt.Dimension(60, 20));
+        int1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(int1);
 
         intc50.setCaption("0.50");
+        intc50.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc50.setCaptionWidth(60);
+        intc50.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc50.setName("qtyc50"); // NOI18N
-        intc50.setPreferredSize(new java.awt.Dimension(60, 20));
+        intc50.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(intc50);
 
         intc25.setCaption("0.25");
+        intc25.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc25.setCaptionWidth(60);
+        intc25.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc25.setName("qtyc25"); // NOI18N
-        intc25.setPreferredSize(new java.awt.Dimension(60, 20));
+        intc25.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(intc25);
 
         intc10.setCaption("0.10");
+        intc10.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc10.setCaptionWidth(60);
+        intc10.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc10.setName("qtyc10"); // NOI18N
-        intc10.setPreferredSize(new java.awt.Dimension(60, 20));
+        intc10.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(intc10);
 
         intc05.setCaption("0.05");
+        intc05.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc05.setCaptionWidth(60);
+        intc05.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc05.setName("qtyc05"); // NOI18N
-        intc05.setPreferredSize(new java.awt.Dimension(60, 20));
+        intc05.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(intc05);
 
         intc01.setCaption("0.01");
+        intc01.setCaptionFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc01.setCaptionWidth(60);
+        intc01.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         intc01.setName("qtyc01"); // NOI18N
-        intc01.setPreferredSize(new java.awt.Dimension(60, 20));
+        intc01.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel12.add(intc01);
+
+        xFormPanel13.setPadding(new java.awt.Insets(0, 0, 5, 0));
 
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setDepends(new String[] {"qty1000"});
         xLabel1.setExpression("#{d1000}");
+        xLabel1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel1.setShowCaption(false);
         xFormPanel13.add(xLabel1);
@@ -207,6 +241,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setDepends(new String[] {"qty500"});
         xLabel3.setExpression("#{d500}");
+        xLabel3.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel3.setShowCaption(false);
         xFormPanel13.add(xLabel3);
@@ -215,6 +250,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel2.setDepends(new String[] {"qty200"});
         xLabel2.setExpression("#{d200}");
+        xLabel2.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel2.setShowCaption(false);
         xFormPanel13.add(xLabel2);
@@ -223,6 +259,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setDepends(new String[] {"qty100"});
         xLabel4.setExpression("#{d100}");
+        xLabel4.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel4.setShowCaption(false);
         xFormPanel13.add(xLabel4);
@@ -231,6 +268,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel5.setDepends(new String[] {"qty50"});
         xLabel5.setExpression("#{d50}");
+        xLabel5.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel5.setShowCaption(false);
         xFormPanel13.add(xLabel5);
@@ -239,6 +277,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel6.setDepends(new String[] {"qty20"});
         xLabel6.setExpression("#{d20}");
+        xLabel6.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel6.setShowCaption(false);
         xFormPanel13.add(xLabel6);
@@ -247,6 +286,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel7.setDepends(new String[] {"qty10"});
         xLabel7.setExpression("#{d10}");
+        xLabel7.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel7.setShowCaption(false);
         xFormPanel13.add(xLabel7);
@@ -255,6 +295,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel8.setDepends(new String[] {"qty5"});
         xLabel8.setExpression("#{d5}");
+        xLabel8.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel8.setShowCaption(false);
         xFormPanel13.add(xLabel8);
@@ -263,6 +304,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel9.setDepends(new String[] {"qty1"});
         xLabel9.setExpression("#{d1}");
+        xLabel9.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel9.setShowCaption(false);
         xFormPanel13.add(xLabel9);
@@ -271,6 +313,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel12.setDepends(new String[] {"qtyc50"});
         xLabel12.setExpression("#{dc50}");
+        xLabel12.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel12.setShowCaption(false);
         xFormPanel13.add(xLabel12);
@@ -279,6 +322,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel13.setDepends(new String[] {"qtyc25"});
         xLabel13.setExpression("#{dc25}");
+        xLabel13.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel13.setShowCaption(false);
         xFormPanel13.add(xLabel13);
@@ -287,6 +331,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel14.setDepends(new String[] {"qtyc10"});
         xLabel14.setExpression("#{dc10}");
+        xLabel14.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel14.setShowCaption(false);
         xFormPanel13.add(xLabel14);
@@ -295,6 +340,7 @@ public class CashDenomination extends XComponentPanel {
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel15.setDepends(new String[] {"qtyc05"});
         xLabel15.setExpression("#{dc05}");
+        xLabel15.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel15.setShowCaption(false);
         xFormPanel13.add(xLabel15);
@@ -303,17 +349,10 @@ public class CashDenomination extends XComponentPanel {
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel16.setDepends(new String[] {"qtyc01"});
         xLabel16.setExpression("#{dc01}");
+        xLabel16.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel16.setShowCaption(false);
         xFormPanel13.add(xLabel16);
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Qty");
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Totals");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -321,16 +360,17 @@ public class CashDenomination extends XComponentPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(xFormPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xFormPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xFormPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 18, Short.MAX_VALUE))
+                        .addComponent(xFormPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -342,27 +382,39 @@ public class CashDenomination extends XComponentPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xFormPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 16, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel2.add(jPanel1, java.awt.BorderLayout.NORTH);
+
+        formfooter.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        formfooter.setPadding(new java.awt.Insets(0, 10, 5, 10));
+
+        xLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel10.setCaption("Total Breakdown");
+        xLabel10.setCaptionWidth(100);
+        xLabel10.setDepends(new String[] {"qty1"});
+        xLabel10.setExpression("#{total}");
+        xLabel10.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
+        formfooter.add(xLabel10);
+
+        xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel11.setCaption("Cash Remaining");
+        xLabel11.setCaptionWidth(100);
+        xLabel11.setDepends(new String[] {"qty1"});
+        xLabel11.setExpression("#{cashremaining}");
+        xLabel11.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
+        formfooter.add(xLabel11);
+
+        jPanel2.add(formfooter, java.awt.BorderLayout.SOUTH);
+
+        jPanel3.add(jPanel2, java.awt.BorderLayout.NORTH);
+
+        add(jPanel3, java.awt.BorderLayout.WEST);
     }// </editor-fold>//GEN-END:initComponents
 
     private void int20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_int20ActionPerformed
@@ -370,6 +422,7 @@ public class CashDenomination extends XComponentPanel {
     }//GEN-LAST:event_int20ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XFormPanel formfooter;
     private com.rameses.rcp.control.XIntegerField int1;
     private com.rameses.rcp.control.XIntegerField int10;
     private com.rameses.rcp.control.XIntegerField int100;
@@ -387,7 +440,8 @@ public class CashDenomination extends XComponentPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel11;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel12;
     private com.rameses.rcp.control.XFormPanel xFormPanel13;
     private com.rameses.rcp.control.XLabel xLabel1;
@@ -479,5 +533,12 @@ public class CashDenomination extends XComponentPanel {
         this.formatter = formatter;
     }
     
-    
+    public boolean isFooterVisible() {
+        return (formfooter == null ? formfooter.isVisible() : true); 
+    }
+    public void setFooterVisible( boolean visible ) {
+        if ( formfooter != null ) {
+            formfooter.setVisible( visible ); 
+        }
+    }
 }

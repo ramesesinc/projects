@@ -10,6 +10,15 @@ class DepositVoucherService  {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service('ControlService') 
+	def controlSvc;	
+
+	@Service("Var")
+	def var;			
+
 	@DataContext("collectionvoucher")
 	def cvEm;
 
@@ -98,8 +107,20 @@ class DepositVoucherService  {
 		z = depositFundEm.find( [parentid: o.objid ]).select("objid").where( " cashier.objid IS NULL ").first();
 		if( z ) throw new Exception( "All funds must be assigned to a cashier");
 
-		depositEm.find( [objid: o.objid ]).update( [state: 'FOR_DEPOSIT' ] );
-		return [state:'FOR_DEPOSIT'];
+
+		def m =  [state: 'FOR_DEPOSIT'];
+		m.dtposted = dateSvc.getServerDate(); 
+
+		def txncode = [ "DEP", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
+		m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtposted, format: var.deposit_format, sequenceid_format: var.deposit_sequenceid_format ]); 
+
+		depositFundEm.find([ parentid: o.objid ]).select('objid,fund.code').list().each{ 
+			def txnno = m.controlno + (it.fund?.code ? ('-'+it.fund.code) : ""); 
+			depositFundEm.find([ objid: it.objid ]).update([ controlno: txnno ]); 
+		} 
+
+		depositEm.find([ objid: o.objid ]).update( m );
+		return m;
 	}
 
 	@ProxyMethod
@@ -110,9 +131,9 @@ class DepositVoucherService  {
 
 		z = depositSlipEm.find( [depositvoucherid: o.objid ] ).where( " validation.refno IS NULL ").first();
 		if(z ) throw new Exception("All deposit slips must be validated");
-		depositEm.find( [objid: o.objid ]).update( [state: 'POSTED' ] );
-		return [state:'POSTED'];
-	}
 
-
+		def m = [ state: 'POSTED' ];
+		depositEm.find( [objid: o.objid ]).update( m );
+		return m; 
+	} 
 }

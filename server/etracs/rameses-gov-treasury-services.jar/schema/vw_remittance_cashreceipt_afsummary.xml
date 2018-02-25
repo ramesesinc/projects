@@ -23,5 +23,5 @@
 		<field name="endseries" />
 		<field name="prefix" />
 		<field name="suffix" />
-	</elemen>
+	</element>
 </schema>

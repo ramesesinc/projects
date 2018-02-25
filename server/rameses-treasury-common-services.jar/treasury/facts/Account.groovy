@@ -8,6 +8,8 @@ class Account {
 	String title;
 	int sortorder;
 
+	Account parentaccount;	//if there is a patrent account in account
+
 	public Map toMap() {
 		def m = [:];
 		m.objid = objid;

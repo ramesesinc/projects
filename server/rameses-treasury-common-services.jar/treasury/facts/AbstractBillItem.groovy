@@ -1,6 +1,7 @@
 package treasury.facts;
 
 import java.util.*;
+import enterprise.facts.*;
 
 public abstract class AbstractBillItem {
 
@@ -13,6 +14,12 @@ public abstract class AbstractBillItem {
 	String txntype;
 	boolean dynamic;	//if true - then this should not be saved in database. Applicable for surcharge and interest
 	String remarks;
+	
+	Org org;			//specified org for account
+
+	public Account getParentaccount() {
+		return account?.parentaccount;
+	}
 
 	public int hashCode() {
 		if( account?.objid ) {

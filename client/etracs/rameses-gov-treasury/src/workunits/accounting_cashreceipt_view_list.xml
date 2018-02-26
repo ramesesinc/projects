@@ -1,8 +1,8 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cashreceipt_view" 
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cashreceipt" 
           allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
-        <invoker folderid="home/accounting" caption="Search Receipts" action="init" 
-                 role="MASTER" index="1" 
+        <invoker folderid="menucategory/accounting/treasury" caption="Search Receipts" 
+                 action="init"  srole="MASTER" index="1" 
                  cols="formno,receiptno,txnmode,receiptdate,paidbyname,collector.name,collectiontype.name,void.objid,amount"/>
     </invokers>
 </workunit>

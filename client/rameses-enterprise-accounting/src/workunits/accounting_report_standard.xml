@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-         <invoker folderid="home/accounting/reports" caption="Standard" action="init"/>
+         <invoker folderid="menucategory/accounting/report" caption="Standard" action="init"/>
          
          <invoker type="formActions" caption="Preview" action="preview" visibleWhen="#{mode=='init'}"/>
          <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode=='preview'}"/>

@@ -5,7 +5,6 @@ class ItemAccountListInterceptor {
 	@Service("LOVService")
 	def lovSvc;
 
-
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public def getNodeList(evt) {
 		def result = evt.result;
@@ -14,7 +13,6 @@ class ItemAccountListInterceptor {
 			result << [title:it,  type:it];
 		}
 	}
-
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public void loadList(def evt) {

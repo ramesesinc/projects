@@ -1,0 +1,16 @@
+<schema>
+
+	<element tablename="cash_ledger">
+		<field name="objid"  primary="true" prefix="CSHTRYLDGR"/>
+		<field name="refid" required="true" />
+		<field name="reftype" required="true" />
+		<field name="refdate" required="true" />
+		<field name="refno" required="true" />
+		<field name="fundid" required="true" />
+		<field name="dr" required="true" />
+		<field name="cr" required="true" />
+		<field name="liquidatingofficer_objid" required="true" />
+		<field name="liquidatingofficer_name" required="true" />
+	</element>
+
+</schema>

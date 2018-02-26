@@ -16,9 +16,6 @@ public class BillItemProvider {
 		Fund f = null;
 		if(v.item?.objid) {
 			acct = itemAcctUtil.lookup( v.item.objid );
-			if( acct.fund?.objid  ) {
-				f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);
-			}
 		}
 
 		def info = [:];
@@ -26,11 +23,18 @@ public class BillItemProvider {
 		info.refid = v.refid;
 		info.reftype = v.reftype;
 		if( acct ) {
+			if( acct.fund?.objid  ) {
+				f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);
+			}
+
 			def ac = new Account( objid: acct.objid, code: acct.code, title: acct.title, fund: f);
 			if( acct.parentaccount?.objid ) {
 				def pac = acct.parentaccount;
 				ac.parentaccount = new Account( objid: pac.objid, code: pac.code, title: pac.title, fund: f);
 			}
+			if( acct.org?.objid ) {
+				ac.org = new Org( orgid: acct.org.objid );
+			} 
 			info.account = ac;
 		}
 		info.txntype = v.txntype;

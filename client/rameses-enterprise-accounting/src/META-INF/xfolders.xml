@@ -15,9 +15,21 @@
             <folder id="accounting" caption="Accounting"/>
         </folder>
     </folder>
+    <!--
     <folder id="home">
         <folder id="accounting" caption="Accounting" icon="home/icons/accounting.png">
             <folder id="reports" caption="Reports"/>
         </folder>    
     </folder>
+    -->
+    <folder id="menucategory">
+        <folder id="accounting" caption="Accounting"  icon="home/icons/book.png" index="-5">
+            <folder id="master" caption="Master Files" index="0" icon="home/icons/book.png"/>
+            <folder id="ledger" caption="Ledgers" index="1" icon="home/icons/book.png"/>
+            <folder id="jev" caption="Journal Entries" index="2" icon="home/icons/book.png"/>
+            <folder id="treasury" caption="Treasury" index="3" icon="home/icons/book.png"/>
+            <folder id="report" caption="Reports" index="1" icon="home/icons/book.png" />
+        </folder>
+    </folder>
+    
 </folders>

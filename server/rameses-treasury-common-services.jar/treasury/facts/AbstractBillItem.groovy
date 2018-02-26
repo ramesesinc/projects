@@ -17,9 +17,24 @@ public abstract class AbstractBillItem {
 	
 	Org org;			//specified org for account
 
+	//This is used for sharing
+	Account nullParentaccount = new Account();
+
 	public Account getParentaccount() {
-		return account?.parentaccount;
+		if( account?.parentaccount == null )
+			return nullParentaccount;
+		return account.parentaccount;
 	}
+
+	Org nullOrg = new Org();
+	public Org getOrg() {
+		if( account?.org == null )
+			return nullOrg;
+		return account.org;
+	}
+
+
+	//used for sharing
 
 	public int hashCode() {
 		if( account?.objid ) {

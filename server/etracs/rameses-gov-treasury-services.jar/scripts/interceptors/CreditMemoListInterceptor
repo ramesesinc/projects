@@ -21,10 +21,10 @@ class CreditMemoListInterceptor {
 		def m = [state: o.node.state];
 
 		if( o.node.id == 'posted-no-receipt' ) {
-			str += ' AND issuereceipt = 0 '; 
+			str += ' AND receiptid IS NULL '; 
 		}
 		else if (o.node.id == 'posted-with-receipt') {
-			str += ' AND issuereceipt = 1 '; 
+			str += ' AND NOT(receiptid IS NULL) '; 
 		}
 
 		if( o.where ) {

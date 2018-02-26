@@ -5,5 +5,9 @@
         <invoker folderid="/explorer/master/accounting" caption="Item Accounts" 
                  action="init" role="MASTER" permission="itemaccount.view" 
                  customFilter="parentid IS NULL"/> 
+        
+        <invoker folderid="/menucategory/accounting/master" caption="Item Accounts" 
+                 action="init" role="MASTER" permission="itemaccount.view" 
+                 customFilter="parentid IS NULL"/>         
    </invokers>
 </workunit>

@@ -9,9 +9,9 @@
         
         <invoker type="formActions" caption="View Income" action="viewPostToIncome" visibleWhen="#{entity.state=='CLOSED' &amp;&amp; entity.issuereceipt==0 &amp;&amp; currentPage=='default' }"/>
    </invokers>
-   <code class="com.rameses.enterprise.accounting.models.CreditMemoModel" />
+   <code class="com.rameses.enterprise.treasury.models.CreditMemoModel" />
    <pages>
-        <page template="com.rameses.enterprise.accounting.views.CreditMemoPage"/>
+        <page template="com.rameses.enterprise.treasury.views.CreditMemoPage"/>
         <page name="income" template="com.rameses.enterprise.treasury.views.CreditMemoPostToIncomePage"/>
    </pages>
    

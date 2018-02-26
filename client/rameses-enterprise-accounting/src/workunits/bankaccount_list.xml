@@ -3,5 +3,10 @@
         <invoker folderid="/explorer/master/accounting" caption="Bank Accounts" action="init" 
                  cols="code,title,fund.title,bank.name,bank.branchname,account.title"
                  role="MASTER" permission="bank.view"/> 
+        
+        <invoker folderid="/menucategory/accounting/master" caption="Bank Accounts" action="init" 
+                 cols="code,title,fund.title,bank.name,bank.branchname,account.title"
+                 role="MASTER" permission="bank.view"/> 
+        
    </invokers>
 </workunit>

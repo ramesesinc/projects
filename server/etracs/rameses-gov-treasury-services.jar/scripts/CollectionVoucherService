@@ -101,6 +101,12 @@ class CollectionVoucherService  {
 		} 
 
 		cvEm.find([ objid: p.objid ]).update( m ); 	
-		return m;  
+
+		def pm = [ collectionvoucherid: p.objid ]; 
+		cvEm.postToCashLedger( pm );
+		cvEm.postToBankAccountLedger( pm );
+		cvEm.postToIncome( pm );
+		cvEm.postToPayable( pm );	
+		return m; 
 	}	
 }

@@ -14,7 +14,7 @@ GROUP BY rf.fund_objid,  f.code, rf.fund_title
 
 
 [postToCashLedger]
-INSERT INTO cash_ledger 
+INSERT INTO cash_treasury_ledger 
 (objid,refid,refno,refdate,reftype,fundid,dr,cr,liquidatingofficer_objid,liquidatingofficer_name)
 SELECT 
     cvf.objid,

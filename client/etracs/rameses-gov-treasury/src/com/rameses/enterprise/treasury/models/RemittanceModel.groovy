@@ -17,6 +17,15 @@ class RemittanceModel extends CrudFormModel {
     def selectedFund;
     def selectedAf;
     
+    def numformat = new java.text.DecimalFormat("#,##0.00"); 
+    
+    def getFormattedAmount() {
+        if ( !(entity.amount instanceof Number )) {
+            entity.amount = 0.0; 
+        } 
+        return numformat.format( entity.amount );  
+    }
+    
     def fundSummaryHandler = [
         fetchList: { o->
             def m = [_schemaname: 'remittance_fund' ];
@@ -50,9 +59,13 @@ class RemittanceModel extends CrudFormModel {
     
     def afSummaryHandler = [
         fetchList: { o->
-           def m = [_schemaname: 'remittance_af' ];
+           def m = [_schemaname: 'vw_remittance_cashreceipt_afsummary' ];
            m.findBy = [ remittanceid: entity.objid ];
-           return queryService.getList( m );
+           def list = queryService.getList( m ); 
+           list.each{ 
+               it.amount = it.amount - it.voidamt; 
+           }
+           return list; 
         },
         onOpenItem: {o,col->
             return viewReceipts();
@@ -64,16 +77,17 @@ class RemittanceModel extends CrudFormModel {
         def o = selectedAf;
         def p = [:];
         p.put( "query.afcontrolid", o.controlid );
-        p.put( "query.fromseries", o.issuedstartseries );
-        p.put( "query.toseries", o.issuedendseries );
+        p.put( "query.fromseries", o.fromseries );
+        p.put( "query.toseries", o.toseries );
         return Inv.lookupOpener("cashreceipt_list:afseries", p );
     }
     
     def checkModel = [
         fetchList: { o->
             def m = [_schemaname: 'cashreceiptpayment_noncash' ];
-            m.select = "refno,reftype,refdate,amount:{SUM(amount)}";
-            m.groupBy = "refno,reftype,refdate";
+            m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)}";
+            m.groupBy = "refno,reftype,refdate,particulars";
+            m.orderBy = "refdate,refno";
             m.where = [ "receipt.remittanceid = :rid", [rid: entity.objid ]];
             return queryService.getList( m );
         }

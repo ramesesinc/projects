@@ -14,7 +14,7 @@ GROUP BY rf.fund_objid,  f.code, rf.fund_title
 
 
 [postToCashLedger]
-INSERT INTO cash_treasury_ledger 
+INSERT INTO cash_ledger 
 (objid,refid,refno,refdate,reftype,fundid,dr,cr,liquidatingofficer_objid,liquidatingofficer_name)
 SELECT 
     cvf.objid,
@@ -56,109 +56,110 @@ FROM
  GROUP BY ccv.objid,ccv.controlno,ccv.controldate,cm.bankaccount_objid,nc.fund_objid
 
 [postToIncome]
-INSERT INTO income_summary 
-(objid,refid,refdate,refno,reftype,item_objid,item_code,item_title,fund_objid,org_objid,amount)
-
-SELECT UUID(),
- a.refno, a.refid, a.refdate, a.reftype, 
- a.item_objid, a.item_code, a.item_title, 
- a.fund_objid, a.org_objid,  SUM( amount ) AS amount 
-FROM 
-(
+INSERT INTO income_summary ( 
+    objid, refid, refdate, refno, reftype, 
+    item_objid, item_code, item_title, 
+    fund_objid, org_objid, amount
+)
+SELECT UUID() AS objid, b.* 
+FROM ( 
     SELECT 
-    cv.controlno AS refno,
-    cv.objid AS refid,
-    cv.controldate AS refdate,
-    'collectionvoucher' AS reftype,
-    ci.item_code AS item_code,
-    ci.item_objid AS item_objid,
-    ci.item_title AS item_title, 
-    ci.item_fund_objid AS fund_objid,
-    c.org_objid AS org_objid,
-    SUM( ci.amount ) AS amount 
-FROM 
-cashreceiptitem ci
-INNER JOIN cashreceipt c ON ci.receiptid=c.objid
-LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
-INNER JOIN remittance r ON c.remittanceid=r.objid
-INNER JOIN collectionvoucher cv ON r.collectionvoucherid=cv.objid 
-WHERE cv.objid = $P{collectionvoucherid} 
-AND crv.objid IS NULL
-GROUP BY cv.controlno,
-    cv.objid,
-    cv.controldate,
-    ci.item_code,
-    ci.item_objid,
-    ci.item_title, 
-    ci.item_fund_objid,
-    c.org_objid
+        a.refid, a.refdate, a.refno, a.reftype,
+        a.item_objid, a.item_code, a.item_title,
+        a.fund_objid, a.org_objid,  
+        SUM( a.amount ) AS amount 
+    FROM (
+         SELECT
+            cv.controlno AS refno,
+            cv.objid AS refid,
+            cv.controldate AS refdate,
+            'collectionvoucher' AS reftype,
+            ci.item_code AS item_code,
+            ci.item_objid AS item_objid,
+            ci.item_title AS item_title,
+            ci.item_fund_objid AS fund_objid,
+            c.org_objid AS org_objid,
+            SUM( ci.amount ) AS amount
+        FROM cashreceiptitem ci
+            INNER JOIN cashreceipt c ON ci.receiptid=c.objid
+            LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
+            INNER JOIN remittance r ON c.remittanceid=r.objid
+            INNER JOIN collectionvoucher cv ON r.collectionvoucherid=cv.objid
+        WHERE cv.objid = $P{collectionvoucherid}
+            AND crv.objid IS NULL
+        GROUP BY 
+            cv.controlno, cv.objid, cv.controldate, ci.item_code, 
+            ci.item_objid, ci.item_title, ci.item_fund_objid, c.org_objid
 
-UNION ALL
+        UNION ALL
 
-SELECT 
-    cv.controlno AS refno,
-    cv.objid AS refid,
-    cv.controldate AS refdate,
-    'collectionvoucher' AS reftype,
-    ia.code AS item_code,
-    ia.objid AS item_objid,
-    ia.title AS item_title, 
-    ia.fund_objid AS fund_objid,
-    c.org_objid AS org_objid,
-    SUM( cs.amount * -1 ) AS amount 
-    
-FROM cashreceipt_share cs 
-INNER JOIN itemaccount ia ON cs.refitem_objid = ia.objid 
-INNER JOIN cashreceipt c ON cs.receiptid=c.objid
-LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
-INNER JOIN remittance r ON c.remittanceid=r.objid
-INNER JOIN collectionvoucher cv ON r.collectionvoucherid=cv.objid 
-WHERE cv.objid = $P{collectionvoucherid}
-AND crv.objid IS NULL
-GROUP BY cv.controlno,
-    cv.objid,
-    cv.controldate,
-    ia.code,
-    ia.objid,
-    ia.title, 
-    ia.fund_objid,
-    c.org_objid
-) a
+        SELECT
+            cv.controlno AS refno,
+            cv.objid AS refid,
+            cv.controldate AS refdate,
+            'collectionvoucher' AS reftype,
+            ia.code AS item_code,
+            ia.objid AS item_objid,
+            ia.title AS item_title,
+            ia.fund_objid AS fund_objid,
+            c.org_objid AS org_objid,
+            SUM( cs.amount * -1 ) AS amount
+        FROM cashreceipt_share cs
+            INNER JOIN itemaccount ia ON cs.refitem_objid = ia.objid
+            INNER JOIN cashreceipt c ON cs.receiptid=c.objid
+            LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
+            INNER JOIN remittance r ON c.remittanceid=r.objid
+            INNER JOIN collectionvoucher cv ON r.collectionvoucherid=cv.objid
+        WHERE cv.objid = $P{collectionvoucherid}
+            AND crv.objid IS NULL
+        GROUP BY 
+            cv.controlno, cv.objid, cv.controldate, ia.code, 
+            ia.objid, ia.title, ia.fund_objid, c.org_objid
+    )a 
+    GROUP BY 
+        a.refid, a.refdate, a.refno, a.reftype,
+        a.item_objid, a.item_code, a.item_title,
+        a.fund_objid, a.org_objid 
+)b 
+
 
 [postToPayable]
-INSERT INTO payable_summary 
-(objid,refid,refdate,refno,reftype,item_objid,item_code,item_title,fund_objid,org_objid,amount)
-
-SELECT UUID(), a.* 
-
-FROM 
-( SELECT 
-    cv.controlno AS refno,
-    cv.objid AS refid,
-    cv.controldate AS refdate,
-    'collectionvoucher' AS reftype,
-    ia.code AS item_code,
-    ia.objid AS item_objid,
-    ia.title AS item_title, 
-    ia.fund_objid AS fund_objid,
-    c.org_objid AS org_objid,
-    SUM( cs.amount * -1 ) AS amount 
-    
-FROM cashreceipt_share cs 
-INNER JOIN itemaccount ia ON cs.payableitem_objid = ia.objid 
-INNER JOIN cashreceipt c ON cs.receiptid=c.objid
-LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
-INNER JOIN remittance r ON c.remittanceid=r.objid
-INNER JOIN collectionvoucher cv ON r.collectionvoucherid=cv.objid 
-WHERE cv.objid = $P{collectionvoucherid}
-AND crv.objid IS NULL
-GROUP BY cv.controlno,
-    cv.objid,
-    cv.controldate,
-    ia.code,
-    ia.objid,
-    ia.title, 
-    ia.fund_objid,
-    c.org_objid
+INSERT INTO payable_summary ( 
+    objid, refid, refdate, refno, reftype, 
+    item_objid, item_code, item_title, fund_objid, 
+    org_objid, amount 
+) 
+SELECT 
+    UUID() AS objid, a.refid, a.refdate, a.refno, a.reftype, 
+    a.item_objid, a.item_code, a.item_title, a.fund_objid, 
+    a.org_objid, a.amount 
+FROM ( 
+    SELECT 
+         cv.controlno AS refno,
+         cv.objid AS refid,
+         cv.controldate AS refdate,
+         'collectionvoucher' AS reftype,
+         ia.code AS item_code,
+         ia.objid AS item_objid,
+         ia.title AS item_title, 
+         ia.fund_objid AS fund_objid,
+         c.org_objid AS org_objid,
+         SUM( cs.amount ) AS amount     
+    FROM cashreceipt_share cs 
+        INNER JOIN itemaccount ia ON cs.payableitem_objid = ia.objid 
+        INNER JOIN cashreceipt c ON cs.receiptid=c.objid
+        LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
+        INNER JOIN remittance r ON c.remittanceid=r.objid
+        INNER JOIN collectionvoucher cv ON r.collectionvoucherid=cv.objid 
+    WHERE cv.objid = $P{collectionvoucherid}
+        AND crv.objid IS NULL
+    GROUP BY cv.controlno,
+         cv.objid,
+         cv.controldate,
+         ia.code,
+         ia.objid,
+         ia.title, 
+         ia.fund_objid,
+         c.org_objid
 ) a
 

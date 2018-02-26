@@ -3,7 +3,7 @@
         <invoker type="home.action" 
                  caption="Accounting" icon="home/icons/accounting.png"
                  visibleWhen="#{self.hasChildren('menucategory/accounting')==true}" 
-                 index="1" action="init"/>
+                 index="-2" action="init"/>
         
         <!--
         <invoker type="formActions" 

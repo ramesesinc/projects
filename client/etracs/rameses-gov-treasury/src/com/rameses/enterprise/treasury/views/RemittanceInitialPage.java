@@ -30,12 +30,21 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
+        jPanel6 = new javax.swing.JPanel();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        jPanel1 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
+        jPanel3 = new javax.swing.JPanel();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jPanel5.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Receipts Summary");
@@ -45,7 +54,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "formno"}
                 , new Object[]{"caption", "Form"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -60,7 +69,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "stubno"}
                 , new Object[]{"caption", "Stub No"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -75,7 +84,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "fromseries"}
                 , new Object[]{"caption", "From Series"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -90,7 +99,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "toseries"}
                 , new Object[]{"caption", "To Series"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -99,13 +108,13 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "qty"}
                 , new Object[]{"caption", "Qty"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -133,14 +142,30 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setHandler("afSummaryHandler");
+        xDataTable1.setPreferredSize(new java.awt.Dimension(200, 200));
+        jPanel5.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel1.setCaption("Total to Remit");
-        xLabel1.setExpression("#{ amount }");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel1.add(xLabel1);
+        jPanel6.setLayout(new java.awt.BorderLayout());
+
+        xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel4.setCaptionWidth(110);
+        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 15, 2));
+
+        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel4.setCaption("Amount to Remit");
+        xLabel4.setExpression("#{formattedAmount}");
+        xLabel4.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
+        xLabel4.setPreferredSize(new java.awt.Dimension(150, 21));
+        xFormPanel4.add(xLabel4);
+
+        jPanel6.add(xFormPanel4, java.awt.BorderLayout.EAST);
+
+        jPanel5.add(jPanel6, java.awt.BorderLayout.SOUTH);
+
+        jPanel4.add(jPanel5, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.YLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Void Receipts");
@@ -150,8 +175,8 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "receiptno"}
                 , new Object[]{"caption", "Receipt No"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -165,8 +190,8 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "receiptdate"}
                 , new Object[]{"caption", "Receipt Date"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -195,8 +220,8 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 110}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -223,14 +248,28 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
             })
         });
         xDataTable2.setHandler("voidReceiptHandler");
+        xDataTable2.setPreferredSize(new java.awt.Dimension(200, 200));
+        jPanel1.add(xDataTable2);
 
-        xLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel2.setCaption("Total Void");
-        xLabel2.setExpression("#{ totalvoid }");
-        xLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 21));
-        xFormPanel2.add(xLabel2);
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel3.setCaptionWidth(110);
+        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 15, 2));
+
+        xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel3.setCaption("Total Void");
+        xLabel3.setExpression("#{formattedTotalVoid}");
+        xLabel3.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
+        xLabel3.setPreferredSize(new java.awt.Dimension(150, 21));
+        xFormPanel3.add(xLabel3);
+
+        jPanel3.add(xFormPanel3, java.awt.BorderLayout.EAST);
+
+        jPanel1.add(jPanel3);
+
+        jPanel4.add(jPanel1, java.awt.BorderLayout.SOUTH);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -238,33 +277,28 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 707, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 707, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(38, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     // End of variables declaration//GEN-END:variables
 }

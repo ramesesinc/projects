@@ -9,6 +9,5 @@
 		<field name="fundid" required="true" />
 		<field name="dr" required="true" />
 		<field name="cr" required="true" />
-		<field name="jevid" />
 	</element>
 </schema>

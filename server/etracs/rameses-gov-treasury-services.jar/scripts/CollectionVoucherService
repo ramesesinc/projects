@@ -16,6 +16,12 @@ class CollectionVoucherService  {
 	@Service("SequenceService")
 	def seqSvc;
 
+	@Service('ControlService') 
+	def controlSvc;	
+
+	@Service("Var")
+	def var;	
+
 	@DataContext("remittance")
 	def remEm;
 
@@ -35,13 +41,13 @@ class CollectionVoucherService  {
 		if(cnt==0) throw new Exception("There are no remittances found that are POSTED within this date");
 
 		def m = [:];
-		m.controlno = 'TMP-LIQ-'+env.USERID;
-		m.controldate = dateSvc.getBasicServerDate();
 		m.dtposted = dateSvc.getServerDate();
+		m.controlno = 'TMP-LIQ-'+env.USERID; 
+		m.controldate = new java.sql.Date( m.dtposted.time );  
 		m.state = "OPEN";
 		m.amount = 0;
 		m.totalcash = 0;
-		m.totalcheck=0;
+		m.totalcheck = 0;
 		m.totalcr = 0;
 		m.cashbreakdown = [];
 		m.liquidatingofficer = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
@@ -79,18 +85,28 @@ class CollectionVoucherService  {
 		return m;
 	}
 
-	
-	@ProxyMethod
-	public def post( def o ) {
-		def m = [collectionvoucherid: o.objid ]
-		cvEm.postToCashLedger( m );
-		cvEm.postToBankAccountLedger( m );
-		cvEm.postToIncome( m );
-		cvEm.postToPayable( m );	
+	@ProxyMethod 
+	public def post( p ) { 
+		def m = [ state: 'POSTED']; 
+		m.dtposted = dateSvc.getServerDate(); 
 
-		def u = [state: 'POSTED', dtposted: dateSvc.getServerDate() ];
-		cvEm.find( [objid: m.objid ]).update( u );
-		return u;	
-	}
+		if ( p.controlno.toString().toUpperCase().startsWith("TMP-")) {
+			def txncode = [ "LIQ", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
+			m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtposted, format: var.liquidation_format, sequenceid_format: var.liquidation_sequenceid_format ]); 
 
+			cvFundEm.find([ parentid: p.objid ]).select('objid,fund.code').list().each{ 
+				def txnno = m.controlno + (it.fund?.code ? ('-'+it.fund.code) : ""); 
+				cvFundEm.find([ objid: it.objid ]).update([ controlno: txnno ]); 
+			} 
+		} 
+
+		cvEm.find([ objid: p.objid ]).update( m ); 	
+
+		def pm = [ collectionvoucherid: p.objid ]; 
+		cvEm.postToCashLedger( pm );
+		cvEm.postToBankAccountLedger( pm );
+		cvEm.postToIncome( pm );
+		cvEm.postToPayable( pm );	
+		return m; 
+	}	
 }

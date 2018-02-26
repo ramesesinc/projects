@@ -13,8 +13,14 @@
 
 		<field name="balance" expr="amount - (totalcash+totalcheck+totalcr)" type="decimal" />
 
-		<complex name="remittance" ref="remittance" jointype="many-to-one" includefields="controlno,state,remittancedate,collector.name,collectionvoucherid">
+		<complex name="remittance" ref="remittance" jointype="many-to-one" 
+			     includefields="controlno,state,remittancedate,collector.name,collectionvoucherid">
 			<key field="remittanceid" target="objid" />		
+		</complex> 
+
+		<complex name="fund" ref="fund" jointype="many-to-one" required="false" 
+			     includefields="objid,code,title" >
+			<key field="fund_objid" target="objid" /> 
 		</complex> 
 	</element>
 </schema>	

@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="cash_ledger">
+    <invokers>
+         <invoker folderid="menucategory/accounting/ledger" caption="Cash Ledger" index="1" action="init"/>
+   </invokers>
+</workunit>

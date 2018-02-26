@@ -36,6 +36,15 @@ class RemittanceInitialModel extends CrudListModel {
         }
     }
     
+    def getFormattedAmount() {
+        if ( amount == null ) amount = 0.0; 
+        return new java.text.DecimalFormat("#,##0.00").format( amount ); 
+    }
+    def getFormattedTotalVoid() {
+        if ( totalvoid == null ) totalvoid = 0.0; 
+        return new java.text.DecimalFormat("#,##0.00").format( totalvoid ); 
+    }
+    
     def afSummaryHandler = [
         fetchList: { o->
             return summaryList;

@@ -1,4 +1,4 @@
-package com.rameses.enterprise.accounting.models;
+package com.rameses.enterprise.treasury.models;
 
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
@@ -8,6 +8,7 @@ import com.rameses.seti2.models.*;
 import com.rameses.util.*;
 
 public class CreditMemoModel extends CrudFormModel { 
+    
     def page;
     
     public def viewPostToIncome() {

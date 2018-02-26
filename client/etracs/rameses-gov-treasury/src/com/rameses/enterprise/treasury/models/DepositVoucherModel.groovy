@@ -14,7 +14,16 @@ class DepositVoucherModel extends CrudFormModel {
     
     def selectedFund;
     def selectedCollection
-        
+
+    def numformat = new java.text.DecimalFormat("#,##0.00"); 
+    
+    def getFormattedAmount() {
+        if ( !(entity.amount instanceof Number )) {
+            entity.amount = 0.0; 
+        } 
+        return numformat.format( entity.amount );  
+    }
+    
     def collectionList = [
         fetchList: { o->
             def m = [_schemaname: 'collectionvoucher' ];
@@ -131,13 +140,13 @@ class DepositVoucherModel extends CrudFormModel {
     public void submitForDeposit() {
         if(! MsgBox.confirm("You are about to submit this for deposit. Continue?")) return;
         def m = depositSvc.submitForDeposit( [objid: entity.objid ] );
-        entity.state = m.state;
+        if ( m ) entity.putAll( m ); 
     }
 
     public void post() {
         if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
         def m = depositSvc.post( [objid: entity.objid ] );
-        entity.state = m.state;
+        if ( m ) entity.putAll( m ); 
     }
 
 }    

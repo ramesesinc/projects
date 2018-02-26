@@ -1,6 +1,6 @@
 <schema>
 
-	<element tablename="cash_treasury_ledger">
+	<element tablename="cash_ledger">
 		<field name="objid"  primary="true" prefix="CSHTRYLDGR"/>
 		<field name="refid" required="true" />
 		<field name="reftype" required="true" />
@@ -11,7 +11,6 @@
 		<field name="cr" required="true" />
 		<field name="liquidatingofficer_objid" required="true" />
 		<field name="liquidatingofficer_name" required="true" />
-		<field name="jevid"  />
 	</element>
 
 </schema>

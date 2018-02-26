@@ -3,17 +3,18 @@ import com.rameses.util.*
 import com.rameses.common.*
 import treasury.utils.*;
 
-class EORListInterceptor {
+class EORRemittanceListInterceptor {
 
-    @After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'eor' }")
+    @After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'eor_remittance' }")
     public void getNodes( evt ) { 
         def x = evt.args[0];
         def result = evt.result;
+        result << [  title: 'Draft', state:'DRAFT' ];
         result << [  title: 'Unremitted', state:'OPEN' ];
         result << [  title: 'Posted', state:'POSTED' ];
     }
 
-    @Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'eor' }")
+    @Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'eor_remittance' }")
     public void loadList(def evt) {
         def o = evt.args[0];
 

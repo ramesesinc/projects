@@ -2,8 +2,9 @@
     <invokers>
         <invoker folderid="menucategory/treasury/epayment" 
             cols="controlno,controldate,partnerid,amount,state"
-            caption="Remittance" 
+            caption="View EOR Remittances" 
             action="init"
+            index="3"
             formTitle="EOR Remittances" />
    </invokers>
 </workunit>

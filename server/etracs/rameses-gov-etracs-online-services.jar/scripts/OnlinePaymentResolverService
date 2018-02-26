@@ -12,18 +12,36 @@ class OnlinePaymentResolverService {
 	def self; 
 
     @ProxyMethod
-    public void resolve( params ) { 
-    	params.start = 0; 
-    	params.limit = 10; 
-    	self.resolveImpl( params ); 
+    public void resolve( params ) {  
+        if ( params.objid ) {
+            def o = po_db.find([ objid: params.objid ]).first(); 
+            if ( !o ) return; 
+
+            params.items = [ o ]; 
+            resolveImpl( params ); 
+
+        } else {
+            params.start = 0; 
+            params.limit = 10; 
+            self.resolveImpl( params ); 
+        }
     } 
 
     @Async 
     @ProxyMethod 
     public void resolveImpl( params ) {
     	def start = (params.start ? params.start : 0);
-    	def limit = (params.limit ? params.limit : 10); 
-    	def items = po_db.find([ origin:'filipizen' ]).list( start, limit+1 ); 
+    	def limit = (params.limit ? params.limit : 10);         
+
+        def items = params.items;         
+        if ( items ) {
+            start = 0; 
+            limit = items.size(); 
+
+        } else {  
+            items = po_db.find([ origin:'filipizen' ]).list( start, limit+1 ); 
+        } 
+
     	if ( items ) resolveItems( items, start, limit ); 
     }
 

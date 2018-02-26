@@ -65,6 +65,18 @@ class CollectionVoucherModel extends CrudFormModel {
         return op;
     }
     
+    def selectedCheck;
+    def checkModel = [
+        fetchList: { o->
+            def m = [_schemaname: 'cashreceiptpayment_noncash' ];
+            m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)}";
+            m.groupBy = "refno,reftype,refdate,particulars";
+            m.orderBy = "refdate,refno";
+            m.where = [ "receipt.remittance.collectionvoucherid = :cvid", [cvid: entity.objid ]];
+            return queryService.getList( m );
+        }
+    ] as BasicListModel;
+    
     def post() {
         if(!MsgBox.confirm("You are about to post this transaction. Proceed?")) return null;
         def o = collSvc.post( entity );
@@ -72,4 +84,11 @@ class CollectionVoucherModel extends CrudFormModel {
         
         fundSummaryHandler.reload(); 
     }
+    
+    def getPrintFormData() { 
+        def rdata = collSvc.getReportData([ objid: entity.objid ]); 
+        if ( rdata ) rdata.putAll( entity ); 
+        
+        return rdata;
+    } 
 } 

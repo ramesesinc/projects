@@ -109,4 +109,10 @@ class CollectionVoucherService  {
 		cvEm.postToPayable( pm );	
 		return m; 
 	}	
+
+
+	@ProxyMethod 
+	public def getReportData( params ) {
+		return params; 
+	}
 }

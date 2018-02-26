@@ -1,11 +1,11 @@
 import com.rameses.annotations.*;
 
-class RemittanceRCDInterceptor {
+class CollectionVoucherRCDInterceptor {
 
-	@Service('RemittanceRCDReportService') 
+	@Service('CollectionVoucherRCDReportService') 
 	def reportSvc; 
 
-	@After(pattern="RemittanceService.getReportData")
+	@After(pattern="CollectionVoucherService.getReportData")
 	void getReportData( evt ) { 
 		def result = evt.result; 
 		def data = reportSvc.getReport( result ); 

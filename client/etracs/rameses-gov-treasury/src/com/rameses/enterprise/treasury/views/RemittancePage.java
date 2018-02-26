@@ -52,15 +52,14 @@ public class RemittancePage extends javax.swing.JPanel {
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         jPanel6 = new javax.swing.JPanel();
         xButton3 = new com.rameses.rcp.control.XButton();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel14 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
         jPanel10 = new javax.swing.JPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
-        jPanel9 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
         cashDenomination1 = new com.rameses.enterprise.treasury.components.CashDenomination();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
@@ -437,15 +436,19 @@ public class RemittancePage extends javax.swing.JPanel {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         xTabbedPane1.addTab("  Summary   ", jPanel12);
 
-        jPanel14.setLayout(new java.awt.BorderLayout(5, 0));
+        jPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        com.rameses.rcp.control.layout.XLayout xLayout2 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout2.setSpacing(5);
+        jPanel9.setLayout(xLayout2);
 
-        jPanel8.setLayout(new java.awt.BorderLayout());
+        jPanel7.setPreferredSize(new java.awt.Dimension(515, 100));
+        jPanel7.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder3.setTitle("Checks and Other Payments");
@@ -514,7 +517,7 @@ public class RemittancePage extends javax.swing.JPanel {
         });
         xDataTable3.setHandler("checkModel");
         xDataTable3.setName("selectedCheck"); // NOI18N
-        jPanel8.add(xDataTable3, java.awt.BorderLayout.CENTER);
+        jPanel7.add(xDataTable3, java.awt.BorderLayout.CENTER);
 
         jPanel10.setLayout(new java.awt.BorderLayout());
 
@@ -532,26 +535,27 @@ public class RemittancePage extends javax.swing.JPanel {
 
         jPanel10.add(xFormPanel3, java.awt.BorderLayout.EAST);
 
-        jPanel8.add(jPanel10, java.awt.BorderLayout.PAGE_END);
+        jPanel7.add(jPanel10, java.awt.BorderLayout.SOUTH);
 
-        jPanel14.add(jPanel8, java.awt.BorderLayout.CENTER);
+        jPanel9.add(jPanel7);
 
-        jPanel9.setLayout(new java.awt.BorderLayout());
+        jPanel11.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder4.setTitle("Cash Breakdown");
-        jPanel11.setBorder(xTitledBorder4);
-        jPanel11.setLayout(new java.awt.BorderLayout());
+        jPanel8.setBorder(xTitledBorder4);
+        jPanel8.setLayout(new java.awt.BorderLayout());
 
         cashDenomination1.setAmountField("entity.totalcash");
         cashDenomination1.setEnabled(false);
         cashDenomination1.setFooterVisible(false);
         cashDenomination1.setName("entity.cashbreakdown"); // NOI18N
-        jPanel11.add(cashDenomination1, java.awt.BorderLayout.CENTER);
+        jPanel8.add(cashDenomination1, java.awt.BorderLayout.CENTER);
 
-        jPanel9.add(jPanel11, java.awt.BorderLayout.CENTER);
+        jPanel11.add(jPanel8, java.awt.BorderLayout.CENTER);
 
         xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel4.setOpaque(true);
         xFormPanel4.setPadding(new java.awt.Insets(3, 15, 0, 2));
 
         xDecimalField9.setCaption("Total Cash");
@@ -562,28 +566,11 @@ public class RemittancePage extends javax.swing.JPanel {
         xDecimalField9.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel4.add(xDecimalField9);
 
-        jPanel9.add(xFormPanel4, java.awt.BorderLayout.SOUTH);
+        jPanel11.add(xFormPanel4, java.awt.BorderLayout.SOUTH);
 
-        jPanel14.add(jPanel9, java.awt.BorderLayout.EAST);
+        jPanel9.add(jPanel11);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 768, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        xTabbedPane1.addTab("  Cash and Checks   ", jPanel2);
+        xTabbedPane1.addTab("  Cash and Checks   ", jPanel9);
 
         add(xTabbedPane1);
     }// </editor-fold>//GEN-END:initComponents
@@ -594,12 +581,11 @@ public class RemittancePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private com.rameses.rcp.control.XButton xButton1;

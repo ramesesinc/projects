@@ -35,6 +35,12 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
+        xTextField7 = new com.rameses.rcp.control.XTextField();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xTextField6 = new com.rameses.rcp.control.XTextField();
+        xTextField5 = new com.rameses.rcp.control.XTextField();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
+        xTextField9 = new com.rameses.rcp.control.XTextField();
 
         xTabbedPane1.setItems("sections");
 
@@ -54,13 +60,52 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
         xTextField4.setStretchWidth(100);
         xFormPanel4.add(xTextField4);
 
+        xTextField7.setCaption("Branch");
+        xTextField7.setName("entity.branch"); // NOI18N
+        xTextField7.setRequired(true);
+        xTextField7.setStretchWidth(100);
+        xFormPanel4.add(xTextField7);
+
+        xFormPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        xFormPanel5.setCaptionWidth(150);
+        xFormPanel5.setCellpadding(new java.awt.Insets(0, 30, 0, 0));
+
+        xTextField6.setCaption("Contact Person");
+        xTextField6.setName("entity.contact"); // NOI18N
+        xTextField6.setRequired(true);
+        xTextField6.setStretchWidth(100);
+        xFormPanel5.add(xTextField6);
+
+        xTextField5.setCaption("Mobile No");
+        xTextField5.setName("entity.mobileno"); // NOI18N
+        xTextField5.setPreferredSize(new java.awt.Dimension(200, 20));
+        xTextField5.setRequired(true);
+        xFormPanel5.add(xTextField5);
+
+        xTextField8.setCaption("Phone No");
+        xTextField8.setName("entity.phoneno"); // NOI18N
+        xTextField8.setPreferredSize(new java.awt.Dimension(200, 20));
+        xTextField8.setRequired(true);
+        xFormPanel5.add(xTextField8);
+
+        xTextField9.setCaption("Email");
+        xTextField9.setName("entity.email"); // NOI18N
+        xTextField9.setPreferredSize(new java.awt.Dimension(200, 20));
+        xTextField9.setRequired(true);
+        xFormPanel5.add(xTextField9);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -68,7 +113,9 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(332, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(210, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -93,8 +140,14 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
+    private com.rameses.rcp.control.XTextField xTextField5;
+    private com.rameses.rcp.control.XTextField xTextField6;
+    private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
+    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
 }

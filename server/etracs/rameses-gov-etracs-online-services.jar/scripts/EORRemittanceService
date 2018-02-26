@@ -1,0 +1,46 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import treasury.utils.*;
+
+class EORRemittanceService {
+
+    @DataContext("eor_remittance")
+    def remEm;
+
+    @DataContext("eor")
+    def eorEm;
+
+    @Service("DateService")
+    def dateSvc;
+
+    @Env
+    def env;
+
+    @ProxyMethod
+    public def create( def pp ) {
+        if(!pp.items )
+            throw new Exception("Please select at least one item to remit");
+        if( pp.amount <= 0 )
+            throw new Exception("Amount must be greater than 0");
+        def items = pp.items;
+
+        def arr = items.collect{ it.objid };
+
+        def m = [state:"DRAFT"];
+        m.controlno = 'TMP-REM-'+env.USERID;
+        m.controldate = pp.controldate;
+        m.partnerid = pp.partnerid;
+        m.amount = pp.amount;
+        m.dtcreated = dateSvc.getServerDate();
+        m.createdby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
+        m = remEm.create(m);
+
+        eorEm.debug = true;
+        eorEm.where( '''objid IN (${ids})''').vars("ids", "'" + arr.join("','") + "'").update([remittanceid: m.objid ]);
+
+        remEm.insertRemittanceFund(  [remittanceid: m.objid ] );
+        return m;
+    }
+
+}

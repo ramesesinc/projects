@@ -34,17 +34,17 @@ public class TestRPTBillingService
 		util.required('ledgerid', params.ledgerid)
 		
 		def bill = billingSvc.initBill()
-		bill.ledgers << [objid: 'RLM-650b8a7a:161455342c5:-7e54']
-		// bill.ledgers << [objid:'RLM-dab3f4f:16159a5a71c:-7719']
+		bill.ledgers << [objid: params.ledgerid]
 
 		if (params.billtoyear) bill.billtoyear = Integer.parseInt(params.billtoyear)
 		if (params.billtoqtr) bill.billtoqtr = Integer.parseInt(params.billtoqtr)
-		bill.billto = [objid:'IND7cfca6b3:15aac60615a:-792e', name:'JUAN', address:'cebu']
-		bill.taxpayer = [objid:'IND7cfca6b3:15aac60615a:-792e', name:'JUAN', address:'cebu']
+		bill.billto = [objid:'IND-10392c89:156689ec4f6:-467b', name:'JUAN', address:'cebu']
+		bill.taxpayer = bill.billto
 		bill.postedby = 'system'
 		bill.postedbytitle = 'system'
 		bill._forpayment = true
 		bill = billingSvc.generateBill(bill)
+		println 'BILL => ' + bill 
 		return bill 
 	}
 }

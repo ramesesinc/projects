@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.11 (64 bit)
 MySQL - 5.1.73-community : Database - etracs_panabo2
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -29,11 +30,11 @@ CREATE TABLE `bankaccount_ledger` (
   PRIMARY KEY (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `cash_ledger` */
+/*Table structure for table `cash_treasury_ledger` */
 
-DROP TABLE IF EXISTS `cash_ledger`;
+DROP TABLE IF EXISTS `cash_treasury_ledger`;
 
-CREATE TABLE `cash_ledger` (
+CREATE TABLE `cash_treasury_ledger` (
   `objid` varchar(150) NOT NULL,
   `refid` varchar(50) DEFAULT NULL,
   `reftype` varchar(50) DEFAULT NULL,

@@ -1,14 +1,13 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="eor_remittance">
     <invokers>
-        <invoker type="eor_remittance:create" 
-            caption="New EOR Remittance" 
-            action="create"
-            formTitle="New EOR Remittance"/>
-
         <invoker type="eor_remittance:open" 
             caption="EOR Remittance" 
             action="open"
             formTitle="EOR Remittance"/>
                 
    </invokers>
+   <code class="com.rameses.gov.epayment.models.EORRemittanceModel" />
+    <pages>
+        <page template="com.rameses.gov.epayment.views.EORRemittancePage" />
+    </pages>
 </workunit>

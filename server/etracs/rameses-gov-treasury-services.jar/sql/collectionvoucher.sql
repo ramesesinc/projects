@@ -14,7 +14,7 @@ GROUP BY rf.fund_objid,  f.code, rf.fund_title
 
 
 [postToCashLedger]
-INSERT INTO cash_ledger 
+INSERT INTO cash_treasury_ledger 
 (objid,refid,refno,refdate,reftype,fundid,dr,cr,liquidatingofficer_objid,liquidatingofficer_name)
 SELECT 
     cvf.objid,
@@ -142,11 +142,12 @@ FROM (
          ia.code AS item_code,
          ia.objid AS item_objid,
          ia.title AS item_title, 
-         ia.fund_objid AS fund_objid,
+         ra.fund_objid AS fund_objid,
          c.org_objid AS org_objid,
          SUM( cs.amount ) AS amount     
     FROM cashreceipt_share cs 
         INNER JOIN itemaccount ia ON cs.payableitem_objid = ia.objid 
+        INNER JOIN itemaccount ra ON cs.refitem_objid = ra.objid    
         INNER JOIN cashreceipt c ON cs.receiptid=c.objid
         LEFT JOIN cashreceipt_void crv ON crv.receiptid=c.objid
         INNER JOIN remittance r ON c.remittanceid=r.objid
@@ -159,7 +160,7 @@ FROM (
          ia.code,
          ia.objid,
          ia.title, 
-         ia.fund_objid,
+         ra.fund_objid,
          c.org_objid
 ) a
 

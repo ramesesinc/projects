@@ -33,8 +33,8 @@ public class RPTBillingRuleService
 	@DataContext('rptcompromise')
 	def em_compromise
 
-	@DataContext('landtax_lgu_account_mapping')
-	def em_landtax_lgu_account_mapping
+	@DataContext('vw_landtax_lgu_account_mapping')
+	def em_account_mapping
 
 	def RULESET 			= 'rptbilling'
 	def FACT_PACKAGE 		= 'rptbilling.'
@@ -297,9 +297,9 @@ public class RPTBillingRuleService
 		actions.addCommand('remove-bill-item', new RemoveBillItem(request:request))
 		actions.addCommand('aggregate-bill-item', new AggregateBillItem(request:request))
 		actions.addCommand('create-tax-summary', new CreateTaxSummary(request:request))
-		actions.addCommand('add-brgy-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'barangay', EM:em_landtax_lgu_account_mapping))		
-		actions.addCommand('add-muni-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'municipality', EM:em_landtax_lgu_account_mapping))		
-		actions.addCommand('add-prov-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'province', EM:em_landtax_lgu_account_mapping))		
+		actions.addCommand('add-brgy-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'barangay', EM:em_account_mapping))		
+		actions.addCommand('add-muni-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'municipality', EM:em_account_mapping))		
+		actions.addCommand('add-prov-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'province', EM:em_account_mapping))		
 		actions.addCommand('set-bill-expiry', new SetBillExpiryDate(request:request))
 
 		/*
@@ -334,15 +334,15 @@ public class RPTBillingRuleService
 		p.revperiod = params.taxsummary.revperiod 
 		if ('barangay'.equalsIgnoreCase(params.lgutype)){
 			p.lgu_objid = params.taxsummary.rptledger.barangayid
-			acct = em_landtax_lgu_account_mapping.select('item.objid,item.title').find(p).first() 
+			acct = em_account_mapping.select('item.objid,item.title').find(p).first() 
 		}
 		else if (params.lgutype.toLowerCase().matches('municipality|city')){
 			p.lgu_objid = params.taxsummary.rptledger.lguid
-			acct = em_landtax_lgu_account_mapping.select('item.objid,item.title').find(p).first() 
+			acct = em_account_mapping.select('item.objid,item.title').find(p).first() 
 		}
 		else if ('province'.equalsIgnoreCase(params.lgutype)){
 			p.lgu_orgclass = 'PROVINCE'
-			acct = em_landtax_lgu_account_mapping.select('item.objid,item.title').find(p).first() 	
+			acct = em_account_mapping.select('item.objid,item.title').find(p).first() 	
 		}
 
 		if (acct){

@@ -1,24 +1,24 @@
 <schema adapter="eor">
 	<element tablename="eor">
 		<field name="objid" primary="true" prefix="EOR"/>
-		<field name="receiptno" required="true" caption="Receipt No"/>
-		<field name="receiptdate" required="true" type="date" caption="Receipt Date"/>
+		<field name="receiptno" required="true" caption="Receipt No" searchable="true" />
+		<field name="receiptdate" required="true" type="date" caption="Receipt Date" indexed="true"/>
 		<field name="txndate" required="true" type="timestamp"/>
 		<field name="state" required="true"/>
 		<field name="partnerid" required="true"/>
 		<field name="txntype" required="true" caption="Txn Type"/>
-		<field name="traceid" required="true"/>
-		<field name="tracedate" required="true"/>
+		<field name="traceid" required="true" caption="Trace No" indexed="true"/>
+		<field name="tracedate" required="true" caption="Trace Date"/>
 		<field name="refid" required="true"/>
-		<field name="paidby" required="true"/>
-		<field name="paidbyaddress" required="true"/>
+		<field name="paidby" required="true" caption="Paid By" indexed="true" searchable="true"/>
+		<field name="paidbyaddress" required="true"  caption="Payer Address"  />
 		<field name="payer_objid" required="true"/>
 		<!-- filipizen or kiosk -->
-		<field name="paymethod" required="true"/>
-		<field name="paymentrefid" required="true"/>
+		<field name="paymethod" required="true"  caption="Pay Method" />
+		<field name="paymentrefid" required="true" caption="Pay Ref"/>
 		<field name="remittanceid" />
 		<field name="remarks" required="true"/>
-		<field name="amount" required="true" type="decimal"/>
+		<field name="amount" required="true" type="decimal"  caption="Amount" />
 
 		<complex name="items" ref="eor_item" jointype="one-to-many">
 			<key field="objid" target="parentid" />

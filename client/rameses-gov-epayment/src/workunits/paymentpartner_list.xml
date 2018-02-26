@@ -1,8 +1,14 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="paymentpartner" allowCreate="false" allowEdit="false" allowDelete="false">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="paymentpartner" 
+          allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker folderid="/explorer/master/epayment" caption="Payment Partner" xrole="MASTER" 
                  cols="code,name"
                  action="init"/>
-        <invoker type="listActions" caption="Sync from Cloud" action="syncCloud" />
+        
+         <invoker folderid="/menucategory/treasury/epayment" caption="Payment Partner" xrole="MASTER" 
+                 cols="code,name,branch"
+                 action="init" index="-5"/>
+         
+         <invoker type="listActions" caption="Sync from Cloud" action="syncCloud" />
    </invokers>
 </workunit>

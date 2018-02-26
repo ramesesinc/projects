@@ -10,8 +10,8 @@
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 		<field name="amount" required="true" />
-		<field name="dtposted" required="true" />
-		<field name="postedby_objid" required="true" />
-		<field name="postedby_name" required="true"	/>
+		<field name="dtposted" />
+		<field name="postedby_objid" />
+		<field name="postedby_name"/>
 	</element>
 </schema>

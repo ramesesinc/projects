@@ -1,28 +1,14 @@
 <workunit schemaName="eor_remittance">
     <invokers>
-        <invoker type="eor:list:listActions" 
-            caption="Remit" 
-            action="start"
+        <invoker folderid="menucategory/treasury/epayment" 
+            caption="Prepare Remittance" 
+            action="create"
+            index="2"
             formTitle="New EOR Remittance"/>
+        <invoker type="formActions" caption="Submit" action="save" confirm="You are about to submit this remittance. Proceed?"/>
    </invokers>
-   <code class="com.rameses.gov.epayment.models.EORRemittanceModel" />
-    <pageflow>
-        <start>
-            <transition to="initial" />
-        </start>
-        <page name="initial" title="Enter Remittance Date">
-            <transition to="resolve" caption="Next" action="fetchForResolve"/>
-        </page>
-        <page name="resolve" title="For Reconciliation">
-            <transition to="view" caption="Next" />
-        </page>
-        <page name="view" title="EOR Remittance">
-            <transition to="post" caption="Post" />
-        </page>
-    </pageflow>
+   <code class="com.rameses.gov.epayment.models.EORRemittanceInitialModel" />
     <pages>
-        <page name="initial" template="com.rameses.gov.epayment.views.EORRemittanceInitialPage" />
-        <page name="resolve" template="com.rameses.gov.epayment.views.ResolveEPaymentPage" />
-        <page name="view" template="com.rameses.gov.epayment.views.EORRemittancePage" />
+        <page template="com.rameses.gov.epayment.views.EORRemittanceInitialPage" />
     </pages>
 </workunit>

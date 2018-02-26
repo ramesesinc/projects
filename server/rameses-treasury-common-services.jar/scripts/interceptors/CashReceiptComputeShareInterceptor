@@ -20,7 +20,6 @@ public class CashReceiptComputeShareInterceptor {
 	@Before(pattern="CashReceiptService.post",  index=50)
 	public void computeShare(def evt) {
 		def p = evt.args[0];
-		
 
 		/***************************************************************
 		//do the sharing here. Just proceed if there are errors 
@@ -33,7 +32,6 @@ public class CashReceiptComputeShareInterceptor {
 			}	
 		}
 		catch(e) {
-			throw e;
 			println "Error executing sharing rule service. " + e.message;
 		}
 	}

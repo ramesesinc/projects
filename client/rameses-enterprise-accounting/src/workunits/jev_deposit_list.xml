@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="jev">
+    <invokers>
+         <invoker folderid="/menucategory/accounting/jev" 
+                 caption="Deposits" 
+                 action="init" role="MASTER" permission="jev.view" 
+                 index="10"
+                 customFilter="1=1"/> 
+    </invokers>
+   
+</workunit>

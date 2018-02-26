@@ -1,5 +1,7 @@
 package treasury.facts;
 
+import enterprise.facts.*;
+
 class Account {
 	
 	Fund fund;
@@ -7,6 +9,7 @@ class Account {
 	String code;
 	String title;
 	int sortorder;
+	Org org;
 
 	Account parentaccount;	//if there is a patrent account in account
 

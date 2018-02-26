@@ -6,12 +6,7 @@ import com.rameses.common.*
 
 class JevListInterceptor  {
 
-	@DataContext("jev")
-	def dcEm;
-
-	@Service("DateService")
-	def dateSvc;
-
+	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'jev' }")
 	public def getNodeList(evt) {
 		def result = evt.result;

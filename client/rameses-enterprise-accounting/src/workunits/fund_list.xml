@@ -3,6 +3,12 @@
         <invoker folderid="/explorer/master/accounting" 
                  caption="Funds" action="init" role="MASTER" permission="fund.view"
                  cols="code,title,system" orderBy="code"/>
+        
         <invoker type="quick_launcher" code="FUND00" caption="Funds"  role="MASTER" permission="fund.view"/> 
+        
+        <invoker folderid="/menucategory/accounting/master" 
+                 caption="Funds" action="init" role="MASTER" permission="fund.view"
+                 cols="code,title,system" orderBy="code"/>
+        
    </invokers>
 </workunit>

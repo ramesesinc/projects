@@ -22,10 +22,13 @@ class BankModel extends CrudFormModel {
     }
     
     void afterInit() {
-        if(!cashReportList) cashReportList = loadItems( "deposit_slip:cash" ); 
-        if(!cashBreakdownReportList) cashBreakdownReportList = loadItems( "deposit_slip:cashbreakdown" ); 
-        if(!checkReportList) checkReportList = loadItems( "deposit_slip:check" ); 
-        if(!checkBreakdownReportList) checkBreakdownReportList = loadItems( "deposit_slip:checkbreakdown" ); 
+        try {
+            if(!cashReportList) cashReportList = loadItems( "deposit_slip:cash" ); 
+            if(!cashBreakdownReportList) cashBreakdownReportList = loadItems( "deposit_slip:cashbreakdown" ); 
+            if(!checkReportList) checkReportList = loadItems( "deposit_slip:check" ); 
+            if(!checkBreakdownReportList) checkBreakdownReportList = loadItems( "deposit_slip:checkbreakdown" ); 
+        }
+        catch(e) {;}
     }
     
     @PropertyChangeListener

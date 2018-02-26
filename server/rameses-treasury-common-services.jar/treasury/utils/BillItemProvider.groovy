@@ -19,6 +19,9 @@ public class BillItemProvider {
 			if( acct.fund?.objid  ) {
 				f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);
 			}
+			if( acct.org?.objid ) {
+				throw new Exception("org id is " + acct.org.objid );
+			} 
 		}
 
 		def info = [:];

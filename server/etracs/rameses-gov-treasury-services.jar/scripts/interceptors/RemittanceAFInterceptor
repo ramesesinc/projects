@@ -57,7 +57,10 @@ class RemittanceAFInterceptor {
 		}
 	} 
 
-	private void insertAFTxn( rem, item ) {
+	private void insertAFTxn( rem, item ) { 
+		def info = aftxn_em.find([ objid: rem.objid ]).first(); 
+		if ( info ) return; 
+		
 		def m = [ state: 'POSTED' ]; 
 		m.objid = rem.objid; 
 		m.controlno = rem.controlno; 

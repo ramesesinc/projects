@@ -80,6 +80,17 @@ class CollectionVoucherService  {
 	}
 
 	
-	
+	@ProxyMethod
+	public def post( def o ) {
+		def m = [collectionvoucherid: o.objid ]
+		cvEm.postToCashLedger( m );
+		cvEm.postToBankAccountLedger( m );
+		cvEm.postToIncome( m );
+		cvEm.postToPayable( m );	
+
+		def u = [state: 'POSTED', dtposted: dateSvc.getServerDate() ];
+		cvEm.find( [objid: m.objid ]).update( u );
+		return u;	
+	}
 
 }

@@ -20,4 +20,13 @@
             <folder id="reports" caption="Reports"/>
         </folder>    
     </folder>
+    
+    <folder id="menucategory">
+        <folder id="accounting" caption="Accounting"  icon="home/icons/accounting.png">
+            <folder id="master" caption="Master Files" index="0" sicon="home/icons/af.png"/>
+            <folder id="ledger" caption="Ledgers" index="0" sicon="home/icons/af.png"/>
+            <folder id="jev" caption="Journal Entries" index="1" sicon="home/icons/cashreceipt.png"/>
+        </folder>
+    </folder>
+    
 </folders>

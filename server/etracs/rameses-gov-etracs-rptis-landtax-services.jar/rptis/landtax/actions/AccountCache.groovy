@@ -25,9 +25,8 @@ public class AccountCache{
 			return acct;
 
 		def p = [:]
-		p.revtype = params.accttype
-		p.revperiod = params.revperiod 
-		def fields = 'item.objid,item.code,item.title,item.fund.objid'
+		p.item_tag = 'rpt_' + params.accttype + '_' + params.revperiod
+		def fields = 'item.objid,item.code,item.title,item.type,item.fund.objid,item.tag'
 
 		if ('barangay'.equalsIgnoreCase(params.lgutype)){
 			p.lgu_objid = params.taxsummary.ledger.barangayid

@@ -929,3 +929,191 @@ INSERT INTO `sys_rulegroup` (`name`, `ruleset`, `title`, `sortorder`) VALUES ('L
 
 
 
+
+
+/*========================================================================
+*
+* UPDATE ON LANDTAX ACCOUNT MAPPING
+*
+*=========================================================================*/
+
+drop procedure if exists buildRptAccounts;
+
+create procedure buildRptAccounts()
+BEGIN
+  select orgclass into @orgclass  from sys_org where root = 1;
+
+  if @orgclass = 'province' then 
+    
+
+    /* MUNICIPALITY SHARE PAYABLE */
+
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_ADVANCE_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC ADVANCE MUNICIPALITY SHARE', 'RPT BASIC ADVANCE MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_CURRENT_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC CURRENT MUNICIPALITY SHARE', 'RPT BASIC CURRENT MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_CURRENT_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC CURRENT PENALTY MUNICIPALITY SHARE', 'RPT BASIC CURRENT PENALTY MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_PREVIOUS_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PREVIOUS MUNICIPALITY SHARE', 'RPT BASIC PREVIOUS MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_PREVIOUS_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PREVIOUS PENALTY MUNICIPALITY SHARE', 'RPT BASIC PREVIOUS PENALTY MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_PRIOR_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PRIOR MUNICIPALITY SHARE', 'RPT BASIC PRIOR MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_PRIOR_MUNICIPALITY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PRIOR PENALTY MUNICIPALITY SHARE', 'RPT BASIC PRIOR PENALTY MUNICIPALITY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_ADVANCE_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF ADVANCE MUNICIPALITY SHARE', 'RPT SEF ADVANCE MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_CURRENT_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF CURRENT MUNICIPALITY SHARE', 'RPT SEF CURRENT MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEFINT_CURRENT_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF CURRENT PENALTY MUNICIPALITY SHARE', 'RPT SEF CURRENT PENALTY MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_PREVIOUS_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF PREVIOUS MUNICIPALITY SHARE', 'RPT SEF PREVIOUS MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEFINT_PREVIOUS_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF PREVIOUS PENALTY MUNICIPALITY SHARE', 'RPT SEF PREVIOUS PENALTY MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_PRIOR_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF PRIOR MUNICIPALITY SHARE', 'RPT SEF PRIOR MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEFINT_PRIOR_MUNICIPALITY_SHARE', 'APPROVED', '455-050', 'RPT SEF PRIOR PENALTY MUNICIPALITY SHARE', 'RPT SEF PRIOR PENALTY MUNICIPALITY SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+
+
+
+    update itemaccount ia, landtax_lgu_account_mapping m, municipality b set 
+      ia.parentid = case 
+        when m.revtype = 'basic' and revperiod = 'advance' then 'RPT_BASIC_ADVANCE_MUNICIPALITY_SHARE'
+        when m.revtype = 'basic' and revperiod = 'current' then 'RPT_BASIC_CURRENT_MUNICIPALITY_SHARE'
+        when m.revtype = 'basicint' and revperiod = 'current' then 'RPT_BASICINT_CURRENT_MUNICIPALITY_SHARE'
+        when m.revtype = 'basic' and revperiod = 'previous' then 'RPT_BASIC_PREVIOUS_MUNICIPALITY_SHARE'
+        when m.revtype = 'basicint' and revperiod = 'previous' then 'RPT_BASICINT_PREVIOUS_MUNICIPALITY_SHARE'
+        when m.revtype = 'basic' and revperiod = 'prior' then 'RPT_BASIC_PRIOR_MUNICIPALITY_SHARE'
+        when m.revtype = 'basicint' and revperiod = 'prior' then 'RPT_BASICINT_PRIOR_MUNICIPALITY_SHARE'
+
+        when m.revtype = 'sef' and revperiod = 'advance' then 'RPT_SEF_ADVANCE_MUNICIPALITY_SHARE'
+        when m.revtype = 'sef' and revperiod = 'current' then 'RPT_SEF_CURRENT_MUNICIPALITY_SHARE'
+        when m.revtype = 'sefint' and revperiod = 'current' then 'RPT_SEFINT_CURRENT_MUNICIPALITY_SHARE'
+        when m.revtype = 'sef' and revperiod = 'previous' then 'RPT_SEF_PREVIOUS_MUNICIPALITY_SHARE'
+        when m.revtype = 'sefint' and revperiod = 'previous' then 'RPT_SEFINT_PREVIOUS_MUNICIPALITY_SHARE'
+        when m.revtype = 'sef' and revperiod = 'prior' then 'RPT_SEF_PRIOR_MUNICIPALITY_SHARE'
+        when m.revtype = 'sefint' and revperiod = 'prior' then 'RPT_SEFINT_PRIOR_MUNICIPALITY_SHARE'
+        end,
+      ia.org_objid = b.objid, 
+      ia.org_name = b.name,
+      ia.type = 'PAYABLE'
+    where ia.objid = m.item_objid
+    and m.lgu_objid = b.objid
+    ;
+
+
+  elseif @orgclass = 'municipality' then 
+    
+    /* PROVINCE SHARE PAYABLE */
+
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_ADVANCE_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC ADVANCE PROVINCE SHARE', 'RPT BASIC ADVANCE PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_CURRENT_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC CURRENT PROVINCE SHARE', 'RPT BASIC CURRENT PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_CURRENT_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC CURRENT PENALTY PROVINCE SHARE', 'RPT BASIC CURRENT PENALTY PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_PREVIOUS_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC PREVIOUS PROVINCE SHARE', 'RPT BASIC PREVIOUS PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_PREVIOUS_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC PREVIOUS PENALTY PROVINCE SHARE', 'RPT BASIC PREVIOUS PENALTY PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_PRIOR_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC PRIOR PROVINCE SHARE', 'RPT BASIC PRIOR PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_PRIOR_PROVINCE_SHARE', 'APPROVED', '455-049', 'RPT BASIC PRIOR PENALTY PROVINCE SHARE', 'RPT BASIC PRIOR PENALTY PROVINCE SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_ADVANCE_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF ADVANCE PROVINCE SHARE', 'RPT SEF ADVANCE PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_CURRENT_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF CURRENT PROVINCE SHARE', 'RPT SEF CURRENT PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEFINT_CURRENT_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF CURRENT PENALTY PROVINCE SHARE', 'RPT SEF CURRENT PENALTY PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_PREVIOUS_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF PREVIOUS PROVINCE SHARE', 'RPT SEF PREVIOUS PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEFINT_PREVIOUS_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF PREVIOUS PENALTY PROVINCE SHARE', 'RPT SEF PREVIOUS PENALTY PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEF_PRIOR_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF PRIOR PROVINCE SHARE', 'RPT SEF PRIOR PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+    INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SEFINT_PRIOR_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SEF PRIOR PENALTY PROVINCE SHARE', 'RPT SEF PRIOR PENALTY PROVINCE SHARE', 'PAYABLE', 'SEF', '02', 'SEF', '0.00', 'ANY', NULL, NULL, NULL);
+
+    update itemaccount ia, landtax_lgu_account_mapping m, province b set 
+      ia.parentid = case 
+        when m.revtype = 'basic' and revperiod = 'advance' then 'RPT_BASIC_ADVANCE_PROVINCE_SHARE'
+        when m.revtype = 'basic' and revperiod = 'current' then 'RPT_BASIC_CURRENT_PROVINCE_SHARE'
+        when m.revtype = 'basicint' and revperiod = 'current' then 'RPT_BASICINT_CURRENT_PROVINCE_SHARE'
+        when m.revtype = 'basic' and revperiod = 'previous' then 'RPT_BASIC_PREVIOUS_PROVINCE_SHARE'
+        when m.revtype = 'basicint' and revperiod = 'previous' then 'RPT_BASICINT_PREVIOUS_PROVINCE_SHARE'
+        when m.revtype = 'basic' and revperiod = 'prior' then 'RPT_BASIC_PRIOR_PROVINCE_SHARE'
+        when m.revtype = 'basicint' and revperiod = 'prior' then 'RPT_BASICINT_PRIOR_PROVINCE_SHARE'
+
+        when m.revtype = 'sef' and revperiod = 'advance' then 'RPT_SEF_ADVANCE_PROVINCE_SHARE'
+        when m.revtype = 'sef' and revperiod = 'current' then 'RPT_SEF_CURRENT_PROVINCE_SHARE'
+        when m.revtype = 'sefint' and revperiod = 'current' then 'RPT_SEFINT_CURRENT_PROVINCE_SHARE'
+        when m.revtype = 'sef' and revperiod = 'previous' then 'RPT_SEF_PREVIOUS_PROVINCE_SHARE'
+        when m.revtype = 'sefint' and revperiod = 'previous' then 'RPT_SEFINT_PREVIOUS_PROVINCE_SHARE'
+        when m.revtype = 'sef' and revperiod = 'prior' then 'RPT_SEF_PRIOR_PROVINCE_SHARE'
+        when m.revtype = 'sefint' and revperiod = 'prior' then 'RPT_SEFINT_PRIOR_PROVINCE_SHARE'
+        end,
+      ia.org_objid = b.objid, 
+      ia.org_name = b.name,
+      ia.type = 'PAYABLE'
+    where ia.objid = m.item_objid
+    and m.lgu_objid = b.objid
+    ;
+  end if;
+
+
+
+  /* BARANGAY SHARE PAYABLE */
+
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_ADVANCE_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC ADVANCE BARANGAY SHARE', 'RPT BASIC ADVANCE BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_CURRENT_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC CURRENT BARANGAY SHARE', 'RPT BASIC CURRENT BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_CURRENT_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC CURRENT PENALTY BARANGAY SHARE', 'RPT BASIC CURRENT PENALTY BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_PREVIOUS_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PREVIOUS BARANGAY SHARE', 'RPT BASIC PREVIOUS BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_PREVIOUS_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PREVIOUS PENALTY BARANGAY SHARE', 'RPT BASIC PREVIOUS PENALTY BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASIC_PRIOR_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PRIOR BARANGAY SHARE', 'RPT BASIC PRIOR BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+  INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_BASICINT_PRIOR_BRGY_SHARE', 'APPROVED', '455-049', 'RPT BASIC PRIOR PENALTY BARANGAY SHARE', 'RPT BASIC PRIOR PENALTY BARANGAY SHARE', 'PAYABLE', 'GENERAL', '01', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
+
+
+  update itemaccount ia, landtax_lgu_account_mapping m, barangay b set 
+    ia.parentid = case 
+      when m.revtype = 'basic' and revperiod = 'advance' then 'RPT_BASIC_ADVANCE_BRGY_SHARE'
+      when m.revtype = 'basic' and revperiod = 'current' then 'RPT_BASIC_CURRENT_BRGY_SHARE'
+      when m.revtype = 'basicint' and revperiod = 'current' then 'RPT_BASICINT_CURRENT_BRGY_SHARE'
+      when m.revtype = 'basic' and revperiod = 'previous' then 'RPT_BASIC_PREVIOUS_BRGY_SHARE'
+      when m.revtype = 'basicint' and revperiod = 'previous' then 'RPT_BASICINT_PREVIOUS_BRGY_SHARE'
+      when m.revtype = 'basic' and revperiod = 'prior' then 'RPT_BASIC_PRIOR_BRGY_SHARE'
+      when m.revtype = 'basicint' and revperiod = 'prior' then 'RPT_BASICINT_PRIOR_BRGY_SHARE'
+      end,
+    ia.org_objid = b.objid, 
+    ia.org_name = b.name,
+      ia.type = 'PAYABLE'
+  where ia.objid = m.item_objid
+  and m.lgu_objid = b.objid;
+
+  update itemaccount a, landtax_lgu_account_mapping m, sys_org o set 
+    a.parentid = null,
+    a.type = 'REVENUE',
+    a.org_objid = o.objid,
+    a.org_name = o.name
+  where m.item_objid = a.objid
+  and m.lgu_objid = o.objid 
+  and o.root = 1;
+
+  
+  insert into itemaccount_tag (objid, acctid, tag)
+  select 
+    concat(a.objid, ':', m.revtype, '_', m.revperiod) as objid,
+    a.objid as acctid, 
+    concat('rpt_', m.revtype, '_', m.revperiod) as tag 
+  from landtax_lgu_account_mapping m, itemaccount a
+  where m.item_objid = a.objid 
+
+
+
+end ;
+
+
+
+
+call buildRptAccounts();
+
+
+drop view if exists vw_landtax_lgu_account_mapping
+;
+
+create view vw_landtax_lgu_account_mapping
+as 
+select 
+  ia.org_objid as lgu_objid,
+  ia.org_name as lgu_name, 
+  ia.objid as item_objid,
+  ia.code as item_code,
+  ia.title as item_title,
+  ia.fund_objid as item_fund_objid, 
+  ia.fund_code as item_fund_code,
+  ia.type as item_type,
+  t.tag as item_tag
+from itemaccount ia
+inner join itemaccount_tag t on ia.objid = t.acctid
+where state = 'APPROVED'
+; 
+
+
+

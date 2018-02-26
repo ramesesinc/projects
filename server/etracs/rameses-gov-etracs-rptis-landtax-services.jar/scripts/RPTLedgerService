@@ -571,6 +571,7 @@ class RPTLedgerService
     }
 
     boolean checkLedgerItemPosted(ledger,yr){
+        if (ledger.nextbilldate) return true 
         if (util.isTrue(var.landtax_check_posted_ledger_items)){
             return em_rptledger_item.select('objid, year')
                             .find([parentid:ledger.objid, year:yr, taxdifference:0])

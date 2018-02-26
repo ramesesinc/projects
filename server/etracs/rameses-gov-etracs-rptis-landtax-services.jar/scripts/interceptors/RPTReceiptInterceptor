@@ -26,7 +26,7 @@ class RPTReceiptInterceptor
 	public void beforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 		receipt.amount = numSvc.round(receipt.amount)
-		receipt.items = svc.getCashReceiptItems(receipt); 
+		svc.buildCashReceiptItemsAndShares(receipt)
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rpt|rptmanual|rptbatch')}") 

@@ -173,6 +173,12 @@ class RPTLedgerInterceptor
         em_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
     }   
 
+    @After(pattern="RuleMgmtService.deploy", index=1000)
+    public void clearNextBillDate(evt){
+        em_ledger.find([state:'APPROVED']).update([nextbilldate:null])
+    }
+
+
 
     def createLedgerFaas(changeinfo, ledgerfaas){
         def newrpu = changeinfo.newinfo

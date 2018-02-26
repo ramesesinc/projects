@@ -7,7 +7,8 @@
                  action="init" target="window" role="COLLECTOR" index="10"/>
         
         <!-- Buttons -->
-        <invoker type="formActions" caption="Submit for Remittance" action="submitForRemittance"/>
+        <invoker type="formActions" caption="Submit for Remittance" action="submitForRemittance" 
+                 visibleWhen="#{remittanceid == null}"/>
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.RemittanceInitialModel" />

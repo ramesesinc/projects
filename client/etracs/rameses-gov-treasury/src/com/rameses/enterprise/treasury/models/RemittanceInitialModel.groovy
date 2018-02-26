@@ -17,7 +17,7 @@ class RemittanceInitialModel extends CrudListModel {
     
     def summaryList;
     def voidList = [];
-    
+        
     void init() {
         //build summaryList
         def m = [_schemaname: 'cashreceipt_af_summary' ];
@@ -66,12 +66,23 @@ class RemittanceInitialModel extends CrudListModel {
             return Inv.lookupOpener("cashreceipt:open", [entity: [objid: o.objid ]] );
         }
     ] as BasicListModel;
+
     
+    def remittanceid; 
     
-    def submitForRemittance() {
+    void submitForRemittance() { 
         def p = [:];
-        p.items = summaryList
-        p = remSvc.create(p);
-        return Inv.lookupOpener( "remittance:open", [entity: p ]);
-    }
+        if ( remittanceid ) {
+            p.objid = remittanceid; 
+            
+        } else  {
+            p.items = summaryList; 
+            p = remSvc.create( p ); 
+            remittanceid = p.objid; 
+        } 
+        
+        def op = Inv.lookupOpener("remittance:open", [ entity: p ]); 
+        Inv.invoke( op );  
+        binding.fireNavigation('_close'); 
+    } 
 }    

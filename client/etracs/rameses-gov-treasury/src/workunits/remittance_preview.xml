@@ -26,6 +26,13 @@
                 return "_close"
             }
         
+            def sendBack() {
+                if ( MsgBox.confirm('You are about to change the transaction status to DRAFT. Proceed?')) {
+                    service.sendBack([ objid: reportData.objid ]); 
+                    return '_close'; 
+                } 
+                return null; 
+            } 
         }
     </code>
 </workunit>  

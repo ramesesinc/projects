@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="collectiondeposit_fund"
+          tag="forjev"
+          allowOpen="true" allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker folderid="menucategory/accounting/treasury" caption="Deposits For JEV" 
+                 action="init"  srole="MASTER" index="3" 
+                 cols="controlno,parent.controldate,fund.title,amount"
+                 customFilter="parent.state='POSTED' AND jevid IS NULL" />
+    </invokers>
+</workunit>

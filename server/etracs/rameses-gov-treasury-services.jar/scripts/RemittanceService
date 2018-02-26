@@ -1,9 +1,7 @@
 import com.rameses.annotations.*;
 import com.rameses.util.*;
-import java.rmi.server.*;
 
 class RemittanceService  {
-
 
 	@Env
 	def env;
@@ -51,12 +49,12 @@ class RemittanceService  {
 		m.controldate = dateSvc.getBasicServerDate();
 		m.dtposted = dateSvc.getServerDate();
 		m.state = "DRAFT";
-		m.totalcash = 0;
-		m.totalcheck=0;
+		m.amount = 0;
 		m.totalcr = 0;
+		m.totalcash = 0;
+		m.totalcheck = 0;
 		m.cashbreakdown = [];
 		m.collector = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
-		m.amount = 0;
 		m = remEm.create( m );
 
 		def scond = "collector.objid = :userid AND series BETWEEN :fromseries AND :toseries";
@@ -129,7 +127,7 @@ class RemittanceService  {
 
 		if ( o.collector?.signature ) m.collector = [signature: o.collector.signature]; 
 
-		remEm.find( [objid: o.objid ] ).update( m );
+		remEm.find([ objid: o.objid ]).update( m );
 		o.putAll( m ); 
 		return o;
 	}
@@ -139,6 +137,20 @@ class RemittanceService  {
 		def m = [ state: 'POSTED']; 
 		m.liquidatingofficer = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
 		remEm.find([ objid: param.objid ]).update( m); 
+	}
+
+	@ProxyMethod 
+	public void sendBack( param ) { 
+		def info = remEm.find([ objid: param.objid ]).select('objid,state').first(); 
+		if ( !info ) throw new Exception('Remittance record not found'); 
+
+		if ( info.state.toString().toUpperCase() != 'OPEN' ) {
+			throw new Exception('This action is only applicable for transaction with OPEN status'); 
+		}
+
+		def m = [ state: 'DRAFT' ]; 
+		m.liquidatingofficer = [ objid: null, name: null, title: null ]; 
+		remEm.find([ objid: param.objid ]).update( m ); 
 	}
 
 	@ProxyMethod 

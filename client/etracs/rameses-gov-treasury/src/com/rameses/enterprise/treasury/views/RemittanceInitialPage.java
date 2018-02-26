@@ -42,7 +42,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
 
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        jPanel4.setLayout(new com.rameses.rcp.control.layout.DividerLayout());
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -163,9 +163,9 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
 
         jPanel5.add(jPanel6, java.awt.BorderLayout.SOUTH);
 
-        jPanel4.add(jPanel5, java.awt.BorderLayout.CENTER);
+        jPanel4.add(jPanel5);
 
-        jPanel1.setLayout(new com.rameses.rcp.control.layout.YLayout());
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Void Receipts");
@@ -249,13 +249,13 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
         });
         xDataTable2.setHandler("voidReceiptHandler");
         xDataTable2.setPreferredSize(new java.awt.Dimension(200, 200));
-        jPanel1.add(xDataTable2);
+        jPanel1.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
         jPanel3.setLayout(new java.awt.BorderLayout());
 
         xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setCaptionWidth(110);
-        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 15, 2));
+        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 2));
 
         xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -267,9 +267,9 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
 
         jPanel3.add(xFormPanel3, java.awt.BorderLayout.EAST);
 
-        jPanel1.add(jPanel3);
+        jPanel1.add(jPanel3, java.awt.BorderLayout.SOUTH);
 
-        jPanel4.add(jPanel1, java.awt.BorderLayout.SOUTH);
+        jPanel4.add(jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -284,7 +284,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

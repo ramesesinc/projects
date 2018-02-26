@@ -2,9 +2,6 @@ import com.rameses.annotations.*;
 
 class RemittanceAFInterceptor {
 	
-	@DataContext('aftxn') 
-	def aftxn_em;
-
 	@DataContext('af_control') 
 	def afc_em;
 
@@ -52,23 +49,20 @@ class RemittanceAFInterceptor {
 		} 
 
 		afs.findAll{( it.qtyissued > 0 )}.each{ 
-			insertAFTxn( result, it ); 
 			insertAFControlDetail( result, it ); 
 		}
 	} 
 
-	private void insertAFTxn( rem, item ) { 
-		def info = aftxn_em.find([ objid: rem.objid ]).first(); 
-		if ( info ) return; 
-		
-		def m = [ state: 'POSTED' ]; 
-		m.objid = rem.objid; 
-		m.controlno = rem.controlno; 
-		m.dtfiled = m.txndate = rem.dtposted; 
-		m.user = m.issueto = rem.collector; 
-		m.txntype = 'REMITTANCE'; 
-		aftxn_em.create( m );  
-	}
+	@After( pattern="RemittanceService.submitForLiquidation" ) 
+	void afterSubmitForLiquidation( evt ) {
+		def result = evt.result; 
+		if ( result.objid ) { 
+			def m = [:]; 
+			if ( result.controlno ) m.controlno = result.controlno; 
+			if ( result.dtposted ) m.txndate = result.dtposted; 
+			if ( m ) afd_em.find([ refid: result.objid ]).update( m ); 
+		} 
+	} 
 
 	private void insertAFControlDetail( rem, item ) { 
 		def afc = afc_em.find([ objid: item.controlid ]).select('objid,currentindexno,currentdetailid').first(); 

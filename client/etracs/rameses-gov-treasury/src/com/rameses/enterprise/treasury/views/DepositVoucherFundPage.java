@@ -41,7 +41,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
-        xButton2 = new com.rameses.rcp.control.XButton();
         xButton3 = new com.rameses.rcp.control.XButton();
         xButton4 = new com.rameses.rcp.control.XButton();
         jPanel2 = new javax.swing.JPanel();
@@ -237,11 +236,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         xButton1.setText("Add");
         xButton1.setVisibleWhen("#{ entity.parent.state == 'FOR_DEPOSIT' }");
 
-        xButton2.setDepends(new String[] {"selectedDepositSlip"});
-        xButton2.setName("validateDeposit"); // NOI18N
-        xButton2.setText("Validate");
-        xButton2.setVisibleWhen("#{ selectedDepositSlip.state == 'APPROVED' }");
-
         xButton3.setName("removeDepositSlip"); // NOI18N
         xButton3.setText("Remove ");
         xButton3.setVisibleWhen("#{ entity.parent.state == 'FOR_DEPOSIT' }");
@@ -264,8 +258,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                         .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -277,7 +269,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(28, Short.MAX_VALUE))
@@ -470,7 +461,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XDataTable xDataTable2;

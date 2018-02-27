@@ -34,6 +34,9 @@ class DepositVoucherService  {
 	@DataContext("depositslip")
 	def depositSlipEm;
 
+	@Service("JevService")
+	def jevSvc;
+
 	@ProxyMethod
 	public def create( def o ) {
 		if(!o.items)
@@ -132,11 +135,13 @@ class DepositVoucherService  {
 		z = depositSlipEm.find( [depositvoucherid: o.objid ] ).where( " validation.refno IS NULL ").first();
 		if(z ) throw new Exception("All deposit slips must be validated");
 
-		def b = paymentCheckEm.find( [depositvoucherid: o.objid ]).where( "despotislipid IS NULL").first()
+		def b = paymentCheckEm.find( [depositvoucherid: o.objid ]).where( "depositslipid IS NULL").first()
 		if(b )
 			throw new Exception("All checks referenced must be deposited");
 		def m = [ state: 'POSTED' ];
 		depositEm.find( [objid: o.objid ]).update( m );
+
+		def p = depositEm.find( [objid: o.objid ]).first();
 
 		//post to jev
 		def ref = [refid:p.objid,refno:p.controlno,reftype:'depositvoucher', refdate:p.controldate, txntype:'DEPOSIT'];
@@ -151,7 +156,6 @@ class DepositVoucherService  {
 		} 
 
 		def pm = [depositvoucherid: p.objid ];
-
 		jevBatch.items.addAll( depositEm.getBankAccountLedgerItems( pm ) );
 		jevBatch.items.addAll( depositEm.getCashLedgerItems( pm ) );
 		jevSvc.createBatch( jevBatch );

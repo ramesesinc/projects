@@ -10,6 +10,9 @@ class DepositSlipService  {
 	@DataContext("paymentcheck")
 	def paymentCheckEm;
 
+	@DataContext("depositvoucher_fund")
+	def dvFundEm;
+
 	@ProxyMethod
 	public def updateCheckTotal( def o ) {
 		if(!o.items) throw new Exception( "items is required");
@@ -63,13 +66,36 @@ class DepositSlipService  {
 
 	@ProxyMethod
 	public void approve( def o ) {
+		def ds = depositSlipEm.find([objid: o.objid]).first();
+		if( (ds.totalcash + ds.totalcheck) != ds.amount )
+			throw new Exception("Total cash and total check must equal the total amount");
+
+		def db = dvFundEm.find( [parentid: ds.depositvoucherid, fundid: ds.fundid ] ).first();
+		if(!db) throw new Exception("Depositvoucher fund not found for this deposit slip");
+		if( db.totalcash > db.cashtodeposit ) throw new Exception("Total cash to deposit must not be greater than cash to deposit");
+		if( db.totalcheck > db.checktodeposit ) throw new Exception("Total check to deposit must not be greater than checks to deposit");
+			
 		depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ]);
+	}
+
+	@ProxyMethod
+	public void disapprove( def o ) {
+		depositSlipEm.find([objid: o.objid]).update( [state: 'DRAFT' ]);
 	}
 
 	@ProxyMethod
 	public void validate( def o ) {
 		if(!o.objid) throw new Exception( "objid is required");
 		if(!o.validation) throw new Exception( "validation is required");
+
+		def ds = depositSlipEm.find( [objid: o.objid]).first();
+
+		def db = dvFundEm.find( [parentid: ds.depositvoucherid, fundid: ds.fundid ] ).first();
+		if(!db) throw new Exception("Depositvoucher fund not found for this deposit slip");
+
+		if( db.totalcash != db.cashtodeposit ) throw new Exception("Total cash to deposit must be equal to total cash deposited");
+		if( db.totalcheck != db.checktodeposit ) throw new Exception("Total check to deposit must be equal to total check deposited");
+
 		depositSlipEm.find([objid: o.objid]).update( [state: 'VALIDATED', validation: o.validation ]);
 	}
 

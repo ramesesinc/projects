@@ -109,6 +109,11 @@ class DepositSlipModel extends CrudFormModel {
         entity.state = 'APPROVED'
     }
     
+    void disapprove() {
+        depositSlipSvc.disapprove( [objid: entity.objid ] );
+        entity.state = 'DRAFT'
+    }
+    
     def validate() {
         def h = { o->
             def m = [objid: entity.objid ];

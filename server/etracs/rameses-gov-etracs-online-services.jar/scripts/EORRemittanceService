@@ -8,8 +8,21 @@ class EORRemittanceService {
     @DataContext("eor_remittance")
     def remEm;
 
+    @DataContext("eor_remittance_fund")
+    def remFundEm;
+
     @DataContext("eor")
     def eorEm;
+
+
+    @DataContext("eor_item")
+    def eorItemEm;
+
+    @DataContext("fund")
+    def fundEm;
+
+    @Service("EORPostingService")
+    def postingSvc;
 
     @Service("DateService")
     def dateSvc;
@@ -36,11 +49,26 @@ class EORRemittanceService {
         m.createdby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
         m = remEm.create(m);
 
-        eorEm.debug = true;
         eorEm.where( '''objid IN (${ids})''').vars("ids", "'" + arr.join("','") + "'").update([remittanceid: m.objid ]);
 
-        remEm.insertRemittanceFund(  [remittanceid: m.objid ] );
+        def fundList = eorItemEm.select("item.fund.objid,amount:{SUM(amount)}").where( "parent.remittanceid = :remittanceid", [remittanceid:m.objid] ).groupBy("item.fund.objid").list();
+        fundList.each {
+            def v = [remittanceid:m.objid]    
+            v.fund = fundEm.find( [objid: it.item.fund.objid ] ).first(); 
+            v.amount = it.amount;
+            remFundEm.create( v );
+        }
+
         return m;
+    }
+
+    @ProxyMethod
+    public def post( def o ) {
+        def list = remFundEm.find( [remittanceid : o.objid ]  ).first();
+        list.each {
+            if( !entity.validation?.refno ) throw new Exception("Each fund must be validated")
+        }
+        postingSvc.post( o );
     }
 
 }

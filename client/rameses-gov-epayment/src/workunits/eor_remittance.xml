@@ -4,7 +4,8 @@
             caption="EOR Remittance" 
             action="open"
             formTitle="EOR Remittance"/>
-                
+        
+      <invoker type="formActions"  caption="Post" action="post" />          
    </invokers>
    <code class="com.rameses.gov.epayment.models.EORRemittanceModel" />
     <pages>

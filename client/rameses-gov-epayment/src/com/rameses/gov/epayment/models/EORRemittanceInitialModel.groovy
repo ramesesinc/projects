@@ -21,6 +21,7 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
     
     def partner;
     def partnerList;
+    def selectedItem;
     
     void afterCreate() {
         def m = [_schemaname: 'paymentpartner'];
@@ -32,6 +33,9 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
     def listener = [
         "partner" : { o->
             listHandler.reload();
+        },
+        "selectedItem" : { o->
+            MsgBox.alert(o);
         }
     ];
     
@@ -39,7 +43,7 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
         fetchList: { o->
             if( !partner ) return [];
             def m = [_schemaname: 'eor'];
-            m.where = ["partnerid =:partnerid", [partnerid: partner.objid ]];
+            m.where = ["partnerid =:partnerid AND remittanceid IS NULL", [partnerid: partner.objid ]];
             m.orderBy = "tracedate";
             return queryService.getList(m);
         },
@@ -66,12 +70,21 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
         } 
     }
     
+    void computeAmount() {
+       entity.amount = listHandler.selectedValue.sum{ it.amount };
+       binding.refresh("amount");
+    }
+    
     public def save() {
-        if(!MsgBox.confirm("Confirm?")) return null;
+        if( entity.amount <= 0 )
+            throw new Exception("Please run compute amount first");
+        if(entity.amount != listHandler.selectedValue.sum{it.amount})
+            throw new Exception("Please run compute amount first");
+            
+        if(!MsgBox.confirm("You are about to create a remittance for the selected items. Proceed?")) return null;
         def arr = listHandler.selectedValue;
         entity.partnerid = partner.objid;
         entity.items = arr.collect{ [objid: it.objid ] };
-        entity.amount = arr.sum{ it.amount }; 
         entity = remittanceSvc.create( entity );
         return Inv.lookupOpener("eor_remittance:open", [entity: entity ]);
     }

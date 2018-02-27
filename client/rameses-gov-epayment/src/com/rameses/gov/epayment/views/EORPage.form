@@ -38,11 +38,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="xFormPanel2" pref="111" max="32767" attributes="0"/>
+                  <Component id="xFormPanel2" max="32767" attributes="0"/>
                   <Component id="xFormPanel3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="395" max="32767" attributes="0"/>
+              <Component id="xTabbedPane1" pref="396" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -50,6 +50,9 @@
   </Layout>
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
+      <Properties>
+        <Property name="captionWidth" type="int" value="100"/>
+      </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
           <Properties>
@@ -81,6 +84,33 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Paid By"/>
+            <Property name="name" type="java.lang.String" value="entity.paidby" noResource="true"/>
+            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 19]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField4">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Paid By Address"/>
+            <Property name="name" type="java.lang.String" value="entity.paidbyaddress" noResource="true"/>
+            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 19]"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <Properties>
+        <Property name="captionWidth" type="int" value="100"/>
+      </Properties>
+      <SubComponents>
         <Component class="com.rameses.rcp.control.XTextField" name="xTextField5">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Pay Partner"/>
@@ -101,27 +131,17 @@
             </Property>
           </Properties>
         </Component>
-      </SubComponents>
-    </Container>
-    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
-      <Properties>
-        <Property name="captionWidth" type="int" value="100"/>
-      </Properties>
-      <SubComponents>
-        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+        <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Paid By"/>
-            <Property name="name" type="java.lang.String" value="entity.paidby" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Trace Date"/>
             <Property name="enabled" type="boolean" value="false"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 19]"/>
-            </Property>
+            <Property name="name" type="java.lang.String" value="entity.tracedate" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XTextField" name="xTextField4">
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Paid By Address"/>
-            <Property name="name" type="java.lang.String" value="entity.paidbyaddress" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Payment Ref ID"/>
+            <Property name="name" type="java.lang.String" value="entity.paymentrefid" noResource="true"/>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 19]"/>
@@ -170,7 +190,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="331" max="32767" attributes="0"/>
+                      <EmptySpace pref="332" max="32767" attributes="0"/>
                       <Component id="xFormPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -178,7 +198,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="xDataTable1" min="-2" pref="311" max="-2" attributes="0"/>
-                          <EmptySpace pref="45" max="32767" attributes="0"/>
+                          <EmptySpace pref="46" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -234,7 +254,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xDataTable3" pref="345" max="32767" attributes="0"/>
+                      <Component id="xDataTable3" pref="346" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

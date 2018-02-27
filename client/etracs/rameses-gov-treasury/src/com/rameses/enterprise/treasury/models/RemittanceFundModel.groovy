@@ -12,8 +12,6 @@ class RemittanceFundModel extends CrudFormModel {
     @Service("RemittanceService")
     def service;
     
-   
-    
     boolean showCashBreakdown = true;
     boolean showCreditMemos = true;
     
@@ -46,9 +44,15 @@ class RemittanceFundModel extends CrudFormModel {
     ] as BasicListModel;
     
     
-    def getPrintFormData() {
-        entity.totalnoncash = entity.totalcheck + entity.totalcr;
-        return entity;
+    def getPrintFormData() { 
+        def rdata = service.getReportData([ objid: entity.remittanceid, fund: entity.fund ]); 
+        if ( rdata ) { 
+            rdata.putAll( entity ); 
+            rdata.totalnoncash = rdata.totalcheck + rdata.totalcr;
+            rdata.remittancedate = rdata.controldate;
+            rdata.txnno = rdata.controlno; 
+        }         
+        return rdata;
     } 
     
     def doCancel() {

@@ -125,4 +125,10 @@ class CollectionVoucherService  {
 
 		return m; 
 	}	
+
+
+	@ProxyMethod 
+	public def getReportData( params ) {
+		return params; 
+	}
 }

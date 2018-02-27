@@ -106,8 +106,10 @@ class CollectionVoucherService  {
 		cvEm.find([ objid: p.objid ]).update( m ); 	
 
 		//post to jev
+		def ref = [refid:p.objid,refno:p.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
+
 		def jevBatch = [:];
-		jevBatch.ref = [refid:p.objid,refno:p.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION']
+		jevBatch.ref = ref;
 		jevBatch.funds = [];
 		jevBatch.items = [];
 

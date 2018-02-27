@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="jev" allowCreate="false" allowEdit="false">
+    <invokers>
+        <invoker type="jev:open" action="open" caption="Journal Entry Voucher" role="MASTER" permission="jev.view"/> 
+   </invokers>
+   <code class="com.rameses.enterprise.accounting.models.JevModel" />
+    <pages>
+        <page template="com.rameses.enterprise.accounting.views.JevPage" />
+    </pages>
+</workunit>

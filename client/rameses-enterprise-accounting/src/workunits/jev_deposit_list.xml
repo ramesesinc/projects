@@ -4,7 +4,8 @@
                  caption="Deposits" 
                  action="init" role="MASTER" permission="jev.view" 
                  index="10"
-                 customFilter="1=1"/> 
+                 cols="refno,jevdate,fund.title,postedby.name,amount,jevno"
+                 customFilter="txntype = 'DEPOSIT' "/> 
     </invokers>
    
 </workunit>

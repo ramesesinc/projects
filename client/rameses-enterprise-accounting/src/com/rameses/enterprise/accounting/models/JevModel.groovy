@@ -12,11 +12,17 @@ class JevModel  extends CrudFormModel {
     
    def itemListModel = [
        fetchList : { o->
-           def drlist = entity.items.findAll{ it.dr > 0 };
-           def crlist = entity.items.findAll { it.cr > 0 };
-           entity.items = drlist + crlist;
-           return entity.items; 
+           def m = [_schemaname:'jevitem'];
+           m.findBy = [jevid: entity.objid ];
+           def list = queryService.getList( m ); 
+           list.each {
+               if(it.side == "CR" ) it.acctname = (" "*10) + it.acctname;
+           }
+           def dr = list.sum{ it.dr };
+           def cr = list.sum{ it.cr };
+            
+           list.add( [ acctname: (" "*10) + ' ------- T O T A L S ------- ', dr: dr , cr: cr ] ); 
+           return list; 
        }
-        
    ] as BasicListModel;
 } 

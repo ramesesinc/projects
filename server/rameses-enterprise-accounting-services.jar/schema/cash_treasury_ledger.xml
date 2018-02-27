@@ -3,6 +3,7 @@
 	<element tablename="cash_treasury_ledger">
 		<field name="objid"  primary="true" prefix="CSHTRYLDGR"/>
 		<field name="jevid" required="true" />
+		<field name="itemacctid" required="true" />
 		<field name="dr" required="true" />
 		<field name="cr" required="true" />
 

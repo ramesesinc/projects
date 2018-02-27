@@ -419,7 +419,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
 
         xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaption("Total Cash");
+        xLabel6.setCaption("Total Cash Deposited");
         xLabel6.setCaptionWidth(120);
         xLabel6.setExpression("#{ entity.totalcash }");
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 18));
@@ -427,7 +427,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
 
         xLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel9.setCaption("Total Check");
+        xLabel9.setCaption("Total Check Deposited");
         xLabel9.setCaptionWidth(120);
         xLabel9.setExpression("#{ entity.totalcheck }");
         xLabel9.setPreferredSize(new java.awt.Dimension(0, 18));

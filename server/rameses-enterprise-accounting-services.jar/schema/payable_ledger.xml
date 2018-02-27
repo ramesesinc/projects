@@ -8,7 +8,7 @@
 		<field name="dr" required="true" />
 		<field name="cr" required="true" />
 
-		<complex name="jev" ref="jev" jointype="many-to-one" includefields="jevno,jevdate,fund.*">
+		<complex name="jev" ref="jev" jointype="many-to-one" includefields="jevno,jevdate,fund.*" required="false">
 			<key field="jevid" target="objid"/>
 		</complex>	
 	</element>

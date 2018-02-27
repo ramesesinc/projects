@@ -7,7 +7,7 @@
 		<field name="acctname" />
 		<field name="dr" type="decimal"/>
 		<field name="cr" />
-		<field name="side" type="decimal"/>
+		<field name="itemrefid" />
 	</element>
 
 

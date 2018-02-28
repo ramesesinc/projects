@@ -84,4 +84,14 @@ class JevService  {
 		}
 	}
 
+	@ProxyMethod 
+	public def updateJevNo( def o ) { 
+		def u = [jevno:o.jevno, jevdate:o.jevdate];
+		u.verifiedby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
+		u.dtverified = dateSvc.getServerDate();
+		u.state = 'POSTED'
+		jevEm.find([objid: o.objid]).update( u);
+		return u;	
+	}
+
 }

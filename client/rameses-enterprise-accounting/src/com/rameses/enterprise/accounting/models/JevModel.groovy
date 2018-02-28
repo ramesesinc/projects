@@ -58,4 +58,12 @@ class JevModel  extends CrudFormModel {
        return op;
    } 
     
+   def post() {
+       def h = { o->
+           entity.putAll(o);
+           binding.refresh();
+       }
+       return Inv.lookupOpener("jevno_entry", [entity: [objid: entity.objid ], handler: h])
+   } 
+    
 } 

@@ -11,7 +11,7 @@ class JevListInterceptor  {
 	public def getNodeList(evt) {
 		def result = evt.result;
 		result << [ title: 'Open', id:'open', state:'OPEN'];
-		result << [ title: 'Closed', id:'closed', state:'CLOSED'];
+		result << [ title: 'Posted', id:'closed', state:'POSTED'];
 	}
 
 
@@ -23,6 +23,7 @@ class JevListInterceptor  {
 		
 		def str = "state=:state";
 		def m = [state:o.node.state];
+
 				
 		//add to first position of where
 		if( o.where ) {

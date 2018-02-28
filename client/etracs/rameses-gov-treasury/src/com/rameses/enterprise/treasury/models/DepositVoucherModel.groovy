@@ -13,7 +13,8 @@ class DepositVoucherModel extends CrudFormModel {
     def depositSvc;  
     
     def selectedFund;
-    def selectedCollection
+    def selectedCollection;
+    def selectedItem;
 
     def numformat = new java.text.DecimalFormat("#,##0.00"); 
     

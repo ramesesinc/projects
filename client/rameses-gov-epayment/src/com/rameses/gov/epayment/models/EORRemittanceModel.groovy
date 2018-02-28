@@ -15,13 +15,18 @@ public class EORRemittanceModel extends CrudFormModel {
     
     def eorListHandler = [
         fetchList: { o->
-            return [];
+            def m = [_schemaname: 'eor'];
+            m.findBy = [remittanceid: entity.objid ];
+            return queryService.getList( m );
+        },
+        onOpenItem: {o,col->
+            return Inv.lookupOpener("eor:lookup", [entity: o ]);
         }
     ] as BasicListModel;
     
     def fundListHandler = [
         fetchList: { o->
-            def m = [_schemaname: 'eor_remittance'];
+            def m = [_schemaname: 'eor_remittance_fund'];
             m.findBy = [remittanceid: entity.objid ];
             return queryService.getList( m );
         }

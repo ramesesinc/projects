@@ -34,6 +34,9 @@ class CollectionVoucherService  {
 	@DataContext("collectionvoucher_fund")
 	def cvFundEm;
 
+	@Service("JevService")
+	def jevSvc;	
+
 	@ProxyMethod
 	public def create( def pp ) {
 		//search if there is at least one for posting
@@ -102,11 +105,26 @@ class CollectionVoucherService  {
 
 		cvEm.find([ objid: p.objid ]).update( m ); 	
 
-		def pm = [ collectionvoucherid: p.objid ]; 
-		cvEm.postToCashLedger( pm );
-		cvEm.postToBankAccountLedger( pm );
-		cvEm.postToIncome( pm );
-		cvEm.postToPayable( pm );	
+		//post to jev
+		def ref = [refid:p.objid,refno:p.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
+
+		def jevBatch = [:];
+		jevBatch.ref = ref;
+		jevBatch.funds = [];
+		jevBatch.items = [];
+
+		cvFundEm.find([ parentid: p.objid ]).select('objid,fund.*,amount').list().each{ 
+			jevBatch.funds << [ objid: it.objid, refno:it.controlno, fund: it.fund, amount: it.amount  ];	 
+		} 
+
+		def pm = [collectionvoucherid: p.objid ];
+
+		jevBatch.items.addAll( cvEm.getCashLedgerItems( pm ) );
+		jevBatch.items.addAll( cvEm.getBankAccountLedgerItems( pm ) );
+		jevBatch.items.addAll( cvEm.getIncomeLedgerItems( pm ) );
+		jevBatch.items.addAll( cvEm.getPayableLedgerItems( pm ) );
+		jevSvc.createBatch( jevBatch );
+
 		return m; 
 	}	
 

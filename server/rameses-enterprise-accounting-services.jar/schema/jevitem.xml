@@ -1,22 +1,14 @@
 <schema>
 
 	<element tablename="jevitem">
-		<field name="objid" primary="true" />
-		<field name="jevid" required="true" />
-		<field name="accttype" required="true" />
-
-		<complex name="account" ref="itemaccount" jointype="many-to-one" includefields="code,title">
-			<key field="acctid" target="objid" />
-		</complex>	
-
-		<complex name="jev" ref="jev" jointype="many-to-one" required="false" includefields="jevno,jevdate,refno,reftype,dtposted,fund.*"> 
-			<key field="jevid" target="objid" />
-		</complex>	
-
-		
-		<field name="dr" required="true" type="decimal"/>
-		<field name="cr" required="true"  type="decimal"/>
-		<field name="particulars"  />
+		<field name="objid" primary="true"/>
+		<field name="jevid" />
+		<field name="acctcode" />
+		<field name="acctname" />
+		<field name="dr" type="decimal"/>
+		<field name="cr" />
+		<field name="itemrefid" />
 	</element>
+
 
 </schema>

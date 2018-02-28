@@ -1,0 +1,64 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import treasury.utils.*;
+
+class EORPostingService {
+
+    
+    //posting data context
+    @DataContext("bankaccount_ledger")
+    def bnkLedgerEm;
+
+    @DataContext("income_summary")
+    def incomeSummaryEm;
+
+    @DataContext("payable_summary")
+    def payableSummaryEm;
+
+    @Service("DateService")
+    def dateSvc;
+
+    @DataContext("fund")
+    def fundEm;
+
+    @Env
+    def env;
+
+    @DataContext("eor_remittance")
+    def eorRem;
+
+     @DataContext("eor_remittance_fund")
+    def eorRemFund;
+
+
+    @ProxyMethod
+    public def post( def o ) {
+       //post to bank ledger
+        def fundList = eorRemFund.find([remittanceid: o.objid]).list();
+        fundList.each {
+            def v = [:];
+            v.bankacctid = 
+            v.refid = it.remittanceid;
+            v.reftype = "eor_remittance";
+            v.refno = it.parent.controlno;
+            v.refdate = it.parent.controldate;
+            v.fundid = it.fund.objid;
+            v.dr = it.amount;
+            v.cr = 0;
+            bnkLedgerEm.create(v);   
+        }
+
+        //post to income summary and payable summary
+        def incomeList = eorRem.getItemsForIncomeSummary([remittanceid: o.objid]);
+        incomeList.each {
+
+        }
+
+        def payableList = eorRem.getItemsForPayableSummary([remittanceid: o.objid]);
+        payableList.each {
+
+        }
+    }
+
+}

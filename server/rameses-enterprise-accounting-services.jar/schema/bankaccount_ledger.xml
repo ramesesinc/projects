@@ -1,13 +1,16 @@
 <schema>
 	<element tablename="bankaccount_ledger">
 		<field name="objid" primary="true" prefix="BNKACTLDGR"/>
+
+		<field name="jevid" required="true" />
 		<field name="bankacctid" required="true" />
-		<field name="refid" required="true" />
-		<field name="reftype" required="true" />
-		<field name="refdate" required="true" />
-		<field name="refno" required="true" />
-		<field name="fundid" required="true" />
+		<field name="itemacctid" required="true" />
 		<field name="dr" required="true" />
 		<field name="cr" required="true" />
+
+		<complex name="jev" ref="jev" jointype="many-to-one" includefields="jevno,jevdate,fund.*"  required="false">
+			<key field="jevid" target="objid"/>
+		</complex>	
+
 	</element>
 </schema>

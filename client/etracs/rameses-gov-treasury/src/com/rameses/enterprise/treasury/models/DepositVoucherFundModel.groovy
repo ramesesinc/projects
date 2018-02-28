@@ -17,6 +17,7 @@ class DepositVoucherFundModel extends CrudFormModel {
     
     def selectedDepositSlip;
     def selectedCheck;
+    def selectedItem;
 
     def depositSlipList = [
         fetchList: { o->
@@ -56,6 +57,8 @@ class DepositVoucherFundModel extends CrudFormModel {
     
     void removeDepositSlip() {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        if(selectedDepositSlip.state == 'VALIDATED' )
+            throw new Exception("Cannot delete this because it is already validated");
         depositSlipSvc.removeDepositSlip( selectedDepositSlip );
         open();
         binding.refresh();

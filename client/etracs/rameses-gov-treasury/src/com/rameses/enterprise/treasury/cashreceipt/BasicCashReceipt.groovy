@@ -120,9 +120,8 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         def lh = [
             getColumnList: {
                 return [
-                    [name:'refaccount.title',caption:'Item Account'],
-                    [name:'payableaccount.title',caption:'Payable Account'],
-                    [name:'share',caption:'Share'],
+                    [name:'refitem.title',caption:'Item Account'],
+                    [name:'payableitem.title',caption:'Payable Account'],
                     [name:'amount',caption:'Amount', type:'decimal']
                 ]
             },

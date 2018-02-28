@@ -201,7 +201,7 @@ class RPTReceiptService
 			payables += rl.shares.findAll{it.item.type == 'PAYABLE'}
 		}
 
-		buildItems(receipt, revenues, payables)
+		buildReceiptItems(receipt, revenues, payables)
 	}
 
 
@@ -502,21 +502,21 @@ class RPTReceiptService
 	* aggregate revenues by itemaccount 
 	* and add payables by tag 
 	*==========================================================*/
-	void buildItems(receipt, revenues, payables){
+	void buildReceiptItems(receipt, revenues, payables){
 		def ZERO = new BigDecimal('0.0');
 		receipt.items = [] 
-		receipt.shares = []
+		receipt.sharing = []
 
 		def groups = revenues.groupBy{ it.item.objid }
 		groups.each{k, list ->
 			def rctitem = createReceiptItem(receipt, list.first())
 			rctitem.amount = list.sum{ it.amount ? it.amount : ZERO }
-			def shares = buildShares(receipt, rctitem, payables)
+			def shares = buildReceiptShares(receipt, rctitem, payables)
 			if (shares){
 				rctitem.amount += shares.sum{ it.amount ? it.amount : ZERO }
 			}
 			receipt.items << rctitem
-			receipt.shares += shares 
+			receipt.sharing += shares 
 		}
 	}
 
@@ -524,7 +524,7 @@ class RPTReceiptService
 	* shares are based on the item tag 
 	* and summarized by itemaccount 
 	*==========================================================*/
-	def buildShares(receipt, rctitem, payables){
+	def buildReceiptShares(receipt, rctitem, payables){
 		def shares = []
 		def itempayables = payables.findAll{it.item.tag == rctitem.item.tag}
 		if (itempayables){

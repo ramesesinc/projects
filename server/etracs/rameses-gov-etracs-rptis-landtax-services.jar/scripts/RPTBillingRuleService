@@ -300,6 +300,7 @@ public class RPTBillingRuleService
 		actions.addCommand('add-brgy-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'barangay', EM:em_account_mapping))		
 		actions.addCommand('add-muni-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'municipality', EM:em_account_mapping))		
 		actions.addCommand('add-prov-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'province', EM:em_account_mapping))		
+		actions.addCommand('add-city-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'city', EM:em_account_mapping))		
 		actions.addCommand('set-bill-expiry', new SetBillExpiryDate(request:request))
 
 		/*

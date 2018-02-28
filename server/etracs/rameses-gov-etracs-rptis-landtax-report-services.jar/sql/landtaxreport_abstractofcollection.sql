@@ -20,21 +20,21 @@ from (
     CASE WHEN cv.objid IS NULL  THEN rl.classcode ELSE '' END AS classification, 
     CASE WHEN cv.objid IS NULL THEN rl.totalav else 0.0 end as assessvalue,
     rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv, 
-    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current') THEN cri.basic ELSE 0.0 END) AS currentyear,
+    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current','advance') THEN cri.basic ELSE 0.0 END) AS currentyear,
     SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('previous','prior') THEN cri.basic ELSE 0.0 END) AS previousyear,
     SUM(CASE WHEN cv.objid IS NULL  THEN cri.basicdisc ELSE 0.0 END) AS discount,
-    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current') THEN cri.basicint ELSE 0.0 END) AS penaltycurrent,
+    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current','advance') THEN cri.basicint ELSE 0.0 END) AS penaltycurrent,
     SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('previous','prior') THEN cri.basicint ELSE 0.0 END) AS penaltyprevious,
-    sum(case when cv.objid is null  and cri.revperiod in ('current') then cri.basicidle else 0.0 end) as basicidlecurrent,
+    sum(case when cv.objid is null  and cri.revperiod in ('current','advance') then cri.basicidle else 0.0 end) as basicidlecurrent,
     sum(case when cv.objid is null  and cri.revperiod in ('previous','prior') then cri.basicidle else 0.0 end) as basicidleprevious,
     sum(case when cv.objid is null  then cri.basicidledisc else 0.0 end) as basicidlediscount,
-    sum(case when cv.objid is null  and cri.revperiod in ('current') then cri.basicidleint else 0.0 end) as basicidlecurrentpenalty,
+    sum(case when cv.objid is null  and cri.revperiod in ('current','advance') then cri.basicidleint else 0.0 end) as basicidlecurrentpenalty,
     sum(case when cv.objid is null  and cri.revperiod in ('previous','prior') then cri.basicidleint else 0.0 end) as basicidlepreviouspenalty,
 
-    sum(case when cv.objid is null  and cri.revperiod in ('current') then cri.sh else 0.0 end) as shcurrent,
+    sum(case when cv.objid is null  and cri.revperiod in ('current','advance') then cri.sh else 0.0 end) as shcurrent,
     sum(case when cv.objid is null  and cri.revperiod in ('previous','prior') then cri.sh else 0.0 end) as shprevious,
     sum(case when cv.objid is null  then cri.shdisc else 0.0 end) as shdiscount,
-    sum(case when cv.objid is null  and cri.revperiod in ('current') then cri.shint else 0.0 end) as shcurrentpenalty,
+    sum(case when cv.objid is null  and cri.revperiod in ('current','advance') then cri.shint else 0.0 end) as shcurrentpenalty,
     sum(case when cv.objid is null  and cri.revperiod in ('previous','prior') then cri.shint else 0.0 end) as shpreviouspenalty,
 
     sum(case when cv.objid is null then cri.firecode else 0.0 end) as firecode,
@@ -62,7 +62,6 @@ from (
     left join city c on d.parentid = c.objid 
     left join municipality m on b.parentid = m.objid 
   where ${filter} 
-    and cri.year <= $P{year} 
     and cr.collector_objid LIKE $P{collectorid} 
   GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav, rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv
@@ -88,10 +87,10 @@ from (
     CASE WHEN cv.objid IS NULL  THEN rl.classcode ELSE '' END AS classification, 
     CASE WHEN cv.objid IS NULL THEN rl.totalav else 0.0 end as assessvalue,
     rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv, 
-    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current') THEN cri.sef ELSE 0.0 END) AS currentyear,
+    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current','advance') THEN cri.sef ELSE 0.0 END) AS currentyear,
     SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('previous','prior') THEN cri.sef ELSE 0.0 END) AS previousyear,
     SUM(CASE WHEN cv.objid IS NULL  THEN cri.basicdisc ELSE 0.0 END) AS discount,
-    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current') THEN cri.sefint ELSE 0.0 END) AS penaltycurrent,
+    SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('current','advance') THEN cri.sefint ELSE 0.0 END) AS penaltycurrent,
     SUM(CASE WHEN cv.objid IS NULL  AND cri.revperiod IN ('previous','prior') THEN cri.sefint ELSE 0.0 END) AS penaltyprevious,
     sum(0) as basicidlecurrent,
     sum(0) as basicidleprevious,
@@ -122,7 +121,6 @@ from (
     left join city c on d.parentid = c.objid 
     left join municipality m on b.parentid = m.objid 
   where ${filter} 
-    and cri.year <= $P{year} 
     and cr.collector_objid LIKE $P{collectorid}
   GROUP BY cr.objid, cr.receiptdate, cr.payer_name, cr.receiptno, rl.objid, rl.fullpin, rl.tdno, b.name, 
             rl.classcode, cv.objid, m.name, c.name , rl.totalav,rl.titleno, rl.cadastrallotno, rl.rputype, rl.totalmv

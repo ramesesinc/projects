@@ -31,7 +31,6 @@ select * from (
 		select 'basicadvance' as objid, 'basic' as revtype, 'advance' as revperiod, acctid as item_objid from itemaccount_tag where tag='RPT_BASIC_ADVANCE' 
 	)xx 
 		inner join itemaccount ia on xx.item_objid=ia.objid, barangay l
-	order by l.objid, xx.objid  
 )xx 
 where objid not in (select objid from itemaccount) 
 
@@ -48,7 +47,6 @@ select * from (
 		${itemaccountsql}
 	)xx 
 		inner join itemaccount ia on xx.item_objid=ia.objid, city l 
-	order by l.objid, xx.objid  
 )xx 
 where not exists(select * from itemaccount where objid = xx.objid )
 
@@ -66,7 +64,6 @@ select * from (
 		${itemaccountsql}
 	)xx 
 		inner join itemaccount ia on xx.item_objid=ia.objid, province l 
-	order by l.objid, xx.objid  
 )xx 
 where objid not in (select objid from itemaccount) 
 
@@ -83,7 +80,6 @@ select * from (
 		${itemaccountsql}
 	)xx 
 		inner join itemaccount ia on xx.item_objid=ia.objid, municipality l 
-	order by l.objid, xx.objid  
 )xx 
 where not exists(select * from itemaccount where objid = xx.objid )
 

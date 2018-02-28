@@ -7,9 +7,6 @@ class LandTaxLGUAccountMappingService
 	@Env 
 	def env 
 
-	@ActiveDB('landtax_lgu_account_mapping')
-	def em
-
 	@DataContext('landtax_lgu_account_mapping')
 	def landtax_lgu_account_mapping
 
@@ -51,7 +48,7 @@ class LandTaxLGUAccountMappingService
 			migrateMappings(params)
 		}
 		else{
-			def stats = em.findLguStats(params) 
+			def stats = landtax_lgu_account_mapping.findLguStats(params) 
 			if ( stats?.totalcount > 0 ) { 
 				buildItemAccounts(params) 
 				buildAccountMappings(params) 
@@ -60,28 +57,28 @@ class LandTaxLGUAccountMappingService
 	}
 
 	def formigrate(params){
-		if ('barangay'.equalsIgnoreCase(params.lgutype) && em.findBrgyMappingCount().count > 0 ){
+		if ('barangay'.equalsIgnoreCase(params.lgutype) && landtax_lgu_account_mapping.findBrgyMappingCount().count > 0 ){
 			return true
 		}
-		else if ('province'.equalsIgnoreCase(params.lgutype) && em.findProvinceMappingCount().count > 0 ){
+		else if ('province'.equalsIgnoreCase(params.lgutype) && landtax_lgu_account_mapping.findProvinceMappingCount().count > 0 ){
 			return true 
 		}
-		else if ('municipality'.equalsIgnoreCase(params.lgutype) && em.findMunicipalityMappingCount().count > 0 ){
+		else if ('municipality'.equalsIgnoreCase(params.lgutype) && landtax_lgu_account_mapping.findMunicipalityMappingCount().count > 0 ){
 			return true
 		}
 		return false 
 	}
 
 	void migrateMappings(params){
-		em.removeAccountMappings(params)
+		landtax_lgu_account_mapping.removeAccountMappings(params)
 		if ('barangay'.equalsIgnoreCase(params.lgutype)){
-			em.migrateBarangayMappings(params)
+			landtax_lgu_account_mapping.migrateBarangayMappings(params)
 		}
 		else if ('province'.equalsIgnoreCase(params.lgutype)){
-			em.migrateProvinceMappings(params)
+			landtax_lgu_account_mapping.migrateProvinceMappings(params)
 		}
 		else if ('municipality'.equalsIgnoreCase(params.lgutype)){
-			em.migrateMunicipalityMappings(params)
+			landtax_lgu_account_mapping.migrateMunicipalityMappings(params)
 		}
 
 	}
@@ -89,19 +86,19 @@ class LandTaxLGUAccountMappingService
 
 	void buildItemAccounts(params) {
 		if ('barangay'.equalsIgnoreCase(params.lgutype)){
-			em.buildBrgyItemAccounts()
+			landtax_lgu_account_mapping.buildBrgyItemAccounts()
 		}
 		else if ('city'.equalsIgnoreCase(params.lgutype)){
 			buildItemAccountSql(params)
-			createItemAccounts(em.getCityItemAccounts(params))
+			createItemAccounts(landtax_lgu_account_mapping.getCityItemAccounts(params))
 		}
 		else if ('province'.equalsIgnoreCase(params.lgutype)){
 			buildItemAccountSql(params)
-			createItemAccounts(em.getProvinceItemAccounts(params))
+			createItemAccounts(landtax_lgu_account_mapping.getProvinceItemAccounts(params))
 		}
 		else if ('municipality'.equalsIgnoreCase(params.lgutype)){
 			buildItemAccountSql(params)
-			createItemAccounts(em.getMunicipalityItemAccounts(params))
+			createItemAccounts(landtax_lgu_account_mapping.getMunicipalityItemAccounts(params))
 		}
 	}
 
@@ -179,10 +176,10 @@ class LandTaxLGUAccountMappingService
 
 
 	void buildAccountMappings(params) {
-		em.removeAccountMappings(params) 
+		landtax_lgu_account_mapping.removeAccountMappings(params) 
 		def orgs = org.select('objid').find([orgclass:params.lgutype]).list()
 		orgs.each{
-			def accts = em.getAccountsByOrg([lguid:it.objid, itemid:'%'+it.objid, orgclass:params.lgutype])
+			def accts = landtax_lgu_account_mapping.getAccountsByOrg([lguid:it.objid, itemid:'%'+it.objid, orgclass:params.lgutype])
 			accts.each{ acct -> 
 				updateRevenueInfo(acct)
 				if (acct.revtype && acct.revperiod ){

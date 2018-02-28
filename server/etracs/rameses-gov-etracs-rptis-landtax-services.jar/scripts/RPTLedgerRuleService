@@ -86,6 +86,8 @@ public class RPTLedgerRuleService
 		def actions = new RuleAction();
 		actions.addCommand('add-basic', new AddBasic(request:request))
 		actions.addCommand('add-sef', new AddSef(request:request))
+		actions.addCommand('add-basicidle', new AddIdleLand(request:request))
+		actions.addCommand('add-sh', new AddSocialHousing(request:request))
 		actions.addCommand('add-firecode', new AddFireCode(request:request))
 		actions.addCommand('calc-tax', new CalcTax(numSvc:numSvc))
 		return actions 

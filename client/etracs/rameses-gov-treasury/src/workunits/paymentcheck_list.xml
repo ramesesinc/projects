@@ -2,7 +2,7 @@
     cols="refno,receivedfrom,refdate,bank.name,amount,balance">
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" caption="Check Payments" action="init" 
-                 role="CASHIER" target="window" index="10" />
+                  target="window" index="10" />
     </invokers>
     
 </workunit>

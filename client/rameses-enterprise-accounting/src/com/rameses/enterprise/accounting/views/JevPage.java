@@ -41,7 +41,13 @@ public class JevPage extends javax.swing.JPanel {
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Ref No");
@@ -73,6 +79,8 @@ public class JevPage extends javax.swing.JPanel {
         xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel9);
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel4.setCaption("Jev No");
         xLabel4.setExpression("#{entity.jevno}");
@@ -93,18 +101,39 @@ public class JevPage extends javax.swing.JPanel {
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel3.setCaption("Amount");
-        xLabel3.setExpression("#{entity.amount}");
-        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel3.setExpression("#{formattedAmount}");
+        xLabel3.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel3);
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 0, 0));
+        jPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
+
+        xButton1.setDepends(new String[] {"accttype"});
+        xButton1.setImmediate(true);
+        xButton1.setName("viewItemAccounts"); // NOI18N
+        xButton1.setText("View In Item Accounts");
+        xButton1.setVisibleWhen("#{accttype != 'itemaccount'}");
+        jPanel2.add(xButton1);
+
+        xButton2.setDepends(new String[] {"accttype"});
+        xButton2.setImmediate(true);
+        xButton2.setName("viewNGASAccounts"); // NOI18N
+        xButton2.setText("View In NGAS Accounts");
+        xButton2.setVisibleWhen("#{accttype == 'itemaccount'}");
+        jPanel2.add(xButton2);
+
+        jPanel1.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "acctcode"}
                 , new Object[]{"caption", "Acct Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -133,7 +162,7 @@ public class JevPage extends javax.swing.JPanel {
                 new Object[]{"name", "dr"}
                 , new Object[]{"caption", "Dr"}
                 , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 150}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -148,7 +177,7 @@ public class JevPage extends javax.swing.JPanel {
                 new Object[]{"name", "cr"}
                 , new Object[]{"caption", "Cr"}
                 , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 150}
+                , new Object[]{"minWidth", 50}
                 , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -161,6 +190,7 @@ public class JevPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setHandler("itemListModel");
+        jPanel1.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -169,12 +199,12 @@ public class JevPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 856, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 815, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,11 +214,15 @@ public class JevPage extends javax.swing.JPanel {
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

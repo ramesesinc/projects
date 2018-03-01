@@ -111,7 +111,8 @@ class RemittanceService  {
 		def list = rfEm.select("cashbreakdown").find( [remittanceid: m.remittanceid ] ).list()*.cashbreakdown;
 		bd = cashBreakdownSvc.summarize( list );
 
-		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd, totalcash: m.totalcash ] );
+		def total = rfEm.find([ remittanceid: m.remittanceid ]).select('totalcash:{SUM(totalcash)}').val();
+		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd, totalcash: total ] );
 	}	
 
 	@ProxyMethod

@@ -94,4 +94,8 @@ class JevService  {
 		return u;	
 	}
 
+	@ProxyMethod 
+	public def getItemsInNGASAccount( params ) {
+		return jevEm.getItemsInNGASAccount( params ); 
+	}
 }

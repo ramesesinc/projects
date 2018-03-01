@@ -14,7 +14,7 @@ SELECT DISTINCT a.* FROM
   UNION 
   SELECT * FROM account WHERE title LIKE $P{searchtext}
 ) a
- ORDER BY a.code 
+ORDER BY a.code 
 
 [findInfo]
 SELECT a.*, p.code AS parent_code, p.title AS parent_title 
@@ -52,9 +52,9 @@ from (
 		left join ( 
 			select a.*, aim.itemid  
 			from ( 
-				select objid from account_maingroup a 
+				select top 1 objid from account_maingroup a 
 				where reporttype = 'NGAS' 
-				order by version desc limit 1 
+				order by version desc 
 			)tmp1 
 				inner join account_maingroup amg on amg.objid = tmp1.objid 
 				inner join account_item_mapping aim on aim.maingroupid = amg.objid 

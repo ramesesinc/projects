@@ -98,6 +98,28 @@ class CashReceiptService  {
         if( daysdiff > staledayscount ) throw new Exception('Stale check is not allowed.')
     }
 	
+	void insertChecks( def p ) {
+		p.checks.each { c->
+			if(!c.objid) {
+				c.amtused = c.amount;
+				c.receiptid = p.objid;
+				c.state = 'PENDING';
+				def cc = checkPayment.create( c );
+				c.objid = cc.objid;
+			}
+			else {
+				checkPayment.find( [objid: c.objid] ).update( [amtused: "{ amtused + :amt }"], [amt: c.amount] );
+				//if amtused is fully exhausted fire an error
+				def z = checkPayment.find([objid: c.objid] ).where("amount - amtused < 0 ").first();
+				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");
+			}	
+		}	
+		//update also payment items
+		p.paymentitems.findAll{ it.check !=null }.each { c->
+			c.refid = c.check.objid;
+		}
+	}
+
 	@ProxyMethod
 	public def post( p ) {
 		if ( !p.formtype ) throw new Exception("Form type is required");
@@ -115,24 +137,8 @@ class CashReceiptService  {
 		//additional code on checks 
 		****************************************************************/
 		if( p.checks ) {
-			p.checks.each { c->
-				if(!c.objid) {
-					c.amtused = c.amount;
-					c.receiptid = p.objid;
-					c.state = 'PENDING';
-					def cc = checkPayment.create( c );
-					c.objid = cc.objid;
-				}
-				else {
-					checkPayment.find( [objid: c.objid] ).update( [amtused: "{ amtused + :amt }"], [amt: c.amount] );
-				}	
-			}	
-			//update also payment items
-			p.paymentitems.findAll{ it.check !=null }.each { c->
-				c.refid = c.check.objid;
-			}
+			insertChecks( p );
 		}
-
 
 		//check if there are payment items with no type. throw error
 		def test = p.paymentitems.findAll{ !it.reftype };

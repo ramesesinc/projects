@@ -11,7 +11,7 @@
 		<field name="fund_objid" required="true"/>
 
 		<complex name="receipt" ref="cashreceipt" jointype="many-to-one"  
-			includefields="receiptno,receiptdate,collector.name,remittanceid,remittance.collectionvoucherid" required="false">
+			includefields="receiptno,receiptdate,collector.name,remittanceid,remittance.collectionvoucherid,void.objid" required="false">
 			<key field="receiptid" target="objid" />
 		</complex> 
 

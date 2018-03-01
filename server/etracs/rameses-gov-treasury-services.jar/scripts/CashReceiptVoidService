@@ -24,6 +24,12 @@ class CashReceiptVoidService  {
 	@Service("DateService")
 	def dateService;
 	
+	@DataContext('cashreceiptpayment_noncash') 
+	def ncPmtEm;
+
+	@DataContext('paymentcheck') 
+	def pmtChkEm;
+
 	@ProxyMethod
 	public def post( def p ) {
 		def v = [objid: "VOID"+new UID()];
@@ -34,6 +40,13 @@ class CashReceiptVoidService  {
 		
 		em.create("cashreceipt:void", v );
 		
+		def plist = ncPmtEm.select("refid,amount").find([receiptid: v.receiptid] ).where(" reftype='CHECK' ").list();
+		if(plist) {
+			plist.each {
+				pmtChkEm.find([objid: it.refid]).update( [amtused:'{amtused - :amt}'], [amt: it.amount] );
+			}
+		}
+
 		v.receipt = p.receipt;
 		return v;
 	}	

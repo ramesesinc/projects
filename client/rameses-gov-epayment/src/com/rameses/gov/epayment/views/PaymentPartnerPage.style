@@ -1,0 +1,3 @@
+"entity.(code|name|indexno)" [ 1==1 ] {
+    enabled: false; 
+} 

@@ -21,11 +21,16 @@ class EORRemittanceService {
     @DataContext("fund")
     def fundEm;
 
-    @Service("EORPostingService")
-    def postingSvc;
+    @DataContext("bankaccount")
+    def bankAcctEm;
 
     @Service("DateService")
     def dateSvc;
+
+    @Service("JevService")
+    def jevSvc;    
+
+
 
     @Env
     def env;
@@ -64,11 +69,61 @@ class EORRemittanceService {
 
     @ProxyMethod
     public def post( def o ) {
-        def list = remFundEm.find( [remittanceid : o.objid ]  ).first();
-        list.each {
-            if( !entity.validation?.refno ) throw new Exception("Each fund must be validated")
+        def fundlist = remFundEm.find([ remittanceid : o.objid ]).list();
+        fundlist.each { 
+            if ( !it.bankaccount?.objid ) throw new Exception("Each fund must have a bank account")
+            if ( !it.validation?.refno ) throw new Exception("Each fund must be validated")
         }
-        postingSvc.post( o );
-    }
 
+        def ref = [
+            refid: o.objid, 
+            refno: o.controlno,
+            reftype: 'eor_remittance', 
+            refdate: o.controldate, 
+            txntype: 'EOR'
+        ];
+        def jevBatch = [:];
+        jevBatch.ref = ref;
+        jevBatch.funds = [];
+        jevBatch.items = [];
+
+        fundlist.each{
+            jevBatch.funds << [ 
+                objid: it.objid, 
+                refno: o.controlno + it.fund.code, 
+                fund: it.fund, 
+                amount: it.amount  
+            ];
+
+            def itemacctid = bankAcctEm.find([ objid: it.bankaccount.objid ]).select('acctid').val(); 
+            if ( !itemacctid ) throw new Exception('Please specify account in bank account ('+ it.bankaccount.title +')'); 
+
+            jevBatch.items << [
+                cr: 0.0,
+                dr: it.amount,  
+                itemacctid: itemacctid,
+                fundid: it.fund.objid, 
+                bankacctid: it.bankaccount.objid, 
+                _schemaname: 'bankaccount_ledger'
+            ]; 
+        }
+
+        def pm = [ remittanceid: o.objid ];
+        jevBatch.items.addAll( remEm.getIncomeLedgerItems( pm ) );
+        jevBatch.items.addAll( remEm.getPayableLedgerItems( pm ) );
+        jevSvc.createBatch( jevBatch ); 
+    } 
+
+
+    @ProxyMethod 
+    public void updateValidation( params ) {
+        def u = [ validation: params.validation ]; 
+        remFundEm.find([ objid: params.objid ]).update( u );
+    }    
+
+    @ProxyMethod 
+    public void updateBankAccount( params ) {
+        def u = [ bankaccount: params.bankaccount ]; 
+        remFundEm.find([ objid: params.objid ]).update( u );
+    }
 }

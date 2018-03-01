@@ -67,3 +67,57 @@ INNER JOIN eor eor ON eor.objid = eori.parentid
 INNER JOIN eor_remittance rem ON eor.remittanceid = rem.objid
 WHERE eor.remittanceid = $P{remittanceid} 
 GROUP BY rem.objid, rem.controlno, rem.controldate,  eori.item_objid, eori.item_code,  eori.item_title, eori.item_fund_objid
+
+[getIncomeLedgerItems]
+SELECT 
+    a.fundid, a.itemacctid, SUM(a.dr) AS dr, SUM(a.cr) AS cr, 
+    'income_ledger' AS _schemaname  
+FROM ( 
+    select 
+        ei.item_fund_objid as fundid, 
+        ei.item_objid as itemacctid, 
+        0.0 as dr, sum(ei.amount) as cr 
+  from eor 
+        inner join eor_item ei on ei.parentid = eor.objid 
+    where eor.remittanceid = $P{remittanceid} 
+    group by ei.item_fund_objid, ei.item_objid
+
+  UNION ALL
+
+    select fundid, itemacctid, sum(dr) as dr, 0.0 as cr 
+    from ( 
+        select 
+            (
+                select min(item_fund_objid) from eor_item 
+                where parentid = ei.parentid and item_objid = ei.refitem_objid 
+            ) as fundid, 
+            ei.refitem_objid as itemacctid, 
+            ei.amount as dr 
+        from eor 
+            inner join eor_share ei on ei.parentid = eor.objid 
+        where eor.remittanceid = $P{remittanceid} 
+    )tmp1 
+    group by fundid, itemacctid 
+) a 
+GROUP BY a.fundid, a.itemacctid
+
+
+[getPayableLedgerItems]
+select 
+    fundid, refitemacctid, itemacctid, 0.0 as dr, sum(amount) as cr, 
+    'payable_ledger' AS _schemaname  
+from ( 
+    select 
+        (
+            select min(item_fund_objid) from eor_item 
+            where parentid = ei.parentid and item_objid = ei.payableitem_objid  
+        ) as fundid,
+        ei.refitem_objid as refitemacctid, 
+        ei.payableitem_objid as itemacctid, 
+        ei.amount
+    from eor 
+        inner join eor_share ei on ei.parentid = eor.objid 
+    where eor.remittanceid = $P{remittanceid} 
+)tmp1 
+group by fundid, refitemacctid, itemacctid 
+

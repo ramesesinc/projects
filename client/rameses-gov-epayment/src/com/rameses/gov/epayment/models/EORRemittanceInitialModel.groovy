@@ -33,10 +33,7 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
     def listener = [
         "partner" : { o->
             listHandler.reload();
-        },
-        "selectedItem" : { o->
-            MsgBox.alert(o);
-        }
+        } 
     ];
     
     def listHandler = [
@@ -49,7 +46,15 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
         },
         isMultiSelect: {
             return true;
-        }
+        },
+        afterSelectionChange: {
+            entity.amount = listHandler.selectedValue.sum{ it.amount };
+            binding.refresh("amount");
+        }, 
+        onOpenItem: { o, name-> 
+            if ( !o ) return null;
+            return Inv.lookupOpener('eor:open', [ entity: o]); 
+        }           
     ] as BasicListModel;
    
     def selectedPO;
@@ -68,11 +73,6 @@ public class EORRemittanceInitialModel  extends CrudFormModel {
         resolveListHandler.selectedValue?.each{ 
             onlineSvc.resolve( it ); 
         } 
-    }
-    
-    void computeAmount() {
-       entity.amount = listHandler.selectedValue.sum{ it.amount };
-       binding.refresh("amount");
     }
     
     public def save() {

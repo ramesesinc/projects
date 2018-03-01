@@ -11,4 +11,6 @@
          
          <invoker type="listActions" caption="Sync from Cloud" action="syncCloud" />
    </invokers>
+   <code class="com.rameses.gov.epayment.models.PaymentPartnerListModel"/> 
+   
 </workunit>

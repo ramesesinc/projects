@@ -24,8 +24,8 @@
 			<key field="objid" target="parentid" />
 		</complex>	
 
-		<!--complex name="sharing" ref="eor_share" jointype="one-to-many" required="false">
+		<complex name="sharing" ref="eor_share" jointype="one-to-many" required="false">
 			<key field="objid" target="parentid" />
-		</complex-->	
+		</complex>
 	</element>
 </schema>

@@ -3,15 +3,14 @@
 		<field name="objid" primary="true" prefix="EORSHR"/>
 		<field name="parentid" required="true"/>
 		
-		<field name="itemaccount_objid" required="true"/>
-		<field name="itemaccount_code" />
-		<field name="itemaccount_title" required="true"/>
+		<field name="refitem_objid" required="true"/>
+		<field name="refitem_code" />
+		<field name="refitem_title" required="true"/>
 
-		<field name="shareaccount_objid" required="true"/>
-		<field name="shareaccount_code" />
-		<field name="shareaccount_title" required="true"/>
+		<field name="payableitem_objid" required="true"/>
+		<field name="payableitem_code" />
+		<field name="payableitem_title" required="true"/>
 
 		<field name="amount" required="true" type="decimal"/>
-		<field name="share" required="true" type="decimal"/>
 	</element>
 </schema>

@@ -11,6 +11,9 @@ class EORService {
     @DataContext('eor')
     def eorEm;
 
+    @DataContext('paymentpartner')
+    def partnerEm;
+
     @Service("DateService")
     def dateService
         
@@ -33,7 +36,7 @@ class EORService {
         def svrDate = dateService.serverDate;
         def entity = [:];
         entity.partnerid = po.partnerid;
-        entity.receiptno = getNextEORNumber();
+        entity.receiptno = getNextEORNumber( po.partnerid );
         entity.receiptdate = po.tracedate;
         entity.txndate = svrDate;
         entity.state = 'POSTED';
@@ -65,11 +68,14 @@ class EORService {
         return eorEm.create( entity ); 
     }   
 
-    def getNextEORNumber() { 
+    def getNextEORNumber( partnerid ) { 
         def org = orgSvc.getRoot(); 
-        if ( !org?.objid ) throw new Exception('no available root org');  
+        def orgid = (org?.objid ? org.objid : '');
 
-        String prefix = 'EOR'+ org.objid + dateService.getServerYear();
-        return prefix + seqSvc.getNextFormattedSeriesA( prefix, 8 );
+        def part = partnerEm.find([ objid: partnerid ]).first(); 
+        def indexno = (part?.indexno ? part.indexno : ''); 
+
+        String prefix = 'EOR'+ indexno + orgid + dateService.getServerYear();
+        return prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
     }
 }

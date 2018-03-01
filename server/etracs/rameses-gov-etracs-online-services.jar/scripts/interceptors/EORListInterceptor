@@ -9,8 +9,8 @@ class EORListInterceptor {
     public void getNodes( evt ) { 
         def x = evt.args[0];
         def result = evt.result;
-        result << [  title: 'Unremitted', state:'OPEN' ];
-        result << [  title: 'Posted', state:'POSTED' ];
+        result << [  title: 'Unremitted', state:'unremitted',  ];
+        result << [  title: 'Remitted', state:'remitted' ];
     }
 
     @Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'eor' }")
@@ -18,9 +18,16 @@ class EORListInterceptor {
         def o = evt.args[0];
 
         if( !o.node?.state ) return;
+
+        def m = [:]; 
+        def str = null;
+        if ( o.node.state == 'unremitted' ) {
+            str = ' remittanceid is null '; 
+        } else {
+            str = ' remittanceid is not null '; 
+        } 
+
         //o.debug = true;
-        def str = " state = :state";
-        def m = [state: o.node.state ]; 
 
         if( o.where ) {
             o.where[0] = str + " AND " + o.where[0];    

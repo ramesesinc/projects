@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.epayment.views;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -11,6 +12,7 @@ import com.rameses.seti2.views.CrudFormPage;
  *
  * @author Elmo Nazareno
  */
+@StyleSheet
 @Template(CrudFormPage.class)
 public class PaymentPartnerPage extends javax.swing.JPanel {
 
@@ -34,6 +36,7 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField10 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField7 = new com.rameses.rcp.control.XTextField();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
@@ -47,12 +50,17 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
         jPanel1.setPreferredSize(new java.awt.Dimension(729, 486));
 
         xFormPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        xFormPanel4.setCaptionWidth(150);
+        xFormPanel4.setCaptionWidth(120);
 
         xTextField3.setCaption("Code");
         xTextField3.setName("entity.code"); // NOI18N
         xTextField3.setRequired(true);
         xFormPanel4.add(xTextField3);
+
+        xTextField10.setCaption("Index No.");
+        xTextField10.setName("entity.indexno"); // NOI18N
+        xTextField10.setRequired(true);
+        xFormPanel4.add(xTextField10);
 
         xTextField4.setCaption("Name");
         xTextField4.setName("entity.name"); // NOI18N
@@ -67,7 +75,7 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
         xFormPanel4.add(xTextField7);
 
         xFormPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        xFormPanel5.setCaptionWidth(150);
+        xFormPanel5.setCaptionWidth(120);
         xFormPanel5.setCellpadding(new java.awt.Insets(0, 30, 0, 0));
 
         xTextField6.setCaption("Contact Person");
@@ -112,10 +120,10 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(210, Short.MAX_VALUE))
+                .addContainerGap(200, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -142,6 +150,7 @@ public class PaymentPartnerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
+    private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;

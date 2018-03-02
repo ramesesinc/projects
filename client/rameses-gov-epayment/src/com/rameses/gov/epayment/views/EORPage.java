@@ -231,7 +231,7 @@ public class EORPage extends javax.swing.JPanel {
 
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "refaccount.title"}
+                new Object[]{"name", "refitem.title"}
                 , new Object[]{"caption", "Ref Account"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -246,7 +246,7 @@ public class EORPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "payableaccount.title"}
+                new Object[]{"name", "payableitem.title"}
                 , new Object[]{"caption", "Payable Account"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}

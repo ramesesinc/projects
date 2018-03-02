@@ -291,7 +291,8 @@ public class EORPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable3.setHandler("itemHandlers.shares");
+        xDataTable3.setHandler("itemHandlers.sharing");
+        xDataTable3.setId("itemHandlers.sharing");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);

@@ -3,7 +3,7 @@ package rptis.landtax.actions;
 import com.rameses.rules.common.*;
 import rptis.landtax.facts.*;
 
-public class AggregateBillItem implements RuleActionHandler {
+public class AggregateLedgerItem implements RuleActionHandler {
 	def request
 
 	public void execute(def params, def drools) {
@@ -26,6 +26,11 @@ public class AggregateBillItem implements RuleActionHandler {
 			aitem.amtdue += entity.amtdue 
 			aitem.interest += entity.interest 
 			aitem.discount += entity.discount 
+			def factitem = request.facts.findAll{it instanceof RPTLedgerItemFact}.find{it.objid == aitem.objid}
+			if (!factitem) throw new Exception('Ledger Item is expected here.')
+			factitem.amtdue = aitem.amtdue
+			factitem.interest = aitem.interest
+			factitem.discount = aitem.discount
 		}
 	}
 }

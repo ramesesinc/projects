@@ -34,7 +34,10 @@ public class RPTBillingRuleService
 	def em_compromise
 
 	@DataContext('vw_landtax_lgu_account_mapping')
-	def em_account_mapping
+	def em_mapping 
+
+	@DataContext('org')
+	def em_org 
 
 	def RULESET 			= 'rptbilling'
 	def FACT_PACKAGE 		= 'rptbilling.'
@@ -73,11 +76,13 @@ public class RPTBillingRuleService
 
 	def buildRequest(bill){
 		bill.shares = []
+		bill.billitems = []
 		bill.expirydate = null
 		
 		def request = [:]
 		request.shares = bill.shares
 		request.items = bill.items
+		request.billitems = bill.billitems
 		request.facts = createFacts(bill)
 		request.actions = buildActions(request)
 		return request
@@ -89,7 +94,6 @@ public class RPTBillingRuleService
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g.name);
 		}
-		updateShareRevenueType(request.shares)
 	}
 
 	void executeShareRules(request){
@@ -97,11 +101,6 @@ public class RPTBillingRuleService
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g);
 		}
-		updateShareRevenueType(request.shares)
-	}
-
-	void updateShareRevenueType(shares){
-		shares.each{ it.revtype = it.accttype }
 	}
 
 	def createFacts(bill){
@@ -293,14 +292,16 @@ public class RPTBillingRuleService
 		actions.addCommand('calc-tax', new CalcTax(numSvc:numSvc))
 		actions.addCommand('calc-interest', new CalcInterest(numSvc:numSvc))
 		actions.addCommand('calc-discount', new CalcDiscount(numSvc:numSvc))
-		actions.addCommand('split-bill-item', new SplitBillItem(request:request, numSvc:numSvc))
-		actions.addCommand('remove-bill-item', new RemoveBillItem(request:request))
-		actions.addCommand('aggregate-bill-item', new AggregateBillItem(request:request))
+		actions.addCommand('split-bill-item', new SplitLedgerItem(request:request, numSvc:numSvc))
+		actions.addCommand('remove-bill-item', new RemoveLedgerItem(request:request))
+		actions.addCommand('aggregate-bill-item', new AggregateLedgerItem(request:request))
 		actions.addCommand('create-tax-summary', new CreateTaxSummary(request:request))
-		actions.addCommand('add-brgy-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'barangay', EM:em_account_mapping))		
-		actions.addCommand('add-muni-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'municipality', EM:em_account_mapping))		
-		actions.addCommand('add-prov-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'province', EM:em_account_mapping))		
-		actions.addCommand('add-city-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'city', EM:em_account_mapping))		
+		actions.addCommand('add-billitem', new AddBillItem(request:request, em_mapping: em_mapping, em_org: em_org))
+		actions.addCommand('add-share', new AddShare(request:request, numSvc: numSvc, em_mapping: em_mapping))
+		//actions.addCommand('add-brgy-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'barangay', EM:em_mapping))		
+		//actions.addCommand('add-muni-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'municipality', EM:em_mapping))		
+		//actions.addCommand('add-prov-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'province', EM:em_mapping))		
+		//actions.addCommand('add-city-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'city', EM:em_mapping))		
 		actions.addCommand('set-bill-expiry', new SetBillExpiryDate(request:request))
 
 		/*
@@ -314,44 +315,6 @@ public class RPTBillingRuleService
 		*/
 		return actions 
 	}
-
-
-
-	def createVariableFact = { facts, rptledger, amount ->
-		def var = ruleSvc.createFact(RULESET, FACT_PACKAGE+'VariableInfoFact')
-		var.rptledger = rptledger
-		var.amount = amount 
-		facts << var
-		return var
-	}
-	
-	def getRevenueAccount = {params ->
-		def acct = params.acct 
-		if (acct)
-			return acct;
-
-		def p = [:]
-		p.revtype = params.sharetype.replaceAll('disc', '')
-		p.revperiod = params.taxsummary.revperiod 
-		if ('barangay'.equalsIgnoreCase(params.lgutype)){
-			p.lgu_objid = params.taxsummary.rptledger.barangayid
-			acct = em_account_mapping.select('item.objid,item.title').find(p).first() 
-		}
-		else if (params.lgutype.toLowerCase().matches('municipality|city')){
-			p.lgu_objid = params.taxsummary.rptledger.lguid
-			acct = em_account_mapping.select('item.objid,item.title').find(p).first() 
-		}
-		else if ('province'.equalsIgnoreCase(params.lgutype)){
-			p.lgu_orgclass = 'PROVINCE'
-			acct = em_account_mapping.select('item.objid,item.title').find(p).first() 	
-		}
-
-		if (acct){
-			return [key:acct.item.objid, value:acct.item.title]
-		}
-		throw new Exception('Account mapping does not exist for ' + p.revtype + ' ' + p.revperiod + '.')
-	}
-
 
 	@ProxyMethod
 	public def buildShareRequest(bill, ledger) {

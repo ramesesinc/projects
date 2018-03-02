@@ -87,16 +87,9 @@ class LandtaxOnlinePaymentInterceptor
     public void postPayment( evt ) { 
         def eor = evt.args[0]
         def bill = getBilling([refno:eor.info.barcode])
+        eor.ledgers = [bill.rptledger]
         eor.rptledger = bill.rptledger 
-        eor.items = []
-        bill.rptledger.shares.each{
-            def item = [:]
-            item.parentid = eor.objid 
-            item.item = it.item 
-            item.amount = it.amount 
-            item.remarks = it.remarks
-            eor.items << item 
-        }
+        postPaymentSvc.buildCashReceiptItemsAndShares(eor)
     }    
 
     @After(pattern="EORService.post", eval="#{args[0].txntype=='rptcol'}")

@@ -3,8 +3,10 @@ package rptis.landtax.actions;
 import com.rameses.rules.common.*;
 import rptis.landtax.facts.*;
 
-public class AddFireCode implements RuleActionHandler {
+public class AddTax implements RuleActionHandler {
 	def request
+	def revtype 
+	def priority
 
 	public void execute(def params, def drools) {
 		def avfact = params.avfact 
@@ -21,9 +23,9 @@ public class AddFireCode implements RuleActionHandler {
 		item.amount = 0.0
 		item.amtpaid = 0.0
 
-		item.revtype = 'firecode'
+		item.revtype = revtype 
 		item.system = true 
-		item.priority = 1 + (item.taxdifference == 1 || item.taxdifference == true ? -1 : 0)
+		item.priority = priority + (item.taxdifference == 1 || item.taxdifference == true ? -1 : 0)
 
 		request.items << item 
 		

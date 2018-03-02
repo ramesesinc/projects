@@ -3,7 +3,7 @@ package rptis.landtax.actions;
 import com.rameses.rules.common.*;
 import rptis.landtax.facts.*;
 
-public class SplitBillItem implements RuleActionHandler {
+public class SplitLedgerItem implements RuleActionHandler {
 	def numSvc 
 	def request
 

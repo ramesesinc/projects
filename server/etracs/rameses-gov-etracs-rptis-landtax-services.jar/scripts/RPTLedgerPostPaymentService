@@ -30,8 +30,25 @@ class RPTLedgerPostPaymentService
 	public void postPayment(eor){
 		def ledgerpmt = createLedgerPayment(eor)
 		postPaidItems(ledgerpmt, eor.rptledger.postingitems)
-		postShares(ledgerpmt, eor.rptledger.shares)
+		postShares(ledgerpmt, eor.rptledger)
 		updateLedgerPaidYearQtr(eor.rptledger)
+		println 'Landtax EOR Payment successfully posted.'
+	}
+
+	@ProxyMethod
+	public def buildCashReceiptItemsAndShares(receipt){
+		receipt.sharing = []
+		receipt.items = []
+		receipt.ledgers.each{rl->
+			rl.shares.each{
+				it.parentid = receipt.objid 
+				receipt.sharing << it
+			}
+			rl.billitems.each{
+				it.parentid = receipt.objid 
+				receipt.items << it 
+			}
+		}
 	}
 
 	def createLedgerPayment(eor){
@@ -69,10 +86,22 @@ class RPTLedgerPostPaymentService
 		em_rptledger_item.where('parentid = :refid and amtpaid >= amount', ledgerpmt).delete()
 	}
 
-	void postShares(ledgerpmt, shares){
-		shares.each{
+void postShares(ledgerpmt, ledger){
+		ledger.shares.each{
 			it.parentid = ledgerpmt.objid 
+			it.item = it.payableitem
 			em_rptpayment_share.create(it)
+		}
+		ledger.billitems.each{
+			def share = [:]
+			share.parentid = ledgerpmt.objid 
+			share.revtype = it.revtype
+			share.revperiod = it.revperiod
+			share.sharetype = it.sharetype 
+			share.item = [objid:it.item.objid]
+			share.amount = it.amount - it.share 
+			share.discount = it.discount - it.sharedisc 
+			em_rptpayment_share.create(share)
 		}
 	}
 

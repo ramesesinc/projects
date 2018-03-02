@@ -12,6 +12,7 @@ public class RPTLedgerFact
     Boolean qtrlypaymentpaidontime
     Boolean undercompromise
     Boolean missedpayment
+    String parentlguid
     String lguid
     String barangayid
     String barangay
@@ -31,6 +32,7 @@ public class RPTLedgerFact
         this.firstqtrpaidontime     = (ledger.firstqtrpaidontime == 1 || (ledger.firstqtrpaidontime ? true : false ))
         this.qtrlypaymentpaidontime = (ledger.qtrlypaymentpaidontime == 1 || (ledger.qtrlypaymentpaidontime ? true : false ))
         this.undercompromise        = (ledger.undercompromise == 1 || (ledger.undercompromise ? true : false ))
+        this.parentlguid                  = ledger.parentlguid
         this.lguid                  = ledger.lguid
         this.barangayid             = ledger.barangayid
         this.barangay               = ledger.barangay

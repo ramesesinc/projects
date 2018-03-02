@@ -1,6 +1,11 @@
 <schema>
     <element tablename="vw_landtax_lgu_account_mapping">
-        <field name="lgu_objid" />
+        <field name="org_objid" />
+        <field name="org_name" />
+        <field name="org_class" />
+        <field name="parent_objid"  />
+        <field name="parent_code"  />
+        <field name="parent_title"  />
         <field name="item_objid"  />
         <field name="item_code"  />
         <field name="item_title"  />

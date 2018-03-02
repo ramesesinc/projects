@@ -23,6 +23,7 @@ SELECT
 	rl.barangayid,
 	rl.classcode,
     rl.nextbilldate,
+    case when m.objid is not null then m.parentid else null end as parentlguid,
     case when m.objid is not null then m.objid else d.parentid end as lguid
 FROM rptledger rl 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 

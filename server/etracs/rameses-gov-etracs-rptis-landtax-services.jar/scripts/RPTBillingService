@@ -312,14 +312,19 @@ public class RPTBillingService
 		
 		def rptledger = tmpbill.rptledger
 		rptledger.items = buildItemsForReport(tmpbill)
+
 		if (bill._forpayment && bill._forpayment == true){
         	rptledger.pay = true
+        	rptledger.billitems = tmpbill.billitems 
         	rptledger.postingitems = buildPostingItems(tmpbill)
         	rptledger.shares = tmpbill.shares
+        	
         	def itemsTotal = numSvc.roundA(rptledger.items.sum{ (it.total ? it.total : 0) }, 2)
         	def postItemsTotal = numSvc.roundA(rptledger.postingitems.sum{ (it.total ? it.total : 0) }, 2)
-        	def sharesTotal = numSvc.roundA(rptledger.shares.sum{ (it.amount ? it.amount : 0) }, 2)
-        	
+        	def sharesTotal = 0.0
+        	if (rptledger.shares){
+        		sharesTotal = numSvc.roundA(rptledger.shares.sum{ (it.amount ? it.amount : 0) }, 2)
+        	}
         	if (itemsTotal != postItemsTotal && itemsTotal != sharesTotal){
         		throw new Exception('There is discrepancy in items and shares total.\nPlease verify rules.')
         	}

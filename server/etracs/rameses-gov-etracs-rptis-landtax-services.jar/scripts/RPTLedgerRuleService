@@ -84,11 +84,11 @@ public class RPTLedgerRuleService
 
 	def buildActions(ledger, request){
 		def actions = new RuleAction();
-		actions.addCommand('add-basic', new AddBasic(request:request))
-		actions.addCommand('add-sef', new AddSef(request:request))
-		actions.addCommand('add-basicidle', new AddIdleLand(request:request))
-		actions.addCommand('add-sh', new AddSocialHousing(request:request))
-		actions.addCommand('add-firecode', new AddFireCode(request:request))
+		actions.addCommand('add-basic', new AddTax(request:request, revtype:'basic', priority:10000))
+		actions.addCommand('add-sef', new AddTax(request:request, revtype:'sef', priority:10000))
+		actions.addCommand('add-basicidle', new AddTax(request:request, revtype:'basicidle', priority:3000))
+		actions.addCommand('add-sh', new AddTax(request:request, revtype:'sh', priority:2000))
+		actions.addCommand('add-firecode', new AddTax(request:request, revtype:'firecode', priority:1000))
 		actions.addCommand('calc-tax', new CalcTax(numSvc:numSvc))
 		return actions 
 	}

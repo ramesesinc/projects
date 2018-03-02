@@ -193,6 +193,18 @@ class RPTReceiptService
 	======================================================*/
 	@ProxyMethod
 	public def buildCashReceiptItemsAndShares(receipt){
+		receipt.sharing = []
+		receipt.items = []
+		receipt.ledgers.each{rl->
+			receipt.sharing += rl.shares 
+			receipt.items += rl.billitems
+		}
+	}
+
+
+/* TODO:
+	@ProxyMethod
+	public def buildCashReceiptItemsAndShares(receipt){
 		def revenues = []
 		def payables = []
 
@@ -203,7 +215,7 @@ class RPTReceiptService
 
 		buildReceiptItems(receipt, revenues, payables)
 	}
-
+*/
 
 /*	@ProxyMethod
 	public def getCashReceiptItems(receipt){
@@ -308,6 +320,7 @@ class RPTReceiptService
 		receipt.ledgers.each{
 			totalItems += numSvc.round(it.postingitems.sum{ it.total ? it.total : ZERO})
 			totalShares += numSvc.round(it.shares.sum{ it.amount ? it.amount : ZERO})
+			totalShares += numSvc.round(it.billitems.sum{ it.amount - it.share })
 		}
 
 		def samount = numSvc.format('#,##0.00', receipt.amount)
@@ -334,7 +347,7 @@ class RPTReceiptService
 		receipt.ledgers.each{ledger ->
 			def ledgerpmt = createLedgerPayment(receipt, ledger)
 			postPaidItems(ledgerpmt, ledger.postingitems)
-			postShares(ledgerpmt, ledger.shares)
+			postShares(ledgerpmt, ledger)
 			updateLedgerPaidYearQtr(ledger)
 		}
 	}
@@ -388,24 +401,35 @@ class RPTReceiptService
 		em_rptledger_item.where('parentid = :refid and amtpaid >= amount', ledgerpmt).delete()
 	}
 
-	void postShares(ledgerpmt, shares){
-		shares.each{
-			it.objid = 'RPS' + new java.rmi.server.UID()
+	void postShares(ledgerpmt, ledger){
+		ledger.shares.each{
 			it.parentid = ledgerpmt.objid 
+			it.item = it.payableitem
 			em_rptpayment_share.create(it)
+		}
+		ledger.billitems.each{
+			def share = [:]
+			share.parentid = ledgerpmt.objid 
+			share.revtype = it.revtype
+			share.revperiod = it.revperiod
+			share.sharetype = it.sharetype 
+			share.item = [objid:it.item.objid]
+			share.amount = it.amount - it.share 
+			share.discount = it.discount - it.sharedisc 
+			em_rptpayment_share.create(share)
 		}
 	}
 
 
-	def createReceiptItem(receipt, item){
-		return [
-			objid: 'CI' + new java.rmi.server.UID(),
-			receiptid: receipt.objid, 
-			item: item.item,
-			amount: new BigDecimal('0'), 
-			remarks: null 
-		]
-	}
+	//def createReceiptItem(receipt, item){
+		//return [
+			//objid: 'CI' + new java.rmi.server.UID(),
+			//receiptid: receipt.objid, 
+			//item: item.item,
+			//amount: new BigDecimal('0'), 
+			//remarks: null 
+		//]
+	//}
 
 	def getCollectingAgency(){
 		def agency = 'TREASURY'
@@ -498,47 +522,47 @@ class RPTReceiptService
 	}
 
 
-	/*==========================================================
-	* aggregate revenues by itemaccount 
-	* and add payables by tag 
-	*==========================================================*/
-	void buildReceiptItems(receipt, revenues, payables){
-		def ZERO = new BigDecimal('0.0');
-		receipt.items = [] 
-		receipt.sharing = []
+//	/*==========================================================
+//	* aggregate revenues by itemaccount 
+//	* and add payables by tag 
+//	*==========================================================*/
+//	void buildReceiptItems(receipt, revenues, payables){
+//		def ZERO = new BigDecimal('0.0');
+//		receipt.items = [] 
+//		receipt.sharing = []
+//
+//		def groups = revenues.groupBy{ it.item.objid }
+//		groups.each{k, list ->
+//			def rctitem = createReceiptItem(receipt, list.first())
+//			rctitem.amount = list.sum{ it.amount ? it.amount : ZERO }
+//			def shares = buildReceiptShares(receipt, rctitem, payables)
+//			if (shares){
+//				rctitem.amount += shares.sum{ it.amount ? it.amount : ZERO }
+//			}
+//			receipt.items << rctitem
+//			receipt.sharing += shares 
+//		}
+//	}
 
-		def groups = revenues.groupBy{ it.item.objid }
-		groups.each{k, list ->
-			def rctitem = createReceiptItem(receipt, list.first())
-			rctitem.amount = list.sum{ it.amount ? it.amount : ZERO }
-			def shares = buildReceiptShares(receipt, rctitem, payables)
-			if (shares){
-				rctitem.amount += shares.sum{ it.amount ? it.amount : ZERO }
-			}
-			receipt.items << rctitem
-			receipt.sharing += shares 
-		}
-	}
-
-	/*==========================================================
-	* shares are based on the item tag 
-	* and summarized by itemaccount 
-	*==========================================================*/
-	def buildReceiptShares(receipt, rctitem, payables){
-		def shares = []
-		def itempayables = payables.findAll{it.item.tag == rctitem.item.tag}
-		if (itempayables){
-			def paygrps = itempayables.groupBy{it.item.objid}
-			paygrps.each{k, list->
-				def share = [:]
-				share.receiptid = receipt.objid 
-				share.refitem = [objid:rctitem.item.objid]
-				share.payableitem = list.first().item 
-				share.amount = list.sum{it.amount ? it.amount : ZERO}
-				shares << share 
-			}
-		}
-		return shares 
-	}	
+	///*==========================================================
+	//* shares are based on the item tag 
+	//* and summarized by itemaccount 
+	//*==========================================================*/
+	//def buildReceiptShares(receipt, rctitem, payables){
+		//def shares = []
+		//def itempayables = payables.findAll{it.item.tag == rctitem.item.tag}
+		//if (itempayables){
+			//def paygrps = itempayables.groupBy{it.item.objid}
+			//paygrps.each{k, list->
+				//def share = [:]
+				//share.receiptid = receipt.objid 
+				//share.refitem = [objid:rctitem.item.objid]
+				//share.payableitem = list.first().item 
+				//share.amount = list.sum{it.amount ? it.amount : ZERO}
+				//shares << share 
+			//}
+		//}
+		//return shares 
+	//}	
 }
 

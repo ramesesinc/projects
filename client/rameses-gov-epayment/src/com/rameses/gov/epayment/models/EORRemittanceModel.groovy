@@ -23,7 +23,9 @@ public class EORRemittanceModel extends CrudFormModel {
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
-            return Inv.lookupOpener("eor:lookup", [entity: o ]);
+            def op = Inv.lookupOpener("eor:open", [entity: o ]);
+            op.target = "popup";
+            return op;
         }
     ] as BasicListModel;
     

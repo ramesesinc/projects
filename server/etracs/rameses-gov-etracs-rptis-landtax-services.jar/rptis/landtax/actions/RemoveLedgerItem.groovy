@@ -3,7 +3,7 @@ package rptis.landtax.actions;
 import com.rameses.rules.common.*;
 import rptis.landtax.facts.*;
 
-public class RemoveBillItem implements RuleActionHandler {
+public class RemoveLedgerItem implements RuleActionHandler {
 	def request
 
 	public void execute(def params, def drools) {

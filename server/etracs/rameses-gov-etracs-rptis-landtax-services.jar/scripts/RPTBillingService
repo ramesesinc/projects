@@ -165,22 +165,17 @@ public class RPTBillingService
 		bill.ledgers = []
 
 		ledgersforbilling.each{ledger ->
-			try{
-				tmpbill.rptledgerid = ledger.objid 
-				tmpbill.rptledger = em.findOpenLedger(tmpbill)
-				println 'Recalculating ledger : ' + tmpbill.rptledger?.tdno 
-				validateAndSetBill(tmpbill)
-		        def endyear = ( tmpbill.billtoyear < tmpbill.cy ? tmpbill.cy : tmpbill.billtoyear)
-		        ledgerSvc.postLedgerItemsForBilling(tmpbill.rptledger, tmpbill.billtoyear)
-		        tmpbill.items = ledgerSvc.getLedgerEntriesForBilling(tmpbill)
-		        tmpbill = ruleSvc.getBilling(tmpbill)
-				bill.expirydate = tmpbill.expirydate
-				bill.billdate = tmpbill.billdate
-				aggregateBill(bill, tmpbill)
-			}
-			catch(e){
-				println 'generateBill [ERROR] ' + e.message
-			}
+			tmpbill.rptledgerid = ledger.objid 
+			tmpbill.rptledger = em.findOpenLedger(tmpbill)
+			println 'Recalculating ledger : ' + tmpbill.rptledger?.tdno 
+			validateAndSetBill(tmpbill)
+	        def endyear = ( tmpbill.billtoyear < tmpbill.cy ? tmpbill.cy : tmpbill.billtoyear)
+	        ledgerSvc.postLedgerItemsForBilling(tmpbill.rptledger, tmpbill.billtoyear)
+	        tmpbill.items = ledgerSvc.getLedgerEntriesForBilling(tmpbill)
+	        tmpbill = ruleSvc.getBilling(tmpbill)
+			bill.expirydate = tmpbill.expirydate
+			bill.billdate = tmpbill.billdate
+			aggregateBill(bill, tmpbill)
 		}
 		saveBill(bill)
 		return bill 
@@ -312,14 +307,19 @@ public class RPTBillingService
 		
 		def rptledger = tmpbill.rptledger
 		rptledger.items = buildItemsForReport(tmpbill)
+
 		if (bill._forpayment && bill._forpayment == true){
         	rptledger.pay = true
+        	rptledger.billitems = tmpbill.billitems 
         	rptledger.postingitems = buildPostingItems(tmpbill)
         	rptledger.shares = tmpbill.shares
+        	
         	def itemsTotal = numSvc.roundA(rptledger.items.sum{ (it.total ? it.total : 0) }, 2)
         	def postItemsTotal = numSvc.roundA(rptledger.postingitems.sum{ (it.total ? it.total : 0) }, 2)
-        	def sharesTotal = numSvc.roundA(rptledger.shares.sum{ (it.amount ? it.amount : 0) }, 2)
-        	
+        	def sharesTotal = 0.0
+        	if (rptledger.shares){
+        		sharesTotal = numSvc.roundA(rptledger.shares.sum{ (it.amount ? it.amount : 0) }, 2)
+        	}
         	if (itemsTotal != postItemsTotal && itemsTotal != sharesTotal){
         		throw new Exception('There is discrepancy in items and shares total.\nPlease verify rules.')
         	}
@@ -375,7 +375,7 @@ public class RPTBillingService
 	def buildItemsForReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
-		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + '-' + it.priority}
+		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) }
 		groups.each{k, list ->
 			def first = list.first() 
 			def item = [:]

@@ -1007,8 +1007,6 @@ BEGIN
     INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) 
     VALUES ('RPT_FIRECODEINT_PRIOR', 'APPROVED', '455-050', 'RPT FIRECODE PENALTY PRIOR', 'RPT FIRECODE PENALTY PRIOR', 'REVENUE', 'GENERAL', '02', 'GENERAL', '0.00', 'ANY', NULL, NULL, NULL);
 
-
-
     insert into itemaccount_tag (objid, acctid, tag)
     select  'RPT_BASIC_ADVANCE' as objid, 'RPT_BASIC_ADVANCE' as acctid, 'rpt_basic_advance' as tag
     union 
@@ -1222,7 +1220,6 @@ BEGIN
     INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SH_PRIOR_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SOCIAL HOUSING PRIOR PROVINCE SHARE', 'RPT SOCIAL HOUSING PRIOR PROVINCE SHARE', 'PAYABLE', 'SOCIAL HOUSING', '02', 'SOCIAL HOUSING', '0.00', 'ANY', NULL, NULL, NULL);
     INSERT INTO `itemaccount` (`objid`, `state`, `code`, `title`, `description`, `type`, `fund_objid`, `fund_code`, `fund_title`, `defaultvalue`, `valuetype`, `org_objid`, `org_name`, `parentid`) VALUES ('RPT_SHINT_PRIOR_PROVINCE_SHARE', 'APPROVED', '455-050', 'RPT SOCIAL HOUSING PENALTY PRIOR PROVINCE SHARE', 'RPT SOCIAL HOUSING PENALTY PRIOR PROVINCE SHARE', 'PAYABLE', 'SOCIAL HOUSING', '02', 'SOCIAL HOUSING', '0.00', 'ANY', NULL, NULL, NULL);
 
-
     update itemaccount ia, landtax_lgu_account_mapping m, province b set 
       ia.parentid = case 
         when m.revtype = 'basic' and revperiod = 'advance' then 'RPT_BASIC_ADVANCE_PROVINCE_SHARE'
@@ -1346,6 +1343,15 @@ BEGIN
         when m.revtype = 'basicint' and revperiod = 'prior' then 'RPT_BASICINT_PRIOR'
 
         when m.revtype = 'sef' and revperiod = 'advance' then 'RPT_SEF_ADVANCE'
+      when m.revtype = 'basic' and revperiod = 'advance' then 'RPT_BASIC_ADVANCE'
+      when m.revtype = 'basic' and revperiod = 'current' then 'RPT_BASIC_CURRENT'
+      when m.revtype = 'basicint' and revperiod = 'current' then 'RPT_BASICINT_CURRENT'
+      when m.revtype = 'basic' and revperiod = 'previous' then 'RPT_BASIC_PREVIOUS'
+      when m.revtype = 'basicint' and revperiod = 'previous' then 'RPT_BASICINT_PREVIOUS'
+      when m.revtype = 'basic' and revperiod = 'prior' then 'RPT_BASIC_PRIOR'
+      when m.revtype = 'basicint' and revperiod = 'prior' then 'RPT_BASICINT_PRIOR'
+
+      when m.revtype = 'sef' and revperiod = 'advance' then 'RPT_SEF_ADVANCE'
         when m.revtype = 'sef' and revperiod = 'current' then 'RPT_SEF_CURRENT'
         when m.revtype = 'sefint' and revperiod = 'current' then 'RPT_SEFINT_CURRENT'
         when m.revtype = 'sef' and revperiod = 'previous' then 'RPT_SEF_PREVIOUS'
@@ -1401,8 +1407,6 @@ end ;
 
 
 call buildRptAccounts();
-
-
 
 
 drop view if exists vw_landtax_lgu_account_mapping

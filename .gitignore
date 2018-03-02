@@ -14,6 +14,7 @@ android/*/nbproject/genfiles.properties
 android/*/nbproject/groovy-build.xml
 android/*/.terminal
 android/*/Thumbs.db
+android/waterworks-v2
 
 /**/_tmp
 /**/dist

@@ -313,22 +313,10 @@ public abstract class AbstractCashReceipt {
         ReportUtil.print(handle.report, canShowPrinterDialog);
     }
     
-    void reprint() {
-        if ( entity._options ) { 
-            entity._options.canShowPrinterDialog = true; 
-        }
-        
-        if( verifyReprint() ){            
-            print();
-        } else {
-            MsgBox.alert('Invalid security code'); 
-        }
+    def reprint() {
+        return InvokerUtil.lookupOpener( "cashreceipt:reprint" );
     }
     
-    boolean verifyReprint() {
-        return (MsgBox.prompt("Please enter security code") == "etracs"); 
-    }
-
     def getInfoHtml() {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
     }

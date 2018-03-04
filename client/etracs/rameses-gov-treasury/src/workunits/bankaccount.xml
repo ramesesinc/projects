@@ -1,0 +1,14 @@
+<workunit schemaName="bankaccount">
+    
+   <invokers>
+         <invoker type="bankaccount:open" caption="Bank Account" action="open" target="popup"/>
+         <invoker type="bankaccount:create" caption="New Bank Account" action="create" target="popup"/>
+   </invokers>
+   <code class="com.rameses.enterprise.treasury.models.BankAccountModel" />
+   
+   
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.BankAccountPage" />
+   </pages>
+   
+</workunit>

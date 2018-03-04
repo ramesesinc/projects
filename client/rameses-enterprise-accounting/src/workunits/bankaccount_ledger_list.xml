@@ -3,6 +3,6 @@
          <invoker folderid="menucategory/accounting/ledger" caption="Bank Account Ledger" index="1"  action="init"/>
    </invokers>
    <pages>
-        <page name="queryForm" template="com.rameses.enterprise.accounting.views.BankAccountFilterPanel" />
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.BankAccountFilterPanel" />
    </pages>
 </workunit>

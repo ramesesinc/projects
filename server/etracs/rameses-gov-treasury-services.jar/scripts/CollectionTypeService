@@ -21,6 +21,7 @@ class CollectionTypeService extends ActiveCrudListService {
 	@DataContext("collectiontype")
 	def collectionTypeEm;
 
+	/*
 	@ProxyMethod
 	public def getColumns( def o ) {
 		return[
@@ -71,7 +72,7 @@ class CollectionTypeService extends ActiveCrudListService {
 			ctacct.create( o ); 
 		} 
 	}
-
+	*/
 	
 	//must return a collection of elements with fields [formno and formtype]
 	//this is impt for associating handlers. Used by collection type.

@@ -1,0 +1,35 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+
+class FundListInterceptor  {
+
+	@DataContext("fundgroup")
+	def grpEm;
+
+
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'fund' }")
+	public def getNodeList(evt) {
+		def result = evt.result;
+		
+		def list = grpEm.where("1=1").orderBy("indexno").list();
+		list.each {
+			result << [title:it.title,  objid:it.objid];
+		}
+	}
+
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'fund' }")
+	public void loadList(def evt) {
+		def o = evt.args[0];
+		//o.debug = true;
+		if( !o.node?.objid ) return;
+
+		def str = "groupid = :pid";
+		def m = [pid: o.node.objid];
+		o.where = [str, m];
+	}	
+
+}

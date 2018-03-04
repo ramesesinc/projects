@@ -1,0 +1,10 @@
+<workunit>
+   <invokers>
+         <invoker type="supervisor_approval" caption="Supervisor Approval11" target="popup" action="init"/>
+   </invokers>
+   <code class="com.rameses.enterprise.treasury.models.SupervisorApprovalModel" />
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.SupervisorApprovalPage" />
+   </pages>
+   
+</workunit>

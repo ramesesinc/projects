@@ -11,6 +11,11 @@ public class CollectionTypeModel extends CrudFormModel {
     @Service("CollectionTypeService")
     def service;
     
+    def formTypes;
+    def categoryList;
+    def handlers;
+    def batchHandlers;
+    
     void afterCreate() { 
         entity.state = 'APPROVED';
         entity.sortorder = 0; 
@@ -25,28 +30,22 @@ public class CollectionTypeModel extends CrudFormModel {
         if(!entity.allowbatch) entity.allowbatch = 0;
     }
     
-    def getFormTypes() {
-        return service.getFormTypes()*.objid;
+    void afterInit() {
+        formTypes = service.getFormTypes()*.objid;
+        handlers = InvokerUtil.lookupOpeners( "collectiontype:handler" )*.properties.name;
+        batchHandlers = InvokerUtil.lookupOpeners( "collectiontype:batchhandler" )*.properties.name;
     }
-
-    def getHandlers() {
-        return InvokerUtil.lookupOpeners( "collectiontype:handler" )*.properties.name;
-    }
-
-    def getBatchHandlers() {
-        return InvokerUtil.lookupOpeners( "collectiontype:batchhandler" )*.properties.name;
-    }
-
+    
     def categoryModel = [
         fetchList: { o->
-            return service.getCategories();
+            return categoryList;
         },
         onselect: { o->
             entity.category = o.category;
         }
     ] as SuggestModel;
     
-    /*
+    
     def addAccount() { 
         def params = [ fund: entity.fund ]; 
         params.handler = { o-> 
@@ -67,7 +66,6 @@ public class CollectionTypeModel extends CrudFormModel {
     }
     def removeAccount() {
         if(!selectedAccount) throw new Exception("Please select an account");
-
         entity.accounts.remove(selectedAccount); 
         accountModel.reload();
     }
@@ -95,7 +93,7 @@ public class CollectionTypeModel extends CrudFormModel {
     void afterSave( o ) {
         accountModel.sync();
     } 
-    */
+
 
     
 }

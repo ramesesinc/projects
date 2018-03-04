@@ -105,10 +105,10 @@ public class CashReceiptSelectionModel  {
 
     void askOfflineDate(def info) {
         boolean pass = false;
-        Modal.show( "cashreceipt:specifydate", [ 
-            entity  : [receiptdate: info.receiptdate], 
+        Modal.show( "date:prompt", [ 
+            entity  : [date: info.receiptdate], 
             handler : {v-> 
-                info.receiptdate = v.receiptdate; 
+                info.receiptdate = v; 
                 pass = true;
             }
         ]);

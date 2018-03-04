@@ -1,6 +1,9 @@
-drop view if exists cashreceipt_af_summary
-;
-create view cashreceipt_af_summary as 
+if object_id('dbo.cashreceipt_af_summary', 'V') is not null 
+	drop view dbo.cashreceipt_af_summary 
+
+go 
+
+create view dbo.cashreceipt_af_summary as 
 select 
 	(cr.collector_objid + cr.remittanceid + afc.objid) as objid, 
 	cr.collector_objid, cr.remittanceid, afc.objid as afcontrolid, 
@@ -14,15 +17,19 @@ from cashreceipt cr
 group by 
 	cr.collector_objid, cr.remittanceid, afc.objid, 
 	af.formtype, afc.stubno, cr.formno, afc.endseries 
-;
+
+go 
 
 
-drop view if exists cashreceipt_fund_summary 
-; 
-create view cashreceipt_fund_summary AS 
+if object_id('dbo.cashreceipt_fund_summary', 'V') is not null 
+	drop view dbo.cashreceipt_fund_summary 
+
+go 
+
+create view dbo.cashreceipt_fund_summary AS 
 SELECT 
-    CONCAT( IFNULL( cr.remittanceid, '-' ), f.objid ) AS objid, 
-    CONCAT( IFNULL( r.controlno, '-'), f.code ) AS controlno,
+    ( ISNULL( cr.remittanceid, '-' ) + f.objid ) AS objid, 
+    ( ISNULL( r.controlno, '-') + f.code ) AS controlno,
     cr.remittanceid, f.objid AS fund_objid, 
     f.code AS fund_code, f.title AS fund_title,
     SUM( cri.amount ) AS amount    
@@ -33,12 +40,16 @@ FROM cashreceiptitem cri
 	INNER JOIN fund f ON cri.item_fund_objid = f.objid 
 WHERE cv.objid IS NULL AND cr.state <> 'CANCELLED'
 GROUP BY cr.remittanceid, f.objid, r.controlno, f.code, f.title  
-;
+
+go 
 
 
-drop view if exists vw_af_control_detail
-;
-CREATE VIEW vw_af_control_detail AS 
+if object_id('dbo.vw_af_control_detail', 'V') is not null 
+	drop view dbo.vw_af_control_detail 
+
+go 
+
+CREATE VIEW dbo.vw_af_control_detail AS 
 SELECT 
 	afd.*, 
 	afc.afid, afc.unit, af.formtype, af.denomination, af.serieslength, 
@@ -61,23 +72,31 @@ FROM af_control_detail afd
 	INNER JOIN af_control afc ON afc.objid = afd.controlid 
 	INNER JOIN af ON af.objid = afc.afid 
 	INNER JOIN afunit afu ON (afu.itemid=af.objid AND afu.unit=afc.unit) 
-;
+
+go 
 
 
-drop view if exists vw_afunit  
-;
-create view vw_afunit  as 
+if object_id('dbo.vw_afunit', 'V') is not null 
+	drop view dbo.vw_afunit 
+
+go 
+
+create view dbo.vw_afunit  as 
 select 
 	u.objid, af.title, af.usetype, af.serieslength, af.system, af.denomination, 
 	af.formtype, u.itemid, u.unit, u.qty, u.saleprice  
 from afunit u 
 	inner join af on af.objid = u.itemid  
-;
+
+go 
 
 
-drop view if exists vw_remittance_cashreceipt_af 
-;
-create view vw_remittance_cashreceipt_af as 
+if object_id('dbo.vw_remittance_cashreceipt_af', 'V') is not null 
+	drop view dbo.vw_remittance_cashreceipt_af 
+
+go 
+
+create view dbo.vw_remittance_cashreceipt_af as 
 select 
 	cr.remittanceid, cr.collector_objid, cr.controlid, 
 	min(cr.receiptno) as fromreceiptno, max(cr.receiptno) as toreceiptno, 
@@ -94,7 +113,7 @@ from cashreceipt cr
 group by 
 	cr.remittanceid, cr.collector_objid, cr.controlid, 
 	af.formtype, af.serieslength, af.denomination, 
-	cr.formno, afc.stubno, afc.endseries 
+	cr.formno, afc.stubno, afc.startseries, afc.endseries, afc.prefix, afc.suffix  
 
 union all 
 
@@ -115,7 +134,7 @@ from cashreceipt cr
 group by 
 	cr.remittanceid, cr.collector_objid, cr.controlid, 
 	af.formtype, af.serieslength, af.denomination, 
-	cr.formno, afc.stubno, afc.endseries 
+	cr.formno, afc.stubno, afc.startseries, afc.endseries, afc.prefix, afc.suffix  
 
 union all 
 
@@ -135,15 +154,19 @@ where cr.state = 'CANCELLED'
 group by 
 	cr.remittanceid, cr.collector_objid, cr.controlid, 
 	af.formtype, af.serieslength, af.denomination, 
-	cr.formno, afc.stubno, afc.endseries 
-;
+	cr.formno, afc.stubno, afc.startseries, afc.endseries, afc.prefix, afc.suffix  
+
+go 
 
 
-drop view if exists vw_remittance_cashreceipt_afsummary 
-;
-create view vw_remittance_cashreceipt_afsummary as 
+if object_id('dbo.vw_remittance_cashreceipt_afsummary', 'V') is not null 
+	drop view dbo.vw_remittance_cashreceipt_afsummary 
+
+go 
+
+create view dbo.vw_remittance_cashreceipt_afsummary as 
 select 
-	concat( remittanceid, collector_objid, controlid ) as objid, 
+	(remittanceid + collector_objid + controlid) as objid, 
 	remittanceid, collector_objid, controlid, 
 	min(fromreceiptno) as fromreceiptno, max(toreceiptno) as toreceiptno, 
 	min(fromseries) as fromseries, max(toseries) as toseries, 
@@ -157,5 +180,6 @@ group by
 	remittanceid, collector_objid, controlid, 
 	formtype, serieslength, denomination, formno, stubno, 
 	startseries, endseries, prefix, suffix 
-;
+
+go 
 

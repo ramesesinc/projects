@@ -48,7 +48,6 @@ class AccountService extends ActiveCrudNodeService {
 			p.type = p._tag;
 			if(!p.parentid) p.parentid = '%';
 		}
-
 	}
 	
 	public void afterList( def p, def list ) {

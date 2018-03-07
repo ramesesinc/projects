@@ -51,6 +51,16 @@ SELECT a.* FROM
 WHERE a.type IN ( 'detail', 'subaccount' )
 ORDER BY a.code
 
+[getLookupForTransfer]
+select a.* from (
+  select objid, code, title, type FROM sreaccount t 
+  WHERE t.code LIKE $P{searchtext} and t.type = 'group' 
+  union 
+  select objid, code, title, type FROM sreaccount t 
+  WHERE t.title LIKE $P{searchtext} and t.type = 'group' 
+)a 
+ORDER BY a.code, a.title  
+
 [approve]
 UPDATE sreaccount SET state='APPROVED' WHERE objid=$P{objid} 
 

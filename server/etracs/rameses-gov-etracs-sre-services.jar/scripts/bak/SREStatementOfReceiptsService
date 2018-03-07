@@ -29,7 +29,6 @@ class SREStatementOfReceiptsService {
 		def incomesummarydetails = []; 
 		if ( params.type == 'details' ) {
 			incomesummarydetails = em.getIncomeSummaryByItemAccounts( params );	
-			println 'fetching incomesummarydetails '
 		}
 		
 		def sourcelist = em.getSreAccounts( params ); 

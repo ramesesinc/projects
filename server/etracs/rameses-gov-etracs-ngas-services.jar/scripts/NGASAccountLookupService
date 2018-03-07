@@ -23,10 +23,11 @@ class NGASAccountLookupService extends ActiveListService {
 	public void beforeList(params) {
 		if( params._tag == 'mapping') {
 			params._listMethod = 'getLookupForMapping'; 
-		}
-		else {
+		} else if ( params._tag == 'group') { 
+			params._listMethod = 'getLookupForTransfer'; 
+		} else {
 			params.type = params._tag;
-		}	
+		} 
 		params.searchtext = removeLeadingChar(params.searchtext, '%')+'%'; 
 	}
 

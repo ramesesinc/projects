@@ -20,10 +20,10 @@
                  action="init" target="window" role="COLLECTOR" index="-1"/>
     </invokers>
    
-    <code class="com.rameses.enterprise.treasury.models.CashReceiptSelectionModel" />
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptInitialModel" />
    
     <pages>
-        <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptSelectionPage" />
+        <page template="com.rameses.enterprise.treasury.views.CashReceiptInitialPage" />
     </pages>
    
 </workunit>

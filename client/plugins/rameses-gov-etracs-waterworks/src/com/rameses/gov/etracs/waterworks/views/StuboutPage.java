@@ -40,7 +40,6 @@ public class StuboutPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField5 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField6 = new com.rameses.rcp.control.XLookupField();
 
         xTabbedPane1.setDynamic(true);
@@ -74,7 +73,7 @@ public class StuboutPage extends javax.swing.JPanel {
 
         xLookupField5.setCaption("Zone");
         xLookupField5.setExpression("#{entity.zone.code}");
-        xLookupField5.setHandler("waterworks_sector_zone:lookup");
+        xLookupField5.setHandler("waterworks_zone:lookup");
         xLookupField5.setName("entity.zone"); // NOI18N
         xLookupField5.setRequired(true);
         xFormPanel2.add(xLookupField5);
@@ -92,16 +91,6 @@ public class StuboutPage extends javax.swing.JPanel {
         xFormPanel2.add(xLabel1);
 
         xFormPanel1.add(xFormPanel2);
-
-        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel2.setCaption("Reader");
-        xLabel2.setDepends(new String[] {"entity.zone"});
-        xLabel2.setExpression("#{entity.zone.reader.name}");
-        xLabel2.setOpaque(true);
-        xLabel2.setPadding(new java.awt.Insets(1, 1, 1, 1));
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel2);
 
         xLookupField6.setCaption("Barangay ");
         xLookupField6.setExpression("#{entity.barangay.name}");
@@ -153,7 +142,6 @@ public class StuboutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField5;
     private com.rameses.rcp.control.XLookupField xLookupField6;
     private com.rameses.rcp.control.XPanel xPanel1;

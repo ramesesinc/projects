@@ -42,7 +42,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        jPanel2 = new javax.swing.JPanel();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
@@ -86,10 +86,11 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField2.setCaption("Fund");
         xLookupField2.setEnabled(false);
         xLookupField2.setExpression("#{item.code} #{item.title}");
-        xLookupField2.setHandler("fund:lookup");
+        xLookupField2.setHandler("fund:all:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
         xLookupField2.setRequired(true);
         xLookupField2.setStretchWidth(100);
+        xLookupField2.setVisibleWhen("#{ entity.type != 'PAYABLE' }");
         xFormPanel1.add(xLookupField2);
 
         xComboBox1.setCaption("Item Type");
@@ -97,7 +98,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xComboBox1.setItems("listTypes.type");
         xComboBox1.setName("entity.type"); // NOI18N
         xComboBox1.setStretchWidth(100);
-        xComboBox1.setVisibleWhen("#{ mode == 'create' }");
+        xComboBox1.setVisibleWhen("#{ mode == 'create' && defaultType == null }");
         xFormPanel1.add(xComboBox1);
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -105,7 +106,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLabel1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xLabel1.setExpression("#{entity.type}");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel1.setVisibleWhen("#{ mode != 'create' }");
+        xLabel1.setVisibleWhen("#{ mode != 'create' || defaultType != null }");
         xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -126,6 +127,8 @@ public class ItemAccountPage extends javax.swing.JPanel {
         );
 
         xTabbedPane1.addTab("General", jPanel1);
+
+        xPanel1.setVisibleWhen("#{ mode != 'create' }");
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
@@ -168,20 +171,20 @@ public class ItemAccountPage extends javax.swing.JPanel {
         });
         xDataTable2.setHandler("itemHandlers.tags");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
                 .addContainerGap(305, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -189,7 +192,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        xTabbedPane1.addTab("Options", jPanel2);
+        xTabbedPane1.addTab("Options", xPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -211,7 +214,6 @@ public class ItemAccountPage extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
@@ -223,6 +225,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

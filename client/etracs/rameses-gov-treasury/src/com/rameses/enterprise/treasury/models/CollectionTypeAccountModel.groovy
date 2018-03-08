@@ -8,21 +8,20 @@ import com.rameses.seti2.models.*;
         
 public class CollectionTypeAccountModel extends CrudFormModel {
 
-        def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
-        def fund;
-    
-        void afterCreate() {
-            entity.collectiontypeid = caller.masterEntity.objid;
-            fund = caller.masterEntity.fund;
-        }
-        
-        def getLookupAccount() { 
-            def params = ['query.fund' : fund ];  
-            params.onselect = { o->
-                entity.account = o;
-            }
-            return Inv.lookupOpener( "revenueitem:lookup", params );
-        }
+    def collectiontypeid;
+    def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
+    def fund;
 
+    void afterCreate() {
+        entity.collectiontypeid = collectiontypeid;
+    }
+
+    def getLookupAccount() { 
+        def params = ['query.fund' : fund ];  
+        params.onselect = { o->
+            entity.account = o;
+        }
+        return Inv.lookupOpener( "revenueitem:lookup", params );
+    }
     
 }

@@ -8,7 +8,7 @@
                  role="MASTER" permission="bank.view" action="init"/> 
 
         <invoker folderid="/menucategory/treasury/master" caption="Banks"   
-                 role="MASTER" permission="bank.view" action="init" index="5"/> 
+                 role="MASTER" permission="bank.view" action="init" index="10"/> 
         
    </invokers>
 </workunit>

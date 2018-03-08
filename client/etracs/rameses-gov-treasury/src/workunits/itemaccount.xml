@@ -5,10 +5,12 @@
         <invoker type="itemaccount:open" caption="Item Account" action="open" 
                  role="MASTER" permission="itemaccount.read" target="popup"/>
 
-        <invoker type="formActions" caption="Approve" action="approve" 
-                 role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'APPROVED' }"/> 
-        <invoker type="formActions" caption="Disapprove" action="disapprove" 
-                 role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'APPROVED' }"/>  
+        <invoker type="formActions" caption="Activate" action="activate" 
+                 role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/> 
+                 
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+                 role="MASTER" permission="itemaccount.deactivate" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/>  
+                 
     </invokers> 
    
     <code class="com.rameses.enterprise.treasury.models.ItemAccountModel" />

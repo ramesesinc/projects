@@ -16,7 +16,7 @@ class FundListInterceptor  {
 		
 		def list = grpEm.where("1=1").orderBy("indexno").list();
 		list.each {
-			result << [title:it.title,  objid:it.objid];
+			result << [title:it.title,  groupid:it.objid];
 		}
 	}
 
@@ -24,12 +24,19 @@ class FundListInterceptor  {
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'fund' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
-		//o.debug = true;
-		if( !o.node?.objid ) return;
+		if( !o.node?.groupid ) return;
 
 		def str = "groupid = :pid";
-		def m = [pid: o.node.objid];
-		o.where = [str, m];
+		def m = [pid: o.node.groupid];
+
+		//add to first position of where
+		if( o.where ) {
+			o.where[0] = str + " AND " + o.where[0];	
+			o.where[1].putAll( m );
+		}
+		else {
+			o.where = [str, m];
+		}
 	}	
 
 }

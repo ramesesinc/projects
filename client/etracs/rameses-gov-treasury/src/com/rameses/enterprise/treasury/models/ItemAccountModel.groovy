@@ -8,6 +8,16 @@ import com.rameses.seti2.models.*;
 
 class ItemAccountModel extends CrudFormModel {
     
+    void afterCreate() {
+        entity.type = getDefaultType();
+        entity.active = 1;
+    }
+    
+    public String getDefaultType() {
+        return caller.tag;
+    }
+    
+    /*
     boolean isAllowApprove() {
          return ( mode=='read' && !entity.state.toString().matches('APPROVED') ); 
     }
@@ -19,27 +29,29 @@ class ItemAccountModel extends CrudFormModel {
         if ( !super.isEditAllowed() ) return false; 
         return !entity.state.toString().matches('APPROVED'); 
     }
+    */
     
-    void approve() { 
+    void activate() { 
         if ( MsgBox.confirm('You are about to approve this account. Proceed?')) { 
             getPersistenceService().update([ 
                _schemaname: getSchemaName(), 
                objid : entity.objid, 
-               state : 'APPROVED' 
+               state : 'ACTIVE' 
             ]); 
             loadData(); 
         }
     }
     
-    void disapprove() {
+    void deactivate() {
         if ( MsgBox.confirm('You are about to approve this account. Proceed?')) { 
             getPersistenceService().update([ 
                _schemaname: getSchemaName(), 
                objid : entity.objid, 
-               state : 'DRAFT' 
+               state : 'INACTIVE' 
             ]); 
             loadData(); 
         }
     }
+    
     
 }

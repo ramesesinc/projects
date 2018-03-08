@@ -2,11 +2,11 @@
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Bank Accounts" action="init" 
                  cols="code,title,fund.title,bank.name,bank.branchname,account.title"
-                 role="MASTER" permission="bank.view"/> 
+                 role="MASTER" permission="bank.view" index="11" /> 
         
         <invoker folderid="/menucategory/treasury/master" caption="Bank Accounts" action="init" 
                  cols="code,title,fund.title,bank.name,bank.branchname,account.title"
-                 role="MASTER" permission="bank.view" index="6"/> 
+                 role="MASTER" permission="bank.view" index="11"/> 
         
    </invokers>
 </workunit>

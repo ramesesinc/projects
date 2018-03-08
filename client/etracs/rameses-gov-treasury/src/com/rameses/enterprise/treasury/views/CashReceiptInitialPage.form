@@ -101,8 +101,8 @@
           <Properties>
             <Property name="allowNull" type="boolean" value="false"/>
             <Property name="expression" type="java.lang.String" value="#{item.objid}"/>
-            <Property name="items" type="java.lang.String" value="formTypes"/>
-            <Property name="name" type="java.lang.String" value="formType" noResource="true"/>
+            <Property name="items" type="java.lang.String" value="afTypes"/>
+            <Property name="name" type="java.lang.String" value="afType" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xComboBox1ActionPerformed"/>

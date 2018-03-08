@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import com.rameses.util.*;
 
 class BankAccountModel extends CrudFormModel { 
     
@@ -12,8 +13,11 @@ class BankAccountModel extends CrudFormModel {
     def currencyTypes = [ "PHP", "USD" ];
     
     def getLookupCashInBankAccount() {
-        if(!entity.fund?.objid)
-            throw new Exception("Fund is required");
+        if(!entity.fund?.objid) {
+            def ex = new Exception("Fund is required");
+            MsgBox.err( ex );
+            throw new BreakException();
+        }
         return Inv.lookupOpener( "cashinbankaccount:lookup", [fundid: entity.fund.objid ] );
     }
 } 

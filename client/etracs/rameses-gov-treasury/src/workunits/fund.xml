@@ -1,8 +1,8 @@
 <workunit schemaName="fund">
         
     <invokers>
-         <invoker type="fund:create" action="create" caption="Fund (Edit)" role="MASTER" permission="fund.create" target="popup"/>
-         <invoker type="fund:open" action="open" caption="Fund (New)" role="MASTER" permission="fund.open" target="popup"/>
+         <invoker type="fund:create" action="create" caption="Fund (New)" role="MASTER" permission="fund.create" target="popup"/>
+         <invoker type="fund:open" action="open" caption="Fund" role="MASTER" permission="fund.open" target="popup"/>
          
          <invoker type="quick_launcher" code="FUND01" caption="Fund" role="MASTER" permission="fund.create"/> 
    </invokers>

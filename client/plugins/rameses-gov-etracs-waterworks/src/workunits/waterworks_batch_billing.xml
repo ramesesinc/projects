@@ -4,7 +4,7 @@
           orderBy="month,year">
     <invokers>
          <invokers>
-            <invoker folderid="/home/waterworks" caption="Waterworks Billing" action="init" index="10" />
+            <invoker folderid="/menucategory/waterworks/billing" caption="Batch Billing" action="init" index="10" />
         </invokers>
     </invokers>
 </workunit>

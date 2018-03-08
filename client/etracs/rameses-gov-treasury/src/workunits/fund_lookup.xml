@@ -1,6 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="fund">
     <invokers>
-        <invoker type="fund:lookup" caption="Lookup Fund" target="popup" cols="parentid,code,title" action="init"/>
+        <invoker type="fund:all:lookup" caption="Lookup Fund" target="popup" 
+                 cols="code,title,groupid" orderBy="code" action="init"/>
+
+        <invoker type="fund:lookup" caption="Lookup Depository Fund" target="popup" 
+                 cols="code,title,groupid" orderBy="code" action="init" customFilter="parentid IS NULL"/>
+
     </invokers>
 </workunit>
 

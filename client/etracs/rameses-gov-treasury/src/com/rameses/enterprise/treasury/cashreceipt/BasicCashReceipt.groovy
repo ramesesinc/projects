@@ -9,11 +9,26 @@ import com.rameses.enterprise.models.*;
         
 public class BasicCashReceipt extends AbstractCashReceipt {
 
+    @Script("User")
+    def user;
+    
+    @Service("QueryService")
+    def queryService;
+    
     @Service('RevenueSharingService')
     def sharingSvc;
     
+    def queryFilter = [:];
+    
     void init() {
         super.init();
+        //check if there are collection type items.
+        def m = [_schemaname:'collectiontype_account'];
+        m.findBy = [collectiontypeid: entity.collectiontype.objid ];
+        m.select = "account.objid";
+        queryFilter.acctids = queryService.getList( m )*.account.objid;
+        
+        //MsgBox.alert( "org is " + user.env.ORGROOT );
     }
 
     def itemListModel = [
@@ -59,8 +74,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         return InvokerUtil.lookupOpener("cashreceiptitem:lookup",[
             "query.txntype" : "cashreceipt",
             "query.collectorid" : entity.collector.objid,
-            "query.fund" : entity.collectiontype.fund,
-            "query.collectiontype": entity.collectiontype, 
+            queryFilter: queryFilter,    
             onselect:{ o->
                 selectedItem.item = o;
                 selectedItem.amount = o.defaultvalue;

@@ -1,14 +1,25 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount" allowCreate="false" allowOpen="false">
     <invokers>
-        <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" />
-
-        <invoker type="mainitemaccount:lookup" caption="Lookup Main Item Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="MAIN"/>
+       
+       <!-- used in revenue sharing rules lookup -->
+       <invoker type="mainitemaccount:lookup" caption="Lookup Main Item Account" action="init" target="popup"
+        cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="MAIN"/>
+       
+       <invoker type="mainrevenueaccount:lookup" caption="Lookup Main Revenue Account" action="init" target="popup"
+        cols="code,title,fund.title" tag="MAIN_REVENUE"/>
                 
+       <invoker type="mainpayableaccount:lookup" caption="Lookup Main Payable Account" action="init" target="popup"
+        cols="code,title,fund.title" tag="MAIN_PAYABLE"/>
+
        <invoker type="payableaccount:lookup" caption="Lookup Payable Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="PAYABLE"/>
-       
+
+
+       <!-- used in looking up in rules --> 
+       <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" />
+
+       <!-- -->
        <invoker type="receivableaccount:lookup" caption="Lookup Receivable Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="RECEIVABLE"/>
        
@@ -20,49 +31,14 @@
        
        <invoker type="revenueitem:lookup" caption="Lookup Revenue" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="REVENUE"/>
+       
+       <!-- used for looking up items in cash receipt -->
+       <invoker type="cashreceiptitem:lookup" caption="Lookup Revenue" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="valuetype,defaultvalue,fund.objid" 
+            tag="CASHRECEIPT"/>
+       
     </invokers> 
    
-    <code>
-        <![CDATA[
-        
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.util.*;
-        import com.rameses.seti2.models.*;
-        
-        class ItemAccountLookup extends CrudLookupModel { 
-        
-            def fundid;
-            
-            public def getCustomFilter() {
-                def s = [];
-                def parm = [:];
-                if(fundid) {
-                    s << "fund.objid = :fundid";
-                    parm.fundid = fundid;
-                }
-                if(tag) {
-                    if ( tag == 'MAIN' ) {
-                        s << " parentid IS NULL and state='APPROVED' AND type NOT IN ('CASH','CASH_IN_BANK') ";
-                        parm.atype = tag;
-                    } else {
-                        s << "state='APPROVED' AND type= :atype ";
-                        parm.atype = tag;
-                    } 
-                }
-
-                if(tag.matches("REVENUE|PAYABLE") ) {
-                    s << "parentid IS NULL ";
-                }
-                                                
-                return [s.join(" AND "), parm ];
-            }
-        
-        }        
-                                
-        ]]>
-    </code>    
+    <code class="com.rameses.enterprise.treasury.models.ItemAccountLookupModel" />
     
 </workunit>

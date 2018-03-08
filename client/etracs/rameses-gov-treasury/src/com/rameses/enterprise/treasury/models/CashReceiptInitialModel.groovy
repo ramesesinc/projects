@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
         
-public class CashReceiptSelectionModel  {
+public class CashReceiptInitialModel  {
         
     @Binding
     def binding;
@@ -17,14 +17,14 @@ public class CashReceiptSelectionModel  {
     @Service("CashReceiptService")
     def cashReceiptSvc;
 
-    @Service("CollectionTypeService")
-    def collectionTypeSvc;
-
+    @Service("QueryService")
+    def queryService;
+    
     String title = "Cash Receipt";
 
     def items = [];
-    def formTypes;
-    def formType;
+    def afTypes;
+    def afType;
     def formTitle;
     def homeicon;
 
@@ -33,16 +33,34 @@ public class CashReceiptSelectionModel  {
     
     @PropertyChangeListener
     def listener = [
-        "formType" : { binding.refresh(); },
+        "afType" : { binding.refresh(); },
         "txnmode" : {binding.refresh(); }
     ];
 
-    void init() {
-        formType = null;
-        formTitle = "Select accountable form";
-        formTypes = collectionTypeSvc.getFormTypes();
-        formType = formTypes.find{ it.objid == '51' };
+    void loadFormTypes() {
+        def m= [_schemaname:'af'];
+        m._limit = 1000;
+        afTypes = queryService.getList(m);    
+        afType = afTypes.find{ it.objid == '51' };
+    }
+    
+    def loadCollectionTypes() {
+       def sarr = [];
+       def m = [_schemaname:'collectiontype'];
+       sarr << "formno = :formtype"; 
+       m.formtype = afType.objid;
+       
+       //filter by org
+       if( txnmode == 'ONLINE'  ) sarr << "allowonline = 1";
+       if( txnmode == 'OFFLINE' ) sarr << "allowoffline = 1"; 
+       m.where = [sarr.join( " AND "), m ];
+       return queryService.getList( m );
+    }
 
+    void init() {
+        afType = null;
+        formTitle = "Select accountable form";
+        loadFormTypes();
         items.clear();
         def appEnv = clientContext.appEnv; 
         def customfolder = appEnv['app.custom']; 
@@ -66,14 +84,7 @@ public class CashReceiptSelectionModel  {
         fetchList: {o-> 
             def xlist = [];
             xlist.addAll( items );
-            def p = [formtype: formType.objid];  
-            def list = null;
-            if(txnmode == 'ONLINE') {
-                list = collectionTypeSvc.getOnlineCollectionTypes(p);
-            }
-            else {
-                list = collectionTypeSvc.getOfflineCollectionTypes(p);
-            }
+            def list = loadCollectionTypes();
             list.each{
                 it.caption = it.title;
                 it.icon = homeicon;
@@ -94,8 +105,8 @@ public class CashReceiptSelectionModel  {
             else {
                 def entity = [
                     txnmode         : txnmode, 
-                    formno          : o.formno, 
-                    formtype        : o.formtype, 
+                    formno          : afType.objid, 
+                    formtype        : afType.formtype, 
                     collectiontype  : o 
                 ]; 
                 return findOpener( entity ); 

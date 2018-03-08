@@ -10,41 +10,6 @@ class RevenueItemAccountService extends ActiveCrudListService {
 	def em;
 
 	@ProxyMethod
-	public def getColumns( def o ) {
-		return[
-			[name:'code', caption:'Item Code', maxWidth:90 ],
-			[name:'title', caption:'Item Title' ],
-			[name:'type', caption:'Item Type', maxWidth:100, minWidth:100 ],
-			[name:'fund.code', caption:'Fund Account', maxWidth:90 ],
-			[name:'fund.title', caption:'Fund Title' ],
-			[name:'org.name', caption:'Org' ],
-		];
-	}	
-
-	void beforeList(o) {
-		o.fund = o.searchtext
-		o.searchtext = (o.searchtext ? o.searchtext : '') +'%'
-	}
-
-	void afterOpen(o) {
-		o.tags = em.getTags([acctid: o.objid])*.tag;
-	}
-
-	void afterCreate( def o ) {
-		em.removeTags( [acctid: o.objid ]);
-		o.tags.each {
-			em.create( [acctid:o.objid, tag:it ], "tag" );
-		}
-	}
-
-	void afterUpdate( def o ) {
-		em.removeTags( [acctid: o.objid ]);
-		o.tags.each {
-			em.create( [acctid:o.objid, tag:it ], "tag" );
-		}
-	}
-
-	@ProxyMethod
 	def findAccount(o) {
 		if(! o.objid ) throw new Exception("'objid' is required    ")
 		return em.findAccount( o)

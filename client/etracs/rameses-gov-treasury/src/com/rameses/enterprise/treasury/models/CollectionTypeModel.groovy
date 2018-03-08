@@ -8,13 +8,12 @@ import com.rameses.seti2.models.*;
         
 public class CollectionTypeModel extends CrudFormModel {
 
-    @Service("CollectionTypeService")
-    def service;
-    
+   
     def formTypes;
     def categoryList;
     def handlers;
     def batchHandlers;
+    def selectedAccount;
     
     void afterCreate() { 
         entity.state = 'APPROVED';
@@ -31,7 +30,10 @@ public class CollectionTypeModel extends CrudFormModel {
     }
     
     void afterInit() {
-        formTypes = service.getFormTypes()*.objid;
+        def m = [_schemaname:'af']
+        m.select = "objid";
+        m._limit = 1000;
+        formTypes = queryService.getList(m)*.objid;
         handlers = InvokerUtil.lookupOpeners( "collectiontype:handler" )*.properties.name;
         batchHandlers = InvokerUtil.lookupOpeners( "collectiontype:batchhandler" )*.properties.name;
     }
@@ -45,55 +47,42 @@ public class CollectionTypeModel extends CrudFormModel {
         }
     ] as SuggestModel;
     
-    
     def addAccount() { 
-        def params = [ fund: entity.fund ]; 
+        def params = [ fund: entity.fund, collectiontypeid: entity.objid ]; 
         params.handler = { o-> 
-            o.collectiontypeid = entity.objid; 
-            entity.accounts << o; 
-            accountModel.reload();
+            accountListHandler.reload();
         }
-        return Inv.lookupOpener( "collectiontypeaccount:create", params );
+        return Inv.lookupOpener( "collectiontype_account:create", params );
     }
+    
     def editAccount() {
         if(!selectedAccount) throw new Exception("Please select an account"); 
-
         def params = [ fund: entity.fund, entity: selectedAccount ]; 
         params.handler = { o-> 
-            accountModel.reload(); 
+            accountListHandler.reload(); 
         } 
-        return Inv.lookupOpener( "collectiontypeaccount:edit", params ); 
+        return Inv.lookupOpener( "collectiontype_account:edit", params ); 
     }
+    
     def removeAccount() {
         if(!selectedAccount) throw new Exception("Please select an account");
-        entity.accounts.remove(selectedAccount); 
-        accountModel.reload();
+        def m = [_schemaname: 'collectiontype_account'];
+        m.findBy = [objid: selectedAccount.objid ];
+        persistenceService.removeEntity( m );
+        accountListHandler.reload();
     }
 
-
-    def accountModel = [
+    void reloadAccount() {
+        accountListHandler.reload();
+    }
+    
+    def accountListHandler = [
         fetchList: { o-> 
-            return entity.accounts; 
-        },
-        sync: {
-            entity.accounts = service.getAccounts( [objid: entity.objid] ); 
-            accountModel.reload(); 
-        } 
+            def m = [_schemaname: 'collectiontype_account'];
+            m.findBy = [collectiontypeid: entity.objid ];
+            return queryService.getList( m );
+        }
     ] as BasicListModel;
-
-
-    void afterCreate( o ) {
-        accountModel.reload();
-    } 
-    
-    void afterOpen( o ) {
-        accountModel.reload();
-    } 
-    
-    void afterSave( o ) {
-        accountModel.sync();
-    } 
-
 
     
 }

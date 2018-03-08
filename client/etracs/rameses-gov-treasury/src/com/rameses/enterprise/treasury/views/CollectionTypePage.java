@@ -15,7 +15,6 @@ import com.rameses.seti2.views.CrudFormPage;
  *
  * @author  jzamss
  */
-@StyleSheet
 @Template(CrudFormPage.class)
 public class CollectionTypePage extends javax.swing.JPanel {
     
@@ -46,7 +45,12 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xSuggest1 = new com.rameses.rcp.control.XSuggest();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        xLookupField3 = new com.rameses.rcp.control.XLookupField();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xButton3 = new com.rameses.rcp.control.XButton();
+        xButton4 = new com.rameses.rcp.control.XButton();
 
         xTabbedPane1.setItems("sections");
 
@@ -154,13 +158,6 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLookupField2);
 
-        xLookupField3.setCaption("          Org");
-        xLookupField3.setExpression("#{item.objid} #{item.name}");
-        xLookupField3.setHandler("org:lookup");
-        xLookupField3.setName("entity.org"); // NOI18N
-        xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLookupField3);
-
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -180,6 +177,138 @@ public class CollectionTypePage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("General Information", jPanel3);
 
+        xPanel1.setVisibleWhen("#{ mode == 'read' }");
+
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "account.title"}
+                , new Object[]{"caption", "Account Title"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "tag"}
+                , new Object[]{"caption", "Tag"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "valuetype"}
+                , new Object[]{"caption", "Value Type"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "defaultvalue"}
+                , new Object[]{"caption", "Default Value"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "sortorder"}
+                , new Object[]{"caption", "Sort Order"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
+            })
+        });
+        xDataTable1.setHandler("accountListHandler");
+        xDataTable1.setName("selectedAccount"); // NOI18N
+
+        xButton1.setName("addAccount"); // NOI18N
+        xButton1.setText("Add");
+        xButton1.setVisibleWhen("#{ mode == 'read' }");
+
+        xButton2.setDepends(new String[] {"selectedAccount"});
+        xButton2.setName("removeAccount"); // NOI18N
+        xButton2.setText("Remove");
+
+        xButton3.setDepends(new String[] {"selectedAccount"});
+        xButton3.setName("editAccount"); // NOI18N
+        xButton3.setText("Edit");
+
+        xButton4.setName("reloadAccount"); // NOI18N
+        xButton4.setText("Reload");
+
+        org.jdesktop.layout.GroupLayout xPanel1Layout = new org.jdesktop.layout.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
+                    .add(xPanel1Layout.createSequentialGroup()
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 351, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
+                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        xTabbedPane1.addTab("Accounts", xPanel1);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -198,27 +327,32 @@ public class CollectionTypePage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void xCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xCheckBox2ActionPerformed
-
     private void xCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_xCheckBox3ActionPerformed
+
+    private void xCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xCheckBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xCheckBox2ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel3;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField2;
-    private com.rameses.rcp.control.XLookupField xLookupField3;
+    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XSuggest xSuggest1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;

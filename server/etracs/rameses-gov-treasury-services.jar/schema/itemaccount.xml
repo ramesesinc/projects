@@ -5,18 +5,17 @@
 		<field name="state" required="true" indexed="true" defaultValue="DRAFT" caption="State"/>
 
 		<field name="code" required="true" indexed="true" caption="Acct Code" searchable="true"/>
-		<field name="title" required="true" indexed="true" caption="Acct Title" searchable="true"/>
+		<field name="title" required="true" indexed="true" caption="Acct Title" searchable="true" width="300"/>
 		<field name="description" caption="Description" visible="false"/>
 		<field name="type" required="true" indexed="true" lov="ITEM_ACCOUNT_TYPES" caption="Type"/>
-		<field name="fund_objid" required="true" hidden="true" visible="false"/>
-		<field name="fund_code" required="true" indexed="true" caption="Fund Code"/>
-		<field name="fund_title" required="true" caption="Fund Title"/>
+		<field name="fund_objid" />
+		<field name="fund_code" indexed="true" caption="Fund Code"/>
+		<field name="fund_title" caption="Fund Title"/>
 
-		<field name="valuetype"  visible="false" lov="ITEM_ACCOUNT_VALUE_TYPES" defaultValue="ANY"/>
-		<field name="defaultvalue" visible="false" defaultValue="0" datatype="integer"/>
+		<field name="valuetype"   lov="ITEM_ACCOUNT_VALUE_TYPES" defaultValue="ANY"/>
+		<field name="defaultvalue" defaultValue="0" datatype="integer"/>
 
 		<field name="org_name" />
-		<field name="active" type="integer" defaultvalue="1" />
 
 		<complex name="org" ref="sys_org" jointype="many-to-one" includefields="objid,code,name" required="false">
 			<key field="org_objid" target="objid"/>

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.cashreceipt;
+package com.rameses.enterprise.treasury.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
@@ -13,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  */
 
 @Template(FormPage.class)
-public class CashReceiptSelectionPage extends javax.swing.JPanel {
+public class CashReceiptInitialPage extends javax.swing.JPanel {
 
     /**
      * Creates new form CashReceiptPOSPage
      */
-    public CashReceiptSelectionPage() {
+    public CashReceiptInitialPage() {
         initComponents();
     }
 
@@ -55,8 +55,8 @@ public class CashReceiptSelectionPage extends javax.swing.JPanel {
 
         xComboBox1.setAllowNull(false);
         xComboBox1.setExpression("#{item.objid}");
-        xComboBox1.setItems("formTypes");
-        xComboBox1.setName("formType"); // NOI18N
+        xComboBox1.setItems("afTypes");
+        xComboBox1.setName("afType"); // NOI18N
         xComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xComboBox1ActionPerformed(evt);

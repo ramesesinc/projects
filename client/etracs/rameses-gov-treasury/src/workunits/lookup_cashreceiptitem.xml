@@ -1,8 +1,10 @@
 <workunit extends="wtemplates/BasicLookupController.xml">
     
+    <!--
    <invokers>
          <invoker type="cashreceiptitem:lookup" />
    </invokers>
+   -->
    
    <code>
    <![CDATA[

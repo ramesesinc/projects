@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+class WaterworksBatchReadingService {
+	
+	@DataContext('waterworks_consumption')
+	def consEm; 
+
+	@ProxyMethod 
+	public def post( def p ) {
+		def hasitems = consEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
+		if(hasitems) throw new Exception("There are items that are not processed. Please process first");
+		
+	}
+
+
+}

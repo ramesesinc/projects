@@ -4,18 +4,6 @@ import com.rameses.services.extended.*;
 import rptis.landtax.actions.*
 
 class RPTCompromiseService {
-	@ActiveDB('rptcompromise')
-	def em
-
-	@ActiveDB('rptledger')
-	def ledgerEm 
-
-	@DataContext('rptledger_item')
-	def em_rptledger_item
-
-	@DataContext('rptledger_item_qtrly')
-	def em_rptledger_item_qtrly
-	
 	@Env
 	def env 
 	
@@ -46,11 +34,21 @@ class RPTCompromiseService {
 	@Service('ReportParameterService')
 	def reportSvc
 
-	def SCHEMA_NAME 			= 'rptcompromise'
-	def ITEM_SCHEMA_NAME 		= 'rptcompromise_item'
-	def INSTALLMENT_SCHEMA_NAME	= 'rptcompromise_installment'
-	def CREDIT_SCHEMA_NAME		= 'rptcompromise_credit'
-	def RPTLEDGER_SCHEMA_NAME	= 'rptledger'
+	@DataContext('rptcompromise')
+	def em_compromise
+
+	@DataContext('rptcompromise_installment')
+	def em_compromise_installment
+
+	@DataContext('rptledger')
+	def em_rptledger
+
+	@DataContext('rptledger_item')
+	def em_rptledger_item
+
+	@DataContext('rptledger_credit')
+	def em_rptledger_credit
+
 	
 	def STATE_DRAFT 		= 'DRAFT'
 	def STATE_FORPAYMENT 	= 'FORPAYMENT'
@@ -61,15 +59,15 @@ class RPTCompromiseService {
 	def TXN_NO_KEY			= 'RPTCompromise'
 	def REF_NAME			= 'RPTCompromise'
 	
+
 	@ProxyMethod
 	public def getList(params ){
 		if (! params.searchtext ) 
 			params.searchtext = ''
 		params.searchtext += '%'
 		params._pagingKeys = 'c.objid'
-		return em.getList(params)
-	}
-	
+		return em_compromise.getList(params)
+	}	
 
 	@ProxyMethod
 	public def getColumns( params ) {
@@ -85,6 +83,7 @@ class RPTCompromiseService {
         ]
 	}
 
+	
 
 	@ProxyMethod
 	public def create( compromise ) {
@@ -93,47 +92,28 @@ class RPTCompromiseService {
 		if (!compromise.txnno)
 			compromise.txnno = env.ORGID.replaceAll('-', '') + seqSvc.getNextFormattedSeries( TXN_NO_KEY )
 
-		em.create(compromise )
-		em.setLedgerUnderCompromised([objid:compromise.rptledgerid]) 
-		
-		compromise._items.each { 
-			em.create(it, ITEM_SCHEMA_NAME) 
-		}
-		compromise._installments.each { 
-			em.create(it, INSTALLMENT_SCHEMA_NAME) 
-		}
-		
+		em_compromise.create(compromise )
+		em_rptledger.find([objid:compromise.rptledgerid]).update([undercompromise:true])
 		logSvc.log( 'CREATE', REF_NAME, compromise.objid )
-		return compromise 
+		return open(compromise)
 	}	
 
 
 	@ProxyMethod
 	public def update( compromise ) {
 		validateInfo( compromise )
-		em.update(compromise )
+		em_compromise.update(compromise )
 		logSvc.log( 'UPDATE', REF_NAME, compromise.objid )
 		return compromise 
 	}
 
 
 	@ProxyMethod
-	public def open( objid ) {
-		def compromise = em.read([objid:objid] )
+	public def open(compromise) {
+		compromise = em_compromise.read(compromise)
 		if( ! compromise ) {
 			throw new Exception('Compromise does not exists or has already been deleted.')
 		}
-		
-		compromise.putAll( getFaasInfo(compromise) )
-		compromise.cypaymentrequired = utilSvc.toBoolean( compromise.cypaymentrequired, false )
-		compromise.downpaymentrequired = utilSvc.toBoolean( compromise.downpaymentrequired, false )
-		compromise._items = loadItems( compromise.objid )
-		compromise._installments = em.getRPTCompromiseInstallments([rptcompromiseid:objid]).each{
-									it.fullypaid = utilSvc.toBoolean(it.fullypaid, false)
-								}
-		compromise._credits = em.getRPTCompromiseCredits([rptcompromiseid:objid]).each{
-									it.voided = utilSvc.toBoolean(it.voided, false)
-								}
 		compromise.defaulted = getDefaultedStatus(compromise)
 		buildNotarizedInfo(compromise)
 		return compromise
@@ -142,25 +122,28 @@ class RPTCompromiseService {
 
 
 	@ProxyMethod
-	public void delete( objid, ledgerid ) {
-		def compromise = em.read([objid:objid])
-
-		def ledger = [
-			objid        : ledgerid, 
-			lastyearpaid : compromise.lastyearpaid, 
-			lastqtrpaid  : compromise.lastqtrpaid,
-			startyear    : compromise.startyear,
-		]
-
+	public void delete(compromise) {
+		compromise = em_compromise.read(compromise)
 		validateDelete(compromise)
-		em.deleteItems(compromise)
-		em.deleteInstallments(compromise)
-		em.resetLedgerUnderCompromised(ledger)
-		em.deleteLedgerCompromiseCredit(ledger)
-		em.resetLedgerItemsPaidFlag(ledger)
-		em.updateLedgerItemStartYearQtrPaid(ledger)
-		em.updateLastYearQtrPaid(ledger)
-		em.delete(compromise)
+		em_compromise.delete(compromise) 
+
+		//reset ledger info 
+		def info = [undercompromise:false]
+		info.lastyearpaid = (compromise.startqtr == 1 ? compromise.startyear - 1  : compromise.startyear)
+		info.lastqtrpaid = (compromise.startqtr == 1 ? 4 : compromise.startqtr - 1)
+		em_rptledger.find([objid:compromise.rptledger.objid]).update(info)
+		em_rptledger_credit.find([rptledgerid:compromise.rptledger.objid, type:'compromise']).delete()
+
+		//repost ledger items and apply possible partial on latest item 
+		compromise.items.each{
+			it.parentid = compromise.rptledger.objid
+			it.basicav = it.ledgerfaas.assessedvalue
+			it.sefav = it.ledgerfaas.assessedvalue
+			it.av = it.ledgerfaas.assessedvalue
+			it.system = true 
+			it.rptledgerfaas = [objid:it.rptledgerfaasid] 
+			em_rptledger_item.create(it)
+		}
 	}	
 
 	void validateDelete(compromise){
@@ -181,7 +164,7 @@ class RPTCompromiseService {
 		if( compromise.cypaymentrequired || compromise.downpaymentrequired ) {
 			compromise.state = STATE_FORPAYMENT
 		}
-		em.update(compromise )
+		em_compromise.find([objid:compromise.objid]).update([state:compromise.state])
 		logSvc.log('SUBMIT', REF_NAME, compromise.objid, )
 		return compromise
 	}
@@ -191,7 +174,7 @@ class RPTCompromiseService {
 		validateState( compromise.objid, 'submitforapproval')
 		validatePaymentInfo( compromise )
 		compromise.state = STATE_FORAPPROVAL
-		em.update( compromise )
+		em_compromise.update( compromise )
 		return compromise
 	}	
 
@@ -201,7 +184,7 @@ class RPTCompromiseService {
 		validateState( compromise.objid, 'approve')
 		validateNotaryInfo(compromise)
 		compromise.state = STATE_APPROVED
-		em.update(compromise )
+		em_compromise.update(compromise )
 		logSvc.log('APPROVE', REF_NAME, compromise.objid, )
 		return compromise
 	}
@@ -213,21 +196,16 @@ class RPTCompromiseService {
         compromise.downpaymentordate = pmt.ordate
 		validateInfo( compromise )
 		receiptSvc.postCapturedDownpayment(compromise, pmt)
-		setForApprovalIfPaymentComplied( compromise )
-		em.update(compromise )
-		return compromise 
+		updateForApprovalIfPaymentComplied( compromise )
+		return em_compromise.read(compromise)
 	}
 
 	@ProxyMethod
 	public def postCapturedCurrentYearPayment( compromise, pmt ) {
-		compromise.cypaymentorno = pmt.orno
-        compromise.cypaymentordate = pmt.ordate 
-        compromise.cypaymentoramount = pmt.amount 
 		validateInfo( compromise )
-		setForApprovalIfPaymentComplied( compromise )
 		receiptSvc.postCapturedCurrentYearPayment(compromise, pmt)
-		em.update(compromise )
-		return compromise 
+		updateForApprovalIfPaymentComplied( compromise )
+		return em_compromise.read(compromise)
 	}	
 
 
@@ -239,7 +217,7 @@ class RPTCompromiseService {
 		utilSvc.required('Compromise startyear', compromise.startyear)
 		utilSvc.required('Compromise endyear', compromise.endyear)
 
-		def lastpaiditem = em.findLastPaidCompromiseItem(compromise)
+		def lastpaiditem = em_compromise.findLastPaidCompromiseItem(compromise)
 		if (!lastpaiditem){
 			lastpaiditem = [
 				year 			: compromise.startyear - 1,
@@ -257,23 +235,24 @@ class RPTCompromiseService {
 		compromise.fromyear = lastpaiditem.year + 1
 		compromise.toyear = compromise.endyear 
 		updatePartialledItems(compromise)
-		em.resetLedgerItemPaidInfo(compromise)
-		em.resetLedgerItemQtrlyPaidInfo(compromise)
-		em.setDefaultedLedger(compromise)
-		em.setDefaultedCompromise(compromise)
+		//TODO:
+		//em.resetLedgerItemPaidInfo(compromise)
+		//em.resetLedgerItemQtrlyPaidInfo(compromise)
+		//em.setDefaultedLedger(compromise)
+		//em.setDefaultedCompromise(compromise)
 		compromise.state = STATE_DEFAULTED
 		return compromise 
 	}	
 
 	void updatePartialledItems(compromise){
-		def firstunpaiditem = em.findFirstUnpaidCompromiseItem(compromise)
+		def firstunpaiditem = em_compromise.findFirstUnpaidCompromiseItem(compromise)
 		if (!firstunpaiditem){
 			return;
 		}
 		
 		compromise.partialledyear = firstunpaiditem.year 
 
-		def partialleditems = em.getPartialledQtrlyItems(compromise)
+		def partialleditems = em_compromise.getPartialledQtrlyItems(compromise)
 		partialleditems.each{
 			if (it.qtr == firstunpaiditem.qtr){
 				it.basicpaid = firstunpaiditem.basicpaid
@@ -313,7 +292,7 @@ class RPTCompromiseService {
 			}
 		}
 
-		def ledgeritem = em.findLedgerItem(compromise)
+		def ledgeritem = em_compromise.findLedgerItem(compromise)
 		if (ledgeritem){
 			ledgeritem.basicpaid = partialleditems.basicpaid.sum()
 			ledgeritem.basicidlepaid = partialleditems.basicidlepaid.sum()
@@ -326,7 +305,7 @@ class RPTCompromiseService {
 	}
 
 
-	void setForApprovalIfPaymentComplied( compromise ){
+	void updateForApprovalIfPaymentComplied( compromise ){
 		def complied = true 
 		
 		if( compromise.downpaymentrequired == true && (compromise.downpaymentorno == null || compromise.downpaymentorno.trim().length() == 0)) {
@@ -339,20 +318,22 @@ class RPTCompromiseService {
 		
 		if( complied  ) {
 			compromise.state = STATE_FORAPPROVAL
+			em_compromise.find([objid:compromise.objid]).update([state:compromise.state])
 		}
 	}	
 
 
 
 	@ProxyMethod
-	public def initCompromise( compromise ) {
-		validateLedger([objid:compromise.rptledgerid])
+	public def init( compromise ) {
+		validateLedger(compromise.rptledger)
 		validateDownPaymentRate( compromise )
 		validateTermAndNumOfInstallment(compromise)
 		
 		def parsedate = dateSvc.parseDate(compromise.txndate, null)
 
-		def ledger = openRPTLedger(compromise.rptledgerid )
+		def ledger = em_rptledger.read(compromise.rptledger)
+		if (!ledger) throw new Exception('Ledger does not exist or has already been deleted.')
 		if( ledger.state == 'PENDING' )
 			throw new Exception('Ledger is still pending.')
 		if( ledger.state == 'CANCELLED' )
@@ -372,6 +353,7 @@ class RPTCompromiseService {
 		
 		compromise.objid 			= 'RC' + new java.rmi.server.UID()
 		compromise.state 			=  STATE_DRAFT
+		compromise.rptledgerid 		= ledger.objid 
 		compromise.faasid			= ledger.faasid
 		compromise.tdno             = ledger.tdno 
         compromise.taxpayer     	= ledger.taxpayer
@@ -383,7 +365,7 @@ class RPTCompromiseService {
 		compromise.firstpartytitle		= reportSvc.standardParameter.TREASURERTITLE
 		compromise.secondpartyrepresentative = ledger.taxpayer.name 
 		compromise.secondpartyname     = ledger.taxpayer.name 
-		compromise.secondpartyaddress  = ledger.taxpayer.address
+		compromise.secondpartyaddress  = ((ledger.taxpayer.address instanceof String) ? ledger.taxpayer.address : ledger.taxpayer.address.text)
 		compromise.notarizedbytitle		= 'NOTARY PUBLIC'
 		compromise.lastyearpaid			= ledger.lastyearpaid
 		compromise.lastqtrpaid			= ledger.lastqtrpaid
@@ -396,12 +378,10 @@ class RPTCompromiseService {
 		compromise.amtpaid				= 0.0
 		compromise.signatories 			= []
 		
-		compromise._items 	= getDelinquentItems( compromise, compromise.bill)
-		
 		//calculate compromise amount based on compromise._items 
 		compromise.manualdiff = (compromise.manualdiff != null ? compromise.manualdiff : 0.0)
-		compromise.amount = compromise._items.total.sum()
-		def adjustedamt = compromise.amount - compromise.manualdiff 
+		compromise.amount = compromise.bill.ledger.items.total.sum()
+		def adjustedamt = compromise.amount + compromise.manualdiff 
 		if( compromise.downpayment >= adjustedamt ) {
 			throw new Exception('Downpayment must be less than the delinquency amount.')
 		}
@@ -429,11 +409,11 @@ class RPTCompromiseService {
 		compromise.amtforinstallment = adjustedamt - compromise.downpayment
 		compromise.amtpaid = 0.0
 
+		compromise.items = buildItems(compromise)
 		postManualComputationDifference(compromise)
-
-		//build installments 
-		compromise._installments = buildInstallments( compromise )
-		def lastitem = compromise._installments.last();
+		compromise.installments = buildInstallments( compromise )
+		compromise.credits = []
+		def lastitem = compromise.installments.last();
 		compromise.enddate = lastitem.duedate
 		return compromise
 	}	
@@ -454,31 +434,30 @@ class RPTCompromiseService {
 
 	@ProxyMethod
 	public def restructureInstallments(compromise){
-		def oldinstallments = em.getRPTCompromiseInstallments([rptcompromiseid:compromise.objid])
+		def oldinstallments = em_compromise_installment.find([parentid:compromise.objid]).orderBy('installmentno').list()
 		if (oldinstallments.findAll{it.amtpaid > 0.0}){
 			throw new Exception('Cannot restructure agreement. Installment payment has already been made. ')
 		}
 
 		def installments = buildInstallments(compromise)
-		em.update(compromise )
-
-		em.deleteInstallments(compromise)
+		em_compromise.update(compromise )
+		em_compromise_installment.find([parentid:compromise.objid]).delete() 
 
 		installments.each { 
-			em.create(it, INSTALLMENT_SCHEMA_NAME) 
+			em_compromise_installment.create(it)
 		}
 		return installments
 	}
 
 
 	@ProxyMethod
-	public def validateAndGetDelinquentAmount( ledger, txndate ) {
+	public def validateAndGetDelinquentBill( ledger, txndate ) {
 		validateLedger(ledger)
-		return getDelinquentAmount(ledger, txndate)
+		return getDelinquentBill(ledger, txndate)
 	}
 
 	@ProxyMethod
-	public def getDelinquentAmount( ledger, txndate ) {
+	public def getDelinquentBill( ledger, txndate ) {
 		if (!txndate) throw new Exception('Date Executed is required.');
 
 		def pdate = dateSvc.parseDate(txndate, null)
@@ -488,27 +467,19 @@ class RPTCompromiseService {
 			endqtr 		: 4,
 			txndate 	: pdate.date
 		]
-		def bill = billingSvc.initBill(ledger.objid)
-		bill.billdate = compromise.txndate
+		def bill = billingSvc.initBill([_generate_barcode:false])
 		bill.putAll(compromise)
+		bill._save = false 
+		bill._forpayment = true 
+		bill.billtoyear = bill.endyear 
+		bill.billtoqtr = bill.endqtr 
+		bill.taxpayer = ledger.taxpayer
+		bill.billdate = compromise.txndate
+		bill.ledgers = [[objid:ledger.objid]]
 		bill = billingSvc.generateBill(bill)
-		def items = getDelinquentItems(compromise, bill)
-		bill.delinquentamt = items.total.sum()
+		bill.ledger = bill.ledgers.remove(0)
+		bill.delinquentamt = bill.ledger.items.total.sum()
 		return bill
-	}
-
-	def getDelinquentItems( compromise, bill){
-		def items = em.getBillItems(bill)
-		items.each{
-			it.objid = 'CI' + new java.rmi.server.UID()
-			it.rptcompromiseid = compromise.objid 
-			it.total = it.basic + it.basicint + it.basicidle + it.basicidleint
-			it.total += it.sef + it.sefint + it.firecode 
-			it.total += it.sh + it.shint 
-			it.payment = 0.0
-			it.fullypaid = false 
-		}
-		return items 
 	}
 
 	@ProxyMethod
@@ -531,14 +502,15 @@ class RPTCompromiseService {
 
 
 	void validateLedger(ledger){
-		def oldledger = ledgerEm.read(ledger)
+		def oldledger = em_rptledger.select('objid,state').find([objid:ledger.objid]).first()
 		if (!oldledger)
 			throw new Exception('Ledger does not exist or has already been deleted.')
 		if (oldledger.state == 'CANCELLED')
 			throw new Exception('Ledger has already been cancelled.')
 
-		def existingcompromise = em.findCompromiseReferenceByLedger(ledger)
-
+		def existingcompromise = em_compromise.select('objid, state, txnno')
+									.where(''' rptledgerid = :objid and state not in ('DEFAULTED', 'CLOSED') ''', ledger)
+									.first()
 		if ( existingcompromise )
 			throw new Exception('Ledger is already referenced by Compromise No. ' + existingcompromise.txnno + '.')
 	}
@@ -559,33 +531,6 @@ class RPTCompromiseService {
 		if( compromise.downpaymentrate >= 100  ) 
 			throw new Exception('Downpayment Rate must be less than 100 percent.')
 	}	
-
-
-	def openRPTLedger( objid ) {
-		def ledger = em.findLedgerById([objid:objid] )
-		if( ! ledger )
-			throw new Exception('Ledger does not exists.')
-		return ledger 
-	}
-
-
-	def createBill( ledger, parsedate) {
-		return [
-			objid 				: 'B' + new java.rmi.server.UID(),
-			sessionid      		: 'S' + new java.rmi.server.UID(),
-			taxpayerid     		: ledger.taxpayer.objid,
-			rptledgerid    		: ledger.objid,
-			advancepayment 		: false,
-			billdate       		: parsedate.date,
-			billtoyear     		: parsedate.year,
-			billtoqtr      		: 4,
-			fullpayment    		: true,
-			qtrlypaymentavailed : false, 
-			advancepayment 		: false,
-			currentdate 		: parsedate.date,
-            cy 					: parsedate.year,
-        ]
-    }	
 
 
 	def buildInstallments( compromise ){
@@ -612,21 +557,25 @@ class RPTCompromiseService {
 	def createInstallment( compromise, installmentno, duedate, amount ) {
 		return [
 			objid 			: 'RI' + new java.rmi.server.UID(),
-			rptledgerid		: compromise.rptledgerid,
-			rptcompromiseid	: compromise.objid, 
+			parentid		: compromise.objid, 
 			installmentno	: installmentno,
 			duedate			: duedate,
 			amount			: amount,
 			amtpaid			: 0.0 ,
 			fullypaid		: false,
+			compromise      : [objid:compromise.objid],
 		]
 	}	
 
 
 	void checkActiveCompromise( ledgerid ) {
-		def compromise = em.findActiveCompromiseByLedgerId([ledgerid:ledgerid])
-		if( compromise ) {
-			throw new Exception("Ledger is currently referenced by an active Compromise Agreement No. ${compromise.txnno}.")
+		def activecompromise = em_compromise
+								.select('objid, txnno')
+								.where(''' rptledgerid = :objid and state not in ('closed')  ''', [objid:ledgerid])
+								.first()
+		
+		if( activecompromise ) {
+			throw new Exception("Ledger is currently referenced by an active Compromise Agreement No. ${activecompromise.txnno}.")
 		}	
 	}
 
@@ -661,67 +610,61 @@ class RPTCompromiseService {
 		}
 
 		//check installment totals 
-		if (compromise.amtforinstallment != compromise._installments.amount.sum())
+		if (compromise.amtforinstallment != compromise.installments.amount.sum())
 			throw new Exception('Total Installment Amount does not match Amount for Installment.\nPlease verify modified installment amounts.')
 	}	
 
 
 	void postCompromiseCreditToLedger( compromise ) {
-		def params = [
-			objid		: compromise.rptledgerid, 
-			lastyearpaid: compromise.endyear,
-			lastqtrpaid : compromise.endqtr,
-		]
+		//update ledger last year/qtr paid 
+		em_rptledger.find([objid:compromise.rptledgerid])
+					.update([lastyearpaid:compromise.endyear, lastqtrpaid:compromise.endqtr])
 
-		em.updateLastYearQtrPaid(params)
-		em.fullyPayLedgerItems(params)
-		em.fullyPayQtrlyLedgerItems(params)
-		
-		if( compromise._items ) {
-			def pmt 			= [:]
-			pmt.objid			= compromise.objid 
-			pmt.rptledgerid     = compromise.rptledgerid 
-			pmt.type            = 'COMPROMISE'
-			pmt.collector  		= 'SYSTEM'
-			pmt.dtposted        = dateSvc.serverDate
-			pmt.refno     	= compromise.txnno 
-			pmt.refdate     = compromise.txndate 
-			pmt.paidby 		= [name:compromise.secondpartyname, address:compromise.secondpartyaddress]
-			pmt.fromyear        = compromise.startyear 
-			pmt.fromqtr        	= compromise.startqtr 
-			pmt.toyear        	= compromise.endyear 
-			pmt.toqtr        	= compromise.endqtr 
-			pmt.basic	        = compromise._items.basic.sum()
-			pmt.basicint        = compromise._items.basicint.sum()
-			pmt.basicidle       = compromise._items.basicidle.sum()
-			pmt.basicidleint    = compromise._items.basicidleint.sum()
-			pmt.basicidledisc    = 0.0
-			pmt.basicpartial    = 0.0
-			pmt.basicdisc    	= 0.0
-			pmt.basicnet        = pmt.basic + pmt.basicint  
-			pmt.sef          	= compromise._items.sef.sum() 
-			pmt.sefint         	= compromise._items.sefint.sum() 
-			pmt.sefpartial      = 0.0
-			pmt.sefdisc      	= 0.0
-			pmt.sefnet          = pmt.sef + pmt.sefint 
-			pmt.firecode      	= compromise._items.firecode.sum()
-			pmt.sh          	= compromise._items.sh.sum() 
-			pmt.shint         	= compromise._items.shint.sum() 
-			pmt.shpartial      = 0.0
-			pmt.shdisc      	= 0.0
-			pmt.shnet          = pmt.sh + pmt.shint 
-			pmt.total           = pmt.basicnet + pmt.sefnet + pmt.basicidle + pmt.firecode 
-			pmt.voided          = false 
-			pmt.postedby        = env.NAME
-			pmt.postedbytitle   = env.JOBTITLE
-			pmt.amount 			= compromise.amount
-			ledgerEm.create( pmt, 'credit' )         
+		//delete paid ledger items 
+		em_rptledger_item.where('year <= :endyear', compromise).delete() 
+
+		//post credit 
+		def c = [:]
+		c.rptledgerid = compromise.rptledgerid 
+		c.type = 'compromise'
+		c.refno = 'CO# ' + compromise.txnno 
+		c.refdate = compromise.txndate 
+		c.payorid = null 
+		c.paidby = compromise.rptledger.taxpayer
+		if (c.paidby.address instanceof java.util.Map){
+			c.paidby.address = c.paidby.address.text
 		}
+		c.collector = '-' 
+		c.postedby = env.FULLNAME 
+		c.postedbytitle = env.JOBTITLE 
+		c.dtposted = dateSvc.serverDate 
+		c.fromyear = compromise.startyear 
+		c.fromqtr = compromise.startqtr 
+		c.toyear = compromise.endyear 
+		c.toqtr = compromise.endqtr 
+
+		def items = compromise.items
+		c.basic = items.sum{ it.basic ? it.basic : 0 }
+		c.basicint = items.sum{ it.basicint ? it.basicint : 0 }
+		c.basicdisc = 0
+		c.basicidle = items.sum{ it.basicidle ? it.basicidle : 0 }
+		c.sef = items.sum{ it.sef ? it.sef : 0 }
+		c.sefint = items.sum{ it.sefint ? it.sefint : 0 }
+		c.sefdisc = 0
+		c.firecode = items.sum{ it.firecode ? it.firecode : 0 }
+		c.amount = items.sum{ it.amount ? it.amount : 0 }
+		c.collectingagency = 'MTO'
+		if ('province'.equalsIgnoreCase(env.ORGCLASS)){
+			c.collectingagency = 'PTO'
+		} else {
+			c.collectingagency = 'CTO'
+		}
+		em_rptledger_credit.create(c)
 	}
 
 	
 	void validateState( objid, action ) {
-		def old = em.findRPTCompromiseById([objid:objid])
+		def old = em_compromise.select('state').find([objid:objid]).first()
 		if( ! old ) throw new Exception('Compromise does not exists or has already been deleted.')
 		
 		if( action == 'submit' ) {
@@ -736,18 +679,18 @@ class RPTCompromiseService {
 	}	
 
 	
-	def getFaasInfo(compromise)  {
-		return em.findFaasInfo([objid:compromise.rptledgerid])
-	}	
-
-
 	def loadItems( compromiseid ) {
-		return em.getRPTCompromiseItems([rptcompromiseid:compromiseid])
+		return em_compromise.getRPTCompromiseItems([rptcompromiseid:compromiseid])
 	}	
 
 
 	void validatePaymentInfo( compromise ) {
-		def oldcomp = em.read(compromise)
+		def oldcomp = em_compromise.select('''
+							downpaymentrequired,downpaymentorno,downpaymentordate,
+							cypaymentrequired,cypaymentorno,cypaymentordate
+						 ''')
+						.find([objid:compromise.objid])
+						.first()
 		if (!oldcomp) 
 			throw new Exception('Compromise does not exist or has already been deleted.')
 
@@ -765,102 +708,121 @@ class RPTCompromiseService {
 	def getDefaultedStatus(compromise){
 		if (compromise.state == STATE_DEFAULTED)
 			return true;
-		def params = [objid:compromise.objid, currentdate:dateSvc.serverDate]
-		def defaultedinstallment = em.findDefaultedInstallment(params)
+		def installments = em_compromise_installment.select('duedate')
+								.where(''' compromise.state = 'APPROVED' and parentid = :objid and amount > amtpaid''', compromise)
+								.list()
+
+		def currdate = dateSvc.serverDate
+		def defaultedinstallment = installments.find{ (it.duedate + 1) < currdate }
 		if (defaultedinstallment)
 			return true 
 		return false 
 	}
 
 	void postManualComputationDifference(compromise){
-		if (compromise.manualdiff == 0)
+		if (compromise.manualdiff == 0){
 			return
+		}
 
-		if (compromise.manualdiff > 0)
-			applyDifferenceAsPartialPayment(compromise, compromise._items)
-		else 
-			applyDifferenceAsAdditional(compromise, compromise._items)
-	}
-
-	void applyDifferenceAsPartialPayment(compromise, items){
-		def partial = compromise.manualdiff
-		for (item in items){
-			if (partial > item.total){
-				em.fullyPaidItem(item)
-				partial -= item.total
-
-				item.basicpaid = item.basic
-				item.basicintpaid = item.basicint
-				item.basicidlepaid = item.basicidle
-				item.basicidleintpaid = item.basicidleint
-				item.sefpaid = item.sef
-				item.sefintpaid = item.sefint
-				item.shpaid = item.sh
-				item.shintpaid = item.shint
-				item.payment += item.total 
-				item.fullypaid = true 
-			}
-			else{
-				item.basicidledisc = 0.0
-				item.basicdisc = 0.0
-				item.sefdisc = 0.0
-				item.shdisc = 0.0
-				applyPartialPayment(compromise, item, partial)
-				break
-			}
+		if (compromise.manualdiff > 0){
+			applyAdditional(compromise)
+		}
+		else {
+			applyPartial(compromise)
 		}
 	}
 
-	void applyPartialPayment(compromise, item, partial){
-		def itemtotal = item.total 
-		def partialmade = [
-			objid 		: item.objid, 
-			basic 		: numSvc.round( partial * (item.basic / itemtotal) ),
-			basicint 	: numSvc.round( partial * (item.basicint / itemtotal) ),
-			basicidle 		: numSvc.round( partial * (item.basicidle / itemtotal) ),
-			basicidleint 	: numSvc.round( partial * (item.basicidleint / itemtotal) ),
-			sef 		: numSvc.round( partial * (item.sef / itemtotal) ),
-			sefint 		: numSvc.round( partial * (item.sefint / itemtotal) ),
-			sh 		: numSvc.round( partial * (item.sh / itemtotal) ),
-		]
-		partialmade.shint 	= partial - (partialmade.basic + partialmade.basicint + partialmade.basicidle + partialmade.basicidleint + partialmade.sef + partialmade.sefint + partialmade.sh)
-		item.basicpaid = partialmade.basic
-		item.basicintpaid = partialmade.basicint
-		item.basicidlepaid = partialmade.basicidle
-		item.basicidleintpaid = partialmade.basicidleint
-		item.sefpaid = partialmade.sef
-		item.sefintpaid = partialmade.sefint
-		item.shpaid = partialmade.sh
-		item.shintpaid = partialmade.shint
-		item.payment +=  partial 
-		item.fullypaid = false 
-	}	
+	void applyAdditional(compromise){
+		def items = compromise.remove('items')
+		compromise.items = []
 
-	void applyDifferenceAsAdditional(compromise, items){
-		def partial = compromise.manualdiff.abs()
-		def item = items.first()
-		def itemtotal = item.total 
-		def additional = [
-			objid 				: item.objid, 
-			basicadditional 	: numSvc.round( partial * (item.basic / itemtotal) ),
-			basicintadditional 	: numSvc.round( partial * (item.basicint / itemtotal) ),
-			basicidleadditional 	: numSvc.round( partial * (item.basicidle / itemtotal) ),
-			basicidleintadditional 	: numSvc.round( partial * (item.basicidleint / itemtotal) ),
-			sefadditional 		: numSvc.round( partial * (item.sef / itemtotal) ),
-			sefintadditional 		: numSvc.round( partial * (item.sefint / itemtotal) ),
-			shadditional 		: numSvc.round( partial * (item.sh / itemtotal) ),
-		]
-		additional.shintadditional = partial - (additional.basicadditional + additional.basicintadditional + additional.basicidleadditional + additional.basicidleintadditional +additional.sefadditional +additional.sefintadditional+additional.shadditional )
-		item.basic += additional.basicadditional
-		item.basicint += additional.basicintadditional
-		item.basicidle += additional.basicidleadditional
-		item.basicidleint += additional.basicidleintadditional
-		item.sef += additional.sefadditional
-		item.sefint += additional.sefintadditional
-		item.sh += additional.shadditional
-		item.shint += additional.shintadditional
-		item.total += partial 
+		def additional = compromise.manualdiff.abs()
+		def yrs = items.year.unique().sort() 
+		def priorities = items.priority.unique().sort()
+
+		compromise.items = items.findAll{it.year == yrs[0] && it.priority == priorities[0]}
+
+		def operator = {item, amtpartial, intpartial ->
+			item.amount += amtpartial
+			item.interest += intpartial
+			item.balance = item.amount - item.amtpaid + item.interest - item.interestpaid 
+		}
+		distributeDifference(additional, compromise.items, operator)
+		
+		yrs.remove(0)
+		for(yr in yrs){
+			compromise.items += items.findAll{it.year == yr}
+		}
 	}
+
+	void applyPartial(compromise){
+		def items = compromise.remove('items')
+		items.each{ 
+			if (it.qtr == null) it.qtr = 0
+		}
+
+		compromise.items = []
+		def additional = compromise.manualdiff.abs()
+		def yrs = items.year.unique().sort() 
+		def priorities = items.priority.unique().sort()
+
+		for (int idx = 0; idx < yrs.size(); idx++){
+			def yritems = items.findAll{it.year == yrs[idx]}
+			def qtrs = yritems.qtr.unique().sort();
+
+			for (int q = 0; q < qtrs.size(); q++){
+				def qtritems = yritems.findAll{ it.qtr == qtrs[q]}
+				for (int i = 0; i < priorities.size(); i++){
+					def xitems = qtritems.findAll{it.priority == priorities[i]}
+					def itemtotal = xitems.balance.sum()
+
+					if (additional >= itemtotal){
+						additional -= itemtotal 
+						continue
+					}
+					else if (additional > 0){
+						def operator = {item, amtpartial, intpartial ->
+							item.amtpaid = amtpartial
+							item.interestpaid = intpartial
+							item.balance = item.amount - item.amtpaid + item.interest - item.interestpaid 
+						}
+						distributeDifference(additional, xitems, operator)
+						compromise.items += xitems 
+						additional = 0
+					}
+					else{
+						compromise.items += xitems 
+					}
+				}
+			}
+		}
+
+	}
+
+
+	void distributeDifference(additional, items, operator){
+		if (items.size() == 1){
+			distributeDifferenceProportionally(additional, items.first(), operator)
+		} 
+		else {
+			def runningadditional = additional
+			def totalbalance = items.balance.sum() 
+
+			for (int i = 0; i < items.size() - 1; i++){
+				def item = items[i]
+				def partial = additional * numSvc.round(item.balance / totalbalance)
+				distributeDifferenceProportionally(partial, item, operator) 
+				runningadditional -= partial 
+			}
+			distributeDifferenceProportionally(runningadditional, items.last(), operator) 
+		}
+	}
+
+	void distributeDifferenceProportionally(partial, item, operator){
+		def amtpartial = numSvc.round(partial * (item.amount / item.balance))
+		def intpartial = numSvc.round(partial - amtpartial)
+		operator(item, amtpartial, intpartial)
+	}	
 
 
 	void validateNotaryInfo(compromise){
@@ -883,7 +845,7 @@ class RPTCompromiseService {
 	@ProxyMethod
 	public void checkRequiredPaymentMade(params){
 		def paid = false;
-		def compromise = em.read(params)
+		def compromise = em_compromise.read(params)
 		if (!compromise) throw new Exception('Compromise does not exist or has already been deleted.')
 		if ('downpayment'.equalsIgnoreCase(params.paytype.type)){
 			if (compromise.downpaymentreceiptid)
@@ -902,5 +864,28 @@ class RPTCompromiseService {
 			msg += 'Click the Refresh button to update the payment information.'
 			throw new Exception(msg)
 		}
+	}
+
+	def buildItems(compromise){
+		def items = []
+		compromise.bill.ledger.postingitems.each{
+			def item = [objid:it.objid]
+			item.compromise = [objid:compromise.objid]
+			item.parentid = compromise.objid
+			item.rptledgerfaasid = it.rptledgerfaasid
+			item.revtype = it.revtype 
+			item.revperiod = it.revperiod
+			item.year = it.year 
+			item.amount = it.amount 
+			item.amtpaid = 0.0 
+			item.interest = it.interest
+			item.interestpaid = 0.0 
+			item.balance = it.amount + it.interest 
+			item.priority = it.priority 
+			item.taxdifference = false 
+			item.ledgerfaas = [objid:it.rptledgerfaasid]
+			items << item 
+		}
+		return items 
 	}
 }

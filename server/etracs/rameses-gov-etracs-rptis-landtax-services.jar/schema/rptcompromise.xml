@@ -1,18 +1,18 @@
 <schema>
-	<element name="rptcompromise" tablename="rptledger_compromise">
-		<field name="objid" primary="true"/>
-		<field name="state" required="true"/>
-		<field name="txnno" />
-		<field name="txndate" />
+	<element tablename="rptcompromise">
+		<field name="objid" primary="true" prefix="RC"/>
+		<field name="state" required="true" caption="State" searchable="true" indexed="true"/>
+		<field name="txnno"  caption="Txn No." searchable="true" indexed="true"/>
+		<field name="txndate"  caption="Txn Date" searchable="true" indexed="true" type="date"/>
 		<field name="faasid" />
 		<field name="rptledgerid" required="true" />
-		<field name="lastyearpaid" type="integer" required="true" />
-		<field name="lastqtrpaid" type="integer" required="true" />
-		<field name="startyear" type="integer" required="true" />
-		<field name="startqtr" type="integer" required="true" />
-		<field name="endyear" type="integer" required="true" />
-		<field name="endqtr" type="integer" required="true" />
-		<field name="enddate" required="true" />
+		<field name="lastyearpaid" type="integer" required="true"  caption="Last Year Paid" />
+		<field name="lastqtrpaid" type="integer" required="true" caption="Last Qtr Paid"/>
+		<field name="startyear" type="integer" required="true" caption="Start Year" />
+		<field name="startqtr" type="integer" required="true" caption="Start Qtr"/>
+		<field name="endyear" type="integer" required="true" caption="End Year"/>
+		<field name="endqtr" type="integer" required="true" caption="End Qtr"/>
+		<field name="enddate" required="true" caption="End Date"/>
 		<field name="cypaymentrequired" type="boolean" required="true" />
 		<field name="cypaymentorno" />
 		<field name="cypaymentordate" />
@@ -22,9 +22,9 @@
 		<field name="downpayment" type="decimal" required="true" />
 		<field name="downpaymentorno" />
 		<field name="downpaymentordate" />
-		<field name="term" type="integer" required="true" />
-		<field name="numofinstallment" type="integer" required="true" />
-		<field name="amount" type="decimal" required="true" />
+		<field name="term" type="integer" required="true" caption="Term"/>
+		<field name="numofinstallment" type="integer" required="true" caption="No. of Installment"/>
+		<field name="amount" type="decimal" required="true" caption="Amount"/>
 		<field name="amtforinstallment" type="decimal" required="true" />
 		<field name="amtpaid" type="decimal" required="true" />
 		<field name="firstpartyname" required="true" />
@@ -53,90 +53,22 @@
 		<field name="manualdiff" required="true" type="decimal" />
 		<field name="cypaymentreceiptid" />
 		<field name="downpaymentreceiptid" />
-	</element>
-	
-	<!-- 
-	<element name="signatory">
-		<element name="name" required="true"/>
-		<element name="address" />
-	</element>
--->
-		
-	<element name="rptcompromise_item" tablename="rptledger_compromise_item">
-		<field name="objid" primary="true"/>
-		<field name="rptcompromiseid" required="true"/>
-		<field name="year" type="integer" required="true" />
-		<field name="qtr" type="integer" required="true" />
-		<field name="faasid" />
-		<field name="assessedvalue" type="decimal" required="true" />
-		<field name="tdno" required="true" />
-		<field name="classcode" required="true" />
-		<field name="actualusecode" required="true" />
-		<field name="basic" type="decimal" required="true" />
-		<field name="basicpaid" type="decimal" required="true" />
-		<field name="basicint" type="decimal" required="true" />
-		<field name="basicintpaid" type="decimal" required="true" />
-		<field name="basicidle" type="decimal" required="true" />
-		<field name="basicidlepaid" type="decimal" required="true" />
-		<field name="basicidleint" type="decimal" required="true" />
-		<field name="basicidleintpaid" type="decimal" required="true" />
-		<field name="sef" type="decimal" required="true" />
-		<field name="sefpaid" type="decimal" required="true" />
-		<field name="sefint" type="decimal" required="true" />
-		<field name="sefintpaid" type="decimal" required="true" />
-		<field name="firecode" type="decimal" required="true" />
-		<field name="firecodepaid" type="decimal" required="true" />
-		<field name="sh" type="decimal" required="true" />
-		<field name="shpaid" type="decimal" required="true" />
-		<field name="shint" type="decimal" required="true" />
-		<field name="shintpaid" type="decimal" required="true" />
-		<field name="total" type="decimal" required="true" />
-		<field name="fullypaid" type="boolean" required="true" />
-	</element>
-	
-	<element name="rptcompromise_installment" tablename="rptledger_compromise_installment">
-		<field name="objid" primary="true"/>
-		<field name="rptcompromiseid" required="true"/>
-		<field name="installmentno" type="integer" required="true"/>
-		<field name="duedate" required="true"/>
-		<field name="amount" type="decimal" required="true"/>
-		<field name="amtpaid" type="decimal" required="true"/>
-		<field name="fullypaid" type="boolean" required="true"/>
-	</element>
-	
-	<element name="rptcompromise_credit" tablename="rptledger_compromise_credit">
-		<field name="objid" primary="true"/>
-		<field name="rptcompromiseid" required="true"/>
-		<field name="rptreceiptid" />
-		<field name="installmentid" />
-		<field name="collector_name" required="true"/>
-		<field name="collector_title" required="true"/>
-		<field name="orno" required="true"/>
-		<field name="ordate" required="true"/>
-		<field name="oramount" type="decimal" required="true"/>
-		<field name="amount" type="decimal" required="true"/>
-		<field name="mode" required="true"/>
-		<field name="paidby" required="true"/>
-		<field name="paidbyaddress" required="true"/>
-		<field name="partial" type="integer" />
-		<field name="remarks" />
-	</element>
 
+		<complex name="installments" ref="rptcompromise_installment" jointype="one-to-many" required="true" orderBy="installmentno">
+			<key field="objid" target="parentid"/>
+		</complex>
 
-	<element name="rptcompromise_item_credit" tablename="rptledger_compromise_item_credit">
-		<field name="objid" primary="true" />
-		<field name="rptcompromiseitemid" required="true" />
-		<field name="rptreceiptid" />
-		<field name="year" required="true" type="integer" />
-		<field name="qtr" required="true" type="integer" />
-		<field name="basic" required="true" type="decimal" />
-		<field name="basicint" required="true" type="decimal" />
-		<field name="basicidle" required="true" type="decimal" />
-		<field name="basicidleint" required="true" type="decimal" />
-		<field name="sef" required="true" type="decimal" />
-		<field name="sefint" required="true" type="decimal" />
-		<field name="firecode" required="true" type="decimal" />
-		<field name="sh" required="true" type="decimal" />
-		<field name="shint" required="true" type="decimal" />
+		<complex name="items" ref="rptcompromise_item" jointype="one-to-many" required="true" orderBy="year,priority,revtype">
+			<key field="objid" target="parentid"/>
+		</complex>
+
+		<complex name="credits" ref="rptcompromise_credit" jointype="one-to-many" required="false" orderBy="ordate desc">
+			<key field="objid" target="parentid"/>
+		</complex>
+
+		<complex name="rptledger" ref="rptledger" jointype="many-to-one"
+			includefields="objid,tdno,fullpin,cadastrallotno,totalmv,totalav,taxpayer.name,taxpayer.address.text,barangay.name">
+			<key field="rptledgerid" target="objid"/>
+		</complex>
 	</element>
 </schema>

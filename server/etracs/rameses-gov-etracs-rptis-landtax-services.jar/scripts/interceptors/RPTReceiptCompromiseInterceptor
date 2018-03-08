@@ -14,8 +14,8 @@ class RPTReceiptCompromiseInterceptor
 	@Service('Var') 
 	def var;
 
-	@After(pattern="CashReceiptService.open", eval="#{result.formno.matches('56|5156')}", index=100) 
-	public void interceptOpenReceipt( evt ) {
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler.matches('rptcompromise')}") 
+	public void openReceipt( evt ) {
 		def receipt = evt.result
 		if (receipt.txntype == 'compromise'){
 			//TODO:
@@ -28,24 +28,15 @@ class RPTReceiptCompromiseInterceptor
 		}
 	}
 
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].formno.matches('56|5156') && args[0].txntype == 'rptcompromise'}") 
-	public void interceptBeforePostReceipt( evt ) {
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rptcompromise')}") 
+	public void beforePostReceipt( evt ) {
 		def receipt = evt.args[0]
-
-		if (receipt.requiredpayment == null || receipt.requiredpayment.type == 'downpayment'){
-			svc.buildCreditAndTaxItems(receipt);
-		}
-		else {
-			receipt.taxes = svc.getCurrentYearTaxes(receipt);
-		}
-		receipt.taxes.each{
-			receipt.items << createReceiptItem(receipt, it)
-		}
+		svc.buildPostingItems(receipt)
 	}
 
 
-	@After(pattern="CashReceiptService.post", eval="#{result.formno.matches('56|5156') && args[0].txntype == 'rptcompromise'}") 
-	public void interceptAfterPostReceipt( evt ) {
+	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rptcompromise')}") 
+	public void afterPostReceipt( evt ) {
 		def receipt = evt.result
 		svc.createReceipt(receipt)
 		receipt._items = svc.getItemsForPrinting(receipt)
@@ -54,8 +45,8 @@ class RPTReceiptCompromiseInterceptor
 		if(receipt.itemcount > 0) addLGUInfo(receipt)
 	}
 
-	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.formno.matches('56|5156') && args[0].receipt.txntype == 'rptcompromise'}") 
-	public void interceptVoidReceipt( evt ) {
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.collectiontype?.handler.matches('rptcompromise')}") 
+	public void afterVoiddReceipt( evt ) {
 		svc.voidReceipt(evt.result.receipt)
 	}
 

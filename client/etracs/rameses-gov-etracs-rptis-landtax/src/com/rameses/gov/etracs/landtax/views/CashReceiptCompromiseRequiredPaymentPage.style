@@ -1,0 +1,11 @@
+"compromise.downpayment|currentyeardue"[true == true]{
+    visible:false;
+}
+
+"compromise.downpayment" [entity.requiredpayment?.type == 'downpayment']{
+    visible:true;
+}
+
+"currentyeardue" [entity.requiredpayment?.type == 'cypayment']{
+    visible:true;
+}

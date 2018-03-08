@@ -127,26 +127,7 @@ UPDATE rptledger SET
 	undercompromise = 1 
 WHERE objid = $P{objid} 
 
-[resetLedgerUnderCompromised]
-UPDATE rptledger SET 
-	undercompromise = 0 
-WHERE objid = $P{objid} 
 
-[updateLastYearQtrPaid]
-UPDATE rptledger SET	
-	lastyearpaid = $P{lastyearpaid},
-	lastqtrpaid = $P{lastqtrpaid} 
-WHERE objid = $P{objid}	
-
-
-	
-[deleteItems]	
-DELETE FROM rptledger_compromise_item 
-WHERE rptcompromiseid = $P{objid} 
-
-[deleteInstallments]	
-DELETE FROM rptledger_compromise_installment
-WHERE rptcompromiseid = $P{objid} 
 
 [getOpenInstallments]
 SELECT  * 
@@ -530,24 +511,6 @@ where rptledgerid = $P{objid}
 and state not in ('DEFAULTED', 'CLOSED')
 
 
-[deleteLedgerCompromiseCredit]
-delete from rptledger_credit 
-where rptledgerid = $P{objid} 
-  and type = 'COMPROMISE'
-
-
-[resetLedgerItemsPaidFlag]  
-update rptledgeritem set 
-	fullypaid = 0
-where rptledgerid = $P{objid}
-and year >= $P{startyear}
-
-
-[updateLedgerItemStartYearQtrPaid]
-update rptledgeritem set 
-	fullypaid = 0
-where rptledgerid = $P{objid}
-  and year = $P{startyear}
 
 
 [findCompromiseByReceipt]

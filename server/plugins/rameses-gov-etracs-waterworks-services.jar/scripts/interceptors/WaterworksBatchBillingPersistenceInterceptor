@@ -1,0 +1,22 @@
+import com.rameses.annotations.*;
+
+class WaterworksBatchBillingPersistenceInterceptor {
+	
+	@DataContext("waterworks_billing_batch")
+	def batchEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.objid = 'WBILL' + o.zone.code + o.year + o.month.toString().padLeft(2, '0' );
+		o.state = 'DRAFT';
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
+	public void buildBillItems( evt ) { 
+		def o = evt.args[0];
+		batchEm.buildBillings( [batchid: o.objid ] );
+	}
+
+
+}

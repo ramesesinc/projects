@@ -31,7 +31,6 @@ class WaterworksSingleBillingInterceptor {
 		if(!acct) throw new Exception("Waterworks Account not found");
 		r.putAll( acct );
 		r.acctid = acct.objid;
-
 	}
  
     @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )

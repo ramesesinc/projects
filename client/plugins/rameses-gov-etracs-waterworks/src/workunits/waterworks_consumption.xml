@@ -1,4 +1,4 @@
-<workunit>
+<workunit schemaName="waterworks_consumption">
     <invokers>
         <invoker type="waterworks_consumption:create"  
                  caption="New Consumption Entry" target="popup" action="create"/>

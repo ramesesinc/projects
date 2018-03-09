@@ -24,25 +24,25 @@
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
 		
-		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false" 
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one"  required="true" 
 			includefields="objid,code">
 			<key field="sectorid" target="objid"/> 
 		</complex> 
-		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" required="false" 
-			includefields="objid,code,reader.assignee_objid,reader.assignee_name">
+		<complex name="zone" ref="waterworks_zone" jointype="many-to-one"  required="true" 
+			includefields="objid,code">
 			<key field="zoneid" target="objid"/> 
 		</complex> 
 
-		<complex name="meter" ref="waterworks_meter" jointype="many-to-one" required="false" 
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="true" 
 			includefields="objid,serialno,brand,capacity">
 			<key field="meterid" target="objid"/>
 		</complex>
-		<complex name="metersize" ref="waterworks_metersize" jointype="many-to-one" required="false" 
+		<complex name="metersize" ref="waterworks_metersize" jointype="many-to-one"  required="true" 
 			includefields="objid,title">
 			<key field="metersizeid" target="objid"/> 
 		</complex> 
 
-		<complex name="classification" ref="waterworks_classification" jointype="many-to-one" required="false">
+		<complex name="classification" ref="waterworks_classification" jointype="many-to-one" required="true">
 			<key field="classificationid" target="objid"/>
 		</complex>	
 
@@ -51,7 +51,7 @@
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
 
 		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="false" 
-			includefields="objid,code"> 
+			includefields="objid,code,barangay.name"> 
 			<key field="stuboutid" target="objid"/>
 		</complex>  
 		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
@@ -61,13 +61,19 @@
 
 		<field name="currentreading" required="false" caption="Last Reading" type="integer"/>
 
+		<!--
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="false" 
 			includefields="objid,year,month,fromperiod,toperiod,duedate,billdate,readingdate,disconnectiondate,monthname">
 			<key field="billingcycleid" target="objid"/> 
 		</complex>
+		-->
 
 		<field name="barcode" expr="CONCAT('51030:',acctno)"/>
 		<field name="lastbilldate" type="date"/>
+
+		<complex name="attributes" ref="waterworks_account_attribute" jointype="one-to-many" required="false">
+			<key field="objid" target="parentid"/> 
+		</complex>
 	</element>
 
 </schema>

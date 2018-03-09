@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="waterworks_zone" cols="zone,description">
+    <!-- used by rules -->
+    <invokers>
+        <invoker type="waterworks_sector:section" caption="Zones" action="init" index="-1" 
+                 parentid="sectorid" visibleWhen="#{mode == 'read' }"/>
+    </invokers>
+   
+</workunit>

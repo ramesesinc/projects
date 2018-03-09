@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="waterworks_billing"  
+          cols="year,monthname,sector.code,dtcreated,createdby.name"
+          orderBy="month,year">
+    <invokers>
+         <invokers>
+            <invoker folderid="/menucategory/waterworks/billing" caption="Batch Billing" action="init" index="10" />
+        </invokers>
+    </invokers>
+</workunit>

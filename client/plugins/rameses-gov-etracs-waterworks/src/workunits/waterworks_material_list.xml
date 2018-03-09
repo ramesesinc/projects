@@ -3,7 +3,6 @@
           allowCreate="true" allowOpen="true" allowDelete="true"
           cols="code,title,unitprice,unit">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Materials"  
-                 action="init" role="MASTER" index="-5"/>  
+        <invoker folderid="/explorer/master/waterworks" caption="Materials" action="init" index="-5"/>  
     </invokers>
 </workunit>

@@ -49,29 +49,22 @@ class WaterworksMobileRuleService  {
 		def varList = ruleMgmt.findAllVarsByType([ruleid:r.objid, datatype:'integer']);
 		mm.var = varList*.name[0];
 
-		if (a.exprtype == 'expression') {
-			mm.action = a.expr; 
-
-		} else if ( a.listvalue?.size() > 0 ) { 
-			def sb = new StringBuilder();
+		if(a.listvalue?.size()>0) {
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
 			int sz = a.listvalue.size();
-			a.listvalue.eachWithIndex { item, idx-> 
-				if ( idx > 0 ) sb.append(" else "); 
-			    if ( idx < sz-1 ) sb.append(" if(" + mm.var + " < " + item.to + ")" ); 
-
-			    sb.append("{\n");
-			    if ( item.value.toString().toLowerCase().indexOf("return") >= 0 ) {
-			    	sb.append( item.value ).append(";"); 
-			    } else {
-			    	sb.append(" return ").append(item.value).append(";");
-			    } 
-			    sb.append("}\n"); 
-			} 
-			mm.action = sb.toString(); 
-
-		} else { 
-			throw new Exception("No calculation expression found for " + r.name); 
-		} 
+			a.listvalue.each {
+			    if( i++ > 0 ) sb.append("else");
+			    if( i < sz ) sb.append( " if(" + mm.var + " < " + it.to + ")" );
+			    sb.append( " return " + it.value + "; \n");   
+			}
+			mm.action = sb.toString();
+		}
+		else if(a.expr) {
+			mm.action = a.expr;
+		}
+		else
+			throw new Exception("No calculation expression found for " + r.name);
 		return mm;
 	}
 

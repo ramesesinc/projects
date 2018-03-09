@@ -1,10 +1,9 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="waterworks_sector" allowCreate="false" allowDelete="false" 
+          schemaName="waterworks_sector" allowCreate="true" allowDelete="false" 
           cols="objid,code,description">
     
     <!-- used by rules -->
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Sectors" 
-                 action="init" role="MASTER"/>
+        <invoker folderid="/explorer/master/waterworks" caption="Sectors" action="init"/>
     </invokers>
 </workunit>

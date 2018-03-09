@@ -40,8 +40,8 @@
 
 	<field name="billdate" class="java.util.Date"/>
 	<field name="acctname" class="java.lang.String"/>
-	<field name="items" class="java.lang.Object"/>
-	<field name="grandtotal" class="java.math.BigDecimal"/>
+	<field name="billitems" class="java.lang.Object"/>
+	<field name="amount" class="java.math.BigDecimal"/>
 	<field name="meter.serialno" class="java.lang.String"/>
 	<field name="address.text" class="java.lang.String"/>
 	<field name="sector.objid" class="java.lang.String"/>
@@ -479,7 +479,7 @@
 						backcolor="#FFFFFF"
 						key="subreport-1"
 						positionType="Float"/>
-					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
+					<dataSourceExpression><![CDATA[$F{billitems}]]></dataSourceExpression>
 					<subreportExpression  class="java.lang.String"><![CDATA["waterworksbillingitem.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
@@ -520,7 +520,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="barcode-1">
-							<printWhenExpression><![CDATA[( $F{barcode} != null ) ]]></printWhenExpression>
+							<printWhenExpression><![CDATA[( $F{barcode} != null )]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch" fill="Solid" />
@@ -581,7 +581,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{grandtotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

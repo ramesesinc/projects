@@ -1,0 +1,11 @@
+<workunit  schemaName="waterworks_zone">
+    <!-- used by rules -->
+    <invokers>
+        <invoker type="waterworks_zone:create" caption="New Zone" action="create" target="popup"/>
+        <invoker type="waterworks_zone:open" caption="Zone" action="open" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.ZoneModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.ZonePage"/>
+    </pages>
+</workunit>

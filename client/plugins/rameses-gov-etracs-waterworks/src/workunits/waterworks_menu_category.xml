@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="waterworks" cols="2">
+    <invokers>
+        <invoker type="home.action" 
+                 caption="Waterworks"  icon="home/icons/waterworks.png"
+                 visibleWhen="#{self.hasChildren('menucategory/waterworks')==true}" 
+                 index="10" action="init"/>
+        
+    </invokers> 
+</workunit>

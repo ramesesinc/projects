@@ -1,33 +1,32 @@
-<workunit extends="com/rameses/seti2/templates/CrudReport.xml">
+<workunit rulename="waterworksbilling" schemaName="waterworks_billing">
     <invokers>
-        <invoker type="waterworks_account:form:formActions" caption="Billing" index="-10" 
-            reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
-            visibleWhen="#{mode=='read'}"
-            action="view"/>
+        <invokers>
+            <invoker type="waterworks_billing:create" caption="New Waterworks Billing" action="start" index="10" />
+            <invoker type="waterworks_billing:open" caption="Waterworks Billing" action="startOpen" index="10" />
+        </invokers>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.seti2.models.*;
-        import com.rameses.util.*;
-        import java.text.*;
-        
-        class WaterworksBilling extends CrudReportModel {
-            
-            @Service("WaterworksAccountBillingService")
-            def billSvc;    
-        
-            void view() {
-                def param = [acctid:caller.entityContext.objid];
-                entity = billSvc.getBilling(param); 
-                if ( !entity ) throw new Exception('No unpaid items'); 
-                
-                super.view();
-            }
-        }
-        ]]>
-    </code>    
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksBillingModel" />
+    
+    <pageflow>
+        <start>
+            <transition name="create" to="initial"/>
+        </start>
+        <page name="initial" title="Waterworks Billing Initial">
+            <transition to="processing" caption="Next" mnemonic="N" action="saveCreate"/>
+        </page>
+        <page name="processing" title="Processing Bill" action="processBill">
+            <transition name="cancel" to="end" caption="Cancel" mnemonic="B" visibleWhen="#{ false }"/>
+            <transition name="complete" to="view" caption="Complete" visibleWhen="#{ false }"/>
+        </page>
+        <page name="view" title="View Billing"> 
+            <transition to="end" caption="Close"/>
+        </page>
+        <end/>
+    </pageflow>        
+    
+    <pages>
+        <page name="initial" template="com.rameses.gov.etracs.waterworks.views.BillingInitialPage"/>
+        <page name="processing" template="com.rameses.treasury.common.views.ProcessingPage"/>
+        <page name="view" template="com.rameses.gov.etracs.waterworks.views.BillingViewPage"/>
+    </pages>
 </workunit>

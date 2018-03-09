@@ -20,19 +20,15 @@ public class CaptureConsumptionModel extends CrudFormModel {
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
-    def getParent() {
-        return caller.getMasterEntity();
-    }
+    def parent;
     
     boolean requires_recompute;
     def handler;
-    int year;
     
     @PropertyChangeListener
     def listener = [
         "entity.(reading|prevreading)" : { o-> 
             requires_recompute = true; 
-            
             def curr = (entity.reading==null? 0 : entity.reading);
             def prev = (entity.prevreading==null? 0 : entity.prevreading);            
             entity.volume = curr - prev; 
@@ -44,24 +40,14 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.year = dateSvc.getServerYear();
         entity.readingmethod = 'CAPTURE';
         entity.acctid = parent.objid;
-        year = entity.year;
     }
     
     void afterOpen() {
         entity.acctid = entity.account?.objid;
-        year = entity.billingcycle.year;
-    }
-    
-    def getMonthList() {
-        if( !year ) return [];
-        def m = [_schemaname:'waterworks_billing_cycle'];
-        m.findBy = [sectorid:parent.sector.objid, year:year];
-        m.select = schema.links.find{ it.name=='billingcycle' }.includefields;
-        return qryService.getList(m);
     }
     
     void computeAmount() {
-        if( !entity.billingcycle?.month ) 
+        if( !entity.month ) 
             throw new Exception("Period Month is required!");
         
         def m = [:];

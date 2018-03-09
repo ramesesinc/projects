@@ -1,0 +1,149 @@
+import com.rameses.annotations.*;
+
+class PaymentPostingService {
+	
+	@DataContext(dynamic=true)
+	def em;
+
+	@PersistenceContext
+	def db;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Service("SingleBillingHandler")
+	def billingHandler;
+
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	void invokeWorkflow( def pmt, def action ) {
+		//check if there is workflow tasks
+		def taskInfo = billingHandler.getPaymentWorkflow(  pmt );
+		if( taskInfo ) {
+			if( !taskInfo.processname ) 
+				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error processname is required");
+			if( !taskInfo.refid )
+				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error refid is required");
+			taskInfo.autostart = true;	
+			if(action=="pay") {
+				taskInfo.action = taskInfo.payaction;
+			}
+			else {
+				taskinfo.voidaction = taskInfo.voidaction;
+			}
+			taskSvc.signal( taskInfo );		
+		}
+		return null;
+	}	
+
+	@ProxyMethod 
+	public void post( def pmt ) {
+
+		if( pmt.reftype == "creditpayment") {
+			pmt.refno = "CP"+ seqSvc.getNextFormattedSeriesA( "creditpayment", 8 );
+		}
+
+		//save first the xxx_payment. 
+		def emMap = [:];
+		def emLookup = { name ->
+			if( !emMap.containsKey(name)) {
+				emMap.put( name, em.lookup( name));
+			}
+			return emMap.get(name);
+		}
+		pmt.voided = 0;
+		def pmtEm = emLookup( pmt._schemaname );
+		pmt = pmtEm.create( pmt );
+
+		
+		//save or update the reference. it will only update those with ref types
+		pmt.items.findAll{ it.reftype != null }.each {
+			def gb = emLookup( it.reftype );
+			//if there is a _new marker, then create this before saving
+			if( !it.refid || it.refid.matches("new|create") ) {
+				it.remove("refid");
+				gb.create( it );	
+			}
+			else {
+				//find first if it exists then save 
+				gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: it.amount] );
+			}			
+		}
+
+		//update those with overpayment. credits
+		pmt.items.findAll{ it.txntype == 'credit'}.each {
+			def p = [:];
+			p.parentid = pmt.parentid;
+			p.rootid = pmt.rootid;
+			p.refno = pmt.refno;
+			p.reftype = pmt.reftype;
+			p.refid = pmt.refid;
+			p.refdate = pmt.refdate;
+			p.amount = it.amount;
+			p.amtpaid = 0;
+			p.remarks = it.remarks;
+			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
+			crEm.create( p );
+		}
+
+		//if reftype is credit payment. we will update the xx_credit ledger
+		if( pmt.reftype == 'creditpayment' ) {
+			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
+			crEm.find( [objid: pmt.refid ]).update( [amtpaid: '{amtpaid + :amt}' ], [amt: pmt.amount ] );
+		}
+		invokeWorkflow( pmt, "pay" );
+	}
+  
+	@ProxyMethod 
+	public def reversePayment( def pmt ) {
+		if(!pmt._schemaname ) 
+			throw new Exception("PaymentPostingService.reversePayment error. _schemaname is required");
+		if( !pmt.objid)
+			throw new Exception("PaymentPostingService.reversePayment. Payment objid is required");
+
+		def emMap = [:];
+		def emLookup = { name ->
+			if( !emMap.containsKey(name)) {
+				emMap.put( name, em.lookup( name));
+			}
+			return emMap.get(name);
+		}
+
+		//after create post the posting references
+		pmt.items.findAll{ it.reftype !=null }.each {
+			def gb = emLookup( it.reftype );
+			//find first if it exists then save 
+			gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+		}
+
+		def pmtEm = emLookup( pmt._schemaname );
+		pmtEm.find( [ objid: pmt.objid ] ).update( [voided : 1 ] );
+
+		//reverse advance payments if any. We must delete it.
+		pmt.items.findAll{ it.txntype == 'credit' }.each {
+			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
+			crEm.find( [refid: pmt.refid ] ).delete();
+		}
+
+		invokeWorkflow( pmt, "voidpayment");
+		
+		return pmt;
+	}
+
+	/*
+	def wf = voidHandler.getVoidPaymentWorkflow( pmt );
+		if(wf) { 
+			if(!wf.processname) throw new Exception("processname is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+			if(!wf.taskid) throw new Exception("taskid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+			if(!wf.action) throw new Exception("action is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+			if(!wf.refid ) throw new Exception("refid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
+
+			wf.autostart = true; //flag to indicate that this must start task immediately, does not require assign to me
+			pmt._workflow = wf; 
+		}
+	*/	
+
+
+}

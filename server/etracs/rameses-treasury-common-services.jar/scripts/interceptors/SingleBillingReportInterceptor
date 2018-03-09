@@ -1,0 +1,40 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import vehicle.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
+class SingleBillingReportInterceptor {
+	
+	@Service("SingleBillingService")
+	def billingSvc;
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'singlebillingreport' }" )
+	public void getData(def evt) {
+		def params = evt.args[0];
+		def result = evt.result;
+		
+		def vv = [ rulename:params.rulename, params: params.parameters ];
+
+		result.data = billingSvc.execute( vv );
+
+		def billitems = [];
+		result.data.billitems.each {
+			if( it.txntype ==null) billitems << it;
+			else if( it.summary ) billitems << it;
+			else if( !it.txntype.toLowerCase().matches('discount|surcharge|interest') ) billitems << it;
+		}
+		result.data.billitems = billitems;
+	}
+
+
+}

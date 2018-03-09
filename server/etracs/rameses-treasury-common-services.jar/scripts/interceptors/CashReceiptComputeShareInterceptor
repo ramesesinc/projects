@@ -1,0 +1,62 @@
+import com.rameses.annotations.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import java.util.*;
+import enterprise.facts.Org;
+
+public class CashReceiptComputeShareInterceptor {
+	
+	@Service("RevenueSharingService")
+   	def sharingSvc;
+
+	@DataContext('sys_org') 
+	def sys_org;
+
+	@Before(pattern="CashReceiptService.post",  index=50)
+	public void computeShare(def evt) {
+		def p = evt.args[0];
+
+		/***************************************************************
+		//do the sharing here. Just proceed if there are errors 
+		****************************************************************/
+		try {
+			def sharing = sharingSvc.execute( p );
+			if(sharing) {
+				if(!p.sharing) p.sharing = [];
+				p.sharing.addAll( sharing );
+			}	
+		}
+		catch(e) {
+			println "Error executing sharing rule service. " + e.message;
+		}
+	}
+
+
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0] == 'revenuesharing'  }")
+	public void buildFacts(def evt) {
+		def factBuilder = evt.result; 
+		def rct = evt.args[1];
+		def facts = factBuilder.facts;
+
+		facts << new CashReceipt( receiptdate: rct.receiptdate ); 
+		if( rct.org?.objid ) {
+			def org = sys_org.find([ objid: rct.org.objid ]).first(); 
+			facts << new Org( orgid: org.objid, type: org.orgclass, root: (org.root==1)); 
+		}
+		
+		factBuilder.addBillItems( rct.items );
+
+		/*
+		if( rct.collectiongroup &&  !facts.find{it.class == treasury.facts.CollectionGroup.class } ) {
+			def cg = params.collectiongroup;
+			facts << new treasury.facts.CollectionGroup( objid:cg.objid, name: cg.name );
+		}
+		*/
+	}
+
+}

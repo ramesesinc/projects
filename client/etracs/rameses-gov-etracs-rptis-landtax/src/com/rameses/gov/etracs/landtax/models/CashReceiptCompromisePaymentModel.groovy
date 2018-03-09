@@ -1,12 +1,4 @@
-<workunit>
-    <invokers>
-        <invoker type="rptcompromise:forpayment" action="init" />
-    </invokers>
-    
-    <code>
-        
-<![CDATA[
-        
+
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
@@ -14,7 +6,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rpt.common.*;
 
-class CompromiseForPaymentController
+class CashReceiptCompromisePaymentModel
 {
     @Caller 
     def caller;
@@ -26,10 +18,6 @@ class CompromiseForPaymentController
     @PropertyChangeListener 
     def listener = [
         'entity.requiredpayment' : {
-            if (entity.requiredpayment.type == 'downpayment')
-                entity.amount = compromise.downpayment;
-            else
-                entity.amount = currentyeardue;
             caller.calcReceiptAmount();
         }
     ]
@@ -43,12 +31,6 @@ class CompromiseForPaymentController
     
     void init(){
         compromise = entity.compromise;
-        def bill = svc.getCurrentYearDue(compromise.rptledgerid);
-        currentyeardue = bill.currentyeardue;
-        getEntity().bill = bill;
-        getEntity().billid = bill.objid;
-        bill.remove('taxes');
-        bill.remove('items');
     }
     
     List getRequiredPayments() {
@@ -56,19 +38,15 @@ class CompromiseForPaymentController
         
         if( compromise.downpaymentorno == null &&  (compromise.downpaymentrequired == 1 || compromise.downpaymentrequired )  ) {
             list.add( [type:'downpayment', caption:'Downpayment' ] )
+            entity.amount = compromise.downpayment;
         }
         else if( compromise.cypaymentorno == null && ( compromise.cypaymentrequired == 1 || compromise.cypaymentrequired) ) {
             list.add( [type:'cypayment', caption:'Current Year Payment' ] )
+            def bill = svc.getCurrentYearDue(compromise.rptledgerid);
+            currentyeardue = bill.totals.total;
+            entity.bill = bill;
+            entity.amount = currentyeardue;
         }
         return list ;
     }
 }
-
-]]> 
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptByCompromiseRequiredPayment" />
-    </pages>
-    
-</workunit>

@@ -20,32 +20,14 @@ public class SectorModel extends CrudFormModel {
         }
     ];
     
-    void afterCreate() {
-        billCycleList.reload(); 
+    def getQuery() {
+        return [sectorid: entity.objid];
     }
 
-    void generateBillingCycle() {
-        def h = { o->
-            o.sectorid = entity.objid;
-            billingCycleService.generateByYear(o);
-            billCycleList.reload();
-        };
-        def fc = [
-            [name:'year', datatype:'integer', caption:'Year']
-        ];
-        Modal.show("dynamic_field:entry", [title:'Enter Bill Date', formControls:fc, handler:h] );
-    }
-    
-    def billCycleList = [
-        fetchList: {
-            if ( mode.toString() != 'read' ) return []; 
-
-            def m = [_schemaname:'waterworks_billing_cycle'];
-            m.findBy = [sectorid: entity.objid];
-            m._limit = 1000;
-            m._start = 0;
-            queryService.getList(m);
+    def handler = [
+        createItem: {
+            return [sectorid: entity.objid];
         }
-    ] as BasicListModel;
-
+    ]
+    
 }

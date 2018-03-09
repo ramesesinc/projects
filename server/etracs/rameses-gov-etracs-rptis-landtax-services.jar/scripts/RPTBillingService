@@ -81,7 +81,7 @@ public class RPTBillingService
         bill.cy = pdate.year
         bill.cqtr = pdate.qtr
         bill.cmonth = pdate.month
-        if (!params._generate_barcode || params._generate_barcode == true){
+        if (params._generate_barcode == null || params._generate_barcode == true){
         	bill.barcode = generateBarcode(bill)
         }
         bill.maxadvanceyear = getMaxAdvanceYear()
@@ -140,17 +140,35 @@ public class RPTBillingService
 	}
 
 	@ProxyMethod
-	public def generateBillByTdNo(params){
-		def ledger = em_rptledger.find([tdno:params.tdno]).first() 
-		if (!ledger) throw new Exception('Invalid TD No.')
+	public def generateBillByLedger(params){
+		def ledger = em_rptledger.find([objid:params.objid]).first() 
+		if (!ledger) throw new Exception('Ledger does not exist.')
 
-		def bill = initBill()
+		def option = [_generate_barcode:true]
+		if (params.billid) {
+			option._generate_barcode = false
+		}
+		def bill = initBill(option)
+
+		if (params.billid){
+			bill.objid = params.billid
+			bill.billid = params.billid 
+			bill.barcode = em_rptbill.select('barcode').find([objid:bill.objid]).first()?.barcode 
+		}
 		if (params.billtoyear) bill.billtoyear = params.billtoyear
 		if (params.billtoqtr) bill.billtoqtr = params.billtoqtr
 		bill.taxpayer = ledger.taxpayer 
 		bill.ledgers = [[objid:ledger.objid]]
 		bill._forpayment = true 
 		return  generateBill(bill)
+	}
+
+	@ProxyMethod
+	public def generateBillByTdNo(params){
+		def ledger = em_rptledger.select('objid').find([tdno:params.tdno]).first() 
+		if (!ledger) throw new Exception('Invalid TD No.')
+		params.objid = ledger.objid 
+		return generateBillByLedger(params)
 	}
 
 

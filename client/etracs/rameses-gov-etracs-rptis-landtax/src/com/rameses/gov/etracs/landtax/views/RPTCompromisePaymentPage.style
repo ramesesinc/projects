@@ -1,0 +1,16 @@
+"pmt.amount" [true == true] {
+    enabled:false;
+}
+
+"pmt.amount" [pmt.type == 'cypayment'] {
+    enabled:true;
+}
+
+"pmt.cy" [true == true] {
+    visible:false;
+}
+
+"pmt.cy" [pmt.type == 'cypayment'] {
+    visible:true;
+    required:true;
+}

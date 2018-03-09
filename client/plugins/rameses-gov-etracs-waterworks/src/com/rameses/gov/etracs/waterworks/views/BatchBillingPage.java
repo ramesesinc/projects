@@ -5,7 +5,6 @@
 package com.rameses.gov.etracs.waterworks.views;
 
 import com.rameses.osiris2.themes.FormPage;
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -13,17 +12,15 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author Elmo Nazareno
  */
 @Template(FormPage.class)
-@StyleSheet
-public class BatchReadingPage extends javax.swing.JPanel {
+public class BatchBillingPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form BatchReadingListPage
+     * Creates new form BatchBillingPage
      */
-    public BatchReadingPage() {
+    public BatchBillingPage() {
         initComponents();
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,32 +30,59 @@ public class BatchReadingPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
-        jToolBar2 = new javax.swing.JToolBar();
-        btnMoveFirst = new com.rameses.rcp.control.XButton();
-        btnMovePrev = new com.rameses.rcp.control.XButton();
-        btnMoveNext = new com.rameses.rcp.control.XButton();
-        btnMoveLast = new com.rameses.rcp.control.XButton();
-        jPanel5 = new javax.swing.JPanel();
-        lblRecordCount = new com.rameses.rcp.control.XLabel();
-        lblPageCount = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
+        schemaList1 = new com.rameses.seti2.components.SchemaList();
 
-        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+        xLabel1.setCaption("Control No");
+        xLabel1.setExpression("#{ entity.objid }");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel1);
+
+        xLabel5.setCaption("Year");
+        xLabel5.setExpression("#{ entity.year }");
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel5);
+
+        xLabel6.setCaption("Month");
+        xLabel6.setExpression("#{ entity.monthname }");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel6);
+
+        xLabel2.setCaption("Zone");
+        xLabel2.setExpression("#{ entity.zone.code }");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel2);
+
+        xLabel3.setCaption("Sector");
+        xLabel3.setExpression("#{ entity.zone.sector.code }");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel3);
+
+        xLabel4.setCaption("Reader");
+        xLabel4.setExpression("#{ entity.reader.name }");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel4);
+
+        schemaList1.setCustomFilter("batchid = :batchid");
+        schemaList1.setName("selectedItem"); // NOI18N
+        schemaList1.setOrderBy("account.stuboutnode.indexno");
+        schemaList1.setQueryName("query");
+        schemaList1.setSchemaName("waterworks_billing");
+        schemaList1.setAllowOpen(false);
+        schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctno"}
                 , new Object[]{"caption", "Acct No"}
                 , new Object[]{"width", 120}
                 , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -86,9 +110,9 @@ public class BatchReadingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctname"}
                 , new Object[]{"caption", "Acct Name"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 250}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -100,10 +124,10 @@ public class BatchReadingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "prevreading"}
-                , new Object[]{"caption", "Previous Reading"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"caption", "Prev Reading"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -115,10 +139,10 @@ public class BatchReadingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "reading"}
-                , new Object[]{"caption", "Current Reading"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"caption", "Curr. Readng"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -131,10 +155,10 @@ public class BatchReadingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "volume"}
-                , new Object[]{"caption", "Vol Consumed"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"caption", "Vol. Consumption"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -148,9 +172,9 @@ public class BatchReadingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 120}
+                , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -162,10 +186,10 @@ public class BatchReadingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.meter.serialno"}
-                , new Object[]{"caption", "Meter No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"caption", "Meter Serial No"}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -178,9 +202,9 @@ public class BatchReadingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.meter.brand"}
                 , new Object[]{"caption", "Brand"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -204,96 +228,24 @@ public class BatchReadingPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "account.stuboutnode.stubout"}
+                , new Object[]{"caption", "Stubout"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem"); // NOI18N
-        xDataTable1.setRowHeight(25);
-
-        xLabel1.setCaption("Control No");
-        xLabel1.setExpression("#{ entity.objid }");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel1);
-
-        xLabel5.setCaption("Year");
-        xLabel5.setExpression("#{ entity.year }");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel5);
-
-        xLabel6.setCaption("Month");
-        xLabel6.setExpression("#{ entity.monthname }");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel6);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 62, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jToolBar2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jToolBar2.setRollover(true);
-
-        btnMoveFirst.setFocusable(false);
-        btnMoveFirst.setIconResource("images/navbar/first.png");
-        btnMoveFirst.setName("listHandler.moveFirstPage"); // NOI18N
-        jToolBar2.add(btnMoveFirst);
-
-        btnMovePrev.setFocusable(false);
-        btnMovePrev.setIconResource("images/navbar/previous.png");
-        btnMovePrev.setName("moveBackPage"); // NOI18N
-        jToolBar2.add(btnMovePrev);
-
-        btnMoveNext.setFocusable(false);
-        btnMoveNext.setIconResource("images/navbar/next.png");
-        btnMoveNext.setImmediate(true);
-        btnMoveNext.setName("moveNextPage"); // NOI18N
-        jToolBar2.add(btnMoveNext);
-
-        btnMoveLast.setFocusable(false);
-        btnMoveLast.setIconResource("images/navbar/last.png");
-        btnMoveLast.setName("listHandler.moveLastPage"); // NOI18N
-        jToolBar2.add(btnMoveLast);
-
-        jPanel5.setPreferredSize(new java.awt.Dimension(100, 20));
-        jPanel5.setLayout(new com.rameses.rcp.control.layout.XLayout());
-
-        lblRecordCount.setDepends(new String[] {"selectedItem"});
-        lblRecordCount.setExpression("#{pageIndex}");
-        lblRecordCount.setUseHtml(true);
-        jPanel5.add(lblRecordCount);
-
-        lblPageCount.setDepends(new String[] {"selectedItem"});
-        lblPageCount.setExpression("#{pageCount}");
-        lblPageCount.setUseHtml(true);
-        jPanel5.add(lblPageCount);
-
-        jToolBar2.add(jPanel5);
-
-        xLabel2.setCaption("Zone");
-        xLabel2.setExpression("#{ entity.zone.code }");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel2);
-
-        xLabel3.setCaption("Sector");
-        xLabel3.setExpression("#{ entity.zone.sector.code }");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel3);
-
-        xLabel4.setCaption("Reader");
-        xLabel4.setExpression("#{ entity.reader.name }");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel4);
+        schemaList1.setHandler("updateHandler");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -302,47 +254,28 @@ public class BatchReadingPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
                         .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 816, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 573, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(427, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
-                .addGap(28, 28, 28))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 499, Short.MAX_VALUE)
-                    .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton btnMoveFirst;
-    private com.rameses.rcp.control.XButton btnMoveLast;
-    private com.rameses.rcp.control.XButton btnMoveNext;
-    private com.rameses.rcp.control.XButton btnMovePrev;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JToolBar jToolBar2;
-    private com.rameses.rcp.control.XLabel lblPageCount;
-    private com.rameses.rcp.control.XLabel lblRecordCount;
-    private com.rameses.rcp.control.XDataTable xDataTable1;
+    private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;

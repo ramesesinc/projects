@@ -59,6 +59,7 @@ public class CaptureConsumptionModel extends CrudFormModel {
     } 
     
     void beforeSave( mode ) {
+        entity.state = "CAPTURE";
         if( entity.prevreading > entity.reading) 
             throw new Exception("Prev reading must be less than current reading");
         if( entity.prevreading <0 || entity.reading < 0 || entity.volume <0) 

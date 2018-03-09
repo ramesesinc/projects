@@ -1,7 +1,7 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="waterworks_batchreading">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="waterworks_billing_batch">
     <invokers>
         <invoker folderid="/menucategory/waterworks/billing" 
             cols="year,monthname,zone.code,zone.sector.code,readingdate,reader.name,dtcreated,createdby.nam"
-            caption="View Batch Reading List" action="init" index="1" />
+            caption="View Billing List" action="init" index="1" />
     </invokers>
 </workunit>

@@ -1,8 +1,8 @@
 import com.rameses.annotations.*;
 
-class WaterworksBillingInterceptor {
+class WaterworksBatchBillingListInterceptor {
 
-	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'waterworks_billing'}")
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'waterworks_billing_batch'}")
 	public void getNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'Draft', id:'draft'];
@@ -10,7 +10,7 @@ class WaterworksBillingInterceptor {
 		result << [ title: 'Posted', id:'posted'];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_billing'}")
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_billing_batch'}")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		if( !o.node?.id ) return;

@@ -1,0 +1,54 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+class WaterworksBatchBillingService {
+	
+	@DataContext("waterworks_billing")
+	def billing;
+
+	@DataContext('waterworks_billing_account')
+	def billAcct;
+
+	@DataContext("waterworks_billing_cycle")
+	def billCycle;
+
+	@Service("DateService")
+	def dtSvc;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def create( def o ) {
+		o.dtcreated = dtSvc.getServerDate();
+		o.createdby =  [objid:env.USERID, name:env.FULLNAME ]; 
+
+		def pp = billCycle.find( [year: o.year, month: o.month ,sectorid: o.sector.objid ] ).first();
+		o.billingcycleid = pp.objid;
+		o.state = 'DRAFT';
+
+		o = billing.create(o);
+		wbill.buildBillingAccounts( [billid: o.objid, sectorid: o.sector.objid ] );
+		return o;
+	}
+
+	@ProxyMethod
+	public def getStatus(def o ) {
+		def c = billAcct.find( [parentid: p.objid ] ).select("count:{COUNT(*)}").first();
+		def z = billAcct.find( [parentid: p.objid, state:'DRAFT' ] ).select("count:{COUNT(*)}").first();
+
+		//return  also the count records
+		def m = [:];
+		m.recordcount = c.count; 
+		m.unprocessedcount = z.count; 
+		return m;
+	}
+
+
+	@ProxyMethod
+	public def getList( def o ) {
+		return billAcct.find( [parentid: entity.objid, state: 'DRAFT' ] ).list(o);
+	}
+
+
+}

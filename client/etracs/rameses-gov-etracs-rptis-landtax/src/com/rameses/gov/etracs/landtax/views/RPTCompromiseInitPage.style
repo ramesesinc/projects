@@ -1,0 +1,30 @@
+"entity.txndate"[type=='online']{
+    enabled:false;
+}
+
+"entity.txndate"[type!='online']{
+    enabled:true;
+}
+
+"downpayment|entity.downpaymentrate" [entity.downpaymentrequired == true] {
+    enabled:true;
+    required:true;
+}
+
+"downpayment|entity.downpaymentrate" [entity.downpaymentrequired == false] {
+    enabled:false;
+    required:false;
+}
+
+"entity.manualdiff|sep1"[mode=='init' && type=='online']{
+    visible:false;
+}
+
+"entity.manualdiff|sep1"[mode=='init' && type!='online']{
+    visible:true;
+}
+
+"entity.manualdiff|sep1"[mode!='init']{
+    visible:false;
+}
+

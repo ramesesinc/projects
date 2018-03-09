@@ -1,0 +1,11 @@
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise:forinstallment" action="init" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.models.CashReceiptCompromiseInstallmentModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.CashReceiptCompromiseInstallmentPage" />
+    </pages>
+    
+</workunit>

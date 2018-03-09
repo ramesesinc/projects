@@ -1,0 +1,7 @@
+"yearOption|dayOption" [ mode == 'read' ] {
+    enabled: false;
+}
+
+"yearOption|dayOption" [ mode != 'read' ] {
+    enabled: true;
+}

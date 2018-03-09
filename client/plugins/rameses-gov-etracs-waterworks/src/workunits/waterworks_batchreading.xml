@@ -1,0 +1,18 @@
+<workunit schemaName="waterworks_batchreading">
+    <invokers>
+        <invoker folderid="/menucategory/waterworks/billing" caption="New Batch Reading" action="create" index="0"/>
+        
+        <invoker type="waterworks_batchreading:create" caption="New Batch Reading" action="create" />
+        <invoker type="waterworks_batchreading:open" caption="Batch Reading" action="open" />
+        
+        <!-- Post Actions -->
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.BatchReadingModel" />
+
+    <pages>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.BatchReadingPage" />
+        <page name="create" template="com.rameses.gov.etracs.waterworks.views.BatchReadingInitialPage" />
+    </pages>    
+</workunit>

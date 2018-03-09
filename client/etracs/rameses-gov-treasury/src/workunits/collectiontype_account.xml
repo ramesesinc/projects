@@ -1,4 +1,4 @@
-<workunit>
+<workunit schemaName="collectiontype_account">
     
    <invokers>
        <invoker type="collectiontype_account:create" caption="Collection Type Account" action="create"  target="popup"/>

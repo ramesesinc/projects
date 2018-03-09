@@ -1,9 +1,9 @@
 <workunit>
     
    <invokers>
-         <invoker type="cashreceiptinfo:open" caption="Cash Receipt Info" action="open" />
+         <invoker type="cashreceiptinfo:open" caption="Cash Receipt Information" action="open" />
          
-         <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
+         <invoker type="formActions" caption="Reprint" action="viewReprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
    </invokers>
    
    <code>
@@ -27,6 +27,12 @@ class CashReceiptController extends CRUDController {
 
     def getInfoHtml() {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
+    }
+    
+    def viewReprint() {
+        def op = Inv.lookupOpener("cashreceipt:reprint");
+        op.target = "popup";
+        return op;
     }
     
     def report;     

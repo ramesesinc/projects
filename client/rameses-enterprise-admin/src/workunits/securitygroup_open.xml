@@ -1,0 +1,10 @@
+<workunit>
+   <invokers>
+        <invoker type="securitygroup:open" action="init" caption="Security Group" target="popup" />
+   </invokers>
+   
+   <code class="com.rameses.admin.models.SecurityGroupModel" />
+   <pages>
+        <page template="com.rameses.admin.views.SecurityGroupPage"/>       
+   </pages>
+</workunit>

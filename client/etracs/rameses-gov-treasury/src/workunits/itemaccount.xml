@@ -1,0 +1,21 @@
+<workunit schemaName="itemaccount">
+    <invokers>
+        <invoker type="itemaccount:create" caption="Item Account" action="create" 
+                 role="MASTER" permission="itemaccount.create" target="popup"/>
+        <invoker type="itemaccount:open" caption="Item Account" action="open" 
+                 role="MASTER" permission="itemaccount.read" target="popup"/>
+
+        <invoker type="formActions" caption="Activate" action="activate" 
+                 role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/> 
+                 
+        <invoker type="formActions" caption="Deactivate" action="deactivate" 
+                 role="MASTER" permission="itemaccount.deactivate" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/>  
+                 
+    </invokers> 
+   
+    <code class="com.rameses.enterprise.treasury.models.ItemAccountModel" />
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.ItemAccountPage"/>
+    </pages>
+</workunit>

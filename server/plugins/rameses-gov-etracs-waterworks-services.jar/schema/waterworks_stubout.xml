@@ -4,7 +4,7 @@
 		<field name="objid" primary="true" prefix="SO"/>
 		<field name="code" required="true" indexed="true" caption="Stubout Code" searchable="true"/>
 		<field name="description" required="true" indexed="true" caption="Stubout Description"/>
-		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one" 
+		<complex name="zone" ref="waterworks_zone" jointype="many-to-one" 
 			includefields="objid,code,description,sector.objid,sector.code,reader.objid">
 			<key field="zoneid" target="objid"/>	
 		</complex>	

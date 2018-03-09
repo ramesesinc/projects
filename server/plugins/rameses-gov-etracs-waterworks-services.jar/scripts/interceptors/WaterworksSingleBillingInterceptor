@@ -42,12 +42,12 @@ class WaterworksSingleBillingInterceptor {
 		def arr = [];
 		def wp = [:];
 		if(p.params.payoption) {
-			arr << "((billingcycle.year * 12)+billingcycle.month) <= :yearmonth";
+			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
-		arr << "amount - amtpaid > 0"
+		arr << "amount - amtpaid > 0 AND state='POSTED' "
 			
-		def select = "year:{billingcycle.year},month:{billingcycle.month},volume,amount,amtdue:{amount-amtpaid},duedate:{billingcycle.duedate},disconnectiondate:{billingcycle.disconnectiondate},refid:{objid},reftype:{'waterworks_consumption'}"; 
+		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'}"; 
 		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).list();
 		list.addAll( conList );
 	}
@@ -55,7 +55,14 @@ class WaterworksSingleBillingInterceptor {
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
 		def data = evt.args[1];
+		/*
+		data.each { k,v->
+			println k+"="+v;
+		}
+		*/
 		def factBuilder = evt.result;
+		factBuilder.facts << new Stubout( zone:data.zoneid, sector:data.sector?.objid );
+
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {
 				return new WaterBillItem(o);

@@ -2,7 +2,7 @@
           schemaName="waterworks_consumption"
           contextName="waterworks"
           title="Consumption Ledger"
-          cols="billingcycle.year,billingcycle.month,prevreading,reading,volume,amount,amtpaid,balance" >
+          cols="year,monthname,prevreading,reading,volume,amount,amtpaid,balance" >
     <invokers>
         <invoker type="waterworks_account:section" caption="Ledger" 
                  index="2" action="init" 

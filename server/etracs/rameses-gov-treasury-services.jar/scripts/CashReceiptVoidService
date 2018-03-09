@@ -30,10 +30,16 @@ class CashReceiptVoidService  {
 	@DataContext('paymentcheck') 
 	def pmtChkEm;
 
+	@Service("ActionPermissionService")
+	def actionPermissionSvc;
+
+
 	@ProxyMethod
 	public def post( def p ) {
+		def usr = actionPermissionSvc.checkAllowedAction( [username:p.username, password: p.password, action: 'cashreceipt.approve_void' ] );
+
 		def v = [objid: "VOID"+new UID()];
-		v.postedby = [ objid:env.USERID, name:env.FULLNAME ];
+		v.postedby = [ objid:usr.objid, name:usr.firstname+ ' ' + usr.lastname];
 		v.receiptid = p.receipt.objid;
 		v.reason = p.reason;
 		v.txndate = dateService.serverDate;

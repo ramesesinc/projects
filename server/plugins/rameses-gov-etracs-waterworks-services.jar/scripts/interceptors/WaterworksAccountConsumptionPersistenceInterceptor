@@ -8,6 +8,7 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 	@DataContext("waterworks_account")
 	def acct; 
 
+	/*
 	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
 	public void beforeRemove( evt ) {
 		def zz = evt.args[0];
@@ -35,4 +36,5 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 			]); 
 		} 
 	}
+	*/
 }

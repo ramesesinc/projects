@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bank">
+    <invokers>
+
+        <invoker folderid="/explorer/master/treasury" caption="Banks"   
+                 role="MASTER" permission="bank.view" action="init"/> 
+
+        <invoker type="quick_launcher" code="BANK00" caption="Banks" 
+                 role="MASTER" permission="bank.view" action="init"/> 
+
+        <invoker folderid="/menucategory/treasury/master" caption="Banks"   
+                 role="MASTER" permission="bank.view" action="init" index="10"/> 
+        
+   </invokers>
+</workunit>

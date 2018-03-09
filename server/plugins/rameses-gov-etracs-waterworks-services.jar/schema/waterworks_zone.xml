@@ -1,0 +1,16 @@
+<schema adapter="waterworks">
+
+	<element tablename="waterworks_zone">
+		<field name="objid" primary="true" prefix="WSZ"/>
+		<field name="code" caption="Zone Code" indexed="true" searchable="true"/>
+		<field name="description" caption="Zone Description"/>
+		<field name="sectorid" required="true"/>
+
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false"
+			includefields="objid,code">
+			<key field="sectorid" target="objid" />
+		</complex>	
+				
+	</element>
+
+</schema>

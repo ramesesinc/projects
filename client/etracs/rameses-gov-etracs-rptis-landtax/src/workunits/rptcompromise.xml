@@ -32,12 +32,12 @@
         <invoker type="formActions" name="contractMunicipal" caption="Contract" index="100" visibleWhen="#{mode == 'view' &amp;&amp; orgtype == 'MUNICIPALITY'}" category="compromisereport:municipal"/>
         <invoker type="formActions" name="contractMunicipal" caption="Contract" index="100" visibleWhen="#{mode == 'view' &amp;&amp; orgtype == 'CITY'}" category="compromisereport:city"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.rpt.ledger.compromise.RPTCompromiseModel">
+    <code class="com.rameses.gov.etracs.landtax.models.RPTCompromiseModel">
     </code>
     
     <pages>
-        <page name="init" template="com.rameses.gov.etracs.rpt.ledger.compromise.RPTCompromiseInitPage"/>
-        <page template="com.rameses.gov.etracs.rpt.ledger.compromise.RPTCompromisePage"/>
+        <page name="init" template="com.rameses.gov.etracs.landtax.views.RPTCompromiseInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTCompromisePage"/>
         <page name="preview" template="com.rameses.osiris2.reports.templates.ReportViewPage" />
     </pages>
 </workunit>

@@ -5,7 +5,9 @@
 *
 =============================================================*/
 
-
+update cashreceiptitem_rpt_account set discount= 0 where discount is null
+  go
+  
 alter table rptledger add lguid varchar(50)
 go 
 
@@ -54,18 +56,17 @@ create table rptpayment (
 ) 
 go 
 
-create index fk_rptpayment_rptledger on rptpayment(refid)
-go 
 create index fk_rptpayment_cashreceipt on rptpayment(receiptid)
+go 
+create index ix_refid on rptpayment(refid)
 go 
 create index ix_receiptno on rptpayment(receiptno)
 go 
 
 alter table rptpayment 
-  add constraint rptpayment_cashreceipt 
+  add constraint fk_rptpayment_cashreceipt 
   foreign key (receiptid) references cashreceipt (objid)
 go 
-
 
 
 
@@ -82,6 +83,7 @@ create table rptpayment_item (
   interest decimal(16,2) not null,
   discount decimal(16,2) not null,
   partialled int not null,
+  priority int not null,
   primary key (objid)
 ) 
 go
@@ -192,7 +194,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority 
 )
 select
   concat(objid, '-basic') as objid,
@@ -205,7 +208,8 @@ select
   basic as amount,
   basicint as interest,
   basicdisc as discount,
-  partialled
+  partialled,
+  10000 as priority
 from rptledger_payment_item
 go 
 
@@ -224,7 +228,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-sef') as objid,
@@ -237,7 +242,8 @@ select
   sef as amount,
   sefint as interest,
   sefdisc as discount,
-  partialled
+  partialled,
+  10000 as priority
 from rptledger_payment_item
 go 
 
@@ -253,7 +259,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-sh') as objid,
@@ -266,7 +273,8 @@ select
   sh as amount,
   shint as interest,
   shdisc as discount,
-  partialled
+  partialled,
+  100 as priority
 from rptledger_payment_item
 where sh > 0
 go 
@@ -285,7 +293,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-firecode') as objid,
@@ -298,7 +307,8 @@ select
   firecode as amount,
   0 as interest,
   0 as discount,
-  partialled
+  partialled,
+  50 as priority
 from rptledger_payment_item
 where firecode > 0
 
@@ -316,8 +326,8 @@ insert into rptpayment_item(
   revperiod,
   amount,
   interest,
-  discount,
-  partialled
+  discount,,
+  priority
 )
 select
   concat(objid, '-basicidle') as objid,
@@ -330,7 +340,8 @@ select
   basicidle as amount,
   basicidleint as interest,
   basicidledisc as discount,
-  partialled
+  partialled,
+  200 as priority
 from rptledger_payment_item
 where basicidle > 0
 go 
@@ -1563,6 +1574,7 @@ select
   ia.title as item_title,
   ia.fund_objid as item_fund_objid, 
   ia.fund_code as item_fund_code,
+  ia.fund_title as item_fund_title,
   ia.type as item_type,
   pt.tag as item_tag
 from itemaccount ia

@@ -4,11 +4,11 @@
         <invoker type="formActions" action="printDetail" immediate="true" caption="Print Detail" visibleWhen="#{completed == true &amp;&amp; entity.voided == false}" mnemonic="d"/>
     </invokers>
     
-    <code class="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptCompromiseController" >
+    <code class="com.rameses.gov.etracs.landtax.models.CashReceiptCompromiseModel" >
     </code>
     
     <pages>
-        <page name="default" template="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptByCompromise" />
+        <page name="default" template="com.rameses.gov.etracs.landtax.views.CashReceiptCompromisePage" />
     </pages>
     
 </workunit>

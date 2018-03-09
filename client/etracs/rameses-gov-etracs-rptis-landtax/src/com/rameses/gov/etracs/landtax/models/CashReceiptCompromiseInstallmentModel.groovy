@@ -1,12 +1,5 @@
-<workunit>
-    <invokers>
-        <invoker type="rptcompromise:forinstallment" action="init" />
-    </invokers>
-    
-    <code>
-        
-<![CDATA[
-        
+package com.rameses.gov.etracs.landtax.models;
+ 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
@@ -14,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.gov.etracs.rpt.common.*;
 
-class CompromiseForInstallmentController
+class CashReceiptCompromiseInstallmentModel
 {
     @Caller 
     def caller;
@@ -30,7 +23,7 @@ class CompromiseForInstallmentController
     
     void init(){
         compromise = entity.compromise;
-        entity.installments = svc.getUnpaidInstallments(compromise.objid);
+        entity.installments = svc.getUnpaidInstallments([objid:compromise.objid]);
     }
     
     
@@ -92,12 +85,3 @@ class CompromiseForInstallmentController
         caller.calcReceiptAmount();
     }
 }
-
-]]> 
-    </code>
-    
-    <pages>
-        <page template="com.rameses.gov.etracs.rpt.collection.ui.RPTReceiptByCompromiseInstallment" />
-    </pages>
-    
-</workunit>

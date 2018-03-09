@@ -8,12 +8,6 @@ import rptis.landtax.actions.*;
 
 class RPTReceiptCompromiseService
 {
-	@ActiveDB('rptcompromise')
-	def em
-
-	@ActiveDB('cashreceiptrpt')
-	def receiptdb 
-
 	@Service('DateService')
 	def dtSvc
 
@@ -29,12 +23,17 @@ class RPTReceiptCompromiseService
 	@Service('RPTLedgerService')
 	def ledgerSvc 
 
-
 	@Service('LGUService')
 	def lguSvc 
 
 	@Service('RPTReceiptService')
 	def receiptSvc
+
+	@ActiveDB('rptreceipt')
+	def em_rptreceipt 
+
+	@DataContext('rptcompromise')
+	def em_rptcompromise 
 
 	@DataContext('rptledger')
 	def em_rptledger
@@ -52,10 +51,131 @@ class RPTReceiptCompromiseService
 	def em_rptpayment_share
 
 
-
-	
 	def RULESET 			= 'rptbilling'
 	def FACT_PACKAGE 		= 'rptbilling.'
+
+
+
+	@ProxyMethod
+	public def getCurrentYearDue( ledgerid ) {
+		def bill = billingSvc.initBill([_generate_barcode:false])	
+		def ledger = em_rptledger.select('objid,taxpayer.objid,taxpayer.name').find([objid:ledgerid]).first()
+		bill.ledgers = [ledger]
+		bill.taxpayer = ledger.taxpayer 
+		bill._save = false 
+		bill._forpayment = true 
+		bill = billingSvc.generateBill(bill)
+		bill.rptledger = bill.remove('ledgers')[0]
+		if (bill.totals.total <= 0 ) throw new Exception('Ledger has already been fully paid.')
+		return bill 
+	}
+
+	/*====================================================
+	*  receipt
+	*     - items 
+	*     - postingitems 
+	*     - shares 
+	* 	  - credits
+	*====================================================*/
+	@ProxyMethod
+	public void buildPostingItems(receipt){
+		receipt.each{
+			println ' ==> ' + it 
+		}
+		throw new Exception('test')
+		def bill = [:]
+
+		if (receipt.requiredpayment == null || receipt.requiredpayment.type == 'downpayment'){
+			receipt.unpaiditems = em_rptcompromise.getUnpaidItems(receipt)
+		}
+		else {
+			receipt.taxes = svc.getCurrentYearTaxes(receipt);
+		}
+		
+		buildReceiptPostingItems(receipt)
+
+		/*
+		receipt.taxes.each{
+			receipt.items << createReceiptItem(receipt, it)
+		}
+		*/
+	}
+
+
+	/*==============================================================
+	*
+	* SUPPORT METHODS
+	*
+	================================================================*/
+
+	def buildReceiptPostingItems(receipt){
+		def compromise = receipt.compromise 
+		def unpaiditems = em.getUnpaidItems(compromise).each{ updateTotals(it) }
+		
+		def payment = receipt.amount 
+		def paiditems = []
+
+		//build paiditems 
+		for (int i=0; i < unpaiditems.size(); i++){
+			def item = unpaiditems[i]
+			item.paid = 0
+
+			if (payment <= 0.0){
+				break;
+			}
+			else if (item.amtdue <= payment){
+				item.paid = 1
+				paiditems << item
+				payment -= item.amtdue 
+			}
+			else{
+				payment = applyPartialFireCode( item, payment)
+				payment = applyPartialBasicIdle(item, payment)
+				payment = applyPartialSh(item, payment)
+				
+				if (payment > 0.0){
+					def linedue = item.basic + item.basicint + item.sef + item.sefint
+					def partialbasic = numSvc.round( (item.basic / linedue) * payment )
+					def partialbasicint = numSvc.round( (item.basicint / linedue) * payment )
+					def partialsef = numSvc.round( (item.sef / linedue) * payment )
+					def partialsefint = payment - (partialbasic + partialbasicint + partialsef )
+					item.basic = partialbasic 
+					item.basicint = partialbasicint 
+					item.sef = partialsef 
+					item.sefint = partialsefint 
+				}
+				else{
+					item.basic = 0
+					item.basicint = 0
+					item.sef = 0
+					item.sefint = 0
+				}
+				item.paid = 0
+
+				updateTotals(item)
+				paiditems << item
+				payment = 0.0
+			}
+		}
+
+		receipt.paiditems = paiditems 
+		buildShares(receipt)
+		receipt.paiditems.each{
+			it.fullypaid = it.paid 
+		}
+		return receipt
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	@ProxyMethod
 	public def open(receipt  ) {
@@ -83,14 +203,7 @@ class RPTReceiptCompromiseService
 		return em.getUnpaidInstallments([rptcompromiseid:objid])
 	}
 
-	@ProxyMethod
-	public def getCurrentYearDue( ledgerid ) {
-		def bill = billingSvc.generateBillByLedger([objid:ledgerid])	
-		def due = em.findCurrentDueByBill(bill)
-		if (!due) throw new Exception('Current Due is not computed property. Verify ledger data.')
-		bill.currentyeardue = due.amount 
-		return bill 
-	}
+
 
 	@ProxyMethod
 	public def createReceipt(receipt){
@@ -323,64 +436,7 @@ class RPTReceiptCompromiseService
 		item.total = item.amtdue 
 	}
 
-	@ProxyMethod
-	public def buildCreditAndTaxItems(receipt){
-		def compromise = receipt.compromise 
-		def unpaiditems = em.getUnpaidItems(compromise).each{ updateTotals(it) }
-		
-		def payment = receipt.amount 
-		def paiditems = []
-
-		//build paiditems 
-		for (int i=0; i < unpaiditems.size(); i++){
-			def item = unpaiditems[i]
-			item.paid = 0
-
-			if (payment <= 0.0){
-				break;
-			}
-			else if (item.amtdue <= payment){
-				item.paid = 1
-				paiditems << item
-				payment -= item.amtdue 
-			}
-			else{
-				payment = applyPartialFireCode( item, payment)
-				payment = applyPartialBasicIdle(item, payment)
-				payment = applyPartialSh(item, payment)
-				
-				if (payment > 0.0){
-					def linedue = item.basic + item.basicint + item.sef + item.sefint
-					def partialbasic = numSvc.round( (item.basic / linedue) * payment )
-					def partialbasicint = numSvc.round( (item.basicint / linedue) * payment )
-					def partialsef = numSvc.round( (item.sef / linedue) * payment )
-					def partialsefint = payment - (partialbasic + partialbasicint + partialsef )
-					item.basic = partialbasic 
-					item.basicint = partialbasicint 
-					item.sef = partialsef 
-					item.sefint = partialsefint 
-				}
-				else{
-					item.basic = 0
-					item.basicint = 0
-					item.sef = 0
-					item.sefint = 0
-				}
-				item.paid = 0
-
-				updateTotals(item)
-				paiditems << item
-				payment = 0.0
-			}
-		}
-
-		receipt.paiditems = paiditems 
-		buildShares(receipt)
-		receipt.paiditems.each{
-			it.fullypaid = it.paid 
-		}
-		return receipt
-	}
+	
 
 	def applyPartialFireCode(item, payment){
 		if (payment == 0){
@@ -464,7 +520,7 @@ class RPTReceiptCompromiseService
 		def receipt = createCapturedReceipt(compromise, pmt)
 		receipt.installments = installments
 		postInstallmentPayments(receipt)
-		buildCreditAndTaxItems(receipt)
+		buildReceiptPostingItems(receipt)
 		receipt.paiditems.each{ item ->
 			buildPaidItemInfo(receipt, item)
 			em_rptpayment_item.create(item)
@@ -482,7 +538,7 @@ class RPTReceiptCompromiseService
 		def receipt = createCapturedReceipt(compromise, pmt)
 		receipt.amount = compromise.downpayment
 		receipt.remarks = 'Payment for Downpayment'
-		buildCreditAndTaxItems(receipt)
+		buildReceiptPostingItems(receipt)
 
 		receipt.paiditems.each{ item ->
 			buildPaidItemInfo(receipt, item)

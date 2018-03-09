@@ -4,7 +4,7 @@
 * 254032-03020
 *
 =============================================================*/
-
+update cashreceiptitem_rpt_account set discount= 0 where discount is null;
 
 alter table rptledger add lguid varchar(50);
 
@@ -47,13 +47,14 @@ create table `rptpayment` (
   primary key(objid)
 ) engine=innodb default charset=utf8;
 
-create index `fk_rptpayment_rptledger` on rptpayment(`refid`);
 create index `fk_rptpayment_cashreceipt` on rptpayment(`receiptid`);
+create index `ix_refid` on rptpayment(`refid`);
 create index `ix_receiptno` on rptpayment(`receiptno`);
 
 alter table rptpayment 
-  add constraint `rptpayment_cashreceipt` 
+  add constraint `fk_rptpayment_cashreceipt` 
   foreign key (`receiptid`) references `cashreceipt` (`objid`);
+
 
 
 create table `rptpayment_item` (
@@ -68,6 +69,7 @@ create table `rptpayment_item` (
   `interest` decimal(16,2) not null,
   `discount` decimal(16,2) not null,
   `partialled` int(11) not null,
+  `priority` int(11) not null,
   primary key (`objid`)
 ) engine=innodb default charset=utf8;
 
@@ -163,7 +165,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-basic') as objid,
@@ -176,7 +179,8 @@ select
   basic as amount,
   basicint as interest,
   basicdisc as discount,
-  partialled
+  partialled,
+  10000 as priority
 from rptledger_payment_item;
 
 
@@ -194,7 +198,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-sef') as objid,
@@ -207,7 +212,8 @@ select
   sef as amount,
   sefint as interest,
   sefdisc as discount,
-  partialled
+  partialled,
+  10000 as priority
 from rptledger_payment_item;
 
 
@@ -222,7 +228,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-sh') as objid,
@@ -235,7 +242,8 @@ select
   sh as amount,
   shint as interest,
   shdisc as discount,
-  partialled
+  partialled,
+  100 as priority
 from rptledger_payment_item
 where sh > 0;
 
@@ -253,7 +261,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-firecode') as objid,
@@ -266,7 +275,8 @@ select
   firecode as amount,
   0 as interest,
   0 as discount,
-  partialled
+  partialled,
+  50 as priority
 from rptledger_payment_item
 where firecode > 0
 ;
@@ -284,7 +294,8 @@ insert into rptpayment_item(
   amount,
   interest,
   discount,
-  partialled
+  partialled,
+  priority
 )
 select
   concat(objid, '-basicidle') as objid,
@@ -297,7 +308,8 @@ select
   basicidle as amount,
   basicidleint as interest,
   basicidledisc as discount,
-  partialled
+  partialled,
+  200 as priority
 from rptledger_payment_item
 where basicidle > 0
 ;
@@ -1426,6 +1438,7 @@ select
   ia.title as item_title,
   ia.fund_objid as item_fund_objid, 
   ia.fund_code as item_fund_code,
+  ia.fund_title as item_fund_title,
   ia.type as item_type,
   pt.tag as item_tag
 from itemaccount ia
@@ -1434,3 +1447,177 @@ inner join itemaccount_tag pt on p.objid = pt.acctid
 inner join sys_org o on ia.org_objid = o.objid 
 where p.state = 'APPROVED'
 ; 
+
+
+
+
+
+
+
+/*=============================================================
+*
+* COMPROMISE UPDATE 
+*
+==============================================================*/
+
+
+CREATE TABLE `rptcompromise` (
+  `objid` varchar(50) NOT NULL,
+  `state` varchar(25) NOT NULL,
+  `txnno` varchar(25) NOT NULL,
+  `txndate` date NOT NULL,
+  `faasid` varchar(50) DEFAULT NULL,
+  `rptledgerid` varchar(50) NOT NULL,
+  `lastyearpaid` int(11) NOT NULL,
+  `lastqtrpaid` int(11) NOT NULL,
+  `startyear` int(11) NOT NULL,
+  `startqtr` int(11) NOT NULL,
+  `endyear` int(11) NOT NULL,
+  `endqtr` int(11) NOT NULL,
+  `enddate` date NOT NULL,
+  `cypaymentrequired` int(11) DEFAULT NULL,
+  `cypaymentorno` varchar(10) DEFAULT NULL,
+  `cypaymentordate` date DEFAULT NULL,
+  `cypaymentoramount` decimal(10,2) DEFAULT NULL,
+  `downpaymentrequired` int(11) NOT NULL,
+  `downpaymentrate` decimal(10,0) NOT NULL,
+  `downpayment` decimal(10,2) NOT NULL,
+  `downpaymentorno` varchar(50) DEFAULT NULL,
+  `downpaymentordate` date DEFAULT NULL,
+  `term` int(11) NOT NULL,
+  `numofinstallment` int(11) NOT NULL,
+  `amount` decimal(16,2) NOT NULL,
+  `amtforinstallment` decimal(16,2) NOT NULL,
+  `amtpaid` decimal(16,2) NOT NULL,
+  `firstpartyname` varchar(100) NOT NULL,
+  `firstpartytitle` varchar(50) NOT NULL,
+  `firstpartyaddress` varchar(100) NOT NULL,
+  `firstpartyctcno` varchar(15) NOT NULL,
+  `firstpartyctcissued` varchar(100) NOT NULL,
+  `firstpartyctcdate` date NOT NULL,
+  `firstpartynationality` varchar(50) NOT NULL,
+  `firstpartystatus` varchar(50) NOT NULL,
+  `firstpartygender` varchar(10) NOT NULL,
+  `secondpartyrepresentative` varchar(100) NOT NULL,
+  `secondpartyname` varchar(100) NOT NULL,
+  `secondpartyaddress` varchar(100) NOT NULL,
+  `secondpartyctcno` varchar(15) NOT NULL,
+  `secondpartyctcissued` varchar(100) NOT NULL,
+  `secondpartyctcdate` date NOT NULL,
+  `secondpartynationality` varchar(50) NOT NULL,
+  `secondpartystatus` varchar(50) NOT NULL,
+  `secondpartygender` varchar(10) NOT NULL,
+  `dtsigned` date DEFAULT NULL,
+  `notarizeddate` date DEFAULT NULL,
+  `notarizedby` varchar(100) DEFAULT NULL,
+  `notarizedbytitle` varchar(50) DEFAULT NULL,
+  `signatories` varchar(1000) NOT NULL,
+  `manualdiff` decimal(16,2) NOT NULL DEFAULT '0.00',
+  `cypaymentreceiptid` varchar(50) DEFAULT NULL,
+  `downpaymentreceiptid` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create index `ix_rptcompromise_faasid` on rptcompromise(`faasid`);
+create index `ix_rptcompromise_ledgerid` on rptcompromise(`rptledgerid`);
+alter table rptcompromise add CONSTRAINT `fk_rptcompromise_faas` 
+  FOREIGN KEY (`faasid`) REFERENCES `faas` (`objid`);
+alter table rptcompromise add CONSTRAINT `fk_rptcompromise_rptledger` 
+  FOREIGN KEY (`rptledgerid`) REFERENCES `rptledger` (`objid`);
+
+
+
+CREATE TABLE `rptcompromise_installment` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) NOT NULL,
+  `installmentno` int(11) NOT NULL,
+  `duedate` date NOT NULL,
+  `amount` decimal(16,2) NOT NULL,
+  `amtpaid` decimal(16,2) NOT NULL,
+  `fullypaid` int(11) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+create index `ix_rptcompromise_installment_rptcompromiseid` on rptcompromise_installment(`parentid`);
+
+alter table rptcompromise_installment 
+  add CONSTRAINT `fk_rptcompromise_installment_rptcompromise` 
+  FOREIGN KEY (`parentid`) REFERENCES `rptcompromise` (`objid`);
+
+
+
+  CREATE TABLE `rptcompromise_credit` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) NOT NULL,
+  `receiptid` varchar(50) DEFAULT NULL,
+  `installmentid` varchar(50) DEFAULT NULL,
+  `collector_name` varchar(100) NOT NULL,
+  `collector_title` varchar(50) NOT NULL,
+  `orno` varchar(10) NOT NULL,
+  `ordate` date NOT NULL,
+  `oramount` decimal(16,2) NOT NULL,
+  `amount` decimal(16,2) NOT NULL,
+  `mode` varchar(50) NOT NULL,
+  `paidby` varchar(150) NOT NULL,
+  `paidbyaddress` varchar(100) NOT NULL,
+  `partial` int(11) DEFAULT NULL,
+  `remarks` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create index `ix_rptcompromise_credit_parentid` on rptcompromise_credit(`parentid`);
+create index `ix_rptcompromise_credit_receiptid` on rptcompromise_credit(`receiptid`);
+create index `ix_rptcompromise_credit_installmentid` on rptcompromise_credit(`installmentid`);
+
+alter table rptcompromise_credit 
+  add CONSTRAINT `fk_rptcompromise_credit_rptcompromise_installment` 
+  FOREIGN KEY (`installmentid`) REFERENCES `rptcompromise_installment` (`objid`);
+
+alter table rptcompromise_credit 
+  add CONSTRAINT `fk_rptcompromise_credit_cashreceipt` 
+  FOREIGN KEY (`receiptid`) REFERENCES `cashreceipt` (`objid`);
+
+alter table rptcompromise_credit 
+  add CONSTRAINT `fk_rptcompromise_credit_rptcompromise` 
+  FOREIGN KEY (`parentid`) REFERENCES `rptcompromise` (`objid`);
+
+
+
+CREATE TABLE `rptcompromise_item` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) NOT NULL,
+  `rptledgerfaasid` varchar(50) NOT NULL,
+  `revtype` varchar(50) NOT NULL,
+  `revperiod` varchar(50) NOT NULL,
+  `year` int(11) NOT NULL,
+  `amount` decimal(16,2) NOT NULL,
+  `amtpaid` decimal(16,2) NOT NULL,
+  `interest` decimal(16,2) NOT NULL,
+  `interestpaid` decimal(16,2) NOT NULL,
+  `priority` int(11) DEFAULT NULL,
+  `taxdifference` int(11) DEFAULT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create index `ix_rptcompromise_item_rptcompromise` on rptcompromise_item (`parentid`);
+create index `ix_rptcompromise_item_rptledgerfaas` on rptcompromise_item (`rptledgerfaasid`);
+
+alter table rptcompromise_item 
+  add CONSTRAINT `fk_rptcompromise_item_rptcompromise` 
+  FOREIGN KEY (`parentid`) REFERENCES `rptcompromise` (`objid`);
+
+alter table rptcompromise_item 
+  add CONSTRAINT `fk_rptcompromise_item_rptledgerfaas` 
+  FOREIGN KEY (`rptledgerfaasid`) REFERENCES `rptledgerfaas` (`objid`);
+
+
+
+/*=============================================================
+*
+* TODO: MIGRATE COMPROMISE RECORDS 
+*
+==============================================================*/
+
+
+

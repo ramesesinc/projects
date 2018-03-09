@@ -58,8 +58,10 @@ public class RPTBillingRuleService
 		if (!bill.rptledger) throw new Exception('bill.ledger must be specified')
 
 		bill.shares = [] 
+		bill.billitems = []
 		def request = [:]
 		request.shares = bill.shares 
+		request.billitems = bill.billitems 
 		request.facts = createShareFacts(bill)
 		request.actions = buildActions(request)
 		executeShareRules(request)
@@ -196,7 +198,7 @@ public class RPTBillingRuleService
 			return true 
 		}
 
-		if (payments.toqtr.max()+1 < bill.cqtr){
+		if (payments && payments.toqtr.max()+1 < bill.cqtr){
 			//miss payment previous qtr
 			return true 
 		}
@@ -298,21 +300,7 @@ public class RPTBillingRuleService
 		actions.addCommand('create-tax-summary', new CreateTaxSummary(request:request))
 		actions.addCommand('add-billitem', new AddBillItem(request:request, em_mapping: em_mapping, em_org: em_org))
 		actions.addCommand('add-share', new AddShare(request:request, numSvc: numSvc, em_mapping: em_mapping))
-		//actions.addCommand('add-brgy-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'barangay', EM:em_mapping))		
-		//actions.addCommand('add-muni-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'municipality', EM:em_mapping))		
-		//actions.addCommand('add-prov-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'province', EM:em_mapping))		
-		//actions.addCommand('add-city-share', new AddLguShare(numSvc:numSvc, request:request, lgutype:'city', EM:em_mapping))		
 		actions.addCommand('set-bill-expiry', new SetBillExpiryDate(request:request))
-
-		/*
-		actions.addCommand('calc-firecode', new CalcFireCode(numSvc:numSvc))
-		actions.addCommand('apply-incentive', new ApplyIncentive(numSvc:numSvc))
-
-		
-		actions.addCommand('add-cityshare-acct', new AddShareInfo(numSvc:numSvc, facts:facts, taxes:bill.taxes, lgutype:'city', getRevenueAccount:getRevenueAccount))
-		
-		actions.addCommand('add-firecode-acct', new AddFireCodeAccount(numSvc:numSvc, items:bill.items, taxes:bill.taxes))
-		*/
 		return actions 
 	}
 

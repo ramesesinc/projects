@@ -7,6 +7,7 @@
         
      
         <!-- Post Actions -->
+        <invoker type="formActions" caption="Print Bill" action="printBill" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}"/>
         <invoker type="formActions" caption="Post" action="post" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}"/>
     </invokers>
     

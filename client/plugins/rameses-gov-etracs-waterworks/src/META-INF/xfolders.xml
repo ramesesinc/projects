@@ -15,4 +15,12 @@
             <folder id="waterworks" caption="Waterworks" />
         </folder>            
     </folder>
+    <folder id="menucategory">
+        <folder id="waterworks" caption="Waterworks">
+            <folder id="application" caption="Application" icon="home/icons/folder.png"/>
+            <folder id="account" caption="Accounts" icon="home/icons/folder.png"/>
+            <folder id="billing" caption="Billing" icon="home/icons/folder.png"/>
+        </folder>            
+    </folder>
+    
 </folders>    

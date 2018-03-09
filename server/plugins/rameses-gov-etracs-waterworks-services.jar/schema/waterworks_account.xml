@@ -28,8 +28,8 @@
 			includefields="objid,code">
 			<key field="sectorid" target="objid"/> 
 		</complex> 
-		<complex name="zone" ref="waterworks_sector_zone" jointype="many-to-one"  required="true" 
-			includefields="objid,code,reader.assignee_objid,reader.assignee_name">
+		<complex name="zone" ref="waterworks_zone" jointype="many-to-one"  required="true" 
+			includefields="objid,code">
 			<key field="zoneid" target="objid"/> 
 		</complex> 
 
@@ -51,7 +51,7 @@
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
 
 		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="false" 
-			includefields="objid,code"> 
+			includefields="objid,code,barangay.name"> 
 			<key field="stuboutid" target="objid"/>
 		</complex>  
 		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
@@ -61,10 +61,12 @@
 
 		<field name="currentreading" required="false" caption="Last Reading" type="integer"/>
 
+		<!--
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="false" 
 			includefields="objid,year,month,fromperiod,toperiod,duedate,billdate,readingdate,disconnectiondate,monthname">
 			<key field="billingcycleid" target="objid"/> 
 		</complex>
+		-->
 
 		<field name="barcode" expr="CONCAT('51030:',acctno)"/>
 		<field name="lastbilldate" type="date"/>

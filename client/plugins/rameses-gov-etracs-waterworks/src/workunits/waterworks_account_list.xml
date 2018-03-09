@@ -3,23 +3,9 @@
           cols="acctno,acctname,address.text,sector.code,zone.code,meter.serialno,lastdateread,stubout.code,currentreading,billingcycle.readingdate,billingcycle.duedate,billingcycle.disconnectiondate"
           orderBy="acctname">
     <invokers>
-        <invoker folderid="/home/waterworks" caption="Waterworks Account List" action="init" />
+        <invoker folderid="/menucategory/waterworks/account" caption="View Accounts" action="init" />
     </invokers>
     
-    <code>
-    <![CDATA[ 
-import com.rameses.seti2.models.*; 
+    <code class="com.rameses.gov.etracs.waterworks.models.AccountListModel" />
 
-class WaterworksAccountListModel extends CrudListModel {
-    
-    public void initColumn( def c ) {
-        if ( c.name == 'sector.code' ) {
-            c.visible = false; 
-        } else if ( c.name == 'zone.code' ) {
-            c.visible = false; 
-        } 
-    } 
-}    
-    ]]> 
-    </code>    
 </workunit>

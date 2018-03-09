@@ -1,4 +1,4 @@
-<workunit>
+<workunit schemaName="sys_usergroup">
     <invokers>
         <!--
         <invoker type="role:create" caption="Role" action="create" target="popup"/>
@@ -6,6 +6,7 @@
         -->
         <invoker type="sys_usergroup:create" caption="Role" action="create" target="popup"/>
         <invoker type="sys_usergroup:open" caption="Role" action="open" target="popup"/>
+        
     </invokers>
     <code class="com.rameses.admin.models.RoleModel" />
     <pages>

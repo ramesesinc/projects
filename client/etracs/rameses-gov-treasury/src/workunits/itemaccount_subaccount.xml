@@ -1,0 +1,24 @@
+<workunit extends="com/rameses/seti2/templates/FormList.xml" schemaName="itemaccount">
+    <invokers>
+        <invoker type="itemaccount:section"  
+                cols="code,title,org.name" 
+                allowCreate="false" 
+                allowOpen="false" 
+                caption="Sub Accounts" 
+                visibleWhen="#{ mode != 'create' }"
+                action="init"/> 
+
+        <!-- actions inside list -->
+        <invoker type="formActions" caption="Add" action="addSub" 
+                 role="MASTER" permission="itemaccount.update"/> 
+        
+        <invoker type="formActions" caption="Remove" action="removeSub" 
+                 role="MASTER" permission="itemaccount.update" 
+                 depends="selectedItem" visibleWhen="#{selectedItem != null}"/> 
+        
+        <invoker type="formActions" caption="Select All" action="doSelectAll"/> 
+        <invoker type="formActions" caption="Deselect All" action="doDeselectAll"/> 
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.SubItemAccountModel"/>
+</workunit>

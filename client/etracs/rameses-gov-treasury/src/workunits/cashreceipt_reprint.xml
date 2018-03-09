@@ -1,0 +1,27 @@
+<workunit schemaName="cashreceipt_reprint_log">
+    <invokers>
+        <!-- hooks to cash receipt -->
+        <invoker 
+           type="cashreceiptinfo:formActions" caption="Reprint" action="create" 
+           role="COLLECTOR,SUBCOLLECTOR" 
+           target="popup"> 
+        </invoker>
+       
+        <invoker 
+           type="cashreceipt:form:formActions" caption="Reprint" action="create" 
+           role="COLLECTOR,SUBCOLLECTOR" 
+           target="popup"> 
+        </invoker>   
+        
+          <invoker 
+           type="cashreceipt:reprint" caption="Reprint" action="create" target="popup"> 
+        </invoker>   
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptReprintModel" />
+   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.SupervisorApprovalPage"/>
+    </pages>
+   
+</workunit>

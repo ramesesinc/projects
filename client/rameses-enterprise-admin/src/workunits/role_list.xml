@@ -7,8 +7,8 @@
    </invokers>
 </workunit>
 -->
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="sys_usergroup" cols="domain,role,title">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="sys_usergroup" cols="role,title">
     
     <invokers>
         <invoker folderid="/explorer/admin" caption="Roles" action="init" 

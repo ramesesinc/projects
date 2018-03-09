@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml">
+    <pages>
+        <page name="default" template="com.rameses.treasury.common.views.AttributePage"/>
+    </pages>
+</workunit>

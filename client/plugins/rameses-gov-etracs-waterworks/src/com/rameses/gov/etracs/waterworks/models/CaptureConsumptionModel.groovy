@@ -15,8 +15,12 @@ public class CaptureConsumptionModel extends CrudFormModel {
     @Service("WaterworksComputationService")
     def compSvc;
     
+     @Service("WaterworksScheduleService")
+     def scheduleSvc;
+    
     @Service("DateService")
     def dateSvc;
+    
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
@@ -42,16 +46,12 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.acctid = parent.objid;
     }
     
-    void afterOpen() {
-        entity.acctid = entity.account?.objid;
-    }
-    
     void computeAmount() {
         if( !entity.month ) 
             throw new Exception("Period Month is required!");
         
         def m = [:];
-        m.objid = parent.objid; 
+        m.objid = entity.acctid; 
         m.volume = entity.volume; 
         def r = compSvc.compute(m); 
         entity.amount = r; 
@@ -84,6 +84,13 @@ public class CaptureConsumptionModel extends CrudFormModel {
     boolean isDeleteAllowed() {
         if(entity.readingmethod == 'ONLINE') return false;
         return super.isEditAllowed();
+    }
+    
+    void calcDueDate() {
+        def m = [scheduleid: entity.account.zone.schedule.objid, year: entity.year, month: entity.month ];
+        def z = scheduleSvc.getSchedule( m );
+        entity.duedate = z.duedate;
+        entity.discdate = z.discduedate;
     }
     
 }

@@ -46,6 +46,8 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
+        xDateField2 = new com.rameses.rcp.control.XDateField();
+        xButton2 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Billing Information");
@@ -111,11 +113,11 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xLabel17.setPreferredSize(new java.awt.Dimension(100, 20));
         xFormPanel4.add(xLabel17);
 
+        xButton1.setName("computeAmount"); // NOI18N
         xButton1.setCaption(" ");
         xButton1.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
         xButton1.setDisableWhen("#{mode=='read'}");
         xButton1.setImmediate(true);
-        xButton1.setName("computeAmount"); // NOI18N
         xButton1.setShowCaption(false);
         xButton1.setText("Compute Amount");
 
@@ -137,6 +139,18 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xDecimalField3.setRequired(true);
         xFormPanel2.add(xDecimalField3);
 
+        xDateField2.setName("entity.duedate"); // NOI18N
+        xDateField2.setCaption("Due Date");
+        xFormPanel2.add(xDateField2);
+
+        xButton2.setName("calcDueDate"); // NOI18N
+        xButton2.setCaption(" ");
+        xButton2.setCellPadding(new java.awt.Insets(0, 0, 2, 0));
+        xButton2.setDisableWhen("#{mode=='read'}");
+        xButton2.setImmediate(true);
+        xButton2.setText("Due Date");
+        xFormPanel2.add(xButton2);
+
         javax.swing.GroupLayout xPanel4Layout = new javax.swing.GroupLayout(xPanel4);
         xPanel4.setLayout(xPanel4Layout);
         xPanel4Layout.setHorizontalGroup(
@@ -151,14 +165,14 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
                         .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
         xPanel4Layout.setVerticalGroup(
             xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(xPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(xPanel4Layout.createSequentialGroup()
                         .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -195,7 +209,9 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;

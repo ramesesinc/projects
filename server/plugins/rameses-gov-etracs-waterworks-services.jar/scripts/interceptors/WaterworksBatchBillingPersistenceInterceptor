@@ -1,4 +1,5 @@
 import com.rameses.annotations.*;
+import treasury.facts.*;
 
 class WaterworksBatchBillingPersistenceInterceptor {
 	
@@ -15,8 +16,8 @@ class WaterworksBatchBillingPersistenceInterceptor {
 	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
 	public void buildBillItems( evt ) { 
 		def o = evt.args[0];
-		def m = [ batchid: o.objid ]; 
-		batchEm.buildBillings( m ); 
-		batchEm.updateUnpaidAccounts( m ); 
-	} 
+		def m = [ batchid: o.objid ];
+		batchEm.buildBillings( m );
+		batchEm.updateUnpaidAccounts( m ); 		
+	}
 }

@@ -6,6 +6,12 @@ class InterestItem extends BillSubItem {
 
 	int sortorder = 400;
 
+	public InterestItem(def o ) {
+		super(o);
+	}
+
+	public InterestItem() {}
+
 	public def toMap() {
 		def m = super.toMap();
 		m.txntype = getTxntype();

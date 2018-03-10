@@ -33,12 +33,16 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         monthList1 = new com.rameses.enterprise.components.MonthList();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
 
         xIntegerField1.setName("entity.year"); // NOI18N
@@ -53,11 +57,6 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         monthList1.setRequired(true);
         xFormPanel1.add(monthList1);
 
-        xDateField1.setName("entity.readingdate"); // NOI18N
-        xDateField1.setCaption("Reading Date");
-        xDateField1.setRequired(true);
-        xFormPanel1.add(xDateField1);
-
         xLookupField2.setName("entity.zone"); // NOI18N
         xLookupField2.setCaption("Zone");
         xLookupField2.setExpression("#{ entity.zone.code }");
@@ -66,12 +65,46 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Sector");
         xLabel1.setDepends(new String[] {"entity.zone"});
         xLabel1.setExpression("#{ entity.zone.sector.code }");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
+
+        xLabel2.setCaption("Schedule");
+        xLabel2.setCaptionWidth(120);
+        xLabel2.setDepends(new String[] {"entity.zone"});
+        xLabel2.setExpression("#{ entity.scheduleid  }");
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel2);
+
+        xLabel3.setCaption("Reading Due date");
+        xLabel3.setCaptionWidth(120);
+        xLabel3.setDepends(new String[] {"entity.zone"});
+        xLabel3.setExpression("#{ entity.readingduedate  }");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel3);
+
+        xLabel4.setCaption("Billing Due date");
+        xLabel4.setCaptionWidth(120);
+        xLabel4.setDepends(new String[] {"entity.zone"});
+        xLabel4.setExpression("#{ entity.billingduedate  }");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel4);
+
+        xLabel5.setCaption("Discount Due Date");
+        xLabel5.setCaptionWidth(120);
+        xLabel5.setDepends(new String[] {"entity.zone"});
+        xLabel5.setExpression("#{ entity.discduedate  }");
+        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel5);
+
+        xLabel6.setCaption("Due Date");
+        xLabel6.setCaptionWidth(120);
+        xLabel6.setDepends(new String[] {"entity.zone"});
+        xLabel6.setExpression("#{ entity.duedate  }");
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel6);
 
         xLookupField3.setName("entity.reader"); // NOI18N
         xLookupField3.setCaption("Assign To");
@@ -79,7 +112,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField3.setHandler("waterworksreader:lookup");
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
-        xFormPanel1.add(xLookupField3);
+        xFormPanel2.add(xLookupField3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -88,22 +121,31 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGap(42, 42, 42)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
+    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;
     // End of variables declaration//GEN-END:variables

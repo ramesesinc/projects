@@ -25,6 +25,12 @@
 		<field name="reader_objid" />
 		<field name="reader_name" />
 		<field name="readingdate" />
+
+		<field name="readingduedate" type="date"/>
+		<field name="billingduedate" type="date"/>
+
+		<field name="schedule_objid" />
+
 	</element>
 </schema>
 

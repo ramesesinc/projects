@@ -5,6 +5,7 @@
 		<field name="code" caption="Zone Code" indexed="true" searchable="true"/>
 		<field name="description" caption="Zone Description"/>
 		<field name="sectorid" required="true"/>
+		<field name="schedule_objid" required="true" caption="Schedule"/>
 
 		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false"
 			includefields="objid,code">

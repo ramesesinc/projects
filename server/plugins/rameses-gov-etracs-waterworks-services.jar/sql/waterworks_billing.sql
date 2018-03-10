@@ -10,3 +10,4 @@ CONCAT( 'WBILLACCT-', UUID() ), $P{billid}, wa.objid, 'DRAFT',
 FROM waterworks_account wa
 INNER JOIN waterworks_billing_cycle wb ON wa.billingcycleid = wb.objid
 WHERE wa.sectorid = $P{sectorid}
+

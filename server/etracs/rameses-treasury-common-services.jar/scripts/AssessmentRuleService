@@ -17,6 +17,9 @@ public class AssessmentRuleService {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
+	@Service("HolidayService")
+	def holidaySvc;
+
 	/*********************************************************
 	* first parameter is the ruleName
 	* second parameter is the raw data sent 
@@ -85,6 +88,14 @@ public class AssessmentRuleService {
 			def cg = data.collectiongroup;
 			facts << new treasury.facts.CollectionGroup( objid:cg.objid, name: cg.name );
 		}
+
+		//include holidays
+		facts << new HolidayFact(  
+			handler: { dt->
+				def h = holidaySvc.lookup(dt);
+				return (h!=null);
+			}
+		);
 
 
 		//********************************************************************

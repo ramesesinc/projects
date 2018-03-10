@@ -6,9 +6,6 @@ class WaterworksBatchBillingService {
 	@DataContext('waterworks_billing_batch')
 	def batchEm; 
 
-	@DataContext('waterworks_billing')
-	def billingEm; 
-
 	@ProxyMethod 
 	def submitForReading( param ) { 
 		if ( !param.objid ) throw new Exception('objid parameter is required'); 
@@ -34,9 +31,13 @@ class WaterworksBatchBillingService {
 		return batchEm.findBilledStatus( m ); 
 	} 
 
+
 	@ProxyMethod 
 	public def post( def p ) {
-		def hasitems = batchEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
-		if(hasitems) throw new Exception("There are items that are not processed. Please process first");
+		//def hasitems = batchEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
+		//if(hasitems) throw new Exception("There are items that are not processed. Please process first");
+		return p;
 	}
+
+
 }

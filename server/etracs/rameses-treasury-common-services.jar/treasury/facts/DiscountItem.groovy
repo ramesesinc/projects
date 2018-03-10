@@ -8,6 +8,10 @@ class DiscountItem extends BillSubItem {
 	int sortorder = 300;
 
 
+	public DiscountItem( def o ) {
+		super(o);
+	}
+
 	public def toMap() {
 		def m = super.toMap();
 		m.txntype = "discount";

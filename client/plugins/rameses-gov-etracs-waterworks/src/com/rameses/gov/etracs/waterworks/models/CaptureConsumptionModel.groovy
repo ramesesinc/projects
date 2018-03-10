@@ -46,6 +46,16 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.acctid = parent.objid;
     }
     
+    void afterOpen() {  
+        if ( entity.acctid == null ) 
+            entity.acctid = entity.account?.objid; 
+            
+        if ( parent == null ) {
+            parent = (entity.account ? entity.account : [:]); 
+            parent.objid = entity.acctid; 
+        } 
+    }
+    
     void computeAmount() {
         if( !entity.month ) 
             throw new Exception("Period Month is required!");

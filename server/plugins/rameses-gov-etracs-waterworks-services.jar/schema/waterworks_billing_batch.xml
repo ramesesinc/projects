@@ -29,7 +29,7 @@
 		<field name="readingduedate" type="date"/>
 		<field name="billingduedate" type="date"/>
 
-		<field name="scheduleid" />
+		<field name="schedule_objid" />
 
 	</element>
 </schema>

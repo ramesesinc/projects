@@ -7,10 +7,36 @@ class WaterworksBatchBillingService {
 	def batchEm; 
 
 	@ProxyMethod 
+	def submitForReading( param ) { 
+		if ( !param.objid ) throw new Exception('objid parameter is required'); 
+
+		def m = [ objid: param.objid ]; 
+		def o = batchEm.find( m ).select('objid,state').first(); 
+		if ( !o ) throw new Exception('batch billing transaction not found'); 
+
+		def newstate = 'FOR_READING'; 
+		batchEm.find( m ).where(" state='DRAFT' ").update([ state: newstate ]); 
+		o = batchEm.find( m ).select('objid,state').first(); 
+		if ( !o.state.toString().equalsIgnoreCase( newstate )) 
+			throw new Exception('Transaction status must be in DRAFT mode');  
+
+		return [ state: newstate ];  
+	} 
+
+	@ProxyMethod 
+	def getBilledStatus( param ) { 
+		if ( !param.objid ) throw new Exception('objid parameter is required'); 
+
+		def m = [batchid: param.objid]; 
+		return batchEm.findBilledStatus( m ); 
+	} 
+
+
+	@ProxyMethod 
 	public def post( def p ) {
-		def hasitems = batchEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
-		if(hasitems) throw new Exception("There are items that are not processed. Please process first");
-		
+		//def hasitems = batchEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
+		//if(hasitems) throw new Exception("There are items that are not processed. Please process first");
+		return p;
 	}
 
 

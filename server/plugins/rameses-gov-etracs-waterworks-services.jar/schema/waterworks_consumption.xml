@@ -1,9 +1,10 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_consumption">
 		<field name="objid" primary="true"  prefix="WAC"/>
-		<field name="state" required="true"/>
+		<field name="state" />
 		<field name="batchid" />
-		<complex name="account" jointype="many-to-one" ref="waterworks_account" includefields="acctno,acctname,stubout.*,stuboutnode.*">
+		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="false"
+			includefields="acctno,acctname,stubout.*,stuboutnode.*">
 			<key field="acctid" target="objid"/>
 		</complex>
 	

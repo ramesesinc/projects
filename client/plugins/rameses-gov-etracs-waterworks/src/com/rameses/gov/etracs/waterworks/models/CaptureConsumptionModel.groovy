@@ -42,8 +42,14 @@ public class CaptureConsumptionModel extends CrudFormModel {
         entity.acctid = parent.objid;
     }
     
-    void afterOpen() {
-        entity.acctid = entity.account?.objid;
+    void afterOpen() {  
+        if ( entity.acctid == null ) 
+            entity.acctid = entity.account?.objid; 
+            
+        if ( parent == null ) {
+            parent = (entity.account ? entity.account : [:]); 
+            parent.objid = entity.acctid; 
+        } 
     }
     
     void computeAmount() {
@@ -59,6 +65,7 @@ public class CaptureConsumptionModel extends CrudFormModel {
     } 
     
     void beforeSave( mode ) {
+        entity.state = "CAPTURE";
         if( entity.prevreading > entity.reading) 
             throw new Exception("Prev reading must be less than current reading");
         if( entity.prevreading <0 || entity.reading < 0 || entity.volume <0) 

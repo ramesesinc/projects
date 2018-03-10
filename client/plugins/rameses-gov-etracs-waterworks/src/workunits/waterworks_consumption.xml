@@ -4,11 +4,6 @@
                  caption="New Consumption Entry" target="popup" action="create"/>
         <invoker type="waterworks_consumption:open"  
                  caption="Consumption Entry" target="popup" action="open"/>
-        
-        <!--
-        <invoker type="waterworks_consumption:list:listActions"  
-                 caption="Capture Reading" target="popup" action="init"/>
-        -->         
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.CaptureConsumptionModel"/>
     <pages>

@@ -3,52 +3,40 @@ import com.rameses.functions.*;
 
 class WaterworksBatchBillingService {
 	
-	@DataContext("waterworks_billing")
-	def billing;
+	@DataContext('waterworks_billing_batch')
+	def batchEm; 
 
-	@DataContext('waterworks_billing_account')
-	def billAcct;
+	@DataContext('waterworks_billing')
+	def billingEm; 
 
-	@DataContext("waterworks_billing_cycle")
-	def billCycle;
+	@ProxyMethod 
+	def submitForReading( param ) { 
+		if ( !param.objid ) throw new Exception('objid parameter is required'); 
 
-	@Service("DateService")
-	def dtSvc;
+		def m = [ objid: param.objid ]; 
+		def o = batchEm.find( m ).select('objid,state').first(); 
+		if ( !o ) throw new Exception('batch billing transaction not found'); 
 
-	@Env
-	def env;
+		def newstate = 'FOR_READING'; 
+		batchEm.find( m ).where(" state='DRAFT' ").update([ state: newstate ]); 
+		o = batchEm.find( m ).select('objid,state').first(); 
+		if ( !o.state.toString().equalsIgnoreCase( newstate )) 
+			throw new Exception('Transaction status must be in DRAFT mode');  
 
-	@ProxyMethod
-	public def create( def o ) {
-		o.dtcreated = dtSvc.getServerDate();
-		o.createdby =  [objid:env.USERID, name:env.FULLNAME ]; 
+		return [ state: newstate ];  
+	} 
 
-		def pp = billCycle.find( [year: o.year, month: o.month ,sectorid: o.sector.objid ] ).first();
-		o.billingcycleid = pp.objid;
-		o.state = 'DRAFT';
+	@ProxyMethod 
+	def getBilledStatus( param ) { 
+		if ( !param.objid ) throw new Exception('objid parameter is required'); 
 
-		o = billing.create(o);
-		wbill.buildBillingAccounts( [billid: o.objid, sectorid: o.sector.objid ] );
-		return o;
+		def m = [batchid: param.objid]; 
+		return batchEm.findBilledStatus( m ); 
+	} 
+
+	@ProxyMethod 
+	public def post( def p ) {
+		def hasitems = batchEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
+		if(hasitems) throw new Exception("There are items that are not processed. Please process first");
 	}
-
-	@ProxyMethod
-	public def getStatus(def o ) {
-		def c = billAcct.find( [parentid: p.objid ] ).select("count:{COUNT(*)}").first();
-		def z = billAcct.find( [parentid: p.objid, state:'DRAFT' ] ).select("count:{COUNT(*)}").first();
-
-		//return  also the count records
-		def m = [:];
-		m.recordcount = c.count; 
-		m.unprocessedcount = z.count; 
-		return m;
-	}
-
-
-	@ProxyMethod
-	public def getList( def o ) {
-		return billAcct.find( [parentid: entity.objid, state: 'DRAFT' ] ).list(o);
-	}
-
-
 }

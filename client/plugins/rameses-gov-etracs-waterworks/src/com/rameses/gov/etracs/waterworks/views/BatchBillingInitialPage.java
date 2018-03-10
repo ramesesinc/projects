@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Elmo Nazareno
  */
 @Template(CrudFormPage.class)
-public class BatchReadingInitialPage extends javax.swing.JPanel {
+public class BatchBillingInitialPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form BatchReadingInitialPage
+     * Creates new form BatchBillingInitialPage
      */
-    public BatchReadingInitialPage() {
+    public BatchBillingInitialPage() {
         initComponents();
     }
 
@@ -38,11 +38,12 @@ public class BatchReadingInitialPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
 
+        xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setCaption("Bill Year");
         xIntegerField1.setDisableWhen("#{mode != 'create' }");
-        xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
 
@@ -52,29 +53,30 @@ public class BatchReadingInitialPage extends javax.swing.JPanel {
         monthList1.setRequired(true);
         xFormPanel1.add(monthList1);
 
-        xDateField1.setCaption("Reading Date");
         xDateField1.setName("entity.readingdate"); // NOI18N
+        xDateField1.setCaption("Reading Date");
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xLookupField2.setName("entity.zone"); // NOI18N
         xLookupField2.setCaption("Zone");
         xLookupField2.setExpression("#{ entity.zone.code }");
         xLookupField2.setHandler("waterworks_zone:lookup");
-        xLookupField2.setName("entity.zone"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
         xFormPanel1.add(xLookupField2);
 
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Sector");
         xLabel1.setDepends(new String[] {"entity.zone"});
         xLabel1.setExpression("#{ entity.zone.sector.code }");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
+        xLookupField3.setName("entity.reader"); // NOI18N
         xLookupField3.setCaption("Assign To");
         xLookupField3.setExpression("#{ entity.reader.name }");
         xLookupField3.setHandler("waterworksreader:lookup");
-        xLookupField3.setName("entity.reader"); // NOI18N
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
         xFormPanel1.add(xLookupField3);
@@ -86,17 +88,16 @@ public class BatchReadingInitialPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(153, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
     private com.rameses.rcp.control.XDateField xDateField1;

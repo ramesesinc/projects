@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ProgressStatus.xml">
+    <invokers>
+        <invoker type="waterworks_reading_preparation" caption="Reading Preparation Process" action="init" target="popup"/>
+    </invokers>
+</workunit>

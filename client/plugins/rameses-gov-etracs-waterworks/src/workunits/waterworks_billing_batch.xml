@@ -5,10 +5,11 @@
         <invoker type="waterworks_billing_batch:create" caption="New Billing" action="create" />
         <invoker type="waterworks_billing_batch:open" caption="Batch Billing" action="open" />
         
-     
-        <!-- Post Actions -->
+        <!-- Actions -->
+        <invoker type="formActions" caption="Submit For Reading" action="submitForReading" visibleWhen="#{canSubmitForReading == true}"/>
+        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{canPost == true}"/>
+      
         <invoker type="formActions" caption="Print Bill" action="printBill" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}"/>
-        <invoker type="formActions" caption="Post" action="post" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}"/>
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.BatchBillingModel" />

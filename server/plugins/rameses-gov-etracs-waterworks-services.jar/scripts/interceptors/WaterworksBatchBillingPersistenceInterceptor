@@ -16,8 +16,8 @@ class WaterworksBatchBillingPersistenceInterceptor {
 	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
 	public void buildBillItems( evt ) { 
 		def o = evt.args[0];
-		batchEm.buildBillings( [batchid: o.objid ] );
+		def m = [ batchid: o.objid ];
+		batchEm.buildBillings( m );
+		batchEm.updateUnpaidAccounts( m ); 		
 	}
-
-
 }

@@ -43,41 +43,46 @@ public class BatchBillingPage extends javax.swing.JPanel {
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel8 = new com.rameses.rcp.control.XLabel();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Control No");
         xLabel1.setExpression("#{ entity.objid }");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel5.setCaption("Year");
         xLabel5.setExpression("#{ entity.year }");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel5);
 
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setCaption("Month");
         xLabel6.setExpression("#{ entity.monthname }");
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel6);
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Zone");
         xLabel2.setExpression("#{ entity.zone.code }");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel2);
 
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setCaption("Sector");
         xLabel3.setExpression("#{ entity.zone.sector.code }");
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel3);
 
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setCaption("Reader");
         xLabel4.setExpression("#{ entity.reader.name }");
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel4);
 
-        schemaList1.setCustomFilter("batchid = :batchid");
-        schemaList1.setName("selectedItem"); // NOI18N
-        schemaList1.setOrderBy("account.stuboutnode.indexno");
-        schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_billing");
         schemaList1.setAllowOpen(false);
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -248,15 +253,23 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
+        schemaList1.setCustomFilter("batchid = :batchid");
         schemaList1.setHandler("updateHandler");
+        schemaList1.setName("selectedItem"); // NOI18N
+        schemaList1.setOrderBy("account.stuboutnode.indexno");
+        schemaList1.setQueryName("query");
+        schemaList1.setSchemaName("waterworks_billing");
 
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setCaptionWidth(100);
 
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel7.setCaption("Reading Due Date");
         xLabel7.setExpression("#{ entity.readingduedate }");
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel7);
 
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel8.setCaption("Bill Prep Due Date");
         xLabel8.setExpression("#{ entity.billingduedate }");
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));

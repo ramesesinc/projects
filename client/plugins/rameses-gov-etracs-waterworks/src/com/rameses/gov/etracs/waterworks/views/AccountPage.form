@@ -70,7 +70,7 @@
                           <Group type="102" attributes="0">
                               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="attributePanel1" min="-2" pref="199" max="-2" attributes="0"/>
+                              <Component id="attributePanel1" min="-2" pref="167" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
@@ -80,7 +80,7 @@
                               <Component id="xPanel4" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="44" max="32767" attributes="0"/>
+                      <EmptySpace pref="67" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -109,10 +109,10 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="xFormPanel1" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="xFormPanel1" min="-2" pref="140" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -185,6 +185,17 @@
                               </StringArray>
                             </Property>
                             <Property name="expression" type="java.lang.String" value="#{ entity.zone.sector.code }"/>
+                          </Properties>
+                        </Component>
+                        <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+                          <Properties>
+                            <Property name="caption" type="java.lang.String" value="Schedule"/>
+                            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                              <StringArray count="1">
+                                <StringItem index="0" value="entity.zone"/>
+                              </StringArray>
+                            </Property>
+                            <Property name="expression" type="java.lang.String" value="#{ entity.zone.schedule.objid }"/>
                           </Properties>
                         </Component>
                       </SubComponents>

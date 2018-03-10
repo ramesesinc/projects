@@ -20,6 +20,25 @@ public abstract class AbstractBillItem {
 	//This is used for sharing
 	Account nullParentaccount = new Account();
 
+
+	public AbstractBillItem( def o ) {
+
+		if(o.account) account = o.account;
+		if(o.amount) amount = o.amount;
+		if(o.amtpaid) amtpaid = o.amtpaid;
+		if(o.principal) principal = o.principal;	//original amount 
+
+		if(o.sortorder) sortorder = o.sortorder;
+		if(o.txntype) txntype = o.txntype;
+		if(o.dynamic) dynamic = o.dynamic;	//if true - then this should not be saved in database. Applicable for surcharge and interest
+		if(o.remarks) remarks = o.remarks;
+		
+		if(o.org) org = o.org;			//specified org for account
+	}
+
+	public AbstractBillItem() {}
+
+
 	public Account getParentaccount() {
 		if( account?.parentaccount == null )
 			return nullParentaccount;

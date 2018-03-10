@@ -44,27 +44,26 @@ class WaterworksSingleBillingInterceptor {
 			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
-		arr << "amount - amtpaid > 0 AND state='POSTED' "
+		arr << "amount - amtpaid > 0"
 			
 		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'}"; 
-		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).list();
+		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
 	}
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
 		def data = evt.args[1];
-		/*
-		data.each { k,v->
-			println k+"="+v;
-		}
-		*/
+		
 		def factBuilder = evt.result;
 		factBuilder.facts << new Stubout( zone:data.zoneid, sector:data.sector?.objid );
 
+		if(  !data.zone?.schedule ) throw new Exception("Please specify a schedule for zone " + data.zone?.code );
+		factBuilder.facts << new WaterBlockSchedule( id: data.zone.schedule.objid );
+
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {
-				return new WaterBillItem(o);
+				return  new WaterBillItem(o);
 			}
 			else {
 				return new MonthBillItem(o);

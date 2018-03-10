@@ -25,7 +25,7 @@
 		<field name="address_pin" caption="PIN"/>
 		
 		<complex name="zone" ref="waterworks_zone" jointype="many-to-one"  required="true" 
-			includefields="objid,code,sector.objid,sector.code">
+			includefields="objid,code,sector.objid,sector.code,schedule.objid">
 			<key field="zoneid" target="objid"/> 
 		</complex> 
 

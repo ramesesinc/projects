@@ -1,0 +1,16 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="waterworks_block_schedule">
+    <invokers>
+         <invoker type="waterworks_block_schedule:create" 
+                 target="popup"
+                 caption="New Block Schedule"
+                 action="create" />
+         
+        <invoker type="waterworks_block_schedule:open" 
+                 target="popup"
+                 caption="Block Schedule"
+                 action="open" />
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.BlockSchedulePage"/>
+    </pages>
+</workunit>

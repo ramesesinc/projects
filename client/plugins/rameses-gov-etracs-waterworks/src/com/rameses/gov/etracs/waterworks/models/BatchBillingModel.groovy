@@ -18,15 +18,38 @@ public class BatchBillingModel extends CrudFormModel {
    @Service("WaterworksBatchBillingService")
    def batchSvc;
     
+   @Service("WaterworksScheduleService")
+   def scheduleSvc;
+   
+    @Script("ReportService")
+   def reportSvc;
+    
     
    def selectedItem;
    def getQuery() {
         return [batchid: entity.objid];
    } 
     
+   @PropertyChangeListener
+   def listener = [
+       "entity.zone" : { o->
+            entity.scheduleid = o.schedule.objid;
+            def m = [scheduleid: entity.scheduleid, year: entity.year, month: entity.month ];
+            try {
+                def sked = scheduleSvc.getSchedule(m);
+                entity.putAll(sked);
+                binding.refresh();
+            }
+            catch( e) {
+                MsgBox.err( e );
+            }
+       }
+   ]
+    
+    
    def updateHandler = [
         beforeColumnUpdate: { item, colName, value ->
-            if(colName.matches("reading|volume")) return false;
+            if(!colName.matches("reading|volume")) return false;
             try {
                 def r = [:];
                 if(colName == "reading") {
@@ -35,6 +58,7 @@ public class BatchBillingModel extends CrudFormModel {
                     if(p.volume<0) throw new Exception("Current reading must be greater than prev reading");
                     p.objid = item.acctid; 
                     r.volume = p.volume;
+                    
                     r.amount = compSvc.compute(p);
                 }
                 else if(colName == "volume") {
@@ -65,16 +89,6 @@ public class BatchBillingModel extends CrudFormModel {
        batchSvc.post( [objid: entity.objid ]);
    } 
     
-   def _printer;
-   def getPrinter() {
-       if(!_printer) {
-           _printer = new TextPrinter();
-           def res = ClientContext.currentContext.classLoader.getResourceAsStream( "com/rameses/gov/etracs/waterworks/reports/billing/waterbilling.rtxt");
-           _printer.setTemplate( res );
-       }
-       return _printer;
-   }
-    
    def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
    public void printBill() {
        def mz = [_schemaname: 'waterworks_billing'];
@@ -93,7 +107,9 @@ public class BatchBillingModel extends CrudFormModel {
             p.duedate = "";
             p.penalty = 0;
             p.classification = p.classification?.objid.toString().padRight(3," ")[0..2]
-            getPrinter().print([ o: p ]);
+            //getPrinter().print([ o: p ]);
+            reportSvc.print( "waterworks_billing" , [ o: p ] );
+            return;
        }
        
         /*

@@ -1,4 +1,5 @@
 import com.rameses.annotations.*;
+import treasury.facts.*;
 
 class WaterworksBatchBillingPersistenceInterceptor {
 	

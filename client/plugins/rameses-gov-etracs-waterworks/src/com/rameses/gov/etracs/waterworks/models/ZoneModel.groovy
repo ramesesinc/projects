@@ -18,5 +18,12 @@ public class ZoneModel extends CrudFormModel {
         createItem: {
             return [zone: entity];
         }
+    ];
+    
+    @PropertyChangeListener
+    def listener = [
+        "entity.schedule" : { o->
+            entity.scheduleid = o.objid;
+        }
     ]
 }

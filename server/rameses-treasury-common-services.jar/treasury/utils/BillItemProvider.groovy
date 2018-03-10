@@ -18,10 +18,12 @@ public class BillItemProvider {
 			acct = itemAcctUtil.lookup( v.item.objid );
 		}
 
+		/*
 		def info = [:];
 		info.parentid = v.parentid;
 		info.refid = v.refid;
 		info.reftype = v.reftype;
+		*/
 		if( acct ) {
 			if( acct.fund?.objid  ) {
 				f = new Fund( objid: acct.fund.objid, code: acct.fund.code, title: acct.fund.title);
@@ -35,8 +37,9 @@ public class BillItemProvider {
 			if( acct.org?.objid ) {
 				ac.org = new Org( orgid: acct.org.objid );
 			} 
-			info.account = ac;
+			v.account = ac;
 		}
+		/*
 		info.txntype = v.txntype;
 		info.amount = v.amount;
 
@@ -51,8 +54,8 @@ public class BillItemProvider {
 		if(v.month) info.month = v.month;
 		if(v.fromdate) info.fromdate = v.fromdate;
 		if(v.todate) info.todate = v.todate;
-
-		return createBillItemFact( info );
+		*/
+		return createBillItemFact( v );
 	}
 
 	def createBillItemFact = { o-> 

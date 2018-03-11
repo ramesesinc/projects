@@ -32,14 +32,14 @@ public class MonthList extends XComponentPanel {
 
         component = new com.rameses.rcp.control.XComboBox();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.X_AXIS));
 
+        component.setName("month"); // NOI18N
         component.setCaption("Month");
         component.setExpression("#{item.title}");
         component.setItemKey("key");
         component.setItems("monthList");
-        component.setName("month"); // NOI18N
-        add(component, java.awt.BorderLayout.NORTH);
+        add(component);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox component;

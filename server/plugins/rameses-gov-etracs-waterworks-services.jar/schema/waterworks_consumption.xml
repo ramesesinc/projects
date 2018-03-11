@@ -15,7 +15,7 @@
 		<!-- USED FOR ONLINE -->
 		<field name="year" required="true"/>
 		<field name="month" required="true"/>
-		<field name="duedate" caption="Due Date"/>
+		<field name="duedate" required="true" caption="Due Date"/>
 		<field name="discdate" caption="Disc. Due Date"/>
 		<field name="readingdate" required="true"/>
 

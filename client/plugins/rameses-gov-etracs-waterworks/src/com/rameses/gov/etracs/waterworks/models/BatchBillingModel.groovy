@@ -21,7 +21,7 @@ public class BatchBillingModel extends CrudFormModel {
    @Service("WaterworksScheduleService")
    def scheduleSvc;
    
-    @Script("ReportService")
+   @Script("ReportService")
    def reportSvc;
     
     
@@ -33,11 +33,11 @@ public class BatchBillingModel extends CrudFormModel {
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
-            entity.scheduleid = o.schedule.objid;
-            def m = [scheduleid: entity.scheduleid, year: entity.year, month: entity.month ];
+            def m = [scheduleid: o.schedule.objid, year: entity.year, month: entity.month ];
             try {
                 def sked = scheduleSvc.getSchedule(m);
                 entity.putAll(sked);
+                entity.schedule = o.schedule;
                 binding.refresh();
             }
             catch( e) {
@@ -89,51 +89,22 @@ public class BatchBillingModel extends CrudFormModel {
    public void printBill() {
        def mz = [_schemaname: 'waterworks_billing'];
        mz.findBy = [batchid: entity.objid];
-       mz._limit = 10;
+       mz.orderBy = 'account.stuboutnode.indexno'; 
+       mz._limit = 2;
        def list = queryService.getList(mz);
        list.each {
            def p = [:];
+            p.putAll( entity ); 
             p.putAll( it );
-            if(p.prevreadingdate ) p.prevreadingdate = df.format( p.prevreadingdate );
-            if(p.readingdate ) p.readingdate = df.format( p.readingdate );
-            p.discrate = 0.0;
-            p.grandtotal = 0;
-            p.subtotal = 0;
-            p.penalty = 0;
-            p.duedate = "";
-            p.penalty = 0;
-            p.classification = p.classification?.objid.toString().padRight(3," ")[0..2]
-            //getPrinter().print([ o: p ]);
+            p.penalty = it.surcharge + it.interest;
+            p.grandtotal = it.amount + p.penalty;
+            p.classification = p.account.classification?.objid.toString().padRight(3," ")[0..2];
+            p.blockseqno = (p.zone?.code +'-'+ p.account.stuboutnode?.indexno);
             reportSvc.print( "waterworks_billing" , [ o: p ] );
             return;
        }
-       
-        /*
-        def m = [:];
-        m.name = "test".padLeft(10);
-        m.address = "1111".padLeft(10);
-        m.acctno = "22222".padLeft(10);
-        m.indexno = "33333".padLeft(10);
-        m.classification = "4444".padLeft(10);
-        m.readingdate = "5555".padLeft(10);
-        m.reading = "6666".padLeft(10);
-        m.prevreadingdate = "7777".padLeft(10);
-        m.prevreading = "88888".padLeft(10);
-        m.diffpreprevreading = "9999".padLeft(10);
-        m.amount = "1111111".padLeft(10);
-        m.month = "222222".padLeft(10);
-        m.discrete = "333333".padLeft(10);
-        m.reducebill = "444444".padLeft(10);
-        m.penalty = "555555".padLeft(10);
-        m.totalbill = "66666".padLeft(10);
-        m.duedate = "77777".padLeft(10);
-        m.totalbillarrears = "88888".padLeft(10);
-        getPrinter().print( m );
-        */
    } 
     
-
-
    private def progdata = [:]; 
    
    boolean isCanSubmitForReading() {
@@ -212,12 +183,7 @@ public class BatchBillingModel extends CrudFormModel {
    
    private void processItem( item ) {
        if ( item.billed.toString() == '1' ) return; 
-       
-       // execute the billing service here...
-       
-       def p = [ _schemaname: 'waterworks_billing', billed: 1 ];
-       p.findBy = [ objid: item.objid ];
-       persistenceService.update( p ); 
+       batchSvc.processBilling( item )
    }
    
    public boolean isCanPost() {

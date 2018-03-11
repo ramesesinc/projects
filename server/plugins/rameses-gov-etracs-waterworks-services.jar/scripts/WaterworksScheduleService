@@ -20,7 +20,7 @@ class WaterworksScheduleService {
 
 		def facts = [];
 		facts << new WaterBlockSchedule( id: p.scheduleid );
-		facts << new MonthEntry( year: p.year, month : p.month );
+		facts << new BillingPeriod( year: p.year, month : p.month );
 		
 		//include holidays
 		facts << new HolidayFact(  

@@ -46,7 +46,7 @@ class WaterworksSingleBillingInterceptor {
 		} 
 		arr << "amount - amtpaid > 0"
 			
-		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'}"; 
+		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
 		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
 	}
@@ -56,8 +56,8 @@ class WaterworksSingleBillingInterceptor {
 		def data = evt.args[1];
 		
 		def factBuilder = evt.result;
-		factBuilder.facts << new Stubout( zone:data.zoneid, sector:data.sector?.objid );
-
+		factBuilder.facts << new Sector( objid: data.sector?.objid);
+		factBuilder.facts << new Zone( objid:data.zoneid,  sectorid: data.sector?.objid );
 		if(  !data.zone?.schedule ) throw new Exception("Please specify a schedule for zone " + data.zone?.code );
 		factBuilder.facts << new WaterBlockSchedule( id: data.zone.schedule.objid );
 

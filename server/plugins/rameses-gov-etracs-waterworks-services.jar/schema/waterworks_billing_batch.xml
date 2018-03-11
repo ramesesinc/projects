@@ -20,7 +20,7 @@
 		<field name="postedby_name" />
 		<field name="fromperiod" />
 		<field name="toperiod" />
-		<field name="discountdate" />
+		<field name="discdate" />
 
 		<field name="reader_objid" />
 		<field name="reader_name" />
@@ -29,7 +29,7 @@
 		<field name="readingduedate" type="date"/>
 		<field name="billingduedate" type="date"/>
 
-		<field name="schedule_objid" />
+		<field name="schedule_objid" required="true"/>
 
 	</element>
 </schema>

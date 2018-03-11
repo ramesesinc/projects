@@ -100,7 +100,7 @@ public class CaptureConsumptionModel extends CrudFormModel {
         def m = [scheduleid: entity.account.zone.schedule.objid, year: entity.year, month: entity.month ];
         def z = scheduleSvc.getSchedule( m );
         entity.duedate = z.duedate;
-        entity.discdate = z.discduedate;
+        entity.discdate = z.discdate;
     }
     
 }

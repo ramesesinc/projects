@@ -148,7 +148,7 @@ public class BatchBillingModel extends CrudFormModel {
        progdata._success = false; 
        
        def p = [ _schemaname: 'waterworks_billing' ];
-       p.select = 'objid,acctid,unpaidamt,billed';
+       p.select = 'objid,acctid,billed';
        p.findBy = [ batchid: entity.objid ]; 
        p._limit = progdata._limit+1; 
        p._start = progdata._start; 

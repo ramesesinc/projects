@@ -45,7 +45,6 @@ class WaterworksSingleBillingInterceptor {
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
 		arr << "amount - amtpaid > 0"
-			
 		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
 		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );

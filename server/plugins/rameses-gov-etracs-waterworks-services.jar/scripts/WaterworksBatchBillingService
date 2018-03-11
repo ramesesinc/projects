@@ -9,10 +9,23 @@ class WaterworksBatchBillingService {
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
+	@Service("SingleBillingService")
+	def billingSvc;
+
 	@ProxyMethod
 	public void processBilling( def o ) {
-	   println "processing bill " + o;
-	   wbillEm.find( [objid: o.objid ] ).update( [billed: 1]);
+		def b = null;
+		try { b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); } catch(ign) {;}
+		def u = [billed: 1];
+		if( b?.billitems) {
+			def arrears = b.billitems.sum{ it.amount - it.amtpaid  };
+			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
+			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
+			if( arrears ) u.arrears = arrears;
+			if( surcharge ) u.surcharge = surcharge;
+			if( interest ) u.interest = interest;
+		}
+	   	wbillEm.find( [objid: o.objid ] ).update( u );
 	}
 
 	@ProxyMethod 

@@ -4,7 +4,7 @@ INSERT INTO waterworks_billing (
 	prevreadingdate, prevreading, readingdate, reading, readingmethod, 
 	reader_objid, reader_name, volume, amount, month, year,
 	discrate, surcharge, interest, othercharge, advance, 
-	unpaidamt, unpaidmonths, billed 
+	arrears, unpaidmonths, billed 
 ) 
 SELECT 
 	CONCAT(a.objid,'-',br.year,br.month) AS objid, 'DRAFT', a.objid, br.objid, 
@@ -24,10 +24,10 @@ update
 	waterworks_billing wb, (  
 		select 
 			tmp2.batchid, tmp2.acctid, 
-			sum(tmp2.unpaidamt) as unpaidamt, 
+			sum(tmp2.arrears) as arrears, 
 			sum(tmp2.unpaidmonths) as unpaidmonths
 		from ( 
-			select b.batchid, b.acctid, sum(c.amount)-sum(c.amtpaid) as unpaidamt, 0 as unpaidmonths  
+			select b.batchid, b.acctid, sum(c.amount)-sum(c.amtpaid) as arrears, 0 as unpaidmonths  
 			from waterworks_billing_batch bb 
 				inner join waterworks_billing b on b.batchid = bb.objid 
 				inner join waterworks_account a on a.objid = b.acctid 
@@ -39,7 +39,7 @@ update
 
 			union all 
 
-			select tmp1.batchid, tmp1.acctid, 0.0 as unpaidamt, tmp1.unpaidmonths 
+			select tmp1.batchid, tmp1.acctid, 0.0 as arrears, tmp1.unpaidmonths 
 			from ( 
 				select b.batchid, b.acctid, c.year, c.month, count(*) as unpaidmonths  
 				from waterworks_billing_batch bb 
@@ -55,7 +55,7 @@ update
 		group by tmp2.batchid, tmp2.acctid 
 	)zz 
 set 
-	wb.unpaidamt = zz.unpaidamt, 
+	wb.arrears = zz.arrears, 
 	wb.unpaidmonths = zz.unpaidmonths 
 where wb.batchid = zz.batchid 
 	and wb.acctid = zz.acctid 

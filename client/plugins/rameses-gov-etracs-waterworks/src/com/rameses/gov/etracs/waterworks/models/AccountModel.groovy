@@ -11,14 +11,6 @@ public class AccountModel extends CrudFormModel {
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
-    @PropertyChangeListener 
-    def changelistener = [
-        'entity.metersize' : { o-> 
-            entity.meter = null; 
-        }
-    ];
-    
-    
     void afterCreate() {
         entity.address = [:];
         entity.attributes = [];
@@ -36,20 +28,56 @@ public class AccountModel extends CrudFormModel {
         Modal.show("vw_waterworks_stuboutnode_unassigned:lookup", [onselect: h] );  
     }
     
-    def getLookupMeter() { 
-        def params = [metersize: entity.metersize];
-        if ( !params.metersize ) params.metersize = [objid:null]; 
-            
+    void attachMeter() { 
+        def params = [:];
         params.onselect = { o-> 
-            entity.meter = o; 
-            binding.refresh('entity.meter.*');
+            def m = [_schemaname:'waterworks_account'];
+            m.findBy = [objid: entity.objid];
+            m.meterid = o.objid;
+            persistenceService.update( m );
+            entity.meter = o;
+            binding.refresh();
         }
-        params.onempty = {
-            entity.meter = null; 
-            binding.refresh('entity.meter.*');
-        }
-        return Inv.lookupOpener('waterworks_meter_wo_account:lookup', params);
+        Modal.show('waterworks_meter_wo_account:lookup', params);
     }
     
+    void detachMeter() { 
+        if(!MsgBox.confirm('This action will remove the meter from this account. Proceed?')) return;
+        def m = [_schemaname:'waterworks_account'];
+        m.findBy = [objid: entity.objid];
+        m.meterid = "{NULL}";
+        persistenceService.update( m );
+        entity.meter = null;
+        binding.refresh();
+    }
+    
+    def selectedAttribute;
+    def attributeList = [
+        fetchList: { o->
+            def m = [_schemaname:'waterworks_account_attribute'];
+            m.findBy = [parentid: entity.objid];
+            return queryService.getList(m);
+        }
+    ] as BasicListModel;
+    
+    void addAttribute() {
+        def p = [:]
+        p.onselect = { o->
+            def m = [_schemaname:'waterworks_account_attribute'];
+            m.parent = entity;
+            m.attribute = o;
+            persistenceService.create( m );
+            attributeList.reload();
+        }
+        Modal.show( "waterworks_attribute:lookup", p );
+    }
+    
+    void removeAttribute() {
+        if(!selectedAttribute) throw new Exception("Please select an attribute");
+        def m = [_schemaname:'waterworks_account_attribute'];
+        m.findBy = [objid: selectedAttribute.objid];
+        persistenceService.removeEntity( m );
+        attributeList.reload();
+    }
     
 }

@@ -29,8 +29,9 @@
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 
+		<field name="meterid" />
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false" 
-			includefields="objid,serialno,brand,capacity,size.*">
+			includefields="objid,serialno,brand,capacity,size.*,status">
 			<key field="meterid" target="objid"/>
 		</complex>
 		

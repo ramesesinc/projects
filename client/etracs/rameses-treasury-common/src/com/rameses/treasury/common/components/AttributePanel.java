@@ -5,6 +5,7 @@
 package com.rameses.treasury.common.components;
 
 import com.rameses.common.ExpressionResolver;
+import com.rameses.rcp.common.MsgBox;
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 
@@ -156,6 +157,7 @@ public class AttributePanel extends XComponentPanel  {
         bean.setProperty("schemaname", schemaname );
         if( parentname != null ) {
             Object parent = super.getProperty( parentname );
+            MsgBox.alert("parenti is " + parent);
             bean.setProperty("parent", parent);
         }
     }

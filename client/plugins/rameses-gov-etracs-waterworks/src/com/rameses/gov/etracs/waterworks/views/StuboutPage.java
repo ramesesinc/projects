@@ -39,6 +39,7 @@ public class StuboutPage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLookupField6 = new com.rameses.rcp.control.XLookupField();
+        xLookupField7 = new com.rameses.rcp.control.XLookupField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
 
@@ -81,6 +82,16 @@ public class StuboutPage extends javax.swing.JPanel {
         xLookupField6.setStretchWidth(100);
         xFormPanel1.add(xLookupField6);
 
+        xLookupField7.setName("entity.zone"); // NOI18N
+        xLookupField7.setCaption("Zone");
+        xLookupField7.setExpression("#{entity.zone.code}");
+        xLookupField7.setHandler("waterworks_zone:lookup");
+        xLookupField7.setPreferredSize(new java.awt.Dimension(200, 20));
+        xLookupField7.setRequired(true);
+        xLookupField7.setStretchWidth(100);
+        xLookupField7.setVisibleWhen("#{ mode == 'create' && entity.zone == null }");
+        xFormPanel1.add(xLookupField7);
+
         xLabel2.setBackground(new java.awt.Color(245, 245, 245));
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel2.setCaption("Zone");
@@ -90,6 +101,7 @@ public class StuboutPage extends javax.swing.JPanel {
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel2.setStretchWidth(100);
+        xLabel2.setVisibleWhen("#{ mode != 'create' || entity.zone != null }");
         xFormPanel1.add(xLabel2);
 
         xLabel1.setBackground(new java.awt.Color(245, 245, 245));
@@ -116,8 +128,8 @@ public class StuboutPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(174, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General information", xPanel1);
@@ -146,6 +158,7 @@ public class StuboutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField6;
+    private com.rameses.rcp.control.XLookupField xLookupField7;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;

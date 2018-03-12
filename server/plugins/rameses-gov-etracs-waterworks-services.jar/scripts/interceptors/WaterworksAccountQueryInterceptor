@@ -6,6 +6,8 @@ class WaterworksAccountQueryInterceptor{
 	public void getAcctNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'Active', id:'active'];
+		result << [ title: 'Inactive', id:'inactive'];
+		/*
 		result << [ title: 'For Reading', id:'for-reading'];
 		result << [ title: 'Unread', id:'unread'];
 		result << [ title: 'Processing', id:'processing'];
@@ -13,6 +15,7 @@ class WaterworksAccountQueryInterceptor{
 		result << [ title: 'For Disconnection', id:'for-disconnection'];
 		result << [ title: 'Disconnected', id:'disconnected'];
 		result << [ title: 'For Reconnection', id:'for-reconnection'];
+		*/
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_account'}")
@@ -29,44 +32,7 @@ class WaterworksAccountQueryInterceptor{
 				status = 'active';
 				m.state = 'ACTIVE';
 				break;
-			case 'for-reading':
-				status = 'for-reading';
-				m.state = 'ACTIVE'
-				str += ' AND billingcycle.readingdate = NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
-				break;
-
-			case 'unread':
-				status = 'unread';
-				m.state = 'ACTIVE'
-				str += ' AND billingcycle.readingdate < NOW() AND (lastdateread IS NULL OR lastdateread < billingcycle.readingdate)'; 
-				break;
-
-			case 'processing':
-				status = 'processing';
-				m.state = 'PROCESSING';
-				break;
-
-			case 'pastdue':
-				status = 'pastdue';
-				m.state = 'ACTIVE';
-				str += ' AND billingcycle.duedate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.duedate)'; 
-				break;
-
-			case 'for-disconnection':
-				status = 'for-disconnection';
-				m.state = 'ACTIVE';
-				str += ' AND billingcycle.disconnectiondate < NOW() AND (lastdatepaid IS NULL OR lastdatepaid < billingcycle.disconnectiondate)'; 
-				break;
-
-			case 'disconnected':
-				status = 'disconnected';
-				m.state = 'DISCONNECTED';
-				break;
-
-			case 'for-reconnection':
-				status = 'for-reconnection';
-				m.state = 'FOR-RECONNECTION';
-				break;
+			
 		}
 
 		//add to first position of where

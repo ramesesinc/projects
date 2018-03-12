@@ -10,9 +10,6 @@ import com.rameses.util.*;
 
 public class SectorModel extends CrudFormModel {
     
-    @Service("WaterworksBillingCycleService")
-    def billingCycleService;
-    
     @PropertyChangeListener
     def l = [
         "entity.code" : { o->

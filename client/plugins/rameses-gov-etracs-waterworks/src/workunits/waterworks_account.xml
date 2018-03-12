@@ -1,4 +1,4 @@
-<workunit schemaName="waterworks_account" allowCreate="false" allowEdit="false">
+<workunit schemaName="waterworks_account" allowCreate="false" allowEdit="true">
 
     <invokers>
         <invoker folderid="/menucategory/waterworks/account" caption="Add Account (Capture)" action="create" index="4"/>

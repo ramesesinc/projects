@@ -12,7 +12,7 @@ public class WaterAccount {
 	public WaterAccount( def acct ) {
 		this.classification = acct.classificationid;
 		this.metersize = acct.metersize?.objid;
-		this.barangay = acct.address?.barangay?.objid;
-	}
-
+		this.barangay = acct.stuboutnode?.barangay?.objid;
+		if ( !this.barangay ) this.barangay = acct.address?.barangay?.objid;
+	} 
 }

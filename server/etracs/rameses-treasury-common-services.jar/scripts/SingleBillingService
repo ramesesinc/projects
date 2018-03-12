@@ -29,9 +29,6 @@ class SingleBillingService {
 		m.putAll( data );
 		data.billitems = self.getBillItems( m );
 
-		if(!data.billitems)
-			throw new Exception("There must be at least one billitem in data billitems SingleBillingService.execute");
-
 		data.credititems = self.getCreditItems( m );	
 
 		def startgroup = "billing";
@@ -45,7 +42,10 @@ class SingleBillingService {
 		def result = [:];
 		result.putAll( data );
 		result.putAll( r ); 
-		result.amount = result.billitems.sum{ it.amount };
+		result.amount = 0;
+		if( result.billitems ) {
+			result.amount = result.billitems.sum{ it.amount };
+		}
 		return result;
 	}
 

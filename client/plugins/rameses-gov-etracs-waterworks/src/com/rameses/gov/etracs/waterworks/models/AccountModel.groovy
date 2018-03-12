@@ -18,45 +18,24 @@ public class AccountModel extends CrudFormModel {
         }
     ];
     
-    void afterInit() { 
-        listTypes.setHandlers([
-            zone : {
-                return [sectorid: entity?.sector?.objid]; 
-            }
-        ]);   
-    }
     
     void afterCreate() {
         entity.address = [:];
         entity.attributes = [];
     }
 
-    def assignStubout() {
-        if ( !entity.sector?.objid ) 
-            throw new Exception('Please specify sector'); 
-        
-        boolean pass = false;
-        def stuboutid;
-        def h = {o->
-            stuboutid = o.objid;
-            pass = true;
-            return null; 
-        }
-        Modal.show("waterworks_stubout:lookup", [onselect: h, sector: entity.sector] );
-        if( !pass) return;
-
-        pass = false;
-        h = { o->
-            if( o.account?.objid ) throw new Exception("There is already an account assigned. Choose another");
+    
+    def assignNode() {
+        def h = { o ->
             entity.stuboutnode = o;
-            entity.stubout = o.stubout;
-            pass = true;
-            return null; 
+            def m = [_schemaname:'waterworks_account'];
+            m.findBy = [objid: entity.objid];
+            m.stuboutnodeid = o.objid;
+            persistenceService.update( m );
         }
-        Modal.show("waterworks_stubout_node_unassigned_account:lookup", [onselect: h, stuboutid: stuboutid] );
-        //binding.refresh();
+        Modal.show("vw_waterworks_stuboutnode_unassigned:lookup", [onselect: h] );  
     }
-
+    
     def getLookupMeter() { 
         def params = [metersize: entity.metersize];
         if ( !params.metersize ) params.metersize = [objid:null]; 

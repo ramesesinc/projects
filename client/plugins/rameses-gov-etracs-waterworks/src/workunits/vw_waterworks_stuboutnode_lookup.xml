@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="vw_waterworks_stubout_node" 
+          allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+       
+        <invoker type="vw_waterworks_stuboutnode_unassigned:lookup" 
+          cols="zone.code,sector.code,stubout.code,indexno" orderBy="zone.code,indexno"
+          caption="Lookup Unassigned Stubout Node" action="init" customFilter="acctid IS NULL"/>
+    </invokers>
+</workunit>

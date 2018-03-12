@@ -23,15 +23,9 @@
 		<field name="address_bldgno" caption="Building No"/>
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
-		
-		<complex name="zone" ref="waterworks_zone" jointype="many-to-one"  required="true" 
-			includefields="objid,code,sector.objid,sector.code,schedule.objid">
-			<key field="zoneid" target="objid"/> 
-		</complex> 
 
 		<field name="stuboutnodeid" />
-		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
-			includefields="objid,indexno,stubout.code,stubout.title">
+		<complex name="stuboutnode" ref="vw_waterworks_stubout_node" jointype="many-to-one" required="false">
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 

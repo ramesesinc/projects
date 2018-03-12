@@ -22,11 +22,11 @@ class WaterworksComputationService  {
 		else if(o.acctno) {
 			p = [acctno:o.acctno];
 		}
-		if(!p )
-		    throw new Exception('Please specify objid or acctno');
+		if(!p ) throw new Exception('Please specify objid or acctno');
+
 		def m = acct.find( p ).first();
-		if( !m ) 
-			throw new Exception("Waterworks account not found");
+		if( !m ) throw new Exception("Waterworks account not found");
+
 		return m;	
 	}
 
@@ -46,7 +46,7 @@ class WaterworksComputationService  {
 		def wc = new WaterConsumption( volume: vol );
 
 		def facts = [];
-		facts << wc
+		facts << wc;
 		facts << new WaterAccount( m );
 
 		def res = ruleSvc.execute( "waterworkscomputation", facts, null, null );

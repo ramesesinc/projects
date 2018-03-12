@@ -12,7 +12,8 @@ SELECT
 	br.reader_objid, br.reader_name, 0, 0.0, br.month, br.year,
 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0  
 FROM waterworks_billing_batch br 
-	INNER JOIN waterworks_account a ON a.zoneid = br.zoneid  
+	INNER JOIN vw_waterworks_stubout_node wsn ON wsn.zone_objid = br.zoneid 
+	INNER JOIN waterworks_account a ON a.objid = wsn.acctid 
 	LEFT JOIN waterworks_consumption c ON (c.acctid = a.objid AND c.year = br.year AND c.month = br.month) 
 WHERE br.objid = $P{batchid} 
 	AND a.meterid IS NOT NULL 

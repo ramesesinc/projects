@@ -32,8 +32,12 @@ class WaterworksSingleBillingInterceptor {
 			acct = acctEm.find([acctno:p.id]).first(1);
 		}
 		if(!acct) throw new Exception("Waterworks Account not found");
+
 		r.putAll( acct );
 		r.acctid = acct.objid;
+		r.schedule = acct.stuboutnode?.schedule; 
+		r.sector = acct.stuboutnode?.sector; 
+		r.zone   = acct.stuboutnode?.zone; 
 	}
  
     @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
@@ -61,12 +65,15 @@ class WaterworksSingleBillingInterceptor {
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
 		def data = evt.args[1];
-		
+		def zone = data.zone; 
+		def sector = data.sector; 
+		def schedule = data.schedule;
+		if(  !schedule?.objid ) throw new Exception("Please specify a schedule for zone " + zone?.code );
+
 		def factBuilder = evt.result;
-		factBuilder.facts << new Sector( objid: data.sector?.objid);
-		factBuilder.facts << new Zone( objid:data.zoneid,  sectorid: data.sector?.objid );
-		if(  !data.zone?.schedule ) throw new Exception("Please specify a schedule for zone " + data.zone?.code );
-		factBuilder.facts << new WaterBlockSchedule( id: data.zone.schedule.objid );
+		factBuilder.facts << new Sector( objid: sector?.objid);
+		factBuilder.facts << new Zone( objid: zone?.objid,  sectorid: sector?.objid );
+		factBuilder.facts << new WaterBlockSchedule( id: schedule.objid );
 
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {

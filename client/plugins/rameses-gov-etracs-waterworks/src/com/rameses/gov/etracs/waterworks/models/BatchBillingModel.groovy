@@ -57,6 +57,9 @@ public class BatchBillingModel extends CrudFormModel {
        }
    ];
     
+   public void afterCreate() {
+       open();
+   } 
 
    public def open() {
         def p = super.open();
@@ -241,20 +244,8 @@ public class BatchBillingModel extends CrudFormModel {
             p.classification = p.account.classification?.objid.toString().padRight(3," ")[0..2];
             p.blockseqno = (p.zone?.code +'-'+ p.account.stuboutnode?.indexno);
             reportSvc.print( "waterworks_billing" , [ o: p ] );
-            return;
        }
    } 
-    
-    def list = [
-        [code:'A', title:'AAA'],
-        [code:'B', title:'BBB'],
-    ]
-    def editorModel = [
-        fetchList: { o->
-            return list;
-        }
-    ] as EditorListModel;
-    
     
     
 }

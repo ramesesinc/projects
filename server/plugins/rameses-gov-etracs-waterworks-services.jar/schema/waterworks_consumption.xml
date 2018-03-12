@@ -4,7 +4,7 @@
 		<field name="state" />
 		<field name="batchid" />
 		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="false"
-			includefields="acctno,acctname,stubout.*,stuboutnode.*,zone.schedule.objid">
+			includefields="acctno,acctname,stuboutnode.*">
 			<key field="acctid" target="objid"/>
 		</complex>
 	

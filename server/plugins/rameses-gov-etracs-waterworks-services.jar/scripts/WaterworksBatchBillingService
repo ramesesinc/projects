@@ -18,7 +18,7 @@ class WaterworksBatchBillingService {
 		try { b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); } catch(ign) {;}
 		def u = [billed: 1];
 		if( b?.billitems) {
-			def arrears = b.billitems.sum{ it.amount - it.amtpaid  };
+			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
 			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
 			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
 			def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };

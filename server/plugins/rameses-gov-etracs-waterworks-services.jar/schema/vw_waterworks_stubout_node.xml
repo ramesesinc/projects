@@ -1,0 +1,16 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_stubout_node">
+		<field name="objid" primary="true"/>
+		<field name="indexno" caption="Seq No" indexed="true" searchable="true"/>
+		<field name="stubout_code" caption="Stubout No" indexed="true" searchable="true"/>
+		<field name="zone_code" caption="Zone" indexed="true" searchable="true"/>
+		<field name="sector_code" caption="Sector" indexed="true" searchable="true"/>
+		<field name="barangay_name" caption="Barangay" indexed="true" searchable="true"/>
+		<field name="acctid" required="true"/>
+		<field name="stubout_objid"/>
+		<field name="zone_objid" />
+		<field name="sector_objid" />
+		<field name="schedule_objid" />
+		<field name="barangay_objid" />
+	</element>
+</schema>

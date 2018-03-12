@@ -3,16 +3,21 @@
           allowCreate="false" allowEdit="false" allowDelete="false"
           orderBy="indexno">
     <invokers>
+        <!--
         <invoker type="waterworks_stubout_node_unassigned_application:lookup" 
             cols="objid,indexno,application.acctname,application.appno,stubout.objid,stubout.code,stubout.*" 
             customFilter="acctid IS NULL"
             caption="Lookup Unassigned Stubout Node" action="init"/>
-    </invokers>
-    <invokers>
+
         <invoker type="waterworks_stubout_node_unassigned_account:lookup" 
           cols="objid,indexno,acctid,account.acctname,stubout.objid,stubout.code,stubout.*" 
           caption="Lookup Unassigned Stubout Node" action="init"/>
+        -->
+        <invoker type="waterworks_stuboutnode_unassigned:lookup" 
+          cols="stubout.zone.code,stubout.zone.sector.code,stubout.code,indexno" 
+          caption="Lookup Unassigned Stubout Node" action="init" customFilter="account.objid IS NULL"/>
     </invokers>
+    <!--
     <code>
         class UnassignedNodeLookup extends com.rameses.seti2.models.CrudLookupModel {
             def stuboutid;
@@ -22,4 +27,5 @@
             }
         }
     </code>
+    -->
 </workunit>

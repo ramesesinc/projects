@@ -6,6 +6,14 @@ class WaterworksBatchBillingService {
 	@DataContext('waterworks_billing_batch')
 	def batchEm; 
 
+	@DataContext("waterworks_billing")
+	def wbillEm;
+
+	@ProxyMethod
+	public void processBilling( def o ) { 
+	   wbillEm.find([ objid: o.objid ]).update([ billed: 1 ]); 
+	}
+
 	@ProxyMethod 
 	def submitForReading( param ) { 
 		if ( !param.objid ) throw new Exception('objid parameter is required'); 
@@ -30,6 +38,7 @@ class WaterworksBatchBillingService {
 		def m = [batchid: param.objid]; 
 		return batchEm.findBilledStatus( m ); 
 	} 
+
 
 
 	@ProxyMethod 

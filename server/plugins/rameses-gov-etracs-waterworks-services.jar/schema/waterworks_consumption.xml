@@ -4,7 +4,7 @@
 		<field name="state" />
 		<field name="batchid" />
 		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="false"
-			includefields="acctno,acctname,stubout.*,stuboutnode.*">
+			includefields="acctno,acctname,stubout.*,stuboutnode.*,zone.schedule.objid">
 			<key field="acctid" target="objid"/>
 		</complex>
 	
@@ -15,7 +15,8 @@
 		<!-- USED FOR ONLINE -->
 		<field name="year" required="true"/>
 		<field name="month" required="true"/>
-		<field name="duedate" caption="Due Date"/>
+		<field name="duedate" required="true" caption="Due Date"/>
+		<field name="discdate" caption="Disc. Due Date"/>
 		<field name="readingdate" required="true"/>
 
 		<field name="reader_objid" required="false"/>

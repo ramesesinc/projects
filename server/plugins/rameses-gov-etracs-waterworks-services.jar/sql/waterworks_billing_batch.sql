@@ -68,3 +68,7 @@ from (
 		(select count(*) from waterworks_billing where batchid = $P{batchid}) as totalcount, 
 		(select count(*) from waterworks_billing where batchid = $P{batchid} and billed=1) as billedcount  
 )tmp1 
+
+
+[removeBilling]
+delete from waterworks_billing where batchid = $P{batchid} 

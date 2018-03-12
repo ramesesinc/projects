@@ -37,6 +37,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
@@ -46,12 +47,12 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(120);
 
         xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setCaption("Bill Year");
+        xIntegerField1.setCaption("Start Year");
         xIntegerField1.setDisableWhen("#{mode != 'create' }");
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
 
-        monthList1.setCaption("Bill Month");
+        monthList1.setCaption("Start Month");
         monthList1.setName("entity.month"); // NOI18N
         monthList1.setPreferredSize(new java.awt.Dimension(0, 20));
         monthList1.setRequired(true);
@@ -74,9 +75,16 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLabel2.setCaption("Schedule");
         xLabel2.setCaptionWidth(120);
         xLabel2.setDepends(new String[] {"entity.zone"});
-        xLabel2.setExpression("#{ entity.scheduleid  }");
+        xLabel2.setExpression("#{ entity.schedule.objid  }");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel2);
+
+        xLabel7.setCaption("Reading Date");
+        xLabel7.setCaptionWidth(120);
+        xLabel7.setDepends(new String[] {"entity.zone"});
+        xLabel7.setExpression("#{ entity.readingdate  }");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel7);
 
         xLabel3.setCaption("Reading Due date");
         xLabel3.setCaptionWidth(120);
@@ -95,7 +103,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLabel5.setCaption("Discount Due Date");
         xLabel5.setCaptionWidth(120);
         xLabel5.setDepends(new String[] {"entity.zone"});
-        xLabel5.setExpression("#{ entity.discduedate  }");
+        xLabel5.setExpression("#{ entity.discdate  }");
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel5);
 
@@ -108,6 +116,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
 
         xLookupField3.setName("entity.reader"); // NOI18N
         xLookupField3.setCaption("Assign To");
+        xLookupField3.setCaptionWidth(120);
         xLookupField3.setExpression("#{ entity.reader.name }");
         xLookupField3.setHandler("waterworksreader:lookup");
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -146,6 +155,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;
     // End of variables declaration//GEN-END:variables

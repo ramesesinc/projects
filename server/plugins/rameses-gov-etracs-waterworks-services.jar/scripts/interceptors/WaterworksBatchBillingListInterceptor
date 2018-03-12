@@ -5,9 +5,11 @@ class WaterworksBatchBillingListInterceptor {
 	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'waterworks_billing_batch'}")
 	public void getNodeList(def evt) {
 		def result = evt.result;
-		result << [ title: 'Draft', id:'draft'];
-		result << [ title: 'Billing Sent', id:'open'];
-		result << [ title: 'Posted', id:'posted'];
+		result << [ title: 'Draft', id:'DRAFT'];
+		result << [ title: 'For Reading', id:'FOR_READING'];
+		result << [ title: 'For Printing', id:'FOR_PRINTING'];
+		result << [ title: 'Billing Sent', id:'BILLED'];
+		result << [ title: 'Posted', id:'POSTED'];
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_billing_batch'}")

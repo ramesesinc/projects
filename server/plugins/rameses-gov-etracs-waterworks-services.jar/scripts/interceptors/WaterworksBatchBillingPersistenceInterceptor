@@ -6,6 +6,9 @@ class WaterworksBatchBillingPersistenceInterceptor {
 	@DataContext("waterworks_billing_batch")
 	def batchEm;
 
+	@DataContext("waterworks_billing")
+	def wbillEm;
+
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
 	public void beforeCreate( evt ) { 
 		def o = evt.args[0];
@@ -19,5 +22,11 @@ class WaterworksBatchBillingPersistenceInterceptor {
 		def m = [ batchid: o.objid ];
 		batchEm.buildBillings( m );
 		batchEm.updateUnpaidAccounts( m ); 		
+	}
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
+	public void beforeRemoveEntity( evt ) { 
+		def o = evt.args[0];
+		batchEm.removeBilling([ batchid: o.objid ]); 
 	}
 }

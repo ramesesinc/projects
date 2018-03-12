@@ -65,13 +65,13 @@ class WaterworksComputationService  {
 	public def createBatch( param ) { 
 		if ( !param.acctid ) throw new Exception('acctid parameter is required'); 
 
-		def acctinfo = wacctEm.find([ objid: param.acctid ]).select('objid,zone.*').first(); 
+		def acctinfo = wacctEm.find([ objid: param.acctid ]).select('objid,stuboutnode.*').first(); 
 		if ( !acctinfo ) throw new Exception('waterworks account not found'); 
 
-		def zone = acctinfo.zone; 
+		def zone = acctinfo.stuboutnode?.zone; 
 		if ( !zone?.objid ) throw new Exception('Please specify a zone for this account'); 
 
-		def sched = acctinfo.zone.schedule; 
+		def sched = acctinfo.stuboutnode?.schedule; 
 		if ( !sched?.objid ) throw new Exception('Please specify a schedule for zone '+ zone.code); 
 
 		param.items.each{ o-> 

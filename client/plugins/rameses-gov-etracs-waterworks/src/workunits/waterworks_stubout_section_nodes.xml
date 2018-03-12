@@ -8,8 +8,8 @@
             allowEdit="false" allowDelete="false"/>
         
         <invoker type="formActions" caption="Add Nodes" action="addNodes"/>
-        <invoker type="formActions" caption="Assign Account" action="assignAccount" />
-        <invoker type="formActions" caption="UnAssign Account" action="unassignAccount" />
+        <invoker type="formActions" caption="Remove Node" action="removeNode"/>
+        <invoker type="formActions" caption="Edit IndexNo" action="editIndexNo"/>
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.StuboutNodeModel"/>
     <pages>

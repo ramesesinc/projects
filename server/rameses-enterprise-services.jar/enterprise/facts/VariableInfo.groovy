@@ -58,7 +58,7 @@ public class VariableInfo {
 	}
 
 	public void copy( def o ) {
-		println "fields to unmatch ->" + 	"class|metaClass"+excludeFields;
+		//println "fields to unmatch ->" + 	"class|metaClass"+excludeFields;
 		this.metaClass.properties.each { k ->
 			if( !k.name.matches("class|metaClass"+excludeFields)) {
 				//add only if there is a setter

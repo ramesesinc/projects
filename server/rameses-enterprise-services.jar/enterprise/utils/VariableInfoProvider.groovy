@@ -46,7 +46,7 @@ public class VariableInfoProvider {
 	};
 
 	def createDecimalFact;
-	def createIntegerFact;
+	def createIntegerFact ;
 	def createBooleanFact;
 	def createStringFact;
 	def createDateFact;

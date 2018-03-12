@@ -3,7 +3,7 @@
           title="Payments">
     <invokers>
         <invoker type="waterworks_account:section" caption="Payments" 
-                 index="2" action="init" 
+                 index="50" action="init" 
                  visibleWhen="#{mode=='read'}"  />
         
        

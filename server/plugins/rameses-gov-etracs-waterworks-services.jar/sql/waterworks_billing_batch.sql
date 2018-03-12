@@ -3,7 +3,7 @@ INSERT INTO waterworks_billing (
 	objid, state, acctid, batchid, 
 	prevreadingdate, prevreading, readingdate, reading, readingmethod, 
 	reader_objid, reader_name, volume, amount, month, year,
-	discrate, surcharge, interest, othercharge, advance, 
+	discrate, surcharge, interest, otherfees, advance, 
 	arrears, unpaidmonths, billed 
 ) 
 SELECT 
@@ -68,3 +68,18 @@ from (
 		(select count(*) from waterworks_billing where batchid = $P{batchid}) as totalcount, 
 		(select count(*) from waterworks_billing where batchid = $P{batchid} and billed=1) as billedcount  
 )tmp1 
+
+
+[postConsumption]
+INSERT INTO waterworks_consumption ( 
+	objid, acctid, batchid, duedate, discdate, 
+	prevreading, reading, readingmethod, reader_objid, reader_name, 
+	volume, amount, amtpaid, MONTH, YEAR, readingdate, state 
+) 
+SELECT 
+	wb.objid, wb.acctid, wb.batchid, bb.duedate, bb.discdate, 
+	wb.prevreading, wb.reading, wb.readingmethod, wb.reader_objid, wb.reader_name, 
+	wb.volume, wb.amount, 0.0 AS amtpaid, wb.month, wb.year, bb.readingdate, 'POSTED' AS state 
+FROM waterworks_billing_batch bb 
+	INNER JOIN waterworks_billing wb ON wb.batchid = bb.objid 
+WHERE bb.objid = $P{batchid} 

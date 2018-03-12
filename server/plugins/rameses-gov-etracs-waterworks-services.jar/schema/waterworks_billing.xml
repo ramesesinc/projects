@@ -21,7 +21,7 @@
 		<field name="discrate" required="true"/>
 		<field name="surcharge" required="true"/>
 		<field name="interest" required="true"/>
-		<field name="othercharge" required="true"/>
+		<field name="otherfees" required="true"/>
 		<field name="advance" required="true"/>
 		<field name="arrears" required="true"/>
 		<field name="unpaidmonths" required="true"/>

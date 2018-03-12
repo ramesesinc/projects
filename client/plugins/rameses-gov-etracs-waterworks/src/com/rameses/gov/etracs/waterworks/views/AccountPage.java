@@ -225,10 +225,9 @@ public class AccountPage extends javax.swing.JPanel {
 
         xFormPanel4.setCaptionWidth(120);
 
-        xDateField7.setCaption("Start Date");
         xDateField7.setName("entity.dtstarted"); // NOI18N
+        xDateField7.setCaption("Start Date");
         xDateField7.setPreferredSize(new java.awt.Dimension(0, 20));
-        xDateField7.setRequired(true);
         xFormPanel4.add(xDateField7);
 
         xLabel23.setBackground(new java.awt.Color(245, 245, 245));

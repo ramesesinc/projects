@@ -16,6 +16,9 @@ class WaterworksSingleBillingInterceptor {
 	@DataContext("waterworks_consumption")
 	def wcEm;
 
+	@DataContext("waterworks_otherfee")
+	def wotherEm;
+
     @After(pattern="SingleBillingHandler.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getInfo(def evt) {
 		def obj = evt.args[0];
@@ -45,9 +48,14 @@ class WaterworksSingleBillingInterceptor {
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
 		arr << "amount - amtpaid > 0"
-		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
+		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
 		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
+
+		//select for other fees
+		def select2 = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
+		def conList2 = wotherEm.find([acctid: p.acctid]).select(select2).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		list.addAll( conList2 );
 	}
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")

@@ -21,44 +21,41 @@ class WaterworksBatchBillingService {
 			def arrears = b.billitems.sum{ it.amount - it.amtpaid  };
 			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
 			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
+			def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };
+
+			u.arrears = 0;
+			u.surcharge = 0;
+			u.interest = 0;
+			u.otherfees = 0;
+
 			if( arrears ) u.arrears = arrears;
 			if( surcharge ) u.surcharge = surcharge;
 			if( interest ) u.interest = interest;
+			if( otherFees ) u.otherfees = otherFees;
 		}
 	   	wbillEm.find( [objid: o.objid ] ).update( u );
 	}
 
 	@ProxyMethod 
-	def submitForReading( param ) { 
-		if ( !param.objid ) throw new Exception('objid parameter is required'); 
-
-		def m = [ objid: param.objid ]; 
-		def o = batchEm.find( m ).select('objid,state').first(); 
-		if ( !o ) throw new Exception('batch billing transaction not found'); 
-
-		def newstate = 'FOR_READING'; 
-		batchEm.find( m ).where(" state='DRAFT' ").update([ state: newstate ]); 
-		o = batchEm.find( m ).select('objid,state').first(); 
-		if ( !o.state.toString().equalsIgnoreCase( newstate )) 
-			throw new Exception('Transaction status must be in DRAFT mode');  
-
-		return [ state: newstate ];  
-	} 
-
-	@ProxyMethod 
 	def getBilledStatus( param ) { 
 		if ( !param.objid ) throw new Exception('objid parameter is required'); 
-
 		def m = [batchid: param.objid]; 
 		return batchEm.findBilledStatus( m ); 
 	} 
 
-
-
 	@ProxyMethod 
-	public def post( def p ) {
-		//def hasitems = batchEm.select("cnt:{COUNT(*)}").find([batchid: p.objid]).where(" amount=0 AND state='DRAFT' ").first();	
-		//if(hasitems) throw new Exception("There are items that are not processed. Please process first");
+	public def post( p ) { 
+		if ( !p.objid ) throw new Exception('objid parameter is required'); 
+
+		def info = batchEm.find([ objid: p.objid ]).select('objid,state').first(); 
+		if ( !info ) throw new Exception('batch transaction not found'); 
+		if ( !info.state.toString().equalsIgnoreCase('APPROVED') ) 
+			throw new Exception('batch transaction must be in APPROVED status'); 
+
+		batchEm.find([ objid: p.objid ]).update([ state: 'POSTED' ]); 
+		wbillEm.find([ batchid: p.objid ]).update([ state: 'POSTED' ]); 
+		batchEm.postConsumption([ batchid: info.objid ]); 
+		p.state = 'POSTED'; 
 		return p;
 	}
 

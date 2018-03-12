@@ -21,10 +21,11 @@
 		<field name="fromperiod" />
 		<field name="toperiod" />
 		<field name="discdate" />
+		<field name="duedate" required="true"/>
 
 		<field name="reader_objid" />
 		<field name="reader_name" />
-		<field name="readingdate" />
+		<field name="readingdate" required="true"/>
 
 		<field name="readingduedate" type="date"/>
 		<field name="billingduedate" type="date"/>

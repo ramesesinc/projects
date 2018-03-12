@@ -12,8 +12,8 @@ import com.rameses.seti2.views.CrudFormPage;
  *
  * @author Rameses
  */
-@Template(CrudFormPage.class)
 @StyleSheet
+@Template(CrudFormPage.class)
 public class CaptureConsumptionPage extends javax.swing.JPanel {
 
     /**

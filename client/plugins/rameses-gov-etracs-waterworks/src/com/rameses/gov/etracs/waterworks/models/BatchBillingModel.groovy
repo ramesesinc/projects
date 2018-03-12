@@ -56,11 +56,11 @@ public class BatchBillingModel extends CrudFormModel {
             }
        }
    ];
-    
-   public void afterCreate() {
-       open();
-   } 
-
+   
+   void afterSave() {
+       open(); 
+   }
+   
    public def open() {
         def p = super.open();
         if( entity.state == "PROCESSING") {

@@ -15,11 +15,5 @@
 			<key field="stuboutid" target="objid"/>
 		</complex>
 
-		<!--
-		<complex name="application" ref="waterworks_application" required="false" jointype="many-to-one" 
-			includefields="objid,appno,acctname,address.text">
-			<key field="applicationid" target="objid"/>
-		</complex>
-		-->
 	</element>
 </schema>

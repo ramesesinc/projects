@@ -31,7 +31,7 @@
 
 		<field name="meterid" />
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false" 
-			includefields="objid,serialno,brand,capacity,size.*,status">
+			includefields="objid,serialno,brand,capacity,size.*,state,lastreading,lastreadingdate">
 			<key field="meterid" target="objid"/>
 		</complex>
 		
@@ -40,10 +40,7 @@
 		</complex>	
 
 		<!-- Dates -->
-		<field name="lastdateread" required="false" indexed="true" caption="Last Date Read"/>
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
-
-		<field name="currentreading" required="false" caption="Last Reading" type="integer"/>
 
 		<!--
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="false" 

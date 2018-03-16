@@ -40,8 +40,8 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel19 = new com.rameses.rcp.control.XLabel();
         xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel25 = new com.rameses.rcp.control.XLabel();
-        xLabel23 = new com.rameses.rcp.control.XLabel();
         xLabel24 = new com.rameses.rcp.control.XLabel();
+        xLabel23 = new com.rameses.rcp.control.XLabel();
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton3 = new com.rameses.rcp.control.XButton();
         jPanel4 = new javax.swing.JPanel();
@@ -117,26 +117,26 @@ public class AccountPage extends javax.swing.JPanel {
         xLabel25.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel25.setCaption("Meter Status");
         xLabel25.setDepends(new String[] {"entity.meter"});
-        xLabel25.setExpression("#{entity.meter.status}");
+        xLabel25.setExpression("#{entity.meter.state}");
         xLabel25.setOpaque(true);
         xLabel25.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel25);
 
-        xLabel23.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel23.setCaption("Last Reading Date");
-        xLabel23.setExpression("#{entity.lastdateread}");
-        xLabel23.setOpaque(true);
-        xLabel23.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel23);
-
         xLabel24.setBackground(new java.awt.Color(245, 245, 245));
         xLabel24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel24.setCaption("Last Reading");
-        xLabel24.setExpression("#{entity.currentreading==null ? '' : entity.currentreading}");
+        xLabel24.setExpression("#{entity.meter.lastreading}");
         xLabel24.setOpaque(true);
         xLabel24.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel24);
+
+        xLabel23.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel23.setCaption("Last Reading Date");
+        xLabel23.setExpression("#{entity.meter.lastreadingdate}");
+        xLabel23.setOpaque(true);
+        xLabel23.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xLabel23);
 
         xButton2.setName("attachMeter"); // NOI18N
         xButton2.setCaption("");
@@ -344,9 +344,7 @@ public class AccountPage extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(

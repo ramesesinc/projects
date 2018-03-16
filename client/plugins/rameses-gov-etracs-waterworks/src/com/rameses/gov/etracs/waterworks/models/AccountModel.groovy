@@ -30,15 +30,18 @@ public class AccountModel extends CrudFormModel {
     
     void attachMeter() { 
         def params = [:];
-        params.onselect = { o-> 
+        params.handler = { o-> 
+            MsgBox.alert( "entity is " + o );
+            /*
             def m = [_schemaname:'waterworks_account'];
             m.findBy = [objid: entity.objid];
             m.meterid = o.objid;
             persistenceService.update( m );
             entity.meter = o;
+            */
             binding.refresh();
         }
-        Modal.show('waterworks_meter_wo_account:lookup', params);
+        Modal.show('waterworks_assign_meter', params);
     }
     
     void detachMeter() { 

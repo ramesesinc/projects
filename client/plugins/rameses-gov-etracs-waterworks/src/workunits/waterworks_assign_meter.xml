@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="waterworks_assign_meter" 
+                 caption="Assign Meter" index="5" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.AssignMeterModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.AssignMeterPage"/>
+    </pages>
+</workunit>

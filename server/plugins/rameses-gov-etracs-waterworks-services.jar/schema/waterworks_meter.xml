@@ -1,7 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_meter">
 		<field name="objid" primary="true"  prefix="WM"/>
-		<field name="status" caption="Status" defaultValue="ACTIVE"/>
+		<field name="state" caption="Status" defaultValue="ACTIVE"/>
 		<field name="serialno" required="true" indexed="true" caption="Serial No." searchable="true"/>
 		<field name="brand" required="true" indexed="true" caption="Brand"/>
 
@@ -10,7 +10,11 @@
 			<key field="sizeid" target="objid"/>
 		</complex>
 		
-		<field name="capacity" required="true" caption="Capacity" />
+		<field name="capacity" required="true" type="integer" caption="Capacity" />
+
+		<field name="lastreading" indexed="true" caption="Brand"/>
+		<field name="lastreadingdate" indexed="true" caption="Brand"/>
+
 		
 		<!-- for link with application -->
 		<!--

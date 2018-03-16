@@ -44,6 +44,7 @@ class CaptureConsumptionInitialModel {
         while (( startdate.before(enddate) || startdate.equals(enddate) )) {
             def arr = YM.format( startdate ).split('-'); 
             def m = [ acctid: p.acctid ]; 
+            m.meter = parent.meter;
             m.year = arr[0].toInteger(); 
             m.month = arr[1].toInteger(); 
             p.items << m; 
@@ -72,36 +73,44 @@ class CaptureConsumptionInitialModel {
     }
     
     def handler = [
+        isColumnEditable: { item, colName ->
+            if( colName == "reading" ) {
+                if( item.meter?.objid ) return true;
+            }
+            else if( colName == "volume" ) {
+                if(item.meter?.objid ) return false;
+            }
+        },
         beforeColumnUpdate: { item, colName, value ->
-            try { 
-                item.prevreading = Math.max( 0, item.prevreading ); 
-                
+            try {
                 def r = [:];
-                def newvalue = null; 
-                if (colName == "reading") { 
-                    newvalue = Math.max( 0, value ); 
-                    
+
+                if( colName == "reading" ) {
+                    if(item.reading >= item.meter.capacity )
+                        throw new Exception("Current reading must not be greater than capacity");
+                    if(item.reading < 0 )
+                        throw new Exception("Reading must be greater than or equal to 0");
+
                     def p = [ objid: item.acctid ];
-                    p.volume = Math.max( 0, newvalue - item.prevreading ); 
+                    if( value < item.prevreading ) {
+                        p.volume = (value + item.meter.capacity) - item.prevreading; 
+                    } else {
+                        p.volume = value - item.prevreading;
+                    }
                     r.amount = compSvc.compute( p );
                     r.volume = p.volume; 
-                    r.reading = newvalue; 
-                    
-                } else if (colName == "volume") {
-                    newvalue = Math.max( 0, value ); 
-                    
-                    def p = [ objid: item.acctid, volume: newvalue ];
+                    r.reading = value;
+                }
+                else if (colName == "volume") {
+                    def p = [ objid: item.acctid, volume: value ];
                     r.amount = compSvc.compute( p ); 
                     r.volume = p.volume; 
-                    newvalue = p.volume;
                     
-                } else {
-                    newvalue = value; 
-                }
+                } 
 
                 def m = [ _schemaname: 'waterworks_consumption' ];
-                m.putAll( r );
-                m.put( colName, newvalue ); 
+                m.putAll( r ); 
+                m.put( colName, value ); 
                 m.findBy = [objid: item.objid ];
                 persistenceService.update( m );
                 

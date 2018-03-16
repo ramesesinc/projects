@@ -12,6 +12,7 @@
         <field name="item_type"  />
         <field name="item_fund_objid"  />
         <field name="item_fund_code"  />
+        <field name="item_fund_title"  />
         <field name="item_tag"/>
     </element>
 </schema>

@@ -31,6 +31,7 @@
             String title = "Compromise Agreement (Municipal Format)";
             String reportPath = "com/rameses/gov/etracs/landtax/report/compromise/";
             String reportName = reportPath + "rptcompromise_municipal.jasper";
+            def reportdata;
             
             def preview(){
                 buildReport();
@@ -48,20 +49,15 @@
             void buildReport(){
                 params = paramSvc.getStandardParameter();
                 params.LOGOLGU = EtracsReportUtil.getInputStream("lgu-logo.png");
-                def ledger = ledgerSvc.openLedger([objid:entity.rptledgerid]);
+                def ledger = ledgerSvc.open([objid:entity.rptledgerid]);
                 entity.totalareaha = ledger.totalareaha;
                 entity.amtforinstallmentwords = numSvc.convertString(String.valueOf(entity.amtforinstallment));
                 entity.txndateordinal = getOrdinal(new SimpleDateFormat("dd").format(entity.txndate));
                 int max = 0;
-                entity._installments.each{
-                    if(it.installmentno > max){
-                        max = it.installmentno;
-                        entity.duedate = it.duedate;
-                    }
-                    entity.termamount = it.amount;
-                }
+                entity.termamount = entity.installments.last().balance
+                entity.duedate = entity.installments.last().duedate
                 entity.paidbalance = 0;
-                entity._credits.each{
+                entity.credits.each{
                     if(it.remarks.equalsIgnoreCase("downpayment")){
                         entity.downpayment = it.amount;
                     }

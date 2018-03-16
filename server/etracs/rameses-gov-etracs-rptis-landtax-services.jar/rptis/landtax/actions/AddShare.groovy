@@ -35,14 +35,14 @@ public class AddShare implements RuleActionHandler {
 
 	def createShare(params, payableacct){
 		def billitem = params.billitem.toMap()
-		def amt = numSvc.roundA(params.expr.decimalValue, 4)
+		def amtdue = params.amtdue.decimalValue
 		return [
 			revtype 	: billitem.revtype,
 			revperiod	: billitem.revperiod,
 			refitem     : params.billitem.account.toMap(),
 			sharetype 	: payableacct.org.class,
 			payableitem : payableacct.item,
-			amount 		: amt,
+			amount 		: numSvc.roundA(amtdue * params.rate.decimalValue, 4),
 			discount 	: 0,
 		]
 	}

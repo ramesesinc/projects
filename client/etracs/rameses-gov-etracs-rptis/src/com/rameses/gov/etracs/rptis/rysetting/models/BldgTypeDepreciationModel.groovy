@@ -94,6 +94,15 @@ public class BldgTypeDepreciationModel
             objid           : RPTUtil.generateId('BD'),
             bldgtypeid      : bldgType?.objid,
             bldgrysettingid : bldgType?.bldgrysettingid,
+            rate            : 0,
+            excellent       : 0,
+            verygood        : 0,
+            good            : 0,
+            average         : 0,
+            fair            : 0,
+            poor            : 0,
+            verypoor        : 0,
+            unsound         : 0,
             isnew           : true,
         ]
     }

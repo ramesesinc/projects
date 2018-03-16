@@ -120,28 +120,30 @@ class RPTReceiptService
 		payments.each{pmt ->
 			if (!util.isTrue(pmt.voided)){
 				def ledger = em_rptledger.select('objid,taxpayer.objid,taxpayer.name,taxpayer.address').find([objid:pmt.refid]).first()
-				def bill = billSvc.initBill()
-				bill.taxpayer = ledger.taxpayer 
-				bill.billto = ledger.taxpayer 
-				bill.ledgers = [ledger]
-				billSvc.generateBill(bill)
-
+				
 				//revert ledger item payment 
 				def paiditems = em_rptpayment_item.select('year,revtype,amount').find([parentid:pmt.objid]).list()
 				paiditems.each{
 					def findparam = [parentid: pmt.refid, year: it.year, revtype: it.revtype]
 					em_rptledger_item.find(findparam).update([amtpaid:'{amtpaid - :amount}'], [amount:it.amount])
 				}
+
+				//reset ledger last year/qtr paid 
+				def paidinfo = [:]
+				paidinfo.lastyearpaid = (pmt.fromqtr == 1 ? pmt.fromyear - 1 : pmt.fromyear)
+				paidinfo.lastqtrpaid = (pmt.fromqtr == 1 ? 4 : pmt.fromqtr - 1)
+				paidinfo.nextbilldate = null 
+				em_rptledger.find([objid:pmt.refid]).update(paidinfo)
+
+				def bill = billSvc.initBill()
+				bill.taxpayer = ledger.taxpayer 
+				bill.billto = ledger.taxpayer 
+				bill.ledgers = [ledger]
+				billSvc.generateBill(bill)
+
+				//void payment
+				em_rptpayment.find([objid:pmt.objid]).update([voided:true])
 			}
-
-			//void payment
-			em_rptpayment.find([objid:pmt.objid]).update([voided:true])
-
-			//reset ledger last year/qtr paid 
-			def paidinfo = [:]
-			paidinfo.lastyearpaid = (pmt.fromqtr == 1 ? pmt.fromyear - 1 : pmt.fromyear)
-			paidinfo.lastqtrpaid = (pmt.fromqtr == 1 ? 4 : pmt.fromqtr - 1)
-			em_rptledger.find([objid:pmt.refid]).update(paidinfo)
 		}
 	}	
 
@@ -201,42 +203,6 @@ class RPTReceiptService
 		}
 	}
 
-
-/* TODO:
-	@ProxyMethod
-	public def buildCashReceiptItemsAndShares(receipt){
-		def revenues = []
-		def payables = []
-
-		receipt.ledgers.each{rl->
-			revenues += rl.shares.findAll{it.item.type == 'REVENUE'}
-			payables += rl.shares.findAll{it.item.type == 'PAYABLE'}
-		}
-
-		buildReceiptItems(receipt, revenues, payables)
-	}
-*/
-
-/*	@ProxyMethod
-	public def getCashReceiptItems(receipt){
-		def items = []
-
-		def shares = []
-		receipt.ledgers.each{
-			shares += it.shares 
-		}
-		
-		def groups = shares.groupBy{ it.item.objid }
-		groups.each{k, list ->
-			def rctitem = createReceiptItem(receipt, list.first())
-			list.each{
-				rctitem.amount += it.amount 
-			}
-			items << rctitem
-		}
-		return items
-	} 
-	*/
 
 	@ProxyMethod
 	public def applyPartialPayment(bill){
@@ -301,6 +267,36 @@ class RPTReceiptService
 			addLGUInfo(receipt)
 		}
 		receipt.remove('ledgers')
+	}
+
+
+	@ProxyMethod
+	public def getCollectingAgency(){
+		def agency = 'TREASURY'
+		if ('city'.equalsIgnoreCase(env.ORGCLASS))
+			agency = 'CTO'
+		else if ('municipality'.equalsIgnoreCase(env.ORGCLASS))
+			agency = 'MTO'
+		else if ('province'.equalsIgnoreCase(env.ORGCLASS))
+			agency = 'PTO'
+		return agency 
+	}
+
+
+	@ProxyMethod
+	public void addLGUInfo( receipt ) {
+		def lgutype = env.ORGCLASS
+		if("province".equalsIgnoreCase(lgutype)) {
+			receipt.lguname = receipt._items.collect{[munidistrict: it.munidistrict]}.unique{it.munidistrict}*.munidistrict.join('/')
+			receipt.parentlguname = receipt._items[0].provcity 
+		} else if ("city".equalsIgnoreCase(lgutype)) { 
+			def i = receipt._items[0]
+			receipt.lguname = i.provcity  
+		} else {
+			def i = receipt._items[0]
+			receipt.lguname = i.munidistrict
+			receipt.parentlguname = i.provcity 
+		}
 	}
 
 
@@ -417,44 +413,6 @@ class RPTReceiptService
 			share.amount = it.amount - it.share 
 			share.discount = it.discount - it.sharedisc 
 			em_rptpayment_share.create(share)
-		}
-	}
-
-
-	//def createReceiptItem(receipt, item){
-		//return [
-			//objid: 'CI' + new java.rmi.server.UID(),
-			//receiptid: receipt.objid, 
-			//item: item.item,
-			//amount: new BigDecimal('0'), 
-			//remarks: null 
-		//]
-	//}
-
-	def getCollectingAgency(){
-		def agency = 'TREASURY'
-		if ('city'.equalsIgnoreCase(env.ORGCLASS))
-			agency = 'CTO'
-		else if ('municipality'.equalsIgnoreCase(env.ORGCLASS))
-			agency = 'MTO'
-		else if ('province'.equalsIgnoreCase(env.ORGCLASS))
-			agency = 'PTO'
-		return agency 
-	}
-
-
-	void addLGUInfo( receipt ) {
-		def lgutype = env.ORGCLASS
-		if("province".equalsIgnoreCase(lgutype)) {
-			receipt.lguname = receipt._items.collect{[munidistrict: it.munidistrict]}.unique{it.munidistrict}*.munidistrict.join('/')
-			receipt.parentlguname = receipt._items[0].provcity 
-		} else if ("city".equalsIgnoreCase(lgutype)) { 
-			def i = receipt._items[0]
-			receipt.lguname = i.provcity  
-		} else {
-			def i = receipt._items[0]
-			receipt.lguname = i.munidistrict
-			receipt.parentlguname = i.provcity 
 		}
 	}
 

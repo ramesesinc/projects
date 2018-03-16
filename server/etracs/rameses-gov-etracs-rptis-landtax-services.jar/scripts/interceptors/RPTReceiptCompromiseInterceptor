@@ -14,60 +14,31 @@ class RPTReceiptCompromiseInterceptor
 	@Service('Var') 
 	def var;
 
-	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler.matches('rptcompromise')}") 
+	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler.toString().matches('rptcompromise')}") 
 	public void openReceipt( evt ) {
 		def receipt = evt.result
-		if (receipt.txntype == 'compromise'){
-			//TODO:
-			svc.open(receipt)
-			if (!receipt._items )
-				receipt._items = []
-			receipt._items += svc.getItemsForPrinting(receipt)
-			receipt.itemcount = receipt._items.size()
-			if(receipt.itemcount > 0) addLGUInfo(receipt)
-		}
+		svc.open(receipt) 
+		svc.formatReceiptForPrinting(receipt)
 	}
 
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rptcompromise')}") 
+	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.toString().matches('rptcompromise')}") 
 	public void beforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 		svc.buildPostingItems(receipt)
 	}
 
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.matches('rptcompromise')}") 
+	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.toString().matches('rptcompromise')}") 
 	public void afterPostReceipt( evt ) {
 		def receipt = evt.result
-		svc.createReceipt(receipt)
-		receipt._items = svc.getItemsForPrinting(receipt)
-		receipt.itemcount = receipt._items.size()
-		receipt.ledgers = null
-		if(receipt.itemcount > 0) addLGUInfo(receipt)
+		svc.create(receipt)
+		svc.formatReceiptForPrinting(receipt)
 	}
 
-	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.collectiontype?.handler.matches('rptcompromise')}") 
-	public void afterVoiddReceipt( evt ) {
+	@After(pattern="CashReceiptVoidService.post", eval="#{result.receipt.collectiontype?.handler.toString().matches('rptcompromise')}") 
+	public void afterVoidReceipt( evt ) {
 		svc.voidReceipt(evt.result.receipt)
 	}
 
-	def createReceiptItem(receipt, tax){
-		tax.receiptid = receipt.objid 
-		tax.item = em_itemaccount.select('objid, code, title, fund_objid, fund_code, fund_title').find([objid:tax.item.objid]).first()
-		return tax 
-	}
-
-	void addLGUInfo( receipt ) {
-		if("province".equalsIgnoreCase(var.lgu_type)) {
-			receipt.lguname = receipt._items.unique{it.munidistrict}*.munidistrict.join('/')
-			receipt.parentlguname = receipt._items[0].provcity 
-		} else if ("city".equalsIgnoreCase(var.lgu_type)) { 
-			def i = receipt._items[0]
-			receipt.lguname = i.provcity  
-		} else {
-			def i = receipt._items[0]
-			receipt.lguname = i.munidistrict
-			receipt.parentlguname = i.provcity 
-		}
-	}
 }
 

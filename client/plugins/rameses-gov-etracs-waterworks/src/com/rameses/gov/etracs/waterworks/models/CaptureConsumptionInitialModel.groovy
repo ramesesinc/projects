@@ -74,7 +74,7 @@ class CaptureConsumptionInitialModel {
     
     def handler = [
         isColumnEditable: { item, colName ->
-            if( colName == "reading" ) {
+            if( colName.matches("prevreading|reading") ) {
                 if( item.meter?.objid ) return true;
             }
             else if( colName == "volume" ) {
@@ -84,28 +84,37 @@ class CaptureConsumptionInitialModel {
         beforeColumnUpdate: { item, colName, value ->
             try {
                 def r = [:];
-
-                if( colName == "reading" ) {
-                    if(item.reading >= item.meter.capacity )
-                        throw new Exception("Current reading must not be greater than capacity");
-                    if(item.reading < 0 )
-                        throw new Exception("Reading must be greater than or equal to 0");
+                if( colName.matches("reading|prevreading") ) {
+                    def t = (colName=="reading")?"Current" : "Previous";
+                    if( value >= item.meter.capacity )
+                        throw new Exception(t + " reading must not be greater than capacity");
+                    if(value < 0 )
+                        throw new Exception(t+ "reading must be greater than or equal to 0");
 
                     def p = [ objid: item.acctid ];
-                    if( value < item.prevreading ) {
-                        p.volume = (value + item.meter.capacity) - item.prevreading; 
-                    } else {
-                        p.volume = value - item.prevreading;
+                    if( colName == "reading") {
+                        if( value < item.prevreading ) {
+                            p.volume = (value + item.meter.capacity) - item.prevreading; 
+                        } else {
+                            p.volume = value - item.prevreading;
+                        }
+                        r.reading = value;
+                    }
+                    else {
+                        if( item.reading < value ) {
+                            p.volume = (item.reading + item.meter.capacity) - value; 
+                        } else {
+                            p.volume = item.reading - value;
+                        }
+                        r.prevreading = value;
                     }
                     r.amount = compSvc.compute( p );
                     r.volume = p.volume; 
-                    r.reading = value;
                 }
                 else if (colName == "volume") {
                     def p = [ objid: item.acctid, volume: value ];
                     r.amount = compSvc.compute( p ); 
                     r.volume = p.volume; 
-                    
                 } 
 
                 def m = [ _schemaname: 'waterworks_consumption' ];

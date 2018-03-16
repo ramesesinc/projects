@@ -60,7 +60,6 @@ class WaterworksComputationService  {
 		return wc.amount;
 	}
 
-
 	@ProxyMethod 
 	public def createBatch( param ) { 
 		if ( !param.acctid ) throw new Exception('acctid parameter is required'); 

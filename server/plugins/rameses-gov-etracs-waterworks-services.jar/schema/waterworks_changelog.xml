@@ -1,12 +1,14 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_changelog">
 		<field name="objid" primary="true"  prefix="WACCLOG"/>
-	
-		<field name="acctid" />
+		<field name="refid" />
+		<field name="reftype" />
+		<field name="action" />
 		<field name="fieldnames" />
 		<field name="oldvalue" />
 		<field name="newvalue" />
-		<field name="remarks" />
+		<field name="details" />
+		<field name="reason" />
 	</element>
 </schema>		
 

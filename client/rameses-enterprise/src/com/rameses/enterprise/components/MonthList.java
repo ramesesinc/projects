@@ -34,14 +34,19 @@ public class MonthList extends XComponentPanel {
 
         setLayout(new java.awt.BorderLayout());
 
+        component.setName("month"); // NOI18N
         component.setCaption("Month");
         component.setExpression("#{item.title}");
         component.setItemKey("key");
         component.setItems("monthList");
-        component.setName("month"); // NOI18N
         add(component, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox component;
     // End of variables declaration//GEN-END:variables
+
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        component.setEnabled( isEnabled() );
+    }
 }

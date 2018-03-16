@@ -69,21 +69,18 @@
                               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
                                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jPanel5" max="32767" attributes="0"/>
+                                      <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -149,8 +146,8 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xFormPanel5" pref="354" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="xFormPanel5" min="-2" pref="354" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -158,8 +155,8 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xFormPanel5" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="xFormPanel5" min="-2" pref="206" max="-2" attributes="0"/>
+                          <EmptySpace pref="31" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -330,22 +327,6 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
-                      <Properties>
-                        <Property name="name" type="java.lang.String" value="attachMeter" noResource="true"/>
-                        <Property name="caption" type="java.lang.String" value=""/>
-                        <Property name="text" type="java.lang.String" value="Attach Meter"/>
-                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.meter?.objid == null  }"/>
-                      </Properties>
-                    </Component>
-                    <Component class="com.rameses.rcp.control.XButton" name="xButton3">
-                      <Properties>
-                        <Property name="name" type="java.lang.String" value="detachMeter" noResource="true"/>
-                        <Property name="caption" type="java.lang.String" value=""/>
-                        <Property name="text" type="java.lang.String" value="Detach Meter"/>
-                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.meter?.objid != null }"/>
-                      </Properties>
-                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -365,7 +346,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="xFormPanel2" min="-2" pref="338" max="-2" attributes="0"/>
-                          <EmptySpace pref="26" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -471,13 +452,6 @@
                         <Property name="expression" type="java.lang.String" value="#{ entity.stuboutnode.schedule.objid }"/>
                       </Properties>
                     </Component>
-                    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
-                      <Properties>
-                        <Property name="name" type="java.lang.String" value="assignNode" noResource="true"/>
-                        <Property name="caption" type="java.lang.String" value=""/>
-                        <Property name="text" type="java.lang.String" value="Assign Node"/>
-                      </Properties>
-                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -514,7 +488,7 @@
                           <Component id="xPanel3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="84" max="32767" attributes="0"/>
+                          <EmptySpace pref="37" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

@@ -1,6 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
           schemaName="waterworks_zone"  
-          allowCreate="false" allowEdit="false" allowDelete="false" cols="code,description,sector.code,schedule.objid">
+          allowCreate="false" allowEdit="false" allowDelete="false" 
+          cols="code,description,sector.code,schedule.objid" hiddenCols="year,month">
     <invokers>
         <invoker type="waterworks_zone:lookup" caption="Lookup Sector Zone" action="init"/>
     </invokers>

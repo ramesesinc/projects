@@ -24,7 +24,9 @@ public class BatchBillingModel extends CrudFormModel {
    @Script("ReportService")
    def reportSvc;
     
-    
+   int year;
+   int month;
+   
    def selectedItem;
    def selectedBillItem;
     
@@ -41,22 +43,56 @@ public class BatchBillingModel extends CrudFormModel {
        }
    } 
     
+  
+    
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
-            def m = [scheduleid: o.schedule.objid, year: entity.year, month: entity.month ];
-            try {
-                def sked = scheduleSvc.getSchedule(m);
-                entity.putAll(sked);
-                entity.schedule = o.schedule;
-                binding.refresh();
+            year = 0;
+            month = 0;
+            if( o.year ) {
+                int xx = ((o.year * 12)+o.month) + 1;
+                entity.year = (int)(xx / 12);
+                entity.month = (xx % 12);
             }
-            catch( e) {
-                MsgBox.err( e );
+            else {
+                entity.year = 0;
+                entity.month = 0;
             }
        }
    ];
-   
+         
+   /*
+   void viewSchedule() {
+        def m = [scheduleid: o.schedule.objid, year: year, month: month ];
+        try {
+            def sked = scheduleSvc.getSchedule(m);
+            entity.putAll(sked);
+            entity.schedule = o.schedule;
+            binding.refresh();
+        }
+        catch( e) {
+            MsgBox.err( e );
+        }
+   } 
+   */  
+    
+   void beforeSave(def mode) {
+        if(mode == "create") {
+             if(!entity.year) entity.year = year;
+             if(!entity.month) entity.month = month;
+             def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
+             try {
+                 def sked = scheduleSvc.getSchedule(m);
+                 entity.putAll(sked);
+                 entity.schedule = entity.zone.schedule;
+             }
+             catch( e) {
+                 throw e;
+             }
+        }
+   } 
+    
    void afterSave() {
        open(); 
    }

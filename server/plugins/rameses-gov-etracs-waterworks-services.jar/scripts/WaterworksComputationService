@@ -43,7 +43,7 @@ class WaterworksComputationService  {
 	* then specify the volume, month and year
 	***********************************************************************/
 	@ProxyMethod
-	public double compute( def o ) {
+	public def compute( def o ) {
 		def m = findAccount( o );
 		if ( o.volume == null || o.volume < 0 ) 
 			throw new Exception('Volume must be greater than or equal to zero');
@@ -55,9 +55,14 @@ class WaterworksComputationService  {
 		def facts = [];
 		facts << wc
 		facts << new WaterAccount( m );
+		if( m.meter?.objid ) {
+			facts << new WaterMeter( m.meter );
+		}
 
 		def res = ruleSvc.execute( "waterworkscomputation", facts, null, null );
-		return wc.amount;
+		return [
+			amount : wc.amount
+		];
 	}
 
 	@ProxyMethod 

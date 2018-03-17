@@ -108,12 +108,14 @@ class CaptureConsumptionInitialModel {
                         }
                         r.prevreading = value;
                     }
-                    r.amount = compSvc.compute( p );
+                    def res = compSvc.compute( p );
+                    r.amount = res.amount;
                     r.volume = p.volume; 
                 }
                 else if (colName == "volume") {
                     def p = [ objid: item.acctid, volume: value ];
-                    r.amount = compSvc.compute( p ); 
+                    def res = compSvc.compute( p ); 
+                    r.amount = res.amount;
                     r.volume = p.volume; 
                 } 
 

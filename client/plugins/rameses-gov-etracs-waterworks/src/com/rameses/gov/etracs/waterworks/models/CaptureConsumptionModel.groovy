@@ -46,8 +46,8 @@ public class CaptureConsumptionModel extends CrudFormModel {
             def m = [:];
             m.objid = entity.acctid; 
             m.volume = entity.volume; 
-            def r = compSvc.compute(m); 
-            entity.amount = r;
+            def res = compSvc.compute(m); 
+            entity.amount = res.amount;
             
             m = [scheduleid: entity.account.stuboutnode.schedule.objid, year: entity.year, month: entity.month ];
             def z = scheduleSvc.getSchedule( m );

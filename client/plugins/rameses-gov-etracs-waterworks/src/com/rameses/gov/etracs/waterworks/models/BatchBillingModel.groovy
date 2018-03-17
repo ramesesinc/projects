@@ -220,10 +220,10 @@ public class BatchBillingModel extends CrudFormModel {
     def updateHandler = [
         isColumnEditable: {item, colName -> 
             if( colName == "reading" ) {
-                return (entity.state == "FOR_READING");
+                return ( item.account.meter.objid != null && entity.state == "FOR_READING");
             }
             else if( colName =="volume") {
-                return (entity.state == "FOR_READING");
+                return (item.account?.meter?.objid == null && entity.state == "FOR_READING");
             }
             else {
                 return false;
@@ -234,19 +234,25 @@ public class BatchBillingModel extends CrudFormModel {
             try {
                 def r = [:];
                 if(colName == "reading") {
+                    if( value >= item.account.meter.capacity ) {
+                        throw new Exception("Reading must be less than meter capacity");
+                    }
+                    if( value < item.prevreading ) {
+                        value = value + item.account.meter.capacity;
+                    }
                     def p = [:];
                     p.volume = value - item.prevreading;
-                    if(p.volume<0) throw new Exception("Current reading must be greater than prev reading");
                     p.objid = item.acctid; 
                     r.volume = p.volume;
-                    
-                    r.amount = compSvc.compute(p);
+                    def res = compSvc.compute(p);
+                    r.amount = res.amount
                 }
                 else if(colName == "volume") {
                     def p = [:];
                     p.objid = item.acctid; 
                     r.volume = value;
-                    r.amount = compSvc.compute(p);
+                    def res = compSvc.compute(p);
+                    r.amount = res.amount;
                 }
 
                 def m = [_schemaname: 'waterworks_billing'];

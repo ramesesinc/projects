@@ -23,7 +23,7 @@ public class SectorModel extends CrudFormModel {
 
     def handler = [
         createItem: {
-            return [sectorid: entity.objid];
+            return [sectorid: entity.objid, sector: entity];
         }
     ]
     

@@ -46,8 +46,9 @@ public class ZonePage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(110);
 
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Sector");
-        xLabel1.setExpression("#{ entity.sector.zone }");
+        xLabel1.setExpression("#{ entity.sector.code }");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 

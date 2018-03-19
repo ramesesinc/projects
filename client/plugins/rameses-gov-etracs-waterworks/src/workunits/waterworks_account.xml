@@ -15,7 +15,8 @@
     <code class="com.rameses.gov.etracs.waterworks.models.AccountModel" />    
 
     <pages>
-        <page template="com.rameses.gov.etracs.waterworks.views.AccountPage"/>
+        <page name="default" template="com.rameses.gov.etracs.waterworks.views.AccountPage"/>
+        <page name="create" template="com.rameses.gov.etracs.waterworks.views.AccountNewPage"/>
     </pages>    
     
 </workunit>

@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml"
+          schemaName="waterworks_block_schedule">
+    <invokers>
+        <invoker type="waterworks_block_schedule:lookup" caption="Lookup Block Schedules" index="10" action="init" />
+    </invokers>
+</workunit>

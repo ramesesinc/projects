@@ -16,9 +16,10 @@
                  caption="Lookup Water Meter (Without Account)" 
                  action="init" target="popup"
                  cols="serialno,brand,capacity,size.title" 
-                 customFilter="currentacctid IS NULL "/>  
+                 customFilter="account.objid IS NULL "/>  
     </invokers>
     
+    <!--
     <code>
         class WaterworksMeterLookup extends com.rameses.seti2.models.CrudLookupModel {
         
@@ -37,5 +38,6 @@
                 return filter; 
             }
         }
-    </code>    
+    </code> 
+    -->   
 </workunit>

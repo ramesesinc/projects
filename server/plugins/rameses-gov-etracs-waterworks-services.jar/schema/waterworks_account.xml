@@ -23,43 +23,24 @@
 		<field name="address_bldgno" caption="Building No"/>
 		<field name="address_bldgname"  caption="Building Name"/>
 		<field name="address_pin" caption="PIN"/>
-		
-		<complex name="sector" ref="waterworks_sector" jointype="many-to-one"  required="true" 
-			includefields="objid,code">
-			<key field="sectorid" target="objid"/> 
-		</complex> 
-		<complex name="zone" ref="waterworks_zone" jointype="many-to-one"  required="true" 
-			includefields="objid,code">
-			<key field="zoneid" target="objid"/> 
-		</complex> 
 
-		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="true" 
-			includefields="objid,serialno,brand,capacity">
+		<field name="stuboutnodeid" />
+		<complex name="stuboutnode" ref="vw_waterworks_stubout_node" jointype="many-to-one" required="false">
+			<key field="stuboutnodeid" target="objid"/> 
+		</complex>
+
+		<field name="meterid" />
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false" 
+			includefields="objid,serialno,brand,capacity,size.*,state,lastreading,lastreadingdate">
 			<key field="meterid" target="objid"/>
 		</complex>
-		<complex name="metersize" ref="waterworks_metersize" jointype="many-to-one"  required="true" 
-			includefields="objid,title">
-			<key field="metersizeid" target="objid"/> 
-		</complex> 
-
+		
 		<complex name="classification" ref="waterworks_classification" jointype="many-to-one" required="true">
 			<key field="classificationid" target="objid"/>
 		</complex>	
 
 		<!-- Dates -->
-		<field name="lastdateread" required="false" indexed="true" caption="Last Date Read"/>
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
-
-		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="false" 
-			includefields="objid,code,barangay.name"> 
-			<key field="stuboutid" target="objid"/>
-		</complex>  
-		<complex name="stuboutnode" ref="waterworks_stubout_node" jointype="many-to-one" required="false" 
-			includefields="objid,indexno">
-			<key field="stuboutnodeid" target="objid"/> 
-		</complex>
-
-		<field name="currentreading" required="false" caption="Last Reading" type="integer"/>
 
 		<!--
 		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="false" 

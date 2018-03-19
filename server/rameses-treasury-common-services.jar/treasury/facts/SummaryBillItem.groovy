@@ -7,6 +7,13 @@ public class SummaryBillItem extends AbstractBillItem {
 	List<AbstractBillItem> items = [];
 	def keys;
 
+	public SummaryBillItem(def o ) {
+		if(o.items) items = o.items;
+		if(o.keys) keys = o.keys;
+	}
+
+	public SummaryBillItem() {}
+
 	public int getSortorder() {
 		if(items )  {
 			return items*.sortorder.max();	

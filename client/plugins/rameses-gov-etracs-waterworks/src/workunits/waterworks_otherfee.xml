@@ -1,0 +1,12 @@
+<workunit schemaName="waterworks_otherfee">
+    <invokers>
+        <invoker type="waterworks_otherfee:create"  
+                 caption="Add Other Fee" target="popup" action="create"/>
+        <invoker type="waterworks_otherfee:open"  
+                 caption="Other Fee" target="popup" action="open"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.LedgerEntryModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.OtherFeePage"/>
+    </pages>
+</workunit>

@@ -10,8 +10,15 @@ class WaterworksComputationService  {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
+	@Service("WaterworksScheduleService")
+	def scheduleSvc;	
+
 	@DataContext("waterworks_account")
-	def acct;
+	def wacctEm;
+
+	@DataContext("waterworks_consumption")
+	def wconsEm;
+
 
 	//find account by acctno or by objid
 	def findAccount(def o) {
@@ -24,7 +31,7 @@ class WaterworksComputationService  {
 		}
 		if(!p )
 		    throw new Exception('Please specify objid or acctno');
-		def m = acct.find( p ).first();
+		def m = wacctEm.find( p ).first();
 		if( !m ) 
 			throw new Exception("Waterworks account not found");
 		return m;	
@@ -36,7 +43,7 @@ class WaterworksComputationService  {
 	* then specify the volume, month and year
 	***********************************************************************/
 	@ProxyMethod
-	public double compute( def o ) {
+	public def compute( def o ) {
 		def m = findAccount( o );
 		if ( o.volume == null || o.volume < 0 ) 
 			throw new Exception('Volume must be greater than or equal to zero');
@@ -48,10 +55,46 @@ class WaterworksComputationService  {
 		def facts = [];
 		facts << wc
 		facts << new WaterAccount( m );
+		if( m.meter?.objid ) {
+			facts << new WaterMeter( m.meter );
+		}
 
 		def res = ruleSvc.execute( "waterworkscomputation", facts, null, null );
-		return wc.amount;
+		return [
+			amount : wc.amount
+		];
 	}
 
+	@ProxyMethod 
+	public def createBatch( param ) { 
+		if ( !param.acctid ) throw new Exception('acctid parameter is required'); 
 
+		def acctinfo = wacctEm.find([ objid: param.acctid ]).select('objid,stuboutnode.*').first(); 
+		if ( !acctinfo ) throw new Exception('waterworks account not found'); 
+
+		def zone = acctinfo.stuboutnode?.zone; 
+		if ( !zone?.objid ) throw new Exception('Please specify a zone for this account'); 
+
+		def sched = acctinfo.stuboutnode?.schedule; 
+		if ( !sched?.objid ) throw new Exception('Please specify a schedule for zone '+ zone.code); 
+
+		param.items.each{ o-> 
+			def m = [ scheduleid: sched.objid, year: o.year, month: o.month ];
+			def schedinfo = scheduleSvc.getSchedule( m ); 
+			o.readingdate = schedinfo.readingdate;
+			o.discdate = schedinfo.discdate;
+			o.duedate = schedinfo.duedate;
+
+			o.objid = o.acctid +'-'+ o.year.toString() + o.month.toString().padLeft(2,'0'); 
+			o.prevreading = o.reading = o.volume = 0;
+			o.amount = o.amtpaid = 0.0;
+			o.readingmethod = 'CAPTURE'; 
+			o.state = 'CAPTURE';
+			wconsEm.create( o ); 
+
+			def oo = wconsEm.read([ objid: o.objid ]); 
+			if ( oo ) o.putAll( oo ); 
+		} 
+		return param; 
+	} 
 }

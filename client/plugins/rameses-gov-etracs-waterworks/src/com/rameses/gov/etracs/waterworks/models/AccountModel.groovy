@@ -11,66 +11,85 @@ public class AccountModel extends CrudFormModel {
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
     
-    @PropertyChangeListener 
-    def changelistener = [
-        'entity.metersize' : { o-> 
-            entity.meter = null; 
-        }
-    ];
-    
-    void afterInit() { 
-        listTypes.setHandlers([
-            zone : {
-                return [sectorid: entity?.sector?.objid]; 
-            }
-        ]);   
-    }
-    
     void afterCreate() {
         entity.address = [:];
         entity.attributes = [];
     }
 
-    def assignStubout() {
-        if ( !entity.sector?.objid ) 
-            throw new Exception('Please specify sector'); 
-        
-        boolean pass = false;
-        def stuboutid;
-        def h = {o->
-            stuboutid = o.objid;
-            pass = true;
-            return null; 
+     def edit() {
+        def mp = new PopupMenuOpener();
+        if( entity.meter?.objid ) {
+            mp.add( new FormAction(caption:'View Meter', name:'viewMeter', context: this )  );
+            mp.add( new FormAction(caption:'Detach Meter', name:'detachMeter', context: this )  );
         }
-        Modal.show("waterworks_stubout:lookup", [onselect: h, sector: entity.sector] );
-        if( !pass) return;
-
-        pass = false;
-        h = { o->
-            if( o.account?.objid ) throw new Exception("There is already an account assigned. Choose another");
-            entity.stuboutnode = o;
-            entity.stubout = o.stubout;
-            pass = true;
-            return null; 
+        else {
+            mp.add( new FormAction(caption:'Attach Meter', name:'attachMeter', context: this )  );
         }
-        Modal.show("waterworks_stubout_node_unassigned_account:lookup", [onselect: h, stuboutid: stuboutid] );
-        //binding.refresh();
+        mp.add( new FormAction(caption:'Edit Owner', name:'editOwner', context: this)  );
+        return mp;
     }
 
-    def getLookupMeter() { 
-        def params = [metersize: entity.metersize];
-        if ( !params.metersize ) params.metersize = [objid:null]; 
-            
-        params.onselect = { o-> 
-            entity.meter = o; 
-            binding.refresh('entity.meter.*');
-        }
-        params.onempty = {
-            entity.meter = null; 
-            binding.refresh('entity.meter.*');
-        }
-        return Inv.lookupOpener('waterworks_meter_wo_account:lookup', params);
+    void updateAccount( def o ) {
+        def m = [_schemaname:'waterworks_account'];
+        m.findBy = [objid: entity.objid];
+        m.putAll( o );
+        persistenceService.update( m );
+        entity.putAll( o );
+        reload();
+     }
+    
+    def viewMeter() {
+        Modal.show( "waterworks_meter:open", [entity: entity.meter ]);
+        reload();
     }
     
+    void attachMeter() { 
+        def params = [:];
+        params.onselect = { o-> 
+           updateAccount( [meterid: o.objid ]);
+        }
+        Modal.show('waterworks_meter_wo_account:lookup', params);
+    }
+
+    def assignNode() {
+        def h = { o ->
+            updateAccount( [stuboutnodeid: o.objid ] );
+        }
+        Modal.show("vw_waterworks_stuboutnode_unassigned:lookup", [onselect: h] );  
+    }
+    
+    void detachMeter() { 
+        if(!MsgBox.confirm('This action will remove the meter from this account. Proceed?')) return;
+        updateAccount( [meterid: "{NULL}"])
+    }
+    
+    def selectedAttribute;
+    def attributeList = [
+        fetchList: { o->
+            def m = [_schemaname:'waterworks_account_attribute'];
+            m.findBy = [parentid: entity.objid];
+            return queryService.getList(m);
+        }
+    ] as BasicListModel;
+    
+    void addAttribute() {
+        def p = [:]
+        p.onselect = { o->
+            def m = [_schemaname:'waterworks_account_attribute'];
+            m.parent = entity;
+            m.attribute = o;
+            persistenceService.create( m );
+            attributeList.reload();
+        }
+        Modal.show( "waterworks_attribute:lookup", p );
+    }
+    
+    void removeAttribute() {
+        if(!selectedAttribute) throw new Exception("Please select an attribute");
+        def m = [_schemaname:'waterworks_account_attribute'];
+        m.findBy = [objid: selectedAttribute.objid];
+        persistenceService.removeEntity( m );
+        attributeList.reload();
+    }
     
 }

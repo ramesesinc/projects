@@ -6,6 +6,12 @@ class SurchargeItem extends BillSubItem {
 
 	int sortorder = 400;
 
+	public SurchargeItem( def o ) {
+		super(o);
+	}
+
+	public SurchargeItem() {}
+
 	public def toMap() {
 		def m = super.toMap();
 		m.txntype = getTxntype();

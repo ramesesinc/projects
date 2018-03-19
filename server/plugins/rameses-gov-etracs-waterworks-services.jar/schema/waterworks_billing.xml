@@ -1,20 +1,37 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_billing">
-		<field name="objid" primary="true" prefix="WBILL" />
-		<field name="dtcreated"  type="date" required="true" caption="Date Created"/>
-		<field name="state" required="true" />
-		<field name="createdby_objid" required="true"/>
-		<field name="createdby_name" required="true" caption="Prepared By"/>
-		<field name="year" required="true" />
-		<field name="month" required="true" />
-		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" includefields="code">
-			<key field="sectorid" target="objid" />
+		<field name="objid" required="true" prefix="WBILL" />
+		
+		<complex name="account" ref="waterworks_account" jointype="many-to-one" 
+			includefields="acctname,acctno,address.text,classification.objid,stuboutnode.indexno,stuboutnode.stubout.code,meter.*"> 
+			<key field="acctid" target="objid" />
 		</complex>
-		<field name="billingcycleid" required="true" />
-		<field name="dtposted"  />
-		<field name="postedby_objid"  />
-		<field name="postedby_name"  />
+		
+		<complex name="batch" ref="waterworks_billing_batch" jointype="many-to-one" > 
+			<key field="batchid" target="objid" />
+		</complex>
+
+		<field name="state" required="true"/>
+		<field name="prevreadingdate" required="true"/>
+		<field name="prevreading" required="true"/>
+		<field name="readingdate" required="true"/>
+		<field name="reading" required="true"/>
+		<field name="reader_objid" required="true"/>
+		<field name="reader_name" required="true"/>
+		<field name="discrate" required="true"/>
+		<field name="surcharge" required="true"/>
+		<field name="interest" required="true"/>
+		<field name="otherfees" required="true"/>
+		<field name="advance" required="true"/>
+		<field name="arrears" required="true"/>
+		<field name="unpaidmonths" required="true"/>
+		<field name="volume" required="true"/>
+		<field name="amount" required="true"/>
+		<field name="billed"/>
+		<field name="year" required="true"/>
+		<field name="month" required="true"/>
 		<field name="monthname" expr="MONTH_ARRAY( month )" caption="Month"/>
 	</element>
 </schema>
+
 

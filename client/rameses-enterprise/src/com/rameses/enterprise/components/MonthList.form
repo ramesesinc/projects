@@ -18,11 +18,11 @@
   <SubComponents>
     <Component class="com.rameses.rcp.control.XComboBox" name="component">
       <Properties>
+        <Property name="name" type="java.lang.String" value="month" noResource="true"/>
         <Property name="caption" type="java.lang.String" value="Month"/>
         <Property name="expression" type="java.lang.String" value="#{item.title}"/>
         <Property name="itemKey" type="java.lang.String" value="key"/>
         <Property name="items" type="java.lang.String" value="monthList"/>
-        <Property name="name" type="java.lang.String" value="month" noResource="true"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+import treasury.facts.*;
+import waterworks.facts.*;
+
+class WaterworksScheduleService {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("HolidayService")
+	def holidaySvc;
+
+	@ProxyMethod 
+	public def getSchedule( def p ) {
+		if( !p.scheduleid ) throw new Exception("schedule is required");
+		if( !p.year ) throw new Exception("year is required");
+		if( !p.month ) throw new Exception("month is required");
+
+		def facts = [];
+		facts << new WaterBlockSchedule( id: p.scheduleid );
+		facts << new BillingPeriod( year: p.year, month : p.month );
+		
+		//include holidays
+		facts << new HolidayFact(  
+			handler: { dt->
+				def h = holidaySvc.lookup(dt);
+				return (h!=null);
+			}
+		);
+
+		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		def m = [:]
+		facts.each {
+			if(it instanceof VarDate ) {
+				m[(it.tag)] = it.date;
+			}
+		}
+		return m;
+	}
+
+
+}

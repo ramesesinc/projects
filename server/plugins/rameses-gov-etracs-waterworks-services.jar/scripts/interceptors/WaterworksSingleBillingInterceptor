@@ -16,6 +16,9 @@ class WaterworksSingleBillingInterceptor {
 	@DataContext("waterworks_consumption")
 	def wcEm;
 
+	@DataContext("waterworks_otherfee")
+	def wotherEm;
+
     @After(pattern="SingleBillingHandler.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getInfo(def evt) {
 		def obj = evt.args[0];
@@ -29,9 +32,12 @@ class WaterworksSingleBillingInterceptor {
 			acct = acctEm.find([acctno:p.id]).first(1);
 		}
 		if(!acct) throw new Exception("Waterworks Account not found");
+
 		r.putAll( acct );
 		r.acctid = acct.objid;
-
+		r.schedule = acct.stuboutnode?.schedule; 
+		r.sector = acct.stuboutnode?.sector; 
+		r.zone   = acct.stuboutnode?.zone; 
 	}
  
     @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
@@ -45,27 +51,36 @@ class WaterworksSingleBillingInterceptor {
 			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
-		arr << "amount - amtpaid > 0 AND state='POSTED' "
-			
-		def select = "year,month,volume,amount,amtdue:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'}"; 
-		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).list();
+		arr << "amount - amtpaid > 0"
+		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
+		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
+
+		//select for other fees
+		def select2 = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
+		def conList2 = wotherEm.find([acctid: p.acctid]).select(select2).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		list.addAll( conList2 );
 	}
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
 		def data = evt.args[1];
-		/*
-		data.each { k,v->
-			println k+"="+v;
-		}
-		*/
+		def zone = data.zone; 
+		def sector = data.sector; 
+		def schedule = data.schedule;
+		if(  !schedule?.objid ) throw new Exception("Please specify a schedule for zone " + zone?.code );
+
 		def factBuilder = evt.result;
-		factBuilder.facts << new Stubout( zone:data.zoneid, sector:data.sector?.objid );
+		factBuilder.facts << new Sector( objid: sector?.objid);
+		factBuilder.facts << new Zone( objid: zone?.objid,  sectorid: sector?.objid );
+		factBuilder.facts << new WaterBlockSchedule( id: schedule.objid );
+		if( data.meter?.objid ) {
+			factBuilder.facts << new WaterMeter( data.meter );
+		}
 
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {
-				return new WaterBillItem(o);
+				return  new WaterBillItem(o);
 			}
 			else {
 				return new MonthBillItem(o);

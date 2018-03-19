@@ -21,6 +21,9 @@ public class AssessmentBillingService {
 	@Service("FactBuilderService")
 	def factSvc;
 
+	@Service("HolidayService")
+	def holidaySvc;
+
 	/*********************************************************
 	* first parameter is the ruleName
 	* second parameter is the raw data sent 
@@ -63,6 +66,14 @@ public class AssessmentBillingService {
 				facts << new BillDate(svrDate);
 			}
 		};
+
+		//include holidays
+		facts << new HolidayFact(  
+			handler: { dt->
+				def h = holidaySvc.lookup(dt);
+				return (h!=null);
+			}
+		);
 
 
 		if( data.amtpaid ) {

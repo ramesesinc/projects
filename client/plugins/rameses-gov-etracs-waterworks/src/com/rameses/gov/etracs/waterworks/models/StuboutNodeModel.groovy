@@ -7,6 +7,9 @@ import com.rameses.osiris2.common.*;
 
 public class StuboutNodeModel {
     
+    @Service('PersistenceService')
+    def persistenceSvc; 
+    
     @Service('WaterworksStuboutService')
     def svc; 
     
@@ -26,56 +29,75 @@ public class StuboutNodeModel {
         return caller?.entity; 
     } 
     
+    /*
     void reload() { 
         nodes.clear();
         nodes  = null;
         listHandler.reload();
     }
+    */
 
     def listHandler = [
         fetchList: { o-> 
-            if ( !nodes ) { 
-                nodes = svc.getNodes([stuboutid: entity.objid]);
-            } 
-            return nodes; 
+           return svc.getNodes([stuboutid: entity.objid]);
         }
     ] as BasicListModel;
     
     void addNodes() { 
-        def i = MsgBox.prompt("Enter Number of Nodes to add");
-        if ( !i ) return; 
-
-        try {
-            i.toInteger(); 
-        } catch(Throwable t) {
-            MsgBox.alert('Please enter a correct number value'); 
-            return;  
-        } 
-
-        def m = [stuboutid: entity.objid, nodecount: i.toInteger() ];
-        svc.addNodes(m); 
-        reload(); 
-    } 
-    
-    void assignAccount() {
-        if( !selectedItem  ) return;
-        def h = { o->
-            svc.assignAccount( [objid:selectedItem.objid, acctid: o.objid] );
-            reload();
+        def p = [:]
+        p.fields = [
+            [name:'nodecount', type:'integer', caption:'No. of Nodes'],
+            [name:'startnode', type:'integer', caption:'Start No'],
+            [name:'interval', type:'integer', caption:'Interval'],
+        ];
+        p.data = [nodecount:1, startnode: 1, interval:1];
+        p.handler = { o->
+            o.stuboutid = entity.objid;
+            svc.addNodes( o );
+            listHandler.reload();
         }
-        Modal.show( "waterworks_account:lookup", [
-            onselect: h, 
-            sectorid: entity.zone?.sector?.objid, 
-            stuboutid: entity.objid 
-        ]);
+        Modal.show("dynamic:form", p, [title:'Enter Nodes']);
+    }    
+    /*
+    def i = MsgBox.prompt("Enter Number of Nodes to add");
+    if ( !i ) return; 
+
+    try {
+        i.toInteger(); 
+    } catch(Throwable t) {
+        MsgBox.alert('Please enter a correct number value'); 
+        return;  
+    } 
+
+    def m = [stuboutid: entity.objid, nodecount: i.toInteger() ];
+    svc.addNodes(m); 
+    listHandler.reload();
+    */
+    
+    void editIndexNo() {
+        if(!selectedItem) throw new Exception("Please select an item");
+        def p = [:]
+        p.fields = [
+            [name:'value', type:'integer', caption:'Enter Index No']
+        ];
+        p.data = [value: selectedItem.indexno];
+        p.handler = { o->
+            svc.updateIndexNo( [objid:selectedItem.objid, indexno: o.value ] );
+            listHandler.reload();
+        }
+        Modal.show("dynamic:form", p, [title:'Edit Index No']);
     }
     
-    void unassignAccount() {
-        if( !selectedItem?.account?.acctname  ) return;
-        svc.unassignAccount( [objid:selectedItem.objid] );
-        reload();
+    void removeNode() {
+        if(!selectedItem) throw new Exception("Please select an item");
+        if(!MsgBox.confirm('Are you sure you want to remove this entry?')) return;
+        def m = [_schemaname: 'waterworks_stubout_node'];
+        m.objid = selectedItem.objid;
+        persistenceSvc.removeEntity( m );
+        listHandler.reload();
     }
     
+    /*
     boolean isAllowSwapUp() {
         if ( !selectedItem ) return false; 
 
@@ -175,4 +197,5 @@ public class StuboutNodeModel {
         listHandler.reload(); 
         listHandler.setSelectedItem( targetindexno ); 
     } 
+    */
 }

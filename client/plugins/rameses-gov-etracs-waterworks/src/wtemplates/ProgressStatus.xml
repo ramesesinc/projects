@@ -1,0 +1,14 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" caption="Close" action="doClose" visibleWhen="#{mode.toString().matches('init|finish|error') == true}"/>
+                
+        <invoker type="formActions" caption="Stop" action="doStop" visibleWhen="#{mode=='upload'}"/>
+        <invoker type="formActions" caption="Start" action="doStart" visibleWhen="#{mode=='init'}"/>
+    </invokers>
+    
+    <code class="wtemplates.ProgressModel"/>
+    
+    <pages>
+        <page template="wtemplates.ProgressPage"/> 
+    </pages>
+</workunit>

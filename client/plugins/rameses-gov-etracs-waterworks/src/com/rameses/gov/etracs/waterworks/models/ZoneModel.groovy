@@ -10,8 +10,20 @@ import com.rameses.util.*;
 
 public class ZoneModel extends CrudFormModel {
     
-    public void afterCreate() {
-        entity.sectorid = caller.masterEntity?.objid;
+    def getQuery() {
+        return [zoneid : entity.objid ];
     }
 
+    def handler = [
+        createItem: {
+            return [zone: entity];
+        }
+    ];
+    
+    @PropertyChangeListener
+    def listener = [
+        "entity.schedule" : { o->
+            entity.scheduleid = o.objid;
+        }
+    ]
 }

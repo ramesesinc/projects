@@ -3,51 +3,61 @@ import com.rameses.functions.*;
 
 class WaterworksBatchBillingService {
 	
+	@DataContext('waterworks_billing_batch')
+	def batchEm; 
+
 	@DataContext("waterworks_billing")
-	def billing;
+	def wbillEm;
 
-	@DataContext('waterworks_billing_account')
-	def billAcct;
-
-	@DataContext("waterworks_billing_cycle")
-	def billCycle;
-
-	@Service("DateService")
-	def dtSvc;
-
-	@Env
-	def env;
+	@Service("SingleBillingService")
+	def billingSvc;
 
 	@ProxyMethod
-	public def create( def o ) {
-		o.dtcreated = dtSvc.getServerDate();
-		o.createdby =  [objid:env.USERID, name:env.FULLNAME ]; 
+	public void processBilling( def o ) {
+		def b = null;
+		try { b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); } catch(ign) {;}
+		def u = [billed: 1];
+		if( b?.billitems) {
+			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
+			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
+			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
+			def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };
 
-		def pp = billCycle.find( [year: o.year, month: o.month ,sectorid: o.sector.objid ] ).first();
-		o.billingcycleid = pp.objid;
-		o.state = 'DRAFT';
+			u.arrears = 0;
+			u.surcharge = 0;
+			u.interest = 0;
+			u.otherfees = 0;
 
-		o = billing.create(o);
-		wbill.buildBillingAccounts( [billid: o.objid, sectorid: o.sector.objid ] );
-		return o;
+			if( arrears ) u.arrears = arrears;
+			if( surcharge ) u.surcharge = surcharge;
+			if( interest ) u.interest = interest;
+			if( otherFees ) u.otherfees = otherFees;
+		}
+	   	wbillEm.find( [objid: o.objid ] ).update( u );
 	}
 
-	@ProxyMethod
-	public def getStatus(def o ) {
-		def c = billAcct.find( [parentid: p.objid ] ).select("count:{COUNT(*)}").first();
-		def z = billAcct.find( [parentid: p.objid, state:'DRAFT' ] ).select("count:{COUNT(*)}").first();
+	@ProxyMethod 
+	def getBilledStatus( param ) { 
+		if ( !param.objid ) throw new Exception('objid parameter is required'); 
+		def m = [batchid: param.objid]; 
+		return batchEm.findBilledStatus( m ); 
+	} 
 
-		//return  also the count records
-		def m = [:];
-		m.recordcount = c.count; 
-		m.unprocessedcount = z.count; 
-		return m;
-	}
+	@ProxyMethod 
+	public def post( p ) { 
+		if ( !p.objid ) throw new Exception('objid parameter is required'); 
 
+		def info = batchEm.find([ objid: p.objid ]).select('objid,state').first(); 
+		if ( !info ) throw new Exception('batch transaction not found'); 
+		if ( !info.state.toString().equalsIgnoreCase('APPROVED') ) 
+			throw new Exception('batch transaction must be in APPROVED status'); 
 
-	@ProxyMethod
-	public def getList( def o ) {
-		return billAcct.find( [parentid: entity.objid, state: 'DRAFT' ] ).list(o);
+		batchEm.find([ objid: p.objid ]).update([ state: 'POSTED' ]); 
+		wbillEm.find([ batchid: p.objid ]).update([ state: 'POSTED' ]); 
+		batchEm.postConsumption([ batchid: info.objid ]); 
+		batchEm.postMeterReading([ batchid: info.objid ]); 
+		p.state = 'POSTED'; 
+		return p;
 	}
 
 

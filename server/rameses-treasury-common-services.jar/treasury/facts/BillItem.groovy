@@ -17,6 +17,17 @@ class BillItem extends AbstractBillItem {
 	double partialunpaid;
 
 	
+	public BillItem( def o ) {
+		super(o);
+		if(o.parentid ) parentid = o.parentid;
+		if(o.refid) refid = o.refid; 
+		if(o.reftype) reftype = o.reftype;
+		if(o.duedate) duedate = o.duedate;
+		if(o.partialunpaid) partialunpaid = o.partialunpaid;
+	}
+
+	public BillItem() {}
+
 	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
 
 	public def getTotals( def txntype ) {

@@ -1,12 +1,18 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_consumption">
 		<field name="objid" primary="true"  prefix="WAC"/>
-		<field name="state" required="true"/>
+		<field name="state" />
 		<field name="batchid" />
-		<complex name="account" jointype="many-to-one" ref="waterworks_account" includefields="acctno,acctname,stubout.*,stuboutnode.*">
+		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="false"
+			includefields="acctno,acctname,stuboutnode.*">
 			<key field="acctid" target="objid"/>
 		</complex>
 	
+		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false"
+			includefields="objid,serialno,capacity,reading,readingdate,state">
+			<key field="meterid" target="objid"/>
+		</complex>
+
 		<field name="prevreading" required="true" caption="PreviousReading" type="integer" defaultValue="0"/>
 		<field name="reading" required="true" caption="CurrentReading" type="integer" defaultValue="0"/>
 		<field name="readingmethod" required="true" caption="ReadingMethod" defaultValue="CAPTURE"/>
@@ -14,6 +20,8 @@
 		<!-- USED FOR ONLINE -->
 		<field name="year" required="true"/>
 		<field name="month" required="true"/>
+		<field name="duedate" required="true" caption="Due Date"/>
+		<field name="discdate" caption="Disc. Due Date"/>
 		<field name="readingdate" required="true"/>
 
 		<field name="reader_objid" required="false"/>

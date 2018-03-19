@@ -38,9 +38,10 @@ public class StuboutPage extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField5 = new com.rameses.rcp.control.XLookupField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xLookupField6 = new com.rameses.rcp.control.XLookupField();
+        xLookupField7 = new com.rameses.rcp.control.XLookupField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
         xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
@@ -70,36 +71,49 @@ public class StuboutPage extends javax.swing.JPanel {
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel2.setShowCaption(false);
         xFormPanel2.setStretchWidth(100);
+        xFormPanel1.add(xFormPanel2);
 
-        xLookupField5.setCaption("Zone");
-        xLookupField5.setExpression("#{entity.zone.code}");
-        xLookupField5.setHandler("waterworks_zone:lookup");
-        xLookupField5.setName("entity.zone"); // NOI18N
-        xLookupField5.setRequired(true);
-        xFormPanel2.add(xLookupField5);
+        xLookupField6.setName("entity.barangay"); // NOI18N
+        xLookupField6.setCaption("Barangay ");
+        xLookupField6.setExpression("#{entity.barangay.name}");
+        xLookupField6.setHandler("barangay:lookup");
+        xLookupField6.setPreferredSize(new java.awt.Dimension(200, 20));
+        xLookupField6.setRequired(true);
+        xLookupField6.setStretchWidth(100);
+        xFormPanel1.add(xLookupField6);
+
+        xLookupField7.setName("entity.zone"); // NOI18N
+        xLookupField7.setCaption("Zone");
+        xLookupField7.setExpression("#{entity.zone.code}");
+        xLookupField7.setHandler("waterworks_zone:lookup");
+        xLookupField7.setPreferredSize(new java.awt.Dimension(200, 20));
+        xLookupField7.setRequired(true);
+        xLookupField7.setStretchWidth(100);
+        xLookupField7.setVisibleWhen("#{ mode == 'create' && entity.zone == null }");
+        xFormPanel1.add(xLookupField7);
+
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel2.setCaption("Zone");
+        xLabel2.setCaptionWidth(100);
+        xLabel2.setDepends(new String[] {"entity.zone"});
+        xLabel2.setExpression("#{entity.zone.code}");
+        xLabel2.setOpaque(true);
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel2.setStretchWidth(100);
+        xLabel2.setVisibleWhen("#{ mode != 'create' || entity.zone != null }");
+        xFormPanel1.add(xLabel2);
 
         xLabel1.setBackground(new java.awt.Color(245, 245, 245));
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setCaption("Sector");
-        xLabel1.setCaptionWidth(60);
-        xLabel1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xLabel1.setCaptionWidth(100);
         xLabel1.setDepends(new String[] {"entity.zone"});
         xLabel1.setExpression("#{entity.zone.sector.code}");
         xLabel1.setOpaque(true);
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel1.setStretchWidth(100);
-        xFormPanel2.add(xLabel1);
-
-        xFormPanel1.add(xFormPanel2);
-
-        xLookupField6.setCaption("Barangay ");
-        xLookupField6.setExpression("#{entity.barangay.name}");
-        xLookupField6.setHandler("barangay:lookup");
-        xLookupField6.setName("entity.barangay"); // NOI18N
-        xLookupField6.setPreferredSize(new java.awt.Dimension(200, 20));
-        xLookupField6.setRequired(true);
-        xLookupField6.setStretchWidth(100);
-        xFormPanel1.add(xLookupField6);
+        xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -114,8 +128,8 @@ public class StuboutPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(174, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General information", xPanel1);
@@ -142,8 +156,9 @@ public class StuboutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLookupField xLookupField5;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField6;
+    private com.rameses.rcp.control.XLookupField xLookupField7;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;

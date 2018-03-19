@@ -1,0 +1,28 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+
+class WaterworksBatchBillingPersistenceInterceptor {
+	
+	@DataContext("waterworks_billing_batch")
+	def batchEm;
+
+	@DataContext("waterworks_zone")
+	def zoneEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.objid = 'WBILL' + o.zone.code + o.year + o.month.toString().padLeft(2, '0' );
+		o.state = 'DRAFT';
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_billing_batch' }")
+	public void buildBillItems( evt ) { 
+		def o = evt.args[0];
+		def m = [ batchid: o.objid ];
+		batchEm.buildBillings( m );
+		
+		//update the last year and month for the zone
+		zoneEm.find( [objid: o.zone.objid ] ).update( [year: o.year, month: o.month ] );
+	}
+}

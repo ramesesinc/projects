@@ -8,6 +8,7 @@
 		<field name="amount" type="decimal" required="true" caption="Amount"/>
 		<field name="amtpaid" type="decimal" required="true" caption="Amount Paid"/>
 		<field name="fullypaid" type="boolean" required="true" caption="Paid?"/>
+		<field name="balance" type="decimal" expr="amount - amtpaid" caption="Balance"/>
 		<complex name="compromise" ref="rptcompromise" jointype="many-to-one" includefields="objid,state,txnno,txndate">
 			<key field="parentid" target="objid"/>
 		</complex>

@@ -11,6 +11,7 @@
         <field name="interest" required="true" type="decimal"/>
         <field name="discount" required="true" type="decimal"/>
         <field name="partialled" required="true" type="boolean"/>
+        <field name="priority" required="true" type="integer"/>
         <field name="total" expr="amount+interest-discount" type="decimal"/>
         <complex name="parent" ref="rptpayment" jointype="many-to-one" includefields="refid,reftype,receiptid,receiptno,receiptdate" required="false">
             <key field="parentid" target="objid"/>

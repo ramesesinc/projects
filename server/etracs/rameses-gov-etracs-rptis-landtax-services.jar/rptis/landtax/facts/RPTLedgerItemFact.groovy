@@ -122,7 +122,7 @@ public class RPTLedgerItemFact
 
     def toBigDecimal(val){
         if (val == null) val = 0.0
-        return new java.math.BigDecimal(val+'').setScale(2, java.math.RoundingMode.HALF_DOWN)
+        return new java.math.BigDecimal(val+'').setScale(4, java.math.RoundingMode.HALF_DOWN)
     }
 
 }

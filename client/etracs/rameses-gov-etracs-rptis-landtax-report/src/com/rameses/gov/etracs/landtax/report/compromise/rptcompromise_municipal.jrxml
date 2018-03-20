@@ -46,10 +46,10 @@
 	<field name="bookno" class="java.lang.String"/>
 	<field name="series" class="java.lang.String"/>
 	<field name="txndate" class="java.util.Date"/>
-	<field name="taxpayer.name" class="java.lang.String"/>
+	<field name="rptledger.taxpayer.name" class="java.lang.String"/>
 	<field name="representative" class="java.lang.String"/>
 	<field name="totalareaha" class="java.math.BigDecimal"/>
-	<field name="taxpayer.address" class="java.lang.String"/>
+	<field name="rptledger.taxpayer.address" class="java.lang.String"/>
 	<field name="taxdec" class="java.lang.String"/>
 	<field name="fullpin" class="java.lang.String"/>
 	<field name="assessedvalue" class="java.math.BigDecimal"/>
@@ -73,7 +73,7 @@
 	<field name="amtforinstallment" class="java.math.BigDecimal"/>
 	<field name="downpayment" class="java.math.BigDecimal"/>
 	<field name="termamount" class="java.math.BigDecimal"/>
-	<field name="_installments" class="java.lang.Object"/>
+	<field name="installments" class="java.lang.Object"/>
 	<field name="firstpartyctcno" class="java.lang.String"/>
 	<field name="secondpartyctcno" class="java.lang.String"/>
 	<field name="firstpartyctcissued" class="java.lang.String"/>
@@ -85,6 +85,7 @@
 	<field name="amtforinstallmentwords" class="java.lang.String"/>
 	<field name="txndateordinal" class="java.lang.String"/>
 	<field name="term" class="java.lang.Integer"/>
+	<field name="rptledger.barangay.name" class="java.lang.String"/>
 
 
 		<group  name="downpayment" minHeightToStartNewPage="150" >
@@ -204,7 +205,7 @@
 					<textElement textAlignment="Justified" verticalAlignment="Top" isStyledText="true" lineSpacing="1_1_2">
 						<font fontName="Tahoma" pdfFontName="Helvetica" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["                               That the Taxpayer is declared owner of a certain Real Property who is delinquent in the\npayment of his/her corresponding Real Property Tax obligation. The subject property is located in <style isBold=\"true\">"+$F{taxpayer.address}.replaceAll("\n","")+"</style> which is more particularly described in the Notice of Real Property Tax Delinquency with cut-off date on "+new SimpleDateFormat("MMMM dd, yyyy").format($F{txndate})+" duly received by the aforesaid owner/authorized representative on "+new SimpleDateFormat("MMMM dd, yyyy").format($F{txndate})+"."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["                               That the Taxpayer is declared owner of a certain Real Property who is delinquent in the\npayment of his/her corresponding Real Property Tax obligation. The subject property is located in <style isBold=\"true\">"+$F{rptledger.barangay.name} + ", " + $P{LGUFORMALNAME} +"</style> which is more particularly described in the Notice of Real Property Tax Delinquency with cut-off date on "+new SimpleDateFormat("MMMM dd, yyyy").format($F{txndate})+" duly received by the aforesaid owner/authorized representative on "+new SimpleDateFormat("MMMM dd, yyyy").format($F{txndate})+"."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -411,7 +412,7 @@
 						width="498"
 						height="31"
 						key="subreport-2"/>
-					<dataSourceExpression><![CDATA[$F{_installments}]]></dataSourceExpression>
+					<dataSourceExpression><![CDATA[$F{installments}]]></dataSourceExpression>
 					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{installments}]]></subreportExpression>
 				</subreport>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
@@ -689,7 +690,7 @@
 					<textElement textAlignment="Justified" verticalAlignment="Top" isStyledText="true" lineSpacing="1_1_2">
 						<font fontName="Tahoma" pdfFontName="Helvetica" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["<style isBold=\"true\">"+$P{PROVINCIALTREASURERNAME}+"</style>, in his/her capacity as <style isBold=\"true\">"+$P{PROVINCIALTREASURERTITLE}+" of "+$P{PARENTLGUNAME}.replaceAll("PROVINCE OF ","")+"</style>, with Community Tax Certificate No. <style isBold=\"true\">"+$F{firstpartyctcno}+"</style>, issued on <style isBold=\"true\">"+new SimpleDateFormat("MMMM dd, yyyy").format($F{firstpartyctcdate})+"</style> at <style isBold=\"true\">"+$F{firstpartyctcissued}+"</style> and <style isBold=\"true\">"+$F{taxpayer.name}.replace('&', '&amp;') +"</style> with Community Tax Certificate No. <style isBold=\"true\">"+$F{secondpartyctcno}+"</style> issued on <style isBold=\"true\">"+new SimpleDateFormat("MMMM dd,yyyy").format($F{secondpartyctcdate})+"</style> at <style isBold=\"true\">"+$F{secondpartyctcissued}+"</style>, known to me and to me known to be the same person who executed the foregoing instrument, and they acknowledged to me that the same is own free and voluntary act and deed, as well as the principal he/she/they represented."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["<style isBold=\"true\">"+$P{PROVINCIALTREASURERNAME}+"</style>, in his/her capacity as <style isBold=\"true\">"+$P{PROVINCIALTREASURERTITLE}+" of "+$P{PARENTLGUNAME}.replaceAll("PROVINCE OF ","")+"</style>, with Community Tax Certificate No. <style isBold=\"true\">"+$F{firstpartyctcno}+"</style>, issued on <style isBold=\"true\">"+new SimpleDateFormat("MMMM dd, yyyy").format($F{firstpartyctcdate})+"</style> at <style isBold=\"true\">"+$F{firstpartyctcissued}+"</style> and <style isBold=\"true\">"+$F{rptledger.taxpayer.name}.replace('&', '&amp;') +"</style> with Community Tax Certificate No. <style isBold=\"true\">"+$F{secondpartyctcno}+"</style> issued on <style isBold=\"true\">"+new SimpleDateFormat("MMMM dd,yyyy").format($F{secondpartyctcdate})+"</style> at <style isBold=\"true\">"+$F{secondpartyctcissued}+"</style>, known to me and to me known to be the same person who executed the foregoing instrument, and they acknowledged to me that the same is own free and voluntary act and deed, as well as the principal he/she/they represented."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

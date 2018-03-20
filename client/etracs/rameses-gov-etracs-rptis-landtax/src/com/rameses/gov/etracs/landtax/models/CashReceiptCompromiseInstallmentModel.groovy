@@ -81,7 +81,7 @@ class CashReceiptCompromiseInstallmentModel
     
     
     void calcReceiptAmount(){
-        entity.amount = entity.installments.amtdue.sum();
+        entity.amount = entity.installments.sum{ it.pay == true ? it.balance : 0.0 }
         caller.calcReceiptAmount();
     }
 }

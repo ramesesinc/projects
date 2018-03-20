@@ -11,7 +11,7 @@ SELECT
 	wm.lastreadingdate, CASE WHEN wm.lastreading >= 0 THEN wm.lastreading ELSE 0 END, 
 	br.readingdate, 0, 'PROCESSING', br.reader_objid, br.reader_name, 0, 0.0, br.month, br.year,
 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0  
-FROM waterworks_billing_batch br 
+FROM waterworks_batch_billing br 
 	INNER JOIN vw_waterworks_stubout_node wsn ON wsn.zone_objid = br.zoneid 
 	INNER JOIN waterworks_account a ON a.objid = wsn.acctid 
 	INNER JOIN waterworks_meter wm ON wm.objid = a.meterid 	
@@ -28,7 +28,6 @@ from (
 		(select count(*) from waterworks_billing where batchid = $P{batchid} and billed=1) as billedcount  
 )tmp1 
 
-
 [postConsumption]
 INSERT INTO waterworks_consumption ( 
 	objid, acctid, batchid, meterid, duedate, discdate, 
@@ -39,7 +38,7 @@ SELECT
 	wb.objid, wb.acctid, wb.batchid, wa.meterid, bb.duedate, bb.discdate, 
 	wb.prevreading, wb.reading, wb.readingmethod, wb.reader_objid, wb.reader_name, 
 	wb.volume, wb.amount, 0.0 AS amtpaid, wb.month, wb.year, bb.readingdate, 'POSTED' AS state 
-FROM waterworks_billing_batch bb 
+FROM waterworks_batch_billing bb 
 	INNER JOIN waterworks_billing wb ON wb.batchid = bb.objid 
 	INNER JOIN waterworks_account wa on wa.objid = wb.acctid 
 WHERE bb.objid = $P{batchid} 
@@ -48,7 +47,7 @@ WHERE bb.objid = $P{batchid}
 [postMeterReading]
 UPDATE 
 	waterworks_meter wm, waterworks_account wa, 
-	waterworks_billing wb, waterworks_billing_batch wbb 
+	waterworks_billing wb, waterworks_batch_billing wbb 
 SET 
 	wm.lastreadingdate = wbb.readingdate, 
 	wm.lastreading = wb.reading 

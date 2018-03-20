@@ -18,19 +18,19 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Component id="xFormPanel1" min="-2" pref="262" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xFormPanel2" min="-2" pref="220" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="xFormPanel3" min="-2" pref="305" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xFormPanel4" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="xFormPanel4" min="-2" pref="328" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="xTabbedPane1" alignment="0" min="-2" pref="1171" max="-2" attributes="0"/>
+                  <Component id="xTabbedPane1" alignment="0" min="-2" pref="1216" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="44" max="32767" attributes="0"/>
+              <EmptySpace pref="478" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -38,14 +38,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="xFormPanel1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="xFormPanel2" alignment="0" max="32767" attributes="0"/>
-                  <Component id="xFormPanel3" alignment="0" max="32767" attributes="0"/>
-                  <Component id="xFormPanel4" alignment="0" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="xFormPanel3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="xFormPanel1" alignment="0" max="32767" attributes="0"/>
+                      <Component id="xFormPanel2" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="xFormPanel4" min="-2" pref="94" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="364" max="32767" attributes="0"/>
+              <Component id="xTabbedPane1" pref="393" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -282,7 +284,7 @@
       <SubComponents>
         <Container class="com.rameses.rcp.control.XPanel" name="xPanel1">
           <Properties>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ !entity.state.matches(&apos;DRAFT|FOR_REVIEW&apos;) }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ task.properties.show_reading == true }"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
@@ -297,7 +299,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="schemaList1" pref="1146" max="32767" attributes="0"/>
+                      <Component id="schemaList1" pref="1191" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -306,7 +308,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="schemaList1" pref="314" max="32767" attributes="0"/>
+                      <Component id="schemaList1" pref="343" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -343,7 +345,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="schemaList2" pref="1146" max="32767" attributes="0"/>
+                      <Component id="schemaList2" pref="1191" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -352,7 +354,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="schemaList2" pref="314" max="32767" attributes="0"/>
+                      <Component id="schemaList2" pref="343" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

@@ -3,7 +3,7 @@ import com.rameses.functions.*;
 
 class WaterworksBatchBillingService {
 	
-	@DataContext('waterworks_billing_batch')
+	@DataContext('waterworks_batch_billing')
 	def batchEm; 
 
 	@DataContext("waterworks_billing")

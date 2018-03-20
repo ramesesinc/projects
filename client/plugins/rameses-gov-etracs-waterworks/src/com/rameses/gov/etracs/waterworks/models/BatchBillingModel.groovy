@@ -10,7 +10,7 @@ import com.rameses.rcp.framework.*;
 import java.text.*;
 
 
-public class BatchBillingModel extends CrudFormModel {
+public class BatchBillingModel extends WorkflowTaskModel {
     
    @Service("WaterworksComputationService")
    def compSvc;
@@ -39,11 +39,9 @@ public class BatchBillingModel extends CrudFormModel {
            return "New Batch Billing";
        }
        else {
-           return "Zone " + entity.zone?.code + " " + entity.year + "-" + entity.month.toString().padLeft(2, "0") + " (" + entity.state + ")";
+           return "Zone " + entity.zone?.code + " " + entity.year + "-" + entity.month.toString().padLeft(2, "0") + " (" + task.title + ")";
        }
    } 
-    
-  
     
    @PropertyChangeListener
    def listener = [
@@ -98,14 +96,11 @@ public class BatchBillingModel extends CrudFormModel {
    }
    
    public def open() {
-        def p = super.open();
-        if( entity.state == "PROCESSING") {
+        def v = super.open();
+        if( task.state == 'processing' ) {
             stat = batchSvc.getBilledStatus([ objid: entity.objid ]);
-            return "processing";
         }
-        else {
-            return "default";
-        }
+        return v;
     }
     
     private def progdata = [:];
@@ -166,19 +161,22 @@ public class BatchBillingModel extends CrudFormModel {
        progdata.finish(); 
    }
 
-    void changeState( String state ) {
-       def m = [_schemaname:'waterworks_billing_batch'];
-       m.findBy = [objid: entity.objid];
-       m.state = state;
-       persistenceService.update( m );
-       entity.state = state;
-    }
+   public boolean beforeSignal( def param  ) {
+       if( task.state == 'processing' ) {
+           //check stat balance befopre submitting process
+            stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
+            if( stat.balance > 0 ) throw new Exception("Cannot submit. Please complete process first");
+       }
+       return true;
+   } 
     
-    def submitForProcessing() {
-       changeState( "PROCESSING" );
-       stat = batchSvc.getBilledStatus([ objid: entity.objid ]);
-       return "processing";
-    } 
+   public void afterSignal(def transition, def task) {
+       if( task.state == 'processing') {
+           stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
+       }
+   }
+    
+    /*
     
     def submitForReview() {
        stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
@@ -216,14 +214,21 @@ public class BatchBillingModel extends CrudFormModel {
         batchSvc.post([ objid: entity.objid ]);
         entity.state = 'POSTED';
     } 
+    */
     
     def updateHandler = [
         isColumnEditable: {item, colName -> 
+            if( task.state != "for-reading") return false;
+            if( item.account.meter?.objid == null ) return false;
             if( colName == "reading" ) {
-                return ( item.account.meter.objid != null && entity.state == "FOR_READING");
+                return true;
             }
             else if( colName =="volume") {
-                return (item.account?.meter?.objid == null && entity.state == "FOR_READING");
+                //volume is only editable if meter is defective
+                if(item.account?.meter.state == "DEFECTIVE") {
+                    return true;
+                }
+                return false; 
             }
             else {
                 return false;
@@ -254,7 +259,6 @@ public class BatchBillingModel extends CrudFormModel {
                     def res = compSvc.compute(p);
                     r.amount = res.amount;
                 }
-
                 def m = [_schemaname: 'waterworks_billing'];
                 m[(colName)] = value;
                 m.putAll( r );
@@ -268,7 +272,26 @@ public class BatchBillingModel extends CrudFormModel {
                 MsgBox.err(e);
                 return false;
             }
-        }
+        },
+        getContextMenu: { item, name-> 
+            def mnuList = [];
+            if ( item.account?.meter?.objid != null ) 
+                mnuList << [value: 'View Meter', id:'view_meter'];
+            mnuList << [value: 'View Account', id:'view_account'];
+            mnuList << [value: 'View Consumption History', id:'view_consumption_hist'] 
+            return  mnuList; 
+	}, 
+	callContextMenu: { item, menuitem-> 
+            if( menuitem.id == "view_meter") {
+                Modal.show("waterworks_meter:open", [entity: item.account.meter ] );
+            }
+            else if( menuitem.id == "view_account") {
+                Modal.show("waterworks_account:open", [entity: item.account ]);
+            }
+            else {
+                throw new Exception("Menu not registered")
+            }
+	}
     ];
     
    def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 

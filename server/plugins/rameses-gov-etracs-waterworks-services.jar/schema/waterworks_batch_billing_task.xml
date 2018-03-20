@@ -1,0 +1,17 @@
+<schema adapter="waterworks">
+	<element tablename="waterworks_batch_billing_task">
+		<field name="taskid" primary="true" prefix="WWBTCHTASK"/>
+		<field name="refid" required="true"/>
+		<field name="parentprocessid" />
+		<field name="state" caption="State"/>
+		<field name="startdate"  caption="Start Date"/>
+		<field name="assignee_objid"/>
+		<field name="assignee_name" caption="Assign To"/>
+		<field name="enddate" caption="End Date"/>
+		<field name="actor_objid"/>
+		<field name="actor_name"/>
+		<field name="message"/>
+		<field name="dtcreated" required="true"/>
+		<field name="prevtaskid"/>
+	</element>	
+</schema>

@@ -312,11 +312,11 @@ CREATE TABLE `waterworks_billing` (
   UNIQUE KEY `uix_billing_account_parent_acctid` (`batchid`,`acctid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `waterworks_billing_batch` */
+/*Table structure for table `waterworks_batch_billing` */
 
-DROP TABLE IF EXISTS `waterworks_billing_batch`;
+DROP TABLE IF EXISTS `waterworks_batch_billing`;
 
-CREATE TABLE `waterworks_billing_batch` (
+CREATE TABLE `waterworks_batch_billing` (
   `objid` varchar(50) NOT NULL,
   `state` varchar(50) DEFAULT NULL,
   `dtcreated` datetime DEFAULT NULL,

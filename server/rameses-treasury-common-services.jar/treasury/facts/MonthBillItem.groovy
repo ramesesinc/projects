@@ -75,7 +75,7 @@ class MonthBillItem extends BillItem {
 	}
 
 	public int getSortorder() {
-		return (getYearMonth()*1000) + super.getSortorder();
+		return (getYearMonth()*1000); //+ super.getSortorder();
 	}	
 
 	public String getMonthname() {

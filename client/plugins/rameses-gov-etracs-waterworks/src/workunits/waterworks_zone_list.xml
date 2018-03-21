@@ -1,8 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="waterworks_zone" allowCreate="false"
-          cols="code,description,schedule.objid,sector.code">
-    
-    <!-- used by rules -->
+          schemaName="waterworks_zone" allowCreate="false">
+
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Zones" action="init"/>
         <invoker folderid="/menucategory/waterworks/master" caption="Manage Zones" action="init" index="2"/>

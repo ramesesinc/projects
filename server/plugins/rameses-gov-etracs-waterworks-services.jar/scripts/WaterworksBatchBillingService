@@ -55,6 +55,7 @@ class WaterworksBatchBillingService {
 		batchEm.find([ objid: p.objid ]).update([ state: 'POSTED' ]); 
 		wbillEm.find([ batchid: p.objid ]).update([ state: 'POSTED' ]); 
 		batchEm.postConsumption([ batchid: info.objid ]); 
+		batchEm.postMeterReading([ batchid: info.objid ]); 
 		p.state = 'POSTED'; 
 		return p;
 	}

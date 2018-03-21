@@ -10,99 +10,59 @@ class ProgressPanelModel extends ComponentBean  {
     @Binding 
     def binding;
     
-    def options;
-    def initHandler;
-    def stopHandler;
-    def startHandler;
+    def handler; 
     
-    def mode;
-    boolean cancelled;
-    
-
-    void setHandler( o ) {
-        if ( o == null ) return; 
-        
-        initHandler = o.initHandler;
-        stopHandler = o.stopHandler;
-        startHandler = o.startHandler;
-    }
-    
-    void setInit( x ) {
-        mode = 'init';
-        options = [:];
-        options.refresh = { 
-            Number value = (options.value ? options.value : 0); 
-            Number maxvalue = options.maxvalue; 
-            Number num = (value.doubleValue() / maxvalue.doubleValue()) * 100.0; 
-            options.progressvalue = (''+ num.intValue() +'%'); 
-            binding.refresh('progressvalue|label'); 
-        }
-        options.finish = { 
-            mode = 'finish'; 
-            binding.refresh();  
+    def evt = [
+        onRefresh: { stat-> 
+            binding.refresh('label|progressvalue|doStart|doStop'); 
+        }, 
+        onError: { stat-> 
+            binding.refresh('label|progressvalue|doStart|doStop'); 
+        }, 
+        onFinished: {
+            binding.refresh('label|progressvalue|doStart|doStop'); 
         } 
-        options.isSuccess = { 
-            return (mode == 'finish'); 
+    ] as BatchProcessingHandler; 
+    
+    void setHandler( h ) {
+        if ( h instanceof BatchProcessingModel ) {
+            this.handler = h; 
+            this.handler.add( evt )
+        } else {
+            throw new Exception('handler must be an instance of BatchProcessingModel');  
         }
-        options.getMode = {
-            return mode; 
-        }
+    }
         
-        if ( initHandler ) {
-            initHandler( options ); 
-        }
+    void setInit( x ) {
     }
     
     def getProgressvalue() { 
-        if ( cancelled ) {
-            return ""; 
-        } else if ( mode == 'finish' ) {
-            return ""; 
+        if ( handler == null ) return "";
+        
+        if ( handler.status.mode == 'processing' ) {
+            return handler.status.progressValue; 
         } else {
-            return options?.progressvalue; 
+            return ""; 
         }
     }
     def getLabel() {
-        if ( cancelled ) {
-            return 'Operation cancelled.';
-        } else if( mode == 'init' ) {
-            return "Press Start to begin";
-        } else if ( mode == 'upload' ) {
-            return "Processing Data...  ("+ options.value +" of "+ options.maxvalue +")"; 
-        } else if ( mode == 'error' ) {
-            return "Processed with errors..."; 
-        } else if ( mode == 'finish' ) {
-            return "Successfully uploaded"; 
-        } else {
-            return "";
-        }
+        return (handler ? handler.status.label : ""); 
+    }
+    def getMode() {
+        return (handler ? handler.status.mode : ""); 
     }
     
     def doClose() {
         return '_close'; 
     }
     void doStart() { 
-        cancelled = false; 
-        def proc = { 
-            if( startHandler ) { 
-                try { 
-                    startHandler(); 
-                } catch(e) {
-                    mode = 'error';
-                    MsgBox.err( e ); 
-                }
-            }
-        } as Runnable;
-        
-        def thread = new Thread( proc );
-        mode = 'upload'; 
-        thread.start();
+        if ( handler ) {
+            handler.start(); 
+        }
     } 
     void doStop() {
-        mode = 'init';
-        cancelled = true; 
-        if ( stopHandler ) {
-            stopHandler(); 
+        if ( handler ) { 
+            handler.cancel(); 
         }
     }
 }

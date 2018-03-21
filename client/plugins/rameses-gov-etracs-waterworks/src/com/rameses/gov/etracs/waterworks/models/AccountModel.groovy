@@ -16,39 +16,51 @@ public class AccountModel extends CrudFormModel {
         entity.attributes = [];
     }
 
-    
-    def assignNode() {
-        def h = { o ->
-            entity.stuboutnode = o;
-            def m = [_schemaname:'waterworks_account'];
-            m.findBy = [objid: entity.objid];
-            m.stuboutnodeid = o.objid;
-            persistenceService.update( m );
+     def edit() {
+        def mp = new PopupMenuOpener();
+        if( entity.meter?.objid ) {
+            mp.add( new FormAction(caption:'View Meter', name:'viewMeter', context: this )  );
+            mp.add( new FormAction(caption:'Detach Meter', name:'detachMeter', context: this )  );
         }
-        Modal.show("vw_waterworks_stuboutnode_unassigned:lookup", [onselect: h] );  
+        else {
+            mp.add( new FormAction(caption:'Attach Meter', name:'attachMeter', context: this )  );
+        }
+        mp.add( new FormAction(caption:'Edit Owner', name:'editOwner', context: this)  );
+        return mp;
+    }
+
+    void updateAccount( def o ) {
+        def m = [_schemaname:'waterworks_account'];
+        m.findBy = [objid: entity.objid];
+        m.putAll( o );
+        persistenceService.update( m );
+        entity.putAll( o );
+        reload();
+     }
+    
+    def viewMeter() {
+        Modal.show( "waterworks_meter:open", [entity: entity.meter ]);
+        reload();
     }
     
     void attachMeter() { 
         def params = [:];
         params.onselect = { o-> 
-            def m = [_schemaname:'waterworks_account'];
-            m.findBy = [objid: entity.objid];
-            m.meterid = o.objid;
-            persistenceService.update( m );
-            entity.meter = o;
-            binding.refresh();
+           updateAccount( [meterid: o.objid ]);
         }
         Modal.show('waterworks_meter_wo_account:lookup', params);
+    }
+
+    def assignNode() {
+        def h = { o ->
+            updateAccount( [stuboutnodeid: o.objid ] );
+        }
+        Modal.show("vw_waterworks_stuboutnode_unassigned:lookup", [onselect: h] );  
     }
     
     void detachMeter() { 
         if(!MsgBox.confirm('This action will remove the meter from this account. Proceed?')) return;
-        def m = [_schemaname:'waterworks_account'];
-        m.findBy = [objid: entity.objid];
-        m.meterid = "{NULL}";
-        persistenceService.update( m );
-        entity.meter = null;
-        binding.refresh();
+        updateAccount( [meterid: "{NULL}"])
     }
     
     def selectedAttribute;

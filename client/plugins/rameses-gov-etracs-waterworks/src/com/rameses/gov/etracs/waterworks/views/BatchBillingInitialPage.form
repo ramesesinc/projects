@@ -17,23 +17,23 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="xFormPanel1" min="-2" pref="365" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
-              <Component id="xFormPanel2" min="-2" pref="312" max="-2" attributes="0"/>
-              <EmptySpace pref="165" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xFormPanel2" min="-2" pref="336" max="-2" attributes="0"/>
+                  <Component id="xFormPanel1" min="-2" pref="365" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="475" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="xFormPanel1" alignment="0" min="-2" pref="186" max="-2" attributes="0"/>
-                  <Component id="xFormPanel2" alignment="0" min="-2" pref="158" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="103" max="32767" attributes="0"/>
+              <Component id="xFormPanel2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" pref="186" max="-2" attributes="0"/>
+              <EmptySpace pref="72" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -42,38 +42,14 @@
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
       <Properties>
         <Property name="captionWidth" type="int" value="120"/>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="entity.zone"/>
+          </StringArray>
+        </Property>
+        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.zone != null }"/>
       </Properties>
       <SubComponents>
-        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="entity.year" noResource="true"/>
-            <Property name="caption" type="java.lang.String" value="Start Year"/>
-            <Property name="disableWhen" type="java.lang.String" value="#{mode != &apos;create&apos; }"/>
-            <Property name="required" type="boolean" value="true"/>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.enterprise.components.MonthList" name="monthList1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Start Month"/>
-            <Property name="name" type="java.lang.String" value="entity.month" noResource="true"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
-            <Property name="required" type="boolean" value="true"/>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="entity.zone" noResource="true"/>
-            <Property name="caption" type="java.lang.String" value="Zone"/>
-            <Property name="expression" type="java.lang.String" value="#{ entity.zone.code }"/>
-            <Property name="handler" type="java.lang.String" value="waterworks_zone:lookup"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
-            <Property name="required" type="boolean" value="true"/>
-          </Properties>
-        </Component>
         <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Sector"/>
@@ -88,98 +64,63 @@
             </Property>
           </Properties>
         </Component>
-      </SubComponents>
-    </Container>
-    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
-      <SubComponents>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel8">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Schedule"/>
-            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="caption" type="java.lang.String" value="Start Year"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
                 <StringItem index="0" value="entity.zone"/>
               </StringArray>
             </Property>
-            <Property name="expression" type="java.lang.String" value="#{ entity.schedule.objid  }"/>
+            <Property name="expression" type="java.lang.String" value="#{ entity.year }"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.year !=null &amp;&amp; entity.year &gt; 0 }"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel7">
+        <Component class="com.rameses.enterprise.components.MonthList" name="monthList1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Reading Date"/>
-            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="caption" type="java.lang.String" value="Start Month"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
                 <StringItem index="0" value="entity.zone"/>
               </StringArray>
             </Property>
-            <Property name="expression" type="java.lang.String" value="#{ entity.readingdate  }"/>
+            <Property name="disableWhen" type="java.lang.String" value="#{ 1 == 1 }"/>
+            <Property name="name" type="java.lang.String" value="entity.month" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.month !=null &amp;&amp; entity.month &gt; 0  }"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel3">
+        <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Reading Due date"/>
-            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="name" type="java.lang.String" value="year" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Start Year"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
                 <StringItem index="0" value="entity.zone"/>
               </StringArray>
             </Property>
-            <Property name="expression" type="java.lang.String" value="#{ entity.readingduedate  }"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.year == null || entity.year == 0 }"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
+        <Component class="com.rameses.enterprise.components.MonthList" name="monthList2">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Billing Due date"/>
-            <Property name="captionWidth" type="int" value="120"/>
+            <Property name="caption" type="java.lang.String" value="Start Month"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
               <StringArray count="1">
                 <StringItem index="0" value="entity.zone"/>
               </StringArray>
             </Property>
-            <Property name="expression" type="java.lang.String" value="#{ entity.billingduedate  }"/>
+            <Property name="disableWhen" type="java.lang.String" value=""/>
+            <Property name="name" type="java.lang.String" value="month" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel5">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Discount Due Date"/>
-            <Property name="captionWidth" type="int" value="120"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.zone"/>
-              </StringArray>
-            </Property>
-            <Property name="expression" type="java.lang.String" value="#{ entity.discdate  }"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLabel" name="xLabel6">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Due Date"/>
-            <Property name="captionWidth" type="int" value="120"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="entity.zone"/>
-              </StringArray>
-            </Property>
-            <Property name="expression" type="java.lang.String" value="#{ entity.duedate  }"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 20]"/>
-            </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.month ==null || entity.month == 0  }"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField3">
@@ -189,6 +130,22 @@
             <Property name="captionWidth" type="int" value="120"/>
             <Property name="expression" type="java.lang.String" value="#{ entity.reader.name }"/>
             <Property name="handler" type="java.lang.String" value="waterworksreader:lookup"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="entity.zone" noResource="true"/>
+            <Property name="caption" type="java.lang.String" value="Zone"/>
+            <Property name="expression" type="java.lang.String" value="#{ entity.zone.code }"/>
+            <Property name="handler" type="java.lang.String" value="waterworks_zone:lookup"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 20]"/>
             </Property>

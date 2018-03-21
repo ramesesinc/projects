@@ -44,26 +44,26 @@ public class ProgressPanel extends XComponentPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 20, 10));
         jPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
+        xLabel4.setName("label"); // NOI18N
         xLabel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xLabel4.setExpression("#{label}");
         xLabel4.setFontStyle("font-size:12; font-weight:bold;");
         xLabel4.setForeground(new java.awt.Color(100, 100, 100));
-        xLabel4.setName("label"); // NOI18N
         jPanel2.add(xLabel4);
 
         xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xLabel5.setName("progressvalue"); // NOI18N
         xLabel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0));
         xLabel5.setExpression("#{progressvalue}");
         xLabel5.setFontStyle("font-size:14; font-weight:bold;");
         xLabel5.setForeground(new java.awt.Color(0, 51, 153));
-        xLabel5.setName("progressvalue"); // NOI18N
         jPanel2.add(xLabel5);
 
         jPanel1.add(jPanel2);
 
         xButton2.setName("doStop"); // NOI18N
         xButton2.setText("Stop");
-        xButton2.setVisibleWhen("#{ mode == 'upload' }");
+        xButton2.setVisibleWhen("#{ mode == 'processing' }");
 
         xButton3.setName("doStart"); // NOI18N
         xButton3.setText("Start");

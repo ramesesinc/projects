@@ -24,7 +24,9 @@ public class BatchBillingModel extends CrudFormModel {
    @Script("ReportService")
    def reportSvc;
     
-    
+   int year;
+   int month;
+   
    def selectedItem;
    def selectedBillItem;
     
@@ -41,22 +43,56 @@ public class BatchBillingModel extends CrudFormModel {
        }
    } 
     
+  
+    
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
-            def m = [scheduleid: o.schedule.objid, year: entity.year, month: entity.month ];
-            try {
-                def sked = scheduleSvc.getSchedule(m);
-                entity.putAll(sked);
-                entity.schedule = o.schedule;
-                binding.refresh();
+            year = 0;
+            month = 0;
+            if( o.year ) {
+                int xx = ((o.year * 12)+o.month) + 1;
+                entity.year = (int)(xx / 12);
+                entity.month = (xx % 12);
             }
-            catch( e) {
-                MsgBox.err( e );
+            else {
+                entity.year = 0;
+                entity.month = 0;
             }
        }
    ];
-   
+         
+   /*
+   void viewSchedule() {
+        def m = [scheduleid: o.schedule.objid, year: year, month: month ];
+        try {
+            def sked = scheduleSvc.getSchedule(m);
+            entity.putAll(sked);
+            entity.schedule = o.schedule;
+            binding.refresh();
+        }
+        catch( e) {
+            MsgBox.err( e );
+        }
+   } 
+   */  
+    
+   void beforeSave(def mode) {
+        if(mode == "create") {
+             if(!entity.year) entity.year = year;
+             if(!entity.month) entity.month = month;
+             def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
+             try {
+                 def sked = scheduleSvc.getSchedule(m);
+                 entity.putAll(sked);
+                 entity.schedule = entity.zone.schedule;
+             }
+             catch( e) {
+                 throw e;
+             }
+        }
+   } 
+    
    void afterSave() {
        open(); 
    }
@@ -71,6 +107,27 @@ public class BatchBillingModel extends CrudFormModel {
             return "default";
         }
     }
+    
+    def batchHandler = [
+        
+        getTotalCount: {
+            stat = batchSvc.getBilledStatus([ objid: entity.objid ]);
+            return stat.totalcount; 
+        }, 
+        
+        fetchList: { p-> 
+            p._schemaname = 'waterworks_billing';
+            p.select = 'objid,acctid,billed';
+            p.findBy = [ batchid: entity.objid ]; 
+            return qryService.getList( p ); 
+        }, 
+        
+        processItem: { o-> 
+            println '>> '+ o; 
+        }
+        
+    ] as BatchProcessingModel; 
+    
     
     private def progdata = [:];
     def stat;
@@ -184,10 +241,10 @@ public class BatchBillingModel extends CrudFormModel {
     def updateHandler = [
         isColumnEditable: {item, colName -> 
             if( colName == "reading" ) {
-                return (entity.state == "FOR_READING");
+                return ( item.account.meter.objid != null && entity.state == "FOR_READING");
             }
             else if( colName =="volume") {
-                return (entity.state == "FOR_READING");
+                return (item.account?.meter?.objid == null && entity.state == "FOR_READING");
             }
             else {
                 return false;
@@ -198,19 +255,25 @@ public class BatchBillingModel extends CrudFormModel {
             try {
                 def r = [:];
                 if(colName == "reading") {
+                    if( value >= item.account.meter.capacity ) {
+                        throw new Exception("Reading must be less than meter capacity");
+                    }
+                    if( value < item.prevreading ) {
+                        value = value + item.account.meter.capacity;
+                    }
                     def p = [:];
                     p.volume = value - item.prevreading;
-                    if(p.volume<0) throw new Exception("Current reading must be greater than prev reading");
                     p.objid = item.acctid; 
                     r.volume = p.volume;
-                    
-                    r.amount = compSvc.compute(p);
+                    def res = compSvc.compute(p);
+                    r.amount = res.amount
                 }
                 else if(colName == "volume") {
                     def p = [:];
                     p.objid = item.acctid; 
                     r.volume = value;
-                    r.amount = compSvc.compute(p);
+                    def res = compSvc.compute(p);
+                    r.amount = res.amount;
                 }
 
                 def m = [_schemaname: 'waterworks_billing'];

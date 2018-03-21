@@ -36,7 +36,7 @@
   <SubComponents>
     <Component class="com.rameses.common.treasury.components.ProgressPanel" name="progressPanel1">
       <Properties>
-        <Property name="handler" type="java.lang.String" value="progressHandler"/>
+        <Property name="handler" type="java.lang.String" value="batchHandler"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -37,9 +37,9 @@ public class StuboutNodePage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "indexno"}
                 , new Object[]{"caption", "-"}
-                , new Object[]{"width", 50}
-                , new Object[]{"minWidth", 10}
-                , new Object[]{"maxWidth", 50}
+                , new Object[]{"width", 30}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 30}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}

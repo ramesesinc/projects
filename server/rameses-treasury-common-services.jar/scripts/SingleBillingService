@@ -45,6 +45,7 @@ class SingleBillingService {
 		result.amount = 0;
 		if( result.billitems ) {
 			result.amount = result.billitems.sum{ it.amount };
+			result.billitems.sort{ it.sortorder };
 		}
 		return result;
 	}

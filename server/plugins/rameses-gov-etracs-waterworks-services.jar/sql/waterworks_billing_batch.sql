@@ -8,59 +8,17 @@ INSERT INTO waterworks_billing (
 ) 
 SELECT 
 	CONCAT(a.objid,'-',br.year,br.month) AS objid, 'DRAFT', a.objid, br.objid, 
-	a.lastdateread, a.currentreading, br.readingdate, 0, 'PROCESSING', 
-	br.reader_objid, br.reader_name, 0, 0.0, br.month, br.year,
+	wm.lastreadingdate, CASE WHEN wm.lastreading >= 0 THEN wm.lastreading ELSE 0 END, 
+	br.readingdate, 0, 'PROCESSING', br.reader_objid, br.reader_name, 0, 0.0, br.month, br.year,
 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0  
 FROM waterworks_billing_batch br 
 	INNER JOIN vw_waterworks_stubout_node wsn ON wsn.zone_objid = br.zoneid 
 	INNER JOIN waterworks_account a ON a.objid = wsn.acctid 
+	INNER JOIN waterworks_meter wm ON wm.objid = a.meterid 	
 	LEFT JOIN waterworks_consumption c ON (c.acctid = a.objid AND c.year = br.year AND c.month = br.month) 
 WHERE br.objid = $P{batchid} 
 	AND a.meterid IS NOT NULL 
 	AND c.objid IS NULL 
-
-
-[updateUnpaidAccounts]
-update 
-	waterworks_billing wb, (  
-		select 
-			tmp2.batchid, tmp2.acctid, 
-			sum(tmp2.arrears) as arrears, 
-			sum(tmp2.unpaidmonths) as unpaidmonths
-		from ( 
-			select b.batchid, b.acctid, sum(c.amount)-sum(c.amtpaid) as arrears, 0 as unpaidmonths  
-			from waterworks_billing_batch bb 
-				inner join waterworks_billing b on b.batchid = bb.objid 
-				inner join waterworks_account a on a.objid = b.acctid 
-				inner join waterworks_consumption c on c.acctid = a.objid 
-			where bb.objid = $P{batchid}  
-				and a.zoneid = bb.zoneid 
-			group by b.batchid, b.acctid 
-			having (sum(c.amount)-sum(c.amtpaid)) > 0 
-
-			union all 
-
-			select tmp1.batchid, tmp1.acctid, 0.0 as arrears, tmp1.unpaidmonths 
-			from ( 
-				select b.batchid, b.acctid, c.year, c.month, count(*) as unpaidmonths  
-				from waterworks_billing_batch bb 
-					inner join waterworks_billing b on b.batchid = bb.objid 
-					inner join waterworks_account a on a.objid = b.acctid 
-					inner join waterworks_consumption c on c.acctid = a.objid 
-				where bb.objid = $P{batchid}  
-					and a.zoneid = bb.zoneid 
-					and (c.amount - c.amtpaid) > 0 
-				group by b.batchid, b.acctid, c.year, c.month
-			)tmp1
-		)tmp2 
-		group by tmp2.batchid, tmp2.acctid 
-	)zz 
-set 
-	wb.arrears = zz.arrears, 
-	wb.unpaidmonths = zz.unpaidmonths 
-where wb.batchid = zz.batchid 
-	and wb.acctid = zz.acctid 
-
 
 [findBilledStatus]
 select tmp1.*, (totalcount-billedcount) as balance 
@@ -73,14 +31,28 @@ from (
 
 [postConsumption]
 INSERT INTO waterworks_consumption ( 
-	objid, acctid, batchid, duedate, discdate, 
+	objid, acctid, batchid, meterid, duedate, discdate, 
 	prevreading, reading, readingmethod, reader_objid, reader_name, 
 	volume, amount, amtpaid, MONTH, YEAR, readingdate, state 
 ) 
 SELECT 
-	wb.objid, wb.acctid, wb.batchid, bb.duedate, bb.discdate, 
+	wb.objid, wb.acctid, wb.batchid, wa.meterid, bb.duedate, bb.discdate, 
 	wb.prevreading, wb.reading, wb.readingmethod, wb.reader_objid, wb.reader_name, 
 	wb.volume, wb.amount, 0.0 AS amtpaid, wb.month, wb.year, bb.readingdate, 'POSTED' AS state 
 FROM waterworks_billing_batch bb 
 	INNER JOIN waterworks_billing wb ON wb.batchid = bb.objid 
+	INNER JOIN waterworks_account wa on wa.objid = wb.acctid 
 WHERE bb.objid = $P{batchid} 
+
+
+[postMeterReading]
+UPDATE 
+	waterworks_meter wm, waterworks_account wa, 
+	waterworks_billing wb, waterworks_billing_batch wbb 
+SET 
+	wm.lastreadingdate = wbb.readingdate, 
+	wm.lastreading = wb.reading 
+WHERE wbb.objid = $P{batchid} 
+	and wb.batchid = wbb.objid 
+	and wa.objid = wb.acctid 
+	and wm.objid = wa.meterid 

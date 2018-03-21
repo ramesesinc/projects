@@ -31,40 +31,18 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
-        monthList1 = new com.rameses.enterprise.components.MonthList();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
+        monthList1 = new com.rameses.enterprise.components.MonthList();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        monthList2 = new com.rameses.enterprise.components.MonthList();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
 
         xFormPanel1.setCaptionWidth(120);
-
-        xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setCaption("Start Year");
-        xIntegerField1.setDisableWhen("#{mode != 'create' }");
-        xIntegerField1.setRequired(true);
-        xFormPanel1.add(xIntegerField1);
-
-        monthList1.setCaption("Start Month");
-        monthList1.setName("entity.month"); // NOI18N
-        monthList1.setPreferredSize(new java.awt.Dimension(0, 20));
-        monthList1.setRequired(true);
-        xFormPanel1.add(monthList1);
-
-        xLookupField2.setName("entity.zone"); // NOI18N
-        xLookupField2.setCaption("Zone");
-        xLookupField2.setExpression("#{ entity.zone.code }");
-        xLookupField2.setHandler("waterworks_zone:lookup");
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField2.setRequired(true);
-        xFormPanel1.add(xLookupField2);
+        xFormPanel1.setDepends(new String[] {"entity.zone"});
+        xFormPanel1.setVisibleWhen("#{ entity.zone != null }");
 
         xLabel1.setCaption("Sector");
         xLabel1.setDepends(new String[] {"entity.zone"});
@@ -72,47 +50,34 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
-        xLabel2.setCaption("Schedule");
-        xLabel2.setCaptionWidth(120);
-        xLabel2.setDepends(new String[] {"entity.zone"});
-        xLabel2.setExpression("#{ entity.schedule.objid  }");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel2);
+        xLabel8.setCaption("Start Year");
+        xLabel8.setDepends(new String[] {"entity.zone"});
+        xLabel8.setExpression("#{ entity.year }");
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel8.setVisibleWhen("#{ entity.year !=null && entity.year > 0 }");
+        xFormPanel1.add(xLabel8);
 
-        xLabel7.setCaption("Reading Date");
-        xLabel7.setCaptionWidth(120);
-        xLabel7.setDepends(new String[] {"entity.zone"});
-        xLabel7.setExpression("#{ entity.readingdate  }");
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel7);
+        monthList1.setCaption("Start Month");
+        monthList1.setDepends(new String[] {"entity.zone"});
+        monthList1.setDisableWhen("#{ 1 == 1 }");
+        monthList1.setName("entity.month"); // NOI18N
+        monthList1.setPreferredSize(new java.awt.Dimension(0, 20));
+        monthList1.setVisibleWhen("#{ entity.month !=null && entity.month > 0  }");
+        xFormPanel1.add(monthList1);
 
-        xLabel3.setCaption("Reading Due date");
-        xLabel3.setCaptionWidth(120);
-        xLabel3.setDepends(new String[] {"entity.zone"});
-        xLabel3.setExpression("#{ entity.readingduedate  }");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel3);
+        xIntegerField1.setName("year"); // NOI18N
+        xIntegerField1.setCaption("Start Year");
+        xIntegerField1.setDepends(new String[] {"entity.zone"});
+        xIntegerField1.setVisibleWhen("#{ entity.year == null || entity.year == 0 }");
+        xFormPanel1.add(xIntegerField1);
 
-        xLabel4.setCaption("Billing Due date");
-        xLabel4.setCaptionWidth(120);
-        xLabel4.setDepends(new String[] {"entity.zone"});
-        xLabel4.setExpression("#{ entity.billingduedate  }");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel4);
-
-        xLabel5.setCaption("Discount Due Date");
-        xLabel5.setCaptionWidth(120);
-        xLabel5.setDepends(new String[] {"entity.zone"});
-        xLabel5.setExpression("#{ entity.discdate  }");
-        xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel5);
-
-        xLabel6.setCaption("Due Date");
-        xLabel6.setCaptionWidth(120);
-        xLabel6.setDepends(new String[] {"entity.zone"});
-        xLabel6.setExpression("#{ entity.duedate  }");
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLabel6);
+        monthList2.setCaption("Start Month");
+        monthList2.setDepends(new String[] {"entity.zone"});
+        monthList2.setDisableWhen("");
+        monthList2.setName("month"); // NOI18N
+        monthList2.setPreferredSize(new java.awt.Dimension(0, 20));
+        monthList2.setVisibleWhen("#{ entity.month ==null || entity.month == 0  }");
+        xFormPanel1.add(monthList2);
 
         xLookupField3.setName("entity.reader"); // NOI18N
         xLookupField3.setCaption("Assign To");
@@ -121,41 +86,45 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField3.setHandler("waterworksreader:lookup");
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
-        xFormPanel2.add(xLookupField3);
+        xFormPanel1.add(xLookupField3);
+
+        xLookupField2.setName("entity.zone"); // NOI18N
+        xLookupField2.setCaption("Zone");
+        xLookupField2.setExpression("#{ entity.zone.code }");
+        xLookupField2.setHandler("waterworks_zone:lookup");
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField2.setRequired(true);
+        xFormPanel2.add(xLookupField2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(165, Short.MAX_VALUE))
+                .addGap(54, 54, 54)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(475, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.enterprise.components.MonthList monthList1;
+    private com.rameses.enterprise.components.MonthList monthList2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;
     // End of variables declaration//GEN-END:variables

@@ -1,6 +1,7 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_meter">
 		<field name="objid" primary="true"  prefix="WM"/>
+		<field name="state" caption="Status" defaultValue="ACTIVE"/>
 		<field name="serialno" required="true" indexed="true" caption="Serial No." searchable="true"/>
 		<field name="brand" required="true" indexed="true" caption="Brand"/>
 
@@ -9,19 +10,23 @@
 			<key field="sizeid" target="objid"/>
 		</complex>
 		
-		<field name="capacity" required="true" caption="Capacity" />
+		<field name="capacity" required="true" type="integer" caption="Capacity" />
+
+		<field name="lastreading" indexed="true" caption="Brand"/>
+		<field name="lastreadingdate" indexed="true" caption="Brand"/>
+
 		
 		<!-- for link with application -->
+		<!--
 		<complex name="application" ref="waterworks_application" jointype="many-to-one" required="false"
 			includefields="objid,appno,acctname,address.text">
 			<key field="objid" target="meterid"/>
 		</complex>
-
-		<!-- for linking to account -->
-		<field name="currentacctid" required="false" />
+		-->
+		
 		<complex name="account" ref="waterworks_account" jointype="many-to-one" required="false"
 			includefields="objid,acctname,acctno,address.text">
-			<key field="currentacctid" target="objid"/>
+			<key field="objid" target="meterid"/>
 		</complex>
 		
 		<field name="stocktype" defaultValue="STOCK" required="true" caption="Stock Type" 

@@ -74,6 +74,9 @@ class WaterworksSingleBillingInterceptor {
 		factBuilder.facts << new Sector( objid: sector?.objid);
 		factBuilder.facts << new Zone( objid: zone?.objid,  sectorid: sector?.objid );
 		factBuilder.facts << new WaterBlockSchedule( id: schedule.objid );
+		if( data.meter?.objid ) {
+			factBuilder.facts << new WaterMeter( data.meter );
+		}
 
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {

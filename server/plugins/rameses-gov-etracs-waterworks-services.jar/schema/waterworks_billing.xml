@@ -3,7 +3,7 @@
 		<field name="objid" required="true" prefix="WBILL" />
 		
 		<complex name="account" ref="waterworks_account" jointype="many-to-one" 
-			includefields="acctname,acctno,address.text,classification.objid,stuboutnode.indexno,stuboutnode.stubout.code,meter.serialno,meter.brand"> 
+			includefields="acctname,acctno,address.text,classification.objid,stuboutnode.indexno,stuboutnode.stubout.code,meter.*"> 
 			<key field="acctid" target="objid" />
 		</complex>
 		

@@ -5,6 +5,8 @@
           orderBy="objid">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Txn Types" action="init" />
+        <invoker folderid="/menucategory/waterworks/master" caption="Manage Txn Types" action="init" />
+        
         <invoker type="listActions" caption="Set Account" action="setAccount"/>
     </invokers>    
     <code>

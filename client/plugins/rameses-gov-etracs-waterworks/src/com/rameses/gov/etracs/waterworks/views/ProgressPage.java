@@ -32,7 +32,7 @@ public class ProgressPage extends javax.swing.JPanel {
 
         progressPanel1 = new com.rameses.common.treasury.components.ProgressPanel();
 
-        progressPanel1.setHandler("progressHandler");
+        progressPanel1.setHandler("batchHandler");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

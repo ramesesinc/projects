@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_sector">
 		<field name="objid" primary="true" editable="false" caption="Code"/>
-		<field name="code" caption="Sector Code" indexed="true"/>
+		<field name="code" caption="Sector Code" indexed="true" searchable="true"/>
 	</element>
 </schema>

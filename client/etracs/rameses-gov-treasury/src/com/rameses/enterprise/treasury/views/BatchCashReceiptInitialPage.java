@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.cashreceipt;
+package com.rameses.enterprise.treasury.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
@@ -12,12 +12,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author rameses
  */
 @Template(FormPage.class)
-public class CashReceiptBatchSelectionPage extends javax.swing.JPanel {
+public class BatchCashReceiptInitialPage extends javax.swing.JPanel {
 
     /**
      * Creates new form CashReceiptPOSPage
      */
-    public CashReceiptBatchSelectionPage() {
+    public BatchCashReceiptInitialPage() {
         initComponents();
     }
 

@@ -12,6 +12,9 @@ class CaptureConsumptionInitialModel {
     @Service("WaterworksComputationService")
     def compSvc;
     
+    @Service("WaterworksConsumptionService")
+    def consumptionSvc;
+    
     @Service('PersistenceService')
     def persistenceService; 
     
@@ -51,7 +54,7 @@ class CaptureConsumptionInitialModel {
             startdate = DateUtil.add( startdate, '1M' ); 
         } 
         
-        p = compSvc.createBatch( p );  
+        p = consumptionSvc.createBatch( p );  
         def ids = p.items.collect{"'"+ it.objid +"'"}.join(','); 
         if ( !ids ) ids = "''"; 
         

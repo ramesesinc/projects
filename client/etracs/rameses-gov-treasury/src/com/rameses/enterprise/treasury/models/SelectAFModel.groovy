@@ -20,14 +20,42 @@ class SelectAFModel extends CrudLookupModel {
     String title = "Select Stub to use";
 
     def getCustomFilter() {
-        return [ 
-              "state='ISSUED' AND afid = :formno AND assignee.objid = :uid AND txnmode=:mode AND currentseries <= endseries AND active=0 AND lockid IS NULL", 
-            [formno: entity.formno, uid: user.userid, mode: entity.txnmode ]  
-        ];
+        def arr = [];
+        arr << "state='ISSUED'";
+        arr << "afid = :formno";
+        arr << "assignee.objid = :uid";
+        arr << "txnmode=:mode";
+        arr << "currentseries <= endseries";
+        arr << "active=0";
+        def p = [:];
+        p.formno = entity.formno;
+        p.uid = user.userid;
+        p.mode = entity.txnmode;
+        //arr << "lockid IS NULL"
+        if( entity.collectiontype?.fund?.objid ) {
+            arr << "( fund.objid = :fundid OR fund.objid IS NULL)";
+            p.fundid = entity.collectiontype.fund.objid; 
+        }
+        else {
+            arr << " fund.objid IS NULL ";
+        }
+        if(OsirisContext.env.ORGROOT == 1 ) {
+            arr << " respcenter.objid IS NULL ";
+        }
+        else {
+            arr << " respcenter.objid = :orgid ";
+            p.orgid = OsirisContext.env.ORGID;
+        }
+        return [ arr.join(" AND "), p ];
     }
     
     def doOk() {
         def obj = listHandler.getSelectedValue();
+        if( entity.collectiontype?.fund?.objid ) {
+            def vfund = entity.collectiontype.fund;
+            if( vfund.objid != obj.fund?.objid ) 
+                throw new Exception("The selected stub must have a fund that matches the collectiontype"  );
+        }
         service.activateSelectedControl( [objid: obj.objid ] );
         return "_close";
         //return doOk();

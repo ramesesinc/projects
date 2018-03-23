@@ -24,6 +24,9 @@
 		<field name="otherfees" required="true"/>
 		<field name="advance" required="true"/>
 		<field name="arrears" required="true"/>
+
+		<field name="subtotal" expr="(arrears + otherfees + surcharge + interest) - advance" />
+
 		<field name="unpaidmonths" required="true"/>
 		<field name="volume" required="true"/>
 		<field name="amount" required="true"/>

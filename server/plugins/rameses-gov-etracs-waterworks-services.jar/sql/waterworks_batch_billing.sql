@@ -14,10 +14,9 @@ SELECT
 FROM waterworks_batch_billing br 
 	INNER JOIN vw_waterworks_stubout_node wsn ON wsn.zone_objid = br.zoneid 
 	INNER JOIN waterworks_account a ON a.objid = wsn.acctid 
-	INNER JOIN waterworks_meter wm ON wm.objid = a.meterid 	
+	LEFT JOIN waterworks_meter wm ON wm.objid = a.meterid 	
 	LEFT JOIN waterworks_consumption c ON (c.acctid = a.objid AND c.year = br.year AND c.month = br.month) 
 WHERE br.objid = $P{batchid} 
-	AND a.meterid IS NOT NULL 
 	AND c.objid IS NULL 
 
 [findBilledStatus]

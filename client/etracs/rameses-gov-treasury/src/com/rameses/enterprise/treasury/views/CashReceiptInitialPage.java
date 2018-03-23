@@ -9,14 +9,13 @@ import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
- * @author rameses
+ * @author Elmo Nazareno
  */
-
 @Template(FormPage.class)
 public class CashReceiptInitialPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form CashReceiptPOSPage
+     * Creates new form CashReceiptInitialPage
      */
     public CashReceiptInitialPage() {
         initComponents();
@@ -31,85 +30,79 @@ public class CashReceiptInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xTileView1 = new com.rameses.rcp.control.XTileView();
-        jPanel1 = new javax.swing.JPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        setLayout(new java.awt.BorderLayout());
+        xFormPanel1.setCaptionWidth(150);
 
-        xTileView1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xTileView1.setCellSize(new java.awt.Dimension(75, 80));
-        xTileView1.setDynamic(true);
-        xTileView1.setName("model"); // NOI18N
-        xTileView1.setOpaque(false);
-        xTileView1.setPadding(new java.awt.Insets(10, 20, 10, 0));
-        add(xTileView1, java.awt.BorderLayout.CENTER);
+        xComboBox1.setName("mode"); // NOI18N
+        xComboBox1.setCaption("Mode");
+        xComboBox1.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xComboBox1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xComboBox1.setItems("modeList");
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 30));
+        xFormPanel1.add(xComboBox1);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 0, 0));
-        jPanel1.setPreferredSize(new java.awt.Dimension(100, 30));
+        xComboBox2.setName("afType"); // NOI18N
+        xComboBox2.setAllowNull(false);
+        xComboBox2.setCaption("AF Type");
+        xComboBox2.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xComboBox2.setDepends(new String[] {"mode"});
+        xComboBox2.setDynamic(true);
+        xComboBox2.setEmptyText("- Select AF -");
+        xComboBox2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xComboBox2.setItems("afTypeList");
+        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 30));
+        xFormPanel1.add(xComboBox2);
 
-        xComboBox1.setAllowNull(false);
-        xComboBox1.setExpression("#{item.objid}");
-        xComboBox1.setItems("afTypes");
-        xComboBox1.setName("afType"); // NOI18N
-        xComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xComboBox1ActionPerformed(evt);
-            }
-        });
+        xComboBox3.setName("collectionType"); // NOI18N
+        xComboBox3.setAllowNull(false);
+        xComboBox3.setCaption("Collection Type");
+        xComboBox3.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xComboBox3.setDepends(new String[] {"mode", "afType"});
+        xComboBox3.setDynamic(true);
+        xComboBox3.setEmptyText("- Select Collection Type -");
+        xComboBox3.setExpression("#{ item.title }");
+        xComboBox3.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xComboBox3.setItems("collectionTypeList");
+        xComboBox3.setPreferredSize(new java.awt.Dimension(0, 30));
+        xFormPanel1.add(xComboBox3);
 
-        jLabel1.setText("Select Form Type");
+        xButton1.setName("doNext"); // NOI18N
+        xButton1.setText("Next");
 
-        jLabel2.setText("Txn Mode");
-
-        xComboBox2.setItems("txnmodes");
-        xComboBox2.setName("txnmode"); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(176, 176, 176)
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(106, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(294, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(xComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void xComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xComboBox1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
-    private com.rameses.rcp.control.XTileView xTileView1;
+    private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }
-

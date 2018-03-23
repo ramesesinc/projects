@@ -51,7 +51,8 @@ class CashReceiptService  {
     @DataContext("paymentcheck")
    	def checkPayment;
 
-	
+	@Service("AFControlService")
+	def afControlSvc;
 
 	/**
 	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
@@ -85,6 +86,8 @@ class CashReceiptService  {
         	throw new Exception("Form type is required. Check collection form");
         }
         
+		def afc = afControlSvc.getNextAfSeries( entity );
+		entity.putAll( afc );
 		return entity;
 	}	
 
@@ -131,8 +134,6 @@ class CashReceiptService  {
 			throw new Exception('A data problem is encountered during validation of Receipt No. ' + p.receiptno + '.\nThe Receipt Amount is not equal to item amount total.\nClose the form and recreate the transaction to correct the problem.')
 		} 
 
-		
-		
 		/***************************************************************
 		//additional code on checks 
 		****************************************************************/
@@ -152,6 +153,8 @@ class CashReceiptService  {
 		if(p.batchcapture) p.state = "CAPTURED"
 
 		cashreceiptEm.create( p );
+		afControlSvc.updateNextSeries( p );
+
 		p.paymentitems.each { x->
 			if( x.reftype == 'CREDITMEMO') {
 				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
@@ -164,6 +167,7 @@ class CashReceiptService  {
 			def po = paymentOrderEm.find( [objid: p._paymentorderid]).first();
 			paymentOrderSvc.close( po );
 		}	
+
 
 		return formatReport(p);
 	}	

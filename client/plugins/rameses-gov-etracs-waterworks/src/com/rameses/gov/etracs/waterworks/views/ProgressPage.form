@@ -17,26 +17,53 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="progressPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="130" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="xButton1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace pref="123" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="progressPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="66" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+              <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="118" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="com.rameses.common.treasury.components.ProgressPanel" name="progressPanel1">
+    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
       <Properties>
-        <Property name="handler" type="java.lang.String" value="progressHandler"/>
+        <Property name="name" type="java.lang.String" value="progress.start" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Start"/>
+        <Property name="visibleWhen" type="java.lang.String" value="#{ progress.status.mode == &apos;init&apos; }"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="progress.cancel" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="visibleWhen" type="java.lang.String" value="#{  progress.status.mode == &apos;processing&apos;  }"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="progressLabel" noResource="true"/>
+        <Property name="expression" type="java.lang.String" value="Total records processed: #{ progress.status.value } of #{ progress.totalCount }"/>
       </Properties>
     </Component>
   </SubComponents>

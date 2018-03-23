@@ -80,7 +80,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xFormPanel1.add(monthList2);
 
         xLookupField3.setName("entity.reader"); // NOI18N
-        xLookupField3.setCaption("Assign To");
+        xLookupField3.setCaption("Assign To Reader");
         xLookupField3.setCaptionWidth(120);
         xLookupField3.setExpression("#{ entity.reader.name }");
         xLookupField3.setHandler("waterworksreader:lookup");

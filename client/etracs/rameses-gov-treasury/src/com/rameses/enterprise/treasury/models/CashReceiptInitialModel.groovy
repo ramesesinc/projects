@@ -5,153 +5,115 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
-        
-public class CashReceiptInitialModel  {
-        
+
+class CashReceiptInitialModel  {
+
     @Binding
     def binding;
 
-    def clientContext = com.rameses.rcp.framework.ClientContext.currentContext;
-    def session = OsirisContext.getSession();
-
+    @Service("QueryService")
+    def qryService;
+    
     @Service("CashReceiptService")
     def cashReceiptSvc;
-
-    @Service("QueryService")
-    def queryService;
     
-    String title = "Cash Receipt";
-
-    def items = [];
-    def afTypes;
+    
+    def modeList = ["ONLINE", "OFFLINE"];
+    def afTypeList;
+    
+    def mode = "ONLINE";
     def afType;
-    def formTitle;
-    def homeicon;
-
-    def txnmodes = ["ONLINE", "OFFLINE"];
-    def txnmode = "ONLINE";
+    def collectionType;
+    def allCollectionTypes;
+    
+    String title = "Cash Receipt Initial (Select Type of Collection)"
+    
+    void loadCollectionTypes() {
+        def arr = [];
+        def parm = [:];    
+        if( OsirisContext.env.ORGROOT == 1 ) {
+            arr << "org.objid IS NULL"
+        }
+        else {
+            arr << "org.objid = :orgid";
+            parm.orgid = OsirisContext.env.ORGID;
+        }
+        arr << " af.formtype = 'serial' ";
+        if( mode == "ONLINE") {
+            arr << " allowonline = 1";
+        }
+        else {
+            arr << " allowoffline = 1";
+        }
+        def m = [_schemaname: "collectiontype"];
+        m.where = [arr.join(" AND "), parm];
+        m.orderBy = "sortorder,title";
+        allCollectionTypes = qryService.getList( m );
+        afTypeList = allCollectionTypes*.formno.unique();
+    }
+    
+    def getCollectionTypeList() {
+        if( !afType ) return allCollectionTypes;
+        return allCollectionTypes.findAll{ it.formno == afType }; 
+    }
     
     @PropertyChangeListener
     def listener = [
-        "afType" : { binding.refresh(); },
-        "txnmode" : {binding.refresh(); }
-    ];
-
-    void loadFormTypes() {
-        def m= [_schemaname:'af'];
-        m._limit = 1000;
-        afTypes = queryService.getList(m);    
-        afType = afTypes.find{ it.objid == '51' };
-    }
-    
-    def loadCollectionTypes() {
-       def sarr = [];
-       def m = [_schemaname:'collectiontype'];
-       sarr << "formno = :formtype"; 
-       m.formtype = afType.objid;
-       
-       //filter by org
-       if( txnmode == 'ONLINE'  ) sarr << "allowonline = 1";
-       if( txnmode == 'OFFLINE' ) sarr << "allowoffline = 1"; 
-       m.where = [sarr.join( " AND "), m ];
-       return queryService.getList( m );
-    }
-
-    void init() {
-        afType = null;
-        formTitle = "Select accountable form";
-        loadFormTypes();
-        items.clear();
-        def appEnv = clientContext.appEnv; 
-        def customfolder = appEnv['app.custom']; 
-        homeicon = 'images/' + customfolder + '/home-icon.png';  
-        def custom_homeicon = clientContext.getResource(homeicon); 
-        if (!custom_homeicon) homeicon = 'home/icons/folder.png';                  
-        def list = [];
-        Inv.lookupOpeners('cashreceipt:' + txnmode.toLowerCase(), [:]).each{
-            def m = [
-                caption : it.caption, 
-                icon    : it.properties.icon, 
-                opener  : it 
-            ];
-            def iicon = clientContext.getResource(m.icon);
-            if (!iicon) m.icon = homeicon; 
-            items << m;
-        } 
-    } 
-
-    def model = [
-        fetchList: {o-> 
-            def xlist = [];
-            xlist.addAll( items );
-            def list = loadCollectionTypes();
-            list.each{
-                it.caption = it.title;
-                it.icon = homeicon;
-                xlist << it;
-            }
-            return xlist;
-        }, 
-        onOpenItem: {o-> 
-            if (o.opener) {
-                try { 
-                    def result = o.opener.handle.init(); 
-                    if (result == null) throw new BreakException();
-                    return result; 
-                } catch(BreakException be) {
-                    return null; 
-                } 
-            }
-            else {
-                def entity = [
-                    txnmode         : txnmode, 
-                    formno          : afType.objid, 
-                    formtype        : afType.formtype, 
-                    collectiontype  : o 
-                ]; 
-                return findOpener( entity ); 
-            }
+        "mode" : { o->
+            afType = null;
+            collectionType = null;
+            loadCollectionTypes();
         }
-    ] as TileViewModel;
-
-    void askOfflineDate(def info) {
-        boolean pass = false;
-        Modal.show( "date:prompt", [ 
-            entity  : [date: info.receiptdate], 
-            handler : {v-> 
-                info.receiptdate = v; 
-                pass = true;
-            }
-        ]);
-        if ( !pass ) throw new BreakException(); 
+    ]
+    
+    void init() {
+        //MsgBox.alert( "ctx " + OsirisContext.env.ORGID + " is root? " + OsirisContext.env.ORGROOT );
+        loadCollectionTypes();
     }
     
-    def findOpener( o ) {
+    def doNext() {
+        def entity = [
+            txnmode         : mode, 
+            formno          : afType, 
+            formtype        : collectionType.af.formtype, 
+            collectiontype  : collectionType 
+        ]; 
         try { 
-            def info = cashReceiptSvc.init( o );
+            
+            def info = cashReceiptSvc.init( entity );
+            
+            if( mode == "OFFLINE" ) {
+                boolean pass = false;
+                Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 
+                    handler : {v-> 
+                        info.receiptdate = v; 
+                        pass = true;
+                    }
+                ]);
+                if ( !pass ) return null;
+            }
+            
+            //
             def openerParams = [entity: info]; 
-
             openerParams.createHandler = {
-                def op = findOpener( o ); 
+                def op = findOpener( info ); 
                 if ( !op ) return;
-
                 binding.fireNavigation( op ); 
-            } 
-
-            def opener = Inv.lookupOpener("cashreceipt:"+ o.collectiontype.handler, openerParams);  
-            if (opener) {
-                if(txnmode == 'OFFLINE') askOfflineDate(info);
-                opener.target = 'self';
-                return opener; 
-            } else {
+            };
+            
+            def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, openerParams);  
+            if(!opener )
                 throw new Exception('No available handler found');
-            } 
-        } catch(BreakException be) { 
+            opener.target = "self";
+            return opener;
+        } 
+        catch(BreakException be) { 
             return null;
-  
         } catch(Warning w) { 
             String m = "cashreceipt:" + w.message;
-            return InvokerUtil.lookupOpener(m, [entity: o]);
+            Modal.show(m, [entity: entity]);
+            return null;
         }
-    } 
-}   
+    }
+    
+}    

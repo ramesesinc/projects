@@ -104,11 +104,6 @@ SET active=1, txnmode=$P{txnmode}
 WHERE objid=$P{objid}
 	${filter} 
 
-[deactivateControl]
-UPDATE af_control 
-SET active = 0 
-WHERE objid=$P{objid}
-${filter} 
 
 [assignSubcollector]
 UPDATE af_control 

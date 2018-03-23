@@ -44,22 +44,24 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(95, 20));
         xFormPanel1.add(xComboBox1);
 
+        xLookupField1.setName("query.issuedto"); // NOI18N
         xLookupField1.setCaption("Issued To");
         xLookupField1.setCaptionWidth(70);
         xLookupField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xLookupField1.setExpression("#{ query.issuedto.name }");
         xLookupField1.setHandler("collector:lookup");
-        xLookupField1.setName("query.issuedto"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLookupField1.setVisibleWhen("#{ showIssuedToFilter == true }");
         xFormPanel1.add(xLookupField1);
 
+        xLookupField2.setName("query.respcenter"); // NOI18N
         xLookupField2.setCaption("Resp. Center");
         xLookupField2.setCaptionWidth(90);
         xLookupField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xLookupField2.setExpression("#{ query.respcenter.name }");
         xLookupField2.setHandler("org:lookup");
-        xLookupField2.setName("query.respcenter"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLookupField2.setVisibleWhen("#{ showRespcenterFilter == true }");
         xFormPanel1.add(xLookupField2);
 
         add(xFormPanel1, java.awt.BorderLayout.NORTH);

@@ -126,7 +126,7 @@
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField3">
           <Properties>
             <Property name="name" type="java.lang.String" value="entity.reader" noResource="true"/>
-            <Property name="caption" type="java.lang.String" value="Assign To"/>
+            <Property name="caption" type="java.lang.String" value="Assign To Reader"/>
             <Property name="captionWidth" type="int" value="120"/>
             <Property name="expression" type="java.lang.String" value="#{ entity.reader.name }"/>
             <Property name="handler" type="java.lang.String" value="waterworksreader:lookup"/>

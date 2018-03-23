@@ -12,28 +12,43 @@ class WaterworksBatchBillingService {
 	@Service("SingleBillingService")
 	def billingSvc;
 
+	@Service("WaterworksComputationService")
+	def computeSvc;
+
 	@ProxyMethod
 	public void processBilling( def o ) {
-		def b = null;
-		try { b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); } catch(ign) {;}
-		def u = [billed: 1];
-		if( b?.billitems) {
-			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
-			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
-			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
-			def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };
+		def u = [billed:1, prevreadingdate: null, prevreading: 0];
+		if(o.account.meter?.objid) {
+			def b = null;
+			
+			u.prevreadingdate = o.account.meter.lastreadingdate;
+			u.prevreading = o.account.meter.lastreading;
 
-			u.arrears = 0;
-			u.surcharge = 0;
-			u.interest = 0;
-			u.otherfees = 0;
+			try { b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); } catch(ign) {;}
+			
+			if( b?.billitems) {
+				def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
+				def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
+				def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
+				def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };
 
-			if( arrears ) u.arrears = arrears;
-			if( surcharge ) u.surcharge = surcharge;
-			if( interest ) u.interest = interest;
-			if( otherFees ) u.otherfees = otherFees;
+				u.arrears = 0;
+				u.surcharge = 0;
+				u.interest = 0;
+				u.otherfees = 0;
+
+				if( arrears ) u.arrears = arrears;
+				if( surcharge ) u.surcharge = surcharge;
+				if( interest ) u.interest = interest;
+				if( otherFees ) u.otherfees = otherFees;
+			}
 		}
-	   	wbillEm.find( [objid: o.objid ] ).update( u );
+		else {
+			def res = computeSvc.compute([objid:o.acctid ]);
+			u.putAll( res );
+			u.reading = 0;
+		}
+		wbillEm.find( [objid: o.objid ] ).update( u );
 	}
 
 	@ProxyMethod 

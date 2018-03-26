@@ -18,22 +18,24 @@
 		<field name="reading" required="true"/>
 		<field name="reader_objid" required="true"/>
 		<field name="reader_name" required="true"/>
-		<field name="discrate" required="true"/>
-		<field name="surcharge" required="true"/>
-		<field name="interest" required="true"/>
-		<field name="otherfees" required="true"/>
-		<field name="advance" required="true"/>
-		<field name="arrears" required="true"/>
+		<field name="discrate" required="true" type="decimal"/>
+		<field name="surcharge" required="true" type="decimal"/>
+		<field name="interest" required="true" type="decimal"/>
+		<field name="otherfees" required="true" type="decimal"/>
+		<field name="advance" required="true" type="decimal"/>
+		<field name="arrears" required="true" type="decimal"/>
 
 		<field name="subtotal" expr="(arrears + otherfees + surcharge + interest) - advance" />
 
 		<field name="unpaidmonths" required="true"/>
-		<field name="volume" required="true"/>
-		<field name="amount" required="true"/>
+		<field name="volume" required="true" type="integer"/>
+		<field name="amount" required="true" type="decimal"/>
 		<field name="billed"/>
-		<field name="year" required="true"/>
-		<field name="month" required="true"/>
+		<field name="year" required="true" type="integer"/>
+		<field name="month" required="true"  type="integer"/>
 		<field name="monthname" expr="MONTH_ARRAY( month )" caption="Month"/>
+
+		<field name="averageconsumption"  type="integer"/>
 	</element>
 </schema>
 

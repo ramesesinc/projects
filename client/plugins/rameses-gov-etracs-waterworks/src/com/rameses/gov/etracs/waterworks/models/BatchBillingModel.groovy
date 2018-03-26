@@ -129,7 +129,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
        readingHandler.reload();
    }
     
-    def billHandler = [
+   def billHandler = [
         getContextMenu: { item, name-> 
             def mnuList = [];
             mnuList << [value: 'View Account', id:'view_account'];
@@ -156,53 +156,39 @@ public class BatchBillingModel extends WorkflowTaskModel {
     
     def readingHandler = [
         isColumnEditable: {item, colName -> 
+            if( colName != "reading" ) return false;
             if( task.state != "for-reading") return false;
             if( item.account.meter?.objid == null ) return false;
-            if( colName == "reading" ) {
-                return true;
-            }
-            else if( colName =="volume") {
-                //volume is only editable if meter is defective
-                if(item.account?.meter.state == "DEFECTIVE") {
-                    return true;
-                }
-                return false; 
-            }
-            else {
-                return false;
-            }
+            return true;
         },
         beforeColumnUpdate: { item, colName, value ->
-            if(!colName.matches("reading|volume")) return false;
+            if( colName != "reading") return false;
             try {
-                def r = [:];
-                if(colName == "reading") {
-                    if( value >= item.account.meter.capacity ) {
-                        throw new Exception("Reading must be less than meter capacity");
-                    }
-                    if( value < item.prevreading ) {
-                        value = value + item.account.meter.capacity;
-                    }
-                    def p = [:];
-                    p.volume = value - item.prevreading;
-                    p.objid = item.acctid; 
-                    r.volume = p.volume;
-                    def res = compSvc.compute(p);
-                    r.amount = res.amount
+                if( value >= item.account.meter.capacity ) {
+                    throw new Exception("Reading must be less than meter capacity");
                 }
-                else if(colName == "volume") {
-                    def p = [:];
-                    p.objid = item.acctid; 
-                    p.volume = value;
-                    def res = compSvc.compute(p);
-                    r.volume = value;
-                    r.amount = res.amount;
+                if( value < item.prevreading ) {
+                    value = value + item.account.meter.capacity;
                 }
-                def m = [:];
-                m[(colName)] = value;
-                updateVolumeAmount( item.objid, m )
-                item.volume = r.volume;
-                item.amount = r.amount;
+                
+                def p = [:];
+                p.volume = value - item.prevreading;
+                p.objid = item.acctid; 
+                
+                def res = compSvc.compute(p);
+                res.reading = value;
+                if(!res.volume) res.volume = p.volume;
+                if(res.volume == 0 ) res.amount = 0;
+                updateVolumeAmount( item.objid, res );
+                item.putAll( res );
+                
+                int avg = (item.averageconsumption != null) ? item.averageconsumption : 0;
+                int threshold = avg * 0.30;
+                def errs = [];
+                if(  item.volume < (avg - threshold) ) errs << "Volume below threshold";
+                else if( item.volume > (avg + threshold )) errs << "Volume above threshold"; 
+                item.errs = errs;
+                
                 return true;
             }
             catch(e) {
@@ -214,26 +200,41 @@ public class BatchBillingModel extends WorkflowTaskModel {
             def mnuList = [];
             if ( item.account?.meter?.objid != null ) 
                 mnuList << [value: 'View Meter', id:'view_meter'];
+            mnuList << [value: 'Change Volume', id:'change_volume'];    
             mnuList << [value: 'Recompute', id:'recompute'];
             mnuList << [value: 'View Account', id:'view_account'];
             mnuList << [value: 'View Consumption History', id:'view_consumption_hist'];
             return  mnuList; 
 	}, 
 	callContextMenu: { item, menuitem-> 
-            if( menuitem.id == "view_meter") {
+            def mid = menuitem.id;
+            if( mid == "view_meter") {
                 Modal.show("waterworks_meter:open", [entity: item.account.meter ] );
                 readingHandler.reload();
             }
-            else if( menuitem.id == "view_account") {
+            else if( mid == "view_account") {
                 Modal.show("waterworks_account:open", [entity: item.account ]);
                 readingHandler.reload();
             }
-            else if(menuitem.id == "recompute" ) {
+            else if(mid == "recompute" ) {
                 batchSvc.processBilling( item );
                 readingHandler.reload();
             }
-            else {
-                throw new Exception("Menu not registered")
+            else if( mid=="change_volume" ) {
+                def h = [:];
+                h.fields = [
+                    [name:'volume', caption:'Enter Volume', datatype:'integer'],
+                    [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
+                ];
+                h.data = [ volume: item.volume, amount: item.amount ];
+                h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
+                h.reftype = "waterworks_billing";
+                h.refid = item.objid;
+                Modal.show("changeinfo", h, [title:"Enter Volume"]);
+                readingHandler.reload();
+            }
+            else if( mid == "view_consumption_hist") {
+                Modal.show("waterworks_consumption_history", [item: item] );
             }
 	}
     ];

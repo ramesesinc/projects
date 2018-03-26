@@ -42,6 +42,15 @@ FROM waterworks_batch_billing bb
 	INNER JOIN waterworks_account wa on wa.objid = wb.acctid 
 WHERE bb.objid = $P{batchid} 
 
+[findAverageConsumption]
+SELECT AVG(a.volume)  AS avgcon
+FROM
+( SELECT volume FROM waterworks_consumption 
+WHERE  acctid = $P{acctid}
+AND ((year*12)+month) < (($P{year}*12)+$P{month})
+ORDER BY ((year*12)+month) DESC
+LIMIT $P{months} ) a
+
 
 [postMeterReading]
 UPDATE 

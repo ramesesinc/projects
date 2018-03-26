@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+
+class WaterworksBatchBillingInterceptor {
+	
+	@DataContext("waterworks_batch_billing")
+	def batchEm;
+
+	@DataContext("waterworks_zone")
+	def zoneEm;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_billing")
+	def wbillEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
+	public void beforeCreate( evt ) { 
+		def o = evt.args[0];
+		o.objid = 'WBILL' + o.zone.code + o.year + o.month.toString().padLeft(2, '0' );
+		o.state = 'DRAFT';
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_batch_billing' }")
+	public void buildBillItems( evt ) { 
+		def o = evt.args[0];
+		def m = [ batchid: o.objid ];
+
+		batchEm.buildBillings( m );
+		
+		//update the last year and month for the zone
+		zoneEm.find( [objid: o.zone.objid ] ).update( [year: o.year, month: o.month ] );
+
+		def p = [:];
+		p.processname = 'waterworks_batch_billing';
+		p.refid = o.objid;
+		p.startdate = dateSvc.serverDate;
+		taskSvc.start(p);
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", 
+		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].to == 'for-approval'  }")
+	public void beforeApproval( def evt ) {
+		def p = evt.args[0];
+		def cnt = wbillEm.find([batchid:p.refid]).where("amount <= 0").select("c:{COUNT(*)}").val();
+		if( cnt > 0 )	
+			throw new Exception("All billitems must have amount");
+		
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", 
+		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
+	public void submitForPosting( def evt ) {
+		def p = evt.args[0];
+		throw new Exception("blocked process for posting ->"+p)
+
+		if ( !p.refid ) throw new Exception('refid parameter is required'); 
+
+		def info = batchEm.find([ objid: p.refid ]).select('objid,state').first(); 
+		if ( !info ) throw new Exception('batch transaction not found'); 	
+
+		batchEm.find([ objid: p.objid ]).update([ state: 'POSTED' ]); 
+		wbillEm.find([ batchid: p.objid ]).update([ state: 'POSTED' ]); 
+		batchEm.postConsumption([ batchid: info.objid ]); 
+		batchEm.postMeterReading([ batchid: info.objid ]); 
+	}
+}

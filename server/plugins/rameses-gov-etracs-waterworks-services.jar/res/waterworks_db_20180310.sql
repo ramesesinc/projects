@@ -300,7 +300,7 @@ CREATE TABLE `waterworks_billing` (
   `surcharge` decimal(16,2) DEFAULT NULL,
   `interest` decimal(16,2) DEFAULT NULL,
   `othercharge` decimal(16,2) DEFAULT NULL,
-  `advance` decimal(16,2) DEFAULT NULL,
+  `credits` decimal(16,2) DEFAULT NULL,
   `arrears` decimal(16,4) DEFAULT NULL,
   `unpaidmonths` int(11) DEFAULT NULL,
   `volume` int(11) DEFAULT NULL,

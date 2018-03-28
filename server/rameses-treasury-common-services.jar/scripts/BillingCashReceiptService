@@ -40,8 +40,8 @@ class BillingCashReceiptService {
 
 	@ProxyMethod
 	public def getItems( def p ) {
-		if( !p.billitems )
-			throw new Exception("CashReceiptBillingService error. billitems is required "  );
+		if( !p.billitems ) return p;
+			//throw new Exception("CashReceiptBillingService error. billitems is required "  );
 
 		def billitems = p.billitems;
 		p.billitems = billitems.findAll{ it.txntype==null || !it.txntype.toLowerCase().matches('discount|surcharge|interest')  };

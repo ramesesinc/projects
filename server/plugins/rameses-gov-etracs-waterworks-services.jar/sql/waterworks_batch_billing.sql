@@ -3,7 +3,7 @@ INSERT INTO waterworks_billing (
 	objid, state, acctid, batchid, 
 	prevreadingdate, prevreading, readingdate, reading, readingmethod, 
 	reader_objid, reader_name, volume, amount, month, year,
-	discrate, surcharge, interest, otherfees, advance, 
+	discrate, surcharge, interest, otherfees, credits, 
 	arrears, unpaidmonths, billed 
 ) 
 SELECT 

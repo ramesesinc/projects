@@ -138,12 +138,6 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ task.properties.show_reading == true }");
 
-        schemaList1.setCustomFilter("batchid = :batchid");
-        schemaList1.setName("selectedItem"); // NOI18N
-        schemaList1.setOrderBy("account.stuboutnode.indexno");
-        schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_billing");
-        schemaList1.setAllowOpen(false);
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
@@ -158,8 +152,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"expression", "#{  item.errs ? ' **** ' : ' '  }"}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
+                , new Object[]{"expression", "#{  root.getRedflag(item) == true  ?  'images/redflag.png' : null  }"}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.IconColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctno"}
@@ -194,9 +188,9 @@ public class BatchBillingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctname"}
                 , new Object[]{"caption", "Acct Name"}
-                , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 250}
+                , new Object[]{"width", 200}
+                , new Object[]{"minWidth", 250}
+                , new Object[]{"maxWidth", 300}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -345,7 +339,15 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
+        schemaList1.setCustomFilter("batchid = :batchid");
         schemaList1.setHandler("readingHandler");
+        schemaList1.setName("selectedItem"); // NOI18N
+        schemaList1.setOrderBy("account.stuboutnode.indexno");
+        schemaList1.setQueryName("query");
+        schemaList1.setSchemaName("waterworks_billing");
+        schemaList1.setAllowOpen(false);
+        schemaList1.setId("readingModel");
+        schemaList1.setStyleRule("com/rameses/gov/etracs/waterworks/views/BatchBillingPage.style");
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -366,12 +368,6 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Reading Details", xPanel1);
 
-        schemaList2.setCustomFilter("batchid = :batchid");
-        schemaList2.setName("selectedBillItem"); // NOI18N
-        schemaList2.setOrderBy("account.stuboutnode.indexno");
-        schemaList2.setQueryName("query");
-        schemaList2.setSchemaName("waterworks_billing");
-        schemaList2.setAllowOpen(false);
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctno"}
@@ -479,8 +475,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "advance"}
-                , new Object[]{"caption", "Advance"}
+                new Object[]{"name", "credits"}
+                , new Object[]{"caption", "Credits"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
                 , new Object[]{"maxWidth", 100}
@@ -540,7 +536,13 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
             })
         });
+        schemaList2.setCustomFilter("batchid = :batchid");
         schemaList2.setHandler("billHandler");
+        schemaList2.setName("selectedBillItem"); // NOI18N
+        schemaList2.setOrderBy("account.stuboutnode.indexno");
+        schemaList2.setQueryName("query");
+        schemaList2.setSchemaName("waterworks_billing");
+        schemaList2.setAllowOpen(false);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);

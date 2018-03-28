@@ -75,17 +75,24 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     }
 
     void afterLoadInfo() {;}
+    boolean onNoItemsFound() { return false;}
     
     void loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
         p.rulename = getRulename();
         def info = cashReceiptSvc.getInfo( p );
-        billItemList = info.items;
         entity.putAll(info);
-        reloadItems(); 
-        //afterLoadInfo();
-        //loadPayOptions();
+        if( !info.billitems ) {
+            def b = onNoItemsFound();
+            if(!b) throw new Exception("No bill items found");
+        }
+        else {
+            billItemList = info.items;
+            reloadItems(); 
+            //afterLoadInfo();
+            //loadPayOptions();
+        }
     }
     
     void reloadItems() {

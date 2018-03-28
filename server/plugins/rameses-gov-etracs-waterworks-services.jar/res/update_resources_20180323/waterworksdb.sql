@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.11 (64 bit)
 MySQL - 5.1.73-community : Database - icws_waterworks
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -321,7 +322,7 @@ CREATE TABLE `waterworks_billing` (
   `surcharge` decimal(16,2) DEFAULT NULL,
   `interest` decimal(16,2) DEFAULT NULL,
   `otherfees` decimal(16,2) DEFAULT NULL,
-  `advance` decimal(16,2) DEFAULT NULL,
+  `credits` decimal(16,2) DEFAULT NULL,
   `arrears` decimal(16,4) DEFAULT NULL,
   `unpaidmonths` int(11) DEFAULT NULL,
   `volume` int(11) DEFAULT NULL,

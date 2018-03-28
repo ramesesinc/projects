@@ -16,6 +16,9 @@ class WaterworksSingleBillingInterceptor {
 	@DataContext("waterworks_consumption")
 	def wcEm;
 
+	@DataContext("waterworks_credit")
+	def wcCreditEm;
+
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
@@ -57,9 +60,12 @@ class WaterworksSingleBillingInterceptor {
 		list.addAll( conList );
 
 		//select for other fees
-		def select2 = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
-		def conList2 = wotherEm.find([acctid: p.acctid]).select(select2).where(arr.join(" AND "), wp).orderBy("year,month").list();
-		list.addAll( conList2 );
+		select = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
+		conList = wotherEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		list.addAll( conList );
+
+		conList = wcCreditEm.find( [parentid: p.acctid] ).select( "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'}").list();
+		list.addAll( conList );
 	}
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
@@ -81,6 +87,9 @@ class WaterworksSingleBillingInterceptor {
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {
 				return  new WaterBillItem(o);
+			}
+			else if( o.reftype == 'waterworks_credit') {
+				return new CreditBillItem(o);	
 			}
 			else {
 				return new MonthBillItem(o);

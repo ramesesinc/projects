@@ -24,7 +24,7 @@ class WaterworksBatchBillingService {
 			u.prevreadingdate = o.account.meter.lastreadingdate;
 			u.prevreading = o.account.meter.lastreading;
 
-			try { b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); } catch(ign) {;}
+			b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
 			
 			if( b?.billitems) {
 				def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
@@ -63,6 +63,24 @@ class WaterworksBatchBillingService {
 		def m = [batchid: param.objid]; 
 		return batchEm.findBilledStatus( m ); 
 	} 
+
+
+	@ProxyMethod
+	public void post( def p ) {
+		if ( !p.batchid ) throw new Exception('batchid parameter is required in WaterworksBatchBillingService.post'); 
+
+		def info = batchEm.find([ objid: p.batchid ]).select('objid,state').first(); 
+		if ( !info ) throw new Exception('batch transaction not found'); 	
+
+		batchEm.find([ objid: p.batchid ]).update([ state: 'POSTED' ]); 
+		wbillEm.find([ batchid: p.batchid ]).update([ state: 'POSTED' ]); 
+		batchEm.postConsumption([ batchid: p.batchid ]); 
+		batchEm.postMeterReading([ batchid: p.batchid ]);
+
+		//select entries where there are advanced payments and post it to the ledger
+		
+
+	}
 
 
 }

@@ -29,7 +29,15 @@ public class BatchBillingModel extends WorkflowTaskModel {
    
    def selectedItem;
    def selectedBillItem;
-    
+   
+   /*
+    *   This method is used in style rule condition and DataTable column expression 
+    */
+   def getRoot() { 
+       return this; 
+   }
+   
+   
    def getQuery() {
         return [batchid: entity.objid];
    } 
@@ -90,7 +98,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
     }
     
     def stat;
-    
     def progress = [
         getTotalCount : {
             if(stat == null ) throw new Exception("getTotalCount error. stat must not be null");
@@ -112,7 +119,13 @@ public class BatchBillingModel extends WorkflowTaskModel {
         }
     ] as BatchProcessingModel;
     
-   public boolean beforeSignal( def param  ) {
+    public boolean getRedflag( def item ) {
+        boolean b = ( item.averageconsumption > 0 && (item.volume < (item.averageconsumption * 0.70) || item.volume > (item.averageconsumption * 1.30))); 
+        println "redflag is " + b;
+        return b;
+    }
+    
+    public boolean beforeSignal( def param  ) {
        if( task.state == 'processing' ) {
            //check stat balance befopre submitting process
             stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
@@ -129,31 +142,61 @@ public class BatchBillingModel extends WorkflowTaskModel {
        readingHandler.reload();
    }
     
+   void updateVolumeAmount( def objid, def m ) {
+        def p = [_schemaname: 'waterworks_billing'];
+        p.findBy = [objid: objid ];
+        p.putAll( m );
+        persistenceService.update( p );
+    } 
+    
+   def actions = [
+       "view_meter" : {item->  
+            Modal.show("waterworks_meter:open", [entity: item.account.meter ] );
+            readingHandler.reload();
+        },
+       "view_account": {item-> 
+            Modal.show("waterworks_account:open", [entity: item.account ]); 
+            readingHandler.reload();
+        },
+       "view_billing": {item-> 
+            Modal.show("waterworks_account_billing", ['query.objid': item.acctid ]); 
+        },
+       "view_consumption_hist": {item-> 
+             Modal.show("waterworks_consumption_history", [item: item] );
+        },
+        "rebill": { item->
+            batchSvc.processBilling( item );
+            readingHandler.reload();
+        },
+        "change_volume": { item->
+             def h = [:];
+                h.fields = [
+                    [name:'volume', caption:'Enter Volume', datatype:'integer'],
+                    [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
+                ];
+                h.data = [ volume: item.volume, amount: item.amount ];
+                h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
+                h.reftype = "waterworks_billing";
+                h.refid = item.objid;
+                Modal.show("changeinfo", h, [title:"Enter Volume"]);
+                readingHandler.reload();
+        }
+   ] 
+    
    def billHandler = [
         getContextMenu: { item, name-> 
             def mnuList = [];
             mnuList << [value: 'View Account', id:'view_account'];
             mnuList << [value: 'View Bill', id:'view_billing'];
-            mnuList << [value: 'Recompute Bill', id:'recompute_billing']
+            mnuList << [value: 'Recompute Bill', id:'rebill']
             return  mnuList; 
 	}, 
 	callContextMenu: { item, menuitem-> 
-            if( menuitem.id == "view_account") {
-                Modal.show("waterworks_account:open", [entity: item.account ]);
-            }
-            else {
-                throw new Exception("Menu not registered")
-            }
+            def act = actions[(menuitem.id)];
+            act( item );
 	}    
     ];
 
-    void updateVolumeAmount( def objid, def m ) {
-        def p = [_schemaname: 'waterworks_billing'];
-        p.findBy = [objid: objid ];
-        p.putAll( m );
-        persistenceService.update( p );
-    }
-    
     def readingHandler = [
         isColumnEditable: {item, colName -> 
             if( colName != "reading" ) return false;
@@ -170,7 +213,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 if( value < item.prevreading ) {
                     value = value + item.account.meter.capacity;
                 }
-                
                 def p = [:];
                 p.volume = value - item.prevreading;
                 p.objid = item.acctid; 
@@ -181,14 +223,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 if(res.volume == 0 ) res.amount = 0;
                 updateVolumeAmount( item.objid, res );
                 item.putAll( res );
-                
-                int avg = (item.averageconsumption != null) ? item.averageconsumption : 0;
-                int threshold = avg * 0.30;
-                def errs = [];
-                if(  item.volume < (avg - threshold) ) errs << "Volume below threshold";
-                else if( item.volume > (avg + threshold )) errs << "Volume above threshold"; 
-                item.errs = errs;
-                
                 return true;
             }
             catch(e) {
@@ -201,41 +235,14 @@ public class BatchBillingModel extends WorkflowTaskModel {
             if ( item.account?.meter?.objid != null ) 
                 mnuList << [value: 'View Meter', id:'view_meter'];
             mnuList << [value: 'Change Volume', id:'change_volume'];    
-            mnuList << [value: 'Recompute', id:'recompute'];
+            mnuList << [value: 'Recompute', id:'rebill'];
             mnuList << [value: 'View Account', id:'view_account'];
             mnuList << [value: 'View Consumption History', id:'view_consumption_hist'];
             return  mnuList; 
 	}, 
 	callContextMenu: { item, menuitem-> 
-            def mid = menuitem.id;
-            if( mid == "view_meter") {
-                Modal.show("waterworks_meter:open", [entity: item.account.meter ] );
-                readingHandler.reload();
-            }
-            else if( mid == "view_account") {
-                Modal.show("waterworks_account:open", [entity: item.account ]);
-                readingHandler.reload();
-            }
-            else if(mid == "recompute" ) {
-                batchSvc.processBilling( item );
-                readingHandler.reload();
-            }
-            else if( mid=="change_volume" ) {
-                def h = [:];
-                h.fields = [
-                    [name:'volume', caption:'Enter Volume', datatype:'integer'],
-                    [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
-                ];
-                h.data = [ volume: item.volume, amount: item.amount ];
-                h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
-                h.reftype = "waterworks_billing";
-                h.refid = item.objid;
-                Modal.show("changeinfo", h, [title:"Enter Volume"]);
-                readingHandler.reload();
-            }
-            else if( mid == "view_consumption_hist") {
-                Modal.show("waterworks_consumption_history", [item: item] );
-            }
+            def act = actions[(menuitem.id)];
+            act( item );
 	}
     ];
     
@@ -273,45 +280,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
    } 
    */    
   
-    /*
-    def submitForReview() {
-       stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
-       if( stat.balance > 0 ) throw new Exception("Cannot submit. Please complete process first");
-       if( !MsgBox.confirm("You are about to submit this for review. Proceed?")) return
-       changeState( 'FOR_REVIEW' );
-       return "default";
-    } 
-    
-    def revertForProcessing() {
-       def m = [_schemaname:'waterworks_billing'];
-       m.findBy = [batchid: entity.objid];
-       m.billed = 0;
-       persistenceService.update( m );
-       return submitForProcessing();
-    }
-    
-    void submitForReading() {
-       if( !MsgBox.confirm("You are about to submit this for reading. Proceed?")) return
-       changeState( 'FOR_READING' );
-    } 
-    
-    void submitForApproval() {
-        if( !MsgBox.confirm("You are about to submit this for approval. Proceed?")) return
-       changeState( 'FOR_APPROVAL' );
-    } 
-    
-    void approve() {
-        if( !MsgBox.confirm("You are about to approve this batch. Proceed?")) return
-       changeState( 'APPROVED' );
-    } 
-    
-    void post() {
-        if( !MsgBox.confirm("You are about to post this batch. Proceed?")) return
-        batchSvc.post([ objid: entity.objid ]);
-        entity.state = 'POSTED';
-    } 
-    */
-    
     
     
     

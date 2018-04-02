@@ -35,6 +35,8 @@ class BillingCashReceiptService {
 		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
 		rct.billitems = pi.billitems;
 		rct.collectiontype = o.collectiontype;
+
+
 		return getItems( rct );
 	}
 
@@ -73,9 +75,9 @@ class BillingCashReceiptService {
 			if( !payInfo.items  )
 				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error items is required");
 			payInfo.items.each {
-				if(!it.item?.objid) throw new Exception( "CashReceiptBillingService.getItems getPostPaymentInfo error. item.objid is required in each item" );
-				if( !it.txntype?.matches('credit|misc')) {
-					if(!it.reftype ) throw new Exception( "CashReceiptBillingService.getItems error. getPostPaymentInfo reftype  is required in " + it.item.title );
+				if(!it.item?.objid) throw new Exception( "BillingCashReceiptService.getItems getPostPaymentInfo error. item.objid is required in each item" );
+				if( it.refid && !it.reftype ) {
+					throw new Exception( "BillingCashReceiptService.getItems error. getPostPaymentInfo reftype  is required if refid is specified for " + it.item.title );
 				}
 			}
 			payInfo.amount = p.amount;

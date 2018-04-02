@@ -13,6 +13,10 @@ public class CreditListModel extends CrudListModel {
     def total = 0;
     
     def selectedItem;
+    boolean showVoid = false;
+    
+    def selectedPaymentItem;
+    def _paymentSchemaName;
     
     public String getContextName() {
         def pfn = invoker.properties.contextName;
@@ -35,6 +39,16 @@ public class CreditListModel extends CrudListModel {
         _parentkey = workunit?.info?.workunit_properties?.parentkey;
         if ( _parentkey ) return _parentkey; 
         throw new Exception("Please indicate a parentkey")      
+    }
+    
+    public String getPaymentSchemaName() {
+        if(_paymentSchemaName ) return _paymentSchemaName;
+        _paymentSchemaName = invoker.properties.paymentSchemaName;
+        if(_paymentSchemaName) return _paymentSchemaName;
+        _paymentSchemaName = workunit?.info?.workunit_properties?.paymentSchemaName;
+        if ( _paymentSchemaName ) return _paymentSchemaName; 
+        _paymentSchemaName = getContextName() + "_payment_item";
+        return _paymentSchemaName;  
     }
 
     public boolean isCaptureExist() {
@@ -83,6 +97,34 @@ public class CreditListModel extends CrudListModel {
         String n = contextName + "_payment:create";
         
         return Inv.lookupOpener( n, m  );
+    }
+    
+    def paymentListModel = [
+        fetchList: { o->
+            if( !selectedItem ) return [];
+            def m = [_schemaname: paymentSchemaName ];
+            def arr = [];
+            def p = [:];
+            arr << " refid = :refid"
+            p.refid = selectedItem.objid; 
+            if( showVoid  != true ) {
+                arr << " parent.voided = 0 ";
+            } 
+            m.where = [ arr.join(" AND "), p ];
+            m.orderBy = "refdate DESC";
+            return queryService.getList(m);
+        },
+        onOpenItem: { o,col->
+            viewPayment();
+        }
+    ] as BasicListModel;
+
+    void viewPaymentReceipt() {
+        if(!selectedPaymentItem) throw new Exception("Please select a payment item");
+        def m = [entity: [objid: selectedPaymentItem.parent.refid ] ];
+        def str = selectedPaymentItem.parent?.reftype + "info:open";
+        def op = Inv.lookupOpener( str, m );
+        Modal.show(op);
     }
     
 

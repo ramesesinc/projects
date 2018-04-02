@@ -7,35 +7,29 @@ class CreditBillItem extends AbstractBillItem {
 
 	String reftype;
 	String refid;
-	int sortorder = 1000;
+	int sortorder = 10000000;
 	String txntype = "credit";	
 
 	public CreditBillItem( def o ) {
 		super(o);
-		if(o.refid ) refid = o.refid;
-		if(o.reftype) reftype = o.reftype; 
+		if( o.reftype ) reftype = o.reftype;
+		if( o.refid ) refid = o.refid;
 	}
 
 	public def toMap() {
 		def m = super.toMap();
 		m.refid = refid;
 		m.reftype = reftype;
+		m.total = m.amount;
 		return m;
 	}
 
-	/*
 	public int hashCode() {
-		if( account?.objid ) {
-			throw new Exception("account." + account.objid );
-			return account.objid.hashCode();
-		}
-		else if(txntype) {
-			return txntype.hashCode();
-		}
-		else {
-			return this.toString().hashCode();
-		}
+		def sb = new StringBuilder();
+		if( account?.objid ) sb.append( account.objid );
+		if( refid ) sb.append( refid );
+		if( txntype ) sb.append( txntype );
+		return sb.toString().hashCode();
 	}
-	*/
 
 }

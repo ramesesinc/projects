@@ -15,7 +15,7 @@ class SingleBillingHandler {
 	public def getBillItems( def o  ) {return [];}
 
 	@ProxyMethod
-	public def getCreditItems( def o  ) {return [];}
+	public def getCreditPaymentItems( def o  ) {return [];}
 
 	@ProxyMethod
 	public def formatReceiptInfo( def info ) { 

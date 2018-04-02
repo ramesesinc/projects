@@ -1,8 +1,3 @@
-"xreadingModel:item.*" [item.averageconsumption > 0 && (item.volume < (item.averageconsumption * 0.70) || item.volume > (item.averageconsumption * 1.30))  ] {
-    foreground: red;
-    font-weight: bold;
-}
-
 "readingModel:item.*" [ root.getRedflag( item ) == true ] {
     foreground: red;
     font-weight: bold;

@@ -43,7 +43,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
-        xLabel17 = new com.rameses.rcp.control.XLabel();
+        xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
@@ -109,27 +109,20 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel4.setCaptionWidth(110);
 
-        xIntegerField2.setName("entity.prevreading"); // NOI18N
         xIntegerField2.setCaption("Prev. Reading");
         xIntegerField2.setDepends(new String[] {"entity.reading", "entity.volume"});
+        xIntegerField2.setName("entity.prevreading"); // NOI18N
         xIntegerField2.setVisibleWhen("#{ entity.meter?.objid != null }");
         xFormPanel4.add(xIntegerField2);
 
-        xIntegerField3.setName("entity.reading"); // NOI18N
         xIntegerField3.setCaption("This Reading");
+        xIntegerField3.setName("entity.reading"); // NOI18N
         xIntegerField3.setVisibleWhen("#{ entity.meter?.objid != null }");
         xFormPanel4.add(xIntegerField3);
 
-        xLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        xLabel17.setBackground(new java.awt.Color(245, 245, 245));
-        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel17.setCaption("Volume");
-        xLabel17.setDepends(new String[] {"entity.prevreading", "entity.reading"});
-        xLabel17.setExpression("#{entity.volume}");
-        xLabel17.setOpaque(true);
-        xLabel17.setPreferredSize(new java.awt.Dimension(100, 20));
-        xLabel17.setVisibleWhen("#{ entity.meter?.objid != null }");
-        xFormPanel4.add(xLabel17);
+        xIntegerField4.setCaption("Volume");
+        xIntegerField4.setName("entity.volume"); // NOI18N
+        xFormPanel4.add(xIntegerField4);
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(110);
@@ -192,7 +185,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -213,7 +206,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
-    private com.rameses.rcp.control.XLabel xLabel17;
+    private com.rameses.rcp.control.XIntegerField xIntegerField4;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel4;
     // End of variables declaration//GEN-END:variables

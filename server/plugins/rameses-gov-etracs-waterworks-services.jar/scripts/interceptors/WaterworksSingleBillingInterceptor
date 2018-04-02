@@ -43,6 +43,15 @@ class WaterworksSingleBillingInterceptor {
 		r.zone   = acct.stuboutnode?.zone; 
 	}
  
+ 	@After(pattern="SingleBillingHandler.getCreditPaymentItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+	public void getWaterworksCreditItems(def evt) {
+		def p = evt.args[0];
+		def list = evt.result;
+		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
+		def conList = wcCreditEm.find( [parentid: p.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
+		list.addAll( conList );
+	}
+
     @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getWaterworksBillItems(def evt) {
 		def p = evt.args[0];
@@ -64,8 +73,6 @@ class WaterworksSingleBillingInterceptor {
 		conList = wotherEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
 
-		conList = wcCreditEm.find( [parentid: p.acctid] ).select( "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'}").list();
-		list.addAll( conList );
 	}
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
@@ -88,8 +95,8 @@ class WaterworksSingleBillingInterceptor {
 			if( o.reftype == 'waterworks_consumption' ) {
 				return  new WaterBillItem(o);
 			}
-			else if( o.reftype == 'waterworks_credit') {
-				return new CreditBillItem(o);	
+			else if( o.reftype == 'waterworks_credit' ) {
+				return new CreditBillItem( o );
 			}
 			else {
 				return new MonthBillItem(o);
@@ -106,19 +113,6 @@ class WaterworksSingleBillingInterceptor {
 	@After(pattern="SingleBillingService.execute",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void afterBilling(def evt) {
 		def r = evt.result;
-		/*
-		if( m.consumption ) {
-			m.chartdata = m.consumption.collect{ [month:it.month, consumption:it.consumption] }
-			m.averageconsumption = (int) (m.consumption.sum{it.consumption} / m.consumption.size());
-		}
-		else {
-			m.chartdata = [];
-			m.averageconsumption = 0;
-		}
-		r.billitems.each {
-			it.parent = app;
-		}		
-		*/
 	}
 
 	/*******************************************

@@ -19,13 +19,19 @@ class ApplyPayment implements RuleActionHandler {
 		def ct = RuleExecutionContext.getCurrentContext();
 		def facts = ct.facts;
 
+		double totalCredit = 0;
+		def creditList = facts.findAll{ it instanceof CreditBillItem };
+		if(creditList ) {
+			totalCredit = (creditList.sum{ it.amount }*-1);
+		}
+			
 		def billitems = facts.findAll{ it instanceof BillItem }.sort{it.paypriority};
 
 		if(billitems) {
 
 			def newBillItems = [];
-			double amt = payment.amount;
-
+			double amt = payment.amount + totalCredit;
+			
 			/******************************************************************************
 			* This is already a tested routine. If you cannot get the desired result
 			* please check the payment priority order. 
@@ -48,12 +54,19 @@ class ApplyPayment implements RuleActionHandler {
 				drools.retract( it );
 			}
 
+			
+
 			//add new facts
 			for(b in newBillItems) {
 				facts << b;
 				for(bi in b.items) {
 					facts << bi;
 				}		
+			}
+
+			//if there are credit items
+			if( creditList ) {
+				facts.addAll( creditList );
 			}
 
 			//add excess payment if any...

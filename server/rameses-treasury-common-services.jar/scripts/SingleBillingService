@@ -29,24 +29,35 @@ class SingleBillingService {
 		m.putAll( data );
 		data.billitems = self.getBillItems( m );
 
-		data.credititems = self.getCreditItems( m );	
+		def clist = self.getCreditPaymentItems( m );
+		if(clist) {
+			clist.each {
+				it.txntype = 'creditpayment'
+			}
+			data.billitems.addAll( clist );
+		}	
 
 		def startgroup = "billing";
 		if( pp.startgroup ) rulegroup = p.rulegroup; 
+		
 
 		def rp = [:]
 		rp.putAll( pp.params );
 		rp.putAll( data );
-		
+
 		def r = billingSvc.execute( [rulename: rulename, startgroup: startgroup, params: rp ] ); 
 		def result = [:];
 		result.putAll( data );
 		result.putAll( r ); 
 		result.amount = 0;
+
+		
 		if( result.billitems ) {
 			result.amount = result.billitems.sum{ it.amount };
 			result.billitems.sort{ it.sortorder };
 		}
+
+		
 		return result;
 	}
 

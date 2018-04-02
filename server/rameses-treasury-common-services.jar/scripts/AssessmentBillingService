@@ -105,6 +105,9 @@ public class AssessmentBillingService {
 			if( o instanceof BillItem ) {
 				m.billitems << o.toMap();
 			}
+			else if(o instanceof CreditBillItem ) {
+				m.billitems << o.toMap();
+			}
 			else if(o instanceof BillSubItem ) {
 				m.billitems << o.toMap();	
 			}

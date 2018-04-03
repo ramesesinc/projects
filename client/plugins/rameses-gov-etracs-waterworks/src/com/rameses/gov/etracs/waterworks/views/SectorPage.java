@@ -71,12 +71,6 @@ public class SectorPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ mode == 'read' }");
 
-        schemaList1.setCustomFilter("sectorid = :sectorid");
-        schemaList1.setOrderBy("code");
-        schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_zone");
-        schemaList1.setAllowCreate(true);
-        schemaList1.setAllowDelete(true);
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
@@ -109,8 +103,14 @@ public class SectorPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
+        schemaList1.setCustomFilter("sectorid = :sectorid");
         schemaList1.setDepends(new String[] {"sector"});
         schemaList1.setHandler("handler");
+        schemaList1.setOrderBy("code");
+        schemaList1.setQueryName("query");
+        schemaList1.setSchemaName("waterworks_zone");
+        schemaList1.setAllowCreate(true);
+        schemaList1.setAllowDelete(true);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);

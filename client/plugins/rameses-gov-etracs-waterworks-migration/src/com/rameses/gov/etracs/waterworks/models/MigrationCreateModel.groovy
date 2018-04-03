@@ -151,15 +151,7 @@ class MigrationCreateModel {
                 o.sectorid = a?.sector?.objid; 
                 o.zoneid = a?.zone?.objid; 
             } 
-            
-            if ( o.sectorid ) { 
-                def findBy = [sectorid: o.sectorid, year: entity.billyear, month: entity.billmonth]; 
-                def wbc = persistSvc.read([_schemaname: 'waterworks_billing_cycle', findBy: findBy]); 
-                if ( !wbc ) throw new Exception('No available billing cycle for the following: Sector='+ o.sectorid +', Year='+ o.billyear +', Month='+ o.billmonth ); 
-                
-                o.billingcycleid = wbc.objid; 
-            } 
-            
+                        
             o.parentid = entity.objid; 
             o.objid = entity.objid.toString() +'-'+ o.indexno; 
             

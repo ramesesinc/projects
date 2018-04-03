@@ -2,7 +2,7 @@
           schemaName="waterworks_migrationmapping_sector"  
           cols="objid,ref.code">
     <invokers>
-        <invoker xfolderid="/home/waterworks/migration" caption="Sector Mapping" 
+        <invoker xfolderid="/menucategory/waterworks/migration" caption="Manage Sector Mapping" 
                  action="init" role="ADMIN" index="1"/>
     </invokers>
     

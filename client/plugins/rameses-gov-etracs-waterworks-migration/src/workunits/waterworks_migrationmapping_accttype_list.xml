@@ -2,7 +2,7 @@
           schemaName="waterworks_migrationmapping_accttype"  
           cols="objid,ref.description">
     <invokers>
-        <invoker folderid="/home/waterworks/migration" caption="AcctType Mapping" 
+        <invoker folderid="/menucategory/waterworks/migration" caption="Manage AcctType Mapping" 
                  action="init" role="ADMIN" index="1"/>
     </invokers>
     

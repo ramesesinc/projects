@@ -2,7 +2,7 @@
           schemaName="waterworks_migrationmapping_metersize"  
           cols="objid,ref.title">
     <invokers>
-        <invoker folderid="/home/waterworks/migration" caption="MeterSize Mapping" 
+        <invoker folderid="/menucategory/waterworks/migration" caption="Manage MeterSize Mapping" 
                  action="init" role="ADMIN" index="1"/>
     </invokers>
     

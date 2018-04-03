@@ -81,8 +81,8 @@ class AFStockSaleInterceptor {
 	public void afterOpen(evt) {
 		def o = evt.result;
 		o.items.each{
-			def params = [afid: it.item.objid, unit: it.unit, stockissueid: it.parentid, respcentertype: 'COLLECTOR' ]
-			it.items = afInventoryDb.getAFDetails(params); 
+			def params = [ afid: it.item.objid, unit: it.unit, stockissueid: it.parentid ]; 
+			it.items = afInventoryDb.getAFSaleDetails(params); 
 			it.handler =  it.aftype.toLowerCase() 
 		}
 	}

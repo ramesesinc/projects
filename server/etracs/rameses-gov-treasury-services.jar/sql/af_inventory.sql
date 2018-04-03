@@ -99,6 +99,32 @@ from (
 where ac.objid=tmpa.objid 
 order by tmpa.categoryindex, tmpa.txndate, ac.currentseries 
 
+[getAFSaleDetails]
+select tmp1.*, d.cost, 
+   (tmp1.endseries-tmp1.startseries)+1 as qtyissued, 
+   (tmp1.endstub-tmp1.startstub)+1 as qty 
+from ( 
+   select 
+      afd.controlid, afi.afid, afi.unit, afd.refid, afd.reftype, 
+      afi.startseries, afi.endseries, afi.startstub, afi.endstub, 
+      af.serieslength, af.formtype as aftype, afi.prefix, afi.suffix 
+   from af_inventory_detail afd 
+      inner join af_inventory afi on afi.objid = afd.controlid 
+      inner join af on af.objid = afi.afid 
+   where afd.refid = $P{stockissueid} 
+      and afd.reftype = 'stocksale' 
+      and afd.txntype = 'SALE-RECEIPT' 
+      and afi.afid = $P{afid} 
+      and afi.unit = $P{unit} 
+)tmp1 
+   left join af_inventory_detail d on d.refid=tmp1.refid 
+   left join af_inventory a on a.objid = d.controlid 
+where d.reftype = tmp1.reftype 
+   and d.txntype = 'SALE' 
+   and a.afid = tmp1.afid 
+   and a.unit = tmp1.unit 
+   and d.issuedstartseries = tmp1.startseries 
+   and d.issuedendseries = tmp1.endseries 
 
 [getAFDetails]
 select 

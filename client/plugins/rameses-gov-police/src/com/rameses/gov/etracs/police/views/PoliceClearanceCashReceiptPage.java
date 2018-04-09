@@ -12,8 +12,8 @@ import com.rameses.rcp.ui.annotations.Template;
  *
  * @author dell
  */
-@Template(value=SerialCashReceiptPage.class, target="content")
 @StyleSheet
+@Template(value=SerialCashReceiptPage.class, target="content")
 public class PoliceClearanceCashReceiptPage extends javax.swing.JPanel {
 
     /**

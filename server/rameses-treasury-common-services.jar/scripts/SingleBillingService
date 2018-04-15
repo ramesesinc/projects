@@ -29,13 +29,18 @@ class SingleBillingService {
 		m.putAll( data );
 		data.billitems = self.getBillItems( m );
 
-		def clist = self.getCreditPaymentItems( m );
-		if(clist) {
-			clist.each {
-				it.txntype = 'creditpayment'
-			}
-			data.billitems.addAll( clist );
-		}	
+		boolean includeCredits = true;
+		if( pp.params.include_credits == false  ) includeCredits = false;
+
+		if( includeCredits ) {
+			def clist = self.getCreditPaymentItems( m );
+			if(clist) {
+				clist.each {
+					it.txntype = 'creditpayment'
+				}
+				data.billitems.addAll( clist );
+			}	
+		}
 
 		def startgroup = "billing";
 		if( pp.startgroup ) rulegroup = p.rulegroup; 
@@ -50,13 +55,38 @@ class SingleBillingService {
 		result.putAll( data );
 		result.putAll( r ); 
 		result.amount = 0;
-
 		
-		if( result.billitems ) {
-			result.amount = result.billitems.sum{ it.amount };
+		if( r.billitems ) {
+			result.billitems = r.billitems.findAll{ it.txntype==null || !it.txntype.toLowerCase().matches('discount|surcharge|interest')  };
+			result.billitems.each {
+				if(!it.total) it.total = it.amount;
+			}
+			result.amount = result.billitems.sum{ it.total };
 			result.billitems.sort{ it.sortorder };
+
+			//summarize items
+			if( pp.params.include_items == true ) {
+
+				//if cash receipt items not specified
+				if( !r.items ) {
+					//summarize the billitems into cashreceipt items. For specialized grouping, the group complex field must be specified
+					//in each billitem, otherwise this will be grouped by account only. The group must contain the label and remarks if any.
+					def cashRctItems = [];
+					def grpItems = r.billitems.groupBy{ [it.item, it.group] };
+					grpItems.each { k,v->
+						cashRctItems << [item: k[0], remarks: k[1]?.remarks, amount: NumberUtil.round(v.sum{ it.amount }) ];
+					} 
+					result.items = cashRctItems;
+					result.items.each {
+						if(!it.item?.objid) throw new Exception("item.objid is required");
+						if(!it.item?.title) throw new Exception("item.title is required");
+						if(!it.amount) throw new Exception("amount is required in line item");
+					}
+				}
+			}
 		}
 
+		
 		
 		return result;
 	}

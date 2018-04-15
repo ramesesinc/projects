@@ -41,12 +41,9 @@ public class LocalAddress extends XComponentPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         txtSubdivision = new com.rameses.rcp.control.XTextField();
         lupBarangay = new com.rameses.rcp.control.XLookupField();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        txtPin = new com.rameses.rcp.control.XTextField();
-        xButton1 = new com.rameses.rcp.control.XButton();
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setName("entity"); // NOI18N
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 5, 5));
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
@@ -101,25 +98,6 @@ public class LocalAddress extends XComponentPanel {
 
         xFormPanel1.add(xFormPanel3);
 
-        xFormPanel4.setCaption("PIN");
-        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
-
-        txtPin.setCaption("PIN");
-        txtPin.setName("entity.pin"); // NOI18N
-        txtPin.setPreferredSize(new java.awt.Dimension(165, 20));
-        txtPin.setShowCaption(false);
-        txtPin.setStretchWidth(48);
-        xFormPanel4.add(txtPin);
-
-        xButton1.setMargin(new java.awt.Insets(0, 5, 0, 5));
-        xButton1.setName("showText"); // NOI18N
-        xButton1.setShowCaption(false);
-        xButton1.setText("T");
-        xFormPanel4.add(xButton1);
-
-        xFormPanel1.add(xFormPanel4);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -137,15 +115,12 @@ public class LocalAddress extends XComponentPanel {
     private com.rameses.rcp.control.XLookupField lupBarangay;
     private com.rameses.rcp.control.XTextField txtBldgname;
     private com.rameses.rcp.control.XTextField txtBldgno;
-    private com.rameses.rcp.control.XTextField txtPin;
     private com.rameses.rcp.control.XTextField txtStreet;
     private com.rameses.rcp.control.XTextField txtSubdivision;
     private com.rameses.rcp.control.XTextField txtUnitno;
-    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -158,7 +133,6 @@ public class LocalAddress extends XComponentPanel {
             txtStreet.setText(name+".street");
             txtSubdivision.setText(name+".subdivision");
             lupBarangay.setText("#{"+name+".barangay.name}");
-            txtPin.setText( name + ".pin");
         }
     }
 
@@ -170,8 +144,7 @@ public class LocalAddress extends XComponentPanel {
         txtStreet.setEnabled(enabled);
         txtSubdivision.setEnabled(enabled);
         lupBarangay.setEnabled(enabled);
-        txtPin.setEnabled(enabled);
-    }
+     }
     
     @Override
     public void afterLoad() {

@@ -37,7 +37,7 @@ public class BillingReceiptInterceptor {
 		}
 	}
 
-	@After(pattern="CashReceiptService.post", eval="#{ args[0]._postpayment !=null  }",  index=50)
+	@After(pattern="(Cash|Noncash)ReceiptService.post|BillingCapturePaymentService.post", eval="#{ args[0]._postpayment !=null  }",  index=50)
 	public void postPayment(def evt) {
 		def e = evt.args[0];
 		def result = evt.result;
@@ -48,7 +48,8 @@ public class BillingReceiptInterceptor {
 			throw new Exception("_schemaname is required in CashReceipt post payment. Please check if payment schema has an autopost='true'")
 
 		//format the payment references
-		pmt.reftype = "cashreceipt";
+		pmt.reftype = pmt.reftype;
+		if(!pmt.reftype) pmt.reftype = "cashreceipt";
 		pmt.refno = result.receiptno;
 		pmt.refdate = result.receiptdate;
 		pmt.refid = result.objid;

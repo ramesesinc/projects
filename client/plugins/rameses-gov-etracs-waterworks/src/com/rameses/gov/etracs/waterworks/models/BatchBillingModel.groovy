@@ -120,9 +120,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
     ] as BatchProcessingModel;
     
     public boolean getRedflag( def item ) {
-        boolean b = ( item.averageconsumption > 0 && (item.volume < (item.averageconsumption * 0.70) || item.volume > (item.averageconsumption * 1.30))); 
-        println "redflag is " + b;
-        return b;
+        return ( item.averageconsumption > 0 && (item.volume < (item.averageconsumption * 0.70) || item.volume > (item.averageconsumption * 1.30))); 
     }
     
     public boolean beforeSignal( def param  ) {
@@ -167,19 +165,20 @@ public class BatchBillingModel extends WorkflowTaskModel {
         "rebill": { item->
             batchSvc.processBilling( item );
             readingHandler.reload();
+            billHandler.reload();
         },
         "change_volume": { item->
-             def h = [:];
-                h.fields = [
-                    [name:'volume', caption:'Enter Volume', datatype:'integer'],
-                    [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
-                ];
-                h.data = [ volume: item.volume, amount: item.amount ];
-                h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
-                h.reftype = "waterworks_billing";
-                h.refid = item.objid;
-                Modal.show("changeinfo", h, [title:"Enter Volume"]);
-                readingHandler.reload();
+            def h = [:];
+            h.fields = [
+                [name:'volume', caption:'Enter Volume', datatype:'integer'],
+                [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
+            ];
+            h.data = [ volume: item.volume, amount: item.amount ];
+            h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
+            h.reftype = "waterworks_billing";
+            h.refid = item.objid;
+            Modal.show("waterworks_changeinfo", h, [title:"Enter Volume"]);
+            readingHandler.reload();
         }
    ] 
     
@@ -187,8 +186,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
         getContextMenu: { item, name-> 
             def mnuList = [];
             mnuList << [value: 'View Account', id:'view_account'];
+            if(task?.state == 'for-review' ) {
+                mnuList << [value: 'Recompute Bill', id:'rebill']
+            } 
             mnuList << [value: 'View Bill', id:'view_billing'];
-            mnuList << [value: 'Recompute Bill', id:'rebill']
             return  mnuList; 
 	}, 
 	callContextMenu: { item, menuitem-> 
@@ -234,8 +235,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
             def mnuList = [];
             if ( item.account?.meter?.objid != null ) 
                 mnuList << [value: 'View Meter', id:'view_meter'];
-            mnuList << [value: 'Change Volume', id:'change_volume'];    
-            mnuList << [value: 'Recompute', id:'rebill'];
+            mnuList << [value: 'Change Volume', id:'change_volume'];  
+            if( task?.state == 'for-review') {
+                mnuList << [value: 'Recompute', id:'rebill'];
+            }
             mnuList << [value: 'View Account', id:'view_account'];
             mnuList << [value: 'View Consumption History', id:'view_consumption_hist'];
             return  mnuList; 

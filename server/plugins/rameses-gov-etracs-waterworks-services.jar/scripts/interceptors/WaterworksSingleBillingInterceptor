@@ -27,6 +27,7 @@ class WaterworksSingleBillingInterceptor {
 		def obj = evt.args[0];
 		def r = evt.result;
 		def p = obj.params;
+
 		def acct = null;
 		if( p.objid ) {
 			acct = acctEm.find([objid:p.objid]).first(1);

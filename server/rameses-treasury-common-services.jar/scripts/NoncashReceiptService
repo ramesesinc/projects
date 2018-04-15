@@ -1,0 +1,89 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+/*********************************************************************************************************************************
+*  This will create and post bill
+*********************************************************************************************************************************/
+
+class NoncashReceiptService {
+
+	@Service("SingleBillingHandler")
+	def self;
+
+	@Service("SingleBillingService")
+	def billingSvc;
+
+	@Service("PaymentPostingService")
+	def paymentPostingSvc;
+
+	@DataContext("noncashreceipt")
+	def billEm;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def init( def pp ) {
+		if(!pp.collectiontype) throw new Exception("collectiontype is required in parameter of BillReceiptService.init")
+
+		pp.include_credits = true;
+		pp.include_items = true;
+
+		def rct = billingSvc.execute( pp );	
+		rct.collectiontype = pp.collectiontype;
+		rct.txnmode = 'ONLINE';
+
+		pp.params = rct;
+		
+		def rct1 = self.formatReceiptInfo( pp );
+		if( !rct1.paidby  ) throw new Exception("Paid by is required");
+		if( !rct1.paidbyaddress ) throw new Exception("Paid by address is required ");
+		if(! rct1.items ) throw new Exception("items is required ");
+
+		rct.putAll( rct1 );
+
+		rct.org = [objid:env.ORGID, name:env.ORGNAME];
+		rct.user = [objid: env.USERID, name:env.USER];
+		
+
+		def payInfo = self.getPostPaymentInfo( pp );
+		if( payInfo ) {
+			if( !payInfo.parentschemaname )
+				throw new Exception("BillPostingService.init getPostPaymentInfo error parentschemaname is required");	
+			if( !payInfo.items  )
+				throw new Exception("BillPostingService.init getPostPaymentInfo error items is required");
+			payInfo.items.each {
+				if(!it.item?.objid) throw new Exception( "BillPostingService.init getPostPaymentInfo error. item.objid is required in each item" );
+				if( it.refid && !it.reftype ) {
+					throw new Exception( "BillPostingService.init error. getPostPaymentInfo reftype  is required if refid is specified for " + it.item.title );
+				}
+			}
+			payInfo.reftype = 'noncashreceipt';
+			payInfo.amount = rct.amount;
+			rct._postpayment = payInfo;
+		}
+		
+		return rct1;
+	}
+
+	@ProxyMethod
+	public def post( def bill ) { 
+		bill.receiptno = 'NC'+seqSvc.getNextFormattedSeriesA('noncashreceipt', 12);
+		if( !bill.receiptdate ) {
+			bill.receiptdate = dateSvc.getBasicServerDate();
+		}
+		billEm.create( bill );
+	}
+
+}

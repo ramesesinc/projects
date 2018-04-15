@@ -28,7 +28,7 @@
 		<complex name="stuboutnode" ref="vw_waterworks_stubout_node" jointype="many-to-one" required="false">
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
-
+		
 		<field name="meterid" />
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false" 
 			includefields="objid,serialno,brand,capacity,size.*,state,lastreading,lastreadingdate">
@@ -42,15 +42,9 @@
 		<!-- Dates -->
 		<field name="lastdatepaid" required="false" indexed="true" caption="Last Date Paid"/>
 
-		<!--
-		<complex name="billingcycle" ref="waterworks_billing_cycle" jointype="many-to-one" required="false" 
-			includefields="objid,year,month,fromperiod,toperiod,duedate,billdate,readingdate,disconnectiondate,monthname">
-			<key field="billingcycleid" target="objid"/> 
-		</complex>
-		-->
-
 		<field name="barcode" expr="CONCAT('51030:',acctno)"/>
 		<field name="lastbilldate" type="date"/>
+		<field name="units" caption="Units" type="integer" defaultvalue="1"/>
 
 		<complex name="attributes" ref="waterworks_account_attribute" jointype="one-to-many" required="false">
 			<key field="objid" target="parentid"/> 

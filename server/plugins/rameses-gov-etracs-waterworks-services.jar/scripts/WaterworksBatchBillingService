@@ -9,8 +9,8 @@ class WaterworksBatchBillingService {
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
-	@Service("SingleBillingService")
-	def billingSvc;
+	@Service("NoncashReceiptService")
+	def billRctSvc;
 
 	@Service("WaterworksComputationService")
 	def computeSvc;
@@ -18,20 +18,20 @@ class WaterworksBatchBillingService {
 	@ProxyMethod
 	public void processBilling( def o ) {
 		def u = [billed:1, prevreadingdate: null, prevreading: 0];
+		u.arrears = 0;
+		u.surcharge = 0;
+		u.interest = 0;
+		u.otherfees = 0;
+		u.credits = 0;
 
 		def b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
+
 		if( b?.billitems) {
 			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
 			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
 			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
 			def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };
 			def credits = b.billitems.findAll{ it.reftype == 'waterworks_credit' }?.sum{ it.amount };
-
-			u.arrears = 0;
-			u.surcharge = 0;
-			u.interest = 0;
-			u.otherfees = 0;
-			u.credits = 0;
 
 			if( arrears ) u.arrears = arrears;
 			if( surcharge ) u.surcharge = surcharge;
@@ -70,6 +70,7 @@ class WaterworksBatchBillingService {
 
 	@ProxyMethod
 	public void post( def p ) {
+
 		if ( !p.batchid ) throw new Exception('batchid parameter is required in WaterworksBatchBillingService.post'); 
 
 		def info = batchEm.find([ objid: p.batchid ]).select('objid,state').first(); 
@@ -81,7 +82,18 @@ class WaterworksBatchBillingService {
 		batchEm.postMeterReading([ batchid: p.batchid ]);
 
 		//select entries where there are advanced payments and post it to the ledger
-		
+		def clist = wbillEm.find([batchid: p.batchid] ).where( " credits > 0 ").list();
+
+		clist.each {
+			def amtPaid = it.credits;
+
+			def bb = [rulename: 'waterworksbilling', collectiontype: [handler:'waterworks'] ];
+			bb.params = [objid: it.acctid, include_credits: true, amtpaid: amtPaid, include_items: true];
+			def pi = billRctSvc.init( bb );
+			throw new Exception("after init" )
+			billRctSvc.post( pi );
+		}
+		throw new Exception("post finality amt paid is "  );
 
 	}
 

@@ -59,9 +59,9 @@ class WaterworksBatchBillingInterceptor {
 		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
 	public void submitForPosting( def evt ) {
 		def p = evt.args[0];
-		throw new Exception("blocked process for posting ->"+p)
 
 		if(!p.refid) throw new Exception("Error WorkflowTaskService.signal post error. refid is required");
+		
 		batchBillingSvc.post( batchid: p.refid );
 	}
 }

@@ -27,7 +27,7 @@ class BillingCashReceiptService {
 				p.params.put(k,v);
 			}
 		}
-		p.include_items = true;
+		p.params.include_items = true;
 
 		def pi = billingSvc.execute( p );
 		p.params.putAll( pi );

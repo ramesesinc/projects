@@ -32,15 +32,14 @@ public class StuboutNodePage extends javax.swing.JPanel {
 
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
 
-        xDataTable3.setHandler("listHandler");
         xDataTable3.setName("selectedItem"); // NOI18N
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "indexno"}
                 , new Object[]{"caption", "-"}
-                , new Object[]{"width", 50}
-                , new Object[]{"minWidth", 50}
-                , new Object[]{"maxWidth", 80}
+                , new Object[]{"width", 30}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 30}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -127,6 +126,7 @@ public class StuboutNodePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
+        xDataTable3.setHandler("listHandler");
         xDataTable3.setVarStatus("nodeStat");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

@@ -85,6 +85,7 @@
         </Component>
         <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
           <Properties>
+            <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
             <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
             <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 0, 0, 0]"/>

@@ -82,7 +82,7 @@ class WaterworksSingleBillingInterceptor {
 		def zone = data.zone; 
 		def sector = data.sector; 
 		def schedule = data.schedule;
-		if(  !schedule?.objid ) throw new Exception("Please specify a schedule for zone " + zone?.code );
+		if(  !schedule?.objid ) throw new Exception("Please specify a schedule for zone " + zone?.code +" sector "+ sector?.code );
 
 		def factBuilder = evt.result;
 		factBuilder.facts << new Sector( objid: sector?.objid);

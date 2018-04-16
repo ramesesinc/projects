@@ -77,8 +77,7 @@ class PaymentPostingService {
 				def reftype = it.reftype;
 				if(!reftype) reftype = pmt.collectiontype.handler+'_credit';
 				def crEm = emLookup( reftype );
-				def amt = (it.amount * -1);
-				crEm.find( [objid: it.refid ] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: amt] );
+				crEm.find( [objid: it.refid ] ).update([amtpaid: "{amount}"]);
 			}
 			else if(it.reftype) {
 				def gb = emLookup( it.reftype  );
@@ -124,11 +123,11 @@ class PaymentPostingService {
 			if( it.reftype.contains("credit") ) {
 				//if credit amount is positive it means this is original value so make it immediately the amount
 				if(it.amount > 0 ) {
-					gb.find( [objid: it.refid] ).update( [amtpaid: it.amount] );
+					gb.find( [objid: it.refid] ).delete();
 				}
 				else {
 					//we add this because amount is negative value
-					gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: it.amount] );
+					gb.find( [objid: it.refid] ).update([ amtpaid: 0 ]);
 				}
 			}
 			else {

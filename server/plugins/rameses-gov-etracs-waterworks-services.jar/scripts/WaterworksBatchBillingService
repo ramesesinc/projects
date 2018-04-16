@@ -9,11 +9,14 @@ class WaterworksBatchBillingService {
 	@DataContext("waterworks_billing")
 	def wbillEm;
 
-	@Service("NoncashReceiptService")
-	def billRctSvc;
+	@Service("CreditPaymentService")
+	def crPmtSvc;
 
 	@Service("WaterworksComputationService")
 	def computeSvc;
+
+	@Service("DateService")
+	def dateSvc;
 
 	@ProxyMethod
 	public void processBilling( def o ) {
@@ -83,17 +86,17 @@ class WaterworksBatchBillingService {
 
 		//select entries where there are advanced payments and post it to the ledger
 		def clist = wbillEm.find([batchid: p.batchid] ).where( " credits > 0 ").list();
-
+		def txndate = dateSvc.getServerDate();
 		clist.each {
-			def amtPaid = it.credits;
-
 			def bb = [rulename: 'waterworksbilling', collectiontype: [handler:'waterworks'] ];
-			bb.params = [objid: it.acctid, include_credits: true, amtpaid: amtPaid, include_items: true];
-			def pi = billRctSvc.init( bb );
-			throw new Exception("after init" )
-			billRctSvc.post( pi );
+			bb.amtpaid =  it.credits;
+			bb.params = [objid: it.acctid, include_credits: true, include_items: true];
+			bb.controlno = it.controlno;
+			bb.controldate =  txndate;
+			bb.txntype = 'waterworks';
+			bb.txndate = txndate;
+			def pi = crPmtSvc.post( bb );
 		}
-		throw new Exception("post finality amt paid is "  );
 
 	}
 

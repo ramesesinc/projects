@@ -76,6 +76,7 @@ public class LocalAddress extends XComponentPanel {
         txtStreet.setStretchWidth(100);
         xFormPanel1.add(txtStreet);
 
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel3.setShowCaption(false);

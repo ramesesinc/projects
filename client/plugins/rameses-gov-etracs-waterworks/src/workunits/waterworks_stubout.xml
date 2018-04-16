@@ -1,4 +1,4 @@
-<workunit schemaName="waterworks_stubout">
+<workunit schemaName="waterworks_stubout" allowCreate="false">
     <invokers>
         <invoker type="waterworks_stubout:create" formTitle="New Stubout" 
                  action="create" target="popup"/>

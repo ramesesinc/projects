@@ -14,6 +14,7 @@ public class AccountModel extends CrudFormModel {
     void afterCreate() {
         entity.address = [:];
         entity.attributes = [];
+        entity.units = 1;
     }
 
      def edit() {
@@ -25,7 +26,6 @@ public class AccountModel extends CrudFormModel {
         else {
             mp.add( new FormAction(caption:'Change Meter', name:'changeMeter', context: this )  );
         }
-        mp.add( new FormAction(caption:'Change Meter', name:'changeMeter', context: this )  );
         mp.add( new FormAction(caption:'Change Owner', name:'changeOwner', context: this)  );
         mp.add( new FormAction(caption:'Change Address', name:'changeAddress', context: this)  );
         mp.add( new FormAction(caption:'Change Stubout Node', name:'changeNode', context: this)  );
@@ -66,7 +66,8 @@ public class AccountModel extends CrudFormModel {
             [name:'meter', caption:'Meter', datatype:'lookup', expression:'#{data.meter.serialno}', handler: 'waterworks_meter_wo_account:lookup'],
         ];
         def data = [ meter: entity.meter ];
-        showEdit( fields, data, "Change Meter", null );
+        def onUpdate = { o->o.meterid=o.meter.objid; };
+        showEdit( fields, data, "Change Meter", onUpdate );
     }
     
     def changeNode() {

@@ -1,5 +1,5 @@
-<workunit  schemaName="waterworks_zone">
-    <!-- used by rules -->
+<workunit schemaName="waterworks_zone" allowCreate="false">
+
     <invokers>
         <invoker type="waterworks_zone:create" caption="New Zone" action="create" target="popup"/>
         <invoker type="waterworks_zone:open" caption="Zone" action="open" target="popup"/>

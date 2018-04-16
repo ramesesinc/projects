@@ -10,7 +10,7 @@ import treasury.facts.*;
 *  This will create and post bill
 *********************************************************************************************************************************/
 
-class NoncashReceiptService {
+class CreditPaymentService {
 
 	@Service("SingleBillingHandler")
 	def self;
@@ -21,7 +21,7 @@ class NoncashReceiptService {
 	@Service("PaymentPostingService")
 	def paymentPostingSvc;
 
-	@DataContext("noncashreceipt")
+	@DataContext("creditpayment")
 	def billEm;
 
 	@Service("SequenceService")
@@ -34,30 +34,37 @@ class NoncashReceiptService {
 	def env;
 
 	@ProxyMethod
-	public def init( def pp ) {
-		if(!pp.collectiontype) throw new Exception("collectiontype is required in parameter of BillReceiptService.init")
+	public def post( def pp ) {
+		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.init")
+		if(!pp.collectiontype) throw new Exception("collectiontype is required in parameter of CreditPaymentService.init")
+		if(!pp.amtpaid )throw new Exception("amtpaid is required in parameter of CreditPaymentService.init")
 
-		pp.include_credits = true;
+		pp.include_credits = false;
 		pp.include_items = true;
+
+		if( pp.amtpaid < 0 ) pp.amtpaid = pp.amtpaid * -1;
 
 		def rct = billingSvc.execute( pp );	
 		rct.collectiontype = pp.collectiontype;
 		rct.txnmode = 'ONLINE';
+		rct.org = [objid:env.ORGID, name:env.ORGNAME];
+		rct.user = [objid: env.USERID, name:env.USER];
+		rct.state = 'OPEN';
+		rct.controlno = pp.controlno;
+		rct.controldate = pp.controldate;
+		rct.txndate = pp.controldate;
+		rct.txntype = pp.txntype;
 
 		pp.params = rct;
 		
 		def rct1 = self.formatReceiptInfo( pp );
-		if( !rct1.paidby  ) throw new Exception("Paid by is required");
-		if( !rct1.paidbyaddress ) throw new Exception("Paid by address is required ");
-		if(! rct1.items ) throw new Exception("items is required ");
-
 		rct.putAll( rct1 );
-
-		rct.org = [objid:env.ORGID, name:env.ORGNAME];
-		rct.user = [objid: env.USERID, name:env.USER];
 		
+		if( !rct.paidby  ) throw new Exception("Paid by is required");
+		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
+		if(! rct.items ) throw new Exception("items is required ");
 
-		def payInfo = self.getPostPaymentInfo( pp );
+		def payInfo = self.getPostPaymentInfo( rct );
 		if( payInfo ) {
 			if( !payInfo.parentschemaname )
 				throw new Exception("BillPostingService.init getPostPaymentInfo error parentschemaname is required");	
@@ -69,21 +76,15 @@ class NoncashReceiptService {
 					throw new Exception( "BillPostingService.init error. getPostPaymentInfo reftype  is required if refid is specified for " + it.item.title );
 				}
 			}
-			payInfo.reftype = 'noncashreceipt';
+			payInfo.reftype = 'creditpayment';
+			payInfo.refno = rct.controlno;
+			payInfo.refdate = rct.receiptdate;
 			payInfo.amount = rct.amount;
 			rct._postpayment = payInfo;
 		}
 		
-		return rct1;
+		return billEm.create( rct );
 	}
 
-	@ProxyMethod
-	public def post( def bill ) { 
-		bill.receiptno = 'NC'+seqSvc.getNextFormattedSeriesA('noncashreceipt', 12);
-		if( !bill.receiptdate ) {
-			bill.receiptdate = dateSvc.getBasicServerDate();
-		}
-		billEm.create( bill );
-	}
 
 }

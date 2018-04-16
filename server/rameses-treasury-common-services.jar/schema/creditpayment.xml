@@ -1,10 +1,10 @@
 <schema>
-	<element tablename="noncashreceipt" >
+	<element tablename="creditpayment" >
 		<field name="objid" primary="true" prefix="BRCT"/>
-		<field name="state" required="true" />
+		<field name="state" required="true" defaultvalue="OPEN"/>
 		<field name="txndate" required="true"  type="timestamp"/>
-		<field name="receiptno" required="true" searchable="true" indexed="true" caption="Receipt No"/>
-		<field name="receiptdate" required="true" caption="Receipt Date" indexed="true" type="date"/>
+		<field name="controlno" required="true" searchable="true" indexed="true" caption="Receipt No"/>
+		<field name="controldate" required="true" caption="Receipt Date" indexed="true" type="date"/>
 		<field name="txntype" required="true" indexed="true" caption="Txn Mode"/>
 		<field name="payer_objid"  />
 		<field name="payer_name"  caption="Payer" searchable="true"  indexed="true"/>
@@ -16,9 +16,9 @@
 		<field name="org_objid" required="true" />
 		<field name="org_name" required="true" indexed="true" caption="Org Name"/>
 		
-		<field name="collectiontype_objid" required="false" />
+		<field name="collectiontype_objid" />
 
-		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="handler">
+		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" includefields="handler">
 			<key field="collectiontype_objid" target="objid" />
 		</complex> 
 
@@ -27,18 +27,12 @@
 		<field name="remarks" />
 
 		<field name="collectionvoucherid"/>
-		<field name="refid" />
-		<field name="reftype" />
 
-		<complex name="paymentitems" ref="noncashreceiptpayment" jointype="one-to-many">
-			<key field="objid" target="receiptid" />
-		</complex>
-
-		<complex name="items" ref="noncashreceiptitem" jointype="one-to-many">
+		<complex name="items" ref="creditpaymentitem" jointype="one-to-many">
 			<key field="objid" target="receiptid" />
 		</complex>	
 
-		<complex name="sharing" ref="noncashreceipt_share" jointype="one-to-many" required="false">
+		<complex name="sharing" ref="creditpayment_share" jointype="one-to-many" required="false">
 			<key field="objid" target="receiptid" />
 		</complex>	
 

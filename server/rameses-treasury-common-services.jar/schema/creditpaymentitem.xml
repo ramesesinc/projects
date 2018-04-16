@@ -1,6 +1,6 @@
 <schema>
 	
-	<element tablename="noncashreceiptitem">
+	<element tablename="creditpaymentitem">
 		<field name="objid" primary="true" prefix="BRCTI"/>
 		<field name="receiptid" required="true" />
 		<field name="item_objid" required="true" />

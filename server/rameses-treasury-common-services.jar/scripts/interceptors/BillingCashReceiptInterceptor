@@ -37,7 +37,7 @@ public class BillingReceiptInterceptor {
 		}
 	}
 
-	@After(pattern="(Cash|Noncash)ReceiptService.post|BillingCapturePaymentService.post", eval="#{ args[0]._postpayment !=null  }",  index=50)
+	@After(pattern="CashReceiptService.post|BillingCapturePaymentService.post|CreditPaymentService.post", eval="#{ args[0]._postpayment !=null  }",  index=50)
 	public void postPayment(def evt) {
 		def e = evt.args[0];
 		def result = evt.result;
@@ -50,11 +50,13 @@ public class BillingReceiptInterceptor {
 		//format the payment references
 		pmt.reftype = pmt.reftype;
 		if(!pmt.reftype) pmt.reftype = "cashreceipt";
-		pmt.refno = result.receiptno;
-		pmt.refdate = result.receiptdate;
-		pmt.refid = result.objid;
-		pmt.txndate = result.txndate;
+		if(!pmt.refdate ) pmt.refdate = result.receiptdate;
+		if(!pmt.refno ) pmt.refno = result.receiptno;
+		if(!pmt.refid ) pmt.refid = result.objid;
+		if(!pmt.txndate) pmt.txndate = result.txndate;
+		
 		pmt.txnmode = e.txnmode;
+		if(!pmt.txnmode ) pmt.txnmode = 'ONLINE';
 		pmt.collectiontype = result.collectiontype;
 		service.post( pmt );
 	}

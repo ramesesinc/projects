@@ -1,0 +1,5 @@
+"readingModel:item.*" [ root.getRedflag( item ) == true ] {
+    foreground: red;
+    font-weight: bold;
+    opacity: 40;
+}

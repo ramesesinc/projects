@@ -18,7 +18,7 @@ public class CashReceiptComputeShareInterceptor {
 	def sys_org;
 
 
-	//@Before(pattern="CashReceiptService.post",  index=50)
+	@Before(pattern="(Cash|Noncash)ReceiptService.post",  index=50)
 	public void computeShare(def evt) {
 		def p = evt.args[0];
 

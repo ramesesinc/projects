@@ -9,6 +9,7 @@ import com.rameses.osiris3.common.*;
 
 /***
 * Description: Simple Add of Item. Item is unique based on the account. 
+* This is used for overpayment
 * Parameters:
 *    account 
 *    amount
@@ -21,12 +22,8 @@ class AddExcessBillItem extends AddBillItem {
 		if( !params.account || params.account.key == "null" ) 
 			throw new Exception("Account is required");
 
-
-		def billitem = new BillItem(amount: NumberUtil.round( amt));
-
-		//mark as credit
-		billitem.txntype = "credit";
-
+		def billitem = new CreditBillItem(amount: NumberUtil.round( amt), txntype: 'credit');
+		billitem.remarks = "EXCESS PAYMENT";
 		def acct = params.account;
 		if(  acct ) {
 			setAccountFact( billitem, acct.key );

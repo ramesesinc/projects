@@ -1,0 +1,17 @@
+<workunit schemaName="waterworks_batch_billing">
+    <invokers>
+        <invoker folderid="/menucategory/waterworks/billing" caption="New Batch Billing" action="create" index="0"/>
+        
+        <invoker type="waterworks_batch_billing:create" caption="New Billing" action="create" />
+        <invoker type="waterworks_batch_billing:open" caption="Batch Billing" action="open" />
+        -->
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.BatchBillingModel" />
+
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.BatchBillingPage" />
+        <page name="create" template="com.rameses.gov.etracs.waterworks.views.BatchBillingInitialPage" />
+        <page name="processing" template="com.rameses.gov.etracs.waterworks.views.ProgressPage" />
+    </pages>    
+</workunit>

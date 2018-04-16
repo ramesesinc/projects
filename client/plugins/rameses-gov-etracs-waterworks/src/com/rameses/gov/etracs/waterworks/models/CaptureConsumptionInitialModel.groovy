@@ -12,6 +12,9 @@ class CaptureConsumptionInitialModel {
     @Service("WaterworksComputationService")
     def compSvc;
     
+    @Service("WaterworksConsumptionService")
+    def consumptionSvc;
+    
     @Service('PersistenceService')
     def persistenceService; 
     
@@ -51,12 +54,11 @@ class CaptureConsumptionInitialModel {
             startdate = DateUtil.add( startdate, '1M' ); 
         } 
         
-        p = compSvc.createBatch( p );  
+        p = consumptionSvc.createBatch( p );  
         def ids = p.items.collect{"'"+ it.objid +"'"}.join(','); 
         if ( !ids ) ids = "''"; 
         
         query.where = [" objid in ("+ ids +") ", [:]];  
-        query.debug = true;
         mode = 'entry'; 
         return mode; 
     } 
@@ -78,7 +80,7 @@ class CaptureConsumptionInitialModel {
                 if( item.meter?.objid ) return true;
             }
             else if( colName == "volume" ) {
-                if(item.meter?.objid ) return false;
+                if(!item.meter?.objid ) return true;
             }
         },
         beforeColumnUpdate: { item, colName, value ->

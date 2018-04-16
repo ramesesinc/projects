@@ -10,7 +10,7 @@ import com.rameses.rcp.framework.*;
 import java.text.*;
 
 
-public class BatchBillingModel extends CrudFormModel {
+public class BatchBillingModel extends WorkflowTaskModel {
     
    @Service("WaterworksComputationService")
    def compSvc;
@@ -29,7 +29,15 @@ public class BatchBillingModel extends CrudFormModel {
    
    def selectedItem;
    def selectedBillItem;
-    
+   
+   /*
+    *   This method is used in style rule condition and DataTable column expression 
+    */
+   def getRoot() { 
+       return this; 
+   }
+   
+   
    def getQuery() {
         return [batchid: entity.objid];
    } 
@@ -39,11 +47,9 @@ public class BatchBillingModel extends CrudFormModel {
            return "New Batch Billing";
        }
        else {
-           return "Zone " + entity.zone?.code + " " + entity.year + "-" + entity.month.toString().padLeft(2, "0") + " (" + entity.state + ")";
+           return "Zone " + entity.zone?.code + " " + entity.year + "-" + entity.month.toString().padLeft(2, "0") + " (" + task.title + ")";
        }
    } 
-    
-  
     
    @PropertyChangeListener
    def listener = [
@@ -62,20 +68,6 @@ public class BatchBillingModel extends CrudFormModel {
        }
    ];
          
-   /*
-   void viewSchedule() {
-        def m = [scheduleid: o.schedule.objid, year: year, month: month ];
-        try {
-            def sked = scheduleSvc.getSchedule(m);
-            entity.putAll(sked);
-            entity.schedule = o.schedule;
-            binding.refresh();
-        }
-        catch( e) {
-            MsgBox.err( e );
-        }
-   } 
-   */  
     
    void beforeSave(def mode) {
         if(mode == "create") {
@@ -98,198 +90,163 @@ public class BatchBillingModel extends CrudFormModel {
    }
    
    public def open() {
-        def p = super.open();
-        if( entity.state == "PROCESSING") {
+        def v = super.open();
+        if( task.state == 'processing' ) {
             stat = batchSvc.getBilledStatus([ objid: entity.objid ]);
-            return "processing";
         }
-        else {
-            return "default";
-        }
+        return v;
     }
     
-    def batchHandler = [
-        
-        getTotalCount: {
-            stat = batchSvc.getBilledStatus([ objid: entity.objid ]);
-            return stat.totalcount; 
-        }, 
-        
-        fetchList: { p-> 
-            p._schemaname = 'waterworks_billing';
-            p.select = 'objid,acctid,billed';
-            p.findBy = [ batchid: entity.objid ]; 
-            return qryService.getList( p ); 
-        }, 
-        
-        processItem: { o-> 
-            println '>> '+ o; 
-        }
-        
-    ] as BatchProcessingModel; 
-    
-    
-    private def progdata = [:];
     def stat;
-    def progressHandler = [
-        initHandler : { o-> 
-            o.value = 0; 
-            o.maxvalue = stat.totalcount;
-            progdata = o; 
+    def progress = [
+        getTotalCount : {
+            if(stat == null ) throw new Exception("getTotalCount error. stat must not be null");
+            return stat.totalcount;
         },
-        stopHandler : { 
-            progdata.cancelled = true; 
+        fetchList: { o->
+            def p = [ _schemaname: 'waterworks_billing' ];
+            p.putAll( o );
+            p.select = 'objid,acctid,billed,account.meter.*';
+            p.findBy = [ batchid: entity.objid ];
+            return queryService.getList( p );
         },
-        startHandler : {
-            progdata.cancelled = false;
-            startProcess(); 
+        processItem: { o->
+            batchSvc.processBilling( o );
+            binding.refresh('progressLabel');
+        },
+        onFinished: {
+            binding.refresh();
         }
-    ];
+    ] as BatchProcessingModel;
     
-    private void startProcess() { 
-       progdata._start = 0; 
-       progdata._limit = 10;
-       progdata._success = false; 
-       
-       def p = [ _schemaname: 'waterworks_billing' ];
-       p.select = 'objid,acctid,billed';
-       p.findBy = [ batchid: entity.objid ]; 
-       p._limit = progdata._limit+1; 
-       p._start = progdata._start; 
-       
-       def more_result = true; 
-       while( more_result ) {
-           if ( progdata.cancelled == true ) break;
-           
-           def startidx = p._start; 
-           def list = qryService.getList( p ); 
-           more_result = (list.size() > progdata._limit); 
-           if ( more_result ) { 
-               p._start += progdata._limit; 
-           } 
-           for (int i=0; i < list.size(); i++) {
-               if ( progdata.cancelled == true ) {
-                   more_result = false; 
-                   break; 
-               }
-               
-               startidx += 1; 
-               progdata.value = startidx; 
-               progdata.refresh();  
-               
-               def item = list[i];
-               if ( item.billed.toString() == '1' ) continue; 
-               batchSvc.processBilling( item );
-           }
+    public boolean getRedflag( def item ) {
+        return ( item.averageconsumption > 0 && (item.volume < (item.averageconsumption * 0.70) || item.volume > (item.averageconsumption * 1.30))); 
+    }
+    
+    public boolean beforeSignal( def param  ) {
+       if( task.state == 'processing' ) {
+           //check stat balance befopre submitting process
+            stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
+            if( stat.balance > 0 ) throw new Exception("Cannot submit. Please complete process first");
        }
-       if ( progdata.cancelled == true ) return;
-       progdata._success = true;         
-       progdata.finish(); 
+       return true;
+   } 
+    
+   public void afterSignal(def transition, def task) {
+       if( task.state == 'processing') {
+           stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
+       }
+       billHandler.reload();
+       readingHandler.reload();
    }
+    
+   void updateVolumeAmount( def objid, def m ) {
+        def p = [_schemaname: 'waterworks_billing'];
+        p.findBy = [objid: objid ];
+        p.putAll( m );
+        persistenceService.update( p );
+    } 
+    
+   def actions = [
+       "view_meter" : {item->  
+            Modal.show("waterworks_meter:open", [entity: item.account.meter ] );
+            readingHandler.reload();
+        },
+       "view_account": {item-> 
+            Modal.show("waterworks_account:open", [entity: item.account ]); 
+            readingHandler.reload();
+        },
+       "view_billing": {item-> 
+            Modal.show("waterworks_account_billing", ['query.objid': item.acctid ]); 
+        },
+       "view_consumption_hist": {item-> 
+             Modal.show("waterworks_consumption_history", [item: item] );
+        },
+        "rebill": { item->
+            batchSvc.processBilling( item );
+            readingHandler.reload();
+            billHandler.reload();
+        },
+        "change_volume": { item->
+            def h = [:];
+            h.fields = [
+                [name:'volume', caption:'Enter Volume', datatype:'integer'],
+                [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
+            ];
+            h.data = [ volume: item.volume, amount: item.amount ];
+            h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
+            h.reftype = "waterworks_billing";
+            h.refid = item.objid;
+            Modal.show("waterworks_changeinfo", h, [title:"Enter Volume"]);
+            readingHandler.reload();
+        }
+   ] 
+    
+   def billHandler = [
+        getContextMenu: { item, name-> 
+            def mnuList = [];
+            mnuList << [value: 'View Account', id:'view_account'];
+            if(task?.state == 'for-review' ) {
+                mnuList << [value: 'Recompute Bill', id:'rebill']
+            } 
+            mnuList << [value: 'View Bill', id:'view_billing'];
+            return  mnuList; 
+	}, 
+	callContextMenu: { item, menuitem-> 
+            def act = actions[(menuitem.id)];
+            act( item );
+	}    
+    ];
 
-    void changeState( String state ) {
-       def m = [_schemaname:'waterworks_billing_batch'];
-       m.findBy = [objid: entity.objid];
-       m.state = state;
-       persistenceService.update( m );
-       entity.state = state;
-    }
-    
-    def submitForProcessing() {
-       changeState( "PROCESSING" );
-       stat = batchSvc.getBilledStatus([ objid: entity.objid ]);
-       return "processing";
-    } 
-    
-    def submitForReview() {
-       stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
-       if( stat.balance > 0 ) throw new Exception("Cannot submit. Please complete process first");
-       if( !MsgBox.confirm("You are about to submit this for review. Proceed?")) return
-       changeState( 'FOR_REVIEW' );
-       return "default";
-    } 
-    
-    def revertForProcessing() {
-       def m = [_schemaname:'waterworks_billing'];
-       m.findBy = [batchid: entity.objid];
-       m.billed = 0;
-       persistenceService.update( m );
-       return submitForProcessing();
-    }
-    
-    void submitForReading() {
-       if( !MsgBox.confirm("You are about to submit this for reading. Proceed?")) return
-       changeState( 'FOR_READING' );
-    } 
-    
-    void submitForApproval() {
-        if( !MsgBox.confirm("You are about to submit this for approval. Proceed?")) return
-       changeState( 'FOR_APPROVAL' );
-    } 
-    
-    void approve() {
-        if( !MsgBox.confirm("You are about to approve this batch. Proceed?")) return
-       changeState( 'APPROVED' );
-    } 
-    
-    void post() {
-        if( !MsgBox.confirm("You are about to post this batch. Proceed?")) return
-        batchSvc.post([ objid: entity.objid ]);
-        entity.state = 'POSTED';
-    } 
-    
-    def updateHandler = [
+    def readingHandler = [
         isColumnEditable: {item, colName -> 
-            if( colName == "reading" ) {
-                return ( item.account.meter.objid != null && entity.state == "FOR_READING");
-            }
-            else if( colName =="volume") {
-                return (item.account?.meter?.objid == null && entity.state == "FOR_READING");
-            }
-            else {
-                return false;
-            }
+            if( colName != "reading" ) return false;
+            if( task.state != "for-reading") return false;
+            if( item.account.meter?.objid == null ) return false;
+            return true;
         },
         beforeColumnUpdate: { item, colName, value ->
-            if(!colName.matches("reading|volume")) return false;
+            if( colName != "reading") return false;
             try {
-                def r = [:];
-                if(colName == "reading") {
-                    if( value >= item.account.meter.capacity ) {
-                        throw new Exception("Reading must be less than meter capacity");
-                    }
-                    if( value < item.prevreading ) {
-                        value = value + item.account.meter.capacity;
-                    }
-                    def p = [:];
-                    p.volume = value - item.prevreading;
-                    p.objid = item.acctid; 
-                    r.volume = p.volume;
-                    def res = compSvc.compute(p);
-                    r.amount = res.amount
+                if( value >= item.account.meter.capacity ) {
+                    throw new Exception("Reading must be less than meter capacity");
                 }
-                else if(colName == "volume") {
-                    def p = [:];
-                    p.objid = item.acctid; 
-                    r.volume = value;
-                    def res = compSvc.compute(p);
-                    r.amount = res.amount;
+                if( value < item.prevreading ) {
+                    value = value + item.account.meter.capacity;
                 }
-
-                def m = [_schemaname: 'waterworks_billing'];
-                m[(colName)] = value;
-                m.putAll( r );
-                m.findBy = [objid: item.objid ];
-                persistenceService.update( m );
-                item.volume = m.volume;
-                item.amount = m.amount;
+                def p = [:];
+                p.volume = value - item.prevreading;
+                p.objid = item.acctid; 
+                
+                def res = compSvc.compute(p);
+                res.reading = value;
+                if(!res.volume) res.volume = p.volume;
+                if(res.volume == 0 ) res.amount = 0;
+                updateVolumeAmount( item.objid, res );
+                item.putAll( res );
                 return true;
             }
             catch(e) {
                 MsgBox.err(e);
                 return false;
             }
-        }
+        },
+        getContextMenu: { item, name-> 
+            def mnuList = [];
+            if ( item.account?.meter?.objid != null ) 
+                mnuList << [value: 'View Meter', id:'view_meter'];
+            mnuList << [value: 'Change Volume', id:'change_volume'];  
+            if( task?.state == 'for-review') {
+                mnuList << [value: 'Recompute', id:'rebill'];
+            }
+            mnuList << [value: 'View Account', id:'view_account'];
+            mnuList << [value: 'View Consumption History', id:'view_consumption_hist'];
+            return  mnuList; 
+	}, 
+	callContextMenu: { item, menuitem-> 
+            def act = actions[(menuitem.id)];
+            act( item );
+	}
     ];
     
    def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
@@ -309,6 +266,24 @@ public class BatchBillingModel extends CrudFormModel {
             reportSvc.print( "waterworks_billing" , [ o: p ] );
        }
    } 
+    
+   //BACKUP CODES ----->
+   /*
+   void viewSchedule() {
+        def m = [scheduleid: o.schedule.objid, year: year, month: month ];
+        try {
+            def sked = scheduleSvc.getSchedule(m);
+            entity.putAll(sked);
+            entity.schedule = o.schedule;
+            binding.refresh();
+        }
+        catch( e) {
+            MsgBox.err( e );
+        }
+   } 
+   */    
+  
+    
     
     
 }

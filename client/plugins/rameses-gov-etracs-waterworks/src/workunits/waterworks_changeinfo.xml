@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/seti2/templates/ChangeInfo.xml" schemaName="waterworks_changeinfo">
+    <invokers>
+        <invoker type="waterworks_changeinfo" caption="Waterworks Change Info" action="init"/>
+    </invokers>
+</workunit>

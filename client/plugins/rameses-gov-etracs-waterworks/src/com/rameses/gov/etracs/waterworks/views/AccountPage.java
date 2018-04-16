@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.etracs.common.LocalAddressPanel;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -19,6 +20,7 @@ public class AccountPage extends javax.swing.JPanel {
      */
     public AccountPage() {
         initComponents();
+        LocalAddressPanel p;
     }
 
     /**
@@ -55,6 +57,7 @@ public class AccountPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xPanel3 = new com.rameses.rcp.control.XPanel();
         localAddressPanel1 = new com.rameses.etracs.common.LocalAddressPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -236,13 +239,17 @@ public class AccountPage extends javax.swing.JPanel {
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 
-        xComboBox1.setName("entity.classification"); // NOI18N
         xComboBox1.setCaption("Classification");
         xComboBox1.setExpression("#{item.objid}");
         xComboBox1.setItems("listTypes.classification");
+        xComboBox1.setName("entity.classification"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
+
+        xIntegerField1.setCaption("No.of Units");
+        xIntegerField1.setName("entity.units"); // NOI18N
+        xFormPanel1.add(xIntegerField1);
 
         xPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Address", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
         xPanel3.setOpaque(false);
@@ -331,7 +338,7 @@ public class AccountPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -382,7 +389,7 @@ public class AccountPage extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+            .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 617, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -401,6 +408,7 @@ public class AccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel18;

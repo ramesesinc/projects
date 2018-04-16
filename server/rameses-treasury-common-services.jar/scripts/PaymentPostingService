@@ -41,10 +41,6 @@ class PaymentPostingService {
 	@ProxyMethod 
 	public void post( def pmt ) {
 
-		if( pmt.reftype == "creditpayment") {
-			pmt.refno = "CP"+ seqSvc.getNextFormattedSeriesA( "creditpayment", 8 );
-		}
-
 		//save first the xxx_payment. 
 		def emMap = [:];
 		def emLookup = { name ->
@@ -53,46 +49,54 @@ class PaymentPostingService {
 			}
 			return emMap.get(name);
 		}
+		
+
+		//save or update the reference first
+		pmt.items.each {
+			if( it.txntype== "credit" ) {
+				//if there is overpayment or credit items, create a new xxx_credit item
+				def p = [:];
+				p.parentid = pmt.parentid;
+				p.rootid = pmt.rootid;
+				p.refno = pmt.refno;
+				p.reftype = pmt.reftype;
+				p.refid = pmt.refid;
+				p.refdate = pmt.refdate;
+				p.item = it.item;
+				p.amount = it.amount;
+				p.amtpaid = 0;
+				p.remarks = it.remarks;
+				def reftype = pmt.collectiontype.handler+'_credit';
+				def crEm = emLookup( reftype );
+				def vv = crEm.create( p );
+				it.refid = vv.objid;
+				it.reftype = reftype;
+			}
+			else if( it.txntype == "creditpayment") {
+				//this is to close out deduction of previous payment
+				def reftype = it.reftype;
+				if(!reftype) reftype = pmt.collectiontype.handler+'_credit';
+				def crEm = emLookup( reftype );
+				crEm.find( [objid: it.refid ] ).update([amtpaid: "{amount}"]);
+			}
+			else if(it.reftype) {
+				def gb = emLookup( it.reftype  );
+				//if there is a _new marker, then create this before saving
+				if( !it.refid || it.refid.matches("new|create") ) {
+					it.remove("refid");
+					gb.create( it );	
+				}
+				else {
+					//find first if it exists then save 
+					gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: it.amount] );
+				}			
+			}
+		}
+
 		pmt.voided = 0;
 		def pmtEm = emLookup( pmt._schemaname );
 		pmt = pmtEm.create( pmt );
 
-		
-		//save or update the reference. it will only update those with ref types
-		pmt.items.findAll{ it.reftype != null }.each {
-			def gb = emLookup( it.reftype );
-			//if there is a _new marker, then create this before saving
-			if( !it.refid || it.refid.matches("new|create") ) {
-				it.remove("refid");
-				gb.create( it );	
-			}
-			else {
-				//find first if it exists then save 
-				gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid + :amt}"], [amt: it.amount] );
-			}			
-		}
-
-		//update those with overpayment. credits
-		pmt.items.findAll{ it.txntype == 'credit'}.each {
-			def p = [:];
-			p.parentid = pmt.parentid;
-			p.rootid = pmt.rootid;
-			p.refno = pmt.refno;
-			p.reftype = pmt.reftype;
-			p.refid = pmt.refid;
-			p.refdate = pmt.refdate;
-			p.amount = it.amount;
-			p.amtpaid = 0;
-			p.remarks = it.remarks;
-			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
-			crEm.create( p );
-		}
-
-		//if reftype is credit payment. we will update the xx_credit ledger
-		if( pmt.reftype == 'creditpayment' ) {
-			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
-			crEm.find( [objid: pmt.refid ]).update( [amtpaid: '{amtpaid + :amt}' ], [amt: pmt.amount ] );
-		}
 		invokeWorkflow( pmt, "pay" );
 	}
   
@@ -111,21 +115,28 @@ class PaymentPostingService {
 			return emMap.get(name);
 		}
 
+		def sb = [];
+
 		//after create post the posting references
 		pmt.items.findAll{ it.reftype !=null }.each {
 			def gb = emLookup( it.reftype );
-			//find first if it exists then save 
-			gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+			if( it.reftype.contains("credit") ) {
+				//if credit amount is positive it means this is original value so make it immediately the amount
+				if(it.amount > 0 ) {
+					gb.find( [objid: it.refid] ).delete();
+				}
+				else {
+					//we add this because amount is negative value
+					gb.find( [objid: it.refid] ).update([ amtpaid: 0 ]);
+				}
+			}
+			else {
+				gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+			}
 		}
 
 		def pmtEm = emLookup( pmt._schemaname );
 		pmtEm.find( [ objid: pmt.objid ] ).update( [voided : 1 ] );
-
-		//reverse advance payments if any. We must delete it.
-		pmt.items.findAll{ it.txntype == 'credit' }.each {
-			def crEm = emLookup( pmt.collectiontype.handler+'_credit' );
-			crEm.find( [refid: pmt.refid ] ).delete();
-		}
 
 		invokeWorkflow( pmt, "voidpayment");
 		

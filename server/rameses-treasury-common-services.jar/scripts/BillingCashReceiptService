@@ -14,6 +14,8 @@ class BillingCashReceiptService {
 	@Service("SingleBillingService")
 	def billingSvc;
 
+	
+
 	@ProxyMethod
 	public def getInfo( def o ) {
 		if(!o.collectiontype?.handler) throw new Exception("collectiontype handler is required in CashReceiptBillingService.getInfo");
@@ -25,6 +27,7 @@ class BillingCashReceiptService {
 				p.params.put(k,v);
 			}
 		}
+		p.params.include_items = true;
 
 		def pi = billingSvc.execute( p );
 		p.params.putAll( pi );
@@ -35,55 +38,32 @@ class BillingCashReceiptService {
 		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
 		rct.billitems = pi.billitems;
 		rct.collectiontype = o.collectiontype;
-		return getItems( rct );
-	}
+		rct.items = pi.items;
+		rct.amount = pi.amount;
 
-	@ProxyMethod
-	public def getItems( def p ) {
-		if( !p.billitems )
-			throw new Exception("CashReceiptBillingService error. billitems is required "  );
-
-		def billitems = p.billitems;
-		p.billitems = billitems.findAll{ it.txntype==null || !it.txntype.toLowerCase().matches('discount|surcharge|interest')  };
-
-		//if cash receipt items not specified
-		if( !p.items ) {
-			//summarize the billitems into cashreceipt items. For specialized grouping, the group complex field must be specified
-			//in each billitem, otherwise this will be grouped by account only. The group must contain the label and remarks if any.
-			def cashRctItems = [];
-			def grpItems = billitems.groupBy{ [it.item, it.group] };
-			grpItems.each { k,v->
-				cashRctItems << [item: k[0], remarks: k[1]?.remarks, amount: NumberUtil.round(v.sum{ it.amount }) ];
-			} 
-			p.items = cashRctItems;
-			p.items.each {
-				if(!it.item?.objid) throw new Exception("item.objid is required");
-				if(!it.item?.title) throw new Exception("item.title is required");
-				if(!it.amount) throw new Exception("amount is required in line item");
-			}
-		}
-		p.amount = p.items.sum{ it.amount };
-
-		//get also the payment info. This will instruct the PostPaymentService regarding how to update the ledger
-		def payInfo = self.getPostPaymentInfo(  p );
-		if( payInfo ) {
-			
-			if( !payInfo.parentschemaname )
-				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error parentschemaname is required");	
-			if( !payInfo.items  )
-				throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error items is required");
-			payInfo.items.each {
-				if(!it.item?.objid) throw new Exception( "CashReceiptBillingService.getItems getPostPaymentInfo error. item.objid is required in each item" );
-				if( !it.txntype?.matches('credit|misc')) {
-					if(!it.reftype ) throw new Exception( "CashReceiptBillingService.getItems error. getPostPaymentInfo reftype  is required in " + it.item.title );
+		/************************************************************************************************************************
+		* get also the payment info. This will instruct the PostPaymentService regarding how to update the ledger
+		*************************************************************************************************************************/
+		if(rct.items) {
+			def payInfo = self.getPostPaymentInfo(  rct );
+			if( payInfo ) {
+				if( !payInfo.parentschemaname )
+					throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error parentschemaname is required");	
+				if( !payInfo.items  )
+					throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error items is required");
+				payInfo.items.each {
+					if(!it.item?.objid) throw new Exception( "BillingCashReceiptService.getItems getPostPaymentInfo error. item.objid is required in each item" );
+					if( it.refid && !it.reftype ) {
+						throw new Exception( "BillingCashReceiptService.getItems error. getPostPaymentInfo reftype  is required if refid is specified for " + it.item.title );
+					}
 				}
+				payInfo.amount = rct.amount;
+				rct._postpayment = payInfo;
 			}
-			payInfo.amount = p.amount;
-			p._postpayment = payInfo;
 		}
 
-		return p;
+		return rct;
 	}
-	
+
 
 }

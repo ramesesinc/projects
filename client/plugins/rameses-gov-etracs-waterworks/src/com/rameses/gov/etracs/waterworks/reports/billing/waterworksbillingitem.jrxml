@@ -55,7 +55,9 @@
 						y="0"
 						width="160"
 						height="16"
-						key="textField"/>
+						key="textField">
+							<printWhenExpression><![CDATA[$F{year} != null]]></printWhenExpression>
+						</reportElement>
 					<box></box>
 					<textElement>
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
@@ -229,7 +231,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{item.title} ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{item.title}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="###0.00;(###0.00)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

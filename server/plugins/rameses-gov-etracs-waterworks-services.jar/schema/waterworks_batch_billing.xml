@@ -1,5 +1,5 @@
 <schema adapter="waterworks">
-	<element tablename="waterworks_billing_batch">
+	<element tablename="waterworks_batch_billing">
 		<field name="objid" primary="true" prefix="WBILL" />
 		
 		<field name="state" required="true"/>
@@ -32,6 +32,11 @@
 
 		<field name="schedule_objid" required="true"/>
 
+		<field name="taskid" />
+
+		<complex name="task" ref="waterworks_batch_billing_task" jointype="many-to-one" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>
 	</element>
 </schema>
 

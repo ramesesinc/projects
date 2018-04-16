@@ -5,6 +5,8 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import java.text.*;
+import com.rameses.util.*;
 
 public class SectorModel extends CrudFormModel {
     
@@ -20,12 +22,9 @@ public class SectorModel extends CrudFormModel {
     }
 
     def handler = [
-        createItem: { 
-            if ( mode == 'create' ) {
-                throw new Exception('Action not allowed. Please save the sector record first.'); 
-            }
-            
-            return [sectorid: entity.objid, sector: entity];
+        createItem: {
+            return [sectorid: entity.objid];
         }
-    ];    
+    ]
+    
 }

@@ -4,5 +4,9 @@
                 reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
                 visibleWhen="#{mode=='read'}"
                 action="preview"/>
+        
+        <invoker type="waterworks_account_billing" caption="Billing" 
+                reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
+                action="preview"/>
     </invokers>
 </workunit>

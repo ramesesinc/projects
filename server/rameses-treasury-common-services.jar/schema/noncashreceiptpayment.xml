@@ -1,0 +1,23 @@
+<schema>
+	<element tablename="noncashreceiptpayment">
+		<field name="objid" primary="true" prefix="BCRPMT"/>
+		<field name="receiptid" required="true" />
+		<field name="refid" />
+		<field name="refno" required="true"/>
+		<field name="refdate" required="true"/>
+		<field name="reftype" />
+		<field name="amount" />
+		<field name="particulars" />
+		<field name="fund_objid" required="true"/>
+
+		<complex name="receipt" ref="noncashreceipt" jointype="many-to-one"  
+			includefields="controlno,controldate,collectionvoucherid" required="false">
+			<key field="receiptid" target="objid" />
+		</complex> 
+
+		<complex name="fund" ref="fund" jointype="many-to-one"  includefields="objid,code,title">
+			<key field="fund_objid" target="objid" />
+		</complex>  
+
+	</element>
+</schema>

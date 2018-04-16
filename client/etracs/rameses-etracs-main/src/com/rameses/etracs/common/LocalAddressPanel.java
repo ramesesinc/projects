@@ -32,7 +32,6 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         txtSubdivision.setName(name+".subdivision");
         lupBarangay.setName(name+".barangay");
         lupBarangay.setExpression("#{"+name+".barangay.name}");
-        txtPin.setName( name + ".pin");
         register( name );
     }
 
@@ -139,13 +138,12 @@ public class LocalAddressPanel extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         txtSubdivision = new com.rameses.rcp.control.XTextField();
         lupBarangay = new com.rameses.rcp.control.XLookupField();
-        txtPin = new com.rameses.rcp.control.XTextField();
 
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setName("entity"); // NOI18N
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
@@ -198,18 +196,12 @@ public class LocalAddressPanel extends javax.swing.JPanel {
 
         xFormPanel1.add(xFormPanel3);
 
-        txtPin.setCaption("PIN");
-        txtPin.setName("entity.pin"); // NOI18N
-        txtPin.setStretchWidth(48);
-        xFormPanel1.add(txtPin);
-
         add(xFormPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XLookupField lupBarangay;
     private com.rameses.rcp.control.XTextField txtBldgname;
     private com.rameses.rcp.control.XTextField txtBldgno;
-    private com.rameses.rcp.control.XTextField txtPin;
     private com.rameses.rcp.control.XTextField txtStreet;
     private com.rameses.rcp.control.XTextField txtSubdivision;
     private com.rameses.rcp.control.XTextField txtUnitno;

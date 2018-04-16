@@ -1,0 +1,13 @@
+<workunit schemaName="waterworks_account" allowCreate="false" allowEdit="true">
+
+    <invokers>
+        <invoker type="waterworks_consumption_history" caption="Consumption History" action="buildList"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.ConsumptionHistoryModel" />    
+
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.ConsumptionHistoryPage"/>
+    </pages>    
+    
+</workunit>

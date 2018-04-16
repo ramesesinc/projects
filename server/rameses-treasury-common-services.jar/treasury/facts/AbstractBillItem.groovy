@@ -63,7 +63,7 @@ public abstract class AbstractBillItem {
 			return txntype.hashCode();
 		}
 		else {
-			return this.hashCode();
+			return this.toString().hashCode();
 		}
 	}
 

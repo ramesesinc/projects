@@ -16,6 +16,9 @@ class WaterworksSingleBillingInterceptor {
 	@DataContext("waterworks_consumption")
 	def wcEm;
 
+	@DataContext("waterworks_credit")
+	def wcCreditEm;
+
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
@@ -24,6 +27,7 @@ class WaterworksSingleBillingInterceptor {
 		def obj = evt.args[0];
 		def r = evt.result;
 		def p = obj.params;
+
 		def acct = null;
 		if( p.objid ) {
 			acct = acctEm.find([objid:p.objid]).first(1);
@@ -40,6 +44,15 @@ class WaterworksSingleBillingInterceptor {
 		r.zone   = acct.stuboutnode?.zone; 
 	}
  
+ 	@After(pattern="SingleBillingHandler.getCreditPaymentItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+	public void getWaterworksCreditItems(def evt) {
+		def p = evt.args[0];
+		def list = evt.result;
+		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
+		def conList = wcCreditEm.find( [parentid: p.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
+		list.addAll( conList );
+	}
+
     @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getWaterworksBillItems(def evt) {
 		def p = evt.args[0];
@@ -57,9 +70,10 @@ class WaterworksSingleBillingInterceptor {
 		list.addAll( conList );
 
 		//select for other fees
-		def select2 = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
-		def conList2 = wotherEm.find([acctid: p.acctid]).select(select2).where(arr.join(" AND "), wp).orderBy("year,month").list();
-		list.addAll( conList2 );
+		select = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
+		conList = wotherEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		list.addAll( conList );
+
 	}
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
@@ -68,7 +82,7 @@ class WaterworksSingleBillingInterceptor {
 		def zone = data.zone; 
 		def sector = data.sector; 
 		def schedule = data.schedule;
-		if(  !schedule?.objid ) throw new Exception("Please specify a schedule for zone " + zone?.code );
+		if(  !schedule?.objid ) throw new Exception("Please specify a schedule for zone " + zone?.code +" sector "+ sector?.code );
 
 		def factBuilder = evt.result;
 		factBuilder.facts << new Sector( objid: sector?.objid);
@@ -81,6 +95,9 @@ class WaterworksSingleBillingInterceptor {
 		factBuilder.billItemProvider.createBillItemFact = { o-> 
 			if( o.reftype == 'waterworks_consumption' ) {
 				return  new WaterBillItem(o);
+			}
+			else if( o.reftype == 'waterworks_credit' ) {
+				return new CreditBillItem( o );
 			}
 			else {
 				return new MonthBillItem(o);
@@ -97,19 +114,6 @@ class WaterworksSingleBillingInterceptor {
 	@After(pattern="SingleBillingService.execute",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void afterBilling(def evt) {
 		def r = evt.result;
-		/*
-		if( m.consumption ) {
-			m.chartdata = m.consumption.collect{ [month:it.month, consumption:it.consumption] }
-			m.averageconsumption = (int) (m.consumption.sum{it.consumption} / m.consumption.size());
-		}
-		else {
-			m.chartdata = [];
-			m.averageconsumption = 0;
-		}
-		r.billitems.each {
-			it.parent = app;
-		}		
-		*/
 	}
 
 	/*******************************************

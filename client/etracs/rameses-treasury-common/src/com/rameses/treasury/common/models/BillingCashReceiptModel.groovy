@@ -27,10 +27,9 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     def txnid;
     
     def billAmount = 0;
-    def miscAmount = 0;
     
-    def miscList = [];
     def billItemList = [];
+    
     
     boolean amountSpecified = false;
     
@@ -75,46 +74,54 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     }
 
     void afterLoadInfo() {;}
+    boolean onNoItemsFound() { return false;}
+    
+    void init() {
+        def opener = null;
+        try {
+            def h = { o->
+                txnid = o; 
+            }
+            opener = Inv.lookupOpener(getContextName() + ":cashreceipt_lookup", [onselect: h ]);
+            Modal.show( opener );
+        }catch(ign){;}
+        
+        if( !txnid ) {
+            txnid = MsgBox.prompt("Enter Transaction No");
+        }
+        if(!txnid) throw new BreakException();
+        loadInfo([id:txnid, action:'open']);
+    }
     
     void loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
         p.rulename = getRulename();
         def info = cashReceiptSvc.getInfo( p );
-        billItemList = info.items;
         entity.putAll(info);
-        reloadItems(); 
-        //afterLoadInfo();
-        //loadPayOptions();
+        if( !info.billitems ) {
+            def b = onNoItemsFound();
+            if(!b) throw new Exception("No bill items found");
+        }
+        else {
+            billItemList = info.items;
+            reloadItems(); 
+            //afterLoadInfo();
+            //loadPayOptions();
+        }
     }
     
     void reloadItems() {
         entity.items = [];
         entity.items.addAll( billItemList );
-        if( miscList ) {
-            entity.items.addAll( miscList );
-        }
         itemListModel.reload();
-        miscListModel.reload();
         if(binding) binding.refresh();
         updateBalances();
     }
     
     public void updateBalances() {
         billAmount = NumberUtil.round( billItemList.sum{ it.amount } );
-        miscAmount = 0;
-        if( miscList ) {
-            miscAmount = NumberUtil.round( miscList.sum{ it.amount } );
-        }
-        //entity.amount = NumberUtil.round( entity.items.sum{ it.amount } );  
         super.updateBalances();
-    }
-    
-    void init() {
-        def o = MsgBox.prompt("Enter Transaction No");
-        if(!o) throw new BreakException();
-        txnid = o;
-        loadInfo([id:txnid, action:'open']);
     }
     
     void loadBarcode() {
@@ -125,7 +132,6 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
     def getTotalAmount() {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
-    
     
     def showPayOptions() {
         if( amountSpecified ) 
@@ -167,44 +173,5 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         }
     ] as BasicListModel;
           
-    
-    def selectedMiscItem;
-    def getLookupItems() {
-        def n = contextName + "_miscitem:lookup";
-        try {
-            return InvokerUtil.lookupOpener( n, [ 
-                onselect:{ o-> 
-                    selectedMiscItem.item = o; 
-                    selectedMiscItem.amount = o.defaultvalue; 
-                } 
-            ]); 
-        }
-        catch(e) {
-            MsgBox.err( "No lookup handler found for " + n );
-        }
-    } 
-    
-    def miscListModel = [
-        fetchList: { o-> 
-            return miscList;
-        }, 
-        isColumnEditable: { o,colName ->
-            return (amountSpecified == false);
-        },
-        onAddItem: {o-> 
-            o.objid = 'RCTI' + new java.rmi.server.UID();
-            miscList << o; 
-            reloadItems();
-        },
-        onColumnUpdate: {o,name-> 
-            updateBalances();
-        },
-        onRemoveItem: { o->
-            if ( !MsgBox.confirm("You are about to remove this entry. Continue?")) return false;
-            miscList.remove( o );
-            reloadItems();
-            return true;
-        }        
-    ] as EditorListModel;
     
 }

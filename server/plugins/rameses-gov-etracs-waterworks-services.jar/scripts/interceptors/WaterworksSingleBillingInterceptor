@@ -47,6 +47,7 @@ class WaterworksSingleBillingInterceptor {
  	@After(pattern="SingleBillingHandler.getCreditPaymentItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getWaterworksCreditItems(def evt) {
 		def p = evt.args[0];
+		println '> '+ p;
 		def list = evt.result;
 		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
 		def conList = wcCreditEm.find( [parentid: p.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();

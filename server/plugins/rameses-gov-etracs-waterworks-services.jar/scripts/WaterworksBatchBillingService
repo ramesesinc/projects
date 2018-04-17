@@ -18,6 +18,9 @@ class WaterworksBatchBillingService {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("SingleBillingService")
+	def billingSvc;
+
 	@ProxyMethod
 	public void processBilling( def o ) {
 		def u = [billed:1, prevreadingdate: null, prevreading: 0];
@@ -60,6 +63,14 @@ class WaterworksBatchBillingService {
 		if(!avg ) avg = 0;
 		u.averageconsumption = Math.ceil( avg ); 
 
+		def rec = wbillEm.find([ objid: o.objid ]).first(); 
+		def icount = wbillEm.find([ batchid: rec.batchid ])
+							.select('icount:{COUNT(*)}')
+							.where(' controlno IS NOT NULL ')
+							.first()?.icount; 
+		icount = (icount == null ? 1 : icount+1); 
+
+		u.controlno = rec.batchid +'-'+ icount.toString().padLeft(4, '0');
 		wbillEm.find( [objid: o.objid ] ).update( u );
 	}
 
@@ -90,12 +101,16 @@ class WaterworksBatchBillingService {
 		clist.each {
 			def bb = [rulename: 'waterworksbilling', collectiontype: [handler:'waterworks'] ];
 			bb.amtpaid =  it.credits;
-			bb.params = [objid: it.acctid, include_credits: true, include_items: true];
-			bb.controlno = it.controlno;
-			bb.controldate =  txndate;
-			bb.txntype = 'waterworks';
-			bb.txndate = txndate;
-			def pi = crPmtSvc.post( bb );
+			bb.params = [objid: it.acctid, amtpaid: bb.amtpaid, include_credits: true, include_items: true];
+			bb.acctid = bb.params.objid; 
+
+			def rct = crPmtSvc.init( bb ); 
+			rct.controlno = it.controlno;
+			rct.controldate =  txndate;
+			rct.txntype = 'waterworks';
+			rct._postpayment.refno = rct.controlno; 
+			rct._postpayment.refdate = rct.controldate; 
+			crPmtSvc.post( rct );
 		}
 
 	}

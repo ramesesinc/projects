@@ -50,7 +50,6 @@ class PaymentPostingService {
 			return emMap.get(name);
 		}
 		
-
 		//save or update the reference first
 		pmt.items.each {
 			if( it.txntype== "credit" ) {

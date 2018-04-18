@@ -46,16 +46,6 @@ class WaterworksBatchBillingInterceptor {
 	}
 
 	@Before(pattern="WorkflowTaskService.signal", 
-		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].to == 'for-approval'  }")
-	public void beforeApproval( def evt ) {
-		def p = evt.args[0];
-		def cnt = wbillEm.find([batchid:p.refid]).where("amount <= 0").select("c:{COUNT(*)}").val();
-		if( cnt > 0 )	
-			throw new Exception("All billitems must have amount");
-		
-	}
-
-	@Before(pattern="WorkflowTaskService.signal", 
 		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
 	public void submitForPosting( def evt ) {
 		def p = evt.args[0];

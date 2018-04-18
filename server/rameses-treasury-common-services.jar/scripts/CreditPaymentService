@@ -34,7 +34,7 @@ class CreditPaymentService {
 	def env;
 
 	@ProxyMethod
-	public def post( def pp ) {
+	public def init( def pp ) {
 		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.init")
 		if(!pp.collectiontype) throw new Exception("collectiontype is required in parameter of CreditPaymentService.init")
 		if(!pp.amtpaid )throw new Exception("amtpaid is required in parameter of CreditPaymentService.init")
@@ -42,7 +42,13 @@ class CreditPaymentService {
 		pp.include_credits = false;
 		pp.include_items = true;
 
-		if( pp.amtpaid < 0 ) pp.amtpaid = pp.amtpaid * -1;
+		def cpitems = self.getCreditPaymentItems( pp ); 
+		if ( !cpitems ) throw new Exception('There are no credit items found'); 
+
+		def cpamount = cpitems.sum{ it.amount } 
+		if( cpamount < 0 ) cpamount = cpamount * -1;
+
+		pp.amtpaid = cpamount; 
 
 		def rct = billingSvc.execute( pp );	
 		rct.collectiontype = pp.collectiontype;
@@ -50,9 +56,6 @@ class CreditPaymentService {
 		rct.org = [objid:env.ORGID, name:env.ORGNAME];
 		rct.user = [objid: env.USERID, name:env.USER];
 		rct.state = 'OPEN';
-		rct.controlno = pp.controlno;
-		rct.controldate = pp.controldate;
-		rct.txndate = pp.controldate;
 		rct.txntype = pp.txntype;
 
 		pp.params = rct;
@@ -82,9 +85,21 @@ class CreditPaymentService {
 			payInfo.amount = rct.amount;
 			rct._postpayment = payInfo;
 		}
-		
+		rct.items.addAll( cpitems ); 
+		return rct; 	
+	} 
+
+	@ProxyMethod
+	public def post( def rct ) { 
+		if ( !rct.controlno ) {
+			def year = dateSvc.getServerYear();
+			rct.controlno = 'CRP'+ year.toString() + seqSvc.getNextFormattedSeries('CreditPayment'+ year.toString());
+		}
+
+		if ( !rct.controldate ) {
+			rct.controldate = dateSvc.getBasicServerDate();  
+		}
+		rct.txndate = dateSvc.getServerDate();
 		return billEm.create( rct );
 	}
-
-
 }

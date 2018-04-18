@@ -30,9 +30,11 @@ class BillingCashReceiptService {
 		p.params.include_items = true;
 
 		def pi = billingSvc.execute( p );
+
 		p.params.putAll( pi );
 
 		def rct = self.formatReceiptInfo( p );
+
 		if( rct.payer && !rct.payer.objid ) throw new Exception("Payer must have an objid ");
 		if( !rct.paidby  ) throw new Exception("Paid by is required");
 		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");

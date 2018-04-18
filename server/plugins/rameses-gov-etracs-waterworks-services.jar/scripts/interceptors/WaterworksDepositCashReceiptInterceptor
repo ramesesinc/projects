@@ -1,0 +1,41 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import waterworks.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class WaterworksDepositCashReceiptInterceptor {
+	
+	@DataContext('waterworks_account')
+	def acctEm; 
+
+	@DataContext("waterworks_consumption")
+	def wcEm;
+
+	@DataContext("waterworks_credit")
+	def wcCreditEm;
+
+	@DataContext("waterworks_otherfee")
+	def wotherEm;
+
+    @After(pattern="CashReceiptService.post",  eval="#{ args[0].collectiontype.handler == 'waterworks_deposit' }" )
+	public void afterPostDeposit(def evt) {
+		def obj = evt.args[0];
+		def r = evt.result;
+		def p = obj.params;
+		throw new Exception("stop at cash receipt service post " + obj.acctid );
+	}
+
+    @After(pattern="CashReceiptVoidService.post",  eval="#{ result.receipt?.collectiontype?.handler == 'waterworks_deposit' }" )
+	public void voidDeposit(def evt) {
+		def e = evt.args[0];
+		def res= evt.result;
+		def rct = res.receipt;
+		throw new Exception("stop at void receipt")
+	}
+
+}

@@ -120,7 +120,7 @@ class WaterworksSingleBillingInterceptor {
     * CASH RECEIPT SPECFIC HANDLERS
 	********************************************/
 	//applicable for cash receipt billing
-	@After( pattern="SingleBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
+	@After( pattern="SingleBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
 	public void formatCashReceipt(def evt ) {
 		def info = evt.args[0].params;
 		def res = evt.result;
@@ -136,7 +136,7 @@ class WaterworksSingleBillingInterceptor {
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="SingleBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
+	@After( pattern="SingleBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
 	public void getPostPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
@@ -146,7 +146,7 @@ class WaterworksSingleBillingInterceptor {
 		result.parentschemaname = "waterworks_account";
 	} 
 
-	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks'  }")
+	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
@@ -161,7 +161,7 @@ class WaterworksSingleBillingInterceptor {
 	} 
 
 
-	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'waterworks' }")
+	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks') }")
 	public void getVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;

@@ -18,7 +18,7 @@ class WaterworksBatchBillingService {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("SingleBillingService")
+	@Service("BasicBillingService")
 	def billingSvc;
 
 	@ProxyMethod
@@ -30,8 +30,7 @@ class WaterworksBatchBillingService {
 		u.otherfees = 0;
 		u.credits = 0;
 
-		def b = billingSvc.execute([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
-
+		def b = billingSvc.getBillingInfo([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
 		if( b?.billitems) {
 			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
 			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
@@ -93,27 +92,24 @@ class WaterworksBatchBillingService {
 		batchEm.find([ objid: p.batchid ]).update([ state: 'POSTED' ]); 
 		wbillEm.find([ batchid: p.batchid ]).update([ state: 'POSTED' ]); 
 		batchEm.postConsumption([ batchid: p.batchid ]); 
-		batchEm.postMeterReading([ batchid: p.batchid ]);
+		batchEm.postMeterReading([ batchid: p.batchid ]); 
 
 		//select entries where there are advanced payments and post it to the ledger
-		def clist = wbillEm.find([batchid: p.batchid] ).where( " credits > 0 ").list();
-		def txndate = dateSvc.getServerDate();
-		clist.each {
-			def bb = [rulename: 'waterworksbilling', collectiontype: [handler:'waterworks'] ];
-			bb.amtpaid =  it.credits;
-			bb.params = [objid: it.acctid, amtpaid: bb.amtpaid, include_credits: true, include_items: true];
+		def clist = wbillEm.find([ batchid: p.batchid ]).where(" credits > 0 ").list(); 
+		def txndate = dateSvc.getServerDate(); 
+		clist.each { 
+			def bb = [rulename: 'waterworksbilling', txntype: 'waterworks' ]; 
+			bb.amtpaid =  it.credits; 
+			bb.params = [objid: it.acctid ]; 
 			bb.acctid = bb.params.objid; 
 
 			def rct = crPmtSvc.init( bb ); 
-			rct.controlno = it.controlno;
-			rct.controldate =  txndate;
-			rct.txntype = 'waterworks';
-			rct._postpayment.refno = rct.controlno; 
-			rct._postpayment.refdate = rct.controldate; 
-			crPmtSvc.post( rct );
-		}
-
-	}
-
-
-}
+			rct.txntype = 'waterworks'; 
+			rct.reftype = 'waterworks_billing'; 
+			rct.refid = it.objid; 
+			rct.refno = it.controlno; 
+			rct.refdate =  txndate; 
+			crPmtSvc.post( rct ); 
+		} 
+	} 
+} 

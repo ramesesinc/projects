@@ -60,11 +60,14 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 int xx = ((o.year * 12)+o.month) + 1;
                 entity.year = (int)(xx / 12);
                 entity.month = (xx % 12);
+                if ( entity.month <= 0 ) entity.month = 12;
             }
             else {
                 entity.year = 0;
                 entity.month = 0;
             }
+            
+            MsgBox.alert('year = '+ entity.year +', month='+ entity.month); 
        }
    ];
          

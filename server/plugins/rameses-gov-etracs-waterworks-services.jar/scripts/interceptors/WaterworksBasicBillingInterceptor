@@ -8,7 +8,7 @@ import waterworks.facts.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 
-class WaterworksSingleBillingInterceptor {
+class WaterworksBasicBillingInterceptor {
 	
 	@DataContext('waterworks_account')
 	def acctEm; 
@@ -22,7 +22,7 @@ class WaterworksSingleBillingInterceptor {
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
-    @After(pattern="SingleBillingHandler.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+    @After(pattern="BasicBillingHandler.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getInfo(def evt) {
 		def obj = evt.args[0];
 		def r = evt.result;
@@ -44,19 +44,10 @@ class WaterworksSingleBillingInterceptor {
 		r.zone   = acct.stuboutnode?.zone; 
 	}
  
- 	@After(pattern="SingleBillingHandler.getCreditPaymentItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
-	public void getWaterworksCreditItems(def evt) {
-		def p = evt.args[0];
-		println '> '+ p;
-		def list = evt.result;
-		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
-		def conList = wcCreditEm.find( [parentid: p.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
-		list.addAll( conList );
-	}
-
-    @After(pattern="SingleBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+    @After(pattern="BasicBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getWaterworksBillItems(def evt) {
 		def p = evt.args[0];
+		def bill = evt.args[1];
 		def list = evt.result;
 
 		def arr = [];
@@ -67,15 +58,26 @@ class WaterworksSingleBillingInterceptor {
 		} 
 		arr << "amount - amtpaid > 0"
 		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
-		def conList = wcEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		def conList = wcEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
 
 		//select for other fees
 		select = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
-		conList = wotherEm.find([acctid: p.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		conList = wotherEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
 
 	}
+
+ 	@After(pattern="BasicBillingHandler.getCreditItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+	public void getWaterworksCreditItems(def evt) {
+		def p = evt.args[0];
+		def bill = evt.args[1];		
+		def list = evt.result;
+		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
+		def conList = wcCreditEm.find( [parentid: bill.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
+		list.addAll( conList );
+	}
+
 
 	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
@@ -112,18 +114,13 @@ class WaterworksSingleBillingInterceptor {
 		}
 	}
 
-	@After(pattern="SingleBillingService.execute",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
-	public void afterBilling(def evt) {
-		def r = evt.result;
-	}
-
 	/*******************************************
     * CASH RECEIPT SPECFIC HANDLERS
 	********************************************/
 	//applicable for cash receipt billing
-	@After( pattern="SingleBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
+	@After( pattern="BasicBillingHandler.formatReceiptInfo", eval="#{  args[0].txntype?.contains('waterworks')  }")
 	public void formatCashReceipt(def evt ) {
-		def info = evt.args[0].params;
+		def info = evt.args[1];
 		def res = evt.result;
 		if(info.owner?.objid) {
 			res.payer = info.owner;
@@ -137,41 +134,43 @@ class WaterworksSingleBillingInterceptor {
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="SingleBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
-	public void getPostPaymentInfo(def evt ) {
-		def e = evt.args[0];
+	@After( pattern="BasicBillingHandler.getPostPaymentInfo", eval="#{  args[0].txntype.toString().contains('waterworks')  }")
+	public void getPostPaymentInfo( evt ) {
+		def bill = evt.args[1];
 		def result = evt.result;
-		result.parentid =  e.acctid;
-		result.rootid =  e.acctid;
-		result.items = e.billitems;
+		result.parentid =  bill.acctid;
+		result.rootid =  bill.acctid;
+		result.items = bill.billitems;
+		result._schemaname = 'waterworks_payment';
+		result.creditschemaname = 'waterworks_credit';
 		result.parentschemaname = "waterworks_account";
 	} 
 
-	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
-	public void getWorkflowTask(def evt ) {
-		def p = evt.args[0];
-		def result = evt.result;
-		if(p.taskid) {
-			result.processname = 'waterworks_application';
-			result.refid = p.txnid; 
-			result.taskid = p.taskid;
-			result.taskstate = 'payment';
-			result.payaction = "post"
-			result.voidaction = "return";
-		}
-	} 
-
-
-	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks') }")
-	public void getVoidWorkflowTask(def evt ) {
-		def p = evt.args[0];
-		def result = evt.result;
-		/*
-		result.processname = 'waterworks_application';
-		result.refid = p.appid;
-		result.taskid = p.taskid;
-		result.action = 'return';
-		*/
-	} 
+//	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
+//	public void getWorkflowTask(def evt ) {
+//		def p = evt.args[0];
+//		def result = evt.result;
+//		if(p.taskid) {
+//			result.processname = 'waterworks_application';
+//			result.refid = p.txnid; 
+//			result.taskid = p.taskid;
+//			result.taskstate = 'payment';
+//			result.payaction = "post"
+//			result.voidaction = "return";
+//		}
+//	} 
+//
+//
+//	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks') }")
+//	public void getVoidWorkflowTask(def evt ) {
+//		def p = evt.args[0];
+//		def result = evt.result;
+//		/*
+//		result.processname = 'waterworks_application';
+//		result.refid = p.appid;
+//		result.taskid = p.taskid;
+//		result.action = 'return';
+//		*/
+//	} 
 
 }

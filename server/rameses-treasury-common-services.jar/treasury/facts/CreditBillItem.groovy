@@ -21,6 +21,7 @@ class CreditBillItem extends AbstractBillItem {
 		m.refid = refid;
 		m.reftype = reftype;
 		m.total = m.amount;
+		m.sortorder = 99999999;
 		return m;
 	}
 

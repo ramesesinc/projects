@@ -12,10 +12,10 @@ import treasury.facts.*;
 
 class CreditPaymentService {
 
-	@Service("SingleBillingHandler")
-	def self;
+	@Service("BasicBillingHandler")
+	def handler;
 
-	@Service("SingleBillingService")
+	@Service("BasicBillingService")
 	def billingSvc;
 
 	@Service("PaymentPostingService")
@@ -36,56 +36,30 @@ class CreditPaymentService {
 	@ProxyMethod
 	public def init( def pp ) {
 		if(!pp.rulename) throw new Exception("rulename is required in parameter of CreditPaymentService.init")
-		if(!pp.collectiontype) throw new Exception("collectiontype is required in parameter of CreditPaymentService.init")
-		if(!pp.amtpaid )throw new Exception("amtpaid is required in parameter of CreditPaymentService.init")
+		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.init")
 
-		pp.include_credits = false;
-		pp.include_items = true;
+		if ( pp.options == null ) pp.options = [:]; 
+		pp.options.include_credit = false; 
 
-		def cpitems = self.getCreditPaymentItems( pp ); 
+		def cpitems = handler.getCreditItems( pp, pp ); 
 		if ( !cpitems ) throw new Exception('There are no credit items found'); 
+
+		cpitems.each{ it.txntype = 'creditpayment' } 
 
 		def cpamount = cpitems.sum{ it.amount } 
 		if( cpamount < 0 ) cpamount = cpamount * -1;
 
-		pp.amtpaid = cpamount; 
+		pp.params.amtpaid = cpamount; 
 
-		def rct = billingSvc.execute( pp );	
-		rct.collectiontype = pp.collectiontype;
-		rct.txnmode = 'ONLINE';
+
+		def rct = billingSvc.getCashReceiptInfo( pp ); 
+		rct.objid = 'CP' + new java.rmi.server.UID();
 		rct.org = [objid:env.ORGID, name:env.ORGNAME];
 		rct.user = [objid: env.USERID, name:env.USER];
-		rct.state = 'OPEN';
 		rct.txntype = pp.txntype;
-
-		pp.params = rct;
-		
-		def rct1 = self.formatReceiptInfo( pp );
-		rct.putAll( rct1 );
-		
-		if( !rct.paidby  ) throw new Exception("Paid by is required");
-		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
-		if(! rct.items ) throw new Exception("items is required ");
-
-		def payInfo = self.getPostPaymentInfo( rct );
-		if( payInfo ) {
-			if( !payInfo.parentschemaname )
-				throw new Exception("BillPostingService.init getPostPaymentInfo error parentschemaname is required");	
-			if( !payInfo.items  )
-				throw new Exception("BillPostingService.init getPostPaymentInfo error items is required");
-			payInfo.items.each {
-				if(!it.item?.objid) throw new Exception( "BillPostingService.init getPostPaymentInfo error. item.objid is required in each item" );
-				if( it.refid && !it.reftype ) {
-					throw new Exception( "BillPostingService.init error. getPostPaymentInfo reftype  is required if refid is specified for " + it.item.title );
-				}
-			}
-			payInfo.reftype = 'creditpayment';
-			payInfo.refno = rct.controlno;
-			payInfo.refdate = rct.receiptdate;
-			payInfo.amount = rct.amount;
-			rct._postpayment = payInfo;
-		}
-		rct.items.addAll( cpitems ); 
+		rct.txnmode = 'ONLINE';
+		rct.state = 'OPEN';
+		rct.creditpayments = cpitems;
 		return rct; 	
 	} 
 

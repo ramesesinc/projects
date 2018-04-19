@@ -9,9 +9,5 @@
                  index="2" action="init" 
                  parentkey="acctid"
                  visibleWhen="#{mode=='read'}"  />
-        
-        <!-- List Actions -->
-        <invoker type="formActions" caption="Add New Entry" action="addNewEntry"/> 
-        <invoker type="formActions" caption="Edit Entry" action="editEntry"/> 
     </invokers>
 </workunit>

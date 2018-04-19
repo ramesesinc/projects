@@ -1,3 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/FormReport.xml" reportid="singlebillingreport">
-    <code class="com.rameses.treasury.common.models.SingleBillingReportModel" />
-</workunit>

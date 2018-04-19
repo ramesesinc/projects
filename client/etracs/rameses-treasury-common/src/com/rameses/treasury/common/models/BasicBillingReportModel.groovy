@@ -7,11 +7,11 @@ import com.rameses.osiris2.common.*
 import com.rameses.util.*;
 import com.rameses.seti2.models.*;
  
-public class SingleBillingReportModel extends FormReportModel  {
+public class BasicBillingReportModel extends FormReportModel  {
     
     
     public String getReportId() {
-        return "singlebillingreport";
+        return "basicbillingreport";
     }
     
     public def getConfInfo() {

@@ -50,9 +50,15 @@ class PaymentPostingService {
 			return emMap.get(name);
 		}
 		
+		def postitems = [];
+		postitems.addAll( pmt.items ); 
+		if ( pmt.creditpayments ) postitems.addAll( pmt.creditpayments ); 
+
 		//save or update the reference first
-		pmt.items.each {
+		postitems.each {
 			if( it.txntype== "credit" ) {
+				if( !pmt.creditschemaname ) throw new Exception('please specify a creditschemaname'); 
+
 				//if there is overpayment or credit items, create a new xxx_credit item
 				def p = [:];
 				p.parentid = pmt.parentid;
@@ -65,16 +71,18 @@ class PaymentPostingService {
 				p.amount = it.amount;
 				p.amtpaid = 0;
 				p.remarks = it.remarks;
-				def reftype = pmt.collectiontype.handler+'_credit';
+				def reftype = pmt.creditschemaname;
 				def crEm = emLookup( reftype );
 				def vv = crEm.create( p );
 				it.refid = vv.objid;
 				it.reftype = reftype;
 			}
 			else if( it.txntype == "creditpayment") {
+				if( !pmt.creditschemaname ) throw new Exception('please specify a creditschemaname'); 
+
 				//this is to close out deduction of previous payment
 				def reftype = it.reftype;
-				if(!reftype) reftype = pmt.collectiontype.handler+'_credit';
+				if(!reftype) reftype = pmt.creditschemaname; 
 				def crEm = emLookup( reftype );
 				crEm.find( [objid: it.refid ] ).update([amtpaid: "{amount}"]);
 			}

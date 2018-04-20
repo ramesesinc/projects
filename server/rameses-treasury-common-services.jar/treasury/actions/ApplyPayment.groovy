@@ -24,13 +24,14 @@ class ApplyPayment implements RuleActionHandler {
 		if(creditList ) {
 			totalCredit = (creditList.sum{ it.amount }*-1);
 		}
-			
+		
+		double amt = payment.amount + totalCredit;
+
 		def billitems = facts.findAll{ it instanceof BillItem }.sort{it.paypriority};
 
 		if(billitems) {
 
 			def newBillItems = [];
-			double amt = payment.amount + totalCredit;
 			
 			/******************************************************************************
 			* This is already a tested routine. If you cannot get the desired result
@@ -45,16 +46,10 @@ class ApplyPayment implements RuleActionHandler {
 			//remove all billitems in facts
 			def removeList = facts.findAll{ it instanceof AbstractBillItem };
 			facts.removeAll( removeList );
-			facts.remove( payment );
-
-
-			//effect immediately in the drools engine.
-			drools.retract(payment);
+			
 			removeList.each {
 				drools.retract( it );
 			}
-
-			
 
 			//add new facts
 			for(b in newBillItems) {
@@ -69,13 +64,19 @@ class ApplyPayment implements RuleActionHandler {
 				facts.addAll( creditList );
 			}
 
-			//add excess payment if any...
-			if(  amt > 0 ) {
-				def ep = new ExcessPayment( amount: amt );
-				facts << ep;
-				drools.insert( ep );
-			}	
 		}
+
+		//add excess payment if any...
+		if(  amt > 0 ) {
+			def ep = new ExcessPayment( amount: amt );
+			facts << ep;
+			drools.insert( ep );
+		}	
+
+		//effect immediately in the drools engine removal of the payment so it can be used again
+		facts.remove( payment );
+		drools.retract(payment);
+		
 	}
 
 }

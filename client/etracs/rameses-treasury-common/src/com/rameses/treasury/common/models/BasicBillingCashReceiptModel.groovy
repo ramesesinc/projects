@@ -41,7 +41,11 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
             return invoker.caption;
         }
         return getContextName();
-     }
+    }
+    
+    public boolean getAllowDeposit() {
+        return true;
+    }
     
      public String getContextName() {
         def pfn = invoker.properties.contextName;
@@ -98,17 +102,23 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         p.billdate = entity.receiptdate;
         def pp = [ rulename: getRulename(), params: p ]; 
         def info = billingSvc.getCashReceiptInfo( pp );
-        entity.putAll(info);
+        
         if( !info.billitems ) {
-            def b = onNoItemsFound();
-            if(!b) throw new Exception("No bill items found");
+            if( getAllowDeposit() ) {
+                def amt = MsgBox.prompt( "Enter amount for advance payment. ");
+                if(!amt) throw new BreakException();
+                pp.amtpaid = new BigDecimal(""+amt);
+                info = billingSvc.getCashReceiptInfo( pp );
+            }
+            else {
+                throw new Exception("No bill items found");
+            }
         }
-        else {
-            billItemList = info.items;
-            reloadItems(); 
-            //afterLoadInfo();
-            //loadPayOptions();
-        }
+        entity.putAll(info);
+        billItemList = info.items;
+        reloadItems(); 
+        //afterLoadInfo();
+        //loadPayOptions();
     }
     
     void reloadItems() {

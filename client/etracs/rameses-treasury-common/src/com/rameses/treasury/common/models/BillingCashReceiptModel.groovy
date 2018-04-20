@@ -51,6 +51,10 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         return super.getSchemaName(); 
     }
     
+    public boolean getAllowDeposit() {
+        return true;
+    }
+    
     def _payOption = null;
     public String getPayOption() {
         if(_payOption == null ) {
@@ -89,26 +93,38 @@ public class BillingCashReceiptModel extends AbstractCashReceipt {
         if( !txnid ) {
             txnid = MsgBox.prompt("Enter Transaction No");
         }
+        MsgBox.alert( "enter aaa");
         if(!txnid) throw new BreakException();
         loadInfo([id:txnid, action:'open']);
     }
     
     void loadInfo(def p) {
+        MsgBox.alert( "enter bbb");
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
         p.rulename = getRulename();
+        MsgBox.alert( "enter 0");
         def info = cashReceiptSvc.getInfo( p );
-        entity.putAll(info);
+        MsgBox.alert( "enter 01");
         if( !info.billitems ) {
-            def b = onNoItemsFound();
-            if(!b) throw new Exception("No bill items found");
+            MsgBox.alert( "enter 1");
+            if( getAllowDeposit() ) {
+                def amt = MsgBox.prompt( "Enter amount for advance payment. ");
+                if(!amt) throw new BreakException();
+                amt = new BigDecimal(""+amt);
+                MsgBox.alert( "amount is " + amt );
+                p.amtpaid = amt;
+                info = cashReceiptSvc.getInfo( p );
+            }
+            else {
+                throw new Exception("No bill items found");
+            }
         }
-        else {
-            billItemList = info.items;
-            reloadItems(); 
-            //afterLoadInfo();
-            //loadPayOptions();
-        }
+        entity.putAll(info);
+        billItemList = info.items;
+        reloadItems(); 
+        //afterLoadInfo();
+        //loadPayOptions();
     }
     
     void reloadItems() {

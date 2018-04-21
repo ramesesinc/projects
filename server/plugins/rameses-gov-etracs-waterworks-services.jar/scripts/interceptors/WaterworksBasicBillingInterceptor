@@ -161,16 +161,12 @@ class WaterworksBasicBillingInterceptor {
 //	} 
 //
 //
-//	@After( pattern="SingleBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks') }")
-//	public void getVoidWorkflowTask(def evt ) {
-//		def p = evt.args[0];
-//		def result = evt.result;
-//		/*
-//		result.processname = 'waterworks_application';
-//		result.refid = p.appid;
-//		result.taskid = p.taskid;
-//		result.action = 'return';
-//		*/
-//	} 
+	@After( pattern="BasicBillingHandler.getVoidInfo", eval="#{ args[0].collectiontype.handler?.contains('waterworks') }")
+	public void getVoidInfo(def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		result._schemaname = 'waterworks_payment';
+		result.creditschemaname = 'waterworks_credit';
+	} 
 
 }

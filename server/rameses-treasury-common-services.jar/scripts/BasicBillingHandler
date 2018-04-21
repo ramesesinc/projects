@@ -33,4 +33,13 @@ class BasicBillingHandler {
 		return [:]; 
 	}
 
+	@ProxyMethod 
+	public def getPaymentWorkflow( params ) {
+		return [:]; 
+	}
+
+	@ProxyMethod 
+	public def getVoidInfo( rct ) {
+		return [:]; 
+	}
 }

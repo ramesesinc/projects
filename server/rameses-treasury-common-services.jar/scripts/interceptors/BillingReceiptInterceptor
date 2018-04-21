@@ -85,13 +85,14 @@ public class BillingReceiptInterceptor {
 		def res= evt.result;
 		def rct = res.receipt;
 
-		//find first if theres a payment schema that is autopost
-		def schema = findPaymentSchema( rct );
-		if( !schema ) return;
+		def vi = handler.getVoidInfo( rct ); 
+		if ( !vi ) return; 
 
-		def pmtDb = pmtEm.lookup( schema.name );
-		def pmt = pmtDb.find( [refid: rct.objid] ).first(1);
-		pmt._schemaname = schema.name;
+		if ( !vi._schemaname ) throw new Exception('please include _schemname in getVoidInfo'); 
+
+		def pmtDb = pmtEm.lookup( vi._schemaname );
+		def pmt = pmtDb.find([ refid: rct.objid ]).first(1);
+		pmt._schemaname = vi._schemaname;
 		pmt.collectiontype = rct.collectiontype;
 		service.reversePayment( pmt );
 	}

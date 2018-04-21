@@ -11,8 +11,8 @@ class PaymentPostingService {
 	@Service("WorkflowTaskService")
 	def taskSvc;
 
-	@Service("SingleBillingHandler")
-	def billingHandler;
+	@Service("BasicBillingHandler")
+	def handler;
 
 
 	@Service("SequenceService")
@@ -20,12 +20,12 @@ class PaymentPostingService {
 
 	void invokeWorkflow( def pmt, def action ) {
 		//check if there is workflow tasks
-		def taskInfo = billingHandler.getPaymentWorkflow(  pmt );
+		def taskInfo = handler.getPaymentWorkflow( pmt );
 		if( taskInfo ) {
 			if( !taskInfo.processname ) 
-				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error processname is required");
+				throw new Exception("PaymentPostingService.invokeWorkflow: processname is required");
 			if( !taskInfo.refid )
-				throw new Exception("CashReceiptBillingService.getItems getWorkflowTask error refid is required");
+				throw new Exception("PaymentPostingService.invokeWorkflow: refid is required");
 			taskInfo.autostart = true;	
 			if(action=="pay") {
 				taskInfo.action = taskInfo.payaction;
@@ -122,25 +122,34 @@ class PaymentPostingService {
 			return emMap.get(name);
 		}
 
-		def sb = [];
+		def postitems = [];
+		postitems.addAll( pmt.items ); 
+		if ( pmt.creditpayments ) postitems.addAll( pmt.creditpayments ); 
 
-		//after create post the posting references
-		pmt.items.findAll{ it.reftype !=null }.each {
-			def gb = emLookup( it.reftype );
-			if( it.reftype.contains("credit") ) {
-				//if credit amount is positive it means this is original value so make it immediately the amount
-				if(it.amount > 0 ) {
-					gb.find( [objid: it.refid] ).delete();
-				}
-				else {
-					//we add this because amount is negative value
-					gb.find( [objid: it.refid] ).update([ amtpaid: 0 ]);
-				}
+		//save or update the reference first
+		postitems.each {
+			if( it.txntype== "credit" ) {
+				if( !it.reftype ) throw new Exception('reftype is required in post items'); 
+
+				def crEm = emLookup( it.reftype );
+				if ( crEm.find([ objid: it.refid ]).select('amtpaid').first()?.amtpaid > 0 ) 
+					throw new Exception('Credit amount has already been used'); 
+
+				crEm.find([ objid: it.refid ]).delete(); 
 			}
-			else {
-				gb.find( [objid: it.refid] ).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+			else if( it.txntype == "creditpayment") {
+				if( !it.reftype ) throw new Exception('reftype is required in post items'); 
+
+				def crEm = emLookup( it.reftype );
+				crEm.find([ objid: it.refid ]).update([ amtpaid: 0.0 ]); 
 			}
-		}
+			else if(it.reftype) { 
+				if( !it.reftype ) throw new Exception('reftype is required in post items'); 
+
+				def refEm = emLookup( it.reftype  ); 
+				refEm.find([ objid: it.refid ]).update( [amtpaid: "{amtpaid - :amt}"], [amt: it.amount] );
+			} 
+		} 
 
 		def pmtEm = emLookup( pmt._schemaname );
 		pmtEm.find( [ objid: pmt.objid ] ).update( [voided : 1 ] );
@@ -149,19 +158,4 @@ class PaymentPostingService {
 		
 		return pmt;
 	}
-
-	/*
-	def wf = voidHandler.getVoidPaymentWorkflow( pmt );
-		if(wf) { 
-			if(!wf.processname) throw new Exception("processname is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
-			if(!wf.taskid) throw new Exception("taskid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
-			if(!wf.action) throw new Exception("action is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
-			if(!wf.refid ) throw new Exception("refid is required in getVoidPaymentInfo.getVoidPaymentWorkflow for " + rct.collectiontype.handler );
-
-			wf.autostart = true; //flag to indicate that this must start task immediately, does not require assign to me
-			pmt._workflow = wf; 
-		}
-	*/	
-
-
 }

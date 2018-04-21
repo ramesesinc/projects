@@ -1,7 +1,0 @@
-<workunit extends="workunits/cashreceipt_misc.xml" rulename="waterworksbilling" contextName="waterworks">
-    <invokers>
-        <invoker type="collectiontype:handler" caption="Waterworks Deposit" name="waterworks_deposit"  />
-        <invoker type="cashreceipt:waterworks_deposit" action="init" caption="Issue Receipt"/>
-    </invokers>
-    <code class="com.rameses.treasury.common.models.LedgerCashReceiptModel" />
-</workunit>

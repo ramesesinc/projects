@@ -105,7 +105,10 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         
         if( !info.billitems ) {
             if( getAllowDeposit() ) {
-                def amt = MsgBox.prompt( "Enter amount for advance payment. ");
+                if ( !MsgBox.confirm('There are no bill items found. Do you want to pay in advance?')) 
+                    throw new BreakException(); 
+                    
+                def amt = MsgBox.prompt("Enter amount for advance payment. ");
                 if(!amt) throw new BreakException();
                 pp.amtpaid = new BigDecimal(""+amt);
                 info = billingSvc.getCashReceiptInfo( pp );

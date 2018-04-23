@@ -1,0 +1,6 @@
+<workunit>
+    <code class="com.rameses.treasury.common.models.ChangeInfoModel" />
+    <pages>
+        <page template="com.rameses.treasury.common.views.ChangeInfoPage"/>
+    </pages>
+</workunit> 

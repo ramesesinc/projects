@@ -1,0 +1,6 @@
+<workunit>
+    <code class="com.rameses.treasury.common.models.ChangeInfoListModel"/>    
+    <pages>
+        <page template="com.rameses.seti2.views.CrudListPage"/>
+    </pages>
+</workunit> 

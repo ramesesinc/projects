@@ -1,11 +1,13 @@
-<workunit extends="com/rameses/treasury/common/templates/SubList.xml"
+<workunit extends="com/rameses/treasury/common/templates/ChangeInfoList.xml"
           schemaName="waterworks_changelog"
           contextName="waterworks"
-          title="Change Log">
+          title="Change Info">
     <invokers>
-        <invoker type="waterworks_account:section" caption="Change Log" 
+        <invoker type="waterworks_account:section" caption="Change Info" 
                  index="100" action="init" 
-                 parentkey="acctid"
+                 parentkey="refid"
+                 cols="dtfiled,filedby.name,keyfields,oldvalue,newvalue,remarks"
+                 orderBy="dtfiled DESC"
                  visibleWhen="#{mode=='read'}"  />
     </invokers>
 </workunit>

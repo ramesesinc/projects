@@ -1,14 +1,15 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_changelog">
-		<field name="objid" primary="true"  prefix="WACCLOG"/>
-		<field name="refid" />
-		<field name="reftype" />
-		<field name="action" />
-		<field name="fieldnames" />
-		<field name="oldvalue" />
-		<field name="newvalue" />
-		<field name="details" />
-		<field name="reason" />
+		<field name="objid" primary="true" prefix="CHGINFO"/>
+		<field name="reftype" required="true"/>
+		<field name="refid" required="true"/>
+		<field name="dtfiled" required="true" type="timestamp"/>
+		<field name="filedby_objid" required="true" />
+		<field name="filedby_name" required="true" />
+		<field name="action" required="true"/>
+		<field name="keyfields" />
+		<complex name="oldvalue" serializer="default" />
+		<complex name="newvalue" serializer="default" />
+		<field name="remarks" required="true"/>
 	</element>
-</schema>		
-
+</schema>

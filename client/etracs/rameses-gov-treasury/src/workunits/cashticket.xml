@@ -1,0 +1,15 @@
+<workunit>
+    <invokers>
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="Cash Ticket" 
+                 windowTitle="Cash Ticket Entries"
+                 formTitle="Cash Ticket Entries"
+                 action="init" target="window" index="60"/>
+    </invokers>
+    
+    <code class="com.rameses.enterprise.treasury.models.CashTicketEntryModel"/>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.CashTicketEntryPage"/>
+    </pages>
+</workunit>

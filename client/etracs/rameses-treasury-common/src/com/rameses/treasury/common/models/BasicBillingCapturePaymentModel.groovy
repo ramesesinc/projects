@@ -22,7 +22,7 @@ public class BasicBillingCapturePaymentModel {
     
     @Service("BasicBillingService")
     def billingSvc;
-    
+        
     def parent;
     def status;   
     def selectedItem;
@@ -84,8 +84,9 @@ public class BasicBillingCapturePaymentModel {
         return "Details";
     }
 
-    void afterLoadInfo() {;}
     void buildParams( p ) {;}
+    void beforeLoadInfo( p ) {;}
+    void afterLoadInfo() {;}
     
     void init() {
         def p = [:];
@@ -99,14 +100,21 @@ public class BasicBillingCapturePaymentModel {
     }
         
     void loadInfo(def p) {
+        beforeLoadInfo( p );
+        
         def pp = [ rulename: getRulename(), params: p ]; 
         def info = billingSvc.getBillingInfo( pp );
-        println '** info '
-        info.each{
-            println '>> '+ it; 
-        }
         entity.putAll( info );
         billItemList = info.billitems;
+        billItemList.each{ 
+            it.selected = true; 
+            if ( it.amount == null ) it.amount = 0.0; 
+            if ( it.discount == null ) it.discount = 0.0; 
+            if ( it.surcharge == null ) it.surcharge = 0.0; 
+            if ( it.interest == null ) it.interest = 0.0; 
+        }
+        
+        afterLoadInfo(); 
         reloadItems();
     }
     
@@ -156,8 +164,37 @@ public class BasicBillingCapturePaymentModel {
     }
     
     def listHandler = [
+        getRows: { 
+            return 10; 
+        }, 
         fetchList: { o->
             return entity.billitems;
+        }, 
+        isAllowAdd: {
+            return false; 
+        },
+        isColumnEditable: { item, colname->  
+            if ( colname == 'selected' ) return true; 
+            return (item.selected ? true : false); 
+        },
+        afterColumnUpdate: { item, colname-> 
+            updateItemTotal( item ); 
+            updateTotals(); 
         }
-    ] as BasicListModel;
+    ] as EditorListModel;
+    
+    void updateItemTotal( item ) {
+        item.total = 0.0; 
+        if ( item.selected ) {
+            item.total = (item.amount - item.discount) + item.surcharge + item.interest; 
+        }
+    }
+    
+    def save() {
+        if ( MsgBox.confirm('You are about to post this payment. Continue?')) { 
+            
+            return '_close'; 
+        }
+        return null; 
+    }
 }

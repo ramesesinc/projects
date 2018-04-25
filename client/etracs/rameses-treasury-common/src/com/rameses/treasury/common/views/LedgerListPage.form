@@ -26,44 +26,25 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Container class="javax.swing.JSplitPane" name="jSplitPane1">
+    <Container class="com.rameses.rcp.control.XSplitView" name="xSplitView1">
       <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <PropertyBean type="com.rameses.rcp.control.border.XLineBorder">
-            <Property name="hideBottom" type="boolean" value="true"/>
-            <Property name="hideLeft" type="boolean" value="true"/>
-            <Property name="hideRight" type="boolean" value="true"/>
-            <Property name="lineColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="aa" green="aa" red="aa" type="rgb"/>
-            </Property>
-            <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[3, 0, 0, 0]"/>
-            </Property>
-          </PropertyBean>
-        </Property>
-        <Property name="dividerLocation" type="int" value="500"/>
+        <Property name="dividerLocationPercentage" type="int" value="60"/>
+        <Property name="showDividerBorder" type="boolean" value="true"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Center"/>
         </Constraint>
       </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                <EmptyBorder bottom="5" left="5" right="3" top="0"/>
+                <EmptyBorder bottom="5" left="5" right="0" top="0"/>
               </Border>
             </Property>
           </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
-              <JSplitPaneConstraints position="left"/>
-            </Constraint>
-          </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
@@ -186,15 +167,10 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                <EmptyBorder bottom="5" left="5" right="5" top="0"/>
+                <EmptyBorder bottom="5" left="3" right="5" top="0"/>
               </Border>
             </Property>
           </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
-              <JSplitPaneConstraints position="right"/>
-            </Constraint>
-          </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>

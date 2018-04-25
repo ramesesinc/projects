@@ -30,81 +30,81 @@ public class ChangeInfoPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlfooter = new javax.swing.JPanel();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        pnlfooter = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         setLayout(new java.awt.BorderLayout());
 
-        pnlfooter.setPreferredSize(new java.awt.Dimension(400, 100));
+        jPanel4.setLayout(new java.awt.BorderLayout());
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Reason/remarks for modification");
-        xFormPanel1.setBorder(xTitledBorder1);
-
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
-
-        xTextArea1.setCaption("Remarks");
-        xTextArea1.setName("remarks"); // NOI18N
-        xTextArea1.setRequired(true);
-        xTextArea1.setShowCaption(false);
-        jScrollPane1.setViewportView(xTextArea1);
-
-        xFormPanel1.add(jScrollPane1);
-
-        javax.swing.GroupLayout pnlfooterLayout = new javax.swing.GroupLayout(pnlfooter);
-        pnlfooter.setLayout(pnlfooterLayout);
-        pnlfooterLayout.setHorizontalGroup(
-            pnlfooterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlfooterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        pnlfooterLayout.setVerticalGroup(
-            pnlfooterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlfooterLayout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        add(pnlfooter, java.awt.BorderLayout.PAGE_END);
+        jPanel3.setMinimumSize(new java.awt.Dimension(100, 150));
+        jPanel3.setLayout(new java.awt.BorderLayout());
 
         xLabel1.setExpression("#{ formTitle }");
-        add(xLabel1, java.awt.BorderLayout.PAGE_START);
+        xLabel1.setVisibleWhen("#{formTitle ? true : false}");
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 10, 10, 5));
+        jPanel3.add(xLabel1, java.awt.BorderLayout.NORTH);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         xFormPanel2.setName("formControls"); // NOI18N
         xFormPanel2.setCaptionWidth(120);
         xFormPanel2.setDynamic(true);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 5, 0));
+        jPanel1.add(xFormPanel2, java.awt.BorderLayout.NORTH);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        jPanel3.add(jPanel1, java.awt.BorderLayout.SOUTH);
 
-        add(jPanel1, java.awt.BorderLayout.CENTER);
+        jPanel4.add(jPanel3, java.awt.BorderLayout.NORTH);
+
+        add(jPanel4, java.awt.BorderLayout.NORTH);
+
+        pnlfooter.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 10, 8));
+        pnlfooter.setPreferredSize(new java.awt.Dimension(400, 100));
+        pnlfooter.setLayout(new java.awt.BorderLayout());
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Reason/Remarks for modification");
+        jPanel2.setBorder(xTitledBorder1);
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
+
+        xTextArea1.setCaption("Remarks");
+        xTextArea1.setLineWrap(true);
+        xTextArea1.setName("remarks"); // NOI18N
+        xTextArea1.setWrapStyleWord(true);
+        xTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 1, 1));
+        xTextArea1.setExitOnTabKey(true);
+        xTextArea1.setFontStyle("font-size:12;");
+        xTextArea1.setIndex(100);
+        xTextArea1.setRequired(true);
+        xTextArea1.setShowCaption(false);
+        jScrollPane1.setViewportView(xTextArea1);
+
+        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        pnlfooter.add(jPanel2, java.awt.BorderLayout.CENTER);
+
+        add(pnlfooter, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlfooter;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XTextArea xTextArea1;

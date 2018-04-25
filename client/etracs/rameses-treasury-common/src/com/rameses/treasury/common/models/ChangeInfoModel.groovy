@@ -41,11 +41,15 @@ public class ChangeInfoModel extends DynamicForm {
         def m = [:];
         m.caption = invoker.caption;
         m.name = keyfield;
-        invoker.properties.each { k,v->
-            if(!k.matches("type|name|target|action")) {
-                m.put( k, v );
+        
+        if( invoker?.properties ) {
+            invoker.properties.each { k,v-> 
+                if(!k.matches("type|name|target|action|index|width|height")) {
+                    m.put( k, v );
+                }
             }
         }
+
         fields << m;
 
         //load reftype

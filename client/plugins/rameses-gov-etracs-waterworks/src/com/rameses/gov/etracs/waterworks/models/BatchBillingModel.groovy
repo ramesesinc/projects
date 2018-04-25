@@ -66,12 +66,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 entity.year = 0;
                 entity.month = 0;
             }
-            
-            MsgBox.alert('year = '+ entity.year +', month='+ entity.month); 
        }
    ];
          
-    
    void beforeSave(def mode) {
         if(mode == "create") {
              if(!entity.year) entity.year = year;

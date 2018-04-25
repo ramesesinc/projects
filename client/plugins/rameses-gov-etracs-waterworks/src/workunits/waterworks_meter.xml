@@ -2,6 +2,9 @@
     <invokers>
         <invoker type="waterworks_meter:create" caption="Waterworks Meter" action="create" target="popup" role="MASTER"/>
         <invoker type="waterworks_meter:open" caption="Waterworks Meter" action="open" target="popup" role="MASTER"/>
+        <invoker type="waterworks_meter:view" caption="Waterworks Meter" action="open" target="popup" />
+        
+        <invoker type="waterworks_account:edit" caption="View Waterworks Meter" action="initView" target="popup" />
     </invokers>
     <code class="com.rameses.gov.etracs.waterworks.models.MeterModel"/>
     <pages>

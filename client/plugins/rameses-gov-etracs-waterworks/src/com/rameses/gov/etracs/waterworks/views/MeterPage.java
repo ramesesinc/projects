@@ -47,9 +47,10 @@ public class MeterPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xLabel4 = new com.rameses.rcp.control.XLabel();
-        xPanel1 = new com.rameses.rcp.control.XPanel();
 
         setPreferredSize(new java.awt.Dimension(773, 589));
+
+        xTabbedPane1.setItems("sections");
 
         xPanel2.setName("acctsection"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -203,19 +204,6 @@ public class MeterPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Meter Information", jPanel1);
 
-        javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
-        xPanel1.setLayout(xPanel1Layout);
-        xPanel1Layout.setHorizontalGroup(
-            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 748, Short.MAX_VALUE)
-        );
-        xPanel1Layout.setVerticalGroup(
-            xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 539, Short.MAX_VALUE)
-        );
-
-        xTabbedPane1.addTab("Change History", xPanel1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -247,7 +235,6 @@ public class MeterPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;

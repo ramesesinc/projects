@@ -39,7 +39,6 @@ public class ChangeInfoModel extends DynamicForm {
         def newData = entity.get( keyfield );
         fields  = [];
         def m = [:];
-        m.required = true;
         m.caption = invoker.caption;
         m.name = keyfield;
         invoker.properties.each { k,v->
@@ -71,7 +70,7 @@ public class ChangeInfoModel extends DynamicForm {
         return workunit?.info?.workunit_properties?.schemaName;
     }    
     
-    public boolean vaidate(def keyfield, def value) {
+    public boolean validate(def keyfield, def value) {
         return true;
     }
     

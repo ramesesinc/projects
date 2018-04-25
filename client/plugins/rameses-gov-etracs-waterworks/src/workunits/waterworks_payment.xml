@@ -1,6 +1,7 @@
 <workunit extends="com/rameses/treasury/common/templates/BasicBillingCapturePayment.xml" 
           rulename="waterworksbilling" 
           contextName="waterworks" 
+          txntype="waterworks" 
           payOption="year_month_payoption">
     
     <invokers>

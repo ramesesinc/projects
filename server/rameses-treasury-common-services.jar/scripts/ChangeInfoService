@@ -12,6 +12,9 @@ class ChangeInfoService  {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("SequenceService")
+	def seqSvc;
+
 	@Env
 	def env;
 
@@ -38,17 +41,22 @@ class ChangeInfoService  {
 		}
 
 		//save the change info
+		def dtfiled = dateSvc.getServerDate();
+		def df = new java.text.SimpleDateFormat("yyyyMM");
+		def yrmon = df.format( dtfiled );
+
 		def n = [:];
 		if(o.debug) n.debug = true;
 		n._schemaname = o._schemaname;
 		if( !n._schemaname) n._schemaname = "changeinfo";
 
+		n.controlno = "CI-" + yrmon +  seqSvc.getNextFormattedSeriesA( "CHANGEINFO" + yrmon, 10 );
 		n.action = o.action;
-		n.keyfields = o.keyfields;
+		n.keyfield = o.keyfield;
 		n.oldvalue = o.oldvalue;
 		n.newvalue = o.newvalue;
 		n.remarks = o.remarks;
-		n.dtfiled = dateSvc.getServerDate();
+		n.dtfiled = dtfiled;
 		n.refid = ids;
 		n.reftype = o.reftype;
 		n.filedby = [objid:env.USERID, name:env.FULLNAME];

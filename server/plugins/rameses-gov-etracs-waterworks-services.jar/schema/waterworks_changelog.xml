@@ -1,13 +1,14 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_changelog">
 		<field name="objid" primary="true" prefix="CHGINFO"/>
+		<field name="controlno" required="true"/>
 		<field name="reftype" required="true"/>
 		<field name="refid" required="true"/>
 		<field name="dtfiled" required="true" type="timestamp"/>
 		<field name="filedby_objid" required="true" />
 		<field name="filedby_name" required="true" />
 		<field name="action" required="true"/>
-		<field name="keyfields" />
+		<field name="keyfield" />
 		<complex name="oldvalue" serializer="default" />
 		<complex name="newvalue" serializer="default" />
 		<field name="remarks" required="true"/>

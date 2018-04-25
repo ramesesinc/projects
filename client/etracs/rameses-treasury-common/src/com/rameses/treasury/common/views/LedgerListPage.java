@@ -30,7 +30,7 @@ public class LedgerListPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
+        xSplitView1 = new com.rameses.rcp.control.XSplitView();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
@@ -50,16 +50,10 @@ public class LedgerListPage extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(868, 487));
         setLayout(new java.awt.BorderLayout());
 
-        com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder1.setHideBottom(true);
-        xLineBorder1.setHideLeft(true);
-        xLineBorder1.setHideRight(true);
-        xLineBorder1.setLineColor(new java.awt.Color(170, 170, 170));
-        xLineBorder1.setPadding(new java.awt.Insets(3, 0, 0, 0));
-        jSplitPane1.setBorder(xLineBorder1);
-        jSplitPane1.setDividerLocation(500);
+        xSplitView1.setDividerLocationPercentage(60);
+        xSplitView1.setShowDividerBorder(true);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 3));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 0));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -117,9 +111,9 @@ public class LedgerListPage extends javax.swing.JPanel {
         listPanel1.setName("selectedItem"); // NOI18N
         jPanel2.add(listPanel1, java.awt.BorderLayout.CENTER);
 
-        jSplitPane1.setLeftComponent(jPanel2);
+        xSplitView1.add(jPanel2);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5));
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 3, 5, 5));
         jPanel3.setLayout(new java.awt.BorderLayout());
 
         xCheckBox1.setName("showVoid"); // NOI18N
@@ -280,9 +274,9 @@ public class LedgerListPage extends javax.swing.JPanel {
         xDataTable2.setDynamic(true);
         jPanel3.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
-        jSplitPane1.setRightComponent(jPanel3);
+        xSplitView1.add(jPanel3);
 
-        add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        add(xSplitView1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -290,7 +284,6 @@ public class LedgerListPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
     private com.rameses.seti2.components.ListPanel listPanel1;
     private com.rameses.rcp.control.XButton xButton1;
@@ -300,5 +293,6 @@ public class LedgerListPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XSplitView xSplitView1;
     // End of variables declaration//GEN-END:variables
 }

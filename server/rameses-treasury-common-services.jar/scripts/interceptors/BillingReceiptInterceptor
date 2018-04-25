@@ -36,7 +36,7 @@ public class BillingReceiptInterceptor {
 		service.post( payinfo );		
 	}
 
-	@After(pattern="BillingCapturePaymentService.post", eval="#{ args[0]._postpayment == true }",  index=50)
+	@After(pattern="BasicCapturePaymentService.post", eval="#{ args[0]._postpayment == true }",  index=50)
 	public void postCapturePayment( evt ) { 
 		def e = evt.args[0]; 
 		def pp = [ txntype: e.txntype ]; 

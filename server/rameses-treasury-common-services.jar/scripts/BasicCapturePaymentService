@@ -1,0 +1,28 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+class BasicCapturePaymentService {
+
+	@Service("BasicBillingService")
+	def billingSvc;
+
+	@Service("PaymentPostingService")
+	def service;
+
+
+	@ProxyMethod
+	public def getBillingInfo( p ) {
+		return billingSvc.getBillingInfo( p ); 
+	}
+
+	@ProxyMethod
+	public def post( pmt ) {
+		pmt._postpayment = true; 
+		return pmt; 
+	} 
+}

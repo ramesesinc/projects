@@ -49,7 +49,7 @@ public class ChangeInfoPage extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
 
         xTextArea1.setCaption("Remarks");
-        xTextArea1.setName("entity.remarks"); // NOI18N
+        xTextArea1.setName("remarks"); // NOI18N
         xTextArea1.setRequired(true);
         xTextArea1.setShowCaption(false);
         jScrollPane1.setViewportView(xTextArea1);

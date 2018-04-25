@@ -19,7 +19,7 @@ public class ChangeInfoModel extends DynamicForm {
     @Service("ChangeInfoService")
     def changeInfoSvc;
     
-    def entity = [:];
+    def entity;
     def oldValues = [:];
     
     def reftype;
@@ -28,23 +28,41 @@ public class ChangeInfoModel extends DynamicForm {
     
     def listener;
     def beforeUpdate;
-    def keyfields = [];
-    
-    @PropertyChangeListener
-    def fieldListener;
+    def keyfield;
+    def remarks;
     
     public void init() {
-        if(listener!=null) {
-            fieldListener = [:];
-            listener.each { k,v->
-                if( !k.startsWith("data.")) k = "data." + k;
-                fieldListener.put( k, { newVal ->  v( data, newVal ); })
+        if(!keyfield) {
+            keyfield = invoker.properties.keyfield;
+        }
+        
+        def newData = entity.get( keyfield );
+        fields  = [];
+        def m = [:];
+        m.caption = invoker.caption;
+        m.name = keyfield;
+        invoker.properties.each { k,v->
+            if(!k.matches("type|name|target|action")) {
+                m.put( k, v );
             }
         }
-        oldValues = MapBeanUtils.copy( data );
-        oldValues.each { k,v->
-            keyfields << k;
+        fields << m;
+
+        //load reftype
+        reftype = workunit?.info?.workunit_properties?.reftype;    
+        
+        //load refkey
+        String _refkey = workunit?.info?.workunit_properties?.refkey;
+        if(!_refkey) _refkey = "objid";
+        
+        //build the refkeys
+        refkeys = [(_refkey) : entity.get(_refkey) ];
+        data = [ (keyfield) : newData];
+        
+        if(data) {
+            oldValues = MapBeanUtils.copy( data );
         }
+       
         super.init();
     }
     
@@ -52,29 +70,51 @@ public class ChangeInfoModel extends DynamicForm {
         return workunit?.info?.workunit_properties?.schemaName;
     }    
     
-    def doOk() {
-        if(beforeUpdate) beforeUpdate( data );
-        //store key fields
-        entity._schemaname = schemaName;
-        if(!entity._schemaname) entity._schemaname = 'changeinfo';
-        entity.data = data;
-        entity.reftype = reftype;
-        entity.refkeys = refkeys;
-        entity.action = getAction();
-        entity.keyfields = keyfields.join(",");
-        
-        if( keyfields.size() == 1 ) {
-            entity.oldvalue = [oldValues.get( entity.keyfields )];
-            entity.newvalue = [data.get( entity.keyfields )];
-        }
-        else {
-            entity.oldvalue = oldValues;
-            entity.newvalue = data;
-        }
-        changeInfoSvc.save( entity );
-        return "_close";
+    public boolean validate(def keyfield, def value) {
+        return true;
     }
     
+    def doOk() {
+        if(!validate(keyfield, data.get(keyfield)) ) return null;
+        
+        if(oldValues == data)
+            throw new Exception("No changes have been made");
+        
+        if(beforeUpdate) {
+            beforeUpdate( data );
+        }
+        //store key fields
+        def m = [:];
+        m._schemaname = schemaName;
+        if(!m._schemaname) m._schemaname = 'changeinfo';
+        m.remarks = remarks;
+        m.data = data;
+        m.reftype = reftype;
+        m.refkeys = refkeys;
+        
+        m.action = getAction();
+        m.keyfield = keyfield;
+        
+        def v = oldValues.get(keyfield);
+        def v1 = data.get(keyfield);
+        if( v instanceof Map ) {
+            m.oldvalue = v;
+            m.newvalue = v1;
+        }
+        else {
+            m.oldvalue = [v];
+            m.newvalue = [v1];
+        }
+        
+        if( m.newvalue == null ) m.newvalue = [:];
+        
+        changeInfoSvc.save( m );
+        try {
+            if(caller) caller.reload();
+        }
+        catch(e){;}
+        return "_close";
+    }
     
 }
         

@@ -1,0 +1,41 @@
+<workunit extends="com/rameses/treasury/common/templates/ChangeInfo.xml" schemaName="waterworks_changelog" 
+    reftype="waterworks_meter">
+    <invokers>
+        <invoker type="waterworks_meter:edit" target="popup" caption="Change Last Reading" action="init" index="10"
+                 keyfield="lastreading"  datatype="integer" />
+        
+        <invoker type="waterworks_meter:edit" caption="Change Last Reading Date" action="init"  target="popup" index="11"
+            keyfield="lastreadingdate"  datatype="date"/>
+                    
+        
+    </invokers>
+    
+    <code>
+        <![CDATA[
+    
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        import java.text.*;
+        import com.rameses.treasury.common.models.*;
+
+        class MeterInfoModel extends ChangeInfoModel {
+
+            boolean validate( def keyfield, def value ) {
+                if(keyfield=="lastreading") {
+                    def v = value.toInteger();
+                    if( v >= entity.capacity.toInteger() ) {
+                        throw new Exception("Last reading must be less than capacity");
+                    }
+                }
+                return true;
+            }
+
+        }
+
+        ]]>
+    </code>     
+        
+</workunit>

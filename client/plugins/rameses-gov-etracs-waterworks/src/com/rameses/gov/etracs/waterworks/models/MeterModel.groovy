@@ -9,45 +9,18 @@ import com.rameses.util.*;
 
 public class MeterModel extends CrudFormModel {
     
+    void initView() {
+        entity = [objid : caller?.entity?.meter.objid ];
+        super.open();
+    }
+    
     def edit() {
         def mp = new PopupMenuOpener();
-        mp.add( new FormAction(caption:'Edit Reading', name:'editReading', context: this )  );
-        mp.add( new FormAction(caption:'Change Status', name:'changeStatus', context: this)  );
+        def list = Inv.lookupOpeners( "waterworks_meter:edit", [entity: entity ] );
+        list.each { op->
+            mp.add( op );
+        }
         return mp;
-    }
-    
-    void updateMeter( def o ) {
-        def m = [_schemaname:'waterworks_meter'];
-        m.findBy = [objid: entity.objid];
-        m.putAll( o );
-        persistenceService.update( m );
-        entity.putAll( o );
-        binding.refresh();
-    }
-    
-    void editReading() {
-        def p = [ fields:[] ];
-        p.fields << [caption:'Last Reading', name:'lastreading', datatype:'integer', required:true];
-        p.fields << [caption:'Last Reading Date', name:'lastreadingdate', datatype:'date', required:true];
-        p.data = [lastreading: entity.lastreading, lastreadingdate: entity.lastreadingdate];
-        p.handler = { o->
-            o.lastreading = o.lastreading.toInteger();
-            if( o.lastreading >= entity.capacity.toInteger() ) {
-                throw new Exception("Last reading must be less than capacity");
-            }
-            updateMeter(o);
-        }
-        Modal.show( "dynamic:form", p, [title:"Enter Reading Information"] );
-    }
-    
-    def meterStatusList = ['ACTIVE', 'DEFECTIVE'];
-    void changeStatus() {
-        def p = [ fields:[] ];
-        p.fields << [caption:'Change Status', name:'state', datatype:'string_array',arrayvalues:['ACTIVE','DEFECTIVE'] ];
-        p.handler = { o->
-            updateMeter(o);
-        }
-        Modal.show( "dynamic:form", p, [title:"Change Meter Status" ] );
     }
 
 }

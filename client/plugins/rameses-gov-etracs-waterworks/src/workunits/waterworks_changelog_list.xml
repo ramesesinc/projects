@@ -6,7 +6,14 @@
         <invoker type="waterworks_account:section" caption="Change Info" 
                  index="100" action="init" 
                  parentkey="refid"
-                 cols="dtfiled,filedby.name,keyfields,oldvalue,newvalue,remarks"
+                 cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
+                 orderBy="dtfiled DESC"
+                 visibleWhen="#{mode=='read'}"  />
+        
+         <invoker type="waterworks_meter:section" caption="Change Info" 
+                 index="100" action="init" 
+                 parentkey="refid"
+                 cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
                  orderBy="dtfiled DESC"
                  visibleWhen="#{mode=='read'}"  />
     </invokers>

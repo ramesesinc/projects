@@ -2,7 +2,7 @@
     reftype="waterworks_account" >
     <invokers>
         <invoker type="waterworks_account:edit" target="popup" caption="Change Address" action="init" index="10"
-                 keyfield="address"  datatype="local_address" preferredSize="550,100" captionWidth="60" />
+                 keyfield="address"  datatype="local_address" preferredSize="500,100" captionWidth="60"/>
         
         <invoker type="waterworks_account:edit" caption="Change Owner" action="init"  target="popup" index="11"
             keyfield="owner"  datatype="lookup" handler="entity:lookup" 

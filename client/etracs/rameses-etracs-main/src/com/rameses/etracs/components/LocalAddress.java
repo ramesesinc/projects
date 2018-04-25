@@ -6,6 +6,7 @@ package com.rameses.etracs.components;
 
 import com.rameses.common.MethodResolver;
 import com.rameses.rcp.control.XComponentPanel;
+import com.rameses.rcp.ui.UIFocusableContainer;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 import java.beans.Beans;
 
@@ -14,7 +15,7 @@ import java.beans.Beans;
  * @author dell
  */
 @ComponentBean("com.rameses.etracs.components.LocalAddressModel")
-public class LocalAddress extends XComponentPanel {
+public class LocalAddress extends XComponentPanel implements UIFocusableContainer {
 
     /**
      * Creates new form LocalAddress
@@ -158,6 +159,8 @@ public class LocalAddress extends XComponentPanel {
             e.printStackTrace();
         }
     }
-    
-    
+
+    public boolean focusFirstInput() { 
+        return xFormPanel1.focusFirstInput(); 
+    }
 }

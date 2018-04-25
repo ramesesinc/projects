@@ -1,21 +1,9 @@
 <workunit>
-    
     <invokers>
         <invoker type="formActions" action="_close" caption="Close" 
-                 shortcut="ctrl Q" mnemonic="q" />
+                 shortcut="ctrl Q" mnemonic="C" immediate="true" />
         <invoker type="formActions" action="save" caption="Save" 
-                 shortcut="ctrl S" mnemonic="s" />
-        <!--
-        <invoker type="formActions" action="doNext" caption="Next" 
-            icon="images/toolbars/arrow_right.png"  visibleWhen="#{ page == 'initial' }"/>
-        
-        
-        <invoker type="formActions" action="doInitial" caption="Back" 
-            icon="images/toolbars/arrow_right.png"  visibleWhen="#{ page == 'entry' }"/>
-        
-        <invoker type="formActions" action="save" caption="Save" 
-            icon="images/toolbars/save.png"  visibleWhen="#{ page == 'entry' }"/>
-            -->
+                 shortcut="ctrl S" mnemonic="S" />
     </invokers>
     <code class="com.rameses.treasury.common.models.BasicBillingCapturePaymentModel" />
     <pages>

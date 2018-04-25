@@ -20,25 +20,14 @@ public class BasicBillingCapturePaymentModel {
     @Caller 
     def caller; 
     
-    @Service("BasicBillingService")
-    def billingSvc;
-    
+    @Service("BasicCapturePaymentService")
+    def paySvc;
+        
     def parent;
-    def status;   
-    def selectedItem;
     def txnid;
-    def amount;
-    def refid;
-    
-    def entity = [reftype:'cashreceipt'];
-    def billAmount = 0;
-    def miscAmount = 0;
-    
-    def miscList = [];
-    def billItemList = [];
-    
-    def amtpaid = 0;
-    
+    def selectedItem;    
+    def entity = [reftype: 'cashreceiptcapture'];
+        
     boolean amountSpecified = false;
 
     public String getRulename() {
@@ -50,6 +39,15 @@ public class BasicBillingCapturePaymentModel {
         if( s != null ) return s;
     }
 
+    public String getTxntype() {
+        String s = invoker.properties.txntype;
+        if( s!=null ) {
+            return s;
+        }
+        s = workunit?.info?.workunit_properties?.txntype;
+        if( s != null ) return s;
+    }
+    
     public String getTitle() {
         if( invoker.properties.formTitle ) {
             return ExpressionResolver.getInstance().evalString(invoker.properties.formTitle,this);
@@ -84,8 +82,11 @@ public class BasicBillingCapturePaymentModel {
         return "Details";
     }
 
-    void afterLoadInfo() {;}
     void buildParams( p ) {;}
+    void beforeLoadInfo( p ) {;}
+    void afterLoadInfo() {;}
+    void beforeSave() {} 
+    void afterSave() {} 
     
     void init() {
         def p = [:];
@@ -99,27 +100,31 @@ public class BasicBillingCapturePaymentModel {
     }
         
     void loadInfo(def p) {
+        beforeLoadInfo( p );
+        
         def pp = [ rulename: getRulename(), params: p ]; 
-        def info = billingSvc.getBillingInfo( pp );
-        println '** info '
-        info.each{
-            println '>> '+ it; 
-        }
+        def info = paySvc.getBillingInfo( pp );
         entity.putAll( info );
-        billItemList = info.billitems;
+        entity.billitems.each { 
+            it.selected = true; 
+            if ( it.amount == null ) it.amount = 0.0; 
+            if ( it.discount == null ) it.discount = 0.0; 
+            if ( it.surcharge == null ) it.surcharge = 0.0; 
+            if ( it.interest == null ) it.interest = 0.0; 
+        }
+        
+        afterLoadInfo(); 
         reloadItems();
     }
     
     void reloadItems() {
-        entity.items = [];
-        entity.items.addAll( billItemList );
         updateTotals(); 
         listHandler.reload();
         if( binding ) binding.refresh();
     } 
     
     public void updateTotals() {
-        def total = entity.items.sum{( it.total ? it.total : 0.0 )}
+        def total = entity.billitems.sum{( it.total ? it.total : 0.0 )}
         entity.totalamount = (total == null ? 0.0 : total); 
         entity.totalamount = NumberUtil.round( entity.totalamount );  
         if ( binding ) binding.notifyDepends('totals');
@@ -129,6 +134,7 @@ public class BasicBillingCapturePaymentModel {
         if( amountSpecified ) 
             throw new Exception("Please reset amount specified first to Pay All");
         if( !getPayOption() ) return null;
+        
         def m = [:];
         m.onselect = { o->
             loadInfo( [id: txnid, action:'payoption', payoption: o ] );
@@ -156,8 +162,58 @@ public class BasicBillingCapturePaymentModel {
     }
     
     def listHandler = [
+        getRows: { 
+            return 10; 
+        }, 
         fetchList: { o->
             return entity.billitems;
+        }, 
+        isAllowAdd: {
+            return false; 
+        },
+        isColumnEditable: { item, colname->  
+            if ( colname == 'selected' ) return true; 
+            return (item.selected ? true : false); 
+        },
+        afterColumnUpdate: { item, colname-> 
+            updateItemTotal( item ); 
+            updateTotals(); 
         }
-    ] as BasicListModel;
+    ] as EditorListModel;
+    
+    void updateItemTotal( item ) {
+        item.total = 0.0; 
+        if ( item.selected ) {
+            item.total = (item.amount - item.discount) + item.surcharge + item.interest; 
+        }
+    }
+    
+    def save() {
+        beforeSave(); 
+        updateTotals(); 
+        entity.txntype = getTxntype(); 
+
+        def items = entity.billitems.findAll{ it.selected == true } 
+        if ( !items ) throw new Exception('Please select at least one item'); 
+        
+        if ( entity.totalamount==null || entity.amount <= 0 ) 
+            throw new Exception('Total Amount must be greater than zero'); 
+        if ( entity.amount != entity.totalamount ) 
+            throw new Exception('Amount must be equal to the Total Amount'); 
+            
+        if ( MsgBox.confirm('You are about to post this payment. Continue?')) { 
+            def pmt = [:]; 
+            pmt.putAll( entity ); 
+            pmt.billitems = items; 
+            paySvc.post( pmt ); 
+            afterSave(); 
+            
+            try {
+                if ( caller ) caller.reload(); 
+            } catch(Throwable t){;} 
+
+            return '_close'; 
+        }
+        return null; 
+    }
 }

@@ -4,10 +4,16 @@
  */
 package com.rameses.treasury.common.views;
 
+import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
+import com.rameses.rcp.ui.annotations.Template;
+
 /**
  *
- * @author ramesesinc
+ * @author wflores
  */
+@StyleSheet
+@Template( FormPage.class )
 public class BasicBillingCapturePaymentPage extends javax.swing.JPanel {
 
     /**
@@ -298,7 +304,7 @@ public class BasicBillingCapturePaymentPage extends javax.swing.JPanel {
         xLabel11.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
         xLabel11.setFontStyle("font-size:14;");
         xLabel11.setOpaque(true);
-        xLabel11.setPreferredSize(new java.awt.Dimension(200, 22));
+        xLabel11.setPreferredSize(new java.awt.Dimension(130, 22));
         jPanel1.add(xLabel11);
 
         add(jPanel1, java.awt.BorderLayout.PAGE_END);

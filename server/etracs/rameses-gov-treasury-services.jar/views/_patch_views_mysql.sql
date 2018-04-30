@@ -159,3 +159,14 @@ group by
 	startseries, endseries, prefix, suffix 
 ;
 
+
+
+create view vw_collectiontype_org as 
+select 
+	c.objid, c.state, c.name, c.title, c.formno, c.handler, c.allowbatch, 
+	c.barcodekey, c.allowonline, c.allowoffline, c.sortorder, o.org_objid, 
+	o.org_name, c.fund_objid, c.fund_title, c.category, c.queuesection 
+from collectiontype_org o 
+	inner join collectiontype c on c.objid = o.collectiontypeid 
+;
+

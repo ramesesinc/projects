@@ -30,9 +30,9 @@ public class CashReceiptComputeShareInterceptor {
 			if(sharing) {
 				if(!p.sharing) p.sharing = [];
 				p.sharing.addAll( sharing );
-			}	
+			} 
 		}
-		catch(e) {
+		catch(Throwable e) {
 			println "Error executing sharing rule service. " + e.message;
 		}
 	}

@@ -1,15 +1,32 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="cashreceipt"
           cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name" 
           allowCreate="false" allowDelete="false" orderBy="receiptno,receiptdate">
     
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" caption="Cash Receipts List" action="init"
-                 role="SHARED" />
-        
+                 role="SHARED" tag="mgmt"/>
+
+        <invoker folderid="menucategory/treasury/collection" caption="Collector Cash Receipts" action="init"
+                 role="COLLECTOR" tag="collector" index="50"/>
+                
         <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
                  customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
                  target="popup" width="1024"/>
    </invokers>
-      
+   
+   <code>
+import com.rameses.osiris2.client.*;
+              
+class CashReceiptListModel extends com.rameses.seti2.models.CrudListModel {
+    
+   def getCustomFilter() {
+       if ( tag == 'mgmt' ) return null; 
+       if ( tag == 'collector') {
+        return ['collector.objid = :userid', [userid: OsirisContext.env.USERID ]];
+       } 
+       return null; 
+   } 
+}       
+   </code> 
 </workunit>

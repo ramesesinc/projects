@@ -45,7 +45,7 @@ class CashReceiptInitialModel  {
         else {
             arr << " allowoffline = 1";
         }
-        def m = [_schemaname: "collectiontype"];
+        def m = [_schemaname: "vw_collectiontype_org"];
         m.where = [arr.join(" AND "), parm];
         m.orderBy = "sortorder,title";
         allCollectionTypes = qryService.getList( m );

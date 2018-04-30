@@ -26,8 +26,8 @@ class SubItemAccountModel extends CrudListModel {
     }
 
     void addSub() { 
-        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
-            MsgBox.alert( 'Main account must be approved first ');
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'ACTIVE' ) {
+            MsgBox.alert( 'Main account must be activated first ');
             return;
         }; 
         
@@ -61,8 +61,8 @@ class SubItemAccountModel extends CrudListModel {
     } 
 
     void removeSub() {
-        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
-            MsgBox.alert( 'Main account must be approved first ');
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'ACTIVE' ) {
+            MsgBox.alert( 'Main account must be activated first ');
             return;
         }; 
 
@@ -85,15 +85,15 @@ class SubItemAccountModel extends CrudListModel {
     }
     
     void doSelectAll() {
-        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
-            MsgBox.alert( 'Main account must be approved first ');
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'ACTIVE' ) {
+            MsgBox.alert( 'Main account must be activated first ');
             return;
         }; 
         listHandler.selectAll(); 
     } 
     void doDeselectAll() {
-        if ( caller && caller.mode == 'read' && caller.entity.state != 'APPROVED' ) {
-            MsgBox.alert( 'Main account must be approved first ');
+        if ( caller && caller.mode == 'read' && caller.entity.state != 'ACTIVE' ) {
+            MsgBox.alert( 'Main account must be activated first ');
             return;
         }; 
         listHandler.deselectAll(); 

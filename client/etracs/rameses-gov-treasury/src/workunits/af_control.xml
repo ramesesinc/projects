@@ -7,7 +7,7 @@
         
         <!-- control menu -->                  
         <invoker type="af_control:form:actions" caption="Activate" action="activate" target="process"
-                 visibleWhen="#{ context.showAction==true &amp;&amp; entity.active ==0}" />
+                 visibleWhen="#{ context.showAction==true &amp;&amp; context.entity.active ==0}" />
                  
         <invoker type="af_control:form:actions" caption="Deactivate" action="deactivate" target="process"
                  visibleWhen="#{ context.showAction==true &amp;&amp;  entity.active !=0}" />

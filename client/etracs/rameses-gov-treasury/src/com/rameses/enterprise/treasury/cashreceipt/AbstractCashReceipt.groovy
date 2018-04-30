@@ -263,7 +263,8 @@ public abstract class AbstractCashReceipt {
             try { 
                 beforePost();
                 entity._paymentorderid = _paymentorderid;
-                entity = service.post( entity );
+                def res = service.post( entity );
+                if ( res ) entity = res;  
             } catch(e) { 
                 postError(); 
                 throw e; 

@@ -6,11 +6,22 @@ class CashReceiptListInterceptor {
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
-		result << [ id:'posted', title: 'Posted', state:'POSTED' ];
-		result << [ id:'xposted', title: 'Batch', state:'X POSTED' ];
-		result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];
-		result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
+		if ( x._tag == 'collector' ) {
+			result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];	
+			result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
+			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+			result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
+		} else if ( x._tag == 'mgmt' ) {
+			result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
+			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+			result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
+		} else if ( x._tag == 'subcollector' ) {
+			result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];	
+			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+		} else {
+			result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];	
+			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+		}
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashreceipt' }")
@@ -19,26 +30,27 @@ class CashReceiptListInterceptor {
 
 		if( !o.node?.id ) return;
 
-		def str = "";
+		def str = [];
 		def m = [:];
 
-		if( o.node.id == 'unremitted' ) {
-			str = " remittanceid IS NULL ";
-		}
-		else if( o.node.id == 'remitted' ){
-			str = " NOT(remittanceid IS NULL) ";
-		}
-		else {
-			str = " state = :state ";
+		if ( o.node.state ) {
+			str << " state = :state ";
 			m.state =  o.node.state;
 		}
 
+		if( o.node.id == 'unremitted' ) {
+			str << " remittanceid IS NULL ";
+		}
+		else if( o.node.id == 'remitted' ){
+			str << " NOT(remittanceid IS NULL) ";
+		}
+
 		if( o.where ) {
-			o.where[0] = str + " AND " + o.where[0];	
+			o.where[0] = str.join(' AND ') + " AND " + o.where[0];	
 			o.where[1].putAll( m );
 		}
 		else {
-			o.where = [str, m];
+			o.where = [str.join(' AND '), m];
 		}
 	}	
 

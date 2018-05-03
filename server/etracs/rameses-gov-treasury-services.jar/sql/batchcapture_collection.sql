@@ -2,23 +2,6 @@
 select objid from batchcapture_collection 
 where controlid=$P{controlid} and state NOT IN ('POSTED','CLOSED')
 
-[updateBatchCaptureState]
-update batchcapture_collection set state=$P{state} where objid=$P{objid} 
-
-[deleteBatchEntryItem]
-delete from batchcapture_collection_entry_item where parentid=$P{objid}
-
-[deleteBatchEntryItemByRootid]
-delete from batchcapture_collection_entry_item  
-where parentid in (select objid from  batchcapture_collection_entry where parentid=$P{objid}  ) 		
-
-[deleteBatchEntry]
-delete from batchcapture_collection_entry where parentid=$P{objid} 
-
-
-[findBatchEntry]
-select objid from batchcapture_collection_entry where objid=$P{objid} 
-
 [post]	
 update batchcapture_collection set 
 	state=$P{state}, 
@@ -58,9 +41,6 @@ from (
 where 1=1 ${filter} 
 order by bcc.txndate desc 
 
-[getBatchEntry]
-select * from batchcapture_collection_entry where parentid=$P{objid} order by series  
-
 [getBatchEntryItems]
 select bcei.*, 
 	case 
@@ -73,9 +53,6 @@ from batchcapture_collection_entry bce
 	inner join itemaccount ia on bcei.item_objid = ia.objid 
 	left join collectiontype_account cta on (bcei.item_objid=cta.account_objid and cta.collectiontypeid=bc.collectiontype_objid)
 where bce.objid=$P{objid} 
-
-[updateCashReceiptState]
-update cashreceipt set state='POSTED' where objid=$P{objid} 
 
 #
 # added scripts 
@@ -98,18 +75,12 @@ where
 	objid=$P{objid}
 
 
-[getBatchEntries]
-select * from batchcapture_collection_entry where parentid=$P{objid} order by series 
-
-[deleteBatchEntryItems]
-delete from batchcapture_collection_entry_item where parentid=$P{objid}
-
 [findRemitCount]
 select bcc.objid, count(bcce.objid) as remitcount   
 from batchcapture_collection bcc 
 	inner join batchcapture_collection_entry bcce on bcc.objid=bcce.parentid 
 where bcc.objid=$P{batchid} and bcc.state='POSTED' 
-	and bcce.objid in ( select objid from remittance_cashreceipt where objid=bcce.objid ) 
+	and bcce.objid in ( select objid from cashreceipt where objid=bcce.objid and remittanceid is not null) 
 group by bcc.objid 
 
 [getAFHistory]
@@ -119,7 +90,7 @@ select
 from ( 
 	select 
 		bcc2.objid, bcc2.controlid, bcce2.series, 
-		(select count(*) from remittance_cashreceipt where objid=bcce2.objid) as remitted 
+		(select count(*) from cashreceipt where objid=bcce2.objid and remittanceid is not null) as remitted 
 	from ( 
 		select 
 			bcc.objid, bcc.controlid, 

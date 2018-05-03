@@ -47,18 +47,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xDecimalField7 = new com.rameses.rcp.control.XDecimalField();
         jLabel7 = new javax.swing.JLabel();
         xButton3 = new com.rameses.rcp.control.XButton();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
-        buttonCash1 = new com.rameses.rcp.control.XButton();
-        buttonCheck1 = new com.rameses.rcp.control.XButton();
-        buttonCheck2 = new com.rameses.rcp.control.XButton();
-        xDecimalField11 = new com.rameses.rcp.control.XDecimalField();
         jPanel8 = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -78,6 +67,17 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         contentPanel = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        buttonCash1 = new com.rameses.rcp.control.XButton();
+        buttonCheck1 = new com.rameses.rcp.control.XButton();
+        buttonCheck2 = new com.rameses.rcp.control.XButton();
+        xDecimalField11 = new com.rameses.rcp.control.XDecimalField();
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
@@ -276,116 +276,11 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel6.setPreferredSize(new java.awt.Dimension(195, 45));
-
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel8.setText("Amount due");
-
-        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel11.setText("Payment Methods");
-
-        buttonCash1.setAccelerator("F9");
-        buttonCash1.setFocusable(false);
-        buttonCash1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        buttonCash1.setImmediate(true);
-        buttonCash1.setIndex(20);
-        buttonCash1.setName("doCashPayment"); // NOI18N
-        buttonCash1.setText("F9 - CASH  ");
-
-        buttonCheck1.setAccelerator("F10");
-        buttonCheck1.setFocusable(false);
-        buttonCheck1.setImmediate(true);
-        buttonCheck1.setIndex(21);
-        buttonCheck1.setName("doCheckPayment"); // NOI18N
-        buttonCheck1.setText("F10 - CHECK ");
-
-        buttonCheck2.setAccelerator("F11");
-        buttonCheck2.setFocusable(false);
-        buttonCheck2.setImmediate(true);
-        buttonCheck2.setIndex(21);
-        buttonCheck2.setName("doCreditMemo"); // NOI18N
-        buttonCheck2.setText("F11 - CREDIT MEMO ");
-
-        org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel7Layout.createSequentialGroup()
-                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(buttonCash1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(buttonCheck1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(buttonCheck2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
-                .add(0, 2, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel7Layout.createSequentialGroup()
-                .add(buttonCash1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(buttonCheck1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(buttonCheck2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
-        );
-
-        xDecimalField11.setEditable(false);
-        xDecimalField11.setBackground(new java.awt.Color(204, 204, 255));
-        xDecimalField11.setDepends(new String[] {"cash"});
-        xDecimalField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField11.setEnabled(false);
-        xDecimalField11.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
-        xDecimalField11.setName("entity.amount"); // NOI18N
-
-        org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jLabel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xDecimalField11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .add(jLabel8)
-                    .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(12, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel8)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDecimalField11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 31, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(31, 31, 31)
-                .add(jLabel11)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(252, 252, 252))
-        );
-
-        add(jPanel6, java.awt.BorderLayout.EAST);
-
         jPanel8.setLayout(new java.awt.BorderLayout());
 
-        jPanel9.setPreferredSize(new java.awt.Dimension(100, 90));
-        jPanel9.setLayout(new java.awt.BorderLayout());
-
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Remarks");
-        jScrollPane1.setBorder(xTitledBorder1);
-
-        xTextArea1.setIndex(100);
-        xTextArea1.setName("entity.remarks"); // NOI18N
-        jScrollPane1.setViewportView(xTextArea1);
-
-        jPanel9.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jPanel8.add(jPanel9, java.awt.BorderLayout.SOUTH);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Payer Info");
-        jPanel2.setBorder(xTitledBorder2);
+        xTitledBorder1.setTitle("Payer Info");
+        jPanel2.setBorder(xTitledBorder1);
         jPanel2.setPreferredSize(new java.awt.Dimension(0, 100));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(650, 70));
@@ -520,7 +415,112 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         contentPanel.setLayout(new java.awt.BorderLayout());
         jPanel8.add(contentPanel, java.awt.BorderLayout.CENTER);
 
+        jPanel9.setPreferredSize(new java.awt.Dimension(100, 90));
+        jPanel9.setLayout(new java.awt.BorderLayout());
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Remarks");
+        jScrollPane1.setBorder(xTitledBorder2);
+
+        xTextArea1.setIndex(100);
+        xTextArea1.setName("entity.remarks"); // NOI18N
+        jScrollPane1.setViewportView(xTextArea1);
+
+        jPanel9.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanel8.add(jPanel9, java.awt.BorderLayout.SOUTH);
+
         add(jPanel8, java.awt.BorderLayout.CENTER);
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        jPanel6.setPreferredSize(new java.awt.Dimension(195, 45));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setText("Amount due");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel11.setText("Payment Methods");
+
+        buttonCash1.setAccelerator("F9");
+        buttonCash1.setFocusable(false);
+        buttonCash1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        buttonCash1.setImmediate(true);
+        buttonCash1.setIndex(20);
+        buttonCash1.setName("doCashPayment"); // NOI18N
+        buttonCash1.setText("F9 - CASH  ");
+
+        buttonCheck1.setAccelerator("F10");
+        buttonCheck1.setFocusable(false);
+        buttonCheck1.setImmediate(true);
+        buttonCheck1.setIndex(21);
+        buttonCheck1.setName("doCheckPayment"); // NOI18N
+        buttonCheck1.setText("F10 - CHECK ");
+
+        buttonCheck2.setAccelerator("F11");
+        buttonCheck2.setFocusable(false);
+        buttonCheck2.setImmediate(true);
+        buttonCheck2.setIndex(21);
+        buttonCheck2.setName("doCreditMemo"); // NOI18N
+        buttonCheck2.setText("F11 - CREDIT MEMO ");
+
+        org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel7Layout.createSequentialGroup()
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(buttonCash1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(buttonCheck1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(buttonCheck2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                .add(0, 2, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel7Layout.createSequentialGroup()
+                .add(buttonCash1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(buttonCheck1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(buttonCheck2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 37, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
+        );
+
+        xDecimalField11.setEditable(false);
+        xDecimalField11.setBackground(new java.awt.Color(204, 204, 255));
+        xDecimalField11.setDepends(new String[] {"cash"});
+        xDecimalField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField11.setEnabled(false);
+        xDecimalField11.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
+        xDecimalField11.setName("entity.amount"); // NOI18N
+
+        org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jLabel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xDecimalField11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .add(jLabel8)
+                    .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jLabel8)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xDecimalField11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 31, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(31, 31, 31)
+                .add(jLabel11)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(252, 252, 252))
+        );
+
+        add(jPanel6, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
     
     

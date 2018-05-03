@@ -2,25 +2,23 @@ import com.rameses.annotations.*;
 
 class CashReceiptListInterceptor {
 
+	@Env 
+	def env;
+
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'cashreceipt' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
 		if ( x._tag == 'collector' ) {
-			result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];	
-			result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
-			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
-			result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
-		} else if ( x._tag == 'mgmt' ) {
-			result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
-			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
-			result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
+			result << [ id:'unremitted', title: 'Unremitted'];	
+			result << [ id:'delegated', title: 'Delegated'];
+			result << [ id:'remitted', title: 'Remitted'];	
 		} else if ( x._tag == 'subcollector' ) {
-			result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];	
-			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+			result << [ id:'unremitted', title: 'Unremitted'];	
+			result << [ id:'remitted', title: 'Remitted']; 
 		} else {
-			result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];	
-			result << [ id:'posted', title: 'Posted', state:'POSTED' ];
+			result << [ id:'unremitted', title: 'Unremitted'];	
+			result << [ id:'remitted', title: 'Remitted'];	
 		}
 	}
 
@@ -33,16 +31,29 @@ class CashReceiptListInterceptor {
 		def str = [];
 		def m = [:];
 
-		if ( o.node.state ) {
-			str << " state = :state ";
-			m.state =  o.node.state;
-		}
+		if ( o._tag == 'collector' ) {
+			str << " collector.objid = :userid ";
+			if ( o.node.id == 'unremitted' ) { 
+				str << " remittanceid is null ";
+				str << " (subcollector.objid is null  or (subcollector.objid is not null and subcollector.remittanceid is not null)) " 
+			} else if ( o.node.id == 'delegated' ) { 
+				str << " remittanceid is null and subcollector.objid is not null and subcollector.remittanceid is null "; 
+			} else { 
+				str << " remittanceid is not null "; 
+			}
 
-		if( o.node.id == 'unremitted' ) {
+			m.userid = env.USERID;
+
+		} else if ( o._tag == 'subcollector' ) {
+			str << " subcollector.objid = :userid ";
+			str << " subcollector.remittanceid is " + (o.node.id == 'unremitted' ? 'null' : 'not null');
+			m.userid = env.USERID;
+
+		} else if ( o.node.id == 'unremitted' ) {
 			str << " remittanceid IS NULL ";
-		}
-		else if( o.node.id == 'remitted' ){
-			str << " NOT(remittanceid IS NULL) ";
+
+		} else if( o.node.id == 'remitted' ){
+			str << " remittanceid IS NOT NULL ";
 		}
 
 		if( o.where ) {

@@ -34,17 +34,16 @@ class AFControlListInterceptor {
 		def str = "";
 		def m = [:]; 
 
-		if(o.node.state == 'PROCESSING') {
-			str = " lockid = 'PROCESSING' ";
-		}
-		else if( o.node.state == 'ISSUED' ) {
-			str = " state='ISSUED' AND currentseries < endseries AND lockid IS NULL";
+		println 'node -> ' + o.node;
+
+		if( o.node.state == 'ISSUED' ) {
+			str = " state='ISSUED' AND currentseries < endseries ";
 		}
 		else if( o.node.state == 'CONSUMED' ) {
-			str = " currentseries >= endseries AND lockid IS NULL ";
+			str = " currentseries >= endseries ";
 		}
 		else {
-			str = " state = :state AND lockid IS NULL";
+			str = " state = :state ";
 			m.state = o.node.state;
 		}
 		

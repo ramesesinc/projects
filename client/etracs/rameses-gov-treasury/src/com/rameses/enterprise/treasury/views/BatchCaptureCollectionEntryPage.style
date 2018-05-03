@@ -1,0 +1,14 @@
+"entity.*" [ mode.toString().matches('create|edit') == true ] {
+    enabled: true; 
+}
+"entity.*" [ mode.toString().matches('create|edit') != true ] {
+    enabled: false; 
+}
+
+"payment.*" [ mode.toString().matches('create|edit') == true ] {
+    enabled: true; 
+}
+"payment.*" [ mode.toString().matches('create|edit') != true ] {
+    enabled: false; 
+}
+ 

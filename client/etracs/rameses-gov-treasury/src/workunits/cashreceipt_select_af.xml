@@ -1,11 +1,18 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_control">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_control" allowSearch="false">
     <invokers>
-        <invoker type="cashreceipt:select-afcontrol" caption="Select Accountable Form" 
-                cols="currentseries,endseries,prefix,suffix,qtybalance,stubno,fund.title"
-                hiddenCols="fund.objid"
+        <invoker type="cashreceipt:select-af" caption="Select Accountable Form" 
+                cols="afid,stubno,currentseries,endseries,fund.title"
+                hiddenCols="prefix,suffix,fund.objid,owner.*,af.*"
                  action="init"
                  orderBy="stubno,currentseries"
                  target="popup"/>
+        
+        <invoker type="cashreceipt:select-af:subcollector" caption="Select Accountable Form" 
+                cols="afid,stubno,currentseries,endseries,owner.name"
+                hiddenCols="prefix,suffix,fund.*,owner.objid,af.*"
+                 action="init"
+                 orderBy="stubno,currentseries"
+                 target="popup"/>        
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.SelectAFModel" />
 </workunit>

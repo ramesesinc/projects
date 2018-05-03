@@ -1,15 +1,15 @@
-<workunit extends="wtemplates/ListController.xml" >
-    <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (ALL)" role="DATA_CONTROLLER"/>
-        <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (Collector)" action="initCollector" role="COLLECTOR"/>
-        <invoker folderid="/explorer/txn/treasury" caption="Batch Captures (Subcollector)" action="initSubcollector" role="SUBCOLLECTOR"/>
-        
-        <!-- Menu Category -->
-        <invoker folderid="menucategory/treasury/collection" caption="Collector Batch Capture" action="initCollector" role="COLLECTOR" index="5"/>
-        <invoker folderid="menucategory/treasury/collection" caption="Subcollector Batch Capture" action="initSubcollector" role="SUBCOLLECTOR" index="5"/>
-        
-        <invoker type="batchcapture:list:option:allowCreate" role="SUBCOLLECTOR" />  
-    </invokers>
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="batchcapture_collection"
+          cols="state,txndate,formno,collector.name,startseries,endseries,totalamount,capturedby.name" 
+          orderBy="txndate">
     
-    <code class="com.rameses.enterprise.treasury.models.BatchCaptureListModel"/> 
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" caption="Batch Capture List" 
+                 action="init" role="SHARED"/>
+
+        <invoker folderid="menucategory/treasury/collection" caption="Batch Capture List" 
+                 action="init" role="COLLECTOR,SUBCOLLECTOR"/>
+        
+   </invokers>
+
 </workunit>

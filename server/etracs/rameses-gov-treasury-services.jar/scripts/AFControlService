@@ -86,8 +86,8 @@ class AFControlService  {
 	}
 
 	@ProxyMethod
-	public void updateNextSeries( p ) {
-		em.find([ objid: p.controlid ]).update([ currentseries: p.series + 1 ]); 		
+	public void updateNextSeries( p ) { 
+		em.find([ objid: p.controlid ]).update([ currentseries: p.series + 1 ]); 
 	}
 
 	@ProxyMethod 

@@ -17,6 +17,7 @@
 		<field name="fund_title"/> 
 		<field name="category"/> 
 		<field name="queuesection"/> 
+		<field name="system"/> 
 		<field name="af_formtype"/> 
 		<field name="af_serieslength"/> 
 		<field name="af_denomination"/> 

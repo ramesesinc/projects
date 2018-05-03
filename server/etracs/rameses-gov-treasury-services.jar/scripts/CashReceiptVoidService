@@ -35,16 +35,22 @@ class CashReceiptVoidService  {
 
 
 	@ProxyMethod
-	public def post( def p ) {
-		def usr = actionPermissionSvc.checkAllowedAction( [username:p.username, password: p.password, action: 'cashreceipt.approve_void' ] );
+	public def post( def p ) { 
+		def usr = null; 
+		if ( p.txnmode == 'CAPTURE' ) {
+			usr = p.postedby; 
+		} else {
+			usr = actionPermissionSvc.checkAllowedAction( [username:p.username, password: p.password, action: 'cashreceipt.approve_void' ] );
+			usr.name = ''+ usr.firstname +' '+ usr.lastname; 
+		}
 
 		def v = [objid: "VOID"+new UID()];
-		v.postedby = [ objid:usr.objid, name:usr.firstname+ ' ' + usr.lastname];
+		v.postedby = [ objid:usr.objid, name:usr.name ];
 		v.receiptid = p.receipt.objid;
 		v.reason = p.reason;
-		v.txndate = dateService.serverDate;
-		
-		em.create("cashreceipt:void", v );
+		v.txndate = ( p.txndate ? p.txndate : dateService.getServerDate()); 
+
+		cashreceipt_void.create( v ); 
 		
 		def plist = ncPmtEm.select("refid,amount").find([receiptid: v.receiptid] ).where(" reftype='CHECK' ").list();
 		if(plist) {

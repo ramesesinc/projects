@@ -4,61 +4,45 @@ import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
-import com.rameses.util.*;
-import com.rameses.seti2.models.*;
 
-class SelectAFModel extends CrudLookupModel {
+class CashReceiptAFLookupFilter {
 
-    @Service("AFControlService")
-    def service;
-    
-    @Script( "User" )
-    def user;
-
-    def entity;
-
-    String title = "Select Stub to use";
-
-    def getCustomFilter() {
+    public static def getFilter( param ) {
+        def env = OsirisContext.env;
+        def p = [:];
         def arr = [];
         arr << "state='ISSUED'";
         arr << "afid = :formno";
         arr << "assignee.objid = :uid";
         arr << "txnmode=:mode";
         arr << "currentseries <= endseries";
-        arr << "active=0";
-        def p = [:];
-        p.formno = entity.formno;
-        p.uid = user.userid;
-        p.mode = entity.txnmode;
-        //arr << "lockid IS NULL"
-        if( entity.collectiontype?.fund?.objid ) {
+        if ( param.active != null ) {
+            arr << "active=:active";
+            p.active = param.active;
+        }
+        if ( param.startseries != null && param.startseries > 0 ) {
+            arr << " currentseries = :currentseries ";
+            p.currentseries = param.startseries; 
+        }
+        
+        p.uid = env.USERID;
+        p.formno = param.formno;
+        p.mode = param.txnmode;
+        
+        if( param.collectiontype?.fund?.objid ) {
             arr << "( fund.objid = :fundid OR fund.objid IS NULL)";
-            p.fundid = entity.collectiontype.fund.objid; 
+            p.fundid = param.collectiontype.fund.objid; 
         }
         else {
             arr << " fund.objid IS NULL ";
         }
-        if(OsirisContext.env.ORGROOT == 1 ) {
+        if(env.ORGROOT == 1 ) {
             arr << " respcenter.objid IS NULL ";
         }
         else {
             arr << " respcenter.objid = :orgid ";
-            p.orgid = OsirisContext.env.ORGID;
+            p.orgid = env.ORGID;
         }
         return [ arr.join(" AND "), p ];
     }
-    
-    def doOk() {
-        def obj = listHandler.getSelectedValue();
-        if( entity.collectiontype?.fund?.objid ) {
-            def vfund = entity.collectiontype.fund;
-            if( vfund.objid != obj.fund?.objid ) 
-                throw new Exception("The selected stub must have a fund that matches the collectiontype"  );
-        }
-        service.activateSelectedControl( [objid: obj.objid ] );
-        return "_close";
-        //return doOk();
-    }
-    
 }

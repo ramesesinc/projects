@@ -1,128 +1,152 @@
 package com.rameses.enterprise.treasury.models;
 
-import com.rameses.osiris2.common.*;
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
-import java.text.*;
 
-class BatchCashReceiptInitialModel  {
+class BatchCaptureCollectionInitialModel  {
 
     @Binding
     def binding;
 
-    def clientContext = com.rameses.rcp.framework.ClientContext.currentContext;
-    def session = OsirisContext.getSession();
-
-    @Service("CashReceiptService")
-    def cashReceiptSvc;
-
-    @Service("CollectionTypeService")
-    def collectionTypeSvc;
-
-    @Service("OrgService")
-    def orgSvc;
-
-    @Service("OrgLookupService")
-    def orgLookupSvc;
-
-    @Service("DateService")
-    def dtsvc
-
-    String title = "Cash Receipts (Batch Capture)";
-
-    def items = [];
-    def orgType;
-    def org;
-    def orgTypes;
-    def currentdate;
-
-    def getOrgList() {
-        if(!orgType) return [];
-        return orgLookupSvc.getList([orgclass:orgType]); 
-    }
-
-    def df = new SimpleDateFormat("yyyy-MM-dd");
-    def formatDate = { o->
-        if(o instanceof java.util.Date) {
-            return df.parse( df.format( o ));
-        }
-        return df.parse( o );     
-    }
-
-    void init() {
-        orgTypes = orgSvc.getOrgClasses()*.name;
-        currentdate = formatDate( dtsvc.getServerDate() );
-    } 
-
-    def model = [
-        fetchList: {o-> 
-            def appEnv = clientContext.appEnv; 
-            def customfolder = appEnv['app.custom']; 
-            def homeicon = 'images/' + customfolder + '/home-icon.png';  
-            def custom_homeicon = clientContext.getResource(homeicon); 
-            if (!custom_homeicon) homeicon = 'home/icons/folder.png';
-
-            def p = [:]; 
-            if ( orgType ) p.orgclass = orgType; 
-            if ( org ) p.objid = org?.objid; 
-
-            def list = collectionTypeSvc.getBatchCollectionTypes(p).each {
-                it.caption = it.title;
-                it.icon = homeicon;
-            }
-            return list;
-        }, 
-        onOpenItem: {o-> 
-            try { 
-                def entity = [:];
-                entity.collectiontype = o;
-                entity.formno = o.formno;
-                boolean pass = false;
-                def op = InvokerUtil.lookupOpener("afcapture:lookup",[
-                    "query.formno" : entity.formno,
-                    "query.txnmode": "CAPTURE",
-                    onselect:{ m ->
-                        entity.collector = m.owner;
-                        entity.capturedby = m.assignee;
-                        entity.stub = m.stubno;
-                        entity.formtype = m.formtype;
-                        entity.controlid = m.objid;
-                        entity.prefix = m.prefix;
-                        entity.suffix = m.suffix;
-                        entity.serieslength = m.serieslength;
-                        entity.startseries = m.currentseries;
-                        entity.endseries = m.endseries; 
-                        entity.currentseries = m.currentseries;
-                        entity.txnmode = 'CAPTURE';
-                        pass = true;
-                    }
-                ]);
-                op.target = "popup";
-                Modal.show( op );
-                if(!pass) throw new BreakException();    
-
-                //enter the date initial
-                pass = false;
-                Modal.show( "cashreceipt:specifydate", [ handler:{v->
-                    if( formatDate(v.receiptdate).after(currentdate) ) 
-                       throw new Exception("Receipt date must not greater than the current date.");                        
-                    entity.defaultreceiptdate = v.receiptdate;
-                    pass = true;
-                }]);
-                if(!pass) throw new BreakException();    
-
-                String bh = entity.collectiontype.batchhandler;
-                if( !bh ) bh = "misc";
-                def opener = Inv.lookupOpener("cashreceipt:batchcapture:postcreate:"+bh, [entity: entity]);  
-                opener.target = 'self';
-                return opener; 
-            } 
-            catch(BreakException be) { 
-                return null;
-            } 
-        }
-    ] as TileViewModel;
+    @Service("QueryService")
+    def qryService;
     
+    @Service('DateService')
+    def dateSvc; 
+    
+    @Service("BatchCaptureCollectionService")
+    def batchSvc;
+    
+    def modeList = ["CAPTURE"];
+    def afTypeList;
+    
+    def mode = "CAPTURE";
+    def afType;
+    def collectionType;
+    def allCollectionTypes;
+    
+    String title = "Batch Cash Receipt Initial (Select Type of Collection)"
+    
+    @SubWindow
+    def win;
+    
+    void loadCollectionTypes() {
+        def arr = [];
+        def parm = [:];    
+        if( OsirisContext.env.ORGROOT == 1 ) {
+            arr << "org.objid IS NULL"
+        } else { 
+            arr << "org.objid = :orgid";
+            parm.orgid = OsirisContext.env.ORGID;
+        }
+        
+        arr << " af.formtype = 'serial' ";
+        arr << " allowbatch = 1";
+
+        def m = [_schemaname: "vw_collectiontype_org"];
+        m.where = [arr.join(" AND "), parm];
+        m.orderBy = "sortorder,title";
+        allCollectionTypes = qryService.getList( m );
+        afTypeList = allCollectionTypes*.formno.unique();
+    }
+    
+    def getCollectionTypeList() {
+        if( !afType ) return allCollectionTypes;
+        return allCollectionTypes.findAll{ it.formno == afType }; 
+    }
+    
+    @PropertyChangeListener
+    def listener = [
+        "mode" : { o->
+            afType = null;
+            collectionType = null;
+            loadCollectionTypes();
+        }
+    ]
+    
+    boolean subcollectorMode;
+    
+    void init() {
+        //MsgBox.alert( "ctx " + OsirisContext.env.ORGID + " is root? " + OsirisContext.env.ORGROOT );
+        loadCollectionTypes();
+    }
+        
+    void initSubCollector() {
+        subcollectorMode = true; 
+        loadCollectionTypes();
+    }
+    
+    def lookupCollectorAF( param ) { 
+        def p = [ entity: param ]; 
+        def selAF = null; 
+        p.onselect = { o-> 
+            selAF = o;             
+        }
+        Modal.show('cashreceipt:select-af', p ); 
+        return selAF;
+    }
+    
+    def lookupSubCollectorAF( param ) {
+        def p = [ entity: param ]; 
+        def selAF = null; 
+        p.onselect = { o-> 
+            selAF = o;             
+        }
+        Modal.show('cashreceipt:select-af:subcollector', p ); 
+        return selAF;
+    }
+    
+    def doNext() {
+        def entity = [
+            txnmode         : mode, 
+            formno          : afType, 
+            formtype        : collectionType.af.formtype, 
+            collectiontype  : collectionType 
+        ]; 
+
+        def pass = false;
+        def p = [:];
+        p.fields = [
+            [name: 'startseries', caption:'Start Series', type:'integer', required:true], 
+            [name: 'receiptdate', caption:'Start Date', type:'date', required:true]
+        ];
+        p.data = [ receiptdate : dateSvc.getBasicServerDate() ]; 
+        p.handler = { o-> 
+            entity.putAll( o );  
+            pass = true;
+        }
+        Modal.show( "dynamic:form", p, [title: 'Start Receipt Information'] );
+        if ( !pass ) return null;
+        
+        def afc = null ;
+        if ( !subcollectorMode ) {
+            afc = lookupCollectorAF( entity ); 
+        } else {
+            afc = lookupSubCollectorAF( entity ); 
+        }
+        if ( afc == null ) return null; 
+        
+        println '** afc '
+        afc.each{
+            println '> '+ it;
+        }
+        
+        entity.defaultreceiptdate = entity.receiptdate;        
+        entity.stub = afc.stubno;
+        entity.collector = afc.owner;
+        entity.controlid = afc.objid; 
+        entity.endseries = afc.endseries; 
+        entity.prefix = afc.prefix; 
+        entity.suffix = afc.suffix; 
+        entity.serieslength = afc.af.serieslength; 
+        entity = batchSvc.create( entity ); 
+        
+        def op = Inv.lookupOpener('batchcapture_collection:open', [entity: [objid: entity.objid]]);  
+        op.target = 'self'; 
+        win.setTitle('Batch Capture Collection'); 
+        return op; 
+    }    
 }    

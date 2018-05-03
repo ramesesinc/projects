@@ -18,15 +18,30 @@ class CashReceiptService  {
 	@DataContext("cashreceipt")
 	def cashreceiptEm; 
 
+	@DataContext('cashreceipt_void') 
+	def cashreceipt_void;
+
+	@DataContext("paymentorder")
+   	def paymentOrderEm;
+		
+   	@DataContext("cashreceiptpayment_noncash")
+   	def cashRctPmt;
+
+   	@DataContext("cashreceiptitem")
+   	def cashRctItem;
+
+   	@DataContext("creditmemo")
+   	def creditmemo;
+
+    @DataContext("paymentcheck")
+   	def checkPayment;
+
 	@Service("DateService")
 	def dateService;
 
 	@Service("PaymentOrderService")
 	def paymentOrderSvc;
 
-	@DataContext("paymentorder")
-   	def paymentOrderEm;
-		
 	@Service("NumberService")
 	def numSvc;
 	
@@ -39,17 +54,6 @@ class CashReceiptService  {
 	@Service('PersistenceService')
 	def persistence 
 	
-   	@DataContext("cashreceiptpayment_noncash")
-   	def cashRctPmt;
-
-   	@DataContext("cashreceiptitem")
-   	def cashRctItem;
-
-   	@DataContext("creditmemo")
-   	def creditmemo;
-
-    @DataContext("paymentcheck")
-   	def checkPayment;
 
 	@Service("AFControlService")
 	def afControlSvc;
@@ -220,6 +224,29 @@ class CashReceiptService  {
 	public void validatePayer( params ) {
 		//do nothing 
 	}
+
+	@ProxyMethod 
+	public def removeReceipt( params ) { 
+		def p = [ objid: params.objid ]; 
+		def rct = cashreceiptEm.find( p ).first(); 
+		if ( rct ) { 
+			rct.remitted = ( rct.remittanceid ? true : false ); 
+			if ( rct.remitted ) 
+				throw new Exception('You are not allowed to remove a remitted receipt'); 
+
+			def rctparam = [ receiptid: rct.objid ]; 
+			def voidrec = cashreceipt_void.find( rctparam ).select('objid').first(); 
+			rct.voided = ( voidrec?.objid ? true : false ); 
+
+			cashreceipt_void.find( rctparam ).delete();
+			cashRctPmt.find( rctparam ).delete(); 
+
+			rct.items = cashRctItem.find( rctparam ).list(); 
+			cashRctItem.find( rctparam ).delete(); 
+			cashreceiptEm.find( p ).delete(); 
+		} 
+		return rct; 
+	} 
 
 	private def toDate( value ) { 
 		if ( value == null ) return value; 

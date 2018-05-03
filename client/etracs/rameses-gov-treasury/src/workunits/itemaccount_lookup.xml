@@ -12,29 +12,29 @@
         cols="code,title,fund.title" tag="MAIN_PAYABLE"/>
 
        <invoker type="payableaccount:lookup" caption="Lookup Payable Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="PAYABLE"/>
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="PAYABLE"/>
 
 
        <!-- used in looking up in rules --> 
        <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" />
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" />
 
        <!-- -->
        <invoker type="receivableaccount:lookup" caption="Lookup Receivable Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="RECEIVABLE"/>
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="RECEIVABLE"/>
        
        <invoker type="cashinbankaccount:lookup" caption="Lookup Cash In Bank Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH_IN_BANK"/>
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="CASH_IN_BANK"/>
        
        <invoker type="cashaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="CASH"/>
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="CASH"/>
        
        <invoker type="revenueitem:lookup" caption="Lookup Revenue" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="REVENUE"/>
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="REVENUE"/>
        
        <!-- used for looking up items in cash receipt -->
        <invoker type="cashreceiptitem:lookup" caption="Lookup Revenue" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="valuetype,defaultvalue,fund.objid" 
+            cols="code,title,fund.title,type,org.code" hiddenCols="valuetype,defaultvalue,fund.objid,fund.code" 
             tag="CASHRECEIPT"/>
        
     </invokers> 

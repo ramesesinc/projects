@@ -25,16 +25,11 @@ public class CashReceiptComputeShareInterceptor {
 		/***************************************************************
 		//do the sharing here. Just proceed if there are errors 
 		****************************************************************/
-		try {
-			def sharing = sharingSvc.execute( p );
-			if(sharing) {
-				if(!p.sharing) p.sharing = [];
-				p.sharing.addAll( sharing );
-			} 
-		}
-		catch(Throwable e) {
-			println "Error executing sharing rule service. " + e.message;
-		}
+		def sharing = sharingSvc.execute( p );
+		if(sharing) {
+			if(!p.sharing) p.sharing = [];
+			p.sharing.addAll( sharing );
+		} 
 	}
 
 

@@ -7,7 +7,6 @@
 package com.rameses.enterprise.treasury.views;
 
 
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -118,8 +117,8 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xFormPanel1.add(xCheckBox1);
 
         xTextField3.setCaption("Barcode Key");
-        xTextField3.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
         xTextField3.setName("entity.barcodekey"); // NOI18N
+        xTextField3.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
         xFormPanel1.add(xTextField3);
 
         xIntegerField1.setCaption("Sort Order");
@@ -128,9 +127,9 @@ public class CollectionTypePage extends javax.swing.JPanel {
 
         xComboBox3.setCaption("GUI Screen Handler");
         xComboBox3.setDepends(new String[] {"selectedForm"});
-        xComboBox3.setDynamic(true);
         xComboBox3.setItems("handlers");
         xComboBox3.setName("entity.handler"); // NOI18N
+        xComboBox3.setDynamic(true);
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
@@ -179,6 +178,8 @@ public class CollectionTypePage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ mode == 'read' }");
 
+        xDataTable1.setHandler("accountListHandler");
+        xDataTable1.setName("selectedAccount"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.title"}
@@ -256,21 +257,22 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
-        xDataTable1.setHandler("accountListHandler");
-        xDataTable1.setName("selectedAccount"); // NOI18N
 
+        xButton1.setDisableWhen("#{mode=='read'}");
         xButton1.setName("addAccount"); // NOI18N
         xButton1.setText("Add");
-        xButton1.setVisibleWhen("#{ mode == 'read' }");
 
         xButton2.setDepends(new String[] {"selectedAccount"});
+        xButton2.setDisableWhen("#{mode=='read'}");
         xButton2.setName("removeAccount"); // NOI18N
         xButton2.setText("Remove");
 
         xButton3.setDepends(new String[] {"selectedAccount"});
+        xButton3.setDisableWhen("#{mode=='read'}");
         xButton3.setName("editAccount"); // NOI18N
         xButton3.setText("Edit");
 
+        xButton4.setDisableWhen("#{mode=='read'}");
         xButton4.setName("reloadAccount"); // NOI18N
         xButton4.setText("Reload");
 

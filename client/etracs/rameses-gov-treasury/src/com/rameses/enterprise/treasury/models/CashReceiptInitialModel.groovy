@@ -17,6 +17,8 @@ class CashReceiptInitialModel  {
     @Service("CashReceiptService")
     def cashReceiptSvc;
     
+    @Service("AFControlService")
+    def afControlSvc;    
     
     def modeList = ["ONLINE", "OFFLINE"];
     def afTypeList;
@@ -33,11 +35,11 @@ class CashReceiptInitialModel  {
         def parm = [:];    
         if( OsirisContext.env.ORGROOT == 1 ) {
             arr << "org.objid IS NULL"
-        }
-        else {
+        } else { 
             arr << "org.objid = :orgid";
             parm.orgid = OsirisContext.env.ORGID;
         }
+        
         arr << " af.formtype = 'serial' ";
         if( mode == "ONLINE") {
             arr << " allowonline = 1";
@@ -66,9 +68,47 @@ class CashReceiptInitialModel  {
         }
     ]
     
+    boolean subcollectorMode;
+    
     void init() {
         //MsgBox.alert( "ctx " + OsirisContext.env.ORGID + " is root? " + OsirisContext.env.ORGROOT );
         loadCollectionTypes();
+    }
+    
+    void initSubCollector() {
+        subcollectorMode = true; 
+        loadCollectionTypes();
+    }
+    
+    def lookupCollectorAF( param ) { 
+        param.active = 1;
+        def env = OsirisContext.env; 
+        def p = [_schemaname: 'af_control']; 
+        p.where = CashReceiptAFLookupFilter.getFilter( param ); 
+        def res = qryService.findFirst( p ); 
+        if ( res ) return res; 
+        
+        param.active = 0; 
+        p = [ entity: param ]; 
+        
+        def selAF = null; 
+        p.onselect = { o-> 
+            afControlSvc.activateSelectedControl([ objid: o.objid ]);
+            selAF = o;             
+        }
+        Modal.show('cashreceipt:select-af', p ); 
+        return selAF;
+    }
+    
+    def lookupSubCollectorAF( param ) {
+        param.active = 1; 
+        def p = [ entity: param ]; 
+        def selAF = null; 
+        p.onselect = { o-> 
+            selAF = o;             
+        }
+        Modal.show('cashreceipt:select-af:subcollector', p ); 
+        return selAF;
     }
     
     def doNext() {
@@ -78,42 +118,41 @@ class CashReceiptInitialModel  {
             formtype        : collectionType.af.formtype, 
             collectiontype  : collectionType 
         ]; 
-        try { 
-            
-            def info = cashReceiptSvc.init( entity );
-            
-            if( mode == "OFFLINE" ) {
-                boolean pass = false;
-                Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 
-                    handler : {v-> 
-                        info.receiptdate = v; 
-                        pass = true;
-                    }
-                ]);
-                if ( !pass ) return null;
-            }
-            
-            //
-            def openerParams = [entity: info]; 
-            openerParams.createHandler = {
-                def op = findOpener( info ); 
-                if ( !op ) return;
-                binding.fireNavigation( op ); 
-            };
-            
-            def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, openerParams);  
-            if(!opener )
-                throw new Exception('No available handler found');
-            opener.target = "self";
-            return opener;
-        } 
-        catch(BreakException be) { 
-            return null;
-        } catch(Warning w) { 
-            String m = "cashreceipt:" + w.message;
-            Modal.show(m, [entity: entity]);
-            return null;
+
+        def af = null ;
+        if ( !subcollectorMode ) {
+            af = lookupCollectorAF( entity ); 
+        } else {
+            af = lookupSubCollectorAF( entity ); 
         }
-    }
-    
+        
+        if ( af == null ) return null; 
+        
+        def info = cashReceiptSvc.init( entity );
+
+        if( mode == "OFFLINE" ) {
+            boolean pass = false;
+            Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 
+                handler : {v-> 
+                    info.receiptdate = v; 
+                    pass = true;
+                }
+            ]);
+            if ( !pass ) return null;
+        }
+
+        //
+        def openerParams = [entity: info]; 
+        openerParams.createHandler = {
+            def op = findOpener( info ); 
+            if ( !op ) return;
+            binding.fireNavigation( op ); 
+        };
+
+        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, openerParams);  
+        if(!opener )
+            throw new Exception('No available handler found');
+        opener.target = "self";
+        return opener;
+    }    
 }    

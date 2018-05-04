@@ -30,6 +30,9 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xMaskField1 = new com.rameses.rcp.control.XMaskField();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -42,10 +45,30 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
 
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+
+        xDateField1.setCaption("Cutoff Date/Time");
+        xDateField1.setEditable(false);
+        xDateField1.setName("startdate"); // NOI18N
+        xDateField1.setCaptionWidth(120);
+        xDateField1.setEnabled(false);
+        xFormPanel2.add(xDateField1);
+
+        xMaskField1.setCaption("Time");
+        xMaskField1.setEditable(false);
+        xMaskField1.setMask("##:##");
+        xMaskField1.setName("startime"); // NOI18N
+        xMaskField1.setCaptionWidth(120);
+        xMaskField1.setEnabled(false);
+        xMaskField1.setPreferredSize(new java.awt.Dimension(40, 20));
+        xMaskField1.setShowCaption(false);
+        xFormPanel2.add(xMaskField1);
+
         jPanel4.setLayout(new com.rameses.rcp.control.layout.DividerLayout());
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
+        xDataTable1.setHandler("afSummaryHandler");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Receipts Summary");
         xDataTable1.setBorder(xTitledBorder1);
@@ -141,7 +164,6 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable1.setHandler("afSummaryHandler");
         xDataTable1.setPreferredSize(new java.awt.Dimension(200, 200));
         jPanel5.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
@@ -167,6 +189,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        xDataTable2.setHandler("voidReceiptHandler");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Void Receipts");
         xDataTable2.setBorder(xTitledBorder2);
@@ -247,7 +270,6 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable2.setHandler("voidReceiptHandler");
         xDataTable2.setPreferredSize(new java.awt.Dimension(200, 200));
         jPanel1.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
@@ -277,14 +299,18 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -296,9 +322,12 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XMaskField xMaskField1;
     // End of variables declaration//GEN-END:variables
 }

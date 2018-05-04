@@ -12,6 +12,7 @@
             <action role="SUBCOLLECTOR" caption="SubCollector Cash Receipts" tag="subcollector"/> 
         </invoker>
                 
+        <!-- used in open remittance -->        
         <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
                  customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
                  target="popup" width="1024"/>

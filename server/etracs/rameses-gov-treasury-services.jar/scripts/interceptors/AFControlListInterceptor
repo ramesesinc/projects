@@ -34,8 +34,6 @@ class AFControlListInterceptor {
 		def str = "";
 		def m = [:]; 
 
-		println 'node -> ' + o.node;
-
 		if( o.node.state == 'ISSUED' ) {
 			str = " state='ISSUED' AND currentseries < endseries ";
 		}

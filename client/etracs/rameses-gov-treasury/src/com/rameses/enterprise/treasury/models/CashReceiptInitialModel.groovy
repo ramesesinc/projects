@@ -162,6 +162,7 @@ class CashReceiptInitialModel  {
             pp.info = o.info;
             pp.entity = ee;
             pp.barcodeid = o.barcodeid;
+            if ( o._paymentorderid ) pp._paymentorderid = o._paymentorderid;
             def op = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
             binding.fireNavigation( op ); 
         }

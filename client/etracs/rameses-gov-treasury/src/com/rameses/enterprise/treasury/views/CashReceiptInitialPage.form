@@ -119,6 +119,7 @@
     </Container>
     <Component class="com.rameses.rcp.control.XButton" name="xButton1">
       <Properties>
+        <Property name="mnemonic" type="int" value="78"/>
         <Property name="name" type="java.lang.String" value="doNext" noResource="true"/>
         <Property name="text" type="java.lang.String" value="Next"/>
       </Properties>

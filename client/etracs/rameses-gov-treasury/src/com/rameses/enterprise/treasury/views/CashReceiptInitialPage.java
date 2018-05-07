@@ -71,6 +71,7 @@ public class CashReceiptInitialPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 30));
         xFormPanel1.add(xComboBox3);
 
+        xButton1.setMnemonic('N');
         xButton1.setName("doNext"); // NOI18N
         xButton1.setText("Next");
 

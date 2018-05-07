@@ -27,6 +27,18 @@ public class BarcodeLoader {
         int i = p.indexOf(":");
         if( i <=0 ) {
             barcodeid = p.trim(); 
+            def m = [_schemaname: 'paymentorder'];
+            m.findBy = [objid: barcodeid];
+            def po = qrySvc.findFirst( m );
+            MsgBox.alert( po.collectiontype );
+            MsgBox.alert( 'refno ' + po.refno );
+            def v = [
+                prefix: po.collectiontype.barcodekey,
+                barcodeid:po.refno,
+                collectiontype  : po.collectiontype,
+                info: po.info
+            ];
+            handler( v );            
         } 
         else {
             prefix = p.substring(0,i).trim(); 

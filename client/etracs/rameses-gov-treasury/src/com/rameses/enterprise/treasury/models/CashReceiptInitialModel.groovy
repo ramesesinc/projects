@@ -111,6 +111,17 @@ class CashReceiptInitialModel  {
         return selAF;
     }
     
+    def initReceipt(def entity) {
+        def af = null ;
+        if ( !subcollectorMode ) {
+            af = lookupCollectorAF( entity ); 
+        } else {
+            af = lookupSubCollectorAF( entity ); 
+        }
+        if ( af == null ) return null; 
+        return cashReceiptSvc.init( entity );
+    }
+    
     def doNext() {
         def entity = [
             txnmode         : mode, 
@@ -119,16 +130,7 @@ class CashReceiptInitialModel  {
             collectiontype  : collectionType 
         ]; 
 
-        def af = null ;
-        if ( !subcollectorMode ) {
-            af = lookupCollectorAF( entity ); 
-        } else {
-            af = lookupSubCollectorAF( entity ); 
-        }
-        
-        if ( af == null ) return null; 
-        
-        def info = cashReceiptSvc.init( entity );
+        def info = initReceipt( entity );
 
         if( mode == "OFFLINE" ) {
             boolean pass = false;
@@ -149,7 +151,18 @@ class CashReceiptInitialModel  {
     
     def loadBarcode() {
         def h = { o->
-            def op = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, [barcodeid: o.barcodeid] );
+            def e = [
+                txnmode         : "ONLINE", 
+                formno          : o.collectiontype.formno, 
+                formtype        : o.collectiontype.af.formtype, 
+                collectiontype  : o.collectiontype 
+            ];   
+            def ee = initReceipt( e );
+            def pp = [:];
+            pp.info = o.info;
+            pp.entity = ee;
+            pp.barcodeid = o.barcodeid;
+            def op = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
             binding.fireNavigation( op ); 
         }
         return Inv.lookupOpener( "cashreceipt_barcode", [handler: h] );

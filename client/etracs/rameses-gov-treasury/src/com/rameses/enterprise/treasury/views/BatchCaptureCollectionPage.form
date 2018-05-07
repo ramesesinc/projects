@@ -274,6 +274,7 @@
                 </Component>
                 <Component class="com.rameses.rcp.control.XButton" name="xButton1">
                   <Properties>
+                    <Property name="mnemonic" type="int" value="65"/>
                     <Property name="name" type="java.lang.String" value="addItem" noResource="true"/>
                     <Property name="text" type="java.lang.String" value="Add"/>
                   </Properties>
@@ -301,6 +302,7 @@
                         <StringItem index="0" value="selectedItem"/>
                       </StringArray>
                     </Property>
+                    <Property name="mnemonic" type="int" value="82"/>
                     <Property name="name" type="java.lang.String" value="removeItem" noResource="true"/>
                     <Property name="text" type="java.lang.String" value="Remove"/>
                   </Properties>
@@ -328,6 +330,7 @@
                         <StringItem index="0" value="selectedItem"/>
                       </StringArray>
                     </Property>
+                    <Property name="mnemonic" type="int" value="79"/>
                     <Property name="name" type="java.lang.String" value="openItem" noResource="true"/>
                     <Property name="text" type="java.lang.String" value="Open"/>
                   </Properties>

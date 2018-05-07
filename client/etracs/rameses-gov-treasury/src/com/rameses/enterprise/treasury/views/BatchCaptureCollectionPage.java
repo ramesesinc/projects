@@ -53,7 +53,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         xButton3 = new com.rameses.rcp.control.XButton();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        jPanel4 = new javax.swing.JPanel();
+        jPanel4 = new com.rameses.rcp.control.XPanel();
         jLabel3 = new javax.swing.JLabel();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(32767, 0));
@@ -162,18 +162,21 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         xLabel3.setUseHtml(true);
         xPanel1.add(xLabel3);
 
+        xButton1.setMnemonic('A');
         xButton1.setName("addItem"); // NOI18N
         xButton1.setText("Add");
         xPanel1.add(xButton1);
         xPanel1.add(filler1);
 
         xButton2.setDepends(new String[] {"selectedItem"});
+        xButton2.setMnemonic('R');
         xButton2.setName("removeItem"); // NOI18N
         xButton2.setText("Remove");
         xPanel1.add(xButton2);
         xPanel1.add(filler2);
 
         xButton3.setDepends(new String[] {"selectedItem"});
+        xButton3.setMnemonic('O');
         xButton3.setName("openItem"); // NOI18N
         xButton3.setText("Open");
         xPanel1.add(xButton3);
@@ -396,7 +399,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private com.rameses.rcp.control.XPanel jPanel4;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;

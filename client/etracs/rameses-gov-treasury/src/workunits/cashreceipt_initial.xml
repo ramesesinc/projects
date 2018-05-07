@@ -23,6 +23,8 @@
             <action role="COLLECTOR" name="init"/>
             <action role="SUBCOLLECTOR" name="initSubCollector"/>
         </invoker>
+        <!-- actions -->
+        <invoker type="formActions" caption="Barcode" icon="images/toolbars/barcode.png" action="loadBarcode" />
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.CashReceiptInitialModel" />

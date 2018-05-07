@@ -16,34 +16,32 @@ public class BarcodeLoader {
 
     @Service('QueryService')
     def qrySvc 
-
-    def findCollectionTypeParams( def finder ) {
-        //find collection type based on the prefix
-        def p = [_schemaname: 'collectiontype'];
-        p.findBy = finder;
-        def res = qrySvc.findFirst( p );
-        def params = [:];
-        params.txnmode = "ONLINE";
-        params.formno = res.af.objid;
-        params.formtype = res.af.formtype;
-        params.collectiontype = [objid:res.objid, title: res.title, handler: res.handler, name: res.name ];
-        return params;
-    } 
     
-    def init() {
+    def handler;
+
+    void init() {
         def p = MsgBox.prompt("Enter barcode");
         if(!p) return null;
-
         def prefix = null; 
         def barcodeid = null; 
         int i = p.indexOf(":");
         if( i <=0 ) {
             barcodeid = p.trim(); 
-        } else {
+        } 
+        else {
             prefix = p.substring(0,i).trim(); 
             barcodeid = p.substring(i+1).trim();
+            def m = [_schemaname: 'collectiontype'];
+            m.findBy = [barcodekey: prefix];
+            def ct = qrySvc.findFirst( m );
+            def v = [
+                prefix: prefix,
+                barcodeid:barcodeid,
+                collectiontype  : ct
+            ];
+            handler( v );
         } 
-        
+        /*
         def po = null;
         if (prefix == null){
             def q = [:]
@@ -93,9 +91,11 @@ public class BarcodeLoader {
             MsgBox.err( e );
             return null;
         }
+        */
     }
         
     //This is generally for miscellaneous general collection
+    /*
     def findOpener( def entity, def params, paymentOrderId ) {
         try {
             def info = cashReceiptSvc.init( params );
@@ -118,6 +118,6 @@ public class BarcodeLoader {
             return InvokerUtil.lookupOpener(m, [entity: params]);
         }
     } 
-        
+    */
         
 }       

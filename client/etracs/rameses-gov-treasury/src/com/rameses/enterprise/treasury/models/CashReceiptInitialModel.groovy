@@ -140,19 +140,18 @@ class CashReceiptInitialModel  {
             ]);
             if ( !pass ) return null;
         }
-
-        //
-        def openerParams = [entity: info]; 
-        openerParams.createHandler = {
-            def op = findOpener( info ); 
-            if ( !op ) return;
-            binding.fireNavigation( op ); 
-        };
-
-        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, openerParams);  
+        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: info]);  
         if(!opener )
             throw new Exception('No available handler found');
         opener.target = "self";
         return opener;
     }    
+    
+    def loadBarcode() {
+        def h = { o->
+            def op = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, [barcodeid: o.barcodeid] );
+            binding.fireNavigation( op ); 
+        }
+        return Inv.lookupOpener( "cashreceipt_barcode", [handler: h] );
+    }
 }    

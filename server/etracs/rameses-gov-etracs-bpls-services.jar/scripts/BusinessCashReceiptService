@@ -60,6 +60,7 @@ public class BusinessCashReceiptService  {
 
 	@ProxyMethod 
 	public def findInfo( param ) { 
+
 		def info = null; 
 		if ( param.appno ) { 
 
@@ -76,6 +77,8 @@ public class BusinessCashReceiptService  {
 		} else if ( param.applicationid ) {
 			info = app.findInfoByAppid( param ); 
 		} 
+		if(!info) 
+			throw new Exception("Business record not found");
 
 		if (!info.state.toLowerCase().matches('payment|release|completed')) 
 			throw new Exception('This application is not available for payment. Current state is ' + info.state);  

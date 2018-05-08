@@ -24,12 +24,12 @@ public class BatchBillingModel extends WorkflowTaskModel {
    @Script("ReportService")
    def reportSvc;
     
-   int year;
-   int month;
    
    def selectedItem;
    def selectedBillItem;
    
+   boolean hasDate = false; 
+    
    /*
     *   This method is used in style rule condition and DataTable column expression 
     */
@@ -51,40 +51,48 @@ public class BatchBillingModel extends WorkflowTaskModel {
        }
    } 
     
+   void reloadSchedule() {
+       if( !entity.zone.schedule?.objid )
+            throw new Exception("Please specify schedule in zone");
+        def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
+        try {
+            def sked = scheduleSvc.getSchedule(m);
+            
+            entity.putAll(sked);
+            entity.schedule = entity.zone.schedule;
+            binding.refresh();
+        }
+        catch( e) {
+            throw e;
+        }    
+   } 
+    
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
-            year = 0;
-            month = 0;
             if( o.year ) {
                 int xx = ((o.year * 12)+o.month) + 1;
                 entity.year = (int)(xx / 12);
                 entity.month = (xx % 12);
                 if ( entity.month <= 0 ) entity.month = 12;
+                hasDate = true;
+                reloadSchedule();
             }
             else {
                 entity.year = 0;
                 entity.month = 0;
             }
+       },
+       "entity.year" : { o->
+            if( entity.month > 0 ) reloadSchedule();
+            binding.refresh();
+       },
+       "entity.month" : { o->
+            if( entity.year > 0 ) reloadSchedule();
+            binding.refresh();
        }
    ];
-         
-   void beforeSave(def mode) {
-        if(mode == "create") {
-             if(!entity.year) entity.year = year;
-             if(!entity.month) entity.month = month;
-             def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
-             try {
-                 def sked = scheduleSvc.getSchedule(m);
-                 entity.putAll(sked);
-                 entity.schedule = entity.zone.schedule;
-             }
-             catch( e) {
-                 throw e;
-             }
-        }
-   } 
-    
+  
    void afterSave() {
        open(); 
    }

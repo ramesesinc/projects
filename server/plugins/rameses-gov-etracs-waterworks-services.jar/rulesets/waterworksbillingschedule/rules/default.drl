@@ -1,4 +1,4 @@
-package waterworksbillingcycle;
+package waterworksbillingschedule;
 
 import java.util.*;
 import waterworks.facts.*;

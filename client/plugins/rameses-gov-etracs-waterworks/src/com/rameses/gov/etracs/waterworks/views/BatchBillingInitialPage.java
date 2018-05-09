@@ -45,7 +45,7 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
 
         xFormPanel1.setDepends(new String[] {"entity.zone"});
-        xFormPanel1.setVisibleWhen("#{ entity.zone != null }");
+        xFormPanel1.setVisibleWhen("#{ entity.zone.schedule?.objid  != null }");
         xFormPanel1.setCaptionWidth(120);
 
         xLabel1.setCaption("Sector");

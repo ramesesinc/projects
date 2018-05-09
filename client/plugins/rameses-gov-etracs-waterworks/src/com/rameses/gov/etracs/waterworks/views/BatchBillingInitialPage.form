@@ -46,7 +46,7 @@
             <StringItem index="0" value="entity.zone"/>
           </StringArray>
         </Property>
-        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.zone != null }"/>
+        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.zone.schedule?.objid  != null }"/>
         <Property name="captionWidth" type="int" value="120"/>
       </Properties>
       <SubComponents>

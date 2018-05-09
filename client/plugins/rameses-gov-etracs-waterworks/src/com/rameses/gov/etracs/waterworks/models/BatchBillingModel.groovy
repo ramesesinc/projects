@@ -52,12 +52,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
    } 
     
    void reloadSchedule() {
-       if( !entity.zone.schedule?.objid )
-            throw new Exception("Please specify schedule in zone");
         def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
         try {
             def sked = scheduleSvc.getSchedule(m);
-            
             entity.putAll(sked);
             entity.schedule = entity.zone.schedule;
             binding.refresh();
@@ -70,6 +67,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
    @PropertyChangeListener
    def listener = [
        "entity.zone" : { o->
+            if( !o.schedule?.objid ) {
+                MsgBox.err("Please specify schedule in zone");
+                return;
+            }
             if( o.year ) {
                 int xx = ((o.year * 12)+o.month) + 1;
                 entity.year = (int)(xx / 12);

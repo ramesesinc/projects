@@ -7,11 +7,15 @@ import com.rameses.osiris2.client.*;
 
 class CashTicketInitialModel {
 
+    @Service("AFControlService")
+    def afControlSvc;    
+    
     @Invoker 
     def invoker; 
     
     def tag;
     def entity;
+    def env = OsirisContext.env; 
     
     String title = 'Cash Ticket Entries';
     
@@ -38,6 +42,7 @@ class CashTicketInitialModel {
     ] as BasicListModel;
     
     def doAdd() {
+        
         return null; 
     }
 
@@ -48,5 +53,13 @@ class CashTicketInitialModel {
     def doOpen() {
         return null; 
     }
-
+    
+    def lookupCollectorAF( param ) { 
+        param.formtype = 'cashticket';
+        
+        def p = [_schemaname: 'af_control']; 
+        p.where = CashReceiptAFLookupFilter.getFilterByFormType( param ); 
+        def res = qryService.findFirst( p ); 
+        if ( res ) return res; 
+    }    
 }

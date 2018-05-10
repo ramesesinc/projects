@@ -49,6 +49,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
 
         xTabbedPane1.setItems("sections");
+        xTabbedPane1.setDynamic(true);
 
         xFormPanel1.setCaptionWidth(100);
         xFormPanel1.setPadding(new java.awt.Insets(10, 5, 5, 5));

@@ -9,7 +9,7 @@
                  role="MASTER" permission="itemaccount.update" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/> 
                  
         <invoker type="formActions" caption="Deactivate" action="deactivate" 
-                 role="MASTER" permission="itemaccount.deactivate" visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/>  
+                 role="MASTER" permission="itemaccount.deactivate" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'ACTIVE' }"/>  
                  
     </invokers> 
    

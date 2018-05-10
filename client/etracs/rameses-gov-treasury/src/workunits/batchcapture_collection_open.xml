@@ -6,7 +6,7 @@
         <invoker type="formActions" caption="Close" action="_close"  immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
         
         <!-- subcollector functions -->
-        <invoker type="formActions" caption="Submit For Posting" action="submitForPosting" role="SUBCOLLECTOR"
+        <invoker type="formActions" caption="Submit For Posting" action="submitForPosting" role="COLLECTOR,SUBCOLLECTOR"
                visibleWhen="#{entity.state == 'DRAFT'}" shortcut="ctrl S" mnemonic="s" icon="images/toolbars/save.png"/>
         <invoker type="formActions" caption="Delete" action="delete" role="SUBCOLLECTOR" 
                visibleWhen="#{entity.state == 'DRAFT'}" mnemonic="d" shortcut="ctrl D"/>

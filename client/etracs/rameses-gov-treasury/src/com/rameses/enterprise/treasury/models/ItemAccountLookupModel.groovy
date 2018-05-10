@@ -16,6 +16,7 @@ class ItemAccountLookupModel extends CrudLookupModel {
     def queryFilter;
 
     public void beforeQuery( def m ) {
+        m.orgid = OsirisContext.env.ORGID; 
         if( queryFilter ) m._queryFilter = queryFilter;
     }
     

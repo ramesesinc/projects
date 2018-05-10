@@ -13,7 +13,7 @@ SELECT
 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0  
 FROM waterworks_batch_billing br 
 	INNER JOIN vw_waterworks_stubout_node wsn ON wsn.zone_objid = br.zoneid 
-	INNER JOIN waterworks_account a ON a.stuboutnodeid = wsn.objid 
+	INNER JOIN waterworks_account a ON (a.objid = wsn.acctid AND a.stuboutnodeid = wsn.objid) 
 	LEFT JOIN waterworks_meter wm ON wm.objid = a.meterid 	
 	LEFT JOIN waterworks_consumption c ON (c.acctid = a.objid AND c.year = br.year AND c.month = br.month) 
 WHERE br.objid = $P{batchid} 

@@ -16,9 +16,9 @@
         
         <!-- menu panel -->
         <invoker folderid="menucategory/treasury/collection" 
-                 caption="Issue Receipt" 
-                 windowTitle="Cash Receipt Issuance"
-                 formTitle="Cash Receipt Issuance"
+                 caption="Issue Cash Receipt" 
+                 windowTitle="Issue Cash Receipt"
+                 formTitle="Issue Cash Receipt"
                  target="window" index="-1">
             <action role="COLLECTOR" name="init"/>
             <action role="SUBCOLLECTOR" name="initSubCollector"/>

@@ -12,6 +12,9 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     @Binding 
     def binding; 
 
+    @Service("PersistenceService")
+    def persistenceService;
+    
     @Service("CashReceiptService")
     def cashReceiptSvc;
 
@@ -51,6 +54,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
             throw new Exception("Amount is greater than the amount of " + entry.fund.title );
         
         def m = [:];
+        m.refid = check.objid;
         m.reftype =  "CHECK"; 
         m.check =  check;
         m.amount = vamt;
@@ -88,7 +92,6 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         
         //update balance
         balance = balance - check.amount;
-        checks << check;
     }
 
     void initCheck() {
@@ -143,10 +146,18 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         if(balance != 0  )
             throw new Exception("Amount paid must be exact " );
         def m = [:];
-        m.checks = checks;
         m.paymentitems = payments;
         m.totalcash = totalcash;
         saveHandler(m);  
         return "_close";
     }
+    
+    void insertCheck() {
+        check._schemaname = 'paymentcheck';
+        check.state = 'PENDING';
+        check.amtused = 0;
+        check = persistenceService.create( check );
+        MsgBox.alert('check saved');
+    }
+    
 } 

@@ -4,7 +4,7 @@
        
         <invoker type="paymentcheck:section" caption="Receipts" 
                  action="init" index="10" target="popup" 
-                 cols="receipt.receiptno,receipt.receiptdate,receipt.collector.name,amount,fund.title,void.objid"
+                 cols="receipt.receiptno,receipt.receiptdate,receipt.collector.name,amount,fund.title,voided"
                     hiddenCols="receiptid"
                    visibleWhen="#{ mode == 'read' }" />
         

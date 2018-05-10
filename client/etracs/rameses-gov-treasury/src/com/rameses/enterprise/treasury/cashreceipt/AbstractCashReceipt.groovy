@@ -147,7 +147,6 @@ public abstract class AbstractCashReceipt {
         clearAllPayments();
         def handler = { o-> 
             entity.totalcash = o.totalcash; 
-            entity.checks = o.checks;
             entity.paymentitems = o.paymentitems; 
             entity.totalnoncash = o.paymentitems.sum{it.amount};
             success = true; 

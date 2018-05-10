@@ -51,6 +51,7 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xRadio1 = new com.rameses.rcp.control.XRadio();
         xRadio2 = new com.rameses.rcp.control.XRadio();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
         jPanel1.setLayout(new java.awt.CardLayout());
 
@@ -104,13 +105,13 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xFormPanel1.add(xLabel1);
 
         xComboBox1.setCaption("Assign To Fund");
-        xComboBox1.setEmptyText("Distribute Per Fund");
         xComboBox1.setExpression("#{ item.title }");
-        xComboBox1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xComboBox1.setItems("openFundList");
         xComboBox1.setName("fund"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox1.setVisibleWhen("#{ openFundList.size() > 1 }");
+        xComboBox1.setEmptyText("Distribute Per Fund");
+        xComboBox1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xComboBox1);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
@@ -126,8 +127,8 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jPanel1.add(xPanel1, "card2");
@@ -207,18 +208,21 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 
         xRadio1.setCaption("Select Check Type");
-        xRadio1.setCaptionWidth(120);
         xRadio1.setName("check.split"); // NOI18N
         xRadio1.setOptionValue(0);
+        xRadio1.setCaptionWidth(120);
         xRadio1.setText("Single ");
         xFormPanel2.add(xRadio1);
 
-        xRadio2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xRadio2.setName("check.split"); // NOI18N
         xRadio2.setOptionValue(1);
+        xRadio2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xRadio2.setShowCaption(false);
         xRadio2.setText("Split ");
         xFormPanel2.add(xRadio2);
+
+        xButton1.setName("insertCheck"); // NOI18N
+        xButton1.setText("Add Check");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -232,6 +236,10 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 605, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(183, 183, 183)
+                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,11 +248,14 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;

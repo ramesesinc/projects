@@ -2,7 +2,7 @@
            allowOpen="false">
     <invokers>
        
-        <invoker type="paymentcheck_split:lookup" caption="Lookup Cash Receipt" 
+        <invoker type="paymentcheck_split:lookup" caption="Lookup Check" 
                  action="init" index="10" target="popup" 
                  cols="refno,receivedfrom,bank.name,refdate,balance"
                  hiddenCols="bank.objid" allowCreate="true" 

@@ -105,25 +105,24 @@ class CashReceiptService  {
         if( daysdiff > staledayscount ) throw new Exception('Stale check is not allowed.')
     }
 	
-	void insertChecks( def p ) {
-		p.checks.each { c->
-			if(!c.objid) {
-				c.amtused = c.amount;
-				c.receiptid = p.objid;
-				c.state = 'PENDING';
-				def cc = checkPayment.create( c );
-				c.objid = cc.objid;
-			}
-			else {
-				checkPayment.find( [objid: c.objid] ).update( [amtused: "{ amtused + :amt }"], [amt: c.amount] );
+	void updatePaymentReferences( def p ) {
+		if( !p.paymentitems ) return; 	
+		//check if there are payment items with no type. throw error
+		def test = p.paymentitems.findAll{ !it.reftype };
+		if(test) throw new Exception("All payment items must have a type. Please review the code");
+
+		p.paymentitems.each {
+			if( it.reftype == 'CHECK' ) {
+				it.checkid = it.refid;
+				checkPayment.find( [objid: it.checkid ] ).update( [amtused: "{ amtused + :amt }"], [amt: it.amount] );
 				//if amtused is fully exhausted fire an error
-				def z = checkPayment.find([objid: c.objid] ).where("amount - amtused < 0 ").first();
-				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");
-			}	
-		}	
-		//update also payment items
-		p.paymentitems.findAll{ it.check !=null }.each { c->
-			c.refid = c.check.objid;
+				def z = checkPayment.find([objid: it.checkid ] ).where("amount - amtused < 0 ").first();
+				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");				
+			}
+			else if( it.reftype == 'CREDITMEMO') {
+				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
+				creditmemo.find( [objid: it.refid] ).update(cmp);
+			}
 		}
 	}
 
@@ -141,13 +140,7 @@ class CashReceiptService  {
 		/***************************************************************
 		//additional code on checks 
 		****************************************************************/
-		if( p.checks ) {
-			insertChecks( p );
-		}
-
-		//check if there are payment items with no type. throw error
-		def test = p.paymentitems.findAll{ !it.reftype };
-		if(test) throw new Exception("All payment items must have a type. Please review the code");
+		updatePaymentReferences( p );
 
 		if(!p.payer) p.payer = [:];  //if there is no id, we need still to add bec. it is an object.
 
@@ -159,19 +152,11 @@ class CashReceiptService  {
 		cashreceiptEm.create( p );
 		afControlSvc.updateNextSeries( p );
 
-		p.paymentitems.each { x->
-			if( x.reftype == 'CREDITMEMO') {
-				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
-				creditmemo.find( [objid: x.refid] ).update(cmp);
-			}
-		} 
-
 		if (p._paymentorderid) {
 			//retrieve payment order first before firing close
 			def po = paymentOrderEm.find( [objid: p._paymentorderid]).first();
 			paymentOrderSvc.close( po );
 		}	
-
 
 		return formatReport(p);
 	}	

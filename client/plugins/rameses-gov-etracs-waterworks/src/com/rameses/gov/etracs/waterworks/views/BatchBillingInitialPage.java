@@ -37,6 +37,10 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         monthList2 = new com.rameses.enterprise.components.MonthList();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xDateField5 = new com.rameses.rcp.control.XDateField();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xDateField6 = new com.rameses.rcp.control.XDateField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xDateField3 = new com.rameses.rcp.control.XDateField();
@@ -88,9 +92,38 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
         xLookupField3.setHandler("waterworksreader:lookup");
         xLookupField3.setName("entity.reader"); // NOI18N
         xLookupField3.setCaptionWidth(120);
+        xLookupField3.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
         xFormPanel1.add(xLookupField3);
+
+        xFormPanel3.setCaption("Period covered");
+        xFormPanel3.setCaptionPadding(new java.awt.Insets(10, 1, 0, 5));
+        xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xFormPanel3.setRequired(true);
+
+        xDateField5.setCaption("From Period");
+        xDateField5.setDisableWhen("#{1==1}");
+        xDateField5.setEditable(false);
+        xDateField5.setName("entity.fromperiod"); // NOI18N
+        xDateField5.setRequired(true);
+        xDateField5.setShowCaption(false);
+        xFormPanel3.add(xDateField5);
+
+        xLabel2.setShowCaption(false);
+        xLabel2.setText("To");
+        xFormPanel3.add(xLabel2);
+
+        xDateField6.setCaption("To Period");
+        xDateField6.setDisableWhen("#{1==1}");
+        xDateField6.setEditable(false);
+        xDateField6.setName("entity.toperiod"); // NOI18N
+        xDateField6.setRequired(true);
+        xDateField6.setShowCaption(false);
+        xFormPanel3.add(xDateField6);
+
+        xFormPanel1.add(xFormPanel3);
 
         xDateField1.setCaption("Reading Date");
         xDateField1.setName("entity.readingdate"); // NOI18N
@@ -140,8 +173,8 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(80, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -151,10 +184,14 @@ public class BatchBillingInitialPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
+    private com.rameses.rcp.control.XDateField xDateField5;
+    private com.rameses.rcp.control.XDateField xDateField6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;

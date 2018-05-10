@@ -22,12 +22,7 @@
 		<field name="fundid" />
 		<field name="depositslipid" />
 
-		<complex name="items" ref="cashreceiptpayment_noncash" jointype="one-to-many" orderBy="refdate,refno" required="false">
-			<key field="objid" target="refid" />
-		</complex>	
-
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
-
 
 		<complex name="fund" ref="fund" jointype="many-to-one" required="false">
 			<key field="fundid" target="objid" />

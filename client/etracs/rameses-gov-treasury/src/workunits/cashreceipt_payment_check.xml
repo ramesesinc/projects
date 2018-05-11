@@ -30,7 +30,7 @@
         </process> 
         <page name="complete-balance" title="Complete Balance Due">
             <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
-            <transition to="check-details" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}" mnemonic="k"/> 
+            <transition to="ask-checkno" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}" mnemonic="k"/> 
             <transition to="determine-flow" name="add-cash" caption="Add Cash" action="addCash" visibleWhen="#{false}" mnemonic="A"/> 
             
         </page>

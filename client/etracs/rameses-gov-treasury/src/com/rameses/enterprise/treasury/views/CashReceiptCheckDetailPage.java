@@ -38,6 +38,7 @@ public class CashReceiptCheckDetailPage extends javax.swing.JPanel {
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         xFormPanel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xFormPanel1.setCaptionWidth(160);
@@ -100,6 +101,13 @@ public class CashReceiptCheckDetailPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xComboBox1);
 
+        xCheckBox1.setCaption("");
+        xCheckBox1.setName("check.split"); // NOI18N
+        xCheckBox1.setVisibleWhen("#{ new_check == true }");
+        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xCheckBox1.setText("Split Check");
+        xFormPanel1.add(xCheckBox1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,11 +121,12 @@ public class CashReceiptCheckDetailPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(41, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;

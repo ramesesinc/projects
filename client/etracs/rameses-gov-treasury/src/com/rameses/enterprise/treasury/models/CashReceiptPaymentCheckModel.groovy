@@ -62,6 +62,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         selectionList = queryService.getList( m );
         if(selectionList ) {
             check_exists = true;
+            checkSelectionModel.reload();
         }
     }
     

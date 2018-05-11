@@ -62,6 +62,7 @@ public class CashReceiptCheckPaymentPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(160);
 
         xTextField1.setCaption("Check No");
+        xTextField1.setDisableWhen("#{ 1==1 }");
         xTextField1.setName("check.refno"); // NOI18N
         xTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(200, 27));

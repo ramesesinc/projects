@@ -4,7 +4,7 @@
 		<field name="objid" primary="true" prefix="CHKPMT"/>	
 		<field name="state" required="true" defaultValue="PENDING"/>	
 
-		<complex name="bank" ref="bank" jointype="many-to-one" required="true" includefields="objid,name">
+		<complex name="bank" ref="bank" jointype="many-to-one" required="true" includefields="objid,name,code">
 			<key field="bankid" target="objid" />
 		</complex>	
 

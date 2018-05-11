@@ -15,6 +15,9 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     @Service("PersistenceService")
     def persistenceService;
     
+    @Service("QueryService")
+    def queryService;
+    
     @Service("CashReceiptService")
     def cashReceiptSvc;
 
@@ -46,6 +49,48 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
             openFundList = fundList*.fund;
         }
     } 
+    
+    boolean check_exists = false;
+    boolean new_check = false;
+    def selectionList;
+    def selectedCheck;
+    void searchCheckIfExists() {
+        new_check = true;
+        def m = [_schemaname:'paymentcheck'];
+        m.findBy = [refno: check.refno ];
+        m.where = [ " amount - amtused > 0 " ];
+        selectionList = queryService.getList( m );
+        if(selectionList ) {
+            check_exists = true;
+        }
+    }
+    
+    def checkSelectionModel = [
+        fetchList: { o->
+            return selectionList;
+        }
+    ] as BasicListModel;
+    
+    
+    def useExistingCheck() {
+        if(!selectedCheck ) throw new Exception("Please select an unused check from list");
+        new_check = false;
+        check.putAll(selectedCheck);
+        return signal("submit");
+    }
+    
+    def addNewCheck() {
+        new_check = true;
+        return signal( "submit" );
+    }
+    
+    void saveAndAddCheck() {
+        check._schemaname = 'paymentcheck';
+        check.state = 'PENDING';
+        check.amtused = 0;
+        check = persistenceService.create( check );
+        addCheck();
+    }
     
     void addCheckEntry( def vfund, def vamt  ) {
         //check the amount must not be greater than the allocated fund.
@@ -152,12 +197,6 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         return "_close";
     }
     
-    void insertCheck() {
-        check._schemaname = 'paymentcheck';
-        check.state = 'PENDING';
-        check.amtused = 0;
-        check = persistenceService.create( check );
-        MsgBox.alert('check saved');
-    }
+    
     
 } 

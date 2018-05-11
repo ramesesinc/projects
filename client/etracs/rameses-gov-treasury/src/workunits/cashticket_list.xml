@@ -1,0 +1,20 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="cashreceipt" allowDelete="false" 
+          cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name">
+    
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" caption="Cash Ticket List" 
+                 action="init" role="SHARED" tag="mgmt" 
+                 customFilter=" formtype='cashticket' "/>
+
+        <invoker folderid="menucategory/treasury/collection" caption="SubCollector Cash Tickets" 
+                 action="init" index="50" 
+                 customFilter=" formtype='cashticket' "> 
+            <action role="COLLECTOR" caption="Collector Cash Tickets" tag="collector"/> 
+            <action role="SUBCOLLECTOR" caption="SubCollector Cash Tickets" tag="subcollector"/> 
+        </invoker>                
+   </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.CashTicketListModel"/> 
+   
+</workunit>

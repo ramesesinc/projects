@@ -216,7 +216,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("General Information", jPanel3);
 
-        xPanel1.setVisibleWhen("#{ mode == 'read' }");
+        xPanel1.setVisibleWhen("#{ mode != 'create' }");
 
         xDataTable1.setHandler("accountListHandler");
         xDataTable1.setName("selectedAccount"); // NOI18N

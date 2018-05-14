@@ -25,7 +25,7 @@ class PaymentOrderCashReceiptInterceptor {
 
 		def locid = env.ORGID;
 
-		r.objid =  KeyGen.generateAlphanumKey( "", 12 );
+		r.objid =  KeyGen.generateAlphanumKey( "", 6 );
 		r.txndate = dateSvc.getServerDate();
 		r.controlno =  locid.padRight( 5, "0" ) + seqSvc.getNextFormattedSeriesA("PAYORDER", 10);
 		r.org = [objid:env.ORGID, name:env.ORGNAME];

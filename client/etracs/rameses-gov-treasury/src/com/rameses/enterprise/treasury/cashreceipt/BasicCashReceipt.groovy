@@ -74,12 +74,16 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         def p = [:];
         p.put("query.txntype", "cashreceipt");
         p.put( "query.collectorid" , entity.collector.objid );
+        p.put( "query.collectiontype" , entity.collectiontype );
         if( entity.collectiontype.fund?.objid ) {
             p.fundid = entity.collectiontype.fund?.objid;
         }
         p.queryFilter = queryFilter;    
         p.onselect = { o->
             selectedItem.item = o;
+            selectedItem.amount = o.remove("amount");
+            selectedItem.remarks = o.remove("remarks");
+            /*
             selectedItem.amount = o.defaultvalue;
             if(o.valuetype == "FIXEDUNIT") {
                 def m = MsgBox.prompt( "Enter qty" );
@@ -88,6 +92,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
                 selectedItem.amount = Integer.parseInt( m )*o.defaultvalue; 
                 selectedItem.remarks = "qty@"+Integer.parseInt( m ); 
             } 
+            */
         } 
         return InvokerUtil.lookupOpener("cashreceiptitem:lookup",p );
     }

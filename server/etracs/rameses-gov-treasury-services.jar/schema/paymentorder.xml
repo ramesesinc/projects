@@ -22,7 +22,7 @@
 
 		<complex name="info" serializer="default" required="true"/>
 
-		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="objid,name,title,handler,barcodekey,formno,af.*">
+		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="objid,name,title,handler,barcodekey,formno,af.*,fund.*">
 			<key field="collectiontypeid" target="objid"/>
 		</complex>
 		<complex name="items" serializer="default" required="false" type="list" />

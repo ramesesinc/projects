@@ -101,12 +101,15 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         check._schemaname = 'paymentcheck';
         check.state = 'PENDING';
         check.amtused = 0;
+        
+        def _total = fundList.sum{ it.amount - it.used };
+        if( check.amount > _total && check.split != 1 ) {
+            throw new Exception("Amount of check must be less than or equal to amount to pay for non split checks");
+        }
+        
         check = persistenceService.create( check );
-        if( check.split ==  1 ) {
-            def _total = fundList.sum{ it.amount - it.used };
-            if(_total < check.amount ) {
-                check.amount = _total;
-            }
+        if( check.split ==  1 && _total < check.amount ) {
+            check.amount = _total;
         }
         addCheck();
     }

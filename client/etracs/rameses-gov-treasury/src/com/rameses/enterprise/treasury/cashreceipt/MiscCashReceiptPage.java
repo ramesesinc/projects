@@ -6,6 +6,7 @@
 
 package com.rameses.enterprise.treasury.cashreceipt;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
@@ -14,6 +15,7 @@ import com.rameses.rcp.ui.annotations.Template;
  */
 
 @Template(value=SerialCashReceiptPage.class, target="content")
+@StyleSheet
 public class MiscCashReceiptPage extends javax.swing.JPanel {
     
     /** Creates new form BPCashReceipt */
@@ -39,6 +41,8 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Account details");
         setBorder(xTitledBorder1);
 
+        xDataTable1.setHandler("itemListModel");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.title"}
@@ -121,21 +125,20 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("itemListModel");
         xDataTable1.setIndex(10);
-        xDataTable1.setName("selectedItem"); // NOI18N
 
-        xButton1.setImmediate(true);
         xButton1.setName("viewSharing"); // NOI18N
+        xButton1.setImmediate(true);
         xButton1.setText("View Share");
 
         jLabel1.setText("Collection Group :");
 
-        xLookupField1.setText("xLookupField1");
         xLookupField1.setHandler("collectionGroupHandler");
+        xLookupField1.setName("collectiongroup"); // NOI18N
 
-        xButton2.setImmediate(true);
         xButton2.setName("fireRules"); // NOI18N
+        xButton2.setVisibleWhen("#{ false }");
+        xButton2.setImmediate(true);
         xButton2.setText("Run Rules");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);

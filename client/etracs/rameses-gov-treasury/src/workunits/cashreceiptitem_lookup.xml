@@ -1,0 +1,13 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount" allowCreate="false" allowOpen="false">
+    <invokers>
+       
+       <!-- used for looking up items in cash receipt -->
+       <invoker type="cashreceiptitem:lookup" caption="Lookup Revenue" action="init" target="popup"
+            cols="code,title,fund.title,type,org.code" hiddenCols="valuetype,defaultvalue,fund.objid,fund.code" 
+            tag="CASHRECEIPT"/>
+       
+    </invokers> 
+   
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptItemLookupModel" />
+    
+</workunit>

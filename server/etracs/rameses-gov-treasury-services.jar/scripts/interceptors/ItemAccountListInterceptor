@@ -8,6 +8,9 @@ class ItemAccountListInterceptor {
 	@Service("OrgService")
 	def orgSvc;
 
+	@DataContext("collectiontype_account")
+	def collTypeAcct;
+
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public def getNodeList(evt) {
 		def result = evt.result;
@@ -42,6 +45,9 @@ class ItemAccountListInterceptor {
 		def str = "";
 		def m = [:];
 
+		//mark true if there are collectiontype accounts
+		o.has_collection_account = true;
+
 		if( o._queryFilter?.acctids ) {
 			str = " objid IN ('" + o._queryFilter.acctids.join("','") + "')";
 		}
@@ -56,6 +62,25 @@ class ItemAccountListInterceptor {
 		}
 	}
 
+
+	//Please include in the query
+	/*
+	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")
+	public void loadListForCashReceipt(def evt) {
+		def o = evt.args[0];
+		def result = evt.result;
+
+		if( o.has_collection_account ) {
+			def acList = collTypeAcct.find( [collectiotypeid: o.collectiontype.objid ] ).list();
+
+			result.each {
+				def m = acList.find{ it.account.objid == it.objid };
+				it.defaultvalue = m.defaultvalue; 
+				it.valuetype = m.valuetype; 
+			}
+		}
+	}
+	*/
 	
 
 }

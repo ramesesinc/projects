@@ -21,6 +21,14 @@ class PaymentOrderModel extends CrudFormModel {
         if(!pass) throw new BreakException();
     }
     
+    def getQuery() {
+        def p = [:];
+        p.put("txntype", "cashreceipt" );
+        p.put("collectiontype", entity.collectiontype);
+        return p;
+    }
+    
+    
     @PropertyChangeListener
     def listener = [
         "entity.payer": { o->
@@ -33,5 +41,7 @@ class PaymentOrderModel extends CrudFormModel {
     void afterSave() {
         MsgBox.alert( "Order of payment number " + entity.objid );
     }
+    
+    
     
 } 

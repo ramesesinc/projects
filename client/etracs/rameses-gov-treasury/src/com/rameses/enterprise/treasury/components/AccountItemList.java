@@ -15,6 +15,8 @@ import com.rameses.rcp.ui.annotations.ComponentBean;
 public class AccountItemList extends XComponentPanel {
 
     private String totalsFieldName;
+    private String queryName = "query";
+    
     
     /**
      * Creates new form AccountItemList
@@ -159,6 +161,7 @@ public class AccountItemList extends XComponentPanel {
     public void afterLoad() {
         com.rameses.rcp.common.ComponentBean cb = (com.rameses.rcp.common.ComponentBean)getComponentBean();
         cb.setProperty("totalsFieldName", getTotalsFieldName() );
+        cb.setProperty("query", getProperty(getQueryName()));
         //cb.setProperty("handler", getProperty( getHandler()));
         /*
         com.rameses.rcp.common.ComponentBean cb = (com.rameses.rcp.common.ComponentBean)getComponentBean();
@@ -186,5 +189,20 @@ public class AccountItemList extends XComponentPanel {
     public void setTotalsFieldName(String totalsFieldName) {
         this.totalsFieldName = totalsFieldName;
     }
+
+    /**
+     * @return the queryName
+     */
+    public String getQueryName() {
+        return queryName;
+    }
+
+    /**
+     * @param queryName the queryName to set
+     */
+    public void setQueryName(String queryName) {
+        this.queryName = queryName;
+    }
+
 
 }

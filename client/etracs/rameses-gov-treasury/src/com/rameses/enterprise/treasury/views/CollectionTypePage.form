@@ -342,7 +342,7 @@
         </Container>
         <Container class="com.rameses.rcp.control.XPanel" name="xPanel1">
           <Properties>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ mode == &apos;read&apos; }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ mode != &apos;create&apos; }"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">

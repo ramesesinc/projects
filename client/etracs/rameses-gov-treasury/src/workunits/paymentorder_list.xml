@@ -1,12 +1,14 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
          schemaName="paymentorder">
     <invokers>
         <invoker folderid="/explorer/master/treasury" 
                  caption="Payment Order List" 
                  role="MASTER" action="init"
-                 cols="txndate,txntypename,payer.name,amount,expirydate,refno,controlno"
+                 cols="objid,controlno,payer.name,remarks,amount,expirydate"
                  index="1" />
-        <invoker type="listActions" caption="Resolve Online Payment" action="resolveOnlinePayment" />
+        
     </invokers>
+    <!--
     <code class="com.rameses.enterprise.treasury.models.PaymentOrderListModel" />
+    -->
 </workunit>

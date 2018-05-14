@@ -10,7 +10,7 @@ import com.rameses.util.*;
 /******************************************************************************
 * The itemaccount is used everywhere
 *******************************************************************************/
-class ItemAccountLookupModel extends CrudLookupModel {
+class CashReceiptItemLookupModel extends CrudLookupModel {
 
     def fundid;
     def queryFilter;
@@ -21,21 +21,14 @@ class ItemAccountLookupModel extends CrudLookupModel {
     }
     
     public def getCustomFilter() {
-        def s = [ " state = 'ACTIVE' "];
+        def s = [];
         def parm = [:];
-        if(tag) {
-            if(tag.matches('CASH|CASH_IN_BANK') ) {
-                s << "type = :atype";
-                parm.atype = tag;
-            }
-            else if( tag.matches(".*REVENUE")) {
-                if(tag.startsWith("MAIN")) s << " parentid IS NULL";
-                s << "type IN ('REVENUE','NONREVENUE')";
-            }
-            else if( tag.matches(".*PAYABLE")) {
-                if(tag.startsWith("MAIN")) s << " parentid IS NULL";
-                s << "type = 'PAYABLE' ";
-            }
+        if( OsirisContext.env.ORGROOT == 1 ) {
+            s << "parentid IS NULL";
+        } 
+        else {
+            s << "parentid IS NOT NULL AND org.objid =:orgid";
+            parm.orgid = OsirisContext.env.ORGID;
         }
         if(fundid) {
             s << "fund.objid = :fundid";
@@ -44,6 +37,15 @@ class ItemAccountLookupModel extends CrudLookupModel {
         return [s.join(" AND "), parm ];
     }
     
-   
-    
+    def lookupSelectedValue( def obj ) {
+        obj.amount = obj.defaultvalue;
+        if(obj.valuetype == "FIXEDUNIT") {
+            def m = MsgBox.prompt( "Enter QTY : " );
+            if( !m || m == "null" ) throw new Exception("Please provide qty"); 
+            if( !m.isInteger() ) throw new Exception("Qty must be numeric"); 
+            obj.amount = Integer.parseInt( m )*obj.defaultvalue; 
+            obj.remarks = "qty@"+Integer.parseInt( m ); 
+        } 
+        return obj;
+    }
 }

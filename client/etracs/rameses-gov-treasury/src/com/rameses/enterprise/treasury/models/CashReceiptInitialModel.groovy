@@ -157,13 +157,25 @@ class CashReceiptInitialModel  {
                 formtype        : o.collectiontype.af.formtype, 
                 collectiontype  : o.collectiontype 
             ];   
-            def ee = initReceipt( e );
-            def pp = [:];
-            pp.info = o.info;
-            pp.entity = ee;
-            pp.barcodeid = o.barcodeid;
-            if ( o._paymentorderid ) pp._paymentorderid = o._paymentorderid;
-            def op = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
+            def op = null;
+            if ( o._paymentorderid ) {
+                def info = initReceipt( e );
+                info.payer = o.info.payer;
+                info.paidby = o.info.paidby;
+                info.paidbyaddress = o.info.paidbyaddress;
+                info.amount = o.info.amount;
+                info.items = o.info.items.collect{ [item: it.item, amount:it.amount, remarks:it.remarks ] };
+                info.remarks = o.info.particulars;
+                op = Inv.lookupOpener("cashreceipt:"+ e.collectiontype.handler, [entity: info, _paymentorderid:o._paymentorderid ]);
+            }
+            else {
+                def ee = initReceipt( e );
+                def pp = [:];
+                pp.info = o.info;
+                pp.entity = ee;
+                pp.barcodeid = o.barcodeid;
+                op = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
+            }
             binding.fireNavigation( op ); 
         }
         return Inv.lookupOpener( "cashreceipt_barcode", [handler: h] );

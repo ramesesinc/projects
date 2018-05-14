@@ -31,12 +31,11 @@ public class BarcodeLoader {
             m.findBy = [objid: barcodeid];
             def po = qrySvc.findFirst( m );
             if ( !po ) throw new Exception('Order of payment '+ barcodeid + ' not found'); 
-            
             def v = [
                 prefix: po.collectiontype.barcodekey,
                 barcodeid:po.refno,
                 collectiontype  : po.collectiontype,
-                info: po.info, 
+                info: po, 
                 _paymentorderid : barcodeid 
             ];
             handler( v );            

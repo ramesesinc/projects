@@ -143,7 +143,13 @@
         <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
           <Properties>
             <Property name="caption" type="java.lang.String" value=""/>
+            <Property name="checkValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="1" type="code"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="check.split" noResource="true"/>
+            <Property name="uncheckValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="0" type="code"/>
+            </Property>
             <Property name="visibleWhen" type="java.lang.String" value="#{ new_check == true }"/>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[10, 0, 0, 0]"/>

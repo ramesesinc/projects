@@ -1,4 +1,4 @@
-<workunit schemaName="paymentcheck" allowCreate="false" allowEdit="false" cols="refno,refdate,amount">
+<workunit schemaName="paymentcheck" allowCreate="false" cols="refno,refdate,amount">
     <invokers>
        
         <invoker type="paymentcheck:open" caption="Check Payment" 

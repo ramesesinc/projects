@@ -126,22 +126,23 @@ class DepositVoucherService  {
 		return m;
 	}
 
+	/*********************************
+	* post per deposit voucher fund
+	**********************************/
 	@ProxyMethod
 	public def post( def o ) {
 		if(!o.objid) throw new Exception( "objid is required");
-		def z = depositFundEm.find( [parentid: o.objid ]).select("objid").where( "( amount - (totalcash+totalcheck)) <> 0").first();
-		if(z) throw new Exception("Total Amount must be equal to total checks and total cash deposited");
+		def z = depositFundEm.find( [objid: o.objid ]).select("objid").first();
+		if( (z.amount - (z.totalcash+z.totalcheck)) != 0) {
+			throw new Exception("Total Amount must be equal to total checks and total cash deposited");
+		}
 
-		z = depositSlipEm.find( [depositvoucherid: o.objid ] ).where( " validation.refno IS NULL ").first();
+		z = depositSlipEm.find( [parentid: o.objid ] ).where( " validation.refno IS NULL ").first();
 		if(z ) throw new Exception("All deposit slips must be validated");
 
-		def b = paymentCheckEm.find( [depositvoucherid: o.objid ]).where( "depositslipid IS NULL").first()
-		if(b )
-			throw new Exception("All checks referenced must be deposited");
-		def m = [ state: 'POSTED' ];
-		depositEm.find( [objid: o.objid ]).update( m );
+		
 
-		def p = depositEm.find( [objid: o.objid ]).first();
+		def p = depositEm.find( [objid: o.parentid ]).first();
 
 		//post to jev
 		def ref = [refid:p.objid,refno:p.controlno,reftype:'depositvoucher', refdate:p.controldate, txntype:'DEPOSIT'];
@@ -155,9 +156,9 @@ class DepositVoucherService  {
 			jevBatch.funds << [ objid: it.objid, refno:it.controlno, fund: it.fund, amount: it.amount  ];	 
 		} 
 
-		def pm = [depositvoucherid: p.objid ];
-		jevBatch.items.addAll( depositEm.getBankAccountLedgerItems( pm ) );
-		jevBatch.items.addAll( depositEm.getCashLedgerItems( pm ) );
+		def pm = [depositvoucherid: p.objid, fundid: z.fundid ];
+		jevBatch.items.addAll( depositEm.getBankAccountLedgerItem( pm ) );
+		jevBatch.items.addAll( depositEm.getCashLedgerItem( pm ) );
 		jevSvc.createBatch( jevBatch );
 
 		return m; 

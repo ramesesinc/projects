@@ -77,6 +77,18 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         if(!selectedCheck ) throw new Exception("Please select an unused check from list");
         new_check = false;
         check.putAll(selectedCheck);
+        check.objid = selectedCheck.objid;
+        check.bank = selectedCheck.bank;
+        check.refno = selectedCheck.refno;
+        check.refdate = selectedCheck.refdate;
+        check.receivedfrom = selectedCheck.receivedfrom;
+        check.amount = selectedCheck.amount - selectedCheck.amtused;
+        if(check.split == 1 ) {
+            def _total = fundList.sum{ it.amount - it.used };
+            if(_total < check.amount ) {
+                check.amount = _total;
+            }
+        }
         return signal("submit");
     }
     
@@ -90,6 +102,12 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         check.state = 'PENDING';
         check.amtused = 0;
         check = persistenceService.create( check );
+        if( check.split ==  1 ) {
+            def _total = fundList.sum{ it.amount - it.used };
+            if(_total < check.amount ) {
+                check.amount = _total;
+            }
+        }
         addCheck();
     }
     

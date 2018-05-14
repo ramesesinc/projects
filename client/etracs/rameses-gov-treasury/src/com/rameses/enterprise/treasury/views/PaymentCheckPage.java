@@ -40,6 +40,7 @@ public class PaymentCheckPage extends javax.swing.JPanel {
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -58,6 +59,7 @@ public class PaymentCheckPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(160);
 
         xTextField1.setCaption("Check No");
+        xTextField1.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
         xTextField1.setName("entity.refno"); // NOI18N
         xTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 27));
@@ -65,6 +67,7 @@ public class PaymentCheckPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField1);
 
         xTextField2.setCaption("Received From");
+        xTextField2.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
         xTextField2.setName("entity.receivedfrom"); // NOI18N
         xTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 27));
@@ -72,34 +75,46 @@ public class PaymentCheckPage extends javax.swing.JPanel {
         xFormPanel1.add(xTextField2);
 
         xLookupField1.setCaption("Bank");
+        xLookupField1.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
         xLookupField1.setExpression("#{entity.bank.name}");
-        xLookupField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xLookupField1.setHandler("bank:lookup");
         xLookupField1.setName("entity.bank"); // NOI18N
+        xLookupField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 27));
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
         xDateField1.setCaption("Check Date");
-        xDateField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xDateField1.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
         xDateField1.setName("entity.refdate"); // NOI18N
+        xDateField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(0, 27));
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
         xDecimalField2.setCaption("Check Amount");
-        xDecimalField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xDecimalField2.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
         xDecimalField2.setName("entity.amount"); // NOI18N
+        xDecimalField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xDecimalField2.setPreferredSize(new java.awt.Dimension(0, 27));
         xDecimalField2.setRequired(true);
         xFormPanel1.add(xDecimalField2);
 
-        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel1.setCaption("Balance Unused");
         xLabel1.setExpression("#{ entity.balance }");
+        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel1.add(xLabel1);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
+        xCheckBox1.setName("entity.split"); // NOI18N
+        xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xCheckBox1.setText("Split Check");
+        xFormPanel1.add(xCheckBox1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -114,8 +129,8 @@ public class PaymentCheckPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(153, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(106, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel2);
@@ -140,6 +155,7 @@ public class PaymentCheckPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

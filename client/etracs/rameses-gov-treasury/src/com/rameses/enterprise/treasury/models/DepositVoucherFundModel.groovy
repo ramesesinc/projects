@@ -92,7 +92,10 @@ class DepositVoucherFundModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    
+    public void post() {
+        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
+        depositSvc.post( [objid: entity.objid ] );
+    }
     
     /*
     def addCheck() {

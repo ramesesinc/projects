@@ -102,7 +102,9 @@ public class CashReceiptCheckDetailPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox1);
 
         xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
         xCheckBox1.setName("check.split"); // NOI18N
+        xCheckBox1.setUncheckValue(0);
         xCheckBox1.setVisibleWhen("#{ new_check == true }");
         xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xCheckBox1.setText("Split Check");

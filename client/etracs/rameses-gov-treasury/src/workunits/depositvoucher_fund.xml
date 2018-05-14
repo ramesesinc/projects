@@ -7,6 +7,7 @@
                  formTitle="Deposit Voucher Fund"
                  action="open" target="window" 
                  index="10"/>
+        <invoker type="formActions" caption="Post" action="post" />        
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.DepositVoucherFundModel" />

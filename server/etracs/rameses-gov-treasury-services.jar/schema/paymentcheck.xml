@@ -21,6 +21,7 @@
 		<field name="depositvoucherid" />
 		<field name="fundid" />
 		<field name="depositslipid" />
+		<field name="split"  type="integer" defaultValue="0"/>
 
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
 

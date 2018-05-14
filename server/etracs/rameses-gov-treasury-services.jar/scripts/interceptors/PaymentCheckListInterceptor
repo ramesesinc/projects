@@ -10,6 +10,7 @@ class PaymentCheckListInterceptor {
 		def x = evt.args[0];
 		def result = evt.result; 
 		result << [ id:'unused', title: 'Unused Checks'];
+		result << [ id:'partial', title: 'Partial Used Checks'];
 		result << [ id:'undeposited', title: 'Undeposited Checks'];
 		result << [ id:'deposited', title: 'Deposited Checks' ];
 	}
@@ -29,8 +30,12 @@ class PaymentCheckListInterceptor {
 				str = " amtused = 0 ";
 				break;
 
+			case "partial":
+				str = " (amtused > 0) and (amtused <> amount) ";
+				break;	
+
 			case "undeposited":
-				str = " amtused <> 0 AND depositslipid IS NULL";
+				str = " (amtused = amount) AND (depositslipid IS NULL) ";
 				break;
 
 			case "deposited":

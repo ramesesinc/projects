@@ -144,10 +144,5 @@ class DepositVoucherModel extends CrudFormModel {
         if ( m ) entity.putAll( m ); 
     }
 
-    public void post() {
-        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
-        def m = depositSvc.post( [objid: entity.objid ] );
-        if ( m ) entity.putAll( m ); 
-    }
 
 }    

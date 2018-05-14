@@ -12,7 +12,12 @@
                  action="init" index="50"> 
             <action role="COLLECTOR" caption="Collector Cash Receipts" tag="collector"/> 
             <action role="SUBCOLLECTOR" caption="SubCollector Cash Receipts" tag="subcollector"/> 
-        </invoker>                
+        </invoker> 
+        
+        <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
+                 customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
+                 orderBy="receiptno"
+                 target="popup" width="1024" height="700"/>
    </invokers>
    
 </workunit>

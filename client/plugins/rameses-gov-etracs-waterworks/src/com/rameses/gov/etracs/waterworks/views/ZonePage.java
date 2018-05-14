@@ -45,6 +45,7 @@ public class ZonePage extends javax.swing.JPanel {
         schemaList1 = new com.rameses.seti2.components.SchemaList();
 
         xTabbedPane1.setItems("sections");
+        xTabbedPane1.setDynamic(true);
 
         jPanel1.setName("default"); // NOI18N
 
@@ -142,14 +143,8 @@ public class ZonePage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("General Info", jPanel1);
 
-        xPanel1.setVisibleWhen("#{ mode == 'read' }");
+        xPanel1.setVisibleWhen("#{ mode != 'create' }");
 
-        schemaList1.setCustomFilter("zoneid = :zoneid");
-        schemaList1.setOrderBy("code");
-        schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_stubout");
-        schemaList1.setAllowCreate(true);
-        schemaList1.setAllowDelete(true);
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
@@ -197,7 +192,13 @@ public class ZonePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
+        schemaList1.setCustomFilter("zoneid = :zoneid");
         schemaList1.setHandler("handler");
+        schemaList1.setOrderBy("code");
+        schemaList1.setQueryName("query");
+        schemaList1.setSchemaName("waterworks_stubout");
+        schemaList1.setAllowCreate(true);
+        schemaList1.setAllowDelete(true);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);

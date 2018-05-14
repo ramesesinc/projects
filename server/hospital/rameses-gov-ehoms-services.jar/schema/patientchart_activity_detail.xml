@@ -1,9 +1,0 @@
-<schema>
-	<element name="patientchart_activity_detail" tablename="patientchart_activity_detail">
-		<field name="objid" primary="true" />
-		<field name="parentid" requried="true" />
-		<field name="type" requried="true" />
-		<field name="result" requried="true" />
-		<field name="displayvalue" requried="true" />
-	</element>
-</schema>

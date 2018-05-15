@@ -6,10 +6,15 @@
 		<field name="title"/> 
 		<field name="formno"/> 
 		<field name="handler"/> 
-		<field name="allowbatch"/> 
+		
 		<field name="barcodekey"/> 
 		<field name="allowonline"/> 
 		<field name="allowoffline"/> 
+		<field name="allowbatch"/> 
+
+		<field name="allowpaymentorder" />
+		<field name="allowkiosk"/>
+
 		<field name="sortorder"/> 
 		<field name="org_objid"/> 
 		<field name="org_name"/> 

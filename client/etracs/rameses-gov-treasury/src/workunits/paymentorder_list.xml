@@ -3,8 +3,8 @@
     <invokers>
         <invoker folderid="/explorer/master/treasury" 
                  caption="Payment Order List" 
-                 role="MASTER" action="init"
-                 cols="objid,controlno,payer.name,remarks,amount,expirydate"
+                 role="SHARED" action="init"
+                 cols="objid,controlno,txndate,issuedby.name,payer.name,remarks,amount,expirydate,org.name"
                  index="1" />
         
     </invokers>

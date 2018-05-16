@@ -10,16 +10,39 @@ WHERE objid IN (
 )   
 AND (amount - amtused) > 0 
 
+[findInvalidCheck]
+select 
+	pc.refno, pc.amount, sum(nc.amount) as noncashamount 
+from cashreceipt c 
+	inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+	inner join paymentcheck pc on pc.objid = nc.checkid 
+where c.remittanceid = $P{remittanceid} 
+	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
+group by pc.refno, pc.amount
+having (pc.amount-sum(nc.amount)) > 0 
+
 [insertRemittanceFund]
 INSERT INTO remittance_fund ( 
-	objid, remittanceid, controlno, fund_objid, fund_title, 
+	objid, controlno, remittanceid, fund_objid, fund_title, 
 	amount, totalcash, totalcheck, totalcr, cashbreakdown 
 )
 SELECT 
-	objid, remittanceid, controlno, fund_objid, fund_title, 
-	amount, 0, 0, 0, '[]' 
-FROM cashreceipt_fund_summary 
-WHERE remittanceid =  $P{remittanceid} 
+    CONCAT( IFNULL( cr.remittanceid, '-' ), f.objid ), 
+    CONCAT( IFNULL( r.controlno, '-'), f.code ),
+    cr.remittanceid, f.objid, f.title,
+    SUM( cri.amount ), 0, 0, 0, '[]' 
+FROM cashreceipt cr 
+	inner join remittance r ON r.objid = cr.remittanceid 
+	inner join cashreceiptitem cri on cri.receiptid = cr.objid 
+	inner join fund f ON f.objid = cri.item_fund_objid 
+	left join cashreceipt_void cv ON cv.receiptid = cr.objid 
+WHERE cr.remittanceid = $P{remittanceid}  
+	and cv.objid IS NULL 
+	and cr.state <> 'CANCELLED'
+GROUP BY 
+	CONCAT( IFNULL( cr.remittanceid, '-' ), f.objid ), 
+	CONCAT( IFNULL( r.controlno, '-'), f.code ), 
+	cr.remittanceid, f.objid, f.code, f.title 
 
 
 [getCashReceiptsForRemittance]

@@ -9,6 +9,10 @@
 		<field name="valuetype"  required="true"/>
 		<field name="defaultvalue" required="true"/>
 		<field name="sortorder" required="true" />
+
+		<complex ref="itemaccount" name="account" jointype="many-to-one" required="false" includefields="org.*">
+			<key field="account_objid" target="objid"/> 
+		</complex>
 	</element>
 
 </schema>

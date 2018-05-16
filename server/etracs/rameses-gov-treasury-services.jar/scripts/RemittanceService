@@ -43,7 +43,6 @@ class RemittanceService  {
 
 		def o = pp.items;
 
-
 		def m = [:];
 		m.controlno = 'TMP-REM-'+env.USERID;
 		m.controldate = dateSvc.getBasicServerDate();
@@ -77,7 +76,6 @@ class RemittanceService  {
 			vstr += openList.collect{ 'Check No ' + it.refno + ' (' + it.receivedfrom + ') ' + it.amount  }.join("\n");
 			throw new Exception(vstr);
 		}
-			
 		remEm.insertRemittanceFund( z );
 
 		def clist = rfEm.find( z ).list();

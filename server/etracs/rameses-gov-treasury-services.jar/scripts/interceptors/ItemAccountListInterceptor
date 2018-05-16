@@ -8,8 +8,8 @@ class ItemAccountListInterceptor {
 	@Service("OrgService")
 	def orgSvc;
 
-	@DataContext("collectiontype_account")
-	def collTypeAcct;
+	@DataContext('collectiontype_account')
+	def coltypeAcct_db;	
 
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public def getNodeList(evt) {
@@ -37,21 +37,28 @@ class ItemAccountListInterceptor {
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")
-	public void loadListForCashReceipt(def evt) {
+	public void beforeGetListForCashReceipt(def evt) {
 		def o = evt.args[0];
-
-		//throw new Exception( env.ORGID + " does it match with " + orgSvc.getRoot() );
+		o.has_collection_account = false;
 
 		def str = "";
 		def m = [:];
 
-		//mark true if there are collectiontype accounts
-		o.has_collection_account = true;
+		if ( o.collectiontype?.objid ) { 
+			def ctaparam = [ collectiontypeid: o.collectiontype?.objid ]; 
+			def cta = coltypeAcct_db.find( ctaparam ).select('objid').first(); 
+			if ( cta ) {
+				o.has_collection_account = true;
 
-		if( o._queryFilter?.acctids ) {
-			str = " objid IN ('" + o._queryFilter.acctids.join("','") + "')";
-		}
-		if(!str) return;
+				def ctaem = coltypeAcct_db.find( ctaparam ); 
+				def acctids = ctaem.list().collect{ it.account.objid } 
+				if ( acctids ) { 
+					str = " objid IN ('" + acctids.join("','") + "')";
+				}
+			}			
+		} 
+
+		if ( !str ) return;
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	
@@ -62,25 +69,21 @@ class ItemAccountListInterceptor {
 		}
 	}
 
-
-	//Please include in the query
-	/*
 	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")
-	public void loadListForCashReceipt(def evt) {
+	public void afterGetListForCashReceipt(def evt) {
 		def o = evt.args[0];
 		def result = evt.result;
 
 		if( o.has_collection_account ) {
-			def acList = collTypeAcct.find( [collectiotypeid: o.collectiontype.objid ] ).list();
+			def acList = collTypeAcct.find([ collectiotypeid: o.collectiontype.objid ]).list();
 
 			result.each {
-				def m = acList.find{ it.account.objid == it.objid };
-				it.defaultvalue = m.defaultvalue; 
-				it.valuetype = m.valuetype; 
+				def m = acList.find{ it.account.objid == it.objid } 
+				if ( m.valuetype ) {
+					it.valuetype = m.valuetype; 
+					it.defaultvalue = m.defaultvalue; 
+				}
 			}
 		}
 	}
-	*/
-	
-
 }

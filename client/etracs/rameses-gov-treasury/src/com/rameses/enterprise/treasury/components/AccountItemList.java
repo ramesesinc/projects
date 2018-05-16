@@ -162,6 +162,7 @@ public class AccountItemList extends XComponentPanel {
         com.rameses.rcp.common.ComponentBean cb = (com.rameses.rcp.common.ComponentBean)getComponentBean();
         cb.setProperty("totalsFieldName", getTotalsFieldName() );
         cb.setProperty("query", getProperty(getQueryName()));
+        cb.setProperty("total", getProperty( getTotalsFieldName() ));
         //cb.setProperty("handler", getProperty( getHandler()));
         /*
         com.rameses.rcp.common.ComponentBean cb = (com.rameses.rcp.common.ComponentBean)getComponentBean();

@@ -1,0 +1,36 @@
+import com.rameses.annotations.*;
+
+class DepositSlipInterceptor {
+
+
+	@DataContext("cashreceiptpayment_noncash")
+	def ncp;
+
+	@DataContext("collectionvoucher_fund")
+	def cvf;
+
+	@DataContext("depositslip_check")
+	def depChk;
+
+	@DataContext("depositslip")
+	def dep;
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'depositslip' }")
+	public void afterCreateDepositSlip( evt ) { 
+		def o = evt.args[0];
+
+		def p = [depositslipid: o.objid, fundid: o.fundid ];
+		dep.initDepositSlipCheck( p );
+		
+		//o.totalcheck = chkamt;
+		//dep.find( [objid: o.objid ] )
+		//throw new Exception("fired stop");
+	}
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'depositslip' }")
+	public void beforeRemoveDepositSlip( evt ) { 
+		def o = evt.args[0];
+		depChk.find( [depositslipid: o.objid] ).delete();
+	}
+
+}

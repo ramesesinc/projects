@@ -1,6 +1,6 @@
 <schema>
 	<element tablename="paymentorder">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" visible="true" searchable="true" caption="Trace No"/>
 		<field name="txndate" type="timestamp" required="true" />
 		<field name="txntype" />
 		<field name="txntypename"  />
@@ -15,6 +15,11 @@
 		<field name="refno" />
 		<field name="controlno" />
 		<field name="locationid" />
+		<field name="origin" />
+
+		<field name="issuedby_objid" />
+		<field name="issuedby_name" caption="Issued By"/>
+
 		<field name="origin" />
 
 		<field name="org_objid" required="true" />

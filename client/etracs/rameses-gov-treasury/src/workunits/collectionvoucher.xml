@@ -3,8 +3,9 @@
     <invokers>
         <invoker type="collectionvoucher:open" 
                  caption="Collection Voucher" 
-                 windowTitle="Collection Voucher"
-                 formTitle="Collection Voucher"
+                 windowTitle="#{entity.controlno}"
+                 formTitle="Collection Voucher #{entity.controlno}"
+                 formId="#{entity.objid}"
                  action="open" target="window" 
                  index="10"/>
         

@@ -48,6 +48,8 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
 
+        xDataTable1.setHandler("checkListModel");
+        xDataTable1.setName("selectedCheck"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Checks and Other Payments");
         xDataTable1.setBorder(xTitledBorder1);
@@ -98,36 +100,6 @@ public class DepositSlipPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "receivedfrom"}
-                , new Object[]{"caption", "Received From"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "particulars"}
-                , new Object[]{"caption", "Particulars"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
@@ -144,8 +116,6 @@ public class DepositSlipPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("checkListModel");
-        xDataTable1.setName("selectedCheck"); // NOI18N
 
         xFormPanel2.setCaptionWidth(150);
 
@@ -166,10 +136,10 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xDecimalField9.setPreferredSize(new java.awt.Dimension(100, 23));
         xFormPanel3.add(xDecimalField9);
 
-        xButton1.setImmediate(true);
         xButton1.setName("addCheck"); // NOI18N
-        xButton1.setText("Add Check");
         xButton1.setVisibleWhen("#{ entity.state == 'DRAFT' }");
+        xButton1.setImmediate(true);
+        xButton1.setText("Add Check");
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Cash Breakdown");
@@ -196,15 +166,15 @@ public class DepositSlipPage extends javax.swing.JPanel {
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
-        xButton2.setImmediate(true);
         xButton2.setName("removeCheck"); // NOI18N
-        xButton2.setText("Remove Check");
         xButton2.setVisibleWhen("#{ entity.state == 'DRAFT' }");
+        xButton2.setImmediate(true);
+        xButton2.setText("Remove Check");
 
-        xButton3.setImmediate(true);
         xButton3.setName("updateCash"); // NOI18N
-        xButton3.setText("Update Cash");
         xButton3.setVisibleWhen("#{ entity.state == 'DRAFT'  }");
+        xButton3.setImmediate(true);
+        xButton3.setText("Update Cash");
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);

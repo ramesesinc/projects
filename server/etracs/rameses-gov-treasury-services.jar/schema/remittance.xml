@@ -26,6 +26,7 @@
 		
 		<complex name="collection" ref="collectionvoucher" jointype="many-to-one" includefields="controlno,controldate,state" required="false">
 			<key field="collectionvoucherid" target="objid" />
-		</complex>			
+		</complex>
+		
 	</element>
 </schema>

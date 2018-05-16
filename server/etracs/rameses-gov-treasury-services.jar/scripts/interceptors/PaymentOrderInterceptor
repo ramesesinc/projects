@@ -34,6 +34,7 @@ class PaymentOrderCashReceiptInterceptor {
 		cal.setTime( r.txndate );
 		cal.add( Calendar.HOUR, 24 );
 		r.expirydate = new java.sql.Timestamp( cal.getTimeInMillis() );
+		r.issuedby = [objid:env.USERID, name:env.FULLNAME];
 	} 
 
 

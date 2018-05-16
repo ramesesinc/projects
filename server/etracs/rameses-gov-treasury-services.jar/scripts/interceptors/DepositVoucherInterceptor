@@ -11,7 +11,6 @@ class DepositVoucherInterceptor {
 		def x = evt.args[0];
 		def result = evt.result;
 		result << [  title: 'Open', state:'OPEN' ];
-		result << [  title: 'For Deposit', state:'FOR_DEPOSIT' ];
 		result << [  title: 'Posted', state:'POSTED' ];
 	}
 

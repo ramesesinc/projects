@@ -19,8 +19,8 @@ class DepositVoucherService  {
 	@Service("Var")
 	def var;			
 
-	@DataContext("collectionvoucher")
-	def cvEm;
+	@DataContext("collectionvoucher_fund")
+	def cvfEm;
 
 	@DataContext("depositvoucher")
 	def depositEm;
@@ -28,8 +28,6 @@ class DepositVoucherService  {
 	@DataContext("paymentcheck")
 	def paymentCheckEm;
 
-	@DataContext("depositvoucher_fund")
-	def depositFundEm;
 
 	@DataContext("depositslip")
 	def depositSlipEm;
@@ -39,12 +37,34 @@ class DepositVoucherService  {
 
 	@ProxyMethod
 	public def create( def o ) {
+		def m = [:];
+		m.state = "OPEN"
+		m.controlno = "DV" + seqSvc.getNextFormattedSeries("DEPOSIT_VOUCHER");
+		m.controldate = dateSvc.getBasicServerDate(); 
+		m.amount = o.amount;
+		m.totalcash = 0;
+		m.totalcheck = 0;
+		m.totalcr = 0;
+		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.dtcreated = dateSvc.getServerDate();
+		m.fund = o.fund;
+		m.amount = m.amount;	
+
+		def v = depositEm.create( m );
+		o.items.each {
+			cvfEm.find( [ objid: it.objid ] ).update( [depositvoucherid: v.objid ] );
+		}
+
+		/*
+		throw new Exception("test one");
 		if(!o.items)
 			throw new Exception("Please select at least one item " + o.amount );
+		*/	
 		/*
 	    UPDATED TABLES :
 	        depositvoucher, collection, deposit_fund, collection_fund, paymentcheck
 		*/
+		/*
 		def m = [:];
 		m.state = "OPEN"
 		m.controlno = 'TMP-DEP-'+env.USERID;
@@ -61,10 +81,12 @@ class DepositVoucherService  {
 		depositEm.updatePaymentCheckDefaultFund( z );
 		depositEm.updateFundCheckTotal( z );
 		depositEm.cleanUpNullTotals( z );
+		*/
 		return m;
 	}
 
 
+	/*
 	@ProxyMethod
 	public void updateCheckToDeposit( def o ) {
 		if(!o.items) throw new Exception( "items is required");
@@ -125,10 +147,12 @@ class DepositVoucherService  {
 		depositEm.find([ objid: o.objid ]).update( m );
 		return m;
 	}
+	*/
 
 	/*********************************
 	* post per deposit voucher fund
 	**********************************/
+	/*
 	@ProxyMethod
 	public def post( def o ) {
 		if(!o.objid) throw new Exception( "objid is required");
@@ -163,4 +187,5 @@ class DepositVoucherService  {
 
 		return m; 
 	} 
+	*/
 }

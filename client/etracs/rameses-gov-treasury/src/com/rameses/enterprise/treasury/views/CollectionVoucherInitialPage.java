@@ -45,8 +45,8 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
 
         xButton1.setDepends(new String[] {"controldate"});
         xButton1.setName("submitForLiquidation"); // NOI18N
-        xButton1.setText("Liquidate");
         xButton1.setVisibleWhen("#{ controldate != null }");
+        xButton1.setText("Liquidate");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -69,7 +69,23 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        xDataTable1.setHandler("remittanceListHandler");
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "posted"}
+                , new Object[]{"caption", " "}
+                , new Object[]{"width", 30}
+                , new Object[]{"minWidth", 30}
+                , new Object[]{"maxWidth", 30}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
+            }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "controlno"}
                 , new Object[]{"caption", "Control No"}
@@ -192,7 +208,6 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("remittanceListHandler");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

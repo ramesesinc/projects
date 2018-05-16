@@ -22,6 +22,8 @@
 			<key field="fund_objid" target="objid" />
 		</complex>  
 
+		<field name="depositvoucherid" />
+
 	</element>
 
 </schema>	

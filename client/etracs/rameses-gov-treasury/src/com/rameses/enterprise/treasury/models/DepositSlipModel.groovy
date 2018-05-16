@@ -11,9 +11,9 @@ class DepositSlipModel extends CrudFormModel {
     @Service("DepositSlipService")
     def depositSlipSvc;
     
-    def amount;
+    def limit; //the maximum amount
     def handler;
-    def depositvoucherid;
+    def depositvoucher;
     def fundid; 
     
     boolean editable = true;
@@ -22,19 +22,14 @@ class DepositSlipModel extends CrudFormModel {
 
     void afterCreate() {
        entity.state = "DRAFT";
-       entity.depositvoucherid = depositvoucherid;
+       entity.depositvoucherid = depositvoucher.objid;
        entity.fundid = fundid;
-       entity.amount = amount;
+       entity.amount = 0;
        entity.totalcash = 0;
        entity.totalcheck = 0;
        entity.cashbreakdown = [];
+       limit = depositvoucher.amount - ( depositvoucher.totalcheck + depositvoucher.totalcash + depositvoucher.totalcr );
     } 
-    
-    public void beforeSave(def mode){
-        if(mode == "create") {
-            if( amount < entity.amount ) throw new Exception("Amount must be less than amount to deposit");
-        }
-    }
     
     def getBankAccountLookup() {
        def h = { o->
@@ -46,9 +41,12 @@ class DepositSlipModel extends CrudFormModel {
     
    def checkListModel = [
         fetchList: { o->
-            def m = [_schemaname:'paymentcheck'];
+            def m = [_schemaname:'depositslip_check'];
             m.findBy = [depositslipid: entity.objid];
-            return queryService.getList( m );
+            return queryService.getList( m ).collect{ 
+                [objid:it.objid, refno:it.check.refno, refdate:it.check.refdate, bank:it.check.bank,
+                    receivedfrom:it.check.receivedfrom, amount:it.amount] 
+            }
         },
         onOpenItem: {o,col->
             def op = Inv.lookupOpener("paymentcheck:open", [entity: o] );

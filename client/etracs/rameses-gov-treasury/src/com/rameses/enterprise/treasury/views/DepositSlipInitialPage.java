@@ -33,7 +33,6 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
         xFormPanel4.setOpaque(true);
 
@@ -51,13 +50,6 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
         xDateField1.setName("entity.depositdate"); // NOI18N
         xDateField1.setRequired(true);
         xFormPanel4.add(xDateField1);
-
-        xDecimalField1.setCaption("Amount  to deposit");
-        xDecimalField1.setCaptionWidth(120);
-        xDecimalField1.setName("entity.amount"); // NOI18N
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xDecimalField1.setRequired(true);
-        xFormPanel4.add(xDecimalField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -78,7 +70,6 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XDateField xDateField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     // End of variables declaration//GEN-END:variables

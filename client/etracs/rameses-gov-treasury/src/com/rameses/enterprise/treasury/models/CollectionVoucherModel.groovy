@@ -20,6 +20,10 @@ class CollectionVoucherModel extends CrudFormModel {
     
     def numformat = new java.text.DecimalFormat("#,##0.00"); 
     
+    def getTotalNoncash() {
+        return (entity.totalcheck + entity.totalcr);
+    }
+    
     def getFormattedAmount() {
         if ( !(entity.amount instanceof Number )) {
             entity.amount = 0.0; 
@@ -72,7 +76,7 @@ class CollectionVoucherModel extends CrudFormModel {
             m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)}";
             m.groupBy = "refno,reftype,refdate,particulars";
             m.orderBy = "refdate,refno";
-            m.where = [ "receipt.remittance.collectionvoucherid = :cvid", [cvid: entity.objid ]];
+            m.where = [ "receipt.remittance.collectionvoucherid = :cvid AND amount > 0", [cvid: entity.objid ]];
             return queryService.getList( m );
         }
     ] as BasicListModel;

@@ -10,7 +10,7 @@ class DepositSlipService  {
 	@DataContext("paymentcheck")
 	def paymentCheckEm;
 
-	@DataContext("depositvoucher_fund")
+	@DataContext("depositvoucher")
 	def dvFundEm;
 
 	@ProxyMethod

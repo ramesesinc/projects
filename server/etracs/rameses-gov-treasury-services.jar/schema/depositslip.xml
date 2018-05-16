@@ -5,7 +5,6 @@
 		<field name="depositvoucherid" required="true"/> 
 
 		<field name="state" required="true" defaultvalue="DRAFT"/> 
-		<field name="fundid" required="true"/> 
 		<field name="createdby_objid" required="true"/> 
 		<field name="createdby_name" required="true"/> 
 		 
@@ -21,10 +20,6 @@
 		<complex name="cashbreakdown" serializer="default" type="list"/> 
 		<field name="validation_refno" /> 
 		<field name="validation_refdate" /> 
-
-		<complex name="fund" ref="fund" jointype="many-to-one" required="false">
-			<key field="fundid" target="objid" />
-		</complex>
 
 	</element>
 

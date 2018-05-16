@@ -22,7 +22,12 @@ class CollectionVoucherFundModel extends CrudFormModel {
          //build summaryList
          def p = [collectionvoucherid: entity.parentid, fundid: entity.fund.objid ];
          def m = [_schemaname: 'cashreceiptpayment_noncash' ];
-         m.where = ["receipt.remittance.collectionvoucherid =:collectionvoucherid AND fund.objid=:fundid", p];
+         m.where = ["receipt.remittance.collectionvoucherid =:collectionvoucherid AND fund.objid=:fundid AND amount > 0", p];
+         
+         m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)},refid";
+         m.groupBy = "refid,refno,reftype,refdate,particulars";
+         m.orderBy = "refdate,refno";
+            
          def list = queryService.getList( m );
          checkList = list.findAll{ it.reftype == 'CHECK' };
          creditMemoList = list.findAll{ it.reftype != 'CHECK' };
@@ -33,6 +38,11 @@ class CollectionVoucherFundModel extends CrudFormModel {
     def checkModel = [
         fetchList: {o ->
             return checkList;
+        },
+        onOpenItem: {o,col->
+            def op = Inv.lookupOpener("paymentcheck:open", [entity: [objid: o.refid ]] );
+            op.target = "popup";
+            return op;
         }
     ] as BasicListModel; 
 

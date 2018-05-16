@@ -27,7 +27,7 @@ class CollectionVoucherInitialModel extends CrudListModel {
     void buildDatesList() {
         def m = [_schemaname:'remittance'];
         m.select = "controldate";
-        m.where = [" collectionvoucherid IS NULL"];
+        m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL"];
         m.groupBy = "controldate";
         def xlist  = queryService.getList(m);
         if(xlist ) datesList = xlist*.controldate.collect{ df.format(it) };
@@ -43,7 +43,8 @@ class CollectionVoucherInitialModel extends CrudListModel {
         fetchList: { o->
             if( !controldate ) return [];
             def m = [_schemaname: 'remittance' ];
-            m.where = ["collectionvoucherid IS NULL AND controldate =:cdate", [cdate:controldate] ];
+            m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,collector.name,amount,totalcash,totalcheck,totalcr,state"
+            m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL AND controldate =:cdate", [cdate:controldate] ];
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
@@ -57,7 +58,10 @@ class CollectionVoucherInitialModel extends CrudListModel {
     def submitForLiquidation() {
         def p = [controldate: controldate]
         p = collSvc.create(p);
-        return Inv.lookupOpener( "collectionvoucher:open", [entity: p ]);
+        remittanceListHandler.reload();
+        def op = Inv.lookupOpener( "collectionvoucher:open", [entity: p ]);
+        op.target = 'self';
+        return op;
     }
 
     

@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Elmo Nazareno
  */
 @Template(CrudFormPage.class)
-public class DepositVoucherPage extends javax.swing.JPanel {
+public class DepositVoucherPage1 extends javax.swing.JPanel {
 
     /**
      * Creates new form DepositPage
      */
-    public DepositVoucherPage() {
+    public DepositVoucherPage1() {
         initComponents();
     }
 

@@ -3,13 +3,14 @@
     <invokers>
         <invoker type="depositvoucher:open" 
                  caption="Deposit Voucher" 
-                 windowTitle="Deposit Voucher"
-                 formTitle="Deposit Vocuher"
+                 windowTitle="#{entity.controlno}"
+                 formTitle="Deposit Voucher #{entity.controlno}"
+                 formId="#{entity.objid}"
                  action="open" target="window" 
                  index="10"/>
         
         <!-- Buttons -->
-        <invoker type="formActions" caption="Submit for Deposit" action="submitForDeposit" 
+        <invoker type="formActions" caption="Post" action="post" 
                  visibleWhen="#{entity.state == 'OPEN' }"/>
         
     </invokers>

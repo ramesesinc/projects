@@ -6,6 +6,7 @@
                  windowTitle="Remittances"
                  formTitle="Remittances"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
+                 orderBy="controlno"
                  action="init" target="window" index="10"/>
     </invokers>
 </workunit>

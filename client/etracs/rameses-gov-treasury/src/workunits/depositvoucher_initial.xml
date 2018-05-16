@@ -7,7 +7,7 @@
                  action="init" 
                  index="50" />
         
-        <invoker type="depositvoucher:create" 
+        <invoker type="depositvoucher_fund:create" 
                  caption="New Deposit Voucher" 
                  windowTitle="New Deposit Voucher"
                  formTitle="New Deposit Voucher"

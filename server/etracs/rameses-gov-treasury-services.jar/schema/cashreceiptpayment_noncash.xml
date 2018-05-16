@@ -7,6 +7,7 @@
 		<field name="refdate" required="true"/>
 		<field name="reftype" required="true"/>
 		<field name="amount" />
+		<field name="voidamount" />
 		<field name="particulars" />
 		<field name="fund_objid" required="true"/>
 
@@ -14,7 +15,7 @@
 		<field name="checkid" />
 
 		<complex name="receipt" ref="cashreceipt" jointype="many-to-one"  
-			includefields="receiptno,receiptdate,collector.name,remittanceid,remittance.collectionvoucherid,void.objid" required="false">
+			includefields="receiptno,receiptdate,collector.name,remittanceid,remittance.collectionvoucherid" required="false">
 			<key field="receiptid" target="objid" />
 		</complex> 
 

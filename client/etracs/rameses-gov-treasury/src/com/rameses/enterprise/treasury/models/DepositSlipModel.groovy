@@ -6,11 +6,21 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-class DepositSlipModel extends CrudFormModel {
+class DepositSlipModel {
 
+    @Caller 
+    def caller;
+    
+    @Binding
+    def binding;
+    
+    @Service("QueryService")
+    def queryService;
+    
     @Service("DepositSlipService")
     def depositSlipSvc;
     
+    def entity;
     def limit; //the maximum amount
     def handler;
     def depositvoucher;
@@ -19,8 +29,15 @@ class DepositSlipModel extends CrudFormModel {
     boolean editable = true;
     def selectedItems = []; 
     def selectedCheck;
-
-    void afterCreate() {
+    def mode;
+    
+    def getCheckTypeList() {
+        return LOV.BANK_DEPOSIT_TYPES*.key;
+    }
+    
+    def create() {
+        mode = "create"
+       entity = [:];
        entity.state = "DRAFT";
        entity.depositvoucherid = depositvoucher.objid;
        entity.fundid = fundid;
@@ -29,7 +46,23 @@ class DepositSlipModel extends CrudFormModel {
        entity.totalcheck = 0;
        entity.cashbreakdown = [];
        limit = depositvoucher.amount - ( depositvoucher.totalcheck + depositvoucher.totalcash + depositvoucher.totalcr );
+       return "create";
     } 
+    
+    def open() {
+       mode = "read";
+       return "default";
+    }
+    
+    def save() {
+        if( !entity.deposittype ) throw new Exception("Please choose CASH or CHECK")
+        mode = "read";
+        entity = depositSlipSvc.create( entity );
+        if(caller)caller.reloadList();
+        checkListModel.reload();
+        binding.refresh("entity.amount");
+        return "default";
+    }
     
     def getBankAccountLookup() {
        def h = { o->

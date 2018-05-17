@@ -33,6 +33,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
+        xLabel6 = new com.rameses.rcp.control.XLabel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
@@ -44,10 +45,6 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         xButton4 = new com.rameses.rcp.control.XButton();
         jPanel3 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel14 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel2.setCaptionWidth(120);
 
@@ -65,6 +62,14 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         xLabel5.setCaptionWidth(120);
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel2.add(xLabel5);
+
+        xLabel6.setCaption("Amount Deposited");
+        xLabel6.setExpression("#{ entity.amountdeposited }");
+        xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel6.setCaptionWidth(120);
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 18));
+        xFormPanel2.add(xLabel6);
 
         xFormPanel3.setCaptionWidth(120);
 
@@ -101,8 +106,8 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "bankaccount.code"}
-                , new Object[]{"caption", "Acct Code"}
+                new Object[]{"name", "depositdate"}
+                , new Object[]{"caption", "Date "}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -116,8 +121,23 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "depositdate"}
-                , new Object[]{"caption", "Date Deposited"}
+                new Object[]{"name", "deposittype"}
+                , new Object[]{"caption", "Deposit Type"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "checktype"}
+                , new Object[]{"caption", "Check Type"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -384,30 +404,6 @@ public class DepositVoucherPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("References", jPanel3);
 
-        xLabel7.setCaption("Cash deposited");
-        xLabel7.setExpression("#{ entity.totalcash}");
-        xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaptionWidth(120);
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel1.add(xLabel7);
-
-        xLabel8.setCaption("Check deposited");
-        xLabel8.setExpression("#{ entity.totalcheck}");
-        xLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel8.setCaptionWidth(120);
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel1.add(xLabel8);
-
-        xLabel14.setCaption("CR");
-        xLabel14.setExpression("#{ entity.totalcr}");
-        xLabel14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel14.setCaptionWidth(120);
-        xLabel14.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel1.add(xLabel14);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -419,9 +415,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(169, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -430,8 +424,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(93, Short.MAX_VALUE))
@@ -445,16 +438,13 @@ public class DepositVoucherPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
-    private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLabel xLabel8;
+    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

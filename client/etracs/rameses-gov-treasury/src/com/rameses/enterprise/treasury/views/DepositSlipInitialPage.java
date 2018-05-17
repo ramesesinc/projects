@@ -4,14 +4,14 @@
  */
 package com.rameses.enterprise.treasury.views;
 
+import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(CrudFormPage.class)
+@Template(FormPage.class)
 public class DepositSlipInitialPage extends javax.swing.JPanel {
 
     /**
@@ -33,6 +33,21 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
         xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
+        xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
+        jPanel2 = new javax.swing.JPanel();
+        cashDenomination1 = new com.rameses.enterprise.treasury.components.CashDenomination();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField10 = new com.rameses.rcp.control.XDecimalField();
+        xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
         xFormPanel4.setOpaque(true);
 
@@ -46,10 +61,221 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
         xFormPanel4.add(xLookupField2);
 
         xDateField1.setCaption("Deposit Date");
-        xDateField1.setCaptionWidth(120);
         xDateField1.setName("entity.depositdate"); // NOI18N
+        xDateField1.setCaptionWidth(120);
         xDateField1.setRequired(true);
         xFormPanel4.add(xDateField1);
+
+        xDataTable1.setHandler("checkListModel");
+        xDataTable1.setName("selectedCheck"); // NOI18N
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Checks and Other Payments");
+        xDataTable1.setBorder(xTitledBorder1);
+        xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "selected"}
+                , new Object[]{"caption", " "}
+                , new Object[]{"width", 25}
+                , new Object[]{"minWidth", 25}
+                , new Object[]{"maxWidth", 25}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", true}
+                , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "refno"}
+                , new Object[]{"caption", "Check No"}
+                , new Object[]{"width", 80}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 80}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", false}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "refdate"}
+                , new Object[]{"caption", "Check Date"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd", null)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "bank.name"}
+                , new Object[]{"caption", "Bank"}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 150}
+                , new Object[]{"maxWidth", 200}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "amount"}
+                , new Object[]{"caption", "Amount"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", false}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "deposittype"}
+                , new Object[]{"caption", "Type"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            })
+        });
+        xDataTable1.setDynamic(true);
+
+        xFormPanel2.setCaptionWidth(150);
+
+        xDecimalField5.setCaption("Total Check");
+        xDecimalField5.setDepends(new String[] {"selectedCheck"});
+        xDecimalField5.setName("entity.totalcheck"); // NOI18N
+        xDecimalField5.setCaptionWidth(100);
+        xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField5.setEnabled(false);
+        xDecimalField5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xDecimalField5.setPreferredSize(new java.awt.Dimension(150, 23));
+        xFormPanel2.add(xDecimalField5);
+
+        xDecimalField9.setCaption("Total Cash");
+        xDecimalField9.setName("entity.totalcash"); // NOI18N
+        xDecimalField9.setCaptionWidth(100);
+        xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField9.setEnabled(false);
+        xDecimalField9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xDecimalField9.setPreferredSize(new java.awt.Dimension(100, 23));
+        xFormPanel3.add(xDecimalField9);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Cash Breakdown");
+        jPanel2.setBorder(xTitledBorder2);
+
+        cashDenomination1.setAmountField("cashTotal");
+        cashDenomination1.setHandler("cashBreakdownHandler");
+        cashDenomination1.setName("entity.cashbreakdown"); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cashDenomination1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cashDenomination1, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        xButton1.setName("selectAll"); // NOI18N
+        xButton1.setImmediate(true);
+        xButton1.setText("Select All");
+
+        xButton2.setName("deselectAll"); // NOI18N
+        xButton2.setImmediate(true);
+        xButton2.setText("Deselect All");
+
+        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
+        xPanel2.setLayout(xPanel2Layout);
+        xPanel2Layout.setHorizontalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(xPanel2Layout.createSequentialGroup()
+                        .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
+        xPanel2Layout.setVerticalGroup(
+            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
+                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                        .addComponent(xButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(57, 57, 57))
+        );
+
+        xDecimalField1.setCaption("Amount to Deposit");
+        xDecimalField1.setName("entity.amount"); // NOI18N
+        xDecimalField1.setCaptionWidth(120);
+        xFormPanel1.add(xDecimalField1);
+
+        xDecimalField10.setCaption("Balance");
+        xDecimalField10.setName("balance"); // NOI18N
+        xDecimalField10.setCaptionWidth(120);
+        xDecimalField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField10.setEnabled(false);
+        xDecimalField10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xDecimalField10.setPreferredSize(new java.awt.Dimension(100, 23));
+        xFormPanel1.add(xDecimalField10);
+
+        xIntegerField1.setCaption("Limit no. of checks per Deposit Slip");
+        xIntegerField1.setName("entity.numcheckslimit"); // NOI18N
+        xIntegerField1.setCaptionWidth(180);
+        xIntegerField1.setPreferredSize(new java.awt.Dimension(40, 20));
+        xFormPanel5.add(xIntegerField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -57,20 +283,50 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(416, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(499, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.enterprise.treasury.components.CashDenomination cashDenomination1;
+    private javax.swing.JPanel jPanel2;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField1;
+    private com.rameses.rcp.control.XDecimalField xDecimalField10;
+    private com.rameses.rcp.control.XDecimalField xDecimalField5;
+    private com.rameses.rcp.control.XDecimalField xDecimalField9;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XFormPanel xFormPanel5;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XPanel xPanel2;
     // End of variables declaration//GEN-END:variables
 }

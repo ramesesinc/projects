@@ -31,6 +31,11 @@ class DepositVoucherModel extends CrudFormModel {
         }
     ] as BasicListModel;
 
+    void reloadList() {
+        depositSlipList.reload();
+    }
+
+    
     def viewDepositSlip() {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
         def p = [:];
@@ -94,5 +99,6 @@ class DepositVoucherModel extends CrudFormModel {
         if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
         depositSvc.post( [objid: entity.objid ] );
     }
+    
     
 }    

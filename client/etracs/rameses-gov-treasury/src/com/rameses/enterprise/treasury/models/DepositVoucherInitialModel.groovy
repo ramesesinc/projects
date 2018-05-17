@@ -53,7 +53,7 @@ class DepositVoucherInitialModel extends CrudListModel {
         }
     ] as BasicListModel;
     
-    def submitForDeposit() {
+    def submit() {
         def selectedList = collectionListModel.getSelectedValue();
         if(!selectedList) throw new Exception("Please select at least one entry");
         

@@ -10,8 +10,8 @@ public class BillItemProvider {
 	
 	def itemAcctUtil = new ItemAccountUtil();
 
-	public def createFact(def v) {
-
+	public def createFact(def v1 ) {
+		def v = MapBeanUtils.copy( v1 );  
 		def acct = null;
 		Fund f = null;
 		if(v.item?.objid) {

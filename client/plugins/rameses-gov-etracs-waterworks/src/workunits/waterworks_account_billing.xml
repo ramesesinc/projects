@@ -1,8 +1,12 @@
-<workunit extends="com/rameses/treasury/common/templates/SingleBillingReport.xml" rulename="waterworksbilling">
+<workunit extends="com/rameses/treasury/common/templates/BasicBillingReport.xml" rulename="waterworksbilling">
     <invokers>
         <invoker type="waterworks_account:form:formActions" caption="Billing" index="-10" 
                 reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
                 visibleWhen="#{mode=='read'}"
+                action="preview"/>
+        
+        <invoker type="waterworks_account_billing" caption="Billing" 
+                reportName="com/rameses/gov/etracs/waterworks/reports/billing/waterworksbilling.jasper" 
                 action="preview"/>
     </invokers>
 </workunit>

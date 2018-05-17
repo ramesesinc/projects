@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+class WaterworksConsumptionService {
+	
+
+	@Service("WaterworksScheduleService")
+	def scheduleSvc;	
+
+
+	@DataContext("waterworks_account")
+	def wacctEm;
+
+
+	@DataContext("waterworks_consumption")
+	def wconsEm;
+	
+	//This is called from the batch capture in the ledger.
+	@ProxyMethod 
+	public def createBatch( param ) { 
+		if ( !param.acctid ) throw new Exception('acctid parameter is required'); 
+
+		def acctinfo = wacctEm.find([ objid: param.acctid ]).select('objid,stuboutnode.*').first(); 
+		if ( !acctinfo ) throw new Exception('waterworks account not found'); 
+
+		def zone = acctinfo.stuboutnode?.zone; 
+		if ( !zone?.objid ) throw new Exception('Please specify a zone for this account'); 
+
+		def sched = acctinfo.stuboutnode?.schedule; 
+		if ( !sched?.objid ) throw new Exception('Please specify a schedule for zone '+ zone.code); 
+
+		param.items.each{ o-> 
+			def m = [ scheduleid: sched.objid, year: o.year, month: o.month ];
+			def schedinfo = scheduleSvc.getSchedule( m ); 
+			o.readingdate = schedinfo.readingdate;
+			o.discdate = schedinfo.discdate;
+			o.duedate = schedinfo.duedate;
+
+			o.objid = o.acctid +'-'+ o.year.toString() + o.month.toString().padLeft(2,'0'); 
+			o.prevreading = o.reading = o.volume = 0;
+			o.amount = o.amtpaid = 0.0;
+			o.readingmethod = 'CAPTURE'; 
+			o.state = 'CAPTURE';
+			wconsEm.create( o ); 
+
+			def oo = wconsEm.read([ objid: o.objid ]); 
+			if ( oo ) o.putAll( oo ); 
+		} 
+		return param; 
+	} 
+
+
+}

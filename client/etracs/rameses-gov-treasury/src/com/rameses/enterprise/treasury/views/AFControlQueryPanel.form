@@ -43,6 +43,7 @@
         </Component>
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
           <Properties>
+            <Property name="name" type="java.lang.String" value="query.issuedto" noResource="true"/>
             <Property name="caption" type="java.lang.String" value="Issued To"/>
             <Property name="captionWidth" type="int" value="70"/>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -50,14 +51,15 @@
             </Property>
             <Property name="expression" type="java.lang.String" value="#{ query.issuedto.name }"/>
             <Property name="handler" type="java.lang.String" value="collector:lookup"/>
-            <Property name="name" type="java.lang.String" value="query.issuedto" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 20]"/>
             </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ showIssuedToFilter == true }"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
           <Properties>
+            <Property name="name" type="java.lang.String" value="query.respcenter" noResource="true"/>
             <Property name="caption" type="java.lang.String" value="Resp. Center"/>
             <Property name="captionWidth" type="int" value="90"/>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -65,10 +67,10 @@
             </Property>
             <Property name="expression" type="java.lang.String" value="#{ query.respcenter.name }"/>
             <Property name="handler" type="java.lang.String" value="org:lookup"/>
-            <Property name="name" type="java.lang.String" value="query.respcenter" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 20]"/>
             </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ showRespcenterFilter == true }"/>
           </Properties>
         </Component>
       </SubComponents>

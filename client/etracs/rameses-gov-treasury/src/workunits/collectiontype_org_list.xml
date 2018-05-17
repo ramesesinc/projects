@@ -1,6 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="collectiontype_org" allowCreate="false">
    <invokers>
-         <invoker type="collectiontype:section" caption="Orgs" action="init" target="popup" parentid="collectiontypeid" cols="org.name,org.type" index="2"/>
+         <invoker type="collectiontype:section" caption="Orgs" action="init" target="popup" 
+                visibleWhen="#{ mode != 'create' }"
+                  parentid="collectiontypeid" cols="org.name,org.type" index="2"/>
          <invoker type="listActions" caption="Add Entry" action="addEntry" />
    </invokers>
    <code>

@@ -84,5 +84,8 @@ public class CollectionTypeModel extends CrudFormModel {
         }
     ] as BasicListModel;
 
-    
+    boolean isEditAllowed() { 
+        if ( entity.system == 1 ) return false; 
+        return super.isEditAllowed(); 
+    }
 }

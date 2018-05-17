@@ -9,13 +9,13 @@
         
         <!-- Menu category -->
         <invoker folderid="menucategory/treasury/collection" 
-                 caption="AF Request (Collection)" 
-                formTitle="AF Request (Collection)"
-                role="COLLECTOR" action="create" target="window" index="10" reqtype="COLLECTION"/>  
+                 caption="Request Accountable Form" 
+                formTitle="Request Accountable Form"
+                role="COLLECTOR" action="create" target="window" index="-10" reqtype="COLLECTION"/>  
         
         <invoker folderid="menucategory/treasury/af" 
-                 caption="AF Request (Purchase)" 
-                formTitle="AF Request (Purchase)"
+                 caption="Request Accountable Form (Purchase)" 
+                formTitle="Request  Accountable Form (Purchase)"
                 role="AFO" action="create" target="window" index="10" reqtype="PURCHASE"/>   
         
     </invokers>

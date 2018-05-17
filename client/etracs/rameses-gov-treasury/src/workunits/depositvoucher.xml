@@ -3,16 +3,16 @@
     <invokers>
         <invoker type="depositvoucher:open" 
                  caption="Deposit Voucher" 
-                 windowTitle="Deposit Voucher"
-                 formTitle="Deposit Vocuher"
+                 windowTitle="#{entity.controlno}"
+                 formTitle="Deposit Voucher #{entity.controlno}"
+                 formId="#{entity.objid}"
                  action="open" target="window" 
                  index="10"/>
         
         <!-- Buttons -->
-        <invoker type="formActions" caption="Submit to Cashier" action="submitForDeposit" 
-                 visibleWhen="#{entity.state == 'OPEN' }"/>
         <invoker type="formActions" caption="Post" action="post" 
-                 visibleWhen="#{entity.state == 'FOR_DEPOSIT' }" />
+                 visibleWhen="#{entity.state == 'OPEN' }"/>
+        
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.DepositVoucherModel" />

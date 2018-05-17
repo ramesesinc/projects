@@ -56,6 +56,13 @@ public class CaptureConsumptionModel extends CrudFormModel {
                 if(z.discdate) entity.discdate = dateFormatter.format(z.discdate);
                 if(z.readingdate) entity.readingdate = dateFormatter.format(z.readingdate);
             }
+        },
+        "entity.volume": {
+            def m = [:];
+            m.objid = entity.acctid; 
+            m.volume = entity.volume; 
+            def res = compSvc.compute(m); 
+            entity.amount = res.amount;
         }
     ];
 

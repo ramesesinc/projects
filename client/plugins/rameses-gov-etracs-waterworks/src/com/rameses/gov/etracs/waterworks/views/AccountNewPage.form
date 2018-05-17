@@ -33,7 +33,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="228" max="32767" attributes="0"/>
+                  <EmptySpace pref="215" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -66,7 +66,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="xPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="47" max="32767" attributes="0"/>
@@ -121,6 +121,12 @@
                   <Dimension value="[200, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField1">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="No.of Units"/>
+                <Property name="name" type="java.lang.String" value="entity.units" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

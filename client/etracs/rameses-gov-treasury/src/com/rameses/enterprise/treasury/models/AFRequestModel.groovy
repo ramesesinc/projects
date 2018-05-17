@@ -27,6 +27,14 @@ class AFRequestModel extends CrudFormModel {
         entity.reqtype = invoker.properties.reqtype;
         entity.itemclass = 'AF';
         entity.items = [];
+        
+        def env = OsirisContext.env;
+        if ( env.ORGROOT == 0 ) {
+            entity.respcenter = [
+                objid: env.ORGID, 
+                name:  env.ORGNAME
+            ];
+        }
     }
     
     public boolean isEditAllowed() { 

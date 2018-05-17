@@ -34,16 +34,14 @@ class RemittanceService  {
 	def var;
 
 	@ProxyMethod
+	public def getCashReceiptForRemittance( def p ) {
+		return remEm.getCashReceiptsForRemittance( p );
+	}
+ 
+	@ProxyMethod
 	public def create( def pp ) {
 
 		def o = pp.items;
-
-		def buff = new StringBuilder();
-		o.findAll{ it.formtype == "serial" && ( it.qty != (it.toseries - it.fromseries + 1 ))  }.each {
-			buff.append( it.formno + " " + it.stubno + " " + it.fromseries + " " + it.toseries );
-		}
-		def str = buff.toString();
-		if(str ) throw new Exception("Mismatch qty with series. Please check the ff: \n" + str );
 
 		def m = [:];
 		m.controlno = 'TMP-REM-'+env.USERID;
@@ -59,10 +57,14 @@ class RemittanceService  {
 		m = remEm.create( m );
 
 		def scond = "collector.objid = :userid AND series BETWEEN :fromseries AND :toseries";
-		o.each {
+		o.findAll{ it.formtype == 'serial' }.each {
 			//update also remittance_fund
 			def p = [userid: env.USERID, fromseries: it.fromseries, toseries: it.toseries ];
 			cashReceiptEm.find( [controlid: it.afcontrolid ] ).where(scond, p).update( [remittanceid: m.objid] );
+			//test to be sure. compare records affected with the fromseries and toseries 
+			def qty = cashReceiptEm.find( [controlid: it.afcontrolid, remittanceid: m.objid ] ).select( "x:{COUNT(*)}" ).val();
+			if( qty != (it.toseries - it.fromseries + 1)) 
+				throw new Exception("Mismatch qty with series. Please check the ff: " + it.fromseries + "=" + it.toseries + ". Please redo remittance" );
 		}
 
 		def z = [remittanceid: m.objid]
@@ -74,7 +76,6 @@ class RemittanceService  {
 			vstr += openList.collect{ 'Check No ' + it.refno + ' (' + it.receivedfrom + ') ' + it.amount  }.join("\n");
 			throw new Exception(vstr);
 		}
-			
 		remEm.insertRemittanceFund( z );
 
 		def clist = rfEm.find( z ).list();

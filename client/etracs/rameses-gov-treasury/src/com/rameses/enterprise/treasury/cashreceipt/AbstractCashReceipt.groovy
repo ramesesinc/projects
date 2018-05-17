@@ -147,7 +147,6 @@ public abstract class AbstractCashReceipt {
         clearAllPayments();
         def handler = { o-> 
             entity.totalcash = o.totalcash; 
-            entity.checks = o.checks;
             entity.paymentitems = o.paymentitems; 
             entity.totalnoncash = o.paymentitems.sum{it.amount};
             success = true; 
@@ -263,7 +262,8 @@ public abstract class AbstractCashReceipt {
             try { 
                 beforePost();
                 entity._paymentorderid = _paymentorderid;
-                entity = service.post( entity );
+                def res = service.post( entity );
+                if ( res ) entity = res;  
             } catch(e) { 
                 postError(); 
                 throw e; 

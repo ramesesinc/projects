@@ -12,6 +12,20 @@ class AFControlModel extends CrudFormModel {
     @Service("AFControlService")
     def service;
     
+    public boolean getShowAction() {
+        if( entity.state=='ISSUED' && entity.owner.objid == OsirisContext.env.USERID  ) {
+           return true;
+        } 
+        else {
+            return false;
+        }
+    }
+    
+    void afterOpen() {
+        _details = null;       
+        if(binding) binding.refresh("detailInfo");
+    }
+    
     void activate() {
         if(entity.active==1)
             throw new Exception("Entry is already active");
@@ -58,6 +72,26 @@ class AFControlModel extends CrudFormModel {
         if(caller) caller.reloadEntity();
     }
 
+    void changeMode( def mode ) {
+        def v = service.changeMode( [objid: entity.objid, txnmode: mode ] );
+        entity.txnmode = v.txnmode ;
+        entity.active = v.active;
+        if(caller) caller.reloadEntity();
+    }    
+    
+    void changeModeOnline() {
+        changeMode( "ONLINE" )
+    }
+    
+    void changeModeOffline() {
+        changeMode( "OFFLINE" )
+    }
+    
+    void changeModeCapture() {
+        changeMode( "CAPTURE" )
+    }
+    
+    //second page
     public def getDetailInfo() { 
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFControlPage.gtpl", [details: details] );
     }
@@ -72,10 +106,6 @@ class AFControlModel extends CrudFormModel {
         return _details;
     }
     
-    void afterOpen() {
-        _details = null;       
-        if(binding) binding.refresh("detailInfo");
-    }
     
     def viewRef( def o ) {
         def op = Inv.lookupOpener( "aftxn:open", [entity: [objid: o.refid ]] );

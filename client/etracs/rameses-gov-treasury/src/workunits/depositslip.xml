@@ -2,13 +2,6 @@
           allowCreate="false" allowEdit="false" allowDelet="false">
     <invokers>
         
-   <invoker type="depositslip:create" 
-                 caption="New Deposit Slip" 
-                 windowTitle="New Deposit Slip"
-                 formTitle="New Deposit Slip"
-                 action="create" target="popup" 
-                 />
-        
         <invoker type="depositslip:open" 
                  caption="Deposit Slip" 
                  windowTitle="Deposit Slip"

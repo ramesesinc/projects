@@ -1,0 +1,32 @@
+<schema>
+	<element tablename="vw_collectiontype_org">
+		<field name="objid" primary="true"/> 
+		<field name="state"/> 
+		<field name="name"/> 
+		<field name="title"/> 
+		<field name="formno"/> 
+		<field name="handler"/> 
+		
+		<field name="barcodekey"/> 
+		<field name="allowonline"/> 
+		<field name="allowoffline"/> 
+		<field name="allowbatch"/> 
+
+		<field name="allowpaymentorder" />
+		<field name="allowkiosk"/>
+
+		<field name="sortorder"/> 
+		<field name="org_objid"/> 
+		<field name="org_name"/> 
+		<field name="fund_objid"/> 
+		<field name="fund_title"/> 
+		<field name="category"/> 
+		<field name="queuesection"/> 
+		<field name="system"/> 
+		<field name="af_formtype"/> 
+		<field name="af_serieslength"/> 
+		<field name="af_denomination"/> 
+		<field name="af_baseunit"/> 		
+	</element>
+</schema>
+

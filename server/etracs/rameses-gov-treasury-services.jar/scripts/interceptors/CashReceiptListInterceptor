@@ -2,43 +2,75 @@ import com.rameses.annotations.*;
 
 class CashReceiptListInterceptor {
 
+	@Env 
+	def env;
+
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'cashreceipt' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'delegated', title: 'Delegated', state:'DELEGATED' ];
-		result << [ id:'posted', title: 'Posted', state:'POSTED' ];
-		result << [ id:'xposted', title: 'Batch', state:'X POSTED' ];
-		result << [ id:'unremitted', title: 'Unremitted', state:'OPEN' ];
-		result << [ id:'remitted', title: 'Remitted', state:'OPEN' ];	
+		if ( x._tag == 'collector' ) {
+			result << [ id:'unremitted', title: 'Unremitted'];	
+			result << [ id:'delegated', title: 'Delegated'];
+			result << [ id:'remitted', title: 'Remitted'];	
+		} else if ( x._tag == 'subcollector' ) {
+			result << [ id:'unremitted', title: 'Unremitted'];	
+			result << [ id:'remitted', title: 'Remitted']; 
+		} else {
+			result << [ id:'unremitted', title: 'Unremitted'];	
+			result << [ id:'remitted', title: 'Remitted'];	
+		}
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'cashreceipt' }")
-	public void loadList(def evt) {
+	public void beforeGetList( evt ) {
 		def o = evt.args[0];
-
 		if( !o.node?.id ) return;
 
-		def str = "";
-		def m = [:];
+		def qarr = [];
+		def qmap = [:];
 
-		if( o.node.id == 'unremitted' ) {
-			str = " remittanceid IS NULL ";
+		if ( o._tag == 'collector' ) {
+			qarr << " collector.objid = :userid ";
+			if ( o.node.id == 'unremitted' ) { 
+				qarr << " remittanceid is null ";
+				qarr << " (subcollector.objid is null  or (subcollector.objid is not null and subcollector.remittanceid is not null)) " 
+			} else if ( o.node.id == 'delegated' ) { 
+				qarr << " remittanceid is null and subcollector.objid is not null and subcollector.remittanceid is null "; 
+			} else { 
+				qarr << " remittanceid is not null "; 
+			}
+
+			qmap.userid = env.USERID;
+
+		} else if ( o._tag == 'subcollector' ) {
+			qarr << " subcollector.objid = :userid ";
+			qarr << " subcollector.remittanceid is " + (o.node.id == 'unremitted' ? 'null' : 'not null');
+			qmap.userid = env.USERID;
+
+		} else if ( o.node.id == 'unremitted' ) {
+			qarr << " remittanceid IS NULL ";
+
+		} else if( o.node.id == 'remitted' ){
+			qarr << " remittanceid IS NOT NULL ";
 		}
-		else if( o.node.id == 'remitted' ){
-			str = " NOT(remittanceid IS NULL) ";
-		}
-		else {
-			str = " state = :state ";
-			m.state =  o.node.state;
-		}
+
+		def orderbys = [];
+		if ( o.orderBy ) orderbys << o.orderBy;
+
+		if ( o.node?.id.toString().matches('unremitted|delegated')) {
+			orderbys << " receiptdate, receiptno "; 
+		} else { 
+			orderbys << " receiptdate desc, receiptno desc "; 
+		} 
+		o.orderBy = orderbys.join(', '); 
 
 		if( o.where ) {
-			o.where[0] = str + " AND " + o.where[0];	
-			o.where[1].putAll( m );
+			o.where[0] = qarr.join(' AND ') + " AND " + o.where[0];	
+			o.where[1].putAll( qmap );
 		}
 		else {
-			o.where = [str, m];
+			o.where = [qarr.join(' AND '), qmap];
 		}
 	}	
 

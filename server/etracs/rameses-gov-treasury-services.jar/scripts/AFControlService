@@ -7,8 +7,88 @@ class AFControlService  {
 	@DataContext("af_control")
 	def em;
 
+	@DataContext("cashreceipt")
+	def cashRctEm;
+
+	@DataContext("sys_user")
+	def userEm;
+
+
 	@Env
 	def env;
+
+	@ProxyMethod
+	public def getNextAfSeries(def m ) {
+		if(!m.collectiontype?.objid) throw new Exception("Please specify collectiontype in AFControlService.getNextAfSeries");
+
+		def arr = [];
+		def p = [:];
+
+		//filter by af form no
+		arr << "afid = :afid";
+		p.afid = m.collectiontype.formno;
+
+		//active is zero
+		arr << "active = 1";
+
+		//filter assignee
+		arr << "assignee.objid = :assigneeid";
+		p.assigneeid = env.USERID;
+
+		//filter by mode
+		arr << "txnmode =:txnmode";
+		p.txnmode = m.txnmode;
+
+		//filter by fund
+		if( m.collectiontype?.fund?.objid ) {
+			arr << "fund.objid =:fundid";
+			p.fundid = m.collectiontype.fund.objid;
+		}
+		else {
+			arr <<"fund.objid IS NULL";
+		}
+
+		//filter by resp. center
+		if( env.ORGROOT != 1 ) {
+			arr << "respcenter.objid = :orgid";
+			p.orgid = env.ORGID;
+		}
+		else {
+			arr << "respcenter.objid IS NULL";
+		}
+		def afc = em.where( arr.join(" AND "), p ).first();
+		if(!afc ) throw new Warning("select-afcontrol");
+
+		if(afc.af.serieslength <=0 ) 
+			throw new Exception("series length must be greater than zero for AFControlService.getNextAfSeries")
+
+		def result = [:];
+		result.collector = afc.owner; 
+
+		//get the job title
+		result.collector.title = userEm.find( [objid: afc.owner.objid] ).select("jobtitle").val();
+
+		if( afc.owner?.objid != afc.assignee?.objid  ) {
+			result.subcollector = afc.assignee;
+		}
+		result.stub = afc.stubno;
+		if(afc.af.serieslength) {
+			def s = afc.currentseries.toString().padLeft(afc.af.serieslength, '0');
+			result.receiptno = ((afc.prefix)?afc.prefix:'') + s + ((afc.suffix)?afc.suffix:'');
+		}
+		result.controlid = afc.objid;
+		result.series = afc.currentseries;
+		result.endseries = afc.endseries; 
+		result.prefix = afc.prefix
+		result.suffix = afc.suffix
+		result.serieslength = afc.af.serieslength 
+		return result;
+	}
+
+	@ProxyMethod
+	public void updateNextSeries( p ) { 
+		em.find([ objid: p.controlid ]).update([ currentseries: p.series + 1 ]); 
+	}
 
 	@ProxyMethod 
 	public void assignFund(def o) {
@@ -22,118 +102,103 @@ class AFControlService  {
 
 	@ProxyMethod
 	public void assignSubcollector(def o) {
+		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
+		if(z) throw new Exception("Cannot unassign subcollector. Please remit all open collections first");
 		em.find([objid: o.objid] ).update( [assignee: o.assignee] );
 	}
 
 	@ProxyMethod
 	public void unassignSubcollector(def o) {
+		//must check that there are no unremitted funds for this afcontrol
+		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
+		if(z) throw new Exception("Cannot unassign subcollector. Please remit all open collections first");
 		em.find([objid: o.objid] ).update( [assignee: o.owner] );
 	}
+	
 
-	@ProxyMethod
-	public def findActiveControlForCashReceipt(def params) {
-		params.filter = ' and ac.fund_objid is null ';
-		if( params.fundid ) {
-			params.filter =  ''' and ac.fund_objid = $P{fundid} ''';
-		} 
-		return em.findActiveControlForCashReceipt( params );
-	}
-
-	@ProxyMethod
-	public void updateNextSeries( p ) {
-		if (!p.qtyissued) p.qtyissued = 1;
-
-		//open and check if the end series is not valid
-		def o = em.find([ objid: p.objid ]).first(); 
-		if( p.qtyissued >  (o.endseries - o.currentseries + 1)  ) {
-			throw new Exception("There is not enough accountable forms for this batch");
-		} 
-
-		def nextseries = o.currentseries + p.qtyissued; 
-		em.find([ objid: p.objid ]).update([ currentseries: nextseries ]); 		
-	}
-
+	//This is called from select-af
 	@ProxyMethod
 	public void activateSelectedControl(def o) {
 		em.find([objid: o.objid] ).update( [active: 1] );
 	}
 
+	private def buildWhereStatement( def p ) {
+		//deactivate first controls that matches the ff.
+		def str = []
+		def pp = [:];
+		pp.fundid = p.fund?.objid;
+		pp.ownerid = p.owner.objid;
+		pp.assigneeid = p.assignee.objid;
+		pp.afid = p.afid;
+		pp.txnmode =  p.txnmode;
+		pp.unit = p.unit;
+		pp.respcenterid = p.respcenter?.objid;
+
+		if( pp.fundid ) {
+			str << "fund.objid = :fundid";
+		} 
+		else {
+			str << "fund.objid IS NULL";
+		}
+		if( pp.respcenterid ) {
+			str << "respcenter.objid  = :respcenterid ";
+		}
+		else {
+			str << "respcenter.objid IS NULL";
+		}
+		str << "owner.objid =:ownerid "; 
+		str << "assignee.objid =:assigneeid "; 
+		str << "afid =:afid  " ;
+		str << "txnmode = :txnmode";
+		str << "unit  = :unit " ;
+		str << "state = 'ISSUED' "; 	
+		return [ str.join(" AND "), pp ];
+	}
 	
 	@ProxyMethod
 	public void activateControl(def p) {
-		def m = [:];
-		m.objid = p.objid;
-		m.txnmode = p.txnmode;
-		m.filter = ''
-		if( p.fund && p.fund.objid) {
-			m.filter = " and fund_objid='${p.fund.objid}'".toString()
-		}
-		
-		if(!m.txnmode)
-			throw new Exception("Please indicate txn mode first");
-
-		m.afid = p.formno;
-		if(!p.collector) 
-			m.userid = env.USERID;
-		else	
-			m.userid = p.collector.objid
-			
-		def z = em.findActiveControlForDeactivation(m);
-		if(z) {
-			deactivateControl( z )
-		}
-		em.reactivateControl(m);
-		
+		def whr = buildWhereStatement( p );
+		em.where( whr[0], whr[1] ).update( [active: 0] );
+		em.find( [objid: p.objid ]).update( [active:1]);
 	}
 
 	@ProxyMethod
 	public void deactivateControl(def p) {
-		def m =[ objid: p.objid ]
-		m.filter = ''
-		if( p.fund && p.fund.objid ) {
-			m.filter = " and fund_objid='${p.fund.objid}'".toString()
-		}
-		em.deactivateControl(m);
+		em.find( [ objid: p.objid ] ).update( [active: 0 ]);
 	}
 
 	@ProxyMethod
-	public void changeMode( p ) { 
+	public def changeMode( p ) { 
 		//throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
-
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
 
-		def o = em.find([ objid: p.objid ]).first(); 
-		if ( !o ) return; 
-
-		if ( o.active == 1 ) {
-			//em.debug = true;
-			def sqlparam = [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode];
-			def list = em.where('owner.objid= :ownerid and afid= :afid and txnmode= :txnmode and active=1', sqlparam).list(0,2);
-			if ( list.size() > 1 ) em.find([ objid: p.objid ]).update([ active: 0]); 
+		def result = [txnmode: p.txnmode ];
+		//if the current mode is active.try to do an activate
+		def z = em.find( [objid: p.objid]).first();
+		if(z.active==1) {
+			//check if there are other active having the same info as the control
+			def whr = buildWhereStatement( z );
+			whr[0] += " AND active=1 AND NOT( objid = :objid )";
+			whr[1].objid = z.objid;
+			def cnt = em.where( whr[0], whr[1] ).select( "c:{COUNT(*)}").val();
+			if( cnt > 0 ) {
+				em.find( [objid: p.objid] ).update([active:0]);
+				result.active = 0; 
+			}		
 		}
+		else {
+			result.active = z.active;
+		}
+		return result;
 	} 
 
+
 	/*
-	@ProxyMethod
-	public void assignToSubcollector(def p) {
-		def m = [:];
-		m.objid = p.objid;
-		m.assigneeid = p.assignee.objid;
-		m.assigneename = p.assignee.name;
-		em.assignSubcollector(m);
-	}
-
-	@ProxyMethod
-	public void unassign(def p) {
-		em.unassignSubcollector([objid:p.objid]) 
-	}
-	*/
-
 	@ProxyMethod 
 	public def findAFSummary( params ) {
 		if ( !params.controlid ) throw new Exception('controlid parameter is required'); 
 
 		return em.findAFSummary( params ); 
 	} 
-	
+	*/
 }

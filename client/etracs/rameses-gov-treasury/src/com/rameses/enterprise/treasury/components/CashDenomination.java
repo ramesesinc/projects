@@ -18,6 +18,7 @@ public class CashDenomination extends XComponentPanel {
 
     private String formatter;
     private String amountField;      //This is the amount that needs breakdown
+    private String handler;
     
     /**
      * Creates new form Denomination
@@ -471,6 +472,9 @@ public class CashDenomination extends XComponentPanel {
         if( getAmountField()!=null) {
             cb.setProperty("amount", getProperty(getAmountField()));
         }
+        if( getHandler()!=null) {
+            cb.setProperty("handler", getProperty(getHandler()));
+        }
         try {
             MethodResolver mr = MethodResolver.getInstance();
             mr.invoke(cb, "init", null);
@@ -540,5 +544,19 @@ public class CashDenomination extends XComponentPanel {
         if ( formfooter != null ) {
             formfooter.setVisible( visible ); 
         }
+    }
+
+    /**
+     * @return the handler
+     */
+    public String getHandler() {
+        return handler;
+    }
+
+    /**
+     * @param handler the handler to set
+     */
+    public void setHandler(String handler) {
+        this.handler = handler;
     }
 }

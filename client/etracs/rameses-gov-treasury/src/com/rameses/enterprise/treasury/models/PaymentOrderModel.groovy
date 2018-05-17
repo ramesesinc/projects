@@ -5,14 +5,29 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.* 
+import com.rameses.util.BreakException
 
 class PaymentOrderModel extends CrudFormModel {
     
     void afterCreate() {
-        //GENERAL COLLECTION must be system based
-        entity.collectiontype = [objid: 'GENERAL_COLLECTION'];
         entity.items = [];
+        boolean pass = false;
+        def h = [:];
+        h.onselect = { o->
+            entity.collectiontype = o;
+            pass = true;
+        };
+        Modal.show( "collectiontype:paymentorder:lookup", h )
+        if(!pass) throw new BreakException();
     }
+    
+    def getQuery() {
+        def p = [:];
+        p.put("txntype", "cashreceipt" );
+        p.put("collectiontype", entity.collectiontype);
+        return p;
+    }
+    
     
     @PropertyChangeListener
     def listener = [
@@ -26,5 +41,7 @@ class PaymentOrderModel extends CrudFormModel {
     void afterSave() {
         MsgBox.alert( "Order of payment number " + entity.objid );
     }
+    
+    
     
 } 

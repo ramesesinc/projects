@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositslip" 
+          allowCreate="false" allowEdit="false" allowDelet="false">
+    <invokers>
+        
+        <invoker type="depositslip:create" 
+                 caption="New Deposit Slip" 
+                 windowTitle="New Deposit Slip"
+                 formTitle="New Deposit Slip"
+                 action="create" target="popup" />
+        
+        <invoker type="formActions" caption="Save" action="save" />
+        
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositSlipInitialModel" />
+  
+   <pages>
+       <page name="create" template="com.rameses.enterprise.treasury.views.DepositSlipInitialPage" />
+   </pages>
+   
+</workunit>

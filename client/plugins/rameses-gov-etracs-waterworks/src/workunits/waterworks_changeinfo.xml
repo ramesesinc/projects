@@ -1,0 +1,5 @@
+<workunit extends="com/rameses/treasury/common/templates/ChangeInfo.xml" schemaName="waterworks_changelog">
+    <invokers>
+        <invoker type="waterworks_changeinfo" caption="Waterworks Change Info" action="init"/>
+    </invokers>
+</workunit>

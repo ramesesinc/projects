@@ -19,13 +19,20 @@ class ApplyPayment implements RuleActionHandler {
 		def ct = RuleExecutionContext.getCurrentContext();
 		def facts = ct.facts;
 
+		double totalCredit = 0;
+		def creditList = facts.findAll{ it instanceof CreditBillItem };
+		if(creditList ) {
+			totalCredit = (creditList.sum{ it.amount }*-1);
+		}
+		
+		double amt = payment.amount + totalCredit;
+
 		def billitems = facts.findAll{ it instanceof BillItem }.sort{it.paypriority};
 
 		if(billitems) {
 
 			def newBillItems = [];
-			double amt = payment.amount;
-
+			
 			/******************************************************************************
 			* This is already a tested routine. If you cannot get the desired result
 			* please check the payment priority order. 
@@ -39,11 +46,7 @@ class ApplyPayment implements RuleActionHandler {
 			//remove all billitems in facts
 			def removeList = facts.findAll{ it instanceof AbstractBillItem };
 			facts.removeAll( removeList );
-			facts.remove( payment );
-
-
-			//effect immediately in the drools engine.
-			drools.retract(payment);
+			
 			removeList.each {
 				drools.retract( it );
 			}
@@ -56,13 +59,24 @@ class ApplyPayment implements RuleActionHandler {
 				}		
 			}
 
-			//add excess payment if any...
-			if(  amt > 0 ) {
-				def ep = new ExcessPayment( amount: amt );
-				facts << ep;
-				drools.insert( ep );
-			}	
+			//if there are credit items
+			if( creditList ) {
+				facts.addAll( creditList );
+			}
+
 		}
+
+		//add excess payment if any...
+		if(  amt > 0 ) {
+			def ep = new ExcessPayment( amount: amt );
+			facts << ep;
+			drools.insert( ep );
+		}	
+
+		//effect immediately in the drools engine removal of the payment so it can be used again
+		facts.remove( payment );
+		drools.retract(payment);
+		
 	}
 
 }

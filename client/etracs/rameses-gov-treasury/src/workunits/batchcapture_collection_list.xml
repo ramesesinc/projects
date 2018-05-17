@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="batchcapture_collection"
+          cols="state,txndate,formno,collector.name,startseries,endseries,totalamount,capturedby.name" 
+          orderBy="txndate">
+    
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" 
+                 caption="Batch Capture List" action="init" 
+                 role="SHARED" tag="shared"/>
+
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="Batch Capture List" action="init">
+            <action role="COLLECTOR" tag="collector"/>
+            <action role="SUBCOLLECTOR" tag="subcollector"/>
+        </invoker>    
+        
+   </invokers>
+
+</workunit>

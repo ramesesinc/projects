@@ -30,15 +30,110 @@ public class LedgerListPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xDataTable2 = new com.rameses.rcp.control.XDataTable();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xSplitView1 = new com.rameses.rcp.control.XSplitView();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xButton3 = new com.rameses.rcp.control.XButton();
+        xButton4 = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(15, 0), new java.awt.Dimension(15, 0), new java.awt.Dimension(15, 32767));
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         listPanel1 = new com.rameses.seti2.components.ListPanel();
+        jPanel3 = new javax.swing.JPanel();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        jPanel4 = new javax.swing.JPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xDataTable2 = new com.rameses.rcp.control.XDataTable();
+
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        setPreferredSize(new java.awt.Dimension(868, 487));
+        setLayout(new java.awt.BorderLayout());
+
+        xSplitView1.setDividerLocationPercentage(60);
+        xSplitView1.setShowDividerBorder(true);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 0));
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        xButton2.setCaption(" ");
+        xButton2.setName("addNewEntry"); // NOI18N
+        xButton2.setFocusable(false);
+        xButton2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        xButton2.setIconResource("images/toolbars/create.png");
+        xButton2.setImmediate(true);
+        xButton2.setToolTipText("Add Ledger Item");
+        xButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(xButton2);
+
+        xButton3.setCaption(" ");
+        xButton3.setName("openEntry"); // NOI18N
+        xButton3.setFocusable(false);
+        xButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        xButton3.setIconResource("images/toolbars/open.png");
+        xButton3.setImmediate(true);
+        xButton3.setToolTipText("Open Ledger Item");
+        xButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(xButton3);
+
+        xButton4.setCaption(" ");
+        xButton4.setName("removeEntry"); // NOI18N
+        xButton4.setFocusable(false);
+        xButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        xButton4.setIconResource("images/toolbars/trash.png");
+        xButton4.setImmediate(true);
+        xButton4.setToolTipText("Delete Ledger Item");
+        xButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(xButton4);
+        jToolBar1.add(filler1);
+
+        jPanel5.add(jToolBar1);
+
+        xComboBox1.setExpression("#{ item.title }");
+        xComboBox1.setItemKey("id");
+        xComboBox1.setItems("showOptionList");
+        xComboBox1.setName("showOption"); // NOI18N
+        jPanel5.add(xComboBox1);
+
+        jPanel2.add(jPanel5, java.awt.BorderLayout.NORTH);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Payments");
-        xDataTable2.setBorder(xTitledBorder1);
+        xTitledBorder1.setTitle("Ledger Items");
+        listPanel1.setBorder(xTitledBorder1);
+        listPanel1.setDepends(new String[] {"showOption"});
+        listPanel1.setDynamic(true);
+        listPanel1.setName("selectedItem"); // NOI18N
+        jPanel2.add(listPanel1, java.awt.BorderLayout.CENTER);
+
+        xSplitView1.add(jPanel2);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 3, 5, 5));
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        xCheckBox1.setName("showVoid"); // NOI18N
+        xCheckBox1.setText("Show Void Payments");
+        jPanel3.add(xCheckBox1, java.awt.BorderLayout.NORTH);
+
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        xButton1.setName("viewPayment"); // NOI18N
+        xButton1.setText("View Receipt");
+        jPanel4.add(xButton1);
+
+        jPanel3.add(jPanel4, java.awt.BorderLayout.SOUTH);
+
+        xDataTable2.setDepends(new String[] {"showOption", "showVoid", "selectedItem"});
+        xDataTable2.setHandler("paymentListModel");
+        xDataTable2.setName("selectedPaymentItem"); // NOI18N
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Payments");
+        xDataTable2.setBorder(xTitledBorder2);
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "parent.reftype"}
@@ -176,73 +271,28 @@ public class LedgerListPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
             })
         });
-        xDataTable2.setDepends(new String[] {"showOption", "showVoid", "selectedItem"});
         xDataTable2.setDynamic(true);
-        xDataTable2.setHandler("paymentListModel");
-        xDataTable2.setName("selectedPaymentItem"); // NOI18N
+        jPanel3.add(xDataTable2, java.awt.BorderLayout.CENTER);
 
-        xButton1.setName("viewPayment"); // NOI18N
-        xButton1.setText("View Receipt");
+        xSplitView1.add(jPanel3);
 
-        xCheckBox1.setName("showVoid"); // NOI18N
-        xCheckBox1.setText("Show Void Payments");
-
-        xComboBox1.setExpression("#{ item.title }");
-        xComboBox1.setItemKey("id");
-        xComboBox1.setItems("showOptionList");
-        xComboBox1.setName("showOption"); // NOI18N
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Ledger Items");
-        listPanel1.setBorder(xTitledBorder2);
-        listPanel1.setDepends(new String[] {"showOption"});
-        listPanel1.setDynamic(true);
-        listPanel1.setName("selectedItem"); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(listPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(511, 511, 511))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(392, Short.MAX_VALUE)
-                    .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 626, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xComboBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(listPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
-                .addGap(9, 9, 9))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(32, 32, 32)
-                    .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-                    .addGap(34, 34, 34)))
-        );
+        add(xSplitView1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JToolBar jToolBar1;
     private com.rameses.seti2.components.ListPanel listPanel1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
+    private com.rameses.rcp.control.XSplitView xSplitView1;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,7 +10,17 @@
 		<field name="postedby_objid" />
 		<field name="postedby_name" />
 		<field name="dtposted" />
+		<field name="fundid" />
 
-		<field name="amount"  type="decimal" required="true" />
+		<!-- we need this for querying in deposit initial -->
+		<complex name="fund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
+			<key field="fundid" target="objid" />
+		</complex>
+
+		<field name="amount" required="true" type="decimal"/>
+		<field name="amountdeposited" required="true" type="decimal"/>
+
+		
+
 	</element>
 </schema>

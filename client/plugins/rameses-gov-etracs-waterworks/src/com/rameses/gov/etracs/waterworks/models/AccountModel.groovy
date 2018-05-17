@@ -14,55 +14,19 @@ public class AccountModel extends CrudFormModel {
     void afterCreate() {
         entity.address = [:];
         entity.attributes = [];
+        entity.units = 1;
     }
 
-     def edit() {
+    def edit() {
         def mp = new PopupMenuOpener();
-        if( entity.meter?.objid ) {
-            mp.add( new FormAction(caption:'View Meter', name:'viewMeter', context: this )  );
-            mp.add( new FormAction(caption:'Detach Meter', name:'detachMeter', context: this )  );
+        def list = Inv.lookupOpeners( "waterworks_account:edit", [entity: entity ] );
+        list.each { op->
+            mp.add( op );
         }
-        else {
-            mp.add( new FormAction(caption:'Attach Meter', name:'attachMeter', context: this )  );
-        }
-        mp.add( new FormAction(caption:'Edit Owner', name:'editOwner', context: this)  );
         return mp;
     }
-
-    void updateAccount( def o ) {
-        def m = [_schemaname:'waterworks_account'];
-        m.findBy = [objid: entity.objid];
-        m.putAll( o );
-        persistenceService.update( m );
-        entity.putAll( o );
-        reload();
-     }
     
-    def viewMeter() {
-        Modal.show( "waterworks_meter:open", [entity: entity.meter ]);
-        reload();
-    }
-    
-    void attachMeter() { 
-        def params = [:];
-        params.onselect = { o-> 
-           updateAccount( [meterid: o.objid ]);
-        }
-        Modal.show('waterworks_meter_wo_account:lookup', params);
-    }
-
-    def assignNode() {
-        def h = { o ->
-            updateAccount( [stuboutnodeid: o.objid ] );
-        }
-        Modal.show("vw_waterworks_stuboutnode_unassigned:lookup", [onselect: h] );  
-    }
-    
-    void detachMeter() { 
-        if(!MsgBox.confirm('This action will remove the meter from this account. Proceed?')) return;
-        updateAccount( [meterid: "{NULL}"])
-    }
-    
+    //***************************************************************************
     def selectedAttribute;
     def attributeList = [
         fetchList: { o->

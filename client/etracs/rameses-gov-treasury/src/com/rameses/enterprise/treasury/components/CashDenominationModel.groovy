@@ -14,6 +14,7 @@ class CashDenominationModel extends ComponentBean {
     
     def formatter;
     def model;
+    def handler;
     
     int qty1000 = 0;
     int qty500 = 0;
@@ -51,8 +52,11 @@ class CashDenominationModel extends ComponentBean {
     def cashremaining = 0.0;
     
     void calcTotals() {
+        if(amount == null ) amount = 0;
         total = NumberUtil.round(d1000+d500+d200+d100+d50+d20+d10+d5+d1+dc50+dc25+dc10+dc05+dc01);
         cashremaining = NumberUtil.round(amount - total);
+        
+        if(handler) handler( [total: total, cashremaining: cashremaining ]);
         binding.refresh("total|cashremaining");
     };
 

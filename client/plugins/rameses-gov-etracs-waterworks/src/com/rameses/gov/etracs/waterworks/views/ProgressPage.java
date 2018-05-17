@@ -4,14 +4,14 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.WorkflowTaskFormPage;
 
 /**
  *
  * @author Elmo Nazareno
  */
-@Template(FormPage.class)
+@Template(WorkflowTaskFormPage.class)
 public class ProgressPage extends javax.swing.JPanel {
 
     /**
@@ -30,28 +30,50 @@ public class ProgressPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        progressPanel1 = new com.rameses.common.treasury.components.ProgressPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
 
-        progressPanel1.setHandler("progressHandler");
+        xButton1.setName("progress.start"); // NOI18N
+        xButton1.setText("Start");
+        xButton1.setVisibleWhen("#{ progress.status.mode == 'init' }");
+
+        xButton2.setName("progress.cancel"); // NOI18N
+        xButton2.setText("Cancel");
+        xButton2.setVisibleWhen("#{  progress.status.mode == 'processing'  }");
+
+        xLabel1.setName("progressLabel"); // NOI18N
+        xLabel1.setExpression("Total records processed: #{ progress.status.value } of #{ progress.totalCount }");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(progressPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(progressPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addGap(42, 42, 42)
+                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(118, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.common.treasury.components.ProgressPanel progressPanel1;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables
 }

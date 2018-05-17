@@ -35,7 +35,6 @@ public class AFRequestPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -64,19 +63,10 @@ public class AFRequestPage extends javax.swing.JPanel {
         xLabel5.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel1.add(xLabel5);
 
-        xLookupField1.setCaption("Resp. Center");
-        xLookupField1.setExpression("#{ entity.respcenter.name }");
-        xLookupField1.setHandler("org:lookup");
-        xLookupField1.setName("entity.respcenter"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField1.setVisibleWhen("#{ mode != 'read' }");
-        xFormPanel1.add(xLookupField1);
-
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel6.setCaption("Resp. Center");
         xLabel6.setExpression("#{ entity.respcenter.name }");
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 22));
-        xLabel6.setVisibleWhen("#{ mode == 'read' }");
         xFormPanel1.add(xLabel6);
 
         xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -123,6 +113,8 @@ public class AFRequestPage extends javax.swing.JPanel {
                         .addContainerGap())))
         );
 
+        xDataTable1.setHandler("itemHandlers.items");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item"}
@@ -189,8 +181,6 @@ public class AFRequestPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
-        xDataTable1.setHandler("itemHandlers.items");
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -210,7 +200,7 @@ public class AFRequestPage extends javax.swing.JPanel {
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 384, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -226,7 +216,6 @@ public class AFRequestPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables
     
     

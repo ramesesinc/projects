@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
+import com.rameses.util.*;
 
 /******************************************************************************
 * The itemaccount is used everywhere
@@ -15,6 +16,7 @@ class ItemAccountLookupModel extends CrudLookupModel {
     def queryFilter;
 
     public void beforeQuery( def m ) {
+        m.orgid = OsirisContext.env.ORGID; 
         if( queryFilter ) m._queryFilter = queryFilter;
     }
     
@@ -34,9 +36,6 @@ class ItemAccountLookupModel extends CrudLookupModel {
                 if(tag.startsWith("MAIN")) s << " parentid IS NULL";
                 s << "type = 'PAYABLE' ";
             }
-            else if( tag == "CASHRECEIPT" ) {
-                s << "type IN ('REVENUE','NONREVENUE') ";
-            }
         }
         if(fundid) {
             s << "fund.objid = :fundid";
@@ -45,5 +44,6 @@ class ItemAccountLookupModel extends CrudLookupModel {
         return [s.join(" AND "), parm ];
     }
     
+   
     
 }

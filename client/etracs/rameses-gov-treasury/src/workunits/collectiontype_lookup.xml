@@ -1,8 +1,21 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="collectiontype">
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="vw_collectiontype_org">
     <invokers>
         <invoker type="collectiontype:lookup" 
                  caption="Lookup Collection Types" 
                  action="init"  
                  cols="objid,name,title,formno,handler,barcodekey"/>
+        
+        <invoker type="collectiontype:paymentorder:lookup" 
+                 caption="Lookup Collection Type for Payment Order" 
+                 action="init"  
+                 customFilter="allowpaymentorder = 1 AND org.objid = :orgid"
+                 cols="objid,name,title"/>
+        
+         <invoker type="collectiontype:kiosk:lookup" 
+                 caption="Lookup Collection Type for Kiosk" 
+                 action="init"  
+                 customFilter="allowkiosk = 1"
+                 cols="objid,name,title"/>
+        
     </invokers>
 </workunit>

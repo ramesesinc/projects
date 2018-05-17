@@ -60,9 +60,9 @@ public class BusinessCashReceiptService  {
 
 	@ProxyMethod 
 	public def findInfo( param ) { 
+
 		def info = null; 
 		if ( param.appno ) { 
-
 			def sappno = param.appno;
 			if ( sappno.indexOf(':') > 0 ) { 
 				param.appno = sappno.substring( sappno.indexOf(':')+1); 
@@ -73,10 +73,14 @@ public class BusinessCashReceiptService  {
 			} else { 
 				info = app.findInfoByBIN([ bin: sappno ]); 
 			} 
-		} else if ( param.applicationid ) {
+			if(!info) 
+				throw new Exception("Business record not found with refno " + sappno);
+
+		} 
+		else if ( param.applicationid ) {
 			info = app.findInfoByAppid( param ); 
 		} 
-
+		
 		if (!info.state.toLowerCase().matches('payment|release|completed')) 
 			throw new Exception('This application is not available for payment. Current state is ' + info.state);  
 

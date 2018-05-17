@@ -126,46 +126,35 @@ public class PaymentListPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
-        xButton1 = new com.rameses.rcp.control.XButton();
         listPanel1 = new com.rameses.seti2.components.ListPanel();
+        jPanel1 = new javax.swing.JPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
+
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        setLayout(new java.awt.BorderLayout());
 
         xCheckBox1.setName("showVoid"); // NOI18N
+        xCheckBox1.setMargin(new java.awt.Insets(2, 0, 2, 2));
         xCheckBox1.setText("Show Void Payments");
+        add(xCheckBox1, java.awt.BorderLayout.NORTH);
 
-        xButton1.setName("viewPayment"); // NOI18N
-        xButton1.setText("View Receipt");
-
+        listPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         listPanel1.setDepends(new String[] {"showVoid"});
         listPanel1.setDynamic(true);
         listPanel1.setName("selectedItem"); // NOI18N
+        add(listPanel1, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(listPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(xCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(listPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 0, 0));
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        xButton1.setName("viewPayment"); // NOI18N
+        xButton1.setText("View Receipt");
+        jPanel1.add(xButton1);
+
+        add(jPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private com.rameses.seti2.components.ListPanel listPanel1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;

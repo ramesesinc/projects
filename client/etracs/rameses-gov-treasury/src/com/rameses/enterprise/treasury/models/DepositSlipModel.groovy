@@ -6,34 +6,62 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 
-class DepositSlipModel extends CrudFormModel {
+class DepositSlipModel {
 
+    @Caller 
+    def caller;
+    
+    @Binding
+    def binding;
+    
+    @Service("QueryService")
+    def queryService;
+    
     @Service("DepositSlipService")
     def depositSlipSvc;
     
-    def amount;
+    def entity;
+    def limit; //the maximum amount
     def handler;
-    def depositvoucherid;
+    def depositvoucher;
     def fundid; 
     
     boolean editable = true;
     def selectedItems = []; 
     def selectedCheck;
-
-    void afterCreate() {
+    def mode;
+    
+    def getCheckTypeList() {
+        return LOV.BANK_DEPOSIT_TYPES*.key;
+    }
+    
+    def create() {
+        mode = "create"
+       entity = [:];
        entity.state = "DRAFT";
-       entity.depositvoucherid = depositvoucherid;
+       entity.depositvoucherid = depositvoucher.objid;
        entity.fundid = fundid;
-       entity.amount = amount;
+       entity.amount = 0;
        entity.totalcash = 0;
        entity.totalcheck = 0;
        entity.cashbreakdown = [];
+       limit = depositvoucher.amount - ( depositvoucher.totalcheck + depositvoucher.totalcash + depositvoucher.totalcr );
+       return "create";
     } 
     
-    public void beforeSave(def mode){
-        if(mode == "create") {
-            if( amount < entity.amount ) throw new Exception("Amount must be less than amount to deposit");
-        }
+    def open() {
+       mode = "read";
+       return "default";
+    }
+    
+    def save() {
+        if( !entity.deposittype ) throw new Exception("Please choose CASH or CHECK")
+        mode = "read";
+        entity = depositSlipSvc.create( entity );
+        if(caller)caller.reloadList();
+        checkListModel.reload();
+        binding.refresh("entity.amount");
+        return "default";
     }
     
     def getBankAccountLookup() {
@@ -46,9 +74,12 @@ class DepositSlipModel extends CrudFormModel {
     
    def checkListModel = [
         fetchList: { o->
-            def m = [_schemaname:'paymentcheck'];
+            def m = [_schemaname:'depositslip_check'];
             m.findBy = [depositslipid: entity.objid];
-            return queryService.getList( m );
+            return queryService.getList( m ).collect{ 
+                [objid:it.objid, refno:it.check.refno, refdate:it.check.refdate, bank:it.check.bank,
+                    receivedfrom:it.check.receivedfrom, amount:it.amount] 
+            }
         },
         onOpenItem: {o,col->
             def op = Inv.lookupOpener("paymentcheck:open", [entity: o] );

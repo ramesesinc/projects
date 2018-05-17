@@ -10,8 +10,96 @@ class DepositSlipService  {
 	@DataContext("paymentcheck")
 	def paymentCheckEm;
 
-	@DataContext("depositvoucher_fund")
+	@DataContext("depositvoucher")
 	def dvFundEm;
+
+	@DataContext("cashreceiptpayment_noncash")
+	def ncp;
+
+	@DataContext("collectionvoucher_fund")
+	def cvf;
+
+	@DataContext("depositslip_check")
+	def depositSlipChk;
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod
+	public def create( def o ) {
+
+		def tmp = [:];
+		tmp.depositvoucherid = o.depositvoucherid;
+		tmp.createdby = [objid:env.USERID, name:env.FULLNAME];
+		tmp.dtcreated = dateSvc.getServerDate();
+		tmp.bankaccount = o.bankaccount;
+		tmp.depositdate = o.depositdate;
+		tmp.state = 'DRAFT';
+		tmp.amount = 0;
+		tmp.totalcash = 0;
+		tmp.totalcheck = 0;
+		tmp.cashbreakdown = [];
+
+		if( o.totalcash > 0 ) {
+			def m = [:];
+			m.putAll( tmp );
+			m.deposittype = 'CASH';
+			m.totalcash = o.totalcash;
+			m.amount = o.amount;
+			m.cashbreakdown = o.cashbreakdown;
+			depositSlipEm.create(m);
+		}
+
+		if( o.checks ) {
+			def grps = o.checks.groupBy{ it.deposittype };
+			int i = o.numcheckslimit;
+			grps.each {k,v->
+				def m = [:];
+				m.putAll( tmp );
+				m.deposittype = 'CHECK';
+				m.checktype = k;
+				m.amount = o.totalcheck;
+				m.totalcheck = o.totalcheck;
+				m.checks = v;
+				depositSlipEm.create(m);
+			}
+
+		}
+		throw new Exception("stop");			
+	}
+
+	@ProxyMethod
+	public def getAvailableChecks( def o ) {
+		//select all from 
+		return depositSlipEm.getAvailableChecks(o);
+	}
+
+
+	@ProxyMethod
+	public void removeDepositSlip( def o ) {
+		depositSlipChk.find( [depositslipid: o.objid] ).delete();
+		depositSlipEm.find( [objid: o.objid] ).delete();
+	}
+
+	@ProxyMethod
+	public def approve( def o ) {
+		throw new Exception("")
+		/*
+		def ds = depositSlipEm.find([objid: o.objid]).first();
+		if( (ds.totalcash + ds.totalcheck) != ds.amount )
+			throw new Exception("Total cash and total check must equal the total amount");
+
+		def db = dvFundEm.find( [parentid: ds.depositvoucherid, fundid: ds.fundid ] ).first();
+		if(!db) throw new Exception("Depositvoucher fund not found for this deposit slip");
+		if( db.totalcash > db.cashtodeposit ) throw new Exception("Total cash to deposit must not be greater than cash to deposit");
+		if( db.totalcheck > db.checktodeposit ) throw new Exception("Total check to deposit must not be greater than checks to deposit");
+			
+		depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ]);
+		*/
+	}
 
 	@ProxyMethod
 	public def updateCheckTotal( def o ) {
@@ -55,28 +143,8 @@ class DepositSlipService  {
 		depositSlipEm.updateFundCashTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
 	}
 
-	@ProxyMethod
-	public void removeDepositSlip( def o ) {
-		def c = depositSlipEm.find( [objid: o.objid ]).first();
-		depositSlipEm.find([objid: c.objid]).delete();
-		depositSlipEm.updateFundCheckTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
-		depositSlipEm.updateFundCashTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] );
-		depositSlipEm.cleanUpNullFundTotals( [ depositvoucherid: c.depositvoucherid , fundid: c.fundid ] )
-	}
 
-	@ProxyMethod
-	public void approve( def o ) {
-		def ds = depositSlipEm.find([objid: o.objid]).first();
-		if( (ds.totalcash + ds.totalcheck) != ds.amount )
-			throw new Exception("Total cash and total check must equal the total amount");
-
-		def db = dvFundEm.find( [parentid: ds.depositvoucherid, fundid: ds.fundid ] ).first();
-		if(!db) throw new Exception("Depositvoucher fund not found for this deposit slip");
-		if( db.totalcash > db.cashtodeposit ) throw new Exception("Total cash to deposit must not be greater than cash to deposit");
-		if( db.totalcheck > db.checktodeposit ) throw new Exception("Total check to deposit must not be greater than checks to deposit");
-			
-		depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ]);
-	}
+	
 
 	@ProxyMethod
 	public void disapprove( def o ) {

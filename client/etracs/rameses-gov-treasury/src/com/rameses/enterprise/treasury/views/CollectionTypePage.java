@@ -7,7 +7,6 @@
 package com.rameses.enterprise.treasury.views;
 
 
-import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
 
@@ -36,15 +35,18 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
-        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xSuggest1 = new com.rameses.rcp.control.XSuggest();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox5 = new com.rameses.rcp.control.XCheckBox();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
@@ -53,6 +55,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xButton4 = new com.rameses.rcp.control.XButton();
 
         xTabbedPane1.setItems("sections");
+        xTabbedPane1.setDynamic(true);
 
         xFormPanel1.setCaptionWidth(150);
 
@@ -77,49 +80,9 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xCheckBox3.setCaption("");
-        xCheckBox3.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
-        xCheckBox3.setCheckValue(1);
-        xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox3.setName("entity.allowonline"); // NOI18N
-        xCheckBox3.setText("Allow Online");
-        xCheckBox3.setUncheckValue(0);
-        xCheckBox3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xCheckBox3ActionPerformed(evt);
-            }
-        });
-        xFormPanel1.add(xCheckBox3);
-
-        xCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xCheckBox2.setCaption("");
-        xCheckBox2.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
-        xCheckBox2.setCheckValue(1);
-        xCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox2.setName("entity.allowoffline"); // NOI18N
-        xCheckBox2.setText("Allow Offline");
-        xCheckBox2.setUncheckValue(0);
-        xCheckBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xCheckBox2ActionPerformed(evt);
-            }
-        });
-        xFormPanel1.add(xCheckBox2);
-
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xCheckBox1.setCaption("");
-        xCheckBox1.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
-        xCheckBox1.setCheckValue(1);
-        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox1.setName("entity.allowbatch"); // NOI18N
-        xCheckBox1.setText("Allow Batch Capture");
-        xCheckBox1.setUncheckValue(0);
-        xFormPanel1.add(xCheckBox1);
-
         xTextField3.setCaption("Barcode Key");
-        xTextField3.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
         xTextField3.setName("entity.barcodekey"); // NOI18N
+        xTextField3.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
         xFormPanel1.add(xTextField3);
 
         xIntegerField1.setCaption("Sort Order");
@@ -128,9 +91,9 @@ public class CollectionTypePage extends javax.swing.JPanel {
 
         xComboBox3.setCaption("GUI Screen Handler");
         xComboBox3.setDepends(new String[] {"selectedForm"});
-        xComboBox3.setDynamic(true);
         xComboBox3.setItems("handlers");
         xComboBox3.setName("entity.handler"); // NOI18N
+        xComboBox3.setDynamic(true);
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
@@ -158,6 +121,76 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLookupField2);
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setPadding(new java.awt.Insets(25, 20, 2, 2));
+        xTitledBorder1.setTitle("Display Options");
+        xFormPanel2.setBorder(xTitledBorder1);
+        xFormPanel2.setShowCaption(false);
+
+        xCheckBox3.setCaption("");
+        xCheckBox3.setCheckValue(1);
+        xCheckBox3.setName("entity.allowonline"); // NOI18N
+        xCheckBox3.setUncheckValue(0);
+        xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox3.setShowCaption(false);
+        xCheckBox3.setText("Show in Online Mode");
+        xCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox3ActionPerformed(evt);
+            }
+        });
+        xFormPanel2.add(xCheckBox3);
+
+        xCheckBox2.setCaption("");
+        xCheckBox2.setCheckValue(1);
+        xCheckBox2.setName("entity.allowoffline"); // NOI18N
+        xCheckBox2.setUncheckValue(0);
+        xCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox2.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
+        xCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox2.setShowCaption(false);
+        xCheckBox2.setText("Show in Offline Mode");
+        xCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xCheckBox2ActionPerformed(evt);
+            }
+        });
+        xFormPanel2.add(xCheckBox2);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setName("entity.allowbatch"); // NOI18N
+        xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText("Show in Batch Capture Mode");
+        xFormPanel2.add(xCheckBox1);
+
+        xCheckBox4.setCaption("");
+        xCheckBox4.setCheckValue(1);
+        xCheckBox4.setName("entity.allowpaymentorder"); // NOI18N
+        xCheckBox4.setUncheckValue(0);
+        xCheckBox4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox4.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
+        xCheckBox4.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox4.setShowCaption(false);
+        xCheckBox4.setText("Show in Payment Order");
+        xFormPanel2.add(xCheckBox4);
+
+        xCheckBox5.setCaption("");
+        xCheckBox5.setCheckValue(1);
+        xCheckBox5.setName("entity.allowkiosk"); // NOI18N
+        xCheckBox5.setUncheckValue(0);
+        xCheckBox5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox5.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
+        xCheckBox5.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox5.setShowCaption(false);
+        xCheckBox5.setText("Show in Kiosk");
+        xFormPanel2.add(xCheckBox5);
+
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -165,20 +198,28 @@ public class CollectionTypePage extends javax.swing.JPanel {
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 508, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(335, Short.MAX_VALUE))
+                .add(57, 57, 57)
+                .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 225, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .add(21, 21, 21)
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+                    .add(jPanel3Layout.createSequentialGroup()
+                        .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 217, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         xTabbedPane1.addTab("General Information", jPanel3);
 
-        xPanel1.setVisibleWhen("#{ mode == 'read' }");
+        xPanel1.setVisibleWhen("#{ mode != 'create' }");
 
+        xDataTable1.setHandler("accountListHandler");
+        xDataTable1.setName("selectedAccount"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.title"}
@@ -256,21 +297,22 @@ public class CollectionTypePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             })
         });
-        xDataTable1.setHandler("accountListHandler");
-        xDataTable1.setName("selectedAccount"); // NOI18N
 
+        xButton1.setDisableWhen("#{mode=='read'}");
         xButton1.setName("addAccount"); // NOI18N
         xButton1.setText("Add");
-        xButton1.setVisibleWhen("#{ mode == 'read' }");
 
         xButton2.setDepends(new String[] {"selectedAccount"});
+        xButton2.setDisableWhen("#{mode=='read'}");
         xButton2.setName("removeAccount"); // NOI18N
         xButton2.setText("Remove");
 
         xButton3.setDepends(new String[] {"selectedAccount"});
+        xButton3.setDisableWhen("#{mode=='read'}");
         xButton3.setName("editAccount"); // NOI18N
         xButton3.setText("Edit");
 
+        xButton4.setDisableWhen("#{mode=='read'}");
         xButton4.setName("reloadAccount"); // NOI18N
         xButton4.setText("Reload");
 
@@ -323,7 +365,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 438, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -345,10 +387,13 @@ public class CollectionTypePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
+    private com.rameses.rcp.control.XCheckBox xCheckBox4;
+    private com.rameses.rcp.control.XCheckBox xCheckBox5;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField2;

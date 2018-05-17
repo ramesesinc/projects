@@ -22,8 +22,21 @@ class AFControlListModel extends CrudListModel {
     def listener = [
         "query.formno" : { o->
             reload();
-        }
+        },
+        "query.respcenter" : { o->
+            reload();
+        },
     ];
+    
+    boolean getShowRespcenterFilter() {
+        if( tag == "COLLECTION") return false;
+        return true;
+    }
+    
+    boolean getShowIssuedToFilter() {
+        if( tag == "COLLECTION") return false;
+        return true;
+    }
     
     def getCustomFilter() {
         def str = [];
@@ -35,7 +48,17 @@ class AFControlListModel extends CrudListModel {
         if( tag == 'COLLECTION' ) {
             str << " owner.objid = :userid ";
             m.userid = user.userid;
+            if(OsirisContext.env.ORGROOT != 1 ) {
+                str << "respcenter.objid =:orgid";
+                m.orgid = OsirisContext.env.ORGID;
+            }
         };
+        else {
+            if( query.respcenter?.objid ) {
+                str << " respcenter.objid=:respcenterid ";
+                m.respcenterid = query.respcenter.objid;
+            }
+        }
         if( !str )  return null;
         return [ str.join( " AND "), m ];
     }

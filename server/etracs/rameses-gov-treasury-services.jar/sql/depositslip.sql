@@ -1,3 +1,26 @@
+[getAvailableChecks]
+SELECT a.refno, a.refid, bnk.name AS bank_name, bnk.deposittype, a.refdate, a.amount 
+FROM ( 
+  SELECT 
+  ncp.refno, ncp.refid, ncp.refdate, ncp.particulars, SUM(ncp.amount) AS amount
+  FROM cashreceiptpayment_noncash ncp
+  INNER JOIN cashreceipt cr ON cr.objid=ncp.receiptid
+  INNER JOIN remittance r ON cr.remittanceid = r.objid 
+  INNER JOIN collectionvoucher_fund cvf ON cvf.parentid=r.collectionvoucherid
+  WHERE cvf.depositvoucherid = $P{depositvoucherid} 
+  AND ncp.fund_objid=$P{fundid}
+  AND ncp.amount > 0 
+  AND ncp.reftype = 'CHECK'
+  AND cr.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid = cr.objid )
+  GROUP BY ncp.refno, ncp.refid, ncp.refdate, ncp.particulars
+) a
+INNER JOIN paymentcheck pc ON pc.objid = a.refid
+INNER JOIN bank bnk ON pc.bankid = bnk.objid
+WHERE pc.amount > IFNULL((
+  SELECT SUM( amount ) FROM depositslip_check WHERE checkid = pc.objid 
+), 0)
+
+
 [updateCheckTotal]
 UPDATE depositslip
     SET totalcheck = (
@@ -14,38 +37,35 @@ SET
 WHERE objid = $P{depositslipid}
 
 [updateFundCheckTotals]
-UPDATE depositvoucher_fund 
+UPDATE depositvoucher 
    SET totalcheck = (
       SELECT SUM( ds.totalcheck )
       FROM depositslip ds 
-      WHERE ds.depositvoucherid = depositvoucher_fund.parentid 
-      AND ds.fundid = depositvoucher_fund.fundid 
+      WHERE ds.depositvoucherid = depositvoucher.objid 
    )
-WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}  
+WHERE objid=$P{depositvoucherid}   
 
 [updateFundCashTotals]
-UPDATE depositvoucher_fund 
+UPDATE depositvoucher
    SET totalcash = (
    		SELECT SUM( ds.totalcash )
    		FROM depositslip ds 
-   		WHERE ds.depositvoucherid = depositvoucher_fund.parentid 
-   		AND ds.fundid = depositvoucher_fund.fundid 
+   		WHERE ds.depositvoucherid = depositvoucher.objid 
    )
-WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}  
+WHERE objid=$P{depositvoucherid}   
 
 [updateFundCashTotals]
-UPDATE depositvoucher_fund 
+UPDATE depositvoucher 
    SET totalcash = (
       SELECT SUM( ds.totalcash )
       FROM depositslip ds 
-      WHERE ds.depositvoucherid = depositvoucher_fund.parentid 
-      AND ds.fundid = depositvoucher_fund.fundid 
+      WHERE ds.depositvoucherid = depositvoucher.objid 
    )
-WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}  
+WHERE objid=$P{depositvoucherid} 
 
 [cleanUpNullFundTotals]
-UPDATE depositvoucher_fund 
+UPDATE depositvoucher 
 SET 
     totalcheck = CASE WHEN totalcheck IS NULL THEN 0 ELSE totalcheck END,
     totalcash = CASE WHEN totalcash IS NULL THEN 0 ELSE totalcash END
-WHERE parentid=$P{depositvoucherid} AND fundid=$P{fundid}
+WHERE objid=$P{depositvoucherid} 

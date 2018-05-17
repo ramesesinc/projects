@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="formActions" action="_close" caption="Close" 
+                 shortcut="ctrl Q" mnemonic="C" immediate="true" />
+        <invoker type="formActions" action="save" caption="Save" 
+                 shortcut="ctrl S" mnemonic="S" />
+    </invokers>
+    <code class="com.rameses.treasury.common.models.BasicBillingCapturePaymentModel" />
+    <pages>
+        <page name="default" template="com.rameses.treasury.common.views.BasicBillingCapturePaymentPage"/>
+    </pages>
+    
+</workunit>

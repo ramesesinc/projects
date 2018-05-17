@@ -1,0 +1,14 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="cashticket:create" caption="Cash Ticket">
+            <action role="COLLECTOR" name="initCollector"/>
+            <action role="SUBCOLLECTOR" name="initSubCollector"/>
+        </invoker>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.CashTicketInitialModel" />
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.CashTicketInitialPage" />
+    </pages>
+   
+</workunit>

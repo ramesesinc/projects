@@ -1,13 +1,19 @@
 <workunit>
    <invokers>
+       
+       <invoker folderid="/menucategory/treasury/mgmt" caption="Batch Capture Management"   
+                 role="MASTER" permission="bank.view" action="init" index="10"/> 
+       
+       <!--
         <invoker folderid="/explorer/txn/treasury" caption="Batch Capture Management" action="init" index="50" 
             role="DATA_CONTROLLER" permission="batchcapture.manage"/>
         <invoker type="quick_launcher" code="BCM01" caption="Batch Capture Management" action="init" index="50" 
             role="DATA_CONTROLLER" permission="batchcapture.manage"/>
         <invoker type="formActions" caption="Close" action="_close" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
+        -->
    </invokers>
    
-   <code class="com.rameses.gov.treasury.batchcapture.BatchCaptureMgmtController"/>
+   <code class="com.rameses.gov.treasury.batchcapture.BatchCaptureMgmtModel"/>
    
    <pages>
         <page template="com.rameses.gov.treasury.batchcapture.BatchCaptureMgmtPage"/>

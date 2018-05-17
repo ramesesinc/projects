@@ -1,0 +1,10 @@
+<workunit  extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
+          processName="waterworks_batch_billing"
+          schemaName="waterworks_batch_billing" 
+          allowDelete="false" allowNotify="true">
+    <invokers>
+        <invoker folderid="/menucategory/waterworks/billing" 
+            cols="year,monthname,zone.code,zone.sector.code,readingdate,reader.name,dtcreated,createdby.nam"
+            caption="View Batch Billing List" action="init" index="1" />
+    </invokers>
+</workunit>

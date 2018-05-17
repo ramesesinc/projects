@@ -1,15 +1,23 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
-          schemaName="cashreceipt"
-          cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name" 
-          allowCreate="false" allowDelete="false" orderBy="receiptno,receiptdate">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="cashreceipt" allowCreate="false" allowDelete="false" 
+          cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name">
     
     <invokers>
-        <invoker folderid="menucategory/treasury/mgmt" caption="Cash Receipts List" action="init"
-                 role="SHARED" />
+        <invoker folderid="menucategory/treasury/mgmt" caption="Cash Receipt List" action="init"
+                 customFilter=" formtype='serial' "
+                 role="SHARED" tag="mgmt"/>
+
+        <invoker folderid="menucategory/treasury/collection" caption="SubCollector Cash Receipts" 
+                 customFilter=" formtype='serial' "
+                 action="init" index="50"> 
+            <action role="COLLECTOR" caption="Collector Cash Receipts" tag="collector"/> 
+            <action role="SUBCOLLECTOR" caption="SubCollector Cash Receipts" tag="subcollector"/> 
+        </invoker> 
         
         <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
                  customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
-                 target="popup" width="1024"/>
+                 orderBy="receiptno"
+                 target="popup" width="1024" height="700"/>
    </invokers>
-      
+   
 </workunit>

@@ -115,6 +115,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
         xTitledBorder2.setTitle("  Payment Details   ");
         jPanel3.setBorder(xTitledBorder2);
 
+        xDataTable3.setHandler("assessmentInfo.taxfeeModel");
+        xDataTable3.setName("assessmentInfo.selectedTaxfee"); // NOI18N
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "lob.name"}
@@ -126,6 +128,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -139,6 +143,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"expression", "#{item.account.code} - #{item.account.title}"}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
@@ -153,6 +159,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -166,6 +174,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -179,6 +189,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", false}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "RIGHT"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
@@ -193,6 +205,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "RIGHT"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
@@ -207,6 +221,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "RIGHT"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
@@ -221,6 +237,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "RIGHT"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
@@ -235,13 +253,13 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"alignment", "RIGHT"}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable3.setHandler("assessmentInfo.taxfeeModel");
-        xDataTable3.setName("assessmentInfo.selectedTaxfee"); // NOI18N
 
         xFormPanel6.setCellspacing(20);
         xFormPanel6.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
@@ -318,8 +336,8 @@ public class BPLSCashReceipt extends javax.swing.JPanel {
         xButton2.setName("assessmentInfo.showDetails"); // NOI18N
         xButton2.setText("Show Details");
 
-        xButton3.setImmediate(true);
         xButton3.setName("showReceipt"); // NOI18N
+        xButton3.setImmediate(true);
         xButton3.setText("View Receipt");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

@@ -42,6 +42,7 @@
 		<field name="subcollector_objid" />
 		<field name="subcollector_name" indexed="true"/>
 		<field name="subcollector_title" />
+		<field name="subcollector_remittanceid" />
 
 		<complex name="void" ref="cashreceipt_void" jointype="many-to-one" required="false" includefields="objid,reason">
 			<key field="objid" target="receiptid" />
@@ -68,56 +69,6 @@
 
 	</element>
 	
-	<!--
-	<element name="item" tablename="cashreceiptitem">
-		<field name="objid" primary="true"/>
-		<field name="receiptid" required="true" />
-		<field name="item_objid" required="true" />
-		<field name="item_code" required="true" />
-		<field name="item_title" required="true" />
-		<field name="amount" required="true" />
-		<field name="remarks"  />
-	</element>
-	
-
-	<element name="paymentitem-noncash" tablename="cashreceiptpayment_noncash">
-		<field name="objid" primary="true"/>
-		<field name="receiptid" required="true" />
-		<field name="bankid" />
-		<field name="deposittype" />
-		<field name="bank" required="true"/>
-		<field name="refno" required="true"/>
-		<field name="refdate" required="true"/>
-		<field name="reftype" />
-		<field name="amount" />
-		<field name="particulars" />
-		<field name="account_objid" />
-		<field name="account_fund_name"/>
-		<field name="account_fund_objid" />
-		<field name="account_code" />
-		<field name="account_bank"/>
-	</element>
-	-->
-
-	
-	<element name="void" tablename="cashreceipt_void">
-		<field name="objid" primary="true"/>
-		<field name="receiptid" required="true" />
-		<field name="txndate" required="true" />
-		<field name="postedby_objid" required="true" />
-		<field name="postedby_name" required="true" />
-		<field name="reason"  />
-	</element>
-
-	<element name="cancelseries" tablename="cashreceipt_cancelseries">
-		<field name="objid" primary="true"/>
-		<field name="receiptid" required="true" />
-		<field name="controlid" required="true" />
-		<field name="txndate" required="true" />
-		<field name="postedby_objid" required="true" />
-		<field name="postedby_name" required="true" />
-		<field name="reason"  />
-	</element>
 	
 </schema>
 

@@ -7,16 +7,19 @@
 		<field name="title" required="true" searchable="true"/>
 		<field name="formno" required="true"/>
 		<field name="handler" required="true"/>
-		<field name="allowbatch" />
-		<field name="allowonline" />
-		<field name="allowoffline" />
+		
 		<field name="barcodekey" />
 		<field name="sortorder" />
-		<field name="org_objid"  />
-		<field name="org_name"  />
 		<field name="fund_objid"  />
 		<field name="fund_title"  />
 		<field name="category"  />
+		<field name="system" type="integer"/>
+
+		<field name="allowbatch" type="integer" defaultValue="0"/>
+		<field name="allowonline"  type="integer"  defaultValue="0"/>
+		<field name="allowoffline"  type="integer"  defaultValue="0"/>
+		<field name="allowpaymentorder"  type="integer"  defaultValue="0"/>
+		<field name="allowkiosk"  type="integer"  defaultValue="0"/>
 
 		<complex name="af" ref="af" jointype="many-to-one" required="false" includfields="objid,formtype">		
 			<key field="formno" target="objid" />

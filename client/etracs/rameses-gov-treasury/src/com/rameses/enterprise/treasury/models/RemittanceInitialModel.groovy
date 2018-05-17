@@ -6,11 +6,27 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.rcp.framework.ValidatorException;
+import com.rameses.util.BreakException;
 
-class RemittanceInitialModel extends CrudListModel {
+class RemittanceInitialModel {
 
+    @Binding
+    def binding;
+    
+    @Service("DateService")
+    def dateSvc; 
+    
     @Service("RemittanceService")
-    def remSvc;    
+    def remSvc;   
+    
+    @Service("QueryService")
+    def queryService;
+    
+    @Service("Var")
+    def var;
+    
+    def startdate;
+    def startime;
     
     def amount = 0; 
     def totalvoid = 0;
@@ -18,18 +34,51 @@ class RemittanceInitialModel extends CrudListModel {
     def summaryList;
     def voidList = [];
         
+    String title = "Remittance";
+    
+    @Script("User")
+    def userInfo;
+    
+    def user;
+    
     void init() {
+        def today = dateSvc.parseCurrentDate();
+        startdate = null;
+        String st = today.hour.toString().padLeft(2,"0")+":"+today.minute.toString().padLeft(2,"0");
+        def tm =  var.getProperty("remittance_cutoff_time", st ).split(":");
+        def p = [
+            date: today.date,
+            hour: tm[0],
+            min: tm[1],
+            includeTime: true,
+            handler: { o->
+                startdate = o.date;
+                startime = o.hour + ":" + o.minute;
+            }
+        ];
+        Modal.show("date:prompt", p, [title:'Enter Remittance cut off date'] )
+        if(!startdate) throw new BreakException();
+        
+        def app = userInfo.env;
+        user = [objid: app.USERID, name: app.NAME, fullname: app.FULLNAME, username: app.USER ];
+        
+        def param = [collectorid: user.objid, remdate: startdate + " " + startime ]
         //build summaryList
+        
+        summaryList = remSvc.getCashReceiptForRemittance( param );
+        
+        /*
         def m = [_schemaname: 'cashreceipt_af_summary' ];
-        m.where = ["collector.objid =:collectorid AND remittanceid IS NULL", [collectorid: user.objid ] ];
+        m.where = ["collector.objid =:collectorid AND remittanceid IS NULL AND receiptdate<= :remdate ", param ];
         summaryList = queryService.getList( m );
+        */
         if(!summaryList)
             throw new Exception("No cash receipts to remit")
         amount = summaryList.sum{ it.amount };
         
         //list of voided
-        m = [_schemaname: 'cashreceipt' ];
-        m.where = ["collector.objid =:collectorid AND remittanceid IS NULL AND NOT(void.objid IS NULL)", [collectorid: user.objid ] ];
+        def m = [_schemaname: 'cashreceipt' ];
+        m.where = ["collector.objid =:collectorid AND remittanceid IS NULL AND receiptdate<= :remdate AND NOT(void.objid IS NULL)", param ];
         voidList = queryService.getList( m );
         if( voidList ) {
             totalvoid = voidList.sum{ it.amount };

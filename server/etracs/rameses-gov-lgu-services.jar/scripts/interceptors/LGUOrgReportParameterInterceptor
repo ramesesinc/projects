@@ -129,9 +129,8 @@ public class LGUOrgReportParameterInterceptor
 
 		def brgy = brgySvc.getById(env.ORGID)
 
-		def lgu = null
-		if ('city'.equalsIgnoreCase(brgy.lgu.lgutype)){
-			lgu = citySvc.getById( env.ORGID )
+		def lgu = brgy.lgu;
+		if ('city'.equalsIgnoreCase(lgu.lgutype)){
 			result.LGUTYPE	= 'city' 
 			result.CITYNAME = lgu.fullname 
 		}

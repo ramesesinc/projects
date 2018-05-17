@@ -1,0 +1,12 @@
+<schema>
+	<element tablename="depositslip_check">
+		<field name="objid" primary="true" prefix="DEPSLIPCHK" />
+		<field name="depositslipid" />
+		<field name="checkid" />
+		<field name="amount" type="decimal" />
+		<complex name="check" ref="paymentcheck" jointype="many-to-one" required="false"
+			includefields="refno,refdate,bank.name,receivedfrom,amount,reftype">
+			<key field="checkid" target="objid" />
+		</complex>
+	</element>
+</schema>

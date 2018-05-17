@@ -12,6 +12,12 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     @Binding 
     def binding; 
 
+    @Service("PersistenceService")
+    def persistenceService;
+    
+    @Service("QueryService")
+    def queryService;
+    
     @Service("CashReceiptService")
     def cashReceiptSvc;
 
@@ -44,6 +50,70 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         }
     } 
     
+    boolean check_exists = false;
+    boolean new_check = false;
+    def selectionList;
+    def selectedCheck;
+    void searchCheckIfExists() {
+        new_check = true;
+        def m = [_schemaname:'paymentcheck'];
+        m.findBy = [refno: check.refno ];
+        m.where = [ " amount - amtused > 0 " ];
+        selectionList = queryService.getList( m );
+        if(selectionList ) {
+            check_exists = true;
+            checkSelectionModel.reload();
+        }
+    }
+    
+    def checkSelectionModel = [
+        fetchList: { o->
+            return selectionList;
+        }
+    ] as BasicListModel;
+    
+    
+    def useExistingCheck() {
+        if(!selectedCheck ) throw new Exception("Please select an unused check from list");
+        new_check = false;
+        check.putAll(selectedCheck);
+        check.objid = selectedCheck.objid;
+        check.bank = selectedCheck.bank;
+        check.refno = selectedCheck.refno;
+        check.refdate = selectedCheck.refdate;
+        check.receivedfrom = selectedCheck.receivedfrom;
+        check.amount = selectedCheck.amount - selectedCheck.amtused;
+        if(check.split == 1 ) {
+            def _total = fundList.sum{ it.amount - it.used };
+            if(_total < check.amount ) {
+                check.amount = _total;
+            }
+        }
+        return signal("submit");
+    }
+    
+    def addNewCheck() {
+        new_check = true;
+        return signal( "submit" );
+    }
+    
+    void saveAndAddCheck() {
+        check._schemaname = 'paymentcheck';
+        check.state = 'PENDING';
+        check.amtused = 0;
+        
+        def _total = fundList.sum{ it.amount - it.used };
+        if( check.amount > _total && check.split != 1 ) {
+            throw new Exception("Amount of check must be less than or equal to amount to pay for non split checks");
+        }
+        
+        check = persistenceService.create( check );
+        if( check.split ==  1 && _total < check.amount ) {
+            check.amount = _total;
+        }
+        addCheck();
+    }
+    
     void addCheckEntry( def vfund, def vamt  ) {
         //check the amount must not be greater than the allocated fund.
         def entry = fundList.find{ it.fund == vfund };
@@ -51,6 +121,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
             throw new Exception("Amount is greater than the amount of " + entry.fund.title );
         
         def m = [:];
+        m.refid = check.objid;
         m.reftype =  "CHECK"; 
         m.check =  check;
         m.amount = vamt;
@@ -88,7 +159,6 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         
         //update balance
         balance = balance - check.amount;
-        checks << check;
     }
 
     void initCheck() {
@@ -143,10 +213,12 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
         if(balance != 0  )
             throw new Exception("Amount paid must be exact " );
         def m = [:];
-        m.checks = checks;
         m.paymentitems = payments;
         m.totalcash = totalcash;
         saveHandler(m);  
         return "_close";
     }
+    
+    
+    
 } 

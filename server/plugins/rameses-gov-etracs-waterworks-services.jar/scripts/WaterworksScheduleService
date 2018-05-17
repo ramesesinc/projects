@@ -30,7 +30,7 @@ class WaterworksScheduleService {
 			}
 		);
 
-		def res = ruleSvc.execute( "waterworksbilling", facts, null, null );
+		def res = ruleSvc.execute( "waterworksbillingschedule", facts, null, null );
 		def m = [:]
 		facts.each {
 			if(it instanceof VarDate ) {

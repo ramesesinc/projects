@@ -1,9 +1,9 @@
 <schema>
 	<element tablename="paymentorder">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" visible="true" searchable="true" caption="Trace No"/>
 		<field name="txndate" type="timestamp" required="true" />
-		<field name="txntype" required="true" />
-		<field name="txntypename" required="true" />
+		<field name="txntype" />
+		<field name="txntypename"  />
 		<field name="payer_objid" required="true" />
 		<field name="payer_name" required="true" />
 		<field name="paidby" required="true" />
@@ -16,12 +16,22 @@
 		<field name="controlno" />
 		<field name="locationid" />
 		<field name="origin" />
+
+		<field name="issuedby_objid" />
+		<field name="issuedby_name" caption="Issued By"/>
+
+		<field name="origin" />
+
+		<field name="org_objid" required="true" />
+		<field name="org_name" required="true" indexed="true" caption="Org Name"/>
+
 		<complex name="info" serializer="default" required="true"/>
 
-		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="objid,handler,barcodekey,formno">
+		<complex name="collectiontype" ref="collectiontype" jointype="many-to-one" required="true" includefields="objid,name,title,handler,barcodekey,formno,af.*,fund.*">
 			<key field="collectiontypeid" target="objid"/>
 		</complex>
 		<complex name="items" serializer="default" required="false" type="list" />
+		<field name="queueid" required="false"/>
 	</element>
 </schema>
 

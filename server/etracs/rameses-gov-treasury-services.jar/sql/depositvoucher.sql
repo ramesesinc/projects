@@ -56,7 +56,7 @@ UPDATE depositvoucher_fund SET
     checktodeposit = CASE WHEN checktodeposit IS NULL THEN 0 ELSE checktodeposit END
 WHERE parentid = $P{depositvoucherid}
 
-[getBankAccountLedgerItems]
+[getBankAccountLedgerItem]
 SELECT 
     ds.fundid,  
     ds.bankacctid,
@@ -67,9 +67,9 @@ SELECT
 FROM depositslip ds
 INNER JOIN bankaccount ba ON ba.objid = ds.bankacctid 
 WHERE ds.depositvoucherid = $P{depositvoucherid}
-GROUP BY ds.fundid,ds.bankacctid,ba.acctid
+AND ds.fundid = $P{fundid}
 
-[getCashLedgerItems]
+[getCashLedgerItem]
 SELECT 
   cv.fundid,
   (SELECT objid FROM itemaccount WHERE fund_objid = cv.fundid AND TYPE = 'CASH_IN_TREASURY' LIMIT 1 ) AS itemacctid,
@@ -77,4 +77,4 @@ SELECT
   (cv.totalcash + cv.totalcheck) AS cr,
   'cash_treasury_ledger' AS _schemaname
 FROM depositvoucher_fund cv 
-WHERE cv.parentid = $P{depositvoucherid}
+WHERE cv.parentid = $P{depositvoucherid} AND cv.fundid=$P{fundid}

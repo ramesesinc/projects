@@ -1,45 +1,53 @@
-<workunit schemaName="waterworks_account">
+<workunit extends="com/rameses/treasury/common/templates/ChangeInfo.xml" schemaName="waterworks_changelog" 
+    reftype="waterworks_account" >
     <invokers>
-        <invoker type="waterworks_account:form:menuActions" 
-                 caption="Change Address" 
-                 target="popup" 
-                 action="init"
-                 fields="address.*"
-                 view="address"
-                 visibleWhen="#{mode=='read'}"/>        
+        <invoker type="waterworks_account:edit" target="popup" caption="Change Address" action="init" index="10"
+                 keyfield="address"  datatype="local_address" preferredSize="500,100" captionWidth="60"/>
         
-        <invoker type="waterworks_account:form:menuActions" 
-                 caption="Change Meter" 
-                 target="popup"
-                 action="init"
-                 fields="meter.*"
-                 view="meter"
-                 visibleWhen="#{mode=='read'}"/>  
+        <invoker type="waterworks_account:edit" caption="Change Owner" action="init"  target="popup" index="11"
+            keyfield="owner"  datatype="lookup" handler="entity:lookup" 
+            expression="#{data.owner.name}" />            
         
-        <invoker type="waterworks_account:form:menuActions" 
-                 caption="Change Owner" 
-                 target="popup"
-                 action="init"
-                 fields="owner.*,acctname"
-                 view="owner"
-                 visibleWhen="#{mode=='read'}"/>  
+        <invoker type="waterworks_account:edit" caption="Change Meter" action="init"  target="popup" index="12"
+                 keyfield="meter"  datatype="lookup"  handler="waterworks_meter_wo_account:lookup" 
+                 expression="#{data.meter.serialno}"/>
+       
+        <invoker type="waterworks_account:edit" action="init"  target="popup" index="13"
+                 keyfield="units" datatype="integer" caption="Change No. of Units" />
         
-        <invoker type="waterworks_account:form:menuActions" 
-                 caption="Change Reading" 
-                 target="popup" 
-                 action="init" 
-                 fields="currentreading" 
-                 view="reading"
-                 visibleWhen="#{mode=='read'}" 
-                 index="100" />                           
+        <invoker type="waterworks_account:edit" caption="Change Stubout Node" action="init"  target="popup" index="14"
+            keyfield="stuboutnode" datatype="lookup" handler="waterworks_stuboutnode_unassigned:lookup" 
+            expression="#{data.stuboutnode.indexno} Zone: #{data.stuboutnode.zone.code} Sector: #{data.stuboutnode.sector.code}"/>
+        
     </invokers>
     
-    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksChangeInfoModel" />
+    <code>
+        <![CDATA[
     
-    <pages>
-        <page name="address" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountAddressPage"/>
-        <page name="meter" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountMeterPage"/> 
-        <page name="owner" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountOwnerPage"/>  
-        <page name="reading" template="com.rameses.gov.etracs.waterworks.views.ChangeAccountReadingPage"/>     
-    </pages>
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.seti2.models.*;
+        import java.text.*;
+        import com.rameses.treasury.common.models.*;
+
+        class AccountChangeInfoModel extends ChangeInfoModel {
+
+            @PropertyChangeListener
+            def flisten = [
+                "data.stuboutnode": {o->
+                    action = (!o?.objid ) ? "detach-node" : "change-node";
+                    data.stuboutnodeid = o?.objid;
+                },
+                "data.meter" : { o->
+                    action = (!o?.objid) ? "detach-meter" : "change-meter";
+                    data.meterid = o?.objid; 
+                }
+            ];
+        }
+
+        ]]>
+    </code>     
+        
 </workunit>

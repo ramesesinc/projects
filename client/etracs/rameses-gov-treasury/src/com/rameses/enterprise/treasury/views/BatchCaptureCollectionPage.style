@@ -1,0 +1,12 @@
+"(add|remove|open)Item" [ entity.state == 'DRAFT' ] {
+    enabled: true; 
+}
+"(remove|open)Item" [ selectedItem == null ] {
+    enabled: false; 
+}
+"openItem" [ selectedItem != null ] {
+    enabled: true;
+}
+"(add|remove)Item" [ entity.state != 'DRAFT' ] {
+    enabled: false; 
+}

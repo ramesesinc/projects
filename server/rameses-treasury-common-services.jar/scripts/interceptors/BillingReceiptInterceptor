@@ -1,0 +1,99 @@
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import java.rmi.server.*;
+import java.util.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.rules.common.RuleExecutionContext;
+
+public class BillingReceiptInterceptor {
+	
+	@Service("PaymentPostingService")
+	def service;
+
+	@Service("BasicBillingHandler")
+	def handler;
+
+	@DataContext(dynamic=true)
+	def pmtEm;
+
+	@PersistenceContext
+	def db;
+
+	@After(pattern="CashReceiptService.post", eval="#{ args[0]._postpayment == true }",  index=50)
+	public void postCashReceipt( evt ) {
+		def e = evt.args[0];
+		def pp = [ txntype: e.collectiontype.handler ]; 
+		def payinfo = buildPostPaymentInfo( pp, e, evt.result );
+		payinfo.reftype = "cashreceipt";
+		payinfo.refdate = e.receiptdate;
+		payinfo.refno = e.receiptno;
+		payinfo.refid = e.objid;
+		payinfo.txndate = evt.result.txndate;
+		payinfo.amount = e.amount;
+		payinfo.txnmode = e.txnmode;
+		service.post( payinfo );		
+	}
+
+	@After(pattern="BasicCapturePaymentService.post", eval="#{ args[0]._postpayment == true }",  index=50)
+	public void postCapturePayment( evt ) { 
+		def e = evt.args[0]; 
+		def pp = [ txntype: e.txntype ]; 
+		def payinfo = buildPostPaymentInfo( pp, e, evt.result );
+		payinfo.reftype = e.reftype;
+		payinfo.refdate = e.refdate;
+		payinfo.refno = e.refno;
+		payinfo.refid = e.refid;
+		payinfo.txndate = evt.result.txndate; 
+		payinfo.amount = e.amount;
+		payinfo.txnmode = 'CAPTURE';
+		service.post( payinfo );
+	} 
+
+	@After(pattern="CreditPaymentService.post", eval="#{ args[0]._postpayment == true }",  index=50)
+	public void postCreditPayment( evt ) {
+		def e = evt.args[0]; 
+		def result = evt.result;
+		def pp = [ txntype: e.txntype ]; 
+		def payinfo = buildPostPaymentInfo( pp, e, result );
+		payinfo.reftype = 'creditpayment';
+		payinfo.refdate = result.controldate;
+		payinfo.refno = result.controlno;
+		payinfo.refid = result.objid;
+		payinfo.amount = e.amount;
+		payinfo.txndate = result.txndate; 
+		payinfo.txnmode = 'ONLINE';	
+		//this field is provided from creditpayment service post parameter
+		payinfo.creditpayments = e.creditpayments;
+		service.post( payinfo );
+	}
+
+	private def buildPostPaymentInfo( pp, bill, result ) {
+		if ( !pp.txntype ) throw new Exception('txntype parameter is required');
+
+		def payinfo = handler.getPostPaymentInfo( pp, bill ); 
+		if ( !payinfo._schemaname ) throw new Exception("payinfo._schemaname is required");
+		if ( !payinfo.items ) throw new Exception('payinfo.items is required'); 
+
+		return payinfo;
+	}
+
+	@After(pattern="CashReceiptVoidService.post")
+	public void voidPayment(def evt) {
+		def e = evt.args[0];
+		def res= evt.result;
+		def rct = res.receipt;
+
+		def vi = handler.getVoidInfo( rct ); 
+		if ( !vi ) return; 
+
+		if ( !vi._schemaname ) throw new Exception('please include _schemname in getVoidInfo'); 
+
+		def pmtDb = pmtEm.lookup( vi._schemaname );
+		def pmt = pmtDb.find([ refid: rct.objid ]).first(1);
+		pmt._schemaname = vi._schemaname;
+		pmt.collectiontype = rct.collectiontype;
+		service.reversePayment( pmt );
+	}
+}

@@ -2,18 +2,22 @@
     <invokers>
         <invoker folderid="menucategory/treasury/remittance" 
                  caption="Prepare Deposit" 
-                 windowTitle="Deposit"
-                 formTitle="Deposit"
+                 windowTitle="New Deposit Voucher"
+                 formTitle="New Deposit Voucher"
                  action="init" 
                  index="50" />
         
-        <invoker type="depositvoucher:create" 
+        <invoker type="depositvoucher_fund:create" 
                  caption="New Deposit Voucher" 
                  windowTitle="New Deposit Voucher"
                  formTitle="New Deposit Voucher"
                  action="init" 
                  index="50" />
+        
+        <invoker type="formActions" caption="Submit" action="submit" />
     </invokers>
+    
+    
    
    <code class="com.rameses.enterprise.treasury.models.DepositVoucherInitialModel" />
   

@@ -22,6 +22,7 @@ public class AccountItemListModel extends ComponentBean {
 
     def total = 0;
     String totalsFieldName;
+    def query;
     
     void updateTotal() {
         total = getValue().sum{ it.amount };
@@ -60,37 +61,15 @@ public class AccountItemListModel extends ComponentBean {
     def selectedItem;
     def getLookupItems() {
         def p = [:];
-        p.put("query.txntype", "cashreceipt" );
-        //p.put("query.collectorid",entity.collector.objid);
-        //p.put("query.fund",entity.collectiontype.fund);
-        //p.put("query.collectiontype", entity.collectiontype);
+        if(query) {
+            p.put("query", query );
+        }
         p.onselect = { o->
             selectedItem.item = o;
-            selectedItem.amount = o.defaultvalue;
-            if(o.valuetype == "FIXEDUNIT") {
-                def m = MsgBox.prompt( "Enter qty" );
-                if( !m || m == "null" ) throw new Exception("Please provide qty"); 
-                if( !m.isInteger() ) throw new Exception("Qty must be numeric"); 
-                selectedItem.amount = Integer.parseInt( m )*o.defaultvalue; 
-                selectedItem.remarks = "qty@"+Integer.parseInt( m ); 
-            } 
+            selectedItem.amount = o.remove("amount");
+            selectedItem.remarks = o.remove("remarks");
         };
         return InvokerUtil.lookupOpener("cashreceiptitem:lookup", p );
     }
-    
-    /*
-    def getCollectionGroupHandler() {
-        def p = [:];
-        p.put("query.txntype","cashreceipt"); 
-        //p.put("query.fund",entity.collectiontype.fund); 
-        //p.put("query.collectiontype", entity.collectiontype); 
-        p.selectHandler = { o-> 
-            getValue().addAll(o);
-            itemListModel.reload();
-            updateTotal(); 
-        };
-        return InvokerUtil.lookupOpener("collectiongroup:lookup", p); 
-    }
-    */       
     
 }

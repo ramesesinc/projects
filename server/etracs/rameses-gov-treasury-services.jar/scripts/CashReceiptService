@@ -18,27 +18,12 @@ class CashReceiptService  {
 	@DataContext("cashreceipt")
 	def cashreceiptEm; 
 
-	@Service("DateService")
-	def dateService;
-
-	@Service("PaymentOrderService")
-	def paymentOrderSvc;
+	@DataContext('cashreceipt_void') 
+	def cashreceipt_void;
 
 	@DataContext("paymentorder")
    	def paymentOrderEm;
 		
-	@Service("NumberService")
-	def numSvc;
-	
-	@Service("Var")
-	def var;
-
-	@Env
-	def env;
-
-	@Service('PersistenceService')
-	def persistence 
-	
    	@DataContext("cashreceiptpayment_noncash")
    	def cashRctPmt;
 
@@ -51,7 +36,27 @@ class CashReceiptService  {
     @DataContext("paymentcheck")
    	def checkPayment;
 
+	@Service("DateService")
+	def dateService;
+
+	@Service("PaymentOrderService")
+	def paymentOrderSvc;
+
+	@Service("NumberService")
+	def numSvc;
 	
+	@Service("Var")
+	def var;
+
+	@Env
+	def env;
+
+	@Service('PersistenceService')
+	def persistence 
+	
+
+	@Service("AFControlService")
+	def afControlSvc;
 
 	/**
 	* note: setting of collector is in the CashReceiptInterceptor of gov. module.
@@ -85,6 +90,8 @@ class CashReceiptService  {
         	throw new Exception("Form type is required. Check collection form");
         }
         
+		def afc = afControlSvc.getNextAfSeries( entity );
+		entity.putAll( afc );
 		return entity;
 	}	
 
@@ -98,25 +105,24 @@ class CashReceiptService  {
         if( daysdiff > staledayscount ) throw new Exception('Stale check is not allowed.')
     }
 	
-	void insertChecks( def p ) {
-		p.checks.each { c->
-			if(!c.objid) {
-				c.amtused = c.amount;
-				c.receiptid = p.objid;
-				c.state = 'PENDING';
-				def cc = checkPayment.create( c );
-				c.objid = cc.objid;
-			}
-			else {
-				checkPayment.find( [objid: c.objid] ).update( [amtused: "{ amtused + :amt }"], [amt: c.amount] );
+	void updatePaymentReferences( def p ) {
+		if( !p.paymentitems ) return; 	
+		//check if there are payment items with no type. throw error
+		def test = p.paymentitems.findAll{ !it.reftype };
+		if(test) throw new Exception("All payment items must have a type. Please review the code");
+
+		p.paymentitems.each {
+			if( it.reftype == 'CHECK' ) {
+				it.checkid = it.refid;
+				checkPayment.find( [objid: it.checkid ] ).update( [amtused: "{ amtused + :amt }"], [amt: it.amount] );
 				//if amtused is fully exhausted fire an error
-				def z = checkPayment.find([objid: c.objid] ).where("amount - amtused < 0 ").first();
-				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");
-			}	
-		}	
-		//update also payment items
-		p.paymentitems.findAll{ it.check !=null }.each { c->
-			c.refid = c.check.objid;
+				def z = checkPayment.find([objid: it.checkid ] ).where("amount - amtused < 0 ").first();
+				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");				
+			}
+			else if( it.reftype == 'CREDITMEMO') {
+				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
+				creditmemo.find( [objid: it.refid] ).update(cmp);
+			}
 		}
 	}
 
@@ -131,18 +137,10 @@ class CashReceiptService  {
 			throw new Exception('A data problem is encountered during validation of Receipt No. ' + p.receiptno + '.\nThe Receipt Amount is not equal to item amount total.\nClose the form and recreate the transaction to correct the problem.')
 		} 
 
-		
-		
 		/***************************************************************
 		//additional code on checks 
 		****************************************************************/
-		if( p.checks ) {
-			insertChecks( p );
-		}
-
-		//check if there are payment items with no type. throw error
-		def test = p.paymentitems.findAll{ !it.reftype };
-		if(test) throw new Exception("All payment items must have a type. Please review the code");
+		updatePaymentReferences( p );
 
 		if(!p.payer) p.payer = [:];  //if there is no id, we need still to add bec. it is an object.
 
@@ -152,12 +150,7 @@ class CashReceiptService  {
 		if(p.batchcapture) p.state = "CAPTURED"
 
 		cashreceiptEm.create( p );
-		p.paymentitems.each { x->
-			if( x.reftype == 'CREDITMEMO') {
-				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
-				creditmemo.find( [objid: x.refid] ).update(cmp);
-			}
-		} 
+		afControlSvc.updateNextSeries( p );
 
 		if (p._paymentorderid) {
 			//retrieve payment order first before firing close
@@ -216,6 +209,29 @@ class CashReceiptService  {
 	public void validatePayer( params ) {
 		//do nothing 
 	}
+
+	@ProxyMethod 
+	public def removeReceipt( params ) { 
+		def p = [ objid: params.objid ]; 
+		def rct = cashreceiptEm.find( p ).first(); 
+		if ( rct ) { 
+			rct.remitted = ( rct.remittanceid ? true : false ); 
+			if ( rct.remitted ) 
+				throw new Exception('You are not allowed to remove a remitted receipt'); 
+
+			def rctparam = [ receiptid: rct.objid ]; 
+			def voidrec = cashreceipt_void.find( rctparam ).select('objid').first(); 
+			rct.voided = ( voidrec?.objid ? true : false ); 
+
+			cashreceipt_void.find( rctparam ).delete();
+			cashRctPmt.find( rctparam ).delete(); 
+
+			rct.items = cashRctItem.find( rctparam ).list(); 
+			cashRctItem.find( rctparam ).delete(); 
+			cashreceiptEm.find( p ).delete(); 
+		} 
+		return rct; 
+	} 
 
 	private def toDate( value ) { 
 		if ( value == null ) return value; 

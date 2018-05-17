@@ -26,14 +26,13 @@ public class BusinessPostPaymentService  {
 		if (!appstate.toString().toLowerCase().matches('payment|release|completed')) 
 			throw new Exception("The current application status is not allowed for this transaction. Please verify."); 
 
-		def r = evt.result;
 		def m = [:];
-		m.objid = r.objid;
+		m.objid = a.objid;
 		m.businessid = a.businessid;
 		m.applicationid=a.applicationid;
 		m.appyear = a.appyear;
-		m.refid = r.objid;
-		m.reftype = 'cashreceipt';
+		m.refid = a.objid;
+		m.reftype = 'eor';
 		m.refno = a.receiptno;
 		m.refdate = a.receiptdate;
 		m.amount = a.amount;
@@ -83,8 +82,7 @@ public class BusinessPostPaymentService  {
 
 		//check if app is completed.
 		def app = appSvc.open([objid: pmt.applicationid]);
-		def result = evt.result; 
-		pmtSvc.voidPayment( [objid: r.objid, voidrct: result ] );
+		pmtSvc.voidPayment( [objid: r.objid, voidrct: r ] );
 
 		if (app.state != 'COMPLETED') {
 			def stat = appSvc.checkReleaseStatus([ 

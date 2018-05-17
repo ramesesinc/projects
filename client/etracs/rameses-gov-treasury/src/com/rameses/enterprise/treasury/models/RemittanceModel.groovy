@@ -26,6 +26,10 @@ class RemittanceModel extends CrudFormModel {
         return numformat.format( entity.amount );  
     }
     
+    def getTotalNoncash() {
+        return (entity.totalcheck + entity.totalcr);
+    }
+    
     def fundSummaryHandler = [
         fetchList: { o->
             def m = [_schemaname: 'remittance_fund' ];
@@ -85,11 +89,16 @@ class RemittanceModel extends CrudFormModel {
     def checkModel = [
         fetchList: { o->
             def m = [_schemaname: 'cashreceiptpayment_noncash' ];
-            m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)}";
-            m.groupBy = "refno,reftype,refdate,particulars";
+            m.select = "refid,refno,reftype,refdate,particulars,amount:{SUM(amount)}";
+            m.groupBy = "refid,refno,reftype,refdate,particulars";
             m.orderBy = "refdate,refno";
-            m.where = [ "receipt.remittanceid = :rid", [rid: entity.objid ]];
+            m.where = [ "receipt.remittanceid = :rid AND amount > 0", [rid: entity.objid ]];
             return queryService.getList( m );
+        },
+        onOpenItem: {o,col->
+            def op = Inv.lookupOpener("paymentcheck:open", [entity: [objid: o.refid ]] );
+            op.target = "popup";
+            return op;
         }
     ] as BasicListModel;
     

@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_stubout" 
-          allowCreate="true" allowOpen="true" allowDelete="true"
+          allowCreate="false" allowOpen="true" allowDelete="true"
           cols="code,description,zone.sector.code,zone.description"
           orderBy="code">
     <invokers>

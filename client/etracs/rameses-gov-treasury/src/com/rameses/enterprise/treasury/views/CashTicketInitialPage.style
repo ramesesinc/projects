@@ -1,0 +1,6 @@
+"(remove|open)Item" [ selectedItem == null ] {
+    enabled: false; 
+}
+"openItem" [ selectedItem != null ] {
+    enabled: true;
+}

@@ -9,26 +9,26 @@ import com.rameses.seti2.models.*;
 
 class SelectAFModel extends CrudLookupModel {
 
-    @Service("AFControlService")
-    def service;
-    
     @Script( "User" )
     def user;
 
     def entity;
 
     String title = "Select Stub to use";
-
+    
     def getCustomFilter() {
-        return [ 
-              "state='ISSUED' AND afid = :formno AND assignee.objid = :uid AND txnmode=:mode AND currentseries <= endseries AND active=0 AND lockid IS NULL", 
-            [formno: entity.formno, uid: user.userid, mode: entity.txnmode ]  
-        ];
+        return CashReceiptAFLookupFilter.getFilter( entity ); 
     }
     
     def doOk() {
         def obj = listHandler.getSelectedValue();
-        service.activateSelectedControl( [objid: obj.objid ] );
+        if( entity.collectiontype?.fund?.objid ) {
+            def vfund = entity.collectiontype.fund;
+            if( vfund.objid != obj.fund?.objid ) 
+                throw new Exception("The selected stub must have a fund that matches the collectiontype"  );
+        }
+        
+        if ( onselect ) onselect( obj ); 
         return "_close";
         //return doOk();
     }

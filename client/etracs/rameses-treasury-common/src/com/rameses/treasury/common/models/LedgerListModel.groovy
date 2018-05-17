@@ -98,7 +98,22 @@ public class LedgerListModel extends CrudListModel {
     }
     
     def editEntry() {
-        return Inv.lookupOpener( schemaName + ":open" , [entity: selectedItem ]  );
+        return openEntry(); 
+    }
+    
+    def openEntry() {
+        return Inv.lookupOpener( schemaName + ":open" , [entity: selectedItem ]);
     }
 
+    void removeEntry() {
+        if(!selectedItem) throw new Exception("Please select an item first");
+        if(selectedItem.amtpaid > 0 ) throw new Exception("Cannot delete item if amtpaid is not zero");
+        
+        if ( MsgBox.confirm('You are about to remove the selected item?')) {
+            def m = [_schemaname: schemaName ];
+            m.findBy = [objid:selectedItem.objid];
+            persistenceService.removeEntity( m );
+            reload();
+        }
+    }
 }

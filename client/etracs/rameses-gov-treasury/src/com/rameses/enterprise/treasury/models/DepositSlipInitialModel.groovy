@@ -58,13 +58,13 @@ class DepositSlipInitialModel {
     
     
     def save() {
-        if( balance > 0 )
+        if( balance != 0 )
             throw new Exception("Please ensure that there are no balances remaining" );
         if( entity.amount > limit ) throw new Exception("Total amount must be less than "+limit);
         
         entity.checks = checkList.findAll{ it.selected == true }.collect{ [amount:it.amount, checkid: it.refid, deposittype: it.deposittype] };
-        depositSlipSvc.create( entity );
-        if(caller)caller.reloadList();
+        def r = depositSlipSvc.create( entity );
+        if(caller)caller.updateVoucher(r.amountdeposited);
         return "_close";
     }
     

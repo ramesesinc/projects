@@ -93,7 +93,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "bankaccount.bank.name"}
                 , new Object[]{"caption", "Bank "}
-                , new Object[]{"width", 100}
+                , new Object[]{"width", 150}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
@@ -109,8 +109,8 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 new Object[]{"name", "depositdate"}
                 , new Object[]{"caption", "Date "}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -118,14 +118,14 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd", null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "deposittype"}
                 , new Object[]{"caption", "Deposit Type"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -139,8 +139,8 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 new Object[]{"name", "checktype"}
                 , new Object[]{"caption", "Check Type"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -154,38 +154,8 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "totalcash"}
-                , new Object[]{"caption", "Total Cash"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "totalcheck"}
-                , new Object[]{"caption", "Total Checks"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 150}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}

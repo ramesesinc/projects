@@ -46,6 +46,7 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField10 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField11 = new com.rameses.rcp.control.XDecimalField();
         xFormPanel5 = new com.rameses.rcp.control.XFormPanel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
@@ -209,7 +210,7 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(cashDenomination1, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         xButton1.setName("selectAll"); // NOI18N
@@ -250,10 +251,10 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                    .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(xButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(xButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(57, 57, 57))
         );
 
@@ -262,14 +263,25 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
         xDecimalField1.setCaptionWidth(120);
         xFormPanel1.add(xDecimalField1);
 
-        xDecimalField10.setCaption("Balance");
-        xDecimalField10.setName("balance"); // NOI18N
+        xDecimalField10.setCaption("Total Cash + Check");
+        xDecimalField10.setDepends(new String[] {"entity.amount"});
+        xDecimalField10.setName("total"); // NOI18N
         xDecimalField10.setCaptionWidth(120);
         xDecimalField10.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField10.setEnabled(false);
         xDecimalField10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xDecimalField10.setPreferredSize(new java.awt.Dimension(100, 23));
         xFormPanel1.add(xDecimalField10);
+
+        xDecimalField11.setCaption("Balance");
+        xDecimalField11.setDepends(new String[] {"entity.amount"});
+        xDecimalField11.setName("balance"); // NOI18N
+        xDecimalField11.setCaptionWidth(120);
+        xDecimalField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField11.setEnabled(false);
+        xDecimalField11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xDecimalField11.setPreferredSize(new java.awt.Dimension(100, 23));
+        xFormPanel1.add(xDecimalField11);
 
         xIntegerField1.setCaption("Limit no. of checks per Deposit Slip");
         xIntegerField1.setName("entity.numcheckslimit"); // NOI18N
@@ -318,6 +330,7 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField10;
+    private com.rameses.rcp.control.XDecimalField xDecimalField11;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;
     private com.rameses.rcp.control.XDecimalField xDecimalField9;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;

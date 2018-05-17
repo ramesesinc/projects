@@ -48,7 +48,7 @@ class DepositSlipService  {
 			m.putAll( tmp );
 			m.deposittype = 'CASH';
 			m.totalcash = o.totalcash;
-			m.amount = o.amount;
+			m.amount = o.totalcash;
 			m.cashbreakdown = o.cashbreakdown;
 			depositSlipEm.create(m);
 		}
@@ -56,19 +56,47 @@ class DepositSlipService  {
 		if( o.checks ) {
 			def grps = o.checks.groupBy{ it.deposittype };
 			int i = o.numcheckslimit;
-			grps.each {k,v->
-				def m = [:];
-				m.putAll( tmp );
-				m.deposittype = 'CHECK';
-				m.checktype = k;
-				m.amount = o.totalcheck;
-				m.totalcheck = o.totalcheck;
-				m.checks = v;
-				depositSlipEm.create(m);
+			if( i > 0 ) {
+				grps.each {k,v->
+					if( !k ) throw new Exception("check type is required");
+					def arr = [];
+					def list = v;
+					while(true) {
+					    def p = list[0..(i-1)];
+					    arr << p;
+					    list = list -p;
+					    if(list.size() <= i) {
+					        arr << list;
+					        break;
+					    }
+					}
+					arr.each { 
+						def m = [:];
+						m.putAll( tmp );
+						m.deposittype = 'CHECK';
+						m.checktype = k;
+						m.amount = it.sum{ it.amount };
+						m.totalcheck = m.amount;
+						m.checks = it;
+						depositSlipEm.create(m);
+					}
+				}
 			}
-
+			else {
+				grps.each {k,v->
+					if( !k ) throw new Exception("check type is required");
+					def m = [:];
+					m.putAll( tmp );
+					m.deposittype = 'CHECK';
+					m.checktype = k;
+					m.amount = o.totalcheck;
+					m.totalcheck = o.totalcheck;
+					m.checks = v;
+					depositSlipEm.create(m);
+				}
+			}
 		}
-		throw new Exception("stop");			
+			
 	}
 
 	@ProxyMethod

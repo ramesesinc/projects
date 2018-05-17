@@ -12,13 +12,16 @@ FROM (
   AND ncp.amount > 0 
   AND ncp.reftype = 'CHECK'
   AND cr.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid = cr.objid )
+  AND ncp.refid NOT IN (
+      SELECT checkid FROM depositslip_check 
+      INNER JOIN depositslip  ON depositslip_check.depositslipid = depositslip.objid 
+      WHERE depositslip.depositvoucherid = cvf.depositvoucherid 
+  )
   GROUP BY ncp.refno, ncp.refid, ncp.refdate, ncp.particulars
 ) a
 INNER JOIN paymentcheck pc ON pc.objid = a.refid
 INNER JOIN bank bnk ON pc.bankid = bnk.objid
-WHERE pc.amount > IFNULL((
-  SELECT SUM( amount ) FROM depositslip_check WHERE checkid = pc.objid 
-), 0)
+
 
 
 [updateCheckTotal]

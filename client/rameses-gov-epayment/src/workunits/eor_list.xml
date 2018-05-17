@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="eor" allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker folderid="menucategory/treasury/epayment" caption="EOR List" 
-                 xrole="MASTER" action="init" index="1"
+                 role="MASTER" action="init" index="1"
                  cols="receiptno,receiptdate,partnerof,txntype,paidby,paidbyaddress,amount,traceid,tracedate"/>
    </invokers>
     <code class="com.rameses.gov.epayment.models.EORListModel" />

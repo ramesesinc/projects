@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-         <invoker folderid="menucategory/accounting/report" caption="Crosstab Reports" action="init" index="3"/>
+         <invoker folderid="menucategory/accounting/report" caption="Crosstab Reports" action="init" role="REPORT" index="3"/>
          
          <invoker type="formActions" caption="Preview" action="preview" visibleWhen="#{mode=='init'}"/>
          <invoker type="formActions" caption="Back" action="back" visibleWhen="#{mode=='preview'}"/>

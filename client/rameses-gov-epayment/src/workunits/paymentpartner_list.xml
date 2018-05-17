@@ -1,11 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="paymentpartner" 
           allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
-        <invoker folderid="/explorer/master/epayment" caption="Payment Partner" xrole="MASTER" 
+        <invoker folderid="/explorer/master/epayment" caption="Payment Partner" role="MASTER" 
                  cols="code,name"
                  action="init"/>
         
-         <invoker folderid="/menucategory/treasury/epayment" caption="Payment Partner" xrole="MASTER" 
+         <invoker folderid="/menucategory/treasury/epayment" caption="Payment Partner" role="MASTER" 
                  cols="code,name,branch"
                  action="init" index="-5"/>
          

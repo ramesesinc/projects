@@ -3,6 +3,6 @@
         <!--
         <invoker folderid="home/accounting" caption="Account Master" action="init" index="-1"/> 
         -->
-        <invoker folderid="menucategory/accounting/master" caption="Account Master" action="init" index="-1"/> 
+        <invoker folderid="menucategory/accounting/master" caption="Account Master" action="init" role="MASTER" index="-1"/> 
     </invokers>
 </workunit>

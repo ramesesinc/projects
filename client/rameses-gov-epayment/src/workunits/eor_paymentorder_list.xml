@@ -3,7 +3,7 @@
     <invokers>
         <invoker folderid="menucategory/treasury/epayment" 
                  caption="View Payment Orders" 
-                 xrole="MASTER" action="init"
+                 role="MASTER" action="init"
                  cols="txndate,txntypename,payer.name,amount,expirydate,refno,controlno"/>
         
         <invoker type="listActions" caption="Resolve Online Payment" action="resolveOnlinePayment" />

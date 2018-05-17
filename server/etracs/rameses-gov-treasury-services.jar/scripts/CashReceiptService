@@ -112,7 +112,8 @@ class CashReceiptService  {
 		if(test) throw new Exception("All payment items must have a type. Please review the code");
 
 		p.paymentitems.each {
-			if( it.reftype == 'CHECK' ) {
+			it.voidamount = 0.0;
+			if( it.reftype == 'CHECK' ) {				
 				it.checkid = it.refid;
 				checkPayment.find( [objid: it.checkid ] ).update( [amtused: "{ amtused + :amt }"], [amt: it.amount] );
 				//if amtused is fully exhausted fire an error

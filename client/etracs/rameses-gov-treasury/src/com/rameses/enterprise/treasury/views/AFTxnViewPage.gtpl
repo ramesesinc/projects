@@ -31,19 +31,19 @@
                    <td align="center">${o.txntype}</td>
                    <td align="center">
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD') && (o.qty > o.qtyserved) ) {  %> 
-                        <a href="addBatch" unit="${o.unit}" afid="${o.item.objid}" refitemid="${o.objid}">Add Entry</a>
+                        <a href="addBatch" unit="${o.unit}" afid="${o.item.objid}" aftxnitemid="${o.objid}">Add Entry</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('TRANSFER|RETURN') && (o.qty > o.qtyserved) ) {  %> 
-                        <a href="moveBatch" refitemid="${o.objid}">Select</a>
+                        <a href="moveBatch" aftxnitemid="${o.objid}">Select</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && (o.qty > o.qtyserved) ) {  %> 
-                        <a href="issueBatch" refitemid="${o.objid}">Issue</a>
+                        <a href="issueBatch" aftxnitemid="${o.objid}">Issue</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE')  && ( o.qtyserved > 0 ) && o.afunit.formtype == 'cashticket' ) {  %> 
-                        &nbsp;&nbsp;<a href="editBatch" refitemid="${o.objid}">Edit Qty</a>
+                        &nbsp;&nbsp;<a href="editBatch" aftxnitemid="${o.objid}">Edit Qty</a>
                       <% } %>
                       <%if( entity.state == 'DRAFT' && entity.txntype.matches('FORWARD')  && ( o.qtyserved > 0 )) {  %> 
-                        &nbsp;&nbsp;<a href="editBatch" refitemid="${o.objid}">Edit</a>
+                        &nbsp;&nbsp;<a href="editBatch" aftxnitemid="${o.objid}">Edit</a>
                       <% } %>
                    </td>
                 </tr>
@@ -57,11 +57,11 @@
                             ${ (ii.prefix==null)?'':ii.prefix } ${ii.startseries} - ${ii.endseries} ${(ii.suffix==null)?'':ii.suffix}
                             <% } %>
                             stub: ${ii.startstub} - ${ii.endstub} 
-                            <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD') ) {  %>  
-                                &nbsp;&nbsp;<a href="removeBatch" batchno="${ii.batchno}" refitemid="${o.objid}">Remove</a></td>
+                            <%if( entity.state == 'DRAFT' && entity.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD|TRANSFER|RETURN') ) {  %>  
+                                &nbsp;&nbsp;<a href="removeBatch" batchno="${ii.batchno}" aftxnitemid="${o.objid}">Remove</a></td>
                             <% } %>
                             <%if( entity.state == 'DRAFT' && entity.txntype.matches('ISSUE') ) {  %>  
-                                &nbsp;&nbsp;<a href="revertBatch" batchno="${ii.batchno}" refitemid="${o.objid}">Revert</a></td>
+                                &nbsp;&nbsp;<a href="revertBatch" batchno="${ii.batchno}" aftxnitemid="${o.objid}">Revert</a></td>
                             <% } %>
                         </td>
                     </tr>

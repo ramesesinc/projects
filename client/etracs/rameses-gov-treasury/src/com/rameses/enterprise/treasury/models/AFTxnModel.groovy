@@ -122,7 +122,14 @@ class AFTxnModel extends CrudPageFlowModel {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPage.gtpl", [entity:entity] );
     }
     
-    void saveCreate() {
+    void saveCreate() { 
+        if ( entity.txntype == 'TRANSFER' ) {
+            def issuefromid = entity.issuefrom.objid; 
+            def issuetoid = entity.issueto.objid; 
+            if ( issuefromid == issuetoid ) 
+                throw new Exception("Issued To must not be the same with the Issued From. Please select another"); 
+        }
+        
         def b = MsgBox.confirm( "You are about to save the draft document. Proceed?" );
         if(!b) throw new BreakException();
         super.saveCreate();
@@ -153,7 +160,7 @@ class AFTxnModel extends CrudPageFlowModel {
     //PURCHASE RECEIPT 
     //**************************************************************************/
     def addBatch( def o ) {
-        def item = entity.items.find{ it.objid == o.refitemid };
+        def item = entity.items.find{ it.objid == o.aftxnitemid };
         return Inv.lookupOpener( "af_control:addbatch", [ 
             refitem:item, handler:{ vv-> reloadEntity(); } 
         ]);
@@ -186,17 +193,17 @@ class AFTxnModel extends CrudPageFlowModel {
     }
 
     def editBatch( def o ) {
-        def item = entity.items.find{ it.objid == o.refitemid };
+        def item = entity.items.find{ it.objid == o.aftxnitemid };
         def e= [:];
         e.afid = item.item.objid;
         e.unit = item.unit;
         e.afunit = item.afunit;
-        return Inv.lookupOpener("af_control:editbatch", ['refitemid': o.refitemid, entity: e, txntype:entity.txntype ]);
+        return Inv.lookupOpener("af_control:editbatch", ['aftxnitemid': o.aftxnitemid, entity: e, txntype:entity.txntype ]);
     }
     
     def issueBatch( def o ) {
         try {
-            svc.issueBatch( [refitemid:o.refitemid] );
+            svc.issueBatch([ aftxnitemid: o.aftxnitemid ]);
             reloadEntity();
         }
         catch(e) {
@@ -205,7 +212,7 @@ class AFTxnModel extends CrudPageFlowModel {
     }
     
     def moveBatch( def o ) {
-        def item = entity.items.find{ it.objid == o.refitemid };
+        def item = entity.items.find{ it.objid == o.aftxnitemid };
         item.parent = entity;
         def strname = "af_control_batch:" + item.afunit.formtype + ":lookup"
         def h = { v ->

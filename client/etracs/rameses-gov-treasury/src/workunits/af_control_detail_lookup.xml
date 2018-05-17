@@ -21,8 +21,8 @@
        class XList extends com.rameses.seti2.models.CrudLookupModel {
         
             def getFindBy() {
-                if( query.refitemid ) {
-                    return [refitemid: query.refitemid ];
+                if( query.aftxnitemid ) {
+                    return [aftxnitemid: query.aftxnitemid ];
                 }
                 return null;
             }

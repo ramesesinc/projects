@@ -85,6 +85,7 @@ class AFInventoryService {
 		d.qtycancelled = 0;
 		d.qtyending = 0;
 
+		def u = [:];
 		if ( ref.reftype == 'PURCHASE_RECEIPT') {
 			d.receivedstartseries = afc.startseries;
 			d.receivedendseries = afc.endseries; 
@@ -123,6 +124,7 @@ class AFInventoryService {
 			d.endingstartseries = d.receivedstartseries;
 			d.endingendseries = d.receivedendseries;
 			d.qtyending = d.qtyreceived;
+
 		} else if ( ref.reftype == 'RETURN') {
 			d.beginstartseries = afc.currentseries;
 			d.beginendseries = afc.endseries; 
@@ -130,6 +132,7 @@ class AFInventoryService {
 			d.endingstartseries = d.beginstartseries;
 			d.endingendseries = d.beginendseries;
 			d.qtyending = d.qtybegin;	
+			d.issuedto = [objid: null, name: null]; 
 
 		} else if ( ref.reftype == 'REMITTANCE') {
 			d.beginstartseries = ref.startseries;
@@ -146,13 +149,11 @@ class AFInventoryService {
 			}
 		}
 
-		d = afDetail.create( d );
+		d = afDetail.create( d ); 
 
-		//update the af control
-		def u = [:];
-		u.lockid = 'PROCESSING';
-		u.currentdetailid = d.objid;
-		afCtrl.find( [objid: afc.objid ] ).update( u );
+		u.state = 'PROCESSING'; 
+		u.currentdetailid = d.objid; 
+		afCtrl.find([ objid: afc.objid ]).update( u );
 	}
 
 	@ProxyMethod

@@ -36,6 +36,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
@@ -50,26 +51,36 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
         xLabel4.setCaption("Req No");
         xLabel4.setExpression("#{ entity.request.reqno }");
+        xLabel4.setVisibleWhen("#{ afrequest != null }");
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel4.setVisibleWhen("#{ afrequest != null }");
         xFormPanel1.add(xLabel4);
 
-        xLookupField1.setCaption("Issued To");
-        xLookupField1.setExpression("#{ entity.issueto.name }");
+        xLookupField1.setCaption("Issued From");
+        xLookupField1.setExpression("#{ entity.issuefrom.name }");
         xLookupField1.setHandler("collector:lookup");
-        xLookupField1.setName("entity.issueto"); // NOI18N
+        xLookupField1.setName("entity.issuefrom"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLookupField2.setCaption("Issued To");
+        xLookupField2.setExpression("#{ entity.issueto.name }");
+        xLookupField2.setHandler("collector:lookup");
+        xLookupField2.setName("entity.issueto"); // NOI18N
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField2.setRequired(true);
+        xFormPanel1.add(xLookupField2);
+
         xLabel5.setCaption("Resp. Center");
         xLabel5.setDepends(new String[] {"entity.issueto"});
         xLabel5.setExpression("#{ entity.respcenter.name }");
+        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel5);
 
@@ -80,17 +91,18 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
 
         xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setCaptionWidth(100);
+        xFormPanel3.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel7.setCaption("Txn Type");
         xLabel7.setExpression("#{ entity.txntype }");
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel7);
 
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel6.setCaption("Status");
         xLabel6.setExpression("#{ entity.state }");
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel6);
 
@@ -112,13 +124,14 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
+        xDataTable2.setHandler("itemListHandler");
+        xDataTable2.setName("selectedItem"); // NOI18N
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item"}
@@ -233,8 +246,6 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.ComboBoxColumnHandler("itemTxnTypes", null, null)}
             })
         });
-        xDataTable2.setHandler("itemListHandler");
-        xDataTable2.setName("selectedItem"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -254,7 +265,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xDataTable2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(120, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -268,6 +279,7 @@ public class AFTxnEntryPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

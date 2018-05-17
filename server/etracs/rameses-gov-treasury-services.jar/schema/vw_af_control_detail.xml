@@ -1,10 +1,12 @@
 <schema>
 	<element tablename="vw_af_control_detail">
 		<field name="objid" primary="true"/> 
+		<field name="state" /> 
 		<field name="controlid" /> 
 		<field name="indexno" type="integer"/> 
+		<field name="aftxnid" /> 
+		<field name="aftxnitemid" /> 
 		<field name="refid" /> 
-		<field name="refitemid" /> 
 		<field name="refno" /> 
 		<field name="reftype" /> 
 		<field name="refdate" type="timestamp"/> 
@@ -35,17 +37,13 @@
 		<field name="saleprice" type="decimal"/> 
 		<field name="startseries" type="integer"/> 
 		<field name="endseries" type="integer"/> 
+		<field name="currentseries" type="integer"/> 
 		<field name="stubno" type="integer"/> 
 		<field name="prefix" /> 
 		<field name="suffix" /> 
 		<field name="cost" type="decimal"/> 
-		<field name="state" /> 
 		<field name="batchno" /> 
-
 		<field name="controlstate" /> 
-		<field name="startseries" /> 
-		<field name="endseries" /> 
-		<field name="currentseries" /> 
-		<field name="qtybalance" />
+		<field name="qtybalance" type="integer"/>
 	</element>
 </schema>

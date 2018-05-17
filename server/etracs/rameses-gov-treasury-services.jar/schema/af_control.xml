@@ -17,8 +17,8 @@
 		<field name="unit" caption="Unit" required="true" /> 
 		<field name="owner_objid" /> 
 		<field name="owner_name" caption="Issued To" searchable="true" indexed="true"/> 
-		<field name="prefix" caption="Prefix"/> 
-		<field name="suffix" caption="Suffix"/> 
+		<field name="prefix" caption="Prefix" indexed="true"/> 
+		<field name="suffix" caption="Suffix" indexed="true"/> 
 		<field name="dtfiled" required="true" type="date" caption="Date Filed" /> 
 		<field name="currentindexno" required="true" type="integer"/>
 
@@ -38,7 +38,7 @@
 			<key field="afid" target="objid" />
 		</complex>	
 
-		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,refno,refid,reftype,refdate,refitemid,prevdetailid,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
+		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,aftxnid,aftxnitemid,refid,refno,refdate,reftype,txntype,txndate,prevdetailid,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
 			<key field="currentdetailid" target="objid" />
 		</complex>
 

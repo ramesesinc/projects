@@ -18,9 +18,9 @@
 		</complex>
 
 		<field name="amount" required="true" type="decimal"/>
-		<field name="totalcash" required="true"  type="decimal"/>
-		<field name="totalcheck" required="true"  type="decimal"/>
-		<field name="totalcr" required="true"  type="decimal"/>
+		<field name="amountdeposited" required="true" type="decimal"/>
+
+		
 
 	</element>
 </schema>

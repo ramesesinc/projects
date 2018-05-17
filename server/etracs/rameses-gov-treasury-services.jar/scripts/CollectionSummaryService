@@ -1,0 +1,21 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+public class CollectionSummaryService  {
+
+	@ActiveDB('collectionsummary')
+	def adb		
+
+	@Env
+	def env
+
+	@ProxyMethod
+	public def getCollectionsByCount(receiptcount){
+		def params = [userid:env.USERID, receiptcount : receiptcount ] 
+		return adb.getCollectionsByCount(params)
+	}
+
+}

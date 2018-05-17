@@ -1,6 +1,6 @@
 <workunit>
    <invokers>
-         <invoker type="supervisor_approval" caption="Supervisor Approval11" target="popup" action="init"/>
+         <invoker type="supervisor_approval" caption="Supervisor Approval" target="popup" action="init"/>
    </invokers>
    <code class="com.rameses.enterprise.treasury.models.SupervisorApprovalModel" />
    <pages>

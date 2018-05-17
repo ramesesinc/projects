@@ -60,8 +60,7 @@ class CashReceiptVoidService  {
 		}
 
 		//update the void amount to its amount and amount to zero; 
-		ncPmtEm.find([receiptid: v.receiptid] ).update([ voidamount: '{amount}'  ]);
-		ncPmtEm.find([receiptid: v.receiptid] ).update([ amount: 0 ]);
+		ncPmtEm.find([receiptid: v.receiptid] ).update([ voidamount: '{amount}',  amount: 0  ]);
 
 		v.receipt = p.receipt;
 		return v;

@@ -7,7 +7,7 @@
 		<field name="state" required="true" defaultvalue="DRAFT"/> 
 		<field name="createdby_objid" required="true"/> 
 		<field name="createdby_name" required="true"/> 
-		 
+
 		<field name="depositdate" required="true" type="date"/>
 		<field name="dtcreated" required="true" type="timestamp"/>
 
@@ -20,6 +20,13 @@
 		<complex name="cashbreakdown" serializer="default" type="list"/> 
 		<field name="validation_refno" /> 
 		<field name="validation_refdate" /> 
+
+		<field name="deposittype" required="true"/>
+		<field name="checktype" /> 
+
+		<complex name="checks" ref="depositslip_check" jointype="one-to-many" required="false">
+			<key field="objid" target="depositslipid" />
+		</complex>	
 
 	</element>
 

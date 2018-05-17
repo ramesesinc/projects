@@ -1,17 +1,28 @@
-[initDepositSlipCheck]
-INSERT INTO depositslip_check
-(objid, depositslipid, checkid, amount )
-SELECT 
-MAX(ncp.refid) AS objid, ds.objid AS depositslipid, ncp.refid AS checkid, SUM(ncp.amount) AS amount
-FROM cashreceiptpayment_noncash ncp
-INNER JOIN cashreceipt cr ON cr.objid=ncp.receiptid
-INNER JOIN remittance r ON cr.remittanceid = r.objid 
-INNER JOIN collectionvoucher_fund cvf ON cvf.parentid=r.collectionvoucherid
-INNER JOIN depositslip ds ON ds.depositvoucherid = cvf.depositvoucherid 
-WHERE ds.objid=$P{depositslipid} AND ncp.fund_objid=$P{fundid}
-AND cr.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid = cr.objid )
-AND ncp.reftype = 'CHECK' AND NOT(ncp.refid IS NULL)
-GROUP BY ds.objid, ncp.refid
+[getAvailableChecks]
+SELECT a.refno, a.refid, bnk.name AS bank_name, bnk.deposittype, a.refdate, a.amount 
+FROM ( 
+  SELECT 
+  ncp.refno, ncp.refid, ncp.refdate, ncp.particulars, SUM(ncp.amount) AS amount
+  FROM cashreceiptpayment_noncash ncp
+  INNER JOIN cashreceipt cr ON cr.objid=ncp.receiptid
+  INNER JOIN remittance r ON cr.remittanceid = r.objid 
+  INNER JOIN collectionvoucher_fund cvf ON cvf.parentid=r.collectionvoucherid
+  WHERE cvf.depositvoucherid = $P{depositvoucherid} 
+  AND ncp.fund_objid=$P{fundid}
+  AND ncp.amount > 0 
+  AND ncp.reftype = 'CHECK'
+  AND cr.objid NOT IN (SELECT receiptid FROM cashreceipt_void WHERE receiptid = cr.objid )
+  AND ncp.refid NOT IN (
+      SELECT checkid FROM depositslip_check 
+      INNER JOIN depositslip  ON depositslip_check.depositslipid = depositslip.objid 
+      WHERE depositslip.depositvoucherid = cvf.depositvoucherid 
+  )
+  GROUP BY ncp.refno, ncp.refid, ncp.refdate, ncp.particulars
+) a
+INNER JOIN paymentcheck pc ON pc.objid = a.refid
+INNER JOIN bank bnk ON pc.bankid = bnk.objid
+
+
 
 [updateCheckTotal]
 UPDATE depositslip

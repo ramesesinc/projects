@@ -126,4 +126,12 @@ class RemittanceModel extends CrudFormModel {
         }
     }
     
+    def popupReports( inv ) {
+        def popupMenu = new PopupMenuOpener();
+        def list = Inv.lookupOpeners( inv.properties.category, [entity:entity] );
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }    
 }    

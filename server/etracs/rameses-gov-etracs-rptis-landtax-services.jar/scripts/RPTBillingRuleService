@@ -65,6 +65,7 @@ public class RPTBillingRuleService
 		request.facts = createShareFacts(bill)
 		request.actions = buildActions(request)
 		executeShareRules(request)
+		bill.rptledger.billitems = request.billitems
 		return bill.shares 
 	}
 

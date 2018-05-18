@@ -135,14 +135,19 @@ class RPTReceiptService
 				paidinfo.nextbilldate = null 
 				em_rptledger.find([objid:pmt.refid]).update(paidinfo)
 
-				def bill = billSvc.initBill()
-				bill.taxpayer = ledger.taxpayer 
-				bill.billto = ledger.taxpayer 
-				bill.ledgers = [ledger]
-				billSvc.generateBill(bill)
-
 				//void payment
 				em_rptpayment.find([objid:pmt.objid]).update([voided:true])
+
+				try{
+					def bill = billSvc.initBill()
+					bill.taxpayer = ledger.taxpayer 
+					bill.billto = ledger.taxpayer 
+					bill.ledgers = [ledger]
+					billSvc.generateBill(bill)
+				}
+				catch(e){
+					//ignore 
+				}
 			}
 		}
 	}	

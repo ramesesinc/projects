@@ -3,7 +3,6 @@ SELECT
 	f.objid as faasid,
 	f.*,
 	rp.pin,
-	rp.ry,
 	rp.claimno,
 	rp.section,
 	rp.parcel,

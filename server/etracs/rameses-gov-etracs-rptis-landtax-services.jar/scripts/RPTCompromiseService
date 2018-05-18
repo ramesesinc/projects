@@ -217,93 +217,17 @@ class RPTCompromiseService {
 		utilSvc.required('Compromise startyear', compromise.startyear)
 		utilSvc.required('Compromise endyear', compromise.endyear)
 
-		def lastpaiditem = em_compromise.findLastPaidCompromiseItem(compromise)
-		if (!lastpaiditem){
-			lastpaiditem = [
-				year 			: compromise.startyear - 1,
-				qtr             : 1,
-				basicpaid 		: 0.0,
-				basicintpaid	: 0.0,
-				sefpaid 		: 0.0,
-				sefintpaid 		: 0.0,
-				fullypaid 		: 1,
-			]
+		em_compromise.getUnpaidLedgerItems(compromise).each{
+			em_rptledger_item.create(it)
 		}
 
-		compromise.lastyearpaid = lastpaiditem.year 
-		compromise.lastqtrpaid = lastpaiditem.qtr 
-		compromise.fromyear = lastpaiditem.year + 1
-		compromise.toyear = compromise.endyear 
-		updatePartialledItems(compromise)
-		//TODO:
-		//em.resetLedgerItemPaidInfo(compromise)
-		//em.resetLedgerItemQtrlyPaidInfo(compromise)
-		//em.setDefaultedLedger(compromise)
-		//em.setDefaultedCompromise(compromise)
 		compromise.state = STATE_DEFAULTED
+		em_rptledger.find([objid: compromise.rptledgerid]).update([undercompromise: false])
+		em_compromise.find([objid:compromise.objid]).update([state:compromise.state])
+		return compromise 
+
 		return compromise 
 	}	
-
-	void updatePartialledItems(compromise){
-		def firstunpaiditem = em_compromise.findFirstUnpaidCompromiseItem(compromise)
-		if (!firstunpaiditem){
-			return;
-		}
-		
-		compromise.partialledyear = firstunpaiditem.year 
-
-		def partialleditems = em_compromise.getPartialledQtrlyItems(compromise)
-		partialleditems.each{
-			if (it.qtr == firstunpaiditem.qtr){
-				it.basicpaid = firstunpaiditem.basicpaid
-				it.basicintpaid = firstunpaiditem.basicintpaid
-				it.basicdisctaken = 0.0
-				it.basicidlepaid = firstunpaiditem.basicidlepaid
-				it.basicidledisctaken = 0.0
-				it.basicidleintpaid = firstunpaiditem.basicidleintpaid
-				it.sefpaid = firstunpaiditem.sefpaid
-				it.sefintpaid = firstunpaiditem.sefintpaid
-				it.sefdisctaken = 0.0
-				it.firecodepaid = firstunpaiditem.firecodepaid
-				it.shpaid = firstunpaiditem.shpaid
-				it.shintpaid = firstunpaiditem.shintpaid
-				it.shdisctaken = 0.0
-				it.partialled = 1
-				it.fullypaid = 0
-				em_rptledger_item_qtrly.update(it)
-			}
-			else if (it.qtr > firstunpaiditem.qtr){
-				it.basicpaid = 0.0
-				it.basicintpaid = 0.0
-				it.basicdisctaken = 0.0
-				it.basicidlepaid = 0.0
-				it.basicidledisctaken = 0.0
-				it.basicidleintpaid = 0.0
-				it.sefpaid = 0.0
-				it.sefintpaid = 0.0
-				it.sefdisctaken = 0.0
-				it.firecodepaid = 0.0
-				it.shpaid = 0.0
-				it.shintpaid = 0.0
-				it.shdisctaken = 0.0
-				it.partialled = 0
-				it.fullypaid = 0
-				em_rptledger_item_qtrly.update(it)
-			}
-		}
-
-		def ledgeritem = em_compromise.findLedgerItem(compromise)
-		if (ledgeritem){
-			ledgeritem.basicpaid = partialleditems.basicpaid.sum()
-			ledgeritem.basicidlepaid = partialleditems.basicidlepaid.sum()
-			ledgeritem.sefpaid = partialleditems.sefpaid.sum()
-			ledgeritem.firecodepaid = partialleditems.firecodepaid.sum()
-			ledgeritem.shpaid = partialleditems.shpaid.sum()
-			ledgeritem.fullypaid = 0
-			em_rptledger_item.update(ledgeritem)
-		}
-	}
-
 
 	void updateForApprovalIfPaymentComplied( compromise ){
 		def complied = true 

@@ -363,7 +363,7 @@ class TDReportService
 
 	void buildOrdinanceInfo(td){
 		def ordinance = adb.findOrdinanceInfo(td)
-		if (!ordinance.ordinanceno){
+		if (!ordinance || !ordinance.ordinanceno){
 			def type = 'Land'
 			if (td.rputype == 'bldg')  type = 'Building'
 			if (td.rputype == 'mach')  type = 'Machinery'

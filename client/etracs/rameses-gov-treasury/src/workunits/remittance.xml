@@ -19,6 +19,9 @@
         <!-- Buttons -->
         <invoker type="formActions" caption="Submit for Liquidation" 
                  action="remit" visibleWhen="#{ entity.state == 'DRAFT' }"/>
+        
+        <invoker type="formActions" caption="Reports" name="popupReports" 
+                 visibleWhen="#{entity.state != 'DRAFT' }" category="remittance:reports" />        
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />

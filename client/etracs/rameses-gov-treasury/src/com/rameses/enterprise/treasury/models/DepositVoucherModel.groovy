@@ -15,9 +15,29 @@ class DepositVoucherModel extends CrudFormModel {
     @Service("DepositSlipService")
     def depositSlipSvc;  
     
-    def selectedDepositSlip;
-    def selectedItem;
+    
 
+    def collectionListModel = [
+        fetchList: { o->
+            def m = [_schemaname: 'collectionvoucher_fund' ];
+            m.where = [" depositvoucherid = :depositid", [depositid: entity.objid]];
+            return queryService.getList( m );
+        },
+        onOpenItem: {o,col->
+            def op = Inv.lookupOpener("collectionvoucher_fund:open", [entity: o] );
+            op.target = "popup";
+            return op;
+        }
+    ] as BasicListModel;
+        
+    void updateVoucher(def amt ) {
+        entity.amountdeposited = amt;       
+        depositSlipList.reload();
+        binding.refresh("entity.amountdeposited");
+    }
+    
+    def selectedItem;
+    
     def depositSlipList = [
         fetchList: { o->
             def p = [depositvoucherid:entity.objid, fundid: entity.fund.objid ];
@@ -31,69 +51,54 @@ class DepositVoucherModel extends CrudFormModel {
         }
     ] as BasicListModel;
 
-    void reloadList() {
-        depositSlipList.reload();
-    }
-
-    
     def viewDepositSlip() {
-        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        if(!selectedItem) throw new Exception("Please select a deposit slip");
         def p = [:];
-        p.entity = selectedDepositSlip;
-        p.handler = {
-            open();
-            binding.refresh();
-        }
+        p.entity = selectedItem;
         def op = Inv.lookupOpener("depositslip:open", p );
         op.target = "popup";
         return op;
     }
     
     def addDepositSlip() {
+        if( entity.amount == entity.amountdeposited )
+            throw new Exception("No amount to deposit");
         def p = [depositvoucher: entity, fundid: entity.fund.objid ];
-        p.handler = {
-            open();
-            binding.refresh();
-        }
         return Inv.lookupOpener("depositslip:create", p );
     }
     
     void removeDepositSlip() {
-        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        if(selectedDepositSlip.state == 'VALIDATED' )
+        if(!selectedItem) throw new Exception("Please select a deposit slip");
+        if(selectedItem.state == 'VALIDATED' )
             throw new Exception("Cannot delete this because it is already validated");
-        depositSlipSvc.removeDepositSlip( selectedDepositSlip );
-        open();
-        binding.refresh();
+        def r = depositSlipSvc.removeDepositSlip( selectedItem );
+        updateVoucher( r.amountdeposited );
     }
     
+    public void approveDepositSlip() {
+        if(!selectedItem) throw new Exception("Please select an item");
+        if(! MsgBox.confirm("You are about to approve this deposit slip. This cannot be edited anymore. Proceed?")) return;
+        depositSlipSvc.approveDepositSlip( [objid: selectedItem.objid ] );
+        depositSlipList.reload();
+    }
     
-    def validateDeposit() {
-        if( !selectedDepositSlip ) throw new Exception("Please choose a bank deposit entry");
-        if( selectedDepositSlip.totalcash + selectedDepositSlip.totalcheck )
+    def validateDepositSlip() {
+        if( !selectedItem ) throw new Exception("Please choose a bank deposit entry");
+        if( selectedItem.totalcash + selectedItem.totalcheck )
             throw new Exception("Please make sure the amount is equal to total cash + total check");
         def h = { o->
-            def m = [_schemaname: "depositslip"];
-            m.findBy = [objid: selectedDepositSlip.objid ];
+            def m = [objid: selectedItem.objid ];
             m.validation = o;
-            m.update( m );
-            bankDepositList.reload();
+            depositSlipSvc.validateDepositSlip( m );
+            depositSlipList.reload();
         }    
         return Inv.lookupOpener("deposit_validation", [ handler: h ] );
     }
     
-     def collectionListModel = [
-        fetchList: { o->
-            def m = [_schemaname: 'collectionvoucher_fund' ];
-            m.where = [" depositvoucherid = :depositid", [depositid: entity.objid]];
-            return queryService.getList( m );
-        },
-        onOpenItem: {o,col->
-            def op = Inv.lookupOpener("collectionvoucher_fund:open", [entity: o] );
-            op.target = "popup";
-            return op;
-        }
-    ] as BasicListModel;
+    public void printDepositSlip() {
+        if(!selectedItem) throw new Exception("Please select an item");
+        MsgBox.alert('print slip');
+    }
     
     public void post() {
         if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;

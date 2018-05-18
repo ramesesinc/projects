@@ -42,23 +42,29 @@ class DepositSlipInitialModel {
        checkList = depositSlipSvc.getAvailableChecks( [depositvoucherid: depositvoucher.objid, fundid: fundid ] );
     } 
     
+    
     def cashBreakdownHandler = { o->
         entity.totalcash = o.total;
-        binding.refresh("entity.totalcash|balance");
+        binding.refresh("entity.totalcash|balance|total");
     }
     
     def getBalance() {
         return entity.amount - entity.totalcheck - entity.totalcash;
     }
     
+    def getTotal() {
+        return entity.totalcheck + entity.totalcash;
+    }
+    
+    
     def save() {
-        if( balance > 0 )
+        if( balance != 0 )
             throw new Exception("Please ensure that there are no balances remaining" );
         if( entity.amount > limit ) throw new Exception("Total amount must be less than "+limit);
         
-        entity.checks = checkList.findAll{ it.selected == true }.collect{ [amount:it.amount, checkid: it.refid] };
-        depositSlipSvc.create( entity );
-        if(caller)caller.reloadList();
+        entity.checks = checkList.findAll{ it.selected == true }.collect{ [amount:it.amount, checkid: it.refid, deposittype: it.deposittype] };
+        def r = depositSlipSvc.create( entity );
+        if(caller)caller.updateVoucher(r.amountdeposited);
         return "_close";
     }
     
@@ -87,7 +93,7 @@ class DepositSlipInitialModel {
             else {
                 entity.totalcheck -= o.amount;
             }
-            binding.refresh("entity.totalcheck|balance")
+            binding.refresh("entity.totalcash|balance|total");
         }
     ] as EditorListModel;     
     
@@ -95,13 +101,13 @@ class DepositSlipInitialModel {
     void selectAll() {
         checkList.each {it.selected = true };
         entity.totalcheck = checkList.sum{ it.amount };
-        binding.refresh("entity.totalcheck|balance")
+        binding.refresh("entity.totalcash|balance|total");
     }
     
     void deselectAll() {
         checkList.each {it.selected = false };
         entity.totalcheck = 0;
-        binding.refresh("entity.totalcheck|balance")
+        binding.refresh("entity.totalcash|balance|total");
     }
     
     

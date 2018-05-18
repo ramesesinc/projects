@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/ServiceLookupController.xml" tag="lookup">
    <invokers>
-         <invoker type="collectiongroup:lookup" caption="Lookup Collection Group" />
+         <invoker xtype="collectiongroup:lookup" caption="Lookup Collection Group" />
    </invokers>
    <code>
        <![CDATA[

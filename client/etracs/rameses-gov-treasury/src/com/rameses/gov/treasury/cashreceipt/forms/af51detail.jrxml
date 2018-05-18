@@ -3,7 +3,8 @@
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
 		 name="af51detail"
-		 columnCount="1"
+
+		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
 		 pageWidth="288"
@@ -36,7 +37,7 @@
 
 		<background>
 			<band height="104"  isSplitAllowed="true" >
-				<printWhenExpression><![CDATA[new Boolean( $F{voided}.intValue() == 1 )]]></printWhenExpression>
+				<printWhenExpression><![CDATA[($F{voided}.toString() == "1")]]></printWhenExpression>
 				<staticText>
 					<reportElement
 						x="0"

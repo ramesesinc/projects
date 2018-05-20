@@ -46,6 +46,7 @@ class SignVerifySubmitModel  {
     def showSignViewer() {
         signature = [:];
         loadDigitalSignatureStatus();
+        digitalsigactive = true;
         if (digitalsigactive) {
             SigIdViewer.open(model);   
         }

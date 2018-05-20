@@ -14,6 +14,7 @@ class CollectionVoucherInitialModel extends CrudListModel {
     
     def controldate;
     def datesList;
+    def selectedRemittance;
     
     def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
     
@@ -48,12 +49,20 @@ class CollectionVoucherInitialModel extends CrudListModel {
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("remittance:preview", [entity: o] );
-            op.target = "popup";
-            Modal.show( op );
-            remittanceListHandler.reload();
+            viewRemittance();
         }
     ] as BasicListModel;
+    
+    void viewRemittance() {
+        if(!selectedRemittance) throw new Exception("Please select a remittance");
+        def h = { 
+            buildDatesList();
+            remittanceListHandler.reload();
+        };
+        def op = Inv.lookupOpener("remittance:preview", [entity: selectedRemittance, onAccept: h, onReject: h ]);
+        op.target = "popup";
+        Modal.show( op );
+    }
     
     def submitForLiquidation() {
         def p = [controldate: controldate]
@@ -61,6 +70,7 @@ class CollectionVoucherInitialModel extends CrudListModel {
         remittanceListHandler.reload();
         def op = Inv.lookupOpener( "collectionvoucher:open", [entity: p ]);
         op.target = 'self';
+        buildDatesList();
         return op;
     }
 

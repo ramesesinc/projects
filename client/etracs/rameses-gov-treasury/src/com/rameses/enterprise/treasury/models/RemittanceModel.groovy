@@ -104,21 +104,16 @@ class RemittanceModel extends CrudFormModel {
     
     //for printing
     def getPrintFormData() { 
-        def rdata = remSvc.getReportData([ objid: entity.objid ]); 
-        if ( rdata ) { 
-            rdata.putAll( entity ); 
-            rdata.totalnoncash = rdata.totalcheck + rdata.totalcr;
-            rdata.remittancedate = rdata.controldate;
-            rdata.txnno = rdata.controlno; 
-        }         
-        return rdata;
+        return remSvc.getReportData([ objid: entity.objid ]);
     } 
     
+    /*
     def openPreview() {
         println 'open preview';
         open();
         return preview("remittance:form_report");
     }
+    */
     
     void remit() {
         if ( MsgBox.confirm('You are about to submit this for liquidation. Proceed?')) {

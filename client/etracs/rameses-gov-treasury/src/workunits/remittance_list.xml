@@ -8,5 +8,15 @@
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  orderBy="controlno"
                  action="init" target="window" index="10"/>
+        
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="View Remittances" 
+                 windowTitle="Remittances By Collector"
+                 formTitle="Remittances By Collector"
+                 cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
+                 orderBy="controlno"
+                 role="COLLECTOR"
+                 customFilter="collector.objid = :userid"
+                 action="init" target="window" index="250"/>
     </invokers>
 </workunit>

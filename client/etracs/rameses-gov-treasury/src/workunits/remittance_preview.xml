@@ -1,38 +1,24 @@
 <workunit extends="workunits/form_report.xml">
     <invokers>
-        <invoker type="remittance:form_report" caption="Remittance" action="view" target="popup"
-                height="800" width="1024"/>
+
+        <invoker type="remittance:preview" 
+                 caption="Remittance" 
+                 windowTitle="#{entity.controlno}"
+                 formTitle="Remittance #{entity.controlno}"
+                 formId="#{entity.objid}"
+                 action="view" target="popup" 
+                 index="10"/>        
+        
+        <!--
+        <invoker type="remittance:form_report" caption="Remittance" action="view" target="popup" 
+                height="1200" width="1024"/>
+        -->
         <invoker type="formActions" caption="Accept" action="accept" index="100" visibleWhen="#{ reportData.state == 'OPEN' }"/>
         <invoker type="formActions" caption="Send Back" action="sendBack" index="100" visibleWhen="#{ reportData.state == 'OPEN' }"/>
+        <invoker type="formActions" caption="Affix Collector Signature" action="signCollector" 
+                 index="100" visibleWhen="#{ reportData.state != 'OPEN' &amp;&amp; reportData.collector.signature == null }"/>
+        <invoker type="formActions" caption="Affix Approver Signature" action="signApprover" 
+                 index="100" visibleWhen="#{ reportData.state != 'OPEN' &amp;&amp; reportData.liquidatingofficer.signature == null }"/>
     </invokers>
-    <code>
-        import com.rameses.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-       
-        //This is not a standlone report. It is called from RemittanceModel
-        class RemittanceReport extends com.rameses.seti2.models.SimpleFormReportModel {
-            
-            @Service("RemittanceService")
-            def service;
-        
-            @Caller
-            def caller;
-        
-            def accept() {
-                service.acceptForLiquidation( [objid: reportData.objid ] );
-                return "_close"
-            }
-        
-            def sendBack() {
-                if ( MsgBox.confirm('You are about to change the transaction status to DRAFT. Proceed?')) {
-                    service.sendBack([ objid: reportData.objid ]); 
-                    return '_close'; 
-                } 
-                return null; 
-            } 
-        }
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.RemittanceApprovalModel" />
 </workunit>  

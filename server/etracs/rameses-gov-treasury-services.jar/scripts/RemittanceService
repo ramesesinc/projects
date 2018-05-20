@@ -169,4 +169,16 @@ class RemittanceService  {
 	public def getReportData( params ) { 
 		return params; 
 	} 
+
+	@ProxyMethod
+	public void updateCollectorSignature( def o ) {
+		remEm.find( [objid: o.objid] ).update( [collector: [ signature: o.signature ]] );
+	}
+
+	@ProxyMethod
+	public void updateApproverSignature( def o ) {
+		remEm.find( [objid: o.objid] ).update( [liquidatingofficer: [ signature: o.signature ]] );
+	}
+
+
 }

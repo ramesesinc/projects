@@ -9,13 +9,6 @@
                  action="open" target="window" 
                  index="10"/>
         
-        <invoker type="remittance:preview" 
-                 caption="Remittance" 
-                 windowTitle="#{entity.controlno}"
-                 formTitle="Remittance #{entity.controlno}"
-                 formId="#{entity.objid}"
-                 action="openPreview" target="popup" 
-                 index="10"/>
         <!-- Buttons -->
         <invoker type="formActions" caption="Submit for Liquidation" 
                  action="remit" visibleWhen="#{ entity.state == 'DRAFT' }"/>

@@ -83,18 +83,13 @@ public class BasicCashReceipt extends AbstractCashReceipt {
             selectedItem.item = o;
             selectedItem.amount = o.remove("amount");
             selectedItem.remarks = o.remove("remarks");
-            /*
-            selectedItem.amount = o.defaultvalue;
-            if(o.valuetype == "FIXEDUNIT") {
-                def m = MsgBox.prompt( "Enter qty" );
-                if( !m || m == "null" ) throw new Exception("Please provide qty"); 
-                if( !m.isInteger() ) throw new Exception("Qty must be numeric"); 
-                selectedItem.amount = Integer.parseInt( m )*o.defaultvalue; 
-                selectedItem.remarks = "qty@"+Integer.parseInt( m ); 
-            } 
-            */
         } 
         return InvokerUtil.lookupOpener("cashreceiptitem:lookup",p );
+    }
+    
+    void clearItems() {
+        entity.items.clear();
+        itemListModel.reload();
     }
     
     def getCollectionGroupHandler() {

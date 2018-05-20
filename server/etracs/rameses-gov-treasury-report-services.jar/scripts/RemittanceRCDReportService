@@ -1,4 +1,6 @@
 import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.util.*;
 
 class RCDRemittanceReportService {
 
@@ -17,10 +19,8 @@ class RCDRemittanceReportService {
 	@ProxyMethod 
 	def getReport( param ) { 
 		def result = [:]; 		
-		def em = rem_em.find([ objid: param.objid ]);
-		em.select('objid,controlno,controldate,dtposted,cashbreakdown,collector.*,liquidatingofficer.*'); 
-
-		def reminfo = em.first(); 
+		
+		def reminfo = rem_em.find([ objid: param.objid ]).first(); 
 		if ( !reminfo ) return result; 
 
 		result.putAll( reminfo ); 
@@ -63,6 +63,14 @@ class RCDRemittanceReportService {
 		buildAF( result.remittedforms ); 
 		buildAF( result.nonserialremittances ); 
 		resolveCompatibility( result ); 
+
+		Base64Cipher cipher = new Base64Cipher();
+		if( reminfo.collector?.signature !=null ) {
+			result.collector.signature = cipher.decode( reminfo.collector.signature );
+		}
+		if(reminfo.liquidatingofficer?.signature) {
+			result.liquidatingofficer.signature =  cipher.decode(reminfo.liquidatingofficer.signature)
+		}
 		return result; 
 	} 
 

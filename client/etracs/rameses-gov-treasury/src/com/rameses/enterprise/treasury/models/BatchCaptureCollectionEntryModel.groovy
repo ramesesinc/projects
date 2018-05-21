@@ -112,11 +112,7 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
             throw new Exception('Your check amount must be equal to total amount'); 
         } 
 
-        if ( entity.amount == entity.totalnoncash ) {
-            entity.totalcash = 0.0; 
-        } else {
-            entity.totalcash = entity.amount - entity.totalnoncash;     
-        }
+        entity.totalcash = entity.amount - entity.totalnoncash;     
     } 
 
     void validateCheckPayment() { 
@@ -183,11 +179,7 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
         } 
 
         validateCheckPayment();
-        if ( entity.totalnoncash > 0 ) {
-            entity.totalcash = entity.amount - entity.totalnoncash;
-        } else { 
-            entity.totalcash = entity.totalnoncash = 0.0; 
-        }
+        entity.totalcash = entity.amount - entity.totalnoncash;
     }
     
     protected boolean isShowConfirm() { 

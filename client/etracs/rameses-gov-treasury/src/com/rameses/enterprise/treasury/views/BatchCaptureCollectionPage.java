@@ -328,6 +328,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         jPanel4.add(jLabel3);
 
+        xNumberField3.setDepends(new String[] {"totals"});
         xNumberField3.setName("entity.totalcash"); // NOI18N
         xNumberField3.setEnabled(false);
         xNumberField3.setFieldType(BigDecimal.class);
@@ -343,6 +344,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         jLabel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         jPanel4.add(jLabel2);
 
+        xNumberField2.setDepends(new String[] {"totals"});
         xNumberField2.setName("entity.totalnoncash"); // NOI18N
         xNumberField2.setEnabled(false);
         xNumberField2.setFieldType(BigDecimal.class);
@@ -358,6 +360,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         jPanel4.add(jLabel1);
 
+        xNumberField1.setDepends(new String[] {"totals"});
         xNumberField1.setName("entity.totalamount"); // NOI18N
         xNumberField1.setEnabled(false);
         xNumberField1.setFieldType(BigDecimal.class);

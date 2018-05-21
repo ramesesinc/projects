@@ -52,9 +52,9 @@ class BatchCaptureCollectionInterceptor {
 		if ( mode == 'create' ) header.startseries += 1; 
 
 		bes.startseries = header.startseries; 
-		bes.totalcash = ( bes.totalcash ? bes.totalcash : 0.0 ); 
 		bes.totalnoncash = ( bes.totalnoncash ? bes.totalnoncash : 0.0 ); 
-		bes.totalamount = bes.totalcash + bes.totalnoncash; 
+		bes.totalamount = ( bes.totalamount ? bes.totalamount : 0.0 ); 
+		bes.totalcash = bes.totalamount - bes.totalnoncash; 
 		bc_db.find([ objid: item.parentid ]).update( bes ); 
 
 		def result = evt.result; 

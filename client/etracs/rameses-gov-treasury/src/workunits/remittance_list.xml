@@ -2,15 +2,22 @@
           schemaName="remittance" allowCreate="false">
     <invokers>
         <invoker folderid="menucategory/treasury/remittance" 
-                 caption="View Remittances" action="init"  
+                 caption="View Remittances" 
                  windowTitle="Remittances" formTitle="Remittances"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
-                 hiddenCols="collector.objid,liquidatingofficer.objid" 
-                 orderBy="controlno" 
-                 target="window" index="10">
-           <action role="COLLECTOR" tag="COLLECTOR"/>
-           <action role="LIQUIDATING_OFFICER,CASHIER,SHARED" tag="ALL"/>
-        </invoker>
+                 hiddenCols="collector.objid,liquidatingofficer.objid"
+                 orderBy="controlno"
+                 role="LIQUIDATING_OFFICER,CASHIER,SHARED"
+                 action="init" target="window" index="10" tag="ALL"/>
+
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="View Remittances" 
+                 windowTitle="Remittances By Collector"
+                 formTitle="Remittances By Collector"
+                 cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
+                 orderBy="controlno"
+                 role="COLLECTOR"
+                 action="init" target="window" index="250" tag="COLLECTOR"/>
     </invokers>
     
    <code class="com.rameses.enterprise.treasury.models.RemittanceListModel" />    

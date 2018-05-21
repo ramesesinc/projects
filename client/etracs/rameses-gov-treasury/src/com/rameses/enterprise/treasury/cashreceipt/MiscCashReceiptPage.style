@@ -1,3 +1,3 @@
-"entity.*|collectiongroup|selectedItem|viewSharing" [ _paymentorderid != null ]{
+"entity.*|collectiongroup|selectedItem|viewSharing|clearItems" [ _paymentorderid != null ]{
     enabled:false;
 }

@@ -1,8 +1,8 @@
 <workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="obo" cols="2">
     <invokers>
         <invoker type="home.action" 
-                 caption="Waterworks"  icon="home/icons/waterworks.png"
-                 visibleWhen="#{self.hasChildren('menucategory/waterworks')==true}" 
+                 caption="OBO"  icon="home/icons/obo.png"
+                 visibleWhen="#{self.hasChildren('menucategory/obo')==true}" 
                  index="10" action="init"/>
         
     </invokers> 

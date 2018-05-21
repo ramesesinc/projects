@@ -15,7 +15,6 @@ class RemittanceListModel extends CrudListModel {
                 [ collectorid: OsirisContext.env.USERID ] 
             ]; 
         }
-        
         return null; 
     }
     

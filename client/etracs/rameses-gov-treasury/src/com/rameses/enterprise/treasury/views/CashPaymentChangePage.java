@@ -32,46 +32,66 @@ public class CashPaymentChangePage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        jLabel1 = new javax.swing.JLabel();
 
         xFormPanel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xFormPanel1.setCaptionWidth(150);
 
-        xDecimalField1.setCaption("Cash Tendered");
+        xDecimalField1.setCaption("Amount Due");
+        xDecimalField1.setName("entity.amount"); // NOI18N
         xDecimalField1.setEnabled(false);
         xDecimalField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xDecimalField1.setName("cash"); // NOI18N
         xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 27));
         xFormPanel1.add(xDecimalField1);
 
-        xDecimalField2.setEditable(false);
+        xDecimalField3.setCaption("Cash Tendered");
+        xDecimalField3.setName("cash"); // NOI18N
+        xDecimalField3.setEnabled(false);
+        xDecimalField3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xDecimalField3.setPreferredSize(new java.awt.Dimension(0, 27));
+        xFormPanel1.add(xDecimalField3);
+
         xDecimalField2.setCaption("Change");
         xDecimalField2.setDepends(new String[] {"cash"});
-        xDecimalField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        xDecimalField2.setEditable(false);
         xDecimalField2.setName("change"); // NOI18N
+        xDecimalField2.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xDecimalField2.setEnabled(false);
+        xDecimalField2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         xDecimalField2.setPreferredSize(new java.awt.Dimension(0, 27));
         xFormPanel1.add(xDecimalField2);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setText("Please prepare cash change");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(153, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(jLabel1)
+                .addGap(41, 41, 41)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(91, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
+    private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -90,6 +90,8 @@ class RemittanceService  {
 			u.totalcr = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND NOT(reftype = 'CHECK') ", ppp ).val();
 			if(!u.totalcr ) u.totalcr = 0;
 
+			u.totalcash = u.amount - u.totalcheck - u.totalcr;
+
 			rfEm.find( [objid: it.objid ] ).update( u );
 		}
 
@@ -106,21 +108,24 @@ class RemittanceService  {
 		if(!m.remittanceid ) throw new Exception("remittanceid is required");
 		if(!m.totalcash ) throw new Exception("totalcash is required");
 
+		if( m.cashbreakdown.sum{it.amount} != m.totalcash )
+			throw new Exception("total cash is not equal to the total breakdown");
+
 		def bd = m.cashbreakdown.findAll{ it.qty > 0 };
-		rfEm.find( [objid: m.objid] ).update( [cashbreakdown: bd, totalcash: m.totalcash ] );
+		rfEm.find( [objid: m.objid] ).update( [cashbreakdown: bd ] );
 
 		def list = rfEm.select("cashbreakdown").find( [remittanceid: m.remittanceid ] ).list()*.cashbreakdown;
 		bd = cashBreakdownSvc.summarize( list );
 
-		def total = rfEm.find([ remittanceid: m.remittanceid ]).select('totalcash:{SUM(totalcash)}').val();
-		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd, totalcash: total ] );
+		remEm.find( [objid: m.remittanceid ] ).update( [cashbreakdown: bd ] );
 	}	
 
 	@ProxyMethod
 	public def submitForLiquidation( def o ) {
 		//check total breakdown before submitting
-		def z = rfEm.select("objid").find([ remittanceid: o.objid ]).where(" (amount - (totalcash+totalcheck+totalcr)) > 0 ").first();
-		if ( z ) throw new Exception("Please ensure that all balances must be equal to 0. Please check there may be items that do not have a cash breakdown");
+		def r = remEm.find( [objid: o.objid ]).select("cashbreakdown,totalcash").first();
+		if( r.cashbreakdown.sum{it.amount} != r.totalcash )
+			throw new Exception("Total cash breakdown must equal total cash");
 
 		def m = [ state: 'OPEN' ];	
 		m.dtposted = dateSvc.getServerDate(); 
@@ -169,4 +174,16 @@ class RemittanceService  {
 	public def getReportData( params ) { 
 		return params; 
 	} 
+
+	@ProxyMethod
+	public void updateCollectorSignature( def o ) {
+		remEm.find( [objid: o.objid] ).update( [collector: [ signature: o.signature ]] );
+	}
+
+	@ProxyMethod
+	public void updateApproverSignature( def o ) {
+		remEm.find( [objid: o.objid] ).update( [liquidatingofficer: [ signature: o.signature ]] );
+	}
+
+
 }

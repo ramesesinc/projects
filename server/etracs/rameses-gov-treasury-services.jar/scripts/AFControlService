@@ -59,6 +59,9 @@ class AFControlService  {
 		else {
 			arr << "respcenter.objid IS NULL";
 		}
+
+		arr << "currentseries <= endseries";
+
 		def afc = em.where( arr.join(" AND "), p ).first();
 		if(!afc ) throw new Warning("select-afcontrol");
 

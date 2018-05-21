@@ -71,10 +71,9 @@ class RemittanceModel extends CrudFormModel {
     
     def updateCashByFund() {
         if(!selectedFund) throw new Exception("Please select a fund entry");
-        if(selectedFund.balance == 0 && selectedFund.totalcash==0 ) 
+        if(selectedFund.totalcash == 0  ) 
             throw new Exception("There is no cash remittance for selected item");
-        def total = selectedFund.amount - (selectedFund.totalcheck + selectedFund.totalcr);
-        def p = [total: total, cashbreakdown: entity.cashbreakdown ];
+        def p = [total: selectedFund.totalcash, cashbreakdown: selectedFund.cashbreakdown ];
         p.handler = { o->
             def u = [objid:selectedFund.objid, remittanceid: entity.objid, totalcash: o.total, cashbreakdown: o.cashbreakdown ]; 
             remSvc.updateCash( u );

@@ -29,7 +29,7 @@ class RCDRemittanceReportService {
 		def p = [ remittanceid: param.objid ]; 
 		if ( param.fund?.objid ) { 
 			p.fundid = param.fund.objid; 
-			em = remfund_em.find([ remittanceid: p.remittanceid ]);
+			def em = remfund_em.find([ remittanceid: p.remittanceid ]);
 			em.where('fund.objid = :fundid', [ fundid: p.fundid ]);
 			em.select('controlno,amount,totalcash,totalcheck,totalcr,cashbreakdown,fund.*'); 
 			def o = em.first(); 

@@ -1,6 +1,6 @@
 <workunit schemaName="eor_remittance">
     <invokers>
-        <invoker folderid="menucategory/treasury/epayment" 
+        <invoker folderid="menucategory/treasury/epayment" role="MASTER" 
             caption="Prepare Remittance" 
             action="create"
             index="2"

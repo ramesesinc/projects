@@ -34,6 +34,7 @@ class CashReceiptItemLookupModel extends CrudLookupModel {
             s << "fund.objid = :fundid";
             parm.fundid = fundid;
         }
+        s << "type IN ('REVENUE','NONREVENUE')";
         return [s.join(" AND "), parm ];
     }
     

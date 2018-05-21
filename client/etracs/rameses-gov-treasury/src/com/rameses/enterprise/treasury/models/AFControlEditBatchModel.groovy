@@ -23,11 +23,11 @@ class AFControlEditBatchModel  {
     //the document txntype
     def txntype;
     
-    def refitemid;
+    def aftxnitemid;
     
     void init() {
         def m = [_schemaname:'vw_af_control_detail'];
-        m.findBy = [refitemid: refitemid];
+        m.findBy = [ aftxnitemid: aftxnitemid ];
         m.orderBy = "stubno";
         m.select = "objid,stubno,batchno,controlid,startseries,endseries,currentseries,qtybalance,qtyissued"
         list = qrySvc.getList(m); 

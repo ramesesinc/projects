@@ -74,6 +74,9 @@ class RemittanceInterceptor {
 		def o = rem_db.find( m ).select('objid,state').first();
 		if ( !o ) return; 
 
+		if(o.state!='DRAFT') 
+			throw new Exception("Cannot remove remittance. It is not in DRAFT state");
+
 		// 
 		// initiate update on state field to forcely locked the record 
 		// 

@@ -27,8 +27,8 @@ class AFControlListInterceptor {
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'af_control' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
-
 		if( !o.node?.state ) return;
+
 
 		//o.debug = true;
 		def str = "";

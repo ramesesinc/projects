@@ -10,6 +10,9 @@
 		<field name="dtfiled" required="true" type="date"/>
 		<field name="user_objid" required="true"/>
 		<field name="user_name" required="true"/>
+		<field name="issuefrom_objid" />
+		<field name="issuefrom_name" />
+		<field name="issuefrom_title" />	
 		<field name="issueto_objid" />
 		<field name="issueto_name" />
 		<field name="issueto_title" />	

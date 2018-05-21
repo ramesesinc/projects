@@ -56,7 +56,7 @@ class AFControlAddBatchModel  {
     
     void init() {
         entry = [:];
-        entry.refitemid = refitem.objid;
+        entry.aftxnitemid = refitem.objid;
         entry.qty = refitem.qty - refitem.qtyserved;
     }
 

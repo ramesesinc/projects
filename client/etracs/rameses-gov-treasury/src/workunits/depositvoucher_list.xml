@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="depositvoucher" allowCreate="false">
     <invokers>
-        <invoker folderid="menucategory/treasury/remittance" 
+        <invoker folderid="menucategory/treasury/remittance" role="CASHIER" 
                  caption="View Deposit Vouchers" 
                  windowTitle="Deposit  Vouchers"
                  formTitle="Deposit  Vouchers"

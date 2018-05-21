@@ -40,7 +40,9 @@ public class AFTxnInitialPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(150);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 10, 5, 5));
 
         xComboBox1.setCaption("Select Type of Transaction");
         xComboBox1.setItems("formTypes");
@@ -54,8 +56,9 @@ public class AFTxnInitialPage extends javax.swing.JPanel {
         xFormPanel2.add(xDateField1);
 
         xFormPanel1.setDepends(new String[] {"entity.txntype"});
-        xFormPanel1.setShowCaption(false);
         xFormPanel1.setVisibleWhen("#{ entity.txntype!=null && entity.txntype.matches( 'PURCHASE_RECEIPT|ISSUE' ) }");
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setShowCaption(false);
 
         xRadio2.setName("withrequest"); // NOI18N
         xRadio2.setOptionValue(false);
@@ -70,24 +73,25 @@ public class AFTxnInitialPage extends javax.swing.JPanel {
         xFormPanel1.add(xRadio1);
 
         xLookupField1.setCaption("Enter Request No");
-        xLookupField1.setCaptionWidth(150);
-        xLookupField1.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
         xLookupField1.setDepends(new String[] {"withrequest"});
         xLookupField1.setExpression("#{ afrequest.reqno }");
         xLookupField1.setHandler("lookupRequest");
         xLookupField1.setName("afrequest"); // NOI18N
+        xLookupField1.setVisibleWhen("#{ withrequest == true }");
+        xLookupField1.setCaptionWidth(150);
+        xLookupField1.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
-        xLookupField1.setVisibleWhen("#{ withrequest == true }");
         xFormPanel1.add(xLookupField1);
 
         xLabel1.setCaption("Requested By");
-        xLabel1.setCaptionWidth(150);
-        xLabel1.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
         xLabel1.setDepends(new String[] {"withrequest", "afrequest"});
         xLabel1.setExpression("#{ afrequest.requester.name }");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
         xLabel1.setVisibleWhen("#{ withrequest == true }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setCaptionWidth(150);
+        xLabel1.setCellPadding(new java.awt.Insets(0, 30, 0, 0));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -95,9 +99,8 @@ public class AFTxnInitialPage extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 68, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

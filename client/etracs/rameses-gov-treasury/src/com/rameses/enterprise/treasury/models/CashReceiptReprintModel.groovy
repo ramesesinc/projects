@@ -1,11 +1,11 @@
 package com.rameses.enterprise.treasury.models;
 
-import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
-import com.rameses.osiris2.client.*;
+import com.rameses.rcp.common.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
 import com.rameses.seti2.models.*;
-import com.rameses.rcp.framework.ValidatorException;
 
 class CashReceiptReprintModel extends CrudFormModel {
     
@@ -34,7 +34,7 @@ class CashReceiptReprintModel extends CrudFormModel {
         entity.receiptid = receipt.objid;
         entity.reason = remarks;
         service.verifyReprint( entity );
-        //reprint();
+        reprint();
         return "_close";
     } 
 
@@ -49,7 +49,7 @@ class CashReceiptReprintModel extends CrudFormModel {
         
         
         //check fist if form handler exists.
-        def o = InvokerUtil.lookupOpener( "cashreceipt-form:"+entity.formno, [ reportData: entity ] );
+        def o = Inv.lookupOpener( "cashreceipt-form:"+entity.formno, [ reportData: entity ] );
         if ( !o ) throw new Exception("Handler not found");
         
         if ( entity.receiptdate instanceof String ) { 

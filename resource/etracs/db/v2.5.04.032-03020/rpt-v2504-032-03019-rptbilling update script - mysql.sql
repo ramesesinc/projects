@@ -47,7 +47,6 @@ create table `rptpayment` (
   primary key(objid)
 ) engine=innodb default charset=utf8;
 
-create index `fk_rptpayment_cashreceipt` on rptpayment(`receiptid`);
 create index `ix_refid` on rptpayment(`refid`);
 create index `ix_receiptno` on rptpayment(`receiptno`);
 

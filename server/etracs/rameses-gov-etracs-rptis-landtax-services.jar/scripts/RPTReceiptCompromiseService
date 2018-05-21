@@ -268,9 +268,9 @@ class RPTReceiptCompromiseService
 	*
 	================================================================*/
 	def findCompromiseByReceipt(receipt){
-		def compromise = em_compromise_credit.select('objid:{parentid}').find([receiptid:receipt.objid]).first()
+		def compromise = em_compromise_credit.find([receiptid:receipt.objid]).first()
 		if (!compromise) return null
-		return em_compromise.find(compromise).first()
+		return em_compromise.find([objid:compromise.parentid]).first()
 	}
 
 	void postPaymentItems(receipt, pmt){

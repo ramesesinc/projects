@@ -48,6 +48,7 @@ public class RemittancePage extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xButton4 = new com.rameses.rcp.control.XButton();
         jPanel2 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xButton3 = new com.rameses.rcp.control.XButton();
@@ -280,10 +281,15 @@ public class RemittancePage extends javax.swing.JPanel {
         xButton1.setText("View Entry");
         jPanel4.add(xButton1);
 
-        xButton2.setName("updateCash"); // NOI18N
-        xButton2.setVisibleWhen("#{ entity.state == 'DRAFT'  }");
-        xButton2.setText("Update Cash");
+        xButton2.setName("updateCashByFund"); // NOI18N
+        xButton2.setVisibleWhen("#{cashBreakdownByFund == true && entity.state == 'DRAFT'  }");
+        xButton2.setText("Edit Cash Breakdown By Fund");
         jPanel4.add(xButton2);
+
+        xButton4.setName("updateCashByRemittance"); // NOI18N
+        xButton4.setVisibleWhen("#{cashBreakdownByFund == false && entity.state == 'DRAFT'  }");
+        xButton4.setText("Edit Cash Breakdown");
+        jPanel4.add(xButton4);
 
         jPanel3.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
@@ -597,6 +603,7 @@ public class RemittancePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;

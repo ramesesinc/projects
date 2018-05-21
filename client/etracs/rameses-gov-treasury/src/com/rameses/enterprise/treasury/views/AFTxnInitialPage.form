@@ -41,7 +41,11 @@
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
       <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
         <Property name="captionWidth" type="int" value="150"/>
+        <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 10, 5, 5]"/>
+        </Property>
       </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
@@ -69,9 +73,8 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xFormPanel1" min="-2" pref="430" max="-2" attributes="0"/>
-                  <EmptySpace pref="68" max="32767" attributes="0"/>
+                  <Component id="xFormPanel1" min="-2" pref="440" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="68" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -93,8 +96,9 @@
                 <StringItem index="0" value="entity.txntype"/>
               </StringArray>
             </Property>
-            <Property name="showCaption" type="boolean" value="false"/>
             <Property name="visibleWhen" type="java.lang.String" value="#{ entity.txntype!=null &amp;&amp; entity.txntype.matches( &apos;PURCHASE_RECEIPT|ISSUE&apos; ) }"/>
+            <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+            <Property name="showCaption" type="boolean" value="false"/>
           </Properties>
           <SubComponents>
             <Component class="com.rameses.rcp.control.XRadio" name="xRadio2">
@@ -120,10 +124,6 @@
             <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Enter Request No"/>
-                <Property name="captionWidth" type="int" value="150"/>
-                <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                  <Insets value="[0, 30, 0, 0]"/>
-                </Property>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
                     <StringItem index="0" value="withrequest"/>
@@ -132,20 +132,20 @@
                 <Property name="expression" type="java.lang.String" value="#{ afrequest.reqno }"/>
                 <Property name="handler" type="java.lang.String" value="lookupRequest"/>
                 <Property name="name" type="java.lang.String" value="afrequest" noResource="true"/>
+                <Property name="visibleWhen" type="java.lang.String" value="#{ withrequest == true }"/>
+                <Property name="captionWidth" type="int" value="150"/>
+                <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 30, 0, 0]"/>
+                </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>
                 <Property name="required" type="boolean" value="true"/>
-                <Property name="visibleWhen" type="java.lang.String" value="#{ withrequest == true }"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Requested By"/>
-                <Property name="captionWidth" type="int" value="150"/>
-                <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                  <Insets value="[0, 30, 0, 0]"/>
-                </Property>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="2">
                     <StringItem index="0" value="withrequest"/>
@@ -153,10 +153,21 @@
                   </StringArray>
                 </Property>
                 <Property name="expression" type="java.lang.String" value="#{ afrequest.requester.name }"/>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[0, 16]"/>
-                </Property>
                 <Property name="visibleWhen" type="java.lang.String" value="#{ withrequest == true }"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="b4" green="b4" red="b4" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="captionWidth" type="int" value="150"/>
+                <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 30, 0, 0]"/>
+                </Property>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[0, 20]"/>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>

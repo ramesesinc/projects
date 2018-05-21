@@ -1,15 +1,15 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="af_control" allowSearch="false">
     <invokers>
         <invoker type="cashreceipt:select-af" caption="Select Accountable Form" 
-                cols="afid,stubno,currentseries,endseries,fund.title"
-                hiddenCols="prefix,suffix,fund.objid,owner.*,af.*"
+                cols="afid,stubno,currentseries,endseries,prefix,suffix,fund.title"
+                hiddenCols="fund.objid,owner.*,af.*"
                  action="init"
                  orderBy="stubno,currentseries"
                  target="popup"/>
         
         <invoker type="cashreceipt:select-af:subcollector" caption="Select Accountable Form" 
-                cols="afid,stubno,currentseries,endseries,owner.name"
-                hiddenCols="prefix,suffix,fund.*,owner.objid,af.*"
+                cols="afid,stubno,currentseries,endseries,owner.name,prefix,suffix,fund.title"
+                hiddenCols="fund.*,owner.objid,af.*"
                  action="init"
                  orderBy="stubno,currentseries"
                  target="popup"/>        

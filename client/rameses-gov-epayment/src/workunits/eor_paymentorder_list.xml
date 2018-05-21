@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+         schemaName="eor_paymentorder" allowCreate="false">
+    <invokers>
+        <invoker folderid="menucategory/treasury/epayment" 
+                 caption="View Payment Orders" 
+                 role="MASTER" action="init"
+                 cols="txndate,txntypename,payer.name,amount,expirydate,refno,controlno"/>
+        
+        <invoker type="listActions" caption="Resolve Online Payment" action="resolveOnlinePayment" />
+    </invokers>
+    <code class="com.rameses.gov.epayment.models.EORPaymentOrderListModel" />
+</workunit>

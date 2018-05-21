@@ -92,17 +92,39 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         itemListModel.reload();
     }
     
-    def getCollectionGroupHandler() {
-        return InvokerUtil.lookupOpener("collectiongroup:lookup", [ 
+    def getCollectionGroupHandler() { 
+        def param = [
             "query.txntype" : "cashreceipt", 
             "query.fund" : entity.collectiontype.fund, 
-            "query.collectiontype": entity.collectiontype, 
-            selectHandler: { o-> 
-                    entity.items.addAll(o);
-                    itemListModel.reload();
-                    entity.amount = entity.items.sum{it.amount}
-                    super.updateBalances(); 
-            }]  );
+            "query.collectiontype": entity.collectiontype 
+        ]; 
+        param.onselect = { o-> 
+            if ( !o?.items ) return; 
+
+            def newitems = []; 
+            o.items.each{ 
+                def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
+                rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
+                rci.item = [ 
+                    objid : it.account?.objid, 
+                    code  : it.account?.code, 
+                    title : it.account?.title, 
+                    fund  : it.account?.fund, 
+                    valuetype : it.valuetype, 
+                    defaultvalue : it.defaultvalue 
+                ];                  
+                if ( it.valuetype == 'FIXEDUNIT' ) {
+                    rci.remarks = "qty@1"; 
+                } 
+                newitems << rci; 
+            }
+            
+            entity.items.addAll( newitems ); 
+            entity.amount = entity.items.sum{( it.amount ? it.amount : 0.0 )} 
+            itemListModel.reload();
+            super.updateBalances();             
+        }  
+        return Inv.lookupOpener("collectiongroup:lookup", param); 
     }
             
     def getTotalAmount() {

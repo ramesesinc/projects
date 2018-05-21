@@ -1,11 +1,13 @@
 <workunit>
-    
     <invokers>
         <invoker type="cashreceiptinfo:formActions" caption="Print Detail" action="print"  
                  role="COLLECTOR" index="1" target="process"/> 
                 
         <invoker type="misc_cashreceipt:formActions" caption="Print Detail" action="print" 
                  target="process" index="1" visibleWhen="#{completed &amp;&amp; entity.formno == '51'}"/>
+
+        <invoker type="cashreceipt:form:formActions" caption="Print Detail" action="print" 
+                 target="process" index="1" visibleWhen="#{entity.formno == '51'}"/>
     </invokers>
    
     <code>

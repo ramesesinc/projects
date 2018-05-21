@@ -3,12 +3,13 @@
     <invokers>
         <invoker folderid="menucategory/treasury/remittance" 
                  caption="View Remittances" 
-                 windowTitle="Remittances"
-                 formTitle="Remittances"
+                 windowTitle="Remittances" formTitle="Remittances"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
+                 hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
-                 action="init" target="window" index="10"/>
-        
+                 role="LIQUIDATING_OFFICER,CASHIER,SHARED"
+                 action="init" target="window" index="10" tag="ALL"/>
+
         <invoker folderid="menucategory/treasury/collection" 
                  caption="View Remittances" 
                  windowTitle="Remittances By Collector"
@@ -16,7 +17,8 @@
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  orderBy="controlno"
                  role="COLLECTOR"
-                 customFilter="collector.objid = :userid"
-                 action="init" target="window" index="250"/>
+                 action="init" target="window" index="250" tag="COLLECTOR"/>
     </invokers>
+    
+   <code class="com.rameses.enterprise.treasury.models.RemittanceListModel" />    
 </workunit>

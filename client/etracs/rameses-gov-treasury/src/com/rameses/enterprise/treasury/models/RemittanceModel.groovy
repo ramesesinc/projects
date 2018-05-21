@@ -11,7 +11,10 @@ class RemittanceModel extends CrudFormModel {
 
     @Service("RemittanceService")
     def remSvc;    
-    
+
+    @Service("Var")
+    def var;
+
     //this is passed 
     def handler;
     def selectedFund;
@@ -46,8 +49,28 @@ class RemittanceModel extends CrudFormModel {
         return Inv.lookupOpener("remittance_fund:open", [entity : selectedFund]  );
     }
     
-    def updateCash() {
-        if(!selectedFund) throw new Exception("Please select a fund");
+    boolean getCashBreakdownByFund() {
+        def b = var.getProperty("remittance_breakdown_byfund", "false" );
+        if( b.equals("1")) b = "true";
+        else if( b.equals("0")) b = "false";
+        return Boolean.parseBoolean(b+"");
+    }
+    
+    def updateCashByRemittance() {
+        def p = [total: entity.amount - totalNoncash, cashbreakdown: entity.cashbreakdown ];
+        p.handler = { o->
+            def m = [_schemaname: 'remittance'];
+            m.findBy = [objid: entity.objid];
+            m.cashbreakdown = o.cashbreakdown;
+            m.totalcash = o.cashbreakdown.sum{ it.amount };
+            persistenceService.update( m )
+            binding.refresh();
+        }
+        return Inv.lookupOpener("cashbreakdown", p );
+    }
+    
+    def updateCashByFund() {
+        if(!selectedFund) throw new Exception("Please select a fund entry");
         if(selectedFund.balance == 0 && selectedFund.totalcash==0 ) 
             throw new Exception("There is no cash remittance for selected item");
         def total = selectedFund.amount - (selectedFund.totalcheck + selectedFund.totalcr);
@@ -121,4 +144,12 @@ class RemittanceModel extends CrudFormModel {
         }
     }
     
+    def popupReports( inv ) {
+        def popupMenu = new PopupMenuOpener();
+        def list = Inv.lookupOpeners( inv.properties.category, [entity:entity] );
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    }    
 }    

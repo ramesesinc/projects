@@ -43,21 +43,21 @@ class RemittanceInitialModel {
     
     void init() {
         def today = dateSvc.parseCurrentDate();
-        startdate = null;
-        String st = today.hour.toString().padLeft(2,"0")+":"+today.minute.toString().padLeft(2,"0");
-        def tm =  var.getProperty("remittance_cutoff_time", st ).split(":");
-        def p = [
-            date: today.date,
-            hour: tm[0],
-            min: tm[1],
-            includeTime: true,
-            handler: { o->
-                startdate = o.date;
-                startime = o.hour + ":" + o.minute;
-            }
-        ];
-        Modal.show("date:prompt", p, [title:'Enter Remittance cut off date'] )
-        if(!startdate) throw new BreakException();
+        startdate = new java.text.SimpleDateFormat("yyyy-MM-dd").format( today.date );
+        startime = today.hour.toString().padLeft(2,"0")+":"+today.minute.toString().padLeft(2,"0");
+//        def tm =  var.getProperty("remittance_cutoff_time", st ).split(":");
+//        def p = [
+//            date: today.date,
+//            hour: tm[0],
+//            min: tm[1],
+//            includeTime: true,
+//            handler: { o->
+//                startdate = o.date;
+//                startime = o.hour + ":" + o.minute;
+//            }
+//        ];
+//        Modal.show("date:prompt", p, [title:'Enter Remittance cut off date'] )
+//        if(!startdate) throw new BreakException();
         
         def app = userInfo.env;
         user = [objid: app.USERID, name: app.NAME, fullname: app.FULLNAME, username: app.USER ];

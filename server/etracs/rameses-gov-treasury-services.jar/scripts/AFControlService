@@ -24,16 +24,19 @@ class AFControlService  {
 		def arr = [];
 		def p = [:];
 
+		//filter assignee
+		arr << "assignee.objid = :assigneeid";
+		p.assigneeid = env.USERID;
+
 		//filter by af form no
 		arr << "afid = :afid";
 		p.afid = m.collectiontype.formno;
 
+		//filter not consumed 
+		arr << "currentseries <= endseries";
+
 		//active is zero
 		arr << "active = 1";
-
-		//filter assignee
-		arr << "assignee.objid = :assigneeid";
-		p.assigneeid = env.USERID;
 
 		//filter by mode
 		arr << "txnmode =:txnmode";
@@ -56,8 +59,6 @@ class AFControlService  {
 		else {
 			arr << "respcenter.objid IS NULL";
 		}
-
-		arr << "currentseries <= endseries";
 
 		def afc = em.where( arr.join(" AND "), p ).first();
 		if(!afc ) throw new Warning("select-afcontrol");

@@ -1,0 +1,43 @@
+import com.rameses.annotations.*;
+
+class CollectionGroupListInterceptor {
+
+	@Env 
+	def env; 
+
+	@DataContext('collectiongroup_revenueitem') 
+	def cgi_db;
+
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiongroup' }")
+	public void beforeGetList( evt ) {
+		def o = evt.args[0];
+		if ( !o ) return;
+
+		def qarr = []; 
+		def qmap = [:]; 
+		if ( o.where instanceof List ) {
+			if ( o.where.size() >= 1 ) qarr << o.where[0];
+			if ( o.where.size() >= 2 ) qmap = o.where[1]; 
+			if ( qmap == null ) qmap = [:]; 
+		} 
+
+		if ( env.ORGROOT == 0 ) {
+			qarr << " org.objid = :orgid "; 
+			qmap.orgid = env.ORGID; 
+		}
+
+		if ( qarr ) { 
+			o.where = [ qarr.join(' AND '), qmap ];  
+		}
+	}
+
+	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiongroup' }")
+	public void afterGetList( evt ) {
+		def param = evt.args[0];
+		if ( param?.txntype.toString() == 'cashreceipt' ) {
+			evt.result.each{ o-> 
+				o.items = cgi_db.find([ collectiongroupid: o.objid ]).list(); 
+			}
+		}
+	} 
+}

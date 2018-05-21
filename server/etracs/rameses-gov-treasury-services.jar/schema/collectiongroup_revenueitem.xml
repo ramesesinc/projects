@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="collectiongroup_revenueitem">
+		<field name="collectiongroupid" primary="true"/>
+		<field name="revenueitemid" required="true" />
+		<field name="orderno" required="true"/>
+		<field name="valuetype" required="true"/>
+		<field name="defaultvalue" required="true"/>
+
+		<complex name="account" ref="itemaccount" jointype="many-to-one" required="false" 
+			includefields="objid,code,title,fund.*">
+			<key field="revenueitemid" target="objid"/>
+		</complex>
+	</element>
+</schema>

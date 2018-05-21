@@ -64,6 +64,7 @@ class BatchCaptureCollectionModel  {
         }
         entity.sstartseries = formatSeries(entity.currentseries); 
         entity.sendseries = formatSeries(entity.endseries); 
+        rebuildTotals();
     } 
 
     def getLookupAccount() {
@@ -197,7 +198,26 @@ class BatchCaptureCollectionModel  {
         
         if ( item.currentseries ) 
             entity.currentseries = item.currentseries; 
+            
+        rebuildTotals(); 
     } 
+    
+    void rebuildTotals() {
+        def totalnoncash = 0.0; 
+        def totalamount = 0.0;
+        entity.batchitems.each{
+            if ( it.voided.toString() == '1' ) {
+                //do nothing 
+            } else {
+                totalnoncash += (it.totalnoncash ? it.totalnoncash : 0.0); 
+                totalamount += (it.amount ? it.amount : 0.0); 
+            }
+        }
+        entity.totalnoncash = totalnoncash;
+        entity.totalamount = totalamount;
+        entity.totalcash = totalamount - totalnoncash;
+        if ( binding ) binding.notifyDepends('totals'); 
+    }
 
     def delete() { 
         if ( MsgBox.confirm('You are about to delete this transaction. Continue? ')) {
@@ -244,7 +264,6 @@ class BatchCaptureCollectionModel  {
     void post() {
         if( MsgBox.confirm("You are about to post this captured collection. Continue? ") ) {
             def result = svc.post([ objid: entity.objid ]);
-            println 'result -> ' + result;
             if ( result ) entity.state = result.state; 
             if ( onPost ) onPost();
         }

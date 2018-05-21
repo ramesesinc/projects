@@ -75,13 +75,14 @@ class ItemAccountListInterceptor {
 		def result = evt.result;
 
 		if( o.has_collection_account ) {
-			def acList = collTypeAcct.find([ collectiotypeid: o.collectiontype.objid ]).list();
-
-			result.each {
-				def m = acList.find{ it.account.objid == it.objid } 
+			def acList = coltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]).list();
+			result.each { a-> 
+				def m = acList.find{  
+					it.account.objid == a.objid 
+				} 
 				if ( m.valuetype ) {
-					it.valuetype = m.valuetype; 
-					it.defaultvalue = m.defaultvalue; 
+					a.valuetype = m.valuetype; 
+					a.defaultvalue = m.defaultvalue; 
 				}
 			}
 		}

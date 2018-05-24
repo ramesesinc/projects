@@ -18,6 +18,49 @@ FROM  (
 	GROUP BY dv.objid, dv.controlno, dv.controldate, f.code, f.objid
 ) a
 
+[updateCheckForDeposit]
+UPDATE paymentcheck 
+SET state = 'FOR-DEPOSIT'
+WHERE objid IN 
+( 
+	SELECT nc.refid 
+	FROM cashreceiptpayment_noncash nc 
+	INNER JOIN cashreceipt c ON nc.receiptid = c.objid 
+	INNER JOIN remittance r ON c.remittanceid = r.objid 
+	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
+	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
+	WHERE cvf.depositvoucherid = $P{depositvoucherid}
+	GROUP BY nc.refid
+)
+
+[updateCheckDepositVoucherId]
+UPDATE paymentcheck 
+SET depositvoucherid = ( 
+	SELECT cvf.objid   
+	FROM cashreceiptpayment_noncash nc 
+	INNER JOIN cashreceipt c ON nc.receiptid = c.objid 
+	INNER JOIN remittance r ON c.remittanceid = r.objid 
+	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
+	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
+	WHERE nc.refid = paymentcheck.objid
+	AND nc.amount = paymentcheck.amount
+	AND nc.fund_objid = cvf.fund_objid 
+)
+WHERE objid IN 
+( 
+	SELECT nc.refid 
+	FROM cashreceiptpayment_noncash nc 
+	INNER JOIN cashreceipt c ON nc.receiptid = c.objid 
+	INNER JOIN remittance r ON c.remittanceid = r.objid 
+	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
+	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
+	WHERE cvf.depositvoucherid = $P{depositvoucherid}
+	GROUP BY nc.refid
+)
+
+
+
+
 [updatePaymentCheckDepositId]
 UPDATE paymentcheck
 SET depositvoucherid = $P{depositvoucherid}

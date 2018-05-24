@@ -91,6 +91,21 @@ class AFControlModel extends CrudFormModel {
         changeMode( "CAPTURE" )
     }
     
+    void changeRespCenter() {
+        def h = { o->
+            service.changeRespCenter( [objid:entity.objid, respcenter: o] );
+            if(binding) binding.refresh("entity.respcenter.*")
+            if(caller) caller.reloadEntity();
+        }
+        Modal.show("org:lookup", [onselect: h] );
+    }
+    
+    void removeRespCenter() {
+        service.removeRespCenter( [objid:entity.objid] );
+        if(binding) binding.refresh("entity.respcenter.*")
+        if(caller) caller.reloadEntity();
+    }
+    
     //second page
     public def getDetailInfo() { 
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFControlPage.gtpl", [details: details] );

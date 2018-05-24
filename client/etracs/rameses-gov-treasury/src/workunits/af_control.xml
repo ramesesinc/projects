@@ -32,6 +32,13 @@
          
         <invoker type="af_control:form:actions" caption="Change Mode to CAPTURE" action="changeModeCapture"  target="process"
             visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='CAPTURE' }"/>
+            
+        <invoker type="af_control:form:actions" caption="Change Responsibility Center" action="changeRespCenter"  target="process"
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.respcenter?.objid==null }"/>  
+            
+        <invoker type="af_control:form:actions" caption="Remove Responsibility Center" action="removeRespCenter"  target="process"
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.respcenter?.objid!=null }"/>    
+                
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.AFControlModel" />

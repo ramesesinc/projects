@@ -51,6 +51,11 @@ class DepositVoucherService  {
 		o.items.each {
 			cvfEm.find( [ objid: it.objid ] ).update( [depositvoucherid: m.objid ] );
 		}
+
+		//try to update all payment checks 
+		depositEm.updateCheckForDeposit( [depositvoucherid: m.objid ])
+		depositEm.updateCheckDepositVoucherId( [depositvoucherid: m.objid ] );
+
 		return m;
 	}
 

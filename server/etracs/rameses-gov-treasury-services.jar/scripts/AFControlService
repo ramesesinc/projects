@@ -13,7 +13,6 @@ class AFControlService  {
 	@DataContext("sys_user")
 	def userEm;
 
-
 	@Env
 	def env;
 
@@ -94,31 +93,47 @@ class AFControlService  {
 		em.find([ objid: p.controlid ]).update([ currentseries: p.series + 1 ]); 
 	}
 
+
+	void checkCanPerformFunc( def o) {
+		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
+		if(z) throw new Exception("Cannot perform thsi function. Please remit all open collections first");
+	}
+
 	@ProxyMethod 
 	public void assignFund(def o) {
+		checkCanPerformFunc(o);
 		em.find([objid: o.objid] ).update( [fund: o.fund ] );
 	}
 
 	@ProxyMethod 
 	public void unassignFund(def o) {
+		checkCanPerformFunc(o);
 		em.find([objid: o.objid] ).update( [fund: [objid: null, title: null] ] );
 	}
 
 	@ProxyMethod
 	public void assignSubcollector(def o) {
-		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
-		if(z) throw new Exception("Cannot unassign subcollector. Please remit all open collections first");
+		checkCanPerformFunc(o);
 		em.find([objid: o.objid] ).update( [assignee: o.assignee] );
 	}
 
 	@ProxyMethod
 	public void unassignSubcollector(def o) {
-		//must check that there are no unremitted funds for this afcontrol
-		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
-		if(z) throw new Exception("Cannot unassign subcollector. Please remit all open collections first");
+		checkCanPerformFunc(o);
 		em.find([objid: o.objid] ).update( [assignee: o.owner] );
 	}
 	
+	@ProxyMethod
+	public void changeRespCenter(def o) {
+		checkCanPerformFunc(o);
+		em.find([objid: o.objid] ).update( [respcenter: o.respcenter] );
+	}
+
+	@ProxyMethod
+	public void removeRespCenter(def o) {
+		checkCanPerformFunc(o);
+		em.find([objid: o.objid] ).update( [respcenter: [objid:null, name:null]] );
+	}
 
 	//This is called from select-af
 	@ProxyMethod
@@ -173,6 +188,8 @@ class AFControlService  {
 
 	@ProxyMethod
 	public def changeMode( p ) { 
+		checkCanPerformFunc(o);
+
 		//throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
 
@@ -196,12 +213,10 @@ class AFControlService  {
 		return result;
 	} 
 
-
 	/*
 	@ProxyMethod 
 	public def findAFSummary( params ) {
 		if ( !params.controlid ) throw new Exception('controlid parameter is required'); 
-
 		return em.findAFSummary( params ); 
 	} 
 	*/

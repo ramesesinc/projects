@@ -105,5 +105,31 @@ class DepositVoucherModel extends CrudFormModel {
         depositSvc.post( [objid: entity.objid ] );
     }
     
+    def selectedCheck;
+    def checksListModel = [
+        fetchList: { o->
+            def p = [depositvoucherid:entity.objid ];
+            def m = [_schemaname: 'paymentcheck' ];
+            m.where = ["depositvoucherid = :depositvoucherid " , p ];
+            def list = queryService.getList( m );
+            return list;
+        },
+        onOpenItem: {o,col->
+            
+        }
+    ] as BasicListModel;
+    
+    void addCheck() {
+        
+    }
+    
+    void moveCheck() {
+        if(!selectedCheck) throw new Exception("Please select a check to move");
+    }
+    
+    void addExternalCheck() {
+        
+    }
+    
     
 }    

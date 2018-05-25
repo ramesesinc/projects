@@ -53,6 +53,8 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton8 = new com.rameses.rcp.control.XButton();
         xButton9 = new com.rameses.rcp.control.XButton();
+        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
+        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
         xFormPanel2.setCaptionWidth(120);
 
@@ -325,51 +327,6 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, "yyyy-MM-dd", null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "totalcash"}
-                , new Object[]{"caption", "Total Cash"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "totalcheck"}
-                , new Object[]{"caption", "Total Checks"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "totalcr"}
-                , new Object[]{"caption", "Total CR"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
@@ -411,7 +368,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         xDataTable3.setName("selectedCheck"); // NOI18N
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "check.refno"}
+                new Object[]{"name", "refno"}
                 , new Object[]{"caption", "Check No"}
                 , new Object[]{"width", 80}
                 , new Object[]{"minWidth", 0}
@@ -426,7 +383,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "check.refdate"}
+                new Object[]{"name", "refdate"}
                 , new Object[]{"caption", "Check Date"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -441,7 +398,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "check.bank.name"}
+                new Object[]{"name", "bank.name"}
                 , new Object[]{"caption", "Bank"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -469,18 +426,43 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "deposited"}
+                , new Object[]{"caption", "Deposited"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
             })
         });
         xDataTable3.setDynamic(true);
 
         xButton2.setName("addCheck"); // NOI18N
-        xButton2.setText("Add Check");
+        xButton2.setText("Add Undeposited Checks");
 
         xButton8.setName("moveCheck"); // NOI18N
-        xButton8.setText("Move Check");
+        xButton8.setText("Remove Check");
 
         xButton9.setName("addExternalCheck"); // NOI18N
         xButton9.setText("Add External Check");
+
+        xDecimalField1.setCaption("Total checks to deposit");
+        xDecimalField1.setDepends(new String[] {"selectedItem"});
+        xDecimalField1.setEditable(false);
+        xDecimalField1.setName("entity.totalcheck"); // NOI18N
+        xDecimalField1.setCaptionFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        xDecimalField1.setCaptionWidth(200);
+        xDecimalField1.setEnabled(false);
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 30));
+        xFormPanel4.add(xDecimalField1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -488,15 +470,17 @@ public class DepositVoucherPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xDataTable3, javax.swing.GroupLayout.PREFERRED_SIZE, 781, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xDataTable3, javax.swing.GroupLayout.PREFERRED_SIZE, 743, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(155, Short.MAX_VALUE))
+                        .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(181, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -504,11 +488,13 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xDataTable3, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("Checks", jPanel2);
@@ -555,8 +541,10 @@ public class DepositVoucherPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;
+    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
+    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;

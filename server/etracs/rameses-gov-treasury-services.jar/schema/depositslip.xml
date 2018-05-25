@@ -24,10 +24,6 @@
 		<field name="deposittype" required="true"/>
 		<field name="checktype" /> 
 
-		<complex name="checks" ref="depositslip_check" jointype="one-to-many" required="false">
-			<key field="objid" target="depositslipid" />
-		</complex>	
-
 	</element>
 
 </schema>

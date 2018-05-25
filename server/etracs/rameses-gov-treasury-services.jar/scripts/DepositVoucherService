@@ -35,6 +35,32 @@ class DepositVoucherService  {
 	@Service("JevService")
 	def jevSvc;
 
+
+	@ProxyMethod
+	public def getOpenSplitChecks( def vlist ) {
+		def ids = "('" + vlist.join("','") + "')";
+		return depositEm.getOpenSplitChecks( [ids: ids ] );
+	}
+
+	@ProxyMethod
+	public def addChecks( def v) {
+		def ids = "('" + v.list.join("','") + "')";
+		paymentCheckEm.where( "objid IN " + ids ).update([depositvoucherid: v.depositvoucherid]);
+		return summarizeTotal( [objid: v.depositvoucherid] );
+	}
+
+	@ProxyMethod
+	public def removeCheck( def o ) {
+		paymentCheckEm.find([objid: o.objid]).update([depositvoucherid: null]);
+		return summarizeTotal( [objid: o.depositvoucherid] );
+	}
+
+	def summarizeTotal(def m) {
+		def tot = paymentCheckEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
+		depositEm.find([objid: m.objid ]).update([totalcheck: tot]);
+		return tot;
+	}
+
 	@ProxyMethod
 	public def create( def o ) {
 		def m = [:];
@@ -47,15 +73,22 @@ class DepositVoucherService  {
 		m.fundid = o.fund.objid;
 		m.amount = o.amount;
 		m.amountdeposited = 0;
+		m.totalcheck = 0;
 		m = depositEm.create( m );
 		o.items.each {
 			cvfEm.find( [ objid: it.objid ] ).update( [depositvoucherid: m.objid ] );
 		}
 
 		//try to update all payment checks 
-		depositEm.updateCheckForDeposit( [depositvoucherid: m.objid ])
+		depositEm.updateCheckForDeposit( [depositvoucherid: m.objid ]);
 		depositEm.updateCheckDepositVoucherId( [depositvoucherid: m.objid ] );
 
+		if( o.additionalchecks ) {
+			def ids = "('" + o.additionalchecks.join("','") + "')";
+			paymentCheckEm.where( "objid IN " + ids  ).update( [depositvoucherid: m.objid ] );
+		}
+
+		summarizeTotal( m );
 		return m;
 	}
 

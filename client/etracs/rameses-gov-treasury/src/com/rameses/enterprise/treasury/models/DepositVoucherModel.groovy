@@ -106,13 +106,14 @@ class DepositVoucherModel extends CrudFormModel {
     }
     
     def selectedCheck;
-    def checksListModel = [
+    def checkListModel = [
         fetchList: { o->
-            def p = [depositvoucherid:entity.objid ];
+            def p = [depid:entity.objid ];
             def m = [_schemaname: 'paymentcheck' ];
-            m.where = ["depositvoucherid = :depositvoucherid " , p ];
-            def list = queryService.getList( m );
-            return list;
+            m.select = "objid,refno,refdate,bank.*,amount,deposited:{ CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END }";
+            m.where = ["depositvoucherid = :depid " , p ];
+            m.orderBy = "refno";
+            return queryService.getList( m );
         },
         onOpenItem: {o,col->
             
@@ -120,11 +121,42 @@ class DepositVoucherModel extends CrudFormModel {
     ] as BasicListModel;
     
     void addCheck() {
-        
+        def params = [:];
+        params.onselect = { o->
+            def v = [list: o*.objid, depositvoucherid: entity.objid ];
+            def tot = depositSvc.addChecks( v );
+            entity.totalcheck = tot;
+            binding.refresh("entity.totalcheck");
+            checkListModel.reload();
+        }
+        params.listHandler = [
+            isMultiSelect: {
+                return true;
+            },
+            fetchList: {
+                def m = [_schemaname: 'paymentcheck'];
+                m.where = [" depositvoucherid IS NULL AND state = 'FOR-DEPOSIT' "];
+                return queryService.getList(m);
+            },
+            getColumns: {
+                return [
+                    [name:'refno', caption:'Ref No'],
+                    [name:'refdate', caption:'Ref Date'],
+                    [name:'bank.name', caption:'Bank'],
+                    [name:'amount', caption:'Amount', type:'decimal'],
+                ];
+            }
+        ] as BasicListModel;
+        params.title = "Please select the checks you want included in this deposit"; 
+        Modal.show( "simple_list_lookup", params);
     }
     
     void moveCheck() {
-        if(!selectedCheck) throw new Exception("Please select a check to move");
+        if(!selectedCheck) throw new Exception("Please select a check to remove");
+        def tot = depositSvc.removeCheck( [objid:selectedCheck.objid, depositvoucherid:entity.objid] );
+        entity.totalcheck = tot;
+        binding.refresh("entity.totalcheck");
+        checkListModel.reload();
     }
     
     void addExternalCheck() {

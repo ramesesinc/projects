@@ -60,7 +60,39 @@ class DepositVoucherInitialModel extends CrudListModel {
         def p = MsgBox.confirm("You are about to create a deposit for the selected items. Proceed?");
         if(!p) return null;
         
+        def openChecks = depositSvc.getOpenSplitChecks( selectedList*.objid );
+        
+        def addChecks;
+        if( openChecks ) {
+            boolean pass = false;
+            def params = [:];
+            params.onselect = { o->
+                addChecks = o*.objid;
+                pass = true;
+            }
+            params.listHandler = [
+                isMultiSelect: {
+                    return true;
+                },
+                fetchList: {
+                    return openChecks;
+                },
+                getColumns: {
+                    return [
+                        [name:'refno', caption:'Ref No'],
+                        [name:'refdate', caption:'Ref Date'],
+                        [name:'bank.name', caption:'Bank'],
+                        [name:'amount', caption:'Amount', type:'decimal'],
+                    ];
+                }
+            ] as BasicListModel;
+            params.title = "There are split checks found. Select the checks you want included in this deposit"; 
+            Modal.show( "simple_list_lookup", params);
+            if(!pass) return null;
+        };
+        
         def m = [fund:fund];
+        m.additionalchecks = addChecks;
         m.amount = amount;
         m.items = selectedList;
         def o = depositSvc.create( m );       

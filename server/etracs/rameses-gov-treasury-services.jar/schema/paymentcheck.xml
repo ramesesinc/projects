@@ -19,18 +19,10 @@
 
 		<!-- these fields refer to deposit -->
 		<field name="depositvoucherid" />
-		<field name="fundid" />
 		<field name="depositslipid" />
 		<field name="split"  type="integer" defaultValue="0"/>
 
-		
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
-
-		<complex name="fund" ref="fund" jointype="many-to-one" required="false">
-			<key field="fundid" target="objid" />
-		</complex>
-
-		<field name="amtdeposited" type="decimal"/>
 	</element>
 
 

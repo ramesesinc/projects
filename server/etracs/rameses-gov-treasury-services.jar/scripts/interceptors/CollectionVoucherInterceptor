@@ -11,8 +11,7 @@ class CollectionVoucherInterceptor {
 		def x = evt.args[0];
 		def result = evt.result;
 		result << [  title: 'Open', state:'OPEN' ];
-		result << [  title: 'Posted', state:'POSTED', deposited: false ];
-		result << [  title: 'Sent for Deposit', state:'POSTED', deposited:true ];
+		result << [  title: 'Posted', state:'POSTED' ];
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectionvoucher' }")
@@ -23,15 +22,6 @@ class CollectionVoucherInterceptor {
 		//o.debug = true;
 		def str = "state = :state";
 		def m = [state: o.node.state ]; 
-
-		if(o.node.deposited!=null) {
-			if(o.node.deposited==false) {
-				str += " AND depositvoucherid IS NULL ";
-			}
-			else {
-				str += " AND NOT(depositvoucherid IS NULL) ";
-			}
-		}
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

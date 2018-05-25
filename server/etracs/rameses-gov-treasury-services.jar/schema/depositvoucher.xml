@@ -19,6 +19,7 @@
 
 		<field name="amount" required="true" type="decimal"/>
 		<field name="amountdeposited" required="true" type="decimal"/>
+		<field name="totalcheck" required="true" type="decimal"/>
 
 	</element>
 </schema>

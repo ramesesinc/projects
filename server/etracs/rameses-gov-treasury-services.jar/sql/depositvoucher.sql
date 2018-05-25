@@ -1,22 +1,20 @@
-[insertDepositFund]
-INSERT INTO depositvoucher_fund 
-	(objid,parentid,state,
-	controlno,fundid,
-	totalcash,totalcheck,cashtodeposit,checktodeposit,amount)
-SELECT 
-	CONCAT( a.objid, a.fundid ), a.objid, 'OPEN', 
-	CONCAT(a.controlno, a.fundcode ), a.fundid, 
-	0, 0, 0, 0, a.amount
-FROM  (
-	SELECT dv.objid, dv.controlno, dv.controldate, f.code AS fundcode, f.objid AS fundid, SUM( cvf.amount) AS amount 
-	FROM collectionvoucher_fund cvf
-	INNER JOIN fund f ON cvf.fund_objid = f.objid 
-	INNER JOIN collectionvoucher cv ON cvf.parentid = cv.objid 
-	LEFT JOIN depositvoucher dv ON cv.depositvoucherid = dv.objid
-	WHERE dv.objid = $P{depositvoucherid}
-	AND  ( cvf.totalcheck + cvf.totalcash > 0 )
-	GROUP BY dv.objid, dv.controlno, dv.controldate, f.code, f.objid
-) a
+[getOpenSplitChecks]
+SELECT * FROM paymentcheck 
+WHERE depositvoucherid IS NULL
+AND objid IN 
+( 
+	SELECT nc.refid 
+	FROM cashreceiptpayment_noncash nc 
+	INNER JOIN cashreceipt c ON nc.receiptid = c.objid 
+	INNER JOIN remittance r ON c.remittanceid = r.objid 
+	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
+	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
+	WHERE cvf.objid IN ${ids}
+	AND nc.fund_objid = cvf.fund_objid 
+	AND NOT( nc.amount = paymentcheck.amount )
+	GROUP BY nc.refid
+)
+ORDER BY refno
 
 [updateCheckForDeposit]
 UPDATE paymentcheck 
@@ -30,23 +28,15 @@ WHERE objid IN
 	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
 	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
 	WHERE cvf.depositvoucherid = $P{depositvoucherid}
+	AND nc.fund_objid = cvf.fund_objid 
 	GROUP BY nc.refid
 )
 
 [updateCheckDepositVoucherId]
 UPDATE paymentcheck 
-SET depositvoucherid = ( 
-	SELECT cvf.objid   
-	FROM cashreceiptpayment_noncash nc 
-	INNER JOIN cashreceipt c ON nc.receiptid = c.objid 
-	INNER JOIN remittance r ON c.remittanceid = r.objid 
-	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
-	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
-	WHERE nc.refid = paymentcheck.objid
-	AND nc.amount = paymentcheck.amount
-	AND nc.fund_objid = cvf.fund_objid 
-)
-WHERE objid IN 
+SET depositvoucherid = $P{depositvoucherid}
+WHERE depositvoucherid IS NULL 
+AND objid IN 
 ( 
 	SELECT nc.refid 
 	FROM cashreceiptpayment_noncash nc 
@@ -55,10 +45,10 @@ WHERE objid IN
 	INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid 
 	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
 	WHERE cvf.depositvoucherid = $P{depositvoucherid}
+	AND nc.fund_objid = cvf.fund_objid 
+	AND nc.amount = paymentcheck.amount
 	GROUP BY nc.refid
 )
-
-
 
 
 [updatePaymentCheckDepositId]
@@ -74,30 +64,6 @@ WHERE objid IN
     WHERE cv.depositvoucherid  = $P{depositvoucherid}
 )
 
-[updatePaymentCheckDefaultFund]
-UPDATE paymentcheck 
-SET fundid = (
-     SELECT nc.fund_objid 
-     FROM cashreceiptpayment_noncash nc
-     WHERE nc.refid = paymentcheck.objid AND nc.amount = paymentcheck.amount 
-)
-WHERE depositvoucherid = $P{depositvoucherid}
-
-
-[updateFundCheckTotal]
-UPDATE depositvoucher_fund
-    SET checktodeposit = (
-		SELECT SUM(pc.amount) 
-		FROM paymentcheck pc
-        WHERE pc.depositvoucherid = depositvoucher_fund.parentid 
-        AND pc.fundid = depositvoucher_fund.fundid
-	)
-WHERE parentid = $P{depositvoucherid}
-
-[cleanUpNullTotals]
-UPDATE depositvoucher_fund SET 
-    checktodeposit = CASE WHEN checktodeposit IS NULL THEN 0 ELSE checktodeposit END
-WHERE parentid = $P{depositvoucherid}
 
 [getBankAccountLedgerItem]
 SELECT 

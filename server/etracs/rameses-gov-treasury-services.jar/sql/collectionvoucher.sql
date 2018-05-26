@@ -10,7 +10,11 @@ INNER JOIN remittance r ON rf.remittanceid = r.objid
 INNER JOIN collectionvoucher cv ON r.collectionvoucherid = cv.objid
 INNER JOIN fund f ON f.objid=rf.fund_objid
 WHERE cv.objid = $P{collectionvoucherid}
-GROUP BY rf.fund_objid,  f.code, rf.fund_title
+GROUP BY 
+  CONCAT(cv.objid, '-', rf.fund_objid), 
+  CONCAT(cv.controlno,'-',f.code), 
+  cv.objid, rf.fund_objid, rf.fund_title 
+
 
 [getCashLedgerItems]
 SELECT 

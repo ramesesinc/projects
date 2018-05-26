@@ -104,8 +104,12 @@ class DepositVoucherModel extends CrudFormModel {
     
     public void printDepositSlip() {
         if(!selectedItem) throw new Exception("Please select an item");
-        MsgBox.alert('print slip');
-        MsgBox.alert("check count is " + checksCount)
+        
+        def dephandler = selectedItem.bankaccount.bank.depositsliphandler; 
+        if ( !dephandler ) throw new Exception("Please define deposit slip handler in depository bank"); 
+        
+        def op = Inv.lookupOpener("depositslip:printout:"+ dephandler, [entity: [objid: selectedItem.objid]]); 
+        op.handle.print(); 
     }
     
     public void post() {

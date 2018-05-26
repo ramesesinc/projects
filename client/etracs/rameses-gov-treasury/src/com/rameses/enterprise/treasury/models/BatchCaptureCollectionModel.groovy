@@ -138,7 +138,9 @@ class BatchCaptureCollectionModel  {
         if ( resp.currentseries ) { 
             entity.currentseries = resp.currentseries; 
         }
-        entity.batchitems.remove( selectedItem );         
+        entity.batchitems.remove( selectedItem ); 
+        
+        rebuildTotals();         
         listModel.reload(); 
     } 
     

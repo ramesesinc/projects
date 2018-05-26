@@ -101,13 +101,12 @@ class DepositSlipService  {
 		depositVoucherEm.find( [objid: r.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
 
 		//update all checks for the deposit slip to null
-		paymentCheckEm.find([depositlsipid: o.objid]).update( [depositslipid: null ]);
+		paymentCheckEm.find([depositslipid: o.objid]).update( [depositslipid: null ]);
 		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
 	}
 
 	@ProxyMethod
 	public void approveDepositSlip( def o ) {
-		throw new Exception("id is " + o.objid);
 		 depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ] );
 	}
 

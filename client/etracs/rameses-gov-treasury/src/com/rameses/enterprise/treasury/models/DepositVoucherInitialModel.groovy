@@ -20,11 +20,7 @@ class DepositVoucherInitialModel extends CrudListModel {
     def selectedItem;
     
     void afterInit() {
-        def m = [_schemaname: 'collectionvoucher_fund' ];
-        m.select = "objid:{fund.objid},code:{fund.code},title:{fund.title}";
-        m.where = ["parent.state='POSTED' AND depositvoucherid IS NULL "];
-        m.groupBy =  "fund.objid,fund.code,fund.title";
-        fundList = queryService.getList( m );
+        fundList = depositSvc.getUndepositedFunds();
     }
     
     def collectionListModel = [

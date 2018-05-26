@@ -20,10 +20,21 @@ class CollectionVoucherInitialModel extends CrudListModel {
     
     @PropertyChangeListener
     def listener = [
-        "controldate" : { o->
+        "controldate" : { o-> 
+            buildRemittanceList(); 
             remittanceListHandler.reload();
         }
     ]
+    
+    def remittancelist = null; 
+    void buildRemittanceList() {
+        remittancelist = null; 
+        if ( !controldate ) return;
+        def m = [_schemaname: 'remittance' ];
+        m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,collector.name,amount,totalcash,totalcheck,totalcr,state"
+        m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL AND controldate =:cdate", [cdate:controldate] ];
+        remittancelist = queryService.getList( m );
+    }
     
     void buildDatesList() {
         def m = [_schemaname:'remittance'];
@@ -31,22 +42,23 @@ class CollectionVoucherInitialModel extends CrudListModel {
         m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL"];
         m.groupBy = "controldate";
         def xlist  = queryService.getList(m);
-        if(xlist ) datesList = xlist*.controldate.collect{ df.format(it) };
+        if ( xlist ) datesList = xlist*.controldate.collect{ df.format(it) };
     }
     
     void afterInit() {
         buildDatesList();
         if(!datesList) 
-            throw new Exception("There are no remittances to liquidate")
+            throw new Exception("There are no remittances to liquidate"); 
+            
+        controldate = datesList.first();
+        buildRemittanceList(); 
     }
+    
     
     def remittanceListHandler = [
         fetchList: { o->
             if( !controldate ) return [];
-            def m = [_schemaname: 'remittance' ];
-            m.select = "objid,posted:{CASE WHEN state='POSTED' THEN 1 ELSE 0 END},controlno,controldate,collector.name,amount,totalcash,totalcheck,totalcr,state"
-            m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL AND controldate =:cdate", [cdate:controldate] ];
-            return queryService.getList( m );
+            return remittancelist;
         },
         onOpenItem: {o,col->
             viewRemittance();
@@ -55,17 +67,28 @@ class CollectionVoucherInitialModel extends CrudListModel {
     
     void viewRemittance() {
         if(!selectedRemittance) throw new Exception("Please select a remittance");
-        def h = { 
-            buildDatesList();
+        def h1 = { 
+            selectedRemittance.posted = 1;
+            selectedRemittance.state = 'POSTED';
             remittanceListHandler.reload();
         };
-        def op = Inv.lookupOpener("remittance:preview", [entity: selectedRemittance, onAccept: h, onReject: h ]);
+        def h2 = { 
+            buildDatesList();
+            binding.refresh('controldate'); 
+            
+            buildRemittanceList();
+            remittanceListHandler.reload();
+        } 
+        def op = Inv.lookupOpener("remittance:preview", [entity: selectedRemittance, onAccept: h1, onReject: h2 ]);
         op.target = "popup";
         Modal.show( op );
     }
     
     def submitForLiquidation() {
-        def p = [controldate: controldate]
+        def p = [controldate: controldate]; 
+        p.ids = remittancelist.findAll{( it.posted == 1 )}*.objid; 
+        if ( !p.ids ) throw new Exception('No available posted remittances'); 
+        
         p = collSvc.create(p);
         remittanceListHandler.reload();
         def op = Inv.lookupOpener( "collectionvoucher:open", [entity: p ]);

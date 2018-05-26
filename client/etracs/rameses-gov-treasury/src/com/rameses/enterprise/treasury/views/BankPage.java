@@ -43,13 +43,7 @@ public class BankPage extends javax.swing.JPanel {
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xComboBox4 = new com.rameses.rcp.control.XComboBox();
-        xComboBox5 = new com.rameses.rcp.control.XComboBox();
+        xComboBox6 = new com.rameses.rcp.control.XComboBox();
 
         xTabbedPane1.setItems("sections");
 
@@ -98,13 +92,13 @@ public class BankPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xSeparator1);
 
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCheckValue(1);
-        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("entity.depository"); // NOI18N
+        xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText(" Is this a Depository Bank of the LGU?");
-        xCheckBox1.setUncheckValue(0);
         xFormPanel1.add(xCheckBox1);
 
         xSeparator2.setCaption("Depository Information");
@@ -127,11 +121,19 @@ public class BankPage extends javax.swing.JPanel {
 
         xComboBox1.setCaption("Check Deposit Type");
         xComboBox1.setDepends(new String[] {"entity.depository"});
-        xComboBox1.setDynamic(true);
         xComboBox1.setItems("listTypes.deposittype");
         xComboBox1.setName("entity.deposittype"); // NOI18N
+        xComboBox1.setDynamic(true);
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xComboBox1);
+
+        xComboBox6.setCaption("Deposit Slip Handler");
+        xComboBox6.setDepends(new String[] {"entity.depository"});
+        xComboBox6.setItems("depositHandlerList");
+        xComboBox6.setName("entity.depositsliphandler"); // NOI18N
+        xComboBox6.setVisibleWhen("#{entity.depository == 1}");
+        xComboBox6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xComboBox6);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -152,74 +154,6 @@ public class BankPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("General", jPanel1);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Deposit Slip Report Format");
-        jPanel3.setBorder(xTitledBorder1);
-
-        xComboBox2.setCaption("Cash ");
-        xComboBox2.setCaptionWidth(110);
-        xComboBox2.setItems("cashReportList");
-        xComboBox2.setName("entity.cashreport"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xComboBox2);
-
-        xComboBox3.setCaption("Cash Breakdown");
-        xComboBox3.setCaptionWidth(110);
-        xComboBox3.setItems("cashBreakdownReportList");
-        xComboBox3.setName("entity.cashbreakdownreport"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xComboBox3);
-
-        xComboBox4.setCaption("Check");
-        xComboBox4.setCaptionWidth(110);
-        xComboBox4.setItems("checkReportList");
-        xComboBox4.setName("entity.checkreport"); // NOI18N
-        xComboBox4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xComboBox4);
-
-        xComboBox5.setCaption("Cash Breakdown");
-        xComboBox5.setCaptionWidth(110);
-        xComboBox5.setItems("checkBreakdownReportList");
-        xComboBox5.setName("entity.checkbreakdownreport"); // NOI18N
-        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xComboBox5);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(153, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
-
-        xTabbedPane1.addTab("Print Options", jPanel2);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -239,16 +173,10 @@ public class BankPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XComboBox xComboBox2;
-    private com.rameses.rcp.control.XComboBox xComboBox3;
-    private com.rameses.rcp.control.XComboBox xComboBox4;
-    private com.rameses.rcp.control.XComboBox xComboBox5;
+    private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;

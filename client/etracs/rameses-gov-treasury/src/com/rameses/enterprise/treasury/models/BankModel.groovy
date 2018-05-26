@@ -8,27 +8,24 @@ import com.rameses.seti2.models.*;
         
 class BankModel extends CrudFormModel {
 
-    def cashReportList;
-    def cashBreakdownReportList;
-    def checkReportList;
-    def checkBreakdownReportList;
+    def depositHandlerList;
     
     private def loadItems(def openerName) {
         def arr = [];
         Inv.lookupOpeners( openerName ).each {
-            arr << it.caption;
+            arr << it.properties.name; 
         }
         return arr;
     }
     
     void afterInit() {
         try {
-            if(!cashReportList) cashReportList = loadItems( "deposit_slip:cash" ); 
-            if(!cashBreakdownReportList) cashBreakdownReportList = loadItems( "deposit_slip:cashbreakdown" ); 
-            if(!checkReportList) checkReportList = loadItems( "deposit_slip:check" ); 
-            if(!checkBreakdownReportList) checkBreakdownReportList = loadItems( "deposit_slip:checkbreakdown" ); 
+            if(!depositHandlerList) { 
+                depositHandlerList = loadItems( "depositslip:printout" ); 
+            }
+        } catch(Throwable e) {
+            e.printStackTrace(); 
         }
-        catch(e) {;}
     }
     
     @PropertyChangeListener
@@ -39,6 +36,7 @@ class BankModel extends CrudFormModel {
             }
             else {
                 entity.deposittype = null
+                entity.depositsliphandler = null; 
             }
         }
     ]

@@ -188,7 +188,7 @@ class AFControlService  {
 
 	@ProxyMethod
 	public def changeMode( p ) { 
-		checkCanPerformFunc(o);
+		checkCanPerformFunc( p ); 
 
 		//throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 

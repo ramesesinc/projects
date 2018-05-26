@@ -32,9 +32,22 @@ class DepositVoucherService  {
 	@DataContext("depositslip")
 	def depositSlipEm;
 
+	@DataContext("fund")
+	def fundEm;
+
 	@Service("JevService")
 	def jevSvc;
 
+
+
+	@ProxyMethod 
+	public def getUndepositedFunds() {
+        def adb = cvfEm.where("parent.state='POSTED' AND depositvoucherid IS NULL ");  
+        def funds = adb.select( "objid:{fund.objid},icount:{COUNT(*)}" ).groupBy('fund.objid').list(); 
+        if ( !funds ) return []; 
+
+		return fundEm.where(" objid IN ('"+ funds*.objid.join("','") +"') ").list();
+	}
 
 	@ProxyMethod
 	public def getOpenSplitChecks( def vlist ) {

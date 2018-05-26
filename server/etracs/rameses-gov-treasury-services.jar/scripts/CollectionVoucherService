@@ -39,9 +39,15 @@ class CollectionVoucherService  {
 
 	@ProxyMethod
 	public def create( def pp ) {
+		if ( !pp.ids ) throw new Exception('Please specify at least one remittance to liquidate'); 
+
+		def wheres = []; 
+		wheres << "objid IN ('"+ pp.ids.join("','") +"')"; 
+		wheres << "state = 'POSTED' AND collectionvoucherid IS NULL"; 
+
 		//search if there is at least one for posting
-		def cnt = remEm.where("state='POSTED' AND collectionvoucherid IS NULL").select("x:{COUNT(*)}").val();
-		if(cnt==0) throw new Exception("There are no remittances found that are POSTED within this date");
+		def cnt = remEm.where( wheres.join(' AND ')).select("x:{COUNT(*)}").val();
+		if ( cnt == 0 ) throw new Exception("There are no remittances found that are POSTED within this date"); 
 
 		def m = [:];
 		m.dtposted = dateSvc.getServerDate();
@@ -57,7 +63,7 @@ class CollectionVoucherService  {
 		m = cvEm.create( m );
 
 		//update the collection voucher id for each remittance
-		remEm.where("state='POSTED' AND collectionvoucherid IS NULL").update( [collectionvoucherid: m.objid ]);
+		remEm.where( wheres.join(' AND ')).update([ collectionvoucherid: m.objid ]);
 
 		def z = [collectionvoucherid: m.objid]
 		cvEm.insertCollectionVoucherFund( z );
@@ -80,11 +86,13 @@ class CollectionVoucherService  {
 			u.totalcheck += it.totalcheck;
 			u.totalcr += it.totalcr;
 			u.cashbreakdown << it.cashbreakdown;
-		};
-		if(u.totalcash == 0 ) throw new Exception("Total cash is zero");
+		} 
+
+		// there must be a cash or check amount, if result is zero then this is not valid 
+		if ((u.totalcash + u.totalcheck) == 0 ) throw new Exception("Total Cash must not be zero"); 
+
 		u.cashbreakdown = cashBreakdownSvc.summarize( u.cashbreakdown );
 		cvEm.find( [objid: m.objid ] ).update( u );
-
 		return m;
 	}
 

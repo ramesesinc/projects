@@ -124,7 +124,11 @@ class RemittanceService  {
 	public def submitForLiquidation( def o ) {
 		//check total breakdown before submitting
 		def r = remEm.find( [objid: o.objid ]).select("cashbreakdown,totalcash").first();
-		if( r.cashbreakdown.sum{it.amount} != r.totalcash )
+
+		def cbamount = r.cashbreakdown.sum{it.amount} 
+		if ( cbamount == null ) cbamount = 0.0;
+
+		if( cbamount != r.totalcash )
 			throw new Exception("Total cash breakdown must equal total cash");
 
 		def m = [ state: 'OPEN' ];	

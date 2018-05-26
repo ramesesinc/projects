@@ -15,13 +15,17 @@ class DepositVoucherModel extends CrudFormModel {
     @Service("DepositSlipService")
     def depositSlipSvc;  
     
+    void afterInit() {
+        loadChecks();
+    }
     
-
     def collectionListModel = [
         fetchList: { o->
             def m = [_schemaname: 'collectionvoucher_fund' ];
             m.where = [" depositvoucherid = :depositid", [depositid: entity.objid]];
-            return queryService.getList( m );
+            def list = queryService.getList( m );
+            checksCount = list.size();
+            return list;
         },
         onOpenItem: {o,col->
             def op = Inv.lookupOpener("collectionvoucher_fund:open", [entity: o] );
@@ -31,8 +35,10 @@ class DepositVoucherModel extends CrudFormModel {
     ] as BasicListModel;
         
     void updateVoucher(def amt ) {
-        entity.amountdeposited = amt;       
+        entity.amountdeposited = amt;  
+        loadChecks();
         depositSlipList.reload();
+        checkListModel.reload();
         binding.refresh("entity.amountdeposited");
     }
     
@@ -69,6 +75,7 @@ class DepositVoucherModel extends CrudFormModel {
     
     void removeDepositSlip() {
         if(!selectedItem) throw new Exception("Please select a deposit slip");
+        
         if(selectedItem.state == 'VALIDATED' )
             throw new Exception("Cannot delete this because it is already validated");
         def r = depositSlipSvc.removeDepositSlip( selectedItem );
@@ -98,6 +105,7 @@ class DepositVoucherModel extends CrudFormModel {
     public void printDepositSlip() {
         if(!selectedItem) throw new Exception("Please select an item");
         MsgBox.alert('print slip');
+        MsgBox.alert("check count is " + checksCount)
     }
     
     public void post() {
@@ -105,15 +113,27 @@ class DepositVoucherModel extends CrudFormModel {
         depositSvc.post( [objid: entity.objid ] );
     }
     
+
+    /***************************************************************************
+     *checks section
+    ***************************************************************************/
+    def checksList;
+    int checksCount;
     def selectedCheck;
+    
+    void loadChecks() {
+        def p = [depid:entity.objid ];
+        def m = [_schemaname: 'paymentcheck' ];
+        m.select = "objid,refno,refdate,bank.*,amount,deposited:{ CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END },depositslipid";
+        m.where = ["depositvoucherid = :depid " , p ];
+        m.orderBy = "refno";
+        checksList = queryService.getList( m );     
+        checksCount = checksList.size();
+    }
+    
     def checkListModel = [
         fetchList: { o->
-            def p = [depid:entity.objid ];
-            def m = [_schemaname: 'paymentcheck' ];
-            m.select = "objid,refno,refdate,bank.*,amount,deposited:{ CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END }";
-            m.where = ["depositvoucherid = :depid " , p ];
-            m.orderBy = "refno";
-            return queryService.getList( m );
+           return checksList;
         },
         onOpenItem: {o,col->
             
@@ -126,8 +146,9 @@ class DepositVoucherModel extends CrudFormModel {
             def v = [list: o*.objid, depositvoucherid: entity.objid ];
             def tot = depositSvc.addChecks( v );
             entity.totalcheck = tot;
-            binding.refresh("entity.totalcheck");
+            loadChecks();
             checkListModel.reload();
+            binding.refresh("entity.totalcheck|checksCount");
         }
         params.listHandler = [
             isMultiSelect: {
@@ -152,11 +173,14 @@ class DepositVoucherModel extends CrudFormModel {
     }
     
     void moveCheck() {
+        throw new Exception("depositslipid is " + selectedCheck);
         if(!selectedCheck) throw new Exception("Please select a check to remove");
+        if(selectedCheck.depositslipid) throw new Exception("Cannot remove this check. There is already an associated deposit slip");
         def tot = depositSvc.removeCheck( [objid:selectedCheck.objid, depositvoucherid:entity.objid] );
         entity.totalcheck = tot;
-        binding.refresh("entity.totalcheck");
+        loadChecks();
         checkListModel.reload();
+        binding.refresh("entity.totalcheck|checksCount");
     }
     
     void addExternalCheck() {

@@ -150,7 +150,7 @@ public class DepositSlipInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "deposittype"}
+                new Object[]{"name", "bank.deposittype"}
                 , new Object[]{"caption", "Type"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}

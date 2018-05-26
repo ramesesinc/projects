@@ -34,6 +34,7 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField5 = new com.rameses.rcp.control.XDecimalField();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField9 = new com.rameses.rcp.control.XDecimalField();
         jPanel2 = new javax.swing.JPanel();
@@ -46,14 +47,14 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
 
-        xDataTable1.setItems("entity.checks");
+        xDataTable1.setHandler("checkListModel");
         xDataTable1.setName("selectedCheck"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Checks and Other Payments");
         xDataTable1.setBorder(xTitledBorder1);
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "check.refno"}
+                new Object[]{"name", "refno"}
                 , new Object[]{"caption", "Check No"}
                 , new Object[]{"width", 80}
                 , new Object[]{"minWidth", 0}
@@ -68,7 +69,7 @@ public class DepositSlipPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "check.refdate"}
+                new Object[]{"name", "refdate"}
                 , new Object[]{"caption", "Check Date"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -83,7 +84,7 @@ public class DepositSlipPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "check.bank.name"}
+                new Object[]{"name", "bank.name"}
                 , new Object[]{"caption", "Bank"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -124,6 +125,12 @@ public class DepositSlipPage extends javax.swing.JPanel {
         xDecimalField5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         xDecimalField5.setPreferredSize(new java.awt.Dimension(150, 23));
         xFormPanel2.add(xDecimalField5);
+
+        xIntegerField1.setCaption("No. of checks");
+        xIntegerField1.setEditable(false);
+        xIntegerField1.setName("checksCount"); // NOI18N
+        xIntegerField1.setEnabled(false);
+        xFormPanel2.add(xIntegerField1);
 
         xDecimalField9.setCaption("Total Cash");
         xDecimalField9.setCaptionWidth(70);
@@ -187,9 +194,9 @@ public class DepositSlipPage extends javax.swing.JPanel {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         xFormPanel4.setOpaque(true);
@@ -268,6 +275,7 @@ public class DepositSlipPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XFormPanel xFormPanel4;
+    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;

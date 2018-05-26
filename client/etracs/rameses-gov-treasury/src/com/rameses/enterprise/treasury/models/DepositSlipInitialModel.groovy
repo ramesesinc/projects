@@ -18,6 +18,9 @@ class DepositSlipInitialModel {
     @Service("DepositSlipService")
     def depositSlipSvc;
     
+    @Service("QueryService")
+    def queryService;
+    
     def entity;
     def limit; //the maximum amount
     def handler;
@@ -39,7 +42,12 @@ class DepositSlipInitialModel {
        entity.numcheckslimit = 0;
        entity.amount = depositvoucher.amount - depositvoucher.amountdeposited;
        limit = entity.amount;
-       checkList = depositSlipSvc.getAvailableChecks( [depositvoucherid: depositvoucher.objid, fundid: fundid ] );
+       
+       def m = [_schemaname: 'paymentcheck'];
+       m.findBy = [depositvoucherid: depositvoucher.objid];
+       m.where = [ "depositslipid IS NULL "];
+       m.orderBy = "refno";
+       checkList = queryService.getList( m );
     } 
     
     
@@ -62,7 +70,7 @@ class DepositSlipInitialModel {
             throw new Exception("Please ensure that there are no balances remaining" );
         if( entity.amount > limit ) throw new Exception("Total amount must be less than "+limit);
         
-        entity.checks = checkList.findAll{ it.selected == true }.collect{ [amount:it.amount, checkid: it.refid, deposittype: it.deposittype] };
+        entity.checks = checkList.findAll{ it.selected == true }.collect{ [amount:it.amount, checkid: it.objid, deposittype: it.bank.deposittype] };
         def r = depositSlipSvc.create( entity );
         if(caller)caller.updateVoucher(r.amountdeposited);
         return "_close";

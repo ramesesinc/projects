@@ -10,15 +10,34 @@ class DepositSlipService  {
 	@DataContext("depositvoucher")
 	def depositVoucherEm;
 
+	@DataContext("paymentcheck")
+	def paymentCheckEm;
+
 	@Env
 	def env;
 
 	@Service("DateService")
 	def dateSvc;
 
+
+	void createCheckDepositSlip( def o, def checks, def checkType ) {
+		if(!checks) throw new Exception("There must be checks for check deposit slip");
+		if(!checkType) throw new Exception("checktype is required in create depositslip");
+		def m = [:];
+		m.putAll( o );
+		m.deposittype = 'CHECK';
+		m.checktype = checkType;
+		m.amount = checks.sum{ it.amount };
+		m.totalcheck = m.amount;
+		m = depositSlipEm.create(m);	
+		checks.each {
+			if(!it.checkid) throw new Exception("checkid is required in create depositlsip")
+			paymentCheckEm.find([objid: it.checkid]).update( [depositslipid: m.objid ]);
+		}
+	}
+
 	@ProxyMethod
 	public def create( def o ) {
-
 		def tmp = [:];
 		tmp.depositvoucherid = o.depositvoucherid;
 		tmp.createdby = [objid:env.USERID, name:env.FULLNAME];
@@ -59,28 +78,14 @@ class DepositSlipService  {
 					    }
 					}
 					arr.each { 
-						def m = [:];
-						m.putAll( tmp );
-						m.deposittype = 'CHECK';
-						m.checktype = k;
-						m.amount = it.sum{ it.amount };
-						m.totalcheck = m.amount;
-						m.checks = it;
-						depositSlipEm.create(m);
+						createCheckDepositSlip( tmp, it, k );
 					}
 				}
 			}
 			else {
 				grps.each {k,v->
 					if( !k ) throw new Exception("check type is required");
-					def m = [:];
-					m.putAll( tmp );
-					m.deposittype = 'CHECK';
-					m.checktype = k;
-					m.amount = v.sum{it.amount};
-					m.totalcheck = m.amount;
-					m.checks = v;
-					depositSlipEm.create(m);
+					createCheckDepositSlip( tmp, v, k );
 				}
 			}
 		}
@@ -88,16 +93,15 @@ class DepositSlipService  {
 		return depositVoucherEm.find( [objid: o.depositvoucherid] ).select("amountdeposited").first();
 	}
 
-	@ProxyMethod
-	public def getAvailableChecks( def o ) {
-		return depositSlipEm.getAvailableChecks(o);
-	}
 
 	@ProxyMethod
 	public def removeDepositSlip( def o ) {
 		def r = depositSlipEm.find([objid: o.objid]).first();
 		depositSlipEm.find([objid: o.objid]).delete();
 		depositVoucherEm.find( [objid: r.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
+
+		//update all checks for the deposit slip to null
+		paymentCheckEm.find([depositlsipid: o.objid]).update( [depositslipid: null ]);
 		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
 	}
 

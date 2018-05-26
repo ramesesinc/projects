@@ -11,6 +11,17 @@ class DepositSlipModel extends CrudFormModel {
     @Service("DepositSlipService")
     def depositSlipSvc;
     
+    def checkList;
+    int checksCount;
+    
+    void afterInit() {
+        def m = [_schemaname: 'paymentcheck'];
+        m.findBy = [depositslipid : entity.objid];
+        m.orderBy = "refno";
+        checkList = queryService.getList( m );
+        checksCount = checkList.size();
+    }
+    
     void approve() {
         depositSlipSvc.approve( [objid: entity.objid ] );
         entity.state = 'APPROVED'
@@ -33,4 +44,11 @@ class DepositSlipModel extends CrudFormModel {
         }    
         return Inv.lookupOpener("deposit_validation", [ handler: h ] );
     }
+    
+    def checkListModel = [
+        fetchList : {
+            return checkList;
+        }
+    ] as BasicListModel;
+    
 }    

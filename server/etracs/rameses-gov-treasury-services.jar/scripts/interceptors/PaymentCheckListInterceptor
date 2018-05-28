@@ -61,7 +61,9 @@ class PaymentCheckListInterceptor {
 	public void removeRecord( evt ) { 
 		def x = evt.args[0];
 		def m = pmtChk.find( [objid: x.objid ] ).first();
-		if( m.amtused  > 0 ) throw new Exception("Cannot remove this check. It is already used");
+		//if( m.amtused  > 0 ) throw new Exception("Cannot remove this check. It is already used");
+		if( m.depositvoucherid  ) throw new Exception("Cannot remove this check. There is an associated depositvoucher");
+		if( m.depositslipid  ) throw new Exception("Cannot remove this check. There is an associated depositslip");
 	}
 
 }

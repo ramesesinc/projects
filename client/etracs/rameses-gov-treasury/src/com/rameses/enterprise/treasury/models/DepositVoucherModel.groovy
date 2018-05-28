@@ -177,7 +177,6 @@ class DepositVoucherModel extends CrudFormModel {
     }
     
     void moveCheck() {
-        throw new Exception("depositslipid is " + selectedCheck);
         if(!selectedCheck) throw new Exception("Please select a check to remove");
         if(selectedCheck.depositslipid) throw new Exception("Cannot remove this check. There is already an associated deposit slip");
         def tot = depositSvc.removeCheck( [objid:selectedCheck.objid, depositvoucherid:entity.objid] );
@@ -188,7 +187,15 @@ class DepositVoucherModel extends CrudFormModel {
     }
     
     void addExternalCheck() {
-        
+        def h = { o, saveType ->
+            o.depositvoucherid = entity.objid;
+            o.amtused = o.amount;
+            o.state = 'FOR-DEPOSIT';
+            loadChecks();
+            checkListModel.reload();
+            binding.refresh("entity.totalcheck|checksCount");
+        }
+        Modal.show("paymentcheck:create", [handler: h, external:true ])
     }
     
     

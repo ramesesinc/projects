@@ -103,6 +103,7 @@ public class PaymentCheckPage extends javax.swing.JPanel {
         xLabel1.setCaption("Balance Unused");
         xLabel1.setExpression("#{ entity.balance }");
         xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel1.setVisibleWhen("#{ external == false }");
         xLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel1.add(xLabel1);
@@ -112,6 +113,7 @@ public class PaymentCheckPage extends javax.swing.JPanel {
         xCheckBox1.setDisableWhen("#{ mode=='read' || entity.amtused != 0 }");
         xCheckBox1.setName("entity.split"); // NOI18N
         xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setVisibleWhen("#{ external == false }");
         xCheckBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xCheckBox1.setText("Split Check");
         xFormPanel1.add(xCheckBox1);

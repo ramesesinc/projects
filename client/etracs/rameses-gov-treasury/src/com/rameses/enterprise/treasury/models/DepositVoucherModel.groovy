@@ -91,8 +91,7 @@ class DepositVoucherModel extends CrudFormModel {
     
     def validateDepositSlip() {
         if( !selectedItem ) throw new Exception("Please choose a bank deposit entry");
-        if( selectedItem.totalcash + selectedItem.totalcheck )
-            throw new Exception("Please make sure the amount is equal to total cash + total check");
+        
         def h = { o->
             def m = [objid: selectedItem.objid ];
             m.validation = o;
@@ -112,12 +111,6 @@ class DepositVoucherModel extends CrudFormModel {
         op.handle.print(); 
     }
     
-    public void post() {
-        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
-        depositSvc.post( [objid: entity.objid ] );
-    }
-    
-
     /***************************************************************************
      *checks section
     ***************************************************************************/
@@ -196,6 +189,13 @@ class DepositVoucherModel extends CrudFormModel {
             binding.refresh("entity.totalcheck|checksCount");
         }
         Modal.show("paymentcheck:create", [handler: h, external:true ])
+    }
+    
+    public def post() {
+        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
+        depositSvc.post( [objid: entity.objid ] );
+        MsgBox.alert("Posting successful");
+        return "_close";
     }
     
     

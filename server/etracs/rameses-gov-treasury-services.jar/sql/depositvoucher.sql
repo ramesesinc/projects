@@ -67,23 +67,36 @@ WHERE objid IN
 
 [getBankAccountLedgerItem]
 SELECT 
-    ds.fundid,  
+  dv.fundid,
+  a.bankacctid,
+  ba.acctid AS itemacctid,
+  a.dr,
+  0 AS cr,
+  'bankaccount_ledger' AS _schemaname
+FROM     
+(SELECT 
+	 ds.depositvoucherid, 
     ds.bankacctid,
-    ba.acctid AS itemacctid,
-     SUM(ds.amount) AS dr,
-     0 AS cr,
-     'bankaccount_ledger' AS _schemaname 
-FROM depositslip ds
-INNER JOIN bankaccount ba ON ba.objid = ds.bankacctid 
-WHERE ds.depositvoucherid = $P{depositvoucherid}
-AND ds.fundid = $P{fundid}
+    SUM(ds.amount) AS dr
+FROM depositslip ds 
+WHERE ds.depositvoucherid = $P{depositvoucherid} 
+GROUP BY ds.depositvoucherid, ds.bankacctid) a
+INNER JOIN depositvoucher dv ON a.depositvoucherid = dv.objid 
+INNER JOIN bankaccount ba ON a.bankacctid = ba.objid
 
 [getCashLedgerItem]
 SELECT 
-  cv.fundid,
-  (SELECT objid FROM itemaccount WHERE fund_objid = cv.fundid AND TYPE = 'CASH_IN_TREASURY' LIMIT 1 ) AS itemacctid,
+  dv.fundid,
+  (SELECT objid FROM itemaccount WHERE fund_objid = dv.fundid AND TYPE = 'CASH_IN_TREASURY' LIMIT 1 ) AS itemacctid,  
   0 AS dr,
-  (cv.totalcash + cv.totalcheck) AS cr,
+  a.cr,
   'cash_treasury_ledger' AS _schemaname
-FROM depositvoucher_fund cv 
-WHERE cv.parentid = $P{depositvoucherid} AND cv.fundid=$P{fundid}
+FROM     
+(SELECT 
+	 ds.depositvoucherid,
+    SUM(ds.amount) AS cr
+FROM depositslip ds 
+WHERE ds.depositvoucherid = $P{depositvoucherid}  
+GROUP BY ds.depositvoucherid) a
+INNER JOIN depositvoucher dv ON a.depositvoucherid = dv.objid 
+

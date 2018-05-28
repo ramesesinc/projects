@@ -38,8 +38,6 @@ class DepositVoucherService  {
 	@Service("JevService")
 	def jevSvc;
 
-
-
 	@ProxyMethod 
 	public def getUndepositedFunds() {
         def adb = cvfEm.where("parent.state='POSTED' AND depositvoucherid IS NULL ");  
@@ -103,6 +101,48 @@ class DepositVoucherService  {
 
 		summarizeTotal( m );
 		return m;
+	}
+
+	@ProxyMethod
+	public def post(def o ) {
+		//test if there are undeposited checks
+		int t = paymentCheckEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
+		if(t > 0 )
+			throw new Exception("All checks associated with this deposit must have deposit slips");
+
+		//test if there are deposit slips not validated
+		t = depositSlipEm.find( [depositvoucherid: o.objid] ).where("validation.refno IS NULL").select("v:{COUNT(*)}").val();
+		if(t > 0 )
+			throw new Exception("All deposit slips associated with this deposit must be validated");
+
+		//test amount deposited must equal amount to deposit
+		def ref = depositEm.find([objid: o.objid]).first();
+		if( ref.amount != ref.amountdeposited )
+			throw new Exception("Amount of deposit must equal to amount deposited");
+
+
+		//create the jev and post to jev	
+		def jev = [items:[]]	
+		jev.fundid = ref.fundid;
+		jev.state = 'OPEN'
+		jev.refid = ref.objid;
+		jev.refno = ref.controlno;
+
+		jev.jevdate = ref.controldate;
+		jev.reftype = "DEPOSIT";
+		jev.txntype = "DEPOSIT";
+
+		jev.postedby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
+		jev.amount = ref.amount;
+
+		//add all the items
+		jev.items.addAll( depositEm.getBankAccountLedgerItem([depositvoucherid: o.objid] ));
+		jev.items.addAll( depositEm.getCashLedgerItem([depositvoucherid: o.objid] ));
+
+		jevSvc.create( jev );
+
+		depositEm.find([objid: o.objid]).update([state:'POSTED']);
+
 	}
 
 }

@@ -8,5 +8,11 @@ import com.rameses.seti2.models.*;
 
 class PaymentCheckModel extends CrudFormModel { 
 
+    boolean external = false;
+    def handler;
+    
+    void beforeSave(def saveType) {
+        if( handler ) handler( entity, saveType );
+    }
     
 } 

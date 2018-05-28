@@ -68,6 +68,10 @@ class JevService  {
 
 	@ProxyMethod 
 	public def create( def o ) { 
+		if(!o.dtposted) {
+			o.dtposted = dateSvc.getServerDate();
+		}
+			
 		def emMap = [:];
 		def emLookup = { name ->
 			if( !emMap.containsKey(name)) {

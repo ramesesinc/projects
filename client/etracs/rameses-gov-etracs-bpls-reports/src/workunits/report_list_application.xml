@@ -52,6 +52,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
                 [type:'combo', caption:'Quarter', name:'entity.qtr', required:true, items:'periodUtil.quarters', depends:'entity.period', visibleWhen:'#{ entity.period.type=="quarterly" }', preferredSize:'100,20', captionWidth:100],
                 [type:'combo', caption:'Month', name:'entity.month', required:true, items:'periodUtil.months', expression:'#{item.title}', depends:'entity.period', visibleWhen:'#{ entity.period.type=="monthly" }', preferredSize:'100,20', captionWidth:100],
                 [type:'date', caption:'Date', name:'entity.date', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="daily" }', preferredSize:'100,20', captionWidth:100],
+                [type:'date', caption:'Start Date', name:'entity.startdate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
+                [type:'date', caption:'End Date', name:'entity.enddate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
 
                 [type:'checklist', caption:'App Type', name:'entity.apptypes', immediate:true, preferredSize:'0,20', items:'appTypeList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
                 [type:'checklist', caption:'App Status', name:'entity.appstates', immediate:true, preferredSize:'0,20', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
@@ -106,24 +108,9 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
     } 
     
     void buildReportData(entity, asyncHandler) { 
-        def startdate = null; 
-        def enddate = null; 
-        if ( entity.period.type == 'yearly' ) {
-            startdate = periodUtil.format( periodUtil.getYearStartDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
-            enddate   = periodUtil.format( periodUtil.getYearEndDate( entity.year ), 'yyyy-MM-dd HH:mm:ss' );
-        } else if ( entity.period.type == 'quarterly' ) {
-            startdate = periodUtil.format( periodUtil.getQtrStartDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
-            enddate   = periodUtil.format( periodUtil.getQtrEndDate( entity.year, entity.qtr ), 'yyyy-MM-dd HH:mm:ss' );
-        } else if ( entity.period.type == 'monthly' ) { 
-            startdate = periodUtil.format( periodUtil.getMonthStartDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
-            enddate   = periodUtil.format( periodUtil.getMonthEndDate( entity.year, entity.month.index ), 'yyyy-MM-dd HH:mm:ss' );
-        } else if ( entity.period.type == 'daily' ) { 
-            startdate = ''+ periodUtil.parse( entity.date ) +' 00:00:00'; 
-            enddate   = ''+ periodUtil.parse( entity.date ) +' 23:59:59'; 
-        } 
-        
-        entity.startdate = startdate;
-        entity.enddate = enddate; 
+        def m = periodUtil.build( entity.period.type, entity ); 
+        entity.startdate = m.startdate;
+        entity.enddate = m.enddate; 
         svc.getReport( entity, asyncHandler );
     }
     
@@ -148,6 +135,8 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
             periodtitle = periodUtil.getPeriodTitle([ year: entity.year, month: entity.month.index ]);
         } else if ( entity.period.type == 'daily' ) {
             periodtitle = periodUtil.getPeriodTitle([ date: entity.date ]);
+        } else if ( entity.period.type == 'range' ) {
+            periodtitle = periodUtil.getPeriodTitle([ startdate: entity.startdate, enddate: entity.enddate ]);
         } 
 
         def m = [

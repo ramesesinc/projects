@@ -1,0 +1,31 @@
+<workunit>
+    <invokers>
+        <invoker type="collectiontype:handler" caption="Business" name="bpls" formtype="serial" formno="51"  index="100" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class  BusinessCollectionTypeController {
+        
+            @Caller 
+            def caller;
+        
+            public def getEntity() {
+                return caller.entity;
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.enterprise.treasury.collection.EmptyCollectionTypeHandler"/>
+    </pages>
+    
+</workunit>

@@ -3,34 +3,22 @@ import com.rameses.common.*;
 
 class BPPermitSummaryReportService {
 	
-	@ActiveDB("bpreport")
-	def em
+	@DataContext('report_bpsummary')
+	def report_db;	
 
-	@Service("DateService")
-	def dtSvc 
-
-	@ProxyMethod
+	@ProxyMethod 
 	public def getReport(params) { 
 		if ( !params.permittype?.objid ) throw new Exception('permittype parameter is required'); 
 		if ( !params.year ) throw new Exception('year parameter is required');
 
 		if ( !params.filter ) params.filter = '';
 		params.permittypeid = params.permittype.objid; 
+		
+		def list = report_db.getReport( params ); 
+		if ( !list ) throw new Exception('No available records that matches your criteria');
 
-		def list = null; 
-		def template = params.template?.objid; 
-		if ( template == 'B' ) {
-			list = em.getBusinessPermitSummaryB( params );
-		} else {
-			list = em.getBusinessPermitSummary( params ); 	
-		} 		
-		if( ! list ) throw new Exception('No records found.');
-
-		list.each { x-> 
-			x.newcount = (x.newcount) ? (Integer)x.newcount : 0;
-			x.renewcount =  (x.renewcount) ? (Integer)x.renewcount : 0;
-			x.retirecount = (x.retirecount)? (Integer)x.retirecount : 0;
-			if ( x.iqtr ) x.sqtr = 'Q'+x.iqtr; 
+		list.each { o-> 
+			if ( o.iqtr ) o.sqtr = 'Q'+o.iqtr; 
 		} 
 		return list;
 	}

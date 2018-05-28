@@ -76,7 +76,6 @@ public class BusinessMasterService {
 	@ProxyMethod
 	public def open(def o) {
 		o = em.read( o );
-
 		if(!o.orgtype) throw new Exception("Org type does not exist. Please check record");
 		if (o.address?.objid) {
 			def a = bizAddress.open( o.address ); 

@@ -1,12 +1,8 @@
 <workunit>
     <invokers>
-        <invoker type="business:change" caption="Change Owner" target="popup"
-                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="10" action="init"/>
-
-        <!--
-        <invoker type="business:change" caption="Update Owner Info" target="popup"
-                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="11" action="initUpdate"/>
-        -->         
+        <invoker type="business:change" caption="Change Owner" action="init" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changeowner" 
+                 index="10" target="popup"/>
     </invokers>
     
     <code>

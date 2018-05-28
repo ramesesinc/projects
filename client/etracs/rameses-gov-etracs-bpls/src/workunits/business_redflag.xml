@@ -39,9 +39,16 @@ class BusinessRedflagController {
     void init() {
         mode = 'create'
         entity.objid = "BRF"+new UID();
-        entity.bin = caller?.entity.bin;
-        entity.businessname = caller?.entity.businessname;
-        entity.ownername = caller?.entity.owner.name;
+        entity.bin = entity.businessname = entity.ownername = null; 
+        
+        def ce = null; 
+        try { 
+            ce = caller.entity; 
+        } catch(Throwable t){;} 
+        
+        entity.bin = ce?.bin;
+        entity.businessname = ce?.businessname;
+        entity.ownername = ce?.owner?.name;
     }
     
     void open() {

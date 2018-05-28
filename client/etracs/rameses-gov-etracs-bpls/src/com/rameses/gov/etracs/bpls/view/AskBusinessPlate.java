@@ -31,16 +31,29 @@ public class AskBusinessPlate extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         jLabel1 = new javax.swing.JLabel();
 
+        xComboBox1.setCaption("Type");
+        xComboBox1.setCaptionFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        xComboBox1.setCaptionWidth(130);
+        xComboBox1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        xComboBox1.setItems("typeList");
+        xComboBox1.setName("entity.type"); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(200, 24));
+        xComboBox1.setRequired(true);
+        xComboBox1.setVisibleWhen("#{allowTypeSelection == false ? false : true}");
+        xFormPanel1.add(xComboBox1);
+
         xTextField1.setCaption("Plate No");
-        xTextField1.setCaptionFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
-        xTextField1.setCaptionWidth(120);
-        xTextField1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         xTextField1.setName("entity.plateno"); // NOI18N
+        xTextField1.setCaptionFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        xTextField1.setCaptionWidth(130);
+        xTextField1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xTextField1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(200, 24));
         xFormPanel1.add(xTextField1);
 
@@ -48,7 +61,7 @@ public class AskBusinessPlate extends javax.swing.JPanel {
 
         xTextArea1.setCaption("Remarks");
         xTextArea1.setCaptionFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
-        xTextArea1.setCaptionWidth(120);
+        xTextArea1.setCaptionWidth(130);
         xTextArea1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xTextArea1.setExitOnTabKey(true);
         xTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -77,13 +90,14 @@ public class AskBusinessPlate extends javax.swing.JPanel {
                 .addGap(8, 8, 8)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

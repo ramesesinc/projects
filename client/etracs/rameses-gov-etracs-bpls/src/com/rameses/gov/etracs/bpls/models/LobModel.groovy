@@ -66,4 +66,8 @@ public class LobModel extends CrudFormModel {
             return list;
         }
     ] as BasicListModel; 
+    
+    public void afterOpen() { 
+        listHandler.reload(); 
+    }
 }

@@ -1,10 +1,10 @@
 <workunit>
     <invokers>
-        <invoker type="business:change" caption="Change Business Name" target="popup"
-                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="0" action="initBusinessname"/>
+        <invoker type="business:change" caption="Change Business Name" action="initBusinessname" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changename" index="0" target="popup"/>
 
-        <invoker type="business:change" caption="Change Trade Name (Registered Name)" target="popup"
-                 role="BUSINESSINFO,ASSESSOR,LICENSING" index="1" action="initTradename"/>
+        <invoker type="business:change" caption="Change Trade Name (Registered Name)" action="initTradename" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changename" index="1" target="popup"/>
         
     </invokers>
     

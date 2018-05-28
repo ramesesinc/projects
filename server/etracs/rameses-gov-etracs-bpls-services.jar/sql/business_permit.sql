@@ -185,6 +185,44 @@ where p.objid = $P{permitid}
 	and a.txndate <= pa.txndate 
 
 
+[getBuildLobs]
+select t2.lobid, t2.name, t2.txndate 
+from ( 
+	select 
+		t1.lobid, t1.name, max(t1.txndate) as txndate, sum(t1.iflag) as iflag 
+	from ( 
+		select distinct 
+			bac.txndate, bac.apptype, alob.assessmenttype, alob.lobid, lob.name, 
+			(case when alob.assessmenttype in ('NEW','RENEW') then 1 else -1 end) as iflag 
+		from business_permit bperm 
+			inner join business_application ba on ba.objid = bperm.applicationid 
+			inner join business_application bap on bap.objid = ba.parentapplicationid 
+			inner join business_application bac on (bac.parentapplicationid = bap.objid or bac.objid = bap.objid) 
+			inner join business_application_lob alob on alob.applicationid = bac.objid 
+			inner join lob on lob.objid = alob.lobid  
+		where bperm.objid = $P{permitid} 
+			and bac.txndate < ba.txndate 
+			and bac.state = 'COMPLETED' 
+
+		union all 
+
+		select distinct 
+			ba.txndate, ba.apptype, alob.assessmenttype, alob.lobid, lob.name, 
+			(case when alob.assessmenttype in ('NEW','RENEW') then 1 else -1 end) as iflag 
+		from business_permit bperm 
+			inner join business_application ba on ba.objid = bperm.applicationid 
+			inner join business_application_lob alob on alob.applicationid = ba.objid 
+			inner join lob on lob.objid = alob.lobid  
+		where bperm.objid = $P{permitid} 
+			and ba.state = 'COMPLETED' 
+
+	)t1 
+	group by t1.lobid, t1.name 
+	having sum(t1.iflag) > 0 
+)t2 
+order by t2.txndate, t2.name 
+
+
 [getPermits]
 select p.*  
 from business_permit p 
@@ -208,3 +246,17 @@ select p.* from (
 where p.applicationid=tmp1.applicationid 
 	and p.voided = 0 
 order by p.refdate, p.refno 
+
+
+[getPendingRequirements]
+select breq.reftype, breq.title  
+from ( 
+	select 
+		(case when b.objid is null then a.objid else b.objid end) as appid 
+	from business_application a 
+		left join business_application b on b.objid = a.parentapplicationid 
+	where a.objid = $P{applicationid}  
+)tmp1 
+	inner join business_requirement breq on breq.applicationid = tmp1.appid 
+where (breq.completed is null or breq.completed <> 1) 
+order by breq.title 

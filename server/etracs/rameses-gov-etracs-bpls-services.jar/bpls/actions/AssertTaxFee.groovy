@@ -30,6 +30,8 @@ public class AssertTaxFee implements RuleActionHandler {
 			bt.data = it;
 			bt.highest = false;
 			bt.lowest = false;
+			bt.tag = it.tag; 
+			bt.flag = it.flag;
 			testlist << bt;
 			facts << bt;
 		}

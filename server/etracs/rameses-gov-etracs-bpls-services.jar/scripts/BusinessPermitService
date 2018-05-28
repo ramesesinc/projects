@@ -53,9 +53,19 @@ class BusinessPermitService  {
 	def env;
 
 	@ProxyMethod
+	public def init( params ) { 
+		def adb = permit_db.find([ businessid: params.businessid ]);
+		def perm = adb.where('plateno is not null').orderBy('activeyear desc, dtissued desc').first(); 
+		params.prevplateno = perm?.plateno; 
+		return params; 
+	}
+
+	@ProxyMethod
 	public def create( o ) {
 		if ( !o.businessid ) throw new Exception("Please specify businessid");
 		if ( !o.applicationid ) throw new Exception("Please specify applicationid");
+
+		boolean temporary = ( o.temporary.toString() == 'true'); 
 
 		//check permit if exist to prevent duplication
 		def perminfo = em.findPermit( o ); 
@@ -95,10 +105,10 @@ class BusinessPermitService  {
 			if ( !lgucode ) throw new Exception("LGU code is null. Please check OrgService.getRoot. Ensure there is a root org");
 
 			lgucode = lgucode.replace("-", "");	
-			def yr = dateSvc.serverYear;
-			def mnth = dateSvc.serverMonth;
-			def smon = ( mnth < 10 ) ? "0"+mnth : mnth+"";
-			def prefix = "BP-"+app.appyear;
+			def prefix = "BP-" + app.appyear;
+			if ( temporary ) { 
+				prefix = "TMP-BP-"+ app.appyear;
+			}
 			permitno = prefix+"-"+seqSvc.getNextFormattedSeries(prefix)+"-"+permitver; 
 		}
 
@@ -119,6 +129,10 @@ class BusinessPermitService  {
 		permit.permitno = permitno;
 		permit.plateno = plateno; 
 		permit.remarks = o.remarks; 
+		if ( temporary ) {
+			permit.permittype = 'TEMPORARY'; 
+			permit.expirydate = dateSvc.add( permit.dtissued, '90d' ); 
+		}
 		em.create( permit ); 
 		return permit; 
 	} 
@@ -173,6 +187,7 @@ class BusinessPermitService  {
 		if ( !lobs ) throw new Exception('No available active LOB'); 
 
 		perm.lobs = lobs; 
+		perm.parentapplicationid = app.parentapplicationid; 
  
 		def addr = em.findBusinessAddress([ objid: perm.address?.objid ]);
 		if ( addr ) { 
@@ -207,6 +222,10 @@ class BusinessPermitService  {
 			perm.payments = perm.payments.findAll{ it.applicationid==o.applicationid } 
 		} 
 		perm.barcode = '51005:'+perm.bin;
+
+		if ( perm.permittype.toString().toUpperCase() == 'TEMPORARY') {
+			perm.pendingrequirements = em.getPendingRequirements([ applicationid: perm.applicationid ]); 
+		} 
 		return perm;
 	}
 
@@ -286,7 +305,8 @@ class BusinessPermitService  {
 		def perm = permit_db.find([ objid: params.permitid ]).first(); 
 		if ( !perm ) return null; 
 
-		def lobs = []; 
+		/*
+		def lobs = []; 		
 		em.getAppLOBs([ permitid: perm.objid ]).each{ o-> 
 			if ( o.apptype.toString().toUpperCase().matches('RETIRE|RETIRELOB')) {
 				def x = lobs.find{ it.lobid==o.lobid } 
@@ -295,7 +315,11 @@ class BusinessPermitService  {
 			} else { 
 				lobs << o; 
 			} 
-		} 
+		}
+		*/ 
+
+		def lobs = em.getBuildLobs([ permitid: perm.objid ]); 
+		if ( !lobs ) throw new Exception('failed to build permit lobs'); 
 
 		permitlob_db.find([ parentid: perm.objid ]).delete(); 
 		lobs.each{ o-> 
@@ -306,5 +330,32 @@ class BusinessPermitService  {
 
 		def xdb = permitlob_db.find([ parentid: perm.objid ]); 
 		return xdb.orderBy(' txndate ').list(); 
+	} 
+
+	@ProxyMethod 
+	public def issueOfficialPermit( params ) { 
+		if ( !params.permitid ) throw new Exception('permitid parameter is required'); 
+
+		def perm = permit_db.find([ objid: params.permitid ]).first();  
+		if ( !perm ) throw new Exception('Business Permit transaction does not exist'); 
+
+		if ( !perm.permittype.toString().equalsIgnoreCase("TEMPORARY")) 
+			throw new Exception('Official permit has already been issued to this application'); 
+
+		def m = [:]; 
+		def prefix = "TMP-"; 
+		m.permitno = perm.permitno;
+		if ( m.permitno.startsWith( prefix )) {
+			m.permitno = m.permitno.replaceFirst( prefix, "");  
+		} 
+		m.dtissued = dateSvc.getServerDate(); 
+		m.expirydate = dateSvc.getMonthEndDate( dateSvc.parse('yyyy-MM-dd', perm.activeyear+"-12-01") );	
+		m.permittype = 'STANDARD'; 		
+		if ( params.plateno ) m.plateno = params.plateno; 
+		if ( params.remarks ) m.remarks = params.remarks; 
+
+		permit_db.find([ objid: params.permitid ]).update( m ); 
+		params.putAll( m ); 
+		return params; 
 	}
 } 

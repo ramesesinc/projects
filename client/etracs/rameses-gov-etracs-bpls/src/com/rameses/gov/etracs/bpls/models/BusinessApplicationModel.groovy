@@ -211,10 +211,11 @@ class  BusinessApplicationModel extends WorkflowController {
     } 
     
     def issuePermit() {
-        if( entity.txnmode == 'CAPTURE' ) {
+        def m = [applicationid: entity.objid, businessid: entity.business.objid ]; 
+        if ( entity.txnmode == 'CAPTURE' ) {
             boolean pass = false;
             def h = { pass = true; }
-            def p = [applicationid:entity.objid, businessid:entity.business.objid ];
+            def p = [applicationid: m.applicationid, businessid: m.businessid ];
             Modal.show( "business_permit:capture", [entity:p, handler:h] ); 
             if(!pass) throw new BreakException();
             
@@ -222,16 +223,20 @@ class  BusinessApplicationModel extends WorkflowController {
             return printPermit();
         }
         
+        def tmp = permitSvc.init( m ); 
+        def prevplateno = tmp?.prevplateno; 
+        
         def printout = null;
         if ( !entity.parentapplicationid ) {
             def h = { o->
                 def p = [applicationid:entity.objid, businessid:entity.business.objid ];
                 p.plateno = o.plateno;
                 p.remarks = o.remarks;
+                p.temporary = ( o.type.toString().toUpperCase() == 'TEMPORARY'); 
                 entity.permit = permitSvc.create( p );
                 printout = printPermit();
             }
-            Modal.show( "businessplate:ask", [handler: h] );
+            Modal.show( "businessplate:ask", [handler: h, entity: [plateno: prevplateno]]);
             if( printout ) return printout;
             
         } else {

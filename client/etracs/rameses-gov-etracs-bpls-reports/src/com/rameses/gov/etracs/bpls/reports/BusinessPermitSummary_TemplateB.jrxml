@@ -245,7 +245,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{TRETIRECOUNT}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="381"
 						y="0"
@@ -279,7 +279,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TCAPITAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TCAPITAL} ? $V{TCAPITAL} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -297,7 +297,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TGROSS}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TGROSS} ? $V{TGROSS} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -315,7 +315,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TTAX}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TTAX} ? $V{TTAX} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -333,7 +333,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TFEE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TFEE} ? $V{TFEE} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -351,7 +351,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TOTHERCHARGE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($V{TOTHERCHARGE} ? $V{TOTHERCHARGE} : 0.0)]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupFooter>
@@ -746,7 +746,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{capital}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{capital} ? $F{capital} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -764,7 +764,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{retireamount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{retireamount} ? $F{retireamount} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -890,7 +890,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{gross}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{gross} ? $F{gross} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -908,7 +908,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{tax}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{tax} ? $F{tax} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -926,7 +926,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{fee}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{fee} ? $F{fee} : 0.0)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -944,7 +944,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{othercharge}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[($F{othercharge} ? $F{othercharge} : 0.0)]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -957,7 +957,7 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="473"
+						x="762"
 						y="6"
 						width="67"
 						height="10"
@@ -979,7 +979,7 @@
 						mode="Transparent"
 						x="0"
 						y="6"
-						width="473"
+						width="761"
 						height="10"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -992,7 +992,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Arial" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["GENERATED BY : ETRACS System 2.5               PRINTED BY : " + $P{PRINTEDBY} + "     PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["GENERATED BY : ETRACS 2.5          PRINTED BY : " + $P{PRINTEDBY} + "          PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
 				</textField>
 			</band>
 		</pageFooter>

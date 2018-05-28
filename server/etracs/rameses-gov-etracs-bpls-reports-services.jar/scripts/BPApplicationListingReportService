@@ -20,7 +20,7 @@ class BPApplicationListingReportService {
 
     @Async
 	@ProxyMethod
-	public def getReport( params ) { 
+	public def getReport( params ) { 	
 		if ( !params.permittype?.objid ) 
 			throw new Exception('permit type parameter is required'); 
 
@@ -33,16 +33,15 @@ class BPApplicationListingReportService {
 		params.startdate = startdate; 
 		params.enddate = resolveDate( dateSvc.add( enddate, '1d' )); 
 		params.permittypeid = params.permittype.objid;  
-		params.year = Integer.parseInt( startdate.toString().split('-')[0]); 
 
 		if ( params.apptypes ) {
-			params.apptypefilter = params.apptypes.collect{"'"+it.objid+"'"}.join(','); 
+			params.apptypefilter = params.apptypes.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
 		} else {
 			params.apptypefilter = "''"; 
-		}
+		} 
 
 		if ( params.appstates ) {
-			params.appstatefilter = params.appstates.collect{"'"+it.objid+"'"}.join(','); 
+			params.appstatefilter = params.appstates.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
 		} else {
 			params.appstatefilter = "''"; 
 		} 

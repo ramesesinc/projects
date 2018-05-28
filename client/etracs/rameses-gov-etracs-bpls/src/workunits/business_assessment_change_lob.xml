@@ -2,7 +2,8 @@
     
     <invokers>
         <invoker type="business_assessment:change" caption="Change Line of Business" 
-            target="popup" index="0" action="init" />
+                 action="init" role="ASSESSOR,BUSINESSINFO" permission="assessment.changelob" 
+                 target="popup" index="0" />
                 
         <invoker type="lobActions" caption="Add" action="lob.add" immediate="true"/>
         <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 

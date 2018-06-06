@@ -129,6 +129,7 @@ class BusinessOnlinePaymentInterceptor {
 	public void afterPostPayment( def evt ) { 
 		def o = evt.args[0]; 
 		def res = evt.result; 
+		o.reftype = 'eor';
 		o.receiptno = res.receiptno; 
 		o.receiptdate = res.receiptdate;
 		postPaymentSvc.postPayment( o ); 

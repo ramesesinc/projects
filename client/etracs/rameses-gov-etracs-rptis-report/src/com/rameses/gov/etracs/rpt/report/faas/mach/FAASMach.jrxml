@@ -32,6 +32,7 @@
 	<parameter name="AnnotationList" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="Signatories" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PRINTPAGE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="JSON_SEVICE_PATH" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="show_interim_watermark" class="java.lang.Boolean"/>
 	<field name="txntype.displaycode" class="java.lang.String"/>
@@ -104,6 +105,7 @@
 	<field name="provrecommender.title" class="java.lang.String"/>
 	<field name="provrecommender.name" class="java.lang.String"/>
 	<field name="provrecommender.dtsigned" class="java.util.Date"/>
+	<field name="objid" class="java.lang.String"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >

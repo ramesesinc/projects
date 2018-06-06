@@ -10,24 +10,24 @@
 
 
 
-"entity.tdno|entity.taxpayername" [entity.certtype.type == 'byfaas']{
-    visible:true;
-}
 
-
-"entity.tdno|entity.taxpayername" [entity.certtype.type != 'byfaas']{
+"entity.(tdno|taxpayer.*)|taxpayers"[true == true]{
     visible:false;
 }
 
-
-"entity.taxpayer" [entity.certtype.type == 'byfaas']{
-    visible:false;
-}
-
-
-"entity.taxpayer" [entity.certtype.type != 'byfaas']{
+"entity.tdno|entity.(taxpayername|taxpayeraddress)" [entity.certtype && entity.certtype.type == 'byfaas']{
     visible:true;
 }
+
+"entity.taxpayer|entity.taxpayeraddress" [entity.certtype && entity.certtype.type == 'bytaxpayer']{
+    visible:true;
+}
+
+"taxpayers" [entity.certtype && entity.certtype.type == 'bytaxpayers']{
+    visible:true;
+    required:false;
+}
+
 
 "entity.certtype"[certificationTypes.size() == 1]{
     visible:false;

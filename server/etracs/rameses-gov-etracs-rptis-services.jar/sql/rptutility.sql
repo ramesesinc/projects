@@ -46,7 +46,8 @@ where objid=$P{rpuid}
 
 [modifyLedgerPin]
 update rptledger set 
-  fullpin=$P{newpin}
+  fullpin=$P{newpin},
+  barangayid = $P{barangayid}
 where faasid = $P{faasid}
 
 [modifyFaasPin]

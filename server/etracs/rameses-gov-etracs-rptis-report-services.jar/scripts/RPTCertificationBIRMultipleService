@@ -47,13 +47,47 @@ class RPTCertificationBIRMultipleService
 		return cert 
 	}
 
-	def getItems(cert){
+
+	@ProxyMethod
+	public def getItems(cert){
 		def items = em.getItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
 			it.description = it.cadastrallotno
-			if (it.rputype == 'bldg')
-				it.description = 'Type ' + em.getBldgTypes(it).code.join('/')
+			buildDescription(it)
 		}
 		return items 
 	}
+
+
+	@ProxyMethod
+	public void buildDescription(item){
+		def infos = []
+		if ('land'.equalsIgnoreCase(item.rputype) && item.cadastrallotno){
+			item.description = 'LOT ' + item.cadastrallotno 
+		}
+		else if ('bldg'.equalsIgnoreCase(item.rputype)){
+			infos = em.getBldgInfos(item).each{bi-> bi.info = bi.bldgkind.name}
+			if (infos){
+				item.description = infos.info.join(',')
+			}
+		}
+		else if ('mach'.equalsIgnoreCase(item.rputype)){
+			infos = em.getMachInfos(item)
+			if (infos){
+				item.description = infos.machine.name.join(',')
+			}
+		}
+		else if ('planttree'.equalsIgnoreCase(item.rputype)){
+			infos = em.getPlantTreeInfos(item)
+			if (infos){
+				item.description = infos.planttree.name.join(',')
+			}
+		}
+		else if ('misc'.equalsIgnoreCase(item.rputype)){
+			infos = em.getMiscInfos(item)
+			if (infos){
+				item.description = infos.miscitem.name.join(',')
+			}
+		}
+	}	
 }

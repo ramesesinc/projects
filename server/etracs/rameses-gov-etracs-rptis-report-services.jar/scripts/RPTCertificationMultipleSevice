@@ -44,8 +44,11 @@ class RPTCertificationMultipleService
 
 	void buildDescription(item){
 		def infos = []
-		if ('bldg'.equalsIgnoreCase(item.rputype)){
-			infos = em.getBldgInfos(item).each{bi-> bi.info = bi.bldgtype + ' - ' + bi.bldgkind.name}
+		if ('land'.equalsIgnoreCase(item.rputype) && item.cadastrallotno){
+			item.description = 'LOT ' + item.cadastrallotno 
+		}
+		else if ('bldg'.equalsIgnoreCase(item.rputype)){
+			infos = em.getBldgInfos(item).each{bi-> bi.info = bi.bldgkind.name}
 			if (infos){
 				item.description = infos.info.join(',')
 			}

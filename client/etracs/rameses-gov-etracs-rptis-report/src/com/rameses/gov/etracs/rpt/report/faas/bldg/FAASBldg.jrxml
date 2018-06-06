@@ -34,6 +34,8 @@
 	<parameter name="Signatories" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PRINTPAGE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="AdditionalItem2" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="JSON_SERVICE_PATH" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="JSON_SEVICE_PATH" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="provappraiser.dtsigned" class="java.util.Date"/>
 	<field name="provappraiser.name" class="java.lang.String"/>
@@ -143,6 +145,7 @@
 	<field name="provrecommender.title" class="java.lang.String"/>
 	<field name="provrecommender.name" class="java.lang.String"/>
 	<field name="provrecommender.dtsigned" class="java.util.Date"/>
+	<field name="objid" class="java.lang.String"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >
@@ -1224,17 +1227,6 @@
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{rpu.groundfloorarea}]]></textFieldExpression>
 				</textField>
-				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="185"
-						y="124"
-						width="173"
-						height="119"
-						key="image-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.io.File"><![CDATA[$P{ImageInputStream}]]></imageExpression>
-				</image>
 				<staticText>
 					<reportElement
 						x="0"
@@ -1957,6 +1949,17 @@
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$F{rpu.dtcertoccupancy}]]></textFieldExpression>
 				</textField>
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="185"
+						y="124"
+						width="173"
+						height="119"
+						key="image-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["http://"+ $P{JSON_SEVICE_PATH} +"/etracs25/FAASReportService.getSketch?objid="+ $F{objid}]]></imageExpression>
+				</image>
 			</band>
 			</groupHeader>
 			<groupFooter>

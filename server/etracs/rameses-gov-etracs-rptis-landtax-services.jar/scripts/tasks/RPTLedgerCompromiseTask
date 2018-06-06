@@ -19,6 +19,7 @@ class RPTLedgerCompromiseTask
 		def list = em.getDefaultedCompromises([enddate:enddate]);
 		list.each{
 			svc.closeDefaultedCompromise(it)
+			println 'Closing defaulted compromise...'
 		}
 	}	
 

@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
     <invokers>
-        <invoker type="collectiontype:handler" caption="Realty Tax (Manual)" 
-            name="rptmanual" formno="56" formtype="serial" index="10"/>
+        <invoker type="collectiontype:handler" caption="Realty Tax (Field)" 
+            name="rptmanual" formno="56" formtype="serial" index="10" />
     </invokers>
     
     <code>

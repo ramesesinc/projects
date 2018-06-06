@@ -15,7 +15,7 @@
                  permission="rptis_memoranda_template.read"/>
     </invokers>
     
-    <code class="com.rameses.seti2.models.CrudFormModel"/>
+    <code class="com.rameses.gov.etracs.rptis.master.models.MemorandaTemplateModel"/>
     
     <pages>
         <page template="com.rameses.gov.etracs.rptis.master.views.MemorandaTemplatePage"/>

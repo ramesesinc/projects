@@ -38,7 +38,6 @@ class RPTReportComparativeMVService
 			params.filter += ' AND rp.barangayid = $P{barangayid} '
 		}
 
-
 		util.buildReportFormalTitlePeriod('COMPARATIVE DATA ON MARKET VALUE OF REAL PROPERTY ASSESSMENT', params)
 		util.buildStartEndDateFilter(params)
 

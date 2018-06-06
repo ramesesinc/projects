@@ -47,8 +47,6 @@ class RPTReportComparativeAVService
 		def exemptcurrents 		= em.getCurrentComparativeAVExempt(params)
 		def taxablecancelleds 	= em.getCancelledComparativeAV(params)
 		def exemptcancelleds 	= em.getCancelledComparativeAVExempt(params)
-		def taxableendings 		= em.getEndingComparativeAV(params)
-		def exemptendings 		= em.getEndingComparativeAVExempt(params)
 		
 		def loadSumaryInfo = { data, list ->
 			def info = list.find{ it.classid == data.classid }
@@ -65,7 +63,6 @@ class RPTReportComparativeAVService
 			loadSumaryInfo( data, taxablepreceedings )
 			loadSumaryInfo( data, taxablecurrents )
 			loadSumaryInfo( data, taxablecancelleds )
-			loadSumaryInfo( data, taxableendings )
 			if( data.special == 0 ) {
 				data.classname = lineno + '. ' + data.classname 
 				lineno += 1
@@ -75,6 +72,7 @@ class RPTReportComparativeAVService
 				charindex += 1
 			}
 		}
+		buildEndings(taxables)
 		
 		lineno = 1 
 		def exempts  = getExemptionTypes().collect{ buildComparativeInfo(it, 'EXEMPT') }
@@ -82,10 +80,10 @@ class RPTReportComparativeAVService
 			loadSumaryInfo( data, exemptpreceedings )
 			loadSumaryInfo( data, exemptcurrents )
 			loadSumaryInfo( data, exemptcancelleds )
-			loadSumaryInfo( data, exemptendings )
 			data.classname = lineno + '. ' + data.classname 
 			lineno += 1
 		}
+		buildEndings(exempts)
 		
 		def forlguname = env.ORGCLASS +  ' OF ' + env.ORGNAME 
 		if (params.lgu){
@@ -104,6 +102,14 @@ class RPTReportComparativeAVService
 		]
 	}
 
+
+	def buildEndings(data){
+		data.each{
+			it.endinglandav = it.preceedinglandav + it.currentlandav - it.cancelledlandav
+			it.endingimpav = it.preceedingimpav + it.currentimpav - it.cancelledimpav
+			it.endingtotal = it.preceedingtotal + it.currenttotal - it.cancelledtotal
+		}
+	}
 
 	def buildComparativeInfo( info, taxability ) {
 		return [ classid	: info.objid, 

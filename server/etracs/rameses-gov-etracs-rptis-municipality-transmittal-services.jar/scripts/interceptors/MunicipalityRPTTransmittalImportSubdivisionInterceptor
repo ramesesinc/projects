@@ -22,7 +22,7 @@ class MunicipalityRPTTransmittalImportSubdivisionInterceptor
 		if ('APPROVED'.equalsIgnoreCase(transmittalitem.status)){
 			try{
 				if (subdivisiondata.originlguid == env.ORGID)
-					svc.approveSubdivisionByProvince(subdivisiondata)
+					svc.approveSubdivisionTransmittalByProvince(subdivisiondata)
 				else 
 					svc.postApprovedSubdivisionFromProvince(subdivisiondata)	
 

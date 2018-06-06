@@ -36,6 +36,9 @@ class LandTaxReportNoticeOfDelinquencyService
 		bill.billdate = params.billdate 
 		bill.taxpayer = params.taxpayer 
 		bill.rptledgerid = params.rptledgerid 
+
+		//exclude current year as per blgf manual
+		bill.billtoyear = bill.cy - 1
 		
 		bill.ledgers = billSvc.getOpenLedgers(bill)
 		bill = billSvc.generateBill(bill)

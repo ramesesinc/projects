@@ -5,3 +5,11 @@
 "doApprove" [processing == false]{
     visible:true;
 }
+
+"selectedAdditionalItem.depreciate" [1 == 1]{
+    visible:true;
+}
+
+"selectedAdditionalItem.depreciate" [hidedepreciate == true]{
+    visible:false;
+}

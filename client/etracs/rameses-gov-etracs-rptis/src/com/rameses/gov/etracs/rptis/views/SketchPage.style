@@ -1,0 +1,15 @@
+"entity.rp.*"[true == true]{
+    enabled:false;
+}
+
+"entity.rp.*"[mode=='edit']{
+    enabled:true;
+}
+
+"editor" [true == true]{
+    readonly:true;
+}
+
+"editor" [mode == 'edit' || !entity.state.matches('CURRENT|CANCELLED')]{
+    readonly:false;
+}

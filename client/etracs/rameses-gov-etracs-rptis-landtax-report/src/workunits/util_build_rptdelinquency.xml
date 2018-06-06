@@ -3,10 +3,28 @@
         <invoker folderid="/explorer/txn/landtax/util" action="init" 
                  caption="Build Realty Tax Delinquency" target="window" index="101" 
                  role="REPORT"/>
+        <invoker type="quick_launcher" code="RBD01" action="init" 
+                 caption="Build Realty Tax Delinquency" target="window" index="101" 
+                 role="REPORT"/>
+        
+        <invoker type="formActions" action="_close" caption="Cancel" visibleWhen="#{mode == 'init'}" />
+        <invoker type="formActions" action="buildLedgers" caption="Next" visibleWhen="#{mode == 'init'}" />
+        
+        <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{mode == 'build' &amp;&amp; !processing}" />
+        <invoker type="formActions" action="delete" caption="Delete" visibleWhen="#{mode == 'build' &amp;&amp; !processing}" />
+        
+        <invoker type="formActions" action="buildDelinquency" caption="Start Build" visibleWhen="#{entity.state != 'COMPLETED' &amp;&amp; mode == 'build' &amp;&amp; !processing }" />
+        <invoker type="formActions" action="cancel" caption="Cancel" visibleWhen="#{entity.state != 'COMPLETED' &amp;&amp; mode != 'loadledger' &amp;&amp; processing }" />
+        
+        <invoker type="errorActions" action="refreshErrors" caption="Refresh" />
+        <invoker type="errorActions" action="rescheduleError" caption="Reschedule" visibleWhen="#{processing == false &amp;&amp; errorCount &gt; 0}"/>
+        <invoker type="errorActions" action="ignoreError" caption="Ignore"  visibleWhen="#{processing == false &amp;&amp; errorCount &gt; 0}"/>
+        
     </invokers>
-    <code class="com.rameses.gov.etracs.landtax.report.models.BuildRPTDelinquencyModel">
+    <code class="com.rameses.gov.etracs.landtax.report.models.BuildDelinquencyModel">
     </code>
     <pages>
-        <page template="com.rameses.gov.etracs.landtax.report.views.RPTDelinquencyBuildPage"/>
+        <page name="init" template="com.rameses.gov.etracs.landtax.report.views.BuildRPTDelinquencyInitPage"/>
+        <page template="com.rameses.gov.etracs.landtax.report.views.BuildRPTDelinquencyPage"/>
     </pages>
 </workunit>

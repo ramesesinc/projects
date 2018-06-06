@@ -93,7 +93,7 @@ class RPTUtilityService
 
 	void updatePinLand(info){
 		def rpu = rpuSvc.openRpu( [objid:info.rpuid] )
-		def rp = rpSvc.open([objid:rpu.realpropertyid])
+		def rp = rpSvc.open([objid:info.oldfaas.realpropertyid])
 		def oldpin = rp.pin 
 
 		//update with new info 

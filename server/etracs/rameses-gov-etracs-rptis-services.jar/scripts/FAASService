@@ -54,6 +54,9 @@ class FAASService
 	@DataContext('faas_restriction')
 	def em_restriction
 
+	@DataContext('faas_sketch')
+	def em_sketch
+
 
 
 
@@ -298,6 +301,7 @@ class FAASService
 			}
 		}
 
+		em_sketch.delete([objid:faas.objid])
 		em_faas_previous.find([faasid:faas.objid]).delete()
 		em_faas_backtax.find([faasid:faas.objid]).delete()
 		em_restriction.find([parent_objid:faas.objid]).delete()
@@ -1150,6 +1154,11 @@ class FAASService
 				imageSvc.saveItem(c)
 			}
 		}
+		def sketch = em_sketch.find([objid:info.faas.objid]).first() 
+		if (sketch) {
+			sketch.objid = faas.objid 
+			em_sketch.create(sketch)
+		}
 	}	
 
 	@ProxyMethod
@@ -1210,6 +1219,21 @@ class FAASService
     @ProxyMethod
     public def getRestrictions( faas ) {
     	return em_restriction.find([parent_objid:faas.objid]).orderBy('txndate DESC').list()
+    }
+
+
+    @ProxyMethod
+    public def saveSketch(sketch){
+    	if (sketch){
+    		em_sketch.save(sketch)
+    	}
+    	return sketch
+    }
+
+
+    @ProxyMethod
+    public def openSketch(sketch){
+    	return em_sketch.read(sketch)
     }
 }
 

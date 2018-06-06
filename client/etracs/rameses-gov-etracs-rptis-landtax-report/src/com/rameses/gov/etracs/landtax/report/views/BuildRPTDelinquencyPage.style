@@ -1,0 +1,7 @@
+"selectedError" [processing]{
+    readonly:true;
+}
+
+"selectedError" [!processing]{
+    readonly:false;
+}

@@ -1,12 +1,19 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
+import java.io.ByteArrayOutputStream;
 
 
 class DBImageService
 {
 	@ActiveDB(value='dbimage', em="image")
 	def em 
+
+	@DataContext(value='dbimage_header', adapter='image')
+	def em_header
+
+	@DataContext(value='dbimage_chunk', adapter='image')
+	def em_chunk
 
 	@Service('LogService')
 	def logSvc 
@@ -52,6 +59,29 @@ class DBImageService
 	@ProxyMethod
 	public def getImageItems( param ) {
 		return em.getItems(param)
+	}
+
+	@ProxyMethod
+	public def getImageBytes(param){
+		def header = em_header.find([refid:param.objid]).first() 
+		if (!header){
+			return null
+		}
+
+		def baos = null
+		try{
+			baos = new ByteArrayOutputStream()
+			em_chunk.find([parentid:header.objid]).orderBy('fileno').list().each{
+				baos.write(it.byte)
+			}
+			return baos.toByteArray()
+		} catch(e){
+			println 'getImageBytes [ERROR] ' + e.message 
+		} finally {
+			try{ baos.close() }catch(e){}
+		}
+
+		return null
 	}
 
 }

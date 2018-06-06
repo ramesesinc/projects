@@ -125,9 +125,11 @@ class RPTUtil
             entity.parcel = sparcel;
             newpin += sparcel ;
         }
+        
         if (entity.rputype != 'land'){
-            if (validSuffix(entity))
+            if (entity.suffix){
                 newpin += '-' + entity.suffix;
+            }
         }
 
         if (entity.claimno){
@@ -164,35 +166,5 @@ class RPTUtil
             len = 3;
         }
         return len;
-    }
-    
-    static def getSuffixes(rputype){
-        def suffixes = []
-        if ('land' == rputype){
-            suffixes << [from:0, to:0]
-        }
-        else if ('bldg' == rputype){
-            suffixes << [from:1001, to:1999]
-        }
-        else if ('mach' == rputype){
-            suffixes << [from:2001, to:2999]
-        }
-        else if ('planttree' == rputype){
-            suffixes << [from:3001, to:6999]
-        }
-        else if ('misc' == rputype){
-            suffixes << [from:1001, to:1999]
-            suffixes << [from:5001, to:5999]
-            suffixes << [from:7001, to:7999]
-        }
-        else{
-            throw new Exception('Suffixes are not defined for RPU type ' + rputype + '.')
-        }
-        return suffixes 
-    }
-    
-    static boolean validSuffix(entity){
-        def suffixes = getSuffixes(entity.rputype)
-        return suffixes.find{ entity.suffix >= it.from && entity.suffix <= it.to } != null
     }
 }

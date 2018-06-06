@@ -606,8 +606,12 @@ class RPTLedgerService
     }
 
     void updatePartialledItem(info, item, partialamt ){
+        def qtrlyamt = numSvc.round(item.amount / 4)
+        if (partialamt > qtrlyamt){
+            throw new Exception('Partial payment for ' + item.revtype + ' must not exceed quarterly amount of ' + numSvc.format("#,##0.00",qtrlyamt) + '.')
+        }
         def qtrs = (info.lastqtrpaid == 4 ? 0 : info.lastqtrpaid) 
-        def amtpaid = partialamt + numSvc.round(item.amount / 4) * qtrs
+        def amtpaid = partialamt +  qtrlyamt * qtrs
         em_rptledger_item.find([objid:item.objid]).update([amtpaid:amtpaid])
     }
 
@@ -778,6 +782,7 @@ class RPTLedgerService
         item.qtr = qtr 
         item.revtype = revtype 
         item.partialled = false 
+        item.priority = 0
 
         if (zeroAmount){
             item.amount = 0

@@ -25,6 +25,9 @@ class RemittanceInitialModel {
     @Service("Var")
     def var;
     
+    @Script("User")
+    def userInfo;
+    
     def startdate;
     def startime;
     
@@ -33,13 +36,12 @@ class RemittanceInitialModel {
     
     def summaryList;
     def voidList = [];
+    def user;
         
     String title = "Remittance";
     
-    @Script("User")
-    def userInfo;
-    
-    def user;
+    def draftremid; 
+    def remittanceid; 
     
     void init() {
         def today = dateSvc.parseCurrentDate();
@@ -62,27 +64,21 @@ class RemittanceInitialModel {
         def app = userInfo.env;
         user = [objid: app.USERID, name: app.NAME, fullname: app.FULLNAME, username: app.USER ];
         
-        def param = [collectorid: user.objid, remdate: startdate + " " + startime ]
+        def param = [collectorid: user.objid, remdate: startdate +" "+ startime +":00"];
         //build summaryList
         
-        summaryList = remSvc.getCashReceiptForRemittance( param );
+        def resp = remSvc.init( param ); 
+        if ( !resp.items ) throw new Exception("No cash receipts to remit");
+
+        summaryList = resp.items; 
+        amount = summaryList.sum{( it.amount ? it.amount : 0.0 )} 
+        if ( amount == null ) amount = 0.0; 
         
-        /*
-        def m = [_schemaname: 'cashreceipt_af_summary' ];
-        m.where = ["collector.objid =:collectorid AND remittanceid IS NULL AND receiptdate<= :remdate ", param ];
-        summaryList = queryService.getList( m );
-        */
-        if(!summaryList)
-            throw new Exception("No cash receipts to remit")
-        amount = summaryList.sum{ it.amount };
+        voidList = resp.voiditems; 
+        totalvoid = voidList.sum{( it.amount ? it.amount : 0.0 )} 
+        if ( totalvoid == null ) totalvoid = 0.0; 
         
-        //list of voided
-        def m = [_schemaname: 'cashreceipt' ];
-        m.where = ["collector.objid =:collectorid AND remittanceid IS NULL AND receiptdate<= :remdate AND NOT(void.objid IS NULL)", param ];
-        voidList = queryService.getList( m );
-        if( voidList ) {
-            totalvoid = voidList.sum{ it.amount };
-        }
+        draftremid = resp.objid; 
     }
     
     def getFormattedAmount() {
@@ -100,7 +96,7 @@ class RemittanceInitialModel {
         },
         onOpenItem: {o,col->
             def p = [:];
-            p.put( "query.afcontrolid", o.afcontrolid );
+            p.put( "query.afcontrolid", o.controlid );
             p.put( "query.fromseries", o.fromseries );
             p.put( "query.toseries", o.toseries );
             return Inv.lookupOpener("cashreceipt_list:afseries", p );
@@ -117,18 +113,11 @@ class RemittanceInitialModel {
     ] as BasicListModel;
 
     
-    def remittanceid; 
     
     void submitForRemittance() { 
-        def p = [:];
-        if ( remittanceid ) {
-            p.objid = remittanceid; 
-            
-        } else  {
-            p.items = summaryList; 
-            p = remSvc.create( p ); 
-            remittanceid = p.objid; 
-        } 
+        def p = [ objid: draftremid ]; 
+        def resp = remSvc.create( p ); 
+        remittanceid = resp?.objid; 
         
         def op = Inv.lookupOpener("remittance:open", [ entity: p ]); 
         Inv.invoke( op );  

@@ -56,6 +56,25 @@ order by tmp2.formindex, tmp2.formno, tmp2.startseries
 
 [getIssuedAFControls]
 select 
+	c.remittanceid, c.controlid, 
+	a.startseries, a.endseries, 
+	min(c.series) as issuedstartseries, 
+	max(c.series) as issuedendseries, 
+	(max(c.series)-min(c.series))+1 as qtyissued, 
+	(case when max(c.series) >= a.endseries then null else max(c.series)+1 end) as endingstartseries, 
+	(case when max(c.series) >= a.endseries then null else a.endseries end) as endingendseries, 
+	(case when max(c.series) >= a.endseries then 0 else (a.endseries-max(c.series)) end) as qtyending 
+from remittance rem 
+	inner join cashreceipt c on c.remittanceid = rem.objid 
+	inner join af_control a on a.objid = c.controlid 
+	inner join af on af.objid = a.afid 
+where rem.objid = $P{remittanceid} 
+	and af.formtype = 'serial' 
+group by c.remittanceid, c.controlid, a.startseries, a.endseries 
+
+
+[getIssuedAFControls_bak1]
+select 
 	c.remittanceid, c.afcontrolid as controlid, 
 	c.fromseries as issuedstartseries, c.toseries as issuedendseries, c.qty as qtyissued, 
 	(case when c.toseries >= c.endseries then null else c.toseries+1 end) as endingstartseries, 

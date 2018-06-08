@@ -17,7 +17,8 @@ public class BusinessCashReceiptInterceptor {
 
 	@After(pattern="CashReceiptService.post", eval="#{result.collectiontype?.handler == 'bpls'}")
 	public void postBusinessPayment(def evt) {
-		def a = evt.args[0];
+		def a = evt.args[0]; 
+		a.reftype = 'cashreceipt'; 
 		pmtSvc.postPayment( a );
 	} 
 

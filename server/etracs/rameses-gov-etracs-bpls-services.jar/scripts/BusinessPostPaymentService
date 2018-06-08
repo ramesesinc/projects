@@ -26,13 +26,15 @@ public class BusinessPostPaymentService  {
 		if (!appstate.toString().toLowerCase().matches('payment|release|completed')) 
 			throw new Exception("The current application status is not allowed for this transaction. Please verify."); 
 
+		if ( !a.reftype ) throw new Exception('Please specify the reftype (receipt type)'); 
+
 		def m = [:];
 		m.objid = a.objid;
 		m.businessid = a.businessid;
 		m.applicationid=a.applicationid;
 		m.appyear = a.appyear;
 		m.refid = a.objid;
-		m.reftype = 'eor';
+		m.reftype = a.reftype;
 		m.refno = a.receiptno;
 		m.refdate = a.receiptdate;
 		m.amount = a.amount;

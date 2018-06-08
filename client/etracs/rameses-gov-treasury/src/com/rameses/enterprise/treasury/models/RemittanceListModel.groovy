@@ -19,10 +19,10 @@ class RemittanceListModel extends CrudListModel {
     }
     
     void beforeRemoveItem() {
-        if ( selectedItem.state.toString() != 'DRAFT' ) 
+        if ( selectedItem?.state.toString() != 'DRAFT' ) 
             throw new Exception("You are not allowed to delete this transaction"); 
 
-        if ( selectedItem.collector?.objid != OsirisContext.env.USERID ) 
+        if ( selectedItem?.collector?.objid != OsirisContext.env.USERID ) 
             throw new Exception("You are not allowed to delete this transaction"); 
     }
 }    

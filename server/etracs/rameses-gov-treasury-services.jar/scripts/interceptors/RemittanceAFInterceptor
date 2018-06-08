@@ -58,7 +58,7 @@ class RemittanceAFInterceptor {
 		def result = evt.result; 
 		if ( result.objid ) { 
 			def m = [:]; 
-			if ( result.controlno ) m.controlno = result.controlno; 
+			if ( result.controlno ) m.refno = result.controlno; 
 			if ( result.dtposted ) m.txndate = result.dtposted; 
 			if ( m ) afd_em.find([ refid: result.objid ]).update( m ); 
 		} 

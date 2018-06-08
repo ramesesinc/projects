@@ -15,6 +15,7 @@
                  windowTitle="Remittances By Collector"
                  formTitle="Remittances By Collector"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
+                 hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
                  role="COLLECTOR"
                  action="init" target="window" index="250" tag="COLLECTOR"/>

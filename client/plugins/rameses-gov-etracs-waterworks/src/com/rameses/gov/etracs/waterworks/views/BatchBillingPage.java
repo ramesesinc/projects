@@ -146,6 +146,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ task.properties.show_reading == true }");
 
+        schemaList1.setAllowOpen(false);
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
@@ -166,9 +167,9 @@ public class BatchBillingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctno"}
                 , new Object[]{"caption", "Acct No"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 200}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -181,9 +182,24 @@ public class BatchBillingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.stuboutnode.indexno"}
                 , new Object[]{"caption", "Seq No"}
-                , new Object[]{"width", 80}
-                , new Object[]{"minWidth", 80}
+                , new Object[]{"width", 60}
+                , new Object[]{"minWidth", 60}
                 , new Object[]{"maxWidth", 80}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "account.classification.objid"}
+                , new Object[]{"caption", "Class"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -257,10 +273,10 @@ public class BatchBillingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "averageconsumption"}
-                , new Object[]{"caption", "Ave. Cons."}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"caption", "Ave. "}
+                , new Object[]{"width", 80}
+                , new Object[]{"minWidth", 80}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -273,8 +289,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 100}
                 , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -288,7 +304,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.meter.serialno"}
                 , new Object[]{"caption", "Meter Serial No"}
-                , new Object[]{"width", 120}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
                 , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
@@ -304,8 +320,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 new Object[]{"name", null}
                 , new Object[]{"caption", "Meter Status"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 80}
+                , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -364,12 +380,11 @@ public class BatchBillingPage extends javax.swing.JPanel {
         });
         schemaList1.setCustomFilter("batchid = :batchid");
         schemaList1.setHandler("readingHandler");
+        schemaList1.setId("readingModel");
         schemaList1.setName("selectedItem"); // NOI18N
         schemaList1.setOrderBy("account.stuboutnode.indexno");
         schemaList1.setQueryName("query");
         schemaList1.setSchemaName("waterworks_billing");
-        schemaList1.setAllowOpen(false);
-        schemaList1.setId("readingModel");
         schemaList1.setStyleRule("com/rameses/gov/etracs/waterworks/views/BatchBillingPage.style");
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
@@ -391,6 +406,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Reading Details", xPanel1);
 
+        schemaList2.setAllowOpen(false);
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctno"}
@@ -580,7 +596,6 @@ public class BatchBillingPage extends javax.swing.JPanel {
         schemaList2.setOrderBy("account.stuboutnode.indexno");
         schemaList2.setQueryName("query");
         schemaList2.setSchemaName("waterworks_billing");
-        schemaList2.setAllowOpen(false);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);

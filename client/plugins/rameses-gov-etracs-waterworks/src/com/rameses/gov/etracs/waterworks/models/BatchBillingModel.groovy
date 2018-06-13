@@ -176,6 +176,19 @@ public class BatchBillingModel extends WorkflowTaskModel {
             readingHandler.reload();
             billHandler.reload();
         },
+        "change_prev_reading" : { item ->
+            def h = [:];
+            h.fields = [
+                [name:'prevreading', caption:'Enter Prev Reading', datatype:'integer'],
+                [name:'prevreadingdate', caption:'Prev Reading Date', datatype:'date' ]
+            ];
+            h.data = [ prevreading: item.prevreading, prevreadingdate: item.prevreadingdate ];
+            h.entity = item;
+            h.reftype = "waterworks_billing";
+            h.refid = item.objid;
+            Modal.show("waterworks_changeinfo", h, [title:"Enter Prev Reading"]);
+            readingHandler.reload();
+        },
         "change_volume": { item->
             def h = [:];
             h.fields = [
@@ -183,6 +196,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
             ];
             h.data = [ volume: item.volume, amount: item.amount ];
+            h.entity = item;
             h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
             h.reftype = "waterworks_billing";
             h.refid = item.objid;
@@ -242,9 +256,13 @@ public class BatchBillingModel extends WorkflowTaskModel {
         },
         getContextMenu: { item, name-> 
             def mnuList = [];
-            if ( item.account?.meter?.objid != null ) 
+            if ( item.account?.meter?.objid != null && task?.state == 'for-reading' ) {
+                mnuList << [value: 'Change Prev Reading', id:'change_prev_reading'];
                 mnuList << [value: 'View Meter', id:'view_meter'];
-            mnuList << [value: 'Change Volume', id:'change_volume'];  
+            } 
+            if( task?.state == "for-reading" ) {
+                mnuList << [value: 'Change Volume', id:'change_volume'];
+            }
             if( task?.state == 'for-review') {
                 mnuList << [value: 'Recompute', id:'rebill'];
             }

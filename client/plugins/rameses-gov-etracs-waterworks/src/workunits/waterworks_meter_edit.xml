@@ -1,0 +1,15 @@
+<workunit extends="com/rameses/treasury/common/templates/ChangeInfo.xml" schemaName="waterworks_changelog" 
+    reftype="waterworks_meter">
+    <invokers>
+        <invoker type="waterworks_meter:edit" target="popup" caption="Change Last Reading" action="init" index="10"
+                 keyfield="lastreading"  datatype="integer" />
+        
+        <invoker type="waterworks_meter:edit" caption="Change Last Reading Date" action="init"  target="popup" index="11"
+            keyfield="lastreadingdate"  datatype="date"/>
+        
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.MeterEditModel" />
+        
+        
+</workunit>

@@ -14,6 +14,14 @@
         </data>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
+                <foreign-project>osiris2-test-platform</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+            <reference>
                 <foreign-project>rameses-enterprise</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
@@ -30,7 +38,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>rameses-enterprise-treasury</foreign-project>
+                <foreign-project>rameses-etracs-main</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -38,7 +46,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>rameses-etracs-main</foreign-project>
+                <foreign-project>rameses-gov-treasury</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>

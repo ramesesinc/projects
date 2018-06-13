@@ -37,23 +37,26 @@ public class ChangeInfoModel extends DynamicForm {
         }
         
         def newData = entity.get( keyfield );
-        fields  = [];
-        def m = [:];
-        m.caption = invoker.caption;
-        m.name = keyfield;
-        
-        if( invoker?.properties ) {
-            invoker.properties.each { k,v-> 
-                if(!k.matches("type|name|target|action|index|width|height")) {
-                    m.put( k, v );
+        if(!fields) {
+            fields  = [];
+            def m = [:];
+            m.caption = invoker.caption;
+            m.name = keyfield;
+
+            if( invoker?.properties ) {
+                invoker.properties.each { k,v-> 
+                    if(!k.matches("type|name|target|action|index|width|height")) {
+                        m.put( k, v );
+                    }
                 }
             }
+            fields << m;
         }
 
-        fields << m;
-
         //load reftype
-        reftype = workunit?.info?.workunit_properties?.reftype;    
+        if( !reftype ) {
+            reftype = workunit?.info?.workunit_properties?.reftype;
+        }
         
         //load refkey
         String _refkey = workunit?.info?.workunit_properties?.refkey;

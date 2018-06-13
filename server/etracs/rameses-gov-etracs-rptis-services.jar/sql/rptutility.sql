@@ -140,3 +140,8 @@ from (
 	where landrpuid = $P{landrpuid}
 	and f.state <> 'CANCELLED' 
 ) x
+
+
+
+[deleteTableData]
+delete from ${tablename}

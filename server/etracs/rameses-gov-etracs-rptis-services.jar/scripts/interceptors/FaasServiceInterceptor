@@ -4,7 +4,7 @@ import com.rameses.services.extended.*;
 
 class FaasServiceInterceptor
 {
-	@ActiveDB('faas')
+	@DataContext('faas')
 	def em 
 
 	@Service('RPTLedgerService')
@@ -72,6 +72,19 @@ class FaasServiceInterceptor
 	public void initTransfer( evt ) {
 		def faas = evt.result 
 		clearInfo(faas)
+	}
+
+	@Before(pattern="FAASService.submitForApproval", eval="#{args[0].txntype.objid.matches('TR|TRE|TRC')}", index=11) 
+	public void validateTransfer( evt ) {
+		def faas = evt.args[0]
+		//new owner should not be equal to previous owner
+		if (faas.previousfaases){
+			def prevfaas = em.find([objid: faas.previousfaases[0].prevfaasid]).first()
+			if (prevfaas && faas.taxpayer.objid == prevfaas.taxpayer.objid){
+				throw new Exception('New owner should not be equal to previous owner.')
+			}
+		}
+
 	}
 
 

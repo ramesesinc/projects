@@ -56,7 +56,9 @@ class FaasRequirementInterceptor
 	@Before(pattern="FAASService.deleteFaas") 
 	public void deleteRequirements( evt ) {
 		def faas = evt.args[0]
-		em.deleteRequirements([refid:faas.objid])
+		if (faas) {
+			em.deleteRequirements([refid:faas.objid])
+		}
 	}
 
 

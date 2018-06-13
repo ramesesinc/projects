@@ -102,6 +102,9 @@ class FAASService
     @DataContext('realproperty')
     def realpropertyDb
 
+    @DataContext('txnlog')
+    def em_txnlog 
+
 	
 	def STATE_INTERIM = 'INTERIM'
 	def STATE_FORAPPROVAL = 'FORAPPROVAL'
@@ -317,6 +320,8 @@ class FAASService
 		if (faas.parentfaasid){
 			self.deleteFaas(openFaas([objid:faas.parentfaasid]))
 		}			
+
+		em_txnlog.find([refid:faas.objid]).delete()
 		
 		return faas 
 	}

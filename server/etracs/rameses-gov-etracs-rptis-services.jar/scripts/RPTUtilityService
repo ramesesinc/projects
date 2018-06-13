@@ -140,4 +140,10 @@ class RPTUtilityService
 	        return newpin + '-' + suffix
 	}
 
+
+
+	@ProxyMethod
+	public void deleteTableData(params){
+		em.deleteTableData(params)
+	}
 }

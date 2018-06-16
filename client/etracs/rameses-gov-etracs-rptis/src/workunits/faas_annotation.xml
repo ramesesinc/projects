@@ -6,17 +6,17 @@
         
         <invoker type="faasannotation:open" action="open" caption="FAAS Annotation" target="window"  />
             
-        <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Annotation" index="21" 
+        <invoker folderid="/explorer/txn/rpt/online" action="init"  caption="Annotation" index="10" 
             role="RECORD" permission="annotation.create"/>
         
-        <invoker folderid="/menu/txn/rpt" action="init"  caption="Annotation" index="21" 
+        <invoker folderid="/menu/txn/rpt" action="init"  caption="Annotation" index="10" 
             role="RECORD" permission="annotation.create"/>
         
-        <invoker folderid="/home/rpt/txn" action="init"  caption="Annotation" index="21" 
+        <invoker folderid="/home/rpt/txn" action="init"  caption="Annotation" index="10" 
             role="RECORD" permission="annotation.create"/>
         
          
-         <invoker type="quick_launcher" code="FA01" action="init"  caption="Annotation" index="21" 
+         <invoker type="quick_launcher" code="FA01" action="init"  caption="Annotation" index="10" 
             role="RECORD" permission="annotation.create"/>
          
         <invoker type="supportActions" action="addImage" caption="Add" role="RECORD,RECEIVER" visibleWhen="#{allowEdit}"/>

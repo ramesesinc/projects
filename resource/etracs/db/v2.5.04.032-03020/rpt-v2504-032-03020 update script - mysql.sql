@@ -1098,7 +1098,6 @@ alter table rptcompromise_item
   FOREIGN KEY (`rptledgerfaasid`) REFERENCES `rptledgerfaas` (`objid`);
 
 
-
 /*=============================================================
 *
 * MIGRATE COMPROMISE RECORDS 
@@ -1415,6 +1414,194 @@ group by rc.rptledgerid, year, rptcompromiseid
 ;
 
 
+/*==============================================================
+* SKETCH 
+*
+==============================================================*/
+CREATE TABLE `faas_sketch` (
+  `objid` varchar(50) NOT NULL DEFAULT '',
+  `drawing` text NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+create index FK_faas_sketch_faas  on faas_sketch(objid);
+
+alter table faas_sketch 
+  add constraint FK_faas_sketch_faas foreign key(objid) 
+  references faas(objid);
+
+
+
+
+
+
+
+/*====================================================================
+*
+* LANDTAX RPT DELINQUENCY UPDATE 
+*
+====================================================================*/
+
+drop table if exists report_rptdelinquency_error
+;
+drop table if exists report_rptdelinquency_forprocess
+;
+drop table if exists report_rptdelinquency_item
+;
+drop table if exists report_rptdelinquency_barangay
+;
+drop table if exists report_rptdelinquency
+;
+
+
+
+CREATE TABLE `report_rptdelinquency` (
+  `objid` varchar(50) NOT NULL,
+  `state` varchar(50) NOT NULL,
+  `dtgenerated` datetime NOT NULL,
+  `dtcomputed` datetime NOT NULL,
+  `generatedby_name` varchar(255) NOT NULL,
+  `generatedby_title` varchar(100) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+CREATE TABLE `report_rptdelinquency_item` (
+  `objid` varchar(50) NOT NULL,
+  `parentid` varchar(50) NOT NULL,
+  `rptledgerid` varchar(50) NOT NULL,
+  `barangayid` varchar(50) NOT NULL,
+  `year` int(11) NOT NULL,
+  `qtr` int(11) DEFAULT NULL,
+  `revtype` varchar(50) NOT NULL,
+  `amount` decimal(16,2) NOT NULL,
+  `interest` decimal(16,2) NOT NULL,
+  `discount` decimal(16,2) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+alter table report_rptdelinquency_item 
+  add constraint fk_rptdelinquency_item_rptdelinquency foreign key(parentid)
+  references report_rptdelinquency(objid)
+;
+
+create index fk_rptdelinquency_item_rptdelinquency on report_rptdelinquency_item(parentid)  
+;
+
+
+alter table report_rptdelinquency_item 
+  add constraint fk_rptdelinquency_item_rptledger foreign key(rptledgerid)
+  references rptledger(objid)
+;
+
+create index fk_rptdelinquency_item_rptledger on report_rptdelinquency_item(rptledgerid)  
+;
+
+alter table report_rptdelinquency_item 
+  add constraint fk_rptdelinquency_item_barangay foreign key(barangayid)
+  references barangay(objid)
+;
+
+create index fk_rptdelinquency_item_barangay on report_rptdelinquency_item(barangayid)  
+;
+
+
+
+
+CREATE TABLE `report_rptdelinquency_barangay` (
+  objid varchar(50) not null, 
+  parentid varchar(50) not null, 
+  `barangayid` varchar(50) NOT NULL,
+  count int not null,
+  processed int not null, 
+  errors int not null, 
+  ignored int not null, 
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+alter table report_rptdelinquency_barangay 
+  add constraint fk_rptdelinquency_barangay_rptdelinquency foreign key(parentid)
+  references report_rptdelinquency(objid)
+;
+
+create index fk_rptdelinquency_barangay_rptdelinquency on report_rptdelinquency_item(parentid)  
+;
+
+
+alter table report_rptdelinquency_barangay 
+  add constraint fk_rptdelinquency_barangay_barangay foreign key(barangayid)
+  references barangay(objid)
+;
+
+create index fk_rptdelinquency_barangay_barangay on report_rptdelinquency_barangay(barangayid)  
+;
+
+
+CREATE TABLE `report_rptdelinquency_forprocess` (
+  `objid` varchar(50) NOT NULL,
+  `barangayid` varchar(50) NOT NULL,
+  PRIMARY KEY (`objid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create index ix_barangayid on report_rptdelinquency_forprocess(barangayid);
+  
+
+
+CREATE TABLE `report_rptdelinquency_error` (
+  `objid` varchar(50) NOT NULL,
+  `barangayid` varchar(50) NOT NULL,
+  `error` text NULL,
+  `ignored` int,
+  PRIMARY KEY (`objid`),
+  KEY `ix_barangayid` (`barangayid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;  
+
+
+
+
+drop view vw_landtax_report_rptdelinquency_detail
+;
+
+create view vw_landtax_report_rptdelinquency_detail 
+as
+select
+  parentid, 
+  rptledgerid,
+  barangayid,
+  year,
+  qtr,
+  case when revtype = 'basic' then amount else 0 end as basic,
+  case when revtype = 'basic' then interest else 0 end as basicint,
+  case when revtype = 'basic' then discount else 0 end as basicdisc,
+  case when revtype = 'basic' then interest - discount else 0 end as basicdp,
+  case when revtype = 'basic' then amount + interest - discount else 0 end as basicnet,
+  case when revtype = 'basicidle' then amount else 0 end as basicidle,
+  case when revtype = 'basicidle' then interest else 0 end as basicidleint,
+  case when revtype = 'basicidle' then discount else 0 end as basicidledisc,
+  case when revtype = 'basicidle' then interest - discount else 0 end as basicidledp,
+  case when revtype = 'basicidle' then amount + interest - discount else 0 end as basicidlenet,
+  case when revtype = 'sef' then amount else 0 end as sef,
+  case when revtype = 'sef' then interest else 0 end as sefint,
+  case when revtype = 'sef' then discount else 0 end as sefdisc,
+  case when revtype = 'sef' then interest - discount else 0 end as sefdp,
+  case when revtype = 'sef' then amount + interest - discount else 0 end as sefnet,
+  case when revtype = 'firecode' then amount else 0 end as firecode,
+  case when revtype = 'firecode' then interest else 0 end as firecodeint,
+  case when revtype = 'firecode' then discount else 0 end as firecodedisc,
+  case when revtype = 'firecode' then interest - discount else 0 end as firecodedp,
+  case when revtype = 'firecode' then amount + interest - discount else 0 end as firecodenet,
+  case when revtype = 'sh' then amount else 0 end as sh,
+  case when revtype = 'sh' then interest else 0 end as shint,
+  case when revtype = 'sh' then discount else 0 end as shdisc,
+  case when revtype = 'sh' then interest - discount else 0 end as shdp,
+  case when revtype = 'sh' then amount + interest - discount else 0 end as shnet,
+  amount + interest - discount as total
+from report_rptdelinquency_item 
+;
 
 
 
@@ -1639,3 +1826,53 @@ group by
 
 
 
+drop  view vw_landtax_report_rptdelinquency
+;
+
+create view vw_landtax_report_rptdelinquency
+as
+select
+  v.rptledgerid,
+  v.barangayid,
+  v.year,
+  v.qtr,
+  rr.dtgenerated,
+  rr.generatedby_name,
+  rr.generatedby_title,
+  sum(v.basic) as basic,
+  sum(v.basicint) as basicint,
+  sum(v.basicdisc) as basicdisc,
+  sum(v.basicdp) as basicdp,
+  sum(v.basicnet) as basicnet,
+  sum(v.basicidle) as basicidle,
+  sum(v.basicidleint) as basicidleint,
+  sum(v.basicidledisc) as basicidledisc,
+  sum(v.basicidledp) as basicidledp,
+  sum(v.basicidlenet) as basicidlenet,
+  sum(v.sef) as sef,
+  sum(v.sefint) as sefint,
+  sum(v.sefdisc) as sefdisc,
+  sum(v.sefdp) as sefdp,
+  sum(v.sefnet) as sefnet,
+  sum(v.firecode) as firecode,
+  sum(v.firecodeint) as firecodeint,
+  sum(v.firecodedisc) as firecodedisc,
+  sum(v.firecodedp) as firecodedp,
+  sum(v.firecodenet) as firecodenet,
+  sum(v.sh) as sh,
+  sum(v.shint) as shint,
+  sum(v.shdisc) as shdisc,
+  sum(v.shdp) as shdp,
+  sum(v.shnet) as shnet,
+  sum(v.total) as total
+from report_rptdelinquency rr 
+inner join vw_landtax_report_rptdelinquency_detail v on rr.objid = v.parentid 
+group by 
+  v.rptledgerid,
+  v.barangayid,
+  v.year,
+  v.qtr,
+  rr.dtgenerated,
+  rr.generatedby_name,
+  rr.generatedby_title
+;

@@ -1368,8 +1368,6 @@ from rptledger_compromise_item rci
 inner join rptledger_compromise rc on rci.rptcompromiseid = rc.objid 
 where rci.basic > 0 
 group by rc.rptledgerid, year, rptcompromiseid
-go 
-
 
 
 insert into rptcompromise_item(
@@ -1477,6 +1475,25 @@ go
 
 
 
+/*==============================================================
+* SKETCH 
+*
+==============================================================*/
+CREATE TABLE faas_sketch (
+  objid varchar(50) NOT NULL,
+  drawing text NOT NULL,
+  PRIMARY KEY (objid)
+)
+go 
+
+
+create index FK_faas_sketch_faas  on faas_sketch(objid)
+go 
+
+alter table faas_sketch 
+  add constraint FK_faas_sketch_faas foreign key(objid) 
+  references faas(objid)
+go   
 
 
 

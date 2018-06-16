@@ -104,6 +104,7 @@ class RPTReportRPAService
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
 			params.barangayid = params.barangay.objid 
 		}
+
 	}
 
 	def buildTaxableClasses(taxables, params){
@@ -149,6 +150,13 @@ class RPTReportRPAService
 
 
 	def buildRestrictions(params){
+		if ('TAXABLE'.equalsIgnoreCase(params.taxability) || !params.taxability){
+			params.filter += ' AND r.taxable = 1 '
+		}
+		else {
+			params.filter += ' AND r.taxable = 0 '
+		}
+
 		def restrictions = em.getLiftRestrictions(params)
 		restrictions.each{ item -> 
 			if (params.reporttype.type == 'standard'){

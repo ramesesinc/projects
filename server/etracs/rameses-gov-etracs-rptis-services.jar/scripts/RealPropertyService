@@ -149,7 +149,7 @@ class RealPropertyService
 
 	@ProxyMethod
     public def checkDuplicatePin(params) {
-    	if (util.isTrue(params.txntype.newrealproperty)){
+    	if (params.txntype && util.isTrue(params.txntype.newrealproperty)){
     		return
     	}
 

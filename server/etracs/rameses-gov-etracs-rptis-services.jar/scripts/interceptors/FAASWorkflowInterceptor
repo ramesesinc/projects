@@ -46,7 +46,7 @@ class FAASWorkflowInterceptor
 	}
 
 
-	@After(pattern='FAASService.(initOnlineTransaction|initNewDiscovery)')
+	@After(pattern='FAASService.(initOnlineTransaction|initNewDiscovery)', eval="#{result.datacapture == 0 || result.datacapture == false}")
 	public void handleCreate(evt){
 		startWorkflow(evt)
 	}

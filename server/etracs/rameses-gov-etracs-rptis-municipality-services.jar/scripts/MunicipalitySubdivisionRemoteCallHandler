@@ -35,10 +35,6 @@ class MunicipalitySubdivisionRemoteCallHandler
 		if (state == null || state != 'APPROVED'){
 			state = 'FORAPPROVAL'
 			subdivision.state = state
-			subdivision.faases.each{
-				def fstate = em_faas.select('state').find([objid:faas.objid]).first()?.state
-				it.state = (fstate == null ? 'PENDING' : fstate.state)
-			}
 			supportSvc2.postSubdivisionData(subdivision)
 			subdivision.tasks = em_subdivision_task.where('refid = :objid and enddate is not null', subdivision).list()
 			doApproveSubdivision(subdivision)

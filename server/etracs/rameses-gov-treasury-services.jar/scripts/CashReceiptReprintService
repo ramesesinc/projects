@@ -15,12 +15,22 @@ class CashReceiptReprintService {
 	@Service("DateService")
 	def dateSvc;
 
+	@Env
+	def env;
+
 	@ProxyMethod
 	public void verifyReprint(def p) {
-		def usr = actionPermissionSvc.checkAllowedAction( [username:p.username, password: p.password, action: 'cashreceipt.approve_reprint' ] );
+		def usr = null;
+		if(p.applysecurity == true ) {
+			usr = actionPermissionSvc.checkAllowedAction( [username:p.username, password: p.password, action: 'cashreceipt.approve_reprint' ] );
+			usr.name = usr.firstname + " " + usr.lastname;
+		}
+		else {
+			usr = [objid:env.USERID, name: env.FULLNAME];
+		}
 		def m = [:];
 		m.dtapproved = dateSvc.getServerDate();
-		m.approvedby = [ objid:usr.objid, name:usr.firstname+ ' ' + usr.lastname];
+		m.approvedby = usr;
 		m.reason = p.reason;
 		m.receiptid = p.receiptid;
 		logEm.create( m );

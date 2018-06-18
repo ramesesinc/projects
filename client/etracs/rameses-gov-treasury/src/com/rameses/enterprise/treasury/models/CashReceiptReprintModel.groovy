@@ -7,10 +7,16 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.seti2.models.*;
 
-class CashReceiptReprintModel extends CrudFormModel {
+class CashReceiptReprintModel  {
     
     @Service("CashReceiptReprintService")
     def service;
+
+    @Invoker
+    def invoker;
+
+    @Caller
+    def caller;
 
     @Script("User")
     def user;
@@ -23,14 +29,24 @@ class CashReceiptReprintModel extends CrudFormModel {
     
     def entity;
     def receipt;
+    boolean applySecurity = false;
     
-    void afterCreate() {
+    void reprintUnsecured() {
+        applySecurity = false;
+        receipt = caller.entity;
+    }
+
+    void reprintSecured() {
+        applySecurity = true;
         receipt = caller.entity;
     }
     
     def doOk() {
-        entity.username = username;
-        entity.password = user.encodePwd( password, username );
+        if( applySecurity ) {
+            entity.username = username;
+            entity.password = user.encodePwd( password, username );
+        }
+        entity.applysecurity = applySecurity;
         entity.receiptid = receipt.objid;
         entity.reason = remarks;
         service.verifyReprint( entity );

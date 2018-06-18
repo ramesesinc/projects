@@ -41,6 +41,7 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
         xTextField1.setName("username"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
+        xTextField1.setVisibleWhen("#{ applySecurity == true }");
         xFormPanel1.add(xTextField1);
 
         xPasswordField1.setText("xPasswordField1");
@@ -48,6 +49,7 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
         xPasswordField1.setName("password"); // NOI18N
         xPasswordField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xPasswordField1.setRequired(true);
+        xPasswordField1.setVisibleWhen("#{ applySecurity == true }");
         xFormPanel1.add(xPasswordField1);
 
         jScrollPane1.setName("entity.remarks"); // NOI18N

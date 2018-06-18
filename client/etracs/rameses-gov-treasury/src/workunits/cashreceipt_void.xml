@@ -2,20 +2,25 @@
     
     <invokers>
         <!-- hooks to cash receipt -->
+        <!--
         <invoker 
            type="cashreceiptinfo:formActions" caption="Void Receipt" action="open" 
            role="COLLECTOR,SUBCOLLECTOR"  
            visibleWhen="#{entity.voided == 0}"
            target="popup"> 
         </invoker>
-       
+        -->
+        
+        <!-- this is called from outside receipt -->
         <invoker 
            type="cashreceipt:form:formActions" caption="Void Receipt" action="open" 
-           role="COLLECTOR,SUBCOLLECTOR" 
+           role="COLLECTOR,SUBCOLLECTOR"
+           applySecurity="true" 
            visibleWhen="#{entity.voided == 0 &amp;&amp; entity.remittanceid == null }"
            target="popup"> 
         </invoker>     
             
+        <!-- called from receipt after issuance -->    
         <invoker 
            type="cashreceipt:void" caption="Void Receipt" action="create" 
            role="COLLECTOR,SUBCOLLECTOR" 

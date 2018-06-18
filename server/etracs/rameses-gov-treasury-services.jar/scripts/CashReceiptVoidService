@@ -39,11 +39,14 @@ class CashReceiptVoidService  {
 		def usr = null; 
 		if ( p.txnmode == 'CAPTURE' ) {
 			usr = p.postedby; 
-		} else {
+		} else if(p.applysecurity == true) {
 			usr = actionPermissionSvc.checkAllowedAction( [username:p.username, password: p.password, action: 'cashreceipt.approve_void' ] );
 			usr.name = ''+ usr.firstname +' '+ usr.lastname; 
 		}
-
+		else {
+			usr = [objid:env.USERID, name:env.FULLNAME];
+		}
+		
 		def v = [objid: "VOID"+new UID()];
 		v.postedby = [ objid:usr.objid, name:usr.name ];
 		v.receiptid = p.receipt.objid;

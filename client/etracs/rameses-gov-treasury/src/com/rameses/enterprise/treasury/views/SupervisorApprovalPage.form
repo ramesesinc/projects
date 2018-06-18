@@ -48,6 +48,7 @@
               <Dimension value="[0, 20]"/>
             </Property>
             <Property name="required" type="boolean" value="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ applySecurity == true }"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XPasswordField" name="xPasswordField1">
@@ -59,6 +60,7 @@
               <Dimension value="[0, 20]"/>
             </Property>
             <Property name="required" type="boolean" value="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ applySecurity == true }"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">

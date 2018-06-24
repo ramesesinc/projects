@@ -3,8 +3,8 @@
     <invokers>
         <invoker type="quick_launcher" code="REM" caption="Remittance" action="create" target="window" role="COLLECTOR"/>
         
-        <invoker folderid="home/treasury/remittance" caption="Remit" action="create" role="COLLECTOR" target="window" index="-90"/>
-        <invoker folderid="home/treasury/remittance" caption="Capture Remittance" action="capture" role="COLLECTOR" target="window" index="-80"/>
+        <invoker xfolderid="home/treasury/remittance" caption="Remit" action="create" role="COLLECTOR" target="window" index="-90"/>
+        <invoker xfolderid="home/treasury/remittance" caption="Capture Remittance" action="capture" role="COLLECTOR" target="window" index="-80"/>
 
         <invoker type="remittance:create" caption="Remittance" action="create" target="window"/>
         <invoker type="remittance:open" caption="Remittance (Open)" action="open" target="window"/>

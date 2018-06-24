@@ -1,7 +1,7 @@
 <workunit extends="wtemplates/ListController.xml" >
     <invokers>
         <invoker folderid="home/treasury" caption="Credit Memo List" role="COLLECTOR" />
-        <invoker type="formActions" action="viewReport" caption="Report" />
+        <invoker xtype="formActions" action="viewReport" caption="Report" />
     </invokers>
     
     <code>

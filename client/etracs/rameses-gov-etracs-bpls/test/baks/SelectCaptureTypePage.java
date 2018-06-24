@@ -6,7 +6,6 @@
 
 package baks;
 
-import com.rameses.gov.etracs.bpls.view.*;
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;

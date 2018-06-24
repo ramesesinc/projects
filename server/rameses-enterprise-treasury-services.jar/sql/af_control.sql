@@ -6,7 +6,8 @@ select a.* from (
     case when af.formtype = 'serial' then ac.currentseries else null end as currentseries,
     case when af.formtype = 'serial' then ac.endseries else null end as endseries,
     ac.active, ac.org_objid, ac.org_name, ac.fund_objid, ac.fund_title, ac.stubno, ac.owner_objid,
-    ac.owner_name, ac.prefix, ac.suffix, (ac.currentseries-ac.startseries) as qtyissued, 
+    ac.owner_name, ac.prefix, ac.suffix, af.serieslength, 
+    (ac.currentseries-ac.startseries) as qtyissued, 
     ((ac.endseries-ac.currentseries) + 1) as qtybalance, 
     case when af.formtype = 'serial' then ac.startseries else ac.stubno end as sortseries, 
     case when af.formtype = 'serial' then 0 else 1 end as sortgroupindex 

@@ -43,7 +43,7 @@ class DailyReportCollectionListingController extends ReportController {
         
         tag = invoker?.properties?.tag; 
         months = reportPeriod.getMonths(); 
-        periods = reportPeriod.getTypes().findAll{ it.type.matches('daily|monthly')}  
+        periods = reportPeriod.getTypes().findAll{ it.type.matches('daily|monthly|range')}  
         entity.period = 'daily'; 
         entity.collector = [ objid: user.env.USERID, name: user.env.FULLNAME ]; 
     } 

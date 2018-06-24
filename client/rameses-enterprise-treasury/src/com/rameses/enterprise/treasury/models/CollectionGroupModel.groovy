@@ -19,6 +19,9 @@ class CollectionGroupModel extends CRUDController {
     def selectedItem;
 
     def listModel = [
+        isPagingEnabled: {
+            return false; 
+        }, 
         isMultiSelect: {
             return true; 
         }, 
@@ -28,12 +31,18 @@ class CollectionGroupModel extends CRUDController {
             }
             return entity.revenueitems;
         },
+        isAllowAdd: {
+            return ( mode == 'read' ? false: true );  
+        },
         createItem: {
             return [valuetype:'ANY', defaultvalue:0.0];
         },
         addItem: {
             entity.revenueitems << it; 
-        }  
+        }, 
+        isColumnEditable: { item,name-> 
+            return ( mode == 'read' ? false: true ); 
+        }
     ] as EditorListModel;
 
     void afterOpen( o ) {

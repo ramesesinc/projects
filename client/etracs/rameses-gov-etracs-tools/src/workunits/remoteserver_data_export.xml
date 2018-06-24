@@ -11,12 +11,12 @@
                  immediate="true" visibleWhen="#{mode == 'read'}" icon="images/toolbars/cancel.png" />
         
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C" 
-                 visibleWhen="#{mode == 'init'}" icon="images/toolbars/cancel.png" />
+                 visibleWhen="#{mode == 'init'}" icon="images/toolbars/cancel.png" immediate="true"/>
         <invoker type="formActions" action="next" caption="Next" mnemonic="n" shortcut="ctrl N" 
                  visibleWhen="#{mode == 'init'}" icon="images/toolbars/arrow_right.png" />
         
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C" 
-                 visibleWhen="#{mode == 'preview'}" icon="images/toolbars/cancel.png" />
+                 visibleWhen="#{mode == 'preview'}" icon="images/toolbars/cancel.png" immediate="true"/>
         <invoker type="formActions" action="back" caption="Back" mnemonic="b" 
                  visibleWhen="#{mode == 'preview'}" /> 
         <invoker type="formActions" action="export" caption="Export" mnemonic="x" 

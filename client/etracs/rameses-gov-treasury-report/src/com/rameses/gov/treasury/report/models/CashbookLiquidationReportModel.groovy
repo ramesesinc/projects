@@ -27,7 +27,7 @@ class CashbookLiquidationReportModel extends ReportController {
     
     def doInit( inv ) { 
         tag = inv?.properties?.tag; 
-        
+
         try { 
             return init(); 
         } finally { 

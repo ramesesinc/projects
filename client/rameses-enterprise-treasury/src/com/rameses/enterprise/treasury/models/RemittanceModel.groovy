@@ -72,28 +72,35 @@ class RemittanceModel {
 
     def start() {
         calculateCashBreakdown(); 
+        loadCashBreakdownOpener();
+        mode = "create";    
+        return "main";
+    }
+    
+    void loadCashBreakdownOpener() {
         if ( cashBreakdown == null ) {
-            cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [
-                entries: entity.cashbreakdown, 
-                onupdate: { o-> 
+            def params = [:]; 
+            params.entries = entity.cashbreakdown;
+            params.allowEdit = ( mode == 'read' ? false : true );             
+            if ( params.allowEdit ) {
+                params.onupdate = { o-> 
                     breakdown = o; 
                     total = entity.totalnoncash + breakdown;
                     remaining = entity.totalcash - breakdown;
                     binding.refresh("breakdown|total|remaining");
                 }
-            ]);
-        }
-        mode = "create";    
-        return "main";
+            }
+            cashBreakdown = Inv.lookupOpener("cash:breakdown", params);
+        }        
     }
 
     def open() { 
         mode = "read"; 
         entity = service.open( entity ); 
-        calculateCashBreakdown(); 
-        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [ entries: entity.cashbreakdown ]);    
+        calculateCashBreakdown();         
+        loadCashBreakdownOpener(); 
         total = entity.totalcash + entity.totalnoncash;
-        return "main"
+        return "main";
     }
 
     void calculateCashBreakdown() {
@@ -129,10 +136,13 @@ class RemittanceModel {
 
         if( MsgBox.confirm("You are about to submit this remittance. Please ensure the entries are correct")) {
             def o = service.post( entity );
-            entity.txnno = o.txnno;
-            mode = 'read'
+            mode = 'read';
             entity = o;
-            MsgBox.alert("Posting successful");
+            entity.txnno = o.txnno;
+            MsgBox.alert("Posting successful");            
+            
+            cashBreakdown = null; 
+            loadCashBreakdownOpener();            
         }
     }
 

@@ -49,7 +49,7 @@ class CashBookController extends CRUDController
         return create(); 
     }     
     
-    boolean isAllowCreate() { return is_admin_user; } 
+    boolean isAllowCreate() { return false; } 
     boolean isAllowDelete() { return is_admin_user; } 
     boolean isAllowApprove() { return is_admin_user; } 
     boolean isAllowEdit() { return is_admin_user; } 

@@ -13,4 +13,7 @@
 "entity.date" [entity.period.toString().matches('daily')==true] {
     visible: true; 
 }
+"entity.(start|end)date" [entity.period.toString().matches('range')==true] {
+    visible: true; 
+}
 

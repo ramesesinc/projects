@@ -1,6 +1,7 @@
 <workunit extends="wtemplates/ReportController.xml">
     <invokers>
-        <invoker folderid="/explorer/report/bpls" action="init" caption="Business Delinquency Listing" target="window" />
+        <invoker folderid="/explorer/report/bpls" caption="Business Delinquency Listing" 
+                 action="init" role="REPORT" target="window" />
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true" visibleWhen="#{mode == 'init' &amp;&amp; isViewed == false}"/>
         <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl + V" icon="images/doc-view.png" visibleWhen="#{mode == 'init' &amp;&amp; isViewed == false}"/>

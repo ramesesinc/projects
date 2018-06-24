@@ -36,6 +36,7 @@ public class UserModel  {
     }
             
     void open() {
+        initiator = 'open';
         entity = service.open( [objid: entity.objid]);
         refresh();
     }

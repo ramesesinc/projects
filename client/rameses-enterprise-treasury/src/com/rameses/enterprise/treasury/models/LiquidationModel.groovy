@@ -74,23 +74,35 @@ class LiquidationModel {
         mode = "create";
         entity.cashbreakdown = [];
         remaining = entity.totalcash; 
-        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [
-            entries: entity.cashbreakdown, onupdate: { o->
-                breakdown = o; 
-                total = entity.totalnoncash + breakdown;
-                remaining = entity.totalcash - breakdown; 
-                binding.refresh("remaining|breakdown|total");
-            } 
-        ]); 
+        cashBreakdown = null;
+        loadCashBreakdownOpener();
         return "default";
     }
 
+    void loadCashBreakdownOpener() {
+        if ( cashBreakdown == null ) {
+            def params = [:]; 
+            params.entries = entity.cashbreakdown;
+            params.allowEdit = ( mode == 'read' ? false : true );             
+            if ( params.allowEdit ) {
+                params.onupdate = { o-> 
+                    breakdown = o; 
+                    total = entity.totalnoncash + breakdown;
+                    remaining = entity.totalcash - breakdown; 
+                    binding.refresh("remaining|breakdown|total");
+                }
+            }
+            cashBreakdown = Inv.lookupOpener("cash:breakdown", params);
+        }        
+    }    
+    
     def open(){
         mode = "read";
         entity = service.open(entity);
-        cashBreakdown = InvokerUtil.lookupOpener("cash:breakdown", [entries: entity.cashbreakdown, allowEdit:false] );    
+        cashBreakdown = null;
+        loadCashBreakdownOpener();        
         total = entity.totalcash + entity.totalnoncash;
-        remaining = 0.0
+        remaining = 0.0;
         breakdown = entity.cashbreakdown.sum{it.amount};
     }
 
@@ -100,8 +112,10 @@ class LiquidationModel {
 
         if( MsgBox.confirm("You are about to submit this liquidation. Please ensure the entries are correct")) {
             entity = service.post( entity ); 
-            MsgBox.alert("Posting successful"); 
             mode = "read"; 
+            MsgBox.alert("Posting successful"); 
+            cashBreakdown = null;
+            loadCashBreakdownOpener();               
             if ( handler ) handler(); 
         }
     }
@@ -122,7 +136,15 @@ class LiquidationModel {
     ] as BasicListModel;
 
     def fundSummaryModel = [
-        fetchList: { o->return entity.fundsummary; }
+        fetchList: { o-> 
+            return entity.fundsummary; 
+        },
+        isAllowAdd: { 
+            return false; 
+        },
+        isColumnEditable: { item,colname-> 
+            return ( mode == 'read' ? false : true ); 
+        }
     ] as EditorListModel;
 
     def checkModel = [

@@ -24,7 +24,6 @@
                 m.treasurer = [:];
                 return m;
             }
-            
         }        
     ]]>
     </code>

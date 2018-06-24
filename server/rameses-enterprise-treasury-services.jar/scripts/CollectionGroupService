@@ -60,7 +60,7 @@ class CollectionGroupService extends ActiveCrudListService {
 		em.deleteRevenueItems( entity )
 	}
 
-	protected void afterCreate(def entity){
+	protected void afterCreate(def entity){ 
 		entity.revenueitems.each {
 			it.collectiongroupid = entity.objid;
 			em.create(it, 'collectiongroup_revenueitem')

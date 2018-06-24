@@ -1,7 +1,7 @@
 <workunit>
     
    <invokers>
-         <invoker folderid="/explorer/txn/treasury/tools" caption="New Cashbook (Batch)" action="init" role="MASTER" target="popup" permission="cashbook.create"/>
+         <invoker xfolderid="/explorer/txn/treasury/tools" caption="New Cashbook (Batch)" action="init" role="MASTER" target="popup" permission="cashbook.create"/>
          <invoker type="cashbook:create" caption="New Cashbook (Batch)" action="init" role="MASTER" target="popup" permission="cashbook.create" index="-1"/>
          
          <invoker type="formActions" caption="Cancel" action="doCancel" visibleWhen="#{mode == 'init'}" immediate="true"/> 

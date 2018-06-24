@@ -4,6 +4,8 @@
  */
 package com.rameses.enterprise.treasury.views;
 
+import java.awt.Dimension;
+
 /**
  *
  * @author dell
@@ -15,6 +17,10 @@ public class CollectionTypeQuery extends javax.swing.JPanel {
      */
     public CollectionTypeQuery() {
         initComponents();
+        lblOrgType.setLabelFor(cboOrgType); 
+        lblOrgName.setLabelFor(cboOrgName); 
+        
+        lblOrgType.setDisplayedMnemonic('T');
     }
 
     /**
@@ -26,50 +32,58 @@ public class CollectionTypeQuery extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        lblOrgType = new com.rameses.rcp.control.XLabel();
+        cboOrgType = new com.rameses.rcp.control.XComboBox();
+        lblOrgName = new com.rameses.rcp.control.XLabel();
+        cboOrgName = new com.rameses.rcp.control.XComboBox();
 
-        xFormPanel1.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
+        setLayout(new java.awt.BorderLayout());
 
-        xComboBox2.setCaption("Org Type");
-        xComboBox2.setCaptionWidth(80);
-        xComboBox2.setExpression("#{ item.name }");
-        xComboBox2.setItems("orgTypes");
-        xComboBox2.setName("orgType"); // NOI18N
-        xComboBox2.setPreferredSize(new java.awt.Dimension(120, 20));
-        xFormPanel1.add(xComboBox2);
+        jPanel2.setLayout(new com.rameses.rcp.control.layout.CenterLayout());
 
-        xComboBox3.setCaption("Org Name");
-        xComboBox3.setCaptionWidth(80);
-        xComboBox3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xComboBox3.setDepends(new String[] {"orgType"});
-        xComboBox3.setDynamic(true);
-        xComboBox3.setExpression("#{item.name}");
-        xComboBox3.setItems("orgList");
-        xComboBox3.setName("org"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(200, 20));
-        xFormPanel1.add(xComboBox3);
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        jPanel1.setMinimumSize(new java.awt.Dimension(284, 20));
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        lblOrgType.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        lblOrgType.setText("Org Type : ");
+        jPanel1.add(lblOrgType);
+
+        cboOrgType.setCaption("Org Type");
+        cboOrgType.setExpression("#{ item.name }");
+        cboOrgType.setItems("orgTypes");
+        cboOrgType.setName("orgType"); // NOI18N
+        cboOrgType.setCaptionWidth(80);
+        cboOrgType.setPreferredSize(new java.awt.Dimension(100, 20));
+        jPanel1.add(cboOrgType);
+
+        lblOrgName.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 10));
+        lblOrgName.setText("Org Name : ");
+        jPanel1.add(lblOrgName);
+
+        cboOrgName.setCaption("Org Name");
+        cboOrgName.setDepends(new String[] {"orgType"});
+        cboOrgName.setExpression("#{item.name}");
+        cboOrgName.setItems("orgList");
+        cboOrgName.setName("org"); // NOI18N
+        cboOrgName.setCaptionWidth(80);
+        cboOrgName.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        cboOrgName.setDynamic(true);
+        cboOrgName.setPreferredSize(new java.awt.Dimension(100, 20));
+        jPanel1.add(cboOrgName);
+
+        jPanel2.add(jPanel1);
+
+        add(jPanel2, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XComboBox xComboBox2;
-    private com.rameses.rcp.control.XComboBox xComboBox3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XComboBox cboOrgName;
+    private com.rameses.rcp.control.XComboBox cboOrgType;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private com.rameses.rcp.control.XLabel lblOrgName;
+    private com.rameses.rcp.control.XLabel lblOrgType;
     // End of variables declaration//GEN-END:variables
 }

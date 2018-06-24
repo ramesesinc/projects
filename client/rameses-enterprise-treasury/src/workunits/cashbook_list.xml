@@ -2,13 +2,13 @@
     
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Cash Books" action="doInit"  
-                 role="ADMIN,MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.view"/>
+                 role="COLLECTOR,LIQUIDATING_OFFICER,CASHIER,SHARED" permission="cashbook.view"/>
         
         <invoker folderid="home/treasury" caption="Cash Books" action="doInit"  
-                 role="ADMIN,MASTER,COLLECTOR,LIQUIDATING_OFFICER,CASHIER" permission="cashbook.view" 
+                 role="COLLECTOR,LIQUIDATING_OFFICER,CASHIER,SHARED" permission="cashbook.view" 
                  target="window"/>
             
-        <invoker type="cashbooklist-master-owner" role="ADMIN,MASTER"/> 
+        <invoker type="cashbooklist-master-owner" role="SHARED"/> 
     </invokers>
    
     <code> 
@@ -28,8 +28,8 @@ class CashBookListController extends DefaultListController
         def procid = InvokerUtil.lookup("cashbooklist-master-owner");  
         is_admin_user = (procid? true: false); 
     }
-
-    boolean isAllowCreate() { return is_admin_user; }
+    
+    boolean isAllowCreate() { return false; }
 
     void beforeFetchList( Map params ) { 
         params.admin = is_admin_user; 

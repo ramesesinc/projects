@@ -48,7 +48,23 @@ class CollectionReportService  {
 		def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
 		
 		def period = new StringBuilder();
-		if ( params.period.toString().toUpperCase() == 'MONTHLY' ) {
+		if ( params.period.toString().toUpperCase() == 'RANGE' ) {
+			if ( !params.startdate ) throw new Exception('startdate parameter is required'); 
+			if ( !params.enddate ) throw new Exception('enddate parameter is required'); 
+
+			def formatter = new java.text.SimpleDateFormat('MMMMM dd, yyyy'); 
+			def startdate = java.sql.Date.valueOf( params.startdate ); 
+			def enddate = java.sql.Date.valueOf( params.enddate ); 
+			def enddatestr = formatter.format( enddate ).toUpperCase();
+
+			enddate = new java.sql.Date( DateUtil.add( enddate, '1d' ).time ); 
+			period.append(formatter.format( startdate ).toUpperCase());
+			period.append("  -  ").append(enddatestr); 
+
+			params.startdate = startdate; 
+			params.enddate = enddate; 
+
+		} else if ( params.period.toString().toUpperCase() == 'MONTHLY' ) {
 			if ( !params.year ) throw new Exception('year parameter is required');
 			if ( !params.month?.index ) throw new Exception('month parameter is required');
 

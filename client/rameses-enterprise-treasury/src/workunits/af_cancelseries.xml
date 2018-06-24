@@ -32,10 +32,20 @@
                 receipt.formno = entity.afid
                 receipt = service.init(receipt);
                 receipt.controlid = entity.objid
-                receipt.receiptno = ((entity.prefix)?entity.prefix:'') + entity.currentseries.toString() + ((entity.suffix)?entity.suffix:'');
-                receipt.series = entity.currentseries
-                receipt.stub = entity.stubno
-                receipt.formtype = 'serial'
+                receipt.series = entity.currentseries;
+                receipt.stub = entity.stubno;
+                receipt.formtype = 'serial';
+                
+                def buff = new StringBuilder(); 
+                if ( entity.prefix != null && entity.prefix.trim().length() > 0) buff.append( entity.prefix.trim() ); 
+                if ( entity.serieslength > 0 ) {
+                    buff.append( entity.currentseries.toString().padLeft(entity.serieslength, '0') ); 
+                } else {
+                    buff.append( entity.currentseries.toString() ); 
+                } 
+                if ( entity.suffix != null && entity.suffix.trim().length() > 0) buff.append( entity.suffix.trim() ); 
+                
+                receipt.receiptno = buff.toString(); 
             }
             
             def doOk() {

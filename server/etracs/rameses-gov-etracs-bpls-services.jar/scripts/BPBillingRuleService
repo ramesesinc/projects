@@ -98,6 +98,5 @@ public class BPBillingRuleService  {
 		}	
 
 		return result;		
-	}
-
+	} 
 }	

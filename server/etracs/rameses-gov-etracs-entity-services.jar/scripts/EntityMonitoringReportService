@@ -2,18 +2,13 @@ import com.rameses.annotations.*
 import com.rameses.common.*
 import com.rameses.services.extended.*;
 
-class EntityMonitoringReportService 
-{
+class EntityMonitoringReportService {
+
 	@ActiveDB('entity_report')
 	def em
 
-
 	@Service('DateService')
 	def dtSvc 
-
-	@Service('RPTUtil')
-	def util
-
 
 	@ProxyMethod
 	public def getEncodingStatistics( params ) {
@@ -50,7 +45,7 @@ class EntityMonitoringReportService
 
 		return [
 			title 	: buildTitle( params.year, params.qtr, params.month, params.day),
-			period 	: util.buildPeriod(params),
+			period 	: buildPeriod(params),
 			items 	: items
 		]
 	}
@@ -72,4 +67,44 @@ class EntityMonitoringReportService
 		1.upto( maxday ) { numdays.add( it ) }
 		return numdays 
 	}
+
+    private def buildPeriod( params ) { 
+        def monthno = (params.month?.month ? params.month.month : params.month?.index); 
+        if ( monthno > 0 ) {
+			def months = [ 
+			    [name:'JANUARY',    month:1, qtr:1 ],
+			    [name:'FEBRUARY',   month:2, qtr:1 ],
+			    [name:'MARCH',      month:3, qtr:1 ],		    
+			    [name:'APRIL',  	month:4, qtr:2 ],
+			    [name:'MAY',    	month:5, qtr:2 ],
+			    [name:'JUNE',   	month:6, qtr:2 ],		    
+			    [name:'JULY',       month:7, qtr:3 ],
+			    [name:'AUGUST',     month:8, qtr:3 ],
+			    [name:'SEPTEMBER',  month:9, qtr:3 ],
+			    [name:'OCTOBER',    month:10, qtr:4 ],
+			    [name:'NOVEMBER',   month:11, qtr:4 ],
+			    [name:'DECEMBER',   month:12, qtr:4 ]
+			]; 
+
+			def mon = months.find{( it.month == monthno )}
+
+        	if ( params.day ) {
+				return 'For the day of '+ mon?.name +' '+ params.day +', '+ params.year;
+    		} else {
+				return 'For the Month of '+ mon?.name +', '+ params.year;
+    		}
+        } else if ( params.qtr ) { 
+        	def qtrs = [ 
+        		[qtr:1, name:'1ST QUARTER'],
+        		[qtr:2, name:'2ND QUARTER'],
+        		[qtr:3, name:'3RD QUARTER'],
+        		[qtr:4, name:'4TH QUARTER']
+        	]; 
+        	def qtr = qtrs.find{( it.qtr == params.qtr )} 
+        	return 'For the '+ qtr?.name +' of '+ params.year 
+        } else { 
+        	return 'For the Year ' + params.year; 
+        } 
+    }   
+
 }

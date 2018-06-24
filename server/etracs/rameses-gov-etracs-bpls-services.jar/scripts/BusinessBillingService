@@ -46,13 +46,13 @@ public class BusinessBillingService  {
 	@Service(value="SMSService") 
 	def smsSvc; 
 
-	@ProxyMethod
+	@ProxyMethod 
 	public def generateBilling( def o ) {
 		if(!o.taxfees)
 			throw new Exception("Please provide at least one taxfee");
 
 		def facts = [];
-		
+
 		//transfer taxfees and lob to facts
 		def lobMap = [:];
 		def findLob = { lob, tf ->
@@ -128,7 +128,7 @@ public class BusinessBillingService  {
 			println " " + k.account + " " + k.amount + " qtr:" + k.qtr + " partial?"+k.partial; 
 		}
 		*/
-		
+
 		def newtaxfees = [];
 		annualitems.each{a-> 
 			def tf = o.taxfees.find{ it.objid==a.receivableid } 
@@ -141,6 +141,7 @@ public class BusinessBillingService  {
 			tf.interestaccount = a.interestaccount;
 			newtaxfees << tf; 
 		}
+
 		qtritems.each{k,v-> 
 			def tf = o.taxfees.find{ it.objid==k } 
 			tf.details = v.sort{ it.qtr } 

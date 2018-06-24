@@ -39,11 +39,11 @@ public class CashReceiptCancelSeriesPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(120);
 
         xLabel1.setCaption("Series to cancel");
+        xLabel1.setExpression("#{receipt.receiptno}");
         xLabel1.setCellPadding(new java.awt.Insets(0, 0, 3, 0));
-        xLabel1.setExpression("#{receipt.series}");
         xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xLabel1.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 16));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 80));
@@ -62,8 +62,8 @@ public class CashReceiptCancelSeriesPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 352, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

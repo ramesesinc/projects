@@ -4,15 +4,14 @@
         <invoker type="afserial:transfer" caption="Transfer Accountable Form" target="popup"/>
         
         <invoker type="formActions" caption="Close" action="_close" icon="images/toolbars/cancel.png" immediate="true"/>
-        <invoker type="formActions" caption="Transfer" action="transfer" />
+        <invoker type="formActions" caption="Transfer" action="transfer" mnemonic="T"/>
    </invokers>
    
    <code>
 <![CDATA[
-
-import com.rameses.osiris2.common.*;
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import javax.swing.*;
 import com.rameses.io.*;

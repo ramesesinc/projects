@@ -24,10 +24,11 @@ order by cg.name
 delete from collectiongroup_revenueitem where collectiongroupid=$P{objid} 
 
 [getRevenueItems]
-select c.*, r.* from collectiongroup_revenueitem c 
-	inner join itemaccount r on r.objid = c.revenueitemid 
+select c.*, ia.code, ia.title, ia.fund_objid, ia.fund_code, ia.fund_title
+from collectiongroup_revenueitem c 
+	inner join itemaccount ia on ia.objid = c.revenueitemid 
 where c.collectiongroupid = $P{objid} 
-order by c.orderno 
+order by c.orderno, ia.title  
 
 [approve]
 update collectiongroup set state='APPROVED' where objid=$P{objid} 

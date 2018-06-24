@@ -3,8 +3,8 @@
         <invoker folderid="/explorer/txn/treasury" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER" action="init"/>
         <invoker folderid="home/treasury/liquidation" caption="Unliquidated Remittances" role="LIQUIDATING_OFFICER" action="init" target="window" index="-10"/>
         
-        <invoker folderid="/explorer/txn/treasury" caption="Capture Liquidation" role="LIQUIDATING_OFFICER" action="initCapture"/>
-        <invoker folderid="home/treasury/liquidation" caption="Capture Liquidation" role="LIQUIDATING_OFFICER" action="initCapture" target="window" index="1"/>
+        <invoker xfolderid="/explorer/txn/treasury" caption="Capture Liquidation" role="LIQUIDATING_OFFICER" action="initCapture"/>
+        <invoker xfolderid="home/treasury/liquidation" caption="Capture Liquidation" role="LIQUIDATING_OFFICER" action="initCapture" target="window" index="1"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/toolbars/cancel.png" mnemonic="c" shortcut="ctrl C"/>
         <invoker type="formActions" action="refresh" caption="Refresh" icon="images/toolbars/refresh.png" mnemonic="r" shortcut="ctrl R"/>

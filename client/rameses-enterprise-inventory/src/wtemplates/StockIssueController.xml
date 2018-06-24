@@ -2,16 +2,16 @@
 <workunit>
     
     <invokers>
-       <invoker type="formActions" caption="Close" action="_close" shortcut="ctrl C" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>
-       <invoker type="formActions" caption="Next" action="enterQty" visibleWhen="#{mode=='initial'}" shortcut="ctrl N" mnemonic='n' icon="images/toolbars/arrow_right.png"/>
-       <invoker type="formActions" caption="Next" action="process" visibleWhen="#{mode=='enterqty'}" shortcut="ctrl N" mnemonic='n' icon="images/toolbars/arrow_right.png"/>
-       <invoker type="formActions" caption="Back" action="revert" visibleWhen="#{mode=='process'}" shortcut="ctrl B" mnemonic='b' icon="images/toolbars/arrow_left.png"/>
-       <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode=='process'}" shortcut="ctrl S" icon="images/toolbars/save.png" mnemonic='S'/>
-       <invoker type="formActions" caption="Print" action="print" visibleWhen="#{mode == 'read'}" shortcut="ctrl P" mnemonic='p'/>
+        <invoker type="formActions" caption="Close" action="_close" shortcut="ctrl C" mnemonic="c" icon="images/toolbars/cancel.png" immediate="true"/>
+        <invoker type="formActions" caption="Next" action="enterQty" visibleWhen="#{mode=='initial'}" shortcut="ctrl N" mnemonic='n' icon="images/toolbars/arrow_right.png"/>
+        <invoker type="formActions" caption="Next" action="process" visibleWhen="#{mode=='enterqty'}" shortcut="ctrl N" mnemonic='n' icon="images/toolbars/arrow_right.png"/>
+        <invoker type="formActions" caption="Back" action="revert" visibleWhen="#{mode=='process'}" shortcut="ctrl B" mnemonic='b' icon="images/toolbars/arrow_left.png"/>
+        <invoker type="formActions" caption="Save" action="save" visibleWhen="#{mode=='process'}" shortcut="ctrl S" icon="images/toolbars/save.png" mnemonic='S'/>
+        <invoker type="formActions" caption="Print" action="print" visibleWhen="#{mode == 'read'}" shortcut="ctrl P" mnemonic='p'/>
     </invokers>
     
     <pages>
-       <page name="enterqty" template="com.rameses.enterprise.inventory.stock.StockIssuePage"/>
+        <page name="enterqty" template="com.rameses.enterprise.inventory.stock.StockIssuePage"/>
         <page name="default" template="com.rameses.enterprise.inventory.stock.StockIssueResultPage"/>
     </pages>
     

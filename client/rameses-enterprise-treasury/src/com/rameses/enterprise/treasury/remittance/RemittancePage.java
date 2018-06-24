@@ -65,39 +65,41 @@ public class RemittancePage extends javax.swing.JPanel {
         jPanel2.setBorder(xTitledBorder1);
         jPanel2.setLayout(null);
 
+        formPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        formPanel3.setCaptionWidth(150);
+
         xTextField2.setCaption("Ref  No.");
-        xTextField2.setCaptionFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        xTextField2.setCaptionWidth(140);
-        xTextField2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         xTextField2.setName("entity.txnno"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(200, 21));
+        xTextField2.setCaptionFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        xTextField2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        xTextField2.setPreferredSize(new java.awt.Dimension(200, 22));
         xTextField2.setReadonly(true);
         formPanel3.add(xTextField2);
 
         xLookupField1.setCaption("Liquidating Officer");
-        xLookupField1.setCaptionFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        xLookupField1.setCaptionWidth(140);
         xLookupField1.setExpression("#{item.name}");
-        xLookupField1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         xLookupField1.setHandler("liquidatingofficer:lookup");
         xLookupField1.setName("entity.liquidatingofficer"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLookupField1.setCaptionFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        xLookupField1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 21));
         xLookupField1.setReadonly(true);
         formPanel3.add(xLookupField1);
 
         xDecimalField4.setCaption("Amount to remit");
-        xDecimalField4.setCaptionFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        xDecimalField4.setCaptionWidth(140);
+        xDecimalField4.setName("entity.amount"); // NOI18N
+        xDecimalField4.setCaptionFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         xDecimalField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField4.setEnabled(false);
-        xDecimalField4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        xDecimalField4.setName("entity.amount"); // NOI18N
-        xDecimalField4.setPreferredSize(new java.awt.Dimension(150, 19));
+        xDecimalField4.setFontStyle("font-weight:bold; font-size:15;");
+        xDecimalField4.setPreferredSize(new java.awt.Dimension(200, 22));
         formPanel3.add(xDecimalField4);
 
         jPanel2.add(formPanel3);
         formPanel3.setBounds(10, 20, 606, 80);
 
+        xDataTable1.setHandler("checkModel");
+        xDataTable1.setName("selectedCheck"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "refno"}
@@ -147,9 +149,9 @@ public class RemittancePage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "voided"}
                 , new Object[]{"caption", "Void"}
-                , new Object[]{"width", 30}
-                , new Object[]{"minWidth", 30}
-                , new Object[]{"maxWidth", 30}
+                , new Object[]{"width", 40}
+                , new Object[]{"minWidth", 40}
+                , new Object[]{"maxWidth", 40}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", false}
                 , new Object[]{"nullWhenEmpty", true}
@@ -175,52 +177,51 @@ public class RemittancePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("checkModel");
-        xDataTable1.setName("selectedCheck"); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setText("Checks and other payments");
 
-        xSubFormPanel2.setDynamic(true);
         xSubFormPanel2.setHandler("cashBreakdown");
         xSubFormPanel2.setName("subform"); // NOI18N
+        xSubFormPanel2.setDynamic(true);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel2.setText("Cash Breakdown");
 
+        xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel4.setCaptionWidth(100);
 
         xDecimalField5.setCaption("Total Noncash");
+        xDecimalField5.setName("entity.totalnoncash"); // NOI18N
         xDecimalField5.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField5.setEnabled(false);
-        xDecimalField5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xDecimalField5.setName("entity.totalnoncash"); // NOI18N
+        xDecimalField5.setFontStyle("font-weight:bold; font-size:14");
         xDecimalField5.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel4.add(xDecimalField5);
 
         xFormPanel3.setCaptionWidth(120);
 
         xDecimalField6.setCaption("Cash Breakdown");
+        xDecimalField6.setName("breakdown"); // NOI18N
         xDecimalField6.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField6.setEnabled(false);
-        xDecimalField6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xDecimalField6.setName("breakdown"); // NOI18N
+        xDecimalField6.setFontStyle("font-weight:bold; font-size:14");
         xDecimalField6.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel3.add(xDecimalField6);
 
         xDecimalField8.setCaption("Cash Remaining");
+        xDecimalField8.setName("remaining"); // NOI18N
         xDecimalField8.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField8.setEnabled(false);
-        xDecimalField8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xDecimalField8.setName("remaining"); // NOI18N
+        xDecimalField8.setFontStyle("font-weight:bold; font-size:14");
         xDecimalField8.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel3.add(xDecimalField8);
 
         xDecimalField9.setCaption("Total Cash");
+        xDecimalField9.setName("entity.totalcash"); // NOI18N
         xDecimalField9.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField9.setEnabled(false);
-        xDecimalField9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xDecimalField9.setName("entity.totalcash"); // NOI18N
+        xDecimalField9.setFontStyle("font-weight:bold; font-size:14");
         xDecimalField9.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel3.add(xDecimalField9);
 
@@ -254,7 +255,7 @@ public class RemittancePage extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(xFormPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(jPanel3Layout.createSequentialGroup()
-                        .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                        .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(xFormPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())

@@ -354,7 +354,7 @@ class RPTReceiptService
 	}
 
 	void updateLedgerPaidYearQtr(ledger){
-		def info = [:]
+		def info = [objid: ledger.objid]
 		if (ledger.partialled){
 			info.lastyearpaid = (ledger.toqtr == 1 ? ledger.toyear - 1 : ledger.toyear)
 			info.lastqtrpaid = (ledger.toqtr == 1 ? 4 : ledger.toqtr - 1)
@@ -363,7 +363,7 @@ class RPTReceiptService
 			info.lastyearpaid = ledger.toyear 
 			info.lastqtrpaid = ledger.toqtr 
 		}
-		em_rptledger.find([objid:ledger.objid]).update(info)
+		em_rptledger.where('objid = :objid and lastyearpaid <= :lastyearpaid', info).update(info)
 	}
 
 	def createLedgerPayment(receipt, ledger){
@@ -400,6 +400,7 @@ class RPTReceiptService
 			em_rptledger_item.find([objid:it.itemid]).update([amtpaid:'{amtpaid + :amount}'], [amount:it.amount])
 		}
 		em_rptledger_item.where('parentid = :refid and amtpaid >= amount', ledgerpmt).delete()
+		em_rptledger.closePaidAvDifference(ledgerpmt)
 	}
 
 	void postShares(ledgerpmt, ledger){

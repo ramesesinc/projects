@@ -8,4 +8,6 @@
 	- 
 
 - LANDTAX
-	- 
+	- Modified Posting of tax difference
+		* Migrate ledger with tax difference (rptledger_avdifference)
+		* post difference ledger items 

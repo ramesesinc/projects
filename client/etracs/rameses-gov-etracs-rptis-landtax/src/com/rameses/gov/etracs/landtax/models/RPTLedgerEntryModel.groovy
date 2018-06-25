@@ -24,7 +24,7 @@ class RPTLedgerEntryModel
     
     void refresh(){
         init();
-        listHandler.reload();
+        listHandler.load();
     }
     
     def listHandler = [

@@ -69,6 +69,7 @@ WHERE rl.objid IN (
      and rl.barangayid like $P{barangayid}
      AND (rl.lastyearpaid < $P{billtoyear} 
           OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
+          or (exists(select * from rptledger_item where parentid = rl.objid))
      )
 
     UNION 
@@ -86,6 +87,7 @@ WHERE rl.objid IN (
      and rl.barangayid like $P{barangayid}
      AND (rl.lastyearpaid < $P{billtoyear} 
             OR ( rl.lastyearpaid = $P{billtoyear} AND rl.lastqtrpaid < $P{billtoqtr})
+            or (exists(select * from rptledger_item where parentid = rl.objid))
      )
 )
 and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')

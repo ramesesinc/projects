@@ -45,6 +45,9 @@ class RPTLedgerService
     @DataContext('rptledger_subledger')
     def em_rptledger_subledger
 
+    @DataContext('rptledger_avdifference')
+    def em_avdifference
+
     @DataContext('faas_restriction')
     def em_faas_restriction
 
@@ -62,6 +65,9 @@ class RPTLedgerService
 
     @DataContext('rptpayment_item')
     def em_rptpayment_item
+
+    @DataContext('vw_rptledger_avdifference')
+    def vw_rptledger_avdifference
 
 
     @ProxyMethod
@@ -448,6 +454,78 @@ class RPTLedgerService
         return em_rptledger.find([faasid:faasid]).first()
     }
 
+    @ProxyMethod
+    public def getAvDifferences(entity){
+        return em_avdifference.find([parent_objid:entity.objid]).orderBy('year desc').list()
+    }
+
+    @ProxyMethod
+    public def createAvDifference(difference){
+        def rptledgerfaas = em_rptledger_faas.find([
+            rptledgerid: difference.parent.objid,
+            tdno: difference.parent.tdno,
+        ]).first()
+
+        if (!rptledgerfaas) {
+            throw new Exception('Ledger History for year ' + difference.year + ' is not defined.')
+        }
+
+        difference.rptledgerfaas = rptledgerfaas
+
+        if (difference.year < rptledgerfaas.fromyear) {
+            throw new Exception('Difference year must be greater than or equal to ' + rptledgerfaas.fromyear + '.')
+        }
+
+        if (difference.av <= 0){
+            throw new Exception('Assessed value difference must be greater than zero.')
+        }
+
+        def existingdiff = em_avdifference.find([
+            parent_objid: difference.parent.objid,
+            year: difference.year,
+            paid: 0,
+        ]).first()
+
+        if (existingdiff) {
+            throw new Exception('Difference for the year ' + difference.year + ' has already been added.')
+        }
+
+        em_avdifference.create(difference)
+
+        def ledger = em_rptledger.find([objid:difference.parent.objid]).first()
+        if (!ledger) throw new Exception('Ledger does not exist or has already beend deleted.')
+        postTaxDifferenceLedgerEntries(ledger, difference.year, difference.year)
+        return difference;
+    }
+
+    @ProxyMethod
+    public def updateAvDifference(difference){
+        if (difference.av <= 0){
+            throw new Exception('Assessed value difference must be greater than zero.')
+        }
+
+        em_rptledger_item.find([
+            parentid: difference.parent.objid,
+            year: difference.year,
+            taxdifference: 1,
+        ]).delete()
+
+        em_avdifference.update(difference)
+        return difference;
+    }
+
+
+    @ProxyMethod
+    public void removeAvDifference(difference){
+        em_rptledger_item.find([
+            parentid: difference.parent.objid,
+            year: difference.year,
+            taxdifference: 1,
+        ]).delete()
+
+        em_avdifference.delete(difference)
+    }
+
 
     /*=============================================================
     *
@@ -679,8 +757,9 @@ class RPTLedgerService
     }
 
     void postTaxDifference(ledger, faas){
-        if (ledger.lastyearpaid < faas.effectivityyear)
+        if (ledger.lastyearpaid < faas.effectivityyear){
             return
+        }
 
         def currfaas = em_rptledger_faas.find([rptledgerid: ledger.objid, fromyear:faas.effectivityyear]).first();
         def prevfaas = em_rptledger_faas.find([rptledgerid: ledger.objid, toyear:faas.effectivityyear - 1]).first();
@@ -689,17 +768,41 @@ class RPTLedgerService
         }
 
         def avdifference = faas.rpu.totalav - prevfaas.assessedvalue
-        if (avdifference < 0){
+        if (avdifference <= 0){
             return
         }
 
         for (int yr = faas.effectivityyear; yr <= ledger.lastyearpaid; yr++){
-            currfaas.assessedvalue = avdifference
-            currfaas.taxdifference = true 
-            ledger.faases = [currfaas]
+            def difference = [:]
+            difference.objid = 'TD' + new java.rmi.server.UID()
+            difference.parent = ledger 
+            difference.rptledgerfaas = currfaas
+            difference.year = yr 
+            difference.av = avdifference
+            difference.paid = false 
+            em_avdifference.create(difference)
+        }
+
+        postTaxDifferenceLedgerEntries(ledger, faas.effectivityyear, ledger.lastyearpaid)
+    }    
+
+    @ProxyMethod 
+    public void postTaxDifferenceLedgerEntries(ledger, fromyear, toyear){
+        def faashistory = vw_rptledger_avdifference
+                            .find([rptledgerid:ledger.objid,state:'APPROVED',taxable:true])
+                            .orderBy('fromyear,fromqtr')
+                            .list()
+                            .each{ it.taxdifference = true }
+
+        for (int yr = fromyear; yr <= toyear; yr++){
+            ledger.faases = faashistory.findAll{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) }
+            if (!ledger.faases) throw new Exception('No FAAS history defined for the year ' + yr + '.')
             postLedgerItem(ledger, yr)
         }
-    }    
+
+        ledger.remove('faases')
+    }
+
 
     void updateLedgerFaasInfo(faas, ledger){
         faas.rp = em_realproperty.find([objid:faas.rp.objid]).first()

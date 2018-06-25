@@ -22,10 +22,15 @@ class RPTLedgerModel extends CrudFormModel
         }
     }
     
-    def refreshSections(){
+    void refreshSections() {
         sections?.each {
-            try { it.controller.codeBean.refresh(); }catch(e){;}
+            try { it.handle.refresh(); }catch(e){;}
         }
+    }
+    
+    def reloadEntity(){
+        super.reloadEntity();
+        refreshSections();
     }
     
     /*--------------------------------------------------------------

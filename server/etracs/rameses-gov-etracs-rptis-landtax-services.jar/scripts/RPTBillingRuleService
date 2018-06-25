@@ -140,7 +140,6 @@ public class RPTBillingRuleService
 		rptledger.undercompromise = checkUnderCompromise(rptledger)
 		rptledger.firstqtrpaidontime = checkFirstQtrPaidOntime(rptledger, bill)
 		rptledger.missedpayment = checkMissedPayment(rptledger, bill)
-		println 'rptledger.missedpayment => ' + rptledger.missedpayment
 		bill.ledgerfact = new RPTLedgerFact(rptledger)
 		return bill.ledgerfact
 		

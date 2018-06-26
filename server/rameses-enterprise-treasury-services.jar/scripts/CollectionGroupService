@@ -94,13 +94,13 @@ class CollectionGroupService extends ActiveCrudListService {
 				objid  : 'RCTI' + new java.rmi.server.UID(),
 				amount : it.defaultvalue ? it.defaultvalue : 0.0 , 
 				item   : [ 
-					objid: it.objid,
+					objid: it.revenueitemid,
 					code : it.code,
 					title: it.title,
 					fund : it.fund, 
 					valuetype : it.valuetype
 				]
-			]
+			];
 		} 
 		return items;
 	}

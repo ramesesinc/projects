@@ -1,0 +1,7 @@
+"(add|edit|remove)Unit" [ entity.task.state == "draft" ] {
+    visible:true;
+}
+
+"(add|edit|remove)Unit" [ entity.task.state != "draft" ] {
+    visible:false;
+}

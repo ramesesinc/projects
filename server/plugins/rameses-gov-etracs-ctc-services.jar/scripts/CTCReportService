@@ -12,7 +12,7 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateAbstractCTCIndividual(def params) {
 		def list = em.getAbstractCTCIndividual(params);
-		if( ! list ) throw new Exception('No record(s) found.          ')
+		if( ! list ) throw new Exception('No record(s) found.')
 		
 		return list;
 	}

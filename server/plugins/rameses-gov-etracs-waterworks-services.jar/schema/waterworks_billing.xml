@@ -5,12 +5,11 @@
 		<field name="controlno" required="true"  />
 		
 
-		<complex name="account" ref="waterworks_account" jointype="many-to-one" 
-			includefields="objid,acctname,acctno,address.text,classification.objid,stuboutnode.indexno,stuboutnode.stubout.code,meter.*"> 
+		<complex name="account" ref="vw_waterworks_account" jointype="many-to-one">
 			<key field="acctid" target="objid" />
 		</complex>
 		
-		<complex name="batch" ref="waterworks_batch_billing" jointype="many-to-one" > 
+		<complex name="batch" ref="waterworks_batch_billing" jointype="many-to-one"> 
 			<key field="batchid" target="objid" />
 		</complex>
 

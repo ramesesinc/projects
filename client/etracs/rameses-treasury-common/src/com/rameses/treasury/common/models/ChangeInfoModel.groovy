@@ -16,6 +16,9 @@ import com.rameses.seti2.models.*;
 */
 public class ChangeInfoModel extends DynamicForm {
    
+    @Caller
+    def caller;
+
     @Service("ChangeInfoService")
     def changeInfoSvc;
     

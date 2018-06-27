@@ -1,0 +1,13 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle_application_unit:manual:create" 
+                 action="create" caption="Vehicle Unit" target="popup"/>
+        
+        <invoker type="vehicle_application_unit:manual:edit" 
+                 action="edit" caption="Vehicle Unit" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationUnitModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VehicleApplicationUnitManualPage" />
+    </pages>
+</workunit>

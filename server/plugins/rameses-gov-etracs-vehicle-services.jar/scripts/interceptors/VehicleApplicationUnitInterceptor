@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+class VehicleApplicationUnitInterceptor {
+	
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+	@DataContext("vehicle_application_unit")
+	def unitEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'vehicle_application_unit' }")
+	public void beforeCreateApplicationUnit(def evt) {
+		def entity = evt.args[0];
+		entity.appid = entity.app?.objid;
+		entity.controlid = entity.franchise?.objid;
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'vehicle_application_unit' }")
+	public void afterCreateApplicationUnit(def evt) {
+		def entity = evt.args[0];
+		def result = evt.result;
+		franchiseEm.find( [objid: entity.controlid ]).update( [vehicleunitid: result.objid ] );
+	}
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'vehicle_application_unit' }")
+	public void beforeRemoveApplicationUnit(def evt) {
+		def entity = evt.args[0];
+		def controlid = entity.controlid;
+		def val = null;
+		def m = unitEm.find( [controlid: controlid] ).where(" NOT(vehicleunitid = :vid) ", [vid: entity.objid ]).orderBy("app.appdate DESC").first();
+		if( m && !m.app.apptype.matches("DROP") ) {
+			val = m.objid;
+		} 
+		franchiseEm.find( [objid: controlid ]).update( [vehicleunitid: val] );
+	}
+
+}

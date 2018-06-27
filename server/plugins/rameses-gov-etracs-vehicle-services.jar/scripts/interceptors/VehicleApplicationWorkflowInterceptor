@@ -13,6 +13,9 @@ class VehicleApplicationWorkflowInterceptor {
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@DataContext("vehicle_application_unit")
+	def unitEm;
+
 	@DataContext("vehicle_franchise")
 	def franchiseEm;
 
@@ -21,6 +24,14 @@ class VehicleApplicationWorkflowInterceptor {
 
 	@Service("DateService")
 	def dateSvc;
+
+	@Before(pattern="WorkflowTaskService.signal", 
+		eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'draft' }")
+	public void beforeSubmittingDraft( def evt ) {
+		def p = evt.args[0];
+		def x = unitEm.find( [ appid: p.refid ] ).select("c:{COUNT(*)}").val();
+		if( x == 0 ) throw new Exception("There must be at least 1 vehicle entry");	
+	}
 
 	/************************************************************************************************
 	* before running the payment get the necessary info for evaluation, in this case the amtdue 
@@ -31,14 +42,6 @@ class VehicleApplicationWorkflowInterceptor {
 		def p = evt.args[0];
 		def	total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [parentid: p.refid ] ).val();
 		p.info = [amtdue: total];	
-	}
-
-	@After(pattern="WorkflowTaskService.start", 
-	  eval="#{ args[0].processname=='vehicle_application' }", index=1)
-	public void afterWorkflowStart( def evt ) {
-		def p = evt.args[0];
-		def controlid = appEm.select("controlid").find([objid: p.refid]).val();	
-		franchiseEm.find([objid: controlid]).update([state:'PROCESSING']);
 	}
 
 	/************************************************************************ 

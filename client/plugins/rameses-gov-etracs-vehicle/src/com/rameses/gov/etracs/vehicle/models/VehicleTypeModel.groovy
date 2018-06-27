@@ -14,7 +14,12 @@ import com.rameses.enterprise.models.*;
 public class VehicleTypeModel extends CrudFormModel {
     
     def selectedCluster;
+    def _guiHandlers; 
     
+    void afterCreate() {
+        entity.issued = 0;
+    }
+
     void addCluster() {
         def h = { m->
             m._schemaname = 'vehicletype_cluster';
@@ -42,4 +47,10 @@ public class VehicleTypeModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
+    public def getGuiHandlers() {
+        if(_guiHandlers) return _guiHandlers;
+        _guiHandlers = Inv.lookupOpeners( "vehicle:guihandler" ).collect { it.properties.name }
+        return _guiHandlers;
+    }
+
 }

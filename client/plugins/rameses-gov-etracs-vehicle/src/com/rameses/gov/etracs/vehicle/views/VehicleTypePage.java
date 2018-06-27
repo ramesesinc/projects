@@ -32,12 +32,15 @@ public class VehicleTypePage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTabbedPane1 = new com.rameses.rcp.control.XTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -45,16 +48,35 @@ public class VehicleTypePage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xFormPanel1.setCaptionWidth(120);
+
         xLabel1.setCaption("Vehicle Type");
         xLabel1.setExpression("#{entity.objid}");
+        xLabel1.setVisibleWhen("#{ mode != 'create' }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
+
+        xTextField3.setCaption("Vehicle Type");
+        xTextField3.setName("entity.objid"); // NOI18N
+        xTextField3.setVisibleWhen("#{ mode == 'create' }");
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField3.setRequired(true);
+        xTextField3.setSpaceChar('_');
+        xTextField3.setTextCase(com.rameses.rcp.constant.TextCase.LOWER);
+        xFormPanel1.add(xTextField3);
 
         xTextField1.setCaption("Title");
         xTextField1.setName("entity.title"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
+
+        xComboBox1.setCaption("GUI Handler");
+        xComboBox1.setItems("guiHandlers");
+        xComboBox1.setName("entity.guihandler"); // NOI18N
+        xComboBox1.setRequired(true);
+        xFormPanel1.add(xComboBox1);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Control No Pattern"));
 
@@ -63,8 +85,16 @@ public class VehicleTypePage extends javax.swing.JPanel {
         xTextField2.setCaption("Franchise No");
         xTextField2.setName("entity.controlpattern"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField2.setRequired(true);
         xTextField2.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         xFormPanel2.add(xTextField2);
+
+        xTextField4.setCaption("App No Pattern");
+        xTextField4.setName("entity.appnopattern"); // NOI18N
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField4.setRequired(true);
+        xTextField4.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        xFormPanel2.add(xTextField4);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel2.setCaption("Issuances");
@@ -90,7 +120,7 @@ public class VehicleTypePage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 19, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(jLabel1)
         );
 
@@ -108,11 +138,13 @@ public class VehicleTypePage extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General", jPanel2);
 
+        xDataTable1.setHandler("clusterList");
+        xDataTable1.setName("selectedCluster"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "name"}
@@ -145,16 +177,14 @@ public class VehicleTypePage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("clusterList");
-        xDataTable1.setName("selectedCluster"); // NOI18N
 
         xButton1.setName("addCluster"); // NOI18N
         xButton1.setText("Add");
 
         xButton2.setDepends(new String[] {"selectedCluster"});
         xButton2.setName("removeCluster"); // NOI18N
-        xButton2.setText("Remove");
         xButton2.setVisibleWhen("#{selectedCluster !=null}");
+        xButton2.setText("Remove");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -192,7 +222,7 @@ public class VehicleTypePage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
                     .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -200,9 +230,9 @@ public class VehicleTypePage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -213,6 +243,7 @@ public class VehicleTypePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
@@ -221,5 +252,7 @@ public class VehicleTypePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables
 }

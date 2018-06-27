@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleFranchise.xml"
+          schemaName="vehicle_franchise" 
+          allowCreate="false" allowDelete="false">
+    <invokers>
+        <invoker type="vehicle_franchise:open" caption="Vehicle Franchise" index="-10" action="open"/>
+    </invokers>
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.VehicleFranchisePage" />
+    </pages>
+</workunit>

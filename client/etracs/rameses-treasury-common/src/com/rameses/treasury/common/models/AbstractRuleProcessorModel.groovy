@@ -18,18 +18,19 @@ public abstract class AbstractRuleProcessorModel  {
     def defaultInfos;
     def params;
     def formInfos = [];
+    def options;
     
     void init() {
         if(!rulename) throw new Exception("Please specify rulename in ruleprocesssor");
         if(!handler) throw new Exception("handler is required in ruleprocessor");
         if(params == null) throw new Exception("params is required in RuleExecutor"); 
-        MsgBox.alert('xxx start')
         //we must first clear this when doing initial rules
         params.infos = [];
-        def result = ruleExecutor.execute([rulename:rulename, params:params]);
+        def req = [rulename:rulename, params:params];
+        if(options) req.putAll(options);
+        def result = ruleExecutor.execute(req);
         
         if(result.askinfos) {
-            MsgBox.alert('xxx');
             infos = result.askinfos;
             buildFormInfos();
         }
@@ -71,16 +72,16 @@ public abstract class AbstractRuleProcessorModel  {
         def p = [:];
         p.putAll(params);
         p.infos = createStackedInfos();
-        def result = ruleExecutor.execute( [rulename:rulename, params:p] );
+        def req = [rulename:rulename, params:p];
+        if(options) req.putAll( options );
+        def result = ruleExecutor.execute( req );
         if(result.askinfos) {
-            MsgBox.alert('one');
             if(infos) infoStack.push( infos );
             infos = result.askinfos;
             buildFormInfos();
             return null;
         }
         else {
-            MsgBox.alert('end');
             //This is the ending
             def infos = createStackedInfos();
             if( result.infos ) {

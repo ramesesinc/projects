@@ -1,75 +1,137 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
-import enterprise.facts.*;
-import enterprise.utils.*;
+import com.rameses.util.*;
 
-import vehicle.facts.*;
-import treasury.utils.*;
-import treasury.facts.*;
-
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
 class VehicleApplicationPersistenceInterceptor {
 	
-	@DataContext('sys_user') 
-	def sysuser_db; 
+	@Env
+	def env;
 
-	@DataContext("vehicle_franchise")
-	def franchiseEm;
+	@Service("WorkflowTaskService")
+	def taskSvc;
 
-	@DataContext("vehicle_application_fee")
-	def appFeeEm;
+	@Service("DateService")
+	def dateSvc;
 
-	@DataContext("vehicle_application_info")
-	def appInfoEm;
+	@DataContext("vehicle_application")
+	def appEm;
 
-	@DataContext("vehicle_payment")
-	def appPaymentEm;
+	@DataContext("vehicletype")
+	def vehicleTypeEm;
 
-	@DataContext('entityindividual') 
-	def individualEntityEm; 
+	@Service("SequenceService")
+	def seqSvc;
 
-	@DataContext('vehicle_permit') 
-	def vpermit_db;
-
-	@Service("VehicleFranchiseService")
-	def franchiseSvc;
-
-	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }" )
-	public void afterOpen(def evt) {
-		def entity = evt.result;
+	@Service("ControlNoGeneratorService")
+	def controlNoGenerator;
 
 
-        entity.infos = appInfoEm.find( [parentid: entity.objid]).orderBy( "sortorder" ).list();
-        entity.infos.each {
-        	it.putAll( it.remove("variable") );
-        	it.value = VariableInfoConverter.convertValue( it );
-        };
-
-		//LOAD FEES
-		entity.fees = appFeeEm.find([parentid: entity.objid]).list();
-        entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
-
-        //LOAD PAYMENTS
-		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();
-
-		//LOAD COMPLETE USER INFO
-		def userinfo = sysuser_db.find([ objid: entity.filedby?.objid ]).first();
-		if ( userinfo )  {
-			def fullname = [userinfo.firstname, userinfo.middlename, userinfo.lastname].findAll{( it )}.join(' '); 
-			entity.filedby = [ objid: userinfo.objid, name: fullname, jobtitle: userinfo.jobtitle ]; 
-		}
-
-		//LOAD PERMITS IF ANY
-		entity.permit = vpermit_db.find([ appid: entity.objid ]).first();
-
-		//LOAD COMPLETE ENTITY INFO
-		def g = individualEntityEm.find( [objid: entity.owner.objid ] ).first();
-		if( g ) {
-			g.each { k,v->
-				if( !entity.owner.containsKey(k) ) entity.owner.put(k,v);
+	@Before(pattern="PersistenceService.create", 
+		eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].apptype.matches('NEW|RENEW') }")
+	public void beforeCreateApplicationNewOrRenew(def evt) {
+		def entity = evt.args[0];
+		entity.state = "ACTIVE";
+		def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
+		def dt = dateSvc.getServerDate();
+		def handler = { pttn, num ->
+			if( pttn == "org") {
+				return env.ORGCODE;
 			}
+			else if( pttn == "cluster") {
+				return "";
+			}
+			else if(pttn.startsWith("%")) {
+				return "";
+			}
+			else {
+				def df = new java.text.SimpleDateFormat( pttn );
+				return df.format( dt );
+			}
+			return ret;
 		}
+		String prefix = controlNoGenerator.formatNumber( vt.controlpattern, handler, 0 );
+		entity.appno =  prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
+	}
 
-	}	
+	@After(pattern="PersistenceService.create", 
+		eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].apptype.matches('NEW|RENEW') }")
+	public void afterCreateApplicationNewOrRenew(def evt) {
+		def entity = evt.args[0];
+		def p = [:];
+		p.processname = 'vehicle_application';
+		p.refid = entity.objid;
+		p.startdate = dateSvc.serverDate;
+		taskSvc.start(p);
+	}
 
+
+	/*
+	@Before(pattern="VehicleApplicationService.create", 
+		eval="#{args[0].txnmode!='CAPTURE' && args[0].apptype.matches('NEW|RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT')}")
+	public void beforeCreateApplicationNewOrRenew(def evt) {
+		def entity = evt.args[0];
+		if(!entity.fees) 
+			throw new Exception("There must be at least 1 fee");
+	}
+
+	@Before(pattern="VehicleApplicationService.create", eval="#{ args[0].apptype.matches('NEW|RENEW|LATE_RENEWAL')}", index=10)
+	public void beforeCreateApplicationNewRenewLateRenewal(def evt) {
+		def entity = evt.args[0];
+		if( entity.franchise ) {
+			def fran = franchiseEm.find([objid: entity.franchise.objid]).first();
+			entity.controlid = fran.objid;
+			entity.prevappid = fran.appid;
+			entity.franchise = fran;
+		}
+	}
+
+	//update the franchise info if capture or 
+	@After(pattern="VehicleApplicationService.create", eval="#{ args[0].apptype.matches('NEW|RENEW|LATE_RENEWAL') }", index=10)
+	public void afterCreateApplicationCapture(def evt) {
+		def entity = evt.result;
+		if( entity.franchise ) {
+			def m =[:];
+			m.activeyear = entity.appyear;
+			m.state = "ACTIVE";
+			m.appid = entity.objid;
+			if( entity.startdate ) {
+				//do not change if there is no start date in franchise.
+				m.startdate = entity.startdate;		
+			}
+			if( entity.franchise?.expirydate ) {
+				m.expirydate = entity.franchise?.expirydate;	
+			}
+			franchiseEm.find([objid: entity.franchise.objid]).update(m);
+		}
+	}
+
+	@After(pattern="VehicleApplicationService.create", 
+		eval="#{result.txnmode!='CAPTURE' && args[0].apptype.matches('NEW|RENEW|CHANGE_OWNER_UNIT')}")
+	public void afterCreateApplicationNewOrRenew(def evt) {
+		def entity = evt.result;
+		//fire the workflow
+		def p = [:];
+		p.processname = 'vehicle_application';
+		p.refid = entity.objid;
+		p.startdate = dateSvc.serverDate;
+		taskSvc.start(p);
+	}
+
+	@After(pattern="VehicleApplicationService.create", eval="#{args[0].apptype == 'DROP' }")
+	public void afterCreateApplicationForDrop(def evt) {
+		def o = evt.result;
+		def m = [:];
+		m.state = 'OPEN';
+		m.appid = null;
+		m.activeyear = null;
+		m.startdate = null;
+		m.expirydate = null;
+		franchiseEm.find( [objid:o.franchise.objid ] ).update(m);
+	}
+	*/
 
 }

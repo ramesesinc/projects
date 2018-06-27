@@ -16,9 +16,6 @@ public abstract class AbstractCashReceipt {
     @Service("CashReceiptService")
     def service;
     
-    @Service("CollectionRuleService")
-    def collectionRuleService;
-
     def entity;
     def info;
     def _paymentorderid;
@@ -313,23 +310,11 @@ public abstract class AbstractCashReceipt {
         ReportUtil.print(handle.report, canShowPrinterDialog);
     }
     
-    def reprint() {
-        return InvokerUtil.lookupOpener( "cashreceipt:reprint" );
-    }
     
     def getInfoHtml() {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );
     }
 
-    def doVoid() { 
-        def xbinding = binding; 
-        def params = [ receipt: entity ]; 
-        params.handler = { o-> 
-            entity.voided = true;
-            xbinding.refresh();
-        } 
-        return InvokerUtil.lookupOpener( "cashreceipt:void", params );  
-    }
 
     boolean isAllowCreateEntity() {
         return false; 
@@ -339,9 +324,5 @@ public abstract class AbstractCashReceipt {
         return null; 
     } 
 
-    def previewReceipt() {
-        return Inv.lookupOpener( "cashreceipt:preview", [entity: entity] );
-    }    
-    
     
 }

@@ -106,7 +106,7 @@ class WaterworksBasicBillingInterceptor {
 				return new MonthBillItem(o);
 			}
 		};
-		factBuilder.addBillItems( data.billitems ); 
+		//factBuilder.addBillItems( data.billitems ); 
 		if(data.attributes) {
 			data.attributes.each {
 				factBuilder.facts << new Attribute( it.attribute );

@@ -15,8 +15,10 @@ public class VehicleApplication {
 	public VehicleApplication( def m ) {
 		apptype = m.apptype;
 		vehicletype = m.vehicletype;
-		appyear = m.appyear;
+		if( m.appyear ) appyear = m.appyear;
 		objid = m.objid;
+		if(!apptype) apptype ="NEW";
+		if(!vehicletype) vehicletype = "tricycle";
 		//appdate = m.appdate;
 		
 		if( !objid ) objid = "VAPP" + new UID();

@@ -259,7 +259,7 @@
 						key="subreport-1"
 						positionType="Float"/>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{ITEM}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["af51detailitem.jasper"]]></subreportExpression>
 				</subreport>
 			</band>
 		</detail>

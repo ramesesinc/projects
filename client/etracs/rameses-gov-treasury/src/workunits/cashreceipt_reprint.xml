@@ -1,20 +1,9 @@
 <workunit schemaName="cashreceipt_reprint_log">
     <invokers>
-        <!-- hooks to cash receipt -->
-        <!--
-        <invoker 
-           type="cashreceiptinfo:formActions" caption="Reprint" action="reprintUnsecured" 
-           target="popup"> 
-        </invoker>
-       -->
-       
-        <invoker 
-           type="cashreceipt:form:formActions" caption="Reprint" action="reprintSecured" 
-           role="COLLECTOR,SUBCOLLECTOR" 
-           applySecurity="true" 
+        <invoker type="cashreceipt:form:formActions" 
+           caption="Reprint" action="reprintSecured" 
            target="popup"> 
         </invoker>   
-        
         <invoker 
            type="cashreceipt:reprint" caption="Reprint" action="reprintUnsecured" target="popup"> 
         </invoker>   

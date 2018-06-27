@@ -1,0 +1,10 @@
+<workunit schemaName="vehicle_application">
+    <invokers>
+        <invoker folderid="menucategory/vehicle/application" 
+                 action="create" caption="New Application"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.NewVehicleApplicationModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.ApplicationInitialPage" />
+    </pages>
+</workunit>

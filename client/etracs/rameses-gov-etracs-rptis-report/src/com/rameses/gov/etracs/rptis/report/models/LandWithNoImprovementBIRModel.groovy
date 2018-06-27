@@ -41,9 +41,6 @@ public class LandWithImprovementController extends com.rameses.gov.etracs.rpt.re
     def getLookupFaas(){
         return InvokerUtil.lookupOpener('faas:lookup',[
             onselect : { 
-                if (it.state != 'CURRENT'){
-                    throw new Exception('FAAS is not current.')
-                }
                 if (it.rputype != 'land')
                     throw new Exception('Selected FAAS is not Land. Only land property is allowed.')
                  

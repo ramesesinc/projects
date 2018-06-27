@@ -1,6 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.services.extended.*;
+import com.rameses.util.*
 import java.io.*;
 
 class LandTaxBuildDelinquencyService
@@ -130,7 +131,7 @@ class LandTaxBuildDelinquencyService
 
 	@ProxyMethod
 	public def buildDelinquency( rptledger) {
-		def retval = [processed:0, errors:0]
+		def retval = [processed:0, errors:0, ignored:0]
 
 		def bitem = rptledger.builditem
 
@@ -145,11 +146,12 @@ class LandTaxBuildDelinquencyService
 					em_delinquency_item.create(item)
 				}
 
-				//clear forprocess
-				em_delinquency_barangay.find([objid:bitem.objid]).update([processed:'{processed + 1}'])
-				em_delinquency_forprocess.find([objid:rptledger.objid]).delete()
-				retval.processed = 1;
+				logProcessed(retval, rptledger, bitem)
 			}
+		}
+		catch(Warning be){
+			println 'break exception ....'
+			logProcessed(retval, rptledger, bitem)
 		}
 		catch(Exception ex){
 			retval.errors = 1
@@ -162,6 +164,13 @@ class LandTaxBuildDelinquencyService
 
 		return retval 
 	}	
+
+
+	void logProcessed(retval, rptledger, bitem) {
+		em_delinquency_barangay.find([objid:bitem.objid]).update([processed:'{processed + 1}'])
+		em_delinquency_forprocess.find([objid:rptledger.objid]).delete()
+		retval.processed = 1;
+	}
 
 
 	@ProxyMethod

@@ -283,7 +283,7 @@ public class RPTBillingService
 
 	void saveBill(bill){
 		if (bill.totals.total <= 0.0){
-			throw new Exception('There are no unpaid items found.')
+			throw new Warning('There are no unpaid items found.')
 		}
 		if (bill._save == false) {
 			return

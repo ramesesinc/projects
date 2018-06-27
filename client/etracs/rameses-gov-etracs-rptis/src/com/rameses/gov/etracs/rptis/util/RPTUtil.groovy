@@ -161,7 +161,6 @@ class RPTUtil
             len = new java.math.BigDecimal(sectionlen).intValue();
         }
         catch(e){
-            e.printStackTrace();
             if (pintype.equalsIgnoreCase('new'))
             len = 3;
         }

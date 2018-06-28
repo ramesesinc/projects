@@ -803,7 +803,6 @@ class RPTLedgerService
         ledger.remove('faases')
     }
 
-
     void updateLedgerFaasInfo(faas, ledger){
         faas.rp = em_realproperty.find([objid:faas.rp.objid]).first()
         ledger.faasid          = faas.objid 
@@ -921,6 +920,164 @@ class RPTLedgerService
         ]
         em_rptledger.find([objid:ledgerfaas.rptledgerid]).update(info)
     }
+
+
+
+
+
+    /*========================================================================
+    *
+    * SYNC SUPPORT 
+    *
+    ========================================================================*/
+
+    /*---------------------------------------------
+    * Return the objids of the items to sync.
+    * This will be used by the remote server to send
+    * only the data with an objid not on the list to 
+    * minimize data size and bandwith
+    ---------------------------------------------*/
+    @ProxyMethod
+    public def getItemsObjid(ledger){
+        ledger = open([objid: ledger.objid])
+        buildItemsInfo(ledger)
+        return [
+            items: ledger._items.collect{ it.objid },
+            differences: ledger._differences.collect{ it.objid },
+            credits: ledger._credits.collect{ it.objid },
+            restrictions: ledger._restrictions.collect{ it.objid },
+        ]
+    }
+
+
+    /*-----------------------------------------------
+    * Return ledger information to sync. 
+    * Only items not included in the idinfo.items 
+    * are returned. 
+    -----------------------------------------------*/
+    @ProxyMethod
+    public def getInfo(mapping){
+        def ledger = open([objid:mapping.remote.objid])
+        buildItemsInfo(ledger)
+        removeSyncedItems(ledger._items, mapping.idinfo.items)
+        removeSyncedItems(ledger._differences, mapping.idinfo.differences)
+        removeSyncedItems(ledger._credits, mapping.idinfo.credits)
+        removeSyncedItems(ledger._restrictions, mapping.idinfo.restrictions)
+        loadPaymentItems(ledger._credits)
+        return ledger 
+    }
+
+
+    @ProxyMethod
+    public void sync(remoteledger){
+        def ledger = em_rptledger.find([objid: remoteledger.objid]).first()
+        if (!ledger){
+            // could be deleted, do nothing
+            return 
+        }
+
+        if (checkUpdatedPayment(ledger, remoteledger)){
+            // local payment is more updated then remote payment
+            return 
+        }
+        
+        em_rptledger.save(remoteledger)
+
+        em_rptledger_item.find([parentid: remoteledger.objid]).delete() 
+        remoteledger._items?.each{
+            it.taxdifference = util.toBoolean(it.taxdifference, false)
+            em_rptledger_item.save(it)
+        }
+
+        em_avdifference.find([parent_objid: remoteledger.objid]).delete() 
+        remoteledger._differences?.each{
+            em_avdifference.save(it)
+        }
+
+        remoteledger._credits?.each{
+            em_rptpayment.save(it)
+            it.items.each{pitem ->
+                em_rptpayment_item.save(pitem)
+            }
+        }
+
+        remoteledger._subledgers?.each{
+            em_rptledger_subledger.save(it)
+        }
+
+        remoteledger._restrictions?.each{
+            em_faas_restriction.save(it)
+        }
+    }
+
+    /*---------------------------------------------------------
+    * Checks if ledger payment is updated based on lastyearpaid
+    * and lastqtrpaid. 
+    ---------------------------------------------------------*/
+    def checkUpdatedPayment(ledger, remoteledger) {
+        if (ledger.lastyarpaid > remoteledger.lastyearpaid ||
+            (ledger.lastyearpaid == remoteledger.lastyearpaid && ledger.lastqtrpaid > remoteledger.lastqtrpaid)){
+            // local payment is more updated then remote payment
+            return true 
+        }
+        return false 
+    }
+
+    void loadPaymentItems(credits){
+        credits.each{
+            it.items = em_rptpayment_item.where('parentid = :parentid and amount > 0', [parentid:it.objid]).list()
+        }
+    }
+
+    void removeSyncedItems(items, oids){
+        def deletedItems = []
+        oids.each{oid ->
+            deletedItems += items.findAll{it.objid == oid}
+        }
+        if (deletedItems){
+            items.removeAll(deletedItems)
+        }
+    }
+
+    void buildItemsInfo(ledger) {
+        ledger._items = em_rptledger_item.find([parentid: ledger.objid]).list()
+        ledger._differences = em_avdifference.find([parent_objid: ledger.objid]).list()
+        ledger._credits = em_rptpayment.find([refid: ledger.objid]).list()
+        ledger._restrictions = em_faas_restriction.find([ledger_objid: ledger.objid]).list()
+    }
+
+
+    @ProxyMethod
+    public void syncPayment(payment){
+        def ledger = em_rptledger.find([objid: payment.rptledger.objid]).first()
+        if (!ledger){
+            return 
+        }
+        
+        if (checkUpdatedPayment(ledger, payment.rptledger)) {
+            return 
+        }
+
+        def exist = em_rptpayment.find([objid: payment.objid]).first()
+        if (exist){
+            return
+        }
+
+        em_rptledger.save(payment.rptledger)
+
+        em_rptledger_item.find([parentid: ledger.objid]).delete()
+        payment.ledgeritems.each{
+            em_rptledger_item.save(it)
+        }
+
+        em_rptpayment.save(payment)
+        payment.items.each{
+            em_rptpayment_item.save(it)
+        }
+
+        println 'Remote payment has been successfully posted.'
+    }
+
 }
 
 

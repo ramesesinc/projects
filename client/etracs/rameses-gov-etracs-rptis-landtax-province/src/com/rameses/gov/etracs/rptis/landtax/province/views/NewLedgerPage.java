@@ -5,15 +5,17 @@
 package com.rameses.gov.etracs.rptis.landtax.province.views;
 
 import com.rameses.osiris2.themes.FormPage;
+import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
 
 @Template(FormPage.class)
-public class FAASSearchPage extends javax.swing.JPanel {
+@StyleSheet
+public class NewLedgerPage extends javax.swing.JPanel {
 
     /**
      * Creates new form FAASSearchPage
      */
-    public FAASSearchPage() {
+    public NewLedgerPage() {
         initComponents();
     }
 
@@ -33,10 +35,13 @@ public class FAASSearchPage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
+        xPanel2 = new com.rameses.rcp.control.XPanel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel5 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 5, 5, 5));
-        xTitledBorder1.setTitle("Initial Information");
+        xTitledBorder1.setTitle("New Ledger Information");
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(100);
 
@@ -81,21 +86,41 @@ public class FAASSearchPage extends javax.swing.JPanel {
         xDecimalField2.setName("faas.totalav"); // NOI18N
         xFormPanel1.add(xDecimalField2);
 
+        xPanel2.setVisibleWhen("#{mode == 'processing'}");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 0));
+        xPanel2.setLayout(new java.awt.BorderLayout());
+
+        xLabel4.setExpression("#{msg}");
+        xLabel4.setFontStyle("font-weight:bold;font-size:12;");
+        xLabel4.setForeground(new java.awt.Color(51, 51, 51));
+        xLabel4.setPadding(new java.awt.Insets(1, 5, 1, 1));
+        xLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
+        xPanel2.add(xLabel4, java.awt.BorderLayout.CENTER);
+
+        xLabel5.setIconResource("com/rameses/rcp/icons/loading16.gif");
+        xPanel2.add(xLabel5, java.awt.BorderLayout.WEST);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 29, Short.MAX_VALUE))
+                    .addComponent(xPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(xPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -105,6 +130,9 @@ public class FAASSearchPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XPanel xPanel2;
     // End of variables declaration//GEN-END:variables
 }

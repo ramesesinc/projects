@@ -339,11 +339,13 @@ public class RPTBillingService
 		def fromyear = (rptledger.lastqtrpaid == 4 ? rptledger.lastyearpaid + 1 : rptledger.lastyearpaid)
 		def fromqtr = (rptledger.lastqtrpaid == 4 ? 1 : rptledger.lastqtrpaid + 1)
 
-		if (rptledger.postingitems){
+		if (rptledger.items){
 			// for collection, adjust to handle tax difference
-			def pitem = rptledger.postingitems.first()
-			fromyear = pitem.year
-			fromqtr = (pitem.qtr ? pitem.qtr : 1)
+			def pitem = rptledger.items.first()
+			if (util.isTrue(pitem.taxdifference)){
+				fromyear = pitem.year
+				fromqtr = (pitem.qtr ? pitem.qtr : 1)
+			}
 		}
 
 		rptledger.hastaxdifference = tmpbill.items.find{ util.isTrue(it.taxdifference)} != null 

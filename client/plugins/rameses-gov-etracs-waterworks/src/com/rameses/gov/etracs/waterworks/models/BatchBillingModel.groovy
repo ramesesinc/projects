@@ -113,7 +113,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
             return stat.totalcount;
         },
         fetchList: { o->
-            def p = [ _schemaname: 'waterworks_billing' ];
+            def p = [ _schemaname: 'waterworks_consumption' ];
             p.putAll( o );
             p.select = 'objid,acctid,billed,account.meter.*';
             p.findBy = [ batchid: entity.objid ];
@@ -150,7 +150,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
    }
     
    void updateVolumeAmount( def objid, def m ) {
-        def p = [_schemaname: 'waterworks_billing'];
+        def p = [_schemaname: 'waterworks_consumption'];
         p.findBy = [objid: objid ];
         p.putAll( m );
         persistenceService.update( p );
@@ -184,7 +184,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
             ];
             h.data = [ prevreading: item.prevreading, prevreadingdate: item.prevreadingdate ];
             h.entity = item;
-            h.reftype = "waterworks_billing";
+            h.reftype = "waterworks_consumption";
             h.refid = item.objid;
             Modal.show("waterworks_changeinfo", h, [title:"Enter Prev Reading"]);
             readingHandler.reload();
@@ -198,7 +198,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
             h.data = [ volume: item.volume, amount: item.amount ];
             h.entity = item;
             h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
-            h.reftype = "waterworks_billing";
+            h.reftype = "waterworks_consumption";
             h.refid = item.objid;
             Modal.show("waterworks_changeinfo", h, [title:"Enter Volume"]);
             readingHandler.reload();
@@ -224,8 +224,11 @@ public class BatchBillingModel extends WorkflowTaskModel {
     def readingHandler = [
         isColumnEditable: {item, colName -> 
             if( colName != "reading" ) return false;
-            if( task.state != "for-reading") return false;
-            if( item.account.meter?.objid == null ) return false;
+            if( task?.state != "for-reading") return false; 
+            
+            def meterid = item.account?.meterid; 
+            if ( meterid == null ) meterid = item.account?.meter?.objid; 
+            if( meterid == null ) return false; 
             return true;
         },
         beforeColumnUpdate: { item, colName, value ->
@@ -256,7 +259,10 @@ public class BatchBillingModel extends WorkflowTaskModel {
         },
         getContextMenu: { item, name-> 
             def mnuList = [];
-            if ( item.account?.meter?.objid != null && task?.state == 'for-reading' ) {
+            def meterid = item.account?.meterid; 
+            if ( meterid == null ) meterid = item.account?.meter?.objid;
+            
+            if ( meterid != null && task?.state == 'for-reading' ) {
                 mnuList << [value: 'Change Prev Reading', id:'change_prev_reading'];
                 mnuList << [value: 'View Meter', id:'view_meter'];
             } 
@@ -278,7 +284,7 @@ public class BatchBillingModel extends WorkflowTaskModel {
     
    def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
    public void printBill() {
-       def mz = [_schemaname: 'waterworks_billing'];
+       def mz = [_schemaname: 'waterworks_consumption'];
        mz.findBy = [batchid: entity.objid];
        mz.orderBy = 'account.stuboutnode.indexno'; 
        def list = queryService.getList(mz);
@@ -288,9 +294,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
             p.putAll( it );
             p.penalty = it.surcharge + it.interest;
             p.grandtotal = it.amount + p.penalty;
-            p.classification = p.account.classification?.objid.toString().padRight(3," ")[0..2];
+            p.classification = p.account.classification?.toString().padRight(3," ")[0..2];
             p.blockseqno = (p.zone?.code +'-'+ p.account.stuboutnode?.indexno);
-            reportSvc.print( "waterworks_billing" , [ o: p ] );
+            reportSvc.print( "waterworks_consumption" , [ o: p ] );
        }
    } 
     

@@ -14,25 +14,22 @@ class BasicBillingService {
 	@Service('BasicBillingHandler')
 	def handler;
 
-	@Service('BasicBillingRuleService')
+	@Service('BillingRuleService')
 	def ruleSvc;
-
-	@Service('FactBuilderService')
-	def factBuilderSvc;
 
 	@ProxyMethod
 	public def getCashReceiptInfo( pp ) { 
 		if ( pp.options == null ) pp.options = [:];
 
-		pp.options.summarize_item = true; 
+		pp.options.include_items = true; 
 		def bill = getBillingInfo( pp ); 
 
 		if( !pp.txntype ) pp.txntype = pp.params?.collectiontype.handler;
 		
 		def rctinfo = handler.formatReceiptInfo( pp, bill ); 
 		bill.putAll( rctinfo ); 
-		bill.remove('objid');
-		bill._postpayment = true; 
+		bill.remove('objid');	//we should remove objid bec. there might be conflicts 
+		bill._postpayment = true; //we should mark this to indicate posting will be automatically handled
 		return bill; 
 	}
 
@@ -40,6 +37,8 @@ class BasicBillingService {
 	public def getBillingInfo( pp ) { 
 		if( !pp.rulename ) throw new Exception("BasicBillingService error. rulename is required");
 		if( !pp.params ) throw new Exception("BasicBillingService error. params is required");
+
+		def opt = pp.options;
 
 		def bill = handler.getInfo( pp ); 
 		def billitems = handler.getBillItems( pp, bill ); 
@@ -52,6 +51,12 @@ class BasicBillingService {
 			} 
 		}
 
+		println "************** PRINTING REQUEST ********* "
+		pp.each { k,v->
+			println k;
+		}
+		println "************** END PRINTING REQUEST ********* "
+
 		def startgroup = "billing";
 		if( pp.startgroup ) startgroup = pp.startgroup; 
 
@@ -60,30 +65,13 @@ class BasicBillingService {
 		rp.putAll( pp.params );
 		rp.putAll( bill );
 		rp.billitems = billitems;
+
+		def req = [rulename: pp.rulename, startgroup: startgroup, params: rp ];
+		if(opt) req.putAll( opt );
  			
-		def res = ruleSvc.execute([rulename: pp.rulename, startgroup: startgroup, params: rp ] ); 
+		def res = ruleSvc.execute( req ); 
+		
 		bill.putAll( res ); 
-		bill.billitems = [];
-		if ( pp.options?.summarize_item.toString() == 'true' ) {
-			def items = []; 
-			def grpItems = res.billitems.groupBy{[ it.item, it.group ]}
-			grpItems.each { k,v->
-				items << [item: k[0], remarks: k[1]?.remarks, amount: NumberUtil.round(v.sum{ it.amount }) ];
-			} 
-			bill.items = items;
-		}
-
-		res.billitems.each {
-			if( it.txntype ==null) bill.billitems << it;
-			else if( it.summary ) bill.billitems << it;
-			else if( !it.txntype.toLowerCase().matches('discount|surcharge|interest') ) bill.billitems << it;
-		}
-
-		bill.billitems.each {
-			if(!it.total) it.total = it.amount;
-		}
-		bill.amount = bill.billitems.sum{ it.total } 
-		bill.billitems.sort{ it.sortorder } 
 		return bill;
 	}
 

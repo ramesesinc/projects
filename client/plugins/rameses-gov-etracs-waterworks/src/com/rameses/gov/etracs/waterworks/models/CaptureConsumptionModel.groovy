@@ -37,14 +37,12 @@ public class CaptureConsumptionModel extends CrudFormModel {
                 hasErrs = "Reading must be less than meter capacity"
                 throw new Exception("Reading must be less than meter capacity");
             }
-            
             if( entity.reading < entity.prevreading ) {
                 entity.volume = (entity.meter.capacity + entity.reading) - entity.prevreading; 
             }
             else {
                 entity.volume = entity.reading - entity.prevreading;
             }
-            
             def m = [:];
             m.objid = entity.acctid; 
             m.volume = entity.volume; 

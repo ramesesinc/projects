@@ -1,0 +1,42 @@
+<workunit extends="com/rameses/treasury/common/templates/ChangeInfo.xml" schemaName="waterworks_changelog" 
+    reftype="waterworks_account" >
+    <invokers>
+        <invoker type="waterworks_account:form:edit" target="popup" caption="Change Address" action="init" index="10"
+                 keyfield="address"  datatype="local_address" preferredSize="500,100" captionWidth="60"/>
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Owner" action="init"  target="popup" index="11"
+            keyfield="owner"  datatype="lookup" handler="entity:lookup" 
+            expression="#{data.owner.name}" />            
+        
+        <invoker type="waterworks_account:form:edit" action="init"  target="popup" index="13"
+                 keyfield="units" datatype="integer" caption="Change No. of Units" />
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Stubout Node" action="init"  target="popup" index="14"
+            keyfield="stuboutnode" datatype="lookup" handler="waterworks_stuboutnode_unassigned:lookup" 
+            expression="#{data.stuboutnode.indexno} Zone: #{data.stuboutnode.zone.code} Sector: #{data.stuboutnode.sector.code}"/>
+        
+        <invoker type="waterworks_account:form:edit" caption="Attach Meter" 
+                visibleWhen="#{entity.meter?.objid==null}"
+                action="attachMeter"  target="process" index="16"/>
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Meter" action="init"  target="popup" index="12"
+                 keyfield="meter"  datatype="lookup"  handler="waterworks_meter_wo_account:lookup"
+                 visibleWhen="#{entity.meter?.objid!=null}" 
+                 expression="#{data.meter.serialno}"/>
+        
+        <invoker type="waterworks_account:form:edit" caption="Detach Meter" 
+                visibleWhen="#{entity.meter?.objid!=null}"
+                 action="detachMeter"  target="process" index="15"/>
+        
+        <invoker type="waterworks_account:form:edit" caption="Disconnect" 
+                visibleWhen="#{entity.meter?.state=='ACTIVE'}"
+                action="disconnect"  target="process" index="16"/>
+
+        <invoker type="waterworks_account:form:edit" caption="Reconnect" 
+                visibleWhen="#{entity.meter?.state=='DISCONNECTED'}"
+                action="reconnect"  target="process" index="16"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.waterworks.models.AccountEditModel" />
+        
+</workunit>

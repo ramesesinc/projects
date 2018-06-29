@@ -1,0 +1,10 @@
+<workunit schemaName="treasury_variableinfo">
+    <invokers>
+        <invoker type="treasury_variableinfo:create" caption="Treasury Variable Info" action="create" target="popup" role="MASTER"/>
+        <invoker type="treasury_variableinfo:open" caption="Treasury Variable Info" action="open" target="popup" role="MASTER"/>
+    </invokers>
+    <code class="com.rameses.enterprise.models.VariableInfoModel" />
+    <pages>
+        <page template="com.rameses.enterprise.views.VariableInfoPage"/>
+    </pages>
+</workunit>

@@ -18,12 +18,7 @@ public class AccountModel extends CrudFormModel {
     }
 
     def edit() {
-        def mp = new PopupMenuOpener();
-        def list = Inv.lookupOpeners( "waterworks_account:edit", [entity: entity ] );
-        list.each { op->
-            mp.add( op );
-        }
-        return mp;
+        return showDropdownMenu("edit");
     }
     
     //***************************************************************************

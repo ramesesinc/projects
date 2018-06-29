@@ -61,6 +61,11 @@ class ChangeInfoService  {
 		n.reftype = o.reftype;
 		n.filedby = [objid:env.USERID, name:env.FULLNAME];
 		persistenceService.create( n ); 
-		
 	}
+
+	@ProxyMethod
+	public def execute( def o ) { 
+		persistenceService.update( o );
+	}
+
 }

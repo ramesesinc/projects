@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="treasury_variableinfo" allowCreate="true" allowOpen="true" allowDelete="false"
+          cols="name,datatype,caption,category">
+    <invokers>
+        <invoker folderid="/explorer/master/treasury" caption="Treasury Variable Info" 
+                 index="10" role="MASTER" action="init"/>
+    </invokers>
+</workunit>

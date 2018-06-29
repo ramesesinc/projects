@@ -204,12 +204,6 @@
             <Component class="com.rameses.rcp.control.XIntegerField" name="xIntegerField4">
               <Properties>
                 <Property name="caption" type="java.lang.String" value="Volume"/>
-                <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-                  <StringArray count="2">
-                    <StringItem index="0" value="entity.prevreading"/>
-                    <StringItem index="1" value="entity.reading"/>
-                  </StringArray>
-                </Property>
                 <Property name="name" type="java.lang.String" value="entity.volume" noResource="true"/>
               </Properties>
             </Component>

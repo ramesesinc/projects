@@ -1,19 +1,23 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-          schemaName="variableinfo" allowCreate="false" allowOpen="false" allowDelete="false"
+          schemaName="treasury_variableinfo" allowCreate="false" allowOpen="false" allowDelete="false"
           cols="name,datatype,caption">
     <invokers>
-        <invoker type="treasury_variable:lookup" caption="Variable Info Lookup" 
+        <invoker type="treasury_variableinfo:lookup" caption="Variable Info Lookup" 
                  action="init"/>
-        <invoker type="treasury_variable_decimal:lookup" caption="Decimal Variable Info Lookup" 
+        
+        <invoker type="treasury_variableinfo_decimal:lookup" caption="Decimal Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'decimal' "/>
-        <invoker type="treasury_variable_integer:lookup" caption="Integer Variable Info Lookup" 
+        
+        <invoker type="treasury_variableinfo_integer:lookup" caption="Integer Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'integer' "/>
-        <invoker type="treasury_variable_boolean:lookup" caption="Boolean Variable Info Lookup" 
+        
+        <invoker type="treasury_variableinfo_boolean:lookup" caption="Boolean Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'boolean' "/>
-        <invoker type="treasury_variable_string:lookup" caption="String Variable Info Lookup" 
+        
+        <invoker type="treasury_variableinfo_string:lookup" caption="String Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'string' "/>
     </invokers>

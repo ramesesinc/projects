@@ -10,23 +10,19 @@ public class VariableInfoProvider {
 	public def createFact(dd) {
 		def cf = null;	
 		if(dd.datatype == "integer") {
-			if(!createIntegerFact) 
-				throw new Exception("createIntegerFact not implemented");
+			if(!createIntegerFact) createIntegerFact = { new enterprise.facts.IntegerInfo() };
 			cf = createIntegerFact();
 		}
 		else if(dd.datatype == "decimal") {
-			if(!createDecimalFact) 
-				throw new Exception("createDecimalFact not implemented");
+			if(!createDecimalFact) createDecimalFact = { new enterprise.facts.DecimalInfo() };
 			cf = createDecimalFact();
 		}
 		else if(dd.datatype == "boolean") {
-			if(!createBooleanFact) 
-				throw new Exception("createBooleanFact not implemented");
+			if(!createBooleanFact) createBooleanFact = { new enterprise.facts.BooleanInfo() };
 			cf = createBooleanFact();
 		}
 		else if(dd.datatype == "string") {
-			if(!createStringFact) 
-				throw new Exception("createStringFact not implemented");
+			if(!createStringFact) createStringFact = { new enterprise.facts.StringInfo() };
 			cf = createStringFact();
 		}
 		else if(dd.datatype == "date") {

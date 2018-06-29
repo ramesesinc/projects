@@ -37,10 +37,13 @@ class WaterworksConsumptionService {
 			o.duedate = schedinfo.duedate;
 
 			o.objid = o.acctid +'-'+ o.year.toString() + o.month.toString().padLeft(2,'0'); 
+			o.averageconsumption = o.unpaidmonths = o.billed = 0;
+			o.discrate = o.surcharge = o.interest = 0; 
+			o.otherfees = o.credits = o.arrears = 0; 
 			o.prevreading = o.reading = o.volume = 0;
 			o.amount = o.amtpaid = 0.0;
 			o.readingmethod = 'CAPTURE'; 
-			o.state = 'CAPTURE';
+			o.state = 'POSTED';
 			wconsEm.create( o ); 
 
 			def oo = wconsEm.read([ objid: o.objid ]); 

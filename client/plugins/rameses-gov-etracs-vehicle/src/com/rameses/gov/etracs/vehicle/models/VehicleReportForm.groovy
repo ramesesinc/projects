@@ -5,7 +5,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*; 
 import com.rameses.treasury.common.models.*; 
 
-public class VehicleReportForm extends SingleBillingReportModel {
+public class VehicleReportForm extends BasicBillingReportModel {
     
     public def preview() {
         def entity =  caller.entityContext;
@@ -14,12 +14,6 @@ public class VehicleReportForm extends SingleBillingReportModel {
         return super.preview();
     }
     
-    public def previewByFranchiseId() {
-        def entity =  caller.entityContext;
-        query.objid = entity.franchise.objid;
-        query.vehicletype = entity.vehicletype;
-        return super.preview();
-    }
     
     
 }

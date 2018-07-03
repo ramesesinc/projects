@@ -20,6 +20,12 @@ class VehicleApplicationPersistenceInterceptor {
 	@DataContext("vehicle_application")
 	def appEm;
 
+	@DataContext("vehicle_application_unit")
+	def appUnitEm;
+
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
 	@DataContext("vehicletype")
 	def vehicleTypeEm;
 
@@ -30,11 +36,14 @@ class VehicleApplicationPersistenceInterceptor {
 	def controlNoGenerator;
 
 
-	@Before(pattern="PersistenceService.create", 
-		eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].apptype.matches('NEW|RENEW') }")
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'vehicle_application' }")
 	public void beforeCreateApplicationNewOrRenew(def evt) {
 		def entity = evt.args[0];
-		entity.state = "ACTIVE";
+
+		if( entity.appyear > dateSvc.getServerYear() )
+			throw new Exception("App year must be less than or equal to current year");		
+
 		def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
 		def dt = dateSvc.getServerDate();
 		def handler = { pttn, num ->
@@ -45,6 +54,7 @@ class VehicleApplicationPersistenceInterceptor {
 				return "";
 			}
 			else if(pttn.startsWith("%")) {
+				//this is supposed to be for the leading zeroes
 				return "";
 			}
 			else {
@@ -55,83 +65,53 @@ class VehicleApplicationPersistenceInterceptor {
 		}
 		String prefix = controlNoGenerator.formatNumber( vt.controlpattern, handler, 0 );
 		entity.appno =  prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
+		entity.amount = 0;
 	}
 
-	@After(pattern="PersistenceService.create", 
-		eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].apptype.matches('NEW|RENEW') }")
-	public void afterCreateApplicationNewOrRenew(def evt) {
+	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	public void afterCreateApplicationNew(def evt) {
+		def entity = evt.args[0];
+		def result = evt.result;
+
+		entity.prevappid = entity.primaryappid;
+		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW|CHANGE_OWNER.*") ) {
+			entity.primaryappid = entity.objid;
+		}
+		if( !entity.primaryappid ) throw new Exception("Primary appid is required");
+		appEm.find( [objid: result.objid ]).update( [primaryappid: entity.primaryappid ]);
+	}	
+
+	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|CHANGE_OWNER.*')  }")
+	public void afterCreateApplicationRenew(def evt) {
+		def entity = evt.args[0];
+		def result = evt.result;
+		if(!entity.prevappid ) throw new Exception("prevappid is required in ONLINE-RENEW or CHANGE_OWNER ");
+		//create a copy for each unit and replace the franchise control with the new one
+		def units = franchiseEm.where( "vehicleunit.primaryappid =:appid",  [appid: entity.prevappid ] ).list();
+		units.each { z->
+			def u =[:]	
+			u.putAll( z.vehicleunit );
+			u.app = [objid: result.objid];
+			u.appid = result.objid;
+			u.franchise = [objid: z.objid ];
+			u.controlid = z.objid;
+			u.objid = null;
+			u = appUnitEm.create(u);
+			franchiseEm.find( [objid : z.objid ]).update( [vehicleunitid: u.objid] );
+		}
+	}	
+
+	//workflow is applicable for all applications
+	@After(pattern="PersistenceService.create", index=100, eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	public void fireApplicationWorkflow(def evt) {
 		def entity = evt.args[0];
 		def p = [:];
 		p.processname = 'vehicle_application';
 		p.refid = entity.objid;
 		p.startdate = dateSvc.serverDate;
+		p.info = entity;
 		taskSvc.start(p);
 	}
 
-
-	/*
-	@Before(pattern="VehicleApplicationService.create", 
-		eval="#{args[0].txnmode!='CAPTURE' && args[0].apptype.matches('NEW|RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT')}")
-	public void beforeCreateApplicationNewOrRenew(def evt) {
-		def entity = evt.args[0];
-		if(!entity.fees) 
-			throw new Exception("There must be at least 1 fee");
-	}
-
-	@Before(pattern="VehicleApplicationService.create", eval="#{ args[0].apptype.matches('NEW|RENEW|LATE_RENEWAL')}", index=10)
-	public void beforeCreateApplicationNewRenewLateRenewal(def evt) {
-		def entity = evt.args[0];
-		if( entity.franchise ) {
-			def fran = franchiseEm.find([objid: entity.franchise.objid]).first();
-			entity.controlid = fran.objid;
-			entity.prevappid = fran.appid;
-			entity.franchise = fran;
-		}
-	}
-
-	//update the franchise info if capture or 
-	@After(pattern="VehicleApplicationService.create", eval="#{ args[0].apptype.matches('NEW|RENEW|LATE_RENEWAL') }", index=10)
-	public void afterCreateApplicationCapture(def evt) {
-		def entity = evt.result;
-		if( entity.franchise ) {
-			def m =[:];
-			m.activeyear = entity.appyear;
-			m.state = "ACTIVE";
-			m.appid = entity.objid;
-			if( entity.startdate ) {
-				//do not change if there is no start date in franchise.
-				m.startdate = entity.startdate;		
-			}
-			if( entity.franchise?.expirydate ) {
-				m.expirydate = entity.franchise?.expirydate;	
-			}
-			franchiseEm.find([objid: entity.franchise.objid]).update(m);
-		}
-	}
-
-	@After(pattern="VehicleApplicationService.create", 
-		eval="#{result.txnmode!='CAPTURE' && args[0].apptype.matches('NEW|RENEW|CHANGE_OWNER_UNIT')}")
-	public void afterCreateApplicationNewOrRenew(def evt) {
-		def entity = evt.result;
-		//fire the workflow
-		def p = [:];
-		p.processname = 'vehicle_application';
-		p.refid = entity.objid;
-		p.startdate = dateSvc.serverDate;
-		taskSvc.start(p);
-	}
-
-	@After(pattern="VehicleApplicationService.create", eval="#{args[0].apptype == 'DROP' }")
-	public void afterCreateApplicationForDrop(def evt) {
-		def o = evt.result;
-		def m = [:];
-		m.state = 'OPEN';
-		m.appid = null;
-		m.activeyear = null;
-		m.startdate = null;
-		m.expirydate = null;
-		franchiseEm.find( [objid:o.franchise.objid ] ).update(m);
-	}
-	*/
 
 }

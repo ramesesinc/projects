@@ -60,4 +60,13 @@ class AccountEditModel extends ChangeInfoModel {
         caller?.reload();
     }
 
+    void defective() {
+        if(!MsgBox.confirm("You are about to change this meter to defective. Continue?")) return;
+        def m = [_schemaname: 'waterworks_meter' ];
+        m.findBy = [objid: entity.meterid ];
+        m.state = "DEFECTIVE";
+        changeInfoSvc.execute(m);
+        caller?.reload();
+    }
+
 }

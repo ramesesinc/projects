@@ -1,10 +1,13 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="vehicle_franchise">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vehicle_franchise">
     <invokers>
-        <invoker folderid="/explorer/master/vehicle"
-                 caption="Vehicle Franchise List" index="100"
-                 cols="controlno,activeyear,app.owner.name,app.owner.address.text"
-                 action="init" orderBy="controlno" 
-                 role="MASTER"/>
+       <invoker folderid="menucategory/vehicle/master" 
+                 action="init" caption="Vehicle Franchise List"
+                 formTitle="#{vehicletype.title} Franchise List"  
+                 formId="#{vehicletype.objid}:franchise:list"
+                 role="MASTER" 
+                 index="-1"
+                 orderBy="controlno"
+                 cols="controlno,activeyear,vehicleunit.owner.name,vehicleunit.owner.address.text,vehicleunit.plateno"/> 
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleFranchiseListModel" />
     <pages>

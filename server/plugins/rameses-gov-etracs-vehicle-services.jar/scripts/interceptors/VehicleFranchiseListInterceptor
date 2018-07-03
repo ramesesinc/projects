@@ -6,7 +6,7 @@ class VehicleFranchiseListInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname.startsWith('vehicle_franchise_')}")
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'vehicle_franchise' }")
 	public void getNodeList(def evt) {
 		def result = evt.result;
 		result << [ title: 'All', id:'all'];
@@ -17,7 +17,7 @@ class VehicleFranchiseListInterceptor {
 		result << [ title: 'Delinquent', id:'delinquent'];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.startsWith('vehicle_franchise_') }")
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'vehicle_franchise' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		//o.debug = true;
@@ -29,12 +29,12 @@ class VehicleFranchiseListInterceptor {
 
 		switch( o.node.id ) {
 			case 'unassigned':
-				str = " owner.objid IS NULL ";
+				str = " vehicleunit.owner.objid IS NULL ";
 				break;
 
 			case 'active':
 				m.year = dateSvc.getServerYear();
-				str = " state='ACTIVE' AND activeyear = :year ";
+				str = " NOT(vehicleunit.owner.objid IS NULL) AND activeyear = :year AND expirydate < NOW()";
 				break;
 
 			case 'processing':
@@ -43,12 +43,12 @@ class VehicleFranchiseListInterceptor {
 
 			case 'forrenewal':
 				m.year = dateSvc.getServerYear();
-				str = " ( activeyear + 1 ) = :year";
+				str = " NOT(vehicleunit.owner.objid IS NULL) AND ( activeyear + 1 ) = :year AND expirydate >= NOW()";
 				break;
 
 			case 'delinquent':
 				m.year = dateSvc.getServerYear() - 1;
-				str = " NOT(owner.objid IS NULL) AND activeyear < :year";
+				str = " NOT(vehicleunit.owner.objid IS NULL) AND activeyear < :year";
 				break;
 		}
 

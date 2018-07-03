@@ -1,11 +1,9 @@
 <schema adapter="vehicledb">
 	<element tablename="vehicle_payment" autopost="true">
 		<field name="objid" primary="true" prefix="VPMT"/>
-
 		<field name="parentid" required="true"/>
 		<field name="parentschemaname" required="true"/>
 		<field name="rootid" required="true"/>
-
 		<field name="txnmode" required="true" defaultValue="CAPTURE"/>
 		<field name="amount" required="true" />
 		<field name="voided" required="true" />
@@ -16,15 +14,13 @@
 		<complex name="items" ref="vehicle_payment_item" jointype="one-to-many">
 			<key field="objid" target="parentid" />
 		</complex>	
-
 		<complex name="application" ref="vehicle_application" required="false" jointype="many-to-one" includefields="taskid">
 			<key field="appid" target="objid" />
 		</complex>
-
 		<complex name="items" ref="vehicle_payment_item" jointype="one-to-many">
 			<key field="objid" target="parentid"/>
 		</complex>	
-		<field name="remarks" />
+		<field name="remarks" />		
 	</element>
 
 </schema>

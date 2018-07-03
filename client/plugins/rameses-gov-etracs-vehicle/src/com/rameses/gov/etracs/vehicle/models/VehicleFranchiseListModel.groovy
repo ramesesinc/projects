@@ -27,12 +27,6 @@ class VehicleFranchiseListModel extends CrudListModel {
         }
     ];
     
-    void afterInit() {
-        def m = [_schemaname: 'vehicletype'];
-        m.where = ["1=1"];
-        vehicleTypeList = queryService.getList(m);
-    }
-
     public def getCustomFilter() {
         if( !vehicletype?.objid ) return ["1=0"];
         if(!cluster) {

@@ -1,3 +1,8 @@
+<!--
+  The primary app is the master application and usually it is the first application created to
+  ensure continuity of a particular application (context or thread) 
+  These are the scenarios: NEW, CAPTURE(NEW), CAPTURE(RENEW), CHANGE_OWNERSHIP
+-->
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application">
 		<field name="objid" primary="true" prefix="VAPP"/>
@@ -12,6 +17,7 @@
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
+		<field name="expirydate"  />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>
@@ -25,10 +31,16 @@
 		</complex> 
 
 		<field name="taskid"/>
-		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" 
-				includefields=".*" required="false">
+		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" includefields=".*" required="false">
 			<key field="taskid" target="taskid" />
 		</complex>	
+		<field name="amount"  type="decimal" />
+
+		<!-- primaryappid is applicable for all primary applications (NEW, RENEW) -->
+		<field name="primaryappid" />
+		<complex name="primaryapp" ref="vehicle_application" jointype="many-to-one" includefields="objid,appno,apptype,appyear" required="false">
+			<key field="primaryappid" target="objid" />
+		</complex> 
 
 	</element>
 </schema>

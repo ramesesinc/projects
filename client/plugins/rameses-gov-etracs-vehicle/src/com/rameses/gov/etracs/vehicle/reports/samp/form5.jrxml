@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="form5"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="766"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="117"
+						y="20"
+						width="319"
+						height="60"
+						key="staticText-1"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Republic of the Philippines
+PROVINCE OF COMPOSTELA VALLEY
+MUNICIPALITY OF NABUNTURAN
+OFFICE OF THE MAYOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="88"
+						width="437"
+						height="50"
+						key="staticText-2"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
+					</textElement>
+				<text><![CDATA[MUNICIPAL PERMIT
+(Motorized Tricycle for Hire)
+2016]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="45"
+						y="284"
+						width="456"
+						height="104"
+						key="staticText-3"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Route of Operator:  *** WITHIN POBLACION ONLY EXCEPT ALONG NATIONAL HIGHWAY *** route in accordance with the Revised Code of General Ordinance of 2007 *** and Amendatory Ordinance No. 2009-01
+Per your application and upon recommendation of the office concerned and by the power vested in me’ under REVISED REVENUE CODE OF 2005 and pertinent ordinances, you are hereby granted authority to engage/operate Motorized Tricycle for Hire (MTH) Permit in the Municipality of Nabunturan.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="45"
+						y="471"
+						width="456"
+						height="135"
+						key="staticText-4"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Annual Municipal Permit			                                    P     500.00
+Filing Fee for Application of MTOP		                              750.00
+Additional Unit
+Laboratory Fee (Sputum/Stool/Health Cert.)	                 130.00
+Educational Support Program Fee		                              50.00
+Occupation Calling	                                                    100.00
+MTH Sticker			                                                            30.00
+Police Clearance				                                                     50.00
+Annual Franchise Supervisory
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="45"
+						y="608"
+						width="456"
+						height="106"
+						key="staticText-5"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[This permit is subject to the provisions of existing ordinance governing your business and shall expire on 		December 31, 2016 unless sooner revoked for cause, including non payment of license fee
+P _________________ per annum. In case if failure to pay the corresponding license fee within the time required, penalty of twenty five (25%) per centrum of the impose. This permit is subject to revocation at any good reason of general interest.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="323"
+						y="728"
+						width="160"
+						height="29"
+						key="staticText-6"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[CHELITA C. AMATONG
+Mayor]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="154"
+						width="56"
+						height="19"
+						key="staticText-7"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Body No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="180"
+						width="118"
+						height="19"
+						key="staticText-8"/>
+					<box></box>
+					<textElement>
+						<font size="12" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[(#134)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="205"
+						width="118"
+						height="19"
+						key="staticText-9"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[name of Licensee:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="314"
+						y="154"
+						width="62"
+						height="19"
+						key="staticText-10"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Case No. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="314"
+						y="180"
+						width="170"
+						height="19"
+						key="staticText-11"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Place: Purok 4 Cabidianan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="233"
+						width="32"
+						height="19"
+						key="staticText-12"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Age:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="52"
+						y="258"
+						width="32"
+						height="19"
+						key="staticText-13"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Civil: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="224"
+						y="233"
+						width="30"
+						height="19"
+						key="staticText-14"/>
+					<box></box>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+				<text><![CDATA[Sex:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="117"
+						y="154"
+						width="56"
+						height="19"
+						key="staticText-15"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[134]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="92"
+						y="233"
+						width="56"
+						height="19"
+						key="staticText-16"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[28]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="92"
+						y="258"
+						width="78"
+						height="19"
+						key="staticText-17"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[MARRIED]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="261"
+						y="233"
+						width="56"
+						height="19"
+						key="staticText-18"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[FEMALE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="378"
+						y="155"
+						width="123"
+						height="19"
+						key="staticText-19"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[2012-NAB-363]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="376"
+						y="233"
+						width="56"
+						height="19"
+						key="staticText-20"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica" size="12" isBold="false" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[Status]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

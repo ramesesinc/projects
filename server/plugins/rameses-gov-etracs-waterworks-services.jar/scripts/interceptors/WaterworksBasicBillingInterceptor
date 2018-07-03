@@ -22,7 +22,7 @@ class WaterworksBasicBillingInterceptor {
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
-    @After(pattern="BasicBillingHandler.getInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+    @After(pattern="BasicBillingHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void getInfo(def evt) {
 		def obj = evt.args[0];
 		def r = evt.result;

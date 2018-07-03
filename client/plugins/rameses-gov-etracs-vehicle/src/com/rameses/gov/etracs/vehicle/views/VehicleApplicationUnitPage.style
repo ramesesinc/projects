@@ -1,0 +1,7 @@
+"entity.driver.*" [ vehicletype.guihandler == "motorized" ] {
+    visible:false;
+}
+
+"entity.(plateno|crname|engineno|chassisno|make|model|color|bodyno|sidecarno|sidecarcolor)" [ vehicletype.guihandler == "manual" ] {
+    visible:false;
+}

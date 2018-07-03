@@ -1,7 +1,8 @@
-"(add|edit|remove)Unit" [ entity.task.state == "draft" ] {
-    visible:true;
-}
-
-"(add|edit|remove)Unit" [ entity.task.state != "draft" ] {
+"lookupType" [ entity.apptype != "RENEW" ] {
     visible:false;
 }
+
+"addUnit|editUnit|removeUnit" [ entity.txnmode != 'CAPTURE' && entity.apptype != 'NEW' ] {
+    visible: false;
+}
+

@@ -93,7 +93,6 @@ public class BillingRuleService {
 
 		//add infos and billitems if exist
 		if( data.infos ) {
-			println "data infos is " + data.infos;
 			factBuilder.addInfos( data.infos ); 
 		}	
 		if( data.billitems ) factBuilder.addBillItems( data.billitems ); 

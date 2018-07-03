@@ -9,7 +9,7 @@ import treasury.facts.*;
 class BasicBillingHandler {
 	
 	@ProxyMethod 
-	public def getInfo( params ) {
+	public def getHeaderInfo( params ) {
 		return [:]; 
 	}
 

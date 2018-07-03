@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/FormReport.xml" rulename="vehiclebilling">
+    <invokers>
+        <!-- This is for application billing -->
+        <invoker type="vehicle_application:form:formActions" 
+                 caption="Print Bill" 
+                 target="popup" 
+                 action="preview"
+                 index="5"
+                 reportId="vehiclebilling"
+                 reportName="com/rameses/gov/etracs/vehicle/reports/assessment.jasper" 
+                 xvisibleWhen="#{entity.dtapproved != null }" />
+    </invokers> 
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleReportForm"/>
+</workunit>

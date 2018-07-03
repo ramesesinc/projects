@@ -8,34 +8,136 @@ import com.rameses.osiris2.client.*;
 import com.rameses.seti2.models.*;
 import com.rameses.util.*;
 
-public class NewVehicleApplicationModel extends CrudFormModel {
+public class NewVehicleApplicationModel extends CrudPageFlowModel {
     
     @Service("DateService")
     def dateSvc;
 
+    @Invoker
+    def invoker;
+
     def vehicletype;
 
-    public void afterCreate() {
+    //lookup Types
+    def lookupType = "controlno";
+    def owner;
+    def controlno;
+
+    def resultList;
+    def selectedItem;
+
+    def appTypes = ["NEW", "RENEW" ];
+    def apptype;
+
+    @PropertyChangeListener
+    def listener = [
+        "apptype" : { o->
+            entity.apptype = o;
+        }
+    ];
+
+    def startApp() {
+        def props = invoker.properties;
+        super.create();
+
         entity.vehicletypeid = vehicletype.objid;
-        entity.apptype = "NEW";
-        entity.txnmode = "ONLINE";
-	entity.appyear = dateSvc.getServerYear();
+        entity.apptype = props.apptype;
+        entity.txnmode = props.txnmode;
+        if( !entity.txnmode ) entity.txnmode = "ONLINE";
+        if(entity.txnmode != "CAPTURE") {
+            entity.appyear = dateSvc.getServerYear();
+        }    
         entity.appdate = dateSvc.getBasicServerDate();
+        entity.state = "ACTIVE";
+        def path = "initial";
+        if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW")  ) {
+            path = "entry";
+        }
+        return super.start( path );
     }
-
-    @FormTitle
-    public String getTitle() {
-        return "New Application (" + vehicletype.title + ")"; 
-    }
-
+    
     @FormId
     public String getFormId() {
-        return vehicletype.objid + ":new"; 
+        return vehicletype.objid + ":" + entity.txnmode + ":new"; 
     }
 
-    void afterSave() {
-        def op = Inv.lookupOpener( "vehicle_application:open", [ entity: [objid: entity.objid] ] );
-        binding.fireNavigation( op );
+    void loadList() {
+        def params = [:];
+        def cond = [];
+        params.vehicletypeid = vehicletype.objid;
+        cond << "vehicletypeid =:vehicletypeid";
+
+        if( lookupType == "owner" ) {
+            cond << "owner.objid =:ownerid";
+            params.ownerid = owner.objid;
+        }
+        else if( lookupType == "controlno" ) {
+            cond << "controlno =:controlno";
+            params.controlno = controlno;
+        }
+
+        if( entity.apptype == "RENEW" ) {
+            cond << "expirydate <= NOW() AND appyear = :ayear";
+            params.ayear = entity.appyear - 1;
+        }
+        else {
+            //cond << "appyear = :ayear";
+            //params.ayear = entity.appyear;
+        }
+
+        def m = [_schemaname: 'vehicle_application' ];
+        m.where = [ cond.join( " AND " ), params ];
+        resultList = queryService.getList( m );
+        if(!resultList)
+            throw new Exception("No records found");
+        listModel.reload();
+    }
+
+    def viewInfo() {
+        if( !selectedItem ) throw new Exception("Please select an item");
+        def op = Inv.lookupOpener( "vehicle_application:open", [entity: [objid: selectedItem.objid ]] );
+        op.target = "popup";
+        return op;
+    }
+
+    def listModel = [
+        fetchList: { o->
+            return resultList;
+        }
+    ] as BasicListModel;
+
+    
+
+    void saveCopy() {
+        if(!selectedItem) throw new Exception("Please select an item");
+        if( !MsgBox.confirm("You are now about to create the application. Please ensure data is correct. Proceed?") ) {
+            throw new BreakException();
+        }
+        entity.owner = selectedItem.owner;
+        entity.primaryappid = selectedItem.primaryappid;
+        entity.particulars = selectedItem.particulars;
+        saveCreate();
+    }
+
+    def prevOwner;
+    void checkBeforeChange() {
+        if(!selectedItem)
+            throw new Exception("Please select an item");
+        prevOwner = selectedItem.owner;
+        entity.primaryappid = selectedItem.primaryappid;
+        entity.particulars = selectedItem.particulars;
+        entity.appyear = selectedItem.appyear;
+    }
+
+    void saveChange() {
+        if( prevOwner != null && prevOwner.objid == entity.owner?.objid  ) {
+            throw new Exception("Please use another owner. It must not be the same with the previous owner");
+        }
+        saveCreate();
+    }
+
+    public Object onComplete() {
+        return Inv.lookupOpener( "vehicle_application:open", [ entity: [objid: entity.objid] ] );
     }
 
     

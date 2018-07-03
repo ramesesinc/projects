@@ -2,9 +2,9 @@
 	<element tablename="vehicle_application_unit">
 		<field name="objid" primary="true" prefix="VAPPUNIT"/>
 
-		<field name="appid" required="true" searchable="true" indexed="true"/>
+		<field name="appid" required="true"/>
 		<complex name="app" ref="vehicle_application" jointype="many-to-one" 
-			includefields="objid,appno,apptype,appdate,owner.*" required="true">
+			includefields="objid,appno,apptype,appyear,appdate,owner.*,txnmode" required="true">
 			<key field="appid" target="objid" />
 		</complex> 
 
@@ -12,8 +12,6 @@
 		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno,startdate,expirydate" required="true">
 			<key field="controlid" target="objid" />
 		</complex> 	
-
-		<field name="activeyear" />
 
 		<!-- additional infos -->
 		<field name="plateno" caption="Plate No" searchable="true"  indexed="true"/>

@@ -244,7 +244,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
                 def res = compSvc.compute(p);
                 res.reading = value;
                 if(!res.volume) res.volume = p.volume;
-                if(res.volume == 0 ) res.amount = 0;
                 updateVolumeAmount( item.objid, res );
                 item.putAll( res );
                 return true;

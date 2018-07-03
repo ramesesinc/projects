@@ -66,6 +66,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         fetchList : { o->
             def m = [_schemaname: "vehicle_application_unit" ];
             m.findBy = [ appid: entity.objid ];
+            m.orderBy = "franchise.controlno";
             return queryService.getList( m );
         }
 
@@ -81,7 +82,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         };
         p.vehicletype = entity.vehicletype;
         p.app = entity;
-        return Inv.lookupOpener("vehicle_application_unit:" + s + ":create", p );
+        return Inv.lookupOpener("vehicle_application_unit:create", p );
     }
 
     def editUnit() {
@@ -96,7 +97,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         };
         p.vehicletype = entity.vehicletype;
         p.entity = selectedUnit;
-        return Inv.lookupOpener("vehicle_application_unit:" + s + ":edit", p );
+        return Inv.lookupOpener("vehicle_application_unit:edit", p );
     }
     
     def removeUnit() {
@@ -110,15 +111,31 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
 
     def feeListModel = [
         fetchList: { o->
-            return entity.fees;
+            def m = [_schemaname: "vehicle_application_fee"];
+            m.findBy = [parentid: entity.objid ];
+            m.orderBy = "sortorder";
+            return queryService.getList(m);
         }
     ] as BasicListModel;
     
+    def infos = [];
     def infoListModel = [
         fetchList: { o->
-            return entity.infos;
+            def m = [_schemaname: "vehicle_application_info"];
+            m.findBy = [parentid: entity.objid ];
+            m.orderBy = "sortorder";
+            infos = queryService.getList(m);
+            infos.each {
+                if( it.stringvalue ) it.value = it.stringvalue;
+                else if( it.intvalue ) it.value = it.intvalue;
+                else if( it.decimalvalue ) it.value = it.decimalvalue;
+                else if( it.booleanvalue ) it.value = it.booleanvalue;
+                println "value " + it.name + " is " + it.value;
+            }
+            return infos;
         }
     ] as BasicListModel;
+
 
     def paymentListModel = [
         fetchList : {
@@ -150,10 +167,13 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
 
     void assess() {
         def p = [:];
-        p.rulename = "vehiclebilling"
-        p.params = [billdate:entity.receiptdate];
+        p.rulename = "vehicleassessment"
+        p.params = [billdate:entity.receiptdate, application: entity ];
+        p.include_items = true;
+        p.include_billitems = false;
+        if(infos) p.defaultInfos = infos;
         p.handler = { result->
-            MsgBox.alert("finished rule");
+            if( result !=null ) reload();
         }
         Modal.show( "billing_rule", p );
     }

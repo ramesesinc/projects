@@ -3,19 +3,15 @@
 		<field name="objid" primary="true" prefix="MF"/>
 		<field name="controlno" caption="Control No" required="true" searchable="true" indexed="true"/>
 		<field name="state"  required="true" caption="State"/>
-		<field name="vehicletypeid"  required="false" />
-		<field name="vehicleunitid"  />
-		<field name="startdate" />
-		<field name="activeyear"  />
-		<field name="startdate"  />
-		<field name="expirydate"  />
+		<field name="vehicletypeid" required="true" />
+		<field name="vehicleunitid" required="false" />
 		<complex name="cluster" ref="vehicletype_cluster" jointype="many-to-one" required="false" includefields="objid,name">
 			<key field="clusterid" target="objid" />
 		</complex> 
 		<complex name="vehicletype" ref="vehicletype" jointype="many-to-one" required="false">
 			<key field="vehicletypeid" target="objid" />
 		</complex> 
-		<complex name="vehicleunit" ref="vehicle_application_unit" jointype="many-to-one" required="false">
+		<complex name="vehicleunit" ref="vw_vehicle_unit" jointype="many-to-one" required="false">
 			<key field="vehicleunitid" target="objid" />
 		</complex> 
 	</element>

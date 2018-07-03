@@ -2,7 +2,8 @@
    <invokers>
          <invoker type="entity:lookup" caption="Lookup Entity" action="init" 
                   target="popup" height="500" width="700" 
-                  cols="entityno,name,address.text,address.objid,type,entityname"
+                  cols="entityno,name,address.text,address.objid,type"
+                  hiddenCols="entityname"
                   orderBy="entityname"/>
    </invokers>
    <code>

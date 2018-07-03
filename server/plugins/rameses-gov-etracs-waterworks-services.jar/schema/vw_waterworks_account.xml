@@ -6,10 +6,10 @@ SELECT
    wa.acctname, 
    wa.acctno, 
    wa.address_text,
-   classificationid AS classification,
+   classificationid AS classification_objid,
    sn.indexno AS stuboutnode_indexno,
    ws.code AS stuboutnode_stubout_code,
-   m.objid AS meterid,
+   m.objid AS meter_objid,
    m.serialno  AS meter_serialno,
    m.brand  AS meter_branch,
    m.capacity  AS meter_capacity,
@@ -30,10 +30,10 @@ LEFT JOIN waterworks_stubout ws ON sn.stuboutid = ws.objid
 		<field name="acctname" />
 		<field name="acctno" />
 		<field name="address_text" />
-		<field name="classification" />
+		<field name="classification_objid" />
 		<field name="stuboutnode_indexno" />
 		<field name="stuboutnode_stubout_code" />
-		<field name="meterid" />
+		<field name="meter_objid" />
 		<field name="meter_serialno" />
 		<field name="meter_branch" />
 		<field name="meter_capacity" />

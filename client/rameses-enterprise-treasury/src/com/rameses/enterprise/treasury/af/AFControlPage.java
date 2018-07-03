@@ -47,6 +47,7 @@ public class AFControlPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("AF Control Information");
         formPanel1.setBorder(xTitledBorder1);
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setCaptionWidth(110);
 
         xComboBox1.setCaption("Collector");
@@ -133,7 +134,6 @@ public class AFControlPage extends javax.swing.JPanel {
         xNumberField4.setRequired(true);
         formPanel1.add(xNumberField4);
 
-        xNumberField5.setText("entity.currentseries");
         xNumberField5.setCaption("Current Series");
         xNumberField5.setFieldType(Integer.class);
         xNumberField5.setName("entity.endseries"); // NOI18N

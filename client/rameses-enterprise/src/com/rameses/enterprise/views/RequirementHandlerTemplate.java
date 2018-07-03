@@ -61,9 +61,9 @@ public class RequirementHandlerTemplate extends javax.swing.JPanel {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setPreferredSize(new java.awt.Dimension(420, 35));
 
-        xLabel1.setBackground(new java.awt.Color(255, 255, 255));
         xLabel1.setExpression("#{title}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        xLabel1.setFontStyle("font-size:14; font-weight:bold;");
         xLabel1.setOpaque(true);
         xLabel1.setPreferredSize(new java.awt.Dimension(41, 30));
 

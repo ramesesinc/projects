@@ -29,62 +29,63 @@ public class ChangeModePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xRadio1 = new com.rameses.rcp.control.XRadio();
-        jLabel1 = new javax.swing.JLabel();
         xRadio2 = new com.rameses.rcp.control.XRadio();
         xRadio3 = new com.rameses.rcp.control.XRadio();
 
-        setPreferredSize(new java.awt.Dimension(244, 184));
+        setPreferredSize(new java.awt.Dimension(313, 205));
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.YLayout());
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        xLabel1.setFontStyle("font-weight: bold; font-scale:113;");
+        xLabel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xLabel1.setText("Select a mode");
+        jPanel1.add(xLabel1);
 
         xRadio1.setCaption("ONLINE");
         xRadio1.setName("data.txnmode"); // NOI18N
         xRadio1.setOptionValue("ONLINE");
-        xRadio1.setText("ONLINE");
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Select a mode");
+        xRadio1.setText("  ONLINE  ");
+        jPanel1.add(xRadio1);
 
         xRadio2.setCaption("ONLINE");
         xRadio2.setName("data.txnmode"); // NOI18N
         xRadio2.setOptionValue("OFFLINE");
-        xRadio2.setText("OFFLINE");
+        xRadio2.setText("  OFFLINE  ");
+        jPanel1.add(xRadio2);
 
         xRadio3.setCaption("CAPTURE");
         xRadio3.setName("data.txnmode"); // NOI18N
         xRadio3.setOptionValue("CAPTURE");
-        xRadio3.setText("CAPTURE");
+        xRadio3.setText("  CAPTURE  ");
+        jPanel1.add(xRadio3);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(29, 29, 29)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xRadio2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xRadio1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xRadio3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 168, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap()
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
-                .add(21, 21, 21)
-                .add(xRadio1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xRadio2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xRadio3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XRadio xRadio1;
     private com.rameses.rcp.control.XRadio xRadio2;
     private com.rameses.rcp.control.XRadio xRadio3;

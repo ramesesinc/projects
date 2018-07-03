@@ -32,11 +32,11 @@ public class ShowTrackingnoPage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
 
-        jLabel1.setText("Please use the following tracking code for follow up ");
+        jLabel1.setText("<html>Please use the following tracking code for follow up</html>");
 
-        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         xLabel1.setExpression("#{info.trackingno}");
-        xLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        xLabel1.setFontStyle("font-size:18; font-weight:bold;");
 
         xButton1.setMnemonic('p');
         xButton1.setName("print"); // NOI18N
@@ -53,7 +53,7 @@ public class ShowTrackingnoPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
                     .addComponent(xLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()

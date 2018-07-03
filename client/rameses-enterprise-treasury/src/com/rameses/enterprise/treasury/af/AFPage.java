@@ -40,7 +40,8 @@ public class AFPage extends javax.swing.JPanel {
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
-        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(120);
 
         xTextField1.setCaption("Name");
         xTextField1.setName("entity.objid"); // NOI18N

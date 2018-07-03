@@ -35,6 +35,10 @@
   </Layout>
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+        <Property name="captionWidth" type="int" value="100"/>
+      </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
           <Properties>
@@ -59,15 +63,21 @@
         </Component>
         <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value=""/>
+            <Property name="caption" type="java.lang.String" value=" "/>
             <Property name="checkValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="1" type="code"/>
             </Property>
             <Property name="name" type="java.lang.String" value="entry.complied" noResource="true"/>
-            <Property name="text" type="java.lang.String" value="Complied?"/>
             <Property name="uncheckValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="0" type="code"/>
             </Property>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[5, 0, 0, 0]"/>
+            </Property>
+            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[0, 0, 0, 0]"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Complied?"/>
           </Properties>
         </Component>
       </SubComponents>

@@ -35,8 +35,6 @@ public class AddressEditor extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(510, 444));
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-
         xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Type of Address");
         xComboBox1.setCaptionWidth(100);

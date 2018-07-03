@@ -50,55 +50,48 @@ public class HolidayPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Year");
         xFormPanel1.setBorder(xTitledBorder1);
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
+        xRadio1.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
         xRadio1.setName("yearOption"); // NOI18N
         xRadio1.setOptionValue(0);
-        xRadio1.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
-        xRadio1.setOpaque(false);
         xRadio1.setShowCaption(false);
         xRadio1.setText("Any Year");
         xFormPanel1.add(xRadio1);
 
+        xRadio2.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
         xRadio2.setName("yearOption"); // NOI18N
         xRadio2.setOptionValue(1);
-        xRadio2.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
-        xRadio2.setOpaque(false);
         xRadio2.setShowCaption(false);
         xRadio2.setText("Specific Year");
         xFormPanel1.add(xRadio2);
 
         xIntegerField1.setCaption("Year");
-        xIntegerField1.setDepends(new String[] {"yearOption"});
-        xIntegerField1.setName("entity.year"); // NOI18N
-        xIntegerField1.setVisibleWhen("#{ yearOption == 1 }");
         xIntegerField1.setCaptionWidth(60);
         xIntegerField1.setCellPadding(new java.awt.Insets(0, 60, 0, 0));
+        xIntegerField1.setDepends(new String[] {"yearOption"});
+        xIntegerField1.setName("entity.year"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(60, 20));
         xIntegerField1.setRequired(true);
+        xIntegerField1.setVisibleWhen("#{ yearOption == 1 }");
         xFormPanel1.add(xIntegerField1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Month");
         xFormPanel2.setBorder(xTitledBorder2);
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         monthList1.setCaption("Month");
-        monthList1.setCellPadding(new java.awt.Insets(5, 40, 0, 0));
+        monthList1.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
         monthList1.setName("entity.month"); // NOI18N
-        monthList1.setPreferredSize(new java.awt.Dimension(100, 20));
         monthList1.setRequired(true);
         xFormPanel2.add(monthList1);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder3.setTitle("Day");
         xFormPanel3.setBorder(xTitledBorder3);
-        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
+        xRadio3.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
         xRadio3.setName("dayOption"); // NOI18N
         xRadio3.setOptionValue(0);
-        xRadio3.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
-        xRadio3.setOpaque(false);
         xRadio3.setShowCaption(false);
         xRadio3.setText("Specific Day");
         xFormPanel3.add(xRadio3);
@@ -113,10 +106,9 @@ public class HolidayPage extends javax.swing.JPanel {
         xIntegerField2.setVisibleWhen("#{ dayOption == 0 }");
         xFormPanel3.add(xIntegerField2);
 
+        xRadio4.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
         xRadio4.setName("dayOption"); // NOI18N
         xRadio4.setOptionValue(1);
-        xRadio4.setCellPadding(new java.awt.Insets(0, 40, 0, 0));
-        xRadio4.setOpaque(false);
         xRadio4.setShowCaption(false);
         xRadio4.setText("Day of Week");
         xFormPanel3.add(xRadio4);
@@ -140,11 +132,9 @@ public class HolidayPage extends javax.swing.JPanel {
         dayOfWeekList1.setVisibleWhen("#{ dayOption == 1 }");
         xFormPanel3.add(dayOfWeekList1);
 
-        xFormPanel4.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel4.setCaptionWidth(100);
-
         xTextField1.setCaption("Holiday Name");
         xTextField1.setName("entity.name"); // NOI18N
+        xTextField1.setCaptionWidth(90);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xFormPanel4.add(xTextField1);

@@ -47,6 +47,7 @@ public class VariableInfoPage extends javax.swing.JPanel {
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
 
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setCaptionWidth(100);
         formPanel1.setPadding(new java.awt.Insets(5, 5, 5, 0));
 
@@ -91,16 +92,17 @@ public class VariableInfoPage extends javax.swing.JPanel {
         xLabel1.setPadding(new java.awt.Insets(1, 6, 1, 1));
         xLabel1.setText("Array Values");
 
-        xList1.setDynamic(true);
         xList1.setItems("entity.arrayvalues");
         xList1.setName("arrayvalue"); // NOI18N
+        xList1.setDynamic(true);
+        xList1.setFixedCellHeight(18);
         xList1.setPadding(new java.awt.Insets(1, 3, 1, 0));
         jScrollPane1.setViewportView(xList1);
 
-        xButton1.setMnemonic('a');
         xButton1.setDisableWhen("#{mode == 'read'}");
-        xButton1.setImmediate(true);
+        xButton1.setMnemonic('a');
         xButton1.setName("addArrayValue"); // NOI18N
+        xButton1.setImmediate(true);
         xButton1.setText("Add");
 
         xButton2.setMnemonic('r');
@@ -115,11 +117,11 @@ public class VariableInfoPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel1Layout.createSequentialGroup()
                 .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(xPanel1Layout.createSequentialGroup()
-                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())

@@ -9,6 +9,7 @@ drop table if exists `rptledger_remote`;
 
 CREATE TABLE `remote_mapping` (
   `objid` varchar(50) NOT NULL,
+  `doctype` varchar(50) NOT NULL,
   `remote_objid` varchar(50) NOT NULL,
   `createdby_name` varchar(255) NOT NULL,
   `createdby_title` varchar(100) DEFAULT NULL,
@@ -17,6 +18,13 @@ CREATE TABLE `remote_mapping` (
   `remote_orgcode` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+create index ix_doctype on remote_mapping(doctype);
+create index ix_orgcode on remote_mapping(orgcode);
+create index ix_remote_orgcode on remote_mapping(remote_orgcode);
+create index ix_remote_objid on remote_mapping(remote_objid);
+
 
 
 

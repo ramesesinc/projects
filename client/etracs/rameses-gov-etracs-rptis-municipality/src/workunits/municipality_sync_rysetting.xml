@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="landrysetting:list:formActions" 
+                 action="init" caption="Sync Data"  
+                 schemaName="rysetting_land" />
+            
+        <invoker type="bldgrysetting:list:formActions" 
+                 action="init" caption="Sync Data" 
+                 schemaName="rysetting_bldg" />
+            
+        <invoker type="machrysetting:list:formActions" 
+                 action="init" caption="Sync Data"  
+                 schemaName="rysetting_mach" />
+
+        <invoker type="planttreerysetting:list:formActions" 
+                 action="init" caption="Sync Data"  
+                 schemaName="rysetting_planttree" />
+            
+        <invoker type="miscrysetting:list:formActions" 
+                 action="init" caption="Sync Data"  
+                 schemaName="rysetting_misc" />
+        
+        <invoker type="formActions" action="doClose" caption="Close" immediate="true" />
+        <invoker type="formActions" action="syncData" caption="Sync Data" visibleWhen="#{processing==false}"/>
+        
+            
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.municipality.models.RevisionSettingSyncModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.municipality.views.SyncStatusPage"/>
+    </pages>
+</workunit>

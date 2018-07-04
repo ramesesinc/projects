@@ -50,8 +50,8 @@ public class SyncStatusPage extends javax.swing.JPanel {
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 
         xIntegerField1.setCaption("Revision Year");
+        xIntegerField1.setName("entity.ry"); // NOI18N
         xIntegerField1.setCaptionWidth(100);
-        xIntegerField1.setName("ry"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(80, 20));
         xFormPanel1.add(xIntegerField1);
 

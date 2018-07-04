@@ -5,7 +5,14 @@
 - BPLS 
 		
 - ASSESSOR	
-	- 
+	- Modified master synchronization with prov and muni (rabbit)
 
 - LANDTAX
 	- Sync province and municipal ledgers
+
+
+=======================================================================
+NOTES:	
+=======================================================================
+
+1. Deploy "coordinator" server

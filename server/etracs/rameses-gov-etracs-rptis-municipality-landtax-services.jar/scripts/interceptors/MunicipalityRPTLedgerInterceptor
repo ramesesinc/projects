@@ -42,6 +42,7 @@ class MunicipalityRPTLedgerInterceptor
 
         def mapping = [:]
         mapping.objid = ledger.objid 
+        mapping.doctype = 'rptledger'
         mapping.orgcode = params.remote.orgcode 
         mapping.remote = [objid: params.ledger.objid, orgcode: params.orgcode] 
         mapping.createdby = [name:'SYSTEM', title:'SYSTEM']

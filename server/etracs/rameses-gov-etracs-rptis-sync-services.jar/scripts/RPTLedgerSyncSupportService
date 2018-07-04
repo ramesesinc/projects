@@ -33,11 +33,12 @@ class RPTLedgerSyncSupportService
 
     @ProxyMethod
     public def getLedgerMapping(ledger){
-        def mapping = em_mapping.find([objid:ledger.objid]).first()
+        def mapping = em_mapping.find([objid:ledger.objid, doctype:'rptledger']).first()
         if (!mapping){
             def remoteledger = getRemoteLedger(ledger)
             mapping = [:]
             mapping.objid = ledger.objid 
+            mapping.doctype = 'rptledger'
             mapping.orgcode = env.ORGCODE 
             mapping.remote = remoteledger
             mapping.createdby = [name:env.NAME, title:env.JOBTITLE]

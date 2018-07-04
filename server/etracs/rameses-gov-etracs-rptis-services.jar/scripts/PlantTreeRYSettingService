@@ -254,6 +254,49 @@ public class PlantTreeRYSettingService
     }
 
 
+
+    /*----------------------------------------------------------
+    * SYNC support
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void sync( settings ) {
+        settings.each{ setting ->
+            em_planttree.save(setting)
+
+            setting.lgus = em_rysettinglgu.find([rysettingid:setting.objid, lguid: env.ORGID]).list()
+            if (!setting.lgus){
+                setting.lgus << [
+                    objid: 'RSL' + new java.rmi.server.UID(),
+                    rysettingid: setting.objid,
+                    lguid: env.ORGID,
+                    barangayid: null,
+                    lguname: env.ORGNAME,
+                    settingtype: 'planttree',
+                ]
+            }
+
+            setting.lgus.each{
+                em_rysettinglgu.save(it)
+            }
+
+            setting.assesslevels.each{
+                saveAssessLevel(it)
+            }
+
+             setting.unitvalues.each{
+                it.planttree.state ='APPROVED'
+                planttree.save(it.planttree)
+                saveUnitValue(it)
+            }
+        }
+    }
+
+
+   /*---------------------------------------------------------
+    *
+    * @DEPRECATED 
+    *
+    ---------------------------------------------------------*/
     @ProxyMethod
     public void syncData( msg ) {
         if (msg.msgtype == 'planttreerysetting'){

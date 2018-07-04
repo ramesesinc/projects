@@ -64,7 +64,7 @@ class RPTLedgerSyncInterceptor
 
         def payments = em_rptpayment.find([receiptid: syncdata.refid]).list()
         payments.each{pmt -> 
-            def mapping = em_remote.find([objid: pmt.refid]).first()
+            def mapping = em_remote.find([objid: pmt.refid, doctype:'rptledger']).first()
             if (mapping){
                 pmt.rptledger = em_rptledger.find([objid:pmt.refid]).first()
                 pmt.ledgeritems = em_rptledger_item.find([parentid: pmt.refid]).list()
@@ -116,7 +116,7 @@ class RPTLedgerSyncInterceptor
 
         def voidedpayments = em_rptpayment.find([receiptid: syncdata.refid, voided: 1]).list()
         voidedpayments.each{pmt -> 
-            def mapping = em_remote.find([objid: pmt.refid]).first()
+            def mapping = em_remote.find([objid: pmt.refid, doctype:'rptledger']).first()
             if (mapping){
                 pmt.rptledger = em_rptledger.find([objid:pmt.refid]).first()
                 pmt.ledgeritems = em_rptledger_item.find([parentid: pmt.refid]).list()

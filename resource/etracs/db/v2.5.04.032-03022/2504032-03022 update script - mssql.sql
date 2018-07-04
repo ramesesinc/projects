@@ -11,6 +11,7 @@ go
 
 CREATE TABLE remote_mapping (
   objid varchar(50) NOT NULL,
+  doctype varchar(50) NOT NULL,
   remote_objid varchar(50) NULL,
   createdby_name varchar(255) NOT NULL,
   createdby_title varchar(100) DEFAULT NULL,
@@ -21,6 +22,15 @@ CREATE TABLE remote_mapping (
 )
 go 
 
+
+create index ix_doctype on remote_mapping(doctype)
+go 
+create index ix_orgcode on remote_mapping(orgcode)
+go 
+create index ix_remote_orgcode on remote_mapping(remote_orgcode)
+go 
+create index ix_remote_objid on remote_mapping(remote_objid)
+go 
 
 
 create table sync_data (

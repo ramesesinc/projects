@@ -2,17 +2,17 @@
 INSERT INTO waterworks_consumption ( 
 	objid, state, acctid, batchid, 
 	prevreadingdate, prevreading, readingdate, reading, readingmethod, 
-	reader_objid, reader_name, volume, amount, month, year,
-	discrate, surcharge, interest, otherfees, credits, 
-	arrears, unpaidmonths, billed 
+	reader_objid, reader_name, volume, amount, amtpaid, month, year, 
+	duedate, discdate, discrate, surcharge, interest, otherfees, credits, 
+	arrears, unpaidmonths, billed, meterid 
 ) 
 SELECT 
 	CONCAT(a.objid,'-',br.year,br.month) AS objid, 'DRAFT' as state, a.objid as acctid, br.objid as batchid, 
 	wm.lastreadingdate as prevreadingdate, (CASE WHEN wm.lastreading >= 0 THEN wm.lastreading ELSE 0 END) as prevreading, 
 	br.readingdate, 0 as reading, 'PROCESSING' as readingmethod, br.reader_objid, br.reader_name, 
-	0 as volume, 0.0 as amount, br.month, br.year, 
+	0 as volume, 0.0 as amount, 0.0 as amtpaid, br.month, br.year, br.duedate, br.discdate, 
 	0.0 as discrate, 0.0 as surcharge, 0.0 as interest, 0.0 as otherfees, 0.0 as credits, 
-	0.0 as arrears, 0 as unpaidmonths, 0 as billed  
+	0.0 as arrears, 0 as unpaidmonths, 0 as billed, a.meterid   
 FROM waterworks_batch_billing br 
 	INNER JOIN vw_waterworks_stubout_node wsn ON wsn.zone_objid = br.zoneid 
 	INNER JOIN waterworks_account a ON (a.objid = wsn.acctid AND a.stuboutnodeid = wsn.objid) 

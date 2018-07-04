@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+
+import com.rameses.util.*;
+import java.text.*;
+import java.util.regex.*;
+import treasury.facts.*;
+import vehicle.facts.*;
+
+
+class VehicleApplicationSearchService {
+	
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
+
+
+	//this should return the objid, appno, appdate, particulars, amount, owner 
+	@ProxyMethod
+	public def getList( def o ) {
+		def params = [:];
+		def conds = [];
+		params.vehicletypeid = o.vehicletype.objid;
+        conds << "vehicletypeid =:vehicletypeid";
+
+        if( o.lookuptype == "owner" ) {
+        	conds << "vehicleunit.owner.objid =:ownerid";
+            params.ownerid = o.owner.objid;
+        } 
+        else  {
+        	conds << " vehicleunit.controlno = :controlno ";
+        	params.controlno = o.controlno;
+        }
+
+        if( o.apptype == "RENEW") {
+            conds << "vehicleunit.expirydate <= NOW() AND vehicleunit.activeyear = :ayear";
+            params.ayear = o.appyear - 1;
+        }
+        else {
+			conds << "vehicleunit.activeyear = :ayear";
+            params.ayear = o.appyear;
+        }
+
+        def list = franchiseEm.where( conds.join( " AND " ), params ).list().collect{   
+        	def p = it.vehicleunit.primary;
+        	p.primaryappid = p.objid;
+        	p.owner = it.vehicleunit.owner;
+        	p.appyear = it.vehicleunit.activeyear;
+        	if( o.controlno ) p.controlno = o.controlno;
+        	return p;
+        };
+        return list.unique();
+	}
+
+}

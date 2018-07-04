@@ -1,0 +1,13 @@
+"entity.vehicleunit.*" [ entity.vehicleunit?.objid == null   ] {
+    visible:false;
+}
+
+"entity.vehicleunit.driver.name" [ entity.vehicletype.guihandler == "motorized" ] {
+    visible:false;
+}
+
+"entity.vehicleunit.(crname|engineno|chassisno|make|model|sidecarno|sidecarcolor)" [ entity.vehicletype.guihandler == "manual" ] {
+    visible:false;
+}
+
+

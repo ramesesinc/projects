@@ -121,6 +121,7 @@ public class VehicleApplicationUnitPage extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 65));
 
         xTextArea1.setCaption("Remarks");
+        xTextArea1.setName("entity.remarks"); // NOI18N
         jScrollPane1.setViewportView(xTextArea1);
 
         xFormPanel2.add(jScrollPane1);

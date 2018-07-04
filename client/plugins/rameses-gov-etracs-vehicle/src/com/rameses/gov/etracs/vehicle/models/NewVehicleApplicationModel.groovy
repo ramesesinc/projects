@@ -10,6 +10,9 @@ import com.rameses.util.*;
 
 public class NewVehicleApplicationModel extends CrudPageFlowModel {
     
+    @Service("VehicleApplicationSearchService")
+    def searchSvc;
+
     @Service("DateService")
     def dateSvc;
 
@@ -49,7 +52,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         }    
         entity.appdate = dateSvc.getBasicServerDate();
         entity.state = "ACTIVE";
-        def path = "initial";
+        def path = "search";
         if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW")  ) {
             path = "entry";
         }
@@ -58,36 +61,18 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
     
     @FormId
     public String getFormId() {
-        return vehicletype.objid + ":" + entity.txnmode + ":new"; 
+        return vehicletype.objid + ":" +entity.apptype +":" + entity.txnmode + ":new"; 
     }
 
     void loadList() {
-        def params = [:];
-        def cond = [];
-        params.vehicletypeid = vehicletype.objid;
-        cond << "vehicletypeid =:vehicletypeid";
-
-        if( lookupType == "owner" ) {
-            cond << "owner.objid =:ownerid";
-            params.ownerid = owner.objid;
-        }
-        else if( lookupType == "controlno" ) {
-            cond << "controlno =:controlno";
-            params.controlno = controlno;
-        }
-
-        if( entity.apptype == "RENEW" ) {
-            cond << "expirydate <= NOW() AND appyear = :ayear";
-            params.ayear = entity.appyear - 1;
-        }
-        else {
-            //cond << "appyear = :ayear";
-            //params.ayear = entity.appyear;
-        }
-
-        def m = [_schemaname: 'vehicle_application' ];
-        m.where = [ cond.join( " AND " ), params ];
-        resultList = queryService.getList( m );
+        def m = [:];
+        m.vehicletype = vehicletype;
+        m.apptype = entity.apptype;
+        m.lookuptype = lookupType;
+        m.owner = owner;
+        m.appyear = entity.appyear;
+        m.controlno = controlno;
+        resultList = searchSvc.getList( m );
         if(!resultList)
             throw new Exception("No records found");
         listModel.reload();
@@ -116,6 +101,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         entity.owner = selectedItem.owner;
         entity.primaryappid = selectedItem.primaryappid;
         entity.particulars = selectedItem.particulars;
+        if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
         saveCreate();
     }
 
@@ -127,6 +113,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         entity.primaryappid = selectedItem.primaryappid;
         entity.particulars = selectedItem.particulars;
         entity.appyear = selectedItem.appyear;
+        if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
     }
 
     void saveChange() {

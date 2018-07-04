@@ -25,18 +25,17 @@ public class VehicleFranchiseModel extends CrudFormModel {
         return entity.objid;
     }
     
+    def getQuery() {
+        return [controlid: entity.objid ];
+    }
+
+    
     def appListModel = [
         fetchList: { o->
             def m = [_schemaname:'vehicle_application_unit'];
             m.findBy = [ controlid: entity.objid ];
-            m.orderBy = "app.appdate DESC";
+            m.orderBy = "app.dtcreated DESC";
             return queryService.getList(m);
-        }
-    ] as BasicListModel;
-    
-    def violationListModel = [
-        fetchList: { o->
-            return entity.violations;
         }
     ] as BasicListModel;
     

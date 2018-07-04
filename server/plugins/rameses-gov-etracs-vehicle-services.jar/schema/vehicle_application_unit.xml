@@ -4,7 +4,7 @@
 
 		<field name="appid" required="true"/>
 		<complex name="app" ref="vehicle_application" jointype="many-to-one" 
-			includefields="objid,appno,apptype,appyear,appdate,owner.*,txnmode" required="true">
+			includefields="objid,appno,apptype,appyear,appdate,dtcreated,owner.*,txnmode" required="true">
 			<key field="appid" target="objid" />
 		</complex> 
 

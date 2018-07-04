@@ -30,12 +30,21 @@ class VehicleApplicationUnitInterceptor {
 		franchiseEm.find( [objid: entity.controlid ]).update( [vehicleunitid: result.objid ] );
 	}
 
+	//set existing franchise vehicleunit first to null
 	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'vehicle_application_unit' }")
 	public void beforeRemoveApplicationUnit(def evt) {
 		def entity = evt.args[0];
 		def controlid = entity.controlid;
+		franchiseEm.find( [objid: controlid ]).update( [vehicleunitid: null] );
+	}
+
+	//locate the next franchise vehicleunit that is undeleted
+	@After(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'vehicle_application_unit' }")
+	public void afterRemoveApplicationUnit(def evt) {
+		def entity = evt.args[0];
+		def controlid = entity.controlid;
 		def val = null;
-		def m = unitEm.find( [controlid: controlid] ).where(" NOT(vehicleunitid = :vid) ", [vid: entity.objid ]).orderBy("app.appdate DESC").first();
+		def m = unitEm.find( [controlid: controlid] ).orderBy("app.appyear DESC, app.dtcreated DESC").first();
 		if( m && !m.app.apptype.matches("DROP") ) {
 			val = m.objid;
 		} 

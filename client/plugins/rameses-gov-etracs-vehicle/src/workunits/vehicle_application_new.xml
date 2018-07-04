@@ -3,7 +3,6 @@
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="New Application" apptype="NEW" index="10" />
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Renewal"  apptype="RENEW" index="20"/> 
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Capture" txnmode="CAPTURE" index="30"/>
-        <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Change Owner" apptype="CHANGE_OWNER" index="40"/>
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Change Unit"  apptype="CHANGE_UNIT" index="50"/>
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Change Owner/Unit" apptype="CHANGE_OWNER_UNIT" index="60"/>  
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Drop Unit"  apptype="DROP" index="70"/>       
@@ -12,23 +11,23 @@
     <pageflow>
         <start>
             <transition name="entry" to="entry" />
-            <transition name="initial" to="initial" />
+            <transition name="search" to="search" />
         </start>
         
-        <page name="initial" title="#{vehicletype.title} Application Initial (#{entity.apptype} #{entity.txnmode})">
+        <page name="search" title="#{vehicletype.title} Application Initial (#{entity.apptype} #{entity.txnmode})">
             <transition to="select" caption="Next" action="loadList"/>
         </page>
         
         <page name="select" title="#{vehicletype.title} Application Selection (#{entity.apptype} #{entity.txnmode})">
-            <transition to="initial" caption="Back" />
+            <transition to="search" caption="Back" />
             
             <transition to="end" caption="Next" 
                         action="saveCopy" 
-                        visibleWhen="#{entity.apptype.matches('RENEW')}"/>
+                        visibleWhen="#{entity.apptype.matches('RENEW|CHANGE_UNIT|DROP')}"/>
             
             <transition to="changeowner" caption="Next" 
                         action="checkBeforeChange"
-                        visibleWhen="#{entity.apptype.matches('CHANGE_OWNER.*')}"/>
+                        visibleWhen="#{entity.apptype.matches('CHANGE_OWNER_UNIT')}"/>
         </page>
         
         <page name="entry" title="#{vehicletype.title} Application Entry #{entity.apptype} #{entity.txnmode}">
@@ -40,7 +39,7 @@
         </page>
         
         <page name="changeowner" title="#{vehicletype.title} Change Owner #{entity.apptype} #{entity.txnmode}">
-            <transition to="initial" caption="Back" />
+            <transition to="search" caption="Back" />
             <transition to="end" 
                         action="saveChange" 
                         caption="Save" 
@@ -50,7 +49,7 @@
     </pageflow>
     
     <pages>
-        <page name="initial" template="com.rameses.gov.etracs.vehicle.views.ApplicationInitialPage" />
+        <page name="search" template="com.rameses.gov.etracs.vehicle.views.ApplicationInitialPage" />
         <page name="select" template="com.rameses.gov.etracs.vehicle.views.ApplicationSelectionPage" />
         <page name="changeowner" template="com.rameses.gov.etracs.vehicle.views.ApplicationEntryPage" />
         <page name="entry" template="com.rameses.gov.etracs.vehicle.views.ApplicationEntryPage" />

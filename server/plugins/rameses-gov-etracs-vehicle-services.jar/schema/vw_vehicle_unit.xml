@@ -3,24 +3,35 @@ DROP VIEW IF EXISTS vw_vehicle_unit;
 CREATE VIEW vw_vehicle_unit AS 
 SELECT 
 vu.*,
-va.primaryappid,
 vf.controlno,
 va.appno,
 va.appdate,
-va.appyear AS activeyear,
-va.owner_objid,
-va.owner_name,
-va.owner_address_objid,
-va.owner_address_text
+va.state AS appstate,
+
+vp.objid AS primary_objid,
+vp.appno AS primary_appno,
+vp.appdate AS primary_appdate,
+vp.state AS primary_appstate,
+vp.particulars AS primary_particulars,
+
+vp.expirydate AS expirydate,
+
+vp.appyear AS activeyear,
+vp.owner_objid,
+vp.owner_name,
+vp.owner_address_objid,
+vp.owner_address_text
+
 FROM vehicle_application_unit vu
 INNER JOIN vehicle_application va ON vu.appid = va.objid
+INNER JOIN vehicle_application vp ON va.primaryappid = vp.objid 
 INNER JOIN vehicle_franchise vf ON vu.controlid = vf.objid 
 -->
 <schema adapter="vehicledb">
 	<element tablename="vw_vehicle_unit">
 		<field name="objid" primary="true" />
 		<field name="appid" />
-		<field name="primaryappid" />
+		
 
 		<field name="controlid" />
 		<field name="controlno" />
@@ -39,6 +50,16 @@ INNER JOIN vehicle_franchise vf ON vu.controlid = vf.objid
 		<field name="remarks" caption="Remarks"/>
 		<field name="appno" caption="Latest App No"/>
 		<field name="appdate" caption="App Date"/>
+		<field name="appstate" caption="App State"/>
+
+		<field name="expirydate" caption="Expiry Date"/>
+
+		<field name="primary_objid" />
+		<field name="primary_appno" caption="Primary App No"/>
+		<field name="primary_appdate" caption="Primary App Date"/>
+		<field name="primary_appstate" caption="Primary App State"/>
+		<field name="primary_particulars" caption="Primary App State"/>
+
 		<field name="activeyear" caption="Active Year"/>
 		<field name="owner_objid" />
 		<field name="owner_name" caption="Owner Name"/>

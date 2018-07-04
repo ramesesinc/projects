@@ -7,7 +7,7 @@
                  role="MASTER" 
                  index="-1"
                  orderBy="controlno"
-                 cols="controlno,activeyear,vehicleunit.owner.name,vehicleunit.owner.address.text,vehicleunit.plateno"/> 
+                 cols="controlno,vehicleunit.activeyear,vehicleunit.owner.name,vehicleunit.owner.address.text,vehicleunit.plateno"/> 
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleFranchiseListModel" />
     <pages>

@@ -35,8 +35,6 @@ class VehicleApplicationPersistenceInterceptor {
 	@Service("ControlNoGeneratorService")
 	def controlNoGenerator;
 
-
-
 	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'vehicle_application' }")
 	public void beforeCreateApplicationNewOrRenew(def evt) {
 		def entity = evt.args[0];
@@ -74,20 +72,35 @@ class VehicleApplicationPersistenceInterceptor {
 		def result = evt.result;
 
 		entity.prevappid = entity.primaryappid;
-		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW|CHANGE_OWNER.*") ) {
+		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW|RENEW|CHANGE_OWNER_UNIT") ) {
 			entity.primaryappid = entity.objid;
 		}
 		if( !entity.primaryappid ) throw new Exception("Primary appid is required");
 		appEm.find( [objid: result.objid ]).update( [primaryappid: entity.primaryappid ]);
 	}	
 
-	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|CHANGE_OWNER.*')  }")
+	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|CHANGE_OWNER_UNIT|CHANGE_UNIT|DROP')  }")
 	public void afterCreateApplicationRenew(def evt) {
 		def entity = evt.args[0];
 		def result = evt.result;
-		if(!entity.prevappid ) throw new Exception("prevappid is required in ONLINE-RENEW or CHANGE_OWNER ");
+
+		if(!entity.prevappid ) throw new Exception("prevappid is required in ONLINE-RENEW, CHANGE_OWNER, CHANGE_UNIT AND DROP ");
 		//create a copy for each unit and replace the franchise control with the new one
-		def units = franchiseEm.where( "vehicleunit.primaryappid =:appid",  [appid: entity.prevappid ] ).list();
+		def controlno = entity.controlno;
+		if( entity.apptype == "RENEW") controlno = null;
+
+		def conds = [];
+		def parms = [:];
+		conds << "vehicleunit.primary.objid =:appid";
+		parms.appid = entity.prevappid;
+
+		if(controlno) {
+			conds << " controlno = :controlno";
+			parms.controlno = controlno;
+		}
+
+		def units = franchiseEm.where( conds.join( " AND ") , parms ).list();
+		if(!units) throw new Exception("There must be at least one vehicle included");
 		units.each { z->
 			def u =[:]	
 			u.putAll( z.vehicleunit );
@@ -97,7 +110,8 @@ class VehicleApplicationPersistenceInterceptor {
 			u.controlid = z.objid;
 			u.objid = null;
 			u = appUnitEm.create(u);
-			franchiseEm.find( [objid : z.objid ]).update( [vehicleunitid: u.objid] );
+			def unitid = (entity.apptype == "DROP") ? null : u.objid
+			franchiseEm.find( [objid : z.objid ]).update( [vehicleunitid: unitid ] );
 		}
 	}	
 

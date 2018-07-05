@@ -25,17 +25,21 @@ public class VehicleTypeMenu {
         def m = [_schemaname:'vehicletype'];
         m.where = ["1=1" ];
         vehicleTypes = queryService.getList(m);
+        vehicleTypes.each{
+            if ( !it.icon ) it.icon = 'home/icons/folder-yellow.png';
+        }
     }
 
     def listModel = [
         fetchList: { o->
-            return vehicleTypes.collect{ [ name: it.objid, caption: it.title, handler: it.guihandler, 
-            icon: 'home/icons/' + it.objid + '.png', object: it ]  }
+            return vehicleTypes.collect{[ 
+                name: it.objid, caption: it.title, 
+                handler: it.guihandler, icon: it.icon, 
+                object: it 
+            ]} 
         },
-        onOpenItem : { o ->
-            return Inv.lookupOpener( "vehicle_menu_categiory", [vehicletype:o.object] ); 
-        }
+        onOpenItem : { o -> 
+            return Inv.lookupOpener( "vehicle_menu_category", [ vehicletype: o.object ]); 
+        } 
     ] as TileViewModel;
-
-    
 }

@@ -12,7 +12,9 @@ import com.rameses.rules.common.RuleExecutionContext;
 public class FactBuilderService {
 	
 	@ProxyMethod
-	public FactBuilder getFacts(String rulename, def data) {
+	public FactBuilder getFacts( def m ) {
+		if ( !m.rulename ) throw new Exception("'rulename' parameter is required in FactBuilderService.getFacts"); 
+		if ( !m.params ) throw new Exception("'params' parameter is required in FactBuilderService.getFacts"); 
 		return new FactBuilder();
 	}
 

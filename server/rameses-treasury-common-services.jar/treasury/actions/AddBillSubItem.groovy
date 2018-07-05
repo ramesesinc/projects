@@ -25,11 +25,16 @@ class AddBillSubItem extends AbstractAddBillItem {
 		def acct = params.account;
 		def amt = params.amount.doubleValue;
 
+
 		def txntype = params.txntype;
 		if(txntype!=null &&  !(txntype instanceof String )) {
 			txntype = params.txntype?.key;
 			if( txntype == "null") txntype = null;
 		}
+
+		if( billitem == null ) throw new Exception("Please add billitem in AddBillSubItem of " + drools.rule.name );
+		if( acct == null && txntype == null ) throw new Exception("Please specify account or txntype in AddBillSubItem of " + drools.rule.name );
+		if( amt == null ) throw new Exception("Please specify amount in AddBillSubItem of " + drools.rule.name );
 
 		def subItem = createSubItemFact(  billitem, amt, txntype );
 		if(acct!=null) {

@@ -15,6 +15,7 @@ class SurchargeItem extends BillSubItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.txntype = getTxntype();
+		m.sortorder = sortorder;
 		return m;
 	}
 

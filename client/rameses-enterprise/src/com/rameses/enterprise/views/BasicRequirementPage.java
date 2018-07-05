@@ -36,9 +36,6 @@ public class BasicRequirementPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xDateField2 = new com.rameses.rcp.control.XDateField();
 
-        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setCaptionWidth(100);
-
         xTextField1.setCaption("Ref No");
         xTextField1.setName("entry.refno"); // NOI18N
         xFormPanel1.add(xTextField1);

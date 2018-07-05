@@ -4,7 +4,7 @@ import java.util.*;
 
 class InterestItem extends BillSubItem {
 
-	int sortorder = 400;
+	int sortorder = 500;
 
 	public InterestItem(def o ) {
 		super(o);
@@ -15,6 +15,7 @@ class InterestItem extends BillSubItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.txntype = getTxntype();
+		m.sortorder = sortorder;
 		return m;
 	}
 

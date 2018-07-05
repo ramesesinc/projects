@@ -1,0 +1,14 @@
+<workunit schemaName="vehicle_application">
+    <invokers>
+        <invoker type="vehicle_application:open" 
+                 action="open" caption="Vehicle Application"/>
+        
+        <invoker type="formActions" 
+                 action="assess" caption="Assess" visibleWhen="#{entity.task.state == 'assessment' }"/>
+
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />
+    </pages>
+</workunit>

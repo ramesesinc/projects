@@ -1,5 +1,6 @@
-<workunit schemaName="vehicletype" allowCreate="false">
+<workunit schemaName="vehicletype">
     <invokers>
+        <invoker type="vehicletype:create" caption="New Vehicle Type"  action="create" target="popup" />
         <invoker type="vehicletype:open" caption="Vehicle Type"  action="open" target="popup" />
     </invokers>
     <code class ="com.rameses.gov.etracs.vehicle.models.VehicleTypeModel" />

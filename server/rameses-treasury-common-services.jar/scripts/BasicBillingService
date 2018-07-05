@@ -51,14 +51,10 @@ class BasicBillingService {
 			} 
 		}
 
-		println "************** PRINTING REQUEST ********* "
-		pp.each { k,v->
-			println k;
-		}
-		println "************** END PRINTING REQUEST ********* "
-
+		/*
 		def startgroup = "billing";
 		if( pp.startgroup ) startgroup = pp.startgroup; 
+		*/
 
 		def rp = [:]
 		rp.putAll( pp );
@@ -66,9 +62,9 @@ class BasicBillingService {
 		rp.putAll( bill );
 		rp.billitems = billitems;
 
-		def req = [rulename: pp.rulename, startgroup: startgroup, params: rp ];
+		def req = [rulename: pp.rulename, params: rp ];
 		if(opt) req.putAll( opt );
- 			
+ 		
 		def res = ruleSvc.execute( req ); 
 		
 		bill.putAll( res ); 

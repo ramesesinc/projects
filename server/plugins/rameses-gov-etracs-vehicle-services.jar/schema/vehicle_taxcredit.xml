@@ -1,0 +1,15 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_taxcredit">
+		<field name="objid" primary="true" prefix="VTAXCREDIT"/>
+		<complex name="parent" ref="vehicle_franchise" jointype="many-to-one" 
+			includefields="objid,controlno,vehicletype" required="false">
+			<key field="parentid" target="objid"/>
+		</complex>	
+		<field name="item_objid" required="true" />
+		<field name="item_code" required="true" />
+		<field name="item_title" required="true" />
+		<field name="amount" required="true" />
+		<field name="amtpaid" required="true" />
+		<field name="balance" expr="amount - amtpaid" />
+	</element>
+</schema>

@@ -1,0 +1,15 @@
+"lookupType" [ entity.apptype != "RENEW" ] {
+    visible:false;
+}
+
+"addUnit|editUnit|removeUnit" [ entity.txnmode != 'CAPTURE' && !(entity.apptype.matches('NEW|CHANGE_OWNER_UNIT')) ] {
+    visible: false;
+}
+
+"addUnit" [ entity.apptype == 'CHANGE_OWNER_UNIT' ] {
+    visible: false;
+}
+
+"editUnit" [ entity.apptype == 'CHANGE_UNIT' ] {
+    visible: true;
+}

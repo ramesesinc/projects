@@ -1,0 +1,15 @@
+<workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
+          processName="vehicle_application"
+          schemaName="vehicle_application" 
+          allowDelete="false" allowNotify="true">
+    <invokers>
+        <invoker folderid="menucategory/vehicle/application" 
+                 action="init" caption="View Application List"
+                 formTitle="#{vehicletype.title} App List"  
+                 formId="#{vehicletype.objid}:app:list"
+                 role="MASTER" 
+                 index="-1"
+                 cols="appno,appdate,appyear,apptype,txnmode,owner.name"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationListModel" />
+</workunit>

@@ -3,7 +3,7 @@
         <invoker type="billing_rule" caption="Ask Info" action="init" target="popup"/>
         
         <!-- Form Actions -->
-        <invoker type="formActions" caption="Cancel" action="doCancel"/>
+        <invoker type="formActions" caption="Cancel" action="doCancel" immediate="true"/>
         <invoker type="formActions" caption="Back" action="doBack" visibleWhen="#{hasBack == true}"/>
         <invoker type="formActions" caption="Next" action="doNext" />
     </invokers>

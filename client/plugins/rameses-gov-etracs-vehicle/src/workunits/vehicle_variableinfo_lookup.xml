@@ -1,0 +1,20 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="vehicle_variable" allowCreate="false" allowOpen="false" allowDelete="false"
+          cols="name,datatype,caption">
+    <invokers>
+        <invoker type="vehicle_variableinfo:lookup" caption="Variable Info Lookup" 
+                 action="init"/>
+        <invoker type="vehicle_variableinfo_decimal:lookup" caption="Decimal Variable Info Lookup" 
+                 role="MASTER" action="init"
+                 customFilter=" datatype = 'decimal' "/>
+        <invoker type="vehicle_variableinfo_integer:lookup" caption="Integer Variable Info Lookup" 
+                 role="MASTER" action="init"
+                 customFilter=" datatype = 'integer' "/>
+        <invoker type="vehicle_variableinfo_boolean:lookup" caption="Boolean Variable Info Lookup" 
+                 role="MASTER" action="init"
+                 customFilter=" datatype = 'boolean' "/>
+        <invoker type="vehicle_variableinfo_string:lookup" caption="String Variable Info Lookup" 
+                 role="MASTER" action="init"
+                 customFilter=" datatype = 'string' "/>
+    </invokers>
+</workunit>

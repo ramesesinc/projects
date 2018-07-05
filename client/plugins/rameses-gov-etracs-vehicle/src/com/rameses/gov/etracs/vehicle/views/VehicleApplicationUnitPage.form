@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xFormPanel2" pref="517" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+              <Component id="xFormPanel2" pref="393" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel2">
+      <Properties>
+        <Property name="captionWidth" type="int" value="120"/>
+      </Properties>
+      <SubComponents>
+        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Franchise No"/>
+            <Property name="expression" type="java.lang.String" value="#{ entity.franchise.controlno }"/>
+            <Property name="handler" type="java.lang.String" value="lookupFranchise"/>
+            <Property name="name" type="java.lang.String" value="entity.franchise" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ mode == &apos;create&apos; }"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Franchise No"/>
+            <Property name="expression" type="java.lang.String" value="#{ entity.franchise.controlno }"/>
+            <Property name="name" type="java.lang.String" value="" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ mode != &apos;create&apos; }"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField8">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Plate No"/>
+            <Property name="name" type="java.lang.String" value="entity.plateno" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField15">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="CR Name"/>
+            <Property name="name" type="java.lang.String" value="entity.crname" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 20]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField12">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Engine No"/>
+            <Property name="name" type="java.lang.String" value="entity.engineno" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField14">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Chassis No"/>
+            <Property name="name" type="java.lang.String" value="entity.chassisno" noResource="true"/>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Make"/>
+            <Property name="name" type="java.lang.String" value="entity.make" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Model"/>
+            <Property name="name" type="java.lang.String" value="entity.model" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField7">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Color"/>
+            <Property name="name" type="java.lang.String" value="entity.color" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField13">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Body No"/>
+            <Property name="name" type="java.lang.String" value="entity.bodyno" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Sidecar No"/>
+            <Property name="name" type="java.lang.String" value="entity.sidecarno" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField11">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Sidecar Color"/>
+            <Property name="name" type="java.lang.String" value="entity.sidecarcolor" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.entity.components.EntityLookup" name="entityLookup1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Driver"/>
+            <Property name="entityType" type="java.lang.String" value="entityindividual"/>
+            <Property name="name" type="java.lang.String" value="entity.driver" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 21]"/>
+            </Property>
+            <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="entity.remarks" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 65]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XTextArea" name="xTextArea1">
+              <Properties>
+                <Property name="caption" type="java.lang.String" value="Remarks"/>
+                <Property name="name" type="java.lang.String" value="entity.remarks" noResource="true"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

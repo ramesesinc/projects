@@ -1,0 +1,134 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+import vehicle.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
+class VehicleBillingInterceptor {
+	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_unit")
+	def appUnitEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_payment")
+	def vehiclePmt;
+
+    @After(pattern="BasicBillingHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void getHeaderInfo(def evt) {
+		def obj = evt.args[0];
+		def r = evt.result;
+		def p = obj.params;
+		def app = appEm.find( [objid: p.objid ] ).first();
+		//load all vehicle units applicable to this app
+		app.vehicleunits = appUnitEm.find( [appid: p.objid ]).orderBy("franchise.controlno").list();
+
+		r.application = app;
+	}
+ 
+    @After(pattern="BasicBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void getAppBillItems(def evt) {
+		def p = evt.args[0].params;
+		def list = evt.result;
+
+		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount:{amount-amtpaid},parentid";
+		def res = appFeeEm.select(select).where( "parentid = :parentid AND amount - amtpaid > 0", [parentid: p.objid] ).list();
+		list.addAll( res );
+	}
+
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'vehiclebilling'  }")
+	public void buildFacts(def evt) {
+		def factBuilder = evt.result; 
+		def params = evt.args[0].params;
+		def facts = factBuilder.facts;
+		facts << new VehicleApplication( params.application );
+		
+		def vp = new VariableInfoProvider(
+			schemaName:"vehicle_variable"
+		);
+		factBuilder.variableInfoProvider = vp;
+	}
+
+	//fix the output result of the Basic Billing Service
+	@After(pattern="BasicBillingService.getBillingInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void afterBilling(def evt) {
+		def r = evt.result;
+		r.putAll( r.remove("application") );
+	}
+
+	/*******************************************
+    * CASH RECEIPT SPECFIC HANDLERS
+	********************************************/
+	//applicable for cash receipt billing
+	@After( pattern="BasicBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+	public void formatCashReceipt(def evt ) {
+		def info = evt.args[0].params;
+		def res = evt.result;
+		
+		res.payer = info.owner;
+		res.paidby = info.owner.name + " (" + info.controlno + ")";
+		res.paidbyaddress = info.owner.address.text;
+		res.txnid = info.txnid;
+		res.taskid = info.taskid;
+		res.appid = info.application?.objid;
+		res.franchiseid = info.controlid;
+	} 
+
+
+	/***********************************************************
+    * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
+	************************************************************/
+	@After( pattern="BasicBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
+	public void getPostPaymentInfo(def evt ) {
+		def e = evt.args[0];
+		def result = evt.result;
+		result._schemaname = 'vehicle_payment';
+		result.appid =  e.appid
+		result.franchiseid = e.franchiseid 
+		result.items = e.billitems;
+	} 
+
+	@After( pattern="BasicBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	public void getWorkflowTask(def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		if( p.taskid != null ) {
+			result.processname = 'vehicle_application';
+			result.refid = p.txnid; 
+			result.taskid = p.taskid;
+			result.taskstate = 'payment';
+		}
+	} 
+
+	@After( pattern="BasicBillingHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	public void getVoidPaymentInfo(def evt ) {
+		def result = evt.result;
+		result._schemaname = 'vehicle_payment';
+	} 
+
+	@After( pattern="BasicBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	public void getVoidWorkflowTask(def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		if( p.application?.taskid ) {
+	 		result.taskid = p.application?.taskid;
+			result.processname = 'vehicle_application';
+			result.refid = p.appid;
+			result.action = 'return';
+		}
+	} 
+
+}

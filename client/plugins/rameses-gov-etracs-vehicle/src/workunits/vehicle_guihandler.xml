@@ -1,0 +1,6 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle:guihandler" name="motorized"/>
+        <invoker type="vehicle:guihandler" name="manual"/>
+    </invokers>
+</workunit>

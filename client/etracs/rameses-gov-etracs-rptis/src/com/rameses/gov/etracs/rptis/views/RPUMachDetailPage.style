@@ -28,7 +28,7 @@
 }
 
 
-".*"[entity.txntype?.objid.matches('TR')] {
+".*"[(entity.datacapture == false || entity.datacapture == 0) && entity.txntype?.objid.matches('TR')] {
     enabled:false;
 }
 

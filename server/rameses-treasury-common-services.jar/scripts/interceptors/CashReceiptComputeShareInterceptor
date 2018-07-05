@@ -33,10 +33,10 @@ public class CashReceiptComputeShareInterceptor {
 	}
 
 
-	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0] == 'revenuesharing'  }")
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'revenuesharing'  }")
 	public void buildFacts(def evt) {
 		def factBuilder = evt.result; 
-		def rct = evt.args[1];
+		def rct = evt.args[0].params;
 		def facts = factBuilder.facts;
 
 		facts << new CashReceipt( receiptdate: rct.receiptdate ); 

@@ -49,10 +49,10 @@ class VehicleBillingInterceptor {
 		list.addAll( res );
 	}
 
-	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0] == 'vehiclebilling'  }")
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'vehiclebilling'  }")
 	public void buildFacts(def evt) {
 		def factBuilder = evt.result; 
-		def params = evt.args[1];
+		def params = evt.args[0].params;
 		def facts = factBuilder.facts;
 		facts << new VehicleApplication( params.application );
 		

@@ -17,11 +17,11 @@ class VehicleAssessmentInterceptor {
 	@DataContext("vehicle_application")
 	def appEm;
 
-	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0] == 'vehicleassessment'  }")
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'vehicleassessment'  }")
 	public void buildFacts(def evt) {
 
 		def factBuilder = evt.result; 
-		def params = evt.args[1];
+		def params = evt.args[0].params;
 		def facts = factBuilder.facts;
 
 		if( params.application ) {

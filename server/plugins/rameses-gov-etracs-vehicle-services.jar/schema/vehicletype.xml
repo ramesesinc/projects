@@ -6,5 +6,6 @@
 		<field name="appnopattern" required="true" />
 		<field name="guihandler" required="true" />
 		<field name="issued" type="integer" required="true" defaultValue="0"/>
+		<field name="icon" /> 
 	</element>
 </schema>

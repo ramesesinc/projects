@@ -146,7 +146,6 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ task.properties.show_reading == true }");
 
-        schemaList1.setAllowOpen(false);
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
@@ -195,7 +194,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.classification.objid"}
+                new Object[]{"name", "account.classification"}
                 , new Object[]{"caption", "Class"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -379,11 +378,12 @@ public class BatchBillingPage extends javax.swing.JPanel {
         });
         schemaList1.setCustomFilter("batchid = :batchid");
         schemaList1.setHandler("readingHandler");
-        schemaList1.setId("readingModel");
         schemaList1.setName("selectedItem"); // NOI18N
         schemaList1.setOrderBy("account.stuboutnode.indexno");
         schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_billing");
+        schemaList1.setSchemaName("waterworks_consumption");
+        schemaList1.setAllowOpen(false);
+        schemaList1.setId("readingModel");
         schemaList1.setStyleRule("com/rameses/gov/etracs/waterworks/views/BatchBillingPage.style");
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
@@ -392,7 +392,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 1434, Short.MAX_VALUE)
+                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 1440, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
@@ -405,7 +405,6 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Reading Details", xPanel1);
 
-        schemaList2.setAllowOpen(false);
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "account.acctno"}
@@ -593,7 +592,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
         schemaList2.setName("selectedBillItem"); // NOI18N
         schemaList2.setOrderBy("account.stuboutnode.indexno");
         schemaList2.setQueryName("query");
-        schemaList2.setSchemaName("waterworks_billing");
+        schemaList2.setSchemaName("waterworks_consumption");
+        schemaList2.setAllowOpen(false);
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
@@ -601,7 +601,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(schemaList2, javax.swing.GroupLayout.DEFAULT_SIZE, 1434, Short.MAX_VALUE)
+                .addComponent(schemaList2, javax.swing.GroupLayout.DEFAULT_SIZE, 1440, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel2Layout.setVerticalGroup(

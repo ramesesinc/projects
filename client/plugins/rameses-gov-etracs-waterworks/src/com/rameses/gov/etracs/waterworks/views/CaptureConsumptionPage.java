@@ -121,6 +121,7 @@ public class CaptureConsumptionPage extends javax.swing.JPanel {
         xFormPanel4.add(xIntegerField3);
 
         xIntegerField4.setCaption("Volume");
+        xIntegerField4.setDepends(new String[] {"entity.prevreading", "entity.reading"});
         xIntegerField4.setName("entity.volume"); // NOI18N
         xFormPanel4.add(xIntegerField4);
 

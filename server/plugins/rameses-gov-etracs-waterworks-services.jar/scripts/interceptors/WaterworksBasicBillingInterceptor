@@ -79,9 +79,9 @@ class WaterworksBasicBillingInterceptor {
 	}
 
 
-	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'waterworksbilling' }")
+	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0].rulename == 'waterworksbilling' }")
 	public void buildFactsForBilling(def evt) {
-		def data = evt.args[1];
+		def data = evt.args[0].params;
 		def zone = data.zone; 
 		def sector = data.sector; 
 		def schedule = data.schedule;

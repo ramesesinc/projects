@@ -22,7 +22,7 @@ class RevenueSharingService  {
 	public def execute( def rct ) {
 		def resultList = [];
 		try {
-			def factBuilder = factSvc.getFacts( "revenuesharing", rct );
+			def factBuilder = factSvc.getFacts([ rulename: "revenuesharing", params: rct ]);
 
 			def facts = factBuilder.facts;
 			if(!facts) throw new Exception("There should be at least one fact in RuleProcessorService" );

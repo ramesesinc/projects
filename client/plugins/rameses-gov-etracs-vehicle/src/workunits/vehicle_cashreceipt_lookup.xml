@@ -1,0 +1,9 @@
+<workunit>
+    <invokers>
+        <invoker type="vehicle:cashreceipt_lookup" caption="Lookup Vehicles" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleLookupModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.ApplicationSelectionPage" />
+    </pages>
+</workunit>

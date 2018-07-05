@@ -1,4 +1,5 @@
-<workunit extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml" rulename="vehiclebilling" contextName="vehicle">
+<workunit extends="com/rameses/treasury/common/templates/BillingCashReceipt.xml" 
+          rulename="vehiclebilling" contextName="vehicle">
     <invokers>
         <invoker type="collectiontype:handler" caption="Vehicle Registration" 
                  name="vehicle" formtype="serial" formno="51"  index="110" />

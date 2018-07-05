@@ -28,7 +28,7 @@ class VehicleBillingInterceptor {
 	def vehiclePmt;
 
     @After(pattern="BasicBillingHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
-	public void getInfo(def evt) {
+	public void getHeaderInfo(def evt) {
 		def obj = evt.args[0];
 		def r = evt.result;
 		def p = obj.params;

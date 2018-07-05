@@ -18,7 +18,8 @@ class VehicleApplicationSearchService {
 	public def getList( def o ) {
 		def params = [:];
 		def conds = [];
-		params.vehicletypeid = o.vehicletype.objid;
+
+        params.vehicletypeid = o.vehicletype.objid;
         conds << "vehicletypeid =:vehicletypeid";
 
         if( o.lookuptype == "owner" ) {

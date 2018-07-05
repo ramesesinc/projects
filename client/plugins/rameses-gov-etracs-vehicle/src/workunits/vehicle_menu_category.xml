@@ -1,3 +1,4 @@
+<!-- menu category -->
 <workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="vehicle" cols="2">
     <invokers>
         <invoker type="vehicle_menu_categiory" 

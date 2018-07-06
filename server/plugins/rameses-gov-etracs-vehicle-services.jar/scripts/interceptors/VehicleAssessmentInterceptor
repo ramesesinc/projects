@@ -46,7 +46,7 @@ class VehicleAssessmentInterceptor {
 		def result = evt.result;
 		def data = evt.args[0].params;
 		def app = data.application
-		if( app!=null && app.apptype.matches("NEW|RENEW")) {
+		if( app!=null ) {
 			def appid = app.objid;
 			appFeeEm.find( [parentid: appid ] ).delete(); 
 			def total= 0;

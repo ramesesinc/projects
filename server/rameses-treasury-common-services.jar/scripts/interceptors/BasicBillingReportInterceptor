@@ -15,17 +15,20 @@ import com.rameses.util.*;
 ***************************************************************************************/
 class BasicBillingReportInterceptor {
 	
-	@Service("BasicBillingService")
+	@Service("BillingProcessService")
 	def billingSvc;
+
+	@Service("BillingInfoHandler")
+	def handlerSvc;
 
 	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'basicbillingreport' }" )
 	public void getData(def evt) {
 		def params = evt.args[0];
 		def result = evt.result;
 		
-		def vv = [ rulename:params.rulename, params: params.parameters ];
-		result.data = billingSvc.getBillingInfo( vv );
+		def vv = [ rulename: params.rulename, params: params.parameters ];
+		def data = billingSvc.process( vv ); 
+		data.rulename = params.rulename; 
+		result.data = handlerSvc.formatBillingInfo( data ); 
 	}
-
-
 }

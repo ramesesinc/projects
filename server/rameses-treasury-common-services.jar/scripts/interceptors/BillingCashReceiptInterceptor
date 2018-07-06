@@ -7,12 +7,12 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 import com.rameses.rules.common.RuleExecutionContext;
 
-public class BillingReceiptInterceptor {
+public class BillingCashReceiptInterceptor {
 	
 	@Service("PaymentPostingService")
 	def service;
 
-	@Service("BasicBillingHandler")
+	@Service("PaymentPostingHandler")
 	def handler;
 
 	@DataContext(dynamic=true)
@@ -25,7 +25,8 @@ public class BillingReceiptInterceptor {
 	public void postCashReceipt( evt ) {
 		def e = evt.args[0];
 		def pp = [ txntype: e.collectiontype.handler ]; 
-		def payinfo = buildPostPaymentInfo( pp, e, evt.result );
+		def payinfo = buildPostPaymentInfo( pp, e );
+		payinfo.txntype = pp.txntype;
 		payinfo.reftype = "cashreceipt";
 		payinfo.refdate = e.receiptdate;
 		payinfo.refno = e.receiptno;
@@ -40,7 +41,8 @@ public class BillingReceiptInterceptor {
 	public void postCapturePayment( evt ) { 
 		def e = evt.args[0]; 
 		def pp = [ txntype: e.txntype ]; 
-		def payinfo = buildPostPaymentInfo( pp, e, evt.result );
+		def payinfo = buildPostPaymentInfo( pp, e );
+		payinfo.txntype = pp.txntype;
 		payinfo.reftype = e.reftype;
 		payinfo.refdate = e.refdate;
 		payinfo.refno = e.refno;
@@ -56,7 +58,8 @@ public class BillingReceiptInterceptor {
 		def e = evt.args[0]; 
 		def result = evt.result;
 		def pp = [ txntype: e.txntype ]; 
-		def payinfo = buildPostPaymentInfo( pp, e, result );
+		def payinfo = buildPostPaymentInfo( pp, e );
+		payinfo.txntype = pp.txntype;
 		payinfo.reftype = 'creditpayment';
 		payinfo.refdate = result.controldate;
 		payinfo.refno = result.controlno;
@@ -69,13 +72,17 @@ public class BillingReceiptInterceptor {
 		service.post( payinfo );
 	}
 
-	private def buildPostPaymentInfo( pp, bill, result ) {
+	private def buildPostPaymentInfo( pp, bill ) {
 		if ( !pp.txntype ) throw new Exception('txntype parameter is required');
 
-		def payinfo = handler.getPostPaymentInfo( pp, bill ); 
+		def m = [:]; 
+		m.putAll( pp );
+		m.putAll( bill ); 
+		def payinfo = handler.getPaymentInfo( m ); 
 		if ( !payinfo._schemaname ) throw new Exception("payinfo._schemaname is required");
 		if ( !payinfo.items ) throw new Exception('payinfo.items is required'); 
 
+		payinfo._workflow = handler.getPaymentWorkflow( m ); 
 		return payinfo;
 	}
 
@@ -84,6 +91,8 @@ public class BillingReceiptInterceptor {
 		def e = evt.args[0];
 		def res= evt.result;
 		def rct = res.receipt;
+		rct.txntype = rct.collectiontype?.handler;
+		if ( !rct.txntype ) throw new Exception("'txntype parameter' is required in BillingCashReceiptInterceptor.voidPayment"); 
 
 		def vi = handler.getVoidInfo( rct ); 
 		if ( !vi ) return; 
@@ -92,8 +101,10 @@ public class BillingReceiptInterceptor {
 
 		def pmtDb = pmtEm.lookup( vi._schemaname );
 		def pmt = pmtDb.find([ refid: rct.objid ]).first(1);
-		pmt._schemaname = vi._schemaname;
+		pmt.txntype = rct.txntype; 
 		pmt.collectiontype = rct.collectiontype;
+		pmt._schemaname = vi._schemaname;
+		pmt._workflow = handler.getVoidWorkflow( pmt );  
 		service.reversePayment( pmt );
 	}
 }

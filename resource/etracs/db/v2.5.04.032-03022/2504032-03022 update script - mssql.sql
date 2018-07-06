@@ -85,3 +85,5 @@ create index ix_expirydate on sync_data_pending(expirydate)
 go 
 
 
+alter table faas alter column prevtdno varchar(1000)
+go 

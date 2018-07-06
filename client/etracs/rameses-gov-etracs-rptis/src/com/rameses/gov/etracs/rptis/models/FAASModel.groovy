@@ -33,8 +33,9 @@ public class FAASModel
     def assignee; 
     
     //callbacks
-    def afterCreate;
-    def afterUpdate;
+    def afterCreate = {};
+    def afterUpdate = {};
+    def afterDelete = {};
     def closeonsave = false;
     
         
@@ -174,6 +175,7 @@ public class FAASModel
     def delete(){
         if (MsgBox.confirm('Delete FAAS?')){
             service.deleteFaas(getEntity());
+            afterDelete();
             return '_close';
         }
         return null;

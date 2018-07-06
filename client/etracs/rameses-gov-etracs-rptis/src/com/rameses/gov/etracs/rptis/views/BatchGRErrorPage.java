@@ -6,16 +6,14 @@
 
 package com.rameses.gov.etracs.rptis.views;
 
-import com.rameses.rcp.ui.annotations.StyleSheet;
+import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
-import com.rameses.seti2.views.CrudFormPage;
 
-@Template(CrudFormPage.class)
-@StyleSheet()
-public class FAASGRErrorPage extends javax.swing.JPanel {
+@Template(FormPage.class)
+public class BatchGRErrorPage extends javax.swing.JPanel {
     
     /** Creates new form FAASNewPage */
-    public FAASGRErrorPage() {
+    public BatchGRErrorPage() {
         initComponents();
     }
     
@@ -31,7 +29,6 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         xTextArea2 = new com.rameses.rcp.control.XTextArea();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
 
@@ -40,9 +37,9 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
         jPanel1.setBorder(xTitledBorder1);
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        xTextArea2.setEditable(false);
         xTextArea2.setDepends(new String[] {"selectedItem"});
-        xTextArea2.setName("entity.msg"); // NOI18N
+        xTextArea2.setEditable(false);
+        xTextArea2.setName("entity.error"); // NOI18N
         jScrollPane2.setViewportView(xTextArea2);
 
         jPanel1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -53,23 +50,16 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
         xFormPanel1.setBorder(xTitledBorder2);
         xFormPanel1.setCaptionWidth(100);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel1.setCaption("Revision Year");
-        xLabel1.setExpression("#{entity.newry}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFormPanel1.add(xLabel1);
-
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("TD No.");
-        xLabel2.setExpression("#{entity.faas.tdno}");
+        xLabel2.setExpression("#{entity.tdno}");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel2);
 
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("PIN");
-        xLabel3.setExpression("#{entity.faas.fullpin}");
+        xLabel3.setExpression("#{entity.fullpin}");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLabel3);
@@ -91,7 +81,7 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -101,7 +91,6 @@ public class FAASGRErrorPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XTextArea xTextArea2;

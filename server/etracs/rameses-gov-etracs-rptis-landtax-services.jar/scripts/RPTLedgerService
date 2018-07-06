@@ -318,11 +318,13 @@ class RPTLedgerService
     @ProxyMethod
     public def checkLedgerApprovedState(faasid){
         def ledger = em_rptledger.select('state').find([faasid:faasid]).first()
-        if (!ledger) 
+        if (!ledger && !'PROVINCE'.equalsIgnoreCase(env.ORGCLASS)){
             throw new Exception('Ledger does not exist or has already been deleted.')
-        if (ledger.state == 'CANCELLED')
+        }
+            
+        if (ledger && ledger.state == 'CANCELLED')
             throw new Exception('Ledger has already been cancelled.')
-        if (ledger.state == 'PENDING')
+        if (ledger && ledger.state == 'PENDING')
             throw new Exception('Ledger is still pending.')
     }
 

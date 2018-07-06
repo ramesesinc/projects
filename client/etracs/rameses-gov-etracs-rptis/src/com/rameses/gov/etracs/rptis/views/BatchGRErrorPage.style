@@ -1,4 +1,4 @@
-"entity.msg" [true]{
+"entity.error" [true]{
     enabled:true;
     readonly:true;
 }

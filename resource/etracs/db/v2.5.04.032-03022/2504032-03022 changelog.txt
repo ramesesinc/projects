@@ -6,6 +6,7 @@
 		
 - ASSESSOR	
 	- Modified master synchronization with prov and muni (rabbit)
+	- Modified Batch GR Processing
 
 - LANDTAX
 	- Sync province and municipal ledgers

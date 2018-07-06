@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="batchgr_error:open" 
+                 caption="Batch General Revision Error" 
+                 target="popup" />
+        
+        <invoker type="formActions" 
+                 action="_close" caption="Close" immediate="true" />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.BatchGRErrorModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.BatchGRErrorPage" />
+    </pages>
+</workunit>

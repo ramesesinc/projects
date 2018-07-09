@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/gov/etracs/vehicle/templates/VehicleReport.xml" reportId="vehicle_assessment">
-    <invokers>
-        <invoker type="vehicle_application_tricycle:form:formActions" 
-                 caption="Print Assessment" 
-                 target="self" action="preview"
-                 reportName="com/rameses/gov/etracs/vehicle/tricycle/reports/assessment.jasper" 
-                 visibleWhen="#{entity.dtapproved != null }" />
-    </invokers> 
-</workunit>

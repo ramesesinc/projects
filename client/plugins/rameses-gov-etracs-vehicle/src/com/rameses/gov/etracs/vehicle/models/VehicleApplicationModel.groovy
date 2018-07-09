@@ -11,6 +11,8 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleApplicationModel extends WorkflowTaskModel {
     
+    @Service("SchemaService")
+    def schemaSvc;
 
     boolean viewReportAllowed = false; 
     
@@ -36,32 +38,30 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
     public String getFormId() {
         return entity.objid;
     }
+
+    def fields;
+    void afterOpen() {
+        fields = [];
+        if( !entity.vehicletype.allowedfields ) throw new Exception("Error in opening application form. vehicletype allowed fields must not be null");
+        schemaSvc.getSchema( [name:"vehicle_application_unit" ] )?.fields.collect{
+            if( it.name.matches("franchise.controlno")) {
+                fields.add(0, it);
+                return;
+            }
+            if(!it.included) return;
+            def n = it.name;
+            if(n.contains("_")) n = it.name.split("_")[0];
+            if( n.matches(entity.vehicletype.allowedfields)) {
+                fields << it;
+            }
+        };
+        loadInfos();
+    }
     
-    def fieldMatch = [ 
-        motorized : "franchise.controlno|plateno|engineno|bodyno|sidecarno|make|model|color|chassisno|sidecarcolor|crname", 
-        manual: "franchise.controlno|plateno|driver.name"
-    ]
-
-    def fields = [
-        [ name:'franchise.controlno', caption: 'Franchise No'],
-        [ name:'plateno', caption: 'Plate No'],
-        [ name:"engineno", caption:"Engine No"],
-        [ name:"bodyno", caption:"Body No"],
-        [ name:"sidecarno", caption:"Sidecar No"],
-        [ name:"make", caption:"Make"],
-        [ name:"model", caption:"Model"],
-        [ name:"color", caption:"Color"],
-        [ name:"chassisno", caption:"Chassis No"],
-        [ name:"sidecarcolor", caption:"Sidecar Color"],
-        [ name:"crname", caption:"CR Name"],
-        [ name:"driver.name", caption:"Driver"],
-    ];
-
     def selectedUnit;
     def unitListModel = [
         getColumnList: {
-            def s = fieldMatch.get( entity.vehicletype.guihandler );
-            return fields.findAll{ it.name.matches(s) };
+            return fields;
         },
         fetchList : { o->
             def m = [_schemaname: "vehicle_application_unit" ];
@@ -73,7 +73,6 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
     ] as BasicListModel;
 
     def addUnit() {
-        def s = entity.vehicletype.guihandler;
         def p = [:];
         p.handler = { o->
             o._schemaname = 'vehicle_application_unit';
@@ -87,7 +86,6 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
 
     def editUnit() {
         if(!selectedUnit) throw new Exception("Please select a unit");
-        def s = entity.vehicletype.guihandler;
         def p = [:];
         p.handler = { o->
             o._schemaname = 'vehicle_application_unit';
@@ -113,25 +111,28 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         fetchList: { o->
             def m = [_schemaname: "vehicle_application_fee"];
             m.findBy = [parentid: entity.objid ];
-            m.orderBy = "sortorder";
+            m.orderBy = "appyear,sortorder";
             return queryService.getList(m);
         }
     ] as BasicListModel;
     
     def infos = [];
+    void loadInfos() {
+        def m = [_schemaname: "vehicle_application_info"];
+        m.findBy = [parentid: entity.objid ];
+        m.orderBy = "sortorder";
+        infos = queryService.getList(m);
+        infos.each {
+            it.putAll( it.remove("variable") );
+            if( it.stringvalue ) it.value = it.stringvalue;
+            else if( it.intvalue ) it.value = it.intvalue;
+            else if( it.decimalvalue ) it.value = it.decimalvalue;
+            else if( it.booleanvalue ) it.value = it.booleanvalue;
+        }
+    }
+    
     def infoListModel = [
         fetchList: { o->
-            def m = [_schemaname: "vehicle_application_info"];
-            m.findBy = [parentid: entity.objid ];
-            m.orderBy = "sortorder";
-            infos = queryService.getList(m);
-            infos.each {
-                if( it.stringvalue ) it.value = it.stringvalue;
-                else if( it.intvalue ) it.value = it.intvalue;
-                else if( it.decimalvalue ) it.value = it.decimalvalue;
-                else if( it.booleanvalue ) it.value = it.booleanvalue;
-                println "value " + it.name + " is " + it.value;
-            }
             return infos;
         }
     ] as BasicListModel;
@@ -165,21 +166,73 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         return opener;
     }
 
-    void assess() {
+    void assessLateRenewal() {
+        boolean bstop = false;
+        boolean infoloaded = false;
+        int startYr = entity.lastrenewal + 1;
+        int endYr = entity.appyear - 1;
+        def localInfos = null;
+        ( startYr .. endYr ).each {
+            if( bstop ) return;
+            def app = [:];
+            app.putAll( entity );
+            app.appyear = it;
+            def p = [:];
+            p.rulename = "vehicleassessment"
+            p.params = [application: app ];
+            p.include_items = true;
+            p.include_billitems = false;
+            if(infos) {
+                p.defaultInfos = infos;
+                p.infos = localInfos;
+            }
+            p.handler = { result->
+                if( result == null ) {
+                    bstop = true;
+                    return;
+                }
+                if(!infoloaded) {
+                    infoloaded = true;
+                    loadInfos();
+                    localInfos = infos;
+                }
+            }
+            try {
+                Modal.show( "billing_rule", p );
+            }
+            catch(BreakException be) {;}
+        }
+        if( bstop ) return;
+        reload();
+        feeListModel.reload(); 
+        infoListModel.reload(); 
+    }
+    
+    void assessBasic() {
         def p = [:];
         p.rulename = "vehicleassessment"
-        p.params = [billdate:entity.receiptdate, application: entity ];
+        p.params = [application: entity ];
         p.include_items = true;
         p.include_billitems = false;
         if(infos) p.defaultInfos = infos;
         p.handler = { result->
             if( result !=null ) { 
                 reload();
+                loadInfos();
                 feeListModel.reload(); 
                 infoListModel.reload(); 
             }
         }
         Modal.show( "billing_rule", p );
+    }
+
+    void assess() {
+        if( entity.apptype == 'LATE_RENEWAL') {
+            assessLateRenewal();
+        }
+        else {
+            assessBasic();
+        }
     }
 
 }

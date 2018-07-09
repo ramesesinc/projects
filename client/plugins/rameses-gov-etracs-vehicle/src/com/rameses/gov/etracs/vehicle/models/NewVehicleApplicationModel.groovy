@@ -44,6 +44,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         super.create();
 
         entity.vehicletypeid = vehicletype.objid;
+        entity.vehicletype = [objid: vehicletype.objid];
         entity.apptype = props.apptype;
         entity.txnmode = props.txnmode;
         if( !entity.txnmode ) entity.txnmode = "ONLINE";
@@ -101,6 +102,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         entity.owner = selectedItem.owner;
         entity.primaryappid = selectedItem.primaryappid;
         entity.particulars = selectedItem.particulars;
+        entity.lastrenewal = selectedItem.appyear; 
         if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
         saveCreate();
     }

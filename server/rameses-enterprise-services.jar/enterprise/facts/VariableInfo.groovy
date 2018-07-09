@@ -78,7 +78,8 @@ public class VariableInfo {
 			if( !k.name.matches("class|metaClass"+excludeFields)) {
 				//add only if there is a setter
 				if( k.setter && o.containsKey(k.name)) {
-					this[(k.name)] = o.get( k.name );	
+					def v = o.get( k.name );
+					if(v) this[(k.name)] = v;	
 				}
 			}
 		}

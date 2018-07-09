@@ -46,24 +46,43 @@ class VehicleAssessmentInterceptor {
 		def result = evt.result;
 		def data = evt.args[0].params;
 		def app = data.application
-		if( app!=null ) {
-			def appid = app.objid;
-			appFeeEm.find( [parentid: appid ] ).delete(); 
-			def total= 0;
-			result.items?.each {
-				it.parent = [objid: appid ];
-				appFeeEm.create( it );
-				total += it.amount;
-			}
-			//update the total assessment
-			appEm.find( [objid: appid ]).update( [amount: total]);
+		def appid = app.objid;
 
+		//clear first the data before saving
+		if( app.apptype == 'LATE_RENEWAL' ) {
+			//remove existing fees
+			appFeeEm.find( [parentid: appid, appyear: app.appyear ] ).delete(); 
+
+			//remove existing infos if appyear = last renewed
+			if( app.appyear == (app.lastrenewal +1) ) {
+				//update the total assessment
+				appInfoEm.find( [parentid: appid ] ).delete(); 
+				result.infos?.each {
+					it.parent = [objid: appid ];
+					appInfoEm.create( it );
+				}
+			}
+		}
+		else {
+			//remove existing fees	
+			appFeeEm.find( [parentid: appid ] ).delete(); 
+			//remove existing infos
 			appInfoEm.find( [parentid: appid ] ).delete(); 
 			result.infos?.each {
 				it.parent = [objid: appid ];
 				appInfoEm.create( it );
 			}
 		}
+
+		//SAVE THE APP FEE HERE.
+		result.items?.each {
+			it.parent = [objid: appid ];
+			it.appyear = app.appyear;
+			appFeeEm.create( it );
+		}
+		//find and update the total
+		def total = appFeeEm.find( [parentid : appid] ).select("total:{SUM(amount)}").val();
+		appEm.find( [objid: appid ]).update( [amount: total]);
 	}
 	
 

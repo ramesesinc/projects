@@ -35,11 +35,14 @@ class VehicleApplicationSearchService {
             conds << "vehicleunit.expirydate <= NOW() AND vehicleunit.activeyear = :ayear";
             params.ayear = o.appyear - 1;
         }
+        else if( o.apptype == "LATE_RENEWAL") {
+            conds << " vehicleunit.activeyear < :ayear";
+            params.ayear = o.appyear - 1;
+        }
         else {
 			conds << "vehicleunit.activeyear = :ayear";
             params.ayear = o.appyear;
         }
-
         def list = franchiseEm.where( conds.join( " AND " ), params ).list().collect{   
         	def p = it.vehicleunit.primary;
         	p.primaryappid = p.objid;

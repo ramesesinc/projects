@@ -28,6 +28,10 @@ public class VehicleFranchiseModel extends CrudFormModel {
     def getQuery() {
         return [controlid: entity.objid ];
     }
+    
+    def getVehicletype() {
+        return entity.vehicletype;
+    }
 
     
     def appListModel = [

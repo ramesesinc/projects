@@ -14,18 +14,18 @@
 		</complex> 	
 
 		<!-- additional infos -->
-		<field name="plateno" caption="Plate No" searchable="true"  indexed="true"/>
-		<field name="engineno" caption="Engine No" searchable="true" indexed="true"/>
-		<field name="bodyno" caption="Body No" searchable="true" indexed="true"/>
-		<field name="sidecarno" caption="Sidecar No"  indexed="true"/>
-		<field name="make" caption="Make"/>
-		<field name="model" caption="Model"/>
-		<field name="color" caption="Color"/>
-		<field name="chassisno" caption="Chassis No"/>
-		<field name="sidecarcolor" caption="Color"/>
-		<field name="crname" caption="CR Name"/>
+		<field name="plateno" caption="Plate No" searchable="true"  indexed="true" included="true"/>
+		<field name="engineno" caption="Engine No" searchable="true" indexed="true" included="true"/>
+		<field name="bodyno" caption="Body No" searchable="true" indexed="true" included="true"/>
+		<field name="sidecarno" caption="Sidecar No"  indexed="true" included="true"/>
+		<field name="make" caption="Make" included="true"/>
+		<field name="model" caption="Model" included="true"/>
+		<field name="color" caption="Color" included="true"/>
+		<field name="chassisno" caption="Chassis No" included="true"/>
+		<field name="sidecarcolor" caption="Sidecar Color" included="true"/>
+		<field name="crname" caption="CR Name" included="true"/>
 		<field name="driver_objid" visible="false"/>
-		<field name="driver_name" caption="Driver Name"/>
-		<field name="remarks" caption="Remarks"/>
+		<field name="driver_name" caption="Driver" included="true"/>
+		<field name="remarks" caption="Remarks" included="true"/>
 	</element>
 </schema>

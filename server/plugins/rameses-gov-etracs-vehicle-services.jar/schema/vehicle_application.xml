@@ -18,6 +18,7 @@
 		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
 		<field name="expirydate"  />
+		<field name="lastrenewal"  />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>
@@ -26,7 +27,7 @@
 
 		<!-- this will be loaded automatically -->
 		<field name="vehicletypeid" required="true" />
-		<complex name="vehicletype" ref="vehicletype" jointype="many-to-one" required="true">
+		<complex name="vehicletype" ref="vehicletype" includefields="objid,title,allowedfields" jointype="many-to-one" required="true" >
 			<key field="vehicletypeid" target="objid" />
 		</complex> 
 

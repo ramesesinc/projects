@@ -1,12 +1,34 @@
-"entity.vehicleunit.*" [ entity.vehicleunit?.objid == null   ] {
+"entity.vehicleunit.plateno" [ !"plateno".matches(vehicletype.allowedfields) ] {
     visible:false;
 }
-
-"entity.vehicleunit.driver.name" [ entity.vehicletype.guihandler == "motorized" ] {
+"entity.vehicleunit.crname" [ !"crname".matches(vehicletype.allowedfields) ] {
     visible:false;
 }
-
-"entity.vehicleunit.(crname|engineno|chassisno|make|model|sidecarno|sidecarcolor)" [ entity.vehicletype.guihandler == "manual" ] {
+"entity.vehicleunit.engineno" [ !"engineno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.chassisno" [ !"chassisno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.make" [ !"make".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.model" [ !"model".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.color" [ !"color".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.bodyno" [ !"bodyno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.sidecarno" [ !"sidecarno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.sidecarcolor" [ !"sidecarcolor".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.vehicleunit.driver" [ !"driver".matches(vehicletype.allowedfields) ] {
     visible:false;
 }
 

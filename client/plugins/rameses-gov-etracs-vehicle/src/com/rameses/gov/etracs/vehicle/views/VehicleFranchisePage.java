@@ -316,7 +316,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
             })
         });
         schemaList1.setCustomFilter("controlid = :controlid");
-        schemaList1.setOrderBy("app.dtcreated DESC");
+        schemaList1.setOrderBy("app.appyear DESC,app.dtcreated DESC");
         schemaList1.setQueryName("query");
         schemaList1.setSchemaName("vehicle_application_unit");
         schemaList1.setAllowCreate(true);
@@ -353,7 +353,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

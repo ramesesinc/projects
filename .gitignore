@@ -1,3 +1,9 @@
+._.DS_Store
+.DS_Store
+.terminal
+build-impl.xml~
+Thumbs.db
+
 _tmp
 _dev
 

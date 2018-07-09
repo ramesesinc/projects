@@ -124,6 +124,7 @@ public class EntityLookup extends XComponentPanel {
         xLookupField1.setName("entity"); // NOI18N
         add(xLookupField1);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 0, 0));
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
 

@@ -30,19 +30,23 @@ public class EntityLookupQueryForm extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 5, 3, 5));
         setLayout(new java.awt.BorderLayout());
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
+
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         xLabel1.setText("Type :");
         jPanel1.add(xLabel1);
 
         xComboBox3.setCaption("Type");
-        xComboBox3.setCaptionWidth(50);
-        xComboBox3.setEmptyText("- - All Types - -");
         xComboBox3.setItems("entityTypes");
         xComboBox3.setName("selectedType"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(100, 20));
         xComboBox3.setVisibleWhen("#{allowSelectEntityType == true}");
+        xComboBox3.setCaptionWidth(50);
+        xComboBox3.setEmptyText("- - All Types - -");
+        xComboBox3.setPreferredSize(new java.awt.Dimension(100, 20));
         jPanel1.add(xComboBox3);
 
         add(jPanel1, java.awt.BorderLayout.EAST);

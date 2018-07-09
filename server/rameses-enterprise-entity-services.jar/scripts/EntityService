@@ -9,6 +9,9 @@ class EntityService
 	@DataContext("entity")
 	def	em; 
 
+	@Service('PersistenceService')
+	def persistenceSvc;	
+
 	@ActiveDB('entityindividual')
 	def em_individual 
 
@@ -19,14 +22,8 @@ class EntityService
 	def em_multiple 
 
 	@ActiveDB('entitymember')
-	def em_member;
+	def em_member
 
-	@Service('PersistenceService')
-	def persistenceSvc;	
-
-	@Service
-	def self; 
-	
 
 	@ProxyMethod
 	public def open( o ) { 

@@ -49,9 +49,9 @@
         <Component class="com.rameses.rcp.control.XList" name="xList1">
           <Properties>
             <Property name="expression" type="java.lang.String" value="#{item.title}"/>
-            <Property name="fixedCellHeight" type="int" value="20"/>
             <Property name="handler" type="java.lang.String" value="listHandler"/>
             <Property name="name" type="java.lang.String" value="selectedItem" noResource="true"/>
+            <Property name="fixedCellHeight" type="int" value="18"/>
           </Properties>
         </Component>
       </SubComponents>

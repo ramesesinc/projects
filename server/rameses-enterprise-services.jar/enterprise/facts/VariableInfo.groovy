@@ -47,11 +47,26 @@ public class VariableInfo {
 		m.category = category;
 		m.name = name;
 		m.value = null;
-		if(m.datatype == 'decimal') m.value  = decimalvalue;
-		else if(m.datatype=="integer") m.value = intvalue;
-		else if(m.datatype=="boolean") m.value = booleanvalue;
-		else if(m.datatype == "date" ) m.value = datevalue;
-		else m.value = stringvalue;
+		if(m.datatype == 'decimal') {
+			m.value  = decimalvalue;
+			m.decimalvalue = m.value;
+		}	
+		else if(m.datatype=="integer") {
+			m.value = intvalue;
+			m.intvalue = m.value;
+		}	
+		else if(m.datatype=="boolean") {
+			m.value = booleanvalue;
+			m.booleanvalue = m.value;
+		}	
+		else if(m.datatype == "date" ) {
+			m.value = datevalue;
+			m.datevalue = m.value;
+		}	
+		else {
+			m.value = stringvalue;
+			m.stringvalue = m.value;
+		}	
 		m.arrayvalues = arrayvalues;
 		m.sortorder = sortorder;
 		return m;

@@ -33,19 +33,21 @@ public class ProcessingPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         jPanel1 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         xButton2 = new com.rameses.rcp.control.XButton();
 
         xLabel1.setExpression("Processing ...#{ counter } of #{ totalcount }\n");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xLabel1.setName("message"); // NOI18N
+        xLabel1.setFontStyle("font-size:14; font-weight: bold;");
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
         xButton1.setName("cancel"); // NOI18N
+        xButton1.setVisibleWhen("#{ !cancelled }");
         xButton1.setPreferredSize(new java.awt.Dimension(80, 40));
         xButton1.setText("Cancel");
-        xButton1.setVisibleWhen("#{ !cancelled }");
         jPanel1.add(xButton1);
+        jPanel1.add(filler1);
 
         xButton2.setName("resume"); // NOI18N
         xButton2.setPreferredSize(new java.awt.Dimension(80, 40));
@@ -75,6 +77,7 @@ public class ProcessingPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;

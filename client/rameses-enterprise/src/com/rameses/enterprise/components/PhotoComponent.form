@@ -49,18 +49,13 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/images/clip.png"/>
             </Property>
-            <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Arial" size="10" style="0"/>
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="10" style="0"/>
-            </Property>
+            <Property name="name" type="java.lang.String" value="doCapture" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{photo==null &amp;&amp; allowCapture==true}"/>
+            <Property name="fontStyle" type="java.lang.String" value="font-size: 10;"/>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[2, 4, 2, 4]"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="doCapture" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Add File"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{photo==null &amp;&amp; allowCapture==true}"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XButton" name="addPhoto">
@@ -68,18 +63,13 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/images/camera.png"/>
             </Property>
-            <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Arial" size="10" style="0"/>
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="10" style="0"/>
-            </Property>
+            <Property name="name" type="java.lang.String" value="doCamera" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{photo==null &amp;&amp; allowCamera==true}"/>
+            <Property name="fontStyle" type="java.lang.String" value="font-size: 10;"/>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[2, 4, 2, 4]"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="doCamera" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Add Photo"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{photo==null &amp;&amp; allowCamera==true}"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XButton" name="changePhoto">
@@ -87,18 +77,13 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/images/edit.png"/>
             </Property>
-            <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Arial" size="10" style="0"/>
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="10" style="0"/>
-            </Property>
+            <Property name="name" type="java.lang.String" value="changePhoto" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{photo!=null &amp;&amp; allowChange==true}"/>
+            <Property name="fontStyle" type="java.lang.String" value="font-size: 10;"/>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[2, 4, 2, 4]"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="changePhoto" noResource="true"/>
             <Property name="text" type="java.lang.String" value="Change"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{photo!=null &amp;&amp; allowChange==true}"/>
           </Properties>
         </Component>
       </SubComponents>

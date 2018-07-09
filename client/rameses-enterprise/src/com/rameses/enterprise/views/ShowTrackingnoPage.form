@@ -53,16 +53,14 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Please use the following tracking code for follow up "/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;Please use the following tracking code for follow up &lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="expression" type="java.lang.String" value="#{info.trackingno}"/>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Arial" size="18" style="1"/>
-        </Property>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="fontStyle" type="java.lang.String" value="font-size:18; font-weight: bold;"/>
       </Properties>
     </Component>
     <Component class="com.rameses.rcp.control.XButton" name="xButton1">

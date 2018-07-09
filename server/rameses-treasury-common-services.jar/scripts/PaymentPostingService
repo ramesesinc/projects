@@ -11,32 +11,12 @@ class PaymentPostingService {
 	@Service("WorkflowTaskService")
 	def taskSvc;
 
-	@Service("BasicBillingHandler")
+	@Service("PaymentPostingHandler")
 	def handler;
 
 
 	@Service("SequenceService")
 	def seqSvc;
-
-	void invokeWorkflow( def pmt, def action ) {
-		//check if there is workflow tasks
-		def taskInfo = handler.getPaymentWorkflow( pmt );
-		if( taskInfo ) {
-			if( !taskInfo.processname ) 
-				throw new Exception("PaymentPostingService.invokeWorkflow: processname is required");
-			if( !taskInfo.refid )
-				throw new Exception("PaymentPostingService.invokeWorkflow: refid is required");
-			taskInfo.autostart = true;	
-			if(action=="pay") {
-				taskInfo.action = taskInfo.payaction;
-			}
-			else {
-				taskinfo.voidaction = taskInfo.voidaction;
-			}
-			taskSvc.signal( taskInfo );		
-		}
-		return null;
-	}	
 
 	@ProxyMethod 
 	public void post( def pmt ) {
@@ -100,11 +80,22 @@ class PaymentPostingService {
 			}
 		}
 
+		def txntype = pmt.txntype; 
+		def taskInfo = pmt._workflow;
+
 		pmt.voided = 0;
 		def pmtEm = emLookup( pmt._schemaname );
-		pmt = pmtEm.create( pmt );
 
-		invokeWorkflow( pmt, "pay" );
+		pmtEm.create( pmt );
+		pmt.txntype = txntype; 
+		if( taskInfo ) {
+			if( !taskInfo.processname ) 
+				throw new Exception("PaymentPostingService.invokeWorkflow: processname is required");
+			if( !taskInfo.refid )
+				throw new Exception("PaymentPostingService.invokeWorkflow: refid is required");
+			taskInfo.autostart = true;	
+			taskSvc.signal( taskInfo );		
+		}
 	}
   
 	@ProxyMethod 
@@ -154,7 +145,16 @@ class PaymentPostingService {
 		def pmtEm = emLookup( pmt._schemaname );
 		pmtEm.find( [ objid: pmt.objid ] ).update( [voided : 1 ] );
 
-		invokeWorkflow( pmt, "voidpayment");
+		def taskInfo = handler.getVoidWorkflow( pmt );
+		if( taskInfo ) {
+			if( !taskInfo.processname ) 
+				throw new Exception("PaymentPostingService.getVoidWorkflow: processname is required");
+			if( !taskInfo.refid )
+				throw new Exception("PaymentPostingService.getVoidWorkflow: refid is required");
+			if ( !taskInfo.action ) taskInfo.action = 'revert'; 
+			taskInfo.autostart = true;	
+			taskSvc.signal( taskInfo );		
+		}
 		
 		return pmt;
 	}

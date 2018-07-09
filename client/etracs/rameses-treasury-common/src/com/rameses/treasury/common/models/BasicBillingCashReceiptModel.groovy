@@ -15,7 +15,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
     @Invoker
     def invoker;
     
-    @Service("BasicBillingService")
+    @Service("BillingCashReceiptService")
     def billingSvc;
     
     String entityName = "misc_cashreceipt"
@@ -101,7 +101,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
         def pp = [ rulename: getRulename(), params: p ]; 
-        def info = billingSvc.getCashReceiptInfo( pp );
+        def info = billingSvc.getInfo( pp );
         
         if( !info.billitems ) {
             if( getAllowDeposit() ) {
@@ -111,7 +111,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
                 def amt = MsgBox.prompt("Enter amount for advance payment. ");
                 if(!amt) throw new BreakException();
                 pp.amtpaid = new BigDecimal(""+amt);
-                info = billingSvc.getCashReceiptInfo( pp );
+                info = billingSvc.getInfo( pp );
             }
             else {
                 throw new Exception("No bill items found");

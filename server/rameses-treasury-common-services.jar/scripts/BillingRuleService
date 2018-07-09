@@ -37,7 +37,7 @@ public class BillingRuleService {
 
 		def rulename = request.rulename;
 		def data = request.params;
-
+		
 		def factBuilder = factSvc.getFacts([ rulename: rulename, params: data ]);
 
 		def facts = factBuilder.facts;
@@ -97,7 +97,6 @@ public class BillingRuleService {
 		}	
 		if( data.billitems ) factBuilder.addBillItems( data.billitems ); 
 
-
 		def res = ruleSvc.execute( rulename, facts, null, hdlr );
 		if(!started) throw new Exception("No rules fired. Rulegroup " +  request.startgroup + " does not exist" ); 
 
@@ -155,8 +154,8 @@ public class BillingRuleService {
 		//items is used for cash receipt so it should not be a default behavior
 		//billitems is used almost everywhere so it should be the default
 
-		boolean include_billitems = (!request.include_billitems) ? true : request.include_billitems;
-		boolean include_items = (!request.include_items) ? false : request.include_items;
+		boolean include_billitems = ( request.include_billitems == null ) ? true : request.include_billitems;
+		boolean include_items = (request.include_items == null) ? false : request.include_items;
 
 		//fixed individual totals if any.
 		if( include_billitems ) {
@@ -178,7 +177,6 @@ public class BillingRuleService {
 		//clean also requirements and infos
 		if( !m.requirements ) m.remove("requirements");
 		if( !m.infos ) m.remove("infos");
-
 		return m;
 	}
 }

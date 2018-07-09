@@ -35,6 +35,8 @@ public class RequirementHandlerBasicPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xTextField1.setCaption("Ref No");
         xTextField1.setName("entry.refno"); // NOI18N
         xFormPanel1.add(xTextField1);
@@ -48,11 +50,13 @@ public class RequirementHandlerBasicPage extends javax.swing.JPanel {
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField2);
 
-        xCheckBox1.setCaption("");
+        xCheckBox1.setCaption(" ");
         xCheckBox1.setCheckValue(1);
         xCheckBox1.setName("entry.complied"); // NOI18N
-        xCheckBox1.setText("Complied?");
         xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setText("Complied?");
         xFormPanel1.add(xCheckBox1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

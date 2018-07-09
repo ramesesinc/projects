@@ -61,9 +61,9 @@ public class RequirementHandlerTemplate extends javax.swing.JPanel {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setPreferredSize(new java.awt.Dimension(420, 35));
 
-        xLabel1.setBackground(new java.awt.Color(255, 255, 255));
         xLabel1.setExpression("#{title}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        xLabel1.setFontStyle("font-size:14; font-weight: bold;");
         xLabel1.setOpaque(true);
         xLabel1.setPreferredSize(new java.awt.Dimension(41, 30));
 
@@ -84,17 +84,17 @@ public class RequirementHandlerTemplate extends javax.swing.JPanel {
         jToolBar1.setRollover(true);
         jToolBar1.setPreferredSize(new java.awt.Dimension(100, 30));
 
-        btnSave.setAccelerator("ctrl S");
         btnSave.setCaption("");
+        btnSave.setName("update"); // NOI18N
+        btnSave.setAccelerator("ctrl S");
         btnSave.setFocusable(false);
         btnSave.setIconResource("images/toolbars/save.png");
-        btnSave.setName("update"); // NOI18N
         btnSave.setText("Update");
         jToolBar1.add(btnSave);
 
+        xActionBar1.setName("extActions"); // NOI18N
         xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
         xActionBar1.setDynamic(true);
-        xActionBar1.setName("extActions"); // NOI18N
         jToolBar1.add(xActionBar1);
 
         jPanel2.add(jToolBar1);

@@ -1,9 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_payment" autopost="true">
 		<field name="objid" primary="true" prefix="WP"/>
-		<field name="parentid" required="true"/>
-		<field name="parentschemaname" required="true"/>
-		<field name="rootid" required="true"/>
 		<field name="refno" required="true"/>
 		<field name="reftype" required="true"/>
 		<!-- soft link to refid like cashreceipt -->

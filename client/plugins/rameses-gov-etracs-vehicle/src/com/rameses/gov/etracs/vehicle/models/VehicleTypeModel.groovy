@@ -19,13 +19,34 @@ import javax.imageio.ImageIO;
 
 public class VehicleTypeModel extends CrudFormModel {
     
+    @Service("SchemaService")
+    def schemaSvc;
+    
     def selectedCluster;
-    def _guiHandlers; 
+    
+    def includedFields = [];
+    def includedField;
+    def excludedFields = [];
+    def excludedField;
     
     void afterCreate() {
         entity.issued = 0;
+        entity.allowedfields = ".*";
     }
 
+    void afterOpen() {
+        schemaSvc.getSchema( [name:"vehicle_application_unit" ] )?.fields.findAll{it.included == "true"}.collect{
+            if(it.name.contains("_")) it.name = it.name.split("_")[0];
+            def m = [name: it.name, caption: it.caption];
+            if( m.name.matches(entity.allowedfields)) {
+                includedFields << m;
+            }
+            else {
+                excludedFields << m;
+            }
+        };
+    }
+    
     void addCluster() {
         def h = { m->
             m._schemaname = 'vehicletype_cluster';
@@ -53,12 +74,6 @@ public class VehicleTypeModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    public def getGuiHandlers() {
-        if(_guiHandlers) return _guiHandlers;
-        _guiHandlers = Inv.lookupOpeners( "vehicle:guihandler" ).collect { it.properties.name }
-        return _guiHandlers;
-    }
-    
     void addImage() {
         def jfc = new JFileChooser();
         int retval = jfc.showOpenDialog(null); 
@@ -73,5 +88,22 @@ public class VehicleTypeModel extends CrudFormModel {
             ImageIO.write(bi, "JPG", baos); 
             entity.icon = baos.toByteArray(); 
         } 
+    }
+    
+    
+    void addField() {
+        if( !excludedField) return;
+        includedFields << excludedField;
+        excludedFields.remove( excludedField );
+    }
+    
+    void removeField() {
+        if( !includedField ) return;
+        excludedFields << includedField;
+        includedFields.remove( includedField );
+    }
+    
+    void beforeSave( def o ) {
+        entity.allowedfields = includedFields*.name.join("|");
     }
 }

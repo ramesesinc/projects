@@ -5,7 +5,8 @@
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Capture" txnmode="CAPTURE" index="30"/>
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Change Unit"  apptype="CHANGE_UNIT" index="50"/>
         <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Change Owner/Unit" apptype="CHANGE_OWNER_UNIT" index="60"/>  
-        <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Drop Unit"  apptype="DROP" index="70"/>       
+        <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Drop Unit"  apptype="DROP" index="70"/> 
+        <invoker folderid="menucategory/vehicle/application" action="startApp" caption="Late Renewal"  apptype="LATE_RENEWAL" index="80"/>       
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.NewVehicleApplicationModel" />
     <pageflow>
@@ -23,7 +24,7 @@
             
             <transition to="end" caption="Next" 
                         action="saveCopy" 
-                        visibleWhen="#{entity.apptype.matches('RENEW|CHANGE_UNIT|DROP')}"/>
+                        visibleWhen="#{entity.apptype.matches('RENEW|CHANGE_UNIT|DROP|LATE_RENEWAL')}"/>
             
             <transition to="changeowner" caption="Next" 
                         action="checkBeforeChange"

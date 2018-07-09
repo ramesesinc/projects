@@ -26,6 +26,7 @@ public abstract class AbstractRuleProcessorModel  {
         if(params == null) throw new Exception("params is required in RuleExecutor"); 
         //we must first clear this when doing initial rules
         params.infos = [];
+        if(infos) params.infos = infos;
         def req = [rulename:rulename, params:params];
         if(options) req.putAll(options);
         def result = ruleExecutor.execute(req);

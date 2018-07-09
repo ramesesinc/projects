@@ -31,10 +31,14 @@
         <invoker type="waterworks_account:form:edit" caption="Disconnect" 
                 visibleWhen="#{entity.meter?.state=='ACTIVE'}"
                 action="disconnect"  target="process" index="16"/>
+        
+        <invoker type="waterworks_account:form:edit" caption="Change status to Defective" 
+                visibleWhen="#{entity.meter?.state=='ACTIVE'}"
+                action="defective" target="process" index="16"/>
 
         <invoker type="waterworks_account:form:edit" caption="Reconnect" 
-                visibleWhen="#{entity.meter?.state=='DISCONNECTED'}"
-                action="reconnect"  target="process" index="16"/>
+                visibleWhen="#{entity.meter?.state?.matches('DISCONNECTED|DEFECTIVE')}"
+                action="reconnect"  target="process" index="17"/>
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.AccountEditModel" />

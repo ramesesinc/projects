@@ -27,21 +27,27 @@ class VehicleBillingInterceptor {
 	@DataContext("vehicle_payment")
 	def vehiclePmt;
 
-    @After(pattern="BasicBillingHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
-	public void getHeaderInfo(def evt) {
+    @After(pattern="BillingInfoHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void loadHeaderInfo(def evt) {
 		def obj = evt.args[0];
-		def r = evt.result;
 		def p = obj.params;
-		def app = appEm.find( [objid: p.objid ] ).first();
-		//load all vehicle units applicable to this app
-		app.vehicleunits = appUnitEm.find( [appid: p.objid ]).orderBy("franchise.controlno").list();
+		def app = null; 
+		if ( p.id ) {
+			app = appEm.find( [appno: p.id ] ).first();
+		} else if ( p.objid ) {
+			app = appEm.find( [objid: p.objid ] ).first();
+		} 
 
-		r.application = app;
-	}
+		if ( !app ) throw new Exception('Vehicle application not found'); 
+
+		//load all vehicle units applicable to this app
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).orderBy("franchise.controlno").list();
+		evt.result.application = app;  
+	} 
  
-    @After(pattern="BasicBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
-	public void getAppBillItems(def evt) {
-		def p = evt.args[0].params;
+    @After(pattern="BillingInfoHandler.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
+	public void loadBillItems(def evt) {
+		def p = evt.args[0].headerinfo.application;
 		def list = evt.result;
 
 		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount:{amount-amtpaid},parentid";
@@ -49,7 +55,37 @@ class VehicleBillingInterceptor {
 		list.addAll( res );
 	}
 
-	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'vehiclebilling'  }")
+	/*******************************************
+    * CASH RECEIPT SPECFIC HANDLERS
+	********************************************/
+	//applicable for cash receipt billing
+	@After( pattern="BillingInfoHandler.formatReceiptInfo", eval="#{ args[0].txntype == 'vehicle' }")
+	public void formatCashReceipt(def evt ) {
+		def app = evt.args[0].application;
+		def res = evt.result;
+		
+		res.payer = app.owner;
+		res.paidby = app.owner.name;
+		res.paidbyaddress = app.owner.address?.text;
+		res.txnid = app.txnid;
+		res.taskid = app.taskid;
+		res.appid = app.objid;
+	} 
+
+
+	/*******************************************
+    * CASH RECEIPT SPECFIC HANDLERS
+	********************************************/
+	//applicable for cash receipt billing
+	@After( pattern="BillingInfoHandler.formatBillingInfo", eval="#{ args[0].rulename == 'vehiclebilling' }")
+	public void formatBillingInfo( evt ) {
+		def param = evt.args[0];
+		def res = evt.result;
+		res.putAll( param.remove('application')); 
+	} 
+
+
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename.toString().matches('vehicle(assessment|billing)') }")
 	public void buildFacts(def evt) {
 		def factBuilder = evt.result; 
 		def params = evt.args[0].params;
@@ -62,72 +98,46 @@ class VehicleBillingInterceptor {
 		factBuilder.variableInfoProvider = vp;
 	}
 
-	//fix the output result of the Basic Billing Service
-	@After(pattern="BasicBillingService.getBillingInfo",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
-	public void afterBilling(def evt) {
-		def r = evt.result;
-		r.putAll( r.remove("application") );
-	}
-
-	/*******************************************
-    * CASH RECEIPT SPECFIC HANDLERS
-	********************************************/
-	//applicable for cash receipt billing
-	@After( pattern="BasicBillingHandler.formatReceiptInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
-	public void formatCashReceipt(def evt ) {
-		def info = evt.args[0].params;
-		def res = evt.result;
-		
-		res.payer = info.owner;
-		res.paidby = info.owner.name + " (" + info.controlno + ")";
-		res.paidbyaddress = info.owner.address.text;
-		res.txnid = info.txnid;
-		res.taskid = info.taskid;
-		res.appid = info.application?.objid;
-		res.franchiseid = info.controlid;
-	} 
-
-
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="BasicBillingHandler.getPostPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle'  }")
-	public void getPostPaymentInfo(def evt ) {
+	@After( pattern="PaymentPostingHandler.getPaymentInfo", eval="#{  args[0].txntype == 'vehicle'  }")
+	public void loadPaymentInfo(def evt ) {
 		def e = evt.args[0];
 		def result = evt.result;
 		result._schemaname = 'vehicle_payment';
-		result.appid =  e.appid
-		result.franchiseid = e.franchiseid 
+		result.appid =  e.appid; 
 		result.items = e.billitems;
 	} 
 
-	@After( pattern="BasicBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	@After( pattern="PaymentPostingHandler.getPaymentWorkflow", eval="#{  args[0].txntype == 'vehicle' }")
 	public void getWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
 		if( p.taskid != null ) {
 			result.processname = 'vehicle_application';
-			result.refid = p.txnid; 
+			result.refid = p.appid;
 			result.taskid = p.taskid;
 			result.taskstate = 'payment';
 		}
 	} 
 
-	@After( pattern="BasicBillingHandler.getVoidPaymentInfo", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
+	@After( pattern="PaymentPostingHandler.getVoidInfo", eval="#{  args[0].txntype == 'vehicle' }")
 	public void getVoidPaymentInfo(def evt ) {
 		def result = evt.result;
 		result._schemaname = 'vehicle_payment';
 	} 
 
-	@After( pattern="BasicBillingHandler.getVoidPaymentWorkflow", eval="#{  args[0].collectiontype.handler == 'vehicle' }")
-	public void getVoidWorkflowTask(def evt ) {
+	@After( pattern="PaymentPostingHandler.getVoidWorkflow", eval="#{  args[0].txntype == 'vehicle' }")
+	public void loadVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
+		println '\n *** loadVoidWorkflowTask'
+		p.each{ println '>> '+ it; }
 		if( p.application?.taskid ) {
 	 		result.taskid = p.application?.taskid;
 			result.processname = 'vehicle_application';
 			result.refid = p.appid;
-			result.action = 'return';
 		}
 	} 
 

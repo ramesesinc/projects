@@ -51,7 +51,7 @@ class WaterworksComputationService  {
 		def facts = [];
 		facts << new WaterAccount( m );
 
-		if( vol > 0 ) 			facts << new WaterConsumption( volume: vol );
+		facts << new WaterConsumption( volume: vol );
 		if( m.meter?.objid ) 	facts << new WaterMeter( m.meter );
 
 		ruleSvc.execute( "waterworkscomputation", facts, null, null );

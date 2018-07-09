@@ -173,7 +173,11 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         p.include_billitems = false;
         if(infos) p.defaultInfos = infos;
         p.handler = { result->
-            if( result !=null ) reload();
+            if( result !=null ) { 
+                reload();
+                feeListModel.reload(); 
+                infoListModel.reload(); 
+            }
         }
         Modal.show( "billing_rule", p );
     }

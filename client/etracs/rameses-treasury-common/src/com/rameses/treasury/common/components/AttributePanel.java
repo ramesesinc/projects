@@ -41,6 +41,7 @@ public class AttributePanel extends XComponentPanel  {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel1 = new javax.swing.JPanel();
         btnAdd = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         btnRemove = new com.rameses.rcp.control.XButton();
 
         setLayout(new java.awt.BorderLayout());
@@ -81,40 +82,26 @@ public class AttributePanel extends XComponentPanel  {
         xDataTable1.setName("selectedItem"); // NOI18N
         add(xDataTable1, java.awt.BorderLayout.CENTER);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 0));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
+
         btnAdd.setName("addAttribute"); // NOI18N
-        btnAdd.setText("Add");
         btnAdd.setVisibleWhen("#{ editable == true }");
+        btnAdd.setText("Add");
+        jPanel1.add(btnAdd);
+        jPanel1.add(filler1);
 
         btnRemove.setName("removeAttribute"); // NOI18N
         btnRemove.setText("Remove");
         btnRemove.setVisibleWhen("#{ editable == true }");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 335, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
-        );
+        jPanel1.add(btnRemove);
 
         add(jPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton btnAdd;
     private com.rameses.rcp.control.XButton btnRemove;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     // End of variables declaration//GEN-END:variables

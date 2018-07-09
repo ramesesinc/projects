@@ -1,9 +1,6 @@
 <workunit>
     <invokers>
        
-         <invoker type="usergroup" action="init" caption="Manage Security Group" 
-            resizable="false" target="popup" />
-        
          <invoker type="usergroup-folder:formActions" action="init" caption="Manage Security Group" 
             resizable="false" target="popup" />    
             

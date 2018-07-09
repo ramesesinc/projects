@@ -3,9 +3,7 @@
         <invoker type="sys_user:edit" action="edit" caption="Edit User"/>
         <invoker type="sys_user:create" action="create" caption="Create New User" target="popup"/>
         <invoker type="user:edit" action="edit" caption="Edit User"/>
-        <!--
-        <invoker type="sys_user:open" action="edit" caption="Edit User" target="popup"/>
-        -->
+        
         <invoker type="formActions" action="_close" caption="Cancel" immediate="true"/>
         <invoker type="formActions" action="save" caption="Save"/>
     </invokers>

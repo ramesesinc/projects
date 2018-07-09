@@ -29,9 +29,14 @@ public class VehicleTxnMenu extends com.rameses.menu.models.MenuCategoryModel {
         return vehicletype.title + " Menu";
     }
     
-    def openItem( def h ) {
-        def op = invokers.get( h.id );
-        return Inv.invoke( op, [vehicletype: vehicletype]  ); 
-    }
-    
+    def openItem( param ) {
+        if ( invokers == null || !param?.id ) return null; 
+        
+        def inv = invokers.get( param.id ); 
+        if ( inv == null ) return null; 
+        
+        def op = Inv.createOpener( inv, [ vehicletype: vehicletype ]); 
+        if ( !op.target ) op.target = 'window'; 
+        return op; 
+    }    
 }

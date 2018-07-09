@@ -34,6 +34,9 @@ public class CapturePaymentInitialPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(100);
+
         xTextField1.setCaption("Txn No");
         xTextField1.setName("txnid"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));

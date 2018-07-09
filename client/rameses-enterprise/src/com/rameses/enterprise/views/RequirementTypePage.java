@@ -35,6 +35,7 @@ public class RequirementTypePage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel1.setCaptionWidth(100);
         formPanel1.setPadding(new java.awt.Insets(5, 5, 5, 0));
 

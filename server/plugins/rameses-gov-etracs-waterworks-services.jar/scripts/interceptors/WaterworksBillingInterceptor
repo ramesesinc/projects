@@ -8,7 +8,7 @@ import waterworks.facts.*;
 import com.rameses.annotations.*;
 import com.rameses.util.*;
 
-class WaterworksBasicBillingInterceptor {
+class WaterworksBillingInfoInterceptor {
 	
 	@DataContext('waterworks_account')
 	def acctEm; 
@@ -22,21 +22,21 @@ class WaterworksBasicBillingInterceptor {
 	@DataContext("waterworks_otherfee")
 	def wotherEm;
 
-    @After(pattern="BasicBillingHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
-	public void getInfo(def evt) {
+    @After(pattern="BillingInfoHandler.getHeaderInfo",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+	public void loadHeaderInfo( evt ) {
 		def obj = evt.args[0];
-		def r = evt.result;
 		def p = obj.params;
 
 		def acct = null;
-		if( p.objid ) {
-			acct = acctEm.find([objid:p.objid]).first(1);
-		}
-		else if( p.id ) {
-			acct = acctEm.find([acctno:p.id]).first(1);
-		}
-		if(!acct) throw new Exception("Waterworks Account not found");
+		if ( p.id ) {
+			acct = acctEm.find([ acctno: p.id ]).first(1);
+		} else if( p.objid ) {
+			acct = acctEm.find([ objid: p.objid ]).first(1);
+		} 
 
+		if ( !acct ) throw new Exception("Waterworks Account not found");
+
+		def r = evt.result;
 		r.putAll( acct );
 		r.acctid = acct.objid;
 		r.schedule = acct.stuboutnode?.schedule; 
@@ -44,21 +44,23 @@ class WaterworksBasicBillingInterceptor {
 		r.zone   = acct.stuboutnode?.zone; 
 	}
  
-    @After(pattern="BasicBillingHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
-	public void getWaterworksBillItems(def evt) {
+    @After(pattern="BillingInfoHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+	public void loadBillItems(def evt) {
 		def p = evt.args[0];
-		def bill = evt.args[1];
-		def list = evt.result;
+		def bill = p.headerinfo; 
 
 		def arr = [];
 		def wp = [:];
-		if(p.params.payoption) {
+		if ( p.params.payoption ) { 
 			arr << "((year * 12)+month) <= :yearmonth";
 			wp.yearmonth = (p.params.payoption.year * 12)+p.params.payoption.month;
 		} 
-		arr << "amount - amtpaid > 0"
+		arr << "amount - amtpaid > 0"; 
+
 		def select = "year,month,volume,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate"; 
 		def conList = wcEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
+		
+		def list = evt.result;
 		list.addAll( conList );
 
 		//select for other fees
@@ -69,13 +71,13 @@ class WaterworksBasicBillingInterceptor {
 	}
 
  	@After(pattern="BasicBillingHandler.getCreditItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
-	public void getWaterworksCreditItems(def evt) {
+	public void loadCreditItems(def evt) {
 		def p = evt.args[0];
-		def bill = evt.args[1];		
-		def list = evt.result;
+		def bill = p.headerinfo; 
+
 		def s =  "amount:{amtpaid-amount},refid:{objid},reftype:{'waterworks_credit'},item.*"
 		def conList = wcCreditEm.find( [parentid: bill.acctid] ).where(" amount - amtpaid > 0 ").select(s).list();
-		list.addAll( conList );
+		evt.result.addAll( conList );
 	}
 
 
@@ -120,9 +122,9 @@ class WaterworksBasicBillingInterceptor {
 	//applicable for cash receipt billing
 	@After( pattern="BasicBillingHandler.formatReceiptInfo", eval="#{  args[0].txntype?.contains('waterworks')  }")
 	public void formatCashReceipt(def evt ) {
-		def info = evt.args[1];
 		def res = evt.result;
-		if(info.owner?.objid) {
+		def info = evt.args[0];
+		if ( info.owner?.objid) {
 			res.payer = info.owner;
 		}
 		res.paidby = info.acctname + " (" + info.acctno + ")";
@@ -134,9 +136,9 @@ class WaterworksBasicBillingInterceptor {
 	/***********************************************************
     * THIS IS BOTH USED BY CASH RECEIPT AND CAPTURE PAYMENT
 	************************************************************/
-	@After( pattern="BasicBillingHandler.getPostPaymentInfo", eval="#{  args[0].txntype.toString().contains('waterworks')  }")
-	public void getPostPaymentInfo( evt ) {
-		def bill = evt.args[1];
+	@After( pattern="PaymentPostingHandler.getPaymentInfo", eval="#{  args[0].txntype.toString().contains('waterworks')  }")
+	public void loadPaymentInfo( evt ) {
+		def bill = evt.args[0];
 		def result = evt.result;
 		result.parentid =  bill.acctid;
 		result.rootid =  bill.acctid;
@@ -146,23 +148,8 @@ class WaterworksBasicBillingInterceptor {
 		result.parentschemaname = "waterworks_account";
 	} 
 
-//	@After( pattern="SingleBillingHandler.getPaymentWorkflow", eval="#{  args[0].collectiontype.handler?.contains('waterworks')  }")
-//	public void getWorkflowTask(def evt ) {
-//		def p = evt.args[0];
-//		def result = evt.result;
-//		if(p.taskid) {
-//			result.processname = 'waterworks_application';
-//			result.refid = p.txnid; 
-//			result.taskid = p.taskid;
-//			result.taskstate = 'payment';
-//			result.payaction = "post"
-//			result.voidaction = "return";
-//		}
-//	} 
-//
-//
-	@After( pattern="BasicBillingHandler.getVoidInfo", eval="#{ args[0].collectiontype.handler?.contains('waterworks') }")
-	public void getVoidInfo(def evt ) {
+	@After( pattern="PaymentPostingHandler.getVoidInfo", eval="#{ args[0].txntype.toString().contains('waterworks') }")
+	public void loadVoidInfo( evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
 		result._schemaname = 'waterworks_payment';

@@ -2,12 +2,12 @@
           schemaName="entityindividual">
    <invokers>
        <invoker type="entityindividual:lookup" caption="Lookup Individual Entity" 
-                  action="init" target="popup" height="350"  
+                  action="init" target="popup" height="630" width="800"
                   cols="entityno,name,address.text"
                   hiddenCols="entityname,gender,type"/>
        
        <invoker type="individualentity:lookup" caption="Lookup Individual Entity" 
-                  action="init" target="popup" height="350"  
+                  action="init" target="popup" height="630"  width="800"
                   cols="entityno,name,address.text"
                    hiddenCols="entityname,gender,type" />
    </invokers>

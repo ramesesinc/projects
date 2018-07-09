@@ -38,6 +38,8 @@ public class IndividualEntityRelationPage extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         entityLookup1.setCaption("Name");
         entityLookup1.setEntityType("entityindividual");
         entityLookup1.setExpression("#{entity.name}  (#{entity.entityno}) ");
@@ -50,7 +52,7 @@ public class IndividualEntityRelationPage extends javax.swing.JPanel {
 
         xLabel1.setCaption("of");
         xLabel1.setExpression(" #{ entity.entity.name } ( #{ entity.entity.entityno } )");
-        xLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        xLabel1.setFontStyle("font-size: 12; font-weight: bold;");
 
         jLabel2.setText("OF");
 
@@ -76,7 +78,7 @@ public class IndividualEntityRelationPage extends javax.swing.JPanel {
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+                            .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(xComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))))
@@ -93,7 +95,7 @@ public class IndividualEntityRelationPage extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(xComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)

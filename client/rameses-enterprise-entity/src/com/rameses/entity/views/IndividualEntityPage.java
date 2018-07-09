@@ -51,20 +51,21 @@ public class IndividualEntityPage extends javax.swing.JPanel {
         xTextField8 = new com.rameses.rcp.control.XTextField();
         xTextField9 = new com.rameses.rcp.control.XTextField();
 
-        xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
+        xTabbedPane1.setDynamic(true);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 15, 0, 15));
         xTitledBorder1.setTitle("Personal");
         xFormPanel1.setBorder(xTitledBorder1);
 
+        xLabel1.setCaption("Entity No");
+        xLabel1.setExpression("#{entity.entityno}");
         xLabel1.setBackground(new java.awt.Color(245, 245, 245));
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
-        xLabel1.setCaption("Entity No");
         xLabel1.setCaptionWidth(100);
-        xLabel1.setExpression("#{entity.entityno}");
-        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel1.setFontStyle("font-size: 12; font-weight: bold;");
+        xLabel1.setForeground(new java.awt.Color(50, 50, 50));
         xLabel1.setOpaque(true);
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
@@ -197,7 +198,7 @@ public class IndividualEntityPage extends javax.swing.JPanel {
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        xTabbedPane1.addTab("General", jPanel1);
+        xTabbedPane1.addTab("  General   ", jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

@@ -38,17 +38,20 @@ public class IndividualEntityMatchName extends XComponentPanel {
 
         xPanel3 = new com.rameses.rcp.control.XPanel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
+        jPanel1 = new javax.swing.JPanel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
-        jLabel1 = new javax.swing.JLabel();
         xButton3 = new com.rameses.rcp.control.XButton();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         jPanel3 = new javax.swing.JPanel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
-        xButton2 = new com.rameses.rcp.control.XButton();
+        jPanel4 = new javax.swing.JPanel();
         xButton4 = new com.rameses.rcp.control.XButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        xButton2 = new com.rameses.rcp.control.XButton();
         jPanel2 = new javax.swing.JPanel();
         xPhoto1 = new com.rameses.rcp.control.XPhoto();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
@@ -67,107 +70,93 @@ public class IndividualEntityMatchName extends XComponentPanel {
 
         xPanel1.setVisibleWhen("#{mode=='ask-name'}");
 
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        xLabel7.setFontStyle("font-weight: bold;");
+        xLabel7.setPadding(new java.awt.Insets(0, 0, 10, 0));
+        xLabel7.setText("Enter Name");
+        jPanel1.add(xLabel7, java.awt.BorderLayout.NORTH);
+
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(100);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xTextField3.setCaption("Last Name");
-        xTextField3.setCaptionWidth(100);
         xTextField3.setName("entity.lastname"); // NOI18N
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField3.setRequired(true);
         xFormPanel1.add(xTextField3);
 
         xTextField2.setCaption("First Name");
-        xTextField2.setCaptionWidth(100);
         xTextField2.setName("entity.firstname"); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
         xTextField5.setCaption("Middle Name");
-        xTextField5.setCaptionWidth(100);
         xTextField5.setName("entity.middlename"); // NOI18N
         xTextField5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField5);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Enter Name");
-
         xButton3.setName("verifyName"); // NOI18N
-        xButton3.setText("Next");
+        xButton3.setCellPadding(new java.awt.Insets(20, 100, 0, 0));
+        xButton3.setMargin(new java.awt.Insets(3, 14, 3, 14));
+        xButton3.setShowCaption(false);
+        xButton3.setText("  Next  ");
+        xFormPanel1.add(xButton3);
+
+        jPanel1.add(xFormPanel1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
         xPanel1Layout.setHorizontalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
-                .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(xPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(xPanel1Layout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(455, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(516, Short.MAX_VALUE))
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jLabel1)
-                .addGap(17, 17, 17)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(359, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(332, Short.MAX_VALUE))
         );
 
         xPanel3.add(xPanel1, "card2");
 
         xPanel2.setVisibleWhen("#{mode=='show-list'}");
 
-        xLabel6.setExpression("<html>The system has found potential matches for <b>#{entity.lastname}</b>, <b>#{entity.firstname}</b>   <b>#{entity.middlename!=null? info.middlename : '' }</b>. <br>  If the person is not on this list, click <b>Proceed</b>. </html>");
-        xLabel6.setUseHtml(true);
+        jPanel3.setLayout(new java.awt.BorderLayout());
 
-        xButton2.setMnemonic('P');
-        xButton2.setAccelerator("ctrl P");
-        xButton2.setName("add"); // NOI18N
-        xButton2.setText("Proceed");
+        xLabel6.setExpression("<html>The system has found potential matches for <b>#{entity.lastname}</b>, <b>#{entity.firstname}</b>   <b>#{entity.middlename!=null? info.middlename : '' }</b>. <br>  If the person is not on this list, click <b>Proceed</b>. </html>");
+        xLabel6.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xLabel6.setUseHtml(true);
+        jPanel3.add(xLabel6, java.awt.BorderLayout.NORTH);
+
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         xButton4.setName("back"); // NOI18N
-        xButton4.setText("Retry");
+        xButton4.setMargin(new java.awt.Insets(4, 14, 4, 14));
+        xButton4.setText("  Retry  ");
+        jPanel4.add(xButton4);
+        jPanel4.add(filler1);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(xLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26))
-        );
+        xButton2.setMnemonic('P');
+        xButton2.setName("add"); // NOI18N
+        xButton2.setAccelerator("ctrl P");
+        xButton2.setMargin(new java.awt.Insets(4, 14, 4, 14));
+        xButton2.setText(" Proceed ");
+        jPanel4.add(xButton2);
+
+        jPanel3.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
         xPhoto1.setDepends(new String[] {"selectedItem"});
         xPhoto1.setName("selectedPhoto"); // NOI18N
         xPhoto1.setText("xPhoto1");
+
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
 
         xLabel1.setCaption("Lastname");
         xLabel1.setDepends(new String[] {"selectedItem"});
@@ -200,10 +189,10 @@ public class IndividualEntityMatchName extends XComponentPanel {
         xFormPanel2.add(xLabel5);
 
         xButton1.setMnemonic('S');
-        xButton1.setAccelerator("ctrl S");
         xButton1.setName("select"); // NOI18N
-        xButton1.setText("Select");
         xButton1.setVisibleWhen("#{allowSelect == true}");
+        xButton1.setAccelerator("ctrl S");
+        xButton1.setText("Select");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -233,6 +222,8 @@ public class IndividualEntityMatchName extends XComponentPanel {
                 .addGap(0, 70, Short.MAX_VALUE))
         );
 
+        xDataTable1.setHandler("listModel");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "entityno"}
@@ -326,8 +317,6 @@ public class IndividualEntityMatchName extends XComponentPanel {
             })
         });
         xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("listModel");
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
         xPanel2.setLayout(xPanel2Layout);
@@ -346,8 +335,9 @@ public class IndividualEntityMatchName extends XComponentPanel {
         xPanel2Layout.setVerticalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -359,9 +349,11 @@ public class IndividualEntityMatchName extends XComponentPanel {
         add(xPanel3, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
@@ -375,6 +367,7 @@ public class IndividualEntityMatchName extends XComponentPanel {
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XPanel xPanel3;

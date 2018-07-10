@@ -75,7 +75,6 @@ public class BillingRuleService {
 			}
 		);
 
-
 		if( data.amtpaid ) {
 			def amt = new BigDecimal( data.amtpaid + "" );
 			facts << new treasury.facts.Payment( amount: amt );

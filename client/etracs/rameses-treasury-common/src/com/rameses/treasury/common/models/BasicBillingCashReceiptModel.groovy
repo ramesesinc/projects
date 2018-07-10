@@ -110,7 +110,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
                     
                 def amt = MsgBox.prompt("Enter amount for advance payment. ");
                 if(!amt) throw new BreakException();
-                pp.amtpaid = new BigDecimal(""+amt);
+                pp.params.amtpaid = new BigDecimal(""+amt);
                 info = billingSvc.getInfo( pp );
             }
             else {

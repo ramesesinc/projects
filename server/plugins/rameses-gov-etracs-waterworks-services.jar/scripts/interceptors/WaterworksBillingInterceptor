@@ -39,9 +39,9 @@ class WaterworksBillingInfoInterceptor {
 		def r = evt.result;
 		r.putAll( acct );
 		r.acctid = acct.objid;
-		r.schedule = acct.stuboutnode?.schedule; 
-		r.sector = acct.stuboutnode?.sector; 
 		r.zone   = acct.stuboutnode?.zone; 
+		r.sector = acct.stuboutnode?.sector; 
+		r.schedule = acct.stuboutnode?.schedule; 
 	}
  
     @After(pattern="BillingInfoHandler.getBillItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
@@ -70,7 +70,7 @@ class WaterworksBillingInfoInterceptor {
 
 	}
 
- 	@After(pattern="BasicBillingHandler.getCreditItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
+ 	@After(pattern="BillingInfoHandler.getCreditItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )
 	public void loadCreditItems(def evt) {
 		def p = evt.args[0];
 		def bill = p.headerinfo; 
@@ -120,7 +120,7 @@ class WaterworksBillingInfoInterceptor {
     * CASH RECEIPT SPECFIC HANDLERS
 	********************************************/
 	//applicable for cash receipt billing
-	@After( pattern="BasicBillingHandler.formatReceiptInfo", eval="#{  args[0].txntype?.contains('waterworks')  }")
+	@After( pattern="BillingInfoHandler.formatReceiptInfo", eval="#{  args[0].txntype?.contains('waterworks')  }")
 	public void formatCashReceipt(def evt ) {
 		def res = evt.result;
 		def info = evt.args[0];

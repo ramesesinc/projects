@@ -12,11 +12,11 @@ import treasury.facts.*;
 
 class CreditPaymentService {
 
-	@Service("BasicBillingHandler")
+	@Service("BillingInfoHandler")
 	def handler;
 
-	@Service("BasicBillingService")
-	def billingSvc;
+	@Service("BillingCashReceiptService")
+	def billingCashReceiptSvc;
 
 	@Service("PaymentPostingService")
 	def paymentPostingSvc;
@@ -39,27 +39,19 @@ class CreditPaymentService {
 		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.init")
 
 		if ( pp.options == null ) pp.options = [:]; 
+
 		pp.options.include_credit = false; 
+		pp.options.returns_credit = true; 
 
-		def cpitems = handler.getCreditItems( pp, pp ); 
-		if ( !cpitems ) throw new Exception('There are no credit items found'); 
+		def rct = billingCashReceiptSvc.getInfo( pp );
+		if ( !rct.creditpayments ) throw new Exception('There are no credit items found'); 
 
-		cpitems.each{ it.txntype = 'creditpayment' } 
-
-		def cpamount = cpitems.sum{ it.amount } 
-		if( cpamount < 0 ) cpamount = cpamount * -1;
-
-		pp.params.amtpaid = cpamount; 
-
-
-		def rct = billingSvc.getCashReceiptInfo( pp ); 
 		rct.objid = 'CP' + new java.rmi.server.UID();
-		rct.org = [objid:env.ORGID, name:env.ORGNAME];
-		rct.user = [objid: env.USERID, name:env.USER];
+		rct.org = [ objid:env.ORGID, name:env.ORGNAME ];
+		rct.user = [ objid: env.USERID, name:env.USER ];
 		rct.txntype = pp.txntype;
 		rct.txnmode = 'ONLINE';
 		rct.state = 'OPEN';
-		rct.creditpayments = cpitems;
 		return rct; 	
 	} 
 

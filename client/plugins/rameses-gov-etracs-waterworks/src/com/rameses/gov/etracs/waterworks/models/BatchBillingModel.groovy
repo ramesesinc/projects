@@ -145,8 +145,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
        if( task.state == 'processing') {
            stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
        }
-       billHandler.reload();
-       readingHandler.reload();
    }
     
    void updateVolumeAmount( def objid, def m ) {

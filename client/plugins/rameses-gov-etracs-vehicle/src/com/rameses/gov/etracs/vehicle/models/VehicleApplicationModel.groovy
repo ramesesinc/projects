@@ -137,7 +137,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         }
     ] as BasicListModel;
 
-
+    /*
     def paymentListModel = [
         fetchList : {
             return entity.payments;
@@ -148,7 +148,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
             return op;
         }
     ] as BasicListModel;
-    
+    */
 
     void viewTrackingno() {
         Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );

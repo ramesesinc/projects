@@ -78,11 +78,16 @@ class VehicleApplicationPersistenceInterceptor {
 		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW|RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT") ) {
 			entity.primaryappid = entity.objid;
 		}
+		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW") ) {
+			entity.rootappid = entity.objid;
+		}
 		if( !entity.primaryappid ) throw new Exception("Primary appid is required");
-		appEm.find( [objid: result.objid ]).update( [primaryappid: entity.primaryappid ]);
+		if( !entity.rootappid ) throw new Exception("Root appid is required");
+
+		appEm.find( [objid: result.objid ]).update( [primaryappid: entity.primaryappid, rootappid: entity.rootappid ]);
 	}	
 
-	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT|CHANGE_UNIT|DROP')  }")
+	@After(pattern="PersistenceService.create", index=60, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT|CHANGE_UNIT|DROP')  }")
 	public void afterCreateApplicationRenew(def evt) {
 		def entity = evt.args[0];
 		def result = evt.result;

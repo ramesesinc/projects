@@ -101,6 +101,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         }
         entity.owner = selectedItem.owner;
         entity.primaryappid = selectedItem.primaryappid;
+        entity.rootappid = selectedItem.rootappid;
         entity.particulars = selectedItem.particulars;
         entity.lastrenewal = selectedItem.appyear; 
         if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
@@ -113,6 +114,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
             throw new Exception("Please select an item");
         prevOwner = selectedItem.owner;
         entity.primaryappid = selectedItem.primaryappid;
+        entity.rootappid = selectedItem.rootappid;
         entity.particulars = selectedItem.particulars;
         entity.appyear = selectedItem.appyear;
         if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;

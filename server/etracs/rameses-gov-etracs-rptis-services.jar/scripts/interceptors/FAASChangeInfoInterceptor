@@ -165,6 +165,10 @@ class FAASChangeInfoInterceptor
 		rpinfo.west = changeinfo.newinfo.west
 		rpinfo.south = changeinfo.newinfo.south
 		em_realproperty.update(rpinfo)
+
+		if (changeinfo.sketch){
+			faasSvc.saveSketch(changeinfo.sketch)
+		}
 	}	
 
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='add_faas_requirement_document'}")

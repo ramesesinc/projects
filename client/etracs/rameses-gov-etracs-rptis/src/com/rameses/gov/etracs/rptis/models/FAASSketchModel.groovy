@@ -76,6 +76,7 @@ class FAASSketchModel
         boundary.west = entity.rp.west;
         boundary.south = entity.rp.south;
         mode = MODE_EDIT;
+        println 'edit hander => ' + handler;
         handler?.refresh();
     }
     

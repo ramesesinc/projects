@@ -44,9 +44,11 @@ class VehicleAssessmentInterceptor {
 	@After(pattern="BillingRuleService.execute", eval="#{ args[0].rulename == 'vehicleassessment' && result.askinfos == null }")
 	public void afterBilling(def evt) {
 		def result = evt.result;
+
 		def data = evt.args[0].params;
 		def app = data.application
 		def appid = app.objid;
+		def expirydate = result.expirydate;
 
 		//clear first the data before saving
 		if( app.apptype == 'LATE_RENEWAL' ) {
@@ -82,7 +84,7 @@ class VehicleAssessmentInterceptor {
 		}
 		//find and update the total
 		def total = appFeeEm.find( [parentid : appid] ).select("total:{SUM(amount)}").val();
-		appEm.find( [objid: appid ]).update( [amount: total]);
+		appEm.find( [objid: appid ]).update( [amount: total, expirydate: expirydate]);
 	}
 	
 

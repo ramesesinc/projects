@@ -43,5 +43,7 @@
 			<key field="primaryappid" target="objid" />
 		</complex> 
 
+		<field name="rootappid"/>
+
 	</element>
 </schema>

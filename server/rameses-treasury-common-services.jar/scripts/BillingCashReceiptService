@@ -14,16 +14,22 @@ class BillingCashReceiptService {
 		if( !pp.rulename ) throw new Exception("BillingCashReceiptService error. rulename is required");
 		if( !pp.params ) throw new Exception("BillingCashReceiptService error. params is required");
 
+		//this is used as an option because in vehicle reg, getting billitems has a different query than getting for cashreceipt
 		pp.options.request_action = "cashreceipt";
+
+		boolean returnsCredit = (pp.options.returns_credit.toString() == 'true'); 
+		boolean includeCredit = (pp.options.include_credit.toString() == 'false' ? false : true ); 
+
 		pp.options.include_items = true; 
 
 		pp.headerinfo = handler.getHeaderInfo( pp ); 
 		pp.billitems = handler.getBillItems( pp ); 
 
-		if ( !pp.options.include_credit.toString().equals('false') ) {
-			def citems = handler.getCreditItems( pp ); 
-			if ( citems ) { 
-				citems.each{ it.txntype = 'creditpayment' } 
+		def citems = handler.getCreditItems( pp ); 
+		citems.each{ it.txntype = 'creditpayment' } 
+
+		if ( includeCredit ) { 
+			if ( citems && pp.billitems ) { 
 				pp.billitems.addAll( citems ); 
 			} 
 		}
@@ -38,7 +44,7 @@ class BillingCashReceiptService {
 		ruleParam.params = m; 
 
 		def ruleRes = ruleSvc.execute( ruleParam ); 
-		if ( !ruleRes.items ) throw new Exception('There must be a result items in your BillingRuleService.execute'); 
+		//if ( !ruleRes.items ) throw new Exception('There must be a result items in your BillingRuleService.execute'); 
 
 		m = [:];
 		m.putAll( pp.headerinfo );  
@@ -48,6 +54,8 @@ class BillingCashReceiptService {
 		if( !m.txntype ) m.txntype = pp.params?.collectiontype?.handler;
 		
 		def bill = handler.formatReceiptInfo( m ); 
+		if ( returnsCredit ) bill.creditpayments = citems; 
+
 		bill.billitems = m.billitems;
 		bill.items = m.items; 
 		bill.amount = m.items.sum{( it.amount ? it.amount : 0.0 )} 

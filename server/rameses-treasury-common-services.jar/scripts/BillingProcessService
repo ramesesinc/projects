@@ -14,6 +14,7 @@ class BillingProcessService {
 		if( !pp.rulename ) throw new Exception("BillingCashReceiptService error. rulename is required");
 		if( !pp.params ) throw new Exception("BillingCashReceiptService error. params is required");
 
+		pp.options.request_action = "billing";
 		pp.headerinfo = handler.getHeaderInfo( pp ); 
 		pp.billitems = handler.getBillItems( pp ); 
 

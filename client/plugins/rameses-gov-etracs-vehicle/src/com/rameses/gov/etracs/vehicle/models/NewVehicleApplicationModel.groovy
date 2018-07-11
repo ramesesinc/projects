@@ -25,6 +25,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
     def lookupType = "controlno";
     def owner;
     def controlno;
+    def appno;
 
     def resultList;
     def selectedItem;

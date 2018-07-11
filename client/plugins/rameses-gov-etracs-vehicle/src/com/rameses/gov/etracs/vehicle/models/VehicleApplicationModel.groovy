@@ -154,17 +154,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
  
-    def printPermit() { 
-        String vehicletype = getSchemaName().toString();
-        int idx = vehicletype.lastIndexOf('_'); 
-        if ( idx > 0 ) { 
-            vehicletype = vehicletype.substring(idx+1);
-        }
-        
-        def opener = Inv.lookupOpener('vehicle_application_permit:print', [vehicletype: vehicletype, entity: entity]);
-        opener.target = 'self'; 
-        return opener;
-    }
+    
 
     void assessLateRenewal() {
         boolean bstop = false;
@@ -233,6 +223,19 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         else {
             assessBasic();
         }
+    }
+    
+    //PRINTOUTS
+    def printApplication() {
+        
+    }
+    def printBill() {
+        
+    }
+    def printPermit() { 
+        def opener = Inv.lookupOpener('vehicle_application_permit:print', [vehicletype: vehicletype, entity: entity]);
+        opener.target = 'self'; 
+        return opener;
     }
 
 }

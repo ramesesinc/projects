@@ -26,9 +26,14 @@ class VehicleApplicationSearchService {
         	conds << "vehicleunit.owner.objid =:ownerid";
             params.ownerid = o.owner.objid;
         } 
-        else  {
-        	conds << " vehicleunit.controlno = :controlno ";
+        else if( o.lookuptype == "controlno") {
+        	conds << " controlno = :controlno ";
         	params.controlno = o.controlno;
+        }
+        else {
+            //by application
+            conds << " vehicleunit.appno = :appno ";
+            params.appno = o.appno;
         }
 
         if( o.apptype == "RENEW") {

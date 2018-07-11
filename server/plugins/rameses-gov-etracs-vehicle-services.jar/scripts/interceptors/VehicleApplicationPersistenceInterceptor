@@ -26,6 +26,9 @@ class VehicleApplicationPersistenceInterceptor {
 	@DataContext("vehicle_application_unit")
 	def appUnitEm;
 
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
 	@DataContext("vehicle_franchise")
 	def franchiseEm;
 
@@ -38,7 +41,16 @@ class VehicleApplicationPersistenceInterceptor {
 	@Service("ControlNoGeneratorService")
 	def controlNoGenerator;
 
-	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	@Before(pattern="PersistenceService.create", index=1, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode !='CAPTURE' && args[0].apptype != 'NEW' }")
+	public void checkArrearsBeforeCreateApp(def evt) {
+		def entity = evt.args[0];
+		def result = evt.result;
+		def rootappid = entity.rootappid;
+		def val = appFeeEm.where( "parent.rootappid = :rootappid ", [rootappid: rootappid] ).select("total:{SUM(amount-amtpaid)}").val();
+		if( val > 0 ) throw new Exception("Cannot proceed with the transaction. There are still unpaid fees.");
+	}
+
+	@Before(pattern="PersistenceService.create", index=2, eval="#{ args[0]._schemaname == 'vehicle_application' }")
 	public void beforeCreateApplicationNewOrRenew(def evt) {
 		def entity = evt.args[0];
 

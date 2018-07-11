@@ -2,7 +2,7 @@
 	<element tablename="vehicle_application_fee">
 		<field name="objid" primary="true" prefix="VAPPF"/>
 		<complex name="parent" ref="vehicle_application" jointype="many-to-one" 
-			includefields="objid,appno,apptype,appyear,vehicletype,controlid" required="true">
+			includefields="objid,appno,apptype,appyear,vehicletype,controlid,rootappid" required="true">
 			<key field="parentid" target="objid"/>
 		</complex>	
 		<field name="appyear" type="integer" />

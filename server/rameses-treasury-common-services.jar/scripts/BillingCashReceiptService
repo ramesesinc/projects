@@ -14,10 +14,14 @@ class BillingCashReceiptService {
 		if( !pp.rulename ) throw new Exception("BillingCashReceiptService error. rulename is required");
 		if( !pp.params ) throw new Exception("BillingCashReceiptService error. params is required");
 
+		//this is used as an option because in vehicle reg, getting billitems has a different query than getting for cashreceipt
+		pp.options.request_action = "cashreceipt";
+
 		boolean returnsCredit = (pp.options.returns_credit.toString() == 'true'); 
 		boolean includeCredit = (pp.options.include_credit.toString() == 'false' ? false : true ); 
 
 		pp.options.include_items = true; 
+
 		pp.headerinfo = handler.getHeaderInfo( pp ); 
 		pp.billitems = handler.getBillItems( pp ); 
 

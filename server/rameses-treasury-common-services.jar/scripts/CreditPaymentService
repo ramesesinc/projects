@@ -15,14 +15,11 @@ class CreditPaymentService {
 	@Service("BillingInfoHandler")
 	def handler;
 
-	@Service("BillingCashReceiptService")
-	def billingCashReceiptSvc;
-
-	@Service("PaymentPostingService")
-	def paymentPostingSvc;
+	@Service("BillingRuleService")
+	def ruleSvc;
 
 	@DataContext("creditpayment")
-	def billEm;
+	def creditpaymentEm;
 
 	@Service("SequenceService")
 	def seqSvc;
@@ -40,19 +37,46 @@ class CreditPaymentService {
 
 		if ( pp.options == null ) pp.options = [:]; 
 
-		pp.options.include_credit = false; 
-		pp.options.returns_credit = true; 
+		pp.options.include_items = true; 
+		pp.headerinfo = handler.getHeaderInfo( pp ); 
+		pp.billitems = handler.getBillItems( pp ); 
 
-		def rct = billingCashReceiptSvc.getInfo( pp );
-		if ( !rct.creditpayments ) throw new Exception('There are no credit items found'); 
+		def citems = handler.getCreditItems( pp ); 
+		if ( !citems ) throw new Exception('There are no credit items found'); 
 
-		rct.objid = 'CP' + new java.rmi.server.UID();
+		citems.each{ it.txntype = 'creditpayment' } 
+
+		def m = [:]; 
+		m.putAll( pp.params ); 
+		m.putAll( pp.headerinfo ); 
+		m.billitems = pp.billitems; 
+
+		def ruleParam = [ rulename: pp.rulename ]; 
+		ruleParam.putAll( pp.options ); 
+		ruleParam.params = m; 
+
+		def ruleRes = ruleSvc.execute( ruleParam ); 
+
+		m = [:];
+		m.putAll( pp.headerinfo );  
+		m.putAll( ruleRes );  
+		m.rulename = pp.rulename; 
+		m.txntype = pp.txntype; 
+		
+		def rct = handler.formatReceiptInfo( m ); 
+		rct.creditpayments = citems;
+		rct.billitems = m.billitems;
+		rct.items = m.items; 
+		rct.amount = m.items.sum{( it.amount ? it.amount : 0.0 )} 
+		rct._postpayment = true; //we should mark this to indicate posting will be automatically handled
+
+		rct.objid = 'CP' + new java.rmi.server.UID(); 
 		rct.org = [ objid:env.ORGID, name:env.ORGNAME ];
 		rct.user = [ objid: env.USERID, name:env.USER ];
 		rct.txntype = pp.txntype;
 		rct.txnmode = 'ONLINE';
 		rct.state = 'OPEN';
-		return rct; 	
+		return rct; 
 	} 
 
 	@ProxyMethod
@@ -66,6 +90,6 @@ class CreditPaymentService {
 			rct.controldate = dateSvc.getBasicServerDate();  
 		}
 		rct.txndate = dateSvc.getServerDate();
-		return billEm.create( rct );
+		return creditpaymentEm.create( rct );
 	}
 }

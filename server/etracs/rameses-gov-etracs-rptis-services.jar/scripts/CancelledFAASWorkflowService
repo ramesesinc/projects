@@ -51,7 +51,7 @@ class CancelledFAASWorkflowService extends ActiveWorkflowService
 		if (task.state.matches('assign.*'))
 			task.owner = true 
 
-		task.data = faasSvc.openCancelledFaas([objid:task.refid])
+		task.data = faasSvc.open([objid:task.refid])
 		removeUserNotification(task)
 	}
 

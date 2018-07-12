@@ -13,7 +13,7 @@ class FAASRestrictionService
 	def logSvc 
 
 	@DataContext('faas_restriction')
-	def em
+	def em_restriction
 
 	@DataContext('rptledger')
 	def em_ledger
@@ -24,7 +24,7 @@ class FAASRestrictionService
 
 	@ProxyMethod
 	public def approve( entity ) {
-		def old = em.read(entity)
+		def old = em_restriction.read(entity)
 		if (!old) 
 			throw new Exception('Record does not exist or has already been deleted.')
 		if (old.state == 'UNRESTRICTED')
@@ -32,17 +32,33 @@ class FAASRestrictionService
 		entity.state = 'ACTIVE'
 		entity.ledger = em_ledger.find([faasid:entity.parent.objid]).first() 
 		entity.rpumaster = em_rpu.find([objid:entity.parent.rpuid]).first()
-		return em.update(entity)
+		return em_restriction.update(entity)
 	}
 
 	@ProxyMethod
 	public void removeRestriction( entity ) {
-		def old = em.read(entity)
+		def old = em_restriction.read(entity)
 		if (!old) 
 			return 
 		if (old.state == 'UNRESTRICTED')
 			throw new Exception('Delete is not allowed. Record has already been unrestricted.')
-		em.delete(entity)	
+		em_restriction.delete(entity)	
+	}
+
+	@ProxyMethod
+	public def cancel( restriction, receipt ) {
+		restriction.state = 'UNRESTRICTED'
+		restriction.receipt = receipt
+		em_restriction.update(restriction)
+		return restriction
+	}
+
+	@ProxyMethod
+	public def reactivate(restriction) {
+		restriction.state = 'ACTIVE'
+		restriction.receipt = null 
+		em_restriction.update(restriction)
+		return restriction
 	}
 
 }

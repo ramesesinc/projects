@@ -39,7 +39,7 @@ public class CancelledFaasWorkflowClosedController
     
     
     void open(){
-        entity = svc.openCancelledFaas(entity);
+        entity = svc.open(entity);
         formId = (entity.txnno ? entity.txnno : entity.faas.tdno );
     }   
     

@@ -59,8 +59,8 @@ public class CancelledFAASPage extends javax.swing.JPanel {
         xLookupField1.setCaption("TD No. ");
         xLookupField1.setExpression("#{entity.faas.tdno}");
         xLookupField1.setHandler("lookupFaas");
-        xLookupField1.setIndex(-100);
         xLookupField1.setName("entity.faas"); // NOI18N
+        xLookupField1.setIndex(-100);
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);
@@ -101,6 +101,7 @@ public class CancelledFAASPage extends javax.swing.JPanel {
         xComboBox1.setItems("cancelReasons");
         xComboBox1.setName("entity.reason"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 22));
+        xComboBox1.setRequired(true);
         formPanel2.add(xComboBox1);
 
         xLabel3.setCellPadding(new java.awt.Insets(5, 0, 0, 0));

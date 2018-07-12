@@ -3,6 +3,9 @@ import com.rameses.common.*;
 import com.rameses.services.extended.*;
 
 class SyncService {
+	@Env 
+	def env 
+
 	@Service()
 	def self 
 
@@ -52,7 +55,18 @@ class SyncService {
 	--------------------------------------*/
 	@ProxyMethod
 	public def send(syncdata){
+		println syncdata.action + ' sent.'
 		return coordinator.send(syncdata)
+	}
+
+	@ProxyMethod
+	public def send2(syncdata, data){
+		if (data) {
+			println syncdata.action + ' sent.'
+			syncdata.data = data 
+			return coordinator.send(syncdata)	
+		}
+		return null 
 	}
 
 
@@ -65,22 +79,38 @@ class SyncService {
 	public def receive(syncdata){
 		//can be overriden by interceptor to
 		//return specific data 
+		println syncdata.action + ' received.'
 		return [:]
 	}
 
-
 	@ProxyMethod
 	public def create(data) {
+		data.sender = [objid: env.USERID, name: env.FULLNAME]
+		data.orgid = env.ORGID
 		em_sync.create(data)
 		em_sync_forprocess.create(data)
 		return data 
 	}
 
 	@ProxyMethod
+	public def schedule(parentid, refid, reftype, action, dtfiled, idx, remote) {
+		def data = [:]
+		data.parentid = parentid
+        data.refid = refid
+        data.reftype = reftype
+        data.action = action
+        data.dtfiled = dtfiled
+        data.idx = idx 
+        data.remote = remote 
+        return create(data)
+	}
+
+
+	@ProxyMethod
 	public def getForProcessItems(){
 		return em_sync.where('forprocess.objid is not null')
-				.orderBy('dtfiled')
-				.limit(20)
+				.orderBy('dtfiled, idx')
+				.limit(25)
 				.list()
 	}
 
@@ -94,7 +124,7 @@ class SyncService {
 
 		return em_sync.where(filter, syncdata)
 				.orderBy('dtfiled')
-				.limit(20)
+				.limit(25)
 				.list()
 	}
 
@@ -102,7 +132,7 @@ class SyncService {
 	public void movePendingToForProcess(){
 		def pendings = em_sync.where('pending.objid is not null and expirydate <= :currdate', [currdate: dtSvc.serverDate])
 				.orderBy('dtfiled')
-				.limit(20)
+				.limit(25)
 				.list()
 
 		pendings.each{
@@ -114,12 +144,14 @@ class SyncService {
 
 	void completed(data){
 		em_sync_forprocess.delete(data)
+		em_sync_pending.delete(data)
+		em_sync.delete(data)
 	}
 
 	void moveToPending(syncdata, err){
 		syncdata.error = err.message 
 		syncdata.expirydate = dtSvc.add(dtSvc.serverDate, '1m')
-		em_sync_pending.create(syncdata)
+		em_sync_pending.save(syncdata)
 		em_sync_forprocess.delete(syncdata)
 		println 'SyncService [ERROR] : ' + err.message 
 	}

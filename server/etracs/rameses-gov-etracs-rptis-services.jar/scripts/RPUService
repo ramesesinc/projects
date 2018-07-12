@@ -311,6 +311,7 @@ class RPUService
             em.deleteRpuMaster([objid:rpu.rpumasterid])
         }
         catch(e){
+            e.printStackTrace()
             //ignore: possible references when there are multiple assessments
         }
     }

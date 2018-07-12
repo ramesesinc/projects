@@ -23,9 +23,6 @@ class FAASChangeSketchModel extends FAASSketchModel
     @Invoker 
     def invoker
     
-    @Service('FAASSupportService')
-    def supportSvc;
-    
     @Service('FAASChangeInfoService')
     def svc;  
     

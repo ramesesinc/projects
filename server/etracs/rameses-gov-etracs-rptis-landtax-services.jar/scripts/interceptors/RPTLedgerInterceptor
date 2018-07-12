@@ -73,6 +73,7 @@ class RPTLedgerInterceptor
 
 	@After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && !env?.ORGCLASS?.equalsIgnoreCase('province')}")
 	public void postFaasToRPTLedger(evt){
+        println 'postFaasToRPTLedger ....'
         def faas = evt.result 
         if (util.isTrue(faas.datacapture) && (faas.previousfaases.size() == 0 || faas.previousfaases.findAll{it.prevfaasid != null}.size() == 0 )) {
             postNewLedger(faas)
@@ -94,6 +95,8 @@ class RPTLedgerInterceptor
     @After(pattern="FAASService.(approveFaas|approveFaasByRemote)", eval="#{env && env?.ORGCLASS?.equalsIgnoreCase('province')}")
     public void postToProvinceLedger(evt){
         def faas = evt.result 
+
+        println 'postToProvinceLedger...'
 
         if (isLedgerExisting(faas)){
             svc.postLedgerFaasData(faas)
@@ -204,6 +207,13 @@ class RPTLedgerInterceptor
         rlf.assessedvalue = newrpu.totalav 
         rlf.systemcreated = true 
         return rlf 
+    }
+
+
+    @After(pattern="FAASService.revertToInterim")
+    public void revertToInterim(evt){
+        def faas = evt.result 
+        svc.deleteFromRevertedFaas(faas)
     }
 
 }

@@ -44,7 +44,7 @@ public class FAASAnnotationController extends PageFlowController
     
     
     def open(){
-        entity = svc.openAnnotation(entity.objid)
+        entity = svc.open(entity)
         loadImages();
         mode = MODE_READ;
         return super.signal('open');
@@ -93,15 +93,15 @@ public class FAASAnnotationController extends PageFlowController
     
     void save(){
         if (mode == MODE_CREATE)
-        entity = svc.createAnnotation(entity)
+        entity = svc.create(entity)
         else 
-        entity = svc.updateAnnotation(entity)
+        entity = svc.update(entity)
         mode = MODE_READ;
     }    
    
     
     void delete(){
-        svc.deleteAnnotation(entity)
+        svc.delete(entity)
     }
     
     
@@ -112,22 +112,22 @@ public class FAASAnnotationController extends PageFlowController
      *
      *----------------------------------------------------*/
     void initAnnotation(){
-        entity = svc.initAnnotation(faas);
+        entity = svc.init(faas);
     }
     
     
     void submitAnnotationForApproval(){
-        entity = svc.submitAnnotationForApproval(entity);
+        entity = svc.submitForApproval(entity);
     }
     
     
     void disapproveAnnotation(){
-        entity = svc.disapproveAnnotation(entity)
+        entity = svc.disapprove(entity)
     }
     
     
     void approveAnnotation() {
-        entity = svc.approveAnnotation(entity);
+        entity = svc.approve(entity);
     }
 
     

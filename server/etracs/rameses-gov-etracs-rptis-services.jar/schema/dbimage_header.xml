@@ -1,4 +1,4 @@
-<schema>
+<schema adapter="image">
 	<element tablename="image_header">
 		<field name="objid" primary="true"/>
 		<field name="refid" />

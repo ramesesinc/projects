@@ -19,7 +19,7 @@ AND EXISTS(SELECT * FROM faas WHERE rpuid = r.objid  )
 
 
 [deleteRpu]
-DELETE FROM rpu WHERE objid = $P{objid} AND state NOT IN ('CURRENT', 'CANCELLED')
+DELETE FROM rpu WHERE objid = $P{objid}
 
 
 [deleteAllAssessments]

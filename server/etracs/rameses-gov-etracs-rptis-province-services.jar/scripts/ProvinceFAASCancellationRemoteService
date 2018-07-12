@@ -17,10 +17,10 @@ class ProvinceFAASCancellationRemoteService
 		def cf = em.findById(cancelledfaas)
 		if (!cf){
 			cancelledfaas.state = 'FORAPPROVAL'
-			svc.createCancelledFaas(cancelledfaas)
+			svc.create(cancelledfaas)
 		}
 
-		svc.approveFaasCancellation(cancelledfaas)
+		svc.approve(cancelledfaas)
 		println 'FAAS Cancellation submitted by the municipality has been successfully posted.'
 	}
 }

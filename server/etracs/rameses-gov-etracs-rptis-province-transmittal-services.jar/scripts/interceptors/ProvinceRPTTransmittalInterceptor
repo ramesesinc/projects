@@ -71,7 +71,7 @@ class ProvinceRPTTransmittalInterceptor
 				.update(updateditem)
 	}
 
-	@After(pattern='CancelledFAASService.approveFaasCancellation', index=1005)
+	@After(pattern='CancelledFAASService.approve', index=1005)
 	public void approveCancelledFaasTransmittalItem(evt){
 		def cancelledfaas = evt.result 
 

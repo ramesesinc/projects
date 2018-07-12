@@ -53,6 +53,8 @@ class BillingCashReceiptService {
 		m.txntype = pp.txntype; 
 		if( !m.txntype ) m.txntype = pp.params?.collectiontype?.handler;
 		
+		handler.validateReceiptInfo( m );
+
 		def bill = handler.formatReceiptInfo( m ); 
 		if ( returnsCredit ) bill.creditpayments = citems; 
 

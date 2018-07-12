@@ -1,9 +1,9 @@
-<workunit>
+<workunit schemaName="vw_vehicle_for_payment" extends="com/rameses/seti2/templates/CrudLookup.xml">
     <invokers>
-        <invoker type="vehicle:cashreceipt_lookup" caption="Lookup Vehicles" />
+        <invoker type="vehicle:cashreceipt_lookup" caption="Lookup Vehicles"
+                 cols="appno,apptype,appyear,owner.name,controlno"
+                 hiddenCols="plateno,engineno,sidecarno,bodyno"
+                 width="1000"
+                 action="init"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.vehicle.models.VehicleLookupModel" />
-    <pages>
-        <page template="com.rameses.gov.etracs.vehicle.views.ApplicationSelectionPage" />
-    </pages>
 </workunit>

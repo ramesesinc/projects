@@ -12,13 +12,21 @@ class WaterworksOrgModel  {
 
     def selectedSector;
     def selectedZone;
+    def selectedStubout;
+    def selectedStuboutnode;
     
     def getSectorQuery() {
-        return [ sectorid: "A" ]
+        if( !selectedSector?.objid ) return [:];
+        return [ sectorid: selectedSector.objid ]
     }
     
-    def zoneListHandler = [
-        
-    ]
+    def getZoneQuery() {
+        if( !selectedZone?.objid ) return [:];
+        return [ zoneid: selectedZone.objid ]
+    }
     
+    def getStuboutQuery() {
+        if( !selectedStubout?.objid ) return [:];
+        return [ stuboutid: selectedStubout.objid ]
+    }
 }

@@ -25,59 +25,42 @@ class VehicleApplicationWorkflowInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@Before(pattern="WorkflowTaskService.signal", 
-		eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'draft' }")
+	//check before submitting draft application
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'draft' }")
 	public void beforeSubmittingDraft( def evt ) {
 		def p = evt.args[0];
 		def x = unitEm.find( [ appid: p.refid ] ).select("c:{COUNT(*)}").val();
 		if( x == 0 ) throw new Exception("There must be at least 1 vehicle entry");	
 	}
 
-	/************************************************************************************************
-	* before running the payment get the necessary info for evaluation, in this case the amtdue 
-	************************************************************************************************/
-	@Before(pattern="WorkflowTaskService.signal", 
-		eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'payment' }")
+	//check before submitting assessed application
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'assessment' }")
+	public void checkHasFees( def evt ) {
+		def p = evt.args[0];
+		def app = appEm.find( [objid: p.refid] ).select("txnmode,apptype").first();
+		if( app.txnmode == "ONLINE") {
+			int ct = vFee.find( [parentid: p.refid ] ).select("scount:{COUNT(*)}").val();
+			if( ct == 0 ) throw new Exception("There must be at least one fee entry");
+		}
+	}
+
+	//before running the payment get the necessary info for evaluation, in this case the amtdue 
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'payment' }")
 	public void beforePayment( def evt ) {
 		def p = evt.args[0];
 		def	total = vFee.select( "total:{SUM( amount-amtpaid )}" ).find( [parentid: p.refid ] ).val();
-		p.info = [amtdue: total];	
-	}
-
-	/************************************************************************ 
-	* Approve will update the appid of the franchise 
-	**************************************************************************/
-	@After(pattern="WorkflowTaskService.signal", 
-	  eval="#{ args[0].processname=='vehicle_application' && args[0].action=='approve' }", index=1)
-	public void afterApprove( def evt ) {
-		def p = evt.args[0];
-		def task = evt.result;
-		def m = appEm.select("controlid,appyear,apptype,appdate,franchise.startdate,franchise.expirydate").find( [objid: p.refid] ).first();
-		def u = [:];
-		u.appid = p.refid;
-		u.activeyear = m.appyear;
-		franchiseEm.find([objid: m.controlid]).update(u);
+		p.info = [amtdue: total, message: 'balance unpaid:' + total ];	
 	}
 
 	/************************************************************************ 
 	* Issue Permit will create a new permit 
 	**************************************************************************/
-	@After(pattern="WorkflowTaskService.signal", 
-	  eval="#{ args[0].processname=='vehicle_application' && args[0].action=='issue-permit' }")
+	@After(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].action=='issue-permit' }")
 	public void afterIssuePermit( def evt ) {
 		def p = evt.args[0];
 		permitSvc.create( [appid: p.refid] );
 	}
 
 
-	/************************************************************************ 
-	* After permit 
-	**************************************************************************/
-	@After(pattern="WorkflowTaskService.signal", 
-	  eval="#{ args[0].processname=='vehicle_application' && args[0].action=='release' }")
-	public void afterRelease( def evt ) {
-		def p = evt.args[0];
-		franchiseEm.find([appid: p.refid]).update([state:'ACTIVE']);
-	}
 
 }

@@ -37,6 +37,8 @@ class CreditPaymentService {
 
 		if ( pp.options == null ) pp.options = [:]; 
 
+		pp.options.request_action = "creditpayment";
+
 		pp.options.include_items = true; 
 		pp.headerinfo = handler.getHeaderInfo( pp ); 
 		pp.billitems = handler.getBillItems( pp ); 

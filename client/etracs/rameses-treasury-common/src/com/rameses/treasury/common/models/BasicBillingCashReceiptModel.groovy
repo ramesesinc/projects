@@ -84,13 +84,14 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         def opener = null;
         try {
             def h = { o->
-                txnid = o; 
+                txnid = o?.objid; 
+                return null;
             }
             opener = Inv.lookupOpener(getContextName() + ":cashreceipt_lookup", [onselect: h ]);
             Modal.show( opener );
         }catch(ign){;}
         
-        if( !txnid ) {
+        if( opener==null && txnid==null ) {
             txnid = MsgBox.prompt("Enter Transaction No");
         }
         if(!txnid) throw new BreakException();

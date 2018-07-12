@@ -1,0 +1,46 @@
+<!--
+DROP VIEW IF EXISTS vw_vehicle_for_payment;
+CREATE VIEW vw_vehicle_for_payment AS 
+SELECT 
+va.objid,
+va.appno,
+va.appdate,
+va.apptype,
+va.appyear,
+vf.controlno,
+vu.plateno,
+vu.bodyno,
+vu.engineno,
+vu.sidecarno,
+vu.crname,
+vu.driver_name,
+va.owner_name,
+va.owner_address_text
+
+FROM vehicle_application_unit vu
+INNER JOIN vehicle_application va ON vu.appid=va.objid
+INNER JOIN vehicle_franchise vf ON vu.controlid = vf.objid 
+INNER JOIN vehicle_application_task at ON va.taskid = at.taskid 
+WHERE at.state = 'payment';
+-->
+<schema adapter="vehicledb">
+	<element tablename="vw_vehicle_for_payment">
+		<field name="objid" primary="true" />
+		<field name="appno" caption="App No" searchable="true"/>
+		<field name="appdate" caption="App Date"/>
+		<field name="apptype" caption="App Type" />
+		<field name="appyear" caption="App Year" />
+		
+		<field name="controlno" caption="Franchise No" searchable="true"/>
+		<field name="plateno" caption="Plate No" searchable="true"/>
+		<field name="engineno" caption="Engine No" searchable="true"/>
+		<field name="bodyno" caption="Body No" searchable="true"/>
+		<field name="sidecarno" caption="Sidecar No" searchable="true"/>
+		<field name="crname" caption="CR Name" searchable="true"/>
+		<field name="driver_name" caption="Driver" searchable="true"/>
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+
+	</element>
+</schema>
+

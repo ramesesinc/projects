@@ -34,6 +34,9 @@ class VehicleBillingInterceptor {
 		def app = null; 
 		if ( p.id ) {
 			app = appEm.find( [appno: p.id ] ).first();
+			if(!app) {
+				app = appEm.find( [objid: p.id ] ).first();
+			}
 		} else if ( p.objid ) {
 			app = appEm.find( [objid: p.objid ] ).first();
 		} 
@@ -59,11 +62,16 @@ class VehicleBillingInterceptor {
     * CASH RECEIPT SPECFIC HANDLERS
 	********************************************/
 	//applicable for cash receipt billing
+	@After( pattern="BillingInfoHandler.validateReceiptInfo", eval="#{ args[0].txntype == 'vehicle' }")
+	public void validateCashReceipt(def evt ) {
+		def app = evt.args[0].application;
+		def res = evt.result;
+	} 
+
 	@After( pattern="BillingInfoHandler.formatReceiptInfo", eval="#{ args[0].txntype == 'vehicle' }")
 	public void formatCashReceipt(def evt ) {
 		def app = evt.args[0].application;
 		def res = evt.result;
-		
 		res.payer = app.owner;
 		res.paidby = app.owner.name;
 		res.paidbyaddress = app.owner.address?.text;

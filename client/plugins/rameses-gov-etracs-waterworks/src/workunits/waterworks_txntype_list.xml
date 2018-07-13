@@ -4,8 +4,8 @@
           cols="objid,title,priority,item.code,item.title,item.fund.code,item.fund.title"
           orderBy="objid">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Txn Types" action="init" />
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Txn Types" action="init" />
+        <invoker folderid="/explorer/master/waterworks" caption="Txn Types" action="init" role="MASTER"/>
+        <invoker folderid="/menucategory/waterworks/master" caption="Manage Txn Types" action="init" role="MASTER"/>
         
         <invoker type="listActions" caption="Set Account" action="setAccount"/>
     </invokers>    

@@ -2,8 +2,8 @@
           schemaName="waterworks_zone" allowCreate="false">
 
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Zones" action="init"/>
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Zones" action="init" index="2"/>
+        <invoker folderid="/explorer/master/waterworks" caption="Zones" action="init" role="MASTER"/>
+        <invoker folderid="/menucategory/waterworks/master" caption="Manage Zones" action="init" role="MASTER" index="2"/>
     </invokers>
    
 </workunit>

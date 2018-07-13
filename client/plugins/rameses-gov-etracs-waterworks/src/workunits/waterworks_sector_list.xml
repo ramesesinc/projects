@@ -4,8 +4,8 @@
     
     <!-- used by rules -->
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Sectors" action="init"/>
+        <invoker folderid="/explorer/master/waterworks" caption="Sectors" action="init" role="MASTER"/>
         
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Sectors" action="init" index="1"/>
+        <invoker folderid="/menucategory/waterworks/master" caption="Manage Sectors" action="init" role="MASTER" index="1"/>
     </invokers>
 </workunit>

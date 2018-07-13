@@ -4,7 +4,7 @@
           cols="code,description,zone.sector.code,zone.description"
           orderBy="code">
     <invokers>
-        <invoker folderid="/explorer/master/waterworks" caption="Stubout" action="init" index="-4"/> 
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Stubout" action="init" index="3"/> 
+        <invoker folderid="/explorer/master/waterworks" caption="Stubout" action="init" role="MASTER" index="-4"/> 
+        <invoker folderid="/menucategory/waterworks/master" caption="Manage Stubout" action="init" role="MASTER" index="3"/> 
     </invokers>
 </workunit>

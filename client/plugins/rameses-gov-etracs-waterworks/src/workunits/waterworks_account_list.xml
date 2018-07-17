@@ -3,6 +3,6 @@
           cols="acctno,stuboutnode.zone.code,stuboutnode.indexno,acctname,address.text,stuboutnode.sector.code,meter.serialno,lastdateread,stuboutnode.stubout.code,currentreading"
           orderBy="acctname">
     <invokers>
-        <invoker folderid="/menucategory/waterworks/account" caption="View Customer Accounts" action="init" />
+        <invoker folderid="/menucategory/waterworks/account" caption="View Customer Accounts" action="init" role="MASTER"/>
     </invokers>
 </workunit>

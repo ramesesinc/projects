@@ -3,8 +3,8 @@
           schemaName="waterworks_batch_billing" 
           allowNotify="true">
     <invokers>
-        <invoker folderid="/menucategory/waterworks/billing" 
+        <invoker folderid="/menucategory/waterworks/billing" action="init" 
             cols="year,monthname,zone.code,zone.sector.code,readingdate,reader.name,dtcreated,createdby.nam"
-            caption="View Batch Billing List" action="init" index="1" />
+            caption="View Batch Billing List" index="1" role="MASTER"/>
     </invokers>
 </workunit>

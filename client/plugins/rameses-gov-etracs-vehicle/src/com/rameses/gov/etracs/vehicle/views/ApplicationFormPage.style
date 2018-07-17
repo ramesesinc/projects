@@ -13,3 +13,7 @@
 "editUnit" [ entity.apptype == 'CHANGE_UNIT' ] {
     visible: true;
 }
+
+"addUnit|editUnit|removeUnit" [ entity.task?.state != 'draft' ] {
+    visible: false;
+}

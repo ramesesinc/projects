@@ -29,12 +29,7 @@ public class VehicleTypeModel extends CrudFormModel {
     def excludedFields = [];
     def excludedField;
     
-    void afterCreate() {
-        entity.issued = 0;
-        entity.allowedfields = ".*";
-    }
-
-    void afterOpen() {
+    void loadFields() {
         schemaSvc.getSchema( [name:"vehicle_application_unit" ] )?.fields.findAll{it.included == "true"}.collect{
             if(it.name.contains("_")) it.name = it.name.split("_")[0];
             def m = [name: it.name, caption: it.caption];
@@ -45,6 +40,16 @@ public class VehicleTypeModel extends CrudFormModel {
                 excludedFields << m;
             }
         };
+    }
+    
+    void afterCreate() {
+        entity.issued = 0;
+        entity.allowedfields = ".*";
+        loadFields();
+    }
+
+    void afterOpen() {
+        loadFields();
     }
     
     void addCluster() {
@@ -93,12 +98,14 @@ public class VehicleTypeModel extends CrudFormModel {
     
     void addField() {
         if( !excludedField) return;
+        if( includedFields.contains(excludedField) ) return;
         includedFields << excludedField;
         excludedFields.remove( excludedField );
     }
     
     void removeField() {
         if( !includedField ) return;
+        if(excludedFields.contains(includedField)) return;
         excludedFields << includedField;
         includedFields.remove( includedField );
     }

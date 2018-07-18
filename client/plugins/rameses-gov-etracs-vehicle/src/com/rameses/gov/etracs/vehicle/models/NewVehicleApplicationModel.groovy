@@ -97,6 +97,26 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
 
     void saveCopy() {
         if(!selectedItem) throw new Exception("Please select an item");
+        
+        if ( selectedItem.taskstate == 'payment' ) throw new Exception('This transaction is not fully paid. Please settle payment first');  
+        if ( selectedItem.taskstate != 'end' ) throw new Exception('This transaction is not yet completed. Please verify');  
+        
+        if ( entity.apptype == 'RENEW' ) {
+            int yr = entity.appyear-1;
+            if ( selectedItem.appyear < yr ) 
+                throw new Exception('This transaction is delinquent. Please settle deliquency first'); 
+            if ( selectedItem.appyear > yr ) 
+                throw new Exception('Application is already current.'); 
+        }
+        else if ( entity.apptype == 'LATE_RENEWAL' ) {
+            if (selectedItem.appyear > (entity.appyear-2))
+                throw new Exception('Invalid application year'); 
+        }
+        else {
+            if ( entity.appyear != selectedItem.appyear )
+                throw new Exception('Application year must be current'); 
+        }
+        
         if( !MsgBox.confirm("You are now about to create the application. Please ensure data is correct. Proceed?") ) {
             throw new BreakException();
         }
@@ -113,6 +133,13 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
     void checkBeforeChange() {
         if(!selectedItem)
             throw new Exception("Please select an item");
+            
+        if ( selectedItem.taskstate == 'payment' ) throw new Exception('This transaction is not fully paid. Please settle payment first');  
+        if ( selectedItem.taskstate != 'end' ) throw new Exception('This transaction is not yet completed. Please verify');  
+        
+        if ( entity.appyear != selectedItem.appyear )
+            throw new Exception('Application year must be current');             
+            
         prevOwner = selectedItem.owner;
         entity.primaryappid = selectedItem.primaryappid;
         entity.rootappid = selectedItem.rootappid;

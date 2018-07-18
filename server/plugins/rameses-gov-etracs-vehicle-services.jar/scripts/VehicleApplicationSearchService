@@ -9,7 +9,7 @@ import vehicle.facts.*;
 
 class VehicleApplicationSearchService {
 	
-	@DataContext("vehicle_franchise")
+	@DataContext("vw_vehicle_franchise")
 	def franchiseEm;
 
 
@@ -23,7 +23,7 @@ class VehicleApplicationSearchService {
         conds << "vehicletypeid =:vehicletypeid";
 
         if( o.lookuptype == "owner" ) {
-        	conds << "vehicleunit.owner.objid =:ownerid";
+        	conds << "owner.objid =:ownerid";
             params.ownerid = o.owner.objid;
         } 
         else if( o.lookuptype == "controlno") {
@@ -32,27 +32,18 @@ class VehicleApplicationSearchService {
         }
         else {
             //by application
-            conds << " vehicleunit.appno = :appno ";
+            conds << " appno = :appno ";
             params.appno = o.appno;
         }
 
-        if( o.apptype == "RENEW") {
-            conds << "vehicleunit.expirydate <= NOW() AND vehicleunit.activeyear = :ayear";
-            params.ayear = o.appyear - 1;
-        }
-        else if( o.apptype == "LATE_RENEWAL") {
-            conds << " vehicleunit.activeyear < :ayear";
-            params.ayear = o.appyear - 1;
-        }
-        else {
-			conds << "vehicleunit.activeyear = :ayear";
-            params.ayear = o.appyear;
-        }
+        conds << " expirydate <= NOW() ";
+
         def list = franchiseEm.where( conds.join( " AND " ), params ).list().collect{   
-        	def p = it.vehicleunit.primary;
-        	p.primaryappid = p.objid;
-        	p.owner = it.vehicleunit.owner;
-        	p.appyear = it.vehicleunit.activeyear;
+        	def p = [:];
+        	p.owner = it.owner;
+            p.appno = it.appno;
+            p.appdate = it.appdate;
+        	p.appyear = it.appyear;
         	if( o.controlno ) p.controlno = o.controlno;
         	return p;
         };

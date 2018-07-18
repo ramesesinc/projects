@@ -92,14 +92,21 @@ class VehicleBillingInterceptor {
 		res.putAll( param.remove('application')); 
 	} 
 
-
 	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename.toString().matches('vehicle(assessment|billing)') }")
 	public void buildFacts(def evt) {
 		def factBuilder = evt.result; 
 		def params = evt.args[0].params;
+
 		def facts = factBuilder.facts;
-		facts << new VehicleApplication( params.application );
-		
+		def app = params.application;
+
+		facts << new VehicleApplication( app );
+
+		def units = app.vehicleunits;
+		if( !units) units =  appUnitEm.find( [appid: app.objid ]).orderBy("franchise.controlno").list();
+		units.each {
+			facts << new VehicleUnit( it );
+		};
 		def vp = new VariableInfoProvider(
 			schemaName:"vehicle_variable"
 		);
@@ -140,8 +147,6 @@ class VehicleBillingInterceptor {
 	public void loadVoidWorkflowTask(def evt ) {
 		def p = evt.args[0];
 		def result = evt.result;
-		println '\n *** loadVoidWorkflowTask'
-		p.each{ println '>> '+ it; }
 		if( p.application?.taskid ) {
 	 		result.taskid = p.application?.taskid;
 			result.processname = 'vehicle_application';

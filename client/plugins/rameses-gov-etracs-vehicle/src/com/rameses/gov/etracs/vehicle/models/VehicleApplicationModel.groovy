@@ -107,12 +107,18 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         unitListModel.reload();
     }
 
+    def feeList;
+    void loadFees() {
+        def m = [_schemaname: "vehicle_application_fee"];
+        m.findBy = [parentid: entity.objid ];
+        m.orderBy = "appyear,sortorder";
+        feeList = queryService.getList(m);
+    }
+    
     def feeListModel = [
         fetchList: { o->
-            def m = [_schemaname: "vehicle_application_fee"];
-            m.findBy = [parentid: entity.objid ];
-            m.orderBy = "appyear,sortorder";
-            return queryService.getList(m);
+            if(feeList == null) loadFees();
+            return feeList;
         }
     ] as BasicListModel;
     
@@ -194,6 +200,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         }
         if( bstop ) return;
         reload();
+        loadFees();
         feeListModel.reload(); 
         infoListModel.reload(); 
     }
@@ -208,6 +215,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         p.handler = { result->
             if( result !=null ) { 
                 reload();
+                loadFees();
                 loadInfos();
                 feeListModel.reload(); 
                 infoListModel.reload(); 
@@ -225,13 +233,17 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         }
     }
     
+    public boolean beforeSignal( def tsk ) {
+        if(tsk.taskstate == "assessment") {
+            if( feeList == null ) loadFees();
+            if(feeList.size() == 0 ) {
+                if( !MsgBox.confirm("There are no fees assessed. Proceed to continue?") ) return false;
+            }
+        }
+        return true;
+    }
+    
     //PRINTOUTS
-    def printApplication() {
-        
-    }
-    def printBill() {
-        
-    }
     def printPermit() { 
         def opener = Inv.lookupOpener('vehicle_application_permit:print', [vehicletype: vehicletype, entity: entity]);
         opener.target = 'self'; 

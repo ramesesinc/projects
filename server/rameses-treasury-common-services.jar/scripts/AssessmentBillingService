@@ -115,7 +115,7 @@ public class AssessmentBillingService {
 				m.billitems << o.toMap();
 			}
 			else if( o instanceof VariableInfo ) {
-				m.infos << o.toMap();
+				if(o.system == 0) m.infos << o.toMap();
 			}
 			else if( o instanceof DueDate ) {
 				if(o.tag) m[(o.tag)] = o.date;

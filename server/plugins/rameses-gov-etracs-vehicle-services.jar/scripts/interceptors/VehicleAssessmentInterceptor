@@ -17,30 +17,6 @@ class VehicleAssessmentInterceptor {
 	@DataContext("vehicle_application")
 	def appEm;
 
-	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'vehicleassessment'  }")
-	public void buildFacts(def evt) {
-
-		def factBuilder = evt.result; 
-		def params = evt.args[0].params;
-		def facts = factBuilder.facts;
-
-		if( params.application ) {
-			facts << new VehicleApplication( params.application );
-		}
-		def vp = new VariableInfoProvider(
-			schemaName:"vehicle_variable"
-		);
-		factBuilder.variableInfoProvider = vp;
-
-		/*
-		factBuilder.facts << new VehicleFranchise( data.franchise );
-		if(data.applications) {
-			data.applications.each {
-			factBuilder.facts << new VehicleApplication( it );	
-		}
-		*/
-	}
-
 	@After(pattern="BillingRuleService.execute", eval="#{ args[0].rulename == 'vehicleassessment' && result.askinfos == null }")
 	public void afterBilling(def evt) {
 		def result = evt.result;

@@ -38,7 +38,7 @@ class VehicleApplicationWorkflowInterceptor {
 	public void checkHasFees( def evt ) {
 		def p = evt.args[0];
 		def app = appEm.find( [objid: p.refid] ).select("txnmode,apptype").first();
-		if( app.txnmode == "ONLINE") {
+		if( app.txnmode == "ONLINE" ) {
 			int ct = vFee.find( [parentid: p.refid ] ).select("scount:{COUNT(*)}").val();
 			if( ct == 0 ) throw new Exception("There must be at least one fee entry");
 		}

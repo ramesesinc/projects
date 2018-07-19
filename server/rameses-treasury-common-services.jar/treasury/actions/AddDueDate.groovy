@@ -16,6 +16,7 @@ class AddDueDate implements RuleActionHandler {
 	public void execute(def params, def drools) {
 		try {
 			def sdate = params.date.eval();
+
 			def tag = params.tag;
 
 			def ct = RuleExecutionContext.getCurrentContext();

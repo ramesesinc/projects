@@ -74,6 +74,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         m.owner = owner;
         m.appyear = entity.appyear;
         m.controlno = controlno;
+        m.appno = appno;
         resultList = searchSvc.getList( m );
         if(!resultList)
             throw new Exception("No records found");

@@ -38,7 +38,7 @@ class AddBillItem extends AbstractAddBillItem {
 		}
 
 		//set the other parameters
-		if( params.year ) billitem.year = params.year.eval();		
+		if( params.year ) billitem.year = params.year.eval();	
 		if( params.month ) billitem.month = params.month.eval();		
 		if( params.fromdate ) billitem.fromdate = params.fromdate.eval();		
 		if( params.todate ) billitem.todate = params.todate.eval();		

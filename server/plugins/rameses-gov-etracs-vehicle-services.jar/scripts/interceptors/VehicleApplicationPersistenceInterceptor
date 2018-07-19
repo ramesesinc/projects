@@ -41,6 +41,9 @@ class VehicleApplicationPersistenceInterceptor {
 	@Service("ControlNoGeneratorService")
 	def controlNoGenerator;
 
+	@Service("BillingRuleService")
+	def billRuleSvc;
+
 	@Before(pattern="PersistenceService.create", index=1, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode !='CAPTURE' && args[0].apptype != 'NEW' }")
 	public void checkArrearsBeforeCreateApp(def evt) {
 		def entity = evt.args[0];
@@ -79,6 +82,11 @@ class VehicleApplicationPersistenceInterceptor {
 		String prefix = controlNoGenerator.formatNumber( vt.controlpattern, handler, 0 );
 		entity.appno =  prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
 		entity.amount = 0;
+
+		//calculate the expiry date
+		def p = [application: entity];
+		def r = billRuleSvc.execute( [rulename:'vehicledates', params: p ] );
+		entity.expirydate = r.expirydate;
 	}
 
 	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' }")

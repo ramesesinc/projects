@@ -1,7 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/FormReport.xml" rulename="vehiclebilling">
     <invokers>
         <!-- This is for application billing -->
-         <invoker type="vehicle_application:form:formActions" 
+         <invoker type="vehicle_application:form:reports" 
                  caption="Print Application" 
                  target="popup" 
                  action="preview"
@@ -9,7 +9,7 @@
                  reportId="vehiclebilling"
                  reportName="com/rameses/gov/etracs/vehicle/reports/application.jasper" 
                  />
-        <invoker type="vehicle_application:form:formActions" 
+        <invoker type="vehicle_application:form:reports" 
                  caption="Print Assessment" 
                  target="popup" 
                  action="preview"
@@ -17,7 +17,7 @@
                  reportId="vehiclebilling"
                  reportName="com/rameses/gov/etracs/vehicle/reports/assessment.jasper" 
                  />
-        <invoker type="vehicle_application:form:formActions" 
+        <invoker type="vehicle_application:form:reports" 
                  caption="Print Bill" 
                  target="popup" 
                  action="preview"
@@ -25,7 +25,7 @@
                  reportId="vehiclebilling"
                  reportName="com/rameses/gov/etracs/vehicle/reports/billing.jasper" 
                  />
-        <invoker type="vehicle_application:form:formActions" 
+        <invoker type="vehicle_application:form:reports" 
                  caption="Print Permit" 
                  target="popup" 
                  action="preview"

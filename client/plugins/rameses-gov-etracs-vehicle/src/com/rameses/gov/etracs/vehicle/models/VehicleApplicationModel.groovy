@@ -14,7 +14,7 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
     @Service("SchemaService")
     def schemaSvc;
 
-    boolean viewReportAllowed = false; 
+    boolean viewReportAllowed = true; 
     
     String getFormName() {
         return getSchemaName() + ":form";

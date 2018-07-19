@@ -17,7 +17,7 @@
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
-		<field name="expirydate"  />
+		<field name="expirydate"  required="true"/>
 		<field name="lastrenewal"  />
 
 		<field name="owner_objid" required="true" />

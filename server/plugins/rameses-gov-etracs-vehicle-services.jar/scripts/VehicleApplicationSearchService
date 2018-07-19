@@ -16,7 +16,7 @@ class VehicleApplicationSearchService {
 	//this should return the objid, appno, appdate, particulars, amount, owner 
 	@ProxyMethod
 	public def getList( def o ) {
-		def params = [:];
+        def params = [:];
 		def conds = [];
 
         params.vehicletypeid = o.vehicletype.objid;
@@ -38,6 +38,7 @@ class VehicleApplicationSearchService {
 
         conds << " expirydate <= NOW() ";
 
+        franchiseEm.debug = true;
         def list = franchiseEm.where( conds.join( " AND " ), params ).list().collect{   
         	def p = [:];
         	p.owner = it.owner;

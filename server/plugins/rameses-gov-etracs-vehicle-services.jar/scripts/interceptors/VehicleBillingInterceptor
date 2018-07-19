@@ -92,7 +92,7 @@ class VehicleBillingInterceptor {
 		res.putAll( param.remove('application')); 
 	} 
 
-	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename.toString().matches('vehicle(assessment|billing)') }")
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename.toString().matches('vehicle(dates|assessment|billing)') }")
 	public void buildFacts(def evt) {
 		def factBuilder = evt.result; 
 		def params = evt.args[0].params;

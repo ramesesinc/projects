@@ -210,3 +210,5 @@ android/**/bin
 /client/plugins/rameses-gov-etracs-waterworks-migration/dist/
 /client/etracs/rameses-gov-treasury-report/nbproject/private/
 /client/etracs/rameses-gov-treasury-report/dist/
+/client/etracs/rameses-gov-etracs-rptis-landtax-province/nbproject/private/
+/client/etracs/rameses-gov-etracs-rptis-landtax-province/build/

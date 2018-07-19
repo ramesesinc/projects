@@ -37,7 +37,7 @@ public class SubdivisionWorkflowClosedController
     
     
     void open(){
-        entity = svc.openSubdivision(entity.objid);
+        entity = svc.open(entity);
         formId = entity.txnno;
         formTitle = 'Subdivision: ' + formId;
     }   

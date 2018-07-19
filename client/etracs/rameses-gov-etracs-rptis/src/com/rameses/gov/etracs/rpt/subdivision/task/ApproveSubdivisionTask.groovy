@@ -46,7 +46,7 @@ public class ApproveSubdivisionTask implements Runnable{
             }
             
             showinfo('Subdivision Approval')
-            entity.putAll(svc.approveSubdivision(entity));
+            entity.putAll(svc.approve(entity));
             showinfo(' .... Done\n');
             
             oncomplete()

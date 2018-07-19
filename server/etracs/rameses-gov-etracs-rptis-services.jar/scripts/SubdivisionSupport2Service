@@ -36,6 +36,9 @@ class SubdivisionSupport2Service
     @Service('SubdivisionService')
     def subdivisionSvc
 
+    @Service('NotificationService')
+    def notifySvc   
+
     @DataContext('subdivision')
     def em_subdivision
 
@@ -64,10 +67,61 @@ class SubdivisionSupport2Service
 
 
 
+    /* new sync support */
+    @ProxyMethod
+    public def getForApproval(subdivision){
+        subdivision.putAll(subdivisionSvc.open(subdivision))
+        subdivision.subdividedlands = subdivisionSvc.getSubdividedLands(subdivision.objid)
+        subdivision.motherlands = subdivisionSvc.getMotherLands(subdivision)
+        subdivision.affectedrpus = subdivisionSvc.getAffectedRpus(subdivision.objid)
+        subdivision.cancelledimprovements = subdivisionSvc.getCancelledImprovements(subdivision.objid)
+        subdivision.tasks = em_subdivision_task.where('refid = :objid and enddate is not null', subdivision).list()
+        return subdivision
+    }
+
+    @ProxyMethod
+    public def getApprovedFaas(faas){
+        faas = faasSvc.openFaas(faas)
+        faas.taxpayer = entitySvc.open(faas.taxpayer)
+        return faas
+
+    }
+
+    @ProxyMethod
+    public def postApprovedFaas(faas){
+        def currfaas = em_faas.select('state').find([objid:faas.objid]).first()
+        if (currfaas && currfaas.state == 'CURRENT') return
+        faas.state = 'PENDING';
+        postFaasData(faas)
+        faasSvc.approveFaas(faas)
+    }
+
+    @ProxyMethod
+    public def postApprovedSubdivision(subdivision){
+        def state = svc.getState( subdivision )
+        if (state  && ! state.equalsIgnoreCase('APPROVED')){
+            subdivision.tasks.each{
+                em_subdivision_task.save(it)
+            }
+            em_subdivision_task.where('refid = :objid and enddate is null', subdivision).delete()
+            svc.insertFaasSignatories(subdivision)
+            svc.approve(subdivision)
+
+            notifyRecommender(subdivision)
+        }
+    }
+
+
+
+
+
+
+
+
 
     @ProxyMethod
     public def buildSubdivisionData(subdivision){
-        subdivision.putAll(subdivisionSvc.openSubdivision(subdivision.objid))
+        subdivision.putAll(subdivisionSvc.open(subdivision.objid))
         subdivision.subdividedlands = subdivisionSvc.getSubdividedLands(subdivision.objid)
         subdivision.motherlands = subdivisionSvc.getMotherLands(subdivision)
         subdivision.affectedrpus = subdivisionSvc.getAffectedRpus(subdivision.objid)
@@ -243,6 +297,28 @@ class SubdivisionSupport2Service
         return [headers:headers, chunks:chunks]
     }
 
+
+    void notifyRecommender(subdivision){
+        def recommendertask = em_subdivision_task.where('refid = :objid and state = :state', [objid:subdivision.objid, state:'recommender'])
+                                        .orderBy('enddate desc')
+                                        .first()
+
+        def approvertask = subdivision.tasks.find{it.state.matches('approver|provapprover')}
+        if (recommendertask && approvertask){
+            def sendername = (approvertask.actor.name ? approvertask.actor.name : 'Province')
+            def msg = [
+                objid     : recommendertask.refid,
+                recipientid : (recommendertask.assignee.objid ? recommendertask.assignee.objid : '-'),
+                recipienttype : 'user',
+                senderid  : '-',
+                sender    : sendername,
+                message   : 'Subdivision ' + subdivision.txnno + ' has already been approved by ' + sendername + '.',
+                filetype  : 'subdivision',
+                data      : [:],
+            ]
+            notifySvc.addMessage(msg)
+        }       
+    }
 }
 
 

@@ -157,7 +157,8 @@ class FAASSyncService
 
 	def getActions(){
 		return  [
-	    	'FAAS-DATACAPTURE': [send: getFaasData, receive: saveFaasData],
+	    	'FAAS-DATA': [send: getFaasData, receive: saveFaasData],
+	    	'FAAS-DATACAPTURE': [send: getFaasData, receive: saveCapturedData],
 	    	'FAAS-DELETE': [send: getFaas, receive: deleteFaas],
 	    	'FAAS-REVERT-TO-INTERIM': [send: getFaas, receive: deleteFaas],
 	    	'FAAS-AFFECTED-FAAS': [send: getFaasData, receive: saveAffectedFaas],
@@ -175,6 +176,11 @@ class FAASSyncService
 	*
 	---------------------------------------------------------*/
 	def saveFaasData = {syncdata ->
+		def faas = syncdata.data
+		saveFaas(faas)
+	}
+
+	def saveCapturedData = {syncdata ->
 		def faas = syncdata.data
 		saveFaas(faas)
 		if ('PROVINCE'.equalsIgnoreCase(syncdata.remote.orgclass)){
@@ -332,8 +338,6 @@ class FAASSyncService
 	}
 
 	def getFaasData = {faas -> 
-		println 'FAAS => ' + faas?.objid 
-
 		faas = faasSvc.openFaas(faas)
 		faas.rpu.rpumaster = rpuSvc.openRpuMaster(faas.rpu)
 		faas.taxpayer = entitySvc.open(faas.taxpayer)

@@ -77,7 +77,8 @@ class FAASChangeInfoSyncService
 
 	def postChangeInfo = {syncdata ->
 		def changeinfo = syncdata.data 
-		svc.postChangeInfo(changeinfo)
+		changeinfo.remote = true 
+		svc.updateInfo(changeinfo)
 	}
 
 }

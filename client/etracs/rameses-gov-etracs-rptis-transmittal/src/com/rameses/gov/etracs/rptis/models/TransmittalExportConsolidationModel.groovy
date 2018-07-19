@@ -22,7 +22,7 @@ public class TransmittalExportConsolidationModel extends TransmittalExportModel
             data.consolidationdata = [objid:transmittalitem.refid, txnno:transmittalitem.refno]; 
         }
         else{
-            def consolidation = consolidationSvc.openConsolidation(transmittalitem.refid);
+            def consolidation = consolidationSvc.open([objid: transmittalitem.refid]);
             if (consolidation.originlguid == OsirisContext.env.ORGID)
                 data.consolidationdata = supportSvc.buildConsolidationData(consolidation);
             else

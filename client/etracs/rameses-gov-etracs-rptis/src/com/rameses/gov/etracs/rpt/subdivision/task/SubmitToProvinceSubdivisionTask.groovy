@@ -28,7 +28,7 @@ public class SubmitToProvinceSubdivisionTask implements Runnable{
             showinfo(' .... Done\n');
             
             showinfo('Subdivision Approval');
-            entity.putAll(svc.submitToProvinceSubdivision(entity));
+            entity.putAll(svc.submitToProvince(entity));
             showinfo(' .... Done\n');
             
             oncomplete();

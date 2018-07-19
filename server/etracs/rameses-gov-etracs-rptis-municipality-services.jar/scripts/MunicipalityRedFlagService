@@ -27,7 +27,6 @@ class MunicipalityRedFlagService
 		redflag.remarks = changeinfo.reason
 		changeinfoSvc.updateInfo(changeinfo)
 		redflag.putAll(redflagSvc.resolveRedFlag(redflag))
-		notifyFiledBy(redflag)
 		userNotificationService.removeMessage([objid:redflag.refid])
 		return redflag 
 	}
@@ -38,15 +37,5 @@ class MunicipalityRedFlagService
 		def changeinfo = changeinfoSvc.openByRedFlag(redflag)
 		notifyFiledBy(redflag)
 		return changeinfo 
-	}
-
-	void notifyFiledBy(redflag){
-		def asyncreq    = notificationSvc.createAsyncRequest('ProvinceRedFlagService', 'resolveRedFlag', redflag, notificationSvc.buildEnvMap(env))
-        def msg         = notificationSvc.createAsyncMessage(asyncreq[0])
-        msg.filetype    = 'faas-redflag-resolve'
-        msg.messagetype = 'faas-redflag-resolve'
-        msg.message     = 'Notify FAAS red flag filed by.'
-        notificationSvc.sendAsyncMessage(msg)
-        println 'Submit FAAS red flag resolution to Province.'
 	}
 }

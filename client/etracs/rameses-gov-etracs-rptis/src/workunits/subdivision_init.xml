@@ -47,7 +47,7 @@ class SubdivisionInitController
     def process(){
         entity.objid = 'SD' + new java.rmi.server.UID();
         entity.filetype = 'subdivision';
-        def newentity = svc.createSubdivision(entity)
+        def newentity = svc.create(entity)
         return InvokerUtil.lookupOpener('subdivision:open', [entity:newentity]);
     }
         

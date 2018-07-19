@@ -19,7 +19,7 @@ public class SubmitToProvinceConsolidationTask implements Runnable{
     public void run(){
         try{
             showinfo('Initializing');
-            svc.initApproveConsolidation(entity);
+            svc.initApprove(entity);
             showinfo(' .... Done\n');
         
             showinfo('Assigning new TD No. to Consolidated Land and Affected RPUs');
@@ -27,7 +27,7 @@ public class SubmitToProvinceConsolidationTask implements Runnable{
             showinfo(' .... Done\n');
             
             showinfo('Consolidation Approval')
-            entity.putAll(svc.submitToProvinceConsolidation(entity));
+            entity.putAll(svc.submitToProvince(entity));
             showinfo(' .... Done\n');
             
             oncomplete()

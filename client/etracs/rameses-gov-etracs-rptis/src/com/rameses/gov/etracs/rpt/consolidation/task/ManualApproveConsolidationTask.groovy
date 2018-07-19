@@ -19,7 +19,7 @@ public class ManualApproveConsolidationTask implements Runnable{
     public void run(){
         try{
             showinfo('Initializing');
-            svc.initApproveConsolidation(entity);
+            svc.initApprove(entity);
             showinfo(' .... Done\n');
             
             showinfo('Processing Consolidated Land ');
@@ -35,7 +35,7 @@ public class ManualApproveConsolidationTask implements Runnable{
             }
             
             showinfo('Consolidation Approval')
-            svc.approveConsolidation(entity);
+            svc.approve(entity);
             entity.state = 'APPROVED';
             showinfo(' .... Done\n');
             

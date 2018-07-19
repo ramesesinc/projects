@@ -4,15 +4,15 @@ import com.rameses.services.extended.*
 
 
 /*----------------------------------------------------------------
-* FAAS Annotation Synchronization support shared 
+* Red Flag Synchronization support shared 
 * between province and municipalities 
 -----------------------------------------------------------------*/
-class FAASChangeInfoSyncInterceptor
+class RedFlagSyncInterceptor
 {
     @Env
     def env
 
-    @Service('FAASChangeInfoSyncService')
+    @Service('RedFlagSyncService')
     def syncSvc 
 
 
@@ -21,25 +21,30 @@ class FAASChangeInfoSyncInterceptor
     * SCHEDULING SUPPORT
     *
     ---------------------------------------------------------*/
-    @After(pattern="FAASChangeInfoService.updateInfo", eval="#{args[0].remote == null}") 
-    public void schedulePostChangeInfo( evt ) {
-        def changeinfo = evt.result
-        syncSvc.schedulePostChangeInfo(changeinfo)
+    @After(pattern="ProvinceRedFlagService.postRedFlag") 
+    public void scheduleSubmitToMunicipality( evt ) {
+        def redflag = evt.result
+        syncSvc.scheduleSubmitToMunicipality(redflag)
     }
 
+    @After(pattern="MunicipalityRedFlagService.resolveRedFlag") 
+    public void scheduleResolvedRedFlag( evt ) {
+        def redflag = evt.result
+        syncSvc.scheduleResolvedRedFlag(redflag)
+    }
 
     /*---------------------------------------------------------
     *
     * SEND/RECEIVE HANDLERS
     *
     ---------------------------------------------------------*/
-    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'faaschangeinfo' && result.action.matches('FAAS-CHANGEINFO-.*')}") 
+    @After(pattern="SyncService.asyncSend", eval="#{result.reftype == 'redflag' && result.action.matches('REDFLAG-.*')}") 
     public void sendData( evt ) {
         def syncdata = evt.result 
         syncSvc.send(syncdata)
     }   
 
-    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'faaschangeinfo' && args[0].action.matches('FAAS-CHANGEINFO-.*')}") 
+    @After(pattern="SyncService.receive", eval="#{args[0].reftype == 'redflag' && args[0].action.matches('REDFLAG-.*')}") 
     public void receiveData(evt){
         def syncdata = evt.args[0]
         syncSvc.receive(syncdata)

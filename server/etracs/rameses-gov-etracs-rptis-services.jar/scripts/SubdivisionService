@@ -53,6 +53,10 @@ class SubdivisionService
     @Service('BarangayLookupService')
     def brgySvc;
 
+
+    @DataContext('subdivision')
+    def em_subdivision
+
     @DataContext('subdivision_cancelledimprovement')
     def cancelledimprovementDb
 
@@ -79,7 +83,7 @@ class SubdivisionService
     def TXNTYPE_SD = 'SD'
 
     @ProxyMethod
-    public def createSubdivision(info) {
+    public def create(info) {
         def pdate = dtSvc.parseCurrentDate()
         def subdivision  = [:]
         subdivision.putAll(info)
@@ -89,26 +93,26 @@ class SubdivisionService
         subdivision.txndate = pdate.date 
         subdivision.txntype = faasSvc.getTxnType(TXNTYPE_SD)
         subdivision.ry = util.toInteger(var.current_ry)
-        subdivision.lguid = env.ORGID 
         subdivision.autonumber = util.toBoolean(var.td_autonumber, false)
         subdivision.effectivityyear = pdate.year + 1
         subdivision.effectivityqtr  = 1
         subdivision.receiver = [type:'receiver', name:env.FULLNAME, title:env.JOBTITLE, dtsigned:dtSvc.serverDate]
+        subdivision.lguid = env.ORGID 
         subdivision.originlguid = ( subdivision.originlguid ? subdivision.originlguid : env.ORGID )
-        em.create(subdivision)
-        return openSubdivision(subdivision.objid) 
+        em_subdivision.create(subdivision)
+        return open(subdivision) 
     }
 
     @ProxyMethod
-    public def updateSubdivision(subdivision) {
+    public def update(subdivision) {
         updateMotherLandInfo(subdivision)
         em.update(subdivision)
         return subdivision
     }
 
     @ProxyMethod
-    public def openSubdivision( objid ) {
-        def subdivision = em.findSubdivisionById([objid:objid])
+    public def open( entity ) {
+        def subdivision = em.findSubdivisionById(entity)
         if (!subdivision) throw new Exception('Subdivision does not exist or has already been deleted.')
         subdivision.txntype = faasSvc.getTxnType(TXNTYPE_SD)
         subdivision.autonumber = util.toBoolean(subdivision.autonumber, false)
@@ -126,7 +130,7 @@ class SubdivisionService
     }
 
     @ProxyMethod
-    public def deleteSubdivision( subdivision ) {
+    public def delete( subdivision ) {
         getAffectedRpus(subdivision.objid).each{arpu ->
             em.delete(arpu, SCHEMA_AFFECTED_RPU)
             faasSvc.deleteFaasById(arpu.newfaasid)
@@ -204,7 +208,7 @@ class SubdivisionService
     @ProxyMethod
     public void undoCancelledImprovement(cancelledimprovement) {
         def arpu = em.findAffectedRpuById(cancelledimprovement)
-        def subdivision = openSubdivision(cancelledimprovement.parentid)
+        def subdivision = open([objid:cancelledimprovement.parentid])
         createAffectedRpu(subdivision, arpu)
         cancelledimprovementDb.delete([objid:cancelledimprovement.objid])
     }
@@ -353,7 +357,7 @@ class SubdivisionService
     }    
 
     @ProxyMethod
-    public def submitToProvinceSubdivision(subdivision){
+    public def submitToProvince(subdivision){
         subdivision.state = STATE_FORAPPROVAL
         insertFaasSignatories(subdivision)
         em.updateSubdividedLandFaasTxnType(subdivision)
@@ -393,7 +397,7 @@ class SubdivisionService
 
 
     @ProxyMethod
-    public def approveSubdivision(subdivision){
+    public def approve(subdivision){
         checkPendingSubdividedLands(subdivision)
         checkPendingAffectedRpus(subdivision)
         cancelMotherLands(subdivision)

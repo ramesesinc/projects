@@ -52,7 +52,7 @@ public abstract class AbstractSubdivisionController extends RPTWorkflowControlle
         
     public void afterSignal(Object result){
         super.afterSignal(result);
-        entity.putAll(svc.openSubdivision(entity.objid));
+        entity.putAll(svc.open(entity));
         if (task && task.state.matches('cityapprover|provapprover|forprovsubmission')){
             autoposting = true;
         }

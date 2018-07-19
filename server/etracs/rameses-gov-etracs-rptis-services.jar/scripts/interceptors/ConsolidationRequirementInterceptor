@@ -12,7 +12,7 @@ class ConsolidationRequirementInterceptor
     def ruleSvc
 
 
-	@After(pattern="ConsolidationService.createConsolidation", index=1000) 
+	@After(pattern="ConsolidationService.create", index=1000) 
 	public void initRequirements( evt ) {
 		def entity = evt.result 
 		def info = evt.args[0] 
@@ -39,7 +39,7 @@ class ConsolidationRequirementInterceptor
 	}
 
 
-	@Before(pattern="ConsolidationService.deleteConsolidation") 
+	@Before(pattern="ConsolidationService.delete") 
 	public void deleteRequirements( evt ) {
 		def entity = evt.args[0]
 		em.deleteRequirements([refid:entity.objid])

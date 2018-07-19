@@ -50,7 +50,7 @@ class ConsolidationInitController
     }
     
     void init(){
-        consolidation = svc.initConsolidation();
+        consolidation = svc.init();
         initEntity();
     }
     
@@ -70,7 +70,7 @@ class ConsolidationInitController
     
     def process(){
         consolidation._info = entity;
-        consolidation = svc.createConsolidation(consolidation)
+        consolidation = svc.create(consolidation)
         initEntity();
         return InvokerUtil.lookupOpener('consolidation:open', [entity:consolidation]);
     }

@@ -128,11 +128,5 @@ class FAASChangeInfoService
 	public def getTxnTypes(  ) {
 		return faasSvc.getTxnTypes()
 	}
-
-	@ProxyMethod
-	public void postChangeInfo(changeinfo) {
-		updateInfo(changeinfo)
-	}
-	
 }
 

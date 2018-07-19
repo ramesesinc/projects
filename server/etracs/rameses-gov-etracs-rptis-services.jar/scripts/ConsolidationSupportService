@@ -15,12 +15,6 @@ class ConsolidationSupportService
     @ActiveDB('consolidation')
     def em
 
-    @ActiveDB('consolidation_task')
-    def taskEm 
-
-    @ActiveDB('faas_task')
-    def faastaskEm
-
     @Service('ExaminationService')
     def examinationSvc
 
@@ -39,15 +33,104 @@ class ConsolidationSupportService
     @Service('TxnRefService')
     def txnRef
 
+    @Service('ConsolidationWorkflowService')
+    def workflowSvc
+
+    @DataContext('consolidation_task')
+    def em_task 
+
+    @DataContext('faas_task')
+    def em_faas_task
+
     @DataContext('faas')
     def em_faas 
 
+
+    /*===================================================
+    * new sync support 
+    ===================================================*/
+
+    @ProxyMethod
+    public def getForApproval(consolidation) {
+        def data = svc.open(consolidation)
+        data.consolidatedlands = svc.getConsolidatedLands(consolidation.objid)
+        data.affectedrpus = svc.getAffectedRpus(consolidation.objid)
+        data.tasks = em_task.where('refid = :objid and enddate is not null', consolidation).list() 
+        return data 
+    }
+
+    @ProxyMethod
+    public void postForApproval(consolidation){
+        em.save(consolidation)
+
+        consolidation.consolidatedlands.each{
+            em.save(it, 'consolidatedland')
+            txnRef.insertRef(it.landfaasid, consolidation.objid, 'FAAS is currently referenced by Consolidation No. ' + consolidation.txnno +'.')
+        }
+
+        consolidation.affectedrpus.each{
+            em.save(it, 'affectedrpu')
+        }
+
+        consolidation.tasks.each {
+            em_task.save(it)
+        }
+    }
+
+    @ProxyMethod
+    public def getApprovedFaas(faas) {
+        def data = faasSvc.openFaas(faas)
+        data.taxpayer = entitySvc.open(data.taxpayer)
+        data.tasks = em_faas_task.where('refid = :objid and enddate is not null', data).list()
+        return data
+    }
+
+    @ProxyMethod
+    public void postApprovedFaas(faas) {
+        def oldfaas = faasSvc.findFaasById(faas.objid)
+        if (oldfaas && oldfaas.state != 'CURRENT'){
+            faas.state = 'PENDING'
+            saveFaas(faas)
+        }
+    }
+
+    @ProxyMethod
+    public def getApprovedConsolidation(consolidation) {
+        def data = svc.open(consolidation)
+        data.tasks = em_task.where('refid = :objid and enddate is not null', consolidation).list()
+        return data 
+    }
+
+    @ProxyMethod
+    public void postApprovedConsolidation(consolidation) {
+        svc.approveConsolidatedLandFaas(consolidation)
+        
+        svc.getAffectedRpus(consolidation.objid).each{
+            svc.approveAffectedRpuFaasRecord(consolidation, it)
+        }
+
+        svc.approve(consolidation)
+
+        consolidation.tasks.each{
+            it.data = consolidation
+            em_task.save(it)
+            svc.updateSignatories(it)
+        }
+        em_task.where('refid = :objid and enddate is null', consolidation).delete() 
+
+        svc.insertFaasSignatories(consolidation)
+    }
+
     
+    /*=================================================*/
+
+
+
 
     @ProxyMethod
     public def buildConsolidationData(consolidation){
         def data = [:]
-        data.putAll(svc.openConsolidation(consolidation.objid))
+        data.putAll(svc.open(consolidation))
 
         data.consolidatedlands = svc.getConsolidatedLands(consolidation.objid)
         data.affectedrpus = svc.getAffectedRpus(consolidation.objid)
@@ -74,7 +157,7 @@ class ConsolidationSupportService
             it.taxpayer = entitySvc.open(it.taxpayer)
         }
 
-        data.tasks << [type:'consolidation', tasks:taskEm.getTasks(consolidation)]
+        data.tasks << [type:'consolidation', tasks:em_task.getTasks(consolidation)]
         data.image = getImageData(data)
         return data 
     }
@@ -89,7 +172,7 @@ class ConsolidationSupportService
         svc.getAffectedRpus(consolidation.objid).each{
             consolidation.faases << getFaasInfo([objid:it.newfaasid])
         }
-        consolidation.tasks = taskEm.getTasks(consolidation)
+        consolidation.tasks = em_task.getTasks(consolidation)
         return consolidation
     }
 
@@ -141,13 +224,13 @@ class ConsolidationSupportService
             if (item.type == 'consolidation'){
                 item.tasks.each{ 
                     if (it.refid && it.enddate)
-                        taskEm.save(it)
+                        em_task.save(it)
                 }
             }
             else if (item.type == 'faas'){
                 item.tasks.each{ 
                     if (it.refid && it.enddate)
-                        faastaskEm.save(it)
+                        em_faas_task.save(it)
                 }
             }
         }
@@ -240,6 +323,7 @@ class ConsolidationSupportService
         faas.taxpayer = entitySvc.open(faas.taxpayer)
         return faas
     }
+
 
 }
 

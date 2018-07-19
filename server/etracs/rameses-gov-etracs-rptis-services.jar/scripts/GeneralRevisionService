@@ -88,7 +88,7 @@ class GeneralRevisionService
 		faas.rp.ry = info.newry 
 		faas.rpu.rp = faas.rp
 		faas.restrictions.each{ it.objid = 'FR' + new java.rmi.server.UID()}
-		if (!faas.memoranda) faas.memoranda = info.batchgr.memoranda
+		if (!faas.memoranda) faas.memoranda = info.batchgr?.memoranda
 		buildDefaultSignatories(faas, info)
 		rpuSvc.reviseRpu(faas.rpu)
 		buildRequirements(faas)
@@ -121,10 +121,10 @@ class GeneralRevisionService
 	}
 
 	void buildDefaultSignatories(faas, info){
-		faas.taxmapper = info.batchgr.taxmapper
-		faas.appraiser = info.batchgr.appraiser
-		faas.recommender = info.batchgr.recommender
-		faas.approver = info.batchgr.approver
+		faas.taxmapper = (info.batchgr ? info.batchgr.taxmapper : [:])
+		faas.appraiser = (info.batchgr ? info.batchgr.appraiser : [:])
+		faas.recommender = (info.batchgr ? info.batchgr.recommender : [:])
+		faas.approver = (info.batchgr ? info.batchgr.approver : [:])
 	}
 
 	@ProxyMethod

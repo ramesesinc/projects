@@ -278,7 +278,7 @@ class FAASReportService
 			def image_bytes = null;
 
 			def sketch = faasSvc.openSketch(params)
-			if (sketch && sketch.drawing){
+			if (sketch && sketch.drawing && sketch.drawing.figures){
 				image_bytes = getDrawingSketchBytes(sketch)
 			}
 			else{

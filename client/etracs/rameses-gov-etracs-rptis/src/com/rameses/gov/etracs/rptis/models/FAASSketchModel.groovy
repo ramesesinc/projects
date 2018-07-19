@@ -59,7 +59,7 @@ class FAASSketchModel
     }
     
     def getAllowEdit(){
-        if (!entity.state.matches('INTERIM|FORAPPROVAL')) return false;
+        if (entity.state.matches('CURRENT|CANCELLED')) return false;
         if (entity.datacapture==1 || entity.datacapture==true) return true;
         if (!entity.taskstate) return false;
         if (entity.taskstate.matches('assign.*|provapprover')) return false;
@@ -76,7 +76,6 @@ class FAASSketchModel
         boundary.west = entity.rp.west;
         boundary.south = entity.rp.south;
         mode = MODE_EDIT;
-        println 'edit hander => ' + handler;
         handler?.refresh();
     }
     
@@ -107,7 +106,7 @@ class FAASSketchModel
     
     void openDrawing(){
         def sketch = faasSvc.openSketch([objid:entity.objid]);
-        if (sketch){
+        if (sketch && sketch.drawing.figures){
             drawing = sketch.drawing;
         } else {
             createImageFigure();

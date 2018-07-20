@@ -74,7 +74,7 @@ class FaasSketchInfoController
     }
     
     def getAllowEdit(){
-        if (entity.state != 'INTERIM') return false;
+        if (entity.state.matches('CURRENT|CANCELLED')) return false;
         if (entity.datacapture==1 || entity.datacapture==true) return true;
         if (!entity.taskstate) return false;
         if (entity.taskstate.matches('assign.*|provapprover')) return false;

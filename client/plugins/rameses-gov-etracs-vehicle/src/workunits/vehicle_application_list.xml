@@ -1,6 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
           processName="vehicle_application"
           schemaName="vehicle_application" 
+          allowCreate="false"
           allowNotify="true">
     <invokers>
         <invoker folderid="menucategory/vehicle/application" 

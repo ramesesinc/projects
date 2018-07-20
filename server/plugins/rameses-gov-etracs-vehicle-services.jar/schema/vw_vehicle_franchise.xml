@@ -18,6 +18,7 @@ SELECT
 	t.taskid, 
 	t.state as taskstate, 
 	a.primaryappid, 
+	a.particulars,
 	a.rootappid 
 FROM vehicle_franchise vf 
 	INNER JOIN vehicle_application_unit vu on vu.objid = vf.vehicleunitid 
@@ -40,6 +41,7 @@ FROM vehicle_franchise vf
 		<field name="owner_address_objid" /> 
 		<field name="owner_address_text" /> 
 		<field name="taskid" /> 
+		<field name="particulars" /> 
 		<field name="taskstate" /> 
 		<field name="primaryappid" /> 
 		<field name="rootappid" /> 

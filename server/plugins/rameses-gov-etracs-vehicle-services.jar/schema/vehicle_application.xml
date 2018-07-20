@@ -35,7 +35,6 @@
 		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" includefields=".*" required="false">
 			<key field="taskid" target="taskid" />
 		</complex>	
-		<field name="amount"  type="decimal" />
 
 		<!-- primaryappid is applicable for all primary applications (NEW, RENEW) -->
 		<field name="primaryappid" />

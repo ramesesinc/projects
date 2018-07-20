@@ -37,18 +37,7 @@ class VehicleApplicationSearchService {
         }
 
         conds << " expirydate <= NOW() ";
-
-        franchiseEm.debug = true;
-        def list = franchiseEm.where( conds.join( " AND " ), params ).list().collect{   
-        	def p = [:];
-        	p.owner = it.owner;
-            p.appno = it.appno;
-            p.appdate = it.appdate;
-        	p.appyear = it.appyear;
-        	if( o.controlno ) p.controlno = o.controlno;
-        	return p;
-        };
-        return list.unique();
+        return franchiseEm.where( conds.join( " AND " ), params ).list();
 	}
 
 }

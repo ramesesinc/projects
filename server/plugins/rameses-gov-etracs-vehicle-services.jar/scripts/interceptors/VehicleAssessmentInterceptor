@@ -58,9 +58,7 @@ class VehicleAssessmentInterceptor {
 			it.appyear = app.appyear;
 			appFeeEm.create( it );
 		}
-		//find and update the total
-		def total = appFeeEm.find( [parentid : appid] ).select("total:{SUM(amount)}").val();
-		appEm.find( [objid: appid ]).update( [amount: total, expirydate: expirydate]);
+		appEm.find( [objid: appid ]).update( [expirydate: expirydate]);
 	}
 	
 

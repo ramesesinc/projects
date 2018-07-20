@@ -63,6 +63,7 @@ class OnlinePaymentService   {
         result.controlno=m.controlno;
         result.paidby=m.paidby;
         result.particulars=m.particulars;
+        result.expirydate=m.expirydate;
 
         result.message=info.message;
         result.email=info.email;

@@ -44,10 +44,6 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         fields = [];
         if( !entity.vehicletype.allowedfields ) throw new Exception("Error in opening application form. vehicletype allowed fields must not be null");
         schemaSvc.getSchema( [name:"vehicle_application_unit" ] )?.fields.collect{
-            if( it.name.matches("franchise.controlno")) {
-                fields.add(0, it);
-                return;
-            }
             if(!it.included) return;
             def n = it.name;
             if(n.contains("_")) n = it.name.split("_")[0];
@@ -66,7 +62,6 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         fetchList : { o->
             def m = [_schemaname: "vehicle_application_unit" ];
             m.findBy = [ appid: entity.objid ];
-            m.orderBy = "franchise.controlno";
             return queryService.getList( m );
         }
 

@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/RuleMgmtController.xml" serviceName="RuleMgmtService">
     <invokers>
-        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Dates"
+        <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Expiry Dates"
                  action="init" index="1" role="RULE_AUTHOR" tag="vehicledates" />
         
         <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Assessment"

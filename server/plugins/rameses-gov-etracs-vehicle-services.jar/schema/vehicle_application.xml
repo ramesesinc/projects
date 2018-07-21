@@ -8,6 +8,11 @@
 		<field name="objid" primary="true" prefix="VAPP"/>
 		<field name="state" caption="State"/>
 
+		<field name="controlid" required="true"/>
+		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno" required="true">
+			<key field="controlid" target="objid" />
+		</complex> 	
+
 		<field name="appno" required="true" caption="App No" searchable="true" indexed="true"/>
 		<field name="appdate" required="true" />
 		<field name="apptype" required="true" indexed="true"/>
@@ -18,7 +23,6 @@
 		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
 		<field name="expirydate"  required="true"/>
-		<field name="lastrenewal"  />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>
@@ -36,13 +40,6 @@
 			<key field="taskid" target="taskid" />
 		</complex>	
 
-		<!-- primaryappid is applicable for all primary applications (NEW, RENEW) -->
-		<field name="primaryappid" />
-		<complex name="primaryapp" ref="vehicle_application" jointype="many-to-one" includefields="objid,appno,apptype,appyear" required="false">
-			<key field="primaryappid" target="objid" />
-		</complex> 
-
-		<field name="rootappid"/>
 
 	</element>
 </schema>

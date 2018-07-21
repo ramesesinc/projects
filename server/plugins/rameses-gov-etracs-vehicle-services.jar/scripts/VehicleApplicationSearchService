@@ -9,7 +9,7 @@ import vehicle.facts.*;
 
 class VehicleApplicationSearchService {
 	
-	@DataContext("vw_vehicle_franchise")
+	@DataContext("vw_vehicle_for_renewal")
 	def franchiseEm;
 
 
@@ -36,7 +36,6 @@ class VehicleApplicationSearchService {
             params.appno = o.appno;
         }
 
-        conds << " expirydate <= NOW() ";
         return franchiseEm.where( conds.join( " AND " ), params ).list();
 	}
 

@@ -34,8 +34,6 @@ public class VehicleApplicationUnitPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField8 = new com.rameses.rcp.control.XTextField();
         xTextField15 = new com.rameses.rcp.control.XTextField();
         xTextField12 = new com.rameses.rcp.control.XTextField();
@@ -51,20 +49,6 @@ public class VehicleApplicationUnitPage extends javax.swing.JPanel {
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
         xFormPanel2.setCaptionWidth(120);
-
-        xLookupField1.setCaption("Franchise No");
-        xLookupField1.setExpression("#{ entity.franchise.controlno }");
-        xLookupField1.setHandler("lookupFranchise");
-        xLookupField1.setName("entity.franchise"); // NOI18N
-        xLookupField1.setVisibleWhen("#{ mode == 'create' }");
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel2.add(xLookupField1);
-
-        xLabel1.setCaption("Franchise No");
-        xLabel1.setExpression("#{ entity.franchise.controlno }");
-        xLabel1.setName(""); // NOI18N
-        xLabel1.setVisibleWhen("#{ mode != 'create' }");
-        xFormPanel2.add(xLabel1);
 
         xTextField8.setCaption("Plate No");
         xTextField8.setName("entity.plateno"); // NOI18N
@@ -149,8 +133,6 @@ public class VehicleApplicationUnitPage extends javax.swing.JPanel {
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField11;

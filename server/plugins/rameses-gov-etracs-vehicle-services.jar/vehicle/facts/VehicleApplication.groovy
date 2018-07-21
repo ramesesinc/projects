@@ -10,9 +10,11 @@ public class VehicleApplication {
 	String apptype;
 	String vehicletype;
 	String objid;
-	
+	Date prevexpirydate;
+	String controlno;
 
 	public VehicleApplication( def m ) {
+		if(m.controlno) controlno = m.controlno;
 		apptype = m.apptype;
 		objid = m.objid;
 		if( m.vehicletypeid ) vehicletype  = m.vehicletypeid;
@@ -24,6 +26,15 @@ public class VehicleApplication {
 			}
 			appdate = m.appdate;
 		}	
+
+		if( m.prevexpirydate ) {
+			if( m.prevexpirydate instanceof String ) {
+				def df = new java.text.SimpleDateFormat( "yyyy-MM-dd");
+				m.prevexpirydate = df.parse( m.prevexpirydate );
+			}
+			prevexpirydate = m.prevexpirydate;
+		}	
+
 		if( !objid ) objid = "VAPP" + new UID();
 		if(!apptype) throw new Exception("apptype is required in rules.vehicle.facts.VehicleApplication");
 		if(!vehicletype) throw new Exception("vehicletype is required in rules.vehicle.facts.VehicleApplication");

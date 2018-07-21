@@ -44,6 +44,7 @@ class VehicleApplicationPersistenceInterceptor {
 	@Service("BillingRuleService")
 	def billRuleSvc;
 
+	/*
 	@Before(pattern="PersistenceService.create", index=1, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode !='CAPTURE' && args[0].apptype != 'NEW' }")
 	public void checkArrearsBeforeCreateApp(def evt) {
 		def entity = evt.args[0];
@@ -52,6 +53,7 @@ class VehicleApplicationPersistenceInterceptor {
 		def val = appFeeEm.where( "parent.rootappid = :rootappid ", [rootappid: rootappid] ).select("total:{SUM(amount-amtpaid)}").val();
 		if( val > 0 ) throw new Exception("Cannot proceed with the transaction. There are still unpaid fees.");
 	}
+	*/
 
 	@Before(pattern="PersistenceService.create", index=2, eval="#{ args[0]._schemaname == 'vehicle_application' }")
 	public void beforeCreateApplicationNewOrRenew(def evt) {
@@ -83,6 +85,18 @@ class VehicleApplicationPersistenceInterceptor {
 		entity.appno =  prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
 		entity.amount = 0;
 
+		//find the previous expiry date. Initially set the existing expiry date as the previous
+		//we will change this only during renewal.
+		if( entity.prevappid ) {
+			def ma = appEm.find( [objid: entity.prevappid]).select("controlid,expirydate").first();
+			entity.prevexpirydate = ma.expirydate;
+			entity.expirydate = ma.expirydate;
+			entity.franchise = [objid: ma.controlid]; 
+		}
+
+		//set the controlid
+		entity.controlid = entity.franchise?.objid;
+
 		//calculate the expiry date
 		def p = [application: entity];
 		def r = billRuleSvc.execute( [rulename:'vehicledates', params: p ] );
@@ -93,18 +107,8 @@ class VehicleApplicationPersistenceInterceptor {
 	public void afterCreateApplicationNew(def evt) {
 		def entity = evt.args[0];
 		def result = evt.result;
-
-		entity.prevappid = entity.primaryappid;
-		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW|RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT") ) {
-			entity.primaryappid = entity.objid;
-		}
-		if( entity.txnmode == "CAPTURE" || entity.apptype.matches("NEW") ) {
-			entity.rootappid = entity.objid;
-		}
-		if( !entity.primaryappid ) throw new Exception("Primary appid is required");
-		if( !entity.rootappid ) throw new Exception("Root appid is required");
-
-		appEm.find( [objid: result.objid ]).update( [primaryappid: entity.primaryappid, rootappid: entity.rootappid ]);
+		def val = (entity.apptype == "DROP") ? "{NULL}" : result.objid;
+		franchiseEm.find( [objid: entity.controlid ] ).update([appid: val ]);
 	}	
 
 	@After(pattern="PersistenceService.create", index=60, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT|CHANGE_UNIT|DROP')  }")
@@ -113,33 +117,13 @@ class VehicleApplicationPersistenceInterceptor {
 		def result = evt.result;
 
 		if(!entity.prevappid ) throw new Exception("prevappid is required in ONLINE-RENEW, CHANGE_OWNER, CHANGE_UNIT AND DROP ");
+
 		//create a copy for each unit and replace the franchise control with the new one
-		def controlno = entity.controlno;
-		if( entity.apptype.matches("RENEW|LATE_RENEWAL")) controlno = null;
-
-		def conds = [];
-		def parms = [:];
-		conds << "vehicleunit.primary.objid =:appid";
-		parms.appid = entity.prevappid;
-
-		if(controlno) {
-			conds << " controlno = :controlno";
-			parms.controlno = controlno;
-		}
-
-		def units = franchiseEm.where( conds.join( " AND ") , parms ).list();
-		if(!units) throw new Exception("There must be at least one vehicle included");
+		def units = appUnitEm.find( [appid: entity.prevappid ] ).list();
 		units.each { z->
-			def u =[:]	
-			u.putAll( z.vehicleunit );
-			u.app = [objid: result.objid];
-			u.appid = result.objid;
-			u.franchise = [objid: z.objid ];
-			u.controlid = z.objid;
-			u.objid = null;
-			u = appUnitEm.create(u);
-			def unitid = (entity.apptype == "DROP") ? null : u.objid
-			franchiseEm.find( [objid : z.objid ]).update( [vehicleunitid: unitid ] );
+			z.objid = null;
+			z.appid = result.objid;
+			appUnitEm.create(z);
 		}
 	}	
 
@@ -168,27 +152,21 @@ class VehicleApplicationPersistenceInterceptor {
 	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'vehicle_application' }")
 	public void beforeApplicationRemove(def evt) {
 		def entity = evt.args[0];
+
 		def app = appEm.find( [objid: entity.objid]).first();
 		if( app.task.state != "draft")
-			throw new Exception("Application can be removed only from the draft state");
+			throw new Exception("Application can only be removed from the draft state");
 		def appid = app.objid;
 		appEm.find( [objid:appid] ).update( [ taskid: null ] );
 		appTaskEm.find( [refid: appid]).delete();
 
-		def list = appUnitEm.find( [appid: appid ]).select("controlid").list();
-		if(!list) throw new Exception("There must be at least one item in the list")
-		list.each {
-			franchiseEm.find( [objid: it.controlid] ).update( [vehicleunitid: null ]);
-		}
-		appUnitEm.find( [appid: appid ]).delete();
-		list.each {
-			def val = null;
-			def m = appUnitEm.find( [controlid: it.controlid] ).orderBy("app.appyear DESC, app.dtcreated DESC").first();
-			if( m && !m.app.apptype.matches("DROP") ) {
-				val = m.objid;
-			} 
-			franchiseEm.find( [objid: it.controlid ]).update( [vehicleunitid: val] );
-		}
+		//remove also all vehicle units for this app
+		appUnitEm.find([appid: appid]).delete();
+
+
+		def m = appEm.find( [controlid: app.controlid] ).where( " NOT(objid = :id) ", [id:app.objid ]).orderBy("dtcreated DESC").first();
+		def val = ( m==null || m.apptype == "DROP") ? "{NULL}" : m.objid;
+		franchiseEm.find( [objid: app.controlid ]).update( [appid: val] );
 	}	
 
 }

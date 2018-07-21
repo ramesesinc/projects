@@ -160,15 +160,27 @@ class AFTxnService  {
 	}	
 
 	@ProxyMethod
-	public void revertBatch( def o ) { 
+	public void revertBatch( o ) { 
 		if( !o.aftxnitemid ) throw new Exception("AFTxnService.revertBatch error. aftxnitemid is required ");
-		def p = [aftxnitemid: o.aftxnitemid ];
-		afControl.where( "currentdetail.aftxnitemid = :aftxnitemid", p ).update( [lockid:'{NULL}', currentdetailid: '{currentdetail.prevdetailid}'] );
-		afControlDetail.where( "aftxnitemid = :aftxnitemid ", p ).delete();
+		
+		def lockid = new UID().toString();
+		def p = [ aftxnitemid: o.aftxnitemid ];
+		def afcs = afControlDetail.find( p ).select('controlid').list(); 
+		afcs.each{ a-> 
+			afControl.find([ objid: a.controlid ]).update([ lockid: lockid, currentdetailid:'{NULL}' ]);
+		}
+		afControlDetail.find( p ).delete();
+		afcs.each{ a-> 
+			def afd = afControlDetail.select('objid').find([ controlid: a.controlid ]).orderBy(' txndate desc, refdate desc ').first(); 
+			afControl.find([ objid: a.controlid ]).update([ currentdetailid: (afd.objid ? afd.objid : '{NULL}')]); 
 
-		//we need to re-update based on the updated detail id i.e. the prevdetailid 
-		afControl.where( "currentdetail.aftxnitemid = :aftxnitemid", p ).update( [currentseries: '{currentdetail.endingstartseries}', endseries: '{currentdetail.endingendseries}'] );
-		aftxnItem.find([objid: o.aftxnitemid ]).update( [qtyserved: 0] );
+			//we need to re-update based on the updated current detail id 
+			def m = [ currentseries: '{currentdetail.endingstartseries}', endseries: '{currentdetail.endingendseries}' ]; 
+			if ( o.txntype == 'ISSUE' ) m.state = 'OPEN'; 
+
+			afControl.find([ objid: a.controlid ]).update( m ); 
+		} 
+		aftxnItem.find([ objid: o.aftxnitemid ]).update([ qtyserved: 0 ]);
 	}	
 
 	@ProxyMethod

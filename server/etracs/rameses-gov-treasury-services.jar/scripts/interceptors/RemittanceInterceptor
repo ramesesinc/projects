@@ -33,6 +33,11 @@ class RemittanceInterceptor {
 		def o = evt.args[0];
 
 		if( !o.node?.state ) return;
+
+		if( o.node.state != 'DRAFT' ) {
+			o.orderBy = ' controldate desc '; 
+		}
+
 		//o.debug = true;
 		def str = "state = :state";
 		def m = [state: o.node.state ]; 

@@ -1,6 +1,8 @@
 <workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="jev" allowCreate="false" allowEdit="false">
     <invokers>
-        <invoker type="jev:open" action="open" caption="Journal Entry Voucher" role="MASTER" permission="jev.view"/>
+        <invoker type="jev:open" action="open" caption="Journal Entry Voucher" 
+                 role="MASTER" permission="jev.view" 
+                 formId="#{entity.refno}" formTitle="#{entity.refno}"/>
         
         <invoker type="formActions" action="viewRef" caption="View Reference"/>
         <invoker type="formActions" action="post" caption="Post" visibleWhen="#{entity.state == 'OPEN' }"/>

@@ -173,9 +173,9 @@
 				<textField isStretchWithOverflow="false" pattern="MMMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="398"
+						x="399"
 						y="44"
-						width="124"
+						width="123"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -290,7 +290,7 @@
 				<text><![CDATA[Responsibility
 Center]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="366"
 						y="22"
@@ -304,7 +304,7 @@ Center]]></text>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" pdfFontName="Helvetica" size="12" isBold="false"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="11" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["FUND: " + $F{fund.title}]]></textFieldExpression>
 				</textField>
@@ -399,7 +399,7 @@ Center]]></text>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
-				<text><![CDATA[Cash Disbursement]]></text>
+				<text><![CDATA[ Cash Disbursement]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -529,13 +529,13 @@ Center]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="399"
-						y="61"
-						width="100"
-						height="18"
+						x="398"
+						y="64"
+						width="113"
+						height="17"
 						key="textField"/>
 					<box></box>
-					<textElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txntype}]]></textFieldExpression>

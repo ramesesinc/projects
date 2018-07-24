@@ -8,7 +8,7 @@
 		<field name="amount" required="true"/>
 		<field name="remarks" />
 		<field name="item_fund_objid" required="true"/>
-		<field name="item_fund_title" required="true"/>
+		
 
 		<complex name="parent" ref="eor" jointype="many-to-one" includefields="controlno,controldate,remittanceid" required="false">
 			<key field="parentid" target="objid" />

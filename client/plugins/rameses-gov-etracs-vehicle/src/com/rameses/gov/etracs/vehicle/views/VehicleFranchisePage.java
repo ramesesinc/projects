@@ -40,134 +40,43 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
         xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel15 = new com.rameses.rcp.control.XLabel();
         xLabel16 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
-        xLabel17 = new com.rameses.rcp.control.XLabel();
-        xLabel18 = new com.rameses.rcp.control.XLabel();
-        xLabel19 = new com.rameses.rcp.control.XLabel();
-        xLabel20 = new com.rameses.rcp.control.XLabel();
-        xLabel21 = new com.rameses.rcp.control.XLabel();
-        xLabel22 = new com.rameses.rcp.control.XLabel();
-        xLabel23 = new com.rameses.rcp.control.XLabel();
-        xLabel24 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
         xFormPanel6 = new com.rameses.rcp.control.XFormPanel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
-        xLabel13 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
-        xLabel25 = new com.rameses.rcp.control.XLabel();
         jPanel3 = new javax.swing.JPanel();
         schemaList1 = new com.rameses.seti2.components.SchemaList();
 
         xFormPanel5.setCaptionWidth(150);
 
         xLabel8.setCaption("Active Year");
-        xLabel8.setExpression("#{entity.vehicleunit.activeyear}");
-        xLabel8.setName("entity.vehicleunit.activeyear"); // NOI18N
+        xLabel8.setExpression("#{entity.app.appyear}");
+        xLabel8.setName("entity.app.appyear"); // NOI18N
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel8.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel5.add(xLabel8);
 
         xLabel15.setCaption("Owner");
-        xLabel15.setExpression("#{entity.vehicleunit.owner.name} - #{entity.vehicleunit.owner.entityno}");
-        xLabel15.setName("entity.vehicleunit.owner"); // NOI18N
+        xLabel15.setExpression("#{entity.app.owner.name} - #{entity.app.owner.entityno}");
+        xLabel15.setName("entity.app.owner"); // NOI18N
         xLabel15.setVisibleWhen("");
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel15.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel15);
 
         xLabel16.setCaption("Owner Address");
-        xLabel16.setExpression("#{entity.vehicleunit.owner.address.text}");
-        xLabel16.setName("entity.vehicleunit.owner.address"); // NOI18N
+        xLabel16.setExpression("#{entity.app.owner.address.text}");
+        xLabel16.setName("entity.app.owner.address"); // NOI18N
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel16.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel16);
 
-        xLabel6.setCaption("Plate No");
-        xLabel6.setExpression("#{entity.vehicleunit.plateno}");
-        xLabel6.setName("entity.vehicleunit.plateno"); // NOI18N
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel6);
-
-        xLabel9.setCaption("CR Name");
-        xLabel9.setExpression("#{entity.vehicleunit.crname}");
-        xLabel9.setName("entity.vehicleunit.crname"); // NOI18N
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel9);
-
-        xLabel10.setCaption("Engine No");
-        xLabel10.setExpression("#{entity.vehicleunit.engineno}");
-        xLabel10.setName("entity.vehicleunit.engineno"); // NOI18N
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel10);
-
-        xLabel11.setCaption("Chassis No");
-        xLabel11.setExpression("#{entity.vehicleunit.chassisno}");
-        xLabel11.setName("entity.vehicleunit.chassisno"); // NOI18N
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel11.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel11);
-
-        xLabel17.setCaption("Make");
-        xLabel17.setExpression("#{entity.vehicleunit.make}");
-        xLabel17.setName("entity.vehicleunit.make"); // NOI18N
-        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel17.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel17);
-
-        xLabel18.setCaption("Model");
-        xLabel18.setExpression("#{entity.vehicleunit.model}");
-        xLabel18.setName("entity.vehicleunit.model"); // NOI18N
-        xLabel18.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel18.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel18);
-
-        xLabel19.setCaption("Color");
-        xLabel19.setExpression("#{entity.vehicleunit.color}");
-        xLabel19.setName("entity.vehicleunit.color"); // NOI18N
-        xLabel19.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel19.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel19);
-
-        xLabel20.setCaption("Body No");
-        xLabel20.setExpression("#{entity.vehicleunit.bodyno}");
-        xLabel20.setName("entity.vehicleunit.bodyno"); // NOI18N
-        xLabel20.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel20.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel20);
-
-        xLabel21.setCaption("Sidecar No");
-        xLabel21.setExpression("#{entity.vehicleunit.sidecarno}");
-        xLabel21.setName("entity.vehicleunit.sidecarno"); // NOI18N
-        xLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel21.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel21);
-
-        xLabel22.setCaption("Sidecar Color");
-        xLabel22.setExpression("#{entity.vehicleunit.sidecarcolor}");
-        xLabel22.setName("entity.vehicleunit.sidecarcolor"); // NOI18N
-        xLabel22.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel22.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel22);
-
-        xLabel23.setCaption("Driver");
-        xLabel23.setExpression("#{entity.vehicleunit.driver.name}");
-        xLabel23.setName("entity.vehicleunit.driver"); // NOI18N
-        xLabel23.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel23.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel23);
-
-        xLabel24.setCaption("Remarks");
-        xLabel24.setExpression("#{entity.vehicleunit.remarks}");
-        xLabel24.setName("entity.vehicleunit.remarks"); // NOI18N
-        xLabel24.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel24.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel5.add(xLabel24);
+        xLabel13.setCaption("Renewal Date");
+        xLabel13.setExpression("#{entity.app.expirydate}");
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel5.add(xLabel13);
 
         xFormPanel6.setCaptionWidth(150);
 
@@ -183,23 +92,11 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel6.add(xLabel12);
 
-        xLabel13.setCaption("Renewal Date");
-        xLabel13.setExpression("#{entity.vehicleunit.expirydate}");
-        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel6.add(xLabel13);
-
         xLabel14.setCaption("Vehice Type");
         xLabel14.setExpression("#{entity.vehicletype.objid}");
         xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel6.add(xLabel14);
-
-        xLabel25.setCaption("GUI Handler");
-        xLabel25.setExpression("#{entity.vehicletype.guihandler}");
-        xLabel25.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel25.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel6.add(xLabel25);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -218,14 +115,14 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(287, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
 
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "app.appno"}
+                new Object[]{"name", "appno"}
                 , new Object[]{"caption", "App No"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -240,7 +137,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "app.apptype"}
+                new Object[]{"name", "apptype"}
                 , new Object[]{"caption", "App Type"}
                 , new Object[]{"width", 150}
                 , new Object[]{"minWidth", 150}
@@ -255,7 +152,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "app.appyear"}
+                new Object[]{"name", "appyear"}
                 , new Object[]{"caption", "Year"}
                 , new Object[]{"width", 50}
                 , new Object[]{"minWidth", 50}
@@ -270,7 +167,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "app.owner.name"}
+                new Object[]{"name", "owner.name"}
                 , new Object[]{"caption", "Owner"}
                 , new Object[]{"width", 250}
                 , new Object[]{"minWidth", 250}
@@ -285,7 +182,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "app.appdate"}
+                new Object[]{"name", "appdate"}
                 , new Object[]{"caption", "App Date"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
@@ -300,7 +197,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "app.txnmode"}
+                new Object[]{"name", "txnmode"}
                 , new Object[]{"caption", "Txn Mode"}
                 , new Object[]{"width", 120}
                 , new Object[]{"minWidth", 120}
@@ -316,9 +213,9 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
             })
         });
         schemaList1.setCustomFilter("controlid = :controlid");
-        schemaList1.setOrderBy("app.appyear DESC,app.dtcreated DESC");
+        schemaList1.setOrderBy("appyear DESC,dtcreated DESC");
         schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("vehicle_application_unit");
+        schemaList1.setSchemaName("vehicle_application");
         schemaList1.setAllowCreate(true);
         schemaList1.setAllowDelete(true);
 
@@ -353,7 +250,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -363,26 +260,13 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
     private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
-    private com.rameses.rcp.control.XLabel xLabel10;
-    private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;
     private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel16;
-    private com.rameses.rcp.control.XLabel xLabel17;
-    private com.rameses.rcp.control.XLabel xLabel18;
-    private com.rameses.rcp.control.XLabel xLabel19;
-    private com.rameses.rcp.control.XLabel xLabel20;
-    private com.rameses.rcp.control.XLabel xLabel21;
-    private com.rameses.rcp.control.XLabel xLabel22;
-    private com.rameses.rcp.control.XLabel xLabel23;
-    private com.rameses.rcp.control.XLabel xLabel24;
-    private com.rameses.rcp.control.XLabel xLabel25;
-    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     // End of variables declaration//GEN-END:variables
 

@@ -103,11 +103,8 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         if ( selectedItem.taskstate != 'end' ) throw new Exception('This transaction is not yet completed. Please verify');  
         
         if ( entity.apptype == 'RENEW' ) {
-            int yr = entity.appyear-1;
-            if ( selectedItem.appyear < yr ) 
+            if ( selectedItem.appyear < (entity.appyear - 1) ) 
                 throw new Exception('This transaction is delinquent. Please settle deliquency first'); 
-            if ( selectedItem.appyear > yr ) 
-                throw new Exception('Application is already current.'); 
         }
         else if ( entity.apptype == 'LATE_RENEWAL' ) {
             if (selectedItem.appyear > (entity.appyear-2))
@@ -121,9 +118,8 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         if( !MsgBox.confirm("You are now about to create the application. Please ensure data is correct. Proceed?") ) {
             throw new BreakException();
         }
+        entity.prevappid = selectedItem.objid;
         entity.owner = selectedItem.owner;
-        entity.primaryappid = selectedItem.primaryappid;
-        entity.rootappid = selectedItem.rootappid;
         entity.particulars = selectedItem.particulars;
         entity.lastrenewal = selectedItem.appyear; 
         if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
@@ -142,8 +138,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
             throw new Exception('Application year must be current');             
             
         prevOwner = selectedItem.owner;
-        entity.primaryappid = selectedItem.primaryappid;
-        entity.rootappid = selectedItem.rootappid;
+        entity.prevappid = selectedItem.objid;
         entity.particulars = selectedItem.particulars;
         entity.appyear = selectedItem.appyear;
         if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
@@ -160,5 +155,14 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         return Inv.lookupOpener( "vehicle_application:open", [ entity: [objid: entity.objid] ] );
     }
 
+    def getLookupFranchise() {
+        def p = [:];
+        p.onselect = { o->
+            entity.franchise = o;
+            binding.refresh("entity.franchise");
+        };
+        p.query = [ vehicletypeid: vehicletype.objid ];    
+        return Inv.lookupOpener("vehicle_franchise:available:lookup", p );
+    }
     
 }

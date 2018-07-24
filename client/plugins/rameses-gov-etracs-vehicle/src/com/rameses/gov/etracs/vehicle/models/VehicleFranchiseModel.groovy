@@ -34,13 +34,4 @@ public class VehicleFranchiseModel extends CrudFormModel {
     }
 
     
-    def appListModel = [
-        fetchList: { o->
-            def m = [_schemaname:'vehicle_application_unit'];
-            m.findBy = [ controlid: entity.objid ];
-            m.orderBy = "app.dtcreated DESC";
-            return queryService.getList(m);
-        }
-    ] as BasicListModel;
-    
 }

@@ -2,7 +2,6 @@
     <invokers>
         <invoker type="vehicle:cashreceipt_lookup" caption="Lookup Vehicles"
                  cols="appno,apptype,appyear,owner.name,controlno"
-                 hiddenCols="plateno,engineno,sidecarno,bodyno"
                  width="1000"
                  action="init"/>
     </invokers>

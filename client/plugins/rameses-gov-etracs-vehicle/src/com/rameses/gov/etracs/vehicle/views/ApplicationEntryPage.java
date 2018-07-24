@@ -34,6 +34,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel {
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
@@ -57,6 +58,13 @@ public class ApplicationEntryPage extends javax.swing.JPanel {
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel3.add(xLabel2);
+
+        xLookupField1.setCaption("Franchise No");
+        xLookupField1.setExpression("#{ entity.franchise.controlno }");
+        xLookupField1.setHandler("lookupFranchise");
+        xLookupField1.setName("entity.franchise"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(250, 20));
+        xFormPanel3.add(xLookupField1);
 
         xDateField1.setCaption("App date");
         xDateField1.setName("entity.appdate"); // NOI18N
@@ -117,8 +125,8 @@ public class ApplicationEntryPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -133,6 +141,7 @@ public class ApplicationEntryPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     // End of variables declaration//GEN-END:variables
 }

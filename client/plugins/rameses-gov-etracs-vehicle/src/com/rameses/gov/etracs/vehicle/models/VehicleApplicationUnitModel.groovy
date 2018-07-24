@@ -21,7 +21,7 @@ public class VehicleApplicationUnitModel  {
     public void create() {
         entity = [:];
         entity.app = app;
-        entity.activeyear = app.appyear;
+        entity.appid = app.objid;
         mode = "create";
     }
 
@@ -30,15 +30,7 @@ public class VehicleApplicationUnitModel  {
         app = entity.app;
     }
 
-    def getLookupFranchise() {
-        def p = [:];
-        p.onselect = { o->
-            entity.franchise = o;
-            binding.refresh("entity.franchise");
-        };
-        p.query = [ vehicletypeid: vehicletype.objid ];    
-        return Inv.lookupOpener("vehicle_franchise:available:lookup", p );
-    }
+   
     
     def doOk() {
         handler( entity );

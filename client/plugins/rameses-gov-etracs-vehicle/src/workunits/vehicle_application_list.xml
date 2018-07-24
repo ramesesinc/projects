@@ -10,7 +10,7 @@
                  formId="#{vehicletype.objid}:app:list"
                  role="MASTER" 
                  index="-1"
-                 cols="appno,appdate,appyear,apptype,txnmode,owner.name"/>
+                 cols="franchise.controlno,appno,appdate,appyear,apptype,txnmode,owner.name"/>
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationListModel" />
 </workunit>

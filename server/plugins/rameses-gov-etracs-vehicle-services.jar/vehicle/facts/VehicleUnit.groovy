@@ -5,7 +5,6 @@ import java.rmi.server.*;
 
 public class VehicleUnit {
 	
-	String controlno;
 	String plateno;
 	String engineno;
 	String bodyno;
@@ -17,7 +16,6 @@ public class VehicleUnit {
 	String sidecarcolor;
 
 	public VehicleUnit( def m ) {
-		this.controlno = m.franchise?.controlno;
 		this.plateno = m.plateno;
 		this.engineno = m.engineno;
 		this.bodyno = m.bodyno;

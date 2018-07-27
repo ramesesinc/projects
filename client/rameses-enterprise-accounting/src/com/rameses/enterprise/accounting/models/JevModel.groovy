@@ -74,6 +74,17 @@ class JevModel  extends CrudFormModel {
             return flist; 
         }
     ] as BasicListModel;
+    
+    def getPrintFormData() {
+        def m = [:]; 
+        m.putAll( super.getPrintFormData()); 
+        
+        def olditems = m.remove('items'); 
+        m.items = []; 
+        m.items.addAll( olditems.findAll{( it.dr > 0 )} ); 
+        m.items.addAll( olditems.findAll{( it.dr <= 0 )} ); 
+        return m; 
+    } 
 
     void viewItemAccounts() {
         accttype = 'itemaccount'; 

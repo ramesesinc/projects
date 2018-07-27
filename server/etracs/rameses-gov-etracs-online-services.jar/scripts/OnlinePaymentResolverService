@@ -5,7 +5,7 @@ class OnlinePaymentResolverService {
 	@Service(value='PartnerPaymentService', connection='gdx_proxy') 
 	def paymentProxySvc; 
 
-	@DataContext('paymentorder')
+	@DataContext('eor_paymentorder')
 	def po_db;
 
 	@Service 
@@ -54,6 +54,7 @@ class OnlinePaymentResolverService {
     		try {
     			o.paymentrefid = o.objid; 
     			o.orgcode = o.locationid; 
+                     println 'before resolve -> '+ o.paymentrefid; 
     			paymentProxySvc.resolve( o ); 
    			} catch(Throwable t) { 
    				t.printStackTrace(); 

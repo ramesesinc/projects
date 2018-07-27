@@ -131,6 +131,11 @@ class CollectionVoucherService  {
 		jevBatch.items.addAll( cvEm.getBankAccountLedgerItems( pm ) );
 		jevBatch.items.addAll( cvEm.getIncomeLedgerItems( pm ) );
 		jevBatch.items.addAll( cvEm.getPayableLedgerItems( pm ) );
+		jevBatch.items.each{
+			it.acctid = it.itemacctid; 
+			it.acctcode = it.itemacctcode; 
+			it.acctname = it.itemacctname;
+		}
 		jevSvc.createBatch( jevBatch );
 
 		return m; 

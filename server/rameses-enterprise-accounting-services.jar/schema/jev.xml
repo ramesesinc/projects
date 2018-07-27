@@ -24,11 +24,10 @@
 			<key field="fundid" target="objid" />
 		</complex>
 
-		<!--
 		<complex name="items" ref="jevitem" jointype="one-to-many">
 			<key field="objid" target="jevid" />
 		</complex>
-		-->
+
 		<field name="batchid" />
 	</element>
 

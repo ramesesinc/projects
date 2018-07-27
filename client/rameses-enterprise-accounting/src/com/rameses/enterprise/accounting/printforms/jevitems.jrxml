@@ -45,8 +45,8 @@
 
 	<field name="dr" class="java.math.BigDecimal"/>
 	<field name="cr" class="java.math.BigDecimal"/>
-	<field name="account.code" class="java.lang.String"/>
-	<field name="account.title" class="java.lang.String"/>
+	<field name="acctcode" class="java.lang.String"/>
+	<field name="acctname" class="java.lang.String"/>
 	<field name="particulars" class="java.lang.String"/>
 
 	<variable name="TCREDIT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
@@ -89,7 +89,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[( ($F{dr}>0) ?'': '     ') + $F{account.title}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( ($F{dr}>0) ?'': '     ') + $F{acctname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -107,7 +107,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{account.code}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{acctcode}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

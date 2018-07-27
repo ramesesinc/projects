@@ -54,6 +54,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xLabel18 = new com.rameses.rcp.control.XLabel();
         xLabel21 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
+        xLabel14 = new com.rameses.rcp.control.XLabel();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
@@ -148,12 +149,18 @@ public class ApplicationFormPage extends javax.swing.JPanel {
         xLabel21.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel6.add(xLabel21);
 
-        xLabel12.setCaption("Expiry Date");
-        xLabel12.setExpression("#{entity.expirydate}");
-        xLabel12.setVisibleWhen("#{ entity.apptype.matches( 'NEW|RENEW' ) }");
+        xLabel12.setCaption("Date Approved");
+        xLabel12.setExpression("#{entity.dtapproved}");
         xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel12.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel6.add(xLabel12);
+
+        xLabel14.setCaption("Expiry Date");
+        xLabel14.setExpression("#{entity.expirydate}");
+        xLabel14.setVisibleWhen("#{ entity.apptype.matches( 'NEW|RENEW' ) }");
+        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel14.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel6.add(xLabel14);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -181,11 +188,11 @@ public class ApplicationFormPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -391,6 +398,7 @@ public class ApplicationFormPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel13;
+    private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel15;
     private com.rameses.rcp.control.XLabel xLabel16;
     private com.rameses.rcp.control.XLabel xLabel17;

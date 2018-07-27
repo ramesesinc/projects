@@ -91,11 +91,26 @@ public class BasicBillingCapturePaymentModel {
     void init() {
         def p = [:];
         buildParams( p ); 
-        if ( !p.txnid ) throw new Exception('Please provide txnid parameter'); 
+
+        if(!txnid) {
+            def opener = null;
+            try {
+                def h = { o->
+                    txnid = o?.objid; 
+                    return null;
+                }
+                opener = Inv.lookupOpener(getContextName() + ":cashreceipt_lookup", [onselect: h ]);
+                Modal.show( opener );
+            }catch(ign){;}
+            if( opener==null && txnid==null ) {
+                txnid = MsgBox.prompt("Enter Transaction No");
+            }
+            if(!txnid) throw new BreakException();
+        }
         
         p.action = 'open';
-        p.id = p.txnid;
-        txnid = p.id;
+        p.id = txnid;
+        p.txntype = txntype;
         loadInfo( p );
     }
         
@@ -111,6 +126,7 @@ public class BasicBillingCapturePaymentModel {
             if ( it.discount == null ) it.discount = 0.0; 
             if ( it.surcharge == null ) it.surcharge = 0.0; 
             if ( it.interest == null ) it.interest = 0.0; 
+            println it;
         }
         
         afterLoadInfo(); 

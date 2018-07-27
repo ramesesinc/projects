@@ -103,7 +103,7 @@ class VehicleBillingInterceptor {
 		facts << new VehicleApplication( app );
 
 		def units = app.vehicleunits;
-		if( !units) units =  appUnitEm.find( [appid: app.objid ]).orderBy("franchise.controlno").list();
+		if( !units) units =  appUnitEm.find( [appid: app.objid ]).list();
 		units.each {
 			facts << new VehicleUnit( it );
 		};

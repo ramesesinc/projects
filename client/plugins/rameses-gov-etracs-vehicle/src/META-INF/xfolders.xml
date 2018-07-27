@@ -18,8 +18,9 @@
     
      <folder id="menucategory">
         <folder id="vehicle" caption="Vehicle">
-            <folder id="application" caption="Application" index="0" icon="home/icons/folder.png"/>
-            <folder id="master" caption="Master Files" index="5" icon="home/icons/master.png"/>
+            <folder id="master" caption="Master Files" index="1" icon="home/icons/master.png"/>
+            <folder id="application" caption="Application" index="2" icon="home/icons/folder.png"/>
+            <folder id="txn" caption="Transactions" index="3" icon="home/icons/folder.png"/>
         </folder>
     </folder>
 </folders>    

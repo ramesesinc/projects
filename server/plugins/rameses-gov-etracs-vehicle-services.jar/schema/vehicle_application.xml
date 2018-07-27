@@ -23,6 +23,7 @@
 		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
 		<field name="expirydate"  required="true"/>
+		<field name="dtapproved" />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>

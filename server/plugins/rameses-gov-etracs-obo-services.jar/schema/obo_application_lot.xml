@@ -1,0 +1,26 @@
+<schema adapter="obodb">
+	<element tablename="obo_application_lot">
+		<field name="objid" primary="true" prefix="OBOAPP"/>
+		<field name="appid" caption="App No"/>
+
+		<field name="owner_name" caption="Owner Name"/>
+		<field name="owner_objid" visible="false"/>
+		<field name="owner_address_text" caption="Owner Address"/>
+		<field name="owner_ctc_objid" />
+		<field name="owner_ctc_receiptno" />
+		<field name="owner_ctc_dateissued" />
+		<field name="owner_ctc_placeissued" />
+
+		<field name="lotno" />
+		<field name="blockno" />
+		<field name="bldgno" />
+		<field name="street" />
+		<field name="subdivision" />
+		<field name="barangay_objid" required="true"/>
+		<field name="barangay_name"  required="true"/>
+
+		<field name="tdno" />
+		<field name="rptid" />
+		<field name="titleno" />
+	</element>
+</schema>

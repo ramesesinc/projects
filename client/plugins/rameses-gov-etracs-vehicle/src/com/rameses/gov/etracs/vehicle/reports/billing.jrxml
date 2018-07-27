@@ -57,26 +57,15 @@
 	<field name="filedby.name" class="java.lang.String"/>
 	<field name="filedby.jobtitle" class="java.lang.String"/>
 	<field name="vehicleunits" class="java.lang.Object"/>
+	<field name="franchise.controlno" class="java.lang.String"/>
+	<field name="vehicletype.title" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</background>
 		<title>
-			<band height="167"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="57"
-						width="540"
-						height="16"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["MTOP BILLING"]]></textFieldExpression>
-				</textField>
+			<band height="215"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -160,8 +149,8 @@
 				<textField isStretchWithOverflow="true" pattern="MMMM dd, yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="419"
-						y="59"
+						x="418"
+						y="54"
 						width="121"
 						height="11"
 						forecolor="#000000"
@@ -180,8 +169,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="349"
-						y="60"
+						x="348"
+						y="55"
 						width="65"
 						height="11"
 						forecolor="#000000"
@@ -397,7 +386,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{appno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{franchise.controlno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -443,7 +432,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="143"
+						y="173"
 						width="540"
 						height="17"
 						forecolor="#000000"
@@ -460,6 +449,71 @@
 					</textElement>
 				<text><![CDATA[Billing Information]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="65"
+						width="540"
+						height="14"
+						key="textField-26"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{vehicletype.title} + " BILLING"]]></textFieldExpression>
+				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="190"
+						width="540"
+						height="19"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-1"
+						positionType="Float"/>
+					<subreportParameter  name="NEXTBILLDATE">
+						<subreportParameterExpression><![CDATA[$F{billexpirydate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$F{vehicleunits}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["billitems.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="149"
+						width="540"
+						height="19"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-2"
+						positionType="Float"/>
+					<dataSourceExpression><![CDATA[$F{vehicleunits}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["vehicleunits.jasper"		]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="131"
+						width="540"
+						height="17"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-73"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Vehicle Information]]></text>
+				</staticText>
 			</band>
 		</title>
 		<pageHeader>
@@ -471,12 +525,12 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="27"  isSplitAllowed="true" >
+			<band height="0"  isSplitAllowed="true" >
 				<line direction="TopDown">
 					<reportElement
 						mode="Opaque"
 						x="0"
-						y="0"
+						y="-38"
 						width="540"
 						height="1"
 						forecolor="#000000"
@@ -484,23 +538,6 @@
 						key="line-22"/>
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 				</line>
-				<subreport  isUsingCache="true">
-					<reportElement
-						mode="Opaque"
-						x="0"
-						y="2"
-						width="540"
-						height="19"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="subreport-1"
-						positionType="Float"/>
-					<subreportParameter  name="NEXTBILLDATE">
-						<subreportParameterExpression><![CDATA[$F{billexpirydate}]]></subreportParameterExpression>
-					</subreportParameter>
-					<dataSourceExpression><![CDATA[$F{vehicleunits}]]></dataSourceExpression>
-					<subreportExpression  class="java.lang.String"><![CDATA["billing_item.jasper"]]></subreportExpression>
-				</subreport>
 			</band>
 		</detail>
 		<columnFooter>

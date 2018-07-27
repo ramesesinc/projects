@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="assessment_item"
+		 name="billitems"
 
 		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
@@ -92,12 +92,12 @@
 			</band>
 		</pageHeader>
 		<columnHeader>
-			<band height="41"  isSplitAllowed="true" >
+			<band height="21"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="26"
-						y="23"
+						y="5"
 						width="55"
 						height="12"
 						forecolor="#000000"
@@ -117,7 +117,7 @@
 					<reportElement
 						mode="Transparent"
 						x="469"
-						y="23"
+						y="5"
 						width="60"
 						height="12"
 						forecolor="#000000"
@@ -133,40 +133,11 @@
 					</textElement>
 				<text><![CDATA[Total]]></text>
 				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="0"
-						y="16"
-						width="540"
-						height="0"
-						key="line-2"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="0"
-						y="1"
-						width="540"
-						height="14"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-13"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[Assessment Information]]></text>
-				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="191"
-						y="23"
+						y="5"
 						width="60"
 						height="12"
 						forecolor="#000000"
@@ -186,7 +157,7 @@
 					<reportElement
 						mode="Transparent"
 						x="267"
-						y="23"
+						y="5"
 						width="60"
 						height="12"
 						forecolor="#000000"
@@ -206,7 +177,7 @@
 					<reportElement
 						mode="Transparent"
 						x="340"
-						y="23"
+						y="5"
 						width="60"
 						height="12"
 						forecolor="#000000"
@@ -226,7 +197,7 @@
 					<reportElement
 						mode="Transparent"
 						x="409"
-						y="23"
+						y="5"
 						width="60"
 						height="12"
 						forecolor="#000000"

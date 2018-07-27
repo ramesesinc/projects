@@ -1,0 +1,52 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+
+class VehicleReportInterceptor {
+	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_unit")
+	def appUnitEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@Service("BillingRuleService")
+	def billingRuleSvc;
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_application' }")
+	public void getApplication(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def app = appEm.find( [objid: p.parameters.objid ]).first();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
+		result.data = app;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_assessment' }")
+	public void getAssessment(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+
+		def app  = appEm.find( [objid: p.parameters.objid ]).first();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
+
+		def params = [:];
+		params.application = app;
+		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount,parentid";		
+		params.billitems = appFeeEm.select(select).find( [parentid: app.objid] ).list();
+		if(app.dtapproved) params.billdate = app.dtapproved;
+		//params.include_billitems = false;
+		//params.include_items = true;
+
+		def res = billingRuleSvc.execute( [rulename: "vehiclebilling", params: params ] );
+		app.billitems = res.billitems;
+		result.data = app;
+	}
+
+}

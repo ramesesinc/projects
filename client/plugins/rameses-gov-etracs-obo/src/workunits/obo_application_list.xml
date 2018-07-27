@@ -1,9 +1,9 @@
 <workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
           processName="obo_application" schemaName="obo_application"
-          allowDelete="false" allowNotify="true">
+          allowDelete="false" allowNotify="false">
     <invokers>
-        <invoker folderid="/home/obo" caption="OBO Application List"
-                cols="appno,appdate,owner.name,description,projectcost"
-                action="init" index="1" srole="SHARED"/>
+        <invoker folderid="menucategory/obo/application" caption="View Application List"
+             cols="appno,appdate,owner.name,description,projectcost"
+                action="init" index="-1" srole="SHARED"/>
     </invokers>
 </workunit>

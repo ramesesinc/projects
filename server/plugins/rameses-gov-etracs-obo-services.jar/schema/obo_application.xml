@@ -55,21 +55,15 @@
 			<key field="taskid" target="taskid" />
 		</complex>
 
-		<field name="rptinfo_tdno" />
-		<field name="rptinfo_objid" />
-		<field name="rptinfo_titleno" />
-
+		<!--
 		<complex name="buildingkind" ref="obo_building_kind" jointype="many-to-one" 
 			includefields="name,use.*">
 			<key field="bldgkindid" target="objid"/>	
 		</complex>	
-
+		-->
+		
 		<field name="projectcost" caption="Project Cost" type="decimal"/>
 		<field name="estimatedcost" caption="Est. Cost"  type="decimal"/>
-
-		<complex name="permits" ref="obo_auxiliary_permit" jointype="one-to-many" required="false">
-			<key field="objid" target="appid"/>	
-		</complex>	
 
 	</element>
 </schema>

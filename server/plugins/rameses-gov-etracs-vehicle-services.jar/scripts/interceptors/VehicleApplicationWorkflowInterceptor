@@ -45,6 +45,13 @@ class VehicleApplicationWorkflowInterceptor {
 	}
 
 	//before running the payment get the necessary info for evaluation, in this case the amtdue 
+	@After(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'approval' && args[0].to == 'payment' }")
+	public void afterApproval( def evt ) {
+		def p = evt.args[0];
+		appEm.find( [objid: p.refid ]).update( [dtapproved: dateSvc.getServerDate() ]);
+	}
+
+	//before running the payment get the necessary info for evaluation, in this case the amtdue 
 	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'payment' }")
 	public void beforePayment( def evt ) {
 		def p = evt.args[0];

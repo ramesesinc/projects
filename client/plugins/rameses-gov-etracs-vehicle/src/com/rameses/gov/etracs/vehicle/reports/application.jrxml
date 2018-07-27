@@ -33,13 +33,10 @@
 
 	<field name="owner.name" class="java.lang.String"/>
 	<field name="appno" class="java.lang.String"/>
-	<field name="engineno" class="java.lang.String"/>
-	<field name="bodyno" class="java.lang.String"/>
-	<field name="color" class="java.lang.String"/>
-	<field name="plateno" class="java.lang.String"/>
-	<field name="make" class="java.lang.String"/>
 	<field name="franchise.controlno" class="java.lang.String"/>
 	<field name="gender" class="java.lang.String"/>
+	<field name="vehicleunits" class="java.lang.Object"/>
+	<field name="vehicletype.title" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -52,29 +49,17 @@
 						x="27"
 						y="257"
 						width="508"
-						height="103"
+						height="107"
 						key="textField-3"/>
 					<box leftPadding="8"></box>
 					<textElement isStyledText="true">
 						<font size="11"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["COMES NOW the applicant unto this Honorable Sangguniang Bayan. Most overs;"+ 
-"\n1. The applicant is of legal age, Filipino an a resident of <u>"+ $P{LGUNAME} + ($P{PARENTLGUNAME} ? ", "+ $P{PARENTLGUNAME}:"") +"</u>"+  
-"\n2. The applicant proposes to operate Tricycle service with the use of 1 unit with 1 ready unit,"+
-"\n    described as follows in which the applicant proposed to operate:"+
-"\n <u>** Within Poblacion only except along National Highway with extended route in accordance with"+
-"\n          Revised Code of General Ordinaces of 2007 and Amendatory Ordinace No. 2009-01***</u>"]]></textFieldExpression>
+"\n1. The applicant is of legal age, Filipino and a resident of <u>"+ $P{LGUNAME} + ($P{PARENTLGUNAME} ? ", "+ $P{PARENTLGUNAME}:"") +"</u>"+  
+"\n2. The applicant proposes to operate the following vehicle services with the use of the following units, described as follows in which the applicant proposed to operate:"+
+"\n <u>** Within the route in accordance with the Revised Code of General Ordinaces of 2007 and Amendatory Ordinace No. 2009-01***</u>"]]></textFieldExpression>
 				</textField>
-				<rectangle>
-					<reportElement
-						x="32"
-						y="368"
-						width="470"
-						height="50"
-						key="rectangle-1"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<staticText>
 					<reportElement
 						x="64"
@@ -116,20 +101,6 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="27"
-						y="139"
-						width="207"
-						height="32"
-						key="staticText-4"/>
-					<box></box>
-					<textElement>
-						<font size="12"/>
-					</textElement>
-				<text><![CDATA[APPLICATION FOR MOTORIZED
-TRICYCLE OPERATORS PERMIT]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
 						x="0"
 						y="220"
 						width="535"
@@ -147,7 +118,8 @@ TRICYCLE OPERATORS PERMIT]]></text>
 						y="442"
 						width="508"
 						height="92"
-						key="staticText-7"/>
+						key="staticText-7"
+						positionType="Float"/>
 					<box leftPadding="8"></box>
 					<textElement>
 						<font size="11"/>
@@ -201,206 +173,16 @@ TRICYCLE OPERATORS PERMIT]]></text>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="27"
-						y="171"
-						width="481"
+						x="134"
+						y="165"
+						width="166"
 						height="20"
 						key="textField"/>
 					<box></box>
 					<textElement>
 						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["("+ $F{franchise.controlno} +") ("+ $F{appno} + ")"]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="35"
-						y="392"
-						width="96"
-						height="20"
-						key="textField"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{engineno}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="134"
-						y="392"
-						width="107"
-						height="20"
-						key="textField"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{bodyno}]]></textFieldExpression>
-				</textField>
-				<line direction="TopDown">
-					<reportElement
-						x="32"
-						y="388"
-						width="470"
-						height="0"
-						key="line-1"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="132"
-						y="368"
-						width="0"
-						height="50"
-						key="line-2"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="242"
-						y="368"
-						width="0"
-						height="50"
-						key="line-3"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="322"
-						y="368"
-						width="0"
-						height="50"
-						key="line-4"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="402"
-						y="368"
-						width="0"
-						height="50"
-						key="line-5"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<staticText>
-					<reportElement
-						x="32"
-						y="368"
-						width="99"
-						height="20"
-						key="staticText-11"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<text><![CDATA[ENGINE NO]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="131"
-						y="368"
-						width="112"
-						height="20"
-						key="staticText-12"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<text><![CDATA[CHASSIS NO]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="243"
-						y="368"
-						width="79"
-						height="20"
-						key="staticText-13"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<text><![CDATA[MAKE]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="322"
-						y="368"
-						width="80"
-						height="20"
-						key="staticText-14"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<text><![CDATA[COLOR]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="401"
-						y="368"
-						width="100"
-						height="20"
-						key="staticText-15"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<text><![CDATA[PLATE NO]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="401"
-						y="392"
-						width="101"
-						height="20"
-						key="textField"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{plateno}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="323"
-						y="392"
-						width="78"
-						height="20"
-						key="textField"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{color}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="242"
-						y="392"
-						width="80"
-						height="20"
-						key="textField"
-						positionType="Float"/>
-					<box topPadding="3"></box>
-					<textElement textAlignment="Center">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{make}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{appno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -441,6 +223,68 @@ TRICYCLE OPERATORS PERMIT]]></text>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{owner.name}]]></textFieldExpression>
 				</textField>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="27"
+						y="374"
+						width="503"
+						height="40"
+						key="subreport-1"/>
+					<dataSourceExpression><![CDATA[$F{vehicleunits}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["vehicleunits.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="27"
+						y="126"
+						width="357"
+						height="39"
+						key="textField-8"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["APPLICATION FOR "+ $F{vehicletype.title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="134"
+						y="185"
+						width="166"
+						height="20"
+						key="textField-9"/>
+					<box></box>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{franchise.controlno}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="27"
+						y="165"
+						width="90"
+						height="20"
+						key="staticText-10"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[APPLICATION NO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="27"
+						y="185"
+						width="90"
+						height="20"
+						key="staticText-11"/>
+					<box></box>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[FRANCHISE NO:]]></text>
+				</staticText>
 			</band>
 		</title>
 		<pageHeader>

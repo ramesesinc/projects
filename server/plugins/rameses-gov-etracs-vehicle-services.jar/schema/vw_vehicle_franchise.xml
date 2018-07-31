@@ -1,0 +1,39 @@
+<!--
+drop view if exists vw_vehicle_franchise
+;
+create view vw_vehicle_franchise as 
+SELECT 
+	vf.objid,
+	vf.vehicletypeid, 
+	vf.controlno,
+	vp.permitno,
+	va.appyear,
+	va.owner_objid,
+	va.owner_name,
+	va.owner_address_objid,
+	va.owner_address_text,
+	va.particulars,
+	vf.renewaldate,
+	vt.state AS taskstate
+FROM vehicle_franchise vf 
+INNER JOIN vehicle_application va ON vf.appid = va.objid
+INNER JOIN vehicle_application_task vt ON va.taskid = vt.taskid
+LEFT JOIN vehicle_permit vp ON vp.appid = va.objid 
+-->
+<schema adapter="vehicledb">
+	<element tablename="vw_vehicle_franchise">
+		<field name="objid" /> 
+		<field name="vehicletypeid" /> 
+		<field name="controlno" /> 
+		<field name="permitno" /> 
+		<field name="appyear" /> 
+		<field name="owner_objid" /> 
+		<field name="owner_name" /> 
+		<field name="owner_address_objid" /> 
+		<field name="owner_address_text" /> 
+		<field name="particulars" /> 
+		<field name="renewaldate" /> 
+		<field name="taskstate" /> 
+	</element>
+</schema>
+

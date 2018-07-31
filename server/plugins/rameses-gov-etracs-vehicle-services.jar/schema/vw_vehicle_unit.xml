@@ -1,30 +1,28 @@
 <!--
 DROP VIEW IF EXISTS vw_vehicle_unit;
 CREATE VIEW vw_vehicle_unit AS 
-SELECT 
-vu.*,
-vf.controlno,
-va.appno,
-va.appdate,
-va.apptype,
-va.state AS appstate,
 
-vp.objid AS primary_objid,
-vp.appno AS primary_appno,
-vp.appdate AS primary_appdate,
-vp.particulars AS primary_particulars,
-vp.expirydate AS expirydate,
+SELECT
+vu.appid,
+vu.plateno,
+vu.engineno,
+vu.bodyno,
+vu.sidecarno,
+vu.make,
+vu.model,
+vu.color,
+vu.chassisno,
+vu.sidecarcolor,
+vu.crname,
+vu.driver_objid,
+vu.driver_name,
+vu.remarks,
+va.owner_objid,
+va.owner_name
+FROM vehicle_franchise vf
+INNER JOIN vehicle_application va ON vf.appid = va.objid
+INNER JOIN vehicle_application_unit vu ON vu.appid = va.objid
 
-vp.appyear AS activeyear,
-vp.owner_objid,
-vp.owner_name,
-vp.owner_address_objid,
-vp.owner_address_text
-
-FROM vehicle_application_unit vu
-INNER JOIN vehicle_application va ON vu.appid = va.objid
-INNER JOIN vehicle_application vp ON va.primaryappid = vp.objid 
-INNER JOIN vehicle_franchise vf ON vu.controlid = vf.objid 
 -->
 <schema adapter="vehicledb">
 	<element tablename="vw_vehicle_unit">
@@ -65,10 +63,6 @@ INNER JOIN vehicle_franchise vf ON vu.controlid = vf.objid
 		<field name="owner_address_objid" />
 		<field name="owner_address_text" caption="Owner Address"/>
 
-		<field name="primary_objid" />
-		<field name="primary_appno" caption="Primary App No"/>
-		<field name="primary_appdate" caption="Primary App Date"/>
-		<field name="primary_particulars" caption="Primary Particulars"/>
 
 	</element>
 </schema>

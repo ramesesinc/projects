@@ -415,19 +415,6 @@
 					<graphicElement stretchType="NoStretch" fill="Solid" />
 					<imageExpression class="java.awt.Image"><![CDATA[it.businesslogic.ireport.barcode.BcImage.getBarcodeImage(5,$F{appno},false,false,null,0,0)]]></imageExpression>
 				</image>
-				<line direction="TopDown">
-					<reportElement
-						mode="Opaque"
-						x="0"
-						y="131"
-						width="540"
-						height="1"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="line-24"
-						positionType="Float"/>
-					<graphicElement stretchType="NoStretch" fill="Solid" />
-				</line>
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -439,9 +426,9 @@
 						backcolor="#FFFFFF"
 						key="staticText-72"
 						positionType="Float"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
@@ -473,10 +460,7 @@
 						backcolor="#FFFFFF"
 						key="subreport-1"
 						positionType="Float"/>
-					<subreportParameter  name="NEXTBILLDATE">
-						<subreportParameterExpression><![CDATA[$F{billexpirydate}]]></subreportParameterExpression>
-					</subreportParameter>
-					<dataSourceExpression><![CDATA[$F{vehicleunits}]]></dataSourceExpression>
+					<dataSourceExpression><![CDATA[$F{billitems}]]></dataSourceExpression>
 					<subreportExpression  class="java.lang.String"><![CDATA["billitems.jasper"]]></subreportExpression>
 				</subreport>
 				<subreport  isUsingCache="true">
@@ -491,22 +475,22 @@
 						key="subreport-2"
 						positionType="Float"/>
 					<dataSourceExpression><![CDATA[$F{vehicleunits}]]></dataSourceExpression>
-					<subreportExpression  class="java.lang.String"><![CDATA["vehicleunits.jasper"		]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["vehicleunits.jasper"]]></subreportExpression>
 				</subreport>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="131"
+						y="128"
 						width="540"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="staticText-73"
 						positionType="Float"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
@@ -526,18 +510,6 @@
 		</columnHeader>
 		<detail>
 			<band height="0"  isSplitAllowed="true" >
-				<line direction="TopDown">
-					<reportElement
-						mode="Opaque"
-						x="0"
-						y="-38"
-						width="540"
-						height="1"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="line-22"/>
-					<graphicElement stretchType="NoStretch" fill="Solid" />
-				</line>
 			</band>
 		</detail>
 		<columnFooter>

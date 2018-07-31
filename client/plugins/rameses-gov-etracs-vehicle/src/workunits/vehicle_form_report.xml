@@ -15,6 +15,7 @@
                  target="popup" 
                  action="preview"
                  index="5"
+                 visibleWhen="#{entity.dtapproved != null}"
                  reportName="assessment" 
                  reportId="vehicle_assessment"
                  />
@@ -33,6 +34,7 @@
                  target="popup" 
                  action="preview"
                  index="7"
+                 visibleWhen="#{entity.permitid != null}"
                  reportName="permit" 
                  reportId="vehicle_permit"
                  />

@@ -25,7 +25,6 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
     def lookupType = "controlno";
     def owner;
     def controlno;
-    def appno;
 
     def resultList;
     def selectedItem;
@@ -74,7 +73,6 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         m.owner = owner;
         m.appyear = entity.appyear;
         m.controlno = controlno;
-        m.appno = appno;
         resultList = searchSvc.getList( m );
         if(!resultList)
             throw new Exception("No records found");
@@ -83,7 +81,7 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
 
     def viewInfo() {
         if( !selectedItem ) throw new Exception("Please select an item");
-        def op = Inv.lookupOpener( "vehicle_application:open", [entity: [objid: selectedItem.objid ]] );
+        def op = Inv.lookupOpener( "vehicle_franchise:open", [entity: [objid: selectedItem.objid ]] );
         op.target = "popup";
         return op;
     }
@@ -102,27 +100,13 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         if ( selectedItem.taskstate == 'payment' ) throw new Exception('This transaction is not fully paid. Please settle payment first');  
         if ( selectedItem.taskstate != 'end' ) throw new Exception('This transaction is not yet completed. Please verify');  
         
-        if ( entity.apptype == 'RENEW' ) {
-            if ( selectedItem.appyear < (entity.appyear - 1) ) 
-                throw new Exception('This transaction is delinquent. Please settle deliquency first'); 
-        }
-        else if ( entity.apptype == 'LATE_RENEWAL' ) {
-            if (selectedItem.appyear > (entity.appyear-2))
-                throw new Exception('Invalid application year'); 
-        }
-        else {
-            if ( entity.appyear != selectedItem.appyear )
-                throw new Exception('Application year must be current'); 
-        }
-        
         if( !MsgBox.confirm("You are now about to create the application. Please ensure data is correct. Proceed?") ) {
             throw new BreakException();
         }
-        entity.prevappid = selectedItem.objid;
+        entity.franchise = [objid: selectedItem.objid, controlno: selectedItem.controlno];
         entity.owner = selectedItem.owner;
+        entity.prevappyear = selectedItem.appyear;
         entity.particulars = selectedItem.particulars;
-        entity.lastrenewal = selectedItem.appyear; 
-        if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
         saveCreate();
     }
 
@@ -134,14 +118,11 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         if ( selectedItem.taskstate == 'payment' ) throw new Exception('This transaction is not fully paid. Please settle payment first');  
         if ( selectedItem.taskstate != 'end' ) throw new Exception('This transaction is not yet completed. Please verify');  
         
-        if ( entity.appyear != selectedItem.appyear )
-            throw new Exception('Application year must be current');             
             
         prevOwner = selectedItem.owner;
-        entity.prevappid = selectedItem.objid;
+        entity.franchise = [objid: selectedItem.objid,controlno: selectedItem.controlno];
+        entity.owner = null;
         entity.particulars = selectedItem.particulars;
-        entity.appyear = selectedItem.appyear;
-        if( selectedItem.controlno ) entity.controlno = selectedItem.controlno;
     }
 
     void saveChange() {

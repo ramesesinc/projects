@@ -35,8 +35,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xRadio2 = new com.rameses.rcp.control.XRadio();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xRadio3 = new com.rameses.rcp.control.XRadio();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
         xRadio1 = new com.rameses.rcp.control.XRadio();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         jLabel1 = new javax.swing.JLabel();
@@ -66,27 +64,6 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
             }
         });
         xFormPanel1.add(xTextField1);
-
-        xRadio3.setCaption("By Owner");
-        xRadio3.setName("lookupType"); // NOI18N
-        xRadio3.setOptionValue("appno");
-        xRadio3.setShowCaption(false);
-        xRadio3.setText("By Application No");
-        xFormPanel1.add(xRadio3);
-
-        xTextField2.setCaption("App No");
-        xTextField2.setDepends(new String[] {"lookupType"});
-        xTextField2.setName("appno"); // NOI18N
-        xTextField2.setVisibleWhen("#{ lookupType == 'appno' }");
-        xTextField2.setCaptionWidth(120);
-        xTextField2.setCellPadding(new java.awt.Insets(0, 25, 0, 0));
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xTextField2ActionPerformed(evt);
-            }
-        });
-        xFormPanel1.add(xTextField2);
 
         xRadio1.setCaption("By Owner");
         xRadio1.setName("lookupType"); // NOI18N
@@ -137,18 +114,12 @@ public class ApplicationInitialPage extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_xTextField1ActionPerformed
 
-    private void xTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xTextField2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JLabel jLabel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XRadio xRadio1;
     private com.rameses.rcp.control.XRadio xRadio2;
-    private com.rameses.rcp.control.XRadio xRadio3;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

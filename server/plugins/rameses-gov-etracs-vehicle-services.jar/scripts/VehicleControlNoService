@@ -1,0 +1,63 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import java.text.*;
+import java.util.regex.*;
+
+class VehicleControlNoService {
+	
+	@DataContext("vehicletype")
+	def vt;
+
+	@DataContext("vehicletype_cluster")
+	def vtc;
+
+	@Service( "ControlNoGeneratorService" )
+	def controlNoGenerator;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def formatNextNo( def p ) {
+		if(!p.pattern) throw new Exception("pattern is required in VehicleControlService.formatNextNo");
+		if(!p.date) {
+			p.date = dateSvc.getServerDate();
+		}
+		else if(p.date instanceof String) {
+			p.date = new java.text.SimpleDateFormat("yyyy-MM-dd").parse( p.date );
+		}	
+
+		def cluster = p.cluster;
+
+		def handler = { pttn, num, buff  ->
+			if( pttn == "org") {
+				return env.ORGCODE;
+			}
+			else if( pttn == "cluster") {
+				if( !cluster.code ) return "";
+				return cluster.code;
+			}
+			else if(pttn.startsWith("%")) {
+				int numb = seqSvc.getNextSeries( buff.toString() );
+				return String.format( pttn, numb );
+			}
+			else {
+				def df = new java.text.SimpleDateFormat( pttn );
+				def ddt = df.format( p.date ) 
+				return ddt;
+			}
+			return ret;
+		}
+		return controlNoGenerator.formatNumber( p.pattern, handler, 0);
+	}
+
+
+
+}

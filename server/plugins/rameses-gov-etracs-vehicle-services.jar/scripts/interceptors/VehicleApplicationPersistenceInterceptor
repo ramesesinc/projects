@@ -38,22 +38,12 @@ class VehicleApplicationPersistenceInterceptor {
 	@Service("SequenceService")
 	def seqSvc;
 
-	@Service("ControlNoGeneratorService")
-	def controlNoGenerator;
+	@Service("VehicleControlNoService")
+	def controlNoSvc;
 
 	@Service("BillingRuleService")
 	def billRuleSvc;
 
-	/*
-	@Before(pattern="PersistenceService.create", index=1, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode !='CAPTURE' && args[0].apptype != 'NEW' }")
-	public void checkArrearsBeforeCreateApp(def evt) {
-		def entity = evt.args[0];
-		def result = evt.result;
-		def rootappid = entity.rootappid;
-		def val = appFeeEm.where( "parent.rootappid = :rootappid ", [rootappid: rootappid] ).select("total:{SUM(amount-amtpaid)}").val();
-		if( val > 0 ) throw new Exception("Cannot proceed with the transaction. There are still unpaid fees.");
-	}
-	*/
 
 	@Before(pattern="PersistenceService.create", index=2, eval="#{ args[0]._schemaname == 'vehicle_application' }")
 	public void beforeCreateApplicationNewOrRenew(def evt) {
@@ -62,61 +52,32 @@ class VehicleApplicationPersistenceInterceptor {
 		if( entity.appyear > dateSvc.getServerYear() )
 			throw new Exception("App year must be less than or equal to current year");		
 
+		//get the franchise to get the cluster
+		def c = franchiseEm.find( [objid: entity.franchise.objid ] ).first();
+		def cluster = c.cluster;
+
 		def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
 		def dt = dateSvc.getServerDate();
-		def handler = { pttn, num ->
-			if( pttn == "org") {
-				return env.ORGCODE;
-			}
-			else if( pttn == "cluster") {
-				return "";
-			}
-			else if(pttn.startsWith("%")) {
-				//this is supposed to be for the leading zeroes
-				return "";
-			}
-			else {
-				def df = new java.text.SimpleDateFormat( pttn );
-				return df.format( dt );
-			}
-			return ret;
-		}
-		String prefix = controlNoGenerator.formatNumber( vt.controlpattern, handler, 0 );
-		entity.appno =  prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
+
+		def pp = [pattern: vt.appnopattern, cluster: cluster, date: entity.appdate ]
+		entity.appno =  controlNoSvc.formatNextNo( pp );
 		entity.amount = 0;
 
-		//find the previous expiry date. Initially set the existing expiry date as the previous
-		//we will change this only during renewal.
-		if( entity.prevappid ) {
-			def ma = appEm.find( [objid: entity.prevappid]).select("controlid,expirydate").first();
-			entity.prevexpirydate = ma.expirydate;
-			entity.expirydate = ma.expirydate;
-			entity.franchise = [objid: ma.controlid]; 
-		}
-
-		//set the controlid
-		entity.controlid = entity.franchise?.objid;
-
-		//calculate the expiry date
-		def p = [application: entity];
-		def r = billRuleSvc.execute( [rulename:'vehicledates', params: p ] );
-		entity.expirydate = r.expirydate;
+		//store this so we can copy the vehicle units later
+		entity.prevappid = c.appid;
+		entity.controlid = entity.franchise.objid;
 	}
 
 	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' }")
-	public void afterCreateApplicationNew(def evt) {
+	public void afterCreateApplication(def evt) {
 		def entity = evt.args[0];
-		def result = evt.result;
-		def val = (entity.apptype == "DROP") ? "{NULL}" : result.objid;
-		franchiseEm.find( [objid: entity.controlid ] ).update([appid: val ]);
+		franchiseEm.find( [objid: entity.controlid ] ).update([appid: entity.objid ]);
 	}	
 
-	@After(pattern="PersistenceService.create", index=60, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].txnmode=='ONLINE' && args[0].apptype.matches('RENEW|LATE_RENEWAL|CHANGE_OWNER_UNIT|CHANGE_UNIT|DROP')  }")
-	public void afterCreateApplicationRenew(def evt) {
+	@After(pattern="PersistenceService.create", index=60, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].prevappid != null }")
+	public void afterCreateApplicationNotOnlineNew(def evt) {
 		def entity = evt.args[0];
 		def result = evt.result;
-
-		if(!entity.prevappid ) throw new Exception("prevappid is required in ONLINE-RENEW, CHANGE_OWNER, CHANGE_UNIT AND DROP ");
 
 		//create a copy for each unit and replace the franchise control with the new one
 		def units = appUnitEm.find( [appid: entity.prevappid ] ).list();
@@ -165,8 +126,18 @@ class VehicleApplicationPersistenceInterceptor {
 
 
 		def m = appEm.find( [controlid: app.controlid] ).where( " NOT(objid = :id) ", [id:app.objid ]).orderBy("dtcreated DESC").first();
-		def val = ( m==null || m.apptype == "DROP") ? "{NULL}" : m.objid;
-		franchiseEm.find( [objid: app.controlid ]).update( [appid: val] );
+		if( m==null || m.apptype == "DROP" ) {
+			franchiseEm.find( [objid: app.controlid ]).update( [appid: "{NULL}", renewaldate: "{NULL}"] );
+		}
+		else {
+			def u = [appid: m.objid];
+			if( app.apptype.matches("NEW|RENEW") ) {
+				def params = [application: entity];
+				def r = billRuleSvc.execute( [rulename:'vehicledates', params: params ] );
+				u.renewaldate = r.renewaldate;				
+			}
+			franchiseEm.find( [objid: app.controlid ]).update( u );
+		}
 	}	
 
 }

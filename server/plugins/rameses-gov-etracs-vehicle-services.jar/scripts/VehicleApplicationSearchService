@@ -9,11 +9,10 @@ import vehicle.facts.*;
 
 class VehicleApplicationSearchService {
 	
-	@DataContext("vw_vehicle_for_renewal")
+	@DataContext("vw_vehicle_franchise")
 	def franchiseEm;
 
-
-	//this should return the objid, appno, appdate, particulars, amount, owner 
+	//this should return the objid,appdate, particulars, amount, owner 
 	@ProxyMethod
 	public def getList( def o ) {
         def params = [:];
@@ -30,10 +29,9 @@ class VehicleApplicationSearchService {
         	conds << " controlno = :controlno ";
         	params.controlno = o.controlno;
         }
-        else {
-            //by application
-            conds << " appno = :appno ";
-            params.appno = o.appno;
+
+        if( o.apptype == "RENEW") {
+            conds << "renewaldate < NOW()";
         }
 
         return franchiseEm.where( conds.join( " AND " ), params ).list();

@@ -13,6 +13,9 @@ import com.rameses.enterprise.models.*;
 
 public class VehicleFranchiseModel extends CrudFormModel {
     
+    @Service("SchemaService")
+    def schemaSvc;
+    
     public String getTitle() {
         return entity.controlno ;
     }
@@ -33,5 +36,28 @@ public class VehicleFranchiseModel extends CrudFormModel {
         return entity.vehicletype;
     }
 
+    def fields;
+    void afterOpen() {
+        fields = [];
+        if( !vehicletype.allowedfields ) throw new Exception("Error in opening application form. vehicletype allowed fields must not be null");
+        schemaSvc.getSchema( [name:"vehicle_application_unit" ] )?.fields.collect{
+            if(!it.included) return;
+            def n = it.name;
+            if(n.contains("_")) n = it.name.split("_")[0];
+            if( n.matches(vehicletype.allowedfields)) {
+                fields << it;
+            }
+        };
+    }
     
+    def unitListModel = [
+        getColumnList: {
+            return fields;
+        },
+        fetchList : { o->
+            def m = [_schemaname: "vehicle_application_unit" ];
+            m.findBy = [ appid: entity.appid ];
+            return queryService.getList( m );
+        }
+    ] as BasicListModel;
 }

@@ -31,6 +31,7 @@ class VehicleBillingInterceptor {
 	public void loadHeaderInfo(def evt) {
 		def obj = evt.args[0];
 		def p = obj.params;
+
 		def app = null; 
 		if ( p.id ) {
 			app = appEm.find( [appno: p.id ] ).first();
@@ -44,18 +45,27 @@ class VehicleBillingInterceptor {
 		if ( !app ) throw new Exception('Vehicle application not found'); 
 
 		//load all vehicle units applicable to this app
-		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).orderBy("franchise.controlno").list();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
 		evt.result.application = app;  
 	} 
  
     @After(pattern="BillingInfoHandler.getBillItems",  eval="#{ args[0].rulename == 'vehiclebilling' }" )
 	public void loadBillItems(def evt) {
 		def p = evt.args[0].headerinfo.application;
-		def list = evt.result;
 
-		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount:{amount-amtpaid},parentid";
-		def res = appFeeEm.select(select).where( "parentid = :parentid AND amount - amtpaid > 0", [parentid: p.objid] ).list();
-		list.addAll( res );
+		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount:{amount-amtpaid},parentid,year,month";
+		def ob = "year ASC,month ASC,sortorder ASC";
+
+		def list = evt.result;
+		if(p.apptype.matches("NEW|RENEW")) {
+			def pp = [controlid: p.controlid]
+			def res = appFeeEm.select(select).where( "parent.controlid = :controlid AND parent.apptype IN ('NEW','RENEW') AND amount - amtpaid > 0", pp ).orderBy(ob).list();
+			list.addAll( res );
+		}
+		else {
+			def res = appFeeEm.select(select).where( "parentid = :parentid AND amount - amtpaid > 0", [parentid: p.objid] ).orderBy(ob).list();
+			list.addAll( res );
+		}
 	}
 
 	/*******************************************

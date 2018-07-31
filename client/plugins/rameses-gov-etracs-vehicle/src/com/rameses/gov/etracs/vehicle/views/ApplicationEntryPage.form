@@ -89,8 +89,8 @@
         <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="App date"/>
+            <Property name="disableWhen" type="java.lang.String" value="#{ entity.txnmode == &apos;ONLINE&apos; }"/>
             <Property name="name" type="java.lang.String" value="entity.appdate" noResource="true"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.txnmode != &apos;CAPTURE&apos; }"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 20]"/>
             </Property>

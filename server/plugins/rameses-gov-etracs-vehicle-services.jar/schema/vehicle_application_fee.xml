@@ -5,7 +5,8 @@
 			includefields="objid,appno,apptype,appyear,vehicletype,controlid,rootappid" required="true">
 			<key field="parentid" target="objid"/>
 		</complex>	
-		<field name="appyear" type="integer"  />
+		<field name="year" type="integer"  />
+		<field name="month" type="integer"  />
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />
 		<field name="item_title" required="true" />

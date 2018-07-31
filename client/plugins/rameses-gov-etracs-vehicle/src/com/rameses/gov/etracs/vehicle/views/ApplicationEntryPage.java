@@ -67,8 +67,8 @@ public class ApplicationEntryPage extends javax.swing.JPanel {
         xFormPanel3.add(xLookupField1);
 
         xDateField1.setCaption("App date");
+        xDateField1.setDisableWhen("#{ entity.txnmode == 'ONLINE' }");
         xDateField1.setName("entity.appdate"); // NOI18N
-        xDateField1.setVisibleWhen("#{ entity.txnmode != 'CAPTURE' }");
         xDateField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xDateField1.setRequired(true);
         xFormPanel3.add(xDateField1);

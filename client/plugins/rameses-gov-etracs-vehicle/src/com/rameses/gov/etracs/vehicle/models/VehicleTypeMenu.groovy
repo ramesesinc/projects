@@ -33,8 +33,8 @@ public class VehicleTypeMenu {
     def listModel = [
         fetchList: { o->
             return vehicleTypes.collect{[ 
-                name: it.objid, caption: it.title, 
-                handler: it.guihandler, icon: it.icon, 
+                name: it.objid, caption: it.objid.toUpperCase(), 
+                icon: it.icon, 
                 object: it 
             ]} 
         },

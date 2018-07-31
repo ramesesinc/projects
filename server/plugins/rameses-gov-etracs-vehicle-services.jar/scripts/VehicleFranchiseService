@@ -62,7 +62,7 @@ class VehicleFranchiseService {
 				return env.ORGCODE;
 			}
 			else if( pttn == "cluster") {
-				if( !cluster ) return "";
+				if( !cluster?.code ) return "";
 				return cluster.code;
 			}
 			else if(pttn.startsWith("%")) {

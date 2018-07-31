@@ -5,14 +5,15 @@
 		<field name="state"  required="true" caption="State"/>
 		<field name="vehicletypeid" required="true" />
 		<field name="appid" required="false" />
+		<field name="renewaldate" required="false" caption="Renewal Date"/>
 		
-		<complex name="cluster" ref="vehicletype_cluster" jointype="many-to-one" required="false" includefields="objid,name">
+		<complex name="cluster" ref="vehicletype_cluster" jointype="many-to-one" required="false" includefields="objid,name,code">
 			<key field="clusterid" target="objid" />
 		</complex> 
 		<complex name="vehicletype" ref="vehicletype" jointype="many-to-one" required="false">
 			<key field="vehicletypeid" target="objid" />
 		</complex> 
-		<complex name="app" ref="vehicle_application" jointype="many-to-one" required="false" includefields="appno,appdate,appyear,owner.*,task.state,expirydate">
+		<complex name="app" ref="vehicle_application" jointype="many-to-one" required="false" includefields="appno,appdate,appyear,owner.*,task.state">
 			<key field="appid" target="objid" />
 		</complex> 
 	</element>

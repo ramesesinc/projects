@@ -45,6 +45,8 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel12 = new com.rameses.rcp.control.XLabel();
         xLabel14 = new com.rameses.rcp.control.XLabel();
+        jPanel2 = new javax.swing.JPanel();
+        xDataTable4 = new com.rameses.rcp.control.XDataTable();
         jPanel3 = new javax.swing.JPanel();
         schemaList1 = new com.rameses.seti2.components.SchemaList();
 
@@ -73,7 +75,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
         xFormPanel5.add(xLabel16);
 
         xLabel13.setCaption("Renewal Date");
-        xLabel13.setExpression("#{entity.app.expirydate}");
+        xLabel13.setExpression("#{entity.renewaldate}");
         xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel13.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel5.add(xLabel13);
@@ -98,6 +100,31 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
         xLabel14.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel6.add(xLabel14);
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Vehicle Info");
+        jPanel2.setBorder(xTitledBorder1);
+
+        xDataTable4.setHandler("unitListModel");
+        xDataTable4.setItems("");
+        xDataTable4.setName("selectedUnit"); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -108,6 +135,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                     .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(126, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,7 +143,9 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
                 .addComponent(xFormPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(xFormPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addGap(35, 35, 35)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(55, 55, 55))
         );
 
         xTabbedPane1.addTab("General Info", jPanel1);
@@ -213,7 +243,7 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
             })
         });
         schemaList1.setCustomFilter("controlid = :controlid");
-        schemaList1.setOrderBy("appyear DESC,dtcreated DESC");
+        schemaList1.setOrderBy("dtcreated DESC");
         schemaList1.setQueryName("query");
         schemaList1.setSchemaName("vehicle_application");
         schemaList1.setAllowCreate(true);
@@ -256,8 +286,10 @@ public class VehicleFranchisePage extends javax.swing.JPanel implements UIConten
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private com.rameses.seti2.components.SchemaList schemaList1;
+    private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
     private com.rameses.rcp.control.XLabel xLabel12;

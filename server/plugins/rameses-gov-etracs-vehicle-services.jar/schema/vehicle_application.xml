@@ -14,21 +14,23 @@
 		</complex> 	
 
 		<field name="appno" required="true" caption="App No" searchable="true" indexed="true"/>
-		<field name="appdate" required="true" />
-		<field name="apptype" required="true" indexed="true"/>
+		<field name="appdate" required="true" caption="App Date"/>
+		<field name="apptype" required="true" indexed="true"  caption="App Type"/>
 		<field name="txnmode" required="true" defaultValue="ONLINE"/>
-		<field name="appyear" required="true" />
+		<field name="appyear" required="true"  caption="App Year"/>
 		<field name="dtcreated" required="true" />
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
-		<field name="expirydate"  required="true"/>
 		<field name="dtapproved" />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>
 		<field name="owner_address_text" required="true" />
 		<field name="owner_address_objid" required="true" />
+
+		<!-- this is used for renewals. We need to keep this to be able to rebuild delinquencies -->
+		<field name="prevappyear" required="false" type="integer"/>
 
 		<!-- this will be loaded automatically -->
 		<field name="vehicletypeid" required="true" />
@@ -41,6 +43,8 @@
 			<key field="taskid" target="taskid" />
 		</complex>	
 
-
+		<complex name="permit" ref="vehicle_permit" jointype="many-to-one" includefields="permitno,permittype,dtissued,expirydate" required="false">
+			<key field="permitid" target="objid" />
+		</complex>	
 	</element>
 </schema>

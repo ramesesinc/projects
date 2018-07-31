@@ -25,6 +25,9 @@ class VehicleApplicationWorkflowInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
+	@Service("BillingRuleService")
+	def billRuleSvc;
+
 	//check before submitting draft application
 	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate == 'draft' }")
 	public void beforeSubmittingDraft( def evt ) {
@@ -62,12 +65,22 @@ class VehicleApplicationWorkflowInterceptor {
 	/************************************************************************ 
 	* Issue Permit will create a new permit 
 	**************************************************************************/
-	@After(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].action=='issue-permit' }")
-	public void afterIssuePermit( def evt ) {
+	@After(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname=='vehicle_application' && args[0].taskstate=='release' && args[0].to == 'end'}")
+	public void afterRelease( def evt ) {
 		def p = evt.args[0];
-		permitSvc.create( [appid: p.refid] );
-	}
 
+		def entity = appEm.find( [objid: p.refid ] ).first();
+
+		//update the  renewaldate if apptype is new or renew
+		if( entity.apptype == "DROP" ) {
+			franchiseEm.find([ objid: entity.controlid ] ).update( [renewaldate: "{NULL}", appid: "{NULL}"])
+		}
+		else if( entity.apptype.matches("NEW|RENEW") ) {
+			def params = [application: entity];
+			def r = billRuleSvc.execute( [rulename:'vehicledates', params: params ] );
+			franchiseEm.find([ objid: entity.controlid ] ).update( [renewaldate: r.renewaldate ])
+		}
+	}
 
 
 }

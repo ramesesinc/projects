@@ -16,8 +16,17 @@ class VehicleReportInterceptor {
 	@DataContext("vehicle_application_fee")
 	def appFeeEm;
 
+	@DataContext("vehicle_permit")
+	def permitEm;
+
 	@Service("BillingRuleService")
 	def billingRuleSvc;
+
+	@DataContext("entityindividual")
+	def entityIndividualEm;
+
+	@Service("BillingProcessService")
+	def billingProcessSvc;
 
 	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_application' }")
 	public void getApplication(def evt) {
@@ -47,6 +56,35 @@ class VehicleReportInterceptor {
 		def res = billingRuleSvc.execute( [rulename: "vehiclebilling", params: params ] );
 		app.billitems = res.billitems;
 		result.data = app;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_permit' }")
+	public void getPermit(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def app = appEm.find( [objid: p.parameters.objid ]).first();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
+
+		//get individual entity info
+		app.owner = entityIndividualEm.find( [objid: app.owner.objid] ).first();
+
+		result.data = app;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_billing' }")
+	public void getBilling(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+
+		def parms = [:];
+		parms.objid = p.parameters.objid;
+		parms.include_items = false;
+
+		def res = billingProcessSvc.process( [rulename:'vehiclebilling', params: parms ]);
+		def bill = res.application;
+		bill.billitems = res.billitems;
+		bill.billdate = res.billdate;
+		result.data = bill;
 	}
 
 }

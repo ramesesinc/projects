@@ -22,7 +22,7 @@ class ControlNoGeneratorService {
 	        sb.append( d.substring(start, end)  );
 	        String mg = m.group();
 	        mg = mg.substring(1, mg.length()-1);
-	        sb.append( handler(mg, num) );
+	        sb.append( handler(mg, num, sb) );
 	        start = m.end();
 	    }
 	    if( start < d.length() ) sb.append(d.substring(start));

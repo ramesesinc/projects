@@ -8,5 +8,6 @@
         
         <invoker folderid="/explorer/rulemgmt/vehicle" caption="Vehicle Billing Rules"
                  action="init" index="3" role="RULE_AUTHOR" tag="vehiclebilling" />
+
     </invokers>
 </workunit>

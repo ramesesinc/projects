@@ -24,16 +24,13 @@ class VehicleAssessmentInterceptor {
 		def data = evt.args[0].params;
 		def app = data.application
 		def appid = app.objid;
-		def expirydate = result.expirydate;
 
 		//clear first the data before saving
-		if( app.apptype == 'LATE_RENEWAL' ) {
-			//remove existing fees
-			appFeeEm.find( [parentid: appid, appyear: app.appyear ] ).delete(); 
-
-			//remove existing infos if appyear = last renewed
-			if( app.appyear == (app.lastrenewal +1) ) {
-				//update the total assessment
+		if( (app.fromyear+1) != app.toyear ) {
+			//if this is the first entry
+			if( app.appyear == app.fromyear) {
+				//remove existing fees based on year
+				appFeeEm.find( [parentid: appid ] ).delete(); 
 				appInfoEm.find( [parentid: appid ] ).delete(); 
 				result.infos?.each {
 					it.parent = [objid: appid ];
@@ -42,9 +39,8 @@ class VehicleAssessmentInterceptor {
 			}
 		}
 		else {
-			//remove existing fees	
+			//remove existing fees and infos	
 			appFeeEm.find( [parentid: appid ] ).delete(); 
-			//remove existing infos
 			appInfoEm.find( [parentid: appid ] ).delete(); 
 			result.infos?.each {
 				it.parent = [objid: appid ];
@@ -55,10 +51,8 @@ class VehicleAssessmentInterceptor {
 		//SAVE THE APP FEE HERE.
 		result.items?.each {
 			it.parent = [objid: appid ];
-			it.appyear = app.appyear;
 			appFeeEm.create( it );
 		}
-		appEm.find( [objid: appid ]).update( [expirydate: expirydate]);
 	}
 	
 

@@ -14,6 +14,9 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
     @Service("SchemaService")
     def schemaSvc;
 
+    @Service("VehiclePermitService")
+    def permitSvc;
+
     boolean viewReportAllowed = true; 
     
     String getFormName() {
@@ -106,8 +109,10 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
     void loadFees() {
         def m = [_schemaname: "vehicle_application_fee"];
         m.findBy = [parentid: entity.objid ];
-        m.orderBy = "appyear,sortorder";
+        m.orderBy = "year,month,sortorder";
         feeList = queryService.getList(m);
+        entity.amount = feeList.sum{ it.amount };
+        binding.refresh("entity.amount");
     }
     
     def feeListModel = [
@@ -155,19 +160,19 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         Modal.show( "show_vehicle_trackingno", [appno: entity.appno] );
     }
  
-    
-
-    void assessLateRenewal() {
+    void assessWithLateRenewal() {
         boolean bstop = false;
         boolean infoloaded = false;
-        int startYr = entity.lastrenewal + 1;
-        int endYr = entity.appyear - 1;
+        int startYr = entity.prevappyear + 1;
+        int endYr = entity.appyear;
         def localInfos = null;
         ( startYr .. endYr ).each {
             if( bstop ) return;
             def app = [:];
             app.putAll( entity );
             app.appyear = it;
+            app.fromyear = startYr;
+            app.toyear = endYr;
             def p = [:];
             p.rulename = "vehicleassessment"
             p.params = [application: app ];
@@ -220,11 +225,12 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
     }
 
     void assess() {
-        if( entity.apptype == 'LATE_RENEWAL') {
-            assessLateRenewal();
+        if( entity.apptype == 'RENEW' && entity.prevappyear && ((entity.prevappyear + 1) < entity.appyear )) {
+            if(! MsgBox.confirm("This is subject for late renewal assessments from " + (entity.prevappyear+1) + ". Proceed?" )) return;
+            assessWithLateRenewal();
         }
         else {
-            assessBasic();
+            assessBasic();            
         }
     }
     
@@ -243,6 +249,34 @@ public class VehicleApplicationModel extends WorkflowTaskModel {
         def opener = Inv.lookupOpener('vehicle_application_permit:print', [vehicletype: vehicletype, entity: entity]);
         opener.target = 'self'; 
         return opener;
+    }
+    
+    void issuePermit() {
+        if(entity.txnmode == 'CAPTURE' ) {
+            def p = [:]
+            p.fields = [
+                [name:'permitno', caption:'Permit No', required: true],
+                [name:'permittype', type:'lov', caption:'Permit Type', listName: 'VEHICLE_PERMIT_TYPE', required: true],                
+                [name:'dtissued', type:'date', caption:'Date Issued', required: true],
+            ];
+            p.data = [:];
+            p.handler = { o->
+                def pmt = [app: entity];
+                pmt.putAll( o );
+                pmt = permitSvc.create( pmt );
+                entity.permitid = pmt.objid;
+                entity.permit = pmt;
+                binding.refresh("entity.permit.*");
+            }
+            Modal.show("dynamic:form", p, [title:'Enter Permit Details']);
+        }
+        else {
+            def pmt = [app: entity];
+            pmt = permitSvc.create( pmt );
+            entity.permitid = pmt.objid;
+            entity.permit = pmt;
+            binding.refresh("entity.permit.*");
+        }
     }
 
 }

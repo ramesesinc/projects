@@ -40,11 +40,11 @@ public class ApplicationSelectionPage extends javax.swing.JPanel {
         xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "appno"}
-                , new Object[]{"caption", "App No"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 200}
+                new Object[]{"name", "controlno"}
+                , new Object[]{"caption", "Control No"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -100,11 +100,11 @@ public class ApplicationSelectionPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "appdate"}
-                , new Object[]{"caption", "App Date"}
+                new Object[]{"name", "permitno"}
+                , new Object[]{"caption", "Permit No"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -112,11 +112,11 @@ public class ApplicationSelectionPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.DateColumnHandler(null, null, null)}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "controlno"}
-                , new Object[]{"caption", "Control No"}
+                new Object[]{"name", "taskstate"}
+                , new Object[]{"caption", "Status"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}

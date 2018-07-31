@@ -47,3 +47,12 @@
 "formActions"[true]{
     enabled:true;
 }
+
+"rpu.dtappraised" [entity.datacapture == 1 || entity.datacapture == true] {
+    visible:true;
+    required:true;
+}
+
+"rpu.dtappraised" [entity.datacapture == 0 || entity.datacapture == false ] {
+    visible:false;
+}

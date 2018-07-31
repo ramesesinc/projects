@@ -62,7 +62,7 @@
                       </Group>
                       <Component id="jPanel2" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -142,11 +142,6 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="114" max="32767" attributes="0"/>
-                      <Component id="xCheckBox3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
-                  </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -159,6 +154,11 @@
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="xCheckBox3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -175,9 +175,9 @@
                       <Component id="formPanel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="formPanel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="xCheckBox3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="32" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -185,6 +185,7 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
               <Properties>
+                <Property name="name" type="java.lang.String" value="newlyinstalled" noResource="true"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                     <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -194,12 +195,12 @@
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[0, 0, 0, 0]"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="newlyinstalled" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Newly Installed?"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox2">
               <Properties>
+                <Property name="name" type="java.lang.String" value="imported" noResource="true"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                     <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -208,7 +209,6 @@
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[0, 0, 0, 0]"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="imported" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Is Imported?"/>
               </Properties>
             </Component>
@@ -301,14 +301,24 @@
                     </DimensionLayout>
                   </Layout>
                 </Container>
+                <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Date Appraised"/>
+                    <Property name="name" type="java.lang.String" value="rpu.dtappraised" noResource="true"/>
+                    <Property name="captionWidth" type="int" value="100"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[0, 20]"/>
+                    </Property>
+                  </Properties>
+                </Component>
                 <Component class="com.rameses.rcp.control.XNumberField" name="xNumberField1">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Year Acquired"/>
+                    <Property name="name" type="java.lang.String" value="yearacquired" noResource="true"/>
                     <Property name="captionWidth" type="int" value="100"/>
                     <Property name="fieldType" type="java.lang.Class" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="int.class" type="code"/>
                     </Property>
-                    <Property name="name" type="java.lang.String" value="yearacquired" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[0, 18]"/>
                     </Property>
@@ -409,6 +419,7 @@
             </Container>
             <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox3">
               <Properties>
+                <Property name="name" type="java.lang.String" value="autodepreciate" noResource="true"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                     <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -417,12 +428,12 @@
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[0, 0, 0, 0]"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="autodepreciate" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Auto Depreciate?"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox5">
               <Properties>
+                <Property name="name" type="java.lang.String" value="machdetail.taxable" noResource="true"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                     <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -432,7 +443,6 @@
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[0, 0, 0, 0]"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="machdetail.taxable" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Taxable?"/>
               </Properties>
             </Component>
@@ -716,6 +726,7 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox4">
               <Properties>
+                <Property name="name" type="java.lang.String" value="machdetail.useswornamount" noResource="true"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                     <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -724,7 +735,6 @@
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[0, 0, 0, 0]"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="machdetail.useswornamount" noResource="true"/>
                 <Property name="text" type="java.lang.String" value="Use Sworn Amount?"/>
               </Properties>
             </Component>

@@ -47,7 +47,8 @@ public class RPUMachDetailModel
     
     @PropertyChangeListener
     def listener = [
-        'machdetail.(useswornamount|swornamount)' : { recalc();}
+        'machdetail.(useswornamount|swornamount)' : { recalc();},
+        'rpu.dtappraised' : { recalc();},
     ]
             
     void create() { 
@@ -92,6 +93,13 @@ public class RPUMachDetailModel
         arrastrecost        = machdetail.arrastrecost
         othercost           = machdetail.othercost
         depreciation        = machdetail.depreciation
+        
+        if (rpu.dtappraised){
+            if (!entity.appraiser) {
+                entity.appraiser = [:]
+            }
+            entity.appraiser.dtsigned = rpu.dtappraised
+        }
         loading = false;
     }
     

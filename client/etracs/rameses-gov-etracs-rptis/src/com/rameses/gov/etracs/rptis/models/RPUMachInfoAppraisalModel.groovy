@@ -15,12 +15,16 @@ class RPUMachInfoAppraisalModel extends SubPageModel
     def rpuSvc;
     
     void init(){
-        entity.rpu.dtappraised = entity.appraiser?.dtsigned;
+        setRpuAppraisalDate();
     }
     
     void calculateAssessment(){
         super.calculateAssessment();
         machineListHandler.load();
+    }
+    
+    void setRpuAppraisalDate() {
+        entity.rpu.dtappraised = entity.appraiser?.dtsigned;
     }
     
     
@@ -67,6 +71,7 @@ class RPUMachInfoAppraisalModel extends SubPageModel
                 
     def addMachine(){
         if (!actualuse) return;
+        setRpuAppraisalDate();
         return InvokerUtil.lookupOpener('machdetail:create', [ 
             svc     : svc,
             entity  : entity,
@@ -86,6 +91,7 @@ class RPUMachInfoAppraisalModel extends SubPageModel
     }
     
     def openMachine(){
+        setRpuAppraisalDate();
         return InvokerUtil.lookupOpener('machdetail:open', [ 
             svc         : svc,
             entity      : entity,

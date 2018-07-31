@@ -26,6 +26,7 @@ class NoticeOfDelinquencyModel
     def entity;
     def data = [:]
     def dtcomputed;
+    def includecy = false;
     
     String title = 'Notice of Delinquency'
     
@@ -49,6 +50,7 @@ class NoticeOfDelinquencyModel
             taxpayer    : (taxpayer ? taxpayer : entity?.taxpayer),
             rptledgerid : entity?.objid,
             billdate    : dtcomputed,
+            includecy   : includecy, 
         ]
         
         if (!params.taxpayer) throw new Exception('Please specify taxpayer'); 

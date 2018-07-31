@@ -32,12 +32,14 @@ public class NoticeOfDelinquencyInitPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
+        xFormPanel1.setCaption("Taxpayer");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 10, 10, 10));
         xTitledBorder1.setTitle("Notice of Delinquency Initial");
         xFormPanel1.setBorder(xTitledBorder1);
-        xFormPanel1.setCaption("Taxpayer");
         xFormPanel1.setCaptionWidth(110);
         xFormPanel1.setCellpadding(new java.awt.Insets(0, 5, 0, 0));
         xFormPanel1.setRequired(true);
@@ -66,6 +68,26 @@ public class NoticeOfDelinquencyInitPage extends javax.swing.JPanel {
         xDateField1.setRequired(true);
         xFormPanel1.add(xDateField1);
 
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 449, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        xFormPanel1.add(xSeparator1);
+
+        xCheckBox1.setName("includecy"); // NOI18N
+        xCheckBox1.setShowCaption(false);
+        xCheckBox1.setText("Include current year?");
+        xFormPanel1.add(xCheckBox1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,10 +108,12 @@ public class NoticeOfDelinquencyInitPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
     
 }

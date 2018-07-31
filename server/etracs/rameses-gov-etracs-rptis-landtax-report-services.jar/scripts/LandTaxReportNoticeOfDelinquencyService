@@ -39,6 +39,9 @@ class LandTaxReportNoticeOfDelinquencyService
 
 		//exclude current year as per blgf manual
 		bill.billtoyear = bill.cy - 1
+		if (params.includecy == true){
+			bill.billtoyear = bill.cy
+		}
 		
 		bill.ledgers = billSvc.getOpenLedgers(bill)
 		bill = billSvc.generateBill(bill)
@@ -54,7 +57,7 @@ class LandTaxReportNoticeOfDelinquencyService
 			it.amtdue = it.items.sum{it.total}
 		}
 		
-		util.buildPeriodCovered(bill.ledgers)
+		util.buildBuildPeriod(bill.ledgers)
 
 		params.cy = bill.cy 
 		params.ledgers = bill.ledgers 

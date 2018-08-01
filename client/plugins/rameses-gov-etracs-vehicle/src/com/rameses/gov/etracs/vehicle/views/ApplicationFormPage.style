@@ -2,7 +2,7 @@
     visible:false;
 }
 
-"addUnit|editUnit|removeUnit" [ entity.txnmode != 'CAPTURE' && !(entity.apptype.matches('NEW|CHANGE_OWNER_UNIT')) ] {
+"addUnit|editUnit|removeUnit" [ entity.txnmode != 'CAPTURE' && !(entity.apptype.matches('NEW|RENEW|CHANGE_OWNER_UNIT')) ] {
     visible: false;
 }
 

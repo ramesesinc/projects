@@ -26,7 +26,8 @@ class VehicleAssessmentInterceptor {
 		def appid = app.objid;
 
 		//clear first the data before saving
-		if( (app.fromyear+1) != app.toyear ) {
+
+		if(app.fromyear != null && (app.fromyear+1) != app.toyear ) {
 			//if this is the first entry
 			if( app.appyear == app.fromyear) {
 				//remove existing fees based on year

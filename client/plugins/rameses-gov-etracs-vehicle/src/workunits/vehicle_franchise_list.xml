@@ -10,7 +10,4 @@
                  cols="controlno,app.appyear,app.owner.name,app.owner.address.text,app.apptype,renewaldate"/> 
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleFranchiseListModel" />
-    <pages>
-        <page name="queryForm" template="com.rameses.gov.etracs.vehicle.views.VehicleFranchiseQueryPanel" />
-    </pages>
 </workunit>

@@ -47,7 +47,7 @@ class VehicleReportInterceptor {
 
 		def params = [:];
 		params.application = app;
-		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount,parentid";		
+		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount,parentid,year,month";		
 		params.billitems = appFeeEm.select(select).find( [parentid: app.objid] ).list();
 		if(app.dtapproved) params.billdate = app.dtapproved;
 		//params.include_billitems = false;

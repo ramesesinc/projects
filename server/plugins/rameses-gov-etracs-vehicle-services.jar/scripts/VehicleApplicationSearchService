@@ -31,7 +31,7 @@ class VehicleApplicationSearchService {
         }
 
         if( o.apptype == "RENEW") {
-            conds << "renewaldate < NOW()";
+            conds << "renewaldate <= NOW()";
         }
 
         return franchiseEm.where( conds.join( " AND " ), params ).list();

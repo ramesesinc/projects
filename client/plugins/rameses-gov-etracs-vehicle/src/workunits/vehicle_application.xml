@@ -8,7 +8,7 @@
 
         <invoker type="formActions" 
                  action="issuePermit" caption="Issue Permit" 
-                 visibleWhen="#{entity.permitid == null &amp;&amp; entity.task.state == 'release' }"/>
+                 visibleWhen="#{entity.permitid == null &amp;&amp; entity.task.state.toString().matches('release|end') }"/>
 
     </invokers>
     <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationModel" />

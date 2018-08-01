@@ -144,6 +144,7 @@ class VehicleBillingInterceptor {
 			result.refid = p.appid;
 			result.taskid = p.taskid;
 			result.taskstate = 'payment';
+			result.action = 'post';
 		}
 	} 
 
@@ -160,7 +161,9 @@ class VehicleBillingInterceptor {
 		if( p.application?.taskid ) {
 	 		result.taskid = p.application?.taskid;
 			result.processname = 'vehicle_application';
+			result.taskstate = 'release';
 			result.refid = p.appid;
+			result.action = 'revert';
 		}
 	} 
 

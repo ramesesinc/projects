@@ -68,16 +68,16 @@ class VehiclePermitService {
 		}
 		else {
 			//generate the permit number
-			def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
+			def vt = vehicleTypeEm.find( [objid: app.vehicletypeid ] ).first();
 			if( !vt.permitnopattern )
-				throw new Exception("Please specify permitno pattern in type " + entity.vehicletypeid );
+				throw new Exception("Please specify permitno pattern in type " + app.vehicletypeid );
 
 			//get the franchise to get the cluster
 			def c = franchiseEm.find( [objid: app.controlid ] ).first();
 			def cluster = c.cluster;
 
 			def pp = [pattern: vt.permitnopattern, cluster: cluster ];
-			entity.permitno =  controlNoSvc.formatNextNo( pp );
+			permit.permitno =  controlNoSvc.formatNextNo( pp );
 		};
 		permit.expirydate = r.expirydate;
 		permit = vperm_db.create( permit );

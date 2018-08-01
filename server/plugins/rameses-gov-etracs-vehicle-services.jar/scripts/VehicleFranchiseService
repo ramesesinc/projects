@@ -57,7 +57,7 @@ class VehicleFranchiseService {
 		int qty = (o.qty+"").toInteger();
 		def dt = dateSvc.getServerDate();
 
-		def handler = { pttn, num ->
+		def handler = { pttn, num, buff ->
 			if( pttn == "org") {
 				return env.ORGCODE;
 			}

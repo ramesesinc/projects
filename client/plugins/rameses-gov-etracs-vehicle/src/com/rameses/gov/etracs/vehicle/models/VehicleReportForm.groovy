@@ -20,7 +20,7 @@ public class VehicleReportForm extends FormReportModel {
         def entity =  caller.entityContext;
         String s = invoker.properties.reportName;
         String mainPath = "com/rameses/gov/etracs/vehicle/reports";
-        _reportName = mainPath + "/" + entity.vehicletype.objid  + "/" + s + ".jasper";
+        _reportName = mainPath + "/" + entity.vehicletype.objid  + "_" + s + ".jasper";
         def u = ClientContext.getCurrentContext().getClassLoader().getResource(_reportName);
         if(!u) {
             _reportName = mainPath + "/" + s + ".jasper";

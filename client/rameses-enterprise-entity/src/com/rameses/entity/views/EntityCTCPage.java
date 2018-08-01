@@ -5,10 +5,14 @@
  */
 package com.rameses.entity.views;
 
+import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
+
 /**
  *
  * @author elmonazareno
  */
+@Template(CrudFormPage.class)
 public class EntityCTCPage extends javax.swing.JPanel {
 
     /**
@@ -33,12 +37,15 @@ public class EntityCTCPage extends javax.swing.JPanel {
         xDateField2 = new com.rameses.rcp.control.XDateField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xTextField2 = new com.rameses.rcp.control.XTextField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
 
-        xFormPanel1.setCaptionVAlignment("CENTER");
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(120);
 
         xTextField1.setCaption("CTC No");
-        xTextField1.setName("entity.idno"); // NOI18N
+        xTextField1.setName("entity.ctcno"); // NOI18N
         xTextField1.setRequired(true);
         xTextField1.setStretchWidth(100);
         xFormPanel1.add(xTextField1);
@@ -60,11 +67,36 @@ public class EntityCTCPage extends javax.swing.JPanel {
         xCheckBox1.setUncheckValue(0);
         xFormPanel1.add(xCheckBox1);
 
-        xTextField2.setCaption("CTC No");
-        xTextField2.setName("entity.idno"); // NOI18N
+        xTextField2.setCaption("Place of Issue");
+        xTextField2.setName("entity.placeissued"); // NOI18N
         xTextField2.setRequired(true);
         xTextField2.setStretchWidth(100);
         xFormPanel1.add(xTextField2);
+
+        xTextField3.setCaption("LGU Issued");
+        xTextField3.setDepends(new String[] {"entity.nonresident"});
+        xTextField3.setName("entity.lgu.name"); // NOI18N
+        xTextField3.setRequired(true);
+        xTextField3.setStretchWidth(100);
+        xTextField3.setVisibleWhen("#{ entity.nonresident == 1 }");
+        xFormPanel1.add(xTextField3);
+
+        xTextField4.setCaption("Barangay Name");
+        xTextField4.setDepends(new String[] {"entity.nonresident"});
+        xTextField4.setName("entity.barangay.name"); // NOI18N
+        xTextField4.setRequired(true);
+        xTextField4.setStretchWidth(100);
+        xTextField4.setVisibleWhen("#{ entity.nonresident == 1 }");
+        xFormPanel1.add(xTextField4);
+
+        xLookupField1.setCaption("Barangay");
+        xLookupField1.setDepends(new String[] {"entity.nonresident"});
+        xLookupField1.setExpression("#{ entity.barangay.name }");
+        xLookupField1.setHandler("barangay:lookup");
+        xLookupField1.setName("entity.barangay"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLookupField1.setVisibleWhen("#{ entity.nonresident == 0 }");
+        xFormPanel1.add(xLookupField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -73,14 +105,14 @@ public class EntityCTCPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(14, 14, 14)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -90,7 +122,10 @@ public class EntityCTCPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
+    private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables
 }

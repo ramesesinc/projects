@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="entity_ctc" 
+          cols="ctcno,dtissued,placeissued,barangay.name,lgu.name,expirydate">
+    <invokers>
+        <invoker type="entityindividual:section" caption="CTC List" index="150" action="init"/>
+    </invokers>
+    <code class="com.rameses.entity.models.EntityCTCListModel" />
+</workunit>

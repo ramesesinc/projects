@@ -26,6 +26,7 @@ SELECT
 FROM vehicle_franchise vf
 INNER JOIN vehicle_application va ON vf.appid = va.objid
 INNER JOIN vehicle_application_unit vu ON vu.appid = va.objid
+
 -->
 <schema adapter="vehicledb">
 	<element tablename="vw_vehicle_unit">

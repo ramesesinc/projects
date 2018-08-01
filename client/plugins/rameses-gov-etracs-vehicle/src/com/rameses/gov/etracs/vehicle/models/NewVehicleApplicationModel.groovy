@@ -107,6 +107,9 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         entity.owner = selectedItem.owner;
         entity.prevappyear = selectedItem.appyear;
         entity.particulars = selectedItem.particulars;
+        if( entity.apptype != 'RENEW') {
+            entity.appyear = selectedItem.appyear;
+        }
         saveCreate();
     }
 
@@ -118,11 +121,11 @@ public class NewVehicleApplicationModel extends CrudPageFlowModel {
         if ( selectedItem.taskstate == 'payment' ) throw new Exception('This transaction is not fully paid. Please settle payment first');  
         if ( selectedItem.taskstate != 'end' ) throw new Exception('This transaction is not yet completed. Please verify');  
         
-            
         prevOwner = selectedItem.owner;
         entity.franchise = [objid: selectedItem.objid,controlno: selectedItem.controlno];
         entity.owner = null;
         entity.particulars = selectedItem.particulars;
+        entity.appyear = selectedItem.appyear;
     }
 
     void saveChange() {

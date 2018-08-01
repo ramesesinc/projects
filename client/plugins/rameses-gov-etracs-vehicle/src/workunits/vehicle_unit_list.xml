@@ -1,4 +1,6 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="vw_vehicle_unit">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="vw_vehicle_unit"
+          allowDelete="false" allowCreate="false">
     <invokers>
        <invoker folderid="menucategory/vehicle/master" 
                  action="init" caption="Vehicle Units List"
@@ -6,8 +8,9 @@
                  formId="#{vehicletype.objid}:vehicleunit:list"
                  role="MASTER" 
                  index="5"
-                 orderBy="controlno"
-                 cols="controlno,plateno,bodyno,driver.name"
-                 hiddenCols="controlid"/> 
+                 orderBy="appyear,controlno"
+                 cols="controlno,appyear,owner.name,plateno,bodyno,driver.name,bodyno,sidecarno"
+                 /> 
     </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleUnitListModel" />
 </workunit>

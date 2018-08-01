@@ -3,6 +3,9 @@ import java.rmi.server.UID;
 
 class VehiclePermitService {
 	
+	@Env
+	def env;	
+
 	@DataContext('vehicle_permit') 
 	def vperm_db; 
 
@@ -12,42 +15,37 @@ class VehiclePermitService {
  	@DataContext("vehicle_franchise") 
 	def franchiseEm;
 
-	@Service("SequenceService")
-	def seqSvc;
-
 	@Service("DateService")
 	def dateSvc;	
 
-	@Env
-	def env;	
-
 	@Service("BillingRuleService")
 	def billRuleSvc;
+
+	@Service("VehicleControlNoService")
+	def controlNoSvc;
+
+	@DataContext("vehicletype")
+	def vehicleTypeEm;
 
 	@ProxyMethod 
 	public def create( params ) { 
 		if ( params.app == null ) params.app = [:]; 
 
 		def appid = params.app.objid; 
-		if ( !appid ) { 
-			appid = params.appid; 
-			params.app.objid = appid; 
-		} 
 
 		if ( !appid ) throw new Exception('Please provide an appid'); 
 
-		def oldperm = vperm_db.find([ appid: appid ]).first(); 
-		if ( oldperm ) throw new Exception('There is already a permit issued to this application'); 
+		def app = appEm.find([ objid: appid ]).first(); 
+		if ( app.permitid ) throw new Exception('There is already a permit issued to this application'); 
 
-		def app = params.app;
 		def rundate = dateSvc.getServerDate(); 
 
-		def p = [application: params.app];
+		def p = [application: app ];
 		def r = billRuleSvc.execute( [rulename:'vehicledates', params: p ] );
 
 		def permit = [:];
 		permit.objid = "VPERM"+ new UID();
-		permit.app = params.app; 
+		permit.app = app; 
 		permit.state = 'ACTIVE';
 		permit.activeyear = app.appyear;
 		permit.controlid = app.controlid;
@@ -69,44 +67,23 @@ class VehiclePermitService {
 			permit.permitno = params.permitno;
 		}
 		else {
-			def yr = dateSvc.serverYear;
-			if ( !app.appyear ) app.appyear = yr; 
-			def prefix = "VP-"+ app.appyear;
-			permit.permitno = prefix+"-"+seqSvc.getNextFormattedSeries( prefix ); 
-		}
+			//generate the permit number
+			def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
+			if( !vt.permitnopattern )
+				throw new Exception("Please specify permitno pattern in type " + entity.vehicletypeid );
+
+			//get the franchise to get the cluster
+			def c = franchiseEm.find( [objid: app.controlid ] ).first();
+			def cluster = c.cluster;
+
+			def pp = [pattern: vt.permitnopattern, cluster: cluster ];
+			entity.permitno =  controlNoSvc.formatNextNo( pp );
+		};
 		permit.expirydate = r.expirydate;
 		permit = vperm_db.create( permit );
 
-		//update the franchise and application permit
-		franchiseEm.find( [objid: permit.controlid] ).update( [permitid: permit.objid ]);		
 		appEm.find( [objid: app.objid] ).update( [permitid: permit.objid]);
 		return permit; 
 	}
 
-	/*
-	@ProxyMethod 
-	public def open( params ) { 
-		if ( !params.objid ) throw new Exception('objid parameter is required'); 
-		def permit = vperm_db.find([ objid: params.objid ]).first();  
-		loadAdditionalInfos( permit ); 
-		return permit; 
-	} 
-
-	private void loadAdditionalInfos( o ) {
-		//load the full application
-		def appEm = em.lookup( "vehicle_application_"+o.app.vehicletype );
-		def app = appEm.find( [objid: o.app.objid ] ).first();
-		o.putAll( app );
-		o.orgtype = env.ORGCLASS; 
-		if ( o.orgtype.toString().toUpperCase()=='MUNICIPALITY' ) {
-			o.orgtype = 'MUNICIPAL'; 
-		};
-
-		//add also all info for individual entity
-		def g = individualEntityEm.find( [objid: app.owner.objid ] ).first();
-		g.each { k,v->
-			if( !o.owner.containsKey(k) ) o.owner.put(k,v);
-		}
-	}
-	*/
 }

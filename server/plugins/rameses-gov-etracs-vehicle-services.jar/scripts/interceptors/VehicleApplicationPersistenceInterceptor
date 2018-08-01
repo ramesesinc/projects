@@ -35,9 +35,6 @@ class VehicleApplicationPersistenceInterceptor {
 	@DataContext("vehicletype")
 	def vehicleTypeEm;
 
-	@Service("SequenceService")
-	def seqSvc;
-
 	@Service("VehicleControlNoService")
 	def controlNoSvc;
 
@@ -57,7 +54,8 @@ class VehicleApplicationPersistenceInterceptor {
 		def cluster = c.cluster;
 
 		def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
-		def dt = dateSvc.getServerDate();
+		if( !vt.appnopattern )
+			throw new Exception("Please specify appno pattern in type " + entity.vehicletypeid );
 
 		def pp = [pattern: vt.appnopattern, cluster: cluster, date: entity.appdate ]
 		entity.appno =  controlNoSvc.formatNextNo( pp );

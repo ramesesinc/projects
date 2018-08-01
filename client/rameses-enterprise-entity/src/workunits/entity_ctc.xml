@@ -1,0 +1,10 @@
+<workunit schemaName="entity_ctc">
+    <invokers>
+        <invoker type="entity_ctc:create" caption="Entity CTC" action="create" target="popup"/>
+        <invoker type="entity_ctc:open" caption="Entity CTC" action="open"  target="popup"/> 
+    </invokers>
+    <code class="com.rameses.entity.models.EntityCTCModel"/>
+    <pages>
+        <page template="com.rameses.entity.views.EntityCTCPage"/>        
+    </pages>
+</workunit>

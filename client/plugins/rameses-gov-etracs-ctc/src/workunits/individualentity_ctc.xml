@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudSubList.xml" schemaName="ctc_individual_view">
-    <invokers>
-	<invoker type="entityindividual:section" 
-                 caption="Community Tax" index="10"
-                 cols="receiptno,receiptdate,receiptyear,businessgross,annualsalary,propertyincome,barangay.name"
-                parentid="payer.objid" action="init"/>
-    </invokers>	
-</workunit>
-

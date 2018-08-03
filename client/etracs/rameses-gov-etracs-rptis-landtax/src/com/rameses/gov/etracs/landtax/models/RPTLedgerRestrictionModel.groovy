@@ -56,6 +56,7 @@ class RPTLedgerRestrictionModel
     def open(){
         def p = restrictionParam
         p.entity = selectedItem
+        p.entity._type = type;
         return Inv.lookupOpener('faas_restriction:open', p)
     }    
     

@@ -48,6 +48,9 @@ public abstract class AbstractCashReceipt {
         return entity.amount; 
     }
     
+    public String getEntityType() {
+        return null;
+    }
    
     
     //this is overridable bec. some might not follow this convention.
@@ -186,6 +189,37 @@ public abstract class AbstractCashReceipt {
         //to be implemented 
     }
     
+    @PropertyChangeListener
+    def propertyChange = [
+        "entity.payer" : { o->
+            if(o) {
+                def newdata = entity.clone();
+                newdata.payer = o;
+                newdata.items = null; 
+                service.validatePayer( newdata );  
+
+                entity.payer = o;
+                entity.paidby = o.name;
+                entity.paidbyaddress = o.address.text;
+                binding.refresh("entity.(payer.*|paidby.*)");
+                binding.refresh('createEntity|openEntity');
+
+                def opener = payerChanged( o );
+                if( opener != null ) { 
+                    binding.fireNavigation( opener );
+                }
+            }
+            else {
+                entity.payer = null; 
+                entity.paidby = null;
+                entity.paidbyaddress = null;
+                binding.refresh("entity.(payer.*|paidby.*)");
+                binding.refresh('createEntity|openEntity');     
+            }
+        }
+    ];
+    
+    /*
     def getLookupEntity() {
         def params = [:]; 
         beforeLookupEntity( params ); 
@@ -215,6 +249,7 @@ public abstract class AbstractCashReceipt {
         } 
         return InvokerUtil.lookupOpener( getLookupEntityName(), params );
     } 
+    */
 
     /*
     def cancelSeries(){

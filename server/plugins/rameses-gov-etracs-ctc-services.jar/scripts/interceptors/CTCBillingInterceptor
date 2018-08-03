@@ -7,9 +7,9 @@ import treasury.utils.*;
 class CTCBillingInterceptor {
 
 	//update the franchise info if capture or 
-	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0] == 'ctcbilling' }")
+	@After(pattern="FactBuilderService.getFacts",  eval="#{ args[0].rulename == 'ctcbilling' }")
 	public void buildFacts(def evt) {
-		def data = evt.args[1];
+		def data = evt.args[0].params;
 		def factBuilder = evt.result;
 
 		if( data.type == "individual") {

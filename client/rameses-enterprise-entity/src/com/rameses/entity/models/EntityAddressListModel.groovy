@@ -64,7 +64,10 @@ class EntityAddressListModel  {
     
     def doOk() {
         if(!selectedItem) throw new Exception("Please select an item");
-        if(onselect) onselect( selectedItem );
+        if(onselect) {
+            def m = persistenceSvc.read( [_schemaname:'entity_address', objid:selectedItem.objid] );
+            onselect( m );
+        }
         return "_close";
     }
     

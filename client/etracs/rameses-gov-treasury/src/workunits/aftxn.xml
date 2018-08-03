@@ -16,12 +16,19 @@
     
     <pageflow>
         <start>
-            <transition to="initial" name="default" />
+            <transition to="initial" name="default" action="create"/>
             <transition to="view" name="view"/>
             <transition to="posted" name="posted"/>
         </start>
-        <page name="initial" title="New Accountable Form Issue/Receipt" action="create">
-            <transition to="entry" caption="Next"  action="initNew" immediate="false"/>
+        <page name="initial" title="New Accountable Form Issue/Receipt" >
+            <transition to="check-path" caption="Next"  action="initNew" immediate="false"/>
+        </page>
+        <process name="check-path">
+            <transition to="single-entry" cond="#{entity.txntype.matches('FORWARD|TRANSFER|RETURN')}"/>
+            <transition to="entry" cond="#{!entity.txntype.matches('FORWARD|TRANSFER|RETURN')}"/>
+        </process>    
+        <page name="single-entry" title="Enter Details">
+            <transition to="initial" caption="Back One" />
         </page>
         <page name="entry" title="Enter Qty and Details">
             <transition to="initial" caption="Back" />
@@ -39,6 +46,7 @@
     
     <pages>
         <page name="initial" template="com.rameses.enterprise.treasury.views.AFTxnInitialPage" />
+        <page name="single-entry" template="com.rameses.enterprise.treasury.views.AFSingleEntryPage" />
         <page name="entry"   template="com.rameses.enterprise.treasury.views.AFTxnEntryPage" />
         <page name="view"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
         <page name="posted"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />

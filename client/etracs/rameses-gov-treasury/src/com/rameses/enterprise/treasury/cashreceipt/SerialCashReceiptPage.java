@@ -61,10 +61,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        xButton2 = new com.rameses.rcp.control.XButton();
+        entityLookup1 = new com.rameses.entity.components.EntityLookup();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         contentPanel = new javax.swing.JPanel();
@@ -342,51 +339,24 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(70);
 
-        xFormPanel4.setCaption("Payer");
-        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel4.setStretchWidth(100);
-
-        xLookupField2.setCaption("Payer");
-        xLookupField2.setExpression("#{item.name}");
-        xLookupField2.setHandler("lookupEntity");
-        xLookupField2.setIndex(-1000);
-        xLookupField2.setName("entity.payer"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
-        xLookupField2.setShowCaption(false);
-        xLookupField2.setStretchWidth(100);
-        xFormPanel4.add(xLookupField2);
-
-        xButton1.setDepends(new String[] {"entity.payer"});
-        xButton1.setImmediate(true);
-        xButton1.setMargin(new java.awt.Insets(0, 3, 0, 3));
-        xButton1.setName("createEntity"); // NOI18N
-        xButton1.setShowCaption(false);
-        xButton1.setText("+");
-        xButton1.setVisibleWhen("#{allowCreateEntity == true}");
-        xFormPanel4.add(xButton1);
-
-        xButton2.setDepends(new String[] {"entity.payer"});
-        xButton2.setImmediate(true);
-        xButton2.setMargin(new java.awt.Insets(0, 3, 0, 3));
-        xButton2.setName("openEntity"); // NOI18N
-        xButton2.setShowCaption(false);
-        xButton2.setText("...");
-        xButton2.setVisibleWhen("#{allowOpenEntity == true && entity.payer?.objid != null}");
-        xFormPanel4.add(xButton2);
-
-        xFormPanel1.add(xFormPanel4);
+        entityLookup1.setCaption("Payer");
+        entityLookup1.setEntityTypeName("entityType");
+        entityLookup1.setName("entity.payer"); // NOI18N
+        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(entityLookup1);
 
         xTextField2.setCaption("Paid By");
-        xTextField2.setIndex(1);
+        xTextField2.setDepends(new String[] {"entity.payer"});
         xTextField2.setName("entity.paidby"); // NOI18N
+        xTextField2.setIndex(1);
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
         xTextField3.setCaption("Address");
-        xTextField3.setIndex(2);
+        xTextField3.setDepends(new String[] {"entity.payer"});
         xTextField3.setName("entity.paidbyaddress"); // NOI18N
+        xTextField3.setIndex(2);
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField3.setRequired(true);
         xFormPanel1.add(xTextField3);
@@ -491,7 +461,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
             .add(buttonCheck1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(buttonCheck2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(buttonCheck4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .add(buttonCheck3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+            .add(buttonCheck3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -556,6 +526,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton buttonCheck3;
     private com.rameses.rcp.control.XButton buttonCheck4;
     private javax.swing.JPanel contentPanel;
+    private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -575,8 +546,6 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField11;
@@ -589,11 +558,9 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel4;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

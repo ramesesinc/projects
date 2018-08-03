@@ -18,11 +18,11 @@
     enabled:true;
 }
 
-"entity.payer.acr"[ entity.payer.citizenship == 'FILIPINO']{
+"entity.payer.acr"[ entity.payer?.citizenship == 'FILIPINO']{
     enabled:false;
     required:false;
 }
-"entity.payer.acr"[ entity.payer.citizenship != 'FILIPINO']{
+"entity.payer.acr"[ entity.payer?.citizenship != 'FILIPINO']{
     enabled:true;
     required:true;
 }

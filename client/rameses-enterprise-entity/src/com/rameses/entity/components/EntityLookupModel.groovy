@@ -53,6 +53,7 @@ class EntityLookupModel extends ComponentBean {
                 onempty(); 
             } else {
                 setValue( null ); 
+                fireOnselect( null );
             }
             binding.refresh(); 
         };
@@ -60,8 +61,10 @@ class EntityLookupModel extends ComponentBean {
     } 
     
     void fireOnselect( o ) { 
-        def schemaname = 'entity' + (o.type ? o.type :'').toLowerCase(); 
-        o = persistenceSvc.read([ _schemaname: schemaname, objid: o.objid ]); 
+        if(o!=null) {
+            def schemaname = 'entity' + (o.type ? o.type :'').toLowerCase(); 
+            o = persistenceSvc.read([ _schemaname: schemaname, objid: o.objid ]); 
+        }
         if ( onselect ) { 
             onselect( o ); 
         } else { 

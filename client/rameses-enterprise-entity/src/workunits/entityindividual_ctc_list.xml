@@ -1,6 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" 
           schemaName="entity_ctc" 
-          cols="ctcno,dtissued,placeissued,barangay.name,lgu.name,expirydate">
+          cols="ctcno,dtissued,placeissued,barangay.name,lgu.name,expirydate"
+          hiddenCols="system">
     <invokers>
         <invoker type="entityindividual:section" caption="CTC List" index="150" action="init"/>
     </invokers>

@@ -22,7 +22,6 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
     def needsrecalc = false;
     
     def hasbusinessinfo = false;
-    
     def hasmiddlename = false;
     def hasprofession = false;
     def hastin = false;
@@ -64,7 +63,13 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
                 
         'entity.payer.birthdate' : {
             entity.payer.seniorcitizen = ctcSvc.getSeniorCitizenStatus(entity.payer);
+        },
+        
+        'entity.payer.address': { o->
+            entity.barangay = o.barangay;
+            binding.refresh("entity.barangay");
         }
+        
     ]
     
     
@@ -74,6 +79,15 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
         entity.businessgross = 0.0;
         entity.propertyincome = 0.0;
         entity.hasadditional = false;
+        entity.interest = 0;
+        entity.interestdue = 0;
+        entity.brgytaxshare = 0;
+        entity.brgyinterestshare = 0;
+
+    }
+    
+    public String getEntityType() {
+        return "individual";
     }
     
     public void validateBeforePost() {
@@ -92,27 +106,6 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
         }
     }
 
-    def createEntity() { 
-        def h = { o->
-            o.type = 'INDIVIDUAL';
-            entity.payer = o;
-            entity.paidby = o.name;
-            entity.paidbyaddress = o.address.text;
-            binding.refresh("entity.(payer.*|paidby.*)");
-            binding.refresh('createEntity|openEntity');
-            payerChanged( o );
-        }
-        return Inv.lookupOpener("individualentity:create", [entity:[:], onselect:h]); 
-    }
-    
-    protected void beforeLookupEntity( params ) {
-        params['query.type'] = 'INDIVIDUAL'; 
-        params.allowSelectEntityType = false; 
-    }
-    protected String getLookupEntityName() { 
-        return 'individualentity:lookup'; 
-    } 
-    
     public def payerChanged( o ) { 
         if ( ! o.type.equalsIgnoreCase('INDIVIDUAL'))
             throw new Exception('Only individual entities are allowed.');
@@ -144,7 +137,6 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
             orig_businessgross = entity.businessgross;
             hasbusinessinfo = true;
         }
-        
         entity.items = [];
         updateBalances();
         binding.refresh('.*')
@@ -174,18 +166,5 @@ class  IndividualCtcCashReceipt extends AbstractCashReceipt {
             return profSvc.getList( o )*.objid; 
         }
     ] as SuggestModel; 
-    
-    def editAddress() {
-        if ( !entity.payer?.objid ) return null; 
-        def m = [:];
-        m['query.objid'] = entity.payer?.objid;
-        m['query.name'] = entity.payer.name;
-        m.onselect = { o->
-            entity.paidbyaddress = o.text;
-            entity.payer.address = o;
-            binding.refresh('entity.*');
-        };
-        return Inv.lookupOpener( "entity_address:lookup", m );
-    }
     
 }

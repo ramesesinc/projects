@@ -43,8 +43,14 @@ public class IndividualCTCService {
 	public def calculateTax( ctc ) { 
 		ctc.type = "individual";
 		if ( ctc.newbusiness == null ) ctc.newbusiness = false; 
-		def result = basicBillingService.execute( [rulename: "ctcbilling", params: ctc ] );
-		return result;
+
+		def req = [:];
+		req.rulename = "ctcbilling"; 
+		req.params = ctc;
+		req.include_items = true;
+		req.include_billitems = false;
+
+		return basicBillingService.execute( req );
 	}
 
 

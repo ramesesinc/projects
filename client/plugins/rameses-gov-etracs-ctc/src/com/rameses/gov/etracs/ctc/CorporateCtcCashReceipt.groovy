@@ -6,8 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.enterprise.treasury.cashreceipt.*;
 
-class  CorporateCtcCashReceipt extends AbstractCashReceipt 
-{
+class  CorporateCtcCashReceipt extends AbstractCashReceipt {
     @Service('CorporateCTCService')
     def ctcSvc;
     
@@ -61,6 +60,14 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
         entity.businessgross = 0.0;
         entity.newbusiness = false;
         entity.hasadditional = false;
+        entity.interest = 0;
+        entity.interestdue = 0;
+        entity.brgytaxshare = 0;
+        entity.brgyinterestshare = 0;
+    }
+    
+    public String getEntityType() {
+        return "juridical";
     }
     
     public void validateBeforePost() {
@@ -91,14 +98,6 @@ class  CorporateCtcCashReceipt extends AbstractCashReceipt
         }
         return Inv.lookupOpener("juridicalentity:create", [entity:[:], onselect:h]); 
     }
-    
-    protected void beforeLookupEntity( params ) {
-        params['query.type'] = 'JURIDICAL'; 
-        params.allowSelectEntityType = false; 
-    }    
-    protected String getLookupEntityName() { 
-        return 'juridicalentity:lookup'; 
-    }     
     
     public def payerChanged( o ) {
         if ( ! o.type.equalsIgnoreCase('JURIDICAL') )

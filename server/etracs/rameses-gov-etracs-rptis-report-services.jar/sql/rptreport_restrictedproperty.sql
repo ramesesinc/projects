@@ -34,7 +34,12 @@ select
     r.totalareaha, r.totalareasqm,
     r.totalmv, r.totalav,
     frt.name as restrictiontype,
-    fr.remarks
+    fr.remarks,
+    fr.receipt_receiptno,
+    fr.receipt_receiptdate,
+    fr.receipt_amount,
+    fr.receipt_lastyearpaid,
+    fr.receipt_lastqtrpaid
 from faas f 
     inner join realproperty rp on f.realpropertyid = rp.objid 
     inner join rpu r on f.rpuid = r.objid 

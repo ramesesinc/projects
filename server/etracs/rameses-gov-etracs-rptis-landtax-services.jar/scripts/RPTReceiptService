@@ -58,7 +58,6 @@ class RPTReceiptService
 	@DataContext('faas_restriction')
 	def em_faas_restriction
 
-
 	@ProxyMethod
 	public def create(receipt) {
 		validateTotals(receipt)
@@ -536,7 +535,6 @@ class RPTReceiptService
 			it.receipt = pmt
 			em_faas_restriction.update(it)
 		}
-	}	
-
+	}
 }
 

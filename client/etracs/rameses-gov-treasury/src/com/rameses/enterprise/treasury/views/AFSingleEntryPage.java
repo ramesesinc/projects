@@ -31,35 +31,22 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
-        formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
-        xSeparator1 = new com.rameses.rcp.control.XSeparator();
-        xLabel17 = new com.rameses.rcp.control.XLabel();
-        xLabel16 = new com.rameses.rcp.control.XLabel();
-        xLabel14 = new com.rameses.rcp.control.XLabel();
-        xLabel15 = new com.rameses.rcp.control.XLabel();
-        xLabel11 = new com.rameses.rcp.control.XLabel();
-        xLabel12 = new com.rameses.rcp.control.XLabel();
-        xLabel13 = new com.rameses.rcp.control.XLabel();
-        xSeparator3 = new com.rameses.rcp.control.XSeparator();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
-        xLabel5 = new com.rameses.rcp.control.XLabel();
-        xSeparator4 = new com.rameses.rcp.control.XSeparator();
-        xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
+        xSeparator2 = new com.rameses.rcp.control.XSeparator();
+        xNumberField2 = new com.rameses.rcp.control.XNumberField();
+        txtstartseries = new com.rameses.rcp.control.XTextField();
+        txtcurrentseries = new com.rameses.rcp.control.XTextField();
+        txtendseries = new com.rameses.rcp.control.XTextField();
+        txtqtyrcv = new com.rameses.rcp.control.XIntegerField();
+        xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
 
-        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel2.setCaptionWidth(150);
-        xFormPanel2.setPadding(new java.awt.Insets(0, 10, 5, 5));
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(150);
+        xFormPanel1.setPadding(new java.awt.Insets(8, 5, 5, 5));
 
         xLookupField1.setCaption("Issued To");
         xLookupField1.setExpression("#{ entity.issueto.name }");
@@ -67,239 +54,125 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         xLookupField1.setName("entity.issueto"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
-        xFormPanel2.add(xLookupField1);
+        xFormPanel1.add(xLookupField1);
 
         xLookupField3.setCaption("AF Type");
-        xLookupField3.setExpression("#{ entity.af.objid }");
-        xLookupField3.setHandler("af_collection:lookup");
-        xLookupField3.setName("entity.af"); // NOI18N
+        xLookupField3.setExpression("#{ form.afunit.objid }");
+        xLookupField3.setHandler("afunit_collection:lookup");
+        xLookupField3.setName("form.afunit"); // NOI18N
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField3.setRequired(true);
-        xFormPanel2.add(xLookupField3);
+        xFormPanel1.add(xLookupField3);
 
-        formPanel1.setCaptionWidth(110);
+        xLabel1.setCaption("Unit");
+        xLabel1.setDepends(new String[] {"form.afunit"});
+        xLabel1.setExpression("#{ form.afunit.unit }");
+        xFormPanel1.add(xLabel1);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel1.setCaption("AF No");
-        xLabel1.setExpression("#{ entity.af.objid }");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel1);
+        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
 
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel3.setCaption("Date Filed");
-        xLabel3.setExpression("#{ entity.dtfiled }");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel3);
-
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel10.setCaption("Status");
-        xLabel10.setExpression("#{ entity.state }");
-        xLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        xLabel10.setName("entity.state"); // NOI18N
-        xLabel10.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel10);
-
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel8.setCaption("Txn Mode");
-        xLabel8.setExpression("#{ entity.txnmode }");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel8);
-
-        xCheckBox1.setCaption("");
-        xCheckBox1.setCheckValue(1);
-        xCheckBox1.setName("entity.active"); // NOI18N
-        xCheckBox1.setText("Active");
-        xCheckBox1.setUncheckValue(0);
-        formPanel1.add(xCheckBox1);
-
-        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
-
-        javax.swing.GroupLayout xSeparator1Layout = new javax.swing.GroupLayout(xSeparator1);
-        xSeparator1.setLayout(xSeparator1Layout);
-        xSeparator1Layout.setHorizontalGroup(
-            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 411, Short.MAX_VALUE)
+        javax.swing.GroupLayout xSeparator2Layout = new javax.swing.GroupLayout(xSeparator2);
+        xSeparator2.setLayout(xSeparator2Layout);
+        xSeparator2Layout.setHorizontalGroup(
+            xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 419, Short.MAX_VALUE)
         );
-        xSeparator1Layout.setVerticalGroup(
-            xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        xSeparator2Layout.setVerticalGroup(
+            xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 20, Short.MAX_VALUE)
         );
 
-        formPanel1.add(xSeparator1);
+        xFormPanel1.add(xSeparator2);
 
-        xLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel17.setCaption("Allocation");
-        xLabel17.setExpression("#{ entity.allocation.objid }");
-        xLabel17.setPreferredSize(new java.awt.Dimension(150, 20));
-        formPanel1.add(xLabel17);
+        xNumberField2.setCaption("Stub No.");
+        xNumberField2.setName("form.stubno"); // NOI18N
+        xNumberField2.setFieldType(Integer.class);
+        xNumberField2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        xNumberField2.setPreferredSize(new java.awt.Dimension(150, 20));
+        xNumberField2.setRequired(true);
+        xFormPanel1.add(xNumberField2);
 
-        xLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel16.setCaption("Stub No");
-        xLabel16.setExpression("#{ entity.stubno }");
-        xLabel16.setPreferredSize(new java.awt.Dimension(150, 20));
-        formPanel1.add(xLabel16);
+        txtstartseries.setCaption("Start Series");
+        txtstartseries.setDepends(new String[] {"form.afunit"});
+        txtstartseries.setName("form.startseries"); // NOI18N
+        txtstartseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
+        txtstartseries.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        txtstartseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        txtstartseries.setPreferredSize(new java.awt.Dimension(150, 20));
+        txtstartseries.setRequired(true);
+        xFormPanel1.add(txtstartseries);
 
-        xLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel14.setCaption("Prefix");
-        xLabel14.setExpression("#{ entity.prefix }");
-        xLabel14.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel14.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
-        formPanel1.add(xLabel14);
+        txtcurrentseries.setCaption("Current Series");
+        txtcurrentseries.setDepends(new String[] {"form.afunit"});
+        txtcurrentseries.setName("form.currentseries"); // NOI18N
+        txtcurrentseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
+        txtcurrentseries.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        txtcurrentseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        txtcurrentseries.setPreferredSize(new java.awt.Dimension(150, 20));
+        txtcurrentseries.setRequired(true);
+        xFormPanel1.add(txtcurrentseries);
 
-        xLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel15.setCaption("Suffix");
-        xLabel15.setExpression("#{ entity.suffix }");
-        xLabel15.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel15.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
-        formPanel1.add(xLabel15);
+        txtendseries.setCaption("End Series");
+        txtendseries.setDepends(new String[] {"form.afunit"});
+        txtendseries.setDisableWhen("#{ true }");
+        txtendseries.setName("form.endseries"); // NOI18N
+        txtendseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
+        txtendseries.setEnabled(false);
+        txtendseries.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        txtendseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        txtendseries.setPreferredSize(new java.awt.Dimension(150, 20));
+        txtendseries.setRequired(true);
+        xFormPanel1.add(txtendseries);
 
-        xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel11.setCaption("Start Series");
-        xLabel11.setExpression("#{ entity.startseries }");
-        xLabel11.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel11.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
-        formPanel1.add(xLabel11);
+        txtqtyrcv.setCaption("Qty Received");
+        txtqtyrcv.setDepends(new String[] {"form.afunit"});
+        txtqtyrcv.setEditable(true);
+        txtqtyrcv.setName("form.qty"); // NOI18N
+        txtqtyrcv.setVisibleWhen("#{ form.afunit?.formtype == 'cashticket' }");
+        txtqtyrcv.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(txtqtyrcv);
 
-        xLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel12.setCaption("End Series");
-        xLabel12.setExpression("#{ entity.endseries }");
-        xLabel12.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel12.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
-        formPanel1.add(xLabel12);
+        xTextField3.setCaption("Prefix");
+        xTextField3.setName("form.prefix"); // NOI18N
+        xTextField3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xTextField3);
 
-        xLabel13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel13.setCaption("Current Series");
-        xLabel13.setExpression("#{ entity.currentseries }");
-        xLabel13.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel13.setVisibleWhen("#{ entity.af.formtype == 'serial' }");
-        formPanel1.add(xLabel13);
-
-        xSeparator3.setPreferredSize(new java.awt.Dimension(0, 20));
-
-        javax.swing.GroupLayout xSeparator3Layout = new javax.swing.GroupLayout(xSeparator3);
-        xSeparator3.setLayout(xSeparator3Layout);
-        xSeparator3Layout.setHorizontalGroup(
-            xSeparator3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 411, Short.MAX_VALUE)
-        );
-        xSeparator3Layout.setVerticalGroup(
-            xSeparator3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
-        );
-
-        formPanel1.add(xSeparator3);
-
-        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel4.setCaption("Qty Balance");
-        xLabel4.setExpression("#{ entity.qtybalance }");
-        xLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
-        formPanel1.add(xLabel4);
-
-        xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel5.setCaption("Qty Issued");
-        xLabel5.setExpression("#{ entity.qtyissued }");
-        xLabel5.setPreferredSize(new java.awt.Dimension(150, 20));
-        formPanel1.add(xLabel5);
-
-        xSeparator4.setPreferredSize(new java.awt.Dimension(0, 20));
-
-        javax.swing.GroupLayout xSeparator4Layout = new javax.swing.GroupLayout(xSeparator4);
-        xSeparator4.setLayout(xSeparator4Layout);
-        xSeparator4Layout.setHorizontalGroup(
-            xSeparator4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 411, Short.MAX_VALUE)
-        );
-        xSeparator4Layout.setVerticalGroup(
-            xSeparator4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
-        );
-
-        formPanel1.add(xSeparator4);
-
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel2.setCaption("Issued To");
-        xLabel2.setExpression("#{ entity.owner.name }");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel2);
-
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel7.setCaption("Sub Collector");
-        xLabel7.setExpression("#{ entity.assignee.name }");
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLabel7.setVisibleWhen("#{ entity.assignee.objid != entity.owner.objid  }");
-        formPanel1.add(xLabel7);
-
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel9.setCaption("Resp. Center");
-        xLabel9.setExpression("#{ entity.respcenter.name }");
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLabel9);
-
-        xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaption("Fund");
-        xLabel6.setExpression("#{ entity.fund.title }");
-        xLabel6.setName("entity.fund.title"); // NOI18N
-        xLabel6.setPreferredSize(new java.awt.Dimension(150, 20));
-        formPanel1.add(xLabel6);
+        xTextField4.setCaption("Suffix");
+        xTextField4.setName("form.suffix"); // NOI18N
+        xTextField4.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(xTextField4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(204, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(formPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGap(14, 14, 14)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(245, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.util.FormPanel formPanel1;
-    private com.rameses.rcp.control.XCheckBox xCheckBox1;
-    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XTextField txtcurrentseries;
+    private com.rameses.rcp.control.XTextField txtendseries;
+    private com.rameses.rcp.control.XIntegerField txtqtyrcv;
+    private com.rameses.rcp.control.XTextField txtstartseries;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel10;
-    private com.rameses.rcp.control.XLabel xLabel11;
-    private com.rameses.rcp.control.XLabel xLabel12;
-    private com.rameses.rcp.control.XLabel xLabel13;
-    private com.rameses.rcp.control.XLabel xLabel14;
-    private com.rameses.rcp.control.XLabel xLabel15;
-    private com.rameses.rcp.control.XLabel xLabel16;
-    private com.rameses.rcp.control.XLabel xLabel17;
-    private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
-    private com.rameses.rcp.control.XLabel xLabel7;
-    private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField3;
-    private com.rameses.rcp.control.XSeparator xSeparator1;
-    private com.rameses.rcp.control.XSeparator xSeparator3;
-    private com.rameses.rcp.control.XSeparator xSeparator4;
+    private com.rameses.rcp.control.XNumberField xNumberField2;
+    private com.rameses.rcp.control.XSeparator xSeparator2;
+    private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables
 }

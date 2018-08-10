@@ -89,7 +89,6 @@ class AFTxnModel extends CrudPageFlowModel {
     }
     
     void copyRequest() {
-        MsgBox.alert('copy trequest');
         def req = persistenceService.read( [_schemaname:'afrequest', objid: afrequest.objid ] );
         entity.request = [objid:req.objid , reqno: req.reqno];
         entity.issueto = req.requester;
@@ -118,7 +117,6 @@ class AFTxnModel extends CrudPageFlowModel {
     }
     
     void initSingleForm() {
-        MsgBox.alert("init single form");
         form = [:];
     }
     

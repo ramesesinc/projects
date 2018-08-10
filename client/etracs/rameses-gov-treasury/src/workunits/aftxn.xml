@@ -34,6 +34,7 @@
         </process>    
         <page name="single-entry" title="Forward AF - Enter Details">
             <transition to="initial" caption="Back" />
+            <transition to="posted" caption="Next" immediate="false" action="saveCreate"/>
         </page>
         <page name="select-af" title="Select AF to #{entity.txntype}">
             <transition to="initial" caption="Back" action="clearItems"/>

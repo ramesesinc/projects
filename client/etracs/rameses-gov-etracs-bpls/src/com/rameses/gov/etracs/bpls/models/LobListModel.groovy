@@ -13,12 +13,15 @@ public class LobListModel extends CrudListModel {
     boolean autoResize = false;
     
     public void initColumn( def c ) { 
-        
-        if ( c.name == 'name' ) {
-            c.width = 300;
-        } else if ( c.name == 'classification.objid' ) {
+        if ( c.name == 'classification.objid' ) {
             c.width = 150;
         } 
+        else if ( c.name == 'psic.objid' ) {
+            c.width = 120;
+        } 
+        else {
+            c.width = 300;
+        }
     }     
     
     def getLookupAttribute() {

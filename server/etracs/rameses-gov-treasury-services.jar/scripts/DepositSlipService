@@ -10,8 +10,8 @@ class DepositSlipService  {
 	@DataContext("depositvoucher")
 	def depositVoucherEm;
 
-	@DataContext("paymentcheck")
-	def paymentCheckEm;
+	@DataContext("checkpayment")
+	def checkpaymentEm;
 
 	@Env
 	def env;
@@ -32,7 +32,7 @@ class DepositSlipService  {
 		m = depositSlipEm.create(m);	
 		checks.each {
 			if(!it.checkid) throw new Exception("checkid is required in create depositlsip")
-			paymentCheckEm.find([objid: it.checkid]).update( [depositslipid: m.objid ]);
+			checkpaymentEm.find([objid: it.checkid]).update( [depositslipid: m.objid ]);
 		}
 	}
 
@@ -101,7 +101,7 @@ class DepositSlipService  {
 		depositVoucherEm.find( [objid: r.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
 
 		//update all checks for the deposit slip to null
-		paymentCheckEm.find([depositslipid: o.objid]).update( [depositslipid: null ]);
+		checkpaymentEm.find([depositslipid: o.objid]).update( [depositslipid: null ]);
 		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
 	}
 

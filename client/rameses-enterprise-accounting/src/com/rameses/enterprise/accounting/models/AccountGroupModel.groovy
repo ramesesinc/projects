@@ -8,12 +8,15 @@ import com.rameses.seti2.models.*;
         
 class AccountGroupModel extends CrudFormModel {
 
+    def maingroup;
+    def parent;
+    
     void afterCreate() {
-        entity.maingroup = caller.masterEntity;
+        entity.maingroup = maingroup;
         entity.group = null;
+        if( parent ) {
+            entity.group = parent;
+        }
     }    
-
-    def getAccountGroupLookup() {
-        return Inv.lookupOpener( "account_group:lookup", [maingroupid: entity.maingroup.objid] );
-    } 
+ 
 }

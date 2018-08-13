@@ -43,7 +43,7 @@ class DepositSlipInitialModel {
        entity.amount = depositvoucher.amount - depositvoucher.amountdeposited;
        limit = entity.amount;
        
-       def m = [_schemaname: 'paymentcheck'];
+       def m = [_schemaname: 'checkpayment'];
        m.findBy = [depositvoucherid: depositvoucher.objid];
        m.where = [ "depositslipid IS NULL "];
        m.orderBy = "refno";
@@ -89,7 +89,7 @@ class DepositSlipInitialModel {
             return checkList;
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("paymentcheck:open", [entity: [objid: o.refid ]] );
+            def op = Inv.lookupOpener("checkpayment:open", [entity: [objid: o.refid ]] );
             op.target = "popup";
             return op;
         }

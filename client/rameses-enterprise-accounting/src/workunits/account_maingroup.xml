@@ -3,8 +3,8 @@
          <invoker type="account_maingroup:open" caption="Accounts" action="open" 
             formTitle="Account #{entity.name}" formId="#{entity.objid}"/>
    </invokers>
-   <code class="com.rameses.seti2.models.CrudFormModel" />
+   <code class="com.rameses.enterprise.accounting.models.AccountMainGroupModel" />
     <pages>
-        <page template="com.rameses.enterprise.accounting.views.AccountMainGroupViewPage" />
+        <page template="com.rameses.enterprise.accounting.views.AccountMainGroupMgmtPage" />
     </pages>
 </workunit>

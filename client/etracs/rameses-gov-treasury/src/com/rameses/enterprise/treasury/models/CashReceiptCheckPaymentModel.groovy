@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*; 
 import com.rameses.util.*;
 
-class CashReceiptPaymentCheckModel extends PageFlowController { 
+class CashReceiptCheckPaymentModel extends PageFlowController { 
 
     
     @Binding 
@@ -56,7 +56,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     def selectedCheck;
     void searchCheckIfExists() {
         new_check = true;
-        def m = [_schemaname:'paymentcheck'];
+        def m = [_schemaname:'checkpayment'];
         m.findBy = [refno: check.refno ];
         m.where = [ " amount - amtused > 0 " ];
         selectionList = queryService.getList( m );
@@ -98,7 +98,7 @@ class CashReceiptPaymentCheckModel extends PageFlowController {
     }
     
     void saveAndAddCheck() {
-        check._schemaname = 'paymentcheck';
+        check._schemaname = 'checkpayment';
         check.state = 'PENDING';
         check.amtused = 0;
         

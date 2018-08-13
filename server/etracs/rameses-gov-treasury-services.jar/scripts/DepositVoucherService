@@ -25,8 +25,8 @@ class DepositVoucherService  {
 	@DataContext("depositvoucher")
 	def depositEm;
 
-	@DataContext("paymentcheck")
-	def paymentCheckEm;
+	@DataContext("checkpayment")
+	def checkpaymentEm;
 
 
 	@DataContext("depositslip")
@@ -56,18 +56,18 @@ class DepositVoucherService  {
 	@ProxyMethod
 	public def addChecks( def v) {
 		def ids = "('" + v.list.join("','") + "')";
-		paymentCheckEm.where( "objid IN " + ids ).update([depositvoucherid: v.depositvoucherid]);
+		checkpaymentEm.where( "objid IN " + ids ).update([depositvoucherid: v.depositvoucherid]);
 		return summarizeTotal( [objid: v.depositvoucherid] );
 	}
 
 	@ProxyMethod
 	public def removeCheck( def o ) {
-		paymentCheckEm.find([objid: o.objid]).update([depositvoucherid: null]);
+		checkpaymentEm.find([objid: o.objid]).update([depositvoucherid: null]);
 		return summarizeTotal( [objid: o.depositvoucherid] );
 	}
 
 	def summarizeTotal(def m) {
-		def tot = paymentCheckEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
+		def tot = checkpaymentEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
 		depositEm.find([objid: m.objid ]).update([totalcheck: tot]);
 		return tot;
 	}
@@ -96,7 +96,7 @@ class DepositVoucherService  {
 
 		if( o.additionalchecks ) {
 			def ids = "('" + o.additionalchecks.join("','") + "')";
-			paymentCheckEm.where( "objid IN " + ids  ).update( [depositvoucherid: m.objid ] );
+			checkpaymentEm.where( "objid IN " + ids  ).update( [depositvoucherid: m.objid ] );
 		}
 
 		summarizeTotal( m );
@@ -106,7 +106,7 @@ class DepositVoucherService  {
 	@ProxyMethod
 	public def post(def o ) {
 		//test if there are undeposited checks
-		int t = paymentCheckEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
+		int t = checkpaymentEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
 		if(t > 0 )
 			throw new Exception("All checks associated with this deposit must have deposit slips");
 

@@ -27,7 +27,7 @@ class CashReceiptVoidService  {
 	@DataContext('cashreceiptpayment_noncash') 
 	def ncPmtEm;
 
-	@DataContext('paymentcheck') 
+	@DataContext('checkpayment') 
 	def pmtChkEm;
 
 	@Service("ActionPermissionService")

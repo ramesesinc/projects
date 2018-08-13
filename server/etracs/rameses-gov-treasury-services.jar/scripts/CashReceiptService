@@ -33,7 +33,7 @@ class CashReceiptService  {
    	@DataContext("creditmemo")
    	def creditmemo;
 
-    @DataContext("paymentcheck")
+    @DataContext("checkpayment")
    	def checkPayment;
 
 	@Service("DateService")

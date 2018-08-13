@@ -34,9 +34,9 @@ public class AccountPage extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
@@ -44,11 +44,17 @@ public class AccountPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(120);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Main Group");
         xLabel1.setExpression("#{entity.maingroup.code} #{entity.maingroup.title} ");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
+
+        xLabel2.setCaption("Parent Group");
+        xLabel2.setExpression("#{entity.group.code} #{entity.group.title} ");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel2);
 
         xTextField1.setCaption("Acct Code");
         xTextField1.setName("entity.code"); // NOI18N
@@ -62,18 +68,6 @@ public class AccountPage extends javax.swing.JPanel {
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
-
-        xLookupField2.setCaption("Acct Group ");
-        xLookupField2.setExpression("#{entity.group.code} #{entity.group.title} ");
-        xLookupField2.setHandler("accountGroupLookup");
-        xLookupField2.setName("entity.group"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xLookupField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xLookupField2ActionPerformed(evt);
-            }
-        });
-        xFormPanel1.add(xLookupField2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -96,6 +90,7 @@ public class AccountPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ mode != 'create' }");
 
+        xDataTable1.setHandler("itemHandlers.items");
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
@@ -145,7 +140,6 @@ public class AccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("itemHandlers.items");
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);
@@ -184,16 +178,12 @@ public class AccountPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void xLookupField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xLookupField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xLookupField2ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;

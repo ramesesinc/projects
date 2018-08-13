@@ -12,12 +12,12 @@ import com.rameses.seti2.views.CrudFormPage;
  * @author Elmo Nazareno
  */
 @Template(CrudFormPage.class)
-public class PaymentCheckPage extends javax.swing.JPanel {
+public class CheckPaymentPage extends javax.swing.JPanel {
 
     /**
      * Creates new form CashReceiptCheckPage
      */
-    public PaymentCheckPage() {
+    public CheckPaymentPage() {
         initComponents();
     }
 

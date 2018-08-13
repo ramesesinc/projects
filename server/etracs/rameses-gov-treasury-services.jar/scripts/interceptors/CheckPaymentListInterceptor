@@ -1,11 +1,12 @@
 import com.rameses.annotations.*;
 
-class PaymentCheckListInterceptor {
+class CheckPaymentListInterceptor
+ {
 
-	@DataContext("paymentcheck")
+	@DataContext("checkpayment")
 	def pmtChk;
 
-	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'paymentcheck' }")
+	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'checkpayment' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
@@ -16,7 +17,7 @@ class PaymentCheckListInterceptor {
 		result << [ id:'deposited', title: 'Deposited Checks' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'paymentcheck' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'checkpayment' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 
@@ -57,7 +58,7 @@ class PaymentCheckListInterceptor {
 		}
 	}	
 
-	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'paymentcheck' }")
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'checkpayment' }")
 	public void removeRecord( evt ) { 
 		def x = evt.args[0];
 		def m = pmtChk.find( [objid: x.objid ] ).first();

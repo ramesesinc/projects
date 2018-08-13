@@ -1,6 +1,6 @@
 <schema>
 
-	<element  tablename="paymentcheck">
+	<element  tablename="checkpayment">
 		<field name="objid" primary="true" prefix="CHKPMT"/>	
 		<field name="state" required="true" defaultValue="PENDING"/>	
 
@@ -8,11 +8,11 @@
 			<key field="bankid" target="objid" />
 		</complex>	
 
-		<field name="refno" required="true" searchable="true"/>	
-		<field name="refdate" required="true" />
-		<field name="amount" required="true" type="decimal"/>	
-		<field name="bank_name" required="true" />
-		<field name="receivedfrom" required="true" />
+		<field name="refno" required="true" searchable="true"  caption="Check No"/>	
+		<field name="refdate" required="true"  caption="Check Date"/>
+		<field name="amount" required="true" type="decimal"  caption="Amount"/>	
+		<field name="bank_name" required="true"  caption="Bank Name"/>
+		<field name="receivedfrom" required="true"  caption="Received From"/>
 		
 		<!-- amount issued. If this becomes equal to amount then this check is already closed. This starts at 0 --> 
 		<field name="amtused" required="true" type="decimal" defaultValue="0"/>	

@@ -2,7 +2,7 @@
           allowCreate="false" allowDelete="false">
     <invokers>
        
-        <invoker type="paymentcheck:section" caption="Receipts" 
+        <invoker type="checkpayment:section" caption="Receipts" 
                  action="init" index="10" target="popup" 
                  cols="receipt.receiptno,receipt.receiptdate,receipt.collector.name,amount,fund.title,void.objid"
                     hiddenCols="receiptid"

@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*; 
 
-class PaymentCheckModel extends CrudFormModel { 
+class CheckPaymentModel extends CrudFormModel { 
 
     boolean external = false;
     def handler;

@@ -21,8 +21,8 @@ FROM  (
 	GROUP BY dv.objid, dv.controlno, dv.controldate, f.code, f.objid
 )a 
 
-[updatePaymentCheckDepositId]
-UPDATE paymentcheck
+[updateCheckPaymentDepositId]
+UPDATE checkpayment
 SET depositvoucherid = $P{depositvoucherid}
 WHERE objid IN 
 (
@@ -34,12 +34,12 @@ WHERE objid IN
     WHERE cv.depositvoucherid  = $P{depositvoucherid}
 )
 
-[updatePaymentCheckDefaultFund]
-UPDATE paymentcheck 
+[updateCheckPaymentDefaultFund]
+UPDATE checkpayment 
 SET fundid = (
      SELECT nc.fund_objid 
      FROM cashreceiptpayment_noncash nc
-     WHERE nc.refid = paymentcheck.objid AND nc.amount = paymentcheck.amount 
+     WHERE nc.refid = checkpayment.objid AND nc.amount = checkpayment.amount 
 )
 WHERE depositvoucherid = $P{depositvoucherid}
 
@@ -48,7 +48,7 @@ WHERE depositvoucherid = $P{depositvoucherid}
 UPDATE depositvoucher_fund
     SET checktodeposit = (
 		SELECT SUM(pc.amount) 
-		FROM paymentcheck pc
+		FROM checkpayment pc
         WHERE pc.depositvoucherid = depositvoucher_fund.parentid 
         AND pc.fundid = depositvoucher_fund.fundid
 	)

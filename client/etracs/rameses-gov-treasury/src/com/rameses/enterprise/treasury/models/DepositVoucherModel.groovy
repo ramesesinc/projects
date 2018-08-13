@@ -120,7 +120,7 @@ class DepositVoucherModel extends CrudFormModel {
     
     void loadChecks() {
         def p = [depid:entity.objid ];
-        def m = [_schemaname: 'paymentcheck' ];
+        def m = [_schemaname: 'checkpayment' ];
         m.select = "objid,refno,refdate,bank.*,amount,deposited:{ CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END },depositslipid";
         m.where = ["depositvoucherid = :depid " , p ];
         m.orderBy = "refno";
@@ -152,7 +152,7 @@ class DepositVoucherModel extends CrudFormModel {
                 return true;
             },
             fetchList: {
-                def m = [_schemaname: 'paymentcheck'];
+                def m = [_schemaname: 'checkpayment'];
                 m.where = [" depositvoucherid IS NULL AND state = 'FOR-DEPOSIT' "];
                 return queryService.getList(m);
             },
@@ -188,7 +188,7 @@ class DepositVoucherModel extends CrudFormModel {
             checkListModel.reload();
             binding.refresh("entity.totalcheck|checksCount");
         }
-        Modal.show("paymentcheck:create", [handler: h, external:true ])
+        Modal.show("checkpayment:create", [handler: h, external:true ])
     }
     
     public def post() {

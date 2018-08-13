@@ -1,5 +1,5 @@
 [getOpenSplitChecks]
-SELECT * FROM paymentcheck 
+SELECT * FROM checkpayment 
 WHERE depositvoucherid IS NULL
 AND objid IN 
 ( 
@@ -11,13 +11,13 @@ AND objid IN
 	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
 	WHERE cvf.objid IN ${ids}
 	AND nc.fund_objid = cvf.fund_objid 
-	AND NOT( nc.amount = paymentcheck.amount )
+	AND NOT( nc.amount = checkpayment.amount )
 	GROUP BY nc.refid
 )
 ORDER BY refno
 
 [updateCheckForDeposit]
-UPDATE paymentcheck 
+UPDATE checkpayment 
 SET state = 'FOR-DEPOSIT'
 WHERE objid IN 
 ( 
@@ -33,7 +33,7 @@ WHERE objid IN
 )
 
 [updateCheckDepositVoucherId]
-UPDATE paymentcheck 
+UPDATE checkpayment 
 SET depositvoucherid = $P{depositvoucherid}
 WHERE depositvoucherid IS NULL 
 AND objid IN 
@@ -46,13 +46,13 @@ AND objid IN
 	INNER JOIN collectionvoucher_fund cvf ON cvf.parentid = cv.objid 
 	WHERE cvf.depositvoucherid = $P{depositvoucherid}
 	AND nc.fund_objid = cvf.fund_objid 
-	AND nc.amount = paymentcheck.amount
+	AND nc.amount = checkpayment.amount
 	GROUP BY nc.refid
 )
 
 
-[updatePaymentCheckDepositId]
-UPDATE paymentcheck
+[updateCheckPaymentDepositId]
+UPDATE checkpayment
 SET depositvoucherid = $P{depositvoucherid}
 WHERE objid IN 
 (

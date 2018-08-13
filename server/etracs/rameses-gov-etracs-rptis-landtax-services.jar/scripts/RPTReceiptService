@@ -52,6 +52,8 @@ class RPTReceiptService
 	@DataContext('rptbill_ledger')
 	def em_rptbill_ledger
 
+	@DataContext('faas_restriction')
+	def em_faas_restriction
 
 
 	@ProxyMethod
@@ -351,6 +353,7 @@ class RPTReceiptService
 			postPaidItems(ledgerpmt, ledger.postingitems)
 			postShares(ledgerpmt, ledger)
 			updateLedgerPaidYearQtr(ledger)
+			unrestrictProperty(receipt, ledger)
 		}
 	}
 
@@ -485,6 +488,23 @@ class RPTReceiptService
 		item.amtdue = item.total 
 		item.partialled = true 
 	}
+
+	void unrestrictProperty(receipt, ledger) {
+		def params = [objid: ledger.objid, state: 'ACTIVE']
+		def restrictions = em_faas_restriction.where('ledger_objid = :objid and state = :state', params).list()
+		restrictions.each{
+			def pmt = [:]
+			pmt.objid = receipt.objid 
+			pmt.receiptno = receipt.receiptno
+			pmt.receiptdate = receipt.receiptdate
+			pmt.amount = ledger.total 
+			pmt.lastyearpaid = ledger.toyear
+			pmt.lastqtrpaid = ledger.toqtr
+			it.state = 'UNRESTRICTED'
+			it.receipt = pmt
+			em_faas_restriction.update(it)
+		}
+	}	
 
 
 //	/*==========================================================

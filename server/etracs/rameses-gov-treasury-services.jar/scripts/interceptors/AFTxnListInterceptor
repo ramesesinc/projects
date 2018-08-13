@@ -8,7 +8,6 @@ class AFTxnListInterceptor {
 	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'aftxn' }")
 	public void getNodes( evt ) { 
-		def x = evt.args[0];
 		def result = evt.result; 
 		result << [ id:'open', title: 'Draft', state:'DRAFT' ];
 		result << [ id:'closed', title: 'Posted', state:'POSTED' ];
@@ -17,10 +16,13 @@ class AFTxnListInterceptor {
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'aftxn' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
-		//o.debug = true;
 		if( !o.node?.id ) return;
+
 		def str = " state = :state ";
-		def m = [ state: o.node.state ]; 
+		def m = [ state: o.node.state ];
+		if ( m.state == 'POSTED' ) {
+			o.orderBy = 'txndate DESC';
+		} 
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

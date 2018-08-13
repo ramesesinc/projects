@@ -40,6 +40,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtstartseries = new com.rameses.rcp.control.XTextField();
         txtcurrentseries = new com.rameses.rcp.control.XTextField();
         txtendseries = new com.rameses.rcp.control.XTextField();
+        lblbalance = new com.rameses.rcp.control.XLabel();
         txtqtyrcv = new com.rameses.rcp.control.XIntegerField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
@@ -67,6 +68,8 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         xLabel1.setCaption("Unit");
         xLabel1.setDepends(new String[] {"form.afunit"});
         xLabel1.setExpression("#{ form.afunit.unit }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(xLabel1);
 
         xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -87,7 +90,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         xNumberField2.setCaption("Stub No.");
         xNumberField2.setName("form.stubno"); // NOI18N
         xNumberField2.setFieldType(Integer.class);
-        xNumberField2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        xNumberField2.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         xNumberField2.setPreferredSize(new java.awt.Dimension(150, 20));
         xNumberField2.setRequired(true);
         xFormPanel1.add(xNumberField2);
@@ -96,7 +99,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtstartseries.setDepends(new String[] {"form.afunit"});
         txtstartseries.setName("form.startseries"); // NOI18N
         txtstartseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
-        txtstartseries.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        txtstartseries.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         txtstartseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         txtstartseries.setPreferredSize(new java.awt.Dimension(150, 20));
         txtstartseries.setRequired(true);
@@ -106,7 +109,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtcurrentseries.setDepends(new String[] {"form.afunit"});
         txtcurrentseries.setName("form.currentseries"); // NOI18N
         txtcurrentseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
-        txtcurrentseries.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        txtcurrentseries.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         txtcurrentseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         txtcurrentseries.setPreferredSize(new java.awt.Dimension(150, 20));
         txtcurrentseries.setRequired(true);
@@ -124,9 +127,17 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtendseries.setRequired(true);
         xFormPanel1.add(txtendseries);
 
+        lblbalance.setCaption("Qty Balance");
+        lblbalance.setDepends(new String[] {"form.afunit", "form.currentseries"});
+        lblbalance.setExpression("#{(form.endseries.toInteger() - form.currentseries.toInteger())+1}");
+        lblbalance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblbalance.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        lblbalance.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        lblbalance.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(lblbalance);
+
         txtqtyrcv.setCaption("Qty Received");
         txtqtyrcv.setDepends(new String[] {"form.afunit"});
-        txtqtyrcv.setEditable(true);
         txtqtyrcv.setName("form.qty"); // NOI18N
         txtqtyrcv.setVisibleWhen("#{ form.afunit?.formtype == 'cashticket' }");
         txtqtyrcv.setPreferredSize(new java.awt.Dimension(150, 20));
@@ -149,19 +160,20 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(245, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XLabel lblbalance;
     private com.rameses.rcp.control.XTextField txtcurrentseries;
     private com.rameses.rcp.control.XTextField txtendseries;
     private com.rameses.rcp.control.XIntegerField txtqtyrcv;

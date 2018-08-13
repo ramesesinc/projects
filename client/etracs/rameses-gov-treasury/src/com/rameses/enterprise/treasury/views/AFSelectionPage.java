@@ -46,11 +46,13 @@ public class AFSelectionPage extends javax.swing.JPanel {
 
         xPanel1.setPreferredSize(new java.awt.Dimension(801, 80));
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xLookupField2.setCaption("Issued From");
         xLookupField2.setExpression("#{ entity.issuefrom.lastname }, #{ entity.issuefrom.firstname }");
         xLookupField2.setHandler("collector:lookup");
         xLookupField2.setName("entity.issuefrom"); // NOI18N
-        xLookupField2.setVisibleWhen("#{entity.txntype == 'TRANSFER' }");
+        xLookupField2.setVisibleWhen("#{entity.txntype.toString().matches('TRANSFER|RETURN')}");
         xLookupField2.setCaptionWidth(120);
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
@@ -81,7 +83,7 @@ public class AFSelectionPage extends javax.swing.JPanel {
             .addGroup(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,6 +236,8 @@ public class AFSelectionPage extends javax.swing.JPanel {
 
         xLabel1.setExpression("Select accountable forms to #{ entity.txntype } and click Next");
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xComboBox1.setCaption("Select AF Type");
         xComboBox1.setExpression("#{ item.objid }");
         xComboBox1.setItems("afTypes");
@@ -251,23 +255,23 @@ public class AFSelectionPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+                        .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 206, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 112, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(xLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                .addComponent(xLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

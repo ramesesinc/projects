@@ -167,12 +167,6 @@ class AFTxnModel extends CrudPageFlowModel {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPage.gtpl", [entity:entity] );
     }
     
-    void buildItems() {
-        def selectedItems = afListModel.selectedValue;
-        MsgBox.alert( selectedItems*.objid );
-        MsgBox.alert( selectedItems.size() );
-    }
-    
     void clearItems() {
         afType = null;
         entity.issuefrom = null;
@@ -205,20 +199,59 @@ class AFTxnModel extends CrudPageFlowModel {
         }
     ] as BasicListModel;
     
+    void buildItems() {
+        entity.items.clear(); 
+        entity.afitems = null; 
+        entity.form = null; 
+        
+        if( entity.txntype == 'FORWARD' ) { 
+            def m = [:]; 
+            m.item = form.afunit;
+            m.item.objid = m.item.itemid;
+            m.unit = m.item.unit;
+            m.txntype = entity.txntype;
+            m.qtyserved = m.qty = 1;
+            m.linetotal = m.cost = 0.0;
+            entity.items << m; 
+            entity.form = form;
+        } else {
+            entity.afitems = afListModel.selectedValue; 
+            entity.afitems.each{
+                it.remove('currentdetail'); 
+
+                def m = [:]; 
+                m.item = it.afunit; 
+                m.item.putAll( it.af ); 
+                m.unit = it.unit;
+                m.txntype = entity.txntype; 
+                m.qtyserved = m.qty = 1; 
+                m.linetotal = m.cost = it.cost; 
+                entity.items << m; 
+            }
+        }
+    }
+    
     void saveCreate() { 
+        def confirmMsg = null; 
         if ( entity.txntype == 'TRANSFER' ) {
             if ( entity.issuefrom.objid == entity.issueto.objid ) 
                 throw new Exception("Issued To must not be the same with the Issued From. Please select another");
-            buildItems();    
+                
+            buildItems(); 
+            confirmMsg = "You are about to save this transaction. Proceed?"; 
         }
-        else if( entity.txntype == 'RETURN' ) {
-            buildItems();
+        else if( entity.txntype.toString().matches('RETURN|FORWARD')) {
+            buildItems(); 
+            confirmMsg = "You are about to save this transaction. Proceed?"; 
+        } 
+        
+        if ( !confirmMsg ) {
+            confirmMsg = "You are about to save the draft document. Proceed?"; 
         }
-        else if( entity.txntype == 'FORWARD' ) {
-            
-        }
-        def b = MsgBox.confirm( "You are about to save the draft document. Proceed?" );
-        if(!b) throw new BreakException();
+        
+        def b = MsgBox.confirm( confirmMsg );
+        if ( !b ) throw new BreakException(); 
+        
         super.saveCreate();
     }
     

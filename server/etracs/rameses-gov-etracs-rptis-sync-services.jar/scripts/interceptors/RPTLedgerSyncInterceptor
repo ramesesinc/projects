@@ -50,10 +50,12 @@ class RPTLedgerSyncInterceptor
         def receipt = evt.result 
         
         def data = [:]
+        data.parentid = receipt.objid 
         data.refid = receipt.objid 
         data.reftype = 'rptreceipt'
         data.action = 'POSTPAYMENT'
         data.dtfiled = dtSvc.serverDate 
+        data.idx = 0
         syncSvc.create(data)
     }   
 

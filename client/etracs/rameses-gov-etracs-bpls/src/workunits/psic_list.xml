@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="psic" 
+          allowCreate="false" allowDelete="false" allowOpen="false">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="PSIC" 
+                 action="init" role="MASTER" permission="psic.view" target="window" 
+                 index="200"
+                 orderBy="objid"/>
+        <invoker type="listActions" caption="Sync Data" action="syncData" />
+    </invokers>
+</workunit>

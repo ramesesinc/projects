@@ -4,6 +4,10 @@
            caption="Reprint" action="reprintSecured" 
            target="popup"> 
         </invoker>   
+        <invoker type="misc_cashreceipt:formActions" 
+           caption="Reprint" action="reprintSecured" 
+           target="popup"> 
+        </invoker>   
         <invoker 
            type="cashreceipt:reprint" caption="Reprint" action="reprintUnsecured" target="popup"> 
         </invoker>   

@@ -19,6 +19,14 @@
            visibleWhen="#{entity.voided == 0 &amp;&amp; entity.remittanceid == null }"
            target="popup"> 
         </invoker>     
+
+        <invoker 
+           type="misc_cashreceipt:formActions" caption="Void Receipt" action="open" 
+           role="COLLECTOR,SUBCOLLECTOR"
+           applySecurity="true" 
+           visibleWhen="#{entity.voided == 0 &amp;&amp; entity.remittanceid == null }"
+           target="popup"> 
+        </invoker> 
             
         <!-- called from receipt after issuance -->    
         <invoker 

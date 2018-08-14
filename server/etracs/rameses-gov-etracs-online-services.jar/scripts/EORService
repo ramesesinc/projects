@@ -20,11 +20,8 @@ class EORService {
     @Service("NumberService")
     def numSvc  
 
-    @Service('OrgService')
-    def orgSvc 
-
-    @Service("SequenceService")
-    def seqSvc;
+    @Service("EORNumberService")
+    def eorNumSvc;
 
     @ProxyMethod
     public def post( def po ) {
@@ -36,7 +33,7 @@ class EORService {
         def svrDate = dateService.serverDate;
         def entity = [:];
         entity.partnerid = po.partnerid;
-        entity.receiptno = getNextEORNumber( po.partnerid );
+        entity.receiptno = eorNumSvc.getNextNumber( po.partnerid );
         entity.receiptdate = po.tracedate;
         entity.txndate = svrDate;
         entity.state = 'POSTED';
@@ -68,14 +65,5 @@ class EORService {
         return eorEm.create( entity ); 
     }   
 
-    def getNextEORNumber( partnerid ) { 
-        def org = orgSvc.getRoot(); 
-        def orgid = (org?.objid ? org.objid : '');
-
-        def part = partnerEm.find([ objid: partnerid ]).first(); 
-        def indexno = (part?.indexno ? part.indexno : ''); 
-
-        String prefix = 'EOR'+ indexno + orgid + dateService.getServerYear();
-        return prefix + seqSvc.getNextFormattedSeriesA( prefix, 6 );
-    }
+    
 }

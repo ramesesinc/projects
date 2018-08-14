@@ -15,6 +15,7 @@ SELECT
 	rl.fullpin,
 	rl.totalareaha,
 	rl.totalareaha * 10000 AS totalareasqm,
+  rl.totalmv,
 	rl.totalav,
 	rl.taxable,
 	b.name AS barangay,

@@ -27,6 +27,8 @@ class AFTxnModel extends CrudPageFlowModel {
     def form;
     def itemTxnTypes;
     
+    def targetListHandler;
+    
     @FieldValidator
     def validators = [
         "form.startseries" : { o->
@@ -67,11 +69,11 @@ class AFTxnModel extends CrudPageFlowModel {
         }
     ];
     
-    void create() {
-        entity = [:];
-        entity.state = 'DRAFT';
+    void create() { 
+        entity = [:]; 
+        entity.state = 'DRAFT'; 
         entity.items = [];
-        afrequest = null;
+        afrequest = null; 
         itemListHandler.reload();
         entity.dtfiled = dateSvc.getBasicServerDate();
         
@@ -114,6 +116,21 @@ class AFTxnModel extends CrudPageFlowModel {
         m.findBy = [formtype: entity.txntype];
         m.orderBy = "sortorder";
         itemTxnTypes = queryService.getList( m )*.txntype;
+
+        if ( itemTxnTypes.size() == 1 ) {
+            entity.items.each{ 
+                it.txntype = itemTxnTypes.first(); 
+            } 
+        }
+        
+        if ( !entity.txntype.toString().matches('TRANSFER|RETURN|FORWARD')) { 
+            entity.items.findAll{( it.txntype )}.each{
+                if ( !itemTxnTypes.contains(it.txntype) ) {
+                    entity.items.remove( it ); 
+                }
+            }
+            itemListHandler.reload();
+        }
     }
     
     void initSingleForm() {
@@ -134,8 +151,14 @@ class AFTxnModel extends CrudPageFlowModel {
         fetchList : { o->
             return entity.items;
         },
+        createItem: {
+           def m = [:]; 
+           if ( itemTxnTypes != null && itemTxnTypes.size() == 1 ) {
+               m.txntype = itemTxnTypes.first();
+           }
+           return m; 
+        }, 
         onAddItem: { o-> 
-            //if ( !o.qtyrequested ) o.qtyrequested = o.qtyissued;
             entity.items << o;
         },
         onRemoveItem: { o->

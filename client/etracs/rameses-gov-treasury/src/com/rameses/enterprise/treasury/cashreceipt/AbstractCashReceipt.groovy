@@ -358,6 +358,4 @@ public abstract class AbstractCashReceipt {
     def createEntity() { 
         return null; 
     } 
-
-    
 }

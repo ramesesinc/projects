@@ -55,6 +55,15 @@ WHERE realpropertyid = $P{realpropertyid}
 AND rputype <> 'land'
 GROUP BY rputype 
 
+[findNextSuffix]
+SELECT 
+  MAX(r.suffix + 1) AS nextsuffix 
+FROM faas f 
+  inner join rpu r on f.rpuid = r.objid 
+WHERE f.realpropertyid = $P{realpropertyid}
+AND r.rputype = $P{rputype}
+GROUP BY r.rputype 
+
 
 [updateSuffix]
 UPDATE rpu SET suffix = $P{suffix}, fullpin = $P{fullpin} WHERE objid = $P{objid}

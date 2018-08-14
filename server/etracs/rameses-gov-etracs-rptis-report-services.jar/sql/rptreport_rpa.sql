@@ -32,7 +32,7 @@ FROM faas f
 WHERE r.taxable = 1 
   AND (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   ${filter}
 GROUP BY pc.objid, pc.name, pc.orderno
@@ -73,7 +73,7 @@ FROM faas f
 WHERE r.taxable = 0
   AND (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   ${filter}
 GROUP BY e.objid, e.name, e.orderno 
@@ -85,7 +85,7 @@ ORDER BY e.orderno
 
 
 
-[getLintTaxables]
+[getLiftTaxables]
 SELECT 
 	pc.objid AS classid,
 	pc.name AS classname, 
@@ -119,14 +119,14 @@ FROM faas f
 WHERE r.taxable = 1 
   AND (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   ${filter}
 GROUP BY pc.objid, pc.name, pc.orderno
 ORDER BY pc.orderno  
 
 
-[getLintExempts]
+[getLiftExempts]
 SELECT 
 	e.objid AS classid,
 	e.name AS classname, 
@@ -161,7 +161,7 @@ FROM faas f
 WHERE r.taxable = 0
   AND (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   ${filter}
 GROUP BY e.objid, e.name, e.orderno 
@@ -170,7 +170,7 @@ ORDER BY e.orderno
 
 
 
-[getLintIdleLandTaxables]
+[getLiftIdleLandTaxables]
 SELECT 
 	pc.objid AS classid,
 	pc.name AS classname, 
@@ -205,14 +205,14 @@ FROM faas f
 WHERE r.taxable = 1 and lr.idleland = 1 
   AND (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   ${filter}
 GROUP BY pc.objid, pc.name, pc.orderno
 ORDER BY pc.orderno  
 
 
-[getLintIdleLandExempts]
+[getLiftIdleLandExempts]
 SELECT 
 	e.objid AS classid,
 	e.name AS classname, 
@@ -248,7 +248,7 @@ FROM faas f
 WHERE r.taxable = 0 and lr.idleland = 1 
   AND (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   ${filter}
 GROUP BY e.objid, e.name, e.orderno 
@@ -257,7 +257,7 @@ ORDER BY e.orderno
 
 
 
-[getLintRestrictions]
+[getLiftRestrictions]
 SELECT 
 	frt.name AS restriction, 
 	frt.idx, 
@@ -298,9 +298,9 @@ FROM faas_restriction fr
 WHERE fr.state='ACTIVE'
   and (
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-		(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
+		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
-
+  and fr.state = 'ACTIVE'
   ${filter}
 GROUP BY frt.name, frt.idx, pc.objid, pc.name, pc.orderno 
 ORDER BY frt.idx, pc.orderno 

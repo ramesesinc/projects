@@ -2,15 +2,15 @@
 <workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
     <invokers>       
         <invoker type="quick_launcher" code="ND01" action="init" caption="New Discovery" 
-            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="0"/>
+            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="110"/>
             
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="New Discovery" 
-            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="0"  />
+            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="110"  />
             
         <invoker folderid="/home/rpt/txn" action="init" caption="New Discovery" 
-            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="0"  />
+            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="110"  />
         <invoker folderid="/menu/txn/rpt" action="init" caption="New Discovery" 
-            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="0"  />
+            txntype="ND" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createNewDiscovery" index="110"  />
     </invokers>
     <code class="com.rameses.gov.etracs.rptis.models.FAASInitNewDiscoveyModel">
     </code>

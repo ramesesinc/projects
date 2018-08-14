@@ -35,6 +35,8 @@
 	<parameter name="ImageInputStream" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="Signatories" isForPrompting="false" class="java.lang.Object"/>
 	<parameter name="PRINTPAGE" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="JSON_SERVICE_PATH" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="JSON_SEVICE_PATH" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="show_interim_watermark" class="java.lang.Boolean"/>
 	<field name="txntype.displaycode" class="java.lang.String"/>
@@ -128,6 +130,7 @@
 	<field name="provrecommender.title" class="java.lang.String"/>
 	<field name="provrecommender.name" class="java.lang.String"/>
 	<field name="provrecommender.dtsigned" class="java.util.Date"/>
+	<field name="objid" class="java.lang.String"/>
 
 
 		<group  name="PART1_HEADINFO" >
@@ -541,39 +544,6 @@
 			<groupHeader>
 			<band height="403"  isSplitAllowed="true" >
 				<printWhenExpression><![CDATA[new Boolean($P{PRINTPAGE} == null || $P{PRINTPAGE} == "front")]]></printWhenExpression>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="57"
-						y="162"
-						width="465"
-						height="125"
-						forecolor="#CCCCCC"
-						key="staticText-239">
-							<printWhenExpression><![CDATA[new Boolean($F{state}.equals("INTERIM") && $F{show_interim_watermark})]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="3">					<pen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
-					<topPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
-					<leftPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
-					<bottomPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
-					<rightPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Black" size="72"/>
-					</textElement>
-				<text><![CDATA[INTERIM]]></text>
-				</staticText>
-				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="284"
-						y="149"
-						width="258"
-						height="176"
-						key="image-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.io.File"><![CDATA[$P{ImageInputStream}]]></imageExpression>
-				</image>
 				<rectangle>
 					<reportElement
 						mode="Transparent"
@@ -585,6 +555,17 @@
 						key="rectangle-1"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
+				<image  scaleImage="RetainShape" vAlign="Middle" hAlign="Center" onErrorType="Blank" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="284"
+						y="149"
+						width="258"
+						height="176"
+						key="image-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA["http://"+ $P{JSON_SEVICE_PATH} +"/etracs25/FAASReportService.getSketch?objid="+ $F{objid}]]></imageExpression>
+				</image>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="48"
@@ -1207,6 +1188,28 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{administrator.tin}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="57"
+						y="162"
+						width="465"
+						height="125"
+						forecolor="#CCCCCC"
+						key="staticText-239">
+							<printWhenExpression><![CDATA[new Boolean($F{state}.equals("INTERIM") && $F{show_interim_watermark})]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="3">					<pen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<topPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="5.0" lineStyle="Solid" lineColor="#CCCCCC"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial Black" size="72"/>
+					</textElement>
+				<text><![CDATA[INTERIM]]></text>
+				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"

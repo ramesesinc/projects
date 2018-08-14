@@ -91,6 +91,25 @@ class ProvinceSubdivisionWorkflowInterceptor
 	}
 
 	void postSubdivisionToMunicipality(subdivision){
+		def queue = new LinkedBlockingQueue();
+
+		//submit faases
+		def faases = subdivisionSvc.getSubdividedLands(subdivision.objid)
+		faases += subdivisionSvc.getAffectedRpus(subdivision.objid)
+		faases.each{
+			it._includetask = true
+			it._includeimage = true
+			def faas = supportSvc2.buildFaasData(it)
+			def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'approveSubdivisionFaas',  faas)
+			def msg = svc.createAsyncMessage(asyncreq[0], subdivision.lguid)
+			msg.messagetype = 'subdivision-faas-approved'
+			msg.txnid = faas.objid 
+			msg.txnno = faas.tdno 
+			svc.sendMessage(msg)
+		}
+
+		queue.poll(1, TimeUnit.SECONDS)
+
 		def data = supportSvc2.buildSubdivisionData(subdivision)
 		def asyncreq = svc.createAsyncRequest('MunicipalitySubdivisionRemoteCallHandler', 'postApprovedSubdivisionFromProvince',  data)
 		def msg = svc.createAsyncMessage(asyncreq[0], subdivision.lguid)

@@ -21,14 +21,14 @@ class RPTReceiptCompromiseInterceptor
 		svc.formatReceiptForPrinting(receipt)
 	}
 
-	@Before(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.toString().matches('rptcompromise')}") 
+	@Before(pattern="CashReceiptService.post", eval="#{args[0]?.collectiontype?.handler.toString().matches('rptcompromise')}") 
 	public void beforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 		svc.buildPostingItems(receipt)
 	}
 
 
-	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.toString().matches('rptcompromise')}") 
+	@After(pattern="CashReceiptService.post", eval="#{args[0]?.collectiontype?.handler.toString().matches('rptcompromise')}") 
 	public void afterPostReceipt( evt ) {
 		def receipt = evt.result
 		svc.create(receipt)

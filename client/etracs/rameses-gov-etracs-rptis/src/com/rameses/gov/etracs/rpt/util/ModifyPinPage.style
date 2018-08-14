@@ -29,3 +29,11 @@
 "entity.useoldpin"[entity.pintype == 'new']{
     visible:false;
 }
+
+"faas" [!externalCall] {
+    enabled:true;
+}
+
+"faas" [externalCall] {
+    enabled:false;
+}

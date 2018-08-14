@@ -1,16 +1,20 @@
 
-"ry" [showry == true]{
+"entity.ry" [showry == true]{
     visible:true;
     required:true;
 }
 
-"ry" [showry != true]{
+"entity.ry" [showry != true]{
     visible:false;
     required:false;
 }
 
-"ry"[showry == true && processing == true]{
+"entity.ry"[showry == true && processing == true]{
     enabled:false;
+}
+
+"entity.ry"[showry == true && processing != true]{
+    enabled:true;
 }
 
 

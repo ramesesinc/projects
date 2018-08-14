@@ -28,7 +28,7 @@
 }
 
 
-".*"[entity.txntype?.objid.matches('TR')] {
+".*"[(entity.datacapture == false || entity.datacapture == 0) && entity.txntype?.objid.matches('TR')] {
     enabled:false;
 }
 
@@ -46,4 +46,13 @@
 
 "formActions"[true]{
     enabled:true;
+}
+
+"rpu.dtappraised" [entity.datacapture == 1 || entity.datacapture == true] {
+    visible:true;
+    required:true;
+}
+
+"rpu.dtappraised" [entity.datacapture == 0 || entity.datacapture == false ] {
+    visible:false;
 }

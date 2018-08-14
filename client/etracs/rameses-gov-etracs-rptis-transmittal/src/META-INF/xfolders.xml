@@ -7,7 +7,7 @@
         </folder>
     </folder>
     <folder id="home">
-        <folder id="rpt" caption="Assessor">
+        <folder id="rpt" caption="Assessor" icon="home/icons/assessor.png">
             <folder id="transmittal" caption="Transmittal" index="5000" icon="home/icons/transmittals.png"/>
         </folder>
     </folder>

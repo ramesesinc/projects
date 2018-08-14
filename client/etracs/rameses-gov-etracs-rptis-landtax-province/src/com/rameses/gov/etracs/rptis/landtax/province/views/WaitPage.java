@@ -6,13 +6,7 @@
 
 package com.rameses.gov.etracs.rptis.landtax.province.views;
 
-import com.rameses.osiris2.themes.FormPage;
-import com.rameses.rcp.ui.annotations.StyleSheet;
-import com.rameses.rcp.ui.annotations.Template;
 
-
-@StyleSheet
-@Template(FormPage.class)
 public class WaitPage extends javax.swing.JPanel {
     
     /** Creates new form ReportInitPage */
@@ -35,11 +29,11 @@ public class WaitPage extends javax.swing.JPanel {
         xPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel1.setLayout(new java.awt.BorderLayout());
 
+        xLabel1.setExpression("Processing request...");
         xLabel1.setFontStyle("font-weight:bold;font-size:12;");
         xLabel1.setForeground(new java.awt.Color(51, 51, 51));
         xLabel1.setPadding(new java.awt.Insets(1, 5, 1, 1));
         xLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel1.setText("Processing request please wait...");
         xPanel1.add(xLabel1, java.awt.BorderLayout.CENTER);
 
         xLabel2.setIconResource("com/rameses/rcp/icons/loading16.gif");
@@ -51,15 +45,15 @@ public class WaitPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     

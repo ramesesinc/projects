@@ -16,14 +16,20 @@ class LandTaxReportDelinquencyService
 	@Service('NumberService')
 	def numSvc 
 
-	@DataContext('landtaxreport_rptdelinquency')
-	def em_delinquency 
+	@ActiveDB('landtaxreport_rptdelinquency')
+	def em 
 
 	@DataContext('propertyclassification')
 	def em_classification
 
 	@DataContext('barangay')
 	def em_barangay
+
+	@DataContext('report_rptdelinquency')
+	def em_delinquency
+
+	@DataContext('report_rptdelinquency_barangay')
+	def em_delinquency_barangay
 
 
 	@ProxyMethod
@@ -36,56 +42,13 @@ class LandTaxReportDelinquencyService
 		return em_classification.where("state = 'APPROVED'").orderBy('orderno').list()
 	}	
 
-	@ProxyMethod
-	public void validateDateComputed( dtcomputed  ) {
-		if (!dtcomputed)
-			throw new Exception('Date Computed is required.')
-		/*
-		dtcomputed = dtSvc.parse('yyyy-MM-dd', dtcomputed)
-		if ( dtSvc.add(dtcomputed, '1d') < dtSvc.serverDate )
-			throw new Exception('Date Computed must be greater than or equal to current date.')
-		*/
-	}
-
-	@Async
-	@ProxyMethod
-	public def cleanup( params ) {
-		if ( params.barangay?.objid ) {
-			em_delinquency.find([barangayid:params.barangay.objid]).delete()
-		} else {
-			em_delinquency.where('1=1').delete() 
-		}
-		return "OK"; 
-	}
-
-	@ProxyMethod
-	public def getOpenLedgersByBarangay( barangay ) {
-		def params = [barangayid:barangay.objid, cy:dtSvc.serverYear]
-		return em_delinquency.getOpenLedgersByBarangay(params)
-	}	
-
-	@ProxyMethod
-	public void buildDelinquency( rptledger, dtgenerated ) {
-		def items = getBillingByLedger([objid:rptledger.objid, billdate:dtgenerated])
-		if (!items) return;
-
-		def generatedby = [name:env.FULLNAME, title:env.JOBTITLE]
-
-		items.each{ item ->
-			item.rptledgerid = rptledger.objid 
-			item.barangayid = rptledger.barangayid
-			item.dtgenerated = dtgenerated
-			item.generatedby = generatedby
-			em_delinquency.create(item)
-		}
-	}
-
-
-
 
 	@Async
 	@ProxyMethod
 	public def generateDelinquencyReport( params ) {
+
+		validate(params)
+
 		def currentyear = dtSvc.getServerYear(); 
 		if ( !params.year ) params.year = currentyear;
 
@@ -115,11 +78,11 @@ class LandTaxReportDelinquencyService
 
 		def list = null; 
 		if ( params.reporttype == 'summary' ) {
-			list = em_delinquency.getDelinquentLedgersSummary( params ); 
+			list = em.getDelinquentLedgersSummary( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 		} 
 		else if ( params.reporttype == 'certifiedlist' ) {
-			list = em_delinquency.getCertifiedList( params ); 
+			list = em.getCertifiedList( params ); 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 		} 
 		else if ( params.reporttype == 'byclassification' ) {
@@ -128,8 +91,8 @@ class LandTaxReportDelinquencyService
 		else {
 			if (params.format.type.equalsIgnoreCase('format2')){
 				params.filter = ''' AND year <= $P{year} ''';
-				list = em_delinquency.getDelinquentLedgers2( params ).each{
-					def orno = em_delinquency.findLatestPayment(it)
+				list = em.getDelinquentLedgers2( params ).each{
+					def orno = em.findLatestPayment(it)
 					if(orno){
 						it.putAll(orno)
 					}
@@ -150,7 +113,7 @@ class LandTaxReportDelinquencyService
 					params.toyear = params.year
 					params.filter = ''' AND year <= $P{year} ''';
 				} 
-				list = em_delinquency.getDelinquentLedgers3( params )
+				list = em.getDelinquentLedgers3( params )
 				if (list.size() > 1){
 					def previd = list[0].rptledgerid 
 					for(int i=1; i<list.size(); i++){
@@ -165,7 +128,7 @@ class LandTaxReportDelinquencyService
 				}
 			}
 			else {
-				list = em_delinquency.getDelinquentLedgers( params ); 
+				list = em.getDelinquentLedgers( params ); 
 			}
 
 			if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency for this barangay.')
@@ -185,21 +148,30 @@ class LandTaxReportDelinquencyService
 	}
 
 	def buildDelinquentLedgersByClassification(params){
-		def list = em_delinquency.getDelinquentLedgersByClassification( params ); 
+		def list = em.getDelinquentLedgersByClassification( params ); 
 		if ( !list ) throw new Exception('No records found. Try rebuilding the delinquency')
 		return list;
 	}
 
 
-	def getBillingByLedger(ledger){
-		def bill = billSvc.initBill([_generate_barcode:false])
-		bill.billdate = dtSvc.parse('yyyy-MM-dd', ledger.billdate)
-		bill.ledgers = [[objid:ledger.objid]]
-		bill._save = false 		// not save billing information
-		bill._forpayment = true 	// to build computes postingitems 
-		billSvc.generateBill(bill)
-		return bill.ledgers[0].postingitems
-	}	
-
+	/* if per lgu, report_rptdelinquency state should be COMPLETED
+	*  if by barangay, report_rptdelinquency_barangay processed > 0 and errors = 0 
+	*/
+	void validate(params){
+		if (params.barangay){
+			def brgy = em_delinquency_barangay.find([barangayid: params.barangay.objid]).first()
+			if (brgy.count > 0 && (brgy.processed = 0 || brgy.errors > 0)){
+				throw new Exception('Delinquencies for Barangay ' + params.barangay.name + ' has not yet been fully generated.\nOpen the realty tax delinquency build facility and complete the process.')
+			}
+		} else {
+			def build = em_delinquency.where('1=1').first();
+			if (!build){
+				throw new Exception('Realty Tax Delinquencies has not yet been generated.\nBuild the delinquecies first inorder to generate this report.')
+			}
+			if (!'COMPLETED'.equalsIgnoreCase(build.state)){
+				throw new Exception('Realty tax delinquency build has not completed.\nOpen the realty tax delinquency build facility and complete the process.')
+			}
+		}
+	}
 }
 

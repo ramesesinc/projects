@@ -1,0 +1,18 @@
+<workunit schemaName="batchgr" 
+          windowTitle="Batch Revisions"
+          allowDelete="false" 
+          cols="state,ry,lgu.name,barangay.name,section,rputype,classification.name" 
+          orderBy="ry,lgu.name,barangay.name,section,rputype,classification.name" >
+    <invokers>
+        <invoker folderid="/home/rpt" 
+                 action="init" caption="Batch Revisions"  
+                 index="1000" 
+                 role="SHARED" 
+                 permission="batchgr.viewlist" 
+                icon="home/icons/batchgrs.png" />
+    </invokers>
+    <code class="com.rameses.seti2.models.CrudListModel"/>
+    <pages>
+        <page template="com.rameses.seti2.views.CrudListPage"/>
+    </pages>
+</workunit>

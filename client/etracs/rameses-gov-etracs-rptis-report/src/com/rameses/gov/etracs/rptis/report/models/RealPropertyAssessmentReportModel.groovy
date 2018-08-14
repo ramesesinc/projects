@@ -43,6 +43,10 @@ class RealPropertyAssessmentReportModel extends AsyncReportModel
         [type:'quarterly', caption:'QUARTERLY'],
         [type:'monthly', caption:'MONTHLY'],
    ]
+   
+    def taxabilities = [
+        'TAXABLE', 'EXEMPT',
+    ]
  
     
     def reporttypes = [

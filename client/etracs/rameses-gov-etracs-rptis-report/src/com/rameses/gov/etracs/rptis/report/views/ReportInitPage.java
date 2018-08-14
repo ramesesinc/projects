@@ -36,15 +36,14 @@ public class ReportInitPage extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 0));
         xPanel2.setVisibleWhen("#{mode == 'processing'}");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 0));
         xPanel2.setLayout(new java.awt.BorderLayout());
 
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
         xLabel3.setForeground(new java.awt.Color(51, 51, 51));
         xLabel3.setPadding(new java.awt.Insets(1, 5, 1, 1));
         xLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
-        xLabel3.setText("Processing request please wait...");
         xPanel2.add(xLabel3, java.awt.BorderLayout.CENTER);
 
         xLabel4.setIconResource("com/rameses/rcp/icons/loading16.gif");
@@ -52,12 +51,12 @@ public class ReportInitPage extends javax.swing.JPanel {
 
         add(xPanel2, java.awt.BorderLayout.NORTH);
 
+        xFormPanel1.setName("formControl"); // NOI18N
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setPadding(new java.awt.Insets(25, 5, 5, 5));
         xTitledBorder1.setTitle("Initial Information");
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionWidth(110);
-        xFormPanel1.setName("formControl"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

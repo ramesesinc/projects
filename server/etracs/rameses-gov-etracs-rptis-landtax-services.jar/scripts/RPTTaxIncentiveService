@@ -11,11 +11,18 @@ class RPTTaxIncentiveService extends ActiveCrudListService
 	@ActiveDB('rpttaxincentive')
 	def em
 
+	@DataContext('rptledger')
+	def em_rptledger
+
 	@Service('DateService')
 	def dtSvc
 
 	@Service('SequenceService')
 	def seqSvc
+
+	@Service('RPTLedgerService')
+	def ledgerSvc
+
 
 	def SCHEMA_INCENTIVE 	= 'rpttaxincentive'
 	def SCHEMA_ITEM  		= 'rpttaxincentiveitem'
@@ -85,8 +92,13 @@ class RPTTaxIncentiveService extends ActiveCrudListService
 	void afterApprove(entity){
 		entity.txnno = env.ORGID.replace('-','') + seqSvc.getNextFormattedSeries('RPTTAXINCENTIVE')
 		em.updateTxnNo(entity)
+
+		def cy = dtSvc.serverYear
+
 		entity.items.each{
-			em.clearLedgerNextBillDate(it)
+			em_rptledger.find([objid:it.rptledgerid]).update([nextbilldate:null])
+			def ledger = ledgerSvc.open([objid:it.rptledgerid])
+			ledgerSvc.postLedgerItems(ledger, cy)
 		}
 	}
 

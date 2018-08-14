@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/explorer/setting" caption="Signatory Templates" role="MASTER" target="window" />
+        <invoker folderid="/home/rpt/master" caption="Signatories" role="MASTER" target="window" icon="home/icons/signatories.png" index="1000" />
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="Ctrl C" icon="images/cancel.png" />
         <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="Ctrl O" icon="images/open.png" />
     </invokers>

@@ -89,9 +89,25 @@ class FAASInitNewDiscoveyModel extends FAASInitTxnModel
     }
     
     void buildPin(){
+        if (entity.rputype != 'land'){
+            validateSuffix();
+        }
         RPTUtil.buildPin(entity, var);
         binding?.refresh('entity.pin');
     }
+    
+    void validateSuffix() {
+        if (entity.isection && entity.iparcel && entity.suffix){
+            try {
+                rpuSvc.validateSuffix(entity.rputype, entity.suffix);
+            }
+            catch(e){
+                entity.suffix = null;
+                binding.focus('entity.suffix');
+                MsgBox.alert(e.message);
+            }
+        }
+    }    
     
     def process(){
         entity.txntype = [objid:'ND'];

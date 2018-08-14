@@ -38,6 +38,9 @@ public class RPTLedgerManualModel extends RPTLedgerModel
         entity.partialbasic = 0.0
         entity.partialsef = 0.0
         entity.partialsefint = 0.0
+        entity.effectivityqtr = 1;
+        entity.lastyearpaid = 0;
+        entity.lastqtrpaid= 0;
         entity.manualdiff = 0.0
         entity.subledger  = [:] 
         entity.administrator  = [:]

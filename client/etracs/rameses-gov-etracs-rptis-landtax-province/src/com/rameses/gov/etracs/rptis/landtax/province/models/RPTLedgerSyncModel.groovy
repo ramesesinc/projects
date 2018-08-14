@@ -22,12 +22,16 @@ class RPTLedgerSyncModel
     String title = 'Synchronize Municipal Ledger';
     
     def oncomplete = {
-        caller?.open();
+        caller?.reload();
         binding.fireNavigation('_close');
     }
     
     def onerror = {e ->
-        MsgBox.alert(e.message);
+        if (e.message.matches('.*Timeout.*')) {
+            MsgBox.alert('Remote server is currently not available. Please try again later.');
+        } else {
+            MsgBox.alert(e.message);
+        }
         binding.fireNavigation('_close');
     }
     
@@ -48,7 +52,12 @@ class RPTLedgerSyncModel
         }
     ] as Runnable;    
     
+    
     def sync(){
+        if (!entity) {
+            entity = caller?.entityContext;
+        }
+        
         if (MsgBox.confirm('Sync with municipality ledger?')){
             new Thread(process).start();
             return 'default';

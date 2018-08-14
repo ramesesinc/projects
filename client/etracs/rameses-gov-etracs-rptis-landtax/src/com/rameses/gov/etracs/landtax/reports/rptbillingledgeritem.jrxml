@@ -468,8 +468,7 @@
 			</band>
 		</detail>
 		<columnFooter>
-			<band height="17"  isSplitAllowed="true" >
-				<printWhenExpression><![CDATA[($V{firecodenet} + ($V{shnet} ? $V{shnet} : 0) + ($V{basicidlenet} ? $V{basicidlenet} : 0)) > 0]]></printWhenExpression>
+			<band height="14"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="376"

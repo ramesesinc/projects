@@ -28,8 +28,16 @@ class RPTNotificationService
     @Service('RPTUtil')
     def util 
 
+    @DataContext('sys_org')
+    def em_org 
+
     @ProxyMethod
     public def createAsyncMessage(asyncreq){
+        if (!env.ORGID) {
+            def org = em_org.find([root:1]).first()
+            env.ORGID = org.objid 
+            env.ORGCODE = org.code 
+        }
         return [
             sender   : env.FULLNAME, 
             senderid : env.USERID,            

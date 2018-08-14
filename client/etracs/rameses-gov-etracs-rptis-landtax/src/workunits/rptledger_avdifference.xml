@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger_avdifference:create" 
+                action="create" caption="Tax Difference (Create)"
+                target="popup" /> 
+        <invoker type="rptledger_avdifference:edit" 
+                action="edit" caption="Tax Difference (Edit)"
+                target="popup" /> 
+        
+        <invoker type="formActions" 
+                 action="_close" caption="Cancel" mnemonic="c" />
+        
+        <invoker type="formActions" 
+                 action="save" caption="Save" mnemonic="s" />
+            
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerAvDifferenceModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerAvDifferencePage" />
+    </pages>
+</workunit>

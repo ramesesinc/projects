@@ -4,8 +4,10 @@ public class Bill
 {
 	Date currentdate 
 	Date expirydate 
+    Date billdate 
     Integer billtoyear
     Integer billtoqtr
+    Boolean advancebill
 
     def entity 
     
@@ -16,6 +18,8 @@ public class Bill
     	this.currentdate = bill.currentdate 
         this.billtoyear = bill.billtoyear
         this.billtoqtr = bill.billtoqtr
+        this.advancebill = bill.advancebill
+        this.billdate = bill.billdate 
     }
 
     public void setExpirydate(expirydate){

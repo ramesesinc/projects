@@ -30,6 +30,7 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox8 = new com.rameses.rcp.control.XComboBox();
         xComboBox7 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
@@ -50,20 +51,29 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionWidth(110);
         xFormPanel1.setPadding(new java.awt.Insets(5, 10, 5, 5));
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Report Format");
         xComboBox1.setExpression("#{item.caption}");
         xComboBox1.setItems("reporttypes");
         xComboBox1.setName("entity.reporttype"); // NOI18N
+        xComboBox1.setAllowNull(false);
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xComboBox7.setAllowNull(false);
+        xComboBox8.setCaption("Taxability");
+        xComboBox8.setDepends(new String[] {"entity.reporttype"});
+        xComboBox8.setItems("taxabilities");
+        xComboBox8.setName("entity.taxability"); // NOI18N
+        xComboBox8.setAllowNull(false);
+        xComboBox8.setPreferredSize(new java.awt.Dimension(200, 20));
+        xComboBox8.setRequired(true);
+        xFormPanel1.add(xComboBox8);
+
         xComboBox7.setCaption("Period Type");
         xComboBox7.setExpression("#{item.caption}");
         xComboBox7.setItems("periodtypes");
         xComboBox7.setName("entity.periodtype"); // NOI18N
+        xComboBox7.setAllowNull(false);
         xComboBox7.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox7.setRequired(true);
         xFormPanel1.add(xComboBox7);
@@ -221,8 +231,8 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xPanel1);
 
-        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel2.setVisibleWhen("#{mode == 'processing'}");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 0));
         xPanel2.setLayout(new java.awt.BorderLayout());
 
         xLabel3.setFontStyle("font-weight:bold;font-size:12;");
@@ -264,6 +274,7 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
     private com.rameses.rcp.control.XComboBox xComboBox7;
+    private com.rameses.rcp.control.XComboBox xComboBox8;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;

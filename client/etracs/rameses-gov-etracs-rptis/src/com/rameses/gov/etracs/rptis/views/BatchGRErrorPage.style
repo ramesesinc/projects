@@ -1,0 +1,4 @@
+"entity.error" [true]{
+    enabled:true;
+    readonly:true;
+}

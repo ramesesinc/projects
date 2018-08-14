@@ -56,7 +56,10 @@ public class AddBillItem implements RuleActionHandler {
 		def p = [org_objid:org.objid]
 		p.item_tag = 'rpt_' + params.revtype + '_' + params.revperiod
 		def mapping = em_mapping.find(p).first()
-		if (!mapping) throw new Exception('AddBillItem [ERROR] item account with tag "' + p.tag + '"" is not defined.')
+		if (!mapping) {
+			def s = params.revperiod + ' ' + params.revtype 
+			throw new Exception('Item account for  ' + s + ' is not defined.')
+		}
 
 		def acct = new Account()
 		acct.fund = createFund(mapping)

@@ -4,53 +4,61 @@ import com.rameses.common.*;
 
 class ProvinceRPTLedgerService
 {   
-    @Service('RPTLedgerService')
-    def  ledgerSvc
+	@Env 
+	def env 
 
-	@Service('LandTaxLedgerSupportService')
-	def supportSvc     
+	@Service('SyncService')
+	def syncSvc
 
-    @DataContext('rptledger_credit')
-    def em_credit
+    @Service('RPTLedgerSyncService')
+    def  ledgerSyncSvc
 
-    @DataContext('rptledger')
-    def em_ledger 
+    @Service('RPTLedgerSyncSupportService')
+    def supportSvc     
 
-    @DataContext('rptledger_remote')
-    def em_mapping
+	@Service('FAASService')
+	def faasSvc 
 
-    @DataContext('cashreceipt')
-    def em_cashreceipt 
+	@Service('RPTLedgerService')
+	def ledgerSvc 
 
-    
+
 	@ProxyMethod
-	public void syncLedger(ledger){
-		def remoteledger = getRemoteLedgerForSync(ledger)
-		supportSvc.resolveLedgerIds(ledger, remoteledger)
-		remoteledger._credits.each{
-			def creditexist = em_credit.find([refno:it.refno, rptledgerid:ledger.objid]).first()
-			def paymentexist = em_cashreceipt.find([formno:'56',receiptno:it.refno]).first()
-			if ( !(creditexist || paymentexist) ){
-				it.objid = 'RLC' + new java.rmi.server.UID()
-				it.collector = it.collector?.name 
-				em_credit.save(it)
-			}
-		}
-		ledgerSvc.update(remoteledger)
-		supportSvc.fixLedger(remoteledger)
-	}	
-
-	def getRemoteLedgerForSync(ledger){
-		def mapping = supportSvc.getRemoteLedgerMapping(ledger)
-		def remoteSvc = supportSvc.getRemoteService('RPTLedgerService', ledger.faasid)
-		return remoteSvc.getLedgerForSync(mapping.remote)
+	public def createLedger( faas ) {
+        faas = faasSvc.getFaasByTdNo(faas.tdno);
+        if (!faas)
+            throw new Exception('TD No. ' + faas.tdno + ' is invalid or FAAS does not exist.');
+            
+        def ledger = null;
+        try{
+            ledger = ledgerSvc.getLedgerByFaasId( faas.objid )
+        }
+        catch(e){
+            //
+        }
+        if (ledger)
+            throw new Exception('Ledger for FAAS ' + faas.tdno + ' has already been created.');
+            
+        return ledgerSvc.postNewLedger(faas);
 	}
 
 
 	@ProxyMethod
-	public void postMunicipalPayment(payments) {
-		supportSvc.postRemotePayments(payments)
-		println 'Municipal ledger payment has been successfully posted.'
+	public def syncLedger(ledger) {
+		def mapping = supportSvc.getLedgerMapping(ledger)
+		mapping.idinfo = ledgerSyncSvc.getItemsObjid(ledger)
+
+		def syncdata = [:]
+        syncdata.refid =  ledger.objid 
+        syncdata.reftype = 'rptledger'
+        syncdata.action = 'SYNCDATA'
+        syncdata.remote = mapping.remote 
+        syncdata.data = mapping
+		def remoteledger = syncSvc.send(syncdata)
+
+		supportSvc.resolveIds(ledger, remoteledger)
+		ledgerSyncSvc.sync(remoteledger)
+		return [status:'OK']
 	}
 
 }

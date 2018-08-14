@@ -8,6 +8,9 @@ class RPTAssessmentNoticeService
 	@ActiveDB('assessmentnotice')
 	def em
 
+	@DataContext('assessmentnotice_item')
+	def em_item
+
 	@ActiveDB('tdreport')
     def tdreportEm 
 
@@ -88,8 +91,14 @@ class RPTAssessmentNoticeService
 
 	@ProxyMethod
 	public Map createNotice( notice ) {
-		if (!notice.items)
+		if (!notice.items){
 			throw new Exception('At least one property must be included.');
+		}
+
+		def existingNotice = getExistingNotice(notice)
+		if (existingNotice){
+			return existingNotice
+		}
 
 		notice.state  = STATE_OPEN
 		notice.txnno  = getNextSeries(notice)
@@ -116,6 +125,26 @@ class RPTAssessmentNoticeService
 		}
 		buildSignatories(notice)
 		return notice 
+	}
+
+	@ProxyMethod 
+	public def getExistingNotice(notice){
+		def existingNotice = null
+		def noticeitem = em_item.find([faasid:notice.items[0].faasid]).first()
+		if (noticeitem){
+			return openNotice(noticeitem.assessmentnoticeid)
+		}
+		return existingNotice
+	}
+
+	@ProxyMethod 
+	public def getExistingNoticeByFaas(faas){
+		def existingNotice = null
+		def noticeitem = em_item.find([faasid:faas.objid]).first()
+		if (noticeitem){
+			return openNotice(noticeitem.assessmentnoticeid)
+		}
+		return existingNotice
 	}
 
 	void buildSignatories(notice){

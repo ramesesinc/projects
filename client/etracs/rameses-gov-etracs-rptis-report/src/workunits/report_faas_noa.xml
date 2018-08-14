@@ -23,13 +23,20 @@
         def viewNoa(){
             faas = entity;
             init();
-            entity.taxpayer = faas.taxpayer;
-            def item = svc.getFaasById(faas.objid)
-            item.included = true 
-            entity.items.add(item)
-            if (save() !=  null)
-                return preview();    
-            return '_close';
+            def notice = svc.getExistingNoticeByFaas([objid:faas.objid]);
+            if (notice){
+                entity.putAll(notice);
+                return preview();
+            } else {
+                entity.taxpayer = faas.taxpayer;
+                def item = svc.getFaasById(faas.objid)
+                item.included = true 
+                entity.items.add(item)
+                if (save() !=  null){
+                    return preview();    
+                }
+                return '_close';
+            }
         }
     }        
     

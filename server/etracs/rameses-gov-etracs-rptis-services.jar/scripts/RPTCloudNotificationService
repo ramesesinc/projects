@@ -61,6 +61,10 @@ class RPTCloudNotificationService
 
     @ProxyMethod
     public def createAsyncMessage( asyncreq, lguid ) {
+        if (env == null){
+            buildEnv();
+        }
+
         return [
             origin   : env.ORGID.replaceAll('-.*?', ''),
             data     : asyncreq,
@@ -77,6 +81,15 @@ class RPTCloudNotificationService
         if (!org)
             throw new Exception('buildOrgCode [Error]: Invalid LGUID ' + lguid + '.')
         return org.code.replaceAll('-', '');
+    }
+
+    void buildEnv(){
+        def root = orgSvc.findRoot()
+        env.ORGID = root.objid
+        env.ORGCLASS = root.orgclass
+        env.ORGNAME = root.name
+        env.USERID = 'system'
+        env.FULLNAME = 'system'
     }
 
 } 

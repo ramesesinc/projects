@@ -156,13 +156,20 @@ class RPTReceiptCompromiseService
 		}
 		receipt.bill = bill
 		receipt.items = []
-		receipt.sharing = []
 		def item = null 
 
 		bill.rptledger.shares.each{
-			receipt.sharing += rl.shares 
+			item = createReceiptItem(receipt, it.payableitem)
+			item.amount = numSvc.roundA(it.amount, 4)
+			item.discount = numSvc.roundA(it.discount, 4)
+			receipt.items << item
 		}
-		receipt.items = bill.billitems
+		bill.billitems.each{
+			item = createReceiptItem(receipt, it.item)
+			item.amount = numSvc.roundA(it.amount - it.share, 4)
+			item.discount = numSvc.roundA(it.discount - it.sharedisc, 4)
+			receipt.items << item
+		}
 	}
 
 
@@ -607,4 +614,17 @@ class RPTReceiptCompromiseService
 		def compromiseparam = [objid:compromise.objid, amtpaid:pmt.amount]
 		em.updateCompromiseAmountPaid(compromiseparam)
 	}
+
+	def createReceiptItem(receipt, item){
+		return [
+			objid: 'CI' + new java.rmi.server.UID(),
+			receiptid: receipt.objid, 
+			item: item,
+			amount: new BigDecimal('0'), 
+			remarks: null 
+		]
+	}	
+
+
+
 }

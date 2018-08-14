@@ -1,6 +1,11 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
 
+/*------------------------------------------------------
+*
+* @DEPRECIATED 
+*
+------------------------------------------------------*/
 class RPTISSyncService
 {   
 	@Service(value='CloudNotificationService', connection='notification_proxy')

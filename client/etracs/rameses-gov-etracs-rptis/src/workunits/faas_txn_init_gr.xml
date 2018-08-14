@@ -2,15 +2,15 @@
 <workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
     <invokers>       
         <invoker type="quick_launcher" code="GR01" action="init" caption="General Revision" 
-            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="100"  />
             
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="General Revision" 
-            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="100"  />
         
         <invoker folderid="/home/rpt/txn" action="init" caption="General Revision" 
-            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="100"  />
         <invoker folderid="/menu/txn/rpt" action="init" caption="General Revision" 
-            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="GR" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="100"  />
             
     </invokers>
     <code class="com.rameses.gov.etracs.rptis.models.FAASInitGeneralRevisionModel">

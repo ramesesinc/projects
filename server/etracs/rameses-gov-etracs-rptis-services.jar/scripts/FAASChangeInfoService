@@ -62,6 +62,7 @@ class FAASChangeInfoService
         }
         else if (changeinfo.action == 'change_faas_sketch'){
             changeinfo.image = supportSvc.getImageByIds([changeinfo.refid])
+            changeinfo.sketch = faasSvc.openSketch([objid: changeinfo.refid])
         }
 
         return changeinfo
@@ -90,10 +91,11 @@ class FAASChangeInfoService
 
 		def exist = em.read(changeinfo)
 		if (exist)
-			em.update(changeinfo);
+			em.update(changeinfo)
 		else 
-			em.create(changeinfo);
-		changeinfo.newinfo = newinfo;
+			em.create(changeinfo)
+		changeinfo.newinfo = newinfo
+
 		logSvc.logA(changeinfo.action, 'faas', changeinfo.refid, changeinfo.reason)
 		return changeinfo
 	}
@@ -101,7 +103,7 @@ class FAASChangeInfoService
 
 	@ProxyMethod
 	public def getTxnTypes(  ) {
-		return faasSvc.getTxnTypes();
+		return faasSvc.getTxnTypes()
 	}
 	
 }

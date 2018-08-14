@@ -14,10 +14,27 @@ class RPUInfoMemorandaModel extends SubPageModel
         return Inv.lookupOpener('memorandatemplate:lookup', [
             
             onselect : { 
-                entity.memoranda = it.template;
+                entity.memoranda = resolveTemplate(it);
                 binding.refresh('entity.memoranda');
             },
         ])
+    }
+    
+    def resolveTemplate(t){
+        def engine = new groovy.text.SimpleTemplateEngine();
+        def binding = [:]
+        
+        t.params.each{
+            binding[it.param.name] = it.value;
+        }
+        
+        try {
+            def template = engine.createTemplate(t.template).make(binding);
+            return template.toString();
+        }
+        catch( e) {
+            return t.template;
+        }
     }
 }    
     

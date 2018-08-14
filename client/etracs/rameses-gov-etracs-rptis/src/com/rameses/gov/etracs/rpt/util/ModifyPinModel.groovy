@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
 import com.rameses.gov.etracs.rptis.util.*;
 
-public class ModifyPINUtilityController 
+public class ModifyPinModel 
 {
     @Binding
     def binding
@@ -43,6 +43,9 @@ public class ModifyPINUtilityController
     def landfaas
     def lgutype
     
+    def onUpdate = {};
+    def externalCall = false;
+    
     void init(){
         entity = [
             lgutype : OsirisContext.env.ORGCLASS.toLowerCase(),
@@ -52,6 +55,12 @@ public class ModifyPINUtilityController
             suffix  : 0,
             useoldpin : false,
         ]
+    }
+    
+    void create() {
+        init();
+        updateFaas(faas);
+        externalCall = true;
     }
     
     def updatePin() {
@@ -69,7 +78,7 @@ public class ModifyPINUtilityController
             }
             
             def rp = svc.updatePin(entity)
-            if (caller?.faas){
+            if (!externalCall && caller?.faas){
                 caller.faas.fullpin = entity.newpin
                 caller.faas.rpu?.fullpin = entity.newpin
                 if ( rp ) {
@@ -79,8 +88,16 @@ public class ModifyPINUtilityController
                     caller.faas.rp.parcel = rp.parcel
                 }
             }
-            clearInfo()
-            binding?.focus('faas')
+            
+            //invoke callback
+            onUpdate();
+            
+            if (externalCall) {
+                return '_close';
+            } else {
+                clearInfo()
+                binding?.focus('faas')
+            }
         }
     }
     
@@ -93,58 +110,66 @@ public class ModifyPINUtilityController
         landfaas = null;
     }
     
+    
+    void updateFaas(f) {
+        this.faas = f; 
+        this.landfaas = null;
+        entity.rputype = f.rputype;
+        entity.pintype = (f.pintype ? f.pintype : 'new');
+
+        def tokens = f.fullpin.tokenize('-');
+        
+        if (f.rputype == 'land'){
+            println 'f.barangayid => ' + f.barangayid
+            entity.suffix = 0
+            entity.munidistrict = getMuniDistrictList().find{it.indexno == tokens[1]}
+            entity.barangay = getBarangayList().find{it.objid == f.barangayid}
+        }
+        else {
+            try {
+                def ssuffix = tokens[5].replace('(','').replace(')','')
+                entity.suffix = Integer.parseInt(ssuffix)
+            }
+            catch( e ) {
+                entity.suffix = null
+            }
+        }
+
+        RPTUtil.buildPin(entity, varSvc);
+        binding?.refresh('.*');
+    }
+    
     def getLookupFaas() {
         return InvokerUtil.lookupOpener('faas:lookup',[
-                onselect : { f ->
-                    this.faas = f; 
-                    this.landfaas = null;
-                    entity.rputype = f.rputype;
-                    entity.pintype = (f.pintype ? f.pintype : 'new');
-
-                    def tokens = f.fullpin.tokenize('-');
-                    
-                    if (f.rputype == 'land'){
-                        entity.suffix = 0
-                        entity.munidistrict = getMuniDistrictList().find{it.indexno == tokens[1]}
-                        entity.barangay = getBarangayList().find{it.indexno == tokens[2]}
-                    }
-                    else {
-                        try {
-                            def ssuffix = tokens[5].replace('(','').replace(')','')
-                            entity.suffix = Integer.parseInt(ssuffix)
-                        }
-                        catch( e ) {
-                            entity.suffix = null
-                        }
-                    }
-
-                    RPTUtil.buildPin(entity, varSvc);
-                    binding.refresh('.*');
-                },
-
-                onempty : {
-                    this.faas = null;
-                    this.landfaas = nulll;
-                    binding.refresh('.*');
-                }
-            ])
+            onselect : { 
+                updateFaas(it);
+            },
+            onempty : {
+                this.faas = null;
+                this.landfaas = nulll;
+                binding?.refresh('.*');
+            }
+        ]);
+    }
+    
+    
+    void updateLandFaas(f) {
+        this.landfaas = f; 
+        entity.fullpin = f.fullpin + '-' + (entity.suffix ? entity.suffix : '0000');
+        entity.newpin = entity.fullpin;
+        binding?.refresh('entity.newpin');
     }
     
     def getLookupLandFaas() {
         return InvokerUtil.lookupOpener('faas:lookup',[
-                rputype : 'land', 
-                
-                onselect : { f ->
-                    this.landfaas = f; 
-                    entity.fullpin = f.fullpin + '-' + (entity.suffix ? entity.suffix : '0000');
-                    entity.newpin = entity.fullpin;
-                    binding.refresh('entity.newpin');
-                },
-
-                onempty : {
-                    this.landfaas = null;
-                }
-            ])
+            rputype : 'land', 
+            onselect : { 
+                updateLandFaas(it); 
+            },
+            onempty : {
+                this.landfaas = null;
+            }
+        ])
     }
     
     List getPinTypeList() {

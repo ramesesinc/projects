@@ -1,11 +1,12 @@
-<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="rptis_memoranda_template" 
-          allowEdit="false" 
-          allowOpen="false"
-          orderBy="code">
+<workunit extends="wtemplates/LookupController.xml">
     <invokers>
         <invoker type="memorandatemplate:lookup" 
                  caption="Memoranda Template Lookup" 
                  action="init"
                  height="500" width="700" />
     </invokers>
+    <code class="com.rameses.gov.etracs.rptis.master.models.MemorandaTemplateLookupModel"/>
+    <pages>
+        <page name="info" template="com.rameses.gov.etracs.rptis.views.VariableInfoPage" />
+    </pages>        
 </workunit>

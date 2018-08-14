@@ -12,7 +12,9 @@ class RPTSalesDataInterceptor
     @Before(pattern="FAASService.deleteFaas") 
 	public void deleteFaas( evt ) {
 		def faas = evt.args[0]
-		svc.removeEntity(faas)
+		if (faas?.objid){
+			svc.removeEntity(faas)
+		}
 	}
 
 

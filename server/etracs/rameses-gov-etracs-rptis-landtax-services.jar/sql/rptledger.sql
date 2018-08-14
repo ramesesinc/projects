@@ -8,3 +8,14 @@ WHERE 1=1
 ${fixfilters}
 ${filters}
 ${orderby}
+
+
+[closePaidAvDifference]
+update rptledger_avdifference set 
+	paid = 1
+where not exists(
+	select * from rptledger_item 
+	where parentid = rptledger_avdifference.parent_objid
+	and year = rptledger_avdifference.year 
+	and taxdifference = 1 
+)

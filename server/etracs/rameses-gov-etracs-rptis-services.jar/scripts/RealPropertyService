@@ -16,12 +16,6 @@ class RealPropertyService
 	@DataContext('rysetting_land')
 	def em_landsetting 	
 
-	@DataContext('barangay')
-	def em_barangay	
-
-	@DataContext('faas')
-	def em_faas
-
     def SECTION_NEW_MAX  	= 3
 	def PARCEL_NEW_MAX  	= 2
 	def SECTION_OLD_MAX  	= 2
@@ -61,8 +55,6 @@ class RealPropertyService
 
 	@ProxyMethod
 	public def create( entity ) {
-		if (!entity.state)
-			entity.state = 'INTERIM'
 		validate(entity)
 		updatePin(entity)
 		return em_realproperty.create(entity)	
@@ -85,8 +77,9 @@ class RealPropertyService
 	@ProxyMethod
 	public def open( entity ) {
 		entity = em_realproperty.read(entity)	
-		if (!entity)
+		if (!entity){
 			throw new Exception('Real Property does not exist or has been deleted.')
+		}
 		entity.isection = null
 		entity.iparcel = null
 		if (entity.section)
@@ -105,9 +98,9 @@ class RealPropertyService
 	@ProxyMethod
 	public def approve( entity ) {
 		entity.state = 'CURRENT'
-		entity.barangay = em_barangay.read([objid:entity.barangayid])
 		em_realproperty.find([objid:entity.previd]).update([state:'CANCELLED'])
-		return em_realproperty.save(entity)
+		em_realproperty.find([objid:entity.objid]).update([state:entity.state])
+		return entity
 	}
 
 
@@ -115,22 +108,6 @@ class RealPropertyService
     public def getRyList(  ) {
     	return em_landsetting.where('1=1').list().ry 
     }
-
-
-    @ProxyMethod
-    public def validateRealPropertyForFaas(rp, faasid){
-    	if (rp.state == 'CANCELLED')
-    		throw new Exception('Real Property has already been cancelled.')
-
-    	//check existing faas 
-    	def filter = 'realpropertyid = :realpropertyid and objid <> :faasid and state = :state'
-    	def params = [realpropertyid:rp.objid, faasid:faasid, state:'CANCELLED']
-    	def faas = em_faas.select('objid, tdno').where(filter, params).first()
-    	if (faas){
-    		throw new Exception('Real Property is currently referenced by TD No. ' + faas.tdno + '.')
-    	}
-    }
-
 
 	@ProxyMethod
 	public def buildPin( rp, info ) {
@@ -172,7 +149,7 @@ class RealPropertyService
 
 	@ProxyMethod
     public def checkDuplicatePin(params) {
-    	if (params.txntype?.newrealproperty==1 || params.txntype?.newrealproperty==true){
+    	if (params.txntype && util.isTrue(params.txntype.newrealproperty)){
     		return
     	}
 
@@ -192,25 +169,31 @@ class RealPropertyService
 	}
 
 	void validateSectionParcelLength(entity){
-		if (entity.pintype == 'new' && entity.section?.length() > 3) 
+		if (entity.pintype == 'new' && entity.section?.length() > 3){
 			throw new Exception('Invalid section. Section must be less than or equal to 999.')
-        if (entity.pintype == 'old' && entity.section?.length() > 2) 
+		}
+        if (entity.pintype == 'old' && entity.section?.length() > 2){
         	throw new Exception('Invalid section. Section must be less than or equal to 99.')
+        }
 
         if (!util.isTrue(var.assessor_allow_3_digit_parcel)){
-	        if (entity.pintype == 'new' && entity.parcel?.length() > 2) 
+	        if (entity.pintype == 'new' && entity.parcel?.length() > 2){
 	        	throw new Exception('Invalid parcel. Parcel must be less than or equal to 99.')
+	        }
         }
-        if (entity.pintype == 'old' && entity.parcel?.length() > 3) 
+        if (entity.pintype == 'old' && entity.parcel?.length() > 3){
         	throw new Exception('Invalid parcel. Parcel must be less than or equal to 999.')
+        }
 	}
  
 	void validateLength(type, value, maxvalue ){
-		if (value > maxvalue)
+		if (value > maxvalue){
 			throw new Exception(type + ' must not exceed ' + maxvalue + '.')
+		}
 
-		if (value < 0)
-		throw new Exception(type + ' must not be zero.')
+		if (value < 0){
+			throw new Exception(type + ' must not be zero.')
+		}
 	}
 
 	@ProxyMethod
@@ -235,7 +218,6 @@ class RealPropertyService
 		if (entity.claimno) {
 			entity.pin = entity.pin.replace('-' + entity.claimno, '')  
 		}
-
 	}
 
 }

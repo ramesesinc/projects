@@ -4,11 +4,15 @@
 		<complex name="app" ref="vehicle_application" jointype="many-to-one">
 			<key field="appid" target="objid" />
 		</complex>	
-		<field name="permitno" required="true" />
-		<field name="permittype" required="false" />
-		<field name="dtissued" required="true" />
+		<!-- start with ACTIVE then RENEWED -->
+		<field name="state" required="true" />
+		<field name="controlid" required="true" />
+		<field name="permitno" required="true" caption="Permit No" />
+		<field name="activeyear" required="true" type="integer" />
+		<field name="permittype" required="false" caption="Permit Type"/>
+		<field name="dtissued" required="true" caption="Permit Issued"/>
 		<field name="issuedby_objid" required="true" />
 		<field name="issuedby_name" required="true" />
-		<field name="expirydate" required="false" />
+		<field name="expirydate" required="true" caption="Permit Expiry Date"/>
 	</element>
 </schema>

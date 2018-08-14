@@ -31,16 +31,23 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xPasswordField1 = new com.rameses.rcp.control.XPasswordField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        jLabel1 = new javax.swing.JLabel();
+
+        xLabel1.setExpression("Please enter name of approver");
+        xLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        xLabel1.setShowCaption(false);
+        xLabel1.setVisibleWhen("#{ applySecurity == true }");
+        xFormPanel1.add(xLabel1);
 
         xTextField1.setCaption("User Name");
         xTextField1.setName("username"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
+        xTextField1.setVisibleWhen("#{ applySecurity == true }");
         xFormPanel1.add(xTextField1);
 
         xPasswordField1.setText("xPasswordField1");
@@ -48,6 +55,7 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
         xPasswordField1.setName("password"); // NOI18N
         xPasswordField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xPasswordField1.setRequired(true);
+        xPasswordField1.setVisibleWhen("#{ applySecurity == true }");
         xFormPanel1.add(xPasswordField1);
 
         jScrollPane1.setName("entity.remarks"); // NOI18N
@@ -60,33 +68,27 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Please enter name of approver");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(27, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(34, 34, 34)
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XPasswordField xPasswordField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

@@ -15,6 +15,9 @@ class AFTxnInterceptor {
 	@Service("PersistenceService") 
 	def persistSvc;
 
+	@Service("AFInventoryService")
+	def afInvSvc;	
+
 	@DataContext("af_control")
 	def afcontrol;
 
@@ -27,6 +30,9 @@ class AFTxnInterceptor {
 	@DataContext("aftxnitem")
 	def aftxnItem;
 
+	@DataContext("aftxn")
+	def aftxn;
+
 	@Env
 	def env;
 
@@ -35,20 +41,21 @@ class AFTxnInterceptor {
 		def o = evt.args[0];
 		o.txndate = dateSvc.getServerDate(); 
 		o.controlno = "IRAF" + seqSvc.getNextFormattedSeries("IRAF");
-		o.org = [objid:env.ORGID, name: env.ORGNAME];
 		o.user = [objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE];
+		o.org = [objid:env.ORGID, name: env.ORGNAME];
 		o.state = "DRAFT";
 
 		if ( !o.dtfiled ) o.dtfiled = o.txndate; 
 
 		if ( o.request ) {
-			afReq.find( [objid: o.request.objid ]).update( [state:'CLOSED']);
+			afReq.find([ objid: o.request.objid ]).update([ state:'CLOSED' ]);
 		}
 
 		o.items?.each {
 			it.qtyserved = 0;
 		}
 	} 
+
 
 	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'aftxn' }")
 	public void afterOpen( evt ) { 
@@ -81,4 +88,104 @@ class AFTxnInterceptor {
 			persistSvc.removeEntity( m ); 
 		} 
 	} 
+
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'aftxn' && args[0].txntype=='FORWARD' }")
+	public void afterCreateForward( evt ) { 
+		def res = evt.result; 
+		aftxn.find([ objid: res.objid ]).update([ state: 'POSTED']); 
+
+		def form = res.form;
+		def afunit = form.afunit;
+		res.items.each{ a-> 
+			aftxnItem.find([ objid: a.objid ]).update([ qtyserved: a.qty ]); 
+
+			def afc = [:]; 
+			afc.afid = a.item.objid;
+			afc.unit = a.unit;
+			afc.afunit = afunit; 
+			if( afunit.formtype == 'serial' ) {				
+				afc.startseries = form.startseries;
+				afc.endseries = form.endseries;
+				afc.currentseries = form.currentseries;
+			}
+			else {
+				afc.startseries = 1; 
+				afc.endseries = form.qty; 
+				afc.currentseries = afc.startseries;
+			}
+
+			afc.dtfiled = res.dtfiled;
+			afc.stubno = form.stubno;
+			afc.prefix = form.prefix;
+			afc.suffix = form.suffix;
+			afc.cost = a.cost;
+			afc.batchno = 1;
+			afc.allocation = res.allocation;
+
+			def ref = [:];
+			ref.aftxnid = a.parentid;
+			ref.aftxnitemid = a.objid;
+			ref.refid = a.parentid;
+			ref.refno = res.controlno;
+			ref.refdate = res.dtfiled;
+			ref.reftype = res.txntype;
+			ref.remarks = res.txntype;
+			ref.txntype = res.txntype;
+			ref.txndate = res.txndate;
+			ref.issueto = res.issueto;
+			ref.respcenter = res.respcenter;
+			afInvSvc.add( ref, afc );
+		}
+	} 
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'aftxn' && args[0].txntype.toString().matches('TRANSFER|RETURN') }")
+	public void afterTransferOrReturn( evt ) { 
+		def res = evt.result; 
+		aftxn.find([ objid: res.objid ]).update([ state: 'POSTED' ]); 
+
+		def afitems = res.afitems.collect{ it.objid } 
+		if ( !afitems ) throw new Exception('Please provide at least one Accountable Form'); 
+
+		def owner = res.issueto;
+		def assignee = owner;
+		if ( res.txntype == 'RETURN' ) {
+			owner = [objid: null, name: null]; 
+			assignee = owner; 
+		}
+
+		afitems.each{
+			afcontrol.find([ objid: it ]).update([ lockid: new java.rmi.server.UID().toString() ]); 
+
+			def afc = afcontrol.find([ objid: it ]).first(); 
+			if ( !afc ) throw new Exception('failed to locate Accountable Form '+ it); 
+
+			def errkey = 'AF#'+ afc.afid +' Stub#'+ afc.stubno; 
+			if ( afc.active.toString() != '0' ) throw new Exception(errkey +' must not be active'); 
+			if ( afc.currentseries > afc.endseries ) throw new Exception(errkey +' is already consumed'); 
+			if ( afc.state.toString() != 'ISSUED' ) throw new Exception(errkey +' must be in ISSUED state'); 
+			if ( afc.assignee.objid != afc.owner.objid ) throw new Exception(errkey +' assignee must be the same as the owner'); 
+
+			afcontrol.find([ objid: it ]).update([ owner: owner, assignee: assignee, lockid:'{NULL}' ]); 
+		}
+
+		res.items.eachWithIndex{ a,idx-> 
+			aftxnItem.find([ objid: a.objid ]).update([ qtyserved: a.qty ]); 
+
+			def ref = [:];
+			ref.aftxnid = a.parentid;
+			ref.aftxnitemid = a.objid;
+			ref.refid = a.parentid;
+			ref.refno = res.controlno;
+			ref.refdate = res.dtfiled;
+			ref.reftype = res.txntype;
+			ref.remarks = res.txntype;
+			ref.txntype = res.txntype;
+			ref.txndate = res.txndate;
+			ref.issueto = owner; 
+			ref.respcenter = res.respcenter;
+			afInvSvc.add( ref, res.afitems[idx] );
+		} 
+	} 
+
 }

@@ -15,7 +15,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
     @Invoker
     def invoker;
     
-    @Service("BasicBillingService")
+    @Service("BillingCashReceiptService")
     def billingSvc;
     
     String entityName = "misc_cashreceipt"
@@ -84,13 +84,14 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         def opener = null;
         try {
             def h = { o->
-                txnid = o; 
+                txnid = o?.objid; 
+                return null;
             }
             opener = Inv.lookupOpener(getContextName() + ":cashreceipt_lookup", [onselect: h ]);
             Modal.show( opener );
         }catch(ign){;}
         
-        if( !txnid ) {
+        if( opener==null && txnid==null ) {
             txnid = MsgBox.prompt("Enter Transaction No");
         }
         if(!txnid) throw new BreakException();
@@ -101,7 +102,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
         def pp = [ rulename: getRulename(), params: p ]; 
-        def info = billingSvc.getCashReceiptInfo( pp );
+        def info = billingSvc.getInfo( pp );
         
         if( !info.billitems ) {
             if( getAllowDeposit() ) {
@@ -110,8 +111,8 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
                     
                 def amt = MsgBox.prompt("Enter amount for advance payment. ");
                 if(!amt) throw new BreakException();
-                pp.amtpaid = new BigDecimal(""+amt);
-                info = billingSvc.getCashReceiptInfo( pp );
+                pp.params.amtpaid = new BigDecimal(""+amt);
+                info = billingSvc.getInfo( pp );
             }
             else {
                 throw new Exception("No bill items found");

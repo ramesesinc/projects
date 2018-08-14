@@ -6,8 +6,8 @@ class WaterworksBatchBillingInterceptor {
 	@DataContext("waterworks_batch_billing")
 	def batchEm;
 
-	@DataContext("waterworks_zone")
-	def zoneEm;
+	@DataContext("waterworks_batch_billing_task")
+	def taskEm;
 
 	@Service("WorkflowTaskService")
 	def taskSvc;
@@ -15,7 +15,7 @@ class WaterworksBatchBillingInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@DataContext("waterworks_billing")
+	@DataContext("waterworks_consumption")
 	def wbillEm;
 
 	@Service("WaterworksBatchBillingService")
@@ -34,10 +34,9 @@ class WaterworksBatchBillingInterceptor {
 		def m = [ batchid: o.objid ];
 
 		batchEm.buildBillings( m );
+		if ( !wbillEm.find(m).first()) 
+			throw new Exception('No available accounts for this batch. Please verify.'); 
 		
-		//update the last year and month for the zone
-		zoneEm.find( [objid: o.zone.objid ] ).update( [year: o.year, month: o.month ] );
-
 		def p = [:];
 		p.processname = 'waterworks_batch_billing';
 		p.refid = o.objid;
@@ -47,11 +46,24 @@ class WaterworksBatchBillingInterceptor {
 
 	@Before(pattern="WorkflowTaskService.signal", 
 		eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].taskstate == 'approved' && args[0].action == 'post'  }")
-	public void submitForPosting( def evt ) {
+	public void beforePost( def evt ) {
 		def p = evt.args[0];
 
 		if(!p.refid) throw new Exception("Error WorkflowTaskService.signal post error. refid is required");
 		
-		batchBillingSvc.post( batchid: p.refid );
+		batchBillingSvc.post([ batchid: p.refid ]);
 	}
+
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_batch_billing'}")
+	void beforeRemoveEntity( evt ) {
+		def p = evt.args[0]; 
+		if ( batchEm.find([ objid: p.objid ]).select('task.state').val()?.state != 'draft' )
+			throw new Exception('Transaction must be in draft state');  
+
+		wbillEm.find([ batchid: p.objid ]).delete(); 
+		batchEm.find([ objid: p.objid ]).update([ taskid: '{NULL}' ]); 
+		taskEm.find([ refid: p.objid ]).delete();
+	}
+
 }

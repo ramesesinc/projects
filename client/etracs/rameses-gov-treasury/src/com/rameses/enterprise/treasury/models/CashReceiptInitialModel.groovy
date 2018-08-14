@@ -131,7 +131,7 @@ class CashReceiptInitialModel  {
         ]; 
 
         def info = initReceipt( entity );
-
+        if( info == null ) return null;
         if( mode == "OFFLINE" ) {
             boolean pass = false;
             Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 

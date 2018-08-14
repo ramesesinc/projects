@@ -12,17 +12,14 @@ import treasury.facts.*;
 
 class CreditPaymentService {
 
-	@Service("BasicBillingHandler")
+	@Service("BillingInfoHandler")
 	def handler;
 
-	@Service("BasicBillingService")
-	def billingSvc;
-
-	@Service("PaymentPostingService")
-	def paymentPostingSvc;
+	@Service("BillingRuleService")
+	def ruleSvc;
 
 	@DataContext("creditpayment")
-	def billEm;
+	def creditpaymentEm;
 
 	@Service("SequenceService")
 	def seqSvc;
@@ -39,28 +36,49 @@ class CreditPaymentService {
 		if(!pp.txntype) throw new Exception("txntype is required in parameter of CreditPaymentService.init")
 
 		if ( pp.options == null ) pp.options = [:]; 
-		pp.options.include_credit = false; 
 
-		def cpitems = handler.getCreditItems( pp, pp ); 
-		if ( !cpitems ) throw new Exception('There are no credit items found'); 
+		pp.options.request_action = "creditpayment";
 
-		cpitems.each{ it.txntype = 'creditpayment' } 
+		pp.options.include_items = true; 
+		pp.headerinfo = handler.getHeaderInfo( pp ); 
+		pp.billitems = handler.getBillItems( pp ); 
 
-		def cpamount = cpitems.sum{ it.amount } 
-		if( cpamount < 0 ) cpamount = cpamount * -1;
+		def citems = handler.getCreditItems( pp ); 
+		if ( !citems ) throw new Exception('There are no credit items found'); 
 
-		pp.params.amtpaid = cpamount; 
+		citems.each{ it.txntype = 'creditpayment' } 
 
+		def m = [:]; 
+		m.putAll( pp.params ); 
+		m.putAll( pp.headerinfo ); 
+		m.billitems = pp.billitems; 
 
-		def rct = billingSvc.getCashReceiptInfo( pp ); 
-		rct.objid = 'CP' + new java.rmi.server.UID();
-		rct.org = [objid:env.ORGID, name:env.ORGNAME];
-		rct.user = [objid: env.USERID, name:env.USER];
+		def ruleParam = [ rulename: pp.rulename ]; 
+		ruleParam.putAll( pp.options ); 
+		ruleParam.params = m; 
+
+		def ruleRes = ruleSvc.execute( ruleParam ); 
+
+		m = [:];
+		m.putAll( pp.headerinfo );  
+		m.putAll( ruleRes );  
+		m.rulename = pp.rulename; 
+		m.txntype = pp.txntype; 
+		
+		def rct = handler.formatReceiptInfo( m ); 
+		rct.creditpayments = citems;
+		rct.billitems = m.billitems;
+		rct.items = m.items; 
+		rct.amount = m.items.sum{( it.amount ? it.amount : 0.0 )} 
+		rct._postpayment = true; //we should mark this to indicate posting will be automatically handled
+
+		rct.objid = 'CP' + new java.rmi.server.UID(); 
+		rct.org = [ objid:env.ORGID, name:env.ORGNAME ];
+		rct.user = [ objid: env.USERID, name:env.USER ];
 		rct.txntype = pp.txntype;
 		rct.txnmode = 'ONLINE';
 		rct.state = 'OPEN';
-		rct.creditpayments = cpitems;
-		return rct; 	
+		return rct; 
 	} 
 
 	@ProxyMethod
@@ -74,6 +92,6 @@ class CreditPaymentService {
 			rct.controldate = dateSvc.getBasicServerDate();  
 		}
 		rct.txndate = dateSvc.getServerDate();
-		return billEm.create( rct );
+		return creditpaymentEm.create( rct );
 	}
 }

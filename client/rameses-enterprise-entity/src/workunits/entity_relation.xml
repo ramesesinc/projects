@@ -1,0 +1,9 @@
+<workunit schemaName="entity_relation">
+    <invokers>
+        <invoker type="entity_relation:create" caption="Add Relation" action="create" target="popup"/> 
+    </invokers>
+    <code class="com.rameses.entity.models.IndividualEntityRelationModel" />
+    <pages>
+        <page template="com.rameses.entity.views.IndividualEntityRelationPage"/>        
+    </pages>    
+</workunit>

@@ -6,7 +6,7 @@ class WaterworksBatchBillingService {
 	@DataContext('waterworks_batch_billing')
 	def batchEm; 
 
-	@DataContext("waterworks_billing")
+	@DataContext("waterworks_consumption")
 	def wbillEm;
 
 	@Service("CreditPaymentService")
@@ -18,11 +18,14 @@ class WaterworksBatchBillingService {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("BasicBillingService")
+	@Service("BillingProcessService")
 	def billingSvc;
 
+	@DataContext("waterworks_zone")
+	def zoneEm;
+
 	@ProxyMethod
-	public void processBilling( def o ) {
+	public void processBilling( o ) { 
 		def u = [billed:1, prevreadingdate: null, prevreading: 0];
 		u.arrears = 0;
 		u.surcharge = 0;
@@ -30,7 +33,7 @@ class WaterworksBatchBillingService {
 		u.otherfees = 0;
 		u.credits = 0;
 
-		def b = billingSvc.getBillingInfo([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
+		def b = billingSvc.process([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
 		if( b?.billitems) {
 			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
 			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
@@ -47,19 +50,22 @@ class WaterworksBatchBillingService {
 			}	
 		}
 
-		if(o.account.meter?.objid) {
+		def meterid = o.account?.meterid;
+		if ( meterid == null ) meterid = o.account?.meter?.objid;
+
+		if ( meterid ) { 
 			u.prevreadingdate = o.account.meter.lastreadingdate;
 			u.prevreading = o.account.meter.lastreading;
-		}
-		else {
-			def res = computeSvc.compute([objid:o.acctid ]);
-			u.putAll( res );
+		} else { 
+			def res = computeSvc.compute([ objid: o.acctid ]);
+			u.putAll( res ); 
 			u.reading = 0;
-		}
+		} 
 
 		//get the average consumption for 3 months (default)//
-		def avg = batchEm.findAverageConsumption( [acctid: o.acctid, year:o.year, month:o.month, months: 3]  )?.avgcon;
-		if(!avg ) avg = 0;
+		def avg = batchEm.findAverageConsumption([ acctid: o.acctid, year:o.year, month:o.month, months: 3 ])?.avgcon; 
+		if ( !avg ) avg = 0; 
+
 		u.averageconsumption = Math.ceil( avg ); 
 
 		def rec = wbillEm.find([ objid: o.objid ]).first(); 
@@ -70,7 +76,7 @@ class WaterworksBatchBillingService {
 		icount = (icount == null ? 1 : icount+1); 
 
 		u.controlno = rec.batchid +'-'+ icount.toString().padLeft(4, '0');
-		wbillEm.find( [objid: o.objid ] ).update( u );
+		wbillEm.find([ objid: o.objid ]).update( u );
 	}
 
 	@ProxyMethod 
@@ -80,32 +86,32 @@ class WaterworksBatchBillingService {
 		return batchEm.findBilledStatus( m ); 
 	} 
 
-
 	@ProxyMethod
 	public void post( def p ) {
 
 		if ( !p.batchid ) throw new Exception('batchid parameter is required in WaterworksBatchBillingService.post'); 
 
-		def info = batchEm.find([ objid: p.batchid ]).select('objid,state').first(); 
+		def info = batchEm.find([ objid: p.batchid ]).first(); 
 		if ( !info ) throw new Exception('batch transaction not found'); 	
 
 		batchEm.find([ objid: p.batchid ]).update([ state: 'POSTED' ]); 
-		wbillEm.find([ batchid: p.batchid ]).update([ state: 'POSTED' ]); 
-		batchEm.postConsumption([ batchid: p.batchid ]); 
+		wbillEm.find([ batchid: p.batchid ]).update([ state: 'POSTED', readingmethod: 'ONLINE' ]); 
 		batchEm.postMeterReading([ batchid: p.batchid ]); 
 
+		//update the last year and month for the zone
+		zoneEm.find([ objid: info.zone.objid ] ).update([ year: info.year, month: info.month ]);
+
 		//select entries where there are advanced payments and post it to the ledger
-		def clist = wbillEm.find([ batchid: p.batchid ]).where(" credits > 0 ").list(); 
 		def txndate = dateSvc.getServerDate(); 
+		def clist = wbillEm.find([ batchid: p.batchid ]).where(" credits > 0 ").list(); 
 		clist.each { 
 			def bb = [rulename: 'waterworksbilling', txntype: 'waterworks' ]; 
-			bb.amtpaid =  it.credits; 
-			bb.params = [objid: it.acctid ]; 
+			bb.params = [ objid: it.acctid, amtpaid: it.credits ]; 
 			bb.acctid = bb.params.objid; 
 
 			def rct = crPmtSvc.init( bb ); 
 			rct.txntype = 'waterworks'; 
-			rct.reftype = 'waterworks_billing'; 
+			rct.reftype = 'waterworks_consumption'; 
 			rct.refid = it.objid; 
 			rct.refno = it.controlno; 
 			rct.refdate =  txndate; 

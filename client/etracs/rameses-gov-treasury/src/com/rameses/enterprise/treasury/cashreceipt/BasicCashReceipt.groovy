@@ -89,6 +89,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     
     void clearItems() {
         entity.items.clear();
+        updateBalances();
         itemListModel.reload();
     }
     
@@ -143,10 +144,13 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         }
         Modal.show("collectiongroup:lookup", [onselect:h]);
         if(!pass) return;
-        def h1 = { x->
-            MsgBox.alert("see result " + x);
+        def h1 = { result->
+            if( !result.items ) MsgBox.err( new Exception("No items defined"));
+            entity.items.addAll( result.items );
+            updateBalances();
+            itemListModel.reload();
         }
-        def op = Inv.lookupOpener("assessment", [rulename:"collection", params: params, handler: h1 ] );
+        def op = Inv.lookupOpener("collection_rule", [rulename:"collection", params: params, handler: h1 ] );
         Modal.show( op );
     }
     

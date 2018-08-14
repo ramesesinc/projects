@@ -1,0 +1,32 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import java.text.*;
+import java.util.regex.*;
+
+class ControlNoGeneratorService {
+	
+	def pattern = Pattern.compile("\\[.*?\\]");
+
+	@ProxyMethod(local=true)
+	public def formatNumber( def d, def handler, int num ) {
+		if(!d) throw new Exception("pattern must be provided in ControlNoGeneratorService");
+		if(!handler) throw new Exception("handler must be provided in ControlNoGeneratorService");
+
+	    def m = pattern.matcher( d );
+	    def sb = new StringBuilder();
+	    int start = 0;
+	    
+	    while(m.find()) {
+	        int end = m.start();
+	        sb.append( d.substring(start, end)  );
+	        String mg = m.group();
+	        mg = mg.substring(1, mg.length()-1);
+	        sb.append( handler(mg, num, sb) );
+	        start = m.end();
+	    }
+	    if( start < d.length() ) sb.append(d.substring(start));
+	    return sb.toString().replaceAll( '[-]{2,}', '-' );
+	}	
+
+}

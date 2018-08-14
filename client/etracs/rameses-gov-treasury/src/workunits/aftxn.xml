@@ -16,15 +16,32 @@
     
     <pageflow>
         <start>
-            <transition to="initial" name="default" />
+            <transition to="initial" name="default" action="create"/>
             <transition to="view" name="view"/>
             <transition to="posted" name="posted"/>
         </start>
-        <page name="initial" title="New Accountable Form Issue/Receipt" action="create">
-            <transition to="entry" caption="Next"  action="initNew" immediate="false"/>
+        <page name="initial" title="New Accountable Form Issue/Receipt" >
+            <transition to="check-path" caption="Next"  immediate="false"/>
+        </page>
+        <process name="check-path">
+            <transition to="single-entry" cond="#{ entity.txntype == 'FORWARD' }" 
+                        action="initSingleForm"/>
+            <transition to="select-af" cond="#{entity.txntype.matches('TRANSFER|RETURN')}"/>            
+            <transition to="entry" cond="#{!entity.txntype.matches('FORWARD|TRANSFER|RETURN') &amp;&amp; afrequest!=null}"  
+                        action="copyRequest"/>
+            <transition to="entry" cond="#{!entity.txntype.matches('FORWARD|TRANSFER|RETURN') &amp;&amp; afrequest==null}"  
+                        action="loadItemTxnTypes"/>
+        </process>    
+        <page name="single-entry" title="Forward AF - Enter Details">
+            <transition to="initial" caption="Back" />
+            <transition to="posted" caption="Next" immediate="false" action="saveCreate"/>
+        </page>
+        <page name="select-af" title="Select AF to #{entity.txntype}">
+            <transition to="initial" caption="Back" action="clearItems"/>
+            <transition to="posted" caption="Next" immediate="false" action="saveCreate"/>
         </page>
         <page name="entry" title="Enter Qty and Details">
-            <transition to="initial" caption="Back" />
+            <transition to="initial" caption="Back" action="clearItems"/>
             <transition to="view" caption="Next" action="saveCreate" immediate="false"/>
         </page>
         <page name="view" title="Accountable Form Issue/Receipt" action="open">
@@ -39,6 +56,8 @@
     
     <pages>
         <page name="initial" template="com.rameses.enterprise.treasury.views.AFTxnInitialPage" />
+        <page name="single-entry" template="com.rameses.enterprise.treasury.views.AFSingleEntryPage" />
+        <page name="select-af" template="com.rameses.enterprise.treasury.views.AFSelectionPage" />
         <page name="entry"   template="com.rameses.enterprise.treasury.views.AFTxnEntryPage" />
         <page name="view"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
         <page name="posted"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />

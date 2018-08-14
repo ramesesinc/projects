@@ -180,7 +180,7 @@
 						<subreportParameterExpression><![CDATA[$P{RECEIPTITEMCOUNT}]]></subreportParameterExpression>
 					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{AF51Item}]]></subreportExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["form_51item.jasper"]]></subreportExpression>
 				</subreport>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

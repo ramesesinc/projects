@@ -67,6 +67,35 @@ public class VariableInfoUtil {
 		}
 	}
 
+	public def getConvertedData( def datatype, def value ) {
+		if(datatype == 'decimal') {
+			if(value==null) value = "0";
+			return (""+value).toDouble();
+		}
+		else if(datatype=="integer") {
+			if(value==null) value = "0";
+			return (""+value).toInteger();
+		}
+		else if(datatype=="boolean") {
+			if(value==null) value = "false";
+			return (""+value).toBoolean();
+		}
+		else if( datatype == "date" ) {
+			if(value==null) return null;
+			if(!(value instanceof Date)) {
+				def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				return df.parse( value );
+			}	
+			else {
+				return value;
+			}
+		}
+		else {
+			if(value==null) return null;
+			return value.toString();
+		}
+	}
+
 	public void fixData(  def obj, def  datatype, def value ) {
 		if(value == "null") value = null;
 		if( value!=null ) {

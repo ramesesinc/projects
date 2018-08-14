@@ -3,8 +3,8 @@
           cols="serialno,brand,sizeid,capacity,account.name,account.acctname,status">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Meter" 
-                 index="-8" role="MASTER" action="init"/>
-          <invoker folderid="/menucategory/waterworks/master" caption="Manage Meters" 
-                 index="20" action="init"/>
+                 action="init" role="MASTER" index="-8"/>
+        <invoker folderid="/menucategory/waterworks/master" caption="Manage Meters" 
+                 action="init" role="MASTER" index="20"/>
     </invokers>
 </workunit>

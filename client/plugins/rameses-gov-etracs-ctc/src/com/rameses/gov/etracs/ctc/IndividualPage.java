@@ -28,12 +28,10 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xTextField6 = new com.rameses.rcp.control.XTextField();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xTextField12 = new com.rameses.rcp.control.XTextField();
-        xButton2 = new com.rameses.rcp.control.XButton();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xDateField3 = new com.rameses.rcp.control.XDateField();
         xTextField10 = new com.rameses.rcp.control.XTextField();
+        entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
@@ -51,7 +49,7 @@ public class IndividualPage extends javax.swing.JPanel {
         jPanel9 = new javax.swing.JPanel();
         formPanel3 = new com.rameses.rcp.util.FormPanel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
@@ -91,29 +89,6 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xTextField6);
 
-        xFormPanel4.setCaption("Address");
-        xFormPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        xFormPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
-        xFormPanel4.setPreferredSize(new java.awt.Dimension(0, 20));
-
-        xTextField12.setCaption("Address");
-        xTextField12.setEnabled(false);
-        xTextField12.setName("entity.payer.address.text"); // NOI18N
-        xTextField12.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField12.setRequired(true);
-        xTextField12.setShowCaption(false);
-        xTextField12.setStretchWidth(100);
-        xFormPanel4.add(xTextField12);
-
-        xButton2.setIconResource("images/toolbars/edit.png");
-        xButton2.setImmediate(true);
-        xButton2.setMargin(new java.awt.Insets(0, 3, 0, 2));
-        xButton2.setName("editAddress"); // NOI18N
-        xButton2.setShowCaption(false);
-        xFormPanel4.add(xButton2);
-
-        formPanel1.add(xFormPanel4);
-
         xFormPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel3.setPreferredSize(new java.awt.Dimension(0, 21));
@@ -135,6 +110,12 @@ public class IndividualPage extends javax.swing.JPanel {
         xFormPanel3.add(xTextField10);
 
         formPanel1.add(xFormPanel3);
+
+        entityAddressLookup1.setCaption("Address");
+        entityAddressLookup1.setName("entity.payer.address"); // NOI18N
+        entityAddressLookup1.setParentIdName("entity.payer.objid");
+        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 30));
+        formPanel1.add(entityAddressLookup1);
 
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
@@ -253,8 +234,8 @@ public class IndividualPage extends javax.swing.JPanel {
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel8Layout.createSequentialGroup()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 362, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -271,12 +252,10 @@ public class IndividualPage extends javax.swing.JPanel {
         xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
         formPanel3.add(xDateField1);
 
-        xLookupField1.setCaption("Barangay");
-        xLookupField1.setExpression("#{entity.barangay.name}");
-        xLookupField1.setHandler("barangay:lookup");
-        xLookupField1.setName("entity.barangay"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel3.add(xLookupField1);
+        xLabel1.setCaption("Barangay");
+        xLabel1.setExpression("#{ entity.barangay.name }");
+        xLabel1.setName("entity.barangay"); // NOI18N
+        formPanel3.add(xLabel1);
 
         xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox3.setCaption("Is New Business?");
@@ -405,7 +384,7 @@ public class IndividualPage extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(jPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel10, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -415,6 +394,7 @@ public class IndividualPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
@@ -422,7 +402,6 @@ public class IndividualPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
@@ -442,14 +421,12 @@ public class IndividualPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel4;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSuggest xSuggest3;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField11;
-    private com.rameses.rcp.control.XTextField xTextField12;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;

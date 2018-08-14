@@ -18,7 +18,8 @@ public class OrgQueryForm extends javax.swing.JPanel {
     /** Creates new form NewJPanel */
     public OrgQueryForm() {
         initComponents();
-        
+        xLabel1.setLabelFor( xComboBox1 ); 
+        xLabel1.setDisplayedMnemonic('S');
     }
     
     /** This method is called from within the constructor to
@@ -29,34 +30,28 @@ public class OrgQueryForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
-
-        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
-        xLayout1.setSpacing(10);
-        jPanel2.setLayout(xLayout1);
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 5, 5));
+        com.rameses.rcp.control.layout.XLayout xLayout2 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout2.setSpacing(10);
+        setLayout(xLayout2);
 
         xLabel1.setText("Select an Org Class :");
-        jPanel2.add(xLabel1);
+        add(xLabel1);
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Select an Org Class");
-        xComboBox1.setCaptionWidth(120);
         xComboBox1.setExpression("#{item.title}");
         xComboBox1.setItems("orgTypes");
         xComboBox1.setName("orgclass"); // NOI18N
-        jPanel2.add(xComboBox1);
-
-        add(jPanel2);
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaptionWidth(120);
+        add(xComboBox1);
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XLabel xLabel1;
     // End of variables declaration//GEN-END:variables

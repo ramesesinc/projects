@@ -35,6 +35,9 @@ public class YearMonthPayOptionPage extends javax.swing.JPanel {
         monthList1 = new com.rameses.enterprise.components.MonthList();
         jLabel1 = new javax.swing.JLabel();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(100);
+
         xIntegerField1.setCaption("Year");
         xIntegerField1.setName("year"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));

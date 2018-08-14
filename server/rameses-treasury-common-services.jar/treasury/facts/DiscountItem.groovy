@@ -15,6 +15,7 @@ class DiscountItem extends BillSubItem {
 	public def toMap() {
 		def m = super.toMap();
 		m.txntype = "discount";
+		m.sortorder = sortorder;
 		return m;
 	}
 }

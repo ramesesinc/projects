@@ -1,7 +1,7 @@
 <workunit schemaName="waterworks_account" allowCreate="false" allowEdit="true">
 
     <invokers>
-        <invoker folderid="/menucategory/waterworks/account" caption="Add Customer Account (Capture)" action="create" index="4"/>
+        <invoker folderid="/menucategory/waterworks/account" caption="Add Customer Account (Capture)" action="create" role="MASTER" index="4"/>
         
         <!-- create or open -->
         <invoker type="waterworks_account:create" caption="Waterworks Customer Account" action="create" target="window"/>        

@@ -34,6 +34,8 @@ public class AttributePage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
         xTextField1.setCaption("Name");
         xTextField1.setName("entity.name"); // NOI18N
         xTextField1.setDisableWhen("#{ mode != 'create' }");

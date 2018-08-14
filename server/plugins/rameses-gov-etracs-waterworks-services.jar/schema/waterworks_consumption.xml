@@ -2,9 +2,8 @@
 	<element tablename="waterworks_consumption">
 		<field name="objid" primary="true"  prefix="WAC"/>
 		<field name="state" />
-		<field name="batchid" />
-		<complex name="account" jointype="many-to-one" ref="waterworks_account" required="false"
-			includefields="acctno,acctname,stuboutnode.*">
+		<field name="controlno" />
+		<complex name="account" jointype="many-to-one" ref="vw_waterworks_account" required="false">
 			<key field="acctid" target="objid"/>
 		</complex>
 	
@@ -14,6 +13,7 @@
 		</complex>
 
 		<field name="prevreading" required="true" caption="PreviousReading" type="integer" defaultValue="0"/>
+		<field name="prevreadingdate" caption="PreviousReadingDate" type="date"/>
 		<field name="reading" required="true" caption="CurrentReading" type="integer" defaultValue="0"/>
 		<field name="readingmethod" required="true" caption="ReadingMethod" defaultValue="CAPTURE"/>
 
@@ -32,5 +32,21 @@
 		<field name="amtpaid" type="decimal" caption="Amount Paid" defaultValue="0"/>
 		<field name="balance" expr="amount-amtpaid" type="decimal" caption="Balance"/>
 		<field name="monthname" expr="MONTH_ARRAY( month )" caption="Month"/>
+
+		<field name="batchid" />
+		<complex name="batch" ref="waterworks_batch_billing" jointype="many-to-one" required="false"> 
+			<key field="batchid" target="objid" />
+		</complex>
+
+		<field name="discrate" type="decimal"/>
+		<field name="surcharge" type="decimal"/>
+		<field name="interest" type="decimal"/>
+		<field name="otherfees" type="decimal"/>
+		<field name="credits" type="decimal"/>
+		<field name="arrears" type="decimal"/>
+		<field name="averageconsumption" type="integer"/>
+		<field name="subtotal" expr="(arrears + otherfees + surcharge + interest) - credits" />
+		<field name="unpaidmonths"/>
+		<field name="billed"/>		
 	</element>
 </schema>

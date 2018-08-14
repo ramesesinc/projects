@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+        <invoker type="home.action" action="init" caption="Vehicle Registration" 
+                 role="MASTER" icon="home/icons/vehicle.png"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleTypeMenu" />
+    <pages>
+        <page template="com.rameses.menu.views.IconMenuPage" />
+    </pages>
+</workunit>

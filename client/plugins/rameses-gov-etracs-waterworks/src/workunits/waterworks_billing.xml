@@ -1,4 +1,4 @@
-<workunit rulename="waterworksbilling" schemaName="waterworks_billing">
+<workunit rulename="waterworksbilling" schemaName="waterworks_consumption">
     <invokers>
         <invokers>
             <invoker type="waterworks_billing:create" caption="New Waterworks Billing" action="start" index="10" />

@@ -11,27 +11,16 @@ import treasury.utils.*;
 
 class CollectionRuleService  {
 
-	@Service("AssessmentRuleService")
+	@Service("BillingRuleService")
 	def ruleSvc;
 
 	@ProxyMethod
 	public def execute( def p ) {
-		def data = [:];
-		def ruleFact = new FactBuilder();
-		if(p.collectiongroup) {
-			ruleFact.facts << new CollectionGroup( objid:p.collectiongroup.objid, name:p.collectiongroup.name );
-		}	
-		def res = ruleSvc.execute("collection", data, ruleFact, null );
-		if(res.askinfos) {
-			return [askinfos: res.askinfos];
-		}
-		else {
-			def m = [:];
-			m.billitems = res.billitems;
-			m.infos = res.infos;
-			m.sharing = res.sharing;
-			return m;
-		}	
+		def req = [rulename: "collection", params: p.params ];
+		req.include_billitems = false;
+		req.include_items = true;
+		def res = ruleSvc.execute( req ); 
+		return res;
 	}
 
 

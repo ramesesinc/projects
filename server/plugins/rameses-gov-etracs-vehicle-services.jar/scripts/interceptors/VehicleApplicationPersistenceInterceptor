@@ -1,75 +1,141 @@
 import com.rameses.annotations.*;
 import java.rmi.server.UID;
-import enterprise.facts.*;
-import enterprise.utils.*;
+import com.rameses.util.*;
 
-import vehicle.facts.*;
-import treasury.utils.*;
-import treasury.facts.*;
-
+/**************************************************************************************
+* This interceptor is exclusively for VehicleApplicationService.create method
+* This is called upon creating the application for NEW, RENEW, DROP, CHANGE_OWNER_UNIT 
+***************************************************************************************/
 class VehicleApplicationPersistenceInterceptor {
 	
-	@DataContext('sys_user') 
-	def sysuser_db; 
+	@Env
+	def env;
 
-	@DataContext("vehicle_franchise")
-	def franchiseEm;
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_task")
+	def appTaskEm;
+
+	@DataContext("vehicle_application_unit")
+	def appUnitEm;
 
 	@DataContext("vehicle_application_fee")
 	def appFeeEm;
 
-	@DataContext("vehicle_application_info")
-	def appInfoEm;
+	@DataContext("vehicle_franchise")
+	def franchiseEm;
 
-	@DataContext("vehicle_payment")
-	def appPaymentEm;
+	@DataContext("vehicletype")
+	def vehicleTypeEm;
 
-	@DataContext('entityindividual') 
-	def individualEntityEm; 
+	@Service("VehicleControlNoService")
+	def controlNoSvc;
 
-	@DataContext('vehicle_permit') 
-	def vpermit_db;
-
-	@Service("VehicleFranchiseService")
-	def franchiseSvc;
-
-	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname.startsWith('vehicle_application_') }" )
-	public void afterOpen(def evt) {
-		def entity = evt.result;
+	@Service("BillingRuleService")
+	def billRuleSvc;
 
 
-        entity.infos = appInfoEm.find( [parentid: entity.objid]).orderBy( "sortorder" ).list();
-        entity.infos.each {
-        	it.putAll( it.remove("variable") );
-        	it.value = VariableInfoConverter.convertValue( it );
-        };
+	@Before(pattern="PersistenceService.create", index=2, eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	public void beforeCreateApplicationNewOrRenew(def evt) {
+		def entity = evt.args[0];
 
-		//LOAD FEES
-		entity.fees = appFeeEm.find([parentid: entity.objid]).list();
-        entity.amount = entity.fees.sum{ it.amount - it.amtpaid };
+		if( entity.appyear > dateSvc.getServerYear() )
+			throw new Exception("App year must be less than or equal to current year");		
 
-        //LOAD PAYMENTS
-		entity.payments = appPaymentEm.find( [appid: entity.objid] ).orderBy("refdate DESC").list();
+		//get the franchise to get the cluster
+		def c = franchiseEm.find( [objid: entity.franchise.objid ] ).first();
+		def cluster = c.cluster;
 
-		//LOAD COMPLETE USER INFO
-		def userinfo = sysuser_db.find([ objid: entity.filedby?.objid ]).first();
-		if ( userinfo )  {
-			def fullname = [userinfo.firstname, userinfo.middlename, userinfo.lastname].findAll{( it )}.join(' '); 
-			entity.filedby = [ objid: userinfo.objid, name: fullname, jobtitle: userinfo.jobtitle ]; 
-		}
+		def vt = vehicleTypeEm.find( [objid: entity.vehicletypeid ] ).first();
+		if( !vt.appnopattern )
+			throw new Exception("Please specify appno pattern in type " + entity.vehicletypeid );
 
-		//LOAD PERMITS IF ANY
-		entity.permit = vpermit_db.find([ appid: entity.objid ]).first();
+		def pp = [pattern: vt.appnopattern, cluster: cluster, date: entity.appdate ]
+		entity.appno =  controlNoSvc.formatNextNo( pp );
+		entity.amount = 0;
 
-		//LOAD COMPLETE ENTITY INFO
-		def g = individualEntityEm.find( [objid: entity.owner.objid ] ).first();
-		if( g ) {
-			g.each { k,v->
-				if( !entity.owner.containsKey(k) ) entity.owner.put(k,v);
-			}
-		}
+		//store this so we can copy the vehicle units later
+		entity.prevappid = c.appid;
+		entity.controlid = entity.franchise.objid;
+	}
 
+	@After(pattern="PersistenceService.create", index=50, eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	public void afterCreateApplication(def evt) {
+		def entity = evt.args[0];
+		franchiseEm.find( [objid: entity.controlid ] ).update([appid: entity.objid ]);
 	}	
 
+	@After(pattern="PersistenceService.create", index=60, eval="#{ args[0]._schemaname == 'vehicle_application' && args[0].prevappid != null }")
+	public void afterCreateApplicationNotOnlineNew(def evt) {
+		def entity = evt.args[0];
+		def result = evt.result;
+
+		//create a copy for each unit and replace the franchise control with the new one
+		def units = appUnitEm.find( [appid: entity.prevappid ] ).list();
+		units.each { z->
+			z.objid = null;
+			z.appid = result.objid;
+			appUnitEm.create(z);
+		}
+	}	
+
+	//workflow is applicable for all applications
+	@After(pattern="PersistenceService.create", index=100, eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	public void fireApplicationWorkflow(def evt) {
+		def entity = evt.args[0];
+		def p = [:];
+		p.processname = 'vehicle_application';
+		p.refid = entity.objid;
+		p.startdate = dateSvc.serverDate;
+		p.info = entity;
+		taskSvc.start(p);
+	}
+
+	/***************************************************************************
+	* steps in removing the application
+	* 1. update application taskid
+	* 2. remove all tasks
+	* 3. for each vehicle unit store the controlid in a list
+	* 3. for each controlid in the list, update franchise vehicleunit id to null
+	* 4. delete all vehicle units in the application
+	* 5. for each controlid in list, update the vehicle unit id to the latest application
+	* 6. remove the application   
+	***************************************************************************/
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'vehicle_application' }")
+	public void beforeApplicationRemove(def evt) {
+		def entity = evt.args[0];
+
+		def app = appEm.find( [objid: entity.objid]).first();
+		if( app.task.state != "draft")
+			throw new Exception("Application can only be removed from the draft state");
+		def appid = app.objid;
+		appEm.find( [objid:appid] ).update( [ taskid: null ] );
+		appTaskEm.find( [refid: appid]).delete();
+
+		//remove also all vehicle units for this app
+		appUnitEm.find([appid: appid]).delete();
+
+
+		def m = appEm.find( [controlid: app.controlid] ).where( " NOT(objid = :id) ", [id:app.objid ]).orderBy("dtcreated DESC").first();
+		if( m==null || m.apptype == "DROP" ) {
+			franchiseEm.find( [objid: app.controlid ]).update( [appid: "{NULL}", renewaldate: "{NULL}"] );
+		}
+		else {
+			def u = [appid: m.objid];
+			if( app.apptype.matches("NEW|RENEW") ) {
+				def params = [application: entity];
+				def r = billRuleSvc.execute( [rulename:'vehicledates', params: params ] );
+				u.renewaldate = r.renewaldate;				
+			}
+			franchiseEm.find( [objid: app.controlid ]).update( u );
+		}
+	}	
 
 }

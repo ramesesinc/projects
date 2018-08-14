@@ -2,7 +2,7 @@ package enterprise.facts;
 
 public class IntegerInfo extends VariableInfo {
 
-	public double getValue() {
+	public int getValue() {
 		return this.intvalue;
 	}
 	

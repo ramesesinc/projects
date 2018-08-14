@@ -45,6 +45,9 @@
   </Layout>
   <SubComponents>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel1">
+      <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
+      </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
           <Properties>
@@ -69,8 +72,8 @@
             <StringItem index="0" value="addressOpener"/>
           </StringArray>
         </Property>
-        <Property name="dynamic" type="boolean" value="true"/>
         <Property name="handler" type="java.lang.String" value="addressOpener"/>
+        <Property name="dynamic" type="boolean" value="true"/>
       </Properties>
 
       <Layout>

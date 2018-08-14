@@ -1,8 +1,9 @@
 <workunit>
     <invokers>
-        <invoker type="cashreceipt-form:51" />
+        <invoker type="cashreceipt-form:51" 
+            reportName="com/rameses/gov/treasury/cashreceipt/forms/form_51.jasper" />
     </invokers>
     
-    <code class="com.rameses.gov.treasury.cashreceipt.forms.CashReceiptForm51"/>
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptPrintoutModel"/>
     
 </workunit>

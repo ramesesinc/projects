@@ -1,0 +1,12 @@
+<workunit>
+    
+    <!-- used by rules -->
+    <invokers>
+        <invoker folderid="/explorer/master/waterworks" caption="Sector Organization" role="MASTER"/>
+        <invoker folderid="/menucategory/waterworks/master" caption="Sector Organization" role="MASTER" index="1"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.waterworks.models.WaterworksOrgModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.waterworks.views.WaterworksOrgPage" />
+    </pages>    
+</workunit>

@@ -23,6 +23,7 @@ class CashReceiptVoidModel  {
     
     boolean allowCreate = false;
     boolean allowEdit = false;
+    boolean applySecurity = false;
 
     def username;
     def password;
@@ -35,13 +36,11 @@ class CashReceiptVoidModel  {
     void create( invo ) { 
         if (receipt.voided) {
             throw new Exception("This transaction is already voided") 
-        }     
-        if ( invo?.properties?.tag != 'admin' ) { 
-            validatePermission(); 
-        } 
-
+        }    
+        if( !allowVoid ) throw new Exception("Void is not allowed"); 
         entity = [objid: "CRVOID"+ new java.rmi.server.UID() ];
         entity.receipt = receipt;
+        applySecurity = false;
     }
 
     void open( invo ) { 
@@ -49,18 +48,19 @@ class CashReceiptVoidModel  {
         if ( receipt.voided ) {
             throw new Exception("This transaction is already voided") 
         } 
-        if ( invo?.properties?.tag != 'admin' ) { 
-            validatePermission(); 
-        } 
-
+        if( !allowVoid ) throw new Exception("Void is not allowed");
         entity = [objid: "CRVOID"+ new java.rmi.server.UID() ];
         entity.receipt = receipt;
+        applySecurity = true;
     }
 
     def doOk() {
         if( MsgBox.confirm( "You are about to void this receipt. Please ensure you have the original receipt on hand. Continue?")) {
-            entity.username = username;
-            entity.password = user.encodePwd( password, username );
+            if( applySecurity ) {
+                entity.username = username;
+                entity.password = user.encodePwd( password, username );
+            }
+            entity.applysecurity = applySecurity;
             entity.reason = remarks;
             service.post( entity );
             receipt.voided = true;
@@ -80,13 +80,7 @@ class CashReceiptVoidModel  {
     def doCancel() {
         return "_close";
     }
-
-    private void validatePermission() {
-        def options = service.getOptions();  
-        if ( options?.collector_allow_void_cashreceipt == 'false' ) { 
-            throw new Exception('You are not allowed to void this transaction'); 
-        } 
-    }             
+          
     
     boolean isAllowVoid() { 
         if ( entity.remitted==true || entity.remitted==1 ) return false; 

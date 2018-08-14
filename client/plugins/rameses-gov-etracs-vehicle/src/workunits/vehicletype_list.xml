@@ -1,5 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml"  
-          schemaName="vehicletype"  allowCreate="false">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"  schemaName="vehicletype">
     <invokers>
         <invoker folderid="/explorer/master/vehicle" 
                  caption="Vehicle Types" 

@@ -7,10 +7,16 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.seti2.models.*;
 
-class CashReceiptReprintModel extends CrudFormModel {
+class CashReceiptReprintModel  {
     
     @Service("CashReceiptReprintService")
     def service;
+
+    @Invoker
+    def invoker;
+
+    @Caller
+    def caller;
 
     @Script("User")
     def user;
@@ -23,14 +29,24 @@ class CashReceiptReprintModel extends CrudFormModel {
     
     def entity;
     def receipt;
+    boolean applySecurity = false;
     
-    void afterCreate() {
+    void reprintUnsecured() {
+        applySecurity = false;
+        receipt = caller.entity;
+    }
+
+    void reprintSecured() {
+        applySecurity = true;
         receipt = caller.entity;
     }
     
     def doOk() {
-        entity.username = username;
-        entity.password = user.encodePwd( password, username );
+        if( applySecurity ) {
+            entity.username = username;
+            entity.password = user.encodePwd( password, username );
+        }
+        entity.applysecurity = applySecurity;
         entity.receiptid = receipt.objid;
         entity.reason = remarks;
         service.verifyReprint( entity );
@@ -42,58 +58,31 @@ class CashReceiptReprintModel extends CrudFormModel {
         return "_close";
     }
 
-    def reprint() {
-        if ( entity._options ) { 
-            entity._options.canShowPrinterDialog = true; 
-        }
-        
-        
-        //check fist if form handler exists.
-        def o = Inv.lookupOpener( "cashreceipt-form:"+entity.formno, [ reportData: entity ] );
-        if ( !o ) throw new Exception("Handler not found");
-        
-        if ( entity.receiptdate instanceof String ) { 
+    def findReportOpener( reportData ) { 
+        //check first if form handler exists. 
+        def o = Inv.lookupOpener( "cashreceipt-form:"+entity.formno, [reportData:reportData] );
+        if ( !o ) throw new Exception("Handler not found"); 
+
+        if ( reportData.receiptdate instanceof String ) { 
             // this is only true when txnmode is OFFLINE 
             try {
-                def dateobj = YMD.parse( entity.receiptdate ); 
-                entity.receiptdate = dateobj; 
+                def dateobj = YMD.parse( reportData.receiptdate ); 
+                reportData.receiptdate = dateobj;  
             } catch( Throwable t ) {;} 
         } 
+        return o.handle; 
+    } 
 
-        def handle = o.handle;
+    void reprint() {
+        def handle = findReportOpener(entity);
         def opt = handle.viewReport(); 
         if ( opt instanceof Opener ) { 
-            // 
-            // possible routing of report opener has been configured 
-            // 
             handle = opt.handle; 
             handle.viewReport(); 
         } 
-        
-        if ( handle instanceof com.rameses.osiris2.reports.ReportModel ) {
-            report = handle; 
-        } else { 
-            report = handle.report; 
-        } 
-        
-        if ( ReportUtil.isDeveloperMode() ) {
-            return 'preview'; 
-        } 
-        
-        if ( report instanceof com.rameses.osiris2.reports.ReportModel ) { 
-            report.print(); 
-        } else { 
-            ReportUtil.print(report, true); 
-        } 
-        return null; 
+        def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
+        ReportUtil.print(handle.report, canShowPrinterDialog);
     }
-    
-    def showReport = { o->   
-        if ( o instanceof com.rameses.osiris2.reports.ReportModel ) {
-            report = o; 
-            report.viewReport(); 
-            binding.fireNavigation('preview');  
-        } 
-    } 
+
     
 }    

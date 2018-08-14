@@ -1,0 +1,35 @@
+"entity.plateno" [ !"plateno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.crname" [ !"crname".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.engineno" [ !"engineno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.chassisno" [ !"chassisno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.make" [ !"make".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.model" [ !"model".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.color" [ !"color".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.bodyno" [ !"bodyno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.sidecarno" [ !"sidecarno".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.sidecarcolor" [ !"sidecarcolor".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+"entity.driver" [ !"driver".matches(vehicletype.allowedfields) ] {
+    visible:false;
+}
+
+

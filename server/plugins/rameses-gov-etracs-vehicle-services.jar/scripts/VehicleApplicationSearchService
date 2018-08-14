@@ -1,0 +1,40 @@
+import com.rameses.annotations.*;
+
+import com.rameses.util.*;
+import java.text.*;
+import java.util.regex.*;
+import treasury.facts.*;
+import vehicle.facts.*;
+
+
+class VehicleApplicationSearchService {
+	
+	@DataContext("vw_vehicle_franchise")
+	def franchiseEm;
+
+	//this should return the objid,appdate, particulars, amount, owner 
+	@ProxyMethod
+	public def getList( def o ) {
+        def params = [:];
+		def conds = [];
+
+        params.vehicletypeid = o.vehicletype.objid;
+        conds << "vehicletypeid =:vehicletypeid";
+
+        if( o.lookuptype == "owner" ) {
+        	conds << "owner.objid =:ownerid";
+            params.ownerid = o.owner.objid;
+        } 
+        else if( o.lookuptype == "controlno") {
+        	conds << " controlno = :controlno ";
+        	params.controlno = o.controlno;
+        }
+
+        if( o.apptype == "RENEW") {
+            conds << "renewaldate <= NOW()";
+        }
+
+        return franchiseEm.where( conds.join( " AND " ), params ).list();
+	}
+
+}

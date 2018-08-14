@@ -47,11 +47,26 @@ public class VariableInfo {
 		m.category = category;
 		m.name = name;
 		m.value = null;
-		if(m.datatype == 'decimal') m.value  = decimalvalue;
-		else if(m.datatype=="integer") m.value = intvalue;
-		else if(m.datatype=="boolean") m.value = booleanvalue;
-		else if(m.datatype == "date" ) m.value = datevalue;
-		else m.value = stringvalue;
+		if(m.datatype == 'decimal') {
+			m.value  = decimalvalue;
+			m.decimalvalue = m.value;
+		}	
+		else if(m.datatype=="integer") {
+			m.value = intvalue;
+			m.intvalue = m.value;
+		}	
+		else if(m.datatype=="boolean") {
+			m.value = booleanvalue;
+			m.booleanvalue = m.value;
+		}	
+		else if(m.datatype == "date" ) {
+			m.value = datevalue;
+			m.datevalue = m.value;
+		}	
+		else {
+			m.value = stringvalue;
+			m.stringvalue = m.value;
+		}	
 		m.arrayvalues = arrayvalues;
 		m.sortorder = sortorder;
 		return m;
@@ -63,7 +78,8 @@ public class VariableInfo {
 			if( !k.name.matches("class|metaClass"+excludeFields)) {
 				//add only if there is a setter
 				if( k.setter && o.containsKey(k.name)) {
-					this[(k.name)] = o.get( k.name );	
+					def v = o.get( k.name );
+					if(v) this[(k.name)] = v;	
 				}
 			}
 		}

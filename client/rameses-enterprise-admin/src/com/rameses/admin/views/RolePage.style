@@ -6,9 +6,3 @@
     enabled:true;
 }
 
-"entity.(domain|role)" [ mode != 'create' ] {
-    enabled: false; 
-} 
-"entity.(domain|role)" [ mode=='create' ] {
-    enabled: true; 
-} 

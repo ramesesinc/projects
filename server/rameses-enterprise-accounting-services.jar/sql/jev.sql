@@ -59,7 +59,7 @@ from (
 				inner join account_maingroup amg on amg.objid = tmp1.objid 
 				inner join account_item_mapping aim on aim.maingroupid = amg.objid 
 				inner join account a on a.objid = aim.acctid 
-		)b on b.itemid = ji.objid 
+		)b on b.itemid = ji.acctid  
 	where ji.jevid = $P{jevid} 
 )tmp1
 group by jevid, acctid, acctcode, acctname, groupindex 

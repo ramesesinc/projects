@@ -1,0 +1,18 @@
+<workunit schemaName="vehicle_application">
+    <invokers>
+        <invoker type="vehicle_application:open" 
+                 action="open" caption="Vehicle Application"/>
+        
+        <invoker type="formActions" 
+                 action="assess" caption="Assess" visibleWhen="#{entity.task.state == 'assessment' }"/>
+
+        <invoker type="formActions" 
+                 action="issuePermit" caption="Issue Permit" 
+                 visibleWhen="#{entity.permitid == null &amp;&amp; entity.task.state.toString().matches('release|end') }"/>
+
+    </invokers>
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleApplicationModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.vehicle.views.ApplicationFormPage" />
+    </pages>
+</workunit>

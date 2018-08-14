@@ -49,6 +49,8 @@
 		<complex name="attributes" ref="waterworks_account_attribute" jointype="one-to-many" required="false">
 			<key field="objid" target="parentid"/> 
 		</complex>
+
+		<field name="status" expr="CASE WHEN meterid IS NULL THEN 'UNMETERED' WHEN meter.state='ACTIVE' THEN 'METERED' ELSE meter.state END"/>
 	</element>
 
 </schema>

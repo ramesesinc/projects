@@ -2,9 +2,11 @@
 	<element tablename="vehicle_application_fee">
 		<field name="objid" primary="true" prefix="VAPPF"/>
 		<complex name="parent" ref="vehicle_application" jointype="many-to-one" 
-			includefields="objid,appno,apptype,appyear,vehicletype,controlid" required="true">
+			includefields="objid,appno,apptype,appyear,vehicletype,controlid,rootappid" required="true">
 			<key field="parentid" target="objid"/>
 		</complex>	
+		<field name="year" type="integer"  />
+		<field name="month" type="integer"  />
 		<field name="item_objid" required="true" />
 		<field name="item_code" required="true" />
 		<field name="item_title" required="true" />
@@ -12,7 +14,7 @@
 		<field name="amtpaid" required="true" />
 		<field name="balance" expr="amount - amtpaid" />
 
-		<field name="txntype" required="true" />
+		<field name="txntype" />
 		<field name="sortorder" required="true" />
 	</element>
 </schema>

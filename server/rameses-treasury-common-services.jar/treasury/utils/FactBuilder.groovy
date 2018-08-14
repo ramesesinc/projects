@@ -10,7 +10,11 @@ public class FactBuilder {
 	BillItemProvider billItemProvider = new BillItemProvider();
 	
 	def facts = [];	
-	
+
+
+	//resultHandler requires two arguments
+	RuleOutputHandler outputHandler;
+
 	/*
 	public VariableInfo getInfoFact( def o ) {
 		return new VariableInfo( o );

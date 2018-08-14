@@ -32,7 +32,7 @@ public class LobPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         jPanel5 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xButton1 = new com.rameses.rcp.control.XButton();
@@ -50,18 +50,20 @@ public class LobPage extends javax.swing.JPanel {
         formPanel1.add(xTextField1);
 
         xLookupField1.setCaption("Classification");
-        xLookupField1.setCaptionWidth(100);
         xLookupField1.setExpression("#{entity.classification.objid}");
         xLookupField1.setHandler("lobclassification:lookup");
         xLookupField1.setName("entity.classification"); // NOI18N
+        xLookupField1.setCaptionWidth(100);
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel1.add(xLookupField1);
 
-        xTextField2.setCaption("PSIC");
-        xTextField2.setCaptionWidth(100);
-        xTextField2.setName("entity.psic"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xTextField2);
+        xLookupField2.setCaption("PSIC");
+        xLookupField2.setExpression("#{entity.psic.objid} #{entity.psic.title}");
+        xLookupField2.setHandler("psic:lookup");
+        xLookupField2.setName("entity.psic"); // NOI18N
+        xLookupField2.setCaptionWidth(100);
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLookupField2);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("   Attributes   ");
@@ -140,8 +142,8 @@ public class LobPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
     
 }

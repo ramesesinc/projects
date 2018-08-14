@@ -1,0 +1,43 @@
+<workunit extends="com/rameses/seti2/templates/FormReport.xml" rulename="vehiclebilling">
+    <invokers>
+        <!-- This is for application billing -->
+         <invoker type="vehicle_application:form:reports" 
+                 caption="Print Application" 
+                 target="popup" 
+                 action="preview"
+                 index="4"
+                 reportName="application"
+                 reportId="vehicle_application"
+                 />
+         
+        <invoker type="vehicle_application:form:reports" 
+                 caption="Print Assessment" 
+                 target="popup" 
+                 action="preview"
+                 index="5"
+                 visibleWhen="#{entity.dtapproved != null}"
+                 reportName="assessment" 
+                 reportId="vehicle_assessment"
+                 />
+        
+        <invoker type="vehicle_application:form:reports" 
+                 caption="Print Bill" 
+                 target="popup" 
+                 action="preview"
+                 index="6"
+                 reportName="billing"
+                 reportId="vehicle_billing"
+                 />
+        
+        <invoker type="vehicle_application:form:reports" 
+                 caption="Print Permit" 
+                 target="popup" 
+                 action="preview"
+                 index="7"
+                 visibleWhen="#{entity.permitid != null}"
+                 reportName="permit" 
+                 reportId="vehicle_permit"
+                 />
+    </invokers> 
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleReportForm"/>
+</workunit>

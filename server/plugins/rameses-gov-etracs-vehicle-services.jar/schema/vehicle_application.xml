@@ -1,51 +1,50 @@
+<!--
+  The primary app is the master application and usually it is the first application created to
+  ensure continuity of a particular application (context or thread) 
+  These are the scenarios: NEW, CAPTURE(NEW), CAPTURE(RENEW), CHANGE_OWNERSHIP
+-->
 <schema adapter="vehicledb">
 	<element tablename="vehicle_application">
 		<field name="objid" primary="true" prefix="VAPP"/>
 		<field name="state" caption="State"/>
 
+		<field name="controlid" required="true"/>
+		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno" required="true">
+			<key field="controlid" target="objid" />
+		</complex> 	
+
 		<field name="appno" required="true" caption="App No" searchable="true" indexed="true"/>
-		<field name="appdate" required="true" />
-		<field name="apptype" required="true" indexed="true"/>
+		<field name="appdate" required="true" caption="App Date"/>
+		<field name="apptype" required="true" indexed="true"  caption="App Type"/>
 		<field name="txnmode" required="true" defaultValue="ONLINE"/>
-		<field name="appyear" required="true" />
-		<field name="dtfiled" required="true" />
-		<field name="filedby_objid" required="true" />
-		<field name="filedby_name" required="true" />
+		<field name="appyear" required="true"  caption="App Year"/>
+		<field name="dtcreated" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
 		<field name="particulars"  />
+		<field name="dtapproved" />
 
 		<field name="owner_objid" required="true" />
 		<field name="owner_name" required="true" caption="Owner Name" searchable="true" indexed="true"/>
 		<field name="owner_address_text" required="true" />
 		<field name="owner_address_objid" required="true" />
-		<field name="barangay_objid"  />
-		<field name="barangay_name" indexed="true"/>
+
+		<!-- this is used for renewals. We need to keep this to be able to rebuild delinquencies -->
+		<field name="prevappyear" required="false" type="integer"/>
 
 		<!-- this will be loaded automatically -->
-		<field name="vehicletype" required="true" />
-		<field name="expirydate" type="date"/>
-
-		<field name="controlid" required="true"/>
-
-		<complex name="franchise" ref="vehicle_franchise" jointype="many-to-one" includefields="objid,controlno,startdate,expirydate" required="true">
-			<key field="controlid" target="objid" />
+		<field name="vehicletypeid" required="true" />
+		<complex name="vehicletype" ref="vehicletype" includefields="objid,title,allowedfields" jointype="many-to-one" required="true" >
+			<key field="vehicletypeid" target="objid" />
 		</complex> 
 
-		<complex name="fees" ref="vehicle_application_fee" jointype="one-to-many">
-			<key field="objid" target="appid" />
-		</complex>
-		
-		<complex name="infos" ref="vehicle_application_info" jointype="one-to-many" required="false">
-			<key field="objid" target="appid" />
-		</complex>
-
 		<field name="taskid"/>
-		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" 
-				includefields=".*" required="false">
+		<complex name="task" ref="vehicle_application_task" jointype="many-to-one" includefields=".*" required="false">
 			<key field="taskid" target="taskid" />
 		</complex>	
 
-		<field name="prevappid" />
-		<field name="dtapproved" type="date" />
-
+		<complex name="permit" ref="vehicle_permit" jointype="many-to-one" includefields="permitno,permittype,dtissued,expirydate" required="false">
+			<key field="permitid" target="objid" />
+		</complex>	
 	</element>
 </schema>

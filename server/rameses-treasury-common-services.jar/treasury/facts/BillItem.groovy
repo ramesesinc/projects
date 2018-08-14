@@ -2,6 +2,7 @@ package treasury.facts;
 
 import java.util.*;
 import com.rameses.util.*;
+import com.rameses.functions.*;
 
 class BillItem extends AbstractBillItem {
 
@@ -16,7 +17,20 @@ class BillItem extends AbstractBillItem {
 	//amount that is left unpaid from the full amount
 	double partialunpaid;
 
-	
+	//we will include the year in this case because we will need the year for 
+	int year;
+	int month;
+	int qtr;
+	Date fromdate;
+	Date todate;
+
+	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
+
+	//used for hascoding dates
+	def dtHashcode = new java.text.SimpleDateFormat("yyyyMMdd");
+
+	public BillItem() {}
+
 	public BillItem( def o ) {
 		super(o);
 		if(o.parentid ) parentid = o.parentid;
@@ -24,11 +38,12 @@ class BillItem extends AbstractBillItem {
 		if(o.reftype) reftype = o.reftype;
 		if(o.duedate) duedate = o.duedate;
 		if(o.partialunpaid) partialunpaid = o.partialunpaid;
+		if(o.year) year = o.year;
+		if(o.month) month = o.month;
+		if(o.qtr) qtr = o.qtr;
+		if(o.fromdate ) fromdate = o.fromdate;
+		if(o.todate) todate = o.todate;
 	}
-
-	public BillItem() {}
-
-	LinkedHashSet<BillSubItem> items = new LinkedHashSet<BillSubItem>();
 
 	public def getTotals( def txntype ) {
 		return items.findAll{ it.txntype == txntype }.sum{it.amount};
@@ -43,13 +58,25 @@ class BillItem extends AbstractBillItem {
 		}
 	};
 
-	public int hashCode() {
-		if( refid ) {
-			return refid.hashCode();
-		} 
-		else {
-			return super.hashCode();
+	public String toString() {
+		def buff = new StringBuffer();
+		if( year > 0 ) buff.append("y:"+year+";");
+		if( month > 0 ) buff.append( "m:"+month+";");
+		if( fromdate ) {
+			buff.append( "fd:" + dtHashcode.format(fromdate)+";");
 		}
+		if( todate ) {
+			buff.append( "td:" + dtHashcode.format(todate)+";");
+		}
+		if( qtr > 0 ) buff.append("q:"+qtr+";");
+		if( account?.objid ) buff.append( "acct:"+account.objid+";");
+		if( txntype ) buff.append( "type:"+txntype+";");
+		if( refid ) buff.append( "refid:"+refid+";");
+		return buff.toString();
+	}
+
+	public int hashCode() {
+		return toString().hashCode();
 	}
 
 	public def toMap() {
@@ -61,12 +88,19 @@ class BillItem extends AbstractBillItem {
 			if(it.amount == null) it.amount = 0;
 			m.put(it.txntype?.toLowerCase(), NumberUtil.round(it.amount));
 		};
+		if(duedate ) m.duedate = duedate;		
 		m.total = total;
 		m.partialunpaid = partialunpaid;
 		if( m.surcharge == null ) m.surcharge = 0;
 		if( m.interest == null ) m.interest = 0;
 		if( m.discount == null) m.discount = 0;
-		m.duedate = duedate;
+		if(year>0) m.year = year;
+		if(month>0) m.month = month;
+		if( qtr>0) m.qtr = qtr;
+		
+		if(fromdate) m.fromdate = fromdate;
+		if(todate) m.todate = todate;
+
 		return m;
 	}
 
@@ -128,6 +162,35 @@ class BillItem extends AbstractBillItem {
 			return _paypriority;	
 		}
 	}
+
+	//**********************************************************************************************************************************
+	// extended properties for the billitem assuming there is year and month
+	//**********************************************************************************************************************************
+	public int getYearMonth() {
+		return (year*12)+month;
+	}
+
+	public int getSortorder() {
+		return (yearMonth*1000); //+ super.getSortorder();
+	}	
+
+    //not today but to day
+    public int getToday() {
+		def cal = Calendar.instance;
+    	cal.setTime( todate );
+    	return cal.get( Calendar.DAY_OF_MONTH );
+    }
+
+    public int getFromday() {
+    	def cal = Calendar.instance;
+    	cal.setTime( fromdate );
+    	return cal.get( Calendar.DAY_OF_MONTH );
+    }
+
+    public int getNumdays() {
+    	if( fromdate == null || todate == null ) return 0;
+    	return DateFunc.daysDiff( fromdate, todate ) + 1;
+    }
 
 
 }

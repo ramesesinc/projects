@@ -1,0 +1,26 @@
+<schema adapter="vehicledb">
+	<element tablename="vehicle_application_unit">
+		<field name="objid" primary="true" prefix="VAPPUNIT"/>
+
+		<field name="appid" required="true"/>
+		<complex name="app" ref="vehicle_application" jointype="many-to-one" 
+			includefields="objid,appno,apptype,appyear,appdate,dtcreated,owner.*,txnmode" required="true">
+			<key field="appid" target="objid" />
+		</complex> 
+
+		<!-- additional infos -->
+		<field name="plateno" caption="Plate No" searchable="true"  indexed="true" included="true"/>
+		<field name="engineno" caption="Engine No" searchable="true" indexed="true" included="true"/>
+		<field name="bodyno" caption="Body No" searchable="true" indexed="true" included="true"/>
+		<field name="sidecarno" caption="Sidecar No"  indexed="true" included="true"/>
+		<field name="make" caption="Make" included="true"/>
+		<field name="model" caption="Model" included="true"/>
+		<field name="color" caption="Color" included="true"/>
+		<field name="chassisno" caption="Chassis No" included="true"/>
+		<field name="sidecarcolor" caption="Sidecar Color" included="true"/>
+		<field name="crname" caption="CR Name" included="true"/>
+		<field name="driver_objid" visible="false"/>
+		<field name="driver_name" caption="Driver" included="true"/>
+		<field name="remarks" caption="Remarks" included="true"/>
+	</element>
+</schema>

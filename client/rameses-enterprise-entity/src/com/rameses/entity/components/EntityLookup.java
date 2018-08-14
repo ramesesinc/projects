@@ -17,7 +17,8 @@ public class EntityLookup extends XComponentPanel {
 
     private String onselect; 
     private String onempty;
-    private String entitytype;
+    private String entityType;
+    private String entityTypeName;
     
     private boolean allowCreate;
     private boolean allowOpen;
@@ -45,10 +46,10 @@ public class EntityLookup extends XComponentPanel {
     } 
     
     public String getEntityType() {
-        return entitytype;
+        return entityType;
     }
     public void setEntityType(String entitytype) {
-        this.entitytype = entitytype;
+        this.entityType = entitytype;
     }    
 
     @Override
@@ -76,25 +77,44 @@ public class EntityLookup extends XComponentPanel {
             Object handler = pr.getProperty(caller, getOnempty()); 
             pr.setProperty(bean, "onempty", handler);
         }
-        pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityType(), caller));
+        pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityTypeName(), getEntityType(), caller));
+    }
+
+    /**
+     * @return the entityTypeName
+     */
+    public String getEntityTypeName() {
+        return entityTypeName;
+    }
+
+    /**
+     * @param entityTypeName the entityTypeName to set
+     */
+    public void setEntityTypeName(String entityTypeName) {
+        this.entityTypeName = entityTypeName;
     }
 
     public class EntityTypeCaller { 
         private String type;
         private Object caller;
+        private String entityTypeName;
         
-        EntityTypeCaller( String type, Object caller ) {
+        EntityTypeCaller( String entityTypename, String type,  Object caller ) {
             this.type = type;
             this.caller = caller;
+            this.entityTypeName = entityTypename;
         }
         
         public Object getEntityType() {
-            if ( type != null && type.trim().length()> 0 ) {
+            if( entityTypeName !=null && entityTypeName.trim().length() > 0 ) {
+                PropertyResolver pr = PropertyResolver.getInstance();
+                Object r =  pr.getProperty(caller, entityTypeName); 
+                return r;
+            }
+            else if ( type != null && type.trim().length()> 0 ) {
                 return type; 
             } 
-            PropertyResolver pr = PropertyResolver.getInstance();
-            Object r =  pr.getProperty(caller, "entityType"); 
-            return r;
+            return null;
         }
     }
     
@@ -124,6 +144,7 @@ public class EntityLookup extends XComponentPanel {
         xLookupField1.setName("entity"); // NOI18N
         add(xLookupField1);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 0, 0));
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.PAGE_AXIS));
 

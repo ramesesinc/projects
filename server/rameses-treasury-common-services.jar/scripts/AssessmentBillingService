@@ -38,7 +38,7 @@ public class AssessmentBillingService {
 		def rulename = params.rulename;
 		def data = params.params;
 
-		def factBuilder = factSvc.getFacts( rulename, data );
+		def factBuilder = factSvc.getFacts([ rulename: rulename, params: data ]);
 
 		def facts = factBuilder.facts;
 		if(!facts) throw new Exception("There should be at least one fact in RuleProcessorService" );
@@ -115,7 +115,7 @@ public class AssessmentBillingService {
 				m.billitems << o.toMap();
 			}
 			else if( o instanceof VariableInfo ) {
-				m.infos << o.toMap();
+				if(o.system == 0) m.infos << o.toMap();
 			}
 			else if( o instanceof DueDate ) {
 				if(o.tag) m[(o.tag)] = o.date;

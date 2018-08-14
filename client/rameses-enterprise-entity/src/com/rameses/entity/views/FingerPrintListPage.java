@@ -35,9 +35,9 @@ public class FingerPrintListPage extends javax.swing.JPanel {
         xImage1 = new com.rameses.rcp.control.XImage();
 
         xList1.setExpression("#{item.title}");
-        xList1.setFixedCellHeight(20);
         xList1.setHandler("listHandler");
         xList1.setName("selectedItem"); // NOI18N
+        xList1.setFixedCellHeight(18);
         jScrollPane1.setViewportView(xList1);
 
         xImage1.setBackground(new java.awt.Color(255, 255, 255));

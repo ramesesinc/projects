@@ -21,6 +21,9 @@ class AFInventoryService {
 	*********************************************************************************/
 	@ProxyMethod 
 	public void add( def ref, def afc ) {
+		def oldref = ref; 
+		def oldafc = afc;
+
 		def prevdetailid = null;
 		if ( !afc?.objid ) {
 			def afunit = afc.afunit;
@@ -33,15 +36,26 @@ class AFInventoryService {
 			m.unit = afc.unit;
 			m.cost = afc.cost;
 
-			if( afunit.formtype == 'serial' ) {				
+			if ( ref.txntype == 'FORWARD' ) {
+				m.owner = ref.issueto;
+				m.assignee = m.owner; 
+			}
+
+			if ( afunit.formtype == 'serial' ) {				
 				m.startseries = formatSeries( afc.startseries, len  );
-				m.currentseries = m.startseries;
 				m.endseries = formatSeries( afc.endseries, len );
-			} else {
+				m.currentseries = m.startseries; 
+				if ( ref.txntype == 'FORWARD' ) { 
+					m.currentseries = formatSeries( afc.currentseries, len ); 
+				} 
+			} else { 
 				m.startseries = 1;
 				m.endseries = afc.endseries; 
 				m.currentseries = m.startseries; 
-			}
+				if ( ref.txntype == 'FORWARD' ) { 
+					m.currentseries = afc.currentseries; 
+				} 
+			} 
 			m.stubno = afc.stubno;
 
 			m.dtfiled = afc.dtfiled;
@@ -54,6 +68,7 @@ class AFInventoryService {
 			m.allocation = afc.allocation;
 			
 			afc = afCtrl.create( m ); 
+			oldafc.objid = afc.objid; 
 		}
 		else {
 			prevdetailid = afc.currentdetailid;
@@ -66,7 +81,6 @@ class AFInventoryService {
 		d.parent = afc;
 		d.issuedto = ref.issueto;
 		d.respcenter = ref.respcenter;
-		d.prevdetailid = prevdetailid;
 		d.state = 0;
 		d.indexno = 1;
 
@@ -85,7 +99,7 @@ class AFInventoryService {
 		d.qtycancelled = 0;
 		d.qtyending = 0;
 
-		def u = [:];
+		def u = [ state: 'PROCESSING' ]; 
 		if ( ref.reftype == 'PURCHASE_RECEIPT') {
 			d.receivedstartseries = afc.startseries;
 			d.receivedendseries = afc.endseries; 
@@ -93,13 +107,24 @@ class AFInventoryService {
 			d.endingstartseries = afc.startseries;
 			d.endingendseries = afc.endseries; 
 			d.qtyending = d.qtyreceived;
-		} else if ( ref.reftype.matches('BEGIN_BALANCE|FORWARD')) {
+
+		} else if ( ref.reftype == 'BEGIN_BALANCE' ) {
 			d.beginstartseries = afc.startseries;
 			d.beginendseries = afc.endseries; 
 			d.qtybegin = (afc.endseries.toInteger() - afc.startseries.toInteger() ) +1;
 			d.endingstartseries = afc.startseries;
 			d.endingendseries = afc.endseries; 
 			d.qtyending = d.qtybegin;
+
+		} else if ( ref.reftype == 'FORWARD' ) {
+			d.beginstartseries = afc.currentseries;
+			d.beginendseries = afc.endseries; 
+			d.qtybegin = (afc.endseries.toInteger() - afc.currentseries.toInteger() ) +1;
+			d.endingstartseries = afc.currentseries;
+			d.endingendseries = afc.endseries; 
+			d.qtyending = d.qtybegin;
+			u.state = 'ISSUED';
+
 		} 
 		else if( ref.reftype.matches("ISSUE") && ref.txntype == "COLLECTION" ) {
 			d.receivedstartseries = afc.currentseries;
@@ -108,6 +133,7 @@ class AFInventoryService {
 			d.endingstartseries = d.receivedstartseries;
 			d.endingendseries = d.receivedendseries;
 			d.qtyending = d.qtyreceived;
+
 		} 
 		else if( ref.reftype.matches("ISSUE") && ref.txntype == "SALE" ) {
 			d.issuedstartseries = afc.currentseries;
@@ -116,6 +142,7 @@ class AFInventoryService {
 			d.endingstartseries = d.issuedstartseries;
 			d.endingendseries = d.issuedendseries;
 			d.qtyending = d.qtyissued;
+
 		}
 		else if ( ref.reftype.matches('TRANSFER')) {
 			d.receivedstartseries = afc.currentseries;
@@ -124,6 +151,7 @@ class AFInventoryService {
 			d.endingstartseries = d.receivedstartseries;
 			d.endingendseries = d.receivedendseries;
 			d.qtyending = d.qtyreceived;
+			u.state = 'ISSUED';
 
 		} else if ( ref.reftype == 'RETURN') {
 			d.beginstartseries = afc.currentseries;
@@ -133,6 +161,7 @@ class AFInventoryService {
 			d.endingendseries = d.beginendseries;
 			d.qtyending = d.qtybegin;	
 			d.issuedto = [objid: null, name: null]; 
+			u.state = 'OPEN';
 
 		} else if ( ref.reftype == 'REMITTANCE') {
 			d.beginstartseries = ref.startseries;
@@ -144,14 +173,16 @@ class AFInventoryService {
 				d.endingstartseries = d.issuedstartseries + 1;
 				d.endingendseries = d.beginendseries; 
 				d.qtyending = (d.endingendseries.toInteger() - d.endingstartseries.toInteger() )+1;
-			} else {
-				d.qtyending = 0;      
-			}
-		}
+			} else { 
+				d.qtyending = 0; 
+			} 
+
+			u.remove('state'); 
+		} 
 
 		d = afDetail.create( d ); 
+		oldref.objid = d.objid;
 
-		u.state = 'PROCESSING'; 
 		u.currentdetailid = d.objid; 
 		afCtrl.find([ objid: afc.objid ]).update( u );
 	}
@@ -175,5 +206,14 @@ class AFInventoryService {
 
 		//we must update this immediately so we can see the effects during lookup
 		afCtrl.find([objid: detail.controlid ] ).update( [currentseries:detail.currentseries, endseries: detail.endseries ]);
-	}	
+	} 
+
+	@ProxyMethod 
+	public def addItem( item ) {
+		def afc = afCtrl.find([ objid: item.controlid ]).first(); 
+		if ( !afc ) throw new Exception('AF Control not found'); 
+
+		def afd = afDetail.create( item ); 
+		afCtrl.find([ objid: afd.controlid ]).update([ currentdetailid: afd.objid ]); 
+	} 
 }

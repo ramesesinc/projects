@@ -2,11 +2,6 @@
     
     <invokers>
         <invoker type="cashreceipt:open" caption="Cash Receipt" action="open" target="popup"/>
-        
-        <!-- buttons -->
-        <!--
-        <invoker type="formActions" caption="Reprint" action="reprint" shortcut="ctrl P" mnemonic="p" role="COLLECTOR"/>
-        -->
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.CashReceiptModel" />

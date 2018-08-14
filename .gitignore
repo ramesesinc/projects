@@ -1,3 +1,9 @@
+._.DS_Store
+.DS_Store
+.terminal
+build-impl.xml~
+Thumbs.db
+
 _tmp
 _dev
 
@@ -204,3 +210,4 @@ android/waterworks-v2
 /client/rameses-gov-epayment/dist/
 /client/etracs/rameses-treasury-common/nbproject/private/
 /client/etracs/rameses-treasury-common/build/
+/client/etracs/rameses-treasury-common/dist/

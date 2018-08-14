@@ -30,9 +30,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="formPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="xPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="82" max="32767" attributes="0"/>
+              <EmptySpace pref="72" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -40,6 +40,7 @@
   <SubComponents>
     <Container class="com.rameses.rcp.util.FormPanel" name="formPanel1">
       <Properties>
+        <Property name="captionVAlignment" type="java.lang.String" value="CENTER"/>
         <Property name="captionWidth" type="int" value="100"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[5, 5, 5, 0]"/>
@@ -119,16 +120,15 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="34" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="xButton1" min="-2" pref="64" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="xButton2" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane1" min="-2" pref="299" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="309" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -138,7 +138,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="102" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="112" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -172,9 +172,10 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XList" name="xList1">
               <Properties>
-                <Property name="dynamic" type="boolean" value="true"/>
                 <Property name="items" type="java.lang.String" value="entity.arrayvalues"/>
                 <Property name="name" type="java.lang.String" value="arrayvalue" noResource="true"/>
+                <Property name="dynamic" type="boolean" value="true"/>
+                <Property name="fixedCellHeight" type="int" value="18"/>
                 <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[1, 3, 1, 0]"/>
                 </Property>
@@ -184,19 +185,19 @@
         </Container>
         <Component class="com.rameses.rcp.control.XButton" name="xButton1">
           <Properties>
-            <Property name="mnemonic" type="int" value="97"/>
             <Property name="disableWhen" type="java.lang.String" value="#{mode == &apos;read&apos;}"/>
-            <Property name="immediate" type="boolean" value="true"/>
+            <Property name="mnemonic" type="int" value="97"/>
             <Property name="name" type="java.lang.String" value="addArrayValue" noResource="true"/>
+            <Property name="immediate" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Add"/>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XButton" name="xButton2">
           <Properties>
-            <Property name="mnemonic" type="int" value="114"/>
             <Property name="disableWhen" type="java.lang.String" value="#{mode == &apos;read&apos;}"/>
-            <Property name="immediate" type="boolean" value="true"/>
+            <Property name="mnemonic" type="int" value="114"/>
             <Property name="name" type="java.lang.String" value="removeArrayValue" noResource="true"/>
+            <Property name="immediate" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Remove"/>
           </Properties>
         </Component>

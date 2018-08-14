@@ -34,6 +34,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
@@ -75,6 +76,12 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xDecimalField1.setName("entity.amount"); // NOI18N
         xFormPanel2.add(xDecimalField1);
 
+        xLabel4.setCaption("State");
+        xLabel4.setExpression("#{entity.state}");
+        xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 26));
+        xFormPanel2.add(xLabel4);
+
         xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         xLabel7.setCaption("");
         xLabel7.setExpression("#{entity.voided == 0 ? '' : 'VOIDED'  }");
@@ -101,10 +108,10 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel3.add(xTextField5);
 
-        xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("Receipt No");
         xLabel3.setExpression("#{entity.receiptno}");
+        xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 26));
         xFormPanel3.add(xLabel3);
@@ -117,6 +124,8 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel6);
 
+        xDataTable1.setHandler("itemHandlers.items");
+        xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.title"}
@@ -199,9 +208,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("itemHandlers.items");
         xDataTable1.setIndex(10);
-        xDataTable1.setName("selectedItem"); // NOI18N
 
         xFormPanel4.setCaptionWidth(100);
 
@@ -239,6 +246,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Items", jPanel1);
 
+        xDataTable2.setHandler("itemHandlers.paymentitems");
         xDataTable2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "reftype"}
@@ -331,7 +339,6 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable2.setHandler("itemHandlers.paymentitems");
 
         xFormPanel5.setCaptionWidth(100);
 
@@ -381,6 +388,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("Payments", jPanel2);
 
+        xDataTable3.setHandler("itemHandlers.sharing");
         xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "refitem.title"}
@@ -443,7 +451,6 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable3.setHandler("itemHandlers.sharing");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -511,6 +518,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel5;
     private com.rameses.rcp.control.XFormPanel xFormPanel6;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;

@@ -1,0 +1,6 @@
+<workunit extends="com/rameses/treasury/common/templates/BasicBillingCapturePayment.xml" 
+          rulename="vehiclebilling" contextName="vehicle" txntype="vehicle">
+    <invokers>
+        <invoker folderid="menucategory/vehicle/txn" caption="Capture Payment" action="init"/>
+    </invokers>
+</workunit>

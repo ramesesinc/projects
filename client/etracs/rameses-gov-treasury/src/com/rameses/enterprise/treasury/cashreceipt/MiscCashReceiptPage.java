@@ -138,7 +138,7 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
         xLookupField1.setName("collectiongroup"); // NOI18N
 
         xButton2.setName("fireRules"); // NOI18N
-        xButton2.setVisibleWhen("#{ false }");
+        xButton2.setVisibleWhen("#{ true }");
         xButton2.setImmediate(true);
         xButton2.setText("Run Rules");
 

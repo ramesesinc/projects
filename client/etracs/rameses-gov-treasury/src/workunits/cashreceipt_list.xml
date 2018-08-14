@@ -7,12 +7,19 @@
                  customFilter=" formtype='serial' "
                  role="SHARED" tag="mgmt"/>
 
-        <invoker folderid="menucategory/treasury/collection" caption="SubCollector Cash Receipts" 
+        <invoker folderid="menucategory/treasury/collection" caption="Collector Cash Receipts" 
                  customFilter=" formtype='serial' "
-                 action="init" index="50"> 
-            <action role="COLLECTOR" caption="Collector Cash Receipts" tag="collector"/> 
-            <action role="SUBCOLLECTOR" caption="SubCollector Cash Receipts" tag="subcollector"/> 
-        </invoker> 
+                 role="COLLECTOR"
+                 tag="collector"
+                 action="init" index="50" /> 
+        
+        <invoker folderid="menucategory/treasury/collection" caption="Sub Collector Cash Receipts" 
+                 customFilter=" formtype='serial' "
+                 role="SUBCOLLECTOR"
+                 tag="subcollector"
+                 action="init" index="50" /> 
+           
+        
         
         <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
                  customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"

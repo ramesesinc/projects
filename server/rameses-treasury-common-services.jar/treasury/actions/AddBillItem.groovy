@@ -36,7 +36,14 @@ class AddBillItem extends AbstractAddBillItem {
 		if(  acct ) {
 			setAccountFact( billitem, acct.key );
 		}
-		
+
+		//set the other parameters
+		if( params.year ) billitem.year = params.year.eval();	
+		if( params.month ) billitem.month = params.month.eval();		
+		if( params.fromdate ) billitem.fromdate = params.fromdate.eval();		
+		if( params.todate ) billitem.todate = params.todate.eval();		
+		if( params.remarks ) billitem.remarks = params.remarks.eval();
+
 		addToFacts( billitem );
 	}
 

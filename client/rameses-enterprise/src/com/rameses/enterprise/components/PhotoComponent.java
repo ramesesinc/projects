@@ -56,30 +56,27 @@ public class PhotoComponent extends XComponentPanel {
         jPanel1.setOpaque(false);
 
         addFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clip.png"))); // NOI18N
-        addFile.setCaptionFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        addFile.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        addFile.setMargin(new java.awt.Insets(2, 4, 2, 4));
         addFile.setName("doCapture"); // NOI18N
-        addFile.setText("Add File");
         addFile.setVisibleWhen("#{photo==null && allowCapture==true}");
+        addFile.setFontStyle("font-size: 10;");
+        addFile.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        addFile.setText("Add File");
         jPanel1.add(addFile);
 
         addPhoto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/camera.png"))); // NOI18N
-        addPhoto.setCaptionFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        addPhoto.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        addPhoto.setMargin(new java.awt.Insets(2, 4, 2, 4));
         addPhoto.setName("doCamera"); // NOI18N
-        addPhoto.setText("Add Photo");
         addPhoto.setVisibleWhen("#{photo==null && allowCamera==true}");
+        addPhoto.setFontStyle("font-size: 10;");
+        addPhoto.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        addPhoto.setText("Add Photo");
         jPanel1.add(addPhoto);
 
         changePhoto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
-        changePhoto.setCaptionFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        changePhoto.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        changePhoto.setMargin(new java.awt.Insets(2, 4, 2, 4));
         changePhoto.setName("changePhoto"); // NOI18N
-        changePhoto.setText("Change");
         changePhoto.setVisibleWhen("#{photo!=null && allowChange==true}");
+        changePhoto.setFontStyle("font-size: 10;");
+        changePhoto.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        changePhoto.setText("Change");
         jPanel1.add(changePhoto);
 
         xPhoto1.setName("photo"); // NOI18N

@@ -1,0 +1,9 @@
+<!-- menu category -->
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="vehicle" cols="2">
+    <invokers>
+        <invoker type="vehicle_menu_category" 
+                 visibleWhen="#{self.hasChildren('menucategory/treasury')==true}" 
+                 index="1" action="init"/>
+    </invokers> 
+    <code class="com.rameses.gov.etracs.vehicle.models.VehicleTxnMenu" />
+</workunit>

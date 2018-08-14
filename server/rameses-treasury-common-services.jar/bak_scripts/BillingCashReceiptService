@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import vehicle.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+class BillingCashReceiptService {
+
+	@Service("SingleBillingHandler")
+	def self;
+
+	@Service("SingleBillingService")
+	def billingSvc;
+
+	
+
+	@ProxyMethod
+	public def getInfo( def o ) {
+		if(!o.collectiontype?.handler) throw new Exception("collectiontype handler is required in CashReceiptBillingService.getInfo");
+		if( !o.rulename ) throw new Exception("rulename is required in BillingCashReceiptService");
+
+		def  p = [rulename: o.rulename, collectiontype: [handler:o.collectiontype.handler], params: [:] ];
+		o.each { k,v->
+			if(!k.matches("rulename|collectiontype")) {
+				p.params.put(k,v);
+			}
+		}
+		p.params.include_items = true;
+
+		def pi = billingSvc.execute( p );
+
+		p.params.putAll( pi );
+
+		def rct = self.formatReceiptInfo( p );
+
+		if( rct.payer && !rct.payer.objid ) throw new Exception("Payer must have an objid ");
+		if( !rct.paidby  ) throw new Exception("Paid by is required");
+		if( !rct.paidbyaddress ) throw new Exception("Paid by address is required ");
+		rct.billitems = pi.billitems;
+		rct.collectiontype = o.collectiontype;
+		rct.items = pi.items;
+		rct.amount = pi.amount;
+
+		/************************************************************************************************************************
+		* get also the payment info. This will instruct the PostPaymentService regarding how to update the ledger
+		*************************************************************************************************************************/
+		if(rct.items) {
+			def payInfo = self.getPostPaymentInfo(  rct );
+			if( payInfo ) {
+				if( !payInfo.parentschemaname )
+					throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error parentschemaname is required");	
+				if( !payInfo.items  )
+					throw new Exception("CashReceiptBillingService.getItems getPostPaymentInfo error items is required");
+				payInfo.items.each {
+					if(!it.item?.objid) throw new Exception( "BillingCashReceiptService.getItems getPostPaymentInfo error. item.objid is required in each item" );
+					if( it.refid && !it.reftype ) {
+						throw new Exception( "BillingCashReceiptService.getItems error. getPostPaymentInfo reftype  is required if refid is specified for " + it.item.title );
+					}
+				}
+				payInfo.amount = rct.amount;
+				rct._postpayment = payInfo;
+			}
+		}
+
+		return rct;
+	}
+
+
+}

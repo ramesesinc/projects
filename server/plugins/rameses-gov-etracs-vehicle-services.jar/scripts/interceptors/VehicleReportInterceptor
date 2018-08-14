@@ -1,0 +1,90 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+
+import treasury.utils.*;
+import treasury.facts.*;
+
+class VehicleReportInterceptor {
+	
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@DataContext("vehicle_application_unit")
+	def appUnitEm;
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_permit")
+	def permitEm;
+
+	@Service("BillingRuleService")
+	def billingRuleSvc;
+
+	@DataContext("entityindividual")
+	def entityIndividualEm;
+
+	@Service("BillingProcessService")
+	def billingProcessSvc;
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_application' }")
+	public void getApplication(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def app = appEm.find( [objid: p.parameters.objid ]).first();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
+		result.data = app;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_assessment' }")
+	public void getAssessment(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+
+		def app  = appEm.find( [objid: p.parameters.objid ]).first();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
+
+		def params = [:];
+		params.application = app;
+		def select = "refid:{objid},reftype:{'vehicle_application_fee'},item.*,amount,parentid,year,month";		
+		params.billitems = appFeeEm.select(select).find( [parentid: app.objid] ).list();
+		if(app.dtapproved) params.billdate = app.dtapproved;
+		//params.include_billitems = false;
+		//params.include_items = true;
+
+		def res = billingRuleSvc.execute( [rulename: "vehiclebilling", params: params ] );
+		app.billitems = res.billitems;
+		result.data = app;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_permit' }")
+	public void getPermit(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def app = appEm.find( [objid: p.parameters.objid ]).first();
+		app.vehicleunits = appUnitEm.find( [appid: app.objid ]).list();
+
+		//get individual entity info
+		app.owner = entityIndividualEm.find( [objid: app.owner.objid] ).first();
+
+		result.data = app;
+	}
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'vehicle_billing' }")
+	public void getBilling(def evt) {
+		def p = evt.args[0];
+		def result = evt.result;
+
+		def parms = [:];
+		parms.objid = p.parameters.objid;
+		parms.include_items = false;
+
+		def res = billingProcessSvc.process( [rulename:'vehiclebilling', params: parms ]);
+		def bill = res.application;
+		bill.billitems = res.billitems;
+		bill.billdate = res.billdate;
+		result.data = bill;
+	}
+
+}

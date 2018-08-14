@@ -1,0 +1,60 @@
+import com.rameses.annotations.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import enterprise.utils.*;
+import java.rmi.server.*;
+import java.util.*;
+import vehicle.facts.*;
+
+class VehicleAssessmentInterceptor {
+
+	@DataContext("vehicle_application_fee")
+	def appFeeEm;
+
+	@DataContext("vehicle_application_info")
+	def appInfoEm;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+	@After(pattern="BillingRuleService.execute", eval="#{ args[0].rulename == 'vehicleassessment' && result.askinfos == null }")
+	public void afterBilling(def evt) {
+		def result = evt.result;
+
+		def data = evt.args[0].params;
+		def app = data.application
+		def appid = app.objid;
+
+		//clear first the data before saving
+
+		if(app.fromyear != null && (app.fromyear+1) != app.toyear ) {
+			//if this is the first entry
+			if( app.appyear == app.fromyear) {
+				//remove existing fees based on year
+				appFeeEm.find( [parentid: appid ] ).delete(); 
+				appInfoEm.find( [parentid: appid ] ).delete(); 
+				result.infos?.each {
+					it.parent = [objid: appid ];
+					appInfoEm.create( it );
+				}
+			}
+		}
+		else {
+			//remove existing fees and infos	
+			appFeeEm.find( [parentid: appid ] ).delete(); 
+			appInfoEm.find( [parentid: appid ] ).delete(); 
+			result.infos?.each {
+				it.parent = [objid: appid ];
+				appInfoEm.create( it );
+			}
+		}
+
+		//SAVE THE APP FEE HERE.
+		result.items?.each {
+			it.parent = [objid: appid ];
+			appFeeEm.create( it );
+		}
+	}
+	
+
+}	

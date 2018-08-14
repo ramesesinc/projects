@@ -4,7 +4,7 @@
 		<complex name="parent" ref="vehicle_application" jointype="many-to-one" includefields="appno" required="true">
 			<key field="parentid" target="objid"/>
 		</complex>	
-		<field name="name" />
+		<field name="name" required="true" />
 		<field name="stringvalue" />
 		<field name="decimalvalue" type="decimal"/>
 		<field name="intvalue" type="integer"/>

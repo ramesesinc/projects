@@ -33,6 +33,9 @@ public class DateEntryPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(100);
+
         xDateField1.setCaption("Enter Date");
         xDateField1.setName("date"); // NOI18N
         xDateField1.setRequired(true);

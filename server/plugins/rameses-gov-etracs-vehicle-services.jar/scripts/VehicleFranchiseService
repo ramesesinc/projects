@@ -26,24 +26,9 @@ class VehicleFranchiseService {
 	@Env
 	def env;
 
-	def pattern = Pattern.compile("\\[.*?\\]");
-
-	public def formatNumber( def d, def handler, int num ) {
-	    def m = pattern.matcher( d );
-	    def sb = new StringBuilder();
-	    int start = 0;
-	    
-	    while(m.find()) {
-	        int end = m.start();
-	        sb.append( d.substring(start, end)  );
-	        String mg = m.group();
-	        mg = mg.substring(1, mg.length()-1);
-	        sb.append( handler(mg, num) );
-	        start = m.end();
-	    }
-	    if( start < d.length() ) sb.append(d.substring(start));
-	    return sb.toString();
-	}
+	@Service("ControlNoGeneratorService")
+	def controlNoGenerator;
+	
 
 	@ProxyMethod
 	public void generate( def o ) {
@@ -59,18 +44,25 @@ class VehicleFranchiseService {
 		if(!g.controlpattern) throw new Exception("controlpattern is required in vehicletype");
 
 		//find the qty issued found in cluster
-		def h = vtc.find( [objid: cluster.objid ] ).first();
-		if(!h) throw new Exception("cluster " + cluster.objid + " not found");
+		int issued = 0;
+		if( !cluster ) {
+			issued = g.issued;
+		}
+		else {
+			def h = vtc.find( [objid: cluster.objid ] ).first();
+			if(!h) throw new Exception("cluster " + cluster.objid + " not found");
+			issued = h.issued;
+		}
 
-		int issued = h.issued;
 		int qty = (o.qty+"").toInteger();
 		def dt = dateSvc.getServerDate();
 
-		def handler = { pttn, num ->
+		def handler = { pttn, num, buff ->
 			if( pttn == "org") {
 				return env.ORGCODE;
 			}
 			else if( pttn == "cluster") {
+				if( !cluster?.code ) return "";
 				return cluster.code;
 			}
 			else if(pttn.startsWith("%")) {
@@ -84,15 +76,21 @@ class VehicleFranchiseService {
 		}
 		
 		for(int i=(issued+1); i < (qty+issued+1); i++ ) {
-			def m = [vehicletype: g.objid];
+			def m = [vehicletypeid: g.objid];
 			m.cluster = cluster;
-		    m.controlno = formatNumber( g.controlpattern, handler, i );
+		    m.controlno = controlNoGenerator.formatNumber( g.controlpattern, handler, i );
 		    m.state = 'OPEN';
 			franchiseEm.create( m );
 		}
 
-		//update the issued in cluster
-		vtc.find( [objid: cluster.objid ] ).update( [issued: issued + qty] );
+		//update the issued in cluster or vehicle type
+		if(!cluster) {
+			vt.find( [objid: vehicletype] ).update( [issued: issued + qty] );
+		}
+		else {
+			vtc.find( [objid: cluster.objid ] ).update( [issued: issued + qty] );
+		}
+		
 	}
 
 

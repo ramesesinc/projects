@@ -49,13 +49,15 @@
                 }
             }
             
+            def appEnv = com.rameses.rcp.framework.ClientContext.currentContext.appEnv; 
+            
             def report =[
                 getReportName : { return getFaasReportName() },
                 getSubReports : { return getFaasSubReports() },
                 getReportData : { return reportdata; },
                 getParameters : { 
                     def params = paramSvc.getStandardParameter(); 
-                    params.ImageInputStream = DBImageUtil.getInstance().getImage2(entity.objid)
+                    params.JSON_SEVICE_PATH = appEnv['app.host'] +'/'+ appEnv['app.cluster'] +'/json'
                     params.putAll(reportparams);
                     return params 
                 }

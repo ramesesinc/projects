@@ -37,8 +37,6 @@ class MasterListModel extends CrudListModel
         def entity = [:]
         entity.title = workunit?.info?.workunit_properties?.windowTitle;
         entity.schemaname = schemaName;
-        entity.servicename = 'ProvinceMasterDataSyncHandler';
-        entity.methodname = 'syncData';
-        return Inv.lookupOpener('rptis_master:sync', [entity:entity]);
+       return Inv.lookupOpener('rptis:master:sync', [entity:entity]);
     }
 }

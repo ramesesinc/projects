@@ -36,15 +36,6 @@ class GeneralRevisionService
 	@Service('RPTUtil')	
 	def utilSvc
 
-	@DataContext('batchgr_error')
-	def em_batchgr_error 
-
-	@DataContext('batchgr_items_forrevision')
-	def em_batchgr_items_forrevision 
-
-	@DataContext('batchgr_log')
-	def em_batchgr_log 
-
 	@ActiveDB(value='dbimage', adapter="image")
 	def em_dbimage 
 
@@ -53,6 +44,9 @@ class GeneralRevisionService
     
     @Service('RPTRequirementService')
     def reqSvc
+
+    @DataContext('faas_sketch')
+    def em_sketch
 
 
 
@@ -94,10 +88,9 @@ class GeneralRevisionService
 		faas.rp.ry = info.newry 
 		faas.rpu.rp = faas.rp
 		faas.restrictions.each{ it.objid = 'FR' + new java.rmi.server.UID()}
-		if (!faas.memoranda) faas.memoranda = var.gr_default_memoranda
+		if (!faas.memoranda) faas.memoranda = info.batchgr?.memoranda
 		buildDefaultSignatories(faas, info)
 		rpuSvc.reviseRpu(faas.rpu)
-		insertSketch(faas)
 		buildRequirements(faas)
 		return faas 
 	}
@@ -128,14 +121,10 @@ class GeneralRevisionService
 	}
 
 	void buildDefaultSignatories(faas, info){
-		def dtsigned = dtSvc.serverDate 
-		updateSignatory(faas, 'appraiser', dtsigned, var.gr_default_appraiser, var.gr_default_appraiser_title)
-		updateSignatory(faas, 'recommender', dtsigned, var.gr_default_recommender, var.gr_default_recommender_title)
-		updateSignatory(faas, 'approver', dtsigned, var.gr_default_approver, var.gr_default_approver_title)
-	}
-
-	void updateSignatory(faas, field, dtsigned, name, title ){
-		faas[field] = [name:name, title:title, dtsigned:dtsigned]
+		faas.taxmapper = (info.batchgr ? info.batchgr.taxmapper : [:])
+		faas.appraiser = (info.batchgr ? info.batchgr.appraiser : [:])
+		faas.recommender = (info.batchgr ? info.batchgr.recommender : [:])
+		faas.approver = (info.batchgr ? info.batchgr.approver : [:])
 	}
 
 	@ProxyMethod
@@ -143,27 +132,31 @@ class GeneralRevisionService
 		info._checkTxnRef = true 
 		def faas = initGeneralRevision( info )
 		def entity = faasSvc.createFaas(faas)
-		em_batchgr_error.find([objid:info.faas.objid]).delete()
-		em_batchgr_items_forrevision.find([objid:info.faas.objid]).delete()
-		em_batchgr_log.save(info.faas)
+		insertSketch(faas)
 		return entity 
 	}	
 
 
 	void insertSketch(faas){
-		if (utilSvc.isTrue(var.gr_carry_over_sketch)){
-			def param = [:]
-			param.newrefid = faas.objid
-			param.prevrefid = faas.previousfaases[0].prevfaasid
-			param.ry = faas.rpu.ry 
-			try{
-				em_dbimage.insertPreviousSketch(param)
-				em_dbimage.insertPreviousSketchItems(param)
-			}
-			catch(e){
-				//ignore 
-			}
+		def param = [:]
+		param.newrefid = faas.objid
+		param.prevrefid = faas.previousfaases[0].prevfaasid
+		param.ry = faas.rpu.ry 
+		try{
+			em_dbimage.insertPreviousSketch(param)
+			em_dbimage.insertPreviousSketchItems(param)
 		}
+		catch(e){
+			//ignore 
+		}
+
+		//insert sketch drawing
+		def olddrawing = em_sketch.find([objid: param.prevrefid]).first()
+		if (olddrawing) {
+			olddrawing.objid = faas.objid
+			em_sketch.save(olddrawing)
+		}
+
 	}
 
 	/*--------------------------------------------------------

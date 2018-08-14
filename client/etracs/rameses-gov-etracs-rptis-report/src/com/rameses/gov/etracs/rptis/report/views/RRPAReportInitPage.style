@@ -39,3 +39,13 @@
 "classifications"[entity.reporttype?.type != 'standard']{
     visible:true;
 }
+
+"entity.taxability" [entity.reporttype?.type == 'lift_restriction'] {
+    visible:true;
+    required:true;
+    allowNull:false;
+}
+
+"entity.taxability" [entity.reporttype?.type != 'lift_restriction'] {
+    visible:false;
+}

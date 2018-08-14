@@ -7,13 +7,13 @@
             target="window" 
             role="ASSESSOR_REPORT,REPORT" />
         
-        <invoker type="assessmentnotice:create" action="init" caption="Notice of Assessment" target="self"/>
-        <invoker type="assessmentnotice:open" action="open" caption="Notice of Assessment" target="self"/>
+        <invoker type="assessmentnotice:create" action="init" caption="Notice of Assessment" target="self" role="RECORD,RECORD_APPROVER" />
+        <invoker type="assessmentnotice:open" action="open" caption="Notice of Assessment" target="self" role="RECORD,RECORD_APPROVER"/>
         
         <invoker type="formActions" action="_close" caption="Close" visibleWhen="#{mode != 'receive'}" immediate="true" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode=='create'}"/>
         
-        <invoker type="formActions" action="receive" caption="Receive" mnemonic="r" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='read'}"/>
+        <invoker type="formActions" action="receive" caption="Receive" mnemonic="r" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='read'}"  role="RECORD,RECORD_APPROVER"/>
         <invoker type="formActions" action="cancelReceive" caption="Cancel" mnemonic="c" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='receive'}" immediate="true"/>
         <invoker type="formActions" action="receiveNotice" caption="Save" mnemonic="s" visibleWhen="#{entity.state == 'OPEN' &amp;&amp; mode=='receive'}"/>
         

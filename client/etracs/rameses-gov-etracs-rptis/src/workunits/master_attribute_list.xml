@@ -14,6 +14,6 @@
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/txntypes.png"/>
+                 icon="home/icons/attributes.png"/>
     </invokers>
 </workunit>

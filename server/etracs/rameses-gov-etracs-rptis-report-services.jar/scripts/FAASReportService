@@ -2,6 +2,10 @@ import com.rameses.annotations.*
 import com.rameses.common.*;
 import com.rameses.util.*;
 import com.rameses.services.extended.*;
+import com.rameses.rcp.draw.*;
+import java.awt.image.*;
+import java.io.ByteArrayOutputStream;
+import javax.imageio.ImageIO;
 
 class FAASReportService
 {
@@ -28,6 +32,9 @@ class FAASReportService
 
 	@Service('RPTUtil')
 	def util
+
+	@Service('DBImageService')
+	def imgSvc
 
 	@DataContext('faas_previous')
 	def em_faas_previous 
@@ -258,5 +265,62 @@ class FAASReportService
 		}
 
 	}	
+
+	@ProxyMethod 
+	public def getSketch( params ) { 
+		def NO_IMAGE = new byte[0];
+
+		def mf = new MediaFile(); 
+		mf.content = NO_IMAGE; 
+		mf.contentType = 'image/jpg'; 
+
+		if ( params.objid ) { 
+			def image_bytes = null;
+
+			def sketch = faasSvc.openSketch(params)
+			if (sketch && sketch.drawing && sketch.drawing.figures){
+				image_bytes = getDrawingSketchBytes(sketch)
+			}
+			else{
+				image_bytes = imgSvc.getImageBytes(params)
+			}
+
+			if ( image_bytes ) {
+				mf.content = image_bytes
+			} else {
+				mf.content = NO_IMAGE; 
+			} 
+		} 
+		return mf; 
+	} 
+
+
+	def getDrawingSketchBytes(sketch){
+		try{
+			def editor = new DrawingEditor(new StdDrawing())
+	        editor.loadDrawing(null, sketch.drawing)
+	        return toByteArray(editor.getImage())
+		}
+		catch(e){
+			e.printStackTrace()
+			return null
+		}
+	}
+
+	def toByteArray(image){
+		def baos = null
+		try{
+			baos = new ByteArrayOutputStream()
+			ImageIO.write(image, "png", baos)
+		}
+		finally{
+			try{
+				baos.close()
+			}catch(e){
+				//ignore 
+			}
+		}
+		return (baos ? baos.toByteArray() : null )
+	}
 
 }

@@ -18,6 +18,9 @@ class FAASLookupService
 		params.orderby    = ''
 		params.columns    = getColumns()
 
+		if (params.objid){
+			params.fixfilters += ' and f.objid = $P{objid} '
+		}
 		if (params.state){
 			params.fixfilters += ' and f.state = $P{state} '
 		}

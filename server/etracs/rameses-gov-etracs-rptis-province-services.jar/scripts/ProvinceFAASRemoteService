@@ -31,10 +31,8 @@ class ProvinceFAASRemoteService
 	public void postManualApprovedTransaction(faas){
 		def oldfaas = supportSvc.findFaasById(faas)
 		if (!oldfaas){
-			faas.state = 'FORAPPROVAL'
-			faas.datacapture = 0 
 			supportSvc.saveFaasData(faas)
-			faasSvc.manuallyApproveFaas(faas)
+			faasSvc.approveFaasByMunicipality(faas)
 			println 'Manually Approved FAAS has been successfully created.'
 		}
 	}

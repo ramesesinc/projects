@@ -1,0 +1,7 @@
+"entity.*" [processing == false] {
+    enabled:true;
+}
+
+"entity.*" [processing == true] {
+    enabled:false;
+}

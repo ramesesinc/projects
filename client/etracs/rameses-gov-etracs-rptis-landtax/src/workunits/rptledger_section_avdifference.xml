@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptledger:section" action="init" caption="Tax Difference" index="11"/> 
+        
+        <invoker type="itemActions" 
+                 action="addItem" caption="Add" mnemonic="a" 
+                 visibleWhen="#{entity.state=='APPROVED'}"  
+                role="ADMIN" />
+            
+        <invoker type="itemActions" 
+                 action="deleteItem" caption="Delete" 
+                 visibleWhen="#{entity.state=='APPROVED' &amp;&amp; selectedItem != null &amp;&amp; !selectedItem.paid}"  
+                 role="ADMIN" mnemonic="d" depends="selectedItem" />
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerAvDifferenceSectionModel">
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.landtax.views.RPTLedgerAvDifferenceSectionPage" />
+    </pages>
+</workunit>

@@ -43,6 +43,7 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
@@ -160,10 +161,16 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
 
         formPanel3.add(xSeparator1);
 
+        xDateField1.setCaption("Date Appraised");
+        xDateField1.setName("rpu.dtappraised"); // NOI18N
+        xDateField1.setCaptionWidth(100);
+        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel3.add(xDateField1);
+
         xNumberField1.setCaption("Year Acquired");
+        xNumberField1.setName("yearacquired"); // NOI18N
         xNumberField1.setCaptionWidth(100);
         xNumberField1.setFieldType(int.class);
-        xNumberField1.setName("yearacquired"); // NOI18N
         xNumberField1.setPreferredSize(new java.awt.Dimension(0, 18));
         xNumberField1.setRequired(true);
         formPanel3.add(xNumberField1);
@@ -210,9 +217,9 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xNumberField6.setPreferredSize(new java.awt.Dimension(0, 18));
         formPanel3.add(xNumberField6);
 
+        xCheckBox3.setName("autodepreciate"); // NOI18N
         xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox3.setName("autodepreciate"); // NOI18N
         xCheckBox3.setText("Auto Depreciate?");
 
         xCheckBox5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -238,10 +245,6 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                         .add(xCheckBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(90, 90, 90)))
                 .addContainerGap())
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(114, Short.MAX_VALUE)
-                .add(xCheckBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(71, 71, 71))
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -251,6 +254,10 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(xCheckBox5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                         .addContainerGap())))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+                .add(0, 0, Short.MAX_VALUE)
+                .add(xCheckBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(72, 72, 72))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -265,9 +272,9 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                 .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(xCheckBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -443,7 +450,7 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -464,6 +471,7 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XCheckBox xCheckBox4;
     private com.rameses.rcp.control.XCheckBox xCheckBox5;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField10;
     private com.rameses.rcp.control.XDecimalField xDecimalField11;

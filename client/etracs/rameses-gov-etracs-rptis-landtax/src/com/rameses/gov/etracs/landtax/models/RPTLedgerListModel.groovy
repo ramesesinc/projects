@@ -1,7 +1,8 @@
 package com.rameses.gov.etracs.landtax.models;
 
-import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*
 import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
 import com.rameses.seti2.models.*;
 
 class RPTLedgerListModel extends CrudListModel
@@ -18,4 +19,12 @@ class RPTLedgerListModel extends CrudListModel
             [id:'CANCELLED', title:'CANCELLED'],
         ]
     }   
+    
+    boolean isCreateAllowed() {
+        if ('PROVINCE'.equalsIgnoreCase(OsirisContext.env.ORGCLASS)) {
+            return false;
+        } else {
+            return super.isCreateAllowed();
+        }
+    }
 }

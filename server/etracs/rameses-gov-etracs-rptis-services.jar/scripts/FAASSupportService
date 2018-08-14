@@ -78,6 +78,9 @@ class FAASSupportService
 			faasdata.stewardfaas = stewardshipSvc.findStewardFaas(buildStewardFaasParam(faasdata))
 		}
 
+
+		faasdata.drawing = faasSvc.openSketch(faas)
+
 		return faasdata 
 	} 
 
@@ -118,6 +121,8 @@ class FAASSupportService
 			faasSvc.cancelPreviousFaases(faasdata.parentfaas)
 			stewardshipSvc.insertStewardFaas(faasdata.stewardfaas)
 		}
+
+		faasSvc.saveSketch(faasdata.drawing)
 	}
 
 

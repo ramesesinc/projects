@@ -15,10 +15,10 @@ public class AssessedValue
 
     public AssessedValue(){}
 
-    public AssessedValue(item){
+    public AssessedValue(item, classification, actualuse){
         this.objid = item.objid
-        this.classification = item.classification
-        this.actualuse = item.actualuse
+        this.classification = classification
+        this.actualuse = actualuse
         this.rputype = item.rputype 
         this.txntype = item.txntype 
         this.year = item.year

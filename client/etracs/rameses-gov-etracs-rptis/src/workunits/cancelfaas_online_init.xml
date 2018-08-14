@@ -2,16 +2,16 @@
 <workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
     <invokers>       
         <invoker type="quick_launcher" code="CF01" action="init" caption="Cancel FAAS" 
-            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="20"  />
             
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Cancel FAAS" 
-            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="20"  />
         
         <invoker folderid="/home/rpt/txn" action="init" caption="Cancel FAAS" 
-            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="20"  />
         
         <invoker folderid="/menu/txn/rpt" action="init" caption="Cancel FAAS" 
-            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="10"  />
+            txntype="CTD" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createGeneralRevision" index="20"  />
             
     </invokers>
     <code class="com.rameses.gov.etracs.rptis.models.FAASInitCancelModel">

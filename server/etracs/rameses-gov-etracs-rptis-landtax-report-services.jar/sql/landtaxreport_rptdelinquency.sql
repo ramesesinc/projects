@@ -1,19 +1,3 @@
-[getOpenLedgersByBarangay]
-SELECT 
-	rl.objid, rl.barangayid, rl.tdno
-FROM rptledger rl
-	LEFT JOIN faas f ON rl.faasid = f.objid 
-WHERE barangayid = $P{barangayid}
-  AND rl.state = 'APPROVED'
-  AND (
-  		(rl.lastyearpaid < $P{cy} OR (rl.lastyearpaid = $P{cy} AND rl.lastqtrpaid < 4))
-  		or 
- 		(exists(select * from rptledger_item where parentid = rl.objid))
-  )
-  AND rl.totalav > 0 
-  AND rl.taxable = 1 
-  
-
 [getDelinquentLedgers]
 SELECT 
 	e.name AS taxpayername,

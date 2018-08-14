@@ -31,7 +31,10 @@ public class BIRCertificationPage extends javax.swing.JPanel {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xTextField2 = new com.rameses.rcp.control.XTextField();
@@ -76,11 +79,45 @@ public class BIRCertificationPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Certification Detail");
         formPanel1.setBorder(xTitledBorder1);
 
+        xComboBox1.setCaption("Report Type");
+        xComboBox1.setExpression("#{item.caption}");
+        xComboBox1.setItems("certificationTypes");
+        xComboBox1.setName("entity.certtype"); // NOI18N
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaptionWidth(135);
+        xComboBox1.setImmediate(true);
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox1.setRequired(true);
+        formPanel1.add(xComboBox1);
+
         xIntegerField1.setCaption("As of Year");
         xIntegerField1.setCaptionWidth(135);
         xIntegerField1.setName("entity.asofyear"); // NOI18N
         xIntegerField1.setRequired(true);
         formPanel1.add(xIntegerField1);
+
+        xLookupField2.setCaption("TD No.");
+        xLookupField2.setDepends(new String[] {"entity.certtype"});
+        xLookupField2.setExpression("#{entity.tdno}");
+        xLookupField2.setHandler("lookupFaas");
+        xLookupField2.setName("entity.tdno"); // NOI18N
+        xLookupField2.setCaptionWidth(135);
+        xLookupField2.setIndex(2);
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 21));
+        xLookupField2.setRequired(true);
+        formPanel1.add(xLookupField2);
+
+        xLabel4.setCaption("Taxpayer");
+        xLabel4.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
+        xLabel4.setExpression("#{entity.taxpayer.name}");
+        xLabel4.setName("entity.taxpayername"); // NOI18N
+        com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel4.setBorder(xLineBorder1);
+        xLabel4.setCaptionWidth(135);
+        xLabel4.setIndex(3);
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 21));
+        formPanel1.add(xLabel4);
 
         xLookupField1.setCaption("Taxpayer");
         xLookupField1.setCaptionWidth(135);
@@ -92,9 +129,9 @@ public class BIRCertificationPage extends javax.swing.JPanel {
         xLookupField1.setRequired(true);
         formPanel1.add(xLookupField1);
 
-        com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
-        xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
-        xLabel3.setBorder(xLineBorder1);
+        com.rameses.rcp.control.border.XLineBorder xLineBorder2 = new com.rameses.rcp.control.border.XLineBorder();
+        xLineBorder2.setLineColor(new java.awt.Color(153, 153, 153));
+        xLabel3.setBorder(xLineBorder2);
         xLabel3.setCaption("Address");
         xLabel3.setCaptionWidth(135);
         xLabel3.setDepends(new String[] {"entity.taxpayer", "entity.tdno", "entity.certtype"});
@@ -223,7 +260,6 @@ public class BIRCertificationPage extends javax.swing.JPanel {
         xCheckBox1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("officialuse"); // NOI18N
-        xCheckBox1.setOpaque(false);
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setText("  Is for Official Use?");
         formPanel1.add(xCheckBox1);
@@ -278,12 +314,13 @@ public class BIRCertificationPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Certification Information", jPanel1);
 
+        xDataTable1.setHandler("listHandler");
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "selected"}
@@ -296,6 +333,8 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Boolean.class, true, false)}
             }),
@@ -309,6 +348,8 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -322,6 +363,8 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -335,6 +378,8 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -348,6 +393,8 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -361,6 +408,8 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             }),
@@ -374,11 +423,12 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.DecimalColumnHandler("#,##0.00", -1.0, -1.0, false, 2)}
             })
         });
-        xDataTable1.setHandler("listHandler");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 153));
@@ -414,7 +464,7 @@ public class BIRCertificationPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -454,6 +504,7 @@ public class BIRCertificationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
@@ -461,7 +512,9 @@ public class BIRCertificationPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XSeparator xSeparator1;

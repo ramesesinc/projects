@@ -54,17 +54,14 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         xDecimalField3 = new com.rameses.rcp.control.XDecimalField();
-        xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xSeparator4 = new com.rameses.rcp.control.XSeparator();
-        xNumberField2 = new com.rameses.rcp.control.XNumberField();
-        xComboBox7 = new com.rameses.rcp.control.XComboBox();
 
         setPreferredSize(new java.awt.Dimension(500, 511));
 
@@ -94,7 +91,7 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xSeparator5.setLayout(xSeparator5Layout);
         xSeparator5Layout.setHorizontalGroup(
             xSeparator5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 431, Short.MAX_VALUE)
+            .add(0, 461, Short.MAX_VALUE)
         );
         xSeparator5Layout.setVerticalGroup(
             xSeparator5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -131,7 +128,7 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xSeparator2.setLayout(xSeparator2Layout);
         xSeparator2Layout.setHorizontalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 431, Short.MAX_VALUE)
+            .add(0, 461, Short.MAX_VALUE)
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -239,32 +236,18 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
         xDecimalField3.setRequired(true);
         formPanel1.add(xDecimalField3);
 
-        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
-
-        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
-        xSeparator1.setLayout(xSeparator1Layout);
-        xSeparator1Layout.setHorizontalGroup(
-            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 431, Short.MAX_VALUE)
-        );
-        xSeparator1Layout.setVerticalGroup(
-            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 10, Short.MAX_VALUE)
-        );
-
-        formPanel1.add(xSeparator1);
-
         xFormPanel2.setCaption("");
         xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
         xFormPanel2.setPreferredSize(new java.awt.Dimension(0, 21));
         xFormPanel2.setShowCaption(false);
 
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCaption("");
-        xCheckBox1.setCaptionWidth(20);
-        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setName("entity.taxable"); // NOI18N
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setCaptionWidth(20);
+        xCheckBox1.setCellPadding(new java.awt.Insets(0, 110, 0, 0));
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox1.setPreferredSize(new java.awt.Dimension(90, 21));
         xCheckBox1.setText(" Taxable?");
         xFormPanel2.add(xCheckBox1);
@@ -292,57 +275,44 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
 
         formPanel1.add(xFormPanel2);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Tax and Partial Payment Info");
-        formPanel2.setBorder(xTitledBorder2);
-        formPanel2.setCaptionWidth(120);
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
 
-        xNumberField1.setCaption("Effectivity Year");
-        xNumberField1.setFieldType(Integer.class);
+        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 461, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 10, Short.MAX_VALUE)
+        );
+
+        formPanel1.add(xSeparator1);
+
+        formPanel2.setCaptionWidth(120);
+        formPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        formPanel2.setPadding(new java.awt.Insets(5, 0, 5, 0));
+        formPanel2.setShowCaption(false);
+
+        xNumberField1.setCaption("Effectivity Year ");
         xNumberField1.setName("entity.effectivityyear"); // NOI18N
+        xNumberField1.setFieldType(Integer.class);
         xNumberField1.setPattern("0000");
         xNumberField1.setPreferredSize(new java.awt.Dimension(150, 19));
         xNumberField1.setRequired(true);
         formPanel2.add(xNumberField1);
 
-        xComboBox3.setCaption("Effectivity Qtr");
+        xComboBox3.setCaption("Qtr");
         xComboBox3.setItems("quarters");
         xComboBox3.setName("entity.effectivityqtr"); // NOI18N
-        xComboBox3.setPreferredSize(new java.awt.Dimension(150, 20));
+        xComboBox3.setCaptionWidth(50);
+        xComboBox3.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xComboBox3.setPreferredSize(new java.awt.Dimension(50, 20));
         xComboBox3.setRequired(true);
         formPanel2.add(xComboBox3);
 
-        xSeparator4.setCaption("Partial Payment");
-        xSeparator4.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
-        xSeparator4.setPreferredSize(new java.awt.Dimension(0, 20));
-
-        org.jdesktop.layout.GroupLayout xSeparator4Layout = new org.jdesktop.layout.GroupLayout(xSeparator4);
-        xSeparator4.setLayout(xSeparator4Layout);
-        xSeparator4Layout.setHorizontalGroup(
-            xSeparator4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 286, Short.MAX_VALUE)
-        );
-        xSeparator4Layout.setVerticalGroup(
-            xSeparator4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
-        );
-
-        formPanel2.add(xSeparator4);
-
-        xNumberField2.setCaption("Last Year Paid");
-        xNumberField2.setFieldType(Integer.class);
-        xNumberField2.setName("entity.lastyearpaid"); // NOI18N
-        xNumberField2.setPattern("0000");
-        xNumberField2.setPreferredSize(new java.awt.Dimension(150, 19));
-        xNumberField2.setRequired(true);
-        formPanel2.add(xNumberField2);
-
-        xComboBox7.setCaption("Last Qtr. Paid");
-        xComboBox7.setItems("quarters");
-        xComboBox7.setName("entity.lastqtrpaid"); // NOI18N
-        xComboBox7.setPreferredSize(new java.awt.Dimension(150, 20));
-        xComboBox7.setRequired(true);
-        formPanel2.add(xComboBox7);
+        formPanel1.add(formPanel2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -350,19 +320,15 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 445, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 300, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 475, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -377,7 +343,6 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XComboBox xComboBox6;
-    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
@@ -386,10 +351,8 @@ public class RPTLedgerManualInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
-    private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
-    private com.rameses.rcp.control.XSeparator xSeparator4;
     private com.rameses.rcp.control.XSeparator xSeparator5;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

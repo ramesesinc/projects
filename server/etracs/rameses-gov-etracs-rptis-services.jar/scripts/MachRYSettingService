@@ -300,12 +300,65 @@ public class MachRYSettingService
     }
 
 
+
+    /*----------------------------------------------------------
+    * SYNC support
+    ----------------------------------------------------------*/
+    @ProxyMethod
+    public void sync( settings ) {
+        settings.each{ setting ->
+            em_mach.save(setting)
+
+            setting.lgus = em_rysettinglgu.find([rysettingid:setting.objid, lguid: env.ORGID]).list()
+            if (!setting.lgus){
+                setting.lgus << [
+                    objid: 'RSL' + new java.rmi.server.UID(),
+                    rysettingid: setting.objid,
+                    lguid: env.ORGID,
+                    barangayid: null,
+                    lguname: env.ORGNAME,
+                    settingtype: 'mach',
+                ]
+            }
+
+            setting.lgus.each{
+                em_rysettinglgu.save(it)
+            }
+
+            setting.assesslevels.each{lvl -> 
+                saveAssessLevel(lvl)
+                lvl.ranges.each{ range ->
+                    saveRange(range)
+                }
+            }
+
+            setting.forexes.each{
+                saveForex(it)
+            }
+        }
+    }
+
+
+    /*---------------------------------------------------------
+    *
+    * @DEPRECATED 
+    *
+    ---------------------------------------------------------*/
     @ProxyMethod
     public void syncData( msg ) {
-        println 'Synching data -> ' + msg.msgtype
-
         if (msg.msgtype == 'machrysetting'){
             em_mach.save( msg.data )
+            msg.data.lgus = em_rysettinglgu.find([rysettingid:msg.data.objid, lguid: env.ORGID]).list()
+            if (!msg.data.lgus){
+                msg.data.lgus << [
+                    objid: 'RSL' + new java.rmi.server.UID(),
+                    rysettingid: msg.data.objid,
+                    lguid: env.ORGID,
+                    barangayid: null,
+                    lguname: env.ORGNAME,
+                    settingtype: 'land',
+                ]
+            }
             msg.data.lgus?.each{
                 em_rysettinglgu.save(it)
             }

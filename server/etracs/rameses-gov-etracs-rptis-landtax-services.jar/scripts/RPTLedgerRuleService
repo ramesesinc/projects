@@ -26,6 +26,9 @@ public class RPTLedgerRuleService
 	@Service('RPTLedgerService')
 	def ledgerSvc 
 
+	@DataContext('rpttaxincentive_item')
+	def em_incentive_item 
+
 
 	def RULESET 			= 'rptledger'
 	def FACT_PACKAGE 		= 'rptledger.'
@@ -59,12 +62,13 @@ public class RPTLedgerRuleService
 		def facts = []
 		facts << new CurrentDate(currdate)
 		facts << new EffectiveDate(currdate)
-		facts << new RPTLedgerFact(ledger)
+		def ledgerfact = new RPTLedgerFact(ledger)
+		facts << ledgerfact 
 		ledger.faases.each{faas ->
 			def item = [:]
 			item.objid = faas.objid 
-			item.classification = faas.classification
-			item.actualuse = faas.actualuse
+			item.classification = faas.classification?.objid 
+			item.actualuse = faas.actualuse?.objid 
 			item.rputype = ledger.rputype 
 			item.txntype = faas.txntype.objid 
 		    item.year = yr 
@@ -75,12 +79,15 @@ public class RPTLedgerRuleService
 
 		    ledgerSvc.calcLedgerItemAssessedValue(item)
 
-		    item.classification = new Classification(faas.classification)
-			item.actualuse = new Classification(faas.actualuse)
-			facts << item.classification
-			facts << item.actualuse
-		    facts << new AssessedValue(item)
+		    def classification = new Classification(faas.classification)
+			def actualuse = new Classification(faas.actualuse)
+			facts << classification
+			facts << actualuse
+		    facts << new AssessedValue(item, classification, actualuse)
 		}
+
+		buildIncentiveFacts(facts, ledgerfact)
+
 		return facts
 	}
 
@@ -92,6 +99,14 @@ public class RPTLedgerRuleService
 		actions.addCommand('add-sh', new AddTax(request:request, revtype:'sh', priority:2000))
 		actions.addCommand('add-firecode', new AddTax(request:request, revtype:'firecode', priority:1000))
 		actions.addCommand('calc-tax', new CalcTax(numSvc:numSvc))
+		actions.addCommand('apply-incentive', new ApplyIncentive(numSvc:numSvc))
 		return actions 
+	}
+
+	void buildIncentiveFacts(facts, ledgerfact){
+		def incentives = em_incentive_item.find([rptledgerid:ledgerfact.objid]).list()
+		incentives.each{
+			facts << new RPTIncentive(ledgerfact, it)
+		}
 	}
 }

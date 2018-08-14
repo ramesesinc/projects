@@ -188,8 +188,13 @@ public class RPTBillingRuleService
 
 	boolean checkMissedPayment(rptledger, bill){
 		//1st qtr, no missed payment 
-		if (bill.cqtr == 1) 
+		if (bill.cqtr == 1) {
 			return false 
+		}
+
+		if (rptledger.lastyearpaid == bill.cy && rptledger.lastqtrpaid + 1 == bill.cqtr){
+			return false
+		}
 
 
 		def payments = em.getCurrentYearCredits([objid:rptledger.objid, cy:bill.cy])

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit extends="rpt_wtemplates/CertificationController.xml">
+    <invokers>
+        <invoker folderid="/explorer/txn/rpt/cert/bir" action="init" 
+                 caption="Land with No Improvements" 
+                 opener="landnoimprovbir" index="3" 
+                role="CERTIFICATION_ISSUER,RECORD" 
+                 permission="certification.landholding"/>
+            
+        <invoker type="landnoimprovbir:open" action="open" caption="Land with No Improvements" /> 
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.report.models.LandWithNoImprovementBIRModel"/>
+    <pages>
+        <page template="com.rameses.gov.etracs.rpt.report.certification.RPTCertificationPage"/>
+    </pages>
+</workunit>

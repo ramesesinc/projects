@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:formActions" action="init" caption="Sketch" index="6" visibleWhen="#{entity._resolve == null || entity._resolve == false}"/>
+        <invoker type="faasmain:formActions" action="init" caption="Sketch" index="6" />
+        <invoker type="sketch:open" action="init" caption="Sketch" index="6" />
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="B" visibleWhen="#{mode=='read'}"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="C" visibleWhen="#{mode=='edit'}"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="E" visibleWhen="#{allowEdit==true &amp;&amp; mode=='read'}" role="TAXMAPPER,ADMIN"/>
+        <invoker type="formActions" action="update" caption="Update" mnemonic="U" visibleWhen="#{allowEdit==true &amp;&amp; mode=='edit'}" role="TAXMAPPER,ADMIN"/>
+        
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.FAASSketchModel">
+  </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.SketchPage"/>
+    </pages>
+</workunit>
+
+

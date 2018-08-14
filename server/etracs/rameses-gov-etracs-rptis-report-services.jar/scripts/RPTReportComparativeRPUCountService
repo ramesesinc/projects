@@ -48,8 +48,6 @@ class RPTReportComparativeRPUCountService
 		def exemptcurrents 	= em.getNewDiscoveryComparativeRpuCountExempt(params)
 		def taxablecancelleds 	= em.getCancelledComparativeRpuCount(params)
 		def exemptcancelleds 	= em.getCancelledComparativeRpuCountExempt(params)
-		def taxableendings 		= em.getEndingComparativeRpuCount(params)
-		def exemptendings 		= em.getEndingComparativeRpuCountExempt(params)
 		
 		def loadSumaryInfo = { data, list ->
 			def info = list.find{ it.classid == data.classid }
@@ -66,7 +64,6 @@ class RPTReportComparativeRPUCountService
 			loadSumaryInfo( data, taxablepreceedings )
 			loadSumaryInfo( data, taxablecurrents )
 			loadSumaryInfo( data, taxablecancelleds )
-			loadSumaryInfo( data, taxableendings )
 			if( data.special == 0 ) {
 				data.classname = lineno + '. ' + data.classname 
 				lineno += 1
@@ -76,6 +73,7 @@ class RPTReportComparativeRPUCountService
 				charindex += 1
 			}
 		}
+		buildEndings(taxables)
 		
 		lineno = 1 
 		def exempts  = getExemptionTypes().collect{ buildComparativeRpuCountInfo(it, 'EXEMPT') }
@@ -83,10 +81,11 @@ class RPTReportComparativeRPUCountService
 			loadSumaryInfo( data, exemptpreceedings )
 			loadSumaryInfo( data, exemptcurrents )
 			loadSumaryInfo( data, exemptcancelleds )
-			loadSumaryInfo( data, exemptendings )
 			data.classname = lineno + '. ' + data.classname 
 			lineno += 1
 		}
+
+		buildEndings(exempts)
 
 		def forlguname = env.ORGCLASS +  ' OF ' + env.ORGNAME 
 		if (params.lgu){
@@ -106,6 +105,13 @@ class RPTReportComparativeRPUCountService
 		]
 	}
 
+	def buildEndings(data){
+		data.each{
+			it.endinglandcount = it.preceedinglandcount + it.newdiscoverylandcount - it.cancelledlandcount
+			it.endingimpcount = it.preceedingimpcount + it.newdiscoveryimpcount - it.cancelledimpcount
+			it.endingtotal = it.preceedingtotal + it.newdiscoverytotal - it.cancelledtotal
+		}
+	}
 
 	def buildComparativeRpuCountInfo( info, taxability ) {
 		return [ classid	: info.objid, 

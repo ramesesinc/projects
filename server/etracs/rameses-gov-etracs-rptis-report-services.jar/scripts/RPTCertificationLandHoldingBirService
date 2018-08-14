@@ -59,7 +59,7 @@ class RPTCertificationLandHoldingBirService
 	def getLandHoldingItems(cert){
 		def items = em.getItems(cert).each{
 			it.street = (it.street ? it.street : it.barangay)
-			it.description = it.cadastrallotno
+			it.description = 'LOT ' + it.cadastrallotno
 		}
 
 		if (!items) 

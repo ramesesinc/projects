@@ -1,0 +1,7 @@
+"faas" [mode != 'processing']{
+    enabled:true;
+}
+
+"faas" [mode == 'processing']{
+    enabled:false;
+}

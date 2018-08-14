@@ -45,6 +45,9 @@ class RPTLedgerService
     @DataContext('rptledger_subledger')
     def em_rptledger_subledger
 
+    @DataContext('rptledger_avdifference')
+    def em_avdifference
+
     @DataContext('faas_restriction')
     def em_faas_restriction
 
@@ -62,6 +65,9 @@ class RPTLedgerService
 
     @DataContext('rptpayment_item')
     def em_rptpayment_item
+
+    @DataContext('vw_rptledger_avdifference')
+    def vw_rptledger_avdifference
 
 
     @ProxyMethod
@@ -312,11 +318,13 @@ class RPTLedgerService
     @ProxyMethod
     public def checkLedgerApprovedState(faasid){
         def ledger = em_rptledger.select('state').find([faasid:faasid]).first()
-        if (!ledger) 
+        if (!ledger && !'PROVINCE'.equalsIgnoreCase(env.ORGCLASS)){
             throw new Exception('Ledger does not exist or has already been deleted.')
-        if (ledger.state == 'CANCELLED')
+        }
+            
+        if (ledger && ledger.state == 'CANCELLED')
             throw new Exception('Ledger has already been cancelled.')
-        if (ledger.state == 'PENDING')
+        if (ledger && ledger.state == 'PENDING')
             throw new Exception('Ledger is still pending.')
     }
 
@@ -446,6 +454,78 @@ class RPTLedgerService
     @ProxyMethod
     public def getLedgerByFaasId(faasid){
         return em_rptledger.find([faasid:faasid]).first()
+    }
+
+    @ProxyMethod
+    public def getAvDifferences(entity){
+        return em_avdifference.find([parent_objid:entity.objid]).orderBy('year desc').list()
+    }
+
+    @ProxyMethod
+    public def createAvDifference(difference){
+        def rptledgerfaas = em_rptledger_faas.find([
+            rptledgerid: difference.parent.objid,
+            tdno: difference.parent.tdno,
+        ]).first()
+
+        if (!rptledgerfaas) {
+            throw new Exception('Ledger History for year ' + difference.year + ' is not defined.')
+        }
+
+        difference.rptledgerfaas = rptledgerfaas
+
+        if (difference.year < rptledgerfaas.fromyear) {
+            throw new Exception('Difference year must be greater than or equal to ' + rptledgerfaas.fromyear + '.')
+        }
+
+        if (difference.av <= 0){
+            throw new Exception('Assessed value difference must be greater than zero.')
+        }
+
+        def existingdiff = em_avdifference.find([
+            parent_objid: difference.parent.objid,
+            year: difference.year,
+            paid: 0,
+        ]).first()
+
+        if (existingdiff) {
+            throw new Exception('Difference for the year ' + difference.year + ' has already been added.')
+        }
+
+        em_avdifference.create(difference)
+
+        def ledger = em_rptledger.find([objid:difference.parent.objid]).first()
+        if (!ledger) throw new Exception('Ledger does not exist or has already beend deleted.')
+        postTaxDifferenceLedgerEntries(ledger, difference.year, difference.year)
+        return difference;
+    }
+
+    @ProxyMethod
+    public def updateAvDifference(difference){
+        if (difference.av <= 0){
+            throw new Exception('Assessed value difference must be greater than zero.')
+        }
+
+        em_rptledger_item.find([
+            parentid: difference.parent.objid,
+            year: difference.year,
+            taxdifference: 1,
+        ]).delete()
+
+        em_avdifference.update(difference)
+        return difference;
+    }
+
+
+    @ProxyMethod
+    public void removeAvDifference(difference){
+        em_rptledger_item.find([
+            parentid: difference.parent.objid,
+            year: difference.year,
+            taxdifference: 1,
+        ]).delete()
+
+        em_avdifference.delete(difference)
     }
 
 
@@ -606,8 +686,12 @@ class RPTLedgerService
     }
 
     void updatePartialledItem(info, item, partialamt ){
+        def qtrlyamt = numSvc.round(item.amount / 4)
+        if (partialamt > qtrlyamt){
+            throw new Exception('Partial payment for ' + item.revtype + ' must not exceed quarterly amount of ' + numSvc.format("#,##0.00",qtrlyamt) + '.')
+        }
         def qtrs = (info.lastqtrpaid == 4 ? 0 : info.lastqtrpaid) 
-        def amtpaid = partialamt + numSvc.round(item.amount / 4) * qtrs
+        def amtpaid = partialamt +  qtrlyamt * qtrs
         em_rptledger_item.find([objid:item.objid]).update([amtpaid:amtpaid])
     }
 
@@ -675,8 +759,9 @@ class RPTLedgerService
     }
 
     void postTaxDifference(ledger, faas){
-        if (ledger.lastyearpaid < faas.effectivityyear)
+        if (ledger.lastyearpaid < faas.effectivityyear){
             return
+        }
 
         def currfaas = em_rptledger_faas.find([rptledgerid: ledger.objid, fromyear:faas.effectivityyear]).first();
         def prevfaas = em_rptledger_faas.find([rptledgerid: ledger.objid, toyear:faas.effectivityyear - 1]).first();
@@ -685,17 +770,40 @@ class RPTLedgerService
         }
 
         def avdifference = faas.rpu.totalav - prevfaas.assessedvalue
-        if (avdifference < 0){
+        if (avdifference <= 0){
             return
         }
 
         for (int yr = faas.effectivityyear; yr <= ledger.lastyearpaid; yr++){
-            currfaas.assessedvalue = avdifference
-            currfaas.taxdifference = true 
-            ledger.faases = [currfaas]
+            def difference = [:]
+            difference.objid = 'TD' + new java.rmi.server.UID()
+            difference.parent = ledger 
+            difference.rptledgerfaas = currfaas
+            difference.year = yr 
+            difference.av = avdifference
+            difference.paid = false 
+            em_avdifference.create(difference)
+        }
+
+        postTaxDifferenceLedgerEntries(ledger, faas.effectivityyear, ledger.lastyearpaid)
+    }    
+
+    @ProxyMethod 
+    public void postTaxDifferenceLedgerEntries(ledger, fromyear, toyear){
+        def faashistory = vw_rptledger_avdifference
+                            .find([rptledgerid:ledger.objid,state:'APPROVED',taxable:true])
+                            .orderBy('fromyear,fromqtr')
+                            .list()
+                            .each{ it.taxdifference = true }
+
+        for (int yr = fromyear; yr <= toyear; yr++){
+            ledger.faases = faashistory.findAll{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) }
+            if (!ledger.faases) throw new Exception('No FAAS history defined for the year ' + yr + '.')
             postLedgerItem(ledger, yr)
         }
-    }    
+
+        ledger.remove('faases')
+    }
 
     void updateLedgerFaasInfo(faas, ledger){
         faas.rp = em_realproperty.find([objid:faas.rp.objid]).first()
@@ -778,6 +886,7 @@ class RPTLedgerService
         item.qtr = qtr 
         item.revtype = revtype 
         item.partialled = false 
+        item.priority = 0
 
         if (zeroAmount){
             item.amount = 0
@@ -813,6 +922,164 @@ class RPTLedgerService
         ]
         em_rptledger.find([objid:ledgerfaas.rptledgerid]).update(info)
     }
+
+
+
+
+
+    /*========================================================================
+    *
+    * SYNC SUPPORT 
+    *
+    ========================================================================*/
+
+    /*---------------------------------------------
+    * Return the objids of the items to sync.
+    * This will be used by the remote server to send
+    * only the data with an objid not on the list to 
+    * minimize data size and bandwith
+    ---------------------------------------------*/
+    @ProxyMethod
+    public def getItemsObjid(ledger){
+        ledger = open([objid: ledger.objid])
+        buildItemsInfo(ledger)
+        return [
+            items: ledger._items.collect{ it.objid },
+            differences: ledger._differences.collect{ it.objid },
+            credits: ledger._credits.collect{ it.objid },
+            restrictions: ledger._restrictions.collect{ it.objid },
+        ]
+    }
+
+
+    /*-----------------------------------------------
+    * Return ledger information to sync. 
+    * Only items not included in the idinfo.items 
+    * are returned. 
+    -----------------------------------------------*/
+    @ProxyMethod
+    public def getInfo(mapping){
+        def ledger = open([objid:mapping.remote.objid])
+        buildItemsInfo(ledger)
+        removeSyncedItems(ledger._items, mapping.idinfo.items)
+        removeSyncedItems(ledger._differences, mapping.idinfo.differences)
+        removeSyncedItems(ledger._credits, mapping.idinfo.credits)
+        removeSyncedItems(ledger._restrictions, mapping.idinfo.restrictions)
+        loadPaymentItems(ledger._credits)
+        return ledger 
+    }
+
+
+    @ProxyMethod
+    public void sync(remoteledger){
+        def ledger = em_rptledger.find([objid: remoteledger.objid]).first()
+        if (!ledger){
+            // could be deleted, do nothing
+            return 
+        }
+
+        if (checkUpdatedPayment(ledger, remoteledger)){
+            // local payment is more updated then remote payment
+            return 
+        }
+        
+        em_rptledger.save(remoteledger)
+
+        em_rptledger_item.find([parentid: remoteledger.objid]).delete() 
+        remoteledger._items?.each{
+            it.taxdifference = util.toBoolean(it.taxdifference, false)
+            em_rptledger_item.save(it)
+        }
+
+        em_avdifference.find([parent_objid: remoteledger.objid]).delete() 
+        remoteledger._differences?.each{
+            em_avdifference.save(it)
+        }
+
+        remoteledger._credits?.each{
+            em_rptpayment.save(it)
+            it.items.each{pitem ->
+                em_rptpayment_item.save(pitem)
+            }
+        }
+
+        remoteledger._subledgers?.each{
+            em_rptledger_subledger.save(it)
+        }
+
+        remoteledger._restrictions?.each{
+            em_faas_restriction.save(it)
+        }
+    }
+
+    /*---------------------------------------------------------
+    * Checks if ledger payment is updated based on lastyearpaid
+    * and lastqtrpaid. 
+    ---------------------------------------------------------*/
+    def checkUpdatedPayment(ledger, remoteledger) {
+        if (ledger.lastyarpaid > remoteledger.lastyearpaid ||
+            (ledger.lastyearpaid == remoteledger.lastyearpaid && ledger.lastqtrpaid > remoteledger.lastqtrpaid)){
+            // local payment is more updated then remote payment
+            return true 
+        }
+        return false 
+    }
+
+    void loadPaymentItems(credits){
+        credits.each{
+            it.items = em_rptpayment_item.where('parentid = :parentid and amount > 0', [parentid:it.objid]).list()
+        }
+    }
+
+    void removeSyncedItems(items, oids){
+        def deletedItems = []
+        oids.each{oid ->
+            deletedItems += items.findAll{it.objid == oid}
+        }
+        if (deletedItems){
+            items.removeAll(deletedItems)
+        }
+    }
+
+    void buildItemsInfo(ledger) {
+        ledger._items = em_rptledger_item.find([parentid: ledger.objid]).list()
+        ledger._differences = em_avdifference.find([parent_objid: ledger.objid]).list()
+        ledger._credits = em_rptpayment.find([refid: ledger.objid]).list()
+        ledger._restrictions = em_faas_restriction.find([ledger_objid: ledger.objid]).list()
+    }
+
+
+    @ProxyMethod
+    public void syncPayment(payment){
+        def ledger = em_rptledger.find([objid: payment.rptledger.objid]).first()
+        if (!ledger){
+            return 
+        }
+        
+        if (checkUpdatedPayment(ledger, payment.rptledger)) {
+            return 
+        }
+
+        def exist = em_rptpayment.find([objid: payment.objid]).first()
+        if (exist){
+            return
+        }
+
+        em_rptledger.save(payment.rptledger)
+
+        em_rptledger_item.find([parentid: ledger.objid]).delete()
+        payment.ledgeritems.each{
+            em_rptledger_item.save(it)
+        }
+
+        em_rptpayment.save(payment)
+        payment.items.each{
+            em_rptpayment_item.save(it)
+        }
+
+        println 'Remote payment has been successfully posted.'
+    }
+
 }
 
 

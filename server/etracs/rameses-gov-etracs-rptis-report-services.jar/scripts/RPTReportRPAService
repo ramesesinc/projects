@@ -49,15 +49,15 @@ class RPTReportRPAService
 			exemptclasses = buildExemptClasses(em.getExempts(params), params)	
 		}
 		else if (params.reporttype.type == 'lift'){
-			taxableclasses = buildTaxableClasses(em.getLintTaxables(params), params)
-			exemptclasses = buildExemptClasses(em.getLintExempts(params), params)	
+			taxableclasses = buildTaxableClasses(em.getLiftTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getLiftExempts(params), params)	
 		}
 		else if (params.reporttype.type == 'lift_restriction'){
 			restrictions = buildRestrictions(params)
 		}
 		else if (params.reporttype.type == 'lift_idleland'){
-			taxableclasses = buildTaxableClasses(em.getLintIdleLandTaxables(params), params)
-			exemptclasses = buildExemptClasses(em.getLintIdleLandExempts(params), params)	
+			taxableclasses = buildTaxableClasses(em.getLiftIdleLandTaxables(params), params)
+			exemptclasses = buildExemptClasses(em.getLiftIdleLandExempts(params), params)	
 		}
 		else{
 			throw new Exception('Report Type ' + params.reporttype.caption + ' is not supported.')
@@ -104,6 +104,7 @@ class RPTReportRPAService
 			params.filter += ' AND rp.barangayid = $P{barangayid} ' 
 			params.barangayid = params.barangay.objid 
 		}
+
 	}
 
 	def buildTaxableClasses(taxables, params){
@@ -149,7 +150,14 @@ class RPTReportRPAService
 
 
 	def buildRestrictions(params){
-		def restrictions = em.getLintRestrictions(params)
+		if ('TAXABLE'.equalsIgnoreCase(params.taxability) || !params.taxability){
+			params.filter += ' AND r.taxable = 1 '
+		}
+		else {
+			params.filter += ' AND r.taxable = 0 '
+		}
+
+		def restrictions = em.getLiftRestrictions(params)
 		restrictions.each{ item -> 
 			if (params.reporttype.type == 'standard'){
 				item.basicrate = params.basicrate/100.0

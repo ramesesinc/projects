@@ -13,6 +13,8 @@ public class FAASCaptureModel extends FAASModel
     def STATE_CURRENT           = 'CURRENT';
     def STATE_CANCELLED         = 'CANCELLED';
     
+    def afterApprove = {}
+    
     
     String getTxntitle(){
         return invoker.caption + ' Transaction'
@@ -28,6 +30,7 @@ public class FAASCaptureModel extends FAASModel
     void approveFaas() {
         if (MsgBox.confirm('Approve FAAS?')){
             entity.putAll(service.approveFaas( entity ));
+            afterApprove();
         }
     }
 

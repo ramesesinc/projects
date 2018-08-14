@@ -252,13 +252,6 @@ public class RPTBillingService
 			bill.billdate = dtSvc.parse('yyyy-MM-dd',bill.billdate) 
 		}
 
-		if (bill.billtoyear < bill.rptledger.lastyearpaid)
-			throw new Exception('Bill To Year must be greater than or equal to Last Year Paid.')
-
-		if (bill.billtoyear == bill.rptledger.lastyearpaid && bill.billtoqtr <= bill.rptledger.lastqtrpaid && bill.rptledger.partialbasic == 0.0)
-			throw new Exception('Bill To Qtr must be greater than Last Qtr Paid.')
-		
-
 		if (bill.billtoyear > bill.cy + getMaxAdvanceYear()){
 			throw new Exception('Bill To Year must not exceed year ' +  bill.maxbilltoyear + '.')
 		}
@@ -290,7 +283,7 @@ public class RPTBillingService
 
 	void saveBill(bill){
 		if (bill.totals.total <= 0.0){
-			throw new Exception('There are no unpaid items found.')
+			throw new Warning('There are no unpaid items found.')
 		}
 		if (bill._save == false) {
 			return
@@ -343,10 +336,22 @@ public class RPTBillingService
         	}
 		}
 
+		def fromyear = (rptledger.lastqtrpaid == 4 ? rptledger.lastyearpaid + 1 : rptledger.lastyearpaid)
+		def fromqtr = (rptledger.lastqtrpaid == 4 ? 1 : rptledger.lastqtrpaid + 1)
+
+		if (rptledger.items){
+			// for collection, adjust to handle tax difference
+			def pitem = rptledger.items.first()
+			if (util.isTrue(pitem.taxdifference)){
+				fromyear = pitem.year
+				fromqtr = (pitem.qtr ? pitem.qtr : 1)
+			}
+		}
+
 		rptledger.hastaxdifference = tmpbill.items.find{ util.isTrue(it.taxdifference)} != null 
 		rptledger.partialled = false
-		rptledger.fromyear = (rptledger.lastqtrpaid == 4 ? rptledger.lastyearpaid + 1 : rptledger.lastyearpaid)
-		rptledger.fromqtr = (rptledger.lastqtrpaid == 4 ? 1 : rptledger.lastqtrpaid + 1)
+		rptledger.fromyear = fromyear
+		rptledger.fromqtr = fromqtr
 		rptledger.toyear = tmpbill.billtoyear
 		rptledger.toqtr = tmpbill.billtoqtr
 		rptledger.total = rptledger.items.total.sum()
@@ -393,7 +398,7 @@ public class RPTBillingService
 	def buildItemsForReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
-		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) }
+		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + ':' + it.taxdifference }
 		groups.each{k, list ->
 			def first = list.first() 
 			def item = [:]

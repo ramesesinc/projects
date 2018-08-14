@@ -2,15 +2,15 @@
 <workunit extends="rpt_wtemplates/FAASInitTxnModel.xml">
     <invokers>       
         <invoker type="quick_launcher" code="RV01" action="init" caption="Change PIN" 
-            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"/>
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="51"/>
             
         <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Change PIN" 
-            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"  />
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="51"  />
             
         <invoker folderid="/home/rpt/txn" action="init" caption="Change PIN" 
-            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"  />
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="51"  />
         <invoker folderid="/menu/txn/rpt" action="init" caption="Change PIN" 
-            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="9"  />
+            txntype="RV" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createChangePin" index="51"  />
     </invokers>
     
     <code class="com.rameses.gov.etracs.rptis.models.FAASInitChangePinModel">

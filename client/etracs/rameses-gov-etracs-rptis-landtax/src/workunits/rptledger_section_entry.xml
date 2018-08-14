@@ -2,16 +2,6 @@
 <workunit>
     <invokers>
         <invoker type="rptledger:section" action="init" caption="Entries" index="10"/> 
-        
-        <invoker type="itemActions" 
-                 action="addLedgerItem" caption="Add" mnemonic="a" 
-                 visibleWhen="#{entity.state=='APPROVED'}"  
-                role="ADMIN" depends="selectedLedgerItem" />
-            
-        <invoker type="itemActions" 
-                 action="deleteLedgerItem" caption="Delete" 
-                 visibleWhen="#{entity.state=='APPROVED' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.taxdifference == 1}"  
-                 role="ADMIN" mnemonic="d" depends="selectedItem" />
     </invokers>
     
     <code class="com.rameses.gov.etracs.landtax.models.RPTLedgerEntryModel">

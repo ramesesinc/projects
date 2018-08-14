@@ -2,7 +2,7 @@ import com.rameses.common.*
 import com.rameses.annotations.*
 import com.rameses.services.extended.*
 
-class LandTaxOnlineService {
+class TDOnlineService {
 	@Env 
 	def env
 
@@ -20,7 +20,7 @@ class LandTaxOnlineService {
 	
 
 	@ProxyMethod
-	public def getLedgerInfo(params) {
+	public def verifyTaxDec(params) {
 		params.tdno = params.refno 
 		def bill = billSvc.generateBillByTdNo(params)
         def rptledger = getLedger(bill)

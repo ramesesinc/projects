@@ -14,6 +14,9 @@ class OnlinePaymentService   {
     @DataContext("eor_paymentorder")
     def poEm; 
 
+    @DataContext("unpostedpayment")
+    def unpostedpayment_db; 
+
     @Env 
     def env; 
 
@@ -72,34 +75,55 @@ class OnlinePaymentService   {
         return result;
     }
 
-    @ProxyMethod
+    @ProxyMethod(local=true)
     public def postPayment( def o ) {
         initEnv(); 
 
         if (!o.txntype) return [status:1, message:'txntype is required'];
+
         def po = poEm.find([ objid: o.paymentrefid ]).first();
         if (!po) throw new Exception('Payment Order No. ' + o.objid + ' does not exist or has already been processed.')
-        
-        if(o.tracedate instanceof String ) {
+
+        if (o.tracedate instanceof String ) {
             def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
-            po.tracedate = df.parse( o.tracedate );
+            o.tracedate = df.parse( o.tracedate );
         }
 
-        po.paymentrefid = po.objid;
-        po.partnerid = o.partnerid;
+        po.paymentrefid = po.objid; 
+        po.partnerid = o.partnerid; 
         po.tracedate = o.tracedate; 
         po.traceid = o.traceid;
-        def r = eorSvc.post( po );
 
+        def r = null; 
         def retval = [:];
-        retval.paymentrefid =  r.paymentrefid;
-        retval.receiptno = r.receiptno;
-        retval.receiptid = r.objid;
-        retval.receiptdate = r.receiptdate; 
+        try { 
+            r = eorSvc.post( po ); 
+            retval.paymentrefid =  r.paymentrefid;
+            retval.receiptno = r.receiptno;
+            retval.receiptid = r.objid;
+            retval.receiptdate = r.receiptdate; 
 
+        } catch(Throwable t) { 
+            def m = buildErrorInfo( t ); 
+            println 'payment posting error '+ o.paymentrefid +' caused by: '+ m.errmsg; 
+            m.objid = o.objid; 
+            m.txndate = o.txndate;
+            m.txntype = o.txntype;
+            m.txntypename = o.info?.txntypename; 
+            m.paymentrefid = o.paymentrefid; 
+            m.amount = o.amount; 
+            m.orgcode = o.orgcode;
+            m.partnerid = o.partnerid;
+            m.traceid = o.traceid; 
+            m.tracedate = o.tracedate; 
+            m.refno = o.info?.refno;
+            m.origin = o.info?.origin; 
+            m.paymentorder = po; 
+            unpostedpayment_db.create( m );  
+            retval = null; 
+        } 
+        
         poEm.find([ objid: po.objid ]).delete();
-
-        //log the payment...
         return retval;
     }
 
@@ -115,4 +139,26 @@ class OnlinePaymentService   {
         }
         return rc;
     } 
+
+    private def buildErrorInfo( Throwable t ) {
+        def m = [:];  
+        def cause = t; 
+        while (cause != null) {
+            m.errmsg = cause.message; 
+            if ( m.errmsg != null) { 
+                def buff = new java.io.StringWriter();
+                cause.printStackTrace(new java.io.PrintWriter(buff)); 
+                m.errdetail = buff.toString(); 
+            } 
+            cause = cause.cause; 
+        }
+
+        m.errmsg = m.errmsg.toString();
+        if ( m.errdetail == null ) {
+            def buff = new java.io.StringWriter();
+            t.printStackTrace(new java.io.PrintWriter(buff)); 
+            m.errdetail = buff.toString(); 
+        } 
+        return m; 
+    }
 }

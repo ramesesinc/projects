@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+         schemaName="unpostedpayment" allowCreate="false" allowDelete="false">
+    <invokers>
+        <invoker folderid="menucategory/treasury/epayment" 
+                 caption="View Unposted Payments" 
+                 role="MASTER" action="init"
+                 cols="txndate,txntypename,paymentrefid,amount,refno,partnerid,errmsg"
+                 orderBy="txndate"/>        
+    </invokers>
+</workunit>

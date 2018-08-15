@@ -6,6 +6,7 @@
         </invoker>   
         <invoker type="misc_cashreceipt:formActions" 
            caption="Reprint" action="reprintSecured" 
+           visibleWhen="#{completed}" 
            target="popup"> 
         </invoker>   
         <invoker 

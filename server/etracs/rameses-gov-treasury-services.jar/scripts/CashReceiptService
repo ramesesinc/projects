@@ -30,8 +30,8 @@ class CashReceiptService  {
    	@DataContext("cashreceiptitem")
    	def cashRctItem;
 
-   	@DataContext("creditmemo")
-   	def creditmemo;
+   	@DataContext("eftpayment")
+   	def eftPayment;
 
     @DataContext("checkpayment")
    	def checkPayment;
@@ -120,9 +120,10 @@ class CashReceiptService  {
 				def z = checkPayment.find([objid: it.checkid ] ).where("amount - amtused < 0 ").first();
 				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");				
 			}
-			else if( it.reftype == 'CREDITMEMO') {
-				def cmp = [state:'CLOSED', receiptid: p.objid, receiptno:p.receiptno, receiptdate:p.receiptdate ];
-				creditmemo.find( [objid: it.refid] ).update(cmp);
+			else if( it.reftype == 'EFT') {
+				def item = it.item;
+				item.state = 'POSTED';
+				eftPayment.save( item );
 			}
 		}
 	}

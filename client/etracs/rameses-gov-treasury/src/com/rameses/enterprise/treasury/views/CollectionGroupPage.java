@@ -4,7 +4,7 @@
  * Created on January 28, 2014, 14:13 PM
  */
 
-package com.rameses.enterprise.treasury.collection;
+package com.rameses.enterprise.treasury.views;
 
 
 import com.rameses.osiris2.themes.FormPage;

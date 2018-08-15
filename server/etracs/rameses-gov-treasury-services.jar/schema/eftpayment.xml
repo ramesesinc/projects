@@ -1,0 +1,21 @@
+<schema>
+
+	<element  tablename="eftpayment">
+		<field name="objid" primary="true" prefix="EFTPMT"/>	
+		<field name="state" required="true" defaultValue="PENDING"/>	
+
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" required="true" includefields="objid,name,bank.*,fund.*">
+			<key field="bankacctid" target="objid" />
+		</complex>	
+
+		<field name="refno" required="true" searchable="true"  caption="Ref No"/>	
+		<field name="refdate" required="true"  caption="Ref Date"/>
+		<field name="amount" required="true" type="decimal"  caption="Amount"/>	
+		<field name="receivedfrom" required="true"  caption="Received From"/>
+		<field name="particulars" caption="Particulars"/>	
+		<field name="fundid" caption="Fund ID" required="true"/>	
+	</element>
+
+
+
+</schema>

@@ -11,7 +11,7 @@
 		<field name="liquidatingofficer_title" required="true"/>
 		<field name="liquidatingofficer_signature" />
 
-		<field name="amount" required="true"/>
+		<field name="amount" required="true" type="decimal"/>
 		<field name="totalcash" required="true" type="decimal"/>
 		<field name="totalcheck" required="true" type="decimal"/>
 		<field name="totalcr" required="true" type="decimal"/>

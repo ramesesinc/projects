@@ -6,22 +6,11 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.seti2.models.*;
         
-class AccountMainGroupModel  {
+class AccountMainGroupModel extends CrudFormModel {
 
-    @Service("PersistenceService")
-    def persistenceService;
-    
-    @Service("QueryService")
-    def queryService;
-    
     def selectedNode;
     def selectedItem;
-    def entity;
     def acctListModel;
-    
-    void open() {
-        
-    }
     
     def treeNodeModel = [
         fetchNodes: { o->
@@ -40,7 +29,7 @@ class AccountMainGroupModel  {
                 m.where = ["groupid = :groupid", [groupid: o.id ]];
             }
             return queryService.getList( m )?.collect {
-                [id: it.objid, name: it.objid, caption: it.code + " " + it.title, item: it ];
+                [id: it.objid, name: it.objid, caption: "[" + it.code + "] " + it.title, item: it ];
             }
         },
         isRootVisible : { return false; },
@@ -55,6 +44,7 @@ class AccountMainGroupModel  {
             parent = selectedNode.item.item;
         }
         Modal.show("account_group:create", [maingroup: entity, parent: parent] );
+        treeNodeModel.reloadSelectedNode();
     }
     
     def editGroup() {
@@ -63,7 +53,16 @@ class AccountMainGroupModel  {
     }
 
     def removeGroup() {
-        //Modal.show("account_group:open", [ maingroup: entity ] );
+        if(!selectedNode?.item?.item?.objid ) throw new Exception("Please select an account group");
+        if(!MsgBox.confirm("Are you sure you want to remove this group?")) return;
+        def m = [_schemaname: "account_group"];
+        m.objid = selectedNode?.item?.item?.objid;
+        persistenceService.removeEntity( m );
+        treeNodeModel.reloadSelectedNode();
+    }
+    
+    void refreshNode() {
+        treeNodeModel.reloadSelectedNode();
     }
     
     Map getAcctQuery() {

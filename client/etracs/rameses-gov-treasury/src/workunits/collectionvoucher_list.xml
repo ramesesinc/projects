@@ -5,6 +5,7 @@
                  windowTitle="Collection Vouchers"
                  formTitle="Collection Vouchers"
                  cols="controlno,controldate,liquidatingofficer.name,amount,state"
+                 orderBy="controldate DESC"
                  action="init" target="window" index="32" role="LIQUIDATING_OFFICER"/>
         
    </invokers>

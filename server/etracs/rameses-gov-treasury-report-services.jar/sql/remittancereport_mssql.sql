@@ -296,7 +296,7 @@ select
   receiptno, receiptdate, acctcode, accttitle, paidby, sum(amount) as amount 
 from ( 
   select 
-    rem.objid as remid, rem.txnno as remno, rem.remittancedate as remdate, rem.dtposted, rem.amount as total, 
+    rem.objid as remid, rem.controlno as remno, rem.controldate as remdate, rem.dtposted, rem.amount as total, 
     rem.collector_name, rem.collector_title, rem.liquidatingofficer_name, rem.liquidatingofficer_title, 
     cr.formno, cr.controlid, cr.series, cr.receiptno, cr.receiptdate, ia.fund_code as acctcode, ia.fund_title as accttitle, 
     (case when xx.voided=0 then cr.paidby else '*** VOIDED ***' end) as paidby, 

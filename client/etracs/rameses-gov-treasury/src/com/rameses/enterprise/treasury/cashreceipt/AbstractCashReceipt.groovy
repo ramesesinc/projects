@@ -158,25 +158,23 @@ public abstract class AbstractCashReceipt {
         }
     }
     
-    
-    def doCreditMemo() {
+    void doEFTPayment() { 
         //if(!entity.items) throw new Exception("At least one item is required");
         if(entity.amount<=0) throw new Exception("Amount must be greater than 0");
-        def success = false;
+        def success = false; 
         clearAllPayments();
-        def handler = { o->
-            entity.totalcash = 0;
-            entity.paymentitems = o.paymentitems;
+        def handler = { o-> 
+            entity.paymentitems = o.paymentitems; 
             entity.totalnoncash = o.paymentitems.sum{it.amount};
             success = true; 
         }
-        Modal.show( "cashreceipt:payment-creditmemo", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] );
+        Modal.show( "cashreceipt:payment-eft", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 
         if ( success ) {
             def outcome = post(); 
             binding.fireNavigation( outcome );  
         }
     }
-
+    
     public def payerChanged( o ) {
         //do nothing for now
     }

@@ -110,4 +110,5 @@ class JevModel  extends CrudFormModel {
         }
         return Inv.lookupOpener("jevno_entry", [entity: [objid: entity.objid ], handler: h])
     } 
+    
 } 

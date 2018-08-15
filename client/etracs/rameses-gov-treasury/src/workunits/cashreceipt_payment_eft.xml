@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+          <invoker type="cashreceipt:payment-eft" caption="EFT" target="popup" action="init"/>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptEFTPaymentModel" />
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.CashReceiptEFTPaymentPage"/>
+    </pages>
+    
+</workunit>

@@ -1,4 +1,5 @@
-<workunit schemaName="account_maingroup" formName="account_maingroup" allowCreate="false"  allowDelete="false">
+<workunit schemaName="account_maingroup" 
+          formName="account_maingroup" allowCreate="false"  allowDelete="false">
     <invokers>
          <invoker type="account_maingroup:open" caption="Accounts" action="open" 
             formTitle="Account #{entity.name}" formId="#{entity.objid}"/>

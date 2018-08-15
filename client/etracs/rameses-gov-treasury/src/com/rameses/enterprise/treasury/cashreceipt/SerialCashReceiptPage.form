@@ -769,9 +769,9 @@
                 <Property name="accelerator" type="java.lang.String" value="F9"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="4"/>
-                <Property name="immediate" type="boolean" value="true"/>
                 <Property name="index" type="int" value="20"/>
                 <Property name="text" type="java.lang.String" value="F9 - CASH  "/>
+                <Property name="toolTipText" type="java.lang.String" value="Cash Payment"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XButton" name="buttonCheck1">
@@ -779,20 +779,19 @@
                 <Property name="name" type="java.lang.String" value="doCheckPayment" noResource="true"/>
                 <Property name="accelerator" type="java.lang.String" value="F10"/>
                 <Property name="focusable" type="boolean" value="false"/>
-                <Property name="immediate" type="boolean" value="true"/>
                 <Property name="index" type="int" value="21"/>
                 <Property name="text" type="java.lang.String" value="F10 - CHECK "/>
+                <Property name="toolTipText" type="java.lang.String" value="Check Payment"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XButton" name="buttonCheck2">
               <Properties>
-                <Property name="name" type="java.lang.String" value="doCreditMemo" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="doEFTPayment" noResource="true"/>
                 <Property name="accelerator" type="java.lang.String" value="F11"/>
-                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="focusable" type="boolean" value="false"/>
-                <Property name="immediate" type="boolean" value="true"/>
                 <Property name="index" type="int" value="21"/>
                 <Property name="text" type="java.lang.String" value="EFT "/>
+                <Property name="toolTipText" type="java.lang.String" value="Electronic Fund Transfer Payment"/>
               </Properties>
             </Component>
             <Component class="com.rameses.rcp.control.XButton" name="buttonCheck3">

@@ -7,7 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.* 
 
 class CashReceiptPaymentNonCashListModel extends CrudSubListModel {
-        ////
+        
     public def getCustomFilter() {
         return ["refid=:id", [id:masterEntity.objid] ]; 
     }

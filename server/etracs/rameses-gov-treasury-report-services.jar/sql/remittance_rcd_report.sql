@@ -46,7 +46,7 @@ select
 	sum(nc.amount) as amount, min(nc.refdate) as refdate  
 from cashreceipt c 
 	inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
-	left join paymentcheck pc on (pc.objid = nc.refid and nc.reftype='CHECK') 
+	left join checkpayment pc on (pc.objid = nc.refid and nc.reftype='CHECK') 
 where c.remittanceid = $P{remittanceid} 
 	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
 group by pc.bank_name, nc.reftype, nc.particulars 

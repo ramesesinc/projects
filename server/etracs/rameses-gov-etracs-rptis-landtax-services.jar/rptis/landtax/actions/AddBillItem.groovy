@@ -48,7 +48,7 @@ public class AddBillItem implements RuleActionHandler {
 	}
 
 	def getAccount(params, revtype){
-		def org = em_org.select('objid,orgclass,root').find([root:1]).first()
+		def org = em_org.select('objid,name,orgclass,root').find([root:1]).first()
 		if (!org) throw new Exception('AddBillItem [ERROR]: root org is not set.')
 		
 		params.revtype = revtype
@@ -58,7 +58,7 @@ public class AddBillItem implements RuleActionHandler {
 		def mapping = em_mapping.find(p).first()
 		if (!mapping) {
 			def s = params.revperiod + ' ' + params.revtype 
-			throw new Exception('Item account for  ' + s + ' is not defined.')
+			throw new Exception('Item account for  ' + s + ' for ' + org.name + ' is not defined.')
 		}
 
 		def acct = new Account()

@@ -11,6 +11,7 @@ SELECT
 	e.address_text AS taxpayer_address, 
 	rl.owner_name,
 	rl.administrator_name,
+  f.administrator_address, 
 	rl.rputype,
 	rl.fullpin,
 	rl.totalareaha,
@@ -29,8 +30,9 @@ SELECT
 FROM rptledger rl 
 	INNER JOIN barangay b ON rl.barangayid = b.objid 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
-    left join municipality m on b.parentid = m.objid 
-    left join district d  on b.parentid = d.objid 
+  left join faas f on rl.faasid = f.objid 
+  left join municipality m on b.parentid = m.objid 
+  left join district d  on b.parentid = d.objid 
 WHERE rl.objid = $P{rptledgerid}
 AND rl.state = 'APPROVED'
 AND (

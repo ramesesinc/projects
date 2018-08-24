@@ -44,10 +44,19 @@ public class BldgAdjustment
     public Map getParams(){
         Map p = [:]
         entity.params?.each {
-            def value = parseInt(it.intvalue)
-            if (it.param.paramtype.matches('.*decimal.*'))
-                value = parseDouble(it.decimalvalue)
-            p[it.param.name] = value
+            def value = 0
+            if (it.param.paramtype.matches('.*decimal.*')){
+                value = parseDouble(it.value)
+                it.decimalvalue = value 
+                it.intvalue = null 
+            }
+            else {
+                value = parseInt(it.value)
+                it.decimalvalue = null 
+                it.intvalue = value 
+            }
+             p[it.param.name] = value
+            p.value = value 
         }
         return p 
     }    

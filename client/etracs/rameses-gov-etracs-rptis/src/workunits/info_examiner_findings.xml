@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:info" action="init" caption="Examination Findings" index="10" />
-        <invoker type="subdivision:info" action="init" caption="Examination Findings" index="10" />
-        <invoker type="subdivisionfromcs:info" action="init" caption="Examination Findings" index="10" />
-        <invoker type="consolidation:info" action="init" caption="Examination Findings" index="10" />
-        <invoker type="resection:info" action="init" caption="Examination Findings" index="10" />
-        <invoker type="mcsettlement:info" action="init" caption="Examination Findings" index="10" />
-        <invoker type="cancelledfaas:info" action="init" caption="Examination Findings" index="10" />
+        <invoker type="faas:info" action="init" doctype="faas" caption="Examination Findings" index="10" />
+        <invoker type="subdivision:info" action="init" doctype="subdivision" caption="Examination Findings" index="10" />
+        <invoker type="subdivisionfromcs:info" action="init" doctype="subdivision" caption="Examination Findings" index="10" />
+        <invoker type="consolidation:info" action="init" doctype="consolidation" caption="Examination Findings" index="10" />
+        <invoker type="resection:info" action="init" doctype="resection" caption="Examination Findings" index="10" />
+        <invoker type="mcsettlement:info" action="init" doctype="mcsettlement" caption="Examination Findings" index="10" />
+        <invoker type="cancelledfaas:info" action="init" doctype="cancelledfaas" caption="Examination Findings" index="10" />
         
         <invoker type="formActions" action="refresh" caption="Refresh" mnemonic="r" />
         
@@ -33,6 +33,9 @@ class ExaminationFindingsInfoController
     
     @Service('ExaminationService')
     def examinationSvc;
+
+    @Invoker 
+    def invoker 
     
     def svc;
     
@@ -72,6 +75,7 @@ class ExaminationFindingsInfoController
        
        
     def create(){
+        entity.doctype = invoker.properties.doctype 
         return InvokerUtil.lookupOpener('examinerfinding:create', [
             entity : entity,
             

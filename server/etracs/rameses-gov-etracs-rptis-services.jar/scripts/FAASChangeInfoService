@@ -96,6 +96,8 @@ class FAASChangeInfoService
 			em.create(changeinfo)
 		changeinfo.newinfo = newinfo
 
+		changeinfo.previnfo = em.serializer.read(changeinfo.previnfo)
+
 		logSvc.logA(changeinfo.action, 'faas', changeinfo.refid, changeinfo.reason)
 		return changeinfo
 	}

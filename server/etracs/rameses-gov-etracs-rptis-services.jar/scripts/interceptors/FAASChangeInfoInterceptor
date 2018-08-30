@@ -30,6 +30,9 @@ class FAASChangeInfoInterceptor
 	@DataContext('faas_list')
 	def em_faas_list
 
+	@DataContext('faas_previous')
+	def em_faas_previous
+
 	@DataContext('realproperty')
 	def em_realproperty 
 
@@ -54,6 +57,7 @@ class FAASChangeInfoInterceptor
 	@After(pattern="FAASChangeInfoService.updateInfo", eval="#{result.action=='change_faas_info'}")
 	public void updateFaasInfo(evt){
 		def changeinfo = evt.result
+
 		changeinfo.newinfo.utdno = changeinfo.newinfo.tdno 
 		changeinfo.newinfo.txntypeid = changeinfo.newinfo.txntype.objid 
 		em.updateFaasInfo(changeinfo.newinfo);
@@ -81,6 +85,8 @@ class FAASChangeInfoInterceptor
 		flinfo.classcode = changeinfo.newinfo.classification.code
 		flinfo.publicland = changeinfo.newinfo.publicland
 		em_faas_list.update(flinfo)
+
+		updateCancelledTdNos(changeinfo)
 	}
 
 
@@ -185,5 +191,13 @@ class FAASChangeInfoInterceptor
 		signatory.objid = signatory.faasid
 		faasSvc.saveSignatory(signatory)
 	}	
+
+	void updateCancelledTdNos(changeinfo) {
+		def prevfaas = em_faas_previous.select('prevfaasid').find([faasid: changeinfo.faasid]).first()
+		if (prevfaas) {
+			em_faas.find([objid: prevfaas.prevfaasid]).update([cancelledbytdnos: changeinfo.newinfo.tdno])
+			em_faas_list.find([objid: prevfaas.prevfaasid]).update([cancelledbytdnos: changeinfo.newinfo.tdno])
+		}
+	}
 }
 

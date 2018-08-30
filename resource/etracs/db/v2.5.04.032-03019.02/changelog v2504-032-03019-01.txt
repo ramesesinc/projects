@@ -5,7 +5,8 @@
 - BPLS 
 		
 - ASSESSOR	
-	- Property examination updates 
+	- Examination: include examinations after approval in report listing
+	- Modify FAAS: update cancelledbytdnos info
 
 - LANDTAX
 	

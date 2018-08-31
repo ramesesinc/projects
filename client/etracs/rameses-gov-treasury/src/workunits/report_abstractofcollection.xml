@@ -30,12 +30,16 @@ class AbstractCollectionSummary extends ReportController {
     def data; 
     def funds; 
     def months; 
-    def postingTypes;
-    
+
+    def postingTypes = [
+        [objid: 'BY_LIQUIDATION', title:'By Liquidation'],
+        [objid: 'BY_REMITTANCE', title:'By Remittance']
+    ]; 
+        
     def formControl = [
         getFormControls: {
             return [
-                new FormControl( "combo", [caption:'Posting Types', name:'entity.postingtype', required:true, items:'postingTypes', expression:'#{item.caption}', preferredSize:'0,20', captionWidth:100, immediate:true]),
+                new FormControl( "combo", [caption:'Posting Types', name:'entity.postingtype', required:true, items:'postingTypes', expression:'#{item.title}', preferredSize:'0,20', captionWidth:100, immediate:true]),
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]), 
                 new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', expression:'#{item.name}', preferredSize:'100,20', captionWidth:100, immediate:true]),
                 new FormControl( "combo", [caption:'Day', name:'entity.day', items:'daylist', preferredSize:'100,20', captionWidth:100, depends:'entity.month', dynamic:true]), 
@@ -49,7 +53,6 @@ class AbstractCollectionSummary extends ReportController {
         def res = svc.initReport(); 
         funds = ( res.funds ? res.funds : [] );
         months = ( res.months ? res.months : [] );
-        postingTypes = ( res.postingtypes ? res.postingtypes : [] );
         entity.day = res.day; 
         entity.year = res.year; 
         entity.month = res.month;
@@ -66,7 +69,7 @@ class AbstractCollectionSummary extends ReportController {
     }
     
     List getCollectors() {
-        def userlist = userroleSvc.getUsers([domain:'TREASURY', roles:'COLLECTOR'])
+        def userlist = userroleSvc.getUsers([domain:'TREASURY', roles:'COLLECTOR']); 
         return userlist.collect{[ 
             objid:it.objid, name:it.name, title:it.title, 
             fullname: it.lastname +', '+ it.firstname +' '+ (it.middlename? it.middlename: '')  

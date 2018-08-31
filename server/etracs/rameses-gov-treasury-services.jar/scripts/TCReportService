@@ -99,45 +99,63 @@ class TCReportService {
 
 
 	@ProxyMethod 
-	public def getAbstractOfCollection( params ) {
-		if(params.day){
-			def dt = params.year + '-' + params.month.index +  '-' + params.day.toString().padLeft(2, '0')
+	public def getAbstractOfCollection( params ) { 
 
-			params.fromdate =  dt + ' 00:00:00'
-			params.todate =  dt + " 23:59:59"
-		} else {
-			params.fromdate = params.year + '-' + params.month.index + '-01 00:00:00'
-			params.todate = dtSvc.format( 'yyyy-MM-dd', dtSvc.getMonthEndDate( dtSvc.parse('yyyy-MM-dd', params.fromdate) ) ) + " 23:59:59"
+		if ( !params.year ) throw new Exception('year parameter is required'); 
+
+		def periodtype = null;
+		def periodtitle = null; 
+		def YMD = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
+
+		if ( params.day ) { 
+			def dtstr = ''+ params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-'+ params.day.toString().padLeft(2, '0'); 
+			params.fromdate =  new java.sql.Date( YMD.parse( dtstr ).getTime()); 
+			params.todate   =  new java.sql.Date( com.rameses.util.DateUtil.add( params.fromdate, "1d").getTime()); 
+			periodtitle = 'FOR THE DAY OF '+ new java.text.SimpleDateFormat("MMMMM dd, yyyy").format( params.fromdate ).toUpperCase(); 
+			periodtype = 'DAILY';
+		} 
+		else if ( params.month?.index ) {
+			def dtstr = ''+ params.year +'-'+ params.month.index.toString().padLeft(2, '0') +'-01'; 
+			params.fromdate =  new java.sql.Date( YMD.parse( dtstr ).getTime()); 
+			params.todate   =  new java.sql.Date( com.rameses.util.DateUtil.add( params.fromdate, "1M").getTime()); 
+			periodtitle = 'FOR THE MONTH OF '+ new java.text.SimpleDateFormat("MMMMM, yyyy").format( params.fromdate ).toUpperCase(); 
+			periodtype = 'MONTHLY';
+		} 
+		else {
+			def dtstr = ''+ params.year +'-01-01';
+			params.fromdate = new java.sql.Date( YMD.parse( dtstr ).getTime()); 
+			params.todate   = new java.sql.Date( com.rameses.util.DateUtil.add( params.fromdate, "12M").getTime()); 
+			periodtitle = 'FOR THE YEAR '+ params.year.toString();
+			periodtype = 'YEARLY';
 		}
 
-
-		params.filter = ''
-		if( params.fund ) {
-			params.fundid = params.fund.objid
-			params.filter += ' and ri.fund_objid = $P{fundid}  ' 
-
+		params.filter = '';
+		if( params.fund?.objid ) {
+			params.fundid = params.fund.objid;
+			params.filter += ' and ri.fund_objid = $P{fundid} ';
 		}
 
-		if(params.collector) {
-			params.collectorid = params.collector.objid 
-			params.filter += ' and cr.collector_objid = $P{collectorid} '
-
+		if ( params.collector?.objid ) { 
+			params.collectorid = params.collector.objid;
+			params.filter += ' and cr.collector_objid = $P{collectorid} '; 
 		}
-		def data = [:]
+
+		params.postingtypeid = params.postingtype?.objid.toString(); 
+
+		def data = [ items: adb.getAbstractOfCollection(params) ]; 
+		if ( !data.items ) throw new Exception("No record(s) found.     "); 
 
 		data.info = [
-			PREPAREDBY 		: env.FULLNAME,
-			PREPAREDBYTITLE : env.JOBTITLE, 
-			PERIOD			: params.day ?  "FOR THE DAY OF " + params.month.caption + ' ' + params.day +  ', ' + params.year  : 'FOR THE MONTH OF ' + params.month.caption + ', ' + params.year,
+			PREPAREDBY 		: env?.FULLNAME, 
+			PREPAREDBYTITLE : env?.JOBTITLE, 
+			PERIOD			: periodtitle, 
+			PERIODTYPE      : periodtype, 
 			TITLE 			: "Abstract of Collection Report ",
-			COLLECTORNAME	: params.collector ? params.collector.fullname : 'ALL'
-		]
-		
-		data.items = adb.getAbstractOfCollection(params) 
-
-		if(! data.items) throw new Exception("No record(s) found.     ")
-		return data;
-	}	
+			COLLECTORNAME	: (params.collector ? params.collector.fullname : '(ALL)'), 
+			FUNDTITLE       : (params.fund ? params.fund.title.toString() : '(ALL)') 
+		]; 
+		return data; 
+	} 
 
 
 

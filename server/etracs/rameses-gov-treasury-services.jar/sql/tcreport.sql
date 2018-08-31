@@ -59,26 +59,41 @@ order by
 
 [getAbstractOfCollection]
 select 
-    cr.formno, 
-    cr.receiptno, 
-    cr.receiptdate, 
-    cr.formtype, 
-    CASE WHEN vr.objid is null THEN cr.paidby ELSE '*** VOIDED ***' END AS payorname, 
-    CASE WHEN vr.objid is null THEN cr.paidbyaddress ELSE '' END AS payoraddress, 
-    CASE WHEN vr.objid is null  THEN cri.item_title ELSE '' END AS accttitle, 
-    CASE WHEN vr.objid is null  THEN ri.fund_title ELSE '' END AS fundname, 
-    CASE WHEN vr.objid is null  THEN cri.amount ELSE 0.0 END AS amount, 
-    cr.collector_name as collectorname, 
-    cr.collector_title as collectortitle  
-from cashreceipt cr 
-  INNER JOIN remittance_cashreceipt rc on cr.objid = rc.objid 
-  INNER JOIN remittance r on r.objid = rc.remittanceid 
+  cr.controlid, cr.formno, cr.receiptno, cr.receiptdate, cr.formtype, 
+  CASE WHEN vr.objid is null THEN cr.paidby ELSE '*** VOIDED ***' END AS payorname, 
+  CASE WHEN vr.objid is null THEN cr.paidbyaddress ELSE '' END AS payoraddress, 
+  CASE WHEN vr.objid is null  THEN cri.item_title ELSE '' END AS accttitle, 
+  CASE WHEN vr.objid is null  THEN ri.fund_title ELSE '' END AS fundname, 
+  CASE WHEN vr.objid is null  THEN cri.amount ELSE 0.0 END AS amount, 
+  cr.collector_name as collectorname, 
+  cr.collector_title as collectortitle 
+from ( 
+  select r.objid 
+  from remittance r 
+    inner join liquidation_remittance lr on lr.objid = r.objid 
+    inner join liquidation l on l.objid = lr.liquidationid 
+  where 'BY_REMITTANCE' = $P{postingtypeid} 
+    and r.remittancedate >= $P{fromdate} 
+    and r.remittancedate <  $P{todate} 
+
+  union 
+
+  select r.objid 
+  from liquidation l 
+    inner join liquidation_remittance lr on lr.liquidationid = l.objid 
+    inner join remittance r on r.objid = lr.objid 
+  where 'BY_LIQUIDATION' = $P{postingtypeid} 
+    and l.liqdate >= $P{fromdate} 
+    and l.liqdate <  $P{todate} 
+)tmp 
+  INNER JOIN remittance r on r.objid = tmp.objid 
+  INNER JOIN remittance_cashreceipt rc on rc.remittanceid = r.objid 
+  INNER JOIN cashreceipt cr on cr.objid = rc.objid 
   INNER join cashreceiptitem cri on cri.receiptid = cr.objid
   INNER join itemaccount ri on ri.objid = cri.item_objid 
   LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
-where r.remittancedate BETWEEN $P{fromdate} AND $P{todate}  
-    ${filter} 
-order by cr.formno, cr.receiptno
+where 1=1 ${filter} 
+order by cr.formno, cr.controlid, cr.receiptno
 
 
 [getFunds]

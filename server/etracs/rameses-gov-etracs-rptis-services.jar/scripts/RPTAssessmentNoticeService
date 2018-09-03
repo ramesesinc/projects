@@ -5,312 +5,187 @@ import com.rameses.services.extended.*
 
 class RPTAssessmentNoticeService 
 {
-	@ActiveDB('assessmentnotice')
+	@Env 
+	def env 
+
+	@Service('DateService')
+	def dtSvc 
+
+	@Service('FAASService')
+	def faasSvc 
+
+	@Service('ReportParameterService')
+	def reportSvc	
+
+	@Service('SequenceService')
+	def seqSvc
+
+	@Service('SignatureService')
+	def sigSvc 	
+
+
+	@Service('RPTUtil')
+	def util
+
+	@DataContext('assessmentnotice')
 	def em
 
 	@DataContext('assessmentnotice_item')
 	def em_item
 
-	@ActiveDB('tdreport')
-    def tdreportEm 
+	@DataContext('faas')
+	def em_faas
 
-	@Service('FAASService')
-	def faasSvc 
-
-
-	@Service('SignatureService')
-	def sigSvc 	
-	
-	@Service('SequenceService')
-	def seqSvc
-	
-	@Service('DateService')
-	def dateSvc
-
-	@Service('RPTUtil')
-	def util 
-
-	@Service('Var')
-	def var 
-
-	@Service('ReportParameterService')
-	def reportSvc
-
-	@Env
-	def env
-	
-	def SCHEMA_ITEM = 'item'
-	
-	def STATE_OPEN 		= 'OPEN' 
-	def STATE_RECEIVED 	= 'RECEIVED' 
+	def STATE_OPEN = 'OPEN'
+	def STATE_RECEIVED = 'RECEIVED'
 
 
 	@ProxyMethod
-	public def getFaasIds( params ) {
-		if (!params.selectiontype)
-		throw new Exception('Selection Type is required.')
-
-		params.barangayid = params.barangay?.objid
-		if(!params.barangayid) params.barangayid = '%'
-
-		if (!params.state)
-			params.state = '%'
-
-		params.sectionfilter = ''
-		if (params.selectiontype.type == 'bysection')
-			params.sectionfilter = ' and rp.section like $P{section} '
-
-		params.starttdnofilter = ''
-		params.endtdnofilter = ''
-
-		if (params.selectiontype.type == 'bytdrange'){
-			params.starttdnofilter = ' and f.tdno >= $P{starttdno} '
-			params.endtdnofilter = ' and f.tdno <= $P{endtdno} '
-		}
-		return em.getFaasIds(params)
+	public def getDeliveryTypes() {
+	    return  [
+	        [objid: 'personal', caption: 'Personnally to declarant/representative'],
+	        [objid: 'occupant', caption: 'Actual Occupant'],
+	        [objid: 'mailed', caption: 'Mailed to last known address'],
+	        [objid: 'brgy', caption: 'Barangay assistance'],
+	    ]
 	}
 
-	
-	@ProxyMethod
-    public def getList( params ) {
-    	params.searchtext = (params.searchtext ? params.searchtext : '') + '%'
-        def filters = [
-            ' and txnno LIKE $P{searchtext}',
-            ' and taxpayername LIKE $P{searchtext}',
-            ' and receivedby LIKE $P{searchtext}',
-        ]
-        return util.getListFromQuery( 'assessmentnotice:getList' , filters, params, 'objid' ).each{
-        	if ('open'.equalsIgnoreCase(it.state )){
-	        	it.deliverydays = 30 - dateSvc.getDaysDiff(it.txndate, dateSvc.serverDate)
-	        	if (it.deliverydays < 0 ) it.deliverydays = 0
-        	}
-        }
-
-    }
-
 
 	@ProxyMethod
-	public Map createNotice( notice ) {
+	public def create(notice) {
 		if (!notice.items){
 			throw new Exception('At least one property must be included.');
 		}
 
-		def existingNotice = getExistingNotice(notice)
-		if (existingNotice){
-			return existingNotice
-		}
-
 		notice.state  = STATE_OPEN
 		notice.txnno  = getNextSeries(notice)
-		notice.txndate  = dateSvc.serverDate
+		notice.txndate  = dtSvc.serverDate
 		notice.taxpayerid = notice.taxpayer.objid
 		notice.taxpayername = notice.taxpayer.name
-		notice.taxpayeraddress = notice.taxpayer.address
-		updateAdministratorInfo(notice)
+		notice.taxpayeraddress = notice.taxpayer.address.text
+		updateNoticeInfo(notice)
 		notice.assessmentyear = notice.items[0].effectivityyear
 		
 		notice.createdbyid =  (env.USERID ? env.USERID : 'SYSTEM')
 		notice.createdbyname =  (env.FULLNAME ? env.FULLNAME : 'SYSTEM')
 		notice.createdbytitle =  (env.JOBTITLE ? env.JOBTITLE : 'SYSTEM')
-
-		notice.approvedbyname = ( var.assessor_name ? var.assessor_name : reportSvc.standardParameter.ASSESSORNAME)
-		notice.approvedbytitle = ( var.assessor_title ? var.assessor_title : reportSvc.standardParameter.ASSESSORTITLE)
+		notice.approvedbyname = reportSvc.standardParameter.ASSESSORNAME
+		notice.approvedbytitle = reportSvc.standardParameter.ASSESSORTITLE
 
 		em.create(notice) 
 
 		notice.items.each{
 			it.objid = util.generateId('ANI')
 			it.assessmentnoticeid = notice.objid 
-			em.create(it, SCHEMA_ITEM)
+			em_item.create(it)
 		}
-		buildSignatories(notice)
-		return notice 
+		return open(notice)
+	}
+
+
+	@ProxyMethod
+	public def open(entity) {
+		entity.items = getItems(entity)
+		updateNoticeInfo(entity)
+		return entity 
 	}
 
 	@ProxyMethod 
-	public def getExistingNotice(notice){
-		def existingNotice = null
-		def noticeitem = em_item.find([faasid:notice.items[0].faasid]).first()
-		if (noticeitem){
-			return openNotice(noticeitem.assessmentnoticeid)
-		}
-		return existingNotice
-	}
-
-	@ProxyMethod 
-	public def getExistingNoticeByFaas(faas){
-		def existingNotice = null
+	public def loadNotice(notice, faas){
 		def noticeitem = em_item.find([faasid:faas.objid]).first()
-		if (noticeitem){
-			return openNotice(noticeitem.assessmentnoticeid)
+		if (!noticeitem) {
+			faas = em_faas.select('objid,taxpayer.objid, taxpayer.name,taxpayer.address.text,effectivityyear')
+								.find([objid: faas.objid]).first()
+			notice.items = []
+			notice.items << [
+				assessmentnoticeid: notice.objid, 
+				faasid: faas.objid,
+				effectivityyear: faas.effectivityyear,
+			]
+			notice.taxpayer = faas.taxpayer 
+			notice = create(notice)
+		} else {
+			notice.objid = noticeitem.assessmentnoticeid
+			notice = open(em.read(notice))
 		}
-		return existingNotice
-	}
-
-	void buildSignatories(notice){
-		if (!notice.items) return
-
-		def td = [objid:notice.items[0].faasid ]
-		faasSvc.loadSignatories(td)
-
-		td.signatories = [:]
-		def retval = sigSvc.decodeSignatories(tdreportEm.getSignatories(td))
-		td.signatories = retval.signatories 
-		td.signaturetampered = retval.tampered
-		td.tamperedsigmsg = retval.tamperedsigmsg
-
-		notice.esigned = false
-		td.signatories.each{k,v->
-			if (v.state == 'approver' && v.signature?.image){
-				notice.esigned = true 
-			}
-		}
-		def objid = notice.objid 
-		notice.putAll(td)
-		notice.objid = objid 
-	}
-
-	void updateAdministratorInfo(notice){
-		if (notice.items.size() == 1){
-			notice.administrator = notice.items[0].administrator
-		}
-	}
-
-
-	@ProxyMethod
-	public def openNotice( objid ) {
-		def notice = em.read([objid:objid])
-		notice.items = getItems(notice)
-		updateAdministratorInfo(notice)
-		notice.dtassessed = dateSvc.getServerYear()+""
-		if( notice.items && notice.items[0].dtsigned )	
-			notice.dtassessed = new java.text.SimpleDateFormat("yyyy").format(notice.items[0].dtsigned)
-		buildSignatories(notice)
 		return notice
-	}
+	}	
 
 	@ProxyMethod
-	public def receiveNotice(notice) {
+	public def receive(notice) {
 		def old = em.read(notice)
-		if (old.state == STATE_RECEIVED)
+		if (old.state == STATE_RECEIVED){
 			throw new Exception('Notice has already been received.')
+		}
 
-		util.required('Received By', notice.receivedby)
 		util.required('Date Delivered', notice.dtdelivered)
 
-		notice.dtdelivered = dateSvc.parse('yyyy-MM-dd', notice.dtdelivered)
-		if (dateSvc.add(notice.dtdelivered, '1d') < notice.txndate)
-			throw new Exception('Date Delivered must be greater than or equal to ' + dateSvc.format('yyyy-MM-dd', notice.txndate) + '.')
+		notice.dtdelivered = dtSvc.parse('yyyy-MM-dd', notice.dtdelivered)
+		if (dtSvc.add(notice.dtdelivered, '1d') < notice.txndate){
+			throw new Exception('Date Delivered must be greater than or equal to ' + dtSvc.format('yyyy-MM-dd', notice.txndate) + '.')
+		}
 
 		notice.state = STATE_RECEIVED
 		em.update(notice)
-		return notice;
-	}
+		return notice
+	}	
 
-	@ProxyMethod
-	public def getApprovedFaasList(taxpayerid){
-		def items = em.getApprovedFaasList(buildParams([taxpayerid:taxpayerid]))
+	def getNextSeries(notice){
+		def cy = dtSvc.serverYear 
+		return env.ORGID.replaceAll('-', '') + '-' + cy +  seqSvc.getNextFormattedSeries('ASSESSMENT_NOTICE-' + cy)
+	}	
+
+
+	def getItems(entity){
+		def items = em.getItems(entity)
 		items.each{faas ->
-			buildAdditionalInfo(faas)
+			buildFaasAdditionalInfo(faas)
 		}
 		return items
 	}
 
-	@ProxyMethod
-	public def getFaasById( faasid ) {
-		def faas = em.findFaasById(buildParams([faasid:faasid]))
-		buildAdditionalInfo(faas)
-		return faas
-	}
-
-	@ProxyMethod 
-	public def getTaxpayerList(params) {
-		return em.getTaxpayerList(params)
-
-	} 
-
-	@ProxyMethod 
-	public def getTaxpayerPropertyListForBatch(params) {
-		return em.getTaxpayerPropertyListForBatch(params)
-	}
-
-
-	def getItems(notice){
-		def items = em.getItems(buildParams(notice))
-		items.each{faas ->
-			buildAdditionalInfo(faas)
-		}
-		if (util.isTrue(var.rpt_pad_noa_items_with_blank_rows)){
-			def itemcount = 10
-			if (items.size() < itemcount){
-				for(int i=items.size(); i<itemcount; i++){
-					items << [:]
-				}
-			}
+	void updateNoticeInfo(entity){
+		if (entity.items.size() == 1){
+			entity.administrator = entity.items[0].administrator
 		}
 
-		return items
+		entity.dtassessed = dtSvc.getServerYear()+""
+		if( entity.items && entity.items[0].dtsigned ){
+			entity.dtassessed = dtSvc.format('yyyy', entity.items[0].dtsigned)
+		}
+
+		entity.deliverytype = getDeliveryTypes().find{it.objid == entity.deliverytype?.objid}
+		buildSignatories(entity)
 	}
 
-	def buildParams(info){
-		return [
-			objid  		: info.objid,
-			faasid 		: info.faasid,
-			taxpayerid 	: info.taxpayerid,
-			fields 		: getFields(),
-		]
-	}
-
-	void buildAdditionalInfo(faas){
+	void buildFaasAdditionalInfo(faas){
 		faas.street = (faas.street ? faas.street : faas.barangay)
 		faas.description = faas.cadastrallotno
 		if (faas.rputype == 'bldg')
 			faas.description = em.getBldgTypes(faas).bldgkind.join('/')
-	}
+	}	
 
-	//Returns the same fields for the following queries:
-	// getItems, findFaasById
-	def getFields(){
-		return '''
-		f.objid AS faasid,
-		f.effectivityyear,
-		f.effectivityqtr,
-		f.tdno,
-		f.taxpayer_objid,
-		e.name as taxpayer_name,
-		e.address_text as taxpayer_address,
-		f.owner_name,
-		f.owner_address,
-		f.administrator_name,
-		f.administrator_address,
-		f.rpuid, 
-		rpu.rputype,
-		rpu.ry,
-		rpu.fullpin ,
-		rpu.taxable,
-		rpu.totalareaha,
-		rpu.totalareasqm,
-		rpu.totalbmv,
-		rpu.totalmv,
-		rpu.totalav,
-		rp.section,
-		rp.parcel,
-		rp.surveyno,
-		rp.cadastrallotno,
-		rp.blockno,
-		rp.claimno,
-		rp.street,
-		o.name as lguname, 
-		b.name AS barangay,
-		pc.code AS classcode,
-		pc.name as classification 
-	'''
-	}
-	
- 
- 	def getNextSeries(notice){
-		def cy = dateSvc.serverYear 
-		return env.ORGID.replaceAll('-', '') + '-' + cy +  seqSvc.getNextFormattedSeries('ASSESSMENT_NOTICE-' + cy)
-	}
+	void buildSignatories(entity){
+		if (!entity.items) return
+
+		def td = [objid:entity.items[0].faasid ]
+		faasSvc.loadSignatories(td)
+
+		td.signatories = [:]
+		def retval = sigSvc.decodeSignatories(em.getSignatories(td))
+		td.signatories = retval.signatories 
+		td.signaturetampered = retval.tampered
+		td.tamperedsigmsg = retval.tamperedsigmsg
+
+		entity.esigned = false
+		td.signatories.each{k,v->
+			if (v.state == 'approver' && v.signature?.image){
+				entity.esigned = true 
+			}
+		}
+		def objid = entity.objid 
+		entity.putAll(td)
+		entity.objid = objid 
+	}	
 
 }

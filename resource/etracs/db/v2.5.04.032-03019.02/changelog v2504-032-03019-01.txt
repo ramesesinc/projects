@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- NOA: Access in faas list and add new filter support 
 	- Examination: include examinations after approval in report listing
 	- Modify FAAS: update cancelledbytdnos info
 	- JAT: additional filter

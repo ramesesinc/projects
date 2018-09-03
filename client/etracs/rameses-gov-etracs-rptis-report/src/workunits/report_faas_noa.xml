@@ -1,51 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:formActions" action="viewNoa" caption="Notice of Assessment" target="popup" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'CURRENT'}" />
-        <invoker type="faasmain:formActions" action="viewNoa" caption="Notice of Assessment" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'CURRENT'}" />
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png"/>
-        
-        <invoker type="faas:noa:batch" action="preview" caption="Notice of Assessment Batch" />
+        <invoker type="assessmentnotice:report" action="preview" caption="Preview" />
+        <invoker type="formActions" action="_close" caption="Close" />
     </invokers>
-        
-    <code>
-<![CDATA[ 
-        
-    import com.rameses.rcp.annotations.* 
-    import com.rameses.rcp.common.* 
-    import com.rameses.osiris2.client.*
-    import com.rameses.osiris2.common.*
-
-    class ViewNoaController extends com.rameses.gov.etracs.rpt.report.notice.AssessmentNoticeController
-    {
-        def faas 
-        
-        def viewNoa(){
-            faas = entity;
-            init();
-            def notice = svc.getExistingNoticeByFaas([objid:faas.objid]);
-            if (notice){
-                entity.putAll(notice);
-                return preview();
-            } else {
-                entity.taxpayer = faas.taxpayer;
-                def item = svc.getFaasById(faas.objid)
-                item.included = true 
-                entity.items.add(item)
-                if (save() !=  null){
-                    return preview();    
-                }
-                return '_close';
-            }
-        }
-    }        
-    
-    
-]]>    
+    <code class="com.rameses.gov.etracs.rptis.report.models.AssessmentNoticeReportModel">
     </code>
     <pages>
         <page name="preview" template="com.rameses.gov.etracs.rpt.report.PreviewPage" />
-    </pages>    
+    </pages>
 </workunit>
 
 

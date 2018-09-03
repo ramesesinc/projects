@@ -56,6 +56,7 @@
 	<field name="administrator.address" class="java.lang.String"/>
 	<field name="dtassessed" class="java.lang.String"/>
 	<field name="assessmentyear" class="java.lang.Integer"/>
+	<field name="deliverytype.objid" class="java.lang.String"/>
 
 
 		<group  name="TAXPAYER" >
@@ -574,6 +575,86 @@
 		</lastPageFooter>
 		<summary>
 			<band height="189"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="250"
+						y="162"
+						width="26"
+						height="12"
+						key="staticText-81">
+							<printWhenExpression><![CDATA[$F{deliverytype.objid} == 'brgy']]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[X]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="250"
+						y="145"
+						width="26"
+						height="12"
+						key="staticText-80">
+							<printWhenExpression><![CDATA[$F{deliverytype.objid} == 'occupant']]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[X]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="44"
+						y="162"
+						width="26"
+						height="12"
+						key="staticText-79">
+							<printWhenExpression><![CDATA[$F{deliverytype.objid} == 'mailed']]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[X]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="44"
+						y="145"
+						width="26"
+						height="12"
+						key="staticText-78">
+							<printWhenExpression><![CDATA[$F{deliverytype.objid} == 'personal']]></printWhenExpression>
+						</reportElement>
+					<box>					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[X]]></text>
+				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
@@ -761,15 +842,6 @@
 					</textElement>
 				<text><![CDATA[ to]]></text>
 				</staticText>
-				<rectangle>
-					<reportElement
-						x="44"
-						y="145"
-						width="26"
-						height="12"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -791,15 +863,6 @@
 					</textElement>
 				<text><![CDATA[Personally to declarant/representative]]></text>
 				</staticText>
-				<rectangle>
-					<reportElement
-						x="44"
-						y="162"
-						width="26"
-						height="12"
-						key="rectangle-2"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -821,15 +884,6 @@
 					</textElement>
 				<text><![CDATA[Mailed to last known address]]></text>
 				</staticText>
-				<rectangle>
-					<reportElement
-						x="250"
-						y="145"
-						width="26"
-						height="12"
-						key="rectangle-3"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -851,15 +905,6 @@
 					</textElement>
 				<text><![CDATA[Actual Occupant]]></text>
 				</staticText>
-				<rectangle>
-					<reportElement
-						x="250"
-						y="162"
-						width="26"
-						height="12"
-						key="rectangle-4"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<staticText>
 					<reportElement
 						mode="Transparent"

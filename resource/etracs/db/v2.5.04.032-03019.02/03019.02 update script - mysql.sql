@@ -49,26 +49,93 @@ where e.parent_objid = c.objid
 
 
 
-/*=============================================================== 	
-* Use the script below to manually update the inspectedby_objid
-* field for inspection done after the record has been approved.
+/*======================================================
 *
-* This query returns the list of examiners 
-* with inspectedby_objid field not yet set.
-* For each result, update the inspectedby_objid 
-* by setting the firstname, lastname and notedby values
-* in the query "-- update inspectedby_userid field"
+*  ASSESSMENT NOTICE 
 *
-*
-*  select distinct notedby from examiner_finding 
-*  where inspectedby_objid is null
-*  order by notedby;
-*
-================================================================*/
-
--- update inspectedby_userid field
-update examiner_finding set 
-	inspectedby_objid = (select objid from sys_user where firstname like 'mirasol%' and lastname like 'gaspar%')
-where inspectedby_objid is null 
-and notedby like 'MIRASOL%GASPAR%'
+======================================================*/
+alter table assessmentnotice modify column dtdelivered date null
 ;
+alter table assessmentnotice add deliverytype_objid varchar(50)
+;
+
+drop view if exists vw_assessment_notice
+;
+
+create view vw_assessment_notice
+as 
+select 
+	a.objid,
+	a.state,
+	a.txnno,
+	a.txndate,
+	a.taxpayerid,
+	a.taxpayername,
+	a.taxpayeraddress,
+	a.dtdelivered,
+	a.receivedby,
+	a.remarks,
+	a.assessmentyear,
+	a.administrator_name,
+	a.administrator_address,
+	fl.tdno,
+	fl.displaypin as fullpin,
+	fl.cadastrallotno,
+	fl.titleno
+from assessmentnotice a 
+inner join assessmentnoticeitem i on a.objid = i.assessmentnoticeid
+inner join faas_list fl on i.faasid = fl.objid
+;
+
+
+drop view if exists vw_assessment_notice_item 
+;
+
+create view vw_assessment_notice_item 
+as 
+select 
+	ni.objid,
+	ni.assessmentnoticeid, 
+	f.objid AS faasid,
+	f.effectivityyear,
+	f.effectivityqtr,
+	f.tdno,
+	f.taxpayer_objid,
+	e.name as taxpayer_name,
+	e.address_text as taxpayer_address,
+	f.owner_name,
+	f.owner_address,
+	f.administrator_name,
+	f.administrator_address,
+	f.rpuid, 
+	rpu.rputype,
+	rpu.ry,
+	rpu.fullpin ,
+	rpu.taxable,
+	rpu.totalareaha,
+	rpu.totalareasqm,
+	rpu.totalbmv,
+	rpu.totalmv,
+	rpu.totalav,
+	rp.section,
+	rp.parcel,
+	rp.surveyno,
+	rp.cadastrallotno,
+	rp.blockno,
+	rp.claimno,
+	rp.street,
+	o.name as lguname, 
+	b.name AS barangay,
+	pc.code AS classcode,
+	pc.name as classification 
+FROM assessmentnoticeitem ni 
+	INNER JOIN faas f ON ni.faasid = f.objid 
+	LEFT JOIN txnsignatory ts on ts.refid = f.objid and ts.type='APPROVER'
+	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
+	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid
+	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
+	INNER JOIN barangay b ON rp.barangayid = b.objid 
+	INNER JOIN sys_org o ON f.lguid = o.objid 
+	INNER JOIN entity e on f.taxpayer_objid = e.objid 
+;
+

@@ -17,6 +17,7 @@ and (
 	(f.dtapproved < $P{startdate} AND f.state = 'CURRENT' ) OR 
 	(f.dtapproved < $P{startdate} and f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
+${filter}
 group by b.objid, b.name, b.pin 
 order by b.pin  
 
@@ -40,6 +41,7 @@ and (
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
+${filter}
 group by b.objid, b.name, b.pin 
 order by b.pin 
 
@@ -62,6 +64,7 @@ from faas f
 where f.lguid = $P{lguid}
 and f.state = 'CANCELLED'
 and f.canceldate >= $P{startdate} AND  f.canceldate < $P{enddate}
+${filter}
 group by b.objid, b.name, b.pin 
 order by b.pin 
 
@@ -85,6 +88,7 @@ and (
 	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
 )
+${filter}
 group by b.objid, b.name, b.pin 
 order by b.pin 
 
@@ -92,7 +96,7 @@ order by b.pin
 
 
 
-[getPreceedingLintList]
+[getPreceedingLiftList]
 select 
 	b.objid,
 	b.name as barangay,
@@ -118,11 +122,12 @@ and (
 	(f.dtapproved < $P{startdate} AND f.state = 'CURRENT' ) OR 
 	(f.dtapproved < $P{startdate} and f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
+${filter}
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  
 
 
-[getCurrentLintList]
+[getCurrentLiftList]
 select 
 	b.objid,
 	b.name as barangay,
@@ -148,13 +153,14 @@ and (
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 	(f.dtapproved >= $P{startdate} and f.dtapproved < $P{enddate} AND f.canceldate >= $P{startdate} AND f.state = 'CANCELLED' )
 )
+${filter}
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  
 
 
 
 
-[getCancelledLintList]
+[getCancelledLiftList]
 select 
 	b.objid,
 	b.name as barangay,
@@ -178,12 +184,13 @@ from faas f
 where f.lguid = $P{lguid}
 and f.state = 'CANCELLED'
 and f.canceldate >= $P{startdate} AND  f.canceldate < $P{enddate}
+${filter}
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  
 
 
 
-[getEndingLintList]
+[getEndingLiftList]
 select 
 	b.objid,
 	b.name as barangay,
@@ -209,6 +216,7 @@ and (
 	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
 )
+${filter}
 group by b.objid, b.name, b.pin, r.rputype 
 order by b.pin, rputypeidx  
 

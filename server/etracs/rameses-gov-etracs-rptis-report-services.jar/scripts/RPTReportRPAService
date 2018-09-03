@@ -95,6 +95,10 @@ class RPTReportRPAService
 			params.period = 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.parse('yyyy-MM-dd', params.asofdate))
 		}
 
+		if (params.ry){
+			params.filter += ' AND rp.ry = $P{ry} ' 
+		}
+
 		if (params.lgu){
 			params.filter += ' AND f.lguid = $P{lguid} ' 
 			params.lguid = params.lgu.objid 

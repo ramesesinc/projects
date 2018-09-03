@@ -7,7 +7,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
 
-class RoaReportModel extends AsyncReportModel
+class RoaReportModel extends AsyncReportModel2
 {
     @Service('RPTReportROAService') 
     def svc;
@@ -32,6 +32,7 @@ class RoaReportModel extends AsyncReportModel
     
     def getFormControl(){
         def controls = []
+        controls << new FormControl( "combo", [captionWidth:110, caption:'Revision Year', name:'entity.ry', items:'revisionyears', emptyText:'ALL']);
         controls << new FormControl( "combo", [captionWidth:110, caption:'Period Type', name:'entity.periodtype', required:true, items:'periodtypes', allowNull:false, expression:'#{item.caption}', immediate:true])
         controls << new FormControl( "integer", [captionWidth:110, caption:'Year', name:'entity.year', required:true, depends:'entity.periodtype', visibleWhen:'#{entity.periodtype?.type=="period"}'])
         controls << new FormControl( "combo", [captionWidth:110, caption:'Quarter', name:'entity.qtr', required:true, items:'quarters', depends:'entity.periodtype', visibleWhen:'#{entity.periodtype?.type=="period"}'])

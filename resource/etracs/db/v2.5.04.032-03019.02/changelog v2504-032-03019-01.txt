@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- TD and FAAS Report: display all previous info 
 	- REPORTS: add revision year filters
 	- NOA: Access in faas list and add new filter support 
 	- Examination: include examinations after approval in report listing

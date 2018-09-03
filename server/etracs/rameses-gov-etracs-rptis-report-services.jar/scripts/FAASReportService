@@ -124,7 +124,7 @@ class FAASReportService
 
 	def getPreviousInfo(list, fieldname, pattern){
 		def info = ''
-		list[fieldname].unique().each{
+		list[fieldname].each{
 			if (it){
 				if (info) info += ' / '
 				if (pattern && it.matches('^[+-]?\\d*.?\\d+$')){

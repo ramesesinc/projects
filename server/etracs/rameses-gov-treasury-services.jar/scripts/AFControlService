@@ -96,7 +96,7 @@ class AFControlService  {
 
 	void checkCanPerformFunc( def o) {
 		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
-		if(z) throw new Exception("Cannot perform thsi function. Please remit all open collections first");
+		if(z) throw new Exception("Cannot perform this function. Please remit all open collections first");
 	}
 
 	@ProxyMethod 
@@ -189,6 +189,10 @@ class AFControlService  {
 	@ProxyMethod
 	public def changeMode( p ) { 
 		checkCanPerformFunc( p ); 
+
+		if ( em.find([ objid: p.objid, txnmode: 'REMOTE' ]).select('objid').first()) {
+			throw new Exception('Change Mode Not Allowed. This record is currently exported'); 
+		}
 
 		//throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 

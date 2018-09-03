@@ -1,10 +1,8 @@
 /*
- * AFControlSerialExportPage.java
- *
- * Created on November 7, 2013, 8:02 PM
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-package com.rameses.gov.treasury.af;
+package com.rameses.enterprise.treasury.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.StyleSheet;
@@ -18,7 +16,7 @@ import com.rameses.rcp.ui.annotations.Template;
 @Template(FormPage.class)
 public class AFControlImportPage extends javax.swing.JPanel {
     
-    /** Creates new form AFControlSerialExportPage */
+    /** Creates new form AFControlImportPage */
     public AFControlImportPage() {
         initComponents();
     }
@@ -33,6 +31,7 @@ public class AFControlImportPage extends javax.swing.JPanel {
 
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
+        xDataTable1.setHandler("listHandler");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("List of AF Controls");
         xDataTable1.setBorder(xTitledBorder1);
@@ -42,11 +41,13 @@ public class AFControlImportPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "AF"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -55,11 +56,13 @@ public class AFControlImportPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Start Series"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -68,11 +71,13 @@ public class AFControlImportPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "End Series"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -81,11 +86,13 @@ public class AFControlImportPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Stub No."}
                 , new Object[]{"width", 80}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -94,11 +101,13 @@ public class AFControlImportPage extends javax.swing.JPanel {
                 , new Object[]{"caption", "Mode"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
@@ -112,11 +121,11 @@ public class AFControlImportPage extends javax.swing.JPanel {
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.UPPER}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable1.setHandler("listHandler");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

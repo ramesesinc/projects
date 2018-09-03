@@ -9,8 +9,13 @@ class TaxmappingListService
 
 
 	@ProxyMethod
-	public def getBarangayLastParcelInfo( params ) {
-		return em.getBarangayLastParcelInfo(params);
+	public def getList( params ) {
+		return em.getList(params);
+	}
+
+	@ProxyMethod
+	public def getFaasList(item) {
+		return em.getFaasList(item)
 	}
 
 

@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Taxmapping: Improve parcel monitoring facility
 	- TD and FAAS Report: display all previous info 
 	- REPORTS: add revision year filters
 	- NOA: Access in faas list and add new filter support 

@@ -58,6 +58,9 @@ alter table assessmentnotice modify column dtdelivered date null
 ;
 alter table assessmentnotice add deliverytype_objid varchar(50)
 ;
+update assessmentnotice set state = 'DELIVERED' where state = 'RECEIVED'
+;
+
 
 drop view if exists vw_assessment_notice
 ;
@@ -108,6 +111,7 @@ select
 	f.administrator_name,
 	f.administrator_address,
 	f.rpuid, 
+	f.lguid,
 	rpu.rputype,
 	rpu.ry,
 	rpu.fullpin ,

@@ -37,8 +37,17 @@ class RPTAssessmentNoticeService
 	def em_faas
 
 	def STATE_OPEN = 'OPEN'
-	def STATE_RECEIVED = 'RECEIVED'
+	def STATE_DELIVERED = 'DELIVERED'
 
+
+
+	@ProxyMethod
+	public def getStates() {
+		return [
+			STATE_OPEN,
+			STATE_DELIVERED
+		]
+	}
 
 	@ProxyMethod
 	public def getDeliveryTypes() {
@@ -114,8 +123,8 @@ class RPTAssessmentNoticeService
 	@ProxyMethod
 	public def receive(notice) {
 		def old = em.read(notice)
-		if (old.state == STATE_RECEIVED){
-			throw new Exception('Notice has already been received.')
+		if (old.state == STATE_DELIVERED){
+			throw new Exception('Notice has already been delivered.')
 		}
 
 		util.required('Date Delivered', notice.dtdelivered)
@@ -125,7 +134,7 @@ class RPTAssessmentNoticeService
 			throw new Exception('Date Delivered must be greater than or equal to ' + dtSvc.format('yyyy-MM-dd', notice.txndate) + '.')
 		}
 
-		notice.state = STATE_RECEIVED
+		notice.state = STATE_DELIVERED
 		em.update(notice)
 		return notice
 	}	

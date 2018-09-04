@@ -5,7 +5,8 @@
 - BPLS 
 		
 - ASSESSOR	
-	- REPORTS: List of Open/Delivered Notice of Assessments
+	- REPORT: List of Cancelled Properties
+	- REPORT: List of Open/Delivered Notice of Assessments
 	- Taxmapping: Improve parcel monitoring facility
 	- TD and FAAS Report: display all previous info 
 	- REPORTS: add revision year filters

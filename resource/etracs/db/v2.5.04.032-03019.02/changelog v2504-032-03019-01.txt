@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- SKETCH: support image (old) and drawing format
 	- REPORT: Transaction Log Listing
 	- REPORT: List of Cancelled Properties
 	- REPORT: List of Open/Delivered Notice of Assessments

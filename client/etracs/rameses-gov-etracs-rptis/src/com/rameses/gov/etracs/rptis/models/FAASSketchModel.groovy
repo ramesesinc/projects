@@ -40,10 +40,20 @@ class FAASSketchModel
     def mode;
     def drawing;
     def image;
+    def converting;
+    def oncloseSketch = {}
+    def committed;
     
     void init(){
         mode = MODE_READ;
+        converting = false;
+        committed = false;
         openDrawing();
+    }
+
+    void initConvert() {
+        init();
+        converting = true;
     }
         
     def handler = [
@@ -55,6 +65,9 @@ class FAASSketchModel
     
     
     def back(){
+        if (converting && committed) {
+            oncloseSketch()
+        }
         return "_close";
     }
     
@@ -79,18 +92,20 @@ class FAASSketchModel
         handler?.refresh();
     }
     
-    void cancel(){
+    def cancel(){
         entity.rp.north = boundary.north;
         entity.rp.east = boundary.east;
         entity.rp.west = boundary.west;
         entity.rp.south = boundary.south;
         mode = MODE_READ;
         handler?.refresh();
+        return null;
     }
     
     void update(){
         rpSvc.updateBoundaries(entity.rp);
         saveSketch();
+        committed = true;
         mode = MODE_READ;
         handler?.refresh();
     }

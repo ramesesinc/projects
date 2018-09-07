@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="eftpayment" allowCreate="true"
+    cols="refno,receivedfrom,refdate,bankaccount.code,bankaccount.bank.name,amount">
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" caption="Incoming EFT Payments" action="init" 
+                  target="window" index="10" role="ADMIN"/> 
+    </invokers>
+    
+</workunit>

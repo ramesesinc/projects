@@ -26,12 +26,12 @@ class RemoteServerDataImportController
     }
     
     void init(){
-        entity = [:]
-        entity.data = [:]
-        entity.data.state = 'POSTED'
-        entity.data.collectiontypes = []
-        entity.data.itemaccounts = []
-        entity.data.users = []
+        entity = [:];
+        entity.data = [:];
+        entity.data.state = 'POSTED';
+        entity.data.collectiontypes = [];
+        entity.data.itemaccounts = [];
+        entity.data.users = [];
         mode   = MODE_INIT;
     }
     

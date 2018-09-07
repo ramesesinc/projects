@@ -42,8 +42,8 @@ SELECT
   'bankaccount_ledger' AS _schemaname 
 FROM  cashreceiptpayment_noncash nc
   INNER JOIN cashreceipt c ON nc.receiptid=c.objid
-  INNER JOIN creditmemo cm ON cm.objid = nc.refid
-  INNER JOIN bankaccount ba ON cm.bankaccount_objid = ba.objid 
+  INNER JOIN eftpayment cm ON cm.objid = nc.refid
+  INNER JOIN bankaccount ba ON cm.bankacctid = ba.objid 
   INNER JOIN remittance r ON c.remittanceid = r.objid
   INNER JOIN collectionvoucher ccv ON r.collectionvoucherid = ccv.objid 
   LEFT JOIN itemaccount ia on ia.objid = ba.acctid 

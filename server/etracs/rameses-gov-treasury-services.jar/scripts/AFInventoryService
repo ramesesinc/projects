@@ -24,7 +24,6 @@ class AFInventoryService {
 		def oldref = ref; 
 		def oldafc = afc;
 
-		def prevdetailid = null;
 		if ( !afc?.objid ) {
 			def afunit = afc.afunit;
 			int len = (afunit.serieslength ? afunit.serieslength : 10);	
@@ -69,14 +68,11 @@ class AFInventoryService {
 			
 			afc = afCtrl.create( m ); 
 			oldafc.objid = afc.objid; 
-		}
-		else {
-			prevdetailid = afc.currentdetailid;
-		}
+		} 
 
 		def d = [:];
 		d.putAll( ref );
-
+		d.objid = 'AFD-'+ new java.rmi.server.UID(); 
 		d.controlid = afc.objid;
 		d.parent = afc;
 		d.issuedto = ref.issueto;

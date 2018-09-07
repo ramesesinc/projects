@@ -11,7 +11,7 @@
         <invoker folderid="menucategory/treasury/collection" 
                  caption="Request Accountable Form" 
                 formTitle="Request Accountable Form"
-                role="COLLECTOR" action="create" target="window" index="-10" reqtype="COLLECTION"/>  
+                role="COLLECTOR" action="create" target="window" index="-1" reqtype="COLLECTION"/>  
         
         <invoker folderid="menucategory/treasury/af" 
                  caption="Request Accountable Form (Purchase)" 

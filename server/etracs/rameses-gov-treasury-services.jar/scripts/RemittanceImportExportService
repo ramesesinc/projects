@@ -1,0 +1,113 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import com.rameses.util.*
+
+class RemittanceImportExportService {
+
+	@PersistenceContext("main")
+	def em;
+
+	@ActiveDB("remittance_import_export")
+	def adb;
+
+	@Service('RemittanceService')
+	def remSvc;
+
+	@Service("CashReceiptService")
+	def crSvc;
+
+	@Service("CashReceiptVoidService")
+	def voidSvc;
+
+    @DataContext("checkpayment")
+   	def check_db;	
+
+    @DataContext("bank")
+   	def bank_db;	
+
+	@ProxyMethod
+	public def exportRemittance(objid) {
+		def data = [:]; 
+		def rem = [ remittanceid: objid ]; 
+		data.entity = adb.findRemittance( rem ); 
+		if ( !data.entity ) throw new Exception('Remittance record does not exist'); 
+
+		data.entity.remotetxn = true; 
+		data.entity.items = adb.getRemittanceItems(rem).each{
+			it.cancelSeriesList = adb.getCancelledSeries([remittanceid: objid, controlid: it.controlid ]) 
+		}
+
+		//cashreceipts
+		data.cashreceipts = adb.getCashReceipts(rem).each {
+			it.items = adb.getCashReceiptItems(it);
+			it.paymentitems = adb.getCashReceiptCheckPayments(it).each{
+				it.type = 'CHECK';
+			}
+
+			def voided = adb.findVoidedReceipt(it);
+			if ( voided ) { 
+				it.voided = 1;
+				it.voidreason = voided.reason; 
+			} 
+		} 
+		return data; 
+	}
+
+	
+	@Async
+	@ProxyMethod
+	public def importRemittance( data ) { 
+		def remittanceid = data?.entity?.objid; 
+		if ( adb.findRemittance([ remittanceid: remittanceid ])) { 
+			throw new Exception('Remittance has already been posted.') 
+		}
+
+		data.cashreceipts.each { c-> 
+			c.paymentitems.each{
+				it.remove('receiptid'); 				
+				it.bank = bank_db.find([ objid: it.bankid ]).first();  
+				it.receivedfrom = c.paidby; 
+				it.state = 'PENDING'; 
+				it.amtused = 0.0; 
+				it.split = 0;
+				it.refid = check_db.create( it ).objid; 
+				it.fundid = c.items.first().item.fund.objid; 
+				it.receiptid = c.objid; 
+				it.voidamount = 0.0;				
+			} 
+
+			c.remove('remittanceid'); 
+			crSvc.post( c ); 
+
+			if ( c.voided && c.voided == 1 ) { 
+				voidSvc.post([ receipt: c, reason: c.voidreason ]); 
+			} 
+		} 
+
+		data.entity.cashreceipts = data.cashreceipts*.objid; 
+		data.entity.cashbreakdown = em.serializer.read( data.entity.cashbreakdown ); 
+
+		def controlno = data.entity.controlno; 
+		if ( controlno == null ) controlno = data.entity.txnno;  
+		if ( controlno && !controlno.toString().endsWith("-R")) controlno = controlno+ '-R'; 
+
+		def controldate = data.entity.controldate; 
+		if ( controldate == null ) controldate = data.entity.remittancedate; 
+
+		def totalcheck = data.entity.totalcheck; 
+		if ( totalcheck == null ) totalcheck = data.entity.totalnoncash; 
+		if ( totalcheck == null ) totalcheck = 0.0; 
+
+		def totalcr = data.entity.totalcr; 
+		if ( totalcr == null ) totalcr = 0.0; 
+
+		data.entity.controlno = controlno; 
+		data.entity.controldate = controldate; 
+		data.entity.totalcheck = totalcheck; 
+		data.entity.totalcr = totalcr; 
+		data.state = 'POSTED'; 
+		remSvc.importData( data.entity );
+		return "OK";
+	} 
+}
+

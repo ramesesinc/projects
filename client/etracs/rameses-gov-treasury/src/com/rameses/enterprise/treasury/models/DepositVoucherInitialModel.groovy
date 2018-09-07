@@ -31,7 +31,11 @@ class DepositVoucherInitialModel extends CrudListModel {
             if(!fund) return null;
             def m = [_schemaname: 'collectionvoucher_fund' ];
             m.where = ["parent.state='POSTED' AND fund.objid = :fundid AND depositvoucherid IS NULL ", [fundid: fund.objid]];
-            return queryService.getList( m );
+            def list = queryService.getList( m );
+            list.each{
+                it.amount -= it.totalcr; 
+            }
+            return list; 
         },
         onOpenItem: {o,col->
             def op = Inv.lookupOpener("collectionvoucher_fund:open", [entity: o] );

@@ -85,13 +85,12 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xFormPanel1.add(jScrollPane1);
 
         xLookupField2.setCaption("Fund");
-        xLookupField2.setEnabled(false);
         xLookupField2.setExpression("#{item.code} #{item.title}");
         xLookupField2.setHandler("fund:all:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
+        xLookupField2.setEnabled(false);
         xLookupField2.setRequired(true);
         xLookupField2.setStretchWidth(100);
-        xLookupField2.setVisibleWhen("#{ entity.type != 'PAYABLE' }");
         xFormPanel1.add(xLookupField2);
 
         xComboBox1.setCaption("Item Type");
@@ -149,6 +148,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xDecimalField1.setRequired(true);
         xFormPanel2.add(xDecimalField1);
 
+        xDataTable2.setHandler("itemHandlers.tags");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Report Tags");
         xDataTable2.setBorder(xTitledBorder1);
@@ -170,7 +170,6 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        xDataTable2.setHandler("itemHandlers.tags");
 
         javax.swing.GroupLayout xPanel1Layout = new javax.swing.GroupLayout(xPanel1);
         xPanel1.setLayout(xPanel1Layout);

@@ -102,10 +102,26 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         param.onselect = { o-> 
             if ( !o?.items ) return; 
 
+            boolean has_sharing = ( o.sharing.toString() == "1"); 
+            if ( has_sharing ) { 
+                def amt = MsgBox.prompt( "Please enter amount" );
+                if( amt == null ) return null;
+                
+                def sharing_amount = new BigDecimal( amt.toString() );
+                o.items.each {
+                    it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
+                }           
+            }
+            
             def newitems = []; 
             o.items.each{ 
                 def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
-                rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
+                if ( it.amount != null ) { 
+                    rci.amount = it.amount; 
+                } else {
+                    rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
+                }
+                
                 rci.item = [ 
                     objid : it.account?.objid, 
                     code  : it.account?.code, 

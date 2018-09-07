@@ -3,11 +3,11 @@
           cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name">
     
     <invokers>
-        <invoker folderid="menucategory/treasury/mgmt" caption="Cash Ticket List" 
+        <invoker folderid="menucategory/treasury/mgmt" caption="Views Cash Tickets" 
                  action="init" role="SHARED" tag="mgmt" 
                  customFilter=" formtype='cashticket' "/>
 
-        <invoker folderid="menucategory/treasury/collection" caption="SubCollector Cash Tickets" 
+        <invoker folderid="menucategory/treasury/collection" caption="View SubCollector Cash Tickets" 
                  action="init" index="50" 
                  customFilter=" formtype='cashticket' "> 
             <action role="COLLECTOR" caption="Collector Cash Tickets" tag="collector"/> 

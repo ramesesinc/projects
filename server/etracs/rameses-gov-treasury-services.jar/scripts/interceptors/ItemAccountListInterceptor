@@ -54,7 +54,7 @@ class ItemAccountListInterceptor {
 				def acctids = ctaem.list().collect{ it.account.objid } 
 				if ( acctids ) { 
 					str = " objid IN ('" + acctids.join("','") + "')";
-				}
+				}  
 			}			
 		} 
 
@@ -76,14 +76,18 @@ class ItemAccountListInterceptor {
 
 		if( o.has_collection_account ) {
 			def acList = coltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]).list();
-			result.each { a-> 
-				def m = acList.find{  
-					it.account.objid == a.objid 
-				} 
-				if ( m.valuetype ) {
-					a.valuetype = m.valuetype; 
-					a.defaultvalue = m.defaultvalue; 
+			acList.each { a-> 
+				def acct = a.account; 
+				if ( acct?.objid == null ) return;
+
+				def m = result.find{ it.objid == acct.objid } 
+				if ( m == null ) {
+					result << acct; 
 				}
+				else if ( acct.valuetype ) {
+					m.valuetype = acct.valuetype; 
+					m.defaultvalue = acct.defaultvalue; 
+				}  
 			}
 		}
 	}

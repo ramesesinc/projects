@@ -4,7 +4,7 @@
 		<field name="objid" primary="true" prefix="EFTPMT"/>	
 		<field name="state" required="true" defaultValue="PENDING"/>	
 
-		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" required="true" includefields="objid,name,bank.*,fund.*">
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" required="true" includefields="objid,code,name,bank.*,fund.*">
 			<key field="bankacctid" target="objid" />
 		</complex>	
 

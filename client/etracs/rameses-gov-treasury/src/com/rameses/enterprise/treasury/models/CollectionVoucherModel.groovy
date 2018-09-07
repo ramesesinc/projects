@@ -95,4 +95,18 @@ class CollectionVoucherModel extends CrudFormModel {
         
         return rdata;
     } 
+    
+    public void changeLiqOfficer() {
+        def s = { o->
+            o.signature = null;
+            def m = [_schemaname:"collectionvoucher"];
+            m.findBy = [objid: entity.objid];
+            m.liquidatingofficer = o;
+            persistenceService.update( m );
+            reloadEntity();
+            binding.refresh();
+        };
+        Modal.show("liquidatingofficer:lookup", [onselect:s]);
+    }
+    
 } 

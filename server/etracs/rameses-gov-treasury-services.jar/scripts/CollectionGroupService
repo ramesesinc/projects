@@ -102,7 +102,7 @@ class CollectionGroupService extends ActiveCrudListService {
 					title: it.title,
 					fund : it.fund, 
 					valuetype : it.valuetype
-				];
+				]
 			];
 		} 
 		return items;

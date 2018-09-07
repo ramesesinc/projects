@@ -19,7 +19,7 @@
                  caption="Issue Cash Receipt" 
                  windowTitle="Issue Cash Receipt"
                  formTitle="Issue Cash Receipt"
-                 target="window" index="-1">
+                 target="window" index="-10">
             <action role="COLLECTOR" name="init"/>
             <action role="SUBCOLLECTOR" name="initSubCollector"/>
         </invoker>

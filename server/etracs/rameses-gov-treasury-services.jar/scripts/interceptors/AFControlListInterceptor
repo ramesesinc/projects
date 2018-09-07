@@ -61,7 +61,7 @@ class AFControlListInterceptor {
 			o.where[1].putAll( m );
 		}
 		else {
-			o.where = [str, m];
+			o.where = [str.toString(), m];
 		} 
 	} 
 }

@@ -68,6 +68,7 @@ class DepositVoucherService  {
 
 	def summarizeTotal(def m) {
 		def tot = checkpaymentEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
+		if ( tot == null ) tot = 0.0;
 		depositEm.find([objid: m.objid ]).update([totalcheck: tot]);
 		return tot;
 	}

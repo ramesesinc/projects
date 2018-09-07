@@ -4,12 +4,12 @@
           orderBy="txndate">
     
     <invokers>
-        <invoker folderid="menucategory/treasury/mgmt" 
+        <invoker folderid="menucategory/treasury/mgmt" index="-5"
                  caption="Batch Capture List" action="init" 
                  role="SHARED" tag="shared"/>
 
         <invoker folderid="menucategory/treasury/collection" 
-                 caption="Batch Capture List" action="init">
+                 caption="Batch Capture List" action="init" index="-5">
             <action role="COLLECTOR" tag="collector"/>
             <action role="SUBCOLLECTOR" tag="subcollector"/>
         </invoker>    

@@ -30,7 +30,7 @@ class ItemAccountLookupModel extends CrudLookupModel {
             }
             else if( tag.matches(".*REVENUE")) {
                 if(tag.startsWith("MAIN")) s << " parentid IS NULL";
-                s << "type IN ('REVENUE','NONREVENUE')";
+                s << "type IN ('REVENUE','NONREVENUE','PAYABLE')";
             }
             else if( tag.matches(".*PAYABLE")) {
                 if(tag.startsWith("MAIN")) s << " parentid IS NULL";

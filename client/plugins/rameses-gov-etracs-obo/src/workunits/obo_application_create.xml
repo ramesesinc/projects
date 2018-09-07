@@ -1,14 +1,20 @@
 <workunit schemaName="obo_application">
     <invokers>
-        <invoker folderid="menucategory/obo/application" caption="New Application (Online)"
+        <invoker folderid="menucategory/obo/application" caption="New Construction"
                 action="startOnline" index="1"/>
 
-        <invoker folderid="menucategory/obo/application" caption="New Application (Walkin)"
-                action="startWalkin" index="1"/>
+        <invoker folderid="menucategory/obo/application" caption="Renewal"
+                action="startOnline" index="1"/>
         
-        <invoker type="obo_application:create" caption="New Application (Walkin)"
-                action="startWalkin" index="1"/>
-        
+        <invoker folderid="menucategory/obo/application" caption="Demolition"
+                action="startOnline" index="1"/>
+
+        <invoker folderid="menucategory/obo/application" caption="Addition"
+                action="startOnline" index="1"/>
+
+        <invoker folderid="menucategory/obo/application" caption="Occupancy Permit"
+                action="startOnline" index="1"/>
+
     </invokers>
     <code class="com.rameses.gov.etracs.obo.models.NewOboApplicationModel" />
     <pageflow>

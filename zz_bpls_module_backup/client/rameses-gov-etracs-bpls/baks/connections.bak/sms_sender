@@ -1,0 +1,7 @@
+provider=script
+app.host=localhost:8071
+app.context=notification
+app.cluster=osiris3	
+readTimeout=30000
+env.acctname=iligan
+env.apikey=5481b808b6c3412aa77acae39bfe79f6

@@ -6,6 +6,7 @@ package com.rameses.entity.components;
 
 import com.rameses.rcp.control.XComponentPanel;
 import com.rameses.rcp.ui.annotations.ComponentBean;
+import com.rameses.rcp.util.UIControlUtil;
 import java.beans.Beans;
 
 /**
@@ -18,6 +19,11 @@ public class EntityAddressLookup extends XComponentPanel {
     //this is used for filtering the item
     private String parentIdName = "entity.objid";
     
+    private String showEditAddress;
+    private String showAddressList;
+    private String disableWhen;
+    
+    
     /**
      * Creates new form EntityAddressLookup
      */
@@ -28,15 +34,56 @@ public class EntityAddressLookup extends XComponentPanel {
     }
 
     @Override
+    public void afterRefresh() {
+        boolean enabled = true;
+        try {
+            boolean disable = UIControlUtil.evaluateExprBoolean(getBean(), disableWhen);
+            if(disable) enabled = false;
+        }
+        catch(Exception ign){;}
+        btnEdit.setEnabled(enabled);
+        btnViewAddress.setEnabled(enabled);
+    }
+
+    @Override
     public void afterLoad() {
         super.afterLoad();
-        txtArea.setEditable(false);
-        txtArea.setEnabled(false);
+        /*
+        boolean enabled = true;
+        try {
+            boolean disable = UIControlUtil.evaluateExprBoolean(getBean(), disableWhen);
+            if(disable) enabled = false;
+        }
+        catch(Exception ign){;}
+        
+        //txtArea.setEditable(enabled);
+        //txtArea.setEnabled(enabled);
+        btnEdit.setEnabled(enabled);
+        btnViewAddress.setEnabled(enabled);
+        */
         try {
             IAddressLookup comp = (IAddressLookup)getComponentBean();
             comp.setLookupCaller( new IAddressLookupCaller() {
                 public String getEntityid() {
                     return (String)getProperty(parentIdName);
+                }
+                public boolean isShowEdit() {
+                    if( showEditAddress == null ) return true;
+                    try {
+                        return UIControlUtil.evaluateExprBoolean(getBean(), showEditAddress);
+                    }
+                    catch(Exception ign) {
+                        return true;
+                    }
+                }
+                public boolean isShowList() {
+                    if(showAddressList == null ) return true;
+                    try {
+                        return UIControlUtil.evaluateExprBoolean(getBean(), showAddressList);
+                    }
+                    catch(Exception ign) {
+                        return true;
+                    }
                 }
             });
         }
@@ -101,22 +148,24 @@ public class EntityAddressLookup extends XComponentPanel {
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
+        btnEdit.setName("editAddress"); // NOI18N
+        btnEdit.setVisibleWhen("#{ showEdit }");
         btnEdit.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 3));
         btnEdit.setBorderPainted(false);
         btnEdit.setContentAreaFilled(false);
         btnEdit.setIconResource("images/toolbars/edit.png");
         btnEdit.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnEdit.setName("editAddress"); // NOI18N
         btnEdit.setToolTipText("Edit Address");
         jPanel1.add(btnEdit);
 
+        btnViewAddress.setCaption("");
+        btnViewAddress.setName("viewAddress"); // NOI18N
+        btnViewAddress.setVisibleWhen("#{ showAddressList }");
         btnViewAddress.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         btnViewAddress.setBorderPainted(false);
-        btnViewAddress.setCaption("");
         btnViewAddress.setContentAreaFilled(false);
         btnViewAddress.setIconResource("images/toolbars/create.png");
         btnViewAddress.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnViewAddress.setName("viewAddress"); // NOI18N
         btnViewAddress.setToolTipText("View Address");
         jPanel1.add(btnViewAddress);
 
@@ -141,5 +190,47 @@ public class EntityAddressLookup extends XComponentPanel {
 
     public void setParentIdName(String parentIdName) {
         this.parentIdName = parentIdName;
+    }
+
+    /**
+     * @return the showEditAddress
+     */
+    public String getShowEditAddress() {
+        return showEditAddress;
+    }
+
+    /**
+     * @param showEditAddress the showEditAddress to set
+     */
+    public void setShowEditAddress(String showEditAddress) {
+        this.showEditAddress = showEditAddress;
+    }
+
+    /**
+     * @return the showAddressList
+     */
+    public String getShowAddressList() {
+        return showAddressList;
+    }
+
+    /**
+     * @param showAddressList the showAddressList to set
+     */
+    public void setShowAddressList(String showAddressList) {
+        this.showAddressList = showAddressList;
+    }
+
+    /**
+     * @return the disableWhen
+     */
+    public String getDisableWhen() {
+        return disableWhen;
+    }
+
+    /**
+     * @param disableWhen the disableWhen to set
+     */
+    public void setDisableWhen(String disableWhen) {
+        this.disableWhen = disableWhen;
     }
 }

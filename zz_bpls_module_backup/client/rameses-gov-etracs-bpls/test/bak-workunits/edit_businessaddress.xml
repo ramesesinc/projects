@@ -1,0 +1,46 @@
+<workunit>
+    <invokers>
+        <invoker type="business_address:edit" caption="Edit Business Address" target="popup" />
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class FixBusinessAddressController  {
+        
+            @Script("BusinessAddressUtil")
+            def address;
+        
+            def entry = [:];
+            def entity;
+            def handler;
+            boolean showremarks = false;
+        
+            def doOk() {
+                address.verify();
+                if(!entity.business.address?.text)
+                    throw new Exception('Please specify address');
+
+                entity.business.address.objid = 'BADDR' + new UID(); 
+                if(handler) handler();
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }        
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.amend.EditBusinessAddress"/>
+    </pages>
+    
+</workunit>

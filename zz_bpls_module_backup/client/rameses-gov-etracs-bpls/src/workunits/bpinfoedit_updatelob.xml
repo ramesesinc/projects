@@ -1,0 +1,115 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="business_application_info:updatelob" caption="Update LOB" action="init" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.application.*;
+        
+        class BPApplicationUpdateLOBController  {
+
+            @Binding
+            def binding;
+        
+            def entity;
+            def lobs = [];
+            def selectedLob;
+            def handler;
+            boolean lobUpdated = false;
+            
+            void init() {
+                lobs = [];
+                lobs.addAll( entity.lobs );
+            }
+            
+            def lobModel = [
+                fetchList: { o->
+                    return lobs;
+                },
+            ] as EditorListModel;
+            
+            def getLookupLob() {
+                return InvokerUtil.lookupOpener( "lob:lookup", [
+                    onselect: { o->
+                        if(lobs.find{ it.lobid == o.objid }!=null) 
+                            throw new Exception("Item already added");
+                        def m = [:];
+                        m.objid = "BPLOB"+new UID();
+                        m.lobid = o.objid;
+                        m.name = o.name;
+                        m.classification = o.classification;
+                        m.assessmenttype = "NEW";
+                        lobs << m; 
+                        lobModel.reload();
+                        lobUpdated = true;
+                        binding.focus("lob");
+                    }
+                ]);
+            }
+             
+            void removeLob() {
+                if(!selectedLob) return;
+                if(selectedLob.assessmenttype != "NEW" ) 
+                    throw new Exception("Only new lines of business can be removed");
+                lobs.remove(selectedLob);
+                lobUpdated = true;
+            }
+
+            void retireLOB() {
+                if(!selectedLob) return;
+                if(selectedLob.assessmenttype != "RENEW" ) 
+                    throw new Exception("Only renew lines of business can be retired");
+                selectedLob.assessmenttype = 'RETIRE'    
+                lobUpdated = true;
+            }
+            
+            def reclassifyLOB() {
+                if(!selectedLob) return;
+                if(selectedLob.assessmenttype != "RENEW") 
+                    throw new Exception("Only renew lines of business can be reclassified");
+                return InvokerUtil.lookupOpener( "lob:lookup", [
+                    onselect: { o->
+                        selectedLob.lobid = o.objid;
+                        selectedLob.name = o.name;
+                        selectedLob.classification = o.classification;
+                        lobModel.reload();
+                        lobUpdated = true;
+                        binding.focus("lob");
+                    }
+                ]);    
+            }
+
+            void unretireLOB() {
+                if(!selectedLob) return;
+                if(selectedLob.assessmenttype != "RETIRE" && selectedLob.assessmenttype != "RETIRED" ) 
+                    throw new Exception("Only retired lines of business can be unretired");
+                selectedLob.assessmenttype = 'RENEW'    
+                lobUpdated = true;
+            }
+            
+            def doOk() {
+                handler(lobs);
+                return "_close";
+            }    
+            
+            def doCancel() {
+                return "_close";
+            }    
+
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.application.UpdateLOBPage"/>
+    </pages>
+    
+</workunit>

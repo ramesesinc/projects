@@ -1,0 +1,129 @@
+<workunit>
+    <invokers>
+       <!--
+       <invoker type="bpassessment:analyzer:formActions" caption="Billing" action="init"/>
+       -->
+       <invoker type="formActions" caption="Back" action="_close" immediate="true"/>
+       <invoker type="formActions" caption="Apply Payment" action="applyPayment" />
+       <invoker type="formActions" caption="Print" action="print" />
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            import com.rameses.gov.etracs.bpls.*;
+            
+            class BPBillingAnalyzerController  {
+            
+                @Service("BusinessBillingService")
+                def billSvc;
+                
+                @Binding
+                def binding;
+                
+                String title = "Business Billing Simulator";
+                
+                def entity;    
+                def result = [:];
+                def billdate;
+                def validUntil;
+                def taxfees;
+                
+                void init() {
+                    if( !entity.taxfees )
+                        throw new Exception("Please run first tax fee calculation" );
+                    def d = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    billdate = d.format(new Date());
+                    
+                    taxfees = entity.taxfees;
+                    taxfees.each {
+                        if(!it.amtpaid) it.amtpaid = 0;
+                        it.iyear = entity.appyear;
+                    }
+                }
+                
+                void runBilling() {
+                    //send the full application.
+                    def app = [objid:'APP', appno:'APPNO', appyear:entity.appyear, apptype: entity.apptype];
+                    app.lobs = entity.lobs;
+                    app.taxfees = entity.taxfees;
+                    
+                    def q = [:];
+                    q.app = app;
+                    q.billdate = billdate;
+                    
+                    result = billSvc.simulate( q );
+                    result.items.each {
+                        it.balancedue = it.total;
+                    }
+                    validUntil = result.validUntil;
+                    listModel.reload();
+                    binding.refresh("result.*|validUntil");
+                }
+                
+                //billing
+                def listModel = [
+                    fetchList: { o->
+                        return result.items;
+                    }
+                ] as BasicListModel;
+                
+                def applyPayment() {
+                    def h = { o->
+                        def p = [:];
+                        p.app = [objid:'APP', appno:'APPNO', appyear:entity.appyear, apptype: entity.apptype];
+                        p.app.lobs = entity.lobs;
+                        p.app.billitems = result.items;
+                        p.payment = o;
+                        binding.fireNavigation( Inv.lookupOpener( 'bpassessment:analyzer:payment', [entity:p] ));
+                    }
+                    return Inv.lookupOpener("cashreceipt:payoption", [handler:h, fullamount:result.total] );
+                }
+                
+                def print() {
+                    def m = [:];
+                    m.putAll( entity );
+                    m.items = result.items;
+                    m.items.each {
+                        switch( it.taxfeetype ) {
+                            case 'TAX':
+                                it.taxfeetypename = 'BUSINESS TAX';
+                                it.sortorder = 100;
+                                break;
+                            case 'REGFEE':
+                                it.taxfeetypename = 'REGULATORY FEE';        
+                                it.sortorder = 200;
+                                break;
+                            case 'OTHERCHARGE':
+                                it.taxfeetypename = 'OTHER CHARGE';        
+                                it.sortorder = 300;
+                                break;
+                        };
+                        if( !it.lob?.objid ) {
+                            it.sortorder = 0;
+                        }
+                    }
+                    m.infos = entity.appinfos + entity.assessmentinfos;
+                    m.items = m.items.sort{ it.sortorder };
+                    m.billdate = billdate;
+                    m.expirydate = result.validUntil;
+                    m.businessname = 'BUSINESS NAME';
+                    m.ownername = 'OWNER NAME';
+                    return Inv.lookupOpener( "business:preassessment:printout", [entity: m] );
+                }
+                
+                
+                
+            }
+        ]]>    
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rules.bpls.BPBillingAnalyzerPage"/>
+       
+    </pages>
+</workunit>

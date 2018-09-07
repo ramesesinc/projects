@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="business_lessor"
+          cols="bldgno,bldgname,street,subdivision,barangay.name,lessor.name,lessor.address.text,orgtype">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Business Lessor List"  
+                action="init" role="MASTER" permission="business_lessor.view" />
+        <invoker folderid="/menucategory/business/acct" caption="Business Lessor List"  
+                action="init" role="MASTER" permission="business_lessor.view" index="200"/>
+    </invokers>
+</workunit>

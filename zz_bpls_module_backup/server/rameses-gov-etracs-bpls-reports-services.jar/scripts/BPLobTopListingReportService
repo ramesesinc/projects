@@ -1,0 +1,50 @@
+
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+class BPLobTopListingReportService
+{
+	@ActiveDB("bpreport")
+	def em
+
+	@ProxyMethod
+	public def getReport( params ) { 
+		params.filter = '';
+		if ( params.txntype ) {
+			params.filter = ''' AND ba.apptype=$P{txntype} '''; 
+		} else { 
+			params.filter = " AND ba.apptype IN ('NEW','RENEW') "; 
+		} 
+
+		if ( params.classification?.objid ) { 
+			params.classificationid = params.classification.objid; 
+			params.filter += ''' AND lob.classification_objid=$P{classificationid} '''; 	
+		} 		
+		if ( params.permittype?.objid ) { 
+			params.permittypeid = params.permittype.objid; 
+			params.filter += ''' AND b.permittype=$P{permittypeid} '''; 	
+		} 
+
+		def list = em.getBusinessTopList( params );
+		if ( !list ) throw new Exception('No records found.'); 
+
+		list.eachWithIndex { o,idx->  
+			o.rankno = idx+1;	
+		} 
+
+		return [ 
+			title : buildTitle( params ), 
+			items : list 
+		]; 
+	} 
+
+	def buildTitle( param ) { 
+		def buff = new StringBuilder("TOP ");
+		buff.append( param.topsize.toString() );
+		if ( param.txntype ) {
+			buff.append( " " + param.txntype.toString() ); 
+		}
+		buff.append( " BUSINESSES" );
+		return buff.toString(); 
+	} 
+}

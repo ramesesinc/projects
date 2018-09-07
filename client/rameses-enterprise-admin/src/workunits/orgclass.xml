@@ -1,37 +1,10 @@
 <workunit>
     <invokers>
-        <invoker type="orgclass:create" caption="Organization Type" action="create" target="popup"/>
-        <invoker type="orgclass:open" caption="Organization Type" action="open" target="popup"/>
+        <invoker type="sys_orgclass:create" caption="Organization Type" action="create" target="popup"/>
+        <invoker type="sys_orgclass:open" caption="Organization Type" action="open" target="popup"/>
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        
-        class OrgClassController extends CRUDController {
-        
-            String createFocusComponent = 'entity.name'; 
-            String editFocusComponent = 'entity.title'; 
-            String serviceName = "OrgClassService";
-            
-            def getLookupParentClass() {
-                def params = ['query.excludename' : entity.name]; 
-                params.onselect = {o-> 
-                    entity.parentclass = o.name; 
-                    binding.refresh('entity.parent');
-                }
-                params.onempty = {
-                    entity.parentclass = null; 
-                    binding.refresh('entity.parent');
-                } 
-                return Inv.lookupOpener('orgclass:lookup', params); 
-            } 
-        }
-        ]]>
-    </code>    
+    <code class="com.rameses.admin.models.OrgClassModel" />
     <pages>
-        <page template="com.rameses.admin.org.OrgClassPage"/>
+        <page template="com.rameses.admin.views.OrgClassPage"/>
     </pages>
 </workunit>

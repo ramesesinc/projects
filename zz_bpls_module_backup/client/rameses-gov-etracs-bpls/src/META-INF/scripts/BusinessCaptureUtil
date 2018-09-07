@@ -1,0 +1,84 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessCaptureUtil {
+
+    @Service("BusinessCaptureService")
+    def service;
+
+    @Caller
+    def caller;
+
+    def datasources;
+    def appTypes = ["NEW", "RENEW"];
+
+    def query = [:];
+    boolean searching = false;
+    def selectedItem;
+     
+    def type = "current";
+
+    def current_apptype;
+
+    def processing_apptype;
+    def processing_dateapplied;
+    def processing_task_state;
+
+    int delinquent_renew_year;
+    int delinquent_new_year;
+    int result_size;
+
+    def taskStates = [
+        [id:'reassessment', title:'Assessment'],
+        [id:'approval', title:'Approval'],
+        [id:'payment', title:'Payment'],
+        [id:'release', title:'Released']
+    ];
+
+    void loadSources() {
+        datasources = service.getSources();
+    }
+
+    void validateTxnType() {
+        service.validateTxnType([ txntype: type ]);
+    } 
+
+    def listModel = [
+        getRows : { return 25; },
+        fetchList: { o->
+            if(!query) return [];
+            if(!query.tradename && !query.ownername) return [];
+            if(!o) o = [:];
+            o.putAll(query);
+            return service.search( o );
+        },
+        onafterFetchList: {list-> 
+            result_size = list.size(); 
+        }
+    ] as PageListModel;
+
+
+    void search() {
+        searching = true;
+        listModel.doSearch();
+    }
+
+    void reset() {
+        searching = false;
+        query = [:];
+        listModel.doSearch();
+    }
+
+    void openEntry() {
+        if(!selectedItem) 
+            throw new Exception("Please select an item");
+        selectedItem.source =  query.source;   
+        caller.entity = service.getInfo(selectedItem);
+        caller.entity.txnmode = 'CAPTURE'
+        caller.entity.source = query.source;
+    }
+}

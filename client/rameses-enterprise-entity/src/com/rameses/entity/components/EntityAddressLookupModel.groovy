@@ -25,9 +25,13 @@ class EntityAddressLookupModel extends ComponentBean implements IAddressLookup {
     }
     
     public boolean isShowAddressList() {
-        return (lookupCaller.entityid!=null);
+        return (lookupCaller.showList);
     }
     
+    public boolean isShowEdit() {
+        return (lookupCaller.showEdit);
+    }
+
     public def viewAddress() {
         if( !lookupCaller.entityid ) throw new Exception("Please select an entity");
         def h = { o->

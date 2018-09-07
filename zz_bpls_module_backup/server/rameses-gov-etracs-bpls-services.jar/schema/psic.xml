@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="psic">
+		<field name="objid" primary="true" caption="PSIC code" searchable="true" visible="true" maxWidth="100"/>
+		<field name="title" required="true" caption="PSIC Title" searchable="true"/>
+		<field name="parentid" visible="false"/>
+	</element>	
+</schema>

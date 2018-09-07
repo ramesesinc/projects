@@ -4,10 +4,11 @@
 
     <invokers>
         <invoker folderid="/explorer/txn/bpls" caption="Business Ledgers" 
-                 role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING" 
+                 role=".*" 
                  permission="business_ledger.view" /> 
-        <invoker folderid="/home/business" caption="Business Ledgers" 
-                 role="SHARED,BUSINESSINFO,ASSESSOR,APPROVER,LICENSING" 
+        
+        <invoker folderid="/menucategory/business/acct" caption="Business Ledgers" 
+                 role=".*" 
                  permission="business_ledger.view" index="60"/> 
     </invokers> 
 </workunit> 

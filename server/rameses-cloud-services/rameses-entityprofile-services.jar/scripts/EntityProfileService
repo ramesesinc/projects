@@ -1,0 +1,22 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class EntityProfileService  {
+
+	@ProxyMethod
+	public def create( def m ) {
+		println "SAVING DATA";
+	}
+
+	@ProxyMethod
+	public def getProfile( def m ) {
+		return [
+			[  idno:'FIL00001', firstname:'elmo', lastname:'nazareno' ]
+		];
+	}
+
+		
+}

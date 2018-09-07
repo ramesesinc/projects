@@ -15,10 +15,13 @@ public class UserRoleLookupModel extends CrudLookupModel {
     public def getCustomFilter() {
         def f = [];
         def p = [:];
+        /*
+        //do not add orgid because somehow it is being injected somewhere. 
         if( query.orgid ) {
             f << "orgid=:orgid";
             p.orgid = query.orgid;
         }
+        */
         if( query.domain ) {
             f << "domain=:domain";
             p.domain = query.domain;

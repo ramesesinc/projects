@@ -9,6 +9,9 @@
 		<field name="member_name"  required="true"/>
 		<field name="member_address_text"  required="true"/>
 		<field name="suffix" />
+		<complex name="member" ref="entity" jointype="many-to-one" includefields="type" required="false">
+			<key field="member_objid" target="objid" />
+		</complex>	
 	</element>
 
 </schema>

@@ -1,0 +1,7 @@
+"entity.(orgtype|owner.*|businessname|tradename)" [entity.apptype == 'NEW' ] {
+    enabled:true;
+}
+"entity.(orgtype|owner.*|businessname|tradename)" [entity.apptype != 'NEW' ] {
+    enabled:false;
+}
+

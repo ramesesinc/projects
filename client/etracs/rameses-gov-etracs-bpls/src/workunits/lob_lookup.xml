@@ -3,5 +3,5 @@
         <invoker type="lob:lookup" caption="Lookup LOB" target="popup" action="init" 
                  orderBy="name"/>
     </invokers>
-    <code class="com.rameses.gov.etracs.bpls.LobLookupModel" />
+    <code class="com.rameses.gov.etracs.bpls.models.LobLookupModel" />
 </workunit>

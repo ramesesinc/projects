@@ -24,7 +24,7 @@ public class BPRequirementRuleService  {
 
 	def buildActions(def request) {
 		def actions = new RuleAction();
-		actions.addCommand( "add_requirement", new AddRequirement(request:request, BR: br));
+		actions.addCommand( "add_requirement", new AddRequirement(request:request));
 		actions.addCommand( "print_test", new PrintTest());
 		return actions;
 	}

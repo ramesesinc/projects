@@ -1,0 +1,78 @@
+<workunit>
+    <invokers>
+        <invoker type="address:component:basic" caption="Basic" index="-10" 
+                    tags="BUSINESS" action="init"/>
+   </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  BusinessAddressBasic {
+        
+            @Binding 
+            def binding;
+            
+            @Caller
+            def caller;
+            
+            def entity;
+            def _addressType;
+            
+            void init() {
+                entity = caller.entity;
+                if(caller.address?.address?.type) {
+                    _addressType = caller.address?.address?.type;
+                }
+            }
+
+            void refresh() {
+               if(binding) binding.refresh();
+            }
+            
+            def basicAddressTypes = [  
+                [key: 'local', caption:'Business owns the location'],
+                [key: 'nonlocal', caption:'Business located outside the LGU'],
+                [key: 'rented', caption:'Location is rented'],
+                [key: 'government', caption:'Located in Market or government property'],
+                [key: 'lessor', caption:'Real estate lessor'],
+            ];
+            
+            public void setAddressType( def o ) {
+                if(!entity.business.address) entity.business.address = [:];
+                if( !entity.business.address.completed) {
+                    entity.business.address = [:];
+                    if( o == 'local' && entity.business.owner?.address ) {
+                        entity.business.address.putAll( entity.business.owner.address );
+                        entity.business.address.objid = null; 
+                    }
+                }
+                entity.business.address.type = o;
+                _addressType = o;
+            }
+            
+            public def getAddressType() {
+                return _addressType;
+            }
+            
+            def getHandler() {
+                //the first address in the caller is the embedded address script.
+                def address = caller.address.address;
+                return Inv.lookupOpener( "address:component:"+addressType, [entity: address ] ); 
+            }
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.address.BasicAddressHandler"/>
+    </pages>
+    
+</workunit>

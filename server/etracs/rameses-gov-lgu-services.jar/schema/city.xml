@@ -1,6 +1,6 @@
 <schema>
 
-	<element name="city" tablename="city">
+	<element tablename="city" extends="sys_org">
 		<field name="objid" primary="true"/>
 		<field name="state" />
 		<field name="indexno" />

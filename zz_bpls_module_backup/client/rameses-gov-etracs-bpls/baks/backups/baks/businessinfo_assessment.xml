@@ -1,0 +1,155 @@
+<workunit>
+    
+    <invokers>
+        <!--
+        <invoker type="business:info" caption="Business Assessment" index="30" action="init" 
+            visibleWhen="#{entity.application!=null}" role="ASSESSOR,APPROVER" />
+        -->    
+            
+
+        <invoker type="businessinfo:application:formActions" caption="View Assessment" index="30" action="load" role="ASSESSOR,APPROVER" />    
+
+         <invoker type="formActions" caption="Back" action="_close" immediate="true" 
+            icon="images/toolbars/arrow_left.png" />
+            
+        <!-- form Actions -->    
+        <invoker type="formActions" caption="Save" index="0" action="save" role="ASSESSOR"
+            visibleWhen="#{editable==true}"/>
+        
+        <invoker type="formActions" caption="Calculate Taxes/Fees" index="30" action="calculateTaxfee" role="ASSESSOR"
+            visibleWhen="#{editable==true}"/>
+            
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.application.*;
+        
+        class BusinessInfoAssessmentController {
+        
+            @Binding
+            def binding;
+            
+            @Service("BPAssessmentService")
+            def assessmentSvc;
+            
+            @Service("BusinessApplicationService")
+            def appSvc;
+            
+            @Caller
+            def caller;
+
+            def mainCaller;
+            
+            String title = "Business Assessment";
+            String entityName = "businessinfo:assessment";
+            
+            def lobUpdated;
+            def entity;
+            boolean editable;
+            
+            def printType;
+            
+            void load() {
+                mainCaller = caller.caller;
+                def tsk = entity.task;
+                def userid = OsirisContext.env.USERID;
+                if( tsk.state?.toLowerCase() == 'assessment' && tsk?.assignee?.objid == userid ) {
+                    editable = true;
+                }
+                if(!entity.taxfees ) entity.taxfees = [];
+            }
+            
+            void init() {
+                entity = entity.application;
+                def tsk = entity.task;
+                def userid = OsirisContext.env.USERID;
+                if( tsk.state?.toLowerCase() == 'assessment' && tsk?.assignee?.objid == userid ) {
+                    editable = true;
+                }
+                if(!entity.taxfees ) entity.taxfees = [];
+            }
+            
+            def updateLOB() {
+                return InvokerUtil.lookupOpener("business_application_info:updatelob", [entity:entity,
+                    handler:{ lobs->
+                        entity.lobs = lobs;
+                        lobUpdated = true;
+                        entity.taxfees.clear();
+                        lobModel.reload();
+                        taxfeeModel.reload();
+                        mainCaller.dirty = true;
+                    }
+                ]);
+            }
+
+            def calculateTaxfee() {
+                return InvokerUtil.lookupOpener( "bpinfoedit:calculatetaxfee", [
+                    entity: entity, 
+                    initialInfos: entity.appinfos.collect{it},
+                    existingInfos: entity.assessmentinfos,
+                    handler:{ result ->
+                        entity.assessmentinfos = result.infos.findAll{ it.infotype == 'assessment' };
+                        assessmentInfoModel.reload();
+                        lobUpdated = false;
+                        entity.taxfees = result.taxfees;
+                        entity.totals = [
+                            tax:result.totals.total_tax,
+                            regfee: result.totals.total_regfee,
+                            othercharge: result.totals.total_othercharge,
+                            total: result.totals.total
+                        ];
+                        taxfeeModel.reload();
+                        binding.refresh("entity.total.*");
+                        mainCaller.dirty = true;
+                    }
+                ]);
+            }
+            
+            def lobModel = [
+                fetchList: { o->    
+                    return  entity.lobs;
+                }
+            ] as BasicListModel;
+             
+            def assessmentInfoModel = [
+                fetchList: { o->    
+                    return  entity.assessmentinfos;
+                }
+            ] as BasicListModel;
+            
+            def taxfeeModel = [
+                fetchList: { o->    
+                    return  entity.taxfees;
+                }
+            ] as BasicListModel;
+            
+             void save() {
+                if(entity.assessedby?.objid==null) {
+                    throw new Exception("Assessed by must not be null");
+                }    
+                if(!mainCaller.dirty) return;
+                if(lobUpdated) 
+                    throw new Exception("Line of business was updated. Please run 'Edit Assessment Info' again" );
+                if(entity.requirements==null) entity.requirements = [];
+                appSvc.update( entity );
+                binding.refresh("entity.total.*");
+                mainCaller.dirty = false;
+                MsgBox.alert("Record successfully updated!");
+                
+            }
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.AssessmentPage"/>
+    </pages>
+
+</workunit>

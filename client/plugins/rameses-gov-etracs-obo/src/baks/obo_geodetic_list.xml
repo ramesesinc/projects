@@ -1,3 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="obo_building_use">
-    <invoker folderid="home/obo" caption="Geodetic (Line and Grade)" action="init" index="20" />
-</workunit>

@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="business_application:unifiedform" action="viewReport"/>
+        <invoker type="formActions" action="_close" caption="Close"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+         import com.rameses.osiris2.reports.*;
+        
+        class  BusinessApplicationUnifiedFormController  {
+        
+            def data;
+            def entity;
+            def title = "Business Application Unified Form"
+            
+            def reportPath = "com/rameses/gov/etracs/bpls/reports/unifiedform/"
+            
+            @Service("ReportParameterService") 
+            def paramsvc
+            
+            @Service("BusinessApplicationUnifiedFormService") 
+            def service;
+            
+            void viewReport() {
+                data = service.getReport( [objid: entity.objid] );
+                report.viewReport();
+            } 
+            
+            def report = [
+                getReportName : { return reportPath + "main.jasper" },
+                getReportData : { return  data },
+                getParameters : { return paramsvc.getStandardParameter() },
+                getSubReports : { return [
+                    new SubReport("ITEM", reportPath + "item.jasper")
+                ] as SubReport[]; }
+            ] as ReportModel
+           
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+    
+</workunit>

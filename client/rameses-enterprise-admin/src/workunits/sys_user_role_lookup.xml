@@ -2,7 +2,14 @@
     <invokers>
         <invoker type="sys_user_role:lookup" caption="Lookup User" target="popup" 
                 action="init"
-                cols="lastname,firstname,name,domain,role,orgid"/>
+                cols="username,lastname,firstname,domain,role"
+                hiddenCols="name,orgid"/>
+
+        <invoker type="user_role:lookup" caption="Lookup User" target="popup" 
+                action="init"
+                cols="username,lastname,firstname,domain,role"
+                hiddenCols="name,orgid"/>
+
     </invokers>
     <code class="com.rameses.admin.models.UserRoleLookupModel" />
 </workunit>

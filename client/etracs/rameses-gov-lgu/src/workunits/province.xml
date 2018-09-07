@@ -1,0 +1,9 @@
+<workunit schemaName="province" allowCreate="false">
+    <invokers>
+        <invoker type="province:manage" caption="Province" target="popup" action="open"/>
+    </invokers>
+   <code class="com.rameses.gov.lgu.models.ProvinceModel" />
+    <pages>
+        <page template="com.rameses.gov.lgu.views.ProvincePage"/> 
+    </pages>
+</workunit>

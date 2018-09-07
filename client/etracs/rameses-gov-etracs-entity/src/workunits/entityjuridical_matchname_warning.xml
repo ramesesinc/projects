@@ -1,0 +1,9 @@
+<workunit>
+    <invokers> 
+        <invoker type="entityjuridical:matchname:warning" caption="Name Match Warning"/>
+    </invokers>
+    <code class="com.rameses.entity.models.JuridicalEntityNameMatchWarningModel" />
+    <pages>
+       <page template="com.rameses.entity.views.JuridicalMatchNameListPage"/>
+    </pages>   
+</workunit>

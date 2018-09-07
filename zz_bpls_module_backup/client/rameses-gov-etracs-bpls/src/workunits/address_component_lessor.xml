@@ -1,0 +1,65 @@
+<workunit>
+    <invokers>
+        <invoker type="address:component:lessor" caption="Lessor"  action="init" />
+   </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  BusinessAddressLessor {
+        
+            @Binding 
+            def binding;
+            
+            @Caller
+            def caller;
+            
+            @Service("BusinessLessorService")
+            def bldgSvc;
+            
+            def entity;
+            
+            void init() {
+               if(!entity.building) entity.building = [:];
+               if(!entity.building.lessor) entity.building.lessor = caller.entity.business.owner;
+            }
+
+            void refresh() {
+                if(binding) binding.refresh();
+            }
+
+            def lookupBuilding() {
+                def c = caller.entity.business.owner;
+                def h = { o-> 
+                    entity.unitno = o.unitno;
+                    entity.bldgno = o.bldgno;
+                    entity.bldgname = o.bldgname;
+                    entity.street = o.street;
+                    entity.subdivision = o.subdivision;
+                    entity.barangay = o.barangay;
+                    entity.lessor = o.lessor;
+                    entity.ownedaddressid = o.objid; 
+                    entity.type = "local";
+                    caller.entity.business.address = entity;
+                    binding.refresh();    
+                }
+                return Inv.lookupOpener( "business_lessor:lookup", [businessowner: c, onselect: h] );
+            }
+
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.address.LessorAddress"/>
+    </pages>
+    
+</workunit>

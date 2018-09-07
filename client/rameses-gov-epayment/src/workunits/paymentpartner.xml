@@ -3,6 +3,7 @@
     <invokers>
         <invoker type="paymentpartner:open" caption="Payment Partner" action="open" target="popup"/>
    </invokers>
+   <class code="com.rameses.gov.epayment.models.PaymentPartnerModel" />
     <pages>
         <page template="com.rameses.gov.epayment.views.PaymentPartnerPage" />
     </pages>

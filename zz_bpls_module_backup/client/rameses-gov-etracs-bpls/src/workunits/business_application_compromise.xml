@@ -1,0 +1,70 @@
+<workunit>
+    
+    <invokers>
+        <invoker folderid="/home/business" caption="Compromise Agreement" 
+                 action="start" index="102" role="ASSESSOR"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.models.*;
+        
+        public class CompromiseAgreement extends PageFlowController {
+        
+            @Service("BusinessApplicationService")
+            def service;
+            
+            @Script("BusinessSearchUtil")
+            def searchList;
+        
+            @FormTitle
+            def title = "Compromise Agreement";
+            
+            def entity;
+    
+            void open() {
+                entity  = service.initNew( [businessid:searchList.selectedItem.objid] );
+            }
+            
+        }
+        ]]>
+    </code>    
+     <pageflow>
+        
+        <start>
+            <transition to="search" />
+        </start>
+        
+        <page name="search" title="Compromise Agreement">
+            <transition to="view-info" caption="Next" name="next" mnemonic="N" immediate="false" action="open"/>
+        </page>
+        
+        <page name="view-info" title="Compromise Agreement">
+            <transition to="search" caption="Back to Search" mnemonic="B" name="back"/>
+            <transition to="confirm" caption="Next" mnemonic="B" name="next" action="updateInfo"/>
+        </page>
+
+        <page name="confirm" title="Compromise Agreement">
+            <transition to="view-info" caption="Back" mnemonic="B" name="back"/>
+            <transition to="save-success" caption="Submit" mnemonic="S" name="save" action="application.save"
+            confirm="You are about to save this transaction. Continue?"/>
+        </page>
+        
+        <page name="save-success" title="Save Success">
+            <transition to="search" caption="Add Another" mnemonic="A" action="search"/>
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessPage"/>
+        <page name="view-info" template="com.rameses.gov.etracs.bpls.view.CompromiseAgreementPage"/>
+    </pages>
+    
+</workunit>

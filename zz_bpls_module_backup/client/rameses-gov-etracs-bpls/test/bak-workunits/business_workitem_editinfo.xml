@@ -1,0 +1,43 @@
+<workunit>
+    <invokers>
+        <invoker type="business:workitem:edit-info:open" caption="Edit Business Info" action="init" target="window"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class BusinessWorkItemEditBusinessInfoController {
+        
+            @Binding 
+            def binding;
+
+            @FormTitle
+            def title;
+
+            def entity;
+            def message;
+            
+            void init() {
+                message = entity.message;
+                MsgBox.alert( entity.objid );
+            }
+            
+          
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.EditBusinessInfoPage"/>
+    </pages>
+    
+</workunit>

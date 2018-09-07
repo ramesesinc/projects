@@ -1,12 +1,12 @@
 <schema>
 	
 	<element tablename="business_application">
-		<field name="objid" primary="true"/>
+		<field name="objid" primary="true" prefix="BUSAPP"/>
 		<field name="business_objid" required="true"/>
-		<field name="appno" required="true"/>
+		<field name="appno" required="true" caption="App No"/>
 		<field name="state" />
-		<field name="apptype" required="true"/>
-		<field name="appyear" required="true"/>
+		<field name="apptype" required="true" caption="App Type"/>
+		<field name="appyear" required="true" caption="App Year"/>
 		<field name="appqtr" />
 		<field name="yearstarted" />
 		<field name="dtfiled" required="true"/>
@@ -27,17 +27,37 @@
 		<field name="totals_total"  required="true"/>
 		<field name="remarks"/>
 		<field name="permit_objid"/>
-		<field name="ownername" required="true"/>
-		<field name="owneraddress" required="true"/>
-		<field name="tradename" required="true"/>
+		<field name="ownername" required="true" searchable="true"/>
+		<field name="owneraddress" required="true" />
+		<field name="tradename" required="true" searchable="true"/>
 		<field name="businessaddress" required="true"/>
 		<field name="parentapplicationid" />
 		<field name="nextbilldate" />
 
 		<complex name="business" ref="business" jointype="many-to-one" required="false" 
-			includefields="bin,owner.*,phoneno,mobileno,email">
+			includefields="bin,owner.*,business.*,phoneno,mobileno,email">
 			<key field="business_objid" target="objid" />
 		</complex>	
+
+		<field name="taskid"/>
+		<complex name="task" ref="business_application_task" jointype="many-to-one" includefields=".*" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>	
+
+		<complex name="lobs" ref="business_application_lob" jointype="one-to-many" orderBy="name">
+			<key field="objid" target="applicationid" />
+		</complex>	
+
+		<complex name="appinfos" ref="business_application_appinfo" jointype="one-to-many" 
+			orderBy="lobindex,lob.name,attribute.sortorder">
+			<key field="objid" target="applicationid" />
+		</complex>	
+
+		<complex name="assessmentinfos" ref="business_application_assessmentinfo" jointype="one-to-many"
+			orderBy="lobindex,lob.name,attribute.sortorder">
+			<key field="objid" target="applicationid" />
+		</complex>	
+
 	</element>	
 
 

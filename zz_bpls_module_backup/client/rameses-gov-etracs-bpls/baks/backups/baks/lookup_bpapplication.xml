@@ -1,0 +1,5 @@
+<workunit extends="wtemplates/ServiceLookupController.xml" serviceName="BPApplicationLookupService">
+    <invokers>
+        <invoker type="bpapplication:lookup" caption="Lookup BP Application" target="popup"/>
+    </invokers>
+</workunit>

@@ -1,0 +1,90 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessOwnerUtil {
+
+    @Caller
+    def caller;
+
+    def orgTypes = LOV.ORG_TYPES;
+
+    def getBusiness() {
+        return caller.entity.business;
+    }
+
+    def getHandler() {
+        caller.binding.refresh("entity.business.owner.*");
+    }
+
+    def find = [
+        fetchList: { o-> 
+            o.type = (business.orgtype == 'SING') ?'INDIVIDUAL':'JURIDICAL'; 
+            return entityLookupSvc.getList( o ); 
+        },
+        onselect: { o->
+            business.owner = [ objid:o.objid, name:o.name, address:o.address ];
+            if(handler) handler();
+        },
+        onempty: {
+            business.owner = [ address:[:] ];
+            if(handler) handler();
+        }
+    ] as SuggestModel;
+            
+    def add() {
+        String stype = (business.orgtype == 'SING') ?'individualentity':'juridicalentity';
+        def sh = { o->
+            business.owner = [ objid:o.objid, name:o.name, address:o.address ];
+            if(handler) handler();
+        }
+        def m = [:];
+        if( business.owner ) {
+            m.putAll( business.owner );
+        }
+        m.objid = null;
+        m.entityno = null;
+        return InvokerUtil.lookupOpener( stype+":create", [onselect:sh, entity:m] );
+    }  
+    
+    def show() {
+        if( !business.owner?.objid )
+            throw new Exception("Please select an owner");
+        String stype = (business.orgtype == 'SING') ?'entityindividual':'entityjuridical';
+        def op = InvokerUtil.lookupOpener( stype + ":open", [ entity: [objid: business.owner.objid] ] ); 
+        op.target = 'popup';
+        return op;
+    }
+    
+    void verify() {
+        if( !business.owner.objid)
+            throw new Exception("Error in owner. Please map the owner.");
+
+        if( !business.owner.address?.objid)
+            throw new Exception("Error in owner address. Please check the address of owner by editing the entity.");
+         business.orgtypename = orgTypes.find{ it.key == business.orgtype}?.value;    
+    }
+
+    void reset() {;}
+
+    void reload() {
+    }
+       
+    def lookupAddress() {
+        if( !business.owner?.objid )
+            throw new Exception("Business owner not yet mapped");
+        def p = [:];
+        p.onselect = { o->
+            business.owner.address = o;
+            caller.binding.refresh();
+        };
+        p['query.objid'] = business.owner.objid;
+        p['query.name'] = business.owner.name;
+        return Inv.lookupOpener( "entity_address:lookup", p );
+    }
+     
+
+}

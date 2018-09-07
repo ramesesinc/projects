@@ -1,0 +1,52 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="bpinfoedit:app" caption="Edit Business Info" action="start" target="popup"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+
+public class BPEditInfoController extends com.rameses.gov.etracs.bpls.models.BusinessInfoEdit {
+
+    @Service("BPInfoRuleService")
+    def service;
+
+    String title = "Edit Business Info";
+
+    public def execute() {
+        return service.execute(query);
+    }
+}
+    ]]> 
+    </code>
+    
+    <pageflow>
+        <start>
+            <transition to="getInfo" />
+        </start>
+        
+        <process name="getInfo" action="loadInfos">
+            <transition to="specify-info" cond="#{completed==false}"/>
+            <transition to="end" cond="#{completed==true}" />
+        </process>
+        
+        <page name="specify-info" title="Specify Info">
+            <transition to="end" caption="Close" />
+            <transition to="specify-info" name="back" caption="Back" mnemonic="B" action="goBack" visibleWhen="level&gt;1"/>
+            <transition to="getInfo" name="next" caption="Next" mnemonic="N"  immediate="false" />
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="specify-info" template="com.rameses.gov.etracs.bpls.BPInfoEditPage"/>
+    </pages>
+    
+</workunit>

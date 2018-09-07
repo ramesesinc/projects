@@ -1,0 +1,22 @@
+<schema>
+
+	<element  tablename="collectionvoucher_fund_transfer">
+		<field name="objid" primary="true" prefix="CVFT"/>
+		<field name="parentid" required="true"/>
+		<field name="amount" type="decimal"/>
+
+		<complex name="parent" ref="collectionvoucher" jointype="many-to-one" includefields="objid,controlno,controldate,state">
+			<key field="parentid" target="objid" />
+		</complex>	
+
+		<complex name="fromfund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
+			<key field="fromfundid" target="objid" />
+		</complex>  
+
+		<complex name="tofund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
+			<key field="tofundid" target="objid" />
+		</complex>  
+
+	</element>
+
+</schema>	

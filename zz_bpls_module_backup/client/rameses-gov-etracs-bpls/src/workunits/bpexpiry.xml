@@ -1,0 +1,10 @@
+<workunit schemaName="bpexpirydate">
+    <invokers>
+        <invoker type="bpexpirydate:create" caption="New BP Expiry" action="create" target="popup"/>
+        <invoker type="bpexpirydate:open" caption="BP Expiry" action="open" target="popup"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.bpls.models.BPExpiryDateModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.BPExpiryDatePage"/>
+    </pages>
+</workunit>

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-       <invoker folderid="home/obo" caption="Assessment Analyzer"/>
+       <invoker folderid="/menucategory/obo/tools" caption="Assessment Analyzer"/>
        <invoker type="formActions" caption="Assess" action="assess" visibleWhen="#{mode == 'default'}"/>
        <invoker type="formActions" caption="Inspection" action="assessInspection" visibleWhen="#{mode == 'default'}"/>
        <invoker type="formActions" caption="Back" action="reset"  visibleWhen="#{mode == 'result'}"/>

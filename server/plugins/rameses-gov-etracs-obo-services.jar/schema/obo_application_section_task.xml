@@ -1,0 +1,20 @@
+<schema adapter="obodb">
+
+	<element tablename="obo_application_task">
+		<field name="taskid" primary="true"  prefix="OBOTSK" visible="true"/>
+		<field name="refid" />
+		<field name="parentprocessid" />
+		<field name="state" required="true"/>
+		<field name="dtcreated" required="true"/>
+		<field name="startdate" />
+		<field name="enddate" />
+		<field name="assignee_objid" />
+		<field name="assignee_name" caption="Assigned To" />
+		<field name="actor_objid" />
+		<field name="actor_name" />
+		<field name="message" />	
+		<field name="prevtaskid" />	
+	</element>
+
+</schema>
+		

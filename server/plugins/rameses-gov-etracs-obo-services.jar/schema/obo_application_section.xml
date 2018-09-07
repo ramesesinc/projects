@@ -1,0 +1,19 @@
+<schema adapter="obodb">
+
+	<element tablename="obo_application_section">
+		<field name="objid" primary="true"  prefix="OBOAPPSEC" visible="true"/>
+		<complex name="app" ref="obo_application" jointype="many-to-one" required="false"
+			includefields="appno,apptype,appdate,owner.name,description"> 
+			<key field="applicationid" target="objid"/>
+		</complex>
+		<field name="dtcreated" />
+		<complex name="sectiontype" ref="obo_section_type" jointype="many-to-one" required="false" includefields="title">
+			<key field="typeid" target="objid" />
+		</complex>	
+		<complex name="task" ref="obo_application_section_task" jointype="many-to-one" 
+				includefields=".*" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>
+	</element>
+
+</schema>

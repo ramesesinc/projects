@@ -177,7 +177,7 @@ public class AccountMainGroupMgmtPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        schemaList1.setCustomFilter("maingroupid = :maingroupid AND groupid LIKE :groupid AND acctid IS NULL");
+        schemaList1.setCustomFilter("groupid = :groupid ");
         schemaList1.setDepends(new String[] {"selectedNode"});
         schemaList1.setHandler("");
         schemaList1.setHandlerName("acctListModel");

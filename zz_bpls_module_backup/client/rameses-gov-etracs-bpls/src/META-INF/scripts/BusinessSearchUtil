@@ -1,0 +1,46 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessSearchUtil {
+
+    @Service("BusinessSearchService")
+    def service;
+
+    @Caller
+    def caller;
+
+    boolean searching = false;
+    def query = [:];
+    def selectedItem;
+    
+    def listModel = [
+        getRows : { return 25; },
+        fetchList: { o->
+            if(!query) return [];
+            if(!o) o = [:];
+            o.putAll(query);
+            return service.getList( o );
+        }
+    ] as PageListModel;
+
+    void search() {
+        if( query.bin?.contains(":")) {
+            query.bin = query.bin.substring( query.bin.indexOf(":")+1);
+            caller.binding.refresh("query.bin");
+        }
+        searching = true;
+        listModel.doSearch();
+    }
+
+    void reset() {
+        searching = false;
+        query = [:];
+        listModel.doSearch();
+        caller.binding.focus("query.bin");
+    }
+
+}

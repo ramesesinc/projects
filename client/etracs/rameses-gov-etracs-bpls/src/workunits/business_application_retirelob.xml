@@ -1,0 +1,46 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menucategory/business/app" caption="Retire LOB"  action="start" target="window"  role="BUSINESSINFO" index="52"/>
+        
+        <invoker type="lobActions" caption="Retire" action="lob.retire" immediate="true" visibleWhen="#{lob.selectedItem!=null  &amp;&amp; lob.selectedItem.assessmenttype=='ACTIVE' }"/>
+        <invoker type="lobActions" caption="Unretire" action="lob.unretire" immediate="true" visibleWhen="#{lob.selectedItem!=null &amp;&amp; lob.selectedItem.assessmenttype=='RETIRE'}"/>
+        
+        <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" action="application.print" visibleWhen="#{state=='save-success'}"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.models.RetireLobBusinessApplication" /> 
+    
+    <pageflow>
+        <start>
+            <transition to="search" name="create" />
+        </start>
+        
+        <page name="search" title="Search Business Name">
+            <transition to="edit-lob" caption="Next" name="next" mnemonic="N" immediate="false" action="open"/>
+        </page>
+        
+        <page name="edit-lob" title="Specify Line of Business">
+            <transition to="search" caption="Back" mnemonic="B" name="back"/>
+            <transition to="confirm" caption="Next" name="next" mnemonic="N"  action="updateInfo" immediate="false"/>
+        </page>
+
+        <page name="confirm" title="Confirm">
+            <transition to="edit-lob" caption="Back" mnemonic="B" name="back" action="lob.restoreAllLobs"/>
+            <transition to="save-success" caption="Submit" mnemonic="S" name="save" action="application.save"
+            confirm="You are about to save this transaction. Continue?"/>
+        </page>
+        
+        <page name="save-success" title="Save Success (New Application)">
+            <transition to="initial" caption="Add Another" mnemonic="A" action="init"/>
+        </page>
+        
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessPage"/>
+        <page name="edit-lob" template="com.rameses.gov.etracs.bpls.view.AdditionalBusinessPage"/>
+        <page name="confirm" template="com.rameses.gov.etracs.bpls.view.ConfirmPage"/>
+        <page name="save-success" template="com.rameses.gov.etracs.bpls.view.SuccessPage"/>
+    </pages>
+</workunit>

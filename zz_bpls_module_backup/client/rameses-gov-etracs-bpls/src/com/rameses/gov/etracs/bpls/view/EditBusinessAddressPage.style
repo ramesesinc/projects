@@ -1,0 +1,6 @@
+"address.type" [address.local == true] {
+    visible:true;
+}
+"address.type" [address.local != true] {
+    visible:false;
+}

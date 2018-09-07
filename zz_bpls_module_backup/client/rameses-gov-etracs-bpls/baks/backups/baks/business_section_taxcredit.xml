@@ -1,0 +1,74 @@
+<workunit>
+    <invokers>
+        <invoker type="business:section" action="init" caption="Tax Credit" index="41" />
+        <invoker type="formActions" action="addTaxCredit" caption="Build Ledger"  visibleWhen="#{entity?.objid==null}" role="ASSESSOR"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class  BPTaxCreditController  {
+            
+            @Service("BusinessTaxCreditService")
+            def service; 
+            
+            @Caller
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            def entity;
+            def selectedItem;
+            def msg;
+            
+            String title = "Business Tax Credit";
+            
+            def businessid;
+            
+            void init() {
+                businessid = entity.objid;
+                loadData();
+                if(!entity) {
+                    entity = [businessid:businessid];
+                    msg = "There is no tax credit ledger yet for this business. Click on 'Build Ledger' to create a ledger";
+                }   
+            }
+            
+            void loadData() {
+                entity = service.findByBusinessid( [businessid: businessid] );
+            }
+        
+            def taxcreditModel = [
+                fetchList: { o->
+                    if(!entity) return [];
+                    return entity.details;
+                }
+            ] as BasicListModel;
+            
+            //this will build a tax credit ledger.
+            def addTaxCredit() {
+                return InvokerUtil.lookupOpener( "businesstaxcredit:create", [entity:entity, 
+                    handler:{ o->
+                        msg = null;
+                        loadData();
+                        binding.refresh();
+                    }
+                ]);
+            }
+            
+         }   
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.taxcredit.BusinessTaxCredit"/>
+    </pages>
+    
+</workunit>

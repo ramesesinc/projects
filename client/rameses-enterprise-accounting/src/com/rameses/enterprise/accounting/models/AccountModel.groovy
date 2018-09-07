@@ -17,7 +17,6 @@ class AccountModel extends CrudFormModel {
         def item = super.createItem( name, subSchema ); 
         item.code = caller.selectedNode.item.item.code;
         item.maingroup = caller.entity;
-        item.acctid = entity.objid;
         item.group = caller.selectedNode.item.item;
         return item; 
     }

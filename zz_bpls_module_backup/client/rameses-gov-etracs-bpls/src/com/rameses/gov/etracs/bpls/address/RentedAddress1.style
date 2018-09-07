@@ -1,0 +1,7 @@
+"entity.lessor.*" [ entity.government == 0 ] {
+    visible: true;
+}
+
+"entity.lessor.*" [ entity.government == 1 ] {
+    visible: false;
+}

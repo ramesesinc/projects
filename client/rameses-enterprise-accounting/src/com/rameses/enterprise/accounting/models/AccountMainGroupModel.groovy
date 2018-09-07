@@ -14,19 +14,16 @@ class AccountMainGroupModel extends CrudFormModel {
     
     def treeNodeModel = [
         fetchNodes: { o->
-            if( o.id == "root" ) {
-                return [[ id: entity.objid, caption: entity.title, maingroup: true, expanded: true ]];
-            }
-
-            def m = [_schemaname: "account_group"];
+            def type = (o.id == "root") ? "root" : "group";
+            def m = [_schemaname: "account"];
             m.findBy = [maingroupid: entity.objid];
             m.orderBy = "code";
             
-            if( o.properties.maingroup ) {
+            if( type == "root") {
                 m.where = ["groupid IS NULL"];
             }
             else {
-                m.where = ["groupid = :groupid", [groupid: o.id ]];
+                m.where = ["groupid = :groupid AND type='group' ", [groupid: o.id ]];
             }
             return queryService.getList( m )?.collect {
                 [id: it.objid, name: it.objid, caption: "[" + it.code + "] " + it.title, item: it ];
@@ -43,13 +40,13 @@ class AccountMainGroupModel extends CrudFormModel {
         if( !selectedNode?.properties.maingroup ) {
             parent = selectedNode.item.item;
         }
-        Modal.show("account_group:create", [maingroup: entity, parent: parent] );
+        Modal.show("account:create", [maingroup: entity, parent: parent, type:'group'] );
         treeNodeModel.reloadSelectedNode();
     }
     
     def editGroup() {
         if( !selectedNode?.item ) throw new Exception("Please select an item");
-        Modal.show("account_group:open", [entity: selectedNode.item.item ] );
+        Modal.show("account:open", [entity: selectedNode.item.item ] );
     }
 
     def removeGroup() {

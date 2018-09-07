@@ -1,0 +1,197 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="home.action" action="start" target="window" role="BUSINESSINFO" 
+            caption="Register Business (Verification - BIN Assignment)" index="51" permission="business.capture"/>
+        <invoker type="extActions" action="printBIN" caption="Print BIN" visibleWhen="#{state=='success'}" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        
+        class BusinessCapture extends PageFlowController {
+        
+            @Service("BusinessCaptureService")
+            def svc;
+        
+            @Binding
+            def binding;
+            
+            def entity;
+            def selectedItem;
+            def query = [:];
+            def years; 
+            def size; 
+            def selectedLob;
+            
+            String msg;
+            boolean lookupDone;
+            def orgTypes = LOV.ORG_TYPES;
+            
+            def start() {
+                years = svc.getYears();
+                query.year = years[0];
+                return super.start();
+            }
+            
+            void searchBusiness() {
+                searchListModel.reload();
+                if(!binding) binding.refresh("size");
+                if(size==0) 
+                    throw new Exception("No records found. Business may have been registered already");
+            }
+             
+            def searchListModel = [
+                fetchList: { o->
+                   if(!o) o = [:];
+                   o.putAll( query );
+                   def m = svc.getList(o);
+                   size = m.size;
+                   return m.list;
+                }
+            ] as BasicListModel;
+            
+            void openEntry() {
+                if(!selectedItem) return;
+                entity = svc.open(selectedItem);
+                receivableModel.reload();
+                lobListModel.reload();
+            }
+            
+            def receivableModel = [
+                fetchList: { o->
+                    return entity.receivables;
+                }
+            ] as BasicListModel
+            
+            def getLookupOwners() {
+                if( !entity.orgtype ) {
+                    MsgBox.err("Please select an orgtype first.");
+                    return null;
+                }    
+                lookupDone = true;
+                return InvokerUtil.lookupOpener( "entity:lookup", [
+                    "query.orgtype": entity.orgtype,
+                    onselect: { o->
+                        entity.owner = o;
+                        binding.refresh("entity.owner.address");
+                    },
+                    onempty: {o->
+                        entity.owner = null;
+                        lookupDone = false;
+                        binding.refresh("entity.owner.*");
+                    }
+                ]);
+            }
+
+            def lobListModel = [
+                fetchList: {o->
+                    return entity.lobs;
+                },
+                onRemoveItem: { o->
+                    def pass = MsgBox.prompt( "Please enter key");
+                    if( pass != 'etracs1234' )
+                        throw new Exception("Remove is not allowed");
+                    if( MsgBox.confirm( 'You are about to remove this item. Proceed?')) {
+                        entity.lobs.remove(o);    
+                        return true;
+                    }
+                    return false;
+                }
+            ] as EditorListModel;
+            
+            //this saves or adds owner
+            def showOwner() {
+                  if(!entity.orgtype)
+                    throw new Exception("Please select an org type");
+                String action = (entity.owner?.objid) ? ":open" : ":create";
+                if(action == ":create" && !lookupDone )
+                    throw new Exception("Please attempt first a lookup before creating a new record");
+
+                String openerName = (entity.orgtype=='SING'?'individual':'juridical')+'entity';
+                if( entity.orgtype == 'SING' ) {
+                    def initial = [:];
+                    initial.firstname = entity.ownerfirstname;
+                    initial.lastname = entity.ownerlastname;
+                    initial.address = entity.owneraddress;
+                    initial.gender = entity.ownergender;
+                    initial.tin = entity.ownertin;
+                    initial.nationality = entity.nationality;
+                    def sh = { o->
+                        entity.owner = [ objid:o.objid, name:o.name, address:o.address ];
+                        binding.refresh("entity.owner.*");
+                        return '_close';
+                    }
+                    return InvokerUtil.lookupOpener( "individualentity"+action, [entity: entity.owner, initial:initial, saveHandler:sh] );
+                }
+                else {
+                    def initial = [:];
+                    initial.orgtype = entity.orgtype;
+                    initial.name = entity.ownername;
+                    initial.address = entity.ownername;
+                    def sh = { o->
+                        entity.owner = [ objid:o.objid, name:o.name, address:o.address ];
+                        binding.refresh("entity.owner.*");
+                        return '_close';
+                    }
+                    return InvokerUtil.lookupOpener( "juridicalentity"+action, [entity: entity.owner, initial: initial, saveHandler:sh] );
+                }
+            }
+            
+            void save() {
+                if(!entity.pass)
+                    throw new Exception("Verification failed. Please settle due obligations");
+                if( !entity.owner?.objid )
+                    throw new Exception("Please select an owner");
+                 entity = svc.register(entity); 
+                 query = [:];
+                 searchListModel.reload();
+            }
+            
+            void reinit() {
+                lookupDone = false;
+            }
+            
+            def printBIN() {
+                return InvokerUtil.lookupOpener( "business:printbin", [entity: entity ] );
+            }
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pageflow>
+        <start>
+            <transition to="search"/>
+        </start>
+        
+        <page name="search" title="Search Business (TRACS)">
+            <transition to="end" caption="Close" />
+            <transition to="info" caption="Next" name="next" action="openEntry"/>
+        </page>
+        
+        <page name="info" title="Edit Business Info">
+            <transition to="search" caption="Back" name="back" action="reinit"/>
+            <transition to="success" caption="Save" name="save" action="save" confirm="You are about to activate this account to ETRACS. Continue?" />
+        </page>
+        
+        <page name="success" title="Business Registered">
+            <transition to="search" caption="Add Another"/>
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.capture.SearchBusiness"/>
+        <page name="info" template="com.rameses.gov.etracs.bpls.capture.BusinessInfo"/>
+        <page name="success" template="com.rameses.gov.etracs.bpls.capture.RegisterSuccess"/>
+    </pages>
+    
+</workunit>

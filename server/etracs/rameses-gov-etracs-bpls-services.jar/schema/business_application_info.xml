@@ -7,7 +7,12 @@
 		<field name="type" required="true"/>
 		<field name="activeyear" required="true"/>
 		<field name="attribute_objid" required="true"/>
-		<field name="attribute_name" required="true"/>
+
+		<complex name="attribute" ref="businessvariable" jointype="many-to-one" required="false" 
+			includefields="name,datatype">
+			<key field="attribute_objid" target="objid"/>
+		</complex>	
+
 		<field name="lob_objid" />
 		<field name="lob_name" />
 		<field name="decimalvalue" />
@@ -16,6 +21,8 @@
 		<field name="boolvalue" />
 		<field name="phase" />
 		<field name="level" />
+		<field name="value" expr=" CASE WHEN attribute.datatype = 'decimal' THEN decimalvalue WHEN attribute.datatype = 'integer' THEN intvalue WHEN attribute.datatype = 'boolean' THEN boolvalue	ELSE stringvalue END " />
+
 	</element>	
 
 </schema>

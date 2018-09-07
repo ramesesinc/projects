@@ -15,7 +15,7 @@
         class AccountListModel extends CrudSubListModel {
         
             def getCustomFilter() {
-                return [ "acctid IS NULL AND maingroupid = :mid", [mid: masterEntity.objid] ];
+                return [ "maingroupid = :mid", [mid: masterEntity.objid] ];
             }
         
         }

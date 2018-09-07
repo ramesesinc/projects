@@ -1,0 +1,12 @@
+<workunit extends="wtemplates/ExplorerViewController.xml" serviceName="BusinessPermitListService" 
+     allowOpen="true" allowCreate="false" autoSelect="true" defaultFileType="business_permit">
+    <invokers>
+        <!--
+        <invoker folderid="/explorer/txn/bpls" caption="Business Permit List" role="LICENSING" />
+        -->
+        <invoker folderid="/menucategory/business/opc" caption="Business Permits" role="LICENSING" index="100"/>
+    </invokers>
+    <pages>
+        <page name="1queryform" template="com.rameses.gov.etracs.bpls.business.BusinessListQueryForm"/>
+    </pages>
+</workunit>

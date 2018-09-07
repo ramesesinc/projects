@@ -1,0 +1,64 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:business:lookup" caption="Lookup Business Receivable" action="initBusiness" target="popup"/>
+        <invoker type="cashreceipt:owner:lookup" caption="Lookup Owner Business" action="initOwner" target="popup"/>
+    </invokers>
+    <code>
+         import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  BusinessReceivableLookupController  {
+        
+            @Service("BusinessReceivableService")
+            def service;
+        
+            def selectedEntity;
+            def onselect;
+            def bin;
+            def ownerid;
+            def list;
+            
+            String title = "Lookup Business";
+            
+            void initBusiness() {
+                list = service.getOpenReceivablesByBIN([bin:bin]);
+            }
+            
+            void initOwner() {
+                list = service.getOpenReceivablesByOwner([ownerid:ownerid]);
+            }
+            
+            def listHandler = [
+                getColumnList: {
+                    return [
+                        [name:'appno', caption:'App No'],
+                        [name:'appyear', caption:'Year'],
+                        [name:'businessname', caption:'Business Name'],
+                        [name:'apptype', caption: 'App Type'],
+                        [name:'balance', caption: 'Balance', type:'decimal'],
+                    ];
+                },
+                fetchList: { o->
+                    return list;
+                }
+            ] as PageListModel;
+            
+            def doSelect() {
+                onselect(selectedEntity);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+
+            
+        }
+    </code>
+    <pages>
+        <page template="com.rameses.osiris2.themes.LookupPage"/>
+    </pages>
+</workunit>

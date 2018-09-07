@@ -1,0 +1,32 @@
+<workunit extends="wtemplates/SimpleReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/bpls" action="preview" role="REPORT" 
+            caption="Line of Business Listing" target="window"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.reports.*;
+
+        public class LOBListingReportController extends com.rameses.etracs.shared.ReportController 
+        {
+
+            @Service('BPLobListingReportService') 
+            def svc 
+            
+            String title = "Line of Business Listing";
+            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+            String reportName = reportpath + 'LobListing.jasper'
+            
+            def getReportData(){
+                return svc.getReport( ); 
+            }
+
+        }
+    ]]>        
+    </code>
+</workunit>

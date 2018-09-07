@@ -5,6 +5,7 @@
 - BPLS 
 		
 - ASSESSOR	
+	- Subdivision: Avoid reloading affected rpus for approved state
 	- FAAS: land: fix missing parameters (online transaction)
 	- SKETCH: support image (old) and drawing format
 	- REPORT: Transaction Log Listing

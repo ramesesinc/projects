@@ -1,0 +1,21 @@
+<schema adapter="eor">
+	<element tablename="unpostedpayment">
+		<field name="objid" primary="true" prefix="PAY"/>
+		<field name="txndate" required="true" caption="TxnDate"/> 
+		<field name="txntype" required="true" caption="TxnType"/> 
+		<field name="txntypename" required="true" caption="TxnTypeName"/> 
+		<field name="paymentrefid" required="true" caption="PaymentRefId" searchable="true" indexed="true"/> 
+		<field name="amount" required="true" caption="Amount"/> 
+		<field name="orgcode" required="true" caption="OrgCode"/> 
+		<field name="partnerid" required="true" caption="PartnerId" indexed="true"/> 
+		<field name="traceid" required="true" indexed="true"/> 
+		<field name="tracedate" required="true"/> 
+		<field name="refno" required="true" caption="RefNo" searchable="true" indexed="true"/> 
+		<field name="origin" required="true" caption="Origin"/> 
+		<complex name="paymentorder" serializer="default" required="true"/>
+
+		<field name="errmsg" required="true" caption="ErrMsg"/> 
+		<complex name="errdetail" serializer="default" required="false"/>
+	</element>
+</schema>	
+

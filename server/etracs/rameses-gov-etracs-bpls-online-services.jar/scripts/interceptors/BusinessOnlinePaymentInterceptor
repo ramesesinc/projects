@@ -28,11 +28,12 @@ class BusinessOnlinePaymentInterceptor {
 		if(!app.state.toString().toUpperCase().matches('PAYMENT|RELEASE|COMPLETED')) {
 			throw new Exception("Application is not in payment state");
 		}
+
 		def r = [:];
-        	r.app = [apptype:app.apptype, appyear:app.appyear, dtfiled:app.dtfiled, appno:app.appno]; 
-        	r.billdate = dateSvc.getBasicServerDate();
-        	r.applicationid = app.objid;
-        if( o.qtr ) {
+    	r.app = [apptype:app.apptype, appyear:app.appyear, dtfiled:app.dtfiled, appno:app.appno]; 
+    	r.billdate = dateSvc.getBasicServerDate();
+    	r.applicationid = app.objid;
+        if ( o.qtr ) {
         	r.payment = [option:'FULLQTR', qtr: o.qtr.toInteger() ]		
         }	
         else {
@@ -117,6 +118,9 @@ class BusinessOnlinePaymentInterceptor {
 		if ( o.info?.qtr ) r.qtr = o.info.qtr; 
 
 		def z = generateBilling( r );
+		if ( o.amount != z.amount ) 
+			throw new Exception('Bill amount has changed from '+ o.amount +' to '+ z.amount); 
+
 		o.businessid = z.app.business.objid;
 		o.applicationid = z.app.objid;
 		o.appyear = z.app.appyear; 

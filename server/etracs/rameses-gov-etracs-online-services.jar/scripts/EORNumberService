@@ -15,13 +15,13 @@ class EORNumberService {
     def partnerEm;
 
     @DataContext('eor_number')
-    def eorNumEm;
+    def num_db;
 
     @Service('OrgService')
     def orgSvc 
 
     @ProxyMethod(local=true)
-    public def getNextNumber( def partnerid ) {
+    public def getNextEORNumber( def partnerid ) {
         def org = orgSvc.getRoot(); 
         def orgid = (org?.objid ? org.objid : '');
 
@@ -29,15 +29,26 @@ class EORNumberService {
         def indexno = (part?.indexno ? part.indexno : ''); 
 
         String prefix = 'EOR'+ indexno + orgid + dateService.getServerYear();
-        def z = eorNumEm.find( [objid: prefix] );
-        if( !z) {
-            z = [objid: prefix, currentno: 1 ];
-            eorNumEm.create( z );
+        def rec = num_db.find([ objid: prefix ]).first();
+        if ( rec) {
+            num_db.find([ objid: prefix ]).update([ currentno: rec.currentno+1 ]);
+        } else {
+            rec = [ objid: prefix, currentno: 1 ];
+            num_db.create( rec );
         }
-        else {
-            eorNumEm.find( [objid:prefix] ).update( [currentno: "{currentno + 1}"] );
-        }
-        return prefix + String.format("%06d", z.currentno );
+        return prefix + String.format("%06d", rec.currentno );
     }   
 
-}
+    @ProxyMethod(local=true)
+    public def getNextPONumber( prefix ) {
+        def seqname = 'PAYORDER'; 
+        def rec = num_db.find([ objid: seqname ]).first(); 
+        if ( rec ) {
+            num_db.find([ objid: seqname ]).update([ currentno: rec.currentno+1 ]); 
+        } else { 
+            rec = [ objid: seqname, currentno: 1 ]; 
+            num_db.create( rec ); 
+        } 
+        return (prefix ? prefix : '') + String.format("%010d", rec.currentno );
+    } 
+} 

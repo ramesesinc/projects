@@ -1,7 +1,7 @@
 <workunit schemaName="depositvoucher">
     <invokers>
         <invoker folderid="menucategory/treasury/remittance" role="CASHIER" 
-                 caption="Prepare Deposit" 
+                 caption="Prepare Deposit Voucher" 
                  windowTitle="New Deposit Voucher"
                  formTitle="New Deposit Voucher"
                  action="init" 

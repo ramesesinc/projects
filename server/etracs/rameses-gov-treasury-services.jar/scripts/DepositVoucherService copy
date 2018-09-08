@@ -1,0 +1,148 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+
+class DepositVoucherService  {
+
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service('ControlService') 
+	def controlSvc;	
+
+	@Service("Var")
+	def var;			
+
+	@DataContext("collectionvoucher_fund")
+	def cvfEm;
+
+	@DataContext("depositvoucher")
+	def depositEm;
+
+	@DataContext("checkpayment")
+	def checkpaymentEm;
+
+
+	@DataContext("depositslip")
+	def depositSlipEm;
+
+	@DataContext("fund")
+	def fundEm;
+
+	@Service("JevService")
+	def jevSvc;
+
+	@ProxyMethod 
+	public def getUndepositedFunds() {
+        def adb = cvfEm.where("parent.state='POSTED' AND depositvoucherid IS NULL ");  
+        def funds = adb.select( "objid:{fund.objid},icount:{COUNT(*)}" ).groupBy('fund.objid').list(); 
+        if ( !funds ) return []; 
+
+		return fundEm.where(" objid IN ('"+ funds*.objid.join("','") +"') ").list();
+	}
+
+	@ProxyMethod
+	public def getOpenSplitChecks( def vlist ) {
+		def ids = "('" + vlist.join("','") + "')";
+		return depositEm.getOpenSplitChecks( [ids: ids ] );
+	}
+
+	@ProxyMethod
+	public def addChecks( def v) {
+		def ids = "('" + v.list.join("','") + "')";
+		checkpaymentEm.where( "objid IN " + ids ).update([depositvoucherid: v.depositvoucherid]);
+		return summarizeTotal( [objid: v.depositvoucherid] );
+	}
+
+	@ProxyMethod
+	public def removeCheck( def o ) {
+		checkpaymentEm.find([objid: o.objid]).update([depositvoucherid: null]);
+		return summarizeTotal( [objid: o.depositvoucherid] );
+	}
+
+	def summarizeTotal(def m) {
+		def tot = checkpaymentEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
+		depositEm.find([objid: m.objid ]).update([totalcheck: tot]);
+		return tot;
+	}
+
+	@ProxyMethod
+	public def create( def o ) {
+		def m = [:];
+		m.state = "OPEN"
+		m.controlno = "DV" + seqSvc.getNextFormattedSeries("DEPOSIT_VOUCHER");
+		m.controldate = dateSvc.getBasicServerDate(); 
+		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.dtcreated = dateSvc.getServerDate();
+		m.fund = o.fund;
+		m.fundid = o.fund.objid;
+		m.amount = o.amount;
+		m.amountdeposited = 0;
+		m.totalcheck = 0;
+		m = depositEm.create( m );
+		o.items.each {
+			cvfEm.find( [ objid: it.objid ] ).update( [depositvoucherid: m.objid ] );
+		}
+
+		//try to update all payment checks 
+		depositEm.updateCheckForDeposit( [depositvoucherid: m.objid ]);
+		depositEm.updateCheckDepositVoucherId( [depositvoucherid: m.objid ] );
+
+		if( o.additionalchecks ) {
+			def ids = "('" + o.additionalchecks.join("','") + "')";
+			checkpaymentEm.where( "objid IN " + ids  ).update( [depositvoucherid: m.objid ] );
+		}
+
+		summarizeTotal( m );
+		return m;
+	}
+
+	@ProxyMethod
+	public def post(def o ) {
+		//test if there are undeposited checks
+		int t = checkpaymentEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
+		if(t > 0 )
+			throw new Exception("All checks associated with this deposit must have deposit slips");
+
+		//test if there are deposit slips not validated
+		t = depositSlipEm.find( [depositvoucherid: o.objid] ).where("validation.refno IS NULL").select("v:{COUNT(*)}").val();
+		if(t > 0 )
+			throw new Exception("All deposit slips associated with this deposit must be validated");
+
+		//test amount deposited must equal amount to deposit
+		def ref = depositEm.find([objid: o.objid]).first();
+		if( ref.amount != ref.amountdeposited )
+			throw new Exception("Amount of deposit must equal to amount deposited");
+
+
+		//create the jev and post to jev	
+		def jev = [items:[]]	
+		jev.fundid = ref.fundid;
+		jev.state = 'OPEN'
+		jev.refid = ref.objid;
+		jev.refno = ref.controlno;
+
+		jev.jevdate = ref.controldate;
+		jev.reftype = "DEPOSIT";
+		jev.txntype = "DEPOSIT";
+
+		jev.postedby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
+		jev.amount = ref.amount;
+
+		//add all the items
+		jev.items.addAll( depositEm.getBankAccountLedgerItem([depositvoucherid: o.objid] ));
+		jev.items.addAll( depositEm.getCashLedgerItem([depositvoucherid: o.objid] ));
+
+		jevSvc.create( jev );
+
+		depositEm.find([objid: o.objid]).update([state:'POSTED']);
+
+	}
+
+}

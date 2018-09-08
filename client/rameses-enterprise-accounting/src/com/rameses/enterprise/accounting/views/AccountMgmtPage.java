@@ -14,12 +14,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author elmonazareno
  */
 @Template(FormPage.class)
-public class AccountMainGroupMgmtPage extends javax.swing.JPanel {
+public class AccountMgmtPage extends javax.swing.JPanel {
 
     /**
      * Creates new form AccountMainGroupListPage
      */
-    public AccountMainGroupMgmtPage() {
+    public AccountMgmtPage() {
         initComponents();
     }
 
@@ -94,7 +94,7 @@ public class AccountMainGroupMgmtPage extends javax.swing.JPanel {
                 .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(xButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -132,7 +132,7 @@ public class AccountMainGroupMgmtPage extends javax.swing.JPanel {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                .addComponent(xLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -177,16 +177,17 @@ public class AccountMainGroupMgmtPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
-        schemaList1.setCustomFilter("groupid = :groupid ");
+        schemaList1.setCustomFilter("groupid = :groupid && type='item'");
         schemaList1.setDepends(new String[] {"selectedNode"});
+        schemaList1.setFormActions("itemActions");
         schemaList1.setHandler("");
         schemaList1.setHandlerName("acctListModel");
+        schemaList1.setMenuContext("menuContext");
         schemaList1.setName("selectedItem"); // NOI18N
         schemaList1.setOrderBy("code");
         schemaList1.setQueryName("acctQuery");
         schemaList1.setSchemaName("account");
-        schemaList1.setAllowCreate(true);
-        schemaList1.setAllowDelete(true);
+        schemaList1.setAllowOpen(false);
         schemaList1.setAllowSearch(true);
         jPanel3.add(schemaList1, java.awt.BorderLayout.CENTER);
 
@@ -219,7 +220,7 @@ public class AccountMainGroupMgmtPage extends javax.swing.JPanel {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+            .addComponent(xFormPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

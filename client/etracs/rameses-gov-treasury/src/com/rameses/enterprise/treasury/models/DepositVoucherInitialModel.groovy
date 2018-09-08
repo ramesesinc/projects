@@ -15,35 +15,29 @@ class DepositVoucherInitialModel extends CrudListModel {
     def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
     def amount = 0;
    
-    def fund;
-    def fundList;
     def selectedItem;
     
-    void afterInit() {
-        fundList = depositSvc.getUndepositedFunds();
-    }
     
     def collectionListModel = [
         isMultiSelect: {
             return true;
         },
         fetchList: { o->
-            if(!fund) return null;
-            def m = [_schemaname: 'collectionvoucher_fund' ];
-            m.where = ["parent.state='POSTED' AND fund.objid = :fundid AND depositvoucherid IS NULL ", [fundid: fund.objid]];
+            def m = [_schemaname: 'collectionvoucher' ];
+            m.where = [" depositvoucherid IS NULL "];
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("collectionvoucher_fund:open", [entity: o] );
+            def op = Inv.lookupOpener("collectionvoucher:open", [entity: o] );
             op.target = "popup";
             return op;
         },
         afterSelectionChange: { o ->
             if( o.selected ) {
-                amount += o.data.amount;
+                amount += (o.data.totalcash + o.data.totalcheck) ;
             }
             else {
-                amount -= o.data.amount;
+                amount -= (o.data.totalcash + o.data.totalcheck);
             }
             binding.notifyDepends("selectedItem");
         }
@@ -52,6 +46,18 @@ class DepositVoucherInitialModel extends CrudListModel {
     def submit() {
         def selectedList = collectionListModel.getSelectedValue();
         if(!selectedList) throw new Exception("Please select at least one entry");
+        if( amount <= 0 ) throw new Exception("Amount must be greater than zero");
+        def m = [:];
+        m.items = selectedList*.objid;
+        m.amount = amount; 
+        def z = depositSvc.create( m );
+        MsgBox.alert("Deposit Voucher Control No. " + z.controlno + " created");
+        return "_close";
+    }
+    
+    /*
+    def submit() {
+        
         
         def p = MsgBox.confirm("You are about to create a deposit for the selected items. Proceed?");
         if(!p) return null;
@@ -96,6 +102,6 @@ class DepositVoucherInitialModel extends CrudListModel {
         op.target = "self";
         return op;
     }
-
+    */
     
 }    

@@ -8,18 +8,22 @@ import com.rameses.seti2.models.*;
 
 class AccountModel extends CrudFormModel {
 
+    def maingroup;
+    def parent;
+    def type;
+    
     void afterCreate() {
-        entity.maingroup = caller.entity;
-        entity.group = caller.selectedNode.item.item;
+        entity.maingroup = maingroup;
+        entity.group = parent;
+        entity.type = type;
+        MsgBox.alert( "main group " + entity.group );
     }    
 
-    public Map createItem(String name, Map subSchema ) { 
-        def item = super.createItem( name, subSchema ); 
-        item.code = caller.selectedNode.item.item.code;
-        item.maingroup = caller.entity;
-        item.group = caller.selectedNode.item.item;
-        return item; 
+    void beforeSave( def mode ) {
+        if( mode == "create") {
+            entity.objid = entity.maingroup.objid + "-" + entity.code;
+        }
     }
-
+    
 }
     

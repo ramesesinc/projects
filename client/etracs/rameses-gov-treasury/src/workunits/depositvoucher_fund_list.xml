@@ -6,7 +6,7 @@
                  caption="View Depost Voucher Fund List" 
                  windowTitle="Deposit Vouchers By Fund"
                  formTitle="Deposit  Vouchers By Fund"
-                 cols="parent.controlno,parent.controldate,fund.title,amount,amountdeposited"
+                 cols="parent.controlno,parent.controldate,fund.title,amount,amountdeposited,balance"
                  action="init" target="window" index="55"/>
         
     </invokers>

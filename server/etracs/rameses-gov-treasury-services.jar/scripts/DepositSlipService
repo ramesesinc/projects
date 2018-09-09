@@ -19,7 +19,7 @@ class DepositSlipService  {
 	@Service("DateService")
 	def dateSvc;
 
-	/*
+	
 	void createCheckDepositSlip( def o, def checks, def checkType ) {
 		if(!checks) throw new Exception("There must be checks for check deposit slip");
 		if(!checkType) throw new Exception("checktype is required in create depositslip");
@@ -35,7 +35,7 @@ class DepositSlipService  {
 			checkpaymentEm.find([objid: it.checkid]).update( [depositslipid: m.objid ]);
 		}
 	}
-	*/
+	
 	
 	@ProxyMethod
 	public def create( def o ) {

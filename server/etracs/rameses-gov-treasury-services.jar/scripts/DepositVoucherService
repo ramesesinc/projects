@@ -83,6 +83,11 @@ class DepositVoucherService  {
 		chkPmtEm.where( "objid IN " + str ).update( [fundid: o.fundid ]);
 	}
 
+	@ProxyMethod
+	public void removeCheck( def o ) {
+		chkPmtEm.where( "objid = :objid", o ).update( [fundid: "{NULL}" ]);
+	}
+
 	/*
 	@ProxyMethod
 	public def post(def o ) {

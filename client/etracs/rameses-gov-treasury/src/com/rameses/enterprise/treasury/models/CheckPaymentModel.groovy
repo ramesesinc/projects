@@ -12,6 +12,11 @@ class CheckPaymentModel extends CrudFormModel {
     def handler;
     
     void beforeSave(def saveType) {
+        if( external ) {
+            if(!entity.depositvoucherid ) 
+                throw new Exception("Deposit voucher is required in external checks");
+            entity.amtused = entity.amount;
+        }
         if( handler ) handler( entity, saveType );
     }
     

@@ -33,9 +33,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
-        xLabel12 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
-        xLabel6 = new com.rameses.rcp.control.XLabel();
         xFormPanel3 = new com.rameses.rcp.control.XFormPanel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
@@ -45,37 +43,20 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         xButton9 = new com.rameses.rcp.control.XButton();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
+        xButton10 = new com.rameses.rcp.control.XButton();
         schemaList2 = new com.rameses.seti2.components.SchemaList();
         jPanel3 = new javax.swing.JPanel();
         schemaList3 = new com.rameses.seti2.components.SchemaList();
 
         xFormPanel2.setCaptionWidth(120);
 
-        xLabel12.setCaption("Fund");
-        xLabel12.setExpression("#{ entity.fund.title }");
-        xLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel12.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xLabel12);
-
-        xLabel5.setCaption("Amount To Deposit");
+        xLabel5.setCaption("Amount");
         xLabel5.setExpression("#{ entity.amount }");
         xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel5.setCaptionWidth(120);
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 18));
         xFormPanel2.add(xLabel5);
-
-        xLabel6.setCaption("Amount Deposited");
-        xLabel6.setExpression("#{ entity.amountdeposited }");
-        xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel6.setCaptionWidth(120);
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 18));
-        xFormPanel2.add(xLabel6);
 
         xFormPanel3.setCaptionWidth(120);
 
@@ -203,7 +184,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(schemaList1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 112, Short.MAX_VALUE))
+                .addGap(0, 132, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("Funds", jPanel1);
@@ -212,23 +193,9 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         xButton9.setVisibleWhen("#{ entity.state != 'POSTED' }");
         xButton9.setText("Add External Check");
 
-        xDecimalField1.setCaption("Total checks to deposit");
-        xDecimalField1.setDepends(new String[] {"selectedItem"});
-        xDecimalField1.setEditable(false);
-        xDecimalField1.setName("entity.totalcheck"); // NOI18N
-        xDecimalField1.setCaptionFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        xDecimalField1.setCaptionWidth(200);
-        xDecimalField1.setEnabled(false);
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 30));
-        xFormPanel4.add(xDecimalField1);
-
-        xIntegerField1.setCaption("Check Count");
-        xIntegerField1.setEditable(false);
-        xIntegerField1.setName("checksCount"); // NOI18N
-        xIntegerField1.setCaptionWidth(200);
-        xIntegerField1.setEnabled(false);
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xIntegerField1);
+        xButton10.setName("removeExternalCheck"); // NOI18N
+        xButton10.setVisibleWhen("#{ entity.state != 'POSTED' }");
+        xButton10.setText("Remove External Check");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -236,16 +203,16 @@ public class DepositVoucherPage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(159, 159, 159)
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(xButton10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(629, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xButton10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
 
@@ -341,7 +308,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "depositslipid"}
+                new Object[]{"name", "deposited"}
                 , new Object[]{"caption", "Deposited"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -353,7 +320,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "fund.code"}
@@ -372,6 +339,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
             })
         });
         schemaList2.setCustomFilter("depositvoucherid = :objid");
+        schemaList2.setHandlerName("checkListModel");
         schemaList2.setName("selectedCheck"); // NOI18N
         schemaList2.setQueryName("entity");
         schemaList2.setSchemaName("checkpayment");
@@ -391,8 +359,8 @@ public class DepositVoucherPage extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(schemaList2, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(schemaList2, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -480,7 +448,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(schemaList3, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("References", jPanel3);
@@ -507,7 +475,7 @@ public class DepositVoucherPage extends javax.swing.JPanel {
                     .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -519,17 +487,13 @@ public class DepositVoucherPage extends javax.swing.JPanel {
     private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.seti2.components.SchemaList schemaList2;
     private com.rameses.seti2.components.SchemaList schemaList3;
+    private com.rameses.rcp.control.XButton xButton10;
     private com.rameses.rcp.control.XButton xButton9;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel4;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
-    private com.rameses.rcp.control.XLabel xLabel12;
     private com.rameses.rcp.control.XLabel xLabel5;
-    private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

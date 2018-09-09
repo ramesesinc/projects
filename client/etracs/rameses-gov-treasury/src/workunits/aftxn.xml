@@ -1,8 +1,11 @@
 <!-- REQUISITION ISSUE SLIP -->
 <workunit schemaName="aftxn">
     <invokers>
+        <invoker folderid="menucategory/treasury/af"
+                 caption="New AF Transaction" formTitle="New AF Transaction" action="start" role="AFO"/>
+        
         <invoker type="aftxn:create" 
-                 caption="New AF Issue/Receipt" formTitle="New AF IR" action="start" role="AFO"/>
+                 caption="New AF Transaction" formTitle="New AF Transaction" action="start" role="AFO"/>
         
         <invoker type="aftxn:open" 
                  formTitle="#{ entity.controlno }"

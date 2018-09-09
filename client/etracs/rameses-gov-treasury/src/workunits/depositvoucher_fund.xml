@@ -2,7 +2,7 @@
             allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         <invoker type="depositvoucher_fund:open" 
-                 caption="Deposit Voucher" 
+                 caption="Deposit Voucher By Fund" 
                  formId="#{entity.objid}"
                  action="open" target="window" 
                  index="10"/>
@@ -14,8 +14,8 @@
         -->
         
         <invoker type="depositSlipActions" caption="Add" action="addDepositSlip"/>
-        <invoker type="approveForPrinting" caption="Add" action="approveForPrinting"/>
-        <invoker type="validateDepositSlip" caption="Add" action="validateDepositSlip"/>
+        <invoker type="depositSlipActions" caption="Approve for Print" action="approveForPrinting"/>
+        <invoker type="depositSlipActions" caption="Validate" action="validateDepositSlip"/>
         
     </invokers>
    

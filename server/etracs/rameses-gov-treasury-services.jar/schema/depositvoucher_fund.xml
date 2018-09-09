@@ -19,7 +19,7 @@
 
 		<field name="amount" required="true" type="decimal"/>
 		<field name="amountdeposited" required="true" type="decimal"/>
-		
+		<field name="balance"  expr="amount - amountdeposited" type="decimal" caption="Balance"/>
 	</element>
 </schema>
 

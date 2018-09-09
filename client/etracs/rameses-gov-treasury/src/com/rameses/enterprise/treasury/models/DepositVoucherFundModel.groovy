@@ -12,7 +12,11 @@ class DepositVoucherFundModel extends CrudFormModel {
     @Service("DepositVoucherService")
     def depositSvc;    
 
+    def selectedDepositSlip;
+    def depositSlipModel;
+    
     def checkListModel;
+    def selectedCheck;
     
     def addDepositSlip() {
         if( entity.amount == entity.amountdeposited )
@@ -25,14 +29,15 @@ class DepositVoucherFundModel extends CrudFormModel {
         return Inv.lookupOpener("depositslip:create", p );
     }
     
+    
+    //CHECKS MANAGEMENT
     void addCheck() {
         def params = [:];
         params.onselect = { o->
             def v = [list: o*.objid, fundid: entity.fund.objid ];
             depositSvc.addChecks( v );
-            //entity.totalcheck = tot;
             checkListModel.reload();
-            binding.refresh("entity.totalcheck|checksCount");
+            binding.refresh("checksCount");
         }
         params.listHandler = [
             isMultiSelect: {
@@ -56,92 +61,42 @@ class DepositVoucherFundModel extends CrudFormModel {
         Modal.show( "simple_list_lookup", params);
     }
     
-    /*    
-    
-    @Service("DepositSlipService")
-    def depositSlipSvc;  
-    
-    void afterInit() {
-        loadChecks();
-    }
-    
-    def collectionListModel = [
-        fetchList: { o->
-            def m = [_schemaname: 'collectionvoucher_fund' ];
-            m.where = [" depositvoucherid = :depositid", [depositid: entity.objid]];
-            def list = queryService.getList( m );
-            checksCount = list.size();
-            return list;
-        },
-        onOpenItem: {o,col->
-            def op = Inv.lookupOpener("collectionvoucher_fund:open", [entity: o] );
-            op.target = "popup";
-            return op;
-        }
-    ] as BasicListModel;
-        
-    void updateVoucher(def amt ) {
-        entity.amountdeposited = amt;  
-        loadChecks();
-        depositSlipList.reload();
+    void removeCheck() {
+        if(!selectedCheck) throw new Exception("Please select a check to remove");
+        if(selectedCheck.depositslipid) throw new Exception("Cannot remove this check. There is already an associated deposit slip");
+        depositSvc.removeCheck( [objid:selectedCheck.objid] );
         checkListModel.reload();
-        binding.refresh("entity.amountdeposited");
+        binding.refresh("checksCount");
     }
     
-    def selectedItem;
-    
-    def depositSlipList = [
-        fetchList: { o->
-            def p = [depositvoucherid:entity.objid, fundid: entity.fund.objid ];
-            def m = [_schemaname: 'depositslip' ];
-            m.where = ["depositvoucherid = :depositvoucherid " , p ];
-            def list = queryService.getList( m );
-            return list;
-        },
-        onOpenItem: {o,col->
-            return viewDepositSlip();
+    void validateDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        def m = [:];
+        m.fields = [
+            [caption: 'Validation Ref No', name:'refno', required:true],
+            [caption: 'Validation Ref Date', name:'refdate', required:true, datatype:'date'],            
+        ];
+        if(selectedDepositSlip.validation) {
+            m.data = selectedDepositSlip.validation;
         }
-    ] as BasicListModel;
+        m.handler = { o->
+            def zz = [_schemaname:"depositslip", validation: o];
+            zz.findBy = [objid: selectedDepositSlip.objid];
+            persistenceService.update( zz );
+            depositSlipModel.reload();
+            reloadEntity();
+        };
+        Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
+    }
+    
 
-    def viewDepositSlip() {
-        if(!selectedItem) throw new Exception("Please select a deposit slip");
-        def p = [:];
-        p.entity = selectedItem;
-        def op = Inv.lookupOpener("depositslip:open", p );
-        op.target = "popup";
-        return op;
+    /*
+    public def post() {
+        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
+        depositSvc.post( [objid: entity.objid ] );
+        MsgBox.alert("Posting successful");
+        return "_close";
     }
-    
-    
-    
-    void removeDepositSlip() {
-        if(!selectedItem) throw new Exception("Please select a deposit slip");
-        
-        if(selectedItem.state == 'VALIDATED' )
-            throw new Exception("Cannot delete this because it is already validated");
-        def r = depositSlipSvc.removeDepositSlip( selectedItem );
-        updateVoucher( r.amountdeposited );
-    }
-    
-    public void approveDepositSlip() {
-        if(!selectedItem) throw new Exception("Please select an item");
-        if(! MsgBox.confirm("You are about to approve this deposit slip. This cannot be edited anymore. Proceed?")) return;
-        depositSlipSvc.approveDepositSlip( [objid: selectedItem.objid ] );
-        depositSlipList.reload();
-    }
-    
-    def validateDepositSlip() {
-        if( !selectedItem ) throw new Exception("Please choose a bank deposit entry");
-        
-        def h = { o->
-            def m = [objid: selectedItem.objid ];
-            m.validation = o;
-            depositSlipSvc.validateDepositSlip( m );
-            depositSlipList.reload();
-        }    
-        return Inv.lookupOpener("deposit_validation", [ handler: h ] );
-    }
-    
     public void printDepositSlip() {
         if(!selectedItem) throw new Exception("Please select an item");
         
@@ -150,65 +105,6 @@ class DepositVoucherFundModel extends CrudFormModel {
         
         def op = Inv.lookupOpener("depositslip:printout:"+ dephandler, [entity: [objid: selectedItem.objid]]); 
         op.handle.print(); 
-    }
-    */
-   
-    /***************************************************************************
-     *checks section
-    ***************************************************************************/
-   
-    /*
-    def checksList;
-    int checksCount;
-    def selectedCheck;
-    
-    void loadChecks() {
-        def p = [depid:entity.objid ];
-        def m = [_schemaname: 'checkpayment' ];
-        m.select = "objid,refno,refdate,bank.*,amount,deposited:{ CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END },depositslipid";
-        m.where = ["depositvoucherid = :depid " , p ];
-        m.orderBy = "refno";
-        checksList = queryService.getList( m );     
-        checksCount = checksList.size();
-    }
-    
-    def checkListModel = [
-        fetchList: { o->
-           return checksList;
-        },
-        onOpenItem: {o,col->
-            
-        }
-    ] as BasicListModel;
-    
-    
-    void moveCheck() {
-        if(!selectedCheck) throw new Exception("Please select a check to remove");
-        if(selectedCheck.depositslipid) throw new Exception("Cannot remove this check. There is already an associated deposit slip");
-        def tot = depositSvc.removeCheck( [objid:selectedCheck.objid, depositvoucherid:entity.objid] );
-        entity.totalcheck = tot;
-        loadChecks();
-        checkListModel.reload();
-        binding.refresh("entity.totalcheck|checksCount");
-    }
-    
-    void addExternalCheck() {
-        def h = { o, saveType ->
-            o.depositvoucherid = entity.objid;
-            o.amtused = o.amount;
-            o.state = 'FOR-DEPOSIT';
-            loadChecks();
-            checkListModel.reload();
-            binding.refresh("entity.totalcheck|checksCount");
-        }
-        Modal.show("checkpayment:create", [handler: h, external:true ])
-    }
-    
-    public def post() {
-        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
-        depositSvc.post( [objid: entity.objid ] );
-        MsgBox.alert("Posting successful");
-        return "_close";
     }
     */
     

@@ -50,10 +50,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         jPanel5 = new javax.swing.JPanel();
         xButton2 = new com.rameses.rcp.control.XButton();
         xButton8 = new com.rameses.rcp.control.XButton();
-        xButton9 = new com.rameses.rcp.control.XButton();
-        xFormPanel4 = new com.rameses.rcp.control.XFormPanel();
-        xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         schemaList2 = new com.rameses.seti2.components.SchemaList();
 
         setLayout(new java.awt.BorderLayout());
@@ -249,6 +245,9 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         });
         schemaList1.setCustomFilter("depositvoucherfundid = :objid");
         schemaList1.setFormActions("depositSlipActions");
+        schemaList1.setHandlerName("depositSlipModel");
+        schemaList1.setHiddenCols("");
+        schemaList1.setName("selectedDepositSlip"); // NOI18N
         schemaList1.setQueryName("entity");
         schemaList1.setSchemaName("depositslip");
         schemaList1.setAllowDelete(true);
@@ -288,33 +287,11 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
 
         xButton2.setName("addCheck"); // NOI18N
         xButton2.setVisibleWhen("#{ entity.state != 'POSTED' }");
-        xButton2.setText("Add Undeposited Checks");
+        xButton2.setText("Add Checks");
 
-        xButton8.setName("moveCheck"); // NOI18N
+        xButton8.setName("removeCheck"); // NOI18N
         xButton8.setVisibleWhen("#{ entity.state != 'POSTED' }");
         xButton8.setText("Remove Check");
-
-        xButton9.setName("addExternalCheck"); // NOI18N
-        xButton9.setVisibleWhen("#{ entity.state != 'POSTED' }");
-        xButton9.setText("Add External Check");
-
-        xDecimalField1.setCaption("Total checks to deposit");
-        xDecimalField1.setDepends(new String[] {"selectedItem"});
-        xDecimalField1.setEditable(false);
-        xDecimalField1.setName("entity.totalcheck"); // NOI18N
-        xDecimalField1.setCaptionFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        xDecimalField1.setCaptionWidth(200);
-        xDecimalField1.setEnabled(false);
-        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 30));
-        xFormPanel4.add(xDecimalField1);
-
-        xIntegerField1.setCaption("Check Count");
-        xIntegerField1.setEditable(false);
-        xIntegerField1.setName("checksCount"); // NOI18N
-        xIntegerField1.setCaptionWidth(200);
-        xIntegerField1.setEnabled(false);
-        xIntegerField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel4.add(xIntegerField1);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -324,21 +301,15 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(xButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
-                .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(625, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(xButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(xButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
@@ -418,7 +389,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "depositslipid"}
+                new Object[]{"name", "deposited"}
                 , new Object[]{"caption", "Deposited"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
@@ -430,11 +401,12 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 , new Object[]{"visible", true}
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
             })
         });
         schemaList2.setCustomFilter("depositvoucherid = :parentid AND fundid = :fundid");
         schemaList2.setHandlerName("checkListModel");
+        schemaList2.setName("selectedCheck"); // NOI18N
         schemaList2.setQueryName("entity");
         schemaList2.setSchemaName("checkpayment");
 
@@ -445,24 +417,24 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel4Layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(schemaList2, javax.swing.GroupLayout.PREFERRED_SIZE, 919, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(56, Short.MAX_VALUE)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(253, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(281, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(43, 43, 43))
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel4Layout.createSequentialGroup()
                     .addGap(20, 20, 20)
-                    .addComponent(schemaList2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(125, Short.MAX_VALUE)))
+                    .addComponent(schemaList2, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(83, Short.MAX_VALUE)))
         );
 
         xTabbedPane1.addTab("Checks", jPanel4);
@@ -505,12 +477,8 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XButton xButton7;
     private com.rameses.rcp.control.XButton xButton8;
-    private com.rameses.rcp.control.XButton xButton9;
-    private com.rameses.rcp.control.XDecimalField xDecimalField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XFormPanel xFormPanel4;
-    private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
     private com.rameses.rcp.control.XLabel xLabel12;

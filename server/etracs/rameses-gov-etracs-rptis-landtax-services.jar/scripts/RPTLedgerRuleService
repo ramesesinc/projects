@@ -29,6 +29,9 @@ public class RPTLedgerRuleService
 	@DataContext('rpttaxincentive_item')
 	def em_incentive_item 
 
+	@DataContext('rptledger_faas')
+	def em_ledger_faas
+
 
 	def RULESET 			= 'rptledger'
 	def FACT_PACKAGE 		= 'rptledger.'
@@ -64,6 +67,11 @@ public class RPTLedgerRuleService
 		facts << new EffectiveDate(currdate)
 		def ledgerfact = new RPTLedgerFact(ledger)
 		facts << ledgerfact 
+
+		def faases = em_ledger_faas.select('fromyear,toyear,assessedvalue')
+						.find([rptledgerid: ledger.objid, state:'APPROVED'])
+						.list()
+
 		ledger.faases.each{faas ->
 			def item = [:]
 			item.objid = faas.objid 
@@ -77,7 +85,9 @@ public class RPTLedgerRuleService
 		    item.sefav = item.av 
 		    item.taxdifference = faas.taxdifference 
 
-		    ledgerSvc.calcLedgerItemAssessedValue(item)
+		    def params = [faases: faases, ledgerfaas: faas, yr: yr, av: item.av]
+		    ledgerSvc.calcLedgerItemAssessedValue(params)
+		    item.av = params.av 
 
 		    def classification = new Classification(faas.classification)
 			def actualuse = new Classification(faas.actualuse)

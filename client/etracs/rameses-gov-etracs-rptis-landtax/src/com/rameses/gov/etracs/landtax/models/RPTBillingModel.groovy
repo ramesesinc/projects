@@ -19,7 +19,7 @@ class RPTBillingModel
     @Service("ReportParameterService")
     def reportSvc;
         
-    String title = 'Real Property Tax Bill';
+    def title = 'Real Property Tax Bill'
     
     def bill;
     def mode = 'init';
@@ -85,6 +85,7 @@ class RPTBillingModel
     }
         
     void buildBill(){
+        bill.totals = [:];
         bill.putAll(svc.generateBill(bill));
         report.viewReport();
     }     
@@ -96,7 +97,7 @@ class RPTBillingModel
      * ASYNC SUPPORT 
      * 
     =============================================================*/
-    def msg;
+    def msg = 'Processing. Please wait...';
     def _printmode 
 
     def afterBuild = {
@@ -141,25 +142,51 @@ class RPTBillingModel
         }
     }
 
+    def cancelled = false;
+
+    void doCancel() {
+        cancelled = true;
+        processing = false;
+        mode = 'init';
+    }
+
     def task = [
         run : {
+            bill.ledgers = [];
+            bill.totals = [:];
+            
             processing = true;
+            cancelled = false;
 
             def tmpbill = [:];
             tmpbill.putAll(bill);
+            tmpbill.totals = [:];
 
             def itemsToBill = items.findAll{it.bill == true}.collect{[objid:it.objid, tdno: it.tdno]};
-            itemsToBill.each{ledger ->
+            def cnt = 0;
+            for (int i=0; i < itemsToBill.size(); i++) {
+                if (cancelled) break;
+
+                def ledger = itemsToBill[i]
                 tmpbill.ledgers = [ledger];
                 tmpbill._forpayment = false;
-                def b = svc.generateBill(tmpbill);
-                aggregateBill(b);
-                updateBillInfo(b)
-                msg = 'Processing Ledger ' + ledger.tdno + '. Please wait...';
-                binding.refresh('msg');
-                sleep(200);
+                try {
+                    def b = svc.generateBill(tmpbill);
+                    aggregateBill(b);
+                    updateBillInfo(b)
+                    cnt += 1;
+                    msg = 'Processing Ledger ' + ledger.tdno + '    (#' + cnt + ')';
+                    binding.refresh('msg');
+                    sleep(100);
+                } catch(e) {
+                    msg = 'Error Processing Ledger ' + ledger.tdno + ' [ERROR] ' + e.message  + '. Ledger will be excluded.'
+                    binding.refresh('msg');
+                    sleep(1500);
+                }
             }
-            afterBuild();
+            if (!cancelled){
+                afterBuild();
+            }
         }
     ] as Runnable 
     

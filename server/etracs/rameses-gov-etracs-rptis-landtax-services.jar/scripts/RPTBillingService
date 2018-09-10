@@ -355,12 +355,14 @@ public class RPTBillingService
 		rptledger.toyear = tmpbill.billtoyear
 		rptledger.toqtr = tmpbill.billtoqtr
 		rptledger.total = rptledger.items.total.sum()
+		if (rptledger.total == null) rptledger.total = 0.0
 		if (!rptledger.nextbilldate){
 			em_rptledger.find([objid:rptledger.objid]).update([nextbilldate:bill.expirydate])
 		}
 
 		tmpbill.remove('items')
 		bill.ledgers << rptledger 
+		if (!bill.totals) bill.totals = [:]
 		tmpbill.totals.each{k,v ->
 			if (!bill.totals[k]){
 				bill.totals[k] = 0

@@ -280,24 +280,32 @@ public class LandParcelMonitoringPage extends javax.swing.JPanel {
         xDecimalField1.setDepends(new String[] {"selectedFaas"});
         xDecimalField1.setName("selectedFaas.totalareasqm"); // NOI18N
         xDecimalField1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField1.setEnabled(false);
         xDecimalField1.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xDecimalField1);
 
         xDecimalField2.setCaption("Area (ha)");
         xDecimalField2.setDepends(new String[] {"selectedFaas"});
         xDecimalField2.setName("selectedFaas.totalareaha"); // NOI18N
+        xDecimalField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField2.setEnabled(false);
         xDecimalField2.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xDecimalField2);
 
         xDecimalField3.setCaption("Market Value");
         xDecimalField3.setDepends(new String[] {"selectedFaas"});
         xDecimalField3.setName("selectedFaas.totalmv"); // NOI18N
+        xDecimalField3.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField3.setEnabled(false);
         xDecimalField3.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xDecimalField3);
 
         xDecimalField4.setCaption("Assessed Value");
         xDecimalField4.setDepends(new String[] {"selectedFaas"});
         xDecimalField4.setName("selectedFaas.totalav"); // NOI18N
+        xDecimalField4.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        xDecimalField4.setEnabled(false);
         xDecimalField4.setPreferredSize(new java.awt.Dimension(200, 20));
         xFormPanel2.add(xDecimalField4);
 
@@ -317,7 +325,7 @@ public class LandParcelMonitoringPage extends javax.swing.JPanel {
         );
         xImagePanel1Layout.setVerticalGroup(
             xImagePanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 377, Short.MAX_VALUE)
+            .add(0, 367, Short.MAX_VALUE)
         );
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
@@ -333,7 +341,7 @@ public class LandParcelMonitoringPage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xImagePanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                .add(xImagePanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

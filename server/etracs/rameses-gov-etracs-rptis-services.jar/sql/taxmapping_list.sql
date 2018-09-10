@@ -13,7 +13,7 @@ WHERE rp.barangayid = $P{objid}
   AND rp.ry = $P{ry} 
   AND f.state = 'CURRENT'
   AND r.rputype = 'land'
-GROUP BY rp.ry, rp.section	
+GROUP BY rp.barangayid, rp.ry, rp.section	
 ORDER BY rp.section
 
 

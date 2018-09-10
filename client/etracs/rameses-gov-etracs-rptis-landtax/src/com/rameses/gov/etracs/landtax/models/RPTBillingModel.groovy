@@ -164,6 +164,8 @@ class RPTBillingModel
 
             def itemsToBill = items.findAll{it.bill == true}.collect{[objid:it.objid, tdno: it.tdno]};
             def cnt = 0;
+            def itemCount = itemsToBill.size() 
+
             for (int i=0; i < itemsToBill.size(); i++) {
                 if (cancelled) break;
 
@@ -175,7 +177,7 @@ class RPTBillingModel
                     aggregateBill(b);
                     updateBillInfo(b)
                     cnt += 1;
-                    msg = 'Processing Ledger ' + ledger.tdno + '    (#' + cnt + ')';
+                    msg = 'Processing Ledger ' + ledger.tdno + '    (' + cnt + '/' + itemCount + ')';
                     binding.refresh('msg');
                     sleep(100);
                 } catch(e) {

@@ -17,6 +17,9 @@
         <invoker type="depositSlipActions" caption="Approve for Print" action="approveForPrinting"/>
         <invoker type="depositSlipActions" caption="Validate" action="validateDepositSlip"/>
         
+        <invoker type="fundTransferActions" caption="Outgoing Fund Transfer" action="addFundTransfer"/>
+        <invoker type="fundTransferActions" caption="Remove Entry" action="removeFundTransfer"/>
+
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.DepositVoucherFundModel" />

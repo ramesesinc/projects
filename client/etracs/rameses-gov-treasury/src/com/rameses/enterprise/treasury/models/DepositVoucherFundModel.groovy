@@ -11,15 +11,21 @@ class DepositVoucherFundModel extends CrudFormModel {
 
     @Service("DepositVoucherService")
     def depositSvc;    
-
+    
+    @Service("DepositFundTransferService")
+    def fundService;
+    
     def selectedDepositSlip;
     def depositSlipModel;
     
     def checkListModel;
     def selectedCheck;
     
+    def selectedFundTransfer;
+    def fundTransferModel;
+    
     def addDepositSlip() {
-        if( entity.amount == entity.amountdeposited )
+        if( (entity.amount - entity.totaldr) == (entity.amountdeposited - entity.totalcr) )
             throw new Exception("No amount to deposit");
         def p = [depositvoucherfund: entity ];
         p.handler = { x->
@@ -28,7 +34,6 @@ class DepositVoucherFundModel extends CrudFormModel {
         };
         return Inv.lookupOpener("depositslip:create", p );
     }
-    
     
     //CHECKS MANAGEMENT
     void addCheck() {
@@ -89,7 +94,19 @@ class DepositVoucherFundModel extends CrudFormModel {
         Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
     }
     
+    void addFundTransfer() {
+        def h = { o->
+            reloadEntity();
+        }
+        Modal.show( "deposit_fund_transfer:create", [ depositvoucherfund: entity, handler: h ]);
+    }
 
+    void removeFundTransfer() {
+        if(!selectedFundTransfer) throw new Exception("Please select an outgoing fund");
+        fundService.removeEntity( selectedFundTransfer );
+        reloadEntity();
+    }
+    
     /*
     public def post() {
         if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;

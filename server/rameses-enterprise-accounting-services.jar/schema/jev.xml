@@ -7,7 +7,8 @@
 		<field name="jevdate" type="date"/>
 		
 		<field name="refid" required="true"/>
-		<field name="refno" caption="Ref No"/>
+		<field name="refno" caption="Ref No" required="true"/>
+		<field name="refdate" caption="Ref Date" required="true"/>
 		<field name="reftype" />
 
 		<field name="postedby_objid" />

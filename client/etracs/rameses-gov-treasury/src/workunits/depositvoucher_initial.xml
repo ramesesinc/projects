@@ -17,8 +17,6 @@
         <invoker type="formActions" caption="Submit" action="submit" />
     </invokers>
     
-    
-   
    <code class="com.rameses.enterprise.treasury.models.DepositVoucherInitialModel" />
   
    <pages>

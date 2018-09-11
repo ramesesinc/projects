@@ -16,6 +16,8 @@ class DepositVoucherService  {
 	@DataContext("depositvoucher_fund")
 	def dvfEm;
 
+	@DataContext("itemaccount")
+	def itemAcctEm;
 
 	@DataContext("cashreceiptpayment_noncash")
 	def ncpEm;
@@ -23,6 +25,8 @@ class DepositVoucherService  {
 	@DataContext("checkpayment")
 	def chkPmtEm;
 
+	@DataContext("depositslip")
+	def depositSlipEm;
 
 	@Service("DateService")
 	def dateSvc;
@@ -32,6 +36,9 @@ class DepositVoucherService  {
 
 	@Service("Var")
 	def var;
+
+	@Service("JevService")
+	def jevSvc;	
 
 	@Env
 	def env;
@@ -62,6 +69,8 @@ class DepositVoucherService  {
 			dvf.fund = [objid:it.fund.objid ];
 			dvf.amount = ( it.totalcash + it.totalcheck );
 			dvf.amountdeposited = 0;
+			dvf.totaldr = 0;
+			dvf.totalcr = 0;
 			dvf.state = 'OPEN';
 			dvfEm.create( dvf );
 		}
@@ -88,49 +97,78 @@ class DepositVoucherService  {
 		chkPmtEm.where( "objid = :objid", o ).update( [fundid: "{NULL}" ]);
 	}
 
-	/*
+
 	@ProxyMethod
-	public def post(def o ) {
-		//test if there are undeposited checks
-		int t = checkpaymentEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
-		if(t > 0 )
-			throw new Exception("All checks associated with this deposit must have deposit slips");
+	public def post( def o ) {
+		//check first if all checks associated with the deposit voucher is accounted for
+		def chkList = chkPmtEm.find( [depositvoucherid : o.objid ] ).where( " depositslipid IS NULL " ).list();  	
+		if( chkList ) {
+			def str = chkList*.refno.join(",");
+			throw new Exception("All checks associated with this deposit voucher must be deposited. Please review the ff checks: \n" + str )
+		}
 
-		//test if there are deposit slips not validated
-		t = depositSlipEm.find( [depositvoucherid: o.objid] ).where("validation.refno IS NULL").select("v:{COUNT(*)}").val();
-		if(t > 0 )
-			throw new Exception("All deposit slips associated with this deposit must be validated");
+		//check all deposit slips associated with the deposit voucher must be validated
+		def depList = depositSlipEm.where( "depositvoucherfund.parentid = :id AND validation.refno IS NULL ", [id: o.objid] ).list();
+		if( depList ) {
+			throw new Exception("All deposit slips must be validated");
+		}
 
-		//test amount deposited must equal amount to deposit
-		def ref = depositEm.find([objid: o.objid]).first();
-		if( ref.amount != ref.amountdeposited )
-			throw new Exception("Amount of deposit must equal to amount deposited");
+		//check all deposit voucher deposited and transferred must balance.
+		def dvfList = dvfEm.find([parentid : o.objid ]).list();
+		if( dvfList.find{ (it.amount - it.totaldr) != (it.amountdeposited - it.totalcr) } ) {
+			throw new Exception("All deposit amount deposited and transferred are not balanced");
+		}
 
+		//retrieve the depost voucher
+		def dv = dvEm.find( [objid: o.objid ]).first();
+		dvEm.find( [objid: o.objid]).update( [state:'POSTED'] );
+		
+		//post to jev
+		def ref = [refid:o.objid,refno:dv.controlno,reftype:'depositvoucher', refdate:dv.controldate, txntype:'DEPOSIT'];
 
-		//create the jev and post to jev	
-		def jev = [items:[]]	
-		jev.fundid = ref.fundid;
-		jev.state = 'OPEN'
-		jev.refid = ref.objid;
-		jev.refno = ref.controlno;
+		def jevBatch = [:];
+		jevBatch.ref = ref;
+		jevBatch.funds = [];
+		jevBatch.items = [];
 
-		jev.jevdate = ref.controldate;
-		jev.reftype = "DEPOSIT";
-		jev.txntype = "DEPOSIT";
+		dvfEm.find([ parentid: o.objid ]).select('objid,fund.*,amount').list().each{ 
+			jevBatch.funds << [ objid: it.objid, refno:o.controlno, fund: it.fund, amount: it.amount  ];	 
+		} 
 
-		jev.postedby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
-		jev.amount = ref.amount;
+		def pm = [depositvoucherid: o.objid ];
 
-		//add all the items
-		jev.items.addAll( depositEm.getBankAccountLedgerItem([depositvoucherid: o.objid] ));
-		jev.items.addAll( depositEm.getCashLedgerItem([depositvoucherid: o.objid] ));
+		jevBatch.items.addAll( dvEm.getBankAccountLedgerItems( pm ) );
+		jevBatch.items.addAll( dvEm.getCashLedgerItems( pm ) );
 
-		jevSvc.create( jev );
+		//fund transfers 
+		def ftList = [];
+		ftList.addAll( dvEm.getOutgoingItems( pm ) );
+		ftList.addAll( dvEm.getIncomingItems( pm ) );
 
-		depositEm.find([objid: o.objid]).update([state:'POSTED']);
+		//search account if not exists create the item
+		ftList.each {
+			def z = it.item;
+			z.code = '-';
+			z.tags = [];
+			if(! itemAcctEm.find( [objid: z.objid ] ).exists() ) {
+				z.state = 'DRAFT';
+				itemAcctEm.create( z );
+			}
+			it.itemacctid = z.objid;
+			it.itemacctcode = z.code;
+			it.itemacctname = z.title;
+		}
 
+		jevBatch.items.addAll( ftList );
+		jevBatch.items.each{
+			it.acctid = it.itemacctid; 
+			it.acctcode = it.itemacctcode; 
+			it.acctname = it.itemacctname;
+		}
+
+		jevSvc.createBatch( jevBatch );
 	}
-	*/
+
 
 
 }

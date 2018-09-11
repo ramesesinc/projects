@@ -88,6 +88,12 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         entity.amount = 0.0;
         if (paiditems){
             entity.amount = paiditems.total.sum();
+            entity.sharing = [] 
+            entity.items = []
+            paiditems.each {
+                entity.sharing += it.shares 
+                entity.items += it.billitems 
+            }
         }
         updateBalances();
         binding?.refresh('totalGeneral|totalSef|entity.*')

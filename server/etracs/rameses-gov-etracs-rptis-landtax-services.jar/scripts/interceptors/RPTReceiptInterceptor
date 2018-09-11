@@ -14,6 +14,11 @@ class RPTReceiptInterceptor
 	def util
 
 
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'cashreceipt' && result.collectiontype?.handler?.toString().matches('rpt|rptmanual|rptbatch') }", index=1000)
+	public void afterOpenCashReceiptSchema( evt ) {
+		interceptOpenReceipt( evt );  
+	} 
+
 	@After(pattern="CashReceiptService.open", eval="#{result.collectiontype?.handler.toString().matches('rpt|rptmanual|rptbatch')}") 
 	public void interceptOpenReceipt( evt ) {
 		def receipt = evt.result; 
@@ -26,7 +31,7 @@ class RPTReceiptInterceptor
 	public void beforePostReceipt( evt ) {
 		def receipt = evt.args[0]
 		receipt.amount = numSvc.round(receipt.amount)
-		svc.buildCashReceiptItemsAndShares(receipt)
+		// svc.buildCashReceiptItemsAndShares(receipt)
 	}
 
 	@After(pattern="CashReceiptService.post", eval="#{args[0].collectiontype?.handler.toString().matches('rpt|rptmanual|rptbatch')}") 

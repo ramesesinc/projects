@@ -321,10 +321,13 @@ public class RPTBillingService
 
 		if (bill._forpayment && bill._forpayment == true){
         	rptledger.pay = true
-        	rptledger.billitems = tmpbill.billitems 
+        	rptledger.billitems = tmpbill.billitems
+        	rptledger.billitems.each {
+        		it.amount = numSvc.round(it.amount)
+        	}
         	rptledger.postingitems = buildPostingItems(tmpbill)
         	rptledger.shares = tmpbill.shares
-        	
+
         	def itemsTotal = numSvc.roundA(rptledger.items.sum{ (it.total ? it.total : 0) }, 2)
         	def postItemsTotal = numSvc.roundA(rptledger.postingitems.sum{ (it.total ? it.total : 0) }, 2)
         	def sharesTotal = 0.0

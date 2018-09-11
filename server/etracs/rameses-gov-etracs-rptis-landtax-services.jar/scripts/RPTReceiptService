@@ -262,6 +262,9 @@ class RPTReceiptService
 		rptledger.toqtr = (lastitem.qtr ? lastitem.qtr: 4)
 		rptledger.partialled = rptledger.postingitems.find{it.partialled == true} != null 
 		rptledger.total = rptledger.postingitems.total.sum()
+		rptledger.billitems.each {
+    		it.amount = numSvc.round(it.amount)
+    	}
 		return rptledger
 	}
 

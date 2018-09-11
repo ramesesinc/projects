@@ -34,6 +34,8 @@ public class FAASAnnotationController extends PageFlowController
     def entity;
     def images;
     
+    String entityName = 'faasannotation';
+    
     
     def init(){
         mode = MODE_CREATE

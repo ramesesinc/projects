@@ -1,0 +1,63 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessInfoUtil {
+    
+    @Caller
+    def caller;
+    def handler;
+
+    def getEntity() {
+        return caller.entity;
+    }
+
+
+    def listModel = [
+       fetchList: { o-> 
+            return entity.appinfos; 
+        }
+    ] as BasicListModel;
+
+    def update() {
+        def e = [:];
+        e.putAll( entity );
+        e.orgtype = entity.business.orgtype;    
+        if( !entity.appinfos ) entity.appinfos = [];
+        return InvokerUtil.lookupOpener( "bpinfoedit:app", [
+            entity: e,
+            existingInfos: entity.appinfos,
+            handler:{ result ->
+                entity.appinfos = result.infos;
+                listModel.reload();
+                if(handler) handler();
+            }
+        ]);
+    }
+
+    def verify() {
+        if ( !entity.appinfos ) 
+            throw new Exception("Please specify at least one info for business"); 
+
+        def unedited = entity.appinfos.findAll{ it.value == null };
+        if( unedited ) {
+            def buff = new StringBuffer();
+            unedited.each {
+                buff.append( "\n"+it.attribute.name );
+            }
+            throw new Exception("Please complete the ff. Do not leave blanks" + buff.toString() );  
+        }    
+    }
+
+    void reset(){
+        listModel.reload();
+    }
+
+    void refresh(){
+        listModel.reload();
+    }
+    
+}

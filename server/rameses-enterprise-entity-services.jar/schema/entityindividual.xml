@@ -17,6 +17,10 @@
 		<field name="tin" />
 		<field name="sss" />
 		<field name="age" expr="GET_AGE( birthdate )" />
+
+		<complex name="profile" ref="entityprofile" jointype="many-to-one" required="false" includefields="idno">
+			<key field="profileid" target="objid"/>
+		</complex>	
 	</element>	
 	
 

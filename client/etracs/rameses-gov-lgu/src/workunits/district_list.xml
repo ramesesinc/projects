@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="district">
+    <invokers>
+        <invoker type="district:manage" caption="District" 
+            cols="pin,indexno,name"
+            orderBy="indexno"
+            action="init"/>
+    </invokers>
+</workunit>

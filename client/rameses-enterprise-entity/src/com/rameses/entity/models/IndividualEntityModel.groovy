@@ -9,6 +9,7 @@ import com.rameses.seti2.models.*;
 class IndividualEntityModel extends CrudFormModel {
     
     def create() {
+        mode = "create";
         return Inv.lookupOpener("entityindividual:create");
     }
     

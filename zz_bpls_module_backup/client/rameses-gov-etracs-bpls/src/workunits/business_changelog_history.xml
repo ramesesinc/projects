@@ -1,0 +1,39 @@
+<workunit>
+    <invokers>
+        <invoker type="business:section" caption="Change Log" index="30" />
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class AmendListController extends ListController {
+        
+            @Service("BusinessChangeService")
+            def service;
+                        
+            String serviceName = "BusinessChangeService";
+            boolean allowOpen = false;
+            boolean allowCreate = false;
+            boolean allowClose = false;
+            def entity;
+            def queryForm = null;
+            
+            public List fetchList( Map params ) {
+                return service.getList( [businessid: entity.objid] );
+            }
+
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.osiris2.themes.ListPage"/>
+    </pages>
+    
+</workunit>

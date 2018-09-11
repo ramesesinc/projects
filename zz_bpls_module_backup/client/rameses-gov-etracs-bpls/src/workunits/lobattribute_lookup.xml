@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="lobattribute">
+    <invokers>
+        <invoker type="lobattribute:lookup" caption="Lookup Attribute"
+                 cols="objid,name" 
+                 target="popup" action="init"/>
+    </invokers>
+</workunit>

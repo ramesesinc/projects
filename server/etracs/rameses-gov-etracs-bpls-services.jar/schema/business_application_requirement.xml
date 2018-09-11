@@ -1,0 +1,34 @@
+<schema>
+
+	<element tablename="business_application_requirement">
+		<field name="objid" primary="true"  prefix="BAPPSEC" visible="true"/>
+		<field name="applicationid" />
+		<complex name="app" ref="business_application" jointype="many-to-one" required="false"
+			includefields="appno,apptype,appyear,appdate,business.bin,business.businessname,business.owner.name,app.business.address.text"> 
+			<key field="applicationid" target="objid"/>
+		</complex>
+		<field name="typeid" />
+		<complex name="type" ref="businessrequirementtype" jointype="many-to-one" required="false">
+			<key field="typeid" target="objid" />
+		</complex>	
+
+		<complex name="task" ref="business_application_requirement_task" jointype="many-to-one" 
+				includefields=".*" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>
+
+		<field name="refno" />
+		<field name="dtissued" />
+		<field name="issuedby" />
+		<field name="placeissued" />
+		<field name="remarks"/>
+
+		<field name="verifiedby_objid"/>
+		<field name="verifiedby_name"/>
+		<field name="dtverified"/>
+		<field name="completed" required="true" type="integer"/>
+		<field name="expirydate" />
+
+	</element>
+
+</schema>

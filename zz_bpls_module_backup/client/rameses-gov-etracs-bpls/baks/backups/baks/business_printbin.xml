@@ -1,0 +1,70 @@
+<workunit>
+    <invokers>
+        <invoker type="bpapplicationform:formActions" caption="Print BIN" action="viewReport"
+            visibleWhen="#{state == 'save-success'}"/>
+
+        <invoker type="businessinfo:generalinfo:formActions" name="print"
+            caption="Print BIN" action="viewReport" index="0" />
+
+        <invoker type="businessinfo:application:formActions" name="print"
+            caption="Print BIN" action="viewReport"  index="0" />
+        
+        <invoker type="business:printbin"
+            caption="Print BIN" action="viewReport" target="window" index="0" />    
+            
+        <invoker type="formActions" caption="Close" action="_close"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+         import com.rameses.osiris2.reports.*;
+        
+        class  BPPrintBINController  {
+        
+            def data;
+            def entity;
+            def title = "BIN"
+            
+            def reportPath = "com/rameses/gov/etracs/bpls/reports/bin/"
+            
+            @Service("ReportParameterService") 
+            def paramsvc
+         
+            @FormId
+            String formId;
+            
+            @FormTitle
+            String formTitle;
+            
+            void viewReport() {
+                formTitle = "App "+ entity.bin; 
+                formId = "APPRPT:"+entity.bin;
+                data = [
+                   bin: entity.bin, 
+                   businessname: entity.businessname, 
+                   barcode: "51005:"+entity.bin
+                ]
+                report.viewReport();
+            } 
+            
+            def report = [
+                getReportName : { return reportPath + "main.jasper" },
+                getReportData : { return  data },
+                getParameters : { return paramsvc.getStandardParameter() },
+                getSubReports : { return null; }
+            ] as ReportModel
+           
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+    
+</workunit>

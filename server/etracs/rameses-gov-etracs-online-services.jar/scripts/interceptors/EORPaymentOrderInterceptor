@@ -9,7 +9,7 @@ class EORPaymentOrderInterceptor {
 	@Service("DateService")
 	def dateSvc;
 
-	@Service("SequenceService") 
+	@Service("EORNumberService") 
 	def seqSvc;	
 
 	@Before( pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'eor_paymentorder'}") 
@@ -18,9 +18,9 @@ class EORPaymentOrderInterceptor {
 
 		String locid = orgSvc.getRoot().code.replaceAll('-', ''); 
 		param.objid =  KeyGen.generateAlphanumKey( locid.padRight( 6, "0" ), 12 );
-		param.txndate = dateSvc.getServerDate();
-		param.controlno =  locid.padRight( 5, "0" ) + seqSvc.getNextFormattedSeriesA("PAYORDER", 10);
-		param.locationid = locid;
+		param.txndate = dateSvc.getServerDate(); 
+		param.controlno =  seqSvc.getNextPONumber( locid.padRight( 5, "0" ));  
+		param.locationid = locid; 
 
 		def cal = Calendar.instance; 
 		cal.setTime( param.txndate ); 

@@ -27,4 +27,17 @@
             <folder id="business_application" caption="Business Applications"/> 
         </folder>
     </folder>
+    
+    <folder id="menucategory">
+        <folder id="business" caption="Business">
+            <folder id="acct" caption="Accounts" index="0" icon="home/icons/master.png"/>
+            <folder id="app" caption="Applications" index="1" />
+            <folder id="txn" caption="Transactions" index="1" />            
+            <folder id="section" caption="Section" index="2" />
+            <folder id="inspection" caption="Inspection" index="4" />
+            <folder id="tools" caption="Tools"  index="5"/>
+            <folder id="misc" caption="Miscellaneous"  index="5"/>
+            <folder id="support" caption="Transactions" index="5"/>
+       </folder>
+    </folder>
 </folders>

@@ -1,0 +1,87 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/business/business_application" caption="Change Name"  
+            action="start" target="window" role="BUSINESSINFO" index="101" />
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class ChangeBusinessNameApplication extends PageFlowController {
+        
+            @Script("BusinessSearchUtil")
+            def searchList;
+            
+            @Script("BusinessApplicationUtil")
+            def application;
+            
+            @Script("BusinessVerificationUtil")
+            def verifyList;
+
+            def entity;
+            
+            void open() {
+                application.init( [businessid:searchList.selectedItem.objid, apptype: 'CHANGE_BUSINESS_NAME'] );
+            }
+            
+            void submit() {
+                if( entity.has_processing == true ) {
+                    if(!MsgBox.confirm('There are still open application processed. Continuing will update their information. Proceed?')) 
+                        throw new BreakException();
+                }  
+                else {
+                    if(!MsgBox.confirm('You are about to update the business information. Proceed?')) 
+                        throw new BreakException();
+                }
+                application.save();
+                MsgBox.alert('Update completed');
+            }
+
+            void verifyName() {
+                verifyList.verify();
+                submit();
+            }
+        }
+        ]]>
+    </code>    
+    
+    <pageflow>
+        <start>
+            <transition to="search" />
+        </start>
+        
+        <page name="search" title="Search Business Name (Change Name)">
+            <transition to="edit-name" caption="Next" name="next" mnemonic="N" immediate="false" action="open"/>
+        </page>
+        
+        <page name="edit-name" title="Business Name">
+            <transition to="initial" caption="Back" mnemonic="B"/>
+            <transition to="check-name" caption="Next" name="next" mnemonic="N" immediate="false" />
+        </page>
+        
+        <process name="check-name" action="verifyList.check">
+            <transition to="verify-name" cond="#{verifyList.pass==false}"/>
+            <transition to="end" cond="#{verifyList.pass==true}" action="submit"/>
+        </process>
+
+        <page name="verify-name" title="Verify Business Name">
+            <transition to="edit-name" caption="Back" mnemonic="B"/>
+            <transition to="end" caption="Next" name="next" mnemonic="N" action="verifyName"/>
+        </page>
+
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="search" template="com.rameses.gov.etracs.bpls.view.SearchBusinessPage"/>
+         <page name="edit-name" template="com.rameses.gov.etracs.bpls.view.EditBusinessNamePage"/>
+        <page name="verify-name" template="com.rameses.gov.etracs.bpls.view.BusinessNameVerificationPage"/>
+    </pages>
+    
+</workunit>

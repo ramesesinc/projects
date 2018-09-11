@@ -1,0 +1,138 @@
+<workunit>
+    <invokers>
+       <invoker type="rulemgmt:formActions" caption="BP Rules Analyzer" action="init"
+            visibleWhen="#{ruleset == 'bpassessment'}" target="window" role="RULE_AUTHOR"/>
+            
+       <invoker folderid="/home/business" caption="Business Rule Analyzer" action="init" index="60" target="window" role="ASSESSOR,APPROVER,RULE_AUTHOR"/>
+       <invoker type="bpanzalyzer:test" caption="BP Rules Test" action="init" target="window" />
+       
+       <invoker type="formActions" caption="Close" action="_close" immediate="true"/>
+       <invoker type="formActions" caption="Run Assessment" action="run"/>
+       <invoker type="formActions" caption="Run Bill" action="runBill"/>
+       <invoker type="formActions" caption="Test Pay" action="testPay"/>
+
+       <invoker type="formActions" caption="Clear Infos" action="clearInfos" immediate="true"/>
+       <!-- lob actions -->
+       <invoker type="lobActions" caption="Add" action="lob.add"  immediate="true"/>
+       <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
+            visibleWhen="#{lob.selectedItem!=null}"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            import com.rameses.util.*
+            
+            class BPAssessmentAnalyzerController   {
+            
+                @Service("DateService")
+                def dateSvc;
+                
+                @Script("BusinessLobUtil")
+                def lob;
+
+                @Script("BusinessApplicationUtil")
+                def application;
+
+                @Script("BusinessInfoUtil")
+                def appinfo;
+                
+                @Script("BusinessAssessmentInfoUtil")
+                def assessmentInfo;
+
+                @Service("BPRequirementRuleService")
+                def reqSvc;
+                
+                @Service("BusinessBillingService")
+                def billSvc;
+
+                @Binding
+                def binding;
+
+                def orgTypes = LOV.ORG_TYPES;
+                String title = "Business Rule Assessment Simulator";
+                String entityName = "bpassessment:analyzer";
+                def entity = [business:[address:[:]], lobs:[], appinfos:[], assessmentinfos:[], taxfees:[]];
+                def addressTypes = ["local", "nonlocal", "rented", "government"];
+                
+                void init() {
+                    application.load();
+                    application.apptypes += ['ADDITIONAL','RETIRE'];
+                    entity.appyear = dateSvc.getServerYear();
+                }
+                
+                void reset() {
+                    init();
+                }
+                
+                void run() {
+                    lob.verify();
+                    Modal.show(appinfo.update());
+                    appinfo.verify();
+                    Modal.show(assessmentInfo.calculate());
+                    def p = reqSvc.execute( entity );
+                    entity.requirements = p.requirements;
+                    requirementModel.reload();
+                    binding.refresh();
+                }
+               
+                def runBill() {
+                    if(!entity.taxfees) throw new Exception("Please run assessment first");
+                    
+                    def billdate = null; 
+                    def h = {o-> 
+                        billdate = o;
+                    }; 
+                    Modal.show( "billdate:edit", [handler:h] );
+                    if ( !billdate ) throw new BreakException();
+                    
+                    return assessmentInfo.runBill(billdate);
+                }
+               
+                def requirementModel = [
+                    fetchList: { o-> return entity.requirements; }
+                ] as BasicListModel;
+                
+                void clearInfos() {
+                    entity.appinfos?.clear();
+                    entity.assessmentinfos?.clear();
+                    entity.requirements?.clear();
+                    entity.taxfees?.clear();
+                    entity.receivables?.clear();
+                    appinfo.refresh();
+                    assessmentInfo.refresh();
+                    requirementModel.reload();
+                }
+                
+                def testPay() {
+                    if( !assessmentInfo )
+                    throw new Exception("Please run billing first");
+                   return assessmentInfo.showPaymentOption();
+                }
+                
+                def showReceipt() {
+                    if(!entity.items)
+                       throw new Exception("Please run test pay first");
+                    return Inv.lookupOpener("businessreceipt:view", [entity:entity]);
+                }
+                
+                def viewRule() {
+                    def t = assessmentInfo.selectedTaxfee;
+                    if( !t ) throw new Exception('Please select a tex fee item');
+                    MsgBox.alert( t._taxfees );  
+                    return null;              
+                }
+                
+            }
+        ]]>    
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.AssessmentAnalyzerPage"/>
+    </pages>
+</workunit>

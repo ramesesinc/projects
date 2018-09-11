@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import bpls.facts.*;
+import bpls.util.*;
+
+public class BusinessApplicationPersistenceInterceptor {
+
+
+	@Service("WorkflowTaskService")
+	def workflowTaskSvc;
+
+
+	@Service("SequenceService")
+	def seqSvc;
+
+	@Service("OrgService")
+	def orgSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("business")
+	def businessEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'business_application' }", index=0)
+	public void beforeCreateApp( def o ) {
+		o.taxcredit = 0;
+		o.appcount = 1;
+		o.activeqtr = 0;
+		o.currentapplicationid = null;
+
+		//create the bin
+		def lgucode = orgSvc.getRoot()?.code;
+		if(!lgucode)
+			throw new Exception("LGU code is null. Please check OrgService.getRoot. Ensure there is a root org");
+		lgucode = lgucode.replace("-", "");	
+		def yr = dateSvc.serverYear;
+		def mnth = dateSvc.serverMonth;
+		def smon = ( mnth < 10 ) ? "0"+mnth : mnth+"";
+		def prefix = "B"+lgucode+yr+smon;
+		o.business.bin = prefix+seqSvc.getNextFormattedSeries(prefix);
+
+		o.business = businessEm.create( o.business );
+	}
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'business_application' && args[0].apptype.matches('NEW|CAPTURE') }")
+	public void beforeCreateAppNewOrCapture( def o ) {
+		
+	}
+
+}

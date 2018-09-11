@@ -1,11 +1,68 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="entityjuridical">
    <invokers>
          <invoker type="entityjuridical:lookup" caption="Lookup Juridical Entity" 
-         		  action="init" target="popup" height="350"
-                  cols="entityno,name,entityname,address.text,type" />
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text,orgtype" 
+                hiddenCols="entityname,type" />
 
          <invoker type="juridicalentity:lookup" caption="Lookup Juridical Entity" 
-         		  action="init" target="popup" height="350"
-                  cols="entityno,name,entityname,address.text,type" />
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text,orgtype" 
+                hiddenCols="entityname,type" />
+         
+         <invoker type="entityjuridical:corp:lookup" caption="Lookup Corporation" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'CORP' "/>
+
+        <invoker type="entityjuridical:coop:lookup" caption="Lookup Cooperative" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'COOP' "/>
+
+        <invoker type="entityjuridical:asso:lookup" caption="Lookup Association" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'ASSO' "/>
+         
+        <invoker type="entityjuridical:rel:lookup" caption="Lookup Religious" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'REL' "/>
+         
+        <invoker type="entityjuridical:found:lookup" caption="Lookup Foundation" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'FOUND' "/>
+
+        <invoker type="entityjuridical:part:lookup" caption="Lookup Partnership" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'PART' "/>
+
+        <invoker type="entityjuridical:gov:lookup" caption="Lookup Government" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text,orgtype" 
+                hiddenCols="entityname,type" 
+                customFilter="orgtype = 'GOV' "/>
+
+        <invoker type="entityjuridical:sch:lookup" caption="Lookup School" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text,orgtype" 
+                hiddenCols="entityname,type" 
+                customFilter="orgtype = 'SCH' "/>
+
+        <invoker type="entityjuridical:ngo:lookup" caption="Lookup NGO" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type,orgtype" 
+                customFilter="orgtype = 'NGO' "/>
+
    </invokers>
 </workunit>

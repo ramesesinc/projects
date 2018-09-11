@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+        <invoker type="entityindividual:section" caption="Lessor" index="20"/>
+        <invoker type="entityjuridical:section" caption="Lessor" index="20"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import java.rmi.server.UID;
+
+public class EntityLessorOption  {
+
+    @Binding
+    def binding;
+
+    @Service("BusinessLessorService")
+    def service;
+    
+    @Caller 
+    def caller;
+
+    String title = "List of Buildings";
+    def entity;
+
+    def listModel = [
+        fetchList: { o->
+            return service.getListByLessor([ ownerid: entity?.objid ]);
+        }
+    ] as BasicListModel;
+
+    def getEntity() {
+        try { 
+            return caller.entity; 
+        } catch(Throwable t) {
+            return null; 
+        } 
+    } 
+}        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.etracs.bpls.entity.LessorList"/>
+   </pages>   
+</workunit>

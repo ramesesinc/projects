@@ -418,24 +418,23 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         buttonCash1.setAccelerator("F9");
         buttonCash1.setFocusable(false);
         buttonCash1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        buttonCash1.setImmediate(true);
         buttonCash1.setIndex(20);
         buttonCash1.setText("F9 - CASH  ");
+        buttonCash1.setToolTipText("Cash Payment");
 
         buttonCheck1.setName("doCheckPayment"); // NOI18N
         buttonCheck1.setAccelerator("F10");
         buttonCheck1.setFocusable(false);
-        buttonCheck1.setImmediate(true);
         buttonCheck1.setIndex(21);
         buttonCheck1.setText("F10 - CHECK ");
+        buttonCheck1.setToolTipText("Check Payment");
 
-        buttonCheck2.setName("doCreditMemo"); // NOI18N
+        buttonCheck2.setName("doEFTPayment"); // NOI18N
         buttonCheck2.setAccelerator("F11");
-        buttonCheck2.setEnabled(false);
         buttonCheck2.setFocusable(false);
-        buttonCheck2.setImmediate(true);
         buttonCheck2.setIndex(21);
         buttonCheck2.setText("EFT ");
+        buttonCheck2.setToolTipText("Electronic Fund Transfer Payment");
 
         buttonCheck3.setName("doCreditMemo"); // NOI18N
         buttonCheck3.setAccelerator("F11");

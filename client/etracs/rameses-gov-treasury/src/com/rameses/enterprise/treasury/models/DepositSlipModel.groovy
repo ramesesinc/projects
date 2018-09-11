@@ -15,7 +15,7 @@ class DepositSlipModel extends CrudFormModel {
     int checksCount;
     
     void afterInit() {
-        def m = [_schemaname: 'paymentcheck'];
+        def m = [_schemaname: 'checkpayment'];
         m.findBy = [depositslipid : entity.objid];
         m.orderBy = "refno";
         checkList = queryService.getList( m );

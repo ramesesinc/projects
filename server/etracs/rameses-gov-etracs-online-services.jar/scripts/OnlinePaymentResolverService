@@ -39,7 +39,7 @@ class OnlinePaymentResolverService {
             limit = items.size(); 
 
         } else {  
-            items = po_db.find([ origin:'filipizen' ]).list( start, limit+1 ); 
+            items = po_db.find([ origin:'filipizen' ]).orderBy('txndate').list( start, limit+1 ); 
         } 
 
     	if ( items ) resolveItems( items, start, limit ); 
@@ -54,7 +54,7 @@ class OnlinePaymentResolverService {
     		try {
     			o.paymentrefid = o.objid; 
     			o.orgcode = o.locationid; 
-                     println 'before resolve -> '+ o.paymentrefid; 
+                println 'before resolve -> '+ o.paymentrefid; 
     			paymentProxySvc.resolve( o ); 
    			} catch(Throwable t) { 
    				t.printStackTrace(); 

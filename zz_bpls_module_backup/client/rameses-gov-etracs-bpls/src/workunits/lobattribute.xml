@@ -1,0 +1,11 @@
+<workunit schemaName="lobattribute">
+    <invokers>
+        <invoker type="lobattribute:open" action="open" caption="LOB Attribute" target="popup"/>        
+        <invoker type="lobattribute:create" action="create" caption="LOB Attribute" target="popup" 
+                 role="MASTER" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.bpls.models.LobAttributeModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.LobAttributePage"/>
+    </pages>
+</workunit>

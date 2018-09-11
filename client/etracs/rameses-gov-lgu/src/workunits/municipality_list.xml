@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="municipality">
+    <invokers>
+        <invoker type="municipality:manage"
+                 visibleWhen="#{ root.orgclass == 'PROVINCE' }"   
+                 cols="indexno,code,pin,name,address"
+                 orderBy="indexno"
+                 caption="Municipality" index="5" action="init" />
+    </invokers>
+</workunit>

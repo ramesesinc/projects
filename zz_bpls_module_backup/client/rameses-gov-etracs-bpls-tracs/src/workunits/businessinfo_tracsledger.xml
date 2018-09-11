@@ -1,0 +1,45 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="business:info" caption="TRACS Ledger" index="50"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        
+        class BusinessTRACSLedger {
+        
+            @Service("TRACSBPLedgerService")
+            def bpLedger;
+        
+            def entity;
+            String title = "TRACS Ledger";
+            def query = [:];
+            
+            void doSearch() {
+                receivableModel.reload();
+            }
+            
+            def receivableModel = [
+                fetchList: { o->
+                    o.objid = entity.objid;
+                    o.putAll( query );
+                    return bpLedger.getReceivables( o );
+                }
+            ] as BasicListModel;
+            
+        }
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.capture.TRACSLedger"/>
+    </pages>
+    
+</workunit>

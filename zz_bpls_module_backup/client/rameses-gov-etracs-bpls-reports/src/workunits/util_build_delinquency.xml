@@ -1,0 +1,23 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/bpls/util" action="init" 
+                 caption="Build Delinquency Data" target="window" 
+                 role="REPORT"/> 
+        
+        
+        <invoker type="formActions" caption="Close" action="_close"/> 
+        <invoker type="formActions" caption="Build" action="doBuild" visibleWhen="#{mode=='init'}"/> 
+        <invoker type="formActions" caption="Refresh" action="doRefresh" visibleWhen="#{mode=='pending'}"/> 
+        <invoker type="formActions" caption="Delete" action="doDelete" visibleWhen="#{mode=='pending'}"/> 
+        
+        <invoker type="formActions" caption="Approve" action="doApprove" visibleWhen="#{mode=='completed'}"/> 
+        <invoker type="formActions" caption="Delete" action="doDelete" visibleWhen="#{mode=='completed'}"/> 
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.reports.models.BPDelinquencyBuilderModel"/>
+
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.reports.views.DelinquencyBuildPage"/>
+        <page name="pending" template="com.rameses.gov.etracs.bpls.reports.views.DelinquencyPendingPage"/>
+    </pages>
+</workunit>

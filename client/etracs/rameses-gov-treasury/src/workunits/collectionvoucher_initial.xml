@@ -12,6 +12,8 @@
                  windowTitle="New Collection Voucher"
                  formTitle="New Collection Voucher"
                  action="init" index="30" role="LIQUIDATING_OFFICER"/>
+        
+        <invoker type="formActions" caption="Submit for Liquidation"  action="submitForLiquidation"/>
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.CollectionVoucherInitialModel" />

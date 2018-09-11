@@ -1,9 +1,8 @@
 <workunit>
     <invokers>
-        <!--
-        <invoker folderid="/home/business" caption="Update Qtr Gross for New"  
+        <invoker folderid="/menucategory/business/misc" caption="Update Qtr Gross for New"  
                  action="start" target="window" role="ASSESSOR" index="52"/>
-        -->
+        
         <invoker type="extActions" caption="Print"  icon="images/toolbars/printer.png" 
             action="application.print" visibleWhen="#{state=='save-success'}"/>
     </invokers>

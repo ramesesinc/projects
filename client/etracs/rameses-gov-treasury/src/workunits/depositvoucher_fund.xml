@@ -1,0 +1,28 @@
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="depositvoucher_fund" 
+            allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+        <invoker type="depositvoucher_fund:open" 
+                 caption="Deposit Voucher By Fund" 
+                 formId="#{entity.objid}"
+                 action="open" target="window" 
+                 index="10"/>
+        
+        <!-- Buttons -->
+        <!--
+        <invoker type="formActions" caption="Post" action="post" 
+                 visibleWhen="#{entity.state == 'OPEN' }"/>
+        -->
+        
+        <invoker type="depositSlipActions" caption="Add" action="addDepositSlip"/>
+        <invoker type="depositSlipActions" caption="Approve for Print" action="approveForPrinting"/>
+        <invoker type="depositSlipActions" caption="Validate" action="validateDepositSlip"/>
+        
+    </invokers>
+   
+   <code class="com.rameses.enterprise.treasury.models.DepositVoucherFundModel" />
+  
+   <pages>
+       <page template="com.rameses.enterprise.treasury.views.DepositVoucherFundPage" />
+   </pages>
+   
+</workunit>

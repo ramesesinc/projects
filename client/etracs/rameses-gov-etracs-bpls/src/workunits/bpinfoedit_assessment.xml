@@ -1,7 +1,10 @@
 <workunit>
     
     <invokers>
-        <invoker type="bpinfoedit:assessment" caption="Edit Assessment Info" action="start" target="popup"/>
+        <invoker type="bpinfoedit:assessment" 
+                 formTitle="Edit Assessment Info"
+                 caption="Edit Assessment Info" 
+                 action="start" target="popup"/>
     </invokers>
     
     <code>
@@ -10,14 +13,13 @@
         import com.rameses.rcp.common.*
         import com.rameses.osiris2.client.*
         import com.rameses.osiris2.common.*
-        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.models.
         
-        public class BPEditAssessmentController extends com.rameses.gov.etracs.bpls.models.BusinessInfoEdit {
+        public class BPEditAssessmentController extends AbstractBusinessInfoModel {
 
             @Service("BusinessAssessmentService")
             def service;
             
-            String title = "Edit Assessment Info";
             
             public def execute() {
                 return service.assess(query);

@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="depositvoucher_fund" 
+            allowCreate="false" allowEdit="false" allowDelete="false">
+    <invokers>
+        
+        <invoker folderid="menucategory/treasury/remittance" srole="CASHIER" 
+                 caption="View Depost Voucher Fund List" 
+                 windowTitle="Deposit Vouchers By Fund"
+                 formTitle="Deposit  Vouchers By Fund"
+                 cols="parent.controlno,parent.controldate,fund.title,amount,amountdeposited,balance"
+                 action="init" target="window" index="55"/>
+        
+    </invokers>
+   
+</workunit>

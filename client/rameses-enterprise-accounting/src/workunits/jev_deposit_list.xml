@@ -5,7 +5,8 @@
                  action="init" role="MASTER" permission="jev.view" 
                  index="10"
                  cols="refno,jevdate,fund.title,postedby.name,amount,jevno"
+                 orderBy="jevdate DESC, refno"
                  customFilter="txntype = 'DEPOSIT' "/> 
     </invokers>
-   
+    
 </workunit>

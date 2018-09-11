@@ -1,11 +1,22 @@
 <workunit schemaName="entityjuridical">
     <invokers> 
+        <invoker type="quick_launcher" code="TP02" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="entityjuridical.create"/>
+        <invoker type="entityjuridical:create" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="entityjuridical.create"/>
+        <invoker type="juridicalentity:create" caption="Juridical Entity (Create)" action="create" target="popup" role="MASTER" permission="entityjuridical.create"/>
+       
+        <!-- used to check if we can allow dupplicate -->
+        <invoker type="entityjuridical:approveduplicate" role="APPROVER" permission="entityjuridical.approveduplicate" />
+        <invoker type="juridicalentity:approveduplicate" role="APPROVER" permission="entityjuridical.approveduplicate" />
+        
+        
         <invoker type="entityjuridical:open" caption="Juridical" action="open" 
                  role="MASTER" index="-1" windowTitle="Entity: #{entity.entityno}" 
+                 target="popup"
                  formTitle="#{entity.entityno}" formId="#{entity.objid}"/> 
 
         <invoker type="juridicalentity:open" caption="Juridical" action="open" 
-                 role="MASTER" index="-1" windowTitle="Entity: #{entity.entityno}" 
+                 role="MASTER" index="-1" windowTitle="Entity: #{entity.entityno}"
+                 target="popup" 
                  formTitle="#{entity.entityno}" formId="#{entity.objid}"/> 
     </invokers>
     <code class="com.rameses.entity.models.JuridicalEntityModel" />

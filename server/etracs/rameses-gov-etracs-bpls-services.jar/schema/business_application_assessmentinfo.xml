@@ -1,0 +1,46 @@
+<!--
+DROP VIEW IF EXISTS business_application_assessmentinfo;
+CREATE VIEW  business_application_assessmentinfo AS
+SELECT 
+   bi.objid,
+   bi.applicationid,
+   bv.objid AS attribute_objid,
+   bv.name AS attribute_name,
+   bv.datatype AS attribute_datatype,
+   bv.sortorder AS attribute_sortorder,
+   bv.caption AS attribute_caption,
+   lob.objid AS lob_objid,
+   lob.name AS lob_name,
+   bi.phase,
+   bi.level,
+   CASE 
+   	  WHEN bv.datatype = 'decimal' THEN bi.decimalvalue 
+      WHEN bv.datatype = 'integer' THEN bi.intvalue 
+      WHEN bv.datatype = 'boolean' THEN bi.boolvalue	
+      ELSE bi.stringvalue 
+   END AS value,
+   CASE WHEN lob.objid IS NULL THEN 0 ELSE 1 END AS lobindex
+FROM business_application_info bi   
+INNER JOIN businessvariable bv  ON bi.attribute_objid=bv.objid
+LEFT JOIN lob ON bi.lob_objid=lob.objid
+WHERE bi.type = 'assessmentinfo'
+-->
+<schema>
+	<!-- this is a view for reading appinfos, not for persisting -->
+	<element tablename="business_application_assessmentinfo">
+		<field name="objid" primary="true"/>
+		<field name="applicationid" />
+		<field name="attribute_objid" />
+		<field name="attribute_name" />
+		<field name="attribute_datatype" />
+		<field name="attribute_caption" />
+		<field name="attribute_sortorder" />
+		<field name="lob_objid" />
+		<field name="lob_name" />
+		<field name="phase" />
+		<field name="level" />
+		<field name="value" />
+		<field name="lobindex" />
+	</element>	
+
+</schema>

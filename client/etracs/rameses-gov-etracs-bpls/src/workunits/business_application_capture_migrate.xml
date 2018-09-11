@@ -1,7 +1,7 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/home/business" 
+        <invoker folderid="/menucategory/business/misc" 
             caption="Data Migration"  action="start" target="window" 
             role="BUSINESSINFO,ADMIN" index="56" permission="business.datamigration"/>
           

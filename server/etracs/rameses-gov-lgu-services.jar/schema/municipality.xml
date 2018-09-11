@@ -1,6 +1,6 @@
 <schema>
 
-	<element name="municipality" tablename="municipality">
+	<element tablename="municipality" extends="sys_org">
 		<field name="objid" primary="true"/>
 		<field name="state" />
 		<field name="indexno" />
@@ -9,7 +9,6 @@
 		<field name="fullname" />
 		<field name="address" />
 		<field name="previd" />
-		<field name="parentid" />
 		<field name="mayor_name" />
 		<field name="mayor_title" />
 		<field name="mayor_office" />
@@ -19,6 +18,10 @@
 		<field name="treasurer_name" />
 		<field name="treasurer_title" />
 		<field name="treasurer_office" />
+
+		<complex name="parent" ref="sys_org" jointype="many-to-one" includefields="code,name,orgclass" required="true">
+			<key field="parentid" target="objid"/>
+		</complex> 
 	</element>
 	
 </schema>

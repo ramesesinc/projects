@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.11 (64 bit)
 MySQL - 5.1.73-community : Database - etracs_panabo2
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -5152,11 +5153,11 @@ CREATE TABLE `payable_summary` (
   PRIMARY KEY (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Table structure for table `paymentcheck` */
+/*Table structure for table `checkpayment` */
 
-DROP TABLE IF EXISTS `paymentcheck`;
+DROP TABLE IF EXISTS `checkpayment`;
 
-CREATE TABLE `paymentcheck` (
+CREATE TABLE `checkpayment` (
   `objid` varchar(50) NOT NULL,
   `bankid` varchar(50) DEFAULT NULL,
   `refno` varchar(50) DEFAULT NULL,
@@ -5167,17 +5168,17 @@ CREATE TABLE `paymentcheck` (
   `amtused` decimal(16,4) DEFAULT NULL,
   `receivedfrom` varchar(255) DEFAULT NULL,
   `adviceid` varchar(50) DEFAULT NULL,
-  `state` varchar(50) DEFAULT NULL,
+  `state` varchar(50) DEFAULT NULL
   `depositvoucherid` varchar(50) DEFAULT NULL,
   `fundid` varchar(100) DEFAULT NULL,
   `depositslipid` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`objid`),
-  KEY `fk_paymentcheck_depositvoucher` (`depositvoucherid`),
-  KEY `fk_paymentcheck_fund` (`fundid`),
-  KEY `fk_paymentcheck_depositslip` (`depositslipid`),
-  CONSTRAINT `fk_paymentcheck_depositvoucher` FOREIGN KEY (`depositvoucherid`) REFERENCES `depositvoucher` (`objid`),
-  CONSTRAINT `fk_paymentcheck_fund` FOREIGN KEY (`fundid`) REFERENCES `fund` (`objid`),
-  CONSTRAINT `fk_paymentcheck_depositslip` FOREIGN KEY (`depositslipid`) REFERENCES `depositslip` (`objid`)
+  KEY `fk_checkpayment_depositvoucher` (`depositvoucherid`),
+  KEY `fk_checkpayment_fund` (`fundid`),
+  KEY `fk_checkpayment_depositslip` (`depositslipid`),
+  CONSTRAINT `fk_checkpayment_depositvoucher` FOREIGN KEY (`depositvoucherid`) REFERENCES `depositvoucher` (`objid`),
+  CONSTRAINT `fk_checkpayment_fund` FOREIGN KEY (`fundid`) REFERENCES `fund` (`objid`),
+  CONSTRAINT `fk_checkpayment_depositslip` FOREIGN KEY (`depositslipid`) REFERENCES `depositslip` (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `paymentorder` */

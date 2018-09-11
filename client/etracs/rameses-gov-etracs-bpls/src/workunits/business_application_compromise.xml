@@ -1,7 +1,7 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/home/business" caption="Compromise Agreement" 
+        <invoker folderid="/menucategory/business/misc" caption="Compromise Agreement" 
                  action="start" index="102" role="ASSESSOR"/>
     </invokers>
     

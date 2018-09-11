@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <style>
+            body { font-family: arial; font-size:10px; padding-top: 10px; padding-left: 5px; padding-right: 5px;}
+            .title { font-size: 12px; padding-left: 2px;}
+            label {width: 100px;padding:20px;}
+            td { font-size:10px; background-color: #ff99cc;}
+            table { width:200px; }
+        </style>
+    </head>
+    <body>
+        <h2 class="title">General Information</h2>
+        <table width="100%" border="1">
+            <tr>
+                <td>
+                    <label>Tradename:</label>${entity.tradename}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>BIN:</label>${entity.bin}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Owner:</label>${entity.owner.name}
+                </td>
+            </tr>
+            
+        </table>
+        <input type="button" value="Submit" idea="mine" onclick="fire"/>
+    </body>
+</html>
+
+    
+    

@@ -1,0 +1,67 @@
+<workunit>
+    <invokers>
+       <invoker type="business:section" caption="Red Flags" index="100"  />
+
+       <invoker type="formActions" caption="Add" action="addRedflag"/>
+       <invoker type="formActions" caption="Open" action="openRedflag"/>
+       <invoker type="formActions" caption="Resolve" action="resolveRedflag"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[    
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.osiris2.reports.*;
+
+class  BusinessredflagController  {
+
+    def entity;
+    def title = "Red Flags"
+    
+    @Service("BusinessRedflagService")
+    def service;
+    
+    def selectedItem;
+    
+    def redflagListModel = [
+        fetchList: { o->
+            return service.getList( entity );
+        }
+    ] as BasicListModel;
+    
+    def addRedflag() {
+        def h = {
+            redflagListModel.reload();
+        }
+        def rf = [businessid: entity.objid];
+        return Inv.lookupOpener( "business_redflag:create", [entity: rf, handler: h] );
+    }
+    
+    def openRedflag() {
+        if(!selectedItem) throw new Exception('Please select an item');
+        def h = {
+            redflagListModel.reload();
+        }
+        return Inv.lookupOpener( "business_redflag:open", [entity:selectedItem, handler: h] );
+    }
+    
+    def resolveRedflag() {
+        if(!selectedItem) throw new Exception('Please select an item');
+        def h = {
+            redflagListModel.reload();
+        }
+        return Inv.lookupOpener( "business_redflag:resolve", [entity:selectedItem, handler: h] );
+    }
+    
+}
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.RedflagListPage"/>
+    </pages>
+    
+</workunit>

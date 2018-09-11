@@ -3,7 +3,7 @@
        <invoker type="rulemgmt:formActions" caption="BP Rules Analyzer" action="init"
             visibleWhen="#{ruleset == 'bpassessment'}" target="window" role="RULE_AUTHOR"/>
             
-       <invoker folderid="/home/business" caption="Business Rule Analyzer" action="init" index="60" target="window" role="ASSESSOR,APPROVER,RULE_AUTHOR"/>
+       <invoker folderid="/menucategory/business/misc" caption="Business Rule Analyzer" action="init" index="60" target="window" role="ASSESSOR,APPROVER,RULE_AUTHOR"/>
        <invoker type="bpanzalyzer:test" caption="BP Rules Test" action="init" target="window" />
        
        <invoker type="formActions" caption="Close" action="_close" immediate="true"/>

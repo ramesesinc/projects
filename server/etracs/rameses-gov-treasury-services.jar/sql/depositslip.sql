@@ -19,7 +19,7 @@ FROM (
   )
   GROUP BY ncp.refno, ncp.refid, ncp.refdate, ncp.particulars
 ) a
-INNER JOIN paymentcheck pc ON pc.objid = a.refid
+INNER JOIN checkpayment pc ON pc.objid = a.refid
 INNER JOIN bank bnk ON pc.bankid = bnk.objid
 
 
@@ -28,7 +28,7 @@ INNER JOIN bank bnk ON pc.bankid = bnk.objid
 UPDATE depositslip
     SET totalcheck = (
 		SELECT SUM(pc.amount) 
-		FROM paymentcheck pc
+		FROM checkpayment pc
         WHERE pc.depositslipid = depositslip.objid   
 	)
 WHERE objid = $P{depositslipid}

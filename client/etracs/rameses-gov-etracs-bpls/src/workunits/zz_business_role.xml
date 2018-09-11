@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="business" >
+    <invokers>
+        <invoker type="role:xsections" caption="Role 1"  action="init"/>
+        <invoker type="role:xsections" caption="Role 2" action="init"/>
+    </invokers>
+    
+</workunit>

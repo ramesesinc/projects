@@ -7,11 +7,11 @@ class DepositSlipService  {
 	@DataContext("depositslip")
 	def depositSlipEm;
 
-	@DataContext("depositvoucher")
-	def depositVoucherEm;
+	@DataContext("depositvoucher_fund")
+	def depositVoucherFundEm;
 
-	@DataContext("paymentcheck")
-	def paymentCheckEm;
+	@DataContext("checkpayment")
+	def checkpaymentEm;
 
 	@Env
 	def env;
@@ -19,7 +19,7 @@ class DepositSlipService  {
 	@Service("DateService")
 	def dateSvc;
 
-
+	
 	void createCheckDepositSlip( def o, def checks, def checkType ) {
 		if(!checks) throw new Exception("There must be checks for check deposit slip");
 		if(!checkType) throw new Exception("checktype is required in create depositslip");
@@ -32,14 +32,15 @@ class DepositSlipService  {
 		m = depositSlipEm.create(m);	
 		checks.each {
 			if(!it.checkid) throw new Exception("checkid is required in create depositlsip")
-			paymentCheckEm.find([objid: it.checkid]).update( [depositslipid: m.objid ]);
+			checkpaymentEm.find([objid: it.checkid]).update( [depositslipid: m.objid ]);
 		}
 	}
-
+	
+	
 	@ProxyMethod
 	public def create( def o ) {
 		def tmp = [:];
-		tmp.depositvoucherid = o.depositvoucherid;
+		tmp.depositvoucherfundid = o.depositvoucherfundid;
 		tmp.createdby = [objid:env.USERID, name:env.FULLNAME];
 		tmp.dtcreated = dateSvc.getServerDate();
 		tmp.bankaccount = o.bankaccount;
@@ -89,8 +90,8 @@ class DepositSlipService  {
 				}
 			}
 		}
-		depositVoucherEm.find( [objid: o.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited+ :amt}'], [amt: o.amount ]  );
-		return depositVoucherEm.find( [objid: o.depositvoucherid] ).select("amountdeposited").first();
+		depositVoucherFundEm.find( [objid: o.depositvoucherfundid] ).update( [ amountdeposited: '{amountdeposited+ :amt}'], [amt: o.amount ]  );
+		return depositVoucherFundEm.find( [objid: o.depositvoucherfundid] ).select("amountdeposited").first();
 	}
 
 
@@ -101,7 +102,7 @@ class DepositSlipService  {
 		depositVoucherEm.find( [objid: r.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
 
 		//update all checks for the deposit slip to null
-		paymentCheckEm.find([depositslipid: o.objid]).update( [depositslipid: null ]);
+		checkpaymentEm.find([depositslipid: o.objid]).update( [depositslipid: null ]);
 		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
 	}
 

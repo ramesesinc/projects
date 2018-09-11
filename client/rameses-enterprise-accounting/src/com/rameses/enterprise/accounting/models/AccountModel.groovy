@@ -8,21 +8,22 @@ import com.rameses.seti2.models.*;
 
 class AccountModel extends CrudFormModel {
 
+    def maingroup;
+    def parent;
+    def type;
+    
     void afterCreate() {
-        entity.maingroup = caller.masterEntity;
+        entity.maingroup = maingroup;
+        entity.group = parent;
+        entity.type = type;
+        MsgBox.alert( "main group " + entity.group );
     }    
 
-    def getAccountGroupLookup() {
-        return Inv.lookupOpener( "account_group:lookup", [maingroupid: entity.maingroup.objid] );
-    }        
-
-    public Map createItem(String name, Map subSchema ) { 
-        def item = super.createItem( name, subSchema ); 
-        item.code = caller.masterEntity.code;
-        item.maingroup = caller.masterEntity;
-        item.acctid = entity.objid;
-        item.group = entity.group;
-        return item; 
+    void beforeSave( def mode ) {
+        if( mode == "create") {
+            entity.objid = entity.maingroup.objid + "-" + entity.code;
+        }
     }
+    
 }
     

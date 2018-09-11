@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="businessvariable">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Business Variables" action="init"
+                cols="name,datatype,caption,system"
+                target="window" role="MASTER" permission="businessvariable.view"/>
+    </invokers>
+</workunit>

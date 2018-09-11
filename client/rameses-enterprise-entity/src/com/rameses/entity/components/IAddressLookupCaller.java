@@ -10,4 +10,6 @@ package com.rameses.entity.components;
  */
 public interface IAddressLookupCaller {
     String getEntityid();
+    boolean isShowEdit();
+    boolean isShowList();
 }

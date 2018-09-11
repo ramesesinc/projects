@@ -1,0 +1,40 @@
+<workunit>
+    <invokers>
+        <invoker type="business:subtask"  target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class  SubTaskController  {
+        
+            def handler;
+            def entity = [:];
+            def actionList;
+            def assigneeList;
+
+            public def doOk() {
+                handler(entity);
+                return "_close";
+            }
+            
+            public def doCancel() {
+                return "_close";
+            }
+        }
+        ]]>
+    </code>
+    
+    
+    <pages>
+        <page  template="com.rameses.gov.etracs.bpls.business.BusinessSubTask"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,46 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="bprequirement:DOC" caption="Requirement Document" action="init" target="popup" />
+        <invoker type="formActions" caption="Close" action="_close"  />
+        <invoker type="formActions" caption="Submit" action="submit" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*
+        import com.rameses.gov.etracs.bpls.application.*;
+        
+        class  BPRequirementDocumentController {
+        
+            def handler;
+            def entity;
+            def info = [:];
+            
+            void init() {
+               info.putAll(entity);
+            }
+            
+            def doOk() {
+                info.completed = 1;
+                handler(info);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.application.BPRequirementDocument"/>
+    </pages>
+    
+</workunit>

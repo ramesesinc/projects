@@ -1,0 +1,100 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.rules.common.*;
+
+import bpls.facts.*;
+import bpls.actions.*;
+
+public class BusinessApplicationRequirementService  {
+
+	@Resource("RuleService")	
+	def ruleSvc;
+
+	@Service("DateService")	
+	def dateSvc;
+
+	@DataContext("business_application_requirement")
+	def appReqEm;
+
+	@DataContext("rule")
+	def ruleDB;
+
+	@Env
+	def env;
+
+	@DataContext("businessrequirementtype")
+	def br;
+
+	@Service("BusinessApplicationFactBuilder")
+	def factBuilder;
+
+	def buildActions(def request) {
+		def actions = new RuleAction();
+		actions.addCommand( "add_requirement", new AddRequirement(request:request));
+		actions.addCommand( "print_test", new PrintTest());
+		return actions;
+	}
+
+	@ProxyMethod
+	public void updateRequirements(def o) throws Exception {
+		if(!o.lobs)
+			throw new Exception("Please provide at least one line of business");
+
+		def facts = [];
+		def currDate = dateSvc.getServerDate();
+		def dt = currDate;
+		if(o.dtfiled && !(o.dtfiled instanceof java.util.Date)) {
+			dt = dateSvc.parse('yyyy-MM-dd', o.dtfiled );
+		}
+		facts << new EffectiveDate( dt );
+		facts << new CurrentDate(currDate);
+
+		o.infos = [];
+		if( o.appinfos ) {
+			o.infos.addAll( o.appinfos.findAll{it.phase!=null && it.phase <= 1} );
+		}
+		
+		if( o.assessmentinfos ) {
+			o.infos.addAll( o.assessmentinfos.findAll{it.phase!=null && it.phase <= 1} );
+		}
+		
+		factBuilder.build(o, facts );
+
+		def request = [requirements:[]];
+		def actions = buildActions( request );
+		def grps = ruleDB.getRulegroups( [ruleset: "bprequirement"] );
+		for( g in grps ) {
+			ruleSvc.execute( "bprequirement", facts, actions, g.name );
+		}
+
+		if( o.objid ) {
+			//check first if it already exists. ignore if it is	
+			def oldList = appReqEm.find( [applicationid: o.objid ] ).list();
+			def reqList = request.requirements*.reftype;
+			reqList.each { r->
+				def e = oldList.find{ it.typeid == r };
+				if( e ) {
+					oldList.remove(e);
+				}
+				else {
+					def z = [:];
+					z.applicationid = o.objid;
+					z.typeid = r;
+					z.type = [objid: r ];
+					z.completed = 0;
+					appReqEm.create( z );
+				}	
+			}
+			//if there is still remaining in old list, remove it from the database
+			if(oldList) {
+				oldList.each{
+					appReqEm.find( [applicationid: o.objid, typeid: it.typeid ] ).delete();	
+				}
+			}
+		}
+	}
+
+
+
+}

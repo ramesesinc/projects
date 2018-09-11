@@ -68,6 +68,9 @@ class CollectionVoucherService  {
 		def z = [collectionvoucherid: m.objid]
 		cvEm.insertCollectionVoucherFund( z );
 
+		//in case there are EFTs, insert into funds that needs to be transferred
+		cvEm.insertCollectionVoucherFundTransfer( z );
+
 		//update cash breakdown totals in each collection fund
 		def lfList = cvFundEm.find( [ parentid: m.objid ] ).list();
 
@@ -88,8 +91,8 @@ class CollectionVoucherService  {
 			u.cashbreakdown << it.cashbreakdown;
 		} 
 
-		// there must be a cash or check amount, if result is zero then this is not valid 
-		if ((u.totalcash + u.totalcheck) == 0 ) throw new Exception("Total Cash must not be zero"); 
+		// there must be a cash,check or credit amount, if result is zero then this is not valid 
+		if ((u.totalcash + u.totalcheck + u.totalcr ) == 0 ) throw new Exception("Total Cash must not be zero"); 
 
 		u.cashbreakdown = cashBreakdownSvc.summarize( u.cashbreakdown );
 		cvEm.find( [objid: m.objid ] ).update( u );
@@ -114,7 +117,7 @@ class CollectionVoucherService  {
 		cvEm.find([ objid: p.objid ]).update( m ); 	
 
 		//post to jev
-		def ref = [refid:p.objid,refno:p.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
+		def ref = [refid:p.objid,refno:m.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
 
 		def jevBatch = [:];
 		jevBatch.ref = ref;
@@ -122,8 +125,9 @@ class CollectionVoucherService  {
 		jevBatch.items = [];
 
 		cvFundEm.find([ parentid: p.objid ]).select('objid,fund.*,amount').list().each{ 
-			jevBatch.funds << [ objid: it.objid, refno:it.controlno, fund: it.fund, amount: it.amount  ];	 
+			jevBatch.funds << [ objid: it.objid, refno:m.controlno, fund: it.fund, amount: it.amount  ];	 
 		} 
+
 
 		def pm = [collectionvoucherid: p.objid ];
 

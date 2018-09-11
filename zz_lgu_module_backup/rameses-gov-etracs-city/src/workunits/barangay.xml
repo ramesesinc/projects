@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="barangay:open" caption="Barangay" action="open" target="popup"/>
+        <invoker type="barangay:create" caption="Barangay" action="create" target="popup"/> 
+        
+        <invoker type="formActions" caption="Show Org Class" action="showOrgClass"/>        
+    </invokers>
+    <code>
+        <![CDATA[
+        import com.rameses.osiris2.common.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.rcp.framework.ClientContext;
+
+        public class BarangayOrgController extends CRUDController {
+        
+            String createFocusComponent = 'entity.code'; 
+            String editFocusComponent = 'entity.name'; 
+            String serviceName = "BarangayService";
+            String entityName = "barangay";
+            String title = "Barangay";
+            
+            Map createEntity() {
+                def m = [:];
+                m.captain = [:];
+                m.treasurer = [:];
+                m.parent = [:];
+                return m;
+            }
+            
+            @Script("User")
+            def user;
+            
+            void showOrgClass() {
+                MsgBox.alert( " class " + user.env.ORGCLASS );
+            }
+            
+        }        
+    ]]>
+    </code>
+    <pages>
+        <page template="com.rameses.gov.lgu.ui.BarangayPage"/> 
+    </pages>
+</workunit>

@@ -1,49 +1,10 @@
-<workunit extends="wtemplates/ListController.xml">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="sys_org">
     <invokers>
-        <invoker type="org:manage" action="init" />
+        <invoker type="org:manage"
+                cols="objid,code,name"
+                customFilter="orgclass =:orgclass"
+                orderBy="code"
+                 action="init" />
     </invokers>
-    <code>
-        <![CDATA[
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-
-        public class OrgListController extends ListController {
-            
-            String entityName;
-            String parentclass;
-            String handler;
-            String serviceName = "OrgService";
-            
-            @FormTitle
-            String title;
-            
-            @FormId
-            String id;
-            
-            public void init() {
-                query.orgclass = entityName;
-                id = entityName;
-            }
-            
-            public def open() {
-                if(!handler) handler = "org";
-                def e = getSelectedEntity();
-                def opener = Inv.lookupOpener( handler+":open",  [entity:e,title:title, parentclass:parentclass ] );
-                opener.target = 'popup';
-                return opener;
-            }
-            
-            public Opener create() {
-                if(!handler) handler = "org";
-                def opener = Inv.lookupOpener( handler+":create",  [entityName:entityName.toUpperCase(), parentclass:parentclass, title:title] );
-                opener.target = 'popup';
-                return opener;
-            }
-            
-        }        
-        ]]> 
-    </code>
-    
+    <code class="com.rameses.admin.models.OrgListModel" />
 </workunit>

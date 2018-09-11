@@ -1,0 +1,56 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="checkpayment" allowDelete="false"
+           allowOpen="false">
+    <invokers>
+       
+        <invoker type="checkpayment_split:lookup" caption="Lookup Check" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,balance"
+                 hiddenCols="bank.objid" allowCreate="true" 
+                    customFilter=" amount - amtused > 0 AND depositvoucherid IS NULL"/>
+        
+        <invoker type="checkpayment_undeposited:lookup" caption="Lookup Undeposited Cash Receipt" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                    customFilter=" depositslipid IS NULL "/>
+        
+        <!--
+         <invoker type="checkpayment:depositfund:lookup" caption="Lookup Undeposited Cash Receipt" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 customFilter=" bankdepositid IS NULL AND depositfundid = :depositfundid"/>
+         -->
+         
+         <!-- used in DepositVoucherFudModel -->
+         <invoker type="checkpayment:undeposited:withoutfund:lookup" caption="Lookup Check Payments (Without Fund)" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
+                 customFilter=" depositvoucherid = :depositvoucherid AND fundid IS NULL AND  depositslipid IS NULL "/>
+         
+         <invoker type="checkpayment:undeposited:withfund:lookup" caption="Lookup Payment Checks" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
+                 customFilter=" depositvoucherid = :depositvoucherid AND fundid = :fundid AND  depositslipid IS NULL "/>
+         
+         <!-- check for deposit -->
+         <invoker type="checkpayment:undeposited:withoutdepositslip:lookup" caption="Lookup Payment Checks For Deposit" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
+                 customFilter=" depositvoucherid = :depositvoucherid AND fundid = :fundid AND depositslipid IS NULL "/>
+
+         <invoker type="checkpayment:undeposited:withdepositslip:lookup" caption="Lookup Payment Checks" 
+                 action="init" index="10" target="popup" 
+                 cols="refno,receivedfrom,bank.name,refdate,amount"
+                 hiddenCols="bank.objid" multiSelect="true"
+                 allowCreate="false" 
+                 customFilter="  depositslipid = :depositslipid "/>
+
+    </invokers>
+</workunit>

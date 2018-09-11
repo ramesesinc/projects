@@ -1,0 +1,17 @@
+<workunit schemaName="municipality">
+    <invokers>
+        <invoker type="municipality:open" caption="Municipality" action="open" target="popup"/>
+        <invoker type="municipality:create" caption="Municipality" action="create" target="popup"/>   
+        
+        <!-- IF municipality show only manage -->
+        <invoker type="municipality:manage" allowCreate="false"
+                target="popup"
+                visibleWhen="#{ root.orgclass == 'MUNICIPALITY' }"   
+                caption="Municipality" action="open"/>
+             
+    </invokers>
+    <code class="com.rameses.gov.lgu.models.MunicipalityModel" />
+    <pages>
+        <page template="com.rameses.gov.lgu.views.MunicipalityPage"/> 
+    </pages>
+</workunit>

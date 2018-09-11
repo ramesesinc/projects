@@ -1,0 +1,88 @@
+<workunit>
+    <invokers>
+        <invoker type="cashreceipt:business:lookup" caption="Lookup Business" target="popup" action="start"/>
+    </invokers>
+    <code>
+         <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            
+            class CashReceiptBusinessLookup extends PageFlowController  {
+            
+                @Binding
+                def binding;
+            
+                @Service("BusinessCashReceiptService")
+                def service;
+            
+                def query = [:];
+                def selectedBusiness;
+                def selectedApplication;
+                def appTypes = ["CURRENT", "ADDITIONAL", "DELINQUENCY", "COMPROMISE"];
+                def onselect;
+                
+                def doSearch() {
+                    businessListModel.reload();
+                }
+                
+                def businessListModel = [
+                    fetchList: { o->
+                        o.putAll( query );
+                        return service.getBusinessList(o);
+                    }
+                ] as PageListModel;
+                
+                def appListModel = [
+                    fetchList: {
+                        def m = [:]
+                        m.businessid = selectedBusiness.objid;
+                        m.apptype = query.apptype;
+                        return service.getAppList( m );
+                    }
+                ] as BasicListModel;
+                
+                def verifyBusiness() {
+                    if(!selectedBusiness) throw new Exception("Selected business is required");
+                    appListModel.reload();
+                    return "app";
+                }
+                
+                def verifyApp() {
+                    if(!selectedApplication) throw new Exception("Selected application is required");
+                    if(selectedApplication.taskstate!=null && selectedApplication.taskstate!='payment')
+                        throw new Exception("Error. This application is not yet approved for payment");
+                        
+                    def m = [:];
+                    m.applicationid = selectedApplication.applicationid;
+                    if(onselect) onselect( m );
+                    return "_close";
+                }
+                
+            }
+        ]]>    
+        
+    </code>
+    <pageflow>
+        <start>
+            <transition to="business"/>
+        </start>
+        <page name="business" title="Select Business">
+            <transition to="end" caption="Close" mnemonic="C"/>
+            <transition to="app" caption="Next" action="verifyBusiness" mnemonic="N"/>
+        </page>
+        <page name="app" title="Select Application">
+            <transition to="business" caption="Back" mnemonic="B"/>
+            <transition to="end" caption="Next" action="verifyApp" mnemonic="N"/>
+        </page>
+        <end/>
+    </pageflow>    
+    <pages>
+        <page name="business" template="com.rameses.gov.etracs.bpls.view.LookupBusinessPage"/>
+        <page name="app" template="com.rameses.gov.etracs.bpls.view.LookupApplicationPage"/>
+    </pages>
+</workunit>

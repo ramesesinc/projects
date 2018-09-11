@@ -32,7 +32,7 @@ select
 from remittance rem 
 	inner join cashreceipt c on c.remittanceid = rem.objid 
 	inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
-	left join paymentcheck pc on (pc.objid = nc.refid and nc.reftype='CHECK') 
+	left join checkpayment pc on (pc.objid = nc.refid and nc.reftype='CHECK') 
 where rem.collectionvoucherid = $P{collectionvoucherid} 
 	and nc.fund_objid like $P{fundid} 
 	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 

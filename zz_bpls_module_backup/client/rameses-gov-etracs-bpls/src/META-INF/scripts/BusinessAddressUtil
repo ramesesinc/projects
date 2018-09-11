@@ -1,0 +1,69 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessAddressUtil {
+
+    @Caller
+    def caller;
+
+    def addressType;
+    boolean local = true;
+    def type;
+    
+    def getAddress() {
+        return caller.entity.business.address;
+    }
+
+    def getHandler() {
+        if(!addressType) addressType = "basic";
+        return Inv.lookupOpener( "address:component:"+addressType, [entity: address ] ); 
+    }
+
+    void verify() {
+        if( !address?.type)
+            throw new Exception("Error in business address type-empty. Please check 'type' in business address");
+        address.text = TemplateProvider.instance.getResult("templates/address/" + address.type + ".htm", [entity: address] );
+        if(address.text) {
+            address.text = address.text.trim();
+            address.text = address.text.replace(",\n", "\n");
+        }   
+        else {
+            throw new Exception("Please specify an address");
+        }
+        caller.entity.business.address = address;
+        caller.entity.business.address.completed = true;
+    }
+
+    void reset() {
+        local = true;
+        type = null;
+    }
+
+    void load() {
+        if( address?.type == 'nonlocal' ) {
+            local = false;
+        }
+        else {
+            local = true;
+            type = address.type;
+        }
+    }
+
+   def edit() {
+        if(!caller.entity.business.address) caller.entity.business.address = [:];
+        def m = { o->
+            caller.entity.business.address = o; 
+            caller.binding.refresh('entity.business.address.text');    
+        }
+        return Inv.lookupOpener( "address:editor", [
+            handler: m, entity: caller.entity.business.address, tag:'BUSINESS' 
+        ]);
+    }
+
+    
+
+}

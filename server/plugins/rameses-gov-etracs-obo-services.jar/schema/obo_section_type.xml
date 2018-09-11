@@ -1,0 +1,11 @@
+
+<schema adapter="obodb">
+	<element tablename="obo_section_type">
+		<field name="objid" primary="true" prefix="OBST"/>
+		<field name="title" required="true"/>
+		<field name="type" required="true"/>
+		<field name="system" required="true"/>
+		<field name="sortindex" required="true"/>
+		<field name="startstate" />
+	</element>
+</schema>

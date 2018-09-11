@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="checkpayment" allowCreate="true"
+    cols="refno,receivedfrom,refdate,bank.name,amount,balance">
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" caption="Incoming Check Payments" action="init" 
+                  target="window" index="10" role="COLLECTOR,SHARED"/> 
+    </invokers>
+    
+</workunit>

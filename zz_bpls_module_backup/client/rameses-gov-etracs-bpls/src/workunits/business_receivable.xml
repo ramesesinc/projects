@@ -1,0 +1,87 @@
+<workunit>
+    <invokers>
+        <invoker type="business_receivable:add" caption="Add Receivable" target="popup" action="create"/>
+        <invoker type="business_receivable:edit" caption="Edit Receivable" target="popup" action="edit"/>
+        <invoker type="business_receivable:remove" target="process" action="delete"/>
+    </invokers>
+    
+    <code>
+<![CDATA[    
+    import com.rameses.rcp.annotations.*
+    import com.rameses.rcp.common.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.common.*
+    import com.rameses.common.*;
+    import java.rmi.server.*
+    import com.rameses.util.*;
+    
+    class BusinessReceivableController {
+    
+        @Binding 
+        def binding;
+        
+        @Service("BusinessReceivableService") 
+        def service;
+        
+        def handler;
+        def parent;
+        def entity;
+        def mode;
+
+        @FormTitle
+        def title;
+        
+        def txnTypes = [ "TAX", "REGFEE", "OTHER" ];
+        
+        void create() {
+            mode = 'create';
+            entity = [amount:0.0, amtpaid:0.0];
+            entity.iyear = parent.activeyear;
+            entity.applicationid =  parent.applicationid;
+            entity.businessid = parent.businessid;
+        }
+
+        void edit() {
+            mode = 'edit';
+        } 
+
+        void delete() {
+            service.removeReceivable( entity ); 
+            if ( handler ) handler(); 
+        } 
+
+        def getAssessmentTypes() {
+            if( parent.apptype == 'NEW' ) {
+                return ['NEW'];
+            } else {
+                return ['NEW','RENEW'];
+            }  
+        }
+        
+        def getBalance() {
+            return entity.amount - entity.amtpaid;
+        }
+                
+        def doOk() {
+            if ( mode == 'edit' ) {
+                service.saveReceivable(entity);
+            } else { 
+                service.addReceivable(entity);
+            } 
+            
+            if (handler) handler(); 
+            
+            return "_close";
+        }
+        
+        def doCancel() {
+            return "_close";
+        }
+    }
+]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.AddReceivablePage"/>
+    </pages>
+</workunit>

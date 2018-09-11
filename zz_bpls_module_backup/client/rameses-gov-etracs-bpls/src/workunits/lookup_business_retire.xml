@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
+          schemaName="business">
+    <invokers>
+        <invoker type="retirebusiness:lookup" caption="Lookup Retired Business" target="popup"
+                 action="init" 
+                 customFilter=" state = 'ACTIVE' "
+                 cols="bin,businessname,owner.name"/>
+    </invokers>
+</workunit>

@@ -9,6 +9,6 @@
     <code class="com.rameses.enterprise.treasury.models.CollectionGroupModel"/>
    
     <pages>
-        <page template="com.rameses.enterprise.treasury.collection.CollectionGroupPage"/>
+        <page template="com.rameses.enterprise.treasury.views.CollectionGroupPage"/>
     </pages>   
 </workunit>

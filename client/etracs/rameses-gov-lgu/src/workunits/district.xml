@@ -1,0 +1,10 @@
+<workunit schemaName="district">
+    <invokers>
+        <invoker type="district:open" caption="District" action="open" target="popup"/>
+        <invoker type="district:create"  caption="District" action="create"  target="popup"/>
+    </invokers>
+   <code class="com.rameses.gov.lgu.models.DistrictModel" />
+    <pages>
+        <page template="com.rameses.gov.lgu.views.DistrictPage"/> 
+    </pages>
+</workunit>

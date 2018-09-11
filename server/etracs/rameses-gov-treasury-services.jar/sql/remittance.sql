@@ -1,6 +1,6 @@
 [getOpenChecks]
 SELECT refno, receivedfrom, amount, amtused 
-FROM paymentcheck
+FROM checkpayment
 WHERE objid IN ( 
    SELECT refid 
    FROM cashreceiptpayment_noncash npc
@@ -15,7 +15,7 @@ select
 	pc.refno, pc.amount, sum(nc.amount) as noncashamount 
 from cashreceipt c 
 	inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
-	inner join paymentcheck pc on pc.objid = nc.checkid 
+	inner join checkpayment pc on pc.objid = nc.checkid 
 where c.remittanceid = $P{remittanceid} 
 	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
 group by pc.refno, pc.amount

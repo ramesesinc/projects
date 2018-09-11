@@ -31,7 +31,7 @@ abstract class DepositSlipPrintoutModel  {
             v = getPrintCashReport(); 
             
         } else { 
-            m._schemaname = 'paymentcheck';
+            m._schemaname = 'checkpayment';
             m.findBy = [depositslipid: o.objid ];
             m.orderBy = "refno"; 
             o.checks = querySvc.getList( m ); 

@@ -1,0 +1,55 @@
+<workunit>
+    <invokers>
+        <invoker type="business_redflag:warning" caption="Red flags!" target="popup" action="init"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class BusinessRedflagWarningController {
+        
+            @Binding 
+            def binding;
+            
+            def list;
+            
+            @Service("BusinessRedflagService")
+            def svc;
+             
+            def htmlText; 
+             
+            void init() {
+                def sb = new StringBuffer();
+                sb.append("There are unresolved issues: <br>")
+                list.each {
+                    sb.append( it.caseno +': '+it.message + ". filed by " + it.filedby.name + "<br>");
+                }
+                htmlText = sb.toString();
+            }
+            
+            def doOk() {
+                svc.notifyMessage( list );
+                return '_close';
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.RedflagWarningPage"/>
+    </pages>
+    
+</workunit>

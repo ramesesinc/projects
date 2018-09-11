@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+       <invoker type="business:billing" caption="Business Billing"  action="preview" index="2" target="popup"/>        
+       
+       <invoker type="formActions" caption="Close" action="_close" mnemonic="b" shortcut="ctrl B" /> 
+       <invoker type="formActions" caption="Send SMS" action="sendSMS" target="process"/> 
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class BusinessBillingReportController  extends com.rameses.etracs.shared.ReportController {
+        
+            @Service("BusinessBillingService")
+            def billSvc;
+
+            def entity;
+            def title = "Business Billing"
+            def reportPath = "com/rameses/gov/etracs/bpls/reports/billing/"
+            String reportName = reportPath + "BPBilling.jasper";
+            
+            def getReportData() {
+                return billSvc.getBilling( [applicationid: entity.objid] ); 
+            }
+            
+            SubReport[] getSubReports(){ 
+                return [
+                    new SubReport("BPBillingItem", reportPath + "BPBillingItem.jasper"),                
+                ] as SubReport[]; 
+            } 
+
+            void sendSMS() {
+                billSvc.sendSMS([ applicationid: entity.objid ]); 
+                MsgBox.alert('Message successfully sent'); 
+            } 
+         }   
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="preview" template="com.rameses.osiris2.common.ui.ReportPreviewPage" />
+    </pages>
+    
+</workunit>

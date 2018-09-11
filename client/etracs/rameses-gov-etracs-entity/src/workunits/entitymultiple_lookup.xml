@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="entitymultiple">
+   <invokers>
+         <invoker type="entitymultiple:lookup" caption="Lookup Multiple Entity" 
+         	action="init" target="popup" height="350"
+                cols="entityno,name,address.text" 
+                hiddenCols="entityname,type" />
+   </invokers>
+</workunit>

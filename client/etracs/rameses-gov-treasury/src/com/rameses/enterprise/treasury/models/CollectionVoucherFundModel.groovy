@@ -40,7 +40,7 @@ class CollectionVoucherFundModel extends CrudFormModel {
             return checkList;
         },
         onOpenItem: {o,col->
-            def op = Inv.lookupOpener("paymentcheck:open", [entity: [objid: o.refid ]] );
+            def op = Inv.lookupOpener("checkpayment:open", [entity: [objid: o.refid ]] );
             op.target = "popup";
             return op;
         }

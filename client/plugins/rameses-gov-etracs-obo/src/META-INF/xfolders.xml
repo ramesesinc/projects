@@ -19,6 +19,9 @@
         <folder id="obo" caption="OBO">
             <folder id="application" caption="Application" index="0" icon="home/icons/folder.png"/>
             <folder id="master" caption="Master Files" index="5" icon="home/icons/master.png"/>
+            <folder id="pc" caption="Permits/Clearances" index="6" />
+            <folder id="aux" caption="Technical" index="7" />
+            <folder id="tools" caption="Tools" index="7" />
         </folder>
     </folder>
 </folders>    

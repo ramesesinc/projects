@@ -1,6 +1,6 @@
 [cleanUpDeposit]
 UPDATE collectionvoucher SET depostvoucherid = NULL;
-UPDATE paymentcheck SET depositvoucherid = NULL, fundid = NULL, depositslipid = NULL;
+UPDATE checkpayment SET depositvoucherid = NULL, fundid = NULL, depositslipid = NULL;
 DELETE FROM depositslip;
 DELETE FROM depositvoucher_fund;
 DELETE FROM depositvoucher;

@@ -4,109 +4,95 @@ import java.rmi.server.*;
 
 class DepositVoucherService  {
 
-	@Env
-	def env;
-
-	@Service("DateService")
-	def dateSvc;
-
-	@Service("SequenceService")
-	def seqSvc;
-
-	@Service('ControlService') 
-	def controlSvc;	
-
-	@Service("Var")
-	def var;			
+	@DataContext("collectionvoucher")
+	def cvEm;
 
 	@DataContext("collectionvoucher_fund")
 	def cvfEm;
 
 	@DataContext("depositvoucher")
-	def depositEm;
+	def dvEm;
 
-	@DataContext("paymentcheck")
-	def paymentCheckEm;
+	@DataContext("depositvoucher_fund")
+	def dvfEm;
 
 
-	@DataContext("depositslip")
-	def depositSlipEm;
+	@DataContext("cashreceiptpayment_noncash")
+	def ncpEm;
 
-	@DataContext("fund")
-	def fundEm;
+	@DataContext("checkpayment")
+	def chkPmtEm;
 
-	@Service("JevService")
-	def jevSvc;
 
-	@ProxyMethod 
-	public def getUndepositedFunds() {
-        def adb = cvfEm.where("parent.state='POSTED' AND depositvoucherid IS NULL ");  
-        def funds = adb.select( "objid:{fund.objid},icount:{COUNT(*)}" ).groupBy('fund.objid').list(); 
-        if ( !funds ) return []; 
+	@Service("DateService")
+	def dateSvc;
 
-		return fundEm.where(" objid IN ('"+ funds*.objid.join("','") +"') ").list();
-	}
+	@Service('ControlService') 
+	def controlSvc;	
 
-	@ProxyMethod
-	public def getOpenSplitChecks( def vlist ) {
-		def ids = "('" + vlist.join("','") + "')";
-		return depositEm.getOpenSplitChecks( [ids: ids ] );
-	}
+	@Service("Var")
+	def var;
 
-	@ProxyMethod
-	public def addChecks( def v) {
-		def ids = "('" + v.list.join("','") + "')";
-		paymentCheckEm.where( "objid IN " + ids ).update([depositvoucherid: v.depositvoucherid]);
-		return summarizeTotal( [objid: v.depositvoucherid] );
-	}
-
-	@ProxyMethod
-	public def removeCheck( def o ) {
-		paymentCheckEm.find([objid: o.objid]).update([depositvoucherid: null]);
-		return summarizeTotal( [objid: o.depositvoucherid] );
-	}
-
-	def summarizeTotal(def m) {
-		def tot = paymentCheckEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
-		depositEm.find([objid: m.objid ]).update([totalcheck: tot]);
-		return tot;
-	}
+	@Env
+	def env;
 
 	@ProxyMethod
 	public def create( def o ) {
+		def txncode = [ "DV", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
+
 		def m = [:];
-		m.state = "OPEN"
-		m.controlno = "DV" + seqSvc.getNextFormattedSeries("DEPOSIT_VOUCHER");
-		m.controldate = dateSvc.getBasicServerDate(); 
-		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.state = "OPEN";
 		m.dtcreated = dateSvc.getServerDate();
-		m.fund = o.fund;
-		m.fundid = o.fund.objid;
+		m.controldate = m.dtcreated;
+		m.createdby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
+		m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtcreated, format: var.deposit_format, sequenceid_format: var.deposit_sequenceid_format ]); 
 		m.amount = o.amount;
-		m.amountdeposited = 0;
-		m.totalcheck = 0;
-		m = depositEm.create( m );
-		o.items.each {
-			cvfEm.find( [ objid: it.objid ] ).update( [depositvoucherid: m.objid ] );
+		m = dvEm.create( m );
+
+		def str = "('" + o.items.join( "','") + "')";
+		cvEm.where( "objid IN " + str ).update( [depositvoucherid: m.objid ] );
+
+		//for each collection voucher fund create a deposit voucher fund
+		def list = cvfEm.where( "parentid IN " + str ).groupBy("fund.objid").select( "fund.objid,totalcheck:{SUM(totalcheck)},totalcash:{SUM(totalcash)}" ).list();
+		list.each {
+			def dvf = [:];
+			dvf.parentid = m.objid;
+			dvf.parent = [objid: m.objid];
+			dvf.fundid = it.fund.objid;
+			dvf.fund = [objid:it.fund.objid ];
+			dvf.amount = ( it.totalcash + it.totalcheck );
+			dvf.amountdeposited = 0;
+			dvf.state = 'OPEN';
+			dvfEm.create( dvf );
 		}
-
-		//try to update all payment checks 
-		depositEm.updateCheckForDeposit( [depositvoucherid: m.objid ]);
-		depositEm.updateCheckDepositVoucherId( [depositvoucherid: m.objid ] );
-
-		if( o.additionalchecks ) {
-			def ids = "('" + o.additionalchecks.join("','") + "')";
-			paymentCheckEm.where( "objid IN " + ids  ).update( [depositvoucherid: m.objid ] );
+		
+		//retrieve check payments from the cash receipt non cash payments
+		def zlist = ncpEm.where( "reftype='CHECK' AND receipt.remittance.collectionvoucherid IN " + str ).list().groupBy{it.refid};
+		zlist.each { refid,v->
+			def u = [depositvoucherid: m.objid];
+			if( v.size() == 1 ) u.fundid = v[0].fund.objid;
+			chkPmtEm.find([objid: refid]).update(u);		
 		}
-
-		summarizeTotal( m );
+		//throw new Exception("stop save")
 		return m;
 	}
 
 	@ProxyMethod
+	public void addChecks( def o ) {
+		def str = " ('" + o.list.join("','") + "')";
+		chkPmtEm.where( "objid IN " + str ).update( [fundid: o.fundid ]);
+	}
+
+	@ProxyMethod
+	public void removeCheck( def o ) {
+		chkPmtEm.where( "objid = :objid", o ).update( [fundid: "{NULL}" ]);
+	}
+
+	/*
+	@ProxyMethod
 	public def post(def o ) {
 		//test if there are undeposited checks
-		int t = paymentCheckEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
+		int t = checkpaymentEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
 		if(t > 0 )
 			throw new Exception("All checks associated with this deposit must have deposit slips");
 
@@ -144,5 +130,7 @@ class DepositVoucherService  {
 		depositEm.find([objid: o.objid]).update([state:'POSTED']);
 
 	}
+	*/
+
 
 }

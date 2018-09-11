@@ -1,0 +1,14 @@
+"query.qtr" [ query.option != 'FULLQTR' ] {
+    visible: false;
+}
+"query.qtr" [ query.option == 'FULLQTR' ] {
+    visible: true;
+}
+"query.amount" [ query.option?.matches('FULLQTR|FULLYEAR') ] {
+    visible: false;
+}
+"query.amount" [ !query.option?.matches('FULLQTR|FULLYEAR') ] {
+    visible: true;
+}
+
+

@@ -12,6 +12,27 @@ INNER JOIN fund f ON f.objid=rf.fund_objid
 WHERE cv.objid = $P{collectionvoucherid}
 GROUP BY cv.objid, rf.fund_objid, cv.controlno, f.code, rf.fund_title
 
+[insertCollectionVoucherFundTransfer]
+INSERT INTO collectionvoucher_fund_transfer
+(objid, parentid, fromfundid, tofundid, amount)
+SELECT  
+  ( ccv.objid+'-'+ ba.fund_objid+ '-'+ nc.fund_objid ) AS objid,
+  ccv.objid, 
+  ba.fund_objid AS fromfundid,
+  nc.fund_objid AS tofundid,
+  SUM(nc.amount) AS amount
+FROM  cashreceiptpayment_noncash nc
+  INNER JOIN cashreceipt c ON nc.receiptid=c.objid
+  INNER JOIN eftpayment cm ON cm.objid = nc.refid
+  INNER JOIN bankaccount ba ON cm.bankacctid = ba.objid 
+  INNER JOIN remittance r ON c.remittanceid = r.objid
+  INNER JOIN collectionvoucher ccv ON r.collectionvoucherid = ccv.objid 
+  LEFT JOIN itemaccount ia on ia.objid = ba.acctid 
+  LEFT JOIN cashreceipt_void cv ON cv.receiptid=c.objid 
+WHERE ccv.objid=$P{collectionvoucherid}
+AND cv.objid IS NULL 
+AND NOT( ba.fund_objid = nc.fund_objid )
+GROUP BY ba.fund_objid, nc.fund_objid
 
 [getCashLedgerItems]
 SELECT 

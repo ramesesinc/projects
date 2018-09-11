@@ -25,6 +25,11 @@ class RPTReportAssessmentReportService
 	public def buildReport(params){
 		params.monthid = params.month?.index
 		params.lguid = params.lgu.objid
+		params.filter = ''
+		
+		if (params.ry) {
+			params.filter += ' AND rp.ry = $P{ry} '
+		}
 
 		util.buildStartEndDateFilter(params)
 
@@ -42,7 +47,7 @@ class RPTReportAssessmentReportService
 			brgys = buildStandardFormat(params)
 		}
 		else if (params.reportformat.type == 'lift'){
-			brgys = buildLintFormat(params)	
+			brgys = buildLiftFormat(params)	
 		}
 		else {
 			throw new Exception('Format ' + params.reportformat.caption + ' is not yet supported.')
@@ -80,7 +85,7 @@ class RPTReportAssessmentReportService
 	}
 
 
-	void updateLintBrgyInfo(result, list){
+	void updateLiftBrgyInfo(result, list){
 		list.each{v ->
 			def res = result.find{it.objid == v.objid && it.rputypeidx == v.rputypeidx}
 			if (res){
@@ -89,7 +94,7 @@ class RPTReportAssessmentReportService
 		}
 	}	
 
-	def buildLintFormat(params){
+	def buildLiftFormat(params){
 		def result = []
 		getBarangays(params).each{
 			result << [objid:it.objid, barangay: it.name, rputypeidx:1, rputype:'land']
@@ -98,10 +103,10 @@ class RPTReportAssessmentReportService
 			result << [objid:it.objid, barangay: it.name, rputypeidx:4, rputype:'other']
 		}
 		
-		updateLintBrgyInfo(result, em.getPreceedingLintList(params))
-		updateLintBrgyInfo(result, em.getCurrentLintList(params))
-		updateLintBrgyInfo(result, em.getCancelledLintList(params))
-		updateLintBrgyInfo(result, em.getEndingLintList(params))
+		updateLiftBrgyInfo(result, em.getPreceedingLiftList(params))
+		updateLiftBrgyInfo(result, em.getCurrentLiftList(params))
+		updateLiftBrgyInfo(result, em.getCancelledLiftList(params))
+		updateLiftBrgyInfo(result, em.getEndingLiftList(params))
 		setZeroValuesToNull(result)
 		return result 
 	}

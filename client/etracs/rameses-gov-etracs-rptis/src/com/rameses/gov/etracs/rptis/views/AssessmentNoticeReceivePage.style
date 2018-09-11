@@ -1,0 +1,7 @@
+"entity.receivedby" [entity.deliverytype && entity.deliverytype.objid.matches('personal|occupant')] {
+    required: true;
+}
+
+"entity.receivedby" [entity.deliverytype && !entity.deliverytype.objid.matches('personal|occupant')] {
+    required: false;
+}

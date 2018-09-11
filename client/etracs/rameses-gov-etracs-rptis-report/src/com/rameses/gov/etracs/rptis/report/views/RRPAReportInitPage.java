@@ -29,6 +29,7 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xComboBox8 = new com.rameses.rcp.control.XComboBox();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox8 = new com.rameses.rcp.control.XComboBox();
         xComboBox7 = new com.rameses.rcp.control.XComboBox();
@@ -50,6 +51,14 @@ public class RRPAReportInitPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(110);
         xFormPanel1.setPadding(new java.awt.Insets(5, 10, 5, 5));
+
+        xComboBox8.setCaption("Revision Year");
+        xComboBox8.setExpression("#{item.caption}");
+        xComboBox8.setItems("revisionyears");
+        xComboBox8.setName("entity.ry"); // NOI18N
+        xComboBox8.setEmptyText("ALL");
+        xComboBox8.setPreferredSize(new java.awt.Dimension(200, 20));
+        xFormPanel1.add(xComboBox8);
 
         xComboBox1.setCaption("Report Format");
         xComboBox1.setExpression("#{item.caption}");

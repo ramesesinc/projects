@@ -170,7 +170,7 @@ class RPTLedgerInterceptor
         }
         em_ledger.update(ledgerinfo)
         em_bill_ledger.find([rptledgerid:orig.rptledgerid]).delete()
-        em_ledger_item.find([rptledgerid:orig.rptledgerid]).delete()
+        em_ledger_item.find([parentid:orig.rptledgerid]).delete()
     }   
 
     @After(pattern="RuleMgmtService.deploy", index=1000)

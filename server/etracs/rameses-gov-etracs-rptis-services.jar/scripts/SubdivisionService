@@ -106,8 +106,10 @@ class SubdivisionService
         if (!subdivision) throw new Exception('Subdivision does not exist or has already been deleted.')
         subdivision.txntype = faasSvc.getTxnType(TXNTYPE_SD)
         subdivision.autonumber = util.toBoolean(subdivision.autonumber, false)
-        getMotherLands(subdivision).each{
-            createAffectedRpus(it)
+        if ('APPROVED' != subdivision.state) {
+            getMotherLands(subdivision).each{
+                createAffectedRpus(it)
+            }
         }
         return subdivision 
     }

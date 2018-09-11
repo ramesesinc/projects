@@ -95,5 +95,5 @@ WHERE (
 	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
  )
-GROUP BY b.name 
+GROUP BY b.pin, b.name 
 ORDER BY b.pin 

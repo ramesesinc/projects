@@ -68,7 +68,7 @@ class LandTaxReportNoticeOfDelinquencyService
 		}
 		
 		//set administrator if there is only one item
-		if (params.ledgers.size() == 1){
+		if (params.rptledgerid){
 			params.administrator = params.ledgers.first().administrator
 		}
 

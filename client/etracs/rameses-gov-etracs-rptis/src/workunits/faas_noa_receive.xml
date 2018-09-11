@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="assessmentnotice:receive" 
+            caption="Receive Notice of Assessment" 
+            target="popup"
+            role="RECORD,RECORD_APPROVER" />
+    </invokers>
+        
+    <code class="com.rameses.gov.etracs.rptis.models.AssessmentNoticeReceiveModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.AssessmentNoticeReceivePage" />
+    </pages>    
+</workunit>
+
+

@@ -1,10 +1,12 @@
 <workunit  extends="rpt_wtemplates/BatchReportController.xml">
     <invokers>
+        <!-- TODO: 
         <invoker folderid="/explorer/report/rpt" 
             action="init" 
             caption="Notice of Assessment Batch Printing" 
             target="window" 
             role="RECORD,RECORD_APPROVER" />
+            -->
     </invokers>
     <code >
     <![CDATA[

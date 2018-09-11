@@ -1,5 +1,5 @@
 <schema>
-	<element name="examiner_finding" tablename="examiner_finding">
+	<element tablename="examiner_finding">
 		<field name="objid" primary="true" />
 		<field name="parent_objid" required="true" />
 		<field name="dtinspected" required="true" />
@@ -8,5 +8,9 @@
 		<field name="notedby" required="true" />
 		<field name="notedbytitle" required="true" />
 		<field name="inspectors" required="true" />
+		<field name="inspectedby_objid"  />
+		<field name="inspectedby_name"  />
+		<field name="inspectedby_title"  />
+		<field name="doctype" />
 	</element>
 </schema>

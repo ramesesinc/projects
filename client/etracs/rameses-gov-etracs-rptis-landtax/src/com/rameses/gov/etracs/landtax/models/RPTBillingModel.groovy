@@ -19,7 +19,7 @@ class RPTBillingModel
     @Service("ReportParameterService")
     def reportSvc;
         
-    String title = 'Real Property Tax Bill';
+    def title = 'Real Property Tax Bill'
     
     def bill;
     def mode = 'init';
@@ -85,6 +85,7 @@ class RPTBillingModel
     }
         
     void buildBill(){
+        bill.totals = [:];
         bill.putAll(svc.generateBill(bill));
         report.viewReport();
     }     
@@ -96,78 +97,109 @@ class RPTBillingModel
      * ASYNC SUPPORT 
      * 
     =============================================================*/
-    def asyncHandler;
-    def has_result;
-    def msg;
-    
-    def getAsyncHandler(reportHandler) {
-        return [
-            onError: {o-> 
-                MsgBox.err(o.message); 
-                back();
-                binding.refresh(); 
-            }, 
-            onTimeout: {
-                asyncHandler.retry(); 
-            },
-            onCancel: {
-                binding.fireNavigation( back() );
-            }, 
-            onMessage: {data-> 
-                if (data == com.rameses.common.AsyncHandler.EOF) {
-                    if (!has_result) {
-                        back();
-                        binding.refresh(); 
-                    } 
-                    
-                } else if (data instanceof Throwable) { 
-                    MsgBox.err(o.message); 
-                    asyncHandler.cancel();
-                    back();
-                    binding.refresh();
-                    
-                } else {
-                    has_result = true; 
-                    bill = data;
-                    binding.fireNavigation(reportHandler()); 
-                }
-            } 
-        ] as com.rameses.common.AbstractAsyncHandler 
-    }
-    
-    def buildAsyncReport(reportHandler){
-        asyncHandler = getAsyncHandler(reportHandler);
-        has_result = false; 
-        bill.ledgers = items.findAll{it.bill == true}.collect{[objid:it.objid]};
-        if (!bill.ledgers) throw new Exception('Ledgers to bill must be specified.')
-        svc.generateBillAsync(bill, asyncHandler);
-        processing = true; 
-        msg = 'Processing. Please wait...';
-        return null; 
-    }
-    
-    def doPreview() {
-        def reportHandler = {
-            report.viewReport();
-            processing = false;
+    def msg = 'Processing. Please wait...';
+    def _printmode 
+
+    def afterBuild = {
+        report.viewReport();
+        processing = false;
+        msg = null;
+        if (_printmode == 'preview') {
             mode = 'view';
-            msg = null;
             binding.fireNavigation('report');
-            binding.refresh();
+        } else {
+            mode = 'init';
+            ReportUtil.print( report.report, true );
         }
-        buildAsyncReport(reportHandler);
+        binding.refresh();
+    }
+
+    void sleep(millis) {
+        try {
+            Thread.sleep(millis);
+        }catch(e){
+            //
+        }
+    }
+
+    void updateBillInfo(tmpbill) {
+        if (!bill.billto) {
+            bill.billdate = tmpbill.billdate;
+            bill.billto = tmpbill.billto ;
+            bill.taxpayer = tmpbill.taxpayer ;
+            bill.dtposted = tmpbill.dtposted;
+            bill.validuntil = tmpbill.validuntil;
+        }
+    }
+
+    void aggregateBill(tmpbill) {
+        bill.ledgers += tmpbill.ledgers;
+        tmpbill.totals.each{ k,v ->
+            if (!bill.totals[k]) {
+                bill.totals[k] = 0
+            }
+            bill.totals[k] = bill.totals[k] + v
+        }
+    }
+
+    def cancelled = false;
+
+    void doCancel() {
+        cancelled = true;
+        processing = false;
+        mode = 'init';
+    }
+
+    def task = [
+        run : {
+            bill.ledgers = [];
+            bill.totals = [:];
+            
+            processing = true;
+            cancelled = false;
+
+            def tmpbill = [:];
+            tmpbill.putAll(bill);
+            tmpbill.totals = [:];
+
+            def itemsToBill = items.findAll{it.bill == true}.collect{[objid:it.objid, tdno: it.tdno]};
+            def cnt = 0;
+            def itemCount = itemsToBill.size() 
+
+            for (int i=0; i < itemsToBill.size(); i++) {
+                if (cancelled) break;
+
+                def ledger = itemsToBill[i]
+                tmpbill.ledgers = [ledger];
+                tmpbill._forpayment = false;
+                try {
+                    def b = svc.generateBill(tmpbill);
+                    aggregateBill(b);
+                    updateBillInfo(b)
+                    cnt += 1;
+                    msg = 'Processing Ledger ' + ledger.tdno + '    (' + cnt + '/' + itemCount + ')';
+                    binding.refresh('msg');
+                    sleep(100);
+                } catch(e) {
+                    msg = 'Error Processing Ledger ' + ledger.tdno + ' [ERROR] ' + e.message  + '. Ledger will be excluded.'
+                    binding.refresh('msg');
+                    sleep(1500);
+                }
+            }
+            if (!cancelled){
+                afterBuild();
+            }
+        }
+    ] as Runnable 
+    
+    void doPreview() {
+        _printmode = 'preview'
+        new Thread(task).start();
     } 
     
     def doPrint() {
-        def reportHandler = {
-            report.viewReport();
-            processing = false;
-            mode = 'init';
-            msg = null;
-            ReportUtil.print( report.report, true );
-            binding.refresh(); 
-        }
-        buildAsyncReport(reportHandler);
+        _printmode = 'print'
+        new Thread(task).start();
     } 
        
     

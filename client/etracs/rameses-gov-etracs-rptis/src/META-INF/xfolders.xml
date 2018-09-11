@@ -53,7 +53,8 @@
             <folder id="master" caption="Master Files" index="-100" icon="home/icons/masterfiles.png"/>
             <folder id="setting" caption="Revision Settings" index="-90" icon="home/icons/masterfiles.png"/>
             <folder id="txn" caption="Transactions" index="-1" icon="home/icons/transactions.png"/>
-            <folder id="manualtxn" caption="Manual Support" index="1000000" icon="home/icons/manual.png"/>
+            <folder id="monitoring" caption="Monitoring" index="1000000" icon="home/icons/folder1.png" />
+            <folder id="manualtxn" caption="Manual Support" index="1000001" icon="home/icons/manual.png"/>
         </folder>
     </folder>
 </folders>

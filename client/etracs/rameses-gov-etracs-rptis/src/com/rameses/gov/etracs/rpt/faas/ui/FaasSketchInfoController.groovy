@@ -104,5 +104,19 @@ class FaasSketchInfoController
         rpSvc.updateBoundaries(entity.rp);
         mode = MODE_READ;
     }
+
+    def oncloseSketch = {
+        binding.fireNavigation("_close");
+    }
+
+    def convertToDrawing() {
+        if (MsgBox.confirm('Are you sure you want to convert image sketch to drawing format?')){
+            return Inv.lookupOpener('sketch:drawing:open', [
+                entity : entity,
+                oncloseSketch: oncloseSketch,
+            ])
+        }
+        return null;
+    }
     
 }

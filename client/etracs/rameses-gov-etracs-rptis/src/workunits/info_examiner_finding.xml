@@ -53,6 +53,7 @@ class ExaminationFindingController
             photos     : [],
             notedby    : OsirisContext.env.FULLNAME,
             notedbytitle: OsirisContext.env.JOBTITLE,
+            doctype  : entity.doctype,
         ]
         mode = MODE_CREATE;
     }

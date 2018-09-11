@@ -20,6 +20,9 @@ abstract class AsyncReportModel
             
     @Service('LGUService')
     def lguSvc
+    
+    @Service('QueryService')
+    def querySvc;
 
     def clientContext = com.rameses.rcp.framework.ClientContext.currentContext;
     
@@ -277,5 +280,18 @@ abstract class AsyncReportModel
     InputStream getInputStream( def imagename) {
         return clientContext.classLoader.getResourceAsStream( getImagePath( imagename ) );
     }
+    
+    def getRevisionyears() {
+        def m = [_schemaname: 'rysetting_land'];
+        m.select = 'ry';
+        m.where =['1=1'];
+        m.orderBy = 'ry desc';
+
+        def list = querySvc.getList(m);
+        if (list) {
+            return list.ry.unique();
+        }
+        return [];
+    }    
         
 }

@@ -1,0 +1,16 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/home/rpt/monitoring" 
+                 action="init"  
+                 caption="Land Parcels"  
+                 target="window" index="1" 
+                 role="TAXMAPPER,TAXMAPPER_CHIEF"  />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.LandParcelMonitoringModel">
+    </code>
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.LandParcelMonitoringPage"/>
+    </pages>
+</workunit>

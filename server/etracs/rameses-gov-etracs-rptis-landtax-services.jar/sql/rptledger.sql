@@ -4,6 +4,7 @@ SELECT
 FROM rptledger rl 
     INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
     INNER JOIN barangay b ON rl.barangayid = b.objid 
+    LEFT JOIN faas f on rl.faasid = f.objid 
 WHERE 1=1
 ${fixfilters}
 ${filters}

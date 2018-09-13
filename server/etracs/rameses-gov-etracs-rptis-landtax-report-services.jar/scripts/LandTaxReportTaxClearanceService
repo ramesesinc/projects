@@ -25,15 +25,27 @@ class LandTaxReportTaxClearanceService
     @Service('ReportParameterService')
     def paramSvc 
 
+
+    @ProxyMethod
+    public def getReportTypes() {
+        return [
+            [name: 'fullypaid', title: 'FULL PAYMENT'],
+            [name: 'zerovalue', title: 'ZERO VALUE'],
+            [name: 'newdiscovery', title: 'NEW EFFECTIVE'],
+            [name: 'exempt', title: 'EXEMPT'],
+        ]
+    }
     
 
     @ProxyMethod
     public def initClearance(  ) {
+        def cy = dtSvc.serverYear
         return [
             objid               : util.generateId('AN'),
             opener              : 'rpttaxclearance',
-            year                : dtSvc.serverYear,
+            year                : cy,
             qtr                 : 4,
+            effectivityyear     : cy + 1,  
             certifiedby         : var.treasurer_name,
             certifiedbytitle    : var.treasurer_title,
             purpose             : 'for whatever legal purpose it may serve him/her best',
@@ -41,28 +53,21 @@ class LandTaxReportTaxClearanceService
             stampamount         : 0.0,
             items               : [],
             official            : false,
+            reporttype          : getReportTypes().first(),
         ]
     }
 
 
     @ProxyMethod
     public def createClearance( cert ) {
-        if (!cert.items)
-            throw new Exception('At least one property must be included.')
-
-        cert.items.each{
-            if (it.lastyearpaid < cert.year) 
-                throw new Exception('TD No. ' + it.tdno + ' is not cleared for the year ' + cert.year + '.')
-            if (it.lastyearpaid == cert.year && it.lastqtrpaid < cert.qtr) 
-                throw new Exception('TD No. ' + it.tdno + ' is not cleared for the ' + util.formalizeNumber(cert.qtr) + ' qtr of ' + cert.year + '.' )
-        }
-
+        validate(cert)
         def year = dtSvc.serverYear
         cert.txnno = year + seqSvc.getNextFormattedSeries('RPTTAXCLEARANCE-' + year )
         certSvc.createCertification(cert)
         cert.items.each{
             certSvc.createItem(it)
         }
+        cert.reporttypename = cert.reporttype.name 
         em.insertTaxClearance(cert)
         return openClearance(cert.objid)
     }
@@ -77,6 +82,7 @@ class LandTaxReportTaxClearanceService
         buildAdministratorInfo(cert)
         buildLguNameInfo(cert)
         loadPaymentInfo(cert)
+        cert.reporttype = getReportTypes().find{it.name == cert.reporttype}
         return cert 
     }
 
@@ -89,6 +95,21 @@ class LandTaxReportTaxClearanceService
         cert.taxpayerid = cert.taxpayer.objid 
         return em.getClearedLedgers(cert)
     }
+
+    void validate(cert) {
+        if (!cert.items) {
+            throw new Exception('At least one property must be included.')
+        }
+
+        if ('fullypaid' == cert.reporttype.name) {
+            cert.items.each{
+                if (it.lastyearpaid < cert.year) 
+                    throw new Exception('TD No. ' + it.tdno + ' is not cleared for the year ' + cert.year + '.')
+                if (it.lastyearpaid == cert.year && it.lastqtrpaid < cert.qtr) 
+                    throw new Exception('TD No. ' + it.tdno + ' is not cleared for the ' + util.formalizeNumber(cert.qtr) + ' qtr of ' + cert.year + '.' )
+            }
+        }
+    }    
 
     void buildIssuanceInfo(cert){
         def pdate = dtSvc.parseDate(cert.txndate, null)

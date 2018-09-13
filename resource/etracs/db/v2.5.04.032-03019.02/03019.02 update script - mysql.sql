@@ -143,3 +143,17 @@ FROM assessmentnoticeitem ni
 	INNER JOIN entity e on f.taxpayer_objid = e.objid 
 ;
 
+
+
+/*======================================================
+*
+*  TAX CLEARANCE UPDATE
+*
+======================================================*/
+
+alter table rpttaxclearance add reporttype varchar(15)
+;
+
+update rpttaxclearance set reporttype = 'fullypaid' where reporttype is null
+;
+

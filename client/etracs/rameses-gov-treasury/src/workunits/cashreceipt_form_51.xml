@@ -2,6 +2,9 @@
     <invokers>
         <invoker type="cashreceipt-form:51" 
             reportName="com/rameses/gov/treasury/cashreceipt/forms/form_51.jasper" />
+        
+        <invoker type="subReport" name="AF51Item" 
+                 template="com/rameses/gov/treasury/cashreceipt/forms/form_51item.jasper"/> 
     </invokers>
     
     <code class="com.rameses.enterprise.treasury.models.CashReceiptPrintoutModel"/>

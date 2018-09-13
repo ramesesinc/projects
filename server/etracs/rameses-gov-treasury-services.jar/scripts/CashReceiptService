@@ -169,8 +169,12 @@ class CashReceiptService  {
 		if( p.amount < 1 ) { 
 			def amount = Long.parseLong( p.amount.toString().split("\\.")[1] )
 			p.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS";
-		} else 
+		} else { 
 			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
+		}
+
+		// data compliant to previous versions 
+		p.totalnoncash = p.totalcheck; 
 		return p;
 	}
 	

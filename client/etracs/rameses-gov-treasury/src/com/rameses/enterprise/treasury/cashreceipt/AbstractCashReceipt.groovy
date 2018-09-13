@@ -143,6 +143,10 @@ public abstract class AbstractCashReceipt {
     void doCheckPayment() { 
         //if(!entity.items) throw new Exception("At least one item is required");
         if(entity.amount<=0) throw new Exception("Amount must be greater than 0");
+
+        def funds = summarizeByFund(); 
+        if ( !funds ) throw new Exception("Please provide the summarize amount by fund"); 
+        
         def success = false; 
         clearAllPayments();
         def handler = { o-> 
@@ -151,7 +155,7 @@ public abstract class AbstractCashReceipt {
             entity.totalnoncash = o.paymentitems.sum{it.amount};
             success = true; 
         }
-        Modal.show( "cashreceipt:payment-check", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 
+        Modal.show( "cashreceipt:payment-check", [entity: entity, saveHandler: handler, fundList:funds] ); 
         if ( success ) {
             def outcome = post(); 
             binding.fireNavigation( outcome );  

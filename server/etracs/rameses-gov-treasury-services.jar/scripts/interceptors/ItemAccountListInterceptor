@@ -33,7 +33,7 @@ class ItemAccountListInterceptor {
 			else {
 				o.where = [str, m];
 			}
-		}
+		} 
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")

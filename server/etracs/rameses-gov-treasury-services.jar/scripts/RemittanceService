@@ -21,6 +21,9 @@ class RemittanceService  {
 	@DataContext("cashreceiptpayment_noncash")
 	def ncEm;
 
+	@DataContext("vw_cashreceiptpayment_noncash")
+	def vw_ncEm;
+
 	@Env
 	def env;
 
@@ -171,11 +174,11 @@ class RemittanceService  {
 
 			def u = [:];
 			u.amount = it.amount;
-			u.totalcheck = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND reftype = 'CHECK' ", ppp ).val();
-			if(!u.totalcheck) u.totalcheck = 0;
+			u.totalcheck = vw_ncEm.select("amount:{SUM(amount)}").where("remittanceid = :remittanceid AND fund.objid = :fundid AND reftype = 'CHECK' AND voided=0 ", ppp ).val();
+			if ( !u.totalcheck ) u.totalcheck = 0;
 
-			u.totalcr = ncEm.select( "amount:{SUM(amount)}").where("receipt.remittanceid=:remittanceid AND fund.objid =:fundid AND NOT(reftype = 'CHECK') ", ppp ).val();
-			if(!u.totalcr ) u.totalcr = 0;
+			u.totalcr = vw_ncEm.select( "amount:{SUM(amount)}").where("remittanceid = :remittanceid AND fund.objid = :fundid AND reftype <> 'CHECK' AND voided=0 ", ppp ).val();
+			if ( !u.totalcr ) u.totalcr = 0;
 
 			u.totalcash = u.amount - u.totalcheck - u.totalcr;
 

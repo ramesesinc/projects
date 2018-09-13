@@ -276,6 +276,7 @@ from (
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join collectiontype ct on cr.collectiontype_objid = ct.objid 
+order by ct.title 
 
 
 [getCashTicketCollectionSummaries]

@@ -87,6 +87,7 @@ class RemittanceModel extends CrudFormModel {
         fetchList: { o->
            def m = [_schemaname: 'vw_remittance_cashreceipt_afsummary' ];
            m.findBy = [ remittanceid: entity.objid ];
+           m.orderBy = 'formno, startseries, stubno'; 
            def list = queryService.getList( m ); 
            list.each{ 
                it.amount = it.amount - it.voidamt; 
@@ -110,11 +111,11 @@ class RemittanceModel extends CrudFormModel {
     
     def checkModel = [
         fetchList: { o->
-            def m = [_schemaname: 'cashreceiptpayment_noncash' ];
+            def m = [_schemaname: 'vw_cashreceiptpayment_noncash' ];
             m.select = "refid,refno,reftype,refdate,particulars,amount:{SUM(amount)}";
             m.groupBy = "refid,refno,reftype,refdate,particulars";
             m.orderBy = "refdate,refno";
-            m.where = [ "receipt.remittanceid = :rid AND amount > 0", [rid: entity.objid ]];
+            m.where = [ "remittanceid = :rid AND voided=0 AND amount > 0", [rid: entity.objid ]];
             return queryService.getList( m );
         },
         onOpenItem: {o,col->

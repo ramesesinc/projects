@@ -166,7 +166,7 @@ class RemittanceReportService  {
 		];
 
 		data.receipts = db.getReceiptsByRemittanceCollectionType( params ); 
-		if( ! data.receipts ) throw new Exception("No record(s) found ");
+		if ( !data.receipts ) throw new Exception("No record(s) found ");
 
 		resolveCompatibility( data ); 		
 		return data;

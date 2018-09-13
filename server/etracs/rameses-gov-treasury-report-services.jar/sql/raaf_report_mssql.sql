@@ -125,72 +125,58 @@ order by tmp5.afid, tmp5.respcenterlevel, tmp5.categoryindex, tmp5.dtfiled, tmp5
 
 
 [getReportDataByRef]
-select * from ( 
+select * 
+from ( 
   select 
-    'A' as idx, '' as type, t2.controlid, af.formtype, afi.afid as formno, af.denomination, af.serieslength, 
-    afi.respcenter_objid as ownerid, afi.respcenter_name as name, afi.respcenter_type as respcentertype, 
-    (case when afi.respcenter_type='AFO' then 0 else 1 end) as categoryindex, afi.startstub, afi.endstub, 
-    t2.prevendingstartseries, t2.prevendingendseries, 
-    t2.receivedstartseries, t2.receivedendseries, 
-    (case when t2.beginstartseries>0 and t2.prevendingstartseries>0 then t2.prevendingstartseries else t2.beginstartseries end) as beginstartseries, 
-    (case when t2.beginendseries>0 and t2.prevendingendseries>0 then t2.prevendingendseries else t2.beginendseries end) as beginendseries, 
-    t2.issuedstartseries, t2.issuedendseries, t2.issuednextseries, 
-    (case when t2.issuednextseries>t2.endingendseries then null else t2.endingstartseries end) as endingstartseries, 
-    (case when t2.issuednextseries>t2.endingendseries then null else t2.endingendseries end) as endingendseries, 
+    'A' as idx, '' as type, afi.afid, af.formtype,
+    afi.afid as formno, af.denomination, af.serieslength, 
+    afi.owner_objid as ownerid, afi.owner_name as name, 
+    'COLLECTOR' as respcentertype, 1 as categoryindex, 
+    afi.stubno as startstub, afi.stubno as endstub, 
     case 
-      when t2.beginstartseries > 0 then t2.beginstartseries 
-      when t2.issuedstartseries > 0 then t2.issuedstartseries 
-      when t2.receivedstartseries > 0 then t2.receivedstartseries 
-      else t2.endingstartseries 
+      when tmp.beginstartseries > 0 then tmp.beginstartseries 
+      when tmp.issuedstartseries > 0 then tmp.issuedstartseries 
+      when tmp.receivedstartseries > 0 then tmp.receivedstartseries 
+      else tmp.endingstartseries 
     end as sortseries, 
-    afi.afid 
+    tmp.* 
   from ( 
-    select t1.*, 
-      (
-        select max(endingstartseries) from af_inventory_detail 
-        where controlid=t1.controlid and [lineno] < t1.minlineno 
-      ) as prevendingstartseries, 
-      (
-        select max(endingendseries) from af_inventory_detail 
-        where controlid=t1.controlid and [lineno] < t1.minlineno 
-      ) as prevendingendseries  
-    from ( 
-      select 
-        afd.controlid, min(afd.[lineno]) as minlineno, max(afd.[lineno]) as maxlineno,   
-        min(afd.receivedstartseries) as receivedstartseries, 
-        max(afd.receivedendseries) as receivedendseries, 
-        min(afd.beginstartseries) as beginstartseries, 
-        max(afd.beginendseries) as beginendseries, 
-        min(afd.issuedstartseries) as issuedstartseries, 
-        max(afd.issuedendseries) as issuedendseries, 
-        max(afd.issuedendseries)+1 as issuednextseries, 
-        max(afd.endingstartseries) as endingstartseries, 
-        max(afd.endingendseries) as endingendseries 
-      from remittance_af raf 
-        inner join af_inventory_detail afd on raf.objid=afd.objid 
-      where raf.remittanceid = $P{refid}  
-      group by afd.controlid 
-      union 
-      select 
-        afd.controlid, min(afd.[lineno]) as minlineno, max(afd.[lineno]) as maxlineno,   
-        min(afd.receivedstartseries) as receivedstartseries, 
-        max(afd.receivedendseries) as receivedendseries, 
-        min(afd.beginstartseries) as beginstartseries, 
-        max(afd.beginendseries) as beginendseries, 
-        min(afd.issuedstartseries) as issuedstartseries, 
-        max(afd.issuedendseries) as issuedendseries, 
-        max(afd.issuedendseries)+1 as issuednextseries, 
-        max(afd.endingstartseries) as endingstartseries, 
-        max(afd.endingendseries) as endingendseries 
-      from liquidation_remittance lr 
-        inner join remittance_af raf on lr.objid = raf.remittanceid 
-        inner join af_inventory_detail afd on raf.objid=afd.objid 
-      where lr.liquidationid = $P{refid}    
-      group by afd.controlid 
-    )t1  
-  )t2 
-    inner join af_inventory afi on t2.controlid=afi.objid 
-    inner join af on afi.afid = af.objid 
-)t3 
-where t3.formno like $P{formno}  
-order by t3.formno, t3.sortseries 
+    select 
+      controlid, 
+      min(case when receivedstartseries=0 then null else receivedstartseries end) as receivedstartseries, 
+      max(case when receivedendseries=0 then null else receivedendseries end) as receivedendseries, 
+      min(case when beginstartseries=0 then null else beginstartseries end) as beginstartseries, 
+      max(case when beginendseries=0 then null else beginendseries end) as beginendseries, 
+      min(case when issuedstartseries=0 then null else issuedstartseries end) as issuedstartseries, 
+      max(case when issuedendseries=0 then null else issuedendseries end) as issuedendseries, 
+      max(case when issuedendseries=0 then null else issuedendseries end)+1 as issuednextseries, 
+      max(case when endingstartseries=0 then null else endingstartseries end) as endingstartseries, 
+      max(case when endingendseries=0 then null else endingendseries end) as endingendseries 
+    from remittance_af 
+    where remittanceid = $P{refid} 
+    group by controlid
+
+    union 
+
+    select 
+      raf.controlid, 
+      min(case when raf.receivedstartseries=0 then null else raf.receivedstartseries end) as receivedstartseries, 
+      max(case when raf.receivedendseries=0 then null else raf.receivedendseries end) as receivedendseries, 
+      min(case when raf.beginstartseries=0 then null else raf.beginstartseries end) as beginstartseries, 
+      max(case when raf.beginendseries=0 then null else raf.beginendseries end) as beginendseries, 
+      min(case when raf.issuedstartseries=0 then null else raf.issuedstartseries end) as issuedstartseries, 
+      max(case when raf.issuedendseries=0 then null else raf.issuedendseries end) as issuedendseries, 
+      max(case when raf.issuedendseries=0 then null else raf.issuedendseries end)+1 as issuednextseries, 
+      max(case when raf.endingstartseries=0 then null else raf.endingstartseries end) as endingstartseries, 
+      max(case when raf.endingendseries=0 then null else raf.endingendseries end) as endingendseries 
+    from remittance rem 
+      inner join remittance_af raf on raf.remittanceid = rem.objid 
+    where rem.collectionvoucherid = $P{refid} 
+    group by raf.controlid 
+
+  )tmp 
+    inner join af_control afi on afi.objid = tmp.controlid 
+    inner join af on af.objid = afi.afid 
+)t2 
+where t2.formno like $P{formno}  
+order by t2.formno, t2.sortseries 

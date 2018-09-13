@@ -38,7 +38,7 @@
 			<key field="afid" target="objid" />
 		</complex>	
 
-		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,aftxnid,aftxnitemid,refid,refno,refdate,reftype,txntype,txndate,prevdetailid,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
+		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,aftxnid,aftxnitemid,refid,refno,refdate,reftype,txntype,txndate,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
 			<key field="currentdetailid" target="objid" />
 		</complex>
 

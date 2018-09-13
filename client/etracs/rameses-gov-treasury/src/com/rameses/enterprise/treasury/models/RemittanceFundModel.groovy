@@ -21,14 +21,13 @@ class RemittanceFundModel extends CrudFormModel {
     void afterOpen() {
         def p = [remittanceid: entity.remittanceid, fundid: entity.fund.objid ]
         //build summaryList
-        def m = [_schemaname: 'cashreceiptpayment_noncash' ];
-        m.where = [ "receipt.remittanceid =:remittanceid AND fund.objid=:fundid AND amount > 0", p ];
-        m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)},refid";
+        def m = [_schemaname: 'vw_cashreceiptpayment_noncash' ];
+        m.select = "refid,refno,reftype,refdate,particulars,amount:{SUM(amount)}";
         m.groupBy = "refid,refno,reftype,refdate,particulars";
         m.orderBy = "refdate,refno";
+        m.where = [ "remittanceid = :remittanceid AND fund.objid = :fundid AND amount > 0 AND voided=0 ", p ];
          
-        def list = queryService.getList( m );
-
+        def list = queryService.getList( m ); 
         checkList = list.findAll{ it.reftype == 'CHECK' };
         creditMemoList = list.findAll{ it.reftype != 'CHECK' };
         if( entity.totalcheck + entity.totalcash == 0 ) showCashBreakdown = false;

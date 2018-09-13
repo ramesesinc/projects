@@ -7,8 +7,8 @@ from (
   select remc.objid 
   from remittance r 
     inner join remittance_cashreceipt remc on r.objid=remc.remittanceid  
-  where r.remittancedate >= $P{fromdate} 
-    and r.remittancedate < $P{todate} 
+  where r.controldate >= $P{fromdate} 
+    and r.controldate < $P{todate} 
     and remc.objid not in (select receiptid from cashreceipt_void where receiptid=remc.objid) 
 )xx1 
   inner join cashreceipt cr on cr.objid=xx1.objid 
@@ -76,7 +76,7 @@ from cashreceipt cr
   INNER join cashreceiptitem cri on cri.receiptid = cr.objid
   INNER join itemaccount ri on ri.objid = cri.item_objid 
   LEFT JOIN cashreceipt_void vr ON cr.objid = vr.receiptid  
-where r.remittancedate BETWEEN $P{fromdate} AND $P{todate}  
+where r.controldate BETWEEN $P{fromdate} AND $P{todate}  
     ${filter} 
 order by cr.formno, cr.receiptno
 

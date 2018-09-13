@@ -25,6 +25,9 @@ class AFInventoryService {
 		def oldafc = afc;
 
 		if ( !afc?.objid ) {
+			if ( afc.prefix == null ) afc.prefix = ''; 
+			if ( afc.suffix == null ) afc.suffix = '';
+
 			def afunit = afc.afunit;
 			int len = (afunit.serieslength ? afunit.serieslength : 10);	
 

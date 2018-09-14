@@ -285,7 +285,13 @@ class RPTLedgerService
 
         // post new ledger items
         em_rptledger_item.find([parentid:info.objid, taxdifference:false]).delete()
-        postLedgerItems(ledger, dtSvc.serverYear )
+        def cy = dtSvc.serverYear
+        def yr = (cy <= info.lastyearpaid ? info.lastyearpaid : cy)
+        def haspartial = (info.basicpaid > 0 || info.sefpaid > 0)
+        if (haspartial && info.lastqtrpaid == 4) {
+            yr += 1
+        }
+        postLedgerItems(ledger, yr)
         applyPartialPayment(info)
 
         info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 

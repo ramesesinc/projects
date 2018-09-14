@@ -400,9 +400,22 @@ public class RPTBillingService
 	}
 
 
+	/* Update the qtr for previous partialled item 
+	*  qtr =  round(amtpaid / (amount / 4)) 
+	*/
+	void updatePartialledItemQtr(items) {
+		def partialleditems = items.findAll{it.qtr == null && it.amtpaid > 0}
+		partialleditems.each {
+			def qtrly = it.amount / 4.0;
+			it.qtr = numSvc.roundA(it.amtpaid / qtrly, 0) + 1;
+			it._partialled = true 
+		}
+	}
+
 	def buildItemsForReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
+		updatePartialledItemQtr(bill.items)
 		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + ':' + it.taxdifference }
 		groups.each{k, list ->
 			def first = list.first() 
@@ -440,15 +453,26 @@ public class RPTBillingService
 	}
 
 	def buildPeriod(list){
-		def period = list.first().year 
-		def minqtr = list.qtr.min()
-		def maxqtr = list.qtr.max()
-		if ((minqtr && minqtr != 1) || (maxqtr && maxqtr != 4)){
-			if (minqtr == maxqtr){
-				period += '-' + minqtr 
+		def firstitem = list.first()
+		def period = firstitem.year 
+		if (firstitem._partialled && firstitem.qtrly == false) {
+			if (firstitem.qtr != 1 ) {
+				if (firstitem.qtr == 4 ){
+					period += '-4'
+				} else {
+					period += '-' + firstitem.qtr + '4'
+				}
 			}
-			else {
-				period += '-' + minqtr + '' + maxqtr
+		} else {
+			def minqtr = list.qtr.min()
+			def maxqtr = list.qtr.max()
+			if ((minqtr && minqtr != 1) || (maxqtr && maxqtr != 4)){
+				if (minqtr == maxqtr){
+					period += '-' + minqtr 
+				}
+				else {
+					period += '-' + minqtr + '' + maxqtr
+				}
 			}
 		}
 		return period 

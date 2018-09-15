@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/explorer/txn/landtax" action="init" caption="Realty Tax Clearance" 
-            role="LANDTAX" permission="taxclearance.create" index="145"/>
-        
-        <invoker folderid="/home/landtax" action="init" caption="Issue Tax Clearance" 
-            role="LANDTAX" permission="taxclearance.create" index="20"  />
+        <invoker folderid="/menucategory/landtax/txn" 
+                 action="init"  caption="Issue Tax Clearance"  
+                 role="LANDTAX" permission="taxclearance.create" 
+                 target="window" index="10" />
             
         <invoker type="rpttaxclearance:open" action="open" caption="Realty Tax Clearance" />
         

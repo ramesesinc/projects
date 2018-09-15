@@ -68,7 +68,7 @@ class BatchCaptureCollectionModel  {
     } 
 
     def getLookupAccount() {
-        return InvokerUtil.lookupOpener("cashreceiptitem:lookup", [ 
+        return Inv.lookupOpener("cashreceiptitem:lookup", [ 
             "query.txntype" : "cashreceipt", 
             "query.collectorid": entity.collector.objid,
             "query.collectiontype": selectedItem.collectiontype,
@@ -94,9 +94,9 @@ class BatchCaptureCollectionModel  {
         fetchList: {
             return entity.batchitems;
         }, 
-        isAllowOpen: {
+        isAllowOpen: { 
             return (entity.state == 'DRAFT'); 
-        },  
+        }, 
         onOpenItem: { item, colname-> 
             return openItemImpl( item ); 
         }
@@ -164,6 +164,7 @@ class BatchCaptureCollectionModel  {
         if ( lastitem?.receiptdate ) m.receiptdate = lastitem.receiptdate; 
 
         if( copyprevinfo ) {
+            println 'lastitem-> '+ lastitem;
             if ( lastitem ) {
                 if ( lastitem.items && lastitem.items.size() == 1 ) {
                     def nfo = lastitem.items[0].clone(); 

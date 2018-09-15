@@ -106,6 +106,7 @@ class DepositSlipService  {
 		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
 	}
 
+	/*
 	@ProxyMethod
 	public void approveDepositSlip( def o ) {
 		 depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ] );
@@ -118,6 +119,6 @@ class DepositSlipService  {
 		m.validation = o.validation; 
 		depositSlipEm.find([objid: o.objid]).update(m);
 	}
-
+	*/
 
 }

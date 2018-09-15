@@ -351,7 +351,7 @@ public class BusinessApplicationPage extends javax.swing.JPanel {
             .addGap(0, 391, Short.MAX_VALUE)
         );
 
-        xTabbedPane1.addTab("Findings", xPanel1);
+        xTabbedPane1.addTab("Red Flags", xPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

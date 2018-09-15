@@ -11,7 +11,7 @@
         
         <!-- Buttons -->
         <invoker type="formActions" caption="Post" action="post" 
-                 visibleWhen="#{entity.state == 'OPEN' }"/>
+                 xvisibleWhen="#{entity.state == 'OPEN' }"/>
         
     </invokers>
    

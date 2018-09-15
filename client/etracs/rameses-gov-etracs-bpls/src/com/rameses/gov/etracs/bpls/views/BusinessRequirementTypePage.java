@@ -38,6 +38,7 @@ public class BusinessRequirementTypePage extends javax.swing.JPanel {
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
         xFormPanel1.setCaption("General Info");
@@ -46,7 +47,7 @@ public class BusinessRequirementTypePage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("General Info");
         xFormPanel1.setBorder(xTitledBorder1);
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionWidth(150);
 
         xTextField1.setCaption("Code");
         xTextField1.setDisableWhen("#{ mode != 'create' }");
@@ -76,14 +77,23 @@ public class BusinessRequirementTypePage extends javax.swing.JPanel {
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 
-        xComboBox1.setCaption("Required State");
+        xComboBox1.setCaption("Activation State");
         xComboBox1.setExpression("#{ item.title }");
         xComboBox1.setItemKey("name");
         xComboBox1.setItems("workflowStates");
-        xComboBox1.setName("entity.requiredstate"); // NOI18N
+        xComboBox1.setName("entity.activationstate"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(150, 22));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
+
+        xComboBox3.setCaption("Validation State");
+        xComboBox3.setExpression("#{ item.title }");
+        xComboBox3.setItemKey("name");
+        xComboBox3.setItems("workflowStates");
+        xComboBox3.setName("entity.requiredstate"); // NOI18N
+        xComboBox3.setPreferredSize(new java.awt.Dimension(150, 22));
+        xComboBox3.setRequired(true);
+        xFormPanel1.add(xComboBox3);
 
         xIntegerField1.setCaption("Sort Index");
         xIntegerField1.setName("entity.sortindex"); // NOI18N
@@ -105,7 +115,7 @@ public class BusinessRequirementTypePage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -113,6 +123,7 @@ public class BusinessRequirementTypePage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
+    private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XLookupField xLookupField1;

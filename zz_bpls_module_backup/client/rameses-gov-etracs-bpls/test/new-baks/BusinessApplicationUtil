@@ -1,0 +1,84 @@
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.common.*
+import java.rmi.server.*;
+import com.rameses.util.*;
+
+public class BusinessApplicationUtil {
+
+     @Caller 
+    def caller;
+
+    public void load() {
+    }
+
+    public void init(def o) {
+        def entity = service.initNew( o );
+        load();
+        entity.yearstarted = entity.appyear;
+        caller.entity = entity;
+    }
+    
+    void save() {
+        def o = caller.entity;
+        if ( !o.appyear ) o.appyear = o.activeyear; 
+        if ( !o.objid ) o.objid = 'BAPP'+ new UID(); 
+
+        caller.entity = service.create( o );
+    }
+
+    def create(def o) {
+        return service.create( o );
+    }
+            
+    def print() {
+        def entity = caller.entity;
+        def op = Inv.lookupOpener( "business_application:unifiedform", [entity: entity] );
+        op.target = 'self';
+        return op;
+    }
+
+    void copyName() {
+        def entity = caller.entity;
+        entity.business.tradename = entity.business.businessname;
+        caller.binding.refresh("entity.business.tradename");
+        caller.binding.focus("entity.business.tradename");
+    }
+
+    void reset() {;}
+
+    void release() {
+        caller.entity = service.release(caller.entity);
+    }
+
+    void cancel() {
+        if( MsgBox.confirm('You are about to cancel this application. Continue?')) {
+            caller.entity = service.cancel(caller.entity);
+        }
+    }
+
+    void open() {
+        caller.entity = service.open( caller.entity );
+    }
+
+    public def getCopyOwnerAddress() {
+        def t = permitTypeOptions.copy_owner_address;
+        if( !t) return false;
+        return t;
+    }
+
+    public def getPermitTypeTitle() {
+        return _permitType.title;
+    }
+
+    public void updateInfos() {
+        def o = caller.entity;
+        def b = [businessid: o.business.objid, activeyear: o.appyear, applicationid: o.objid];
+        b.lobs = o.lobs;
+        b.appinfos = o.appinfos;
+        b.requirements = o.requirements;
+        service.updateInfos(b);
+    }
+
+}

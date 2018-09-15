@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="business_billitem_txntype">
+    <invokers>
+          <invoker type="business_billitem_txntype:lookup" 
+                   action="init" caption="Business BillItem Txntype"  
+                   cols="title,account.title,account.code"
+                   hiddenCols="role,domain,feetype,account.objid"
+                   target="popup"/>
+    </invokers>
+</workunit>

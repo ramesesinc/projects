@@ -1,24 +1,40 @@
-[getList]
-SELECT *
-FROM assessmentnotice
-where 1=1 ${filters}
-ORDER BY txnno DESC 
-
-
 [getItems]
-SELECT 
-	ni.*,
-	${fields}
-FROM assessmentnoticeitem ni 
-	INNER JOIN faas f ON ni.faasid = f.objid 
-	LEFT JOIN txnsignatory ts on ts.refid = f.objid and ts.type='APPROVER'
-	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
-	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-	INNER JOIN sys_org o ON f.lguid = o.objid 
-	INNER JOIN entity e on f.taxpayer_objid = e.objid 
-WHERE ni.assessmentnoticeid = $P{objid}
+select * from vw_assessment_notice_item where assessmentnoticeid = $P{objid}
+
+[getBldgTypes]	
+select bt.code, bk.name as bldgkind 
+from bldgrpu_structuraltype st
+	inner join bldgtype bt on st.bldgtype_objid = bt.objid 
+	inner join bldgkindbucc bucc on st.bldgkindbucc_objid = bucc.objid
+	inner join bldgkind bk on bucc.bldgkind_objid = bk.objid 
+where st.bldgrpuid = $P{rpuid}
+
+
+[getSignatories]
+select 
+	ft.objid,
+	ft.state,
+	ft.actor_name,
+	ft.actor_title,
+	ft.signature,
+	ft.enddate as dtsigned
+from faas_task ft,
+	(
+		select 
+			refid, 
+			state, 
+			max(enddate) as enddate 
+		from faas_task 
+		where refid = $P{objid}
+			and state not like 'assign%'
+			and enddate is not null 
+		group by refid, state 
+	) t 
+where ft.refid = $P{objid}
+  and ft.refid = t.refid 
+  and ft.state = t.state 
+  and ft.enddate = t.enddate
+
 
 [getApprovedFaasList]
 SELECT ${fields}
@@ -69,13 +85,6 @@ where f.state='CURRENT'
 	and rp.section like $P{section}
 
 
-[getBldgTypes]	
-select bt.code, bk.name as bldgkind 
-from bldgrpu_structuraltype st
-	inner join bldgtype bt on st.bldgtype_objid = bt.objid 
-	inner join bldgkindbucc bucc on st.bldgkindbucc_objid = bucc.objid
-	inner join bldgkind bk on bucc.bldgkind_objid = bk.objid 
-where st.bldgrpuid = $P{rpuid}
 
 
 

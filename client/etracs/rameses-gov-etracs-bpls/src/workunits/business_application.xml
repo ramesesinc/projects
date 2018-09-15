@@ -1,10 +1,22 @@
-<workunit>
+<workunit schemaName="business_application">
 
     <invokers>
-        <invoker type="business_application:open" caption="Business Info" action="open" target="window" />
-        <invoker type="global:barcode:51005" caption="Business Application" action="openBarcode" 
-            target="window" expr="#{barcodeid.contains('-')}" />
+        <invoker type="business_application:open" 
+                 caption="Business Application" 
+                 formId="#{entity.objid}"
+                 formTitle="#{entity.appno} - #{entity.apptype} - #{entity.business.businessname}"
+                 action="open" target="window" 
+        />
+        
+        <invoker type="global:barcode:51005" caption="Business Application" 
+                 action="openBarcode" 
+                 formId="#{entity.objid}"
+                 formTitle="#{entity.appno} - #{entity.apptype} - #{entity.business.businessname}"
+                 target="window" expr="#{barcodeid.contains('-')}" 
+        />
+        
        
+        <!--
         <invoker type="formActions" caption="Close" action="_close" 
                  visibleWhen="#{task==null}" index="0"/>      
         
@@ -23,13 +35,17 @@
                  visibleWhen="#{allowViewAssessment==true}" role="SHARED" index="10" /> 
         <invoker type="extActions" caption="Print Tracking No" action="printTrackingno" 
                  index="11" /> 
+        -->
         
+        <invoker type="docActions" caption="Edit" action="editDoc"  index="11" /> 
+        <invoker type="docActions" caption="Update Requirements" action="execReqRules"  index="12" />
+        <invoker type="formActions" caption="Update Info" action="updateInfo"  index="11" /> 
     </invokers>
     
     <code class="com.rameses.gov.etracs.bpls.models.BusinessApplicationModel"/>
     
     <pages>
-        <page template="com.rameses.gov.etracs.bpls.view.ApplicationFormPage"/>
+        <page template="com.rameses.gov.etracs.bpls.views.BusinessApplicationPage"/>
     </pages>
     
 </workunit>

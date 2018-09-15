@@ -1,0 +1,93 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="businessinfo:editlob" caption="Edit LOB" index="1" target="popup" action="init"/>
+        <invoker type="formActions" caption="Save" action="save"/>    
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.gov.etracs.bpls.application.*;
+        
+        class BusinessCaptureEditLOBController {
+        
+            
+            @Binding
+            def binding;
+            
+            def lobAssessmentTypes = ['NEW','RENEW','RETIRE']
+            
+            def lobs;
+            def selectedLob;
+            def handler;
+            
+            void init() {
+                def h = [];
+                if(lobs) h.addAll( lobs );
+                lobs = h;
+            }
+            
+            def addLob() {
+                return InvokerUtil.lookupOpener( "lob:lookup", [
+                    onselect: { o->
+                        if(lobs.find{ it.lobid == o.objid }!=null) 
+                            throw new Exception("Item already added");
+                        def m = [:];
+                        m.objid = "BPLOB"+new UID();
+                        m.lobid = o.objid;
+                        m.name = o.name;
+                        m.classification = o.classification;
+                        m.assessmenttype = "NEW";
+                        lobs << m; 
+                        lobModel.reload();
+                    }
+                ]);
+            }
+             
+            void removeLob() {
+                if(!selectedLob) return;
+                if(selectedLob.assessmenttype != "NEW" ) 
+                    throw new Exception("Only new lines of business can be removed");
+                lobs.remove(selectedLob);
+            }
+             
+            def reclassifyLob() {
+                if(!selectedLob) return;
+                if(selectedLob.assessmenttype != "RENEW") 
+                    throw new Exception("Only renew lines of business can be reclassified");
+                return InvokerUtil.lookupOpener( "lob:lookup", [
+                    onselect: { o->
+                        selectedLob.lobid = o.objid;
+                        selectedLob.name = o.name;
+                        selectedLob.classification = o.classification;
+                        lobModel.reload();
+                    }
+                ]);    
+            }
+            
+            def lobModel = [
+                fetchList: { o->
+                    return lobs;
+                },
+            ] as EditorListModel;
+
+            def save() {
+                if( MsgBox.confirm("You are about to update changes for line of business. Proceed?")) {
+                    handler(lobs);
+                    return "_close";
+                }
+            }
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.business.EditLOBInfo"/>
+    </pages>
+
+</workunit>

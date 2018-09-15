@@ -27,14 +27,18 @@ class RPTReportAccomplishmentRPAService
 	public Map generateAccomplishmentRPA(params) {
 		params.filter = ''
 
+		if (params.ry){
+			params.filter += ' AND rp.ry =  $P{ry} ' 
+		}
+
 		if (params.lgu){
+			params.filter += ' AND f.lguid =  $P{lguid} ' 
 			params.lguid = params.lgu.objid 
-			params.filter = ' AND f.lguid =  $P{lguid} ' 
 		}
 
 		if (params.barangay){
-			params.barangayid = params.barangay.objid 
 			params.filter += ' AND rp.barangayid = $P{barangayid} '
+			params.barangayid = params.barangay.objid 
 		}
 		
 		util.buildReportFormalTitlePeriod('ACCOMPLISHMENT REPORT ON REAL PROPERTY ASSESSMENTS', params)

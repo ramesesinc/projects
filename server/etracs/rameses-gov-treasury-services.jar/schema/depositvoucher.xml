@@ -1,25 +1,15 @@
 <schema>
 	<element  tablename="depositvoucher" >
-		<field name="objid" primary="true" prefix="DEP"/>
+		<field name="objid" primary="true" prefix="DV"/>
 		<field name="state" required="true" />
-		<field name="controlno" required="true" />
-		<field name="controldate" required="true" type="date"/>
+		<field name="controlno" required="true" caption="Control No"/>
+		<field name="controldate" required="true" type="date" caption="Control Date"/>
 		<field name="createdby_objid" required="true" />
 		<field name="createdby_name" required="true" />
 		<field name="dtcreated" required="true" />
 		<field name="postedby_objid" />
 		<field name="postedby_name" />
 		<field name="dtposted" />
-		<field name="fundid" />
-
-		<!-- we need this for querying in deposit initial -->
-		<complex name="fund" ref="fund" jointype="many-to-one" includefields="objid,code,title">
-			<key field="fundid" target="objid" />
-		</complex>
-
 		<field name="amount" required="true" type="decimal"/>
-		<field name="amountdeposited" required="true" type="decimal"/>
-		<field name="totalcheck" required="true" type="decimal"/>
-
 	</element>
 </schema>

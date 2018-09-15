@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faas:formActions" 
+                 action="init" caption="Sketch" 
+                 visibleWhen="#{showOldSketch == true}"
+                 />
+        
+        <invoker type="faasmain:formActions" 
+                 action="init" caption="Sketch  (Image)" 
+                 visibleWhen="#{showOldSketch == true}"
+                 />
+                 
+        <invoker type="sketch:open" action="init" caption="Sketch (old)" index="6" />
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="B" visibleWhen="#{mode=='read'}"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="C" visibleWhen="#{mode=='edit'}"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="E" visibleWhen="#{allowEdit==true &amp;&amp; mode=='read' &amp;&amp; entity.rpu.rputype == 'land'}" role="APPRAISER,TAXMAPPER"/>
+        <invoker type="formActions" action="update" caption="Update" mnemonic="U" visibleWhen="#{allowEdit==true &amp;&amp; mode=='edit'}" role="APPRAISER,TAXMAPPER"/>
+        
+        <invoker type="formActions" action="convertToDrawing" caption="Convert To Drawing" visibleWhen="#{allowEdit==true &amp;&amp; mode=='read' &amp;&amp; entity.rpu.rputype == 'land'}" role="APPRAISER,TAXMAPPER"/>
+        
+   </invokers>
+   <code class="com.rameses.gov.etracs.rpt.faas.ui.FaasSketchInfoController">
+  </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.util.SketchPage"/>
+    </pages>
+</workunit>

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/home/business" caption="Generate Billing" action="init" 
+        <invoker folderid="/menucategory/business/acct" caption="Generate Billing" action="init" 
                 role="ADMIN,REPORT" permission="businessbilling.create" index="1000" />        
         
         <invoker type="formActions" caption="Close" action="doClose" mnemonic="C"/>

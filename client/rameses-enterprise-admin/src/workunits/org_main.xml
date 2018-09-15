@@ -2,83 +2,12 @@
     <invokers>
         <invoker folderid="/home/admin" caption="Organization" action="init" role="SYSADMIN" 
             permission="system" index="0" icon="home/icons/admin-org.png"/> 
+        
+        <invoker type="formActions" caption="Manage Org Types" action="manageOrgTypes"/> 
+        <invoker type="formActions" caption="Reload" action="reloadOrgTypes"/> 
     </invokers> 
-   
-   <code>
-   <![CDATA[
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.osiris2.common.*;
-        import com.rameses.util.*;
-       
-        class OrgMainController 
-        {
-            @Service("OrgService")
-            def service;
-            
-            @Binding 
-            def binding; 
-        
-            String title = "Manage Organizations";
-        
-            def actions = []; 
-        
-            void init() {
-                try { 
-                    Inv.lookup('orgmain.action').each{
-                        def a = [
-                            caption : it.properties.actiontitle, 
-                            icon    : it.properties.icon, 
-                            invoker : it 
-                        ]; 
-                        if (!a.caption) a.caption = it.caption;
-                        if (!a.icon) a.icon = 'home/icons/folder.png'; 
-                        
-                        actions << a; 
-                    } 
-                } catch(e) {;} 
-            } 
-        
-            def orgModel = [
-            
-                fetchList: { o->
-                    def list = service.getOrgClasses().collect {[
-                        name:it.name.toLowerCase(),
-                        caption:it.title,
-                        icon:'home/icons/folder.png',
-                        parentclass:it.parentclass, 
-                        handler: it.handler
-                    ]}
-                    def resultlist = []; 
-                    resultlist.addAll(actions);
-                    resultlist.addAll(list);
-                    return resultlist;
-                },
-            
-                onOpenItem: { o->
-                    if (o.invoker) { 
-                        return Inv.createOpener(o.invoker); 
-                    } 
-                
-                    def opener = null;
-                    try {
-                        opener = Inv.lookupOpener( o.name+":manage", [:] );
-                    }
-                    catch(e){;};
-                    
-                    if(!opener) {
-                        opener = Inv.lookupOpener( "org:manage", [entityName: o.name, title: o.caption, parentclass:o.parentclass, handler:o.handler]);
-                    }
-                    return opener;    
-                }
-                
-            ] as TileViewModel;
-        }
-   ]]>
-   </code>
-   
-   <pages>
-       <page template="com.rameses.admin.org.OrgMainPage" />
-   </pages>
+    <code class="com.rameses.admin.models.OrgMainModel" />
+    <pages>
+       <page template="com.rameses.admin.views.OrgMainPage" />
+    </pages>
 </workunit>

@@ -1,0 +1,12 @@
+<workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
+          processName="obo_application_section" schemaName="obo_application_section"
+          allowDelete="false" allowNotify="false">
+    <invokers>
+        <invoker type="obo_application_section:list" caption="OBO Application Section"
+             formTitle="#{query.title}"   
+             windowTitle="#{query.title}"
+             formId="obo:#{query.type}"
+             cols="app.appno,app.apptype,app.appdate,app.owner.name,app.description"
+                action="init" index="-1"/>
+    </invokers>
+</workunit>

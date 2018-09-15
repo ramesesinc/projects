@@ -13,11 +13,8 @@ class EntityJuridicalPersistenceInterceptor  {
 	@Service('SequenceService')
     def seqSvc;
 
-	@Service("LOVService")
-	def LOV;
-
-	@Service("PersistenceService")
-	def persistenceSvc; 
+	@Service("JuridicalEntityNameMatchService")
+	def matchSvc;
 
 	
 	@DataContext("entity_address")
@@ -30,6 +27,20 @@ class EntityJuridicalPersistenceInterceptor  {
 	public void beforeSave(def evt ) {
 		def o = evt.args[0];
 		o.entityname = o.name;
+	}
+
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityjuridical'}", index=101)
+	public void beforeSaveCreate(def evt ) {
+		def o = evt.args[0];
+
+		//check if there are name matches
+		if( !o.ignore_warning ) {
+			def list = matchSvc.getMatches( [name:o.name]);
+			if(list) {
+				throw new Warning("entityjuridical:matchname:warning", [list: list] );
+			}
+		}
+		throw new Exception("warning is ignored!");
 	}
 
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'entityjuridical'}", index=101)
@@ -59,15 +70,6 @@ class EntityJuridicalPersistenceInterceptor  {
 	public void afterCreate(def evt ) {
 		def o = evt.args[0];
 		addressEm.find([objid: o.address.objid]).update([parentid: o.objid]);
-	}
-
-
-	@After(pattern="PersistenceService.read", eval="#{args[0]._schemaname == 'entityjuridical'}")
-	public void afterOpen(def evt) {
-		def o = evt.result;
-		if( o?.orgtype ) {
-			o.orgtypename = LOV.ORG_TYPES[o.orgtype];
-		}
 	}
 
 	@After( pattern="ListService.getList", eval="#{args[0].name == 'entitytype'}", index=10 )

@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+        allowCreate="false" allowRemove="false"
+          schemaName="entityprofile">
+    <invokers>
+        <invoker folderid="/home/entity" 
+                caption="Online Profile List" index="-50"
+                cols="idno,lastname,firstname,middlename,birthdate" action="init" />
+    </invokers>
+    <code class="com.rameses.entity.models.EntityProfileListModel" />
+</workunit>

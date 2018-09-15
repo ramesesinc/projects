@@ -1,0 +1,9 @@
+<schema>
+	
+	<element tablename="business_application_retire_lob">
+		<field name="objid" primary="true"/>
+		<field name="applicationid" />
+		<field name="businesslobid" />
+	</element>
+
+</schema>

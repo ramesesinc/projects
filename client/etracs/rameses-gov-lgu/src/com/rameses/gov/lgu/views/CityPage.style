@@ -1,0 +1,4 @@
+"entity.(code|name|indexno|pin)" [ 1==1 ] {
+    editable: false;
+    enabled: false;
+}

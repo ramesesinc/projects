@@ -1,0 +1,91 @@
+<workunit>
+    <invokers>
+         <invoker folderid="/home/business" caption="Pre Assessment" 
+            action="init" target="window" role="ASSESSOR"/>
+
+         <invoker type="lobActions" caption="Add" action="lob.add" immediate="true"/>
+         <invoker type="lobActions" caption="Remove" action="lob.remove" immediate="true" 
+            visibleWhen="#{lob.selectedItem!=null}" depends="lob.selectedItem"/>
+         
+         <invoker type="formActions" caption="Assess" action="calculate" />
+         <invoker type="formActions" caption="Print Assessment" action="print" icon="print"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.bpls.models.*;
+        
+        class PreAssessmentController {
+        
+            @Binding 
+            def binding;
+            
+            @Script("BusinessLobUtil")
+            def lob;
+            
+            @Script("BusinessApplicationUtil")
+            def application;
+            
+            @Script("BusinessAssessmentInfoUtil")
+            def assessmentInfo;
+            
+            @Script("BusinessInfoUtil")
+            def appinfo;
+            
+            def orgTypes = LOV.ORG_TYPES;
+            def appTypes = ['NEW', 'RENEW', 'RETIRE'];
+            def addressTypes = ["local", "nonlocal", "rented", "government"];
+             
+            String title = "Preassessment";
+            
+            @FormTitle
+            def ftitle = "Business Pre-assessment";
+            
+            def entity = [lobs:[], business:[address:[:]], taxfees:[]];
+            
+            void init() {
+                application.load();
+            }
+            
+            void calculate() {
+                lob.verify();
+                Modal.show(appinfo.update());
+                appinfo.verify();
+                Modal.show(assessmentInfo.calculate());
+                if ( entity.taxfees ) {
+                    assessmentInfo.runBill(entity.billdate); 
+                    
+                    entity.taxfees.each{ 
+                        if (it.taxfeetype=='TAX') { 
+                            it.sortindex=0; 
+                        } else if (it.taxfeetype=='REGFEE') { 
+                            it.sortindex = (it.lob?.objid? 1: 2); 
+                        } else if (it.taxfeetype=='OTHERCHARGE') { 
+                            it.sortindex = (it.lob?.objid? 3: 4); 
+                        } else { 
+                            it.sortindex = 5; 
+                        } 
+                    }
+                    entity.taxfees.sort{ it.sortindex } 
+                } 
+            } 
+            
+            def print() { 
+                return Inv.lookupOpener("business:preassessment:printout", [entity: entity] );            
+            }
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.PreAssessmentPage"/>
+    </pages>
+        
+</workunit>

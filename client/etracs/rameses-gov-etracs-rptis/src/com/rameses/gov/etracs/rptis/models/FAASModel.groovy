@@ -216,6 +216,8 @@ public class FAASModel
     }
     
     def popupChangeInfo(def inv) {
+        getEntity()._showOldSketch = getShowOldSketch()
+        getEntity()._showNewSketch= getShowNewSketch()
         def popupMenu = new PopupMenuOpener();
         def list = InvokerUtil.lookupOpeners( inv.properties.category, [entity:getEntity()] ).findAll{
             def vw = it.properties.visibleWhen;
@@ -227,6 +229,21 @@ public class FAASModel
         return popupMenu;
     }
     
+    def getShowOldSketch() {
+        def show = false; 
+        if (service.isOldSketch([objid:entity.objid])) {
+            show = true;
+        }
+        return show;
+    }
+
+    def getShowNewSketch() {
+        def show = false;
+        if (!service.isOldSketch([objid:entity.objid])) {
+            show = true;
+        }
+        return show;
+    }
     
     /*===============================================
      *

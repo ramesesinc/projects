@@ -1,0 +1,6 @@
+<workunit extends="wtemplates/ListController.xml" serviceName="BusinessLessorService" 
+            entityName="government_lessor" autoSelect="true" tag="government">
+    <invokers>
+        <invoker folderid="/explorer/master/bpls" caption="Government Property List"  index="4" role="MASTER" />
+    </invokers>
+</workunit>

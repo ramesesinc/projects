@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="lobclassification">
+    <invokers>
+        <invoker type="lobclassification:lookup" caption="Lookup Line of Business Classification" 
+                 action="init"  cols="objid,name"  
+                 target="popup"/>
+    </invokers>
+</workunit>

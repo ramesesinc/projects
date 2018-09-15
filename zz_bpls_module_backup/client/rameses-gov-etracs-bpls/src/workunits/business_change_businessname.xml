@@ -1,0 +1,77 @@
+<workunit>
+    <invokers>
+        <invoker type="business:change" caption="Change Business Name" action="initBusinessname" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changename" index="0" target="popup"/>
+
+        <invoker type="business:change" caption="Change Trade Name (Registered Name)" action="initTradename" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changename" index="1" target="popup"/>
+        
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class ChangeBusinessNameController  {
+        
+            @Service("BusinessChangeService")
+            def service;
+                        
+            def entity;
+            def task;
+            def handler;
+            def entry;
+            def title;
+                        
+            void initBusinessname() {
+                entry = [:];
+                entry.businessid = entity.objid;
+                entry.applicationid = entity.currentapplicationid;
+                entry.oldvalue = entity.businessname;
+                title = "Change Business Name";
+                entry.changetype = "CHANGE-BUSINESSNAME";
+            }
+            
+            void initTradename() {
+                entry = [:];
+                entry.businessid = entity.objid;
+                entry.applicationid = entity.currentapplicationid;
+                entry.oldvalue = entity.tradename;
+                title = "Change Registered Name (DTI,SEC,CDA)";
+                entry.changetype = "CHANGE-TRADENAME";
+            }
+
+            def doOk() {
+                def txt = "Please final check if edits are correct. Click Yes to proceed.";
+                if( !MsgBox.confirm(txt) ) return;
+            
+                if( entry.changetype == 'CHANGE-BUSINESSNAME') {
+                    service.updateBusinessName(entry);
+                    entity.businessname = entry.newvalue;
+                }  
+                else {
+                    service.updateTradename(entry);
+                    entity.tradename = entry.newvalue;
+                }
+                if(handler) handler(false);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }        
+
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.amend.ChangeBusinessName"/>
+    </pages>
+    
+</workunit>

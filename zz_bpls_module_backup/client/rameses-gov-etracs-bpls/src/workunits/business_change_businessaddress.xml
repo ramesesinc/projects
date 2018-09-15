@@ -1,0 +1,88 @@
+<workunit>
+    <invokers>
+        <invoker type="business:change" caption="Change Business Address" action="initChange" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changeaddress" index="3" target="popup"/>
+        <invoker type="business:change" caption="Transfer Business Address" action="initTransfer" 
+                 role="BUSINESSINFO,ASSESSOR" permission="business.changeaddress" index="4" target="popup"/>
+    </invokers>
+    
+    <code>
+         <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.util.*;
+        
+        public class ChangeBusinessAddressController  {
+        
+            @Service("BusinessChangeService")
+            def service;
+                        
+            @Script("BusinessAddressUtil")
+            def address;
+            
+            def entity;
+            def oldEntity;
+            def title;
+            def handler;
+            def entry;
+                        
+            void initChange() {
+                title = "Change Business Address";
+                oldEntity = entity;
+                entity = [objid:oldEntity.objid, business: [address:[type:'local']]];
+                if( oldEntity.address?.objid ) {
+                    entity.business.address.putAll( oldEntity.address );
+                }
+                address.load();
+                entry = [:];
+                entry.changetype = 'CHANGE-BUSINESS-ADDRESS';
+                entry.oldvalue = oldEntity.address.text?.replace('\n',',');
+            }
+            
+            void initTransfer() {
+                title = "Transfer To New Business Address";
+                oldEntity = entity;
+                entity = [objid:oldEntity.objid, business:[address:[:]]];
+                
+                address.load();
+                entry = [:];
+                entry.changetype = 'TRANSFER-BUSINESS-ADDRESS';
+                entry.oldvalue = oldEntity.address.text?.replace('\n',',');
+            }
+
+            def doOk() {
+                def txt = "Please final check if edits are correct. Click Yes to proceed.";
+                if( !MsgBox.confirm(txt) ) return;
+                address.verify();
+                entry.businessid = oldEntity.objid;
+                entry.applicationid = oldEntity.currentapplicationid;
+                entry.newvalue = entity.business.address.text?.replace('\n',',');
+                entry.address = entity.business.address;
+                def addr = null;
+                if( entry.changetype == 'CHANGE-BUSINESS-ADDRESS') {
+                    addr = service.updateBusinessAddress(entry);
+                }  
+                else {
+                    addr = service.transferBusinessAddress(entry);
+                }
+                oldEntity.address = addr;
+                if(handler) handler(false);
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }        
+
+        }
+        ]]>
+    </code>    
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.amend.ChangeBusinessAddress"/>
+    </pages>
+    
+</workunit>

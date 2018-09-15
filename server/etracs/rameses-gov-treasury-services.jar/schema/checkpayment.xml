@@ -19,11 +19,18 @@
 
 		<!-- these fields refer to deposit -->
 		<field name="depositvoucherid" />
+		<field name="fundid" />
 		<field name="depositslipid" />
 		<field name="split"  type="integer" defaultValue="0"/>
 
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
 
+		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,name">
+			<key field="fundid" target="objid" />
+		</complex>
+
+		<field name="deposited" expr="CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END" />
+		<field name="external" />
 	</element>
 
 

@@ -134,6 +134,12 @@ class LandRPUGRService
 		else {
 			deletedItems.add( la )
 		}
+
+		la.params.each{
+			it.objid = 'AD' + new java.rmi.server.UID()
+			it.landadjustmentid = la.objid 
+			it.landrpuid = la.landrpuid 
+		}
 	}
 
 	def getRevisedAdjustment(rpu, la){

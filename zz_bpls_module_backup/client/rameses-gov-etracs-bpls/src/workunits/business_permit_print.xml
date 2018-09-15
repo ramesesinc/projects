@@ -1,0 +1,140 @@
+<workunit extends="wtemplates/SimpleReportController.xml" >
+    <invokers>
+       <invoker type="business_permit:print" index="50" action="printReport"/>    
+       <invoker type="business_permit:open" index="50" action="openReport" target="window"/>    
+       
+       <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" /> 
+       <invoker type="formActions" caption="Update Plate No." action="updatePlateno"  /> 
+       <invoker type="formActions" caption="Update Remarks" action="updateRemarks"  /> 
+       <invoker type="formActions" caption="Issue Official Permit" action="issueOfficialPermit" visibleWhen="#{canIssueOfficialPermit == true}" /> 
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import java.text.SimpleDateFormat;
+        import com.rameses.osiris2.reports.*;
+        
+        class  BusinessPermitReportController extends ReportController {
+        
+            @Service("BusinessPermitService") 
+            def permitSvc;
+            
+            def entity;
+            def data = [:];
+            def title = "Business Permit"
+
+            String reportpath = "com/rameses/gov/etracs/bpls/reports/permit/"            
+            String stdReportName = reportpath + "BusinessPermit.jasper";            
+            String tmpReportName = reportpath + "BusinessPermit_Temporary.jasper";
+                        
+            @FormId
+            def formId
+            
+            @FormTitle
+            def formTitle
+            
+            def applicationid;
+            def permittype;
+            
+            boolean isDynamic() {
+                return true; 
+            } 
+            
+            String getReportName() { 
+                if ( permittype.toString().equalsIgnoreCase('TEMPORARY')) { 
+                    return tmpReportName; 
+                } else {
+                    return stdReportName; 
+                } 
+            } 
+                                                                                                                        
+            def getReportData() { 
+                data = permitSvc.getReport([ applicationid: applicationid ]); 
+                if ( data.permittype ) permittype = data.permittype;                 
+                if ( data.photo ) {
+                    try {
+                        data.photo = new java.io.ByteArrayInputStream( data.photo );
+                    } catch(e) {
+                        data.photo = null;
+                    } 
+                }
+                return data;
+            }
+            
+            def printReport() {
+                applicationid = entity.objid;
+                permittype = entity.permit?.permittype;
+                return preview(); 
+            } 
+            
+            def openReport() {
+                formId = entity.objid;
+                formTitle = entity.permitno;
+                permittype = entity.permittype;
+                applicationid = entity.applicationid;
+                preview(); 
+            } 
+
+            SubReport[] getSubReports(){ 
+                return [
+                    new SubReport("BusinessPermitLOB", reportpath + "BusinessPermitLOB.jasper"),
+                    new SubReport("BusinessPermitOR", reportpath + "BusinessPermitPayment.jasper")
+                ] as SubReport[]
+            }
+            
+            void updatePlateno() {
+                def p = MsgBox.prompt( 'Enter updated Plate No:' );
+                if(!p) return;
+                
+                def permitid = entity.permit?.objid; 
+                if ( !permitid ) permitid = entity.objid;
+                
+                permitSvc.updatePlateno([objid: permitid, plateno: p]);
+                preview();
+            }
+            
+            void updateRemarks() { 
+                def permitid = entity.permit?.objid; 
+                if ( !permitid ) permitid = entity.objid;            
+                
+                def h = { o->
+                    permitSvc.updateRemarks([ objid: permitid, remarks: o ]);
+                    preview();
+                }
+                Modal.show( "remarks:update", [handler: h, remarks: entity.remarks] );
+            } 
+            
+            boolean isCanIssueOfficialPermit() {
+                return permittype.toString().equalsIgnoreCase('TEMPORARY'); 
+            } 
+            
+            void issueOfficialPermit() { 
+                def m = [ applicationid: data.applicationid, businessid: data.businessid ];
+                def resp = permitSvc.init( m ); 
+                def prevplateno = resp?.prevplateno;
+
+                boolean pass = false;                                   
+                def h = { o->
+                    m.plateno = o.plateno;
+                    m.remarks = o.remarks;
+                    m.permitid = data?.objid; 
+                    resp = permitSvc.issueOfficialPermit( m ); 
+                    if ( resp?.permittype ) { 
+                        permittype = resp.permittype; 
+                        if ( entity.permit ) entity.permit.permittype = permittype; 
+                        if ( entity.permittype ) entity.permittype = permittype;
+                    } 
+                    pass = true; 
+                }
+                Modal.show( "businessplate:ask", [handler: h, entity: [plateno: prevplateno], allowTypeSelection: false]);
+                if ( pass ) preview(); 
+            } 
+         }   
+        ]]>
+    </code>
+</workunit>

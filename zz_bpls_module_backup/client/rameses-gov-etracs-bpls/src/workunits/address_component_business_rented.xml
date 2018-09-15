@@ -1,0 +1,94 @@
+<workunit>
+    <invokers>
+        <invoker type="address:component:type" caption="Rented Location" index="-10" role="BUSINESSINFO"
+            key="rented" tags="BUSINESS" action="initOwned"/>
+            
+        <invoker type="address:component:type" caption="Government Property" index="-5" role="BUSINESSINFO"
+            key="government" tags="BUSINESS" action="initGov"/>  
+            
+
+        <invoker type="address:component:rented" caption="Rented Location" index="-10" action="initOwned"/>
+        <invoker type="address:component:government" caption="Government Property" index="-5" action="initGov"/>  
+
+   </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.bpls.business.*;
+        
+        class  BusinessAddressRented {
+        
+            @Binding 
+            def binding;
+            
+            @Service("BusinessLessorService")
+            def bldgSvc;
+            
+            def entity;
+            def bldgModel;
+            int government;
+            
+            def handler = { o->
+                entity.unitno = o.unitno;
+                entity.bldgno = o.bldgno;
+                entity.bldgname = o.bldgname;
+                entity.street = o.street;
+                entity.subdivision = o.subdivision;
+                entity.barangay = o.barangay;
+                entity.lessor = o.lessor;
+                entity.rentedaddressid = o.objid;
+                entity.pin = o.pin;
+                binding.refresh( "entity.*" );
+            }
+            
+            void init() {
+               if(!entity.building) entity.building = [:];
+               if(!entity.building.lessor) entity.building.lessor = [address:[:]];
+                bldgModel = [
+                    fetchList: {o->
+                        o.government = entity.government;
+                        return bldgSvc.getList(o);
+                    },
+                    onselect: handler
+                ] as SuggestModel;
+            }
+
+            void initOwned() {
+                init();
+                entity.government = 0;
+                entity.type = 'rented';
+                government = 0;
+            }   
+
+            void initGov() {
+                init();
+                entity.government = 1;
+                entity.type = 'government';
+                government = 1;
+            }   
+
+            def addBldg() {
+                return Inv.lookupOpener( "business_lessor:create", [ handler: handler, government: entity.government ] );
+            }
+            
+            void refresh() {
+                entity.government = government;
+                if(binding) binding.refresh();
+            }
+
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.address.RentedAddress"/>
+    </pages>
+    
+</workunit>

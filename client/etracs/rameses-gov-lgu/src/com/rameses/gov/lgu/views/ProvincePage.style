@@ -1,0 +1,8 @@
+"entity.(code|name|indexno|pin)" [ 1==1 ] {
+    editable: false;
+    enabled: false;
+}
+"entity.parent.(code|name|indexno|pin)" [ 1==1 ] {
+    editable: false;
+    enabled: false;
+}

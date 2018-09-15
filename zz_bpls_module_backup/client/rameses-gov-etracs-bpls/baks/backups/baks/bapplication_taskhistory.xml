@@ -1,0 +1,40 @@
+<workunit>
+    <invokers>
+        <invoker type="business_application:formActions"  caption="View Task History" visibleWhen="#{entity!=null}" index="50" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+         import com.rameses.osiris2.reports.*;
+        
+        class  BusinessApplicationTaskHistoryController  {
+        
+            @Service("BusinessApplicationService") 
+            def service
+         
+            def entity;
+            
+            def listModel = [
+                fetchList: { o->
+                    return service.getTaskList(entity);
+                }
+            ] as BasicListModel;
+           
+            def doClose() {
+                return "_close";
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.application.ApplicationTaskHistory"/>
+    </pages>
+    
+</workunit>

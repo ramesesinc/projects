@@ -1,0 +1,28 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <!--
+       <invoker type="cashreceipt:business:formActions" caption="Print Details" 
+        action="doPrint" target="process" visibleWhen="#{completed}"/>
+       <invoker type="cashreceiptinfo:formActions" action="doPrint" 
+        caption="Print Business Details" target="process"/>
+        -->
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        
+        class  BusinessCashReceiptController  {
+            void doPrint() {
+                MsgBox.alert("do print details");
+            }
+        }
+        ]]>
+        
+    </code>
+    
+    
+</workunit>

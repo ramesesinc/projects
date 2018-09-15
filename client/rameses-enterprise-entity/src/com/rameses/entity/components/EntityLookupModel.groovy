@@ -33,6 +33,9 @@ class EntityLookupModel extends ComponentBean {
         def params = [:]; 
         String obj = "entity";
         def etype = getEntityType();
+        
+        
+        
         if(etype == null ) {
             //do nothing...
         }

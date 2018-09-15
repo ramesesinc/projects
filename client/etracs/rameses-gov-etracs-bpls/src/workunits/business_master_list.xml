@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="business" allowCreate="false" allowDelete="false">
+    <invokers>
+        <invoker folderid="/menucategory/business/acct" caption="Business Master List" role=".*" 
+                cols="bin,businessname,owner.name,address.text,orgtype"
+                action="init"/>
+    </invokers>
+    <pages>
+        <page name="1queryform" template="com.rameses.gov.etracs.bpls.business.BusinessListQueryForm"/>
+    </pages>
+</workunit>

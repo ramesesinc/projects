@@ -22,30 +22,25 @@ class DepositSlipInitialModel {
     def queryService;
     
     def entity;
-    def limit; //the maximum amount
-    def handler;
-    def depositvoucher;
-    def fundid; 
+    def depositvoucherfund;
     
     def selectedCheck;
     def checkList;
-    
+    def handler;
     
     void create() {
        entity = [:];
        entity.state = "DRAFT";
-       entity.depositvoucherid = depositvoucher.objid;
-       entity.fundid = fundid;
+       entity.depositvoucherfundid = depositvoucherfund.objid;
        entity.totalcash = 0;
        entity.totalcheck = 0;
        entity.cashbreakdown = [];
        entity.numcheckslimit = 0;
-       entity.amount = depositvoucher.amount - depositvoucher.amountdeposited;
-       limit = entity.amount;
+       entity.amount = depositvoucherfund.amount - depositvoucherfund.amountdeposited;
        
        def m = [_schemaname: 'checkpayment'];
-       m.findBy = [depositvoucherid: depositvoucher.objid];
-       m.where = [ "depositslipid IS NULL "];
+       m.findBy = [depositvoucherid: depositvoucherfund.parentid];
+       m.where = [ "depositslipid IS NULL AND fundid = :fundid", [fundid: depositvoucherfund.fundid ]];
        m.orderBy = "refno";
        checkList = queryService.getList( m );
     } 
@@ -66,13 +61,10 @@ class DepositSlipInitialModel {
     
     
     def save() {
-        if( balance != 0 )
-            throw new Exception("Please ensure that there are no balances remaining" );
-        if( entity.amount > limit ) throw new Exception("Total amount must be less than "+limit);
-        
+        entity.amount = entity.totalcash + entity.totalcheck;
         entity.checks = checkList.findAll{ it.selected == true }.collect{ [amount:it.amount, checkid: it.objid, deposittype: it.bank.deposittype] };
         def r = depositSlipSvc.create( entity );
-        if(caller)caller.updateVoucher(r.amountdeposited);
+        handler(r)
         return "_close";
     }
     
@@ -81,6 +73,7 @@ class DepositSlipInitialModel {
            entity.bankaccount = o;
            binding.refresh("bankaccount.*");
        }
+       def fundid = depositvoucherfund.fund.objid;
        return Inv.lookupOpener("bankaccount:lookup", [fundid: fundid, onselect: h] );
    } 
     

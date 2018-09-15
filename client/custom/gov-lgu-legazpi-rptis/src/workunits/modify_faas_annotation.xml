@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faasannotation:formActions" 
+            action="init" caption="Modify Receipt" 
+            role="ADMIN" 
+            permission="faasannotation.modify-receipt" 
+            visibleWhen="#{entity.state == 'APPROVED'}"
+            target="popup" />
+    </invokers>
+    <code class="gov.lgu.legazpi.rptis.models.ModifyAnnotationModel" />
+    <pages>
+        <page template="gov.lgu.legazpi.rptis.views.ModifyAnnotationPage" />
+    </pages>
+</workunit>

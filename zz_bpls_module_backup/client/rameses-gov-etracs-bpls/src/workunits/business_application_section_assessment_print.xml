@@ -1,0 +1,7 @@
+<workunit extends="wtemplates/SimpleReportController.xml" >
+    <invokers>
+        <invoker type="business_application:assessment:print" caption="Assessment" action="preview" index="-8888"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessAssessmentReportController"/>    
+</workunit>

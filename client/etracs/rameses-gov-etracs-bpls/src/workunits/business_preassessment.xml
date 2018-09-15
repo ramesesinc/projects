@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-         <invoker folderid="/home/business" caption="Pre Assessment" 
+         <invoker folderid="/menucategory/business/misc" caption="Pre Assessment" 
             action="init" target="window" role="ASSESSOR"/>
 
          <invoker type="lobActions" caption="Add" action="lob.add" immediate="true"/>

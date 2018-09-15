@@ -1,0 +1,13 @@
+<!--
+<workunit extends="wtemplates/ListController.xml" serviceName="BarangayService" entityName="barangay">
+    <invokers>
+        <invoker type="barangay:manage" caption="Barangay" index="5"/>
+    </invokers>
+</workunit>
+-->
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="barangay" showSyncUpload="true">
+    <invokers>
+        <invoker type="barangay:manage" caption="Barangay" index="5" 
+                 cols="objid,name,code,indexno,pin,parent.name,parent.code,parent.orgclass" action="init"/>
+    </invokers>
+</workunit>

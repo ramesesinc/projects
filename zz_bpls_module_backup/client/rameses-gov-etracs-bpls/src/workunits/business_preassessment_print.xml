@@ -1,0 +1,82 @@
+<workunit>
+    <invokers>
+        <invoker type="business:preassessment:printout" caption="Preassessment" action="viewReport" />
+        <invoker type="formActions" caption="Back" action="_close" />
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import java.rmi.server.*;
+        import com.rameses.osiris2.reports.*;
+        
+        class  BusinessPreAssessmentReportController  {
+        
+            @Service("ReportParameterService") 
+            def paramsvc
+        
+            def entity;
+            def title = "Business Preassessment Printout"
+            def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    
+            def reportPath = "com/rameses/gov/etracs/bpls/reports/preassessment/"
+            
+            void viewReport() {
+                if (entity.dateapplied) { 
+                    if (entity.dateapplied instanceof java.util.Date) { 
+                        //do nothing 
+                    } else { 
+                        entity.dateapplied = df.parse( entity.dateapplied ); 
+                    } 
+                }    
+                if (entity.billdate) {
+                    if (entity.billdate instanceof java.util.Date) { 
+                        //do nothing 
+                    } else { 
+                        entity.billdate = df.parse( entity.billdate ); 
+                    } 
+                } 
+                entity.infos = entity.appinfos + entity.assessmentinfos.findAll {  
+                    !it.attribute.name.matches('CAPITAL|GROSS') 
+                };
+                entity.taxfees?.each {
+                    it.taxfeetypename = it.taxfeetype;
+                }
+                
+                def lobnames = entity.infos.findAll{( it.lob?.objid )}.collect{ it.lob.objid }.unique(); 
+                entity.infos.findAll{( it.lob?.objid )}.each{ 
+                    it.lob.sortorder = lobnames.indexOf( it.lob.objid ); 
+                }
+                entity.infos.findAll{(! it.lob?.objid )}.each{
+                    if ( !it.lob ) it.lob = [:]; 
+                    
+                    it.lob.sortorder = 999;  
+                    it.lob.name = 'BUSINESS INFOS';
+                } 
+                entity.infos.sort{ it.lob.sortorder } 
+                report.viewReport();
+            } 
+            
+            def report = [
+                getReportName : { return reportPath + "PreAssessment.jasper" },
+                getReportData : { return  entity },
+                getParameters : { return paramsvc.getStandardParameter() },
+                getSubReports : { return [
+                        new SubReport("PreAssessmentInfo", reportPath + "PreAssessmentInfo.jasper"),
+                        new SubReport("PreAssessmentItem", reportPath + "PreAssessmentItem.jasper"),
+                    ] as SubReport[];
+                }
+            ] as ReportModel;
+           
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.osiris2.common.ui.ReportPreviewPage"/>
+    </pages>
+    
+</workunit>

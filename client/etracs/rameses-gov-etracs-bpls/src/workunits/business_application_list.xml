@@ -1,0 +1,18 @@
+<workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
+          processName="business_application"
+          schemaName="business_application" 
+          allowCreate="false"
+          allowNotify="true">
+    <invokers>
+        <invoker folderid="/menucategory/business/app" caption="View Application List"
+            cols="appno,apptype,appyear,appdate,ownername,tradename,business.bin,task.assignee.name,task.state" 
+            xorderBy="appyear DESC,appdate ASC"
+            action="init" role="INFO,ASSESSOR,APPROVER"/>
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessApplicationListModel" />
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.bpls.views.YearQueryForm"/>
+    </pages>
+    
+</workunit>

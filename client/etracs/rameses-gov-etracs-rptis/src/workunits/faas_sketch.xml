@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faas:formActions" action="init" caption="Sketch" index="6" visibleWhen="#{entity._resolve == null || entity._resolve == false}"/>
-        <invoker type="faasmain:formActions" action="init" caption="Sketch" index="6" />
-        <invoker type="sketch:open" action="init" caption="Sketch" index="6" />
+        <invoker type="faas:formActions" 
+                 action="init" caption="Sketch" 
+                 visibleWhen="#{showNewSketch == true}" />
+        
+        <invoker type="faasmain:formActions" 
+                 action="init" caption="Sketch" 
+                  visibleWhen="#{showNewSketch == true}" />
+        
+        <invoker type="sketch:drawing:open" action="initConvert" caption="Convert Sketch" index="6" />
         
         <invoker type="formActions" action="back" caption="Back" mnemonic="B" visibleWhen="#{mode=='read'}"/>
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="C" visibleWhen="#{mode=='edit'}"/>

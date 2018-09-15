@@ -1,0 +1,57 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker xfolderid="/explorer/report/bpls" action="init" caption="BP Collection Report Listing" target="window"  
+            role="REPORT"/>
+        
+    </invokers> 
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BPCollectionListingReportController extends ReportController  
+        {
+        
+            @Service('BPCollectionListingReportService')
+            def svc;
+            
+            @Service('BPReportUtilService')
+            def utilSvc;
+            
+            String title = "BP Collection Report Listing";
+            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+            String reportName = reportpath + 'BPCollectionReport.jasper'
+            
+            def formControl = [
+                getFormControls: {
+                    return [
+                        new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "combo", [caption:'Qtr', name:'entity.qtr', items:'quarters', expression:'#{item.name}', required:true, immediate:true, preferredSize:'150,20', captionWidth:100 ]),
+                        new FormControl( "combo", [caption:'Month', name:'entity.month', items:'monthsByQtr', expression:'#{item.name}', preferredSize:'150,20', captionWidth:100, depends:'entity.qtr', dynamic:true]),
+                        new FormControl( "integer", [caption:'Day', name:'entity.day', preferredSize:'150,20', captionWidth:100]),
+                        new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100]),
+                    ]    
+                },
+           ] as FormPanelModel; 
+            
+           
+           def getReportData(){
+                return svc.getReport( entity ); 
+            }
+            
+            Map getParameters(){
+                return [
+                    PERIOD      :   utilSvc.buildPeriod(entity.year, entity.qtr, entity.month, entity.day ),
+                    BARANGAY    :   ( entity.barangay  ? entity.barangay.name : 'ALL' )
+                ] 
+           }
+            
+        }
+    ]]>
+    </code>
+    
+</workunit>

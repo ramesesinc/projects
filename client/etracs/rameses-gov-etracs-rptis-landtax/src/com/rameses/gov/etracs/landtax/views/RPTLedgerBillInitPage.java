@@ -72,20 +72,20 @@ public class RPTLedgerBillInitPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xSeparator1);
 
-        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCaption("");
+        xCheckBox1.setName("bill.advancebill"); // NOI18N
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setCaptionWidth(20);
         xCheckBox1.setCellPadding(new java.awt.Insets(5, 0, 0, 0));
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox1.setName("bill.advancebill"); // NOI18N
         xCheckBox1.setText("Is Advance Billing?");
         xFormPanel1.add(xCheckBox1);
 
         xDateField1.setCaption("Advance Billing Date");
+        xDateField1.setDepends(new String[] {"bill.advancebill"});
+        xDateField1.setName("bill.billdate"); // NOI18N
         xDateField1.setCaptionWidth(120);
         xDateField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xDateField1.setDepends(new String[] {"advancebill"});
-        xDateField1.setName("bill.billdate"); // NOI18N
         xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
         xFormPanel1.add(xDateField1);
 

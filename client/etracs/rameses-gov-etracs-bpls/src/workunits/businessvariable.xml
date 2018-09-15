@@ -1,85 +1,16 @@
 <workunit>
     <invokers>
-        <invoker type="businessvariable:open" action="open" caption="Business Variable"/>
-        <invoker type="businessvariable:create" action="init" caption="Business Variable" 
-                role="MASTER" permission="businessvariable.create"/>
+        
+        <invoker type="businessvariable:open" action="open" 
+                 caption="Business Variable" role="MASTER"
+                 target="popup"   />
+        
+        <invoker type="businessvariable:create" action="create" 
+                 caption="Business Variable" role="MASTER"
+                 target="popup" />
     </invokers>
-    <code>
-    <![CDATA[
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import com.rameses.osiris2.common.*;
-
-class BusinessVariableController extends CRUDController {
-
-    String serviceName = 'BusinessVariableService'
-    String entityName = 'businessvariable'
-    String prefixId = 'BV'
-    def arrayvalue
-    def datatypes = LOV.VAR_DATA_TYPES
-    def vartype = 'USER-DEFINED';
-
-    @PropertyChangeListener
-    def listener = [
-        "entity.datatype": {o->
-            entity.arrayvalues = []
-            binding.refresh('arrayvalue')
-        }
-    ]
-    
-    public Map getCreatePermission() { 
-        return [role:'MASTER', permission: entityName + '.create']; 
-    }
-    public Map getEditPermission() { 
-        return [role:'MASTER', permission: entityName + '.edit']; 
-    } 
-    public Map getDeletePermission() { 
-        return [role:'MASTER', permission: entityName + '.delete']; 
-    }     
-
-    public boolean isAllowEdit() {
-        return (entity.system==1) ? false: super.isAllowEdit();
-    }
-
-    public boolean isAllowCreate() {
-        return (entity.system==1) ? false: super.isAllowCreate();
-    }
-
-    public boolean isAllowApprove() {
-        return (entity.system==1) ? false: super.isAllowApprove();
-    }
-
-    public boolean isAllowDelete() {
-        return (entity.system==1) ? false: super.isAllowDelete();
-    }
-
-    void afterOpen(o) {
-        vartype = (o.system==1) ? 'SYSTEM' : 'USER-DEFINED';  
-    }
-
-    Map createEntity() {
-        return [ system:0, arrayvalues:[] ]
-    }
-
-    void addArrayValue() {
-        def value = MsgBox.prompt("Enter value: ")
-        if( !value || value == 'null' ) return
-        if( !entity.arrayvalues.find{ it == value } ) {
-            entity.arrayvalues.add(value.toUpperCase())
-            binding.refresh('arrayvalue')
-        }
-    }
-
-    void removeArrayValue() {
-        if( MsgBox.confirm("Remove selected array value?") ) {
-            entity.arrayvalues.remove(arrayvalue)
-            binding.refresh('arrayvalue')
-        }
-    }
-}
-    ]]>
-    </code>
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessVariableModel" />
     <pages>
-        <page template="com.rameses.gov.etracs.bpls.BusinessVariablePage"/>
+        <page template="com.rameses.gov.etracs.bpls.views.BusinessVariablePage"/>
     </pages>
 </workunit>

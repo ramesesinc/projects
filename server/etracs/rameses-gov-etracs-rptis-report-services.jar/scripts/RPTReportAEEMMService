@@ -37,6 +37,11 @@ class RPTReportAEEMMService
 		util.buildStartEndDateFilter(params)
 
 		params.filter = ''
+		
+		if (params.ry){
+			params.filter += ' AND rp.ry =  $P{ry} ' 
+		}
+
 		if (params.lgu){
 			params.filter += ' AND f.lguid = $P{lguid} ' 
 			params.lguid = params.lgu.objid 

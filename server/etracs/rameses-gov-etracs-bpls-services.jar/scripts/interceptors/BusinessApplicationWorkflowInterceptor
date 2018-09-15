@@ -1,0 +1,65 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+
+public class BusinessApplicationWorkflowInterceptor {
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@Service("OrgService")
+	def orgSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("business_application_requirement")
+	def bizReq;
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'business_application' }", index=0)
+	public void beforeSignal( def evt ) {
+		def o = evt.args[0];
+		def appid = o.refid;
+		//check if there are requirements that need to be completed.
+		def list = bizReq.find( [applicationid: appid ] ).where(" type.requiredstate = :state AND (completed IS NULL OR completed=0) ", [state: o.taskstate] ).list()
+		if(list) {
+			def buff = new StringBuffer();
+			def str = list*.type.title.join("\n");
+			throw new Exception("The following requirements are not yet verified \n" + str);
+		}	
+	}
+
+	@After(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'business_application' }", index=0)
+	public void afterSignal( def evt ) {
+		def o = evt.args[0];
+		def appid = o.refid;
+
+		//fire requirements 
+		bizReq.debug = true;
+		def list = bizReq.find( [applicationid: appid ] ).where(" type.requiredstate = :state AND (completed IS NULL OR completed=0) AND type.type = 'WORKFLOW'  ", [state: o.to] ).list();
+		if( list ) {
+			list.each {
+				def m = [:];
+				m.refid = it.objid;
+				m.processname = 'business_application_requirement';
+				wfSvc.start(m);
+			}
+		}
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'business_application' && args[0].taskstate == 'assessment' && args[0].to == 'approval' }", index=1)
+	public void beforeShiftAssessment( def evt ) {
+		def o = evt.args[0];
+		throw new Exception("Check if there are assessment items")
+
+		println o;
+		def appid = o.refid;
+		def currState = o.taskstate;
+		def nextState = o.to;
+		def action = o.action;
+		throw new Exception("stop signal")
+	}
+
+
+}

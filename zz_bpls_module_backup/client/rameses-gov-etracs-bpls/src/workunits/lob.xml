@@ -1,0 +1,14 @@
+<workunit schemaName="lob">
+    <invokers>       
+        <invoker type="quick_launcher" code="LOB01" action="create" caption="Line of Business" 
+                 role="MASTER" target="popup"/>
+        <invoker type="lob:open" action="open" caption="Line of Business" 
+                role="MASTER" target="popup" />
+        <invoker type="lob:create" action="create" caption="Line of Business" 
+                 role="MASTER" permission="lob.create" target="popup" />
+    </invokers>
+    <code class="com.rameses.gov.etracs.bpls.models.LobModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.LobPage"/>
+    </pages>
+</workunit>

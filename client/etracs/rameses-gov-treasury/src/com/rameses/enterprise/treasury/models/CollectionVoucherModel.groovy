@@ -61,6 +61,17 @@ class CollectionVoucherModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
+    def fundTransferHandler = [
+        fetchList: { o->
+            def m = [_schemaname:'collectionvoucher_fund_transfer'];
+            m.findBy = [parentid: entity.objid];
+            return queryService.getList( m );
+        },
+        onOpenItem: { o,col->
+            //
+        }
+    ] as BasicListModel;
+    
     def viewFund() {
         if( !selectedFund ) throw new Exception("Please select an item")
         def o = selectedFund;

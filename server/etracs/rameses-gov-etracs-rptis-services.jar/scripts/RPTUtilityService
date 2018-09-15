@@ -62,6 +62,8 @@ class RPTUtilityService
 		em.modifyFaasPin(info)
 		em.modifyLedgerPin(info)
 		em.modifyFaasListPin(info)
+		em.modifySubdividedLandPin(info)
+		em.modifySubdivisionAffectedRpu(info)
 		log(info.faasid, info.oldfullpin, info.newpin)
 	}
 

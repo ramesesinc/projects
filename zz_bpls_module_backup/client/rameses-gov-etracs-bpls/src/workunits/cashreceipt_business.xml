@@ -1,0 +1,125 @@
+<workunit extends="wtemplates/gov/treasury/BasicCashReceiptController.xml">
+    <invokers>
+        <invoker type="cashreceipt:bpls" action="init" />
+        <invoker type="cashreceipt:barcode:51005" action="loadBarcode" caption="Cash Receipt Business"/>
+    </invokers>
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.util.*;
+        import com.rameses.enterprise.treasury.cashreceipt.*
+        
+        class  BusinessCashReceiptController extends BasicCashReceipt {
+
+            @Script("BusinessAssessmentInfoUtil")
+            def assessmentInfo;
+
+            @Service("BusinessCashReceiptService")
+            def cashRctSvc;
+            
+            //we specify this so print detail will appear.
+            String entityName = "misc_cashreceipt";
+            String title = "Business Permit and Licensing";
+
+            def barcodeid;
+            def excessAcct;
+            
+            void init() {
+                super.init();
+                boolean pass = false;
+                def m = [:];
+                m.onselect = { o->
+                    entity.putAll( o );
+                    pass = true;
+                }
+                Modal.show( Inv.lookupOpener( "cashreceipt:business:lookup", m ) );
+                if(!pass) throw new BreakException();
+                
+                //load apps
+                def app = [applicationid:entity.applicationid];
+                def z = cashRctSvc.findInfo( app );
+                entity.putAll(z); 
+                loadBilling( entity );
+            }
+            
+            void loadBarcode() {
+                def app = [appno:barcodeid];
+                def m = cashRctSvc.findInfo( app );
+                entity.putAll(m); 
+                loadBilling( entity );
+            }          
+            
+            def loadBilling = { m ->
+                def r = [:];
+                r.app = [apptype:entity.apptype, appyear:entity.appyear, dtfiled:entity.dtfiled, appno:entity.appno]; 
+                r.billdate = entity.receiptdate;
+                r.applicationid = entity.applicationid;
+                r.payment = m.payment; 
+                if ( !r.payment && info ) { 
+                    r.payment = info;
+                } 
+                def z = cashRctSvc.getBillingForPayment( r ); 
+                if (z.excess) {
+                    excessAcct = z.excess.account; 
+                } else {
+                    excessAcct = null; 
+                } 
+                
+                entity.taxfees = z.taxfees;
+                entity.totals = z.totals;
+                entity.expirydate = z.expirydate;
+                entity.items = z.items;             
+                entity.amount = entity.totals.total;
+                assessmentInfo.refresh();
+                super.updateBalances();
+            }
+
+            def showPaymentOption() {
+                def h = { pmt-> 
+                    loadBilling([ payment: pmt ]);
+                }
+                return Inv.lookupOpener("cashreceipt:payoption", [handler:h] );
+            }
+            
+            def showReceipt() {
+                return Inv.lookupOpener("businessreceipt:view", [entity:entity]);
+            }
+            
+            void removeTaxcredits() {
+                def taxcredits = entity.items.findAll{ it.type=='taxcredit' }
+                if (taxcredits) entity.items.removeAll( taxcredits ); 
+            } 
+            
+            void validateBeforePost() {}
+            
+            void beforeUpdateBalance() { 
+                removeTaxcredits(); 
+            } 
+            
+            void postError() {
+                removeTaxcredits();
+            } 
+            
+            void beforePost() { 
+                removeTaxcredits(); 
+                
+                if(entity.totalcredit > 0) {
+                    if (excessAcct?.objid == null) 
+                        throw new Exception('Tax credit account is required. Please check ExcessPayment rule'); 
+                    
+                    entity.items << [item: excessAcct, amount: entity.totalcredit, remarks:'', type:'taxcredit', indexno:200];
+                } 
+            } 
+        } 
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.BPLSCashReceipt"/>
+    </pages>
+    
+</workunit>

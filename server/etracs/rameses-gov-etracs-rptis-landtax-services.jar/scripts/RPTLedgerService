@@ -335,14 +335,14 @@ class RPTLedgerService
             throw new Exception('Ledger does not exist or has already been deleted.')
 
         def pdate = dtSvc.parseCurrentDate();
-        if (util.isTrue(ledger.taxable)) {
+        if (util.isTrue(ledger.taxable) && checkNonZeroAv(ledger)) {
             if ( ledger.lastyearpaid < pdate.year || (ledger.lastyearpaid == pdate.year && ledger.lastqtrpaid < pdate.qtr))
                 throw new Exception('Ledger has not yet been fully paid.')
             if (util.isTrue(ledger.undercompromise))
                 throw new Exception('Ledger is still under compromised.')
         }
         else {
-            em_rptledger.find([objid:ledger.objid]).update([toyear:dtSvc.serverYear, toqtr:4, nextbilldate:null])
+            em_rptledger.find([objid:ledger.objid]).update([lastyearpaid:dtSvc.serverYear, lastqtrpaid:4, nextbilldate:null])
         }
     }       
 
@@ -1078,6 +1078,14 @@ class RPTLedgerService
         }
 
         println 'Remote payment has been successfully posted.'
+    }
+
+
+    def checkNonZeroAv(ledger) {
+        if (ledger.totalav > 0) return true;
+
+        def nonzeroItem = em_rptledger_faas.where("rptledgerid = :objid and state = 'APPROVED' and  assessedvalue > 0 and taxable = 1 ", ledger).first()
+        return nonzeroItem != null
     }
 
 }

@@ -354,7 +354,7 @@ class LandRPUService
 
 
 	void generateParamsId(adj){
-		adj.parameters.each{
+		adj.params.each{
 			it.objid = util.generateId('PRM')
 			it.landadjustmentid = adj.objid 
 		}

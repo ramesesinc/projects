@@ -3,9 +3,22 @@
     <invokers>
          <invoker type="account_maingroup:open" caption="Accounts" action="open" 
             formTitle="Account #{entity.name}" formId="#{entity.objid}"/>
+         
+         
+         <invoker type="formActions" caption="Add Root" action="addRoot"/>
+         <invoker type="formActions" caption="Edit Root" action="editRoot"/>
+         <invoker type="formActions" caption="Remove Root" action="removeRoot"/>
+         
+         <invoker type="itemActions" caption="Add" action="addItem"/>
+         <invoker type="itemActions" caption="Edit" action="addItem"/>
+         <invoker type="itemActions" caption="Delete" action="deleteItem"/>
+         
    </invokers>
-   <code class="com.rameses.enterprise.accounting.models.AccountMainGroupModel" />
+   <code class="com.rameses.enterprise.accounting.models.AccountMgmtModel" />
     <pages>
-        <page template="com.rameses.enterprise.accounting.views.AccountMainGroupMgmtPage" />
+        <page template="com.rameses.enterprise.accounting.views.AccountEntryPage" />
+        <!--
+        <page template="com.rameses.enterprise.accounting.views.AccountMgmtPage" />
+        -->
     </pages>
 </workunit>

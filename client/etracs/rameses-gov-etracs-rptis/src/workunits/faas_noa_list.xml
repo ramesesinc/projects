@@ -1,38 +1,24 @@
-<workunit extends="wtemplates/ListController.xml">
+<workunit extends="com/rameses/seti2/templates/CrudList.xml"
+    schemaName="vw_assessment_notice"
+    entitySchemaName="assessmentnotice"
+    allowDelete="false"
+    allowPrint="false"
+    allowCreate="false"
+    autoResize="false"
+    cols="state,txnno,txndate,tdno,fullpin,cadastrallotno,taxpayername,deliverydays,receivedby,dtdelivered,remarks"
+    orderBy="txndate desc,tdno"
+>
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/list" caption="Notice of Assessments"  target="window" index="502" role="ASSESSOR_SHARED,SHARED" />
-        <invoker folderid="/home/rpt" caption="Notice of Assessments"  target="window" index="500" role="ASSESSOR_SHARED,SHARED" icon="home/icons/notices.png"/>
-        <invoker type="quick_launcher" code="NOA00" caption="Notice of Assessments" role="ASSESSOR_SHARED,SHARED" index="502"/>
+        <invoker folderid="/home/rpt" 
+            action="init"
+            caption="Notice of Assessments"  
+            target="window" index="500" role="ASSESSOR_SHARED,SHARED" 
+            icon="home/icons/notices.png" />
+
+        <invoker type="quick_launcher" code="NOA00" 
+            action="init"
+            caption="Notice of Assessments" 
+            role="ASSESSOR_SHARED,SHARED" />
     </invokers>
-    <code>
-        import com.rameses.rcp.common.*
-        import com.rameses.rcp.annotations.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        
-        class FAASAnnotationListController extends ListController
-        {
-            String serviceName = 'RPTAssessmentNoticeService'
-            
-            public String getEntityName(){ return 'assessmentnotice' }
-                
-            String formTarget = 'self';
-            
-            int getRows() { return 50 }
-            
-            Column[] getColumns(){
-                return [
-                    new Column(name:"state", caption:"State", width:100),
-                    new Column(name:"txnno", caption:"Txn No.", width:130),
-                    new Column(name:"txndate", caption:"Txn Date", format:'yyyy-MM-dd', width:120),
-                    new Column(name:"taxpayername", caption:"Taxpayer Name", width:250),
-                    new Column(name:"taxpayeraddress", caption:"Taxpayer Address", width:250),
-                    new Column(name:"deliverydays", caption:"Delivery Days", type:'integer', width:180),
-                    new Column(name:"receivedby", caption:"Received By", width:180),
-                    new Column(name:"dtdelivered", caption:"Date Received", width:300),
-                    new Column(name:"remarks", caption:"Remarks", width:200),
-                ]
-            }
-        }
-    </code>
+    
 </workunit>

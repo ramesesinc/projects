@@ -1,9 +1,9 @@
 <workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="obo" cols="2">
     <invokers>
         <invoker type="home.action" 
-                 caption="OBO"  icon="home/icons/obo.png"
-                 visibleWhen="#{self.hasChildren('menucategory/obo')==true}" 
-                 index="10" action="init"/>
-        
+                 caption="OBO" icon="home/icons/obo.png"
+                 role=".*"
+                 index="1" action="init"/>
     </invokers> 
+    <code class="com.rameses.gov.etracs.obo.models.OboMenuCategoryModel" />
 </workunit>

@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+       <invoker type="cashreceipt:payoption" caption="Payment Option" target="popup"/>
+    </invokers>
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.common.*
+            import com.rameses.rulemgmt.constraint.*;
+            import com.rameses.rulemgmt.*;
+            import java.rmi.server.*;
+            
+            class PaymentOptionController  {
+            
+                @Binding
+                def binding;
+            
+                String title = "Payment Option";
+                def handler;
+                
+                def query = [:];
+                def qtrs = (1..4);
+                def payOptions= ['FULLYEAR','FULLQTR','SPECIFY-AMOUNT'];;
+                
+                def doOk() {
+                    handler(query);
+                    return "_close";
+                }
+                
+                def doCancel() {
+                    return "_close";
+                }
+                
+                
+            }
+        ]]>    
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.view.PaymentOption"/>
+    </pages>
+    
+</workunit>

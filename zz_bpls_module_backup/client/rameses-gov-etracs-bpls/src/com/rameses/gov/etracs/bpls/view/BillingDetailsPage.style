@@ -1,0 +1,6 @@
+"entity.assessedvalue"[ analyzer == true ] {
+    visible: true;
+}
+"entity.assessedvalue"[ analyzer == false ] {
+    visible: false;
+}

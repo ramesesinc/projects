@@ -52,11 +52,13 @@ public class AccountPage extends javax.swing.JPanel {
 
         xLabel2.setCaption("Parent Group");
         xLabel2.setExpression("#{entity.group.code} #{entity.group.title} ");
+        xLabel2.setVisibleWhen("#{ entity.group != null }");
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
         xTextField1.setCaption("Acct Code");
+        xTextField1.setDisableWhen("#{ mode != 'create' }");
         xTextField1.setName("entity.code"); // NOI18N
         xTextField1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xTextField1.setPreferredSize(new java.awt.Dimension(120, 20));

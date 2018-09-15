@@ -1,0 +1,15 @@
+"runAssessment" [capture.type!='datasource'] {
+    visible:true;
+}
+
+"runAssessment" [capture.type=='datasource'] {
+    visible:false;
+}
+
+"mapAccount" [capture.type=='datasource'] {
+    visible:true;
+}
+
+"mapAccount" [capture.type!='datasource'] {
+    visible:false;
+}

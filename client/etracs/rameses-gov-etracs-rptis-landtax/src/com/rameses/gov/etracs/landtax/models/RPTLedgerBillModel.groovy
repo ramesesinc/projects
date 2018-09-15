@@ -23,10 +23,10 @@ class RPTLedgerBillModel
         
     @PropertyChangeListener
     def listener = [
-        "advancebill":{
-            if (!advancebill){
-                billdate = null;
-                binding.refresh('billdate');
+        "bill.advancebill":{
+            if (!bill.advancebill){
+                bill.billdate = null;
+                binding.refresh('bill.billdate');
             }
         }
     ]

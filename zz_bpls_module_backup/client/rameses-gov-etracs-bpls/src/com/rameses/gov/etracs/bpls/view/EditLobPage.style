@@ -1,0 +1,3 @@
+"lob.listModel:item.assessmenttype" [ 1==1 ] {
+    editable: false;
+}

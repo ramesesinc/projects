@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/WorkflowTaskList.xml" 
+          processName="business_application_requirement"
+          schemaName="business_application_requirement" 
+          allowCreate="false"
+          allowDelete="false"
+          allowNotify="true">
+    <invokers>
+        <invoker type="business_application_requirement:list" 
+            formTitle="Business Applications List (#{query.title})"
+            formId="business_application_requirement:list:#{query.type}"
+            cols="refno,dtissued,app.appno,app.apptype,app.appyear,app.appdate,app.business.bin,app.business.businessname,app.business.owner.name,app.business.address.text,task.assignee.name" 
+            hiddenCols="applicationid"
+            orderBy="app.appyear DESC"
+            action="init" role=".*"/>
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessApplicationRequirementListModel" />
+    <pages>
+        <page name="queryForm" template="com.rameses.gov.etracs.bpls.views.YearQueryForm"/>
+    </pages>
+</workunit>

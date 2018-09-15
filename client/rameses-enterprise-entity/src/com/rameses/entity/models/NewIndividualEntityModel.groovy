@@ -20,6 +20,7 @@ class NewIndividualEntityModel  {
     boolean allowSelect = false;
     boolean saveAllowed = true;
     def entity;
+    def mode = "create";
     
     void create() {
         entity = [:];

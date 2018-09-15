@@ -6,7 +6,7 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
 
-class MonthlyAssessmentReportModel extends AsyncReportModel
+class MonthlyAssessmentReportModel extends AsyncReportModel2
 {
     @Service('RPTReportAssessmentReportService') 
     def svc
@@ -31,6 +31,7 @@ class MonthlyAssessmentReportModel extends AsyncReportModel
     def formControl = [
          getFormControls: {
              return [
+                 new FormControl( "combo", [captionWidth:110, caption:'Revision Year', name:'entity.ry', items:'revisionyears', emptyText:'ALL']),
                  new FormControl( "combo", [captionWidth:110, caption:'Report Format', name:'entity.reportformat', items:'reportformats', expression:'#{item.caption}', required:true, allowNull:false]),
                  new FormControl( "combo", [captionWidth:110, caption:'LGU', name:'entity.lgu', items:'lgus', expression:'#{item.name}', required:true, allowNull:false]),
                  new FormControl( "integer", [captionWidth:110, caption:'Year', name:'entity.year', required:true, preferredSize:'100,19']),

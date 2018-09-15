@@ -1,0 +1,106 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="bppayment:open" action="open" caption="Payment" target="popup"/>
+        <invoker type="businessinfo:ledger:formActions" action="capture" caption="Capture Payment" target="popup" index="10" role="ASSESSOR" permission="capturePayment"/>
+        <invoker type="businessinfo:ledger:formActions" action="applyTaxcredit" caption="Apply Tax Credit" target="popup" index="11" role="ASSESSOR" permission="applyTaxCredit"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        import com.rameses.gov.etracs.bpls.business.*;
+        
+        class  BPPaymentController  {
+        
+            @Service("BPPaymentService")
+            def service;
+            
+            @Binding
+            def binding;
+            
+            @Caller 
+            def caller;
+            
+            def entity;
+            def selectedItem;
+            
+            def open() {
+                entity = service.open( [objid: entity.objid ] ); 
+                return "open";
+            }
+            
+            def capture() {
+                entity = [businessid:entity.objid];
+                entity.reftype = 'CAPTURE';
+                entity = service.initNew(entity);
+                if(!entity.items)
+                    throw new Exception("No receivables are open");
+                return "capture";
+            }
+
+            def applyTaxcredit() {
+                entity = [businessid:entity.objid];
+                entity.reftype = 'TAXCREDIT';
+                entity = service.initNew(entity);
+                if(!entity.items)
+                    throw new Exception("No receivables are open");
+                return "taxcredit";
+            }
+            
+            void updateTotals( o ) {
+                o.total = o.amtpaid + o.surchargepaid + o.interestpaid;
+                entity.total = entity.items.sum{ it.total };
+            }
+            
+            def listModel = [
+                fetchList: { o->
+                    return entity.items;
+                },
+                onColumnUpdate: { o,col->
+                    if( o.amtpaid > o.balance )
+                        throw new Exception("Amt paid must be less than balance");
+                    updateTotals(o);
+                }
+            ] as EditorListModel;
+            
+            def doOk() {
+                //about to save 
+                entity = service.create(entity);
+                MsgBox.alert( "Ref No " + entity.refno + " is created");
+                return "_close";
+            }
+            
+            def doCancel() {
+                return "_close";
+            }
+            
+            def doClose() {
+                return "_close";
+            }
+
+            def viewCashReceipt() {
+                def opener = InvokerUtil.lookupOpener( "cashreceiptinfo:open", [entity: [objid: entity.refid]] );
+                opener.target = "popup";
+                return opener;
+            }
+            
+        }
+        
+        ]]>
+    </code>
+    
+    
+    <pages>
+        <page name="open" template="com.rameses.gov.etracs.bpls.business.BPPayment"/>
+        <page name="capture" template="com.rameses.gov.etracs.bpls.business.CaptureBPPayment"/>
+        <page name="taxcredit" template="com.rameses.gov.etracs.bpls.business.TaxCreditBPPayment"/>
+    </pages>
+    
+</workunit>

@@ -1,0 +1,10 @@
+<workunit schemaName="deposit_fund_transfer">
+    <invokers>
+        <invoker type="deposit_fund_transfer:create" caption="New Bank Account Transfer"  action="create" target="popup"/>
+        <invoker type="deposit_fund_transfer:open" caption="Bank Account Transfer"  action="open" target="popup"/>
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.DepositFundTransferModel"/>
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.DepositFundTransferPage" />
+    </pages>
+</workunit>

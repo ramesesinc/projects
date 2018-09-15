@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="sys_org" >
+    <invokers>
+        <invoker type="district:lookup" customFilter=" orgclass='DISTRICT' "
+                cols="code,name"
+                orderBy="code"
+                caption="Lookup District" action="init" target="popup" height="350" /> 
+    </invokers> 
+</workunit> 

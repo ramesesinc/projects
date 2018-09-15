@@ -62,9 +62,16 @@ class CheckPaymentListInterceptor
 	public void removeRecord( evt ) { 
 		def x = evt.args[0];
 		def m = pmtChk.find( [objid: x.objid ] ).first();
-		//if( m.amtused  > 0 ) throw new Exception("Cannot remove this check. It is already used");
-		if( m.depositvoucherid  ) throw new Exception("Cannot remove this check. There is an associated depositvoucher");
-		if( m.depositslipid  ) throw new Exception("Cannot remove this check. There is an associated depositslip");
+		if(!m) throw new Exception("Check payment does not exist " + o.objid);
+		if( m.external ==  1) {
+			if( m.fundid ) throw new Exception("Cannot delete this check because it is associated with a fund");
+			if( m.depositslipid ) throw new Exception("Cannot delete this check because there is already a deposit slip issiued");
+		}
+		else {
+			if( m.amtused  > 0 ) throw new Exception("Cannot remove this check. Only external checks can be removed");
+			if( m.depositvoucherid  ) throw new Exception("Cannot remove this check. There is an associated depositvoucher");
+			if( m.depositslipid  ) throw new Exception("Cannot remove this check. There is an associated depositslip");
+		}
 	}
 
 }

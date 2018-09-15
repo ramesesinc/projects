@@ -1145,6 +1145,16 @@ class FAASService
 	}
 
 	@ProxyMethod
+	public def isOldSketch(faas) {
+		def sketch = em_sketch.find([objid:faas.objid]).first() 
+		if (sketch && sketch.drawing.figures){
+			return false 
+		} else {
+			return true 
+		}
+	}
+
+	@ProxyMethod
 	public void insertSketch(info, faas){
 		def headers = imageSvc.getImages([refid:info.faas.objid])
 		headers.each{ h ->

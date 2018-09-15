@@ -4,146 +4,172 @@ import java.rmi.server.*;
 
 class DepositVoucherService  {
 
-	@Env
-	def env;
-
-	@Service("DateService")
-	def dateSvc;
-
-	@Service("SequenceService")
-	def seqSvc;
-
-	@Service('ControlService') 
-	def controlSvc;	
-
-	@Service("Var")
-	def var;			
+	@DataContext("collectionvoucher")
+	def cvEm;
 
 	@DataContext("collectionvoucher_fund")
 	def cvfEm;
 
 	@DataContext("depositvoucher")
-	def depositEm;
+	def dvEm;
+
+	@DataContext("depositvoucher_fund")
+	def dvfEm;
+
+	@DataContext("itemaccount")
+	def itemAcctEm;
+
+	@DataContext("cashreceiptpayment_noncash")
+	def ncpEm;
 
 	@DataContext("checkpayment")
-	def checkpaymentEm;
-
+	def chkPmtEm;
 
 	@DataContext("depositslip")
 	def depositSlipEm;
 
-	@DataContext("fund")
-	def fundEm;
+	@Service("DateService")
+	def dateSvc;
+
+	@Service('ControlService') 
+	def controlSvc;	
+
+	@Service("Var")
+	def var;
 
 	@Service("JevService")
-	def jevSvc;
+	def jevSvc;	
 
-	@ProxyMethod 
-	public def getUndepositedFunds() {
-        def adb = cvfEm.where("parent.state='POSTED' AND depositvoucherid IS NULL ");  
-        def funds = adb.select( "objid:{fund.objid},icount:{COUNT(*)}" ).groupBy('fund.objid').list(); 
-        if ( !funds ) return []; 
 
-		return fundEm.where(" objid IN ('"+ funds*.objid.join("','") +"') ").list();
-	}
-
-	@ProxyMethod
-	public def getOpenSplitChecks( def vlist ) {
-		def ids = "('" + vlist.join("','") + "')";
-		return depositEm.getOpenSplitChecks( [ids: ids ] );
-	}
-
-	@ProxyMethod
-	public def addChecks( def v) {
-		def ids = "('" + v.list.join("','") + "')";
-		checkpaymentEm.where( "objid IN " + ids ).update([depositvoucherid: v.depositvoucherid]);
-		return summarizeTotal( [objid: v.depositvoucherid] );
-	}
-
-	@ProxyMethod
-	public def removeCheck( def o ) {
-		checkpaymentEm.find([objid: o.objid]).update([depositvoucherid: null]);
-		return summarizeTotal( [objid: o.depositvoucherid] );
-	}
-
-	def summarizeTotal(def m) {
-		def tot = checkpaymentEm.find( [depositvoucherid: m.objid ] ).select("a:{SUM(amount)}").val();
-		if ( tot == null ) tot = 0.0;
-		depositEm.find([objid: m.objid ]).update([totalcheck: tot]);
-		return tot;
-	}
+	@Env
+	def env;
 
 	@ProxyMethod
 	public def create( def o ) {
+		def txncode = [ "DV", env.TXNCODE, env.ORGTXNCODE ].findAll{( it )}.join("-");
+
 		def m = [:];
-		m.state = "OPEN"
-		m.controlno = "DV" + seqSvc.getNextFormattedSeries("DEPOSIT_VOUCHER");
-		m.controldate = dateSvc.getBasicServerDate(); 
-		m.createdby = [objid:env.USERID,  name:env.FULLNAME];
+		m.state = "OPEN";
 		m.dtcreated = dateSvc.getServerDate();
-		m.fund = o.fund;
-		m.fundid = o.fund.objid;
+		m.controldate = m.dtcreated;
+		m.createdby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
+		m.controlno = controlSvc.formatTxnno([ txncode: txncode, txndate: m.dtcreated, format: var.deposit_format, sequenceid_format: var.deposit_sequenceid_format ]); 
 		m.amount = o.amount;
-		m.amountdeposited = 0;
-		m.totalcheck = 0;
-		m = depositEm.create( m );
-		o.items.each {
-			cvfEm.find( [ objid: it.objid ] ).update( [depositvoucherid: m.objid ] );
+		m = dvEm.create( m );
+
+		def str = "('" + o.items.join( "','") + "')";
+		cvEm.where( "objid IN " + str ).update( [depositvoucherid: m.objid ] );
+
+		//for each collection voucher fund create a deposit voucher fund
+		def list = cvfEm.where( "parentid IN " + str ).groupBy("fund.objid").select( "fund.objid,totalcheck:{SUM(totalcheck)},totalcash:{SUM(totalcash)}" ).list();
+		list.each {
+			def dvf = [:];
+			dvf.parentid = m.objid;
+			dvf.parent = [objid: m.objid];
+			dvf.fundid = it.fund.objid;
+			dvf.fund = [objid:it.fund.objid ];
+			dvf.amount = ( it.totalcash + it.totalcheck );
+			dvf.amountdeposited = 0;
+			dvf.totaldr = 0;
+			dvf.totalcr = 0;
+			dvf.state = 'OPEN';
+			dvfEm.create( dvf );
 		}
-
-		//try to update all payment checks 
-		depositEm.updateCheckForDeposit( [depositvoucherid: m.objid ]);
-		depositEm.updateCheckDepositVoucherId( [depositvoucherid: m.objid ] );
-
-		if( o.additionalchecks ) {
-			def ids = "('" + o.additionalchecks.join("','") + "')";
-			checkpaymentEm.where( "objid IN " + ids  ).update( [depositvoucherid: m.objid ] );
+		
+		//retrieve check payments from the cash receipt non cash payments
+		def zlist = ncpEm.where( "reftype='CHECK' AND receipt.remittance.collectionvoucherid IN " + str ).list().groupBy{it.refid};
+		zlist.each { refid,v->
+			def u = [depositvoucherid: m.objid];
+			if( v.size() == 1 ) u.fundid = v[0].fund.objid;
+			chkPmtEm.find([objid: refid]).update(u);		
 		}
-
-		summarizeTotal( m );
+		//throw new Exception("stop save")
 		return m;
 	}
 
 	@ProxyMethod
-	public def post(def o ) {
-		//test if there are undeposited checks
-		int t = checkpaymentEm.find( [depositvoucherid: o.objid] ).where("depositslipid IS NULL").select("v:{COUNT(*)}").val();
-		if(t > 0 )
-			throw new Exception("All checks associated with this deposit must have deposit slips");
-
-		//test if there are deposit slips not validated
-		t = depositSlipEm.find( [depositvoucherid: o.objid] ).where("validation.refno IS NULL").select("v:{COUNT(*)}").val();
-		if(t > 0 )
-			throw new Exception("All deposit slips associated with this deposit must be validated");
-
-		//test amount deposited must equal amount to deposit
-		def ref = depositEm.find([objid: o.objid]).first();
-		if( ref.amount != ref.amountdeposited )
-			throw new Exception("Amount of deposit must equal to amount deposited");
-
-
-		//create the jev and post to jev	
-		def jev = [items:[]]	
-		jev.fundid = ref.fundid;
-		jev.state = 'OPEN'
-		jev.refid = ref.objid;
-		jev.refno = ref.controlno;
-
-		jev.jevdate = ref.controldate;
-		jev.reftype = "DEPOSIT";
-		jev.txntype = "DEPOSIT";
-
-		jev.postedby = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
-		jev.amount = ref.amount;
-
-		//add all the items
-		jev.items.addAll( depositEm.getBankAccountLedgerItem([depositvoucherid: o.objid] ));
-		jev.items.addAll( depositEm.getCashLedgerItem([depositvoucherid: o.objid] ));
-
-		jevSvc.create( jev );
-
-		depositEm.find([objid: o.objid]).update([state:'POSTED']);
-
+	public void addChecks( def o ) {
+		def str = " ('" + o.list.join("','") + "')";
+		chkPmtEm.where( "objid IN " + str ).update( [fundid: o.fundid ]);
 	}
+
+	@ProxyMethod
+	public void removeCheck( def o ) {
+		chkPmtEm.where( "objid = :objid", o ).update( [fundid: "{NULL}" ]);
+	}
+
+
+	@ProxyMethod
+	public def post( def o ) {
+		//check first if all checks associated with the deposit voucher is accounted for
+		def chkList = chkPmtEm.find( [depositvoucherid : o.objid ] ).where( " depositslipid IS NULL " ).list();  	
+		if( chkList ) {
+			def str = chkList*.refno.join(",");
+			throw new Exception("All checks associated with this deposit voucher must be deposited. Please review the ff checks: \n" + str )
+		}
+
+		//check all deposit slips associated with the deposit voucher must be validated
+		def depList = depositSlipEm.where( "depositvoucherfund.parentid = :id AND validation.refno IS NULL ", [id: o.objid] ).list();
+		if( depList ) {
+			throw new Exception("All deposit slips must be validated");
+		}
+
+		//check all deposit voucher deposited and transferred must balance.
+		def dvfList = dvfEm.find([parentid : o.objid ]).list();
+		if( dvfList.find{ (it.amount - it.totaldr) != (it.amountdeposited - it.totalcr) } ) {
+			throw new Exception("All deposit amount deposited and transferred are not balanced");
+		}
+
+		//retrieve the depost voucher
+		def dv = dvEm.find( [objid: o.objid ]).first();
+		dvEm.find( [objid: o.objid]).update( [state:'POSTED'] );
+		
+		//post to jev
+		def ref = [refid:o.objid,refno:dv.controlno,reftype:'depositvoucher', refdate:dv.controldate, txntype:'DEPOSIT'];
+
+		def jevBatch = [:];
+		jevBatch.ref = ref;
+		jevBatch.funds = [];
+		jevBatch.items = [];
+
+		dvfEm.find([ parentid: o.objid ]).select('objid,fund.*,amount').list().each{ 
+			jevBatch.funds << [ objid: it.objid, refno:o.controlno, fund: it.fund, amount: it.amount  ];	 
+		} 
+
+		def pm = [depositvoucherid: o.objid ];
+
+		jevBatch.items.addAll( dvEm.getBankAccountLedgerItems( pm ) );
+		jevBatch.items.addAll( dvEm.getCashLedgerItems( pm ) );
+
+		//fund transfers 
+		def ftList = [];
+		ftList.addAll( dvEm.getOutgoingItems( pm ) );
+		ftList.addAll( dvEm.getIncomingItems( pm ) );
+
+		//search account if not exists create the item
+		ftList.each {
+			def z = it.item;
+			z.code = '-';
+			z.tags = [];
+			if(! itemAcctEm.find( [objid: z.objid ] ).exists() ) {
+				z.state = 'DRAFT';
+				itemAcctEm.create( z );
+			}
+			it.itemacctid = z.objid;
+			it.itemacctcode = z.code;
+			it.itemacctname = z.title;
+		}
+
+		jevBatch.items.addAll( ftList );
+		jevBatch.items.each{
+			it.acctid = it.itemacctid; 
+			it.acctcode = it.itemacctcode; 
+			it.acctname = it.itemacctname;
+		}
+
+		jevSvc.createBatch( jevBatch );
+	}
+
+
 
 }

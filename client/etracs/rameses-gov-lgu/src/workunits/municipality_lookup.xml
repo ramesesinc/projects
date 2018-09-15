@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="municipality" >
+    <invokers>
+        <invoker type="municipality:lookup" customFilter=" orgclass='MUNICIPALITY' "
+                cols="code,name"
+                caption="Lookup Municipality" action="init" target="popup" height="350" /> 
+    </invokers> 
+</workunit> 

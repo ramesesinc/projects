@@ -1,10 +1,35 @@
+<!--
+DROP VIEW IF EXISTS business_active_lob;
+CREATE VIEW business_active_lob AS
+SELECT  
+  bal.objid,
+  CASE WHEN ba.parentapplicationid IS NULL THEN ba.objid ELSE ba.parentapplicationid END AS applicationid,
+  ba.business_objid AS businessid, 	
+  ba.appyear AS appyear, 
+  bal.assessmenttype AS assessmenttype,
+  bal.lobid AS lob_objid,
+  bal.particulars,
+  lob.name AS lob_name,
+  lob.classification_objid AS lob_classification_objid,
+  lob.psic_objid  AS lob_psic_objid 
+FROM business_application_lob bal
+INNER JOIN business_application ba ON ba.objid=bal.applicationid 
+INNER JOIN lob ON bal.lobid=lob.objid
+LEFT JOIN business_application_retire_lob barl ON barl.businesslobid=bal.objid 
+WHERE barl.objid IS NULL ;
+-->
 <schema>
-	
 	<element tablename="business_active_lob">
 		<field name="objid" primary="true"/>
+		<field name="applicationid" required="true"/>
 		<field name="businessid" required="true"/>
-		<field name="lobid" required="true"/>
-		<field name="name" required="true"/>
+		<field name="appyear" required="true"/>
+		<field name="assessmenttype" required="true"/>
+		<field name="particulars" required="true" caption="Particulars"/>
+		<field name="lob_objid" required="true"/>
+		<field name="lob_name" required="true" caption="Line of Business"/>		
+		<field name="lob_classification_objid" caption="Classification" required="true"/>
+		<field name="lob_psic_objid" caption="PSIC" required="true"/>		
 	</element>
-
 </schema>
+

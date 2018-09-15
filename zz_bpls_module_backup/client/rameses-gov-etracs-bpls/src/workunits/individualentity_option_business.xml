@@ -1,0 +1,48 @@
+<workunit>
+    <invokers>
+        <invoker type="entityindividual:section" caption="Business" index="10"/>
+        <invoker type="entityjuridical:section" caption="Business" index="10"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import java.rmi.server.UID;
+
+public class EntityBusinessOption  {
+
+    @Binding
+    def binding;
+
+    @Service("BusinessMasterService")
+    def service;
+    
+    @Caller 
+    def caller; 
+
+    String title = "List of Business";
+
+    def listModel = [
+        fetchList: { o-> 
+            return service.getListByOwner([ ownerid: entity?.objid ]);
+        }
+    ] as BasicListModel;
+
+    def getEntity() {
+        try { 
+            return caller.entity; 
+        } catch(Throwable t) {
+            return null; 
+        } 
+    } 
+}        
+   ]]>
+   </code>
+   
+   <pages>
+       <page template="com.rameses.gov.etracs.bpls.entity.BusinessList"/>
+   </pages>   
+</workunit>

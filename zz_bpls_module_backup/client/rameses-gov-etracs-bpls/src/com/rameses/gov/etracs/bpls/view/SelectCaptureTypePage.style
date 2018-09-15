@@ -1,0 +1,33 @@
+"capture.current.*" [capture.type!='current'] {
+    visible:false;
+}
+"capture.current.*" [capture.type=='current'] {
+    visible:true;
+}
+
+"capture.processing.*" [capture.type!='processing'] {
+    visible:false;
+}
+"capture.processing.*" [capture.type=='processing'] {
+    visible:true;
+}
+
+"capture.query.source" [capture.type!='datasource'] {
+    visible:false;
+}
+"capture.query.source" [capture.type=='datasource'] {
+    visible:true;
+}
+"capture.delinquent_renew.*" [capture.type!='delinquent_renew'] {
+    visible:false;
+}
+"capture.delinquent_renew.*" [capture.type=='delinquent_renew'] {
+    visible:true;
+}
+"capture.delinquent_new.*" [capture.type!='delinquent_new'] {
+    visible:false;
+}
+"capture.delinquent_new.*" [capture.type=='delinquent_new'] {
+    visible:true;
+}
+

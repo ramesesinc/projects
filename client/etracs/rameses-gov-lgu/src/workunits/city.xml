@@ -1,0 +1,11 @@
+<workunit allowCreate="false" allowDelete="false" schemaName="city">
+    <invokers>
+        <invoker type="city:open"  caption="City" target="popup" action="open"/>
+        <invoker type="city:manage" caption="City" target="popup" action="open"/>
+    </invokers>
+    
+    <code class="com.rameses.gov.lgu.models.CityModel" />
+    <pages>
+        <page template="com.rameses.gov.lgu.views.CityPage"/> 
+    </pages>
+</workunit>

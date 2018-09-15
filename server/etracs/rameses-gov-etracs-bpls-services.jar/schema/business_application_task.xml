@@ -1,17 +1,19 @@
 <schema>
 	
 	<element tablename="business_application_task">
-		<field name="objid" primary="true"/>
+		<field name="taskid" primary="true" prefix="BAPPTSK"/>
 		<field name="refid" required="true"/>
 		<field name="parentprocessid" />
 		<field name="state"/>
 		<field name="startdate" />
 		<field name="assignee_objid"/>
-		<field name="assignee_name"/>
+		<field name="assignee_name" caption="Assignee"/>
 		<field name="enddate"/>
 		<field name="actor_objid"/>
 		<field name="actor_name"/>
 		<field name="message"/>
+		<field name="dtcreated"/>
+		<field name="prevtaskid"/>		
 	</element>	
 
 

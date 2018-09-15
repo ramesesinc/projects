@@ -1,0 +1,75 @@
+<workunit extends="wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker xfolderid="/explorer/report/bpls" action="myinit" caption="Business Comparative Listing" target="window" 
+            role="REPORT"/>
+        
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.common.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BusinessComparativeListingReportController extends ReportController  
+        {
+            
+            @Service('BPComparativeReportService')
+            def svc;
+            
+            String title = "Business Comparative Listing";
+            String reportpath = 'com/rameses/gov/etracs/bpls/reports/'
+            String reportName = reportpath + 'ComparativeList.jasper'
+            
+             def myinit() {
+                def parsedate = dtSvc.parseCurrentDate();
+                entity.yearfrom = parsedate.year -1 ;
+                entity.yearto = parsedate.year 
+                mode = 'init'
+                return initReport();
+            }
+            
+             def getReportData(){
+                return svc.getReport( entity ); 
+            }
+            
+            def formControl = [
+                getFormControls: {
+                    return [
+                        new FormControl( "integer", [caption:'Year From', name:'entity.yearfrom', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "integer", [caption:'Year To', name:'entity.yearto', required:true, preferredSize:'100,20', captionWidth:100]),
+                        new FormControl( "combo", [caption:'Type', name:'entity.type', items:'typelist', required:true,  preferredSize:'0,20', captionWidth:100 ]),
+                        new FormControl( "combo", [caption:'Variable', name:'entity.varname', items:'variablelist', required:true, preferredSize:'0,20', captionWidth:100]) 
+                    ]
+                },
+           ] as FormPanelModel; 
+            
+           SubReport[] getSubReports(){ 
+                 return [
+                        new SubReport( 'QUARTERLYITEMS', reportpath + 'ComparativeQuarterlyItems.jasper' ),
+                        new SubReport( 'ANNUALLYITEMS', reportpath + 'ComparativeAnnuallyItems.jasper' )
+                    ] as SubReport[]
+            }
+            
+            Map getParameters(){
+                return [
+                    TITLE : reportdata.title,
+                    YEARFROM : entity.yearfrom,
+                    YEARTO : entity.yearto
+                ] 
+            }
+       
+            List getTypelist() {
+                return ['ANNUALLY','QUARTERLY'];
+            }
+            
+            List getVariablelist() {
+                return ['CAPITAL', 'GROSS'];
+            }
+        }
+    ]]>
+    </code>
+    
+</workunit>

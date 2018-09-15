@@ -2,7 +2,7 @@
 	
 	<element tablename="depositslip">
 		<field name="objid" primary="true" prefix="BNKDEP"/>
-		<field name="depositvoucherid" required="true"/> 
+		<field name="depositvoucherfundid" required="true"/> 
 
 		<field name="state" required="true" defaultvalue="DRAFT"/> 
 		<field name="createdby_objid" required="true"/> 
@@ -24,6 +24,9 @@
 		<field name="deposittype" required="true"/>
 		<field name="checktype" /> 
 
+		<complex name="depositvoucherfund" ref="depositvoucher_fund" jointype="many-to-one" includefields="objid,parentid">
+			<key field="depositvoucherfundid" target="objid" />
+		</complex>	
 	</element>
 
 </schema>

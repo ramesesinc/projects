@@ -65,6 +65,7 @@ public class RPTLedgerItemFact
         this.idleland = item.idleland
         this.reclassed = item.reclassed
         this.taxdifference  = item.taxdifference 
+        this.qtrlypaymentavailed = item.qtrlypaymentavailed
         this.amount = item.amount
         this.amtpaid = item.amtpaid
         this.amtdue = item.amtdue

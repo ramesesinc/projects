@@ -99,4 +99,12 @@ class MultipleEntityModel extends CrudFormModel {
         rebuildNames();
         binding.refresh('entity.name')
     }
+    
+    def viewEntity() {
+        if( !selectedEntity ) throw new Exception("Please select an member entity");
+        String s = "entity" + selectedEntity.member.type.toLowerCase() + ":open";
+        def op = Inv.lookupOpener( s, [entity:selectedEntity.member ]);
+        op.target = "popup";
+        return op;
+    }
 }

@@ -65,6 +65,17 @@ update faas_list set
   barangay = $P{barangayname}
 where objid = $P{faasid}
 
+[modifySubdividedLandPin]
+update subdividedland set 
+  newpin=$P{newpin}
+where newfaasid = $P{faasid}
+
+[modifySubdivisionAffectedRpu]
+update subdivisionaffectedrpu set 
+  newpin=$P{newpin}, newsuffix=$P{suffix}, 
+  newrpid = $P{realpropertyid}
+where newrpuid=$P{rpuid}
+
 
 [findFaasInfo]
 select objid, fullpin, rpuid, realpropertyid, taxpayer_objid from faas where objid = $P{faasid}

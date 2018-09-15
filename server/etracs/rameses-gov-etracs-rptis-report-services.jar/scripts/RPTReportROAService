@@ -96,19 +96,23 @@ class RPTReportROAService
             params.period = 'As of ' + dtsvc.format('MMMMM dd, yyyy', dtsvc.parse('yyyy-MM-dd', params.asofdate))
         }
 
+        if(params.ry){
+            params.filter += ' and rp.ry = $P{ry} '
+        }
+
         if(params.lgu){
-            params.lguid = params.lgu.objid 
             params.filter += ' and f.lguid = $P{lguid} '
+            params.lguid = params.lgu.objid 
         }
 
         if(params.barangay){
-            params.barangayid = params.barangay.objid 
             params.filter += ' and rp.barangayid = $P{barangayid} '
+            params.barangayid = params.barangay.objid 
         }
 
         if (params.classification){
-            params.classid = params.classification.objid 
             params.filter += ' and r.classification_objid = $P{classid} '
+            params.classid = params.classification.objid 
         }
 
         if (params.section){

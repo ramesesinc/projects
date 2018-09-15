@@ -1,0 +1,9 @@
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="business" cols="3">
+    <invokers>
+        <invoker type="home.action" 
+                 caption="Business" icon="home/icons/business.png"
+                 role=".*"
+                 index="1" action="init"/>
+    </invokers> 
+    <code class="com.rameses.gov.etracs.bpls.models.BusinessMenuCategoryModel" />
+</workunit>

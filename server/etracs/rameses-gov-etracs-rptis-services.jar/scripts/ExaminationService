@@ -7,6 +7,9 @@ import com.rameses.custom.impl.*;
 
 class ExaminationService
 {
+    @Env 
+    def env 
+
 	@ActiveDB('rpt_examination')
     def em
 
@@ -39,6 +42,11 @@ class ExaminationService
     @ProxyMethod
     public void create( finding ) {
         convertListToString(finding)
+        finding.inspectedby = [
+            objid: env.USERID,
+            name: env.NAME,
+            title: env.JOBTITLE,
+        ]
         em.create(finding)
     }
 

@@ -238,9 +238,13 @@ class RPTUtil
 
     @ProxyMethod
     public def buildPeriod( def params ) { 
-        def monthno = (params.month?.month ? params.month.month : params.month?.index)
-        if( params.month && params.day ) return 'For the day of ' + getMonthName( monthno ) + ' ' + params.day + ', ' + params.year 
-        if( params.month ) return 'For the Month of ' + getMonthName( monthno ) + ', ' + params.year 
+        if (params.month) {
+            def monthno = (params.month?.month ? params.month.month : params.month?.index)
+            def month = getMonthName(monthno)
+            def smonth = month[0].toUpperCase() + month.substring(1).toLowerCase()
+            if( params.month && params.day ) return 'For the day of ' + smonth + ' ' + params.day + ', ' + params.year 
+            if( params.month ) return 'For the Month of ' + smonth + ', ' + params.year 
+        }
         if( params.qtr ) return 'For the ' + getQuarterName( params.qtr ) + ' of ' + params.year 
         return 'For the Year ' + params.year 
     }   

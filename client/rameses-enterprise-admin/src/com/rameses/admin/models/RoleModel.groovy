@@ -57,5 +57,6 @@ public class RoleModel extends CrudFormModel {
         return Inv.lookupOpener( "securitygroup:open", [entity:securitygroup, handler: h]);
     }
     
+    
 }
         

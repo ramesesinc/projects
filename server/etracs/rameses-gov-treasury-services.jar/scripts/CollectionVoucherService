@@ -68,9 +68,6 @@ class CollectionVoucherService  {
 		def z = [collectionvoucherid: m.objid]
 		cvEm.insertCollectionVoucherFund( z );
 
-		//in case there are EFTs, insert into funds that needs to be transferred
-		cvEm.insertCollectionVoucherFundTransfer( z );
-
 		//update cash breakdown totals in each collection fund
 		def lfList = cvFundEm.find( [ parentid: m.objid ] ).list();
 

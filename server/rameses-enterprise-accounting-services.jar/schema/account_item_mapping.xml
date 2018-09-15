@@ -1,18 +1,14 @@
-
 <schema>
 
 	<element tablename="account_item_mapping">
 		<field name="objid" primary="true" prefix="ACCTMAP"/>
+		<field name="maingroupid" />
 
-		<complex name="maingroup" ref="account_maingroup" jointype="many-to-one" includefields="objid,name,title">
-			<key field="maingroupid" target="objid" />	
-		</complex> 
-
-		<complex name="account" ref="account" jointype="many-to-one" includefields="objid,code,title,headerid" >
+		<complex name="account" ref="account" jointype="many-to-one" includefields="objid,code,title,headerid" required="true">
 			<key field="acctid" target="objid" />	
 		</complex> 
 
-		<complex name="item" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title" >
+		<complex name="item" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title"  required="true">
 			<key field="itemid" target="objid" />	
 		</complex> 
 	</element>

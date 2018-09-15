@@ -8,10 +8,22 @@ import com.rameses.seti2.models.*;
 
 public class StuboutModel extends CrudFormModel {
     
+    
+    void afterCreate() {
+        if( !caller.selectedZone ) throw new Exception("Please select a zone");
+        entity.zone = caller.selectedZone;
+        entity.zoneid = entity.zone.objid;
+    }
+    
+    void afterSave() {
+        caller.stuboutListHandler.reload();
+    }
+    /*
     @Service('WaterworksStuboutService')
     def svc;
     
     def selectedItem;
+    
     
     def getQuery() {
         return [stuboutid: entity.objid];
@@ -52,5 +64,6 @@ public class StuboutModel extends CrudFormModel {
         m.objid = selectedItem.objid;
         persistenceSvc.removeEntity( m );
     }
+    */
     
 }

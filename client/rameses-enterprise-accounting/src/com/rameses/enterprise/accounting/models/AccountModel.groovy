@@ -9,14 +9,13 @@ import com.rameses.seti2.models.*;
 class AccountModel extends CrudFormModel {
 
     def maingroup;
-    def parent;
+    def group;
     def type;
     
     void afterCreate() {
         entity.maingroup = maingroup;
-        entity.group = parent;
+        entity.group = group;
         entity.type = type;
-        MsgBox.alert( "main group " + entity.group );
     }    
 
     void beforeSave( def mode ) {

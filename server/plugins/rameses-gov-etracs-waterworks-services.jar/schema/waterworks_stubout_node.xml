@@ -3,14 +3,14 @@
 	<element tablename="waterworks_stubout_node">
 		<field name="objid" primary="true" prefix="WNODE"/>
 		<field name="indexno" required="true" searchable="true" indexed="true" caption="Seq No"/>
-		
+		<field name="currentacctid" />
+
 		<!-- this is for fetching -->
 		<complex name="account" ref="waterworks_account" required="false" jointype="many-to-one" 
 			includefields="objid,acctno,acctname,address.text,meter.serialno,currentreading">
-			<key field="objid" target="stuboutnodeid"/>
+			<key field="currentacctid" target="objid"/>
 		</complex>
-
-		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" 
+		<complex name="stubout" ref="waterworks_stubout" jointype="many-to-one" required="true"
 			includefields="objid,code,zone.objid,zone.code,zone.sector.objid,zone.sector.code,zone.schedule.objid">
 			<key field="stuboutid" target="objid"/>
 		</complex>

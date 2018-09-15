@@ -25,6 +25,7 @@ class DepositVoucherInitialModel extends CrudListModel {
         fetchList: { o->
             def m = [_schemaname: 'collectionvoucher' ];
             m.where = [" depositvoucherid IS NULL "];
+            m.orderBy = "controldate";
             return queryService.getList( m );
         },
         onOpenItem: {o,col->
@@ -47,6 +48,7 @@ class DepositVoucherInitialModel extends CrudListModel {
         def selectedList = collectionListModel.getSelectedValue();
         if(!selectedList) throw new Exception("Please select at least one entry");
         if( amount <= 0 ) throw new Exception("Amount must be greater than zero");
+        if(!MsgBox.confirm("You are about to create a deposit voucher. Proceed?")) return null;
         def m = [:];
         m.items = selectedList*.objid;
         m.amount = amount; 

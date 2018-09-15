@@ -3,7 +3,5 @@
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Classification" 
                  role="MASTER" action="init"/>
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Classifications" 
-                 role="MASTER" action="init"/>
     </invokers>
 </workunit>

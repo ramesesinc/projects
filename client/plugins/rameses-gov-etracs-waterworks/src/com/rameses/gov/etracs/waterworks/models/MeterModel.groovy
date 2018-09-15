@@ -9,18 +9,12 @@ import com.rameses.util.*;
 
 public class MeterModel extends CrudFormModel {
     
-    void initView() {
-        entity = [objid : caller?.entity?.meter.objid ];
-        super.open();
-    }
+    def meterStates = ["ACTIVE","DISCONNECTED","DEFECTIVE"];
     
+    /*
     def edit() {
-        def mp = new PopupMenuOpener();
-        def list = Inv.lookupOpeners( "waterworks_meter:edit", [entity: entity ] );
-        list.each { op->
-            mp.add( op );
-        }
-        return mp;
+        return showDropdownMenu("edit");
     }
+    */
 
 }

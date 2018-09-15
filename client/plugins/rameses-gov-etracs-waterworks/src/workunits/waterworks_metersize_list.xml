@@ -4,7 +4,5 @@
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Meter Size" 
                  role="MASTER" action="init"/>
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Meter Sizes" 
-                 role="MASTER" action="init"/>
     </invokers>
 </workunit>

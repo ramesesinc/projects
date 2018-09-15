@@ -1,0 +1,14 @@
+<workunit schemaName="waterworks_stubout_node">
+    <invokers>
+        <invoker type="waterworks_stubout_node:create" formTitle="New Stubout" 
+                 action="create" target="popup"/>
+        
+        <invoker type="waterworks_stubout_node:open" formTitle="Open Stubout" 
+                 action="open" target="popup"/>
+        
+    </invokers> 
+    <code class="com.rameses.gov.etracs.waterworks.models.StuboutNodeModel"/>
+    <pages>
+       <page template="com.rameses.gov.etracs.waterworks.views.StuboutNodePage"/>
+    </pages>
+</workunit>

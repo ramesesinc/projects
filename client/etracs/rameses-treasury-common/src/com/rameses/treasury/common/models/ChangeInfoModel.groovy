@@ -19,8 +19,8 @@ public class ChangeInfoModel extends DynamicForm {
     @Caller
     def caller;
 
-    @Service("ChangeInfoService")
-    def changeInfoSvc;
+    @Service("PersistenceService")
+    def persistenceSvc;
     
     def entity;
     def oldValues = [:];
@@ -85,6 +85,8 @@ public class ChangeInfoModel extends DynamicForm {
     }
     
     def doOk() {
+        MsgBox.alert("data is " + data);
+        /*
         if(!validate(keyfield, data.get(keyfield)) ) return null;
         
         if(oldValues == data)
@@ -123,6 +125,7 @@ public class ChangeInfoModel extends DynamicForm {
             if(caller) caller.reload();
         }
         catch(e){;}
+        */
         return "_close";
     }
     

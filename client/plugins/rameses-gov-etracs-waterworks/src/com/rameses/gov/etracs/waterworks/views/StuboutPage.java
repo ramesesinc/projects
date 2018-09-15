@@ -42,8 +42,6 @@ public class StuboutPage extends javax.swing.JPanel {
         xLookupField7 = new com.rameses.rcp.control.XLookupField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
-        xPanel2 = new com.rameses.rcp.control.XPanel();
-        schemaList1 = new com.rameses.seti2.components.SchemaList();
 
         xTabbedPane1.setItems("sections");
         xTabbedPane1.setDynamic(true);
@@ -136,132 +134,6 @@ public class StuboutPage extends javax.swing.JPanel {
 
         xTabbedPane1.addTab("General information", xPanel1);
 
-        xPanel2.setVisibleWhen("#{ mode != 'create' }");
-
-        schemaList1.setActionContext("waterworks_stubout_node");
-        schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "indexno"}
-                , new Object[]{"caption", "-"}
-                , new Object[]{"width", 50}
-                , new Object[]{"minWidth", 50}
-                , new Object[]{"maxWidth", 100}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctno"}
-                , new Object[]{"caption", "Acct No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
-                , new Object[]{"caption", "Acct Name"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.address.text"}
-                , new Object[]{"caption", "Address"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meter.serialno"}
-                , new Object[]{"caption", "Meter Serial No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.currentreading"}
-                , new Object[]{"caption", "Last Reading"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            })
-        });
-        schemaList1.setCustomFilter("stuboutid = :stuboutid");
-        schemaList1.setHandler("handler");
-        schemaList1.setName("selectedItem"); // NOI18N
-        schemaList1.setOrderBy("indexno");
-        schemaList1.setQueryName("query");
-        schemaList1.setSchemaName("waterworks_stubout_node");
-        schemaList1.setAllowOpen(false);
-
-        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
-        xPanel2.setLayout(xPanel2Layout);
-        xPanel2Layout.setHorizontalGroup(
-            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 597, Short.MAX_VALUE)
-            .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(xPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        xPanel2Layout.setVerticalGroup(
-            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 357, Short.MAX_VALUE)
-            .addGroup(xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, xPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-
-        xTabbedPane1.addTab("Nodes", xPanel2);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -281,7 +153,6 @@ public class StuboutPage extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
     private com.rameses.rcp.control.XLabel xLabel1;
@@ -289,7 +160,6 @@ public class StuboutPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLookupField xLookupField6;
     private com.rameses.rcp.control.XLookupField xLookupField7;
     private com.rameses.rcp.control.XPanel xPanel1;
-    private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;

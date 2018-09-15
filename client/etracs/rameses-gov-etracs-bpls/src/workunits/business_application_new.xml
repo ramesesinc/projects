@@ -19,6 +19,11 @@
         </start>
 
         <page name="initial" title="Select business application">
+            <transition to="handler" caption="Next" name="next" mnemonic="N" immediate="false" action="initHandler"/>
+        </page>
+
+        <page name="handler" title="Business Handler">
+            <transition to="initial" caption="Back" name="back" mnemonic="N" immediate="false" />            
             <transition to="entry" caption="Next" name="next" mnemonic="N" immediate="false" />
         </page>
 
@@ -78,6 +83,7 @@
     
     <pages>
         <page name="initial" template="com.rameses.gov.etracs.bpls.views.BusinessApplicationNewInitialPage"/>
+        <page name="handler" template="com.rameses.gov.etracs.bpls.views.BusinessApplicationNewHandlerPage"/>
         <page name="entry" template="com.rameses.gov.etracs.bpls.views.BusinessApplicationNewEntryPage"/>
         <!--
         <page name="edit-name" template="com.rameses.gov.etracs.bpls.view.EditBusinessNamePage"/>

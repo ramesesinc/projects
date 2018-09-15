@@ -13,20 +13,40 @@ class WaterworksOrgModel  {
     def selectedSector;
     def selectedZone;
     def selectedStubout;
-    def selectedStuboutnode;
+    def selectedStuboutNode;
+
+    def sectorListHandler;
+    def zoneListHandler;
+    def stuboutListHandler;
+    def stuboutNodeListHandler;
     
-    def getSectorQuery() {
-        if( !selectedSector?.objid ) return [:];
-        return [ sectorid: selectedSector.objid ]
-    }
+    def query = [:];
     
-    def getZoneQuery() {
-        if( !selectedZone?.objid ) return [:];
-        return [ zoneid: selectedZone.objid ]
-    }
+    @PropertyChangeListener
+    def listener = [
+        "selectedSector" : { o->
+            selectedZone = null; selectedStubout = null; selectedStuboutNode = null;
+            query.sectorid = selectedSector?.objid;
+            query.zoneid = null;
+            query.stuboutid = null;
+            zoneListHandler.reload();
+            stuboutListHandler.reload();
+            stuboutNodeListHandler.reload();
+        },
+        "selectedZone" : { o->
+            selectedStubout = null; selectedStuboutNode = null;
+            query.zoneid = selectedZone?.objid;
+            query.stuboutid = null;
+            stuboutListHandler.reload();
+            stuboutNodeListHandler.reload();
+        },
+        "selectedStubout" : {
+            selectedStuboutNode = null;
+            query.stuboutid = selectedStubout?.objid;
+            stuboutNodeListHandler.reload();
+        }
+    ];
     
-    def getStuboutQuery() {
-        if( !selectedStubout?.objid ) return [:];
-        return [ stuboutid: selectedStubout.objid ]
-    }
+   
+
 }

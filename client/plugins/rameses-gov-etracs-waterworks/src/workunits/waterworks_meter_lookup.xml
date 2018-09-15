@@ -15,29 +15,8 @@
         <invoker type="waterworks_meter_wo_account:lookup" 
                  caption="Lookup Water Meter (Without Account)" 
                  action="init" target="popup"
-                 cols="serialno,brand,capacity,size.title,lastreading" 
-                 customFilter="account.objid IS NULL "/>  
+                 cols="serialno,brand,capacity,size.title,lastreading,lastreadingdate,state" 
+                 customFilter="currentacctid IS NULL "/>  
     </invokers>
     
-    <!--
-    <code>
-        class WaterworksMeterLookup extends com.rameses.seti2.models.CrudLookupModel {
-        
-            def metersize;
-            
-            public def getCustomFilter() { 
-                def filter = super.getCustomFilter();
-                if ( metersize ) { 
-                    def sb = new StringBuilder();
-                    sb.append("size.objid=:sizeid");
-                    if ( filter ) {
-                        sb.append(" AND ").append( filter[0] );
-                    } 
-                    return [sb.toString(), [sizeid: metersize.objid]];
-                } 
-                return filter; 
-            }
-        }
-    </code> 
-    -->   
 </workunit>

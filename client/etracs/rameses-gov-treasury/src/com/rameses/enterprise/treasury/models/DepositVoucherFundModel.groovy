@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
-
+import com.rameses.osiris2.reports.*;
 
 class DepositVoucherFundModel extends CrudFormModel {
 
@@ -24,6 +24,7 @@ class DepositVoucherFundModel extends CrudFormModel {
     def selectedFundTransfer;
     def fundTransferModel;
     
+    //DEPOSIT SLIP
     def addDepositSlip() {
         if( (entity.amount - entity.totaldr) == (entity.amountdeposited - entity.totalcr) )
             throw new Exception("No amount to deposit");
@@ -33,6 +34,44 @@ class DepositVoucherFundModel extends CrudFormModel {
             reloadEntity();
         };
         return Inv.lookupOpener("depositslip:create", p );
+    }
+    
+    void approveDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        if(!MsgBox.confirm("You are about to approve this deposit slip for printing. Proceed?")) return;
+        def m = [_schemaname:'depositslip'];
+        m.objid = selectedDepositSlip.objid;
+        m.state = "APPROVED";
+        persistenceService.update(m);
+        depositSlipModel.reload();
+    }
+    
+    def printDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        def bh = selectedDepositSlip.bankaccount.bank.depositsliphandler;
+        if(!bh) throw new Exception("Please specify a depositsliphandler in the bank ");
+        def br = "depositslip_printout:" + bh;
+        return Inv.lookupOpener(br, [entity: selectedDepositSlip ]);
+    }
+    
+    void validateDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        def m = [:];
+        m.fields = [
+            [caption: 'Validation Ref No', name:'refno', required:true],
+            [caption: 'Validation Ref Date', name:'refdate', required:true, datatype:'date'],            
+        ];
+        if(selectedDepositSlip.validation) {
+            m.data = selectedDepositSlip.validation;
+        }
+        m.handler = { o->
+            def zz = [_schemaname:"depositslip", validation: o];
+            zz.findBy = [objid: selectedDepositSlip.objid];
+            persistenceService.update( zz );
+            depositSlipModel.reload();
+            reloadEntity();
+        };
+        Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
     }
     
     //CHECKS MANAGEMENT
@@ -74,25 +113,7 @@ class DepositVoucherFundModel extends CrudFormModel {
         binding.refresh("checksCount");
     }
     
-    void validateDepositSlip() {
-        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        def m = [:];
-        m.fields = [
-            [caption: 'Validation Ref No', name:'refno', required:true],
-            [caption: 'Validation Ref Date', name:'refdate', required:true, datatype:'date'],            
-        ];
-        if(selectedDepositSlip.validation) {
-            m.data = selectedDepositSlip.validation;
-        }
-        m.handler = { o->
-            def zz = [_schemaname:"depositslip", validation: o];
-            zz.findBy = [objid: selectedDepositSlip.objid];
-            persistenceService.update( zz );
-            depositSlipModel.reload();
-            reloadEntity();
-        };
-        Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
-    }
+    
     
     void addFundTransfer() {
         def h = { o->
@@ -106,23 +127,5 @@ class DepositVoucherFundModel extends CrudFormModel {
         fundService.removeEntity( selectedFundTransfer );
         reloadEntity();
     }
-    
-    /*
-    public def post() {
-        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
-        depositSvc.post( [objid: entity.objid ] );
-        MsgBox.alert("Posting successful");
-        return "_close";
-    }
-    public void printDepositSlip() {
-        if(!selectedItem) throw new Exception("Please select an item");
-        
-        def dephandler = selectedItem.bankaccount.bank.depositsliphandler; 
-        if ( !dephandler ) throw new Exception("Please define deposit slip handler in depository bank"); 
-        
-        def op = Inv.lookupOpener("depositslip:printout:"+ dephandler, [entity: [objid: selectedItem.objid]]); 
-        op.handle.print(); 
-    }
-    */
     
 }    

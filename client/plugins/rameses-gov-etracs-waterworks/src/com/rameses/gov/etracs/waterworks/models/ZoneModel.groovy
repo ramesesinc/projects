@@ -10,15 +10,16 @@ import com.rameses.util.*;
 
 public class ZoneModel extends CrudFormModel {
     
-    def getQuery() {
-        return [zoneid : entity.objid ];
+    void afterCreate() {
+        if( !caller.selectedSector ) throw new Exception("Please select a sector");
+        entity.sector = caller.selectedSector;
+        entity.sectorid =  entity.sector.objid;
     }
-
-    def handler = [
-        createItem: {
-            return [zone: entity];
-        }
-    ];
+    
+    void afterSave() {
+        caller.zoneListHandler.reload();
+    }
+    
     
     @PropertyChangeListener
     def listener = [

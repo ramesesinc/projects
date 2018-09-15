@@ -4,14 +4,14 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
-import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
  * @author rameses
  */
-@Template(FormPage.class)
+@Template(CrudFormPage.class)
 public class StuboutNodePage extends javax.swing.JPanel {
 
     /**
@@ -30,104 +30,72 @@ public class StuboutNodePage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xDataTable3 = new com.rameses.rcp.control.XDataTable();
+        jPanel1 = new javax.swing.JPanel();
+        xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
+        xTextField1 = new com.rameses.rcp.control.XTextField();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
 
-        xDataTable3.setName("selectedItem"); // NOI18N
-        xDataTable3.setColumns(new com.rameses.rcp.common.Column[]{
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "indexno"}
-                , new Object[]{"caption", "-"}
-                , new Object[]{"width", 30}
-                , new Object[]{"minWidth", 30}
-                , new Object[]{"maxWidth", 30}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctno"}
-                , new Object[]{"caption", "Account No."}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", true}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", true}
-                , new Object[]{"editableWhen", null}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.acctname"}
-                , new Object[]{"caption", "Account Name"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", true}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.address.text"}
-                , new Object[]{"caption", "Address"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", true}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.meter.serialno"}
-                , new Object[]{"caption", "Serial No."}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", true}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
-            }),
-            new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "account.currentreading"}
-                , new Object[]{"caption", "Last Reading"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
-                , new Object[]{"required", false}
-                , new Object[]{"resizable", true}
-                , new Object[]{"nullWhenEmpty", true}
-                , new Object[]{"editable", false}
-                , new Object[]{"visible", true}
-                , new Object[]{"visibleWhen", null}
-                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
-                , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
-            })
-        });
-        xDataTable3.setHandler("listHandler");
-        xDataTable3.setVarStatus("nodeStat");
+        jPanel1.setName("default"); // NOI18N
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+
+        xTextField1.setCaption("Index No");
+        xTextField1.setName("entity.indexno"); // NOI18N
+        xTextField1.setCaptionWidth(150);
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xTextField1.setRequired(true);
+        xFormPanel1.add(xTextField1);
+
+        xLabel1.setCaption("Sector");
+        xLabel1.setExpression("#{entity.stubout.zone.sector.code}");
+        xLabel1.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setCaptionWidth(150);
+        xLabel1.setOpaque(true);
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel1.setStretchWidth(100);
+        xFormPanel1.add(xLabel1);
+
+        xLabel2.setCaption("Zone");
+        xLabel2.setDepends(new String[] {"entity.zone"});
+        xLabel2.setExpression("#{entity.stubout.zone.code}");
+        xLabel2.setVisibleWhen("");
+        xLabel2.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel2.setCaptionWidth(150);
+        xLabel2.setOpaque(true);
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel2.setStretchWidth(100);
+        xFormPanel1.add(xLabel2);
+
+        xLabel3.setCaption("Stubout");
+        xLabel3.setExpression("#{entity.stubout.code}");
+        xLabel3.setBackground(new java.awt.Color(245, 245, 245));
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel3.setCaptionWidth(150);
+        xLabel3.setOpaque(true);
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel3.setStretchWidth(100);
+        xFormPanel1.add(xLabel3);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(155, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(120, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -135,19 +103,24 @@ public class StuboutNodePage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(215, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(11, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XDataTable xDataTable3;
+    private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
+    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
 }

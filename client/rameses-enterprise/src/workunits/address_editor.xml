@@ -27,6 +27,8 @@
             def handler;
             def tag;
             
+            def delimiter = "\n";
+            
             void init() {
                 formId = "ADDRESS"+new UID();
                 source = entity;
@@ -34,7 +36,6 @@
                 source.each{k,v-> 
                     entity[k]=v;
                 } 
-                
                 def filter = { o->
                     if(!tag) {
                         if(!o.properties.tags) return true;
@@ -46,14 +47,19 @@
                     }
                 };
                 try {
-                    def list = Inv.lookupOpeners( "address:component:type", [entity:entity] );  
+                    def list = Inv.lookupOpeners( "address:component:type", [entity:entity ] );
+                    if(!list) throw new Exception("No address handlers defined. address:component:type" );
                     addressOpeners = [];
-                    list?.each{
+                    list.each{
                         if (filter(it)) addressOpeners << it; 
                     }
-                    if( entity.type ) {
-                        addressOpener = addressOpeners.find{ it.properties.key == entity.type };
-                    }                    
+                    if(!entity.type) {
+                        addressOpener = addressOpeners[0];
+                        entity.type = addressOpener.properties.key;
+                    }
+                    else {
+                         addressOpener = addressOpeners.find{ it.properties.key == entity.type };
+                    }
                 }
                 catch(e) {
                     println "No address:component:type defined";
@@ -64,12 +70,7 @@
                 entity.each{k,v-> 
                     source[k]=v;
                 } 
-                if(!source.type) source.type = addressOpener.properties.key;
-                source.text = TemplateProvider.instance.getResult("templates/address/" + source.type + ".htm", [entity: source] );
-                if(source.text) {
-                    source.text = source.text.trim();
-                    source.text = source.text.replace(",\n", "\n");
-                }    
+                source.text = addressOpener.handle.getAddressText( delimiter );
                 handler(source); 
                 return "_close";
             }

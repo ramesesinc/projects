@@ -41,6 +41,7 @@ class DepositSlipService  {
 	public def create( def o ) {
 		def tmp = [:];
 		tmp.depositvoucherfundid = o.depositvoucherfundid;
+		tmp.depositvoucherfund = [objid: o.depositvoucherfundid ];
 		tmp.createdby = [objid:env.USERID, name:env.FULLNAME];
 		tmp.dtcreated = dateSvc.getServerDate();
 		tmp.bankaccount = o.bankaccount;

@@ -6,67 +6,72 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import java.text.*;
-import com.rameses.treasury.common.models.*;
 
-class AccountEditModel extends ChangeInfoModel {
+class AccountEditModel extends DataEditorModel {
 
-    @PropertyChangeListener
-    def flisten = [
-        "data.stuboutnode": {o->
-            action = (!o?.objid ) ? "detach-node" : "change-node";
-            data.stuboutnodeid = o?.objid;
-        },
-        "data.meter" : { o->
-            action = (!o?.objid) ? "detach-meter" : "change-meter";
-            data.meterid = o?.objid; 
+    void fetchData( zfields ) {
+        if( tag == "address") {
+            setFieldToEdit("address");
+            zfields << [name:'address', caption:'Address', datatype: 'address_editor', preferredSize:"0,50"];
         }
-    ];
-
-    void detachMeter() {
-        if( !MsgBox.confirm("You are about to detach this model. Proceed?")) return;
-        def m = [_schemaname: 'waterworks_account' ];
-        m.findBy = [objid: entity.objid ];
-        m.meterid =  null;
-        changeInfoSvc.execute(m);
-        caller?.reload();
-    }
-
-    void attachMeter() {
-        def h = { o->
-            def m = [_schemaname: 'waterworks_account' ];
-            m.findBy = [objid: entity.objid ];
-            m.meterid =  o.objid;
-            changeInfoSvc.execute(m);
-            caller?.reload();
+        else if( tag == "owner") {
+            setFieldToEdit("owner");
+            zfields << [name:"owner", caption:"Owner", datatype: "lookup", handler:"entity:lookup", expression:"#{data.owner.name}"  ];
         }
-        Modal.show("waterworks_meter_wo_account:lookup", [onselect: h] );
+        else if( tag == "units" ) {
+            setFieldToEdit("units");
+            zfields << [name:"units", caption:"Units", datatype: "integer" ];            
+        }
+        else if( tag == "stuboutnode" ) {
+            setFieldToEdit("stuboutnode");
+            zfields << [name:"stuboutnode", caption:"Stubout Node", datatype: "lookup", 
+                handler:"waterworks_stuboutnode_unassigned:lookup", 
+                expression:"Index No: #{data.stuboutnode.indexno}, Zone: #{data.stuboutnode.zone.code}, Sector: #{data.stuboutnode.sector.code}" ];            
+        }
+        else if( tag == "reading" ) {
+            setFieldToEdit("meter.lastreading");
+            setFieldToEdit("meter.lastreadingdate");
+            zfields << [name:"meter.lastreading", caption:"Last Reading", datatype: "integer"]            
+            zfields << [name:"meter.lastreadingdate", caption:"Last Reading Date", datatype: "date" ];
+        }
+        else if( tag.matches("change_meter|attach_meter") ) {
+            setFieldToEdit("meter");
+            message = "You are about to " + tag.replace("_", " ") + ". Specify meter, enter remarks and proceed";
+            zfields << [name:"meter", caption:"Meter", datatype: "lookup", 
+                        handler:"waterworks_meter_wo_account:lookup", required: true,
+                        expression:"#{data.meter.serialno}"]            
+        }
+        else {
+            message = "You are about to " + tag.replace("_", " ") + " this meter. Enter remarks and click OK to proceed";
+        }
     }
 
-    void disconnect() {
-        if(!MsgBox.confirm("You are about to disconnect this account. Continue?")) return;
-        def m = [_schemaname: 'waterworks_meter' ];
-        m.findBy = [objid: entity.meterid ];
-        m.state = "DISCONNECTED";
-        changeInfoSvc.execute(m);
-        caller?.reload();
+    void beforeInit() {
+        handler = {
+            caller.reloadEntity();
+        }
     }
-
-    void reconnect() {
-        if(!MsgBox.confirm("You are about to reconnect this account. Continue?")) return;
-        def m = [_schemaname: 'waterworks_meter' ];
-        m.findBy = [objid: entity.meterid ];
-        m.state = "ACTIVE";
-        changeInfoSvc.execute(m);
-        caller?.reload();
-    }
-
-    void defective() {
-        if(!MsgBox.confirm("You are about to change this meter to defective. Continue?")) return;
-        def m = [_schemaname: 'waterworks_meter' ];
-        m.findBy = [objid: entity.meterid ];
-        m.state = "DEFECTIVE";
-        changeInfoSvc.execute(m);
-        caller?.reload();
+    
+    void setDataForUpdate() {
+        data.objid = entity.objid; //set the primary key
+        if( tag == "detach" ) {
+            data.meterid =  null;
+        }
+        else if( tag=="reading") {
+            data._schemaname = "waterworks_meter";
+            data.objid = entity.meterid;
+        }
+        else if( tag.matches("disconnect|reconnect|set_as_defective") ) {
+            if( tag == "disconnect" ) data.state = "DISCONNECTED";
+            else if( tag == "set_as_defective" ) data.state = "DEFECTIVE";
+            else data.state = "ACTIVE";
+            data._schemaname = "waterworks_meter";
+            data.objid = entity.meterid;
+        }
+        else {
+            if( data.stuboutnode?.objid )data.stuboutnodeid = data.stuboutnode.objid;
+            if( data.meter?.objid  ) data.meterid = data.meter.objid;
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
+import com.rameses.osiris2.reports.*;
 
 abstract class DepositSlipPrintoutModel  {
     
@@ -25,16 +26,16 @@ abstract class DepositSlipPrintoutModel  {
     public void print() {
         def m = [_schemaname: 'depositslip']; 
         m.findBy = [objid: entity?.objid ]; 
-        def o = querySvc.findFirst( m ); 
+        def data = querySvc.findFirst( m ); 
         def v = null; 
-        if ( o.deposittype == 'CASH' ) {
+        if ( data.deposittype == 'CASH' ) {
             v = getPrintCashReport(); 
             
         } else { 
             m._schemaname = 'checkpayment';
-            m.findBy = [depositslipid: o.objid ];
+            m.findBy = [depositslipid: data.objid ];
             m.orderBy = "refno"; 
-            o.checks = querySvc.getList( m ); 
+            data.checks = querySvc.getList( m ); 
             v = getPrintCheckReport(); 
         } 
         if ( v == null ) return; 
@@ -62,9 +63,19 @@ abstract class DepositSlipPrintoutModel  {
         } else if ( v instanceof String ) {
             rptname = v; 
         }
-        
+        data.each {k1,v1->
+            println k1+"="+v1;
+        }
         if ( !rptname ) return;
-        
-        MsgBox.alert("print "+ rptname); 
+        /*
+        def report = [
+            getReportName : { return rptname; },
+            getReportData : { return data; }, 
+            getParameters : { return [:]; }
+        ] as ReportModel;
+
+        report.viewReport(); 
+        ReportUtil.print( report.report, true );
+        */
     }
 }

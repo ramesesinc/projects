@@ -45,6 +45,14 @@
                 if(binding) binding.refresh();
             } 
             
+            public String getAddressText(String delimiter) {
+                if(delimiter==null) delimiter = "\n";
+                def d1 = [entity.unitno,entity.bldgno, entity.bldgname ].findAll{it}.join(" ");
+                def d2 = [entity.street, entity.subdivision ].findAll{it}.join(" ");
+                def d3 = [entity.barangay?.name, entity.city, entity.municipality, entity.province ].findAll{it}.join(",");
+                return [d1,d2,d3].findAll{ it }.join( delimiter );
+            }
+            
         }
         ]]>
     </code>    

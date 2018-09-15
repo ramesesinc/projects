@@ -2,7 +2,8 @@
             allowCreate="false" allowEdit="false" allowDelete="false">
     <invokers>
         
-        <invoker folderid="menucategory/treasury/remittance" srole="CASHIER" 
+        <invoker folderid="menucategory/treasury/remittance" 
+                 role="CASHIER" 
                  caption="View Deposit Voucher Fund List" 
                  windowTitle="Deposit Vouchers By Fund"
                  formTitle="Deposit  Vouchers By Fund"

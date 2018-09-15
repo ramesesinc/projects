@@ -12,9 +12,9 @@
 		
 		<field name="capacity" required="true" type="integer" caption="Capacity" />
 
-		<field name="lastreading" indexed="true" caption="Brand"/>
-		<field name="lastreadingdate" indexed="true" caption="Brand"/>
-
+		<field name="lastreading" indexed="true" caption="Lst Reading"/>
+		<field name="lastreadingdate" indexed="true" caption="Last Reading Date"/>
+		<field name="currentacctid" />
 		
 		<!-- for link with application -->
 		<!--
@@ -26,7 +26,7 @@
 		
 		<complex name="account" ref="waterworks_account" jointype="many-to-one" required="false"
 			includefields="objid,acctname,acctno,address.text">
-			<key field="objid" target="meterid"/>
+			<key field="currentacctid" target="objid"/>
 		</complex>
 		
 		<field name="stocktype" defaultValue="STOCK" required="true" caption="Stock Type" 

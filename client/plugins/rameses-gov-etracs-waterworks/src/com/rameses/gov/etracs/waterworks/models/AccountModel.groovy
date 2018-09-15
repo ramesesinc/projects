@@ -10,11 +10,16 @@ import java.text.*;
 public class AccountModel extends CrudFormModel {
     
     def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+    def meterStates;
+    
     
     void afterCreate() {
         entity.address = [:];
         entity.attributes = [];
         entity.units = 1;
+        entity.meter = [:];
+        entity.stuboutnode = [:];
+        meterStates = ["ACTIVE","DISCONNECTED","DEFECTIVE"];
     }
 
     def edit() {

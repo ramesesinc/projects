@@ -4,9 +4,21 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.seti2.models.*;
 
-public class StuboutNodeModel {
+public class StuboutNodeModel extends CrudFormModel {
+
+    void afterCreate() {
+        if( !caller.selectedStubout ) throw new Exception("Please select a stubout");
+        entity.stubout = caller.selectedStubout;
+        entity.stuboutid = entity.stubout.objid;
+    }
     
+    void afterSave() {
+        caller.stuboutNodeListHandler.reload();
+    }
+    
+    /*
     @Service('PersistenceService')
     def persistenceSvc; 
     
@@ -28,7 +40,7 @@ public class StuboutNodeModel {
     def getEntity() {
         return caller?.entity; 
     } 
-    
+    */
     /*
     void reload() { 
         nodes.clear();
@@ -37,6 +49,7 @@ public class StuboutNodeModel {
     }
     */
 
+    /*
     def listHandler = [
         fetchList: { o-> 
            return svc.getNodes([stuboutid: entity.objid]);
@@ -57,7 +70,9 @@ public class StuboutNodeModel {
             listHandler.reload();
         }
         Modal.show("dynamic:form", p, [title:'Enter Nodes']);
-    }    
+    } 
+    */
+   
     /*
     def i = MsgBox.prompt("Enter Number of Nodes to add");
     if ( !i ) return; 
@@ -74,6 +89,7 @@ public class StuboutNodeModel {
     listHandler.reload();
     */
     
+    /*
     void editIndexNo() {
         if(!selectedItem) throw new Exception("Please select an item");
         def p = [:]
@@ -96,6 +112,7 @@ public class StuboutNodeModel {
         persistenceSvc.removeEntity( m );
         listHandler.reload();
     }
+    */
     
     /*
     boolean isAllowSwapUp() {

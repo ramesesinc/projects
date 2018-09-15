@@ -9,54 +9,56 @@ import com.rameses.seti2.models.*
 
 class AccountMappingModel { 
 
-    @Service("AccountMappingService")
-    def acctMapSvc;
+    @Service("QueryService")
+    def querySvc;
     
-    def searchText;
-    def selectedItem;
-    
+    @Service("PersistenceService")
+    def persistenceSvc;
+
     @Caller
     def caller;
     
-    @FormTitle
-    public String getTitle() {
-        return maingroup.name;
+    def entity;
+    
+    def selectedItem;
+    
+    void init() {
+        entity = caller.entity;
     }
     
-    void search() {
-        reload();
-    }
+    def mappedItemsHandler;
     
-    def getMaingroup() {
-        return caller.entity;
-    }
-    
-    def mapModel = [
-        fetchList: { o->
-            def m = [:];
-            m.putAll(o);
-            m.maingroupid = maingroup.objid;
-            if(searchText) m.searchText = searchText;
-            return acctMapSvc.getList(m);
+    def unmappedItemsHandler = [
+        isMultiSelect: {
+            return true;
         },
-        onColumnUpdate: { o, name ->
-            def m =[:]
-            m.item = selectedItem?.item;
-            m.account = o.account;
-            m.maingroup = maingroup;
-            acctMapSvc.mapAccount( m );
+        fetchList : {
+            def m = [_schemaname:"itemaccount"];
+            m._limit = 1000;
+            m.where = [' objid NOT IN (${subquery}) '];
+            m.vars = [subquery: "SELECT itemid FROM account_item_mapping WHERE maingroupid = '" + entity.objid + "'"];
+            return querySvc.getList(m); 
         }
         
-    ] as EditorListModel;
+    ] as BasicListModel;
     
-    public void reload() {
-        mapModel.reload();
+    void mapItem() {
+        if(!unmappedItemsHandler.selectedValue) 
+            throw new Exception("Please select ant least one item to map");
+        def h = { o->
+            def list = unmappedItemsHandler.selectedValue;
+            list.each { sitem ->
+                def m = [_schemaname:'account_item_mapping'];
+                m.maingroupid = entity.objid;
+                m.item = sitem;
+                m.account = o;
+                persistenceSvc.create(m);
+            }
+            unmappedItemsHandler.reload();
+            mappedItemsHandler.reload();
+        }
+        Modal.show( "account:lookup", ['query.maingroupid': entity.objid, onselect: h]);
     }
-    
-    def getAccountLookup() {
-        return Inv.lookupOpener( "account:lookup", [maingroupid: maingroup.objid ] );
-    }
-    
 
 } 
 

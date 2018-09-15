@@ -3,11 +3,11 @@
 	<element tablename="waterworks_zone">
 		<field name="objid" primary="true" prefix="WSZ"/>
 		<field name="code" caption="Zone Code" indexed="true" searchable="true"/>
-		<field name="description" caption="Zone Description"/>
+		<field name="description" caption="Zone Description" searchable="true"/>
 		<field name="sectorid" required="true" searchable="true"/>
 		<field name="schedule_objid" required="true" caption="Schedule"/>
 		
-		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="false"
+		<complex name="sector" ref="waterworks_sector" jointype="many-to-one" required="true"
 			includefields="objid,code">
 			<key field="sectorid" target="objid" />
 		</complex>	

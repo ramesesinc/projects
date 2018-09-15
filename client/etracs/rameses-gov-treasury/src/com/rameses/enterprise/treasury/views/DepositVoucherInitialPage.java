@@ -37,7 +37,7 @@ public class DepositVoucherInitialPage extends javax.swing.JPanel {
         xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
 
-        jLabel1.setText("Select from the collections to deposit");
+        jLabel1.setText("Select from the collections to deposit and click submit");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

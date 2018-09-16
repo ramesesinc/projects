@@ -4,6 +4,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
 import com.rameses.seti2.models.*;
 import com.rameses.util.*;
 import com.rameses.rcp.framework.ValidatorException;
@@ -370,5 +371,60 @@ class AFTxnModel extends CrudPageFlowModel {
         return Inv.lookupOpener(strname, [refitem: item, onselect: h ] );
     }
     
+    def preview() {
+        buildCompatibility( entity ); 
+
+        def path = 'com/rameses/gov/treasury/ris/report/';
+        def mainreport = path + 'ris.jasper';
+        def subreports = new SubReport[1]; 
+        subreports[0] = new SubReport("ReportRISItem", path + "risitem.jasper"); 
+        
+        def params = [ title: 'RIS Report']; 
+        params.reportHandler = [ 
+           getData : { return entity; }, 
+           getReportName : { return mainreport; },
+           getSubReports : { return subreports; } 
+        ]; 
+        return Inv.lookupOpener('simple_form_report', params);
+    }
     
+    private void buildCompatibility( data ) {
+        data.reqno = data.request?.reqno;
+        if ( !data.reqno ) data.reqno = data.controlno;
+        if ( !data.requester ) data.requester = data.issueto; 
+        
+        data.items.each{ o-> 
+            if ( o.qtyreceived == null ) o.qtyreceived = o.qtyserved;
+        }
+        
+        if ( !data.reqtype ) {
+            data.reqtype = null; 
+            if ( data.reqtype.toString().toUpperCase().startsWith('PURCHASE')) {
+                data.reqtype = 'PURCHASE'; 
+            } else if ( data.reqtype.toString().toUpperCase().startsWith('ISSU')) {
+                data.reqtype = 'ISSUANCE'; 
+            }
+        }
+        
+        data.items.each{ o-> 
+            if ( o.series ) return; 
+            
+            def buff = []; 
+            if ( o.afunit?.formtype == 'serial') {
+                o.items.each {
+                    buff << (
+                        it.startseries.toString() +' - '+ it.endseries.toString() + 
+                        ' ( '+ ((it.endstub - it.startstub)+1) +' )' 
+                    ); 
+                }
+            } else if ( o.afunit?.formtype != 'serial') { 
+                o.items.each {
+                    buff << (
+                        'Stub No. ( '+ it.startstub.toString() +' - '+ it.endstub.toString() +' )'
+                    ); 
+                }
+            } 
+            o.series = buff.join(', ');
+        }
+    }
 }    

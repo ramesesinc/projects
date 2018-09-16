@@ -106,6 +106,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         check._schemaname = 'checkpayment';
         check.state = 'PENDING';
         check.amtused = 0;
+        check.external = 0;
         check.collectorid = entity.collector.objid;
         def _total = fundList.sum{ it.amount - it.used };
         if( check.amount > _total && check.split != 1 ) {

@@ -19,3 +19,5 @@ CREATE TABLE `checkpayment_deadchecks` (
   `external` int(11) DEFAULT NULL,
   PRIMARY KEY (`objid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+

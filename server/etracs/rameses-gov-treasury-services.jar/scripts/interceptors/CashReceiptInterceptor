@@ -38,6 +38,8 @@ class CashReceiptInterceptor {
 		} 
 
 		// data compliant to previous versions
-		data.totalnoncash = data.totalcheck; 
+		if( !data.totalnoncash ) {
+			data.totalnoncash = data.totalcheck; 
+		}
 	}
 }

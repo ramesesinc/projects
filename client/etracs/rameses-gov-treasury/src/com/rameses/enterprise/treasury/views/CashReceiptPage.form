@@ -39,10 +39,10 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="xFormPanel2" min="-2" pref="111" max="-2" attributes="0"/>
-                  <Component id="xFormPanel3" min="-2" pref="111" max="-2" attributes="0"/>
+                  <Component id="xFormPanel3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="xTabbedPane1" pref="441" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="xTabbedPane1" pref="427" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -110,6 +110,9 @@
       </SubComponents>
     </Container>
     <Container class="com.rameses.rcp.control.XFormPanel" name="xFormPanel3">
+      <Properties>
+        <Property name="captionWidth" type="int" value="100"/>
+      </Properties>
       <SubComponents>
         <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
           <Properties>
@@ -136,6 +139,17 @@
             <Property name="caption" type="java.lang.String" value="Collector"/>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="entity.collector.name" noResource="true"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 19]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XTextField" name="xTextField6">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Sub Collector"/>
+            <Property name="name" type="java.lang.String" value="entity.subcollector.name" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ entity.subcollector.objid != null }"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[0, 19]"/>
             </Property>
@@ -212,7 +226,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="354" max="32767" attributes="0"/>
+                      <EmptySpace pref="322" max="32767" attributes="0"/>
                       <Component id="xFormPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                   </Group>
@@ -220,7 +234,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="xDataTable1" min="-2" pref="333" max="-2" attributes="0"/>
-                          <EmptySpace pref="69" max="32767" attributes="0"/>
+                          <EmptySpace pref="42" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -286,10 +300,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="xFormPanel5" min="-2" max="-2" attributes="0"/>
-                          <Component id="xFormPanel6" min="-2" max="-2" attributes="0"/>
+                          <Component id="xFormPanel6" min="-2" pref="27" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xDataTable2" pref="338" max="32767" attributes="0"/>
+                      <Component id="xDataTable2" pref="316" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -311,16 +325,20 @@
               <SubComponents>
                 <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField3">
                   <Properties>
-                    <Property name="caption" type="java.lang.String" value="Cash Paid"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="caption" type="java.lang.String" value="Cash Tendered"/>
+                    <Property name="disableWhen" type="java.lang.String" value="#{ true }"/>
                     <Property name="name" type="java.lang.String" value="entity.totalcash" noResource="true"/>
+                    <Property name="captionWidth" type="int" value="150"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField4">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Change"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="disableWhen" type="java.lang.String" value="#{ true }"/>
                     <Property name="name" type="java.lang.String" value="entity.cashchange" noResource="true"/>
+                    <Property name="captionWidth" type="int" value="150"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -330,11 +348,14 @@
                 <Property name="captionWidth" type="int" value="100"/>
               </Properties>
               <SubComponents>
-                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField5">
+                <Component class="com.rameses.rcp.control.XDecimalField" name="xDecimalField6">
                   <Properties>
-                    <Property name="caption" type="java.lang.String" value="Total Non cash"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="caption" type="java.lang.String" value="Total Non Cash"/>
+                    <Property name="disableWhen" type="java.lang.String" value="#{ true }"/>
                     <Property name="name" type="java.lang.String" value="entity.totalnoncash" noResource="true"/>
+                    <Property name="text" type="java.lang.String" value="entity.totalnoncash"/>
+                    <Property name="captionWidth" type="int" value="150"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -364,7 +385,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xDataTable3" pref="391" max="32767" attributes="0"/>
+                      <Component id="xDataTable3" pref="369" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

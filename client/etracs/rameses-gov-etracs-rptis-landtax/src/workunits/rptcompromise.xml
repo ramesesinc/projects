@@ -3,7 +3,7 @@
     <invokers>
         
         <invoker folderid="/menucategory/landtax/txn" 
-             action="create" caption="Compromise Agreement" 
+             action="create" caption="New Compromise Agreement" 
             role="ADMIN,LANDTAX" permission="rptcompromise.create" index="20" />
         
         <invoker folderid="/explorer/txn/landtax" 

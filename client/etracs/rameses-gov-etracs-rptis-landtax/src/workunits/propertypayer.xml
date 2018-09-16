@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menucategory/landtax/payer" 
-                action="create" caption="Create New Payer" 
+                action="create" caption="New Payer" 
                 target="window" index="0"  
                 role="LANDTAX" permission="propertypayer.create" />
                 

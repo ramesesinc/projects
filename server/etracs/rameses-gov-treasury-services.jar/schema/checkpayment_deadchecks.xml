@@ -1,13 +1,9 @@
 <schema>
 
-	<element  tablename="checkpayment">
+	<element tablename="checkpayment_deadchecks">
 		<field name="objid" primary="true" prefix="CHKPMT"/>	
-		<field name="state" required="true" defaultValue="PENDING"/>	
-
-		<complex name="bank" ref="bank" jointype="many-to-one" required="true" includefields="objid,name,code,deposittype">
-			<key field="bankid" target="objid" />
-		</complex>	
-
+		<field name="state" required="true" />	
+		<field name="bankid" required="true" />	
 		<field name="refno" required="true" searchable="true"  caption="Check No"/>	
 		<field name="refdate" required="true"  caption="Check Date"/>
 		<field name="amount" required="true" type="decimal"  caption="Amount"/>	
@@ -22,17 +18,14 @@
 		<field name="fundid" />
 		<field name="depositslipid" />
 		<field name="split"  type="integer" defaultValue="0"/>
+		<field name="fundid" />
 
 		<field name="balance" expr="amount - amtused" type="decimal" caption="Amount Balance"/>
-
-		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,name">
-			<key field="fundid" target="objid" />
-		</complex>		
-
 		<!-- collector info -->
 		<field name="collectorid" />
-
-		<field name="deposited" expr="CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END" />
 		<field name="external" />
 	</element>
+
+
+
 </schema>

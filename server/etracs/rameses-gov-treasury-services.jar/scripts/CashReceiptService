@@ -111,6 +111,12 @@ class CashReceiptService  {
 		def test = p.paymentitems.findAll{ !it.reftype };
 		if(test) throw new Exception("All payment items must have a type. Please review the code");
 
+		if( p.checks ) {
+			p.checks.each {
+				checkPayment.create( it );	
+			}
+		}
+
 		p.paymentitems.each {
 			it.voidamount = 0.0;
 			if( it.reftype == 'CHECK' ) {				

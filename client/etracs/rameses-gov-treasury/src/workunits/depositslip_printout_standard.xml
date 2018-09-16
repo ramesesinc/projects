@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="depositslip:printout" name="lbp"/> 
-        <invoker type="depositslip_printout:lbp" action="print" target="process"/> 
+        <invoker type="depositslip:printout" name="standard"/> 
+        <invoker type="depositslip_printout:standard" action="print" target="process"/> 
     </invokers>
     
     <code>
@@ -12,7 +12,7 @@
     import com.rameses.osiris2.common.*;
     import com.rameses.util.*;
 
-    class LBPDepositSlipPrintout extends com.rameses.enterprise.treasury.models.DepositSlipPrintoutModel {
+    class StandardDepositSlipPrintout extends com.rameses.enterprise.treasury.models.DepositSlipPrintoutModel {
 
         def pkg = "com/rameses/gov/treasury/printforms/depositslip/lbp/";
         

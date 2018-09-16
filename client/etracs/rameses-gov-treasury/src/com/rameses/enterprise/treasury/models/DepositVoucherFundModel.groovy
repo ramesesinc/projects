@@ -51,7 +51,14 @@ class DepositVoucherFundModel extends CrudFormModel {
         def bh = selectedDepositSlip.bankaccount.bank.depositsliphandler;
         if(!bh) throw new Exception("Please specify a depositsliphandler in the bank ");
         def br = "depositslip_printout:" + bh;
-        return Inv.lookupOpener(br, [entity: selectedDepositSlip ]);
+        try {
+            def op = Inv.lookupOpener(br, [entity: selectedDepositSlip ]);
+            if(!op) throw new Exception("Opener " + br + " not found. Please ensure it is included in the project");
+            return op;
+        }
+        catch(ex) {
+            MsgBox.err( ex );
+        }
     }
     
     void validateDepositSlip() {

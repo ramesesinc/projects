@@ -172,14 +172,12 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         balance = balance - check.amount;
     }
 
-    void initCheck() {
-        check = [split:0];
-        fund = null;
-        if(openFundList.size()==1) fund = openFundList[0];
-    }
-    
     def addAnotherCheck() {
         new_check = true;
+        check = [split:0];
+        check.receivedfrom = entity.paidby;
+        fund = null;
+        if(openFundList.size()==1) fund = openFundList[0];
         return super.signal( "add-check" );
     }
     
@@ -199,28 +197,6 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         balance = 0;
         fundList.clear();
         super.signal("submit");
-        /*
-        boolean pass= false;
-        def p = [:];
-        p.title = "Additional Cash";
-        p.value = balance;
-        p.handler = { o->
-            if( o < balance ) {
-                throw new Exception("Cash to add must not be less than balance")
-            }
-            if( balance > 0 ) {
-                return 
-            }
-            if(o!=balance)
-                throw new Exception("Cash must equal the balance due");
-            totalcash = o;
-            balance = 0;
-            fundList.clear();
-            pass = true;
-        }
-        Modal.show( "decimal:prompt", p );
-        if(!pass) throw new BreakException();
-        */
     }
     
     //This will add adjusting entries for the fund just in case there are balances due;
@@ -245,7 +221,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         m.paymentitems = payments;
         m.totalcash = totalcash;
         m.cashchange = cashchange;
-        m.checks = checks;
+        m.checks = checks.unique();
         
         saveHandler(m);  
         return "_close";

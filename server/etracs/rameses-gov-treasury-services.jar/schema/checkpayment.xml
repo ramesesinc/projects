@@ -27,16 +27,9 @@
 
 		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,name">
 			<key field="fundid" target="objid" />
-		</complex>		
-
-		<complex name="receipt" ref="cashreceipt" jointype="many-to-one" required="false" includefields="objid,receiptno,collector.*,subcollector.*">
-			<key field="receiptid" target="objid" />
-		</complex>
+		</complex>	
 
 		<field name="deposited" expr="CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END" />
 		<field name="external" />
 	</element>
-
-
-
 </schema>

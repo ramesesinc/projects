@@ -8,6 +8,7 @@ public class Bill
     Integer billtoyear
     Integer billtoqtr
     Boolean advancebill
+    Boolean forpayment
 
     def entity 
     
@@ -20,6 +21,7 @@ public class Bill
         this.billtoqtr = bill.billtoqtr
         this.advancebill = bill.advancebill
         this.billdate = bill.billdate 
+        this.forpayment = (bill._forpayment ? bill._forpayment : false)
     }
 
     public void setExpirydate(expirydate){

@@ -399,23 +399,10 @@ public class RPTBillingService
 		} 
 	}
 
-
-	/* Update the qtr for previous partialled item 
-	*  qtr =  round(amtpaid / (amount / 4)) 
-	*/
-	void updatePartialledItemQtr(items) {
-		def partialleditems = items.findAll{it.qtr == null && it.amtpaid > 0}
-		partialleditems.each {
-			def qtrly = it.amount / 4.0;
-			it.qtr = numSvc.roundA(it.amtpaid / qtrly, 0) + 1;
-			it._partialled = true 
-		}
-	}
-
 	def buildItemsForReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
-		updatePartialledItemQtr(bill.items)
+		def minyear = bill.items.year.min() 
 		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + ':' + it.taxdifference }
 		groups.each{k, list ->
 			def first = list.first() 
@@ -424,7 +411,7 @@ public class RPTBillingService
 			item.qtr = first.qtr 
 			item.originalav = first.rptledgerfaas.assessedvalue 
 			item.taxdifference = first.taxdifference
-			item.period = buildPeriod(list)
+			item.period = buildPeriod(bill, list, minyear)
 			item.total = 0.0 
 			item.flag = ''
 			list.each{
@@ -452,16 +439,27 @@ public class RPTBillingService
 		return items
 	}
 
-	def buildPeriod(list){
+	def buildPeriod(bill, list, minyear){
 		def firstitem = list.first()
 		def period = firstitem.year 
-		if (firstitem._partialled && firstitem.qtrly == false) {
-			if (firstitem.qtr != 1 ) {
-				if (firstitem.qtr == 4 ){
-					period += '-4'
-				} else {
-					period += '-' + firstitem.qtr + '4'
+
+		if (firstitem.qtr == null) {
+			def startqtr = (bill.rptledger.lastqtrpaid + 1)
+			def endqtr = (firstitem.year == bill.billtoyear ? bill.billtoqtr : 4)
+			if (endqtr == startqtr) endqtr = ''
+			if (firstitem.year == bill.rptledger.lastyearpaid) {
+				period += '-' + startqtr + '' +  endqtr
+			} else if (firstitem.year == bill.billtoyear){
+				if (bill.billtoqtr != 4){
+					period += '-1' + (bill.billtoqtr == 1 ? '' : bill.billtoqtr)
 				}
+			}
+		} else if (!firstitem.qtrly  && firstitem.year == minyear) {
+			def startqtr = (bill.rptledger.lastqtrpaid == 4 ? 1 : bill.rptledger.lastqtrpaid + 1)
+			if (startqtr != 4) {
+				period += '-' + startqtr + '4'
+			} else {
+				period += '-4'
 			}
 		} else {
 			def minqtr = list.qtr.min()

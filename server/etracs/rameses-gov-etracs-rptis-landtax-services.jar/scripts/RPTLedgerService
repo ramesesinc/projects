@@ -677,7 +677,7 @@ class RPTLedgerService
         param.parentid = info.objid 
         param.year = (info.lastqtrpaid == 4 ? info.lastyearpaid + 1 : info.lastyearpaid)
         def where = ''' parentid = :parentid and year = :year and revtype in ('basic', 'sef') and taxdifference = 0 '''
-        def items = em_rptledger_item.select('objid,revtype,amount').where(where, param).list()
+        def items = em_rptledger_item.select('objid,revtype,year,amount').where(where, param).list()
 
         items.each{
             def partialamt = 0.0 
@@ -698,6 +698,17 @@ class RPTLedgerService
         }
         def qtrs = (info.lastqtrpaid == 4 ? 0 : info.lastqtrpaid) 
         def amtpaid = partialamt +  qtrlyamt * qtrs
+
+        def pmt = em_rptpayment.where('refid = :objid and :year >= fromyear and :year <= toyear and voided=0', [objid:info.objid, year: item.year])
+                            .orderBy('dtposted desc')
+                            .first()
+
+        if (pmt) {
+            def partial = em_rptpayment_item.select('amount').find([parentid: pmt.objid, year: item.year, partialled:1, revtype: item.revtype]).first() 
+            if (partial) {
+                amtpaid += partial.amount
+            }
+        }
         em_rptledger_item.find([objid:item.objid]).update([amtpaid:amtpaid])
     }
 

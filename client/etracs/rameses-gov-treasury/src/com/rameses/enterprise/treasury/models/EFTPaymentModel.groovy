@@ -10,12 +10,8 @@ import com.rameses.seti2.models.*;
 
 class EFTPaymentModel extends CrudFormModel  { 
 
+    def viewReceipt() {
+        return Inv.lookupOpener( "cashreceipt:open", [entity: [objid: entity.receiptid ]]);
+    }
     
-    @PropertyChangeListener
-    def listener = [
-        "entity.bankaccount" : { o->
-            entity.fund = o.fund;
-            entity.fundid = o.fund.objid;
-        }
-    ]
 } 

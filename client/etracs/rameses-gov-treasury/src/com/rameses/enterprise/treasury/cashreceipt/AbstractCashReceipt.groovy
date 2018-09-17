@@ -38,6 +38,7 @@ public abstract class AbstractCashReceipt {
     } 
     
     def createAnother() { 
+        MsgBox.alert("create handler->"+createHandler);
         if (createHandler) { 
             createHandler(); 
         } 
@@ -172,6 +173,7 @@ public abstract class AbstractCashReceipt {
         def handler = { o-> 
             entity.paymentitems = o.paymentitems; 
             entity.totalnoncash = o.paymentitems.sum{it.amount};
+            entity.eft = o.eft;
             success = true; 
         }
         Modal.show( "cashreceipt:payment-eft", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 

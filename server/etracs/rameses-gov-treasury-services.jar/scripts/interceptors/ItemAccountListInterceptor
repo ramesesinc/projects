@@ -9,7 +9,10 @@ class ItemAccountListInterceptor {
 	def orgSvc;
 
 	@DataContext('collectiontype_account')
-	def coltypeAcct_db;	
+	def coltypeAcct_db;		
+
+	@DataContext('vw_collectiontype_account')
+	def vwcoltypeAcct_db;	
 
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public def getNodeList(evt) {
@@ -75,19 +78,20 @@ class ItemAccountListInterceptor {
 		def result = evt.result;
 
 		if( o.has_collection_account ) {
-			def acList = coltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]).list();
-			acList.each { a-> 
-				def acct = a.account; 
-				if ( acct?.objid == null ) return;
+			def startrow = (o._start ? o._start : 0); 
+			def rowcount = (o._limit ? o._limit : 20);
+			def adb = vwcoltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]); 
+			if ( o.searchtext ) { 
+				def stxt = o.searchtext + '%';
+				adb.where(' (code like :stxt OR title like :stxt) ', [stxt: stxt]) 
+			} 
 
-				def m = result.find{ it.objid == acct.objid } 
-				if ( m == null ) {
-					result << acct; 
+			def acList = adb.list(startrow, rowcount);
+			acList.each { a-> 
+				def m = result.find{ it.objid == a.objid } 
+				if ( m == null ) { 
+					result << a; 
 				}
-				else if ( acct.valuetype ) {
-					m.valuetype = acct.valuetype; 
-					m.defaultvalue = acct.defaultvalue; 
-				}  
 			}
 		}
 	}

@@ -15,13 +15,6 @@ class AFRequestModel extends CrudFormModel {
     
     String printFormName = "afris";
     
-    def getPrintFormData() {
-        def m = [:];
-        m.putAll( entity );
-        m.controlno = entity.reqno;
-        return m;
-    }
-    
     void afterCreate() {
         entity.state = 'DRAFT';
         entity.reqtype = invoker.properties.reqtype;
@@ -48,4 +41,17 @@ class AFRequestModel extends CrudFormModel {
             o.unit = o.item.unit;
         }        
     }
-}    
+    
+    def getPrintFormData() { 
+        return entity; 
+    }
+    def getReportForm() {
+        def path = 'com/rameses/gov/treasury/ris/report/';
+        return [
+            mainreport: path + 'ris.jasper', 
+            subreports: [
+                [name:'ReportRISItem', template:path + 'risitem.jasper']
+            ]
+        ];
+    }
+} 

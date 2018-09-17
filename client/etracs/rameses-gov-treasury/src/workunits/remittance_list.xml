@@ -7,7 +7,7 @@
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
-                 role="LIQUIDATING_OFFICER,CASHIER,SHARED"
+                 role="LIQUIDATING_OFFICER"
                  action="init" target="window" index="10" tag="ALL"/>
 
         <invoker folderid="menucategory/treasury/collection" 

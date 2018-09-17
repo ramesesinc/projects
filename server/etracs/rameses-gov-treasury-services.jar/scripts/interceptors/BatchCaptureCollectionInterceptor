@@ -45,6 +45,7 @@ class BatchCaptureCollectionInterceptor {
 			bcei_db.create( it ); 
 		} 
 
+
 		def bes = bc_db.findBatchSummary([ objid : item.parentid ]); 
 		if ( bes == null ) bes = [:]; 
 

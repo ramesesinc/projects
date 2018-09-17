@@ -234,11 +234,14 @@ class AFTxnService  {
 			sbuff.append(  " AND allocid =:allocid " );
 			p.allocid = alloc.objid;
 		}
+
 		def list = afControl.select('objid,startseries,currentseries,endseries,prevdetailid').where( sbuff.toString(), p ).orderBy('dtfiled,batchno,stubno').limit( qty ).list();
-		if(!list)
-			throw new Exception("No available stock for " + p.afid + " " + p.unit);		
-		list.each {
-			afInvSvc.add( ref, it );
+		if ( !list ) throw new Exception("No available stock for " + p.afid + " " + p.unit);	
+
+		list.eachWithIndex { itm,idx-> 
+			if ( idx < qty ) {
+				afInvSvc.add( ref, itm );
+			}
 		}
 		aftxnItem.find([objid: afi.objid]).update( [qtyserved: '{qtyserved + :qty}'], [qty: list.size() ] );
 	}	

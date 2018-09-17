@@ -188,8 +188,8 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
     }
     
     def save() {
-        super.save(); 
-
+        if ( !super.save()) return null; 
+        
         caller.updateBatchItem( entity ); 
         if ( openForEditing ) return '_close'; 
         
@@ -217,41 +217,38 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
                 def sharing_amount = new BigDecimal( amt.toString() );
                 o.items.each {
                     it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
-                }           
+                } 
+            } 
                 
-                def newitems = []; 
-                o.items.each{ 
-                    def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
-                    if ( it.amount != null ) { 
-                        rci.amount = it.amount; 
-                    } else {
-                        rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
-                    }
-
-                    rci.item = [ 
-                        objid : it.account?.objid, 
-                        code  : it.account?.code, 
-                        title : it.account?.title, 
-                        fund  : it.account?.fund, 
-                        valuetype : it.valuetype, 
-                        defaultvalue : it.defaultvalue 
-                    ];                  
-                    if ( it.valuetype == 'FIXEDUNIT' ) {
-                        rci.remarks = "qty@1"; 
-                    } 
-                    println '** '
-                    rci.each{ oo-> 
-                        println '> '+ oo;
-                    }
-                    newitems << rci; 
+            def newitems = []; 
+            o.items.each{ 
+                def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
+                if ( it.amount != null ) { 
+                    rci.amount = it.amount; 
+                } else {
+                    rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
                 }
 
-                entity.items.addAll( newitems ); 
-                rebuildTotals(); 
-                listModel.reload(); 
-                if (binding) binding.refresh(".*");            
+                rci.item = [ 
+                    objid : it.account?.objid, 
+                    code  : it.account?.code, 
+                    title : it.account?.title, 
+                    fund  : it.account?.fund, 
+                    valuetype : it.valuetype, 
+                    defaultvalue : it.defaultvalue 
+                ];                  
+                if ( it.valuetype == 'FIXEDUNIT' ) {
+                    rci.remarks = "qty@1"; 
+                } 
+                newitems << rci; 
             } 
-        }   
+            
+            newitems.sort{( it.orderno ? it.orderno : 0 )} 
+            entity.items.addAll( newitems ); 
+            rebuildTotals(); 
+            listModel.reload(); 
+            if (binding) binding.refresh(".*");            
+        } 
         return Inv.lookupOpener("collectiongroup:lookup", param );
     }
 

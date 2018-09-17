@@ -193,7 +193,7 @@ public class BatchCaptureCollectionService  {
 			} else { 
 				throw new Exception('Process failed. Receipt# '+ it.receiptno +' may have been tampered. Please verify');
 			} 
-		}
+		} 
 
 		def item = params.batchitems.find{it.amount == 0.0 && (it.voided == 0 || it.voided == false)}
 		validateAmount( item ); 

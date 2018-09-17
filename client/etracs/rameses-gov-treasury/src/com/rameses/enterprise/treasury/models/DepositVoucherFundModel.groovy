@@ -41,7 +41,7 @@ class DepositVoucherFundModel extends CrudFormModel {
         p.handler = { x->
             entity.putAll( x );
             reloadEntity();
-            depostSlipListModel.reload();
+            depositSlipListModel.reload();
         };
         return Inv.lookupOpener("depositslip:create", p );
     }
@@ -53,6 +53,7 @@ class DepositVoucherFundModel extends CrudFormModel {
         list.each {
             depositSlipSvc.removeDepositSlip([objid: it.objid]);
         }
+        reloadEntity();
     }
     
     void approveDepositSlip() {

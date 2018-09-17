@@ -10,7 +10,10 @@ class CollectionGroupService extends ActiveCrudListService {
 	def em;	
 
 	@ActiveDB("collectiongroup_revenueitem")
-	def cgi_db;
+	def cgi_db;	
+
+	@DataContext("collectiongroup_revenueitem")
+	def cga_db;
 
 	@Env 
 	def env; 
@@ -75,7 +78,14 @@ class CollectionGroupService extends ActiveCrudListService {
 	}
 
 	protected void afterOpen(def entity){
-		entity.revenueitems = em.getRevenueItems( entity )
+		entity.revenueitems = []; 
+		cga_db.find([ collectiongroupid: entity.objid ]).orderBy('orderno').list().each { 
+			def acct = it.remove('account'); 
+			if ( !acct ) return; 
+
+			acct.putAll( it );
+			entity.revenueitems << acct;  
+		} 
 	}
 
 	protected void beforeUpdate(def entity){

@@ -50,14 +50,14 @@ class AFControlService  {
 			arr <<"fund.objid IS NULL";
 		}
 
-		//filter by resp. center
-		if( env.ORGROOT != 1 ) {
-			arr << "respcenter.objid = :orgid";
-			p.orgid = env.ORGID;
-		}
-		else {
-			arr << "respcenter.objid IS NULL";
-		}
+		// //filter by resp. center
+		// if( env.ORGROOT != 1 ) {
+		// 	arr << "respcenter.objid = :orgid";
+		// 	p.orgid = env.ORGID;
+		// }
+		// else {
+		// 	arr << "respcenter.objid IS NULL";
+		// }
 
 		def afc = em.where( arr.join(" AND "), p ).first();
 		if(!afc ) throw new Warning("select-afcontrol");

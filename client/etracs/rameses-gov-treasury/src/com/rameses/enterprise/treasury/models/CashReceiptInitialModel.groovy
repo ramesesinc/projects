@@ -102,9 +102,19 @@ class CashReceiptInitialModel  {
     
     def lookupSubCollectorAF( param ) {
         param.active = 1; 
-        def p = [ entity: param ]; 
+
+        def env = OsirisContext.env; 
+        def p = [_schemaname: 'af_control', debug: true]; 
+        p.where = CashReceiptAFLookupFilter.getFilter( param ); 
+        def res = qryService.findFirst( p ); 
+        if ( res ) return res; 
+
+        param.active = 0; 
+        p = [ entity: param ]; 
+        
         def selAF = null; 
         p.onselect = { o-> 
+            afControlSvc.activateSelectedControl([ objid: o.objid ]);
             selAF = o;             
         }
         Modal.show('cashreceipt:select-af:subcollector', p ); 
@@ -118,6 +128,7 @@ class CashReceiptInitialModel  {
         } else {
             af = lookupSubCollectorAF( entity ); 
         }
+        
         if ( af == null ) return null; 
         return cashReceiptSvc.init( entity );
     }

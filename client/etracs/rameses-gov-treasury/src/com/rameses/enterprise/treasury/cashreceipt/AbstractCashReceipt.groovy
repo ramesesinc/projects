@@ -13,6 +13,7 @@ public abstract class AbstractCashReceipt {
     @Binding
     def binding;
     
+    
     @Service("CashReceiptService")
     def service;
     
@@ -38,9 +39,12 @@ public abstract class AbstractCashReceipt {
     } 
     
     def createAnother() { 
-        MsgBox.alert("create handler->"+createHandler);
         if (createHandler) { 
-            createHandler(); 
+            clearAllPayments();
+            entity = createHandler();
+            if( !entity ) return "_close";
+            init();
+            return "default";
         } 
         return '_close'; 
     } 

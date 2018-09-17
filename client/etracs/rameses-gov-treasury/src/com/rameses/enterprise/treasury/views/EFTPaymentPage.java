@@ -32,13 +32,16 @@ public class EFTPaymentPage extends javax.swing.JPanel {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
+        entityLookup1 = new com.rameses.entity.components.EntityLookup();
+        entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
         xFormPanel1.setCaptionFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xFormPanel1.setCaptionWidth(160);
@@ -50,12 +53,19 @@ public class EFTPaymentPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xTextField2.setCaption("Received From");
-        xTextField2.setName("entity.receivedfrom"); // NOI18N
-        xTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 27));
-        xTextField2.setRequired(true);
-        xFormPanel1.add(xTextField2);
+        entityLookup1.setCaption("Payer");
+        entityLookup1.setName("entity.payer"); // NOI18N
+        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 20));
+        entityLookup1.setRequired(true);
+        xFormPanel1.add(entityLookup1);
+
+        entityAddressLookup1.setCaption("Address");
+        entityAddressLookup1.setDepends(new String[] {"entity.payer"});
+        entityAddressLookup1.setName("entity.payer.address"); // NOI18N
+        entityAddressLookup1.setParentIdName("entity.payer.objid");
+        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 53));
+        entityAddressLookup1.setRequired(true);
+        xFormPanel1.add(entityAddressLookup1);
 
         xLookupField1.setCaption("Bank Account");
         xLookupField1.setExpression("#{entity.bankaccount.code} #{entity.bankaccount.title}");
@@ -68,7 +78,7 @@ public class EFTPaymentPage extends javax.swing.JPanel {
 
         xLabel1.setCaption("Fund");
         xLabel1.setDepends(new String[] {"entity.bankaccount"});
-        xLabel1.setExpression("#{ entity.fund.title }");
+        xLabel1.setExpression("#{ entity.bankaccount.fund.title }");
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
@@ -83,7 +93,7 @@ public class EFTPaymentPage extends javax.swing.JPanel {
         xDecimalField2.setCaption("Amount");
         xDecimalField2.setName("entity.amount"); // NOI18N
         xDecimalField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(0, 27));
+        xDecimalField2.setPreferredSize(new java.awt.Dimension(200, 27));
         xDecimalField2.setRequired(true);
         xFormPanel1.add(xDecimalField2);
 
@@ -95,32 +105,49 @@ public class EFTPaymentPage extends javax.swing.JPanel {
 
         xFormPanel1.add(jScrollPane1);
 
+        xLabel2.setCaption("Receipt No");
+        xLabel2.setExpression("#{ entity.receiptno }");
+        xLabel2.setVisibleWhen("#{ entity.receiptid != null }");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel2.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xLabel2);
+
+        xButton1.setCaption("");
+        xButton1.setName("viewReceipt"); // NOI18N
+        xButton1.setVisibleWhen("#{ entity.receiptid != null }");
+        xButton1.setText("View Receipt");
+        xFormPanel1.add(xButton1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.entity.components.EntityAddressLookup entityAddressLookup1;
+    private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
 }

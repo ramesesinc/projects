@@ -9,45 +9,21 @@ import java.rmi.server.*;
 
 class CashReceiptEFTPaymentModel  { 
 
-    @Binding 
-    def binding; 
-
-    @Service("PersistenceService")
-    def persistenceService;
-    
-    @Service("QueryService")
-    def queryService;
-    
-    @Service("CashReceiptService")
-    def cashReceiptSvc;
-
     def entity;
+    def fundList;
     def saveHandler;
     def eft;
     
-    def balance = 0;
-    def fundList;
-    def fund;
-    
-    @PropertyChangeListener
-    def listener = [
-        "eft.bankaccount" : { o->
-            eft.fund = o.fund;
-            eft.fundid = o.fund.objid;
-        }
-    ]
-    
-    def fundListHandler = [
-        fetchList: { o->
-            return fundList;
-        }
-    ] as BasicListModel;
-    
     void init() {
-        eft = [objid:'EFT' + new UID()];
-        eft.receivedfrom = entity.paidby;
-        eft.amount = entity.amount;
-        balance = entity.amount;
+        def fundids = fundList*.fund.objid;
+        def h = { o->
+            if(o.amount!=entity.amount ) {
+                throw new Exception("Amount to pay must match the EFT Amount");
+            }
+            eft = o;
+        }
+        Modal.show( "eftpayment_unused:lookup", [fundids: fundids, onselect: h] );
+        if( !eft ) throw new BreakException();
     } 
     
     def doOk() {
@@ -58,14 +34,16 @@ class CashReceiptEFTPaymentModel  {
             m.refid = eft.objid;
             m.reftype =  "EFT"; 
             m.amount = it.amount;
-            m.particulars = eft.refno + " (" + eft.bankaccount.code + " - " + eft.bankaccount.title + ") dated " + eft.refdate; 
+            m.particulars = eft.refno + " (" + eft.bankaccount.code + " - " + eft.bankaccount.bank.name + ") dated " + eft.refdate; 
             m.refno = eft.refno;
             m.refdate = eft.refdate;
             m.fund = it.fund;
             payments << m;
         }
-        eft.paymentitems = payments;
-        saveHandler( eft );
+        def retval = [:];
+        retval.paymentitems = payments;
+        retval.eft = eft;
+        saveHandler( retval );
         return "_close";
     }
     

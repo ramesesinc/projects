@@ -1,12 +1,13 @@
 <workunit>
    <invokers>
-        <invoker type="creditmemo:handler" caption="Basic" name="basic"/>
-        <invoker type="creditmemo:basic:create" caption="Credit Memo" action="init" role="COLLECTOR" />
-        <invoker type="creditmemo:basic:open" caption="Credit Memo" action="open" role="COLLECTOR" />
-       
+        <invoker type="creditmemo:create" caption="New Credit Memo" action="create" role="MASTER" />
+        <invoker type="creditmemo:open" caption="Credit Memo" action="open" role="MASTER" />
+        
+        <!--
         <invoker type="formActions" caption="Back" action="_close" visibleWhen="#{mode == 'create'}" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/arrow_left.png"/>
         <invoker type="formActions" caption="Close" action="_close" visibleWhen="#{mode == 'read'}" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
         <invoker type="formActions" caption="Submit" action="submit" visibleWhen="#{mode != 'read'}" mnemonic="s" shortcut="ctrl S" icon="images/toolbars/save.png"/>
+        -->
         <!--
         <invoker type="formActions" caption="Edit" action="edit" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}" mnemonic="e" shortcut="ctrl E"/>
         <invoker type="formActions" caption="Delete" action="delete" visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'DRAFT'}" mnemonic="d" />
@@ -14,124 +15,7 @@
         -->
    </invokers>
    
-   <code>
-    <![CDATA[
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import java.rmi.server.UID;
-
-        public class CreditMemoController {
-
-            @Binding 
-            def binding;    
-
-            @Service("CreditMemoService")
-            def svc;
-
-            def MODE_CREATE = 'create';
-            def MODE_READ   = 'read';
-            def MODE_EDIT   = 'edit';
-
-            def mode;
-            def entity;
-            def selectedItem;
-
-            String getTitle(){
-                return 'Credit Memo (' + entity.state + ')'
-            }
-
-            void init(){
-                entity.objid = "CRM"+ new UID();
-                entity.state = 'OPEN';
-                entity.amount = 0.0;
-                entity.items = [];
-                mode = "create";
-            }
-            
-            def getLookupPayer() {
-                def h = { o->
-                    entity.payer = o;
-                    entity.payername = o.name;
-                    entity.payeraddress = o.address?.text;
-                    binding.refresh();
-                }
-                return Inv.lookupOpener( "entity:lookup", [onselect: h]);
-            }
-
-            def getLookupAccount() {
-                return Inv.lookupOpener("creditmemoaccount:lookup", ["query.typeid": entity.type.objid] );            
-            }
-
-            def getLookupBankAccount() {
-                def h = { o->
-                    entity.bankaccount = o;
-                    binding.refresh();
-                }
-                def fundid = entity.type.fund.objid;
-                return Inv.lookupOpener( "bankaccount:lookup", [onselect: h, "query.fundid": fundid ]);
-            }
-            
-            void open(){
-                entity = svc.open(entity)
-                mode = MODE_READ;
-            }
-
-            def submit(){
-                if(!entity.items)    
-                    throw new Exception("Please include at least one item");
-                if(entity.amount<=0)
-                    throw new Exception("Amount must not be zero");                
-                entity = svc.create( entity );  
-                MsgBox.alert('Record successfully saved'); 
-                return "_close";
-            }
-
-            def listHandler = [
-                createItem : { return [parentid:entity.objid] },
-                validate   : { li -> 
-                    def item = li.item;
-                    if ( ! item.item )
-                        throw new Exception('Account is required.');
-                    if (item.amount == null || item.amount <= 0.0)
-                        throw new Exception('Amount is required.');
-                },
-
-                onAddItem  : { item ->
-                    item.objid = 'DCI' + new java.rmi.server.UID();
-                    entity.items << item;
-                },
-
-                onRemoveItem : { item ->
-                    if (MsgBox.confirm('Delete selected item?')){
-                        svc.removeItem(item);
-                        entity.items.remove(item);
-                        calcAmount();
-                        return true;
-                    }
-                    return false;
-                },
-
-                onCommitItem : {
-                    calcAmount();
-                },
-
-                fetchList : { 
-                    return entity.items;
-                },
-
-            ] as EditorListModel;
-
-            void calcAmount(){
-                entity.amount = entity.items.amount.sum();
-                if (entity.amount == null)
-                    entity.amount = 0.0;
-                binding.refresh('entity.amount');
-            }
-        }       
-   ]]>    
-   </code>    
+   <code class="com.rameses.enterprise.treasury.models.CreditMemoModel" />
    
    <pages>
         <page template="com.rameses.enterprise.treasury.creditmemo.CreditMemoPage"/>

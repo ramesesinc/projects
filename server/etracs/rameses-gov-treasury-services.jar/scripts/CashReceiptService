@@ -116,7 +116,6 @@ class CashReceiptService  {
 				checkPayment.create( it );	
 			}
 		}
-
 		p.paymentitems.each {
 			it.voidamount = 0.0;
 			if( it.reftype == 'CHECK' ) {				
@@ -125,12 +124,13 @@ class CashReceiptService  {
 				//if amtused is fully exhausted fire an error
 				def z = checkPayment.find([objid: it.checkid ] ).where("amount - amtused < 0 ").first();
 				if( z ) throw new Exception("Check no " + z.refno + " is already used. amount - amtused less than 0");				
-			}
-			else if( it.reftype == 'EFT') {
-				def item = it.item;
-				item.state = 'POSTED';
-				eftPayment.save( item );
-			}
+			}			
+		}
+	}
+
+	void updateAfterPostReferences( def p ) {
+		if(p.eft) {
+			eftPayment.find( [objid: p.eft.objid ] ).update( [receiptid: p.objid, receiptno: p.receiptno, state:'CLOSED' ]);
 		}
 	}
 
@@ -158,6 +158,11 @@ class CashReceiptService  {
 		if(p.batchcapture) p.state = "CAPTURED"
 
 		cashreceiptEm.create( p );
+
+		//after update references
+		updateAfterPostReferences( p );
+
+		//next series updates
 		afControlSvc.updateNextSeries( p );
 
 		if (p._paymentorderid) {

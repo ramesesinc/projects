@@ -70,6 +70,7 @@ public class SignatoryTemplateController
     }
 
     def signatoryListHandler = [
+        getRows : {return signatories.size()},
         getColumns  : {
             return [
                 new Column(name:'lastname', caption:'Last Name'),

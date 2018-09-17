@@ -1,6 +1,6 @@
 <workunit extends="workunits/SignatoryTemplate.xml">
     <invokers>
-        <invoker type="signatorytemplate" action="init" caption="RPT Transaction Taxmapper" target="window" 
+        <invoker type="signatorytemplate" action="init" caption="Taxmapper" target="window" 
             docType="RPTTAXMAPPER" role="ASSESSOR_DATAMGMT,MASTER"/>
     </invokers>
 </workunit>

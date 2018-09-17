@@ -106,6 +106,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         check._schemaname = 'checkpayment';
         check.state = 'PENDING';
         check.amtused = 0;
+        check.external = 0;
         check.collector = entity.collector;
         if( entity.subcollector ) {
             check.subcollector = entity.subcollector;

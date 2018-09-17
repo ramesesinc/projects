@@ -163,16 +163,18 @@ class BatchCaptureCollectionModel  {
         def lastitem = (entity.batchitems? entity.batchitems.last() : null); 
         if ( lastitem?.receiptdate ) m.receiptdate = lastitem.receiptdate; 
 
-        if( copyprevinfo ) {
-            println 'lastitem-> '+ lastitem;
+        if( copyprevinfo ) { 
             if ( lastitem ) {
-                if ( lastitem.items && lastitem.items.size() == 1 ) {
-                    def nfo = lastitem.items[0].clone(); 
+                m.items = []; 
+                m.amount = 0.0; 
+                lastitem.items.each{
+                    def nfo = it.clone(); 
                     nfo.item = nfo.item.clone(); 
                     nfo.fund = nfo.fund.clone(); 
-                    m.items = [ nfo ]; 
-                    m.amount = m.totalcash = nfo.amount; 
-                } 
+                    m.items << nfo; 
+                    m.amount += nfo.amount; 
+                }
+
                 m.acctinfo = lastitem.acctinfo; 
                 m.receiptdate = lastitem.receiptdate;
                 m.paidbyaddress = lastitem.paidbyaddress;

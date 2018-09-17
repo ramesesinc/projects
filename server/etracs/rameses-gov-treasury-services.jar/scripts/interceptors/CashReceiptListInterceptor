@@ -33,8 +33,7 @@ class CashReceiptListInterceptor {
 		if ( o._tag == 'collector' ) {
 			qarr << " collector.objid = :userid ";
 			if ( o.node.id == 'unremitted' ) { 
-				qarr << " remittanceid is null ";
-				qarr << " (subcollector.objid is null  or (subcollector.objid is not null and subcollector.remittanceid is not null)) " 
+				qarr << " remittanceid is null AND state = 'POSTED' ";
 			} else if ( o.node.id == 'delegated' ) { 
 				qarr << " remittanceid is null and subcollector.objid is not null and subcollector.remittanceid is null "; 
 			} else { 
@@ -48,8 +47,8 @@ class CashReceiptListInterceptor {
 			qarr << " subcollector.remittanceid is " + (o.node.id == 'unremitted' ? 'null' : 'not null');
 			qmap.userid = env.USERID;
 
-		} else if ( o.node.id == 'unremitted' ) {
-			qarr << " remittanceid IS NULL ";
+		} else if ( o.node.id == 'unremitted' ) { 
+			qarr << " remittanceid IS NULL "; 
 
 		} else if( o.node.id == 'remitted' ){
 			qarr << " remittanceid IS NOT NULL ";

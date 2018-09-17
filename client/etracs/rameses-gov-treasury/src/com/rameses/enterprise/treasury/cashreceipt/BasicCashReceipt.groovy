@@ -190,6 +190,4 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         ] as BasicListModel;
         Modal.show("basiclist:view", [listHandler: lh])
     }
-    
-    
 }

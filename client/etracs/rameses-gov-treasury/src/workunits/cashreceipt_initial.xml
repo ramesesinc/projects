@@ -19,10 +19,16 @@
                  caption="Issue Cash Receipt" 
                  windowTitle="Issue Cash Receipt"
                  formTitle="Issue Cash Receipt"
-                 target="window" index="-10">
-            <action role="COLLECTOR" name="init"/>
-            <action role="SUBCOLLECTOR" name="initSubCollector"/>
-        </invoker>
+                 role="COLLECTOR" action="init"
+                 target="window" index="-10" />
+        
+        <invoker folderid="menucategory/treasury/subcollection" 
+                 caption="Issue Cash Receipt" 
+                 windowTitle="Issue Cash Receipt"
+                 formTitle="Issue Cash Receipt"
+                 role="SUBCOLLECTOR" action="initSubCollector"
+                 target="window" index="-10" />
+        
         <!-- actions -->
         <invoker type="formActions" caption="Barcode" icon="images/toolbars/barcode.png" action="loadBarcode" mnemonic="B"/>
     </invokers>

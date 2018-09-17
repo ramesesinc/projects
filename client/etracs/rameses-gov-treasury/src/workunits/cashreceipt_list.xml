@@ -7,13 +7,13 @@
                  customFilter=" formtype='serial' "
                  role="SHARED" tag="mgmt"/>
 
-        <invoker folderid="menucategory/treasury/collection" caption="View Collector Cash Receipts" 
+        <invoker folderid="menucategory/treasury/collection" caption="View Cash Receipts" 
                  customFilter=" formtype='serial' "
                  role="COLLECTOR"
                  tag="collector"
                  action="init" index="50" /> 
         
-        <invoker folderid="menucategory/treasury/collection" caption="View Sub Collector Cash Receipts" 
+        <invoker folderid="menucategory/treasury/subcollection" caption="View Cash Receipts" 
                  customFilter=" formtype='serial' "
                  role="SUBCOLLECTOR"
                  tag="subcollector"

@@ -9,11 +9,14 @@
                  role="SHARED" tag="shared"/>
 
         <invoker folderid="menucategory/treasury/collection" 
-                 caption="Batch Capture List" action="init" index="-5">
-            <action role="COLLECTOR" tag="collector"/>
-            <action role="SUBCOLLECTOR" tag="subcollector"/>
-        </invoker>    
+                 caption="Batch Capture List" action="init" 
+                 role="COLLECTOR" tag="collector" />
         
-   </invokers>
+        <invoker folderid="menucategory/treasury/subcollection" 
+                 caption="Batch Capture List" action="init" 
+                 role="SUBCOLLECTOR" tag="subcollector"
+                 index="-5" />
+
+    </invokers>
 
 </workunit>

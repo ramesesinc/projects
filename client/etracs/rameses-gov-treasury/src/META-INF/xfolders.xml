@@ -46,10 +46,11 @@
             <folder id="af" caption="Accountable Forms" index="0" icon="home/icons/af.png"/>
             <folder id="cashreceipt" caption="Cash Receipt" index="1" icon="home/icons/cashreceipt.png"/>
             <folder id="collection" caption="Collection" index="1" icon="home/icons/collection.png"/>
-            <folder id="remittance" caption="Remittance / Deposit" index="2" icon="home/icons/deposit.png"/>
-            <folder id="deposit" caption="Remittance / Deposit" index="3" icon="home/icons/deposit.png"/>
-            <folder id="mgmt" caption="Management" index="4" icon="home/icons/postledger.png"/>
-            <folder id="master" caption="Master Files" index="5" icon="home/icons/master.png"/>
+            <folder id="subcollection" caption="Sub Collector" index="2" icon="home/icons/collection.png"/>            
+            <folder id="remittance" caption="Remittance / Deposit" index="3" icon="home/icons/deposit.png"/>
+            <folder id="deposit" caption="Remittance / Deposit" index="4" icon="home/icons/deposit.png"/>
+            <folder id="mgmt" caption="Management" index="5" icon="home/icons/postledger.png"/>
+            <folder id="master" caption="Master Files" index="6" icon="home/icons/master.png"/>
         </folder>
     </folder>
 </folders>

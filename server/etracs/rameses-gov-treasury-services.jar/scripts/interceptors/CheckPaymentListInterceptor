@@ -61,6 +61,11 @@ class CheckPaymentListInterceptor {
 			str = "collector.objid = :collectorid";
 			m.collectorid = env.USERID;
 		}
+		else if( o._tag == "SUBCOLLECTOR") {
+			if( str ) str += " AND ";
+			str = "subcollector.objid = :userid";
+			m.userid = env.USERID;
+		}
 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	

@@ -11,6 +11,11 @@
                  cols="refno,receivedfrom,refdate,bank.name,amount,balance"
                  role="COLLECTOR" tag="COLLECTOR" /> 
 
+        <invoker folderid="menucategory/treasury/subcollection" caption="View Checks Issued" 
+                 action="init" target="window" index="200" 
+                 cols="refno,receivedfrom,refdate,bank.name,amount,balance,collector.name"
+                 role="SUBCOLLECTOR" tag="SUBCOLLECTOR" /> 
+
     </invokers>
     
 </workunit>

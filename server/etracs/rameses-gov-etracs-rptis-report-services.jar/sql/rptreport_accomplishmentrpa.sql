@@ -68,25 +68,3 @@ GROUP BY b.objid, b.name , b.indexno
 ORDER BY b.indexno 	 
 
 
-[getEndingRPAAccomplishment]
-SELECT  
-	b.objid AS barangayid, 
-	b.name AS barangay, 
-	SUM( CASE WHEN r.taxable = 1 THEN 1 ELSE 0.0 END ) AS endingtaxablecount, 
-	SUM( CASE WHEN r.taxable = 1 THEN r.totalav ELSE 0.0 END ) AS endingtaxableav, 
-	SUM( CASE WHEN r.taxable = 0 THEN 1 ELSE 0.0 END ) AS endingexemptcount, 
-	SUM( CASE WHEN r.taxable = 0 THEN r.totalav ELSE 0.0 END ) AS endingexemptav 
-FROM faas f
-	INNER JOIN rpu r ON f.rpuid = r.objid 
-	INNER JOIN realproperty rp ON f.realpropertyid = rp.objid
-	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
-	INNER JOIN barangay b ON rp.barangayid = b.objid 
-WHERE (
-	(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
-	(f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
-)
-${filter}
-GROUP BY b.objid, b.name , b.indexno 	 
-ORDER BY b.indexno 	 
-
-

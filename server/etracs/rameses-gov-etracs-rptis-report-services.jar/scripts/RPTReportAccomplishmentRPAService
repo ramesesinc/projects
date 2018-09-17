@@ -47,7 +47,7 @@ class RPTReportAccomplishmentRPAService
 		def preceedingassessments = em.getPreceedingRPAAccomplishment(params)
 		def currentassessments = em.getCurrentRPAAccomplishment(params)
 		def cancelledassessments = em.getCancelledRPAAccomplishment(params)
-		def endingassessments = em.getEndingRPAAccomplishment(params)
+		// def endingassessments = em.getEndingRPAAccomplishment(params)
 		
 		def updateBrgyAccomplishment = { lgu, list ->
 			def info = list.find{ it.barangayid == lgu.objid }
@@ -82,8 +82,11 @@ class RPTReportAccomplishmentRPAService
 			updateBrgyAccomplishment( lgu, preceedingassessments )
 			updateBrgyAccomplishment( lgu, currentassessments )
 			updateBrgyAccomplishment( lgu, cancelledassessments )
-			updateBrgyAccomplishment( lgu, endingassessments )
+			//updateBrgyAccomplishment( lgu, endingassessments )
+
 		}
+		summarizeEnding(lguinfos)
+
 		
 		lguinfos.add([
 			barangay	: 'TOTAL',
@@ -121,6 +124,15 @@ class RPTReportAccomplishmentRPAService
 			reportdata  : lguinfos,
 		]
 	}
+
+	void summarizeEnding(list) {
+		list.each {
+			it.endingtaxablecount = util.isNull(it.preceedingtaxablecount,0) + util.isNull(it.currenttaxablecount,0) - util.isNull(it.cancelledtaxablecount,0)
+			it.endingtaxableav = util.isNull(it.preceedingtaxableav,0) + util.isNull(it.currenttaxableav,0) - util.isNull(it.cancelledtaxableav,0)
+			it.endingexemptcount = util.isNull(it.preceedingexemptcount,0) + util.isNull(it.currentexemptcount,0) - util.isNull(it.cancelledexemptcount,0)
+			it.endingexemptav = util.isNull(it.preceedingexemptav,0) + util.isNull(it.currentexemptav,0) - util.isNull(it.cancelledexemptav,0)
+		}
+	}	
 
 
     @ProxyMethod

@@ -812,6 +812,14 @@ class RPTUtil
         return s.trim()
     }
 
+
+    @ProxyMethod
+    public def isNull(val, newval) {
+        if (val == null) {
+            return newval 
+        }
+        return val 
+    }
     
 
 }

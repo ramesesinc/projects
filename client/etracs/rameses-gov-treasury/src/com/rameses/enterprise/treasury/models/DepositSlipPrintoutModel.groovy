@@ -99,23 +99,12 @@ abstract class DepositSlipPrintoutModel  {
             }
         }
         if( d.cashbreakdown ) {
-            m.dqty1000="0";
-            m.dqty500="0";
-            m.dqty200="0";
-            m.dqty100="0";
-            m.dqty50="0";
-            m.dqty20="0";
-            m.dqty5="0";
-            m.dqty1="0";
-            m.damt1000=0.0;
-            m.damt500=0.0;
-            m.damt200=0.0;
-            m.damt100=0.0;
-            m.damt50=0.0;
-            m.damt20=0.0;
-            m.damt5=0.0;
-            m.damt1=0.0;
-            m.damtCoins = 0.0;
+            m.dqty1000="0"; m.dqty500="0"; m.dqty200="0"; m.dqty100="0";
+            m.dqty50="0"; m.dqty20="0"; m.dqty10="0";
+            m.dqty5="0"; m.dqty1="0";  m.damt1000=0.0;
+            m.damt500=0.0; m.damt200=0.0; m.damt100=0.0;
+            m.damt50=0.0; m.damt20=0.0; m.damt10=0.0;
+            m.damt5=0.0; m.damt1=0.0;m.damtCoins = 0.0;
             d.cashbreakdown.each {
                 if( it.denomination == 1000 ) { m.dqty1000 = it.qty+""; m.damt1000 = it.amount; }
                 else if( it.denomination == 500 ) { m.dqty500 = it.qty+""; m.damt500 = it.amount; }
@@ -123,6 +112,7 @@ abstract class DepositSlipPrintoutModel  {
                 else if( it.denomination == 100 ) { m.dqty100 = it.qty+""; m.damt100 = it.amount; }
                 else if( it.denomination == 50 ) { m.dqty50 = it.qty+""; m.damt50 = it.amount; }
                 else if( it.denomination == 20 ) { m.dqty20 = it.qty+""; m.damt20 = it.amount; }
+                else if( it.denomination == 10 ) { m.dqty10 = it.qty+""; m.damt10 = it.amount; }
                 else if( it.denomination == 5 ) { m.dqty5 = it.qty+""; m.damt5 = it.amount; }
                 else if( it.denomination == 1 ) { m.dqty1 = it.qty+""; m.damt1 = it.amount; }
                 else {
@@ -132,5 +122,33 @@ abstract class DepositSlipPrintoutModel  {
         }        
         return m;
     } 
+    
+    public def formatOldCashBreakdownList( def d ) {
+        def xcoins = [caption:"Coins", qty:"", amount: 0.0];
+        
+        def list = [];
+        list << [caption: "1000", denomination:1000, qty: "0", amount: 0.0 ];
+        list << [caption:"500", denomination:500, qty:"0", amount: 0.0];
+        list << [caption:"200", denomination:200, qty:"0", amount: 0.0];
+        list << [caption:"100", denomination:100, qty:"0", amount: 0.0];
+        list << [caption:"50", denomination:50, qty:"0", amount: 0.0];
+        list << [caption:"20", denomination:20, qty:"0", amount: 0.0];
+        list << [caption:"10", denomination:10, qty:"0", amount: 0.0];
+        list << [caption:"5", denomination:5, qty:"0", amount: 0.0];
+        list << [caption:"1", denomination:1, qty:"0", amount: 0.0];
+        list << xcoins;
+
+        d.cashbreakdown.each { v->
+            def x = list.find{ it.denomination == v.denomination };
+            if(x) {
+                x.qty = v.qty + "";
+                x.amount = v.amount;
+            }
+            else {
+                xcoins.amount += (v.amount);
+            }
+        }
+        return list;
+    }
     
 }

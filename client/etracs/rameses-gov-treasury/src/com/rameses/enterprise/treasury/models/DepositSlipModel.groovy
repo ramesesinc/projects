@@ -22,27 +22,56 @@ class DepositSlipModel extends CrudFormModel {
         checksCount = checkList.size();
     }
     
+    void changeState( def state, def params ) {
+        def m = [_schemaname:'depositslip'];
+        m.findBy = [objid: entity.objid];
+        m.state = state;
+        if( params ) m.putAll( params );
+        persistenceService.update(m);        
+        entity.state = state;
+        if( params ) entity.putAll( params );
+    }
+    
     void approve() {
-        depositSlipSvc.approve( [objid: entity.objid ] );
-        entity.state = 'APPROVED'
+        changeState("APPROVED", null);
     }
     
     void disapprove() {
-        depositSlipSvc.disapprove( [objid: entity.objid ] );
-        entity.state = 'DRAFT'
+        changeState("DRAFT", null);
     }
     
-    def validate() {
-        def h = { o->
-            def m = [objid: entity.objid ];
-            m.validation = [refno: o.refno, refdate: o.refdate ];
-            depositSlipSvc.validate( m );
-            entity.state = 'VALIDATED'
-            entity.validation = m.validation;
-            binding.refresh();
-            handler();
-        }    
-        return Inv.lookupOpener("deposit_validation", [ handler: h ] );
+    void print() {
+        def bh = entity.bankaccount.bank.depositsliphandler;
+        if(!bh) throw new Exception("Please specify a depositsliphandler in the bank ");
+        def br = "depositslip_printout:" + bh;
+        try {
+            def op = Inv.lookupOpener(br, [entity: entity ]);
+            if(!op) throw new Exception("Opener " + br + " not found. Please ensure it is included in the project");
+            op.target = "process";
+            Inv.invoke(op);
+        }
+        catch(ex) {
+            MsgBox.err( ex );
+        }
+    }
+    
+    void markAsPrinted() {
+        changeState( "PRINTED", null );
+    }
+    
+    void validate() {
+        def m = [:];
+        m.fields = [
+            [caption: 'Validation Ref No', name:'refno', required:true],
+            [caption: 'Validation Ref Date', name:'refdate', required:true, datatype:'date'],            
+        ];
+        if(entity.validation) {
+            m.data = entity.validation;
+        }
+        m.handler = { o->
+            changeState( "VALIDATED", [validation: o] );
+        };
+        Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
     }
     
     def checkListModel = [

@@ -63,7 +63,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
     void searchCheckIfExists() {
         new_check = true;
         def m = [_schemaname:'checkpayment'];
-        m.where = [ " amount - amtused > 0 AND collectorid =:collectorid", [collectorid: entity.collector.objid] ];
+        m.where = [ " amount - amtused > 0 AND collector.objid =:collectorid", [collectorid: entity.collector.objid] ];
         selectionList = queryService.getList( m );
         if(selectionList ) {
             check_exists = true;
@@ -106,7 +106,10 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         check._schemaname = 'checkpayment';
         check.state = 'PENDING';
         check.amtused = 0;
-        check.collectorid = entity.collector.objid;
+        check.collector = entity.collector;
+        if( entity.subcollector ) {
+            check.subcollector = entity.subcollector;
+        };
         def _total = fundList.sum{ it.amount - it.used };
         if( check.amount > _total && check.split != 1 ) {
             throw new Exception("Amount of check must be less than or equal to amount to pay for non split checks");

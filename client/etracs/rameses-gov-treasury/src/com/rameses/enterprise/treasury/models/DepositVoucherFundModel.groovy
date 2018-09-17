@@ -10,19 +10,28 @@ import com.rameses.osiris2.reports.*;
 class DepositVoucherFundModel extends CrudFormModel {
 
     @Service("DepositVoucherService")
-    def depositSvc;    
+    def depositSvc; 
+    
+    @Service("DepositSlipService")
+    def depositSlipSvc;
     
     @Service("DepositFundTransferService")
     def fundService;
     
     def selectedDepositSlip;
-    def depositSlipModel;
+    def depositSlipListModel;
     
     def checkListModel;
     def selectedCheck;
     
     def selectedFundTransfer;
     def fundTransferModel;
+    
+    def depositSlipModel;
+    
+    void afterOpen() {
+        depositSlipModel =  ManagedObjects.instance.create( DepositSlipModel.class );
+    }
     
     //DEPOSIT SLIP
     def addDepositSlip() {
@@ -32,53 +41,47 @@ class DepositVoucherFundModel extends CrudFormModel {
         p.handler = { x->
             entity.putAll( x );
             reloadEntity();
+            depostSlipListModel.reload();
         };
         return Inv.lookupOpener("depositslip:create", p );
     }
     
+    void removeDepositSlips() {
+        if(!depositSlipListModel.selectedValue) throw new Exception("Please select a deposit slip by checking it");
+        if(!MsgBox.confirm("Only the deposit slips in DRAFT mode will be removed. Proceed?")) return;
+        def list = depositSlipListModel.selectedValue.findAll{it.state=="DRAFT"};
+        list.each {
+            depositSlipSvc.removeDepositSlip([objid: it.objid]);
+        }
+    }
+    
     void approveDepositSlip() {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        if(!MsgBox.confirm("You are about to approve this deposit slip for printing. Proceed?")) return;
-        def m = [_schemaname:'depositslip'];
-        m.objid = selectedDepositSlip.objid;
-        m.state = "APPROVED";
-        persistenceService.update(m);
-        depositSlipModel.reload();
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.approve();
+        depositSlipListModel.reload();
     }
     
-    def printDepositSlip() {
+    void printDepositSlip() {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        def bh = selectedDepositSlip.bankaccount.bank.depositsliphandler;
-        if(!bh) throw new Exception("Please specify a depositsliphandler in the bank ");
-        def br = "depositslip_printout:" + bh;
-        try {
-            def op = Inv.lookupOpener(br, [entity: selectedDepositSlip ]);
-            if(!op) throw new Exception("Opener " + br + " not found. Please ensure it is included in the project");
-            return op;
-        }
-        catch(ex) {
-            MsgBox.err( ex );
-        }
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.print();
+        depositSlipListModel.reload();
     }
     
+    void markDepositSlipAsPrinted() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.markAsPrinted();
+        depositSlipListModel.reload();
+    }
+
+
     void validateDepositSlip() {
         if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        def m = [:];
-        m.fields = [
-            [caption: 'Validation Ref No', name:'refno', required:true],
-            [caption: 'Validation Ref Date', name:'refdate', required:true, datatype:'date'],            
-        ];
-        if(selectedDepositSlip.validation) {
-            m.data = selectedDepositSlip.validation;
-        }
-        m.handler = { o->
-            def zz = [_schemaname:"depositslip", validation: o];
-            zz.findBy = [objid: selectedDepositSlip.objid];
-            persistenceService.update( zz );
-            depositSlipModel.reload();
-            reloadEntity();
-        };
-        Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.validate();
+        depositSlipListModel.reload();
     }
     
     //CHECKS MANAGEMENT

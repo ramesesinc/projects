@@ -127,6 +127,15 @@ public class BatchCaptureCollectionService  {
 		return entity; 
 	}
 
+	@ProxyMethod 
+	public def findItem( param ) {
+		def item = bce_db.find([ objid: param.objid ]).first(); 
+		if ( item ) {
+			item.items = bcei_db.find([ parentid: item.objid ]).list(); 
+		}
+		return item; 
+	}
+
 	@ProxyMethod  
 	public def removeItem( param ) { 
 		def item = bce_db.find([ objid: param.objid ]).first(); 

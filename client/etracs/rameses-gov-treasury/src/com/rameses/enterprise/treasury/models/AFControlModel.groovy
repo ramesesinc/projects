@@ -12,13 +12,11 @@ class AFControlModel extends CrudFormModel {
     @Service("AFControlService")
     def service;
     
-    public boolean getShowAction() {
-        if( entity.state=='ISSUED' && entity.owner.objid == OsirisContext.env.USERID  ) {
-           return true;
-        } 
-        else {
-            return false;
-        }
+    public boolean getShowAction() { 
+        if ( entity.state != 'ISSUED' ) return false;
+        
+        if ( entity.owner.objid == OsirisContext.env.USERID ) return true; 
+        return ( entity.assignee.objid == OsirisContext.env.USERID ); 
     }
     
     void afterOpen() {

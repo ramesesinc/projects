@@ -164,7 +164,10 @@ class BatchCaptureCollectionModel  {
         if ( lastitem?.receiptdate ) m.receiptdate = lastitem.receiptdate; 
 
         if( copyprevinfo ) { 
-            if ( lastitem ) {
+            if ( lastitem ) { 
+                lastitem = svc.findItem([ objid: lastitem.objid ]);  
+            } 
+            if ( lastitem ) { 
                 m.items = []; 
                 m.amount = 0.0; 
                 lastitem.items.each{

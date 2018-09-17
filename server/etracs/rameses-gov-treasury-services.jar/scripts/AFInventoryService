@@ -31,7 +31,11 @@ class AFInventoryService {
 			def afunit = afc.afunit;
 			int len = (afunit.serieslength ? afunit.serieslength : 10);	
 
-			def m = [:];
+			def m = [ ukey: "" ];
+			if ( !afunit.formtype.toString().equals("serial") ) {
+				m.ukey = com.rameses.util.Encoder.MD5.encode( new java.rmi.server.UID().toString(), "afcontrol" ); 
+			}
+
 			m.afid = afc.afid;
 			m.txnmode = 'ONLINE';
 			m.state = 'DRAFT';
@@ -68,7 +72,7 @@ class AFInventoryService {
 			m.batchref = ref.refno;
 			m.currentindexno = 1;
 			m.allocation = afc.allocation;
-			
+
 			afc = afCtrl.create( m ); 
 			oldafc.objid = afc.objid; 
 		} 

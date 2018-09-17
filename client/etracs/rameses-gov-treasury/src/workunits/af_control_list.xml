@@ -9,10 +9,15 @@
            
        <invoker folderid="menucategory/treasury/collection" 
             cols="afid,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"       
-            caption="Manage AF (Collection)" 
+            caption="View Accountable Forms" 
             action="init"
-            formTitle="Collection Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
+            formTitle="Manage Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
       
+        <invoker folderid="menucategory/treasury/subcollection" 
+            cols="afid,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"       
+            caption="View Accountable Forms" 
+            action="init"
+            formTitle="Manage Accountable Forms" role="SUBCOLLECTOR" tag="SUBCOLLECTION" />
    </invokers>
   
    <code class="com.rameses.enterprise.treasury.models.AFControlListModel" />

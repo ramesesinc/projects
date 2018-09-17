@@ -55,12 +55,18 @@ class AFControlListModel extends CrudListModel {
             }
             */
         };
+        else if( tag == "SUBCOLLECTION" ) {
+            str << " assignee.objid = :userid ";
+            m.userid = user.userid;
+        }
+        /*
         else {
             if( query.respcenter?.objid ) {
                 str << " respcenter.objid=:respcenterid ";
                 m.respcenterid = query.respcenter.objid;
             }
         }
+        */
         if( !str )  return null;
         return [ str.join( " AND "), m ];
     }

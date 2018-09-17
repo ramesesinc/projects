@@ -48,8 +48,10 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         schemaList1 = new com.rameses.seti2.components.SchemaList();
         jPanel7 = new javax.swing.JPanel();
         xButton5 = new com.rameses.rcp.control.XButton();
+        xButton11 = new com.rameses.rcp.control.XButton();
         xButton9 = new com.rameses.rcp.control.XButton();
         xButton6 = new com.rameses.rcp.control.XButton();
+        xButton10 = new com.rameses.rcp.control.XButton();
         xButton7 = new com.rameses.rcp.control.XButton();
         jPanel4 = new javax.swing.JPanel();
         schemaList2 = new com.rameses.seti2.components.SchemaList();
@@ -265,16 +267,34 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "state"}
+                , new Object[]{"caption", "Status"}
+                , new Object[]{"width", 80}
+                , new Object[]{"minWidth", 80}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"alignment", "CENTER"}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             })
         });
         schemaList1.setCustomFilter("depositvoucherfundid = :objid");
         schemaList1.setFormActions("depositSlipActions");
-        schemaList1.setHandlerName("depositSlipModel");
+        schemaList1.setHandlerName("depositSlipListModel");
         schemaList1.setHiddenCols("");
         schemaList1.setName("selectedDepositSlip"); // NOI18N
         schemaList1.setQueryName("entity");
         schemaList1.setSchemaName("depositslip");
-        schemaList1.setAllowDelete(true);
+        schemaList1.setAutoResize(false);
+        schemaList1.setMultiSelect(true);
+        schemaList1.setShowFilter(false);
 
         jPanel7.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
@@ -285,6 +305,11 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         xButton5.setText("Add Deposit Slip");
         jPanel7.add(xButton5);
 
+        xButton11.setName("removeDepositSlips"); // NOI18N
+        xButton11.setVisibleWhen("#{ entity.parent.state != 'POSTED' }");
+        xButton11.setText("Remove Deposit Slip(s)");
+        jPanel7.add(xButton11);
+
         xButton9.setDepends(new String[] {"selectedDepositSlip"});
         xButton9.setName("approveDepositSlip"); // NOI18N
         xButton9.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state == 'DRAFT' }");
@@ -293,13 +318,19 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
 
         xButton6.setDepends(new String[] {"selectedDepositSlip"});
         xButton6.setName("printDepositSlip"); // NOI18N
-        xButton6.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state == 'DRAFT' }");
+        xButton6.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state == 'APPROVED' }");
         xButton6.setText("Print");
         jPanel7.add(xButton6);
 
+        xButton10.setDepends(new String[] {"selectedDepositSlip"});
+        xButton10.setName("markDepositSlipAsPrinted"); // NOI18N
+        xButton10.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state == 'APPROVED' }");
+        xButton10.setText("Mark as Printed");
+        jPanel7.add(xButton10);
+
         xButton7.setDepends(new String[] {"selectedDepositSlip"});
         xButton7.setName("validateDepositSlip"); // NOI18N
-        xButton7.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state == 'DRAFT' }");
+        xButton7.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state == 'PRINTED' }");
         xButton7.setText("Validate");
         jPanel7.add(xButton7);
 
@@ -310,9 +341,12 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(schemaList1, javax.swing.GroupLayout.PREFERRED_SIZE, 910, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+                        .addGap(24, 24, 24))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -425,11 +459,12 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         schemaList2.setSchemaName("checkpayment");
 
         xButton2.setName("addCheck"); // NOI18N
-        xButton2.setVisibleWhen("#{ entity.state != 'POSTED' }");
+        xButton2.setVisibleWhen("#{ entity.parent.state != 'POSTED' }");
         xButton2.setText("Add Checks");
 
+        xButton8.setDepends(new String[] {"selectedCheck"});
         xButton8.setName("removeCheck"); // NOI18N
-        xButton8.setVisibleWhen("#{ entity.state != 'POSTED' }");
+        xButton8.setVisibleWhen("#{ entity.parent.state != 'POSTED' && selectedCheck!=null }");
         xButton8.setText("Remove Check");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -462,8 +497,8 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel4Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(schemaList2, javax.swing.GroupLayout.DEFAULT_SIZE, 918, Short.MAX_VALUE)
-                    .addContainerGap()))
+                    .addComponent(schemaList2, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
+                    .addGap(26, 26, 26)))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -602,19 +637,17 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(schemaList4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(schemaList3, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(schemaList3, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE))
                 .addGap(99, 99, 99))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(schemaList3, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(schemaList3, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(schemaList4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(schemaList4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(9, 9, 9))
         );
 
         xTabbedPane1.addTab("Fund Transfers", jPanel6);
@@ -625,8 +658,8 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 951, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -652,6 +685,8 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
     private com.rameses.seti2.components.SchemaList schemaList2;
     private com.rameses.seti2.components.SchemaList schemaList3;
     private com.rameses.seti2.components.SchemaList schemaList4;
+    private com.rameses.rcp.control.XButton xButton10;
+    private com.rameses.rcp.control.XButton xButton11;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XButton xButton6;

@@ -1,21 +1,23 @@
 import com.rameses.annotations.*;
 
-class CheckPaymentListInterceptor
- {
+class CheckPaymentListInterceptor {
 
 	@DataContext("checkpayment")
 	def pmtChk;
+
+	@Env
+	def env;
 
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'checkpayment' }")
 	public void getNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result; 
-		result << [ id:'all', title: 'All'];
 		result << [ id:'unused', title: 'Unused Checks'];
 		result << [ id:'partial', title: 'Partial Used Checks'];
 		result << [ id:'undeposited', title: 'Undeposited Checks'];
 		result << [ id:'fordeposit', title: 'For deposit'];
 		result << [ id:'deposited', title: 'Deposited Checks' ];
+		result << [ id:'all', title: 'View All Checks Issued'];		
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'checkpayment' }")
@@ -24,12 +26,14 @@ class CheckPaymentListInterceptor
 
 		//o.debug = true;
 		if( !o.node?.id ) return;
-		if(o.node.id=="all") return;
 		
 		def str = "";
 		def m = [:]
 
 		switch(o.node.id) {
+			case "all":
+				break;
+
 			case "unused":
 				str = " amtused = 0 ";
 				break;
@@ -49,6 +53,13 @@ class CheckPaymentListInterceptor
 			case "deposited":
 				str = "NOT( depositslipid IS NULL )";
 				break;
+		}
+
+		//display only checks issued by this collector
+		if( o._tag == "COLLECTOR") {
+			if( str ) str += " AND ";
+			str = "collector.objid = :collectorid";
+			m.collectorid = env.USERID;
 		}
 
 		if( o.where ) {

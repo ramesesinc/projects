@@ -27,6 +27,7 @@
 		<complex name="depositvoucherfund" ref="depositvoucher_fund" jointype="many-to-one" includefields="objid,parentid">
 			<key field="depositvoucherfundid" target="objid" />
 		</complex>	
+
 	</element>
 
 </schema>

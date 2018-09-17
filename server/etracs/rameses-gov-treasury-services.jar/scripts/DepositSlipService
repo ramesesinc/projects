@@ -99,6 +99,7 @@ class DepositSlipService  {
 	@ProxyMethod
 	public def removeDepositSlip( def o ) {
 		def r = depositSlipEm.find([objid: o.objid]).first();
+		if( r.state != "DRAFT") throw new Exception("Only deposit slip in DRAFT state can be removed");		
 		depositSlipEm.find([objid: o.objid]).delete();
 		depositVoucherEm.find( [objid: r.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
 
@@ -107,19 +108,5 @@ class DepositSlipService  {
 		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
 	}
 
-	/*
-	@ProxyMethod
-	public void approveDepositSlip( def o ) {
-		 depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ] );
-	}
-
-	@ProxyMethod
-	public void validateDepositSlip( def o ) {
-		def m = [:];
-		m.state = 'VALIDATED';
-		m.validation = o.validation; 
-		depositSlipEm.find([objid: o.objid]).update(m);
-	}
-	*/
 
 }

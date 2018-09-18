@@ -25,6 +25,17 @@
                  orderBy="receiptno"
                  target="popup" width="1024" height="700"/>
         
+        <invoker type="cashreceipt_list:view" caption="Cash Receipts (Unremitted)" 
+                 action="init" 
+                 orderBy="receiptno,receiptdate"
+                 target="popup" width="1024" height="700"/>
+
+        <invoker type="cashreceipt_list:remitted:view" caption="Cash Receipt (Remitted)" 
+                 action="init" 
+                 orderBy="receiptno,receiptdate"
+                 tag="remitted"
+                 target="popup" width="1024" height="700"/>
+        
    </invokers>
    
    

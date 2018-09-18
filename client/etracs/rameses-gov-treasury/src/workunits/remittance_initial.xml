@@ -1,10 +1,10 @@
 <workunit schemaName="unremitted_cashreceipt_af_summary">
     <invokers>
         <invoker folderid="menucategory/treasury/collection" 
-                 caption="Remit Collection" 
-                 windowTitle="Cash Receipt Remittance"
-                 formTitle="Cash Receipt Remittance"
-                 action="init" target="window" role="COLLECTOR" index="150"/>
+                 caption="Prepare Remittance (Remit)" 
+                 windowTitle="Prepare Remittance (Remit)"
+                 formTitle="Prepare Remittance (Remit)"
+                 action="init" target="window" role="COLLECTOR" index="-5"/>
         
         <!-- Buttons -->
         <invoker type="formActions" caption="Submit for Remittance" action="submitForRemittance" 

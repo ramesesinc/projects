@@ -2,12 +2,12 @@
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" caption="Incoming EFT Payments" action="init" 
         cols="refno,payer.name,refdate,bankaccount.code,bankaccount.bank.name,amount,particulars"
-                  target="window" index="10" role="ADMIN"/> 
+                  target="window" index="201" role="ADMIN"/> 
         
         <invoker folderid="menucategory/treasury/collection" caption="View EFT Payments" action="init" 
         cols="refno,payer.name,refdate,bankaccount.code,bankaccount.bank.name,amount,particulars,createdby.name"
-                xcustomFilter="createdby.objid = :userid"
-                target="window" index="10" role="COLLECTOR"/> 
+                customFilter="createdby.objid = :userid"
+                target="window" index="201" role="COLLECTOR"/> 
 
     </invokers>
     

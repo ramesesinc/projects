@@ -11,12 +11,15 @@
             cols="afid,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"       
             caption="View Accountable Forms" 
             action="init"
+            index="102"
+            customFilter="owner.objid = :userid"
             formTitle="Manage Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
       
         <invoker folderid="menucategory/treasury/subcollection" 
             cols="afid,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"       
             caption="View Accountable Forms" 
             action="init"
+            customFilter="assignee.objid = :userid"
             formTitle="Manage Accountable Forms" role="SUBCOLLECTOR" tag="SUBCOLLECTION" />
    </invokers>
   

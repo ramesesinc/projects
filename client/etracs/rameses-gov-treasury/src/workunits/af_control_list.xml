@@ -3,20 +3,23 @@
    <invokers>
        
        <invoker folderid="menucategory/treasury/af" 
-                cols="afid,dtfiled,batchno,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,assignee.name,owner.name,respcenter.name"       
+                cols="afid,dtfiled,batchno,stubno,owner.name,startseries,currentseries,endseries,prefix,suffix,qtybalance,assignee.name,respcenter.name"       
                 caption="AF Controls" formTitle="AF Controls" role="AFO" action="init" tag="AFO" 
                 orderBy="afid,dtfiled,batchno,stubno"/>
            
        <invoker folderid="menucategory/treasury/collection" 
-            cols="afid,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"       
+            cols="afid,stubno,assignee.name,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,respcenter.name"       
             caption="View Accountable Forms" 
             action="init"
+            index="102"
+            customFilter="owner.objid = :userid"
             formTitle="Manage Accountable Forms" role="COLLECTOR" tag="COLLECTION" />
       
         <invoker folderid="menucategory/treasury/subcollection" 
-            cols="afid,stubno,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,assignee.name,owner.name,respcenter.name"       
+            cols="afid,stubno,owner.name,startseries,currentseries,endseries,prefix,suffix,qtybalance,active,txnmode,fund.title,respcenter.name"       
             caption="View Accountable Forms" 
             action="init"
+            customFilter="assignee.objid = :userid"
             formTitle="Manage Accountable Forms" role="SUBCOLLECTOR" tag="SUBCOLLECTION" />
    </invokers>
   

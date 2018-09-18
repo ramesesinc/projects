@@ -7,6 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.util.*;
+import java.rmi.server.*;
 
 //called by cash receipt list
 class CashReceiptListSummaryModel  { 
@@ -32,8 +33,13 @@ class CashReceiptListSummaryModel  {
     def node;    
     def total = 0.0;
     def list;
+    def selectedItem;
+    
+    def conditions;
+    def openerName;
     
     void init() {
+        openerName = "cashreceipt_list:view";
         tag = caller.tag;
         node = caller.selectedNode;
         title = "Cash Receipt Summary (" + node.title + ")";
@@ -61,8 +67,23 @@ class CashReceiptListSummaryModel  {
         } else if( node.id == 'remitted' ){
             qarr << " remittanceid IS NOT NULL ";
         }
+        
+        conditions = [ qarr.join(" AND "), params ];
+        
         def m = [_schemaname: "cashreceipt"];
-        m.where = [ qarr.join(" AND "), params ];
+        m.where = conditions;
+        m.select = "formno,amount:{SUM(amount)}";
+        m.groupBy = "formno";
+        list = queryService.getList( m );
+        total = list.sum{ it.amount };
+    }
+    
+    void initRemittance() {
+        openerName = "cashreceipt_list:remitted:view";
+        conditions = [ "remittanceid = :remid", [remid: caller.entity.objid ] ];
+        title = "Cash Receipt Summary";
+        def m = [_schemaname: "cashreceipt"];
+        m.where = conditions;
         m.select = "formno,amount:{SUM(amount)}";
         m.groupBy = "formno";
         list = queryService.getList( m );
@@ -72,8 +93,27 @@ class CashReceiptListSummaryModel  {
     def listHandler = [
         fetchList:  { pp ->
             return list;
-        }    
+        },
+        onOpenItem: { o,col->
+            return viewReceipts(o);
+        }
     ] as BasicListModel;
+    
+    def viewReceipts(def o) {
+        def newcond = conditions[0]+" AND formno = :formno";
+        def newparms = [:];
+        newparms.putAll( conditions[1] );
+        newparms.formno = o.formno;
+        def op = Inv.lookupOpener(openerName, [customFilter: [ newcond, newparms ] ] );
+        op.target = "popup";
+        op.id = "RCT" + new UID();
+        return op;
+    }
+    
+    def viewReceipts() {
+        if( !selectedItem ) throw new Exception("Please select an item");
+        return viewReceipts(selectedItem);
+    }
     
     def doClose() {
         return "_close";

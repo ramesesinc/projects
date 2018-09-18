@@ -11,14 +11,14 @@
                  windowTitle="Issue Cash Ticket"
                  formTitle="Issue Cash Ticket"
                  role="COLLECTOR" action="init"
-                 target="window" index="-09" />
+                 target="window" index="-08" />
         
         <invoker folderid="menucategory/treasury/subcollection" 
                  caption="Issue Cash Ticket" 
                  windowTitle="Issue Cash Ticket"
                  formTitle="Issue Cash Ticket"
                  role="SUBCOLLECTOR" action="initSubCollector"
-                 target="window" index="-09" />
+                 target="window" index="-08" />
     </invokers>
    
     <code class="com.rameses.gov.treasury.models.CashTicketInitialModel" />

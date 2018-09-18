@@ -23,6 +23,11 @@ class AFControlListInterceptor {
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
 			result << [  title: 'Exported', state:'EXPORTED', _filter: "txnmode = 'REMOTE'" ];
 		}
+		else if( x._tag == "SUBCOLLECTION") {
+			result << [  title: 'Open', state:'ISSUED' ];
+			result << [  title: 'Consumed', state:'CONSUMED' ];
+			result << [  title: 'Cancelled', state:'CANCELLED' ];
+		}
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'af_control' }")

@@ -8,12 +8,12 @@
                  customFilter=" formtype='cashticket' "/>
 
         <invoker folderid="menucategory/treasury/collection" caption="View Cash Tickets" 
-                 action="init" index="50" 
+                 action="init" index="-7" 
                  role="COLLECTOR" tag="collector"
                  customFilter=" formtype='cashticket' "/> 
         
         <invoker folderid="menucategory/treasury/subcollection" caption="View Cash Tickets" 
-                 action="init" index="50" 
+                 action="init" index="-7" 
                  role="SUBCOLLECTOR" tag="subcollector"
                  customFilter=" formtype='cashticket' " /> 
                                       

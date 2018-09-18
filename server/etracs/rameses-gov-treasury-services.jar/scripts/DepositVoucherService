@@ -119,12 +119,16 @@ class DepositVoucherService  {
 		if( dvfList.find{ (it.amount - it.totaldr) != (it.amountdeposited - it.totalcr) } ) {
 			throw new Exception("All deposit amount deposited and transferred are not balanced");
 		}
-
 		//retrieve the depost voucher
-		def dv = dvEm.find( [objid: o.objid ]).first();
-		dvEm.find( [objid: o.objid]).update( [state:'POSTED'] );
-		
+		def m = [state:'POSTED'];
+		dvEm.find( [objid: o.objid]).update( m );
+		return m;
+	}
+
+	@ProxyMethod 
+	public void postJev( def o ) { 
 		//post to jev
+		def dv = dvEm.find( [objid: o.objid ]).first();
 		def ref = [refid:o.objid,refno:dv.controlno,reftype:'depositvoucher', refdate:dv.controldate, txntype:'DEPOSIT'];
 
 		def jevBatch = [:];
@@ -135,9 +139,7 @@ class DepositVoucherService  {
 		dvfEm.find([ parentid: o.objid ]).select('objid,fund.*,amount').list().each{ 
 			jevBatch.funds << [ objid: it.objid, refno:o.controlno, fund: it.fund, amount: it.amount  ];	 
 		} 
-
 		def pm = [depositvoucherid: o.objid ];
-
 		jevBatch.items.addAll( dvEm.getBankAccountLedgerItems( pm ) );
 		jevBatch.items.addAll( dvEm.getCashLedgerItems( pm ) );
 

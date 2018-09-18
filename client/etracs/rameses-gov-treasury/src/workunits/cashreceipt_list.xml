@@ -5,24 +5,27 @@
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" caption="View Cash Receipts" action="init"
                  customFilter=" formtype='serial' "
+                 index="-1"
                  role="SHARED" tag="mgmt"/>
 
         <invoker folderid="menucategory/treasury/collection" caption="View Cash Receipts" 
                  customFilter=" formtype='serial' "
                  role="COLLECTOR"
                  tag="collector"
-                 action="init" index="50" /> 
+                 action="init" index="-9" /> 
         
         <invoker folderid="menucategory/treasury/subcollection" caption="View Cash Receipts" 
                  customFilter=" formtype='serial' "
                  role="SUBCOLLECTOR"
                  tag="subcollector"
-                 action="init" index="50" /> 
+                 action="init" index="-9" /> 
 
         <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
                  customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
                  orderBy="receiptno"
                  target="popup" width="1024" height="700"/>
+        
    </invokers>
+   
    
 </workunit>

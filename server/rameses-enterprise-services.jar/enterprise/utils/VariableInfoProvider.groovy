@@ -26,8 +26,7 @@ public class VariableInfoProvider {
 			cf = createStringFact();
 		}
 		else if(dd.datatype == "date") {
-			if(!createDateFact) 
-				throw new Exception("createDateFact not implemented");
+			if(!createDateFact) createStringFact = { new enterprise.facts.DateInfo() };
 			cf = createDateFact();
 		}
 		else {

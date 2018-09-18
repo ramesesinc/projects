@@ -20,8 +20,7 @@ class CashReceiptListSummaryModel  {
     @Script("User")
     def user;
     
-    @FormTitle
-    String formTitle;
+    def title;
     
     /*
     * states are as follows. Refer to CashReceiptListInterceptor for the source
@@ -30,51 +29,54 @@ class CashReceiptListSummaryModel  {
     * delegated 
     */
     def tag;
-    def node;
+    def node;    
+    def total = 0.0;
+    def list;
     
     void init() {
         tag = caller.tag;
         node = caller.selectedNode;
-        formTitle = "Cash Receipt Summary (" + node.title + ")";
+        title = "Cash Receipt Summary (" + node.title + ")";
+        
+        //updated list handler
+        if( !node ) return;
+        def qarr = [];
+        def params = [userid: user?.userid ];
+        if( tag == "collector") {
+            qarr << " collector.objid = :userid ";
+            if ( node.id == 'unremitted' ) { 
+                qarr << " remittanceid is null AND state = 'POSTED' ";
+            } else if ( node.id == 'delegated' ) { 
+                qarr << " remittanceid is null and subcollector.objid is not null and subcollector.remittanceid is null "; 
+            } else { 
+                qarr << " remittanceid is not null "; 
+            }            
+        }
+        else if( tag == "subcollector" ) {
+            qarr << " subcollector.objid = :userid ";
+            qarr << " subcollector.remittanceid is " + (node.id == 'unremitted' ? 'NULL' : 'NOT NULL');
+        }
+        else if ( node.id == 'unremitted' ) { 
+            qarr << " remittanceid IS NULL "; 
+        } else if( node.id == 'remitted' ){
+            qarr << " remittanceid IS NOT NULL ";
+        }
+        def m = [_schemaname: "cashreceipt"];
+        m.where = [ qarr.join(" AND "), params ];
+        m.select = "formno,amount:{SUM(amount)}";
+        m.groupBy = "formno";
+        list = queryService.getList( m );
+        total = list.sum{ it.amount };
     }
     
     def listHandler = [
-        getColumns: {
-            return [
-                [ name:'formno', caption:'Form No' ],
-                [ name:'amount', caption:'Amount', type:'decimal']
-            ];
-        },
         fetchList:  { pp ->
-            if( !node ) return [];
-            def qarr = [];
-            def params = [userid: user?.userid ];
-            if( tag == "collector") {
-                qarr << " collector.objid = :userid ";
-                if ( node.id == 'unremitted' ) { 
-                    qarr << " remittanceid is null AND state = 'POSTED' ";
-                } else if ( node.id == 'delegated' ) { 
-                    qarr << " remittanceid is null and subcollector.objid is not null and subcollector.remittanceid is null "; 
-                } else { 
-                    qarr << " remittanceid is not null "; 
-                }            
-            }
-            else if( tag == "subcollector" ) {
-                qarr << " subcollector.objid = :userid ";
-                qarr << " subcollector.remittanceid is " + (node.id == 'unremitted' ? 'NULL' : 'NOT NULL');
-            }
-            else if ( node.id == 'unremitted' ) { 
-                qarr << " remittanceid IS NULL "; 
-            } else if( node.id == 'remitted' ){
-                qarr << " remittanceid IS NOT NULL ";
-            }
-            def m = [_schemaname: "cashreceipt"];
-            m.where = [ qarr.join(" AND "), params ];
-            m.select = "formno,amount:{SUM(amount)}";
-            m.groupBy = "formno";
-            return queryService.getList( m );
+            return list;
         }    
     ] as BasicListModel;
     
+    def doClose() {
+        return "_close";
+    }
     
 } 

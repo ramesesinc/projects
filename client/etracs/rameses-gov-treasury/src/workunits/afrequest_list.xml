@@ -3,6 +3,12 @@
         <invoker folderid="menucategory/treasury/af" caption="AF Requests" 
                  action="init"
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
-                 formTitle="AF Requests" role="AFO" index="1"/>
+                 formTitle="View AF Requests" role="AFO" index="1"/>
+        
+        <invoker folderid="menucategory/treasury/collection" caption="View AF Requests" 
+                 action="init"
+                 cols="reqno,dtfiled,reqtype,requester.name,org.name"
+                 customFilter="requester.objid =:userid"
+                 formTitle="View AF Requests" role="COLLECTOR" index="10"/>
     </invokers>
 </workunit>

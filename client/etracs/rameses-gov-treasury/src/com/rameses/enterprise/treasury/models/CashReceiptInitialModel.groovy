@@ -134,13 +134,15 @@ class CashReceiptInitialModel  {
     }
     
     def doNext() {
-        def entity = [
+        def params = [
             txnmode         : mode, 
             formno          : afType, 
             formtype        : collectionType.af.formtype, 
             collectiontype  : collectionType 
         ]; 
-
+        
+        def entity = [:];
+        entity.putAll(params); 
         def info = initReceipt( entity );
         if( info == null ) return null;
         if( mode == "OFFLINE" ) {
@@ -153,12 +155,18 @@ class CashReceiptInitialModel  {
             ]);
             if ( !pass ) return null;
         }
-        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: info]);  
+        def ch = {
+            def newEntity = [:];
+            newEntity.putAll( params );
+            return initReceipt( newEntity );
+        }
+        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: info,createHandler:ch]);  
         if(!opener )
             throw new Exception('No available handler found');
         opener.target = "self";
         return opener;
     }    
+    
     
     def loadBarcode() {
         def h = { o->

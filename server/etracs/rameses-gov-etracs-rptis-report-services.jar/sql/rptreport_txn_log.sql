@@ -4,6 +4,7 @@ select distinct
 	u.name
 from txnlog l
 inner join sys_user u on l.userid = u.objid 
+where u.state = 'ACTIVE'
 order by u.name 
 
 [getRefTypes]
@@ -19,25 +20,8 @@ select
 	x.ref,
 	x.action, 
 	sum(x.cnt) as cnt 
-from (
-	select 
-		y.username,
-		y.ref,
-		y.action,
-		sum(y.cnt) as cnt 
-	from (
-		select
-			distinct 
-			objid,
-			username, 
-			ref,
-			action,	
-			1 as cnt 
-		from txnlog
-		where txndate >= $P{startdate} and txndate < $P{enddate}
-		${filter}
-	) y 
-	group by y.username, y.ref, y.action 
-) x 
+from vw_txn_log x
+where x.txndate >= $P{startdate} and txndate < $P{enddate}
+${filter}
 group by x.username, x.ref, x.action
 order by x.username, x.ref, x.action

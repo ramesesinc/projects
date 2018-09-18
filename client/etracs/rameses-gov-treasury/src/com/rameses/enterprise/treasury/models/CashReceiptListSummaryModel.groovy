@@ -7,6 +7,7 @@ import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
 import com.rameses.osiris2.reports.*;
 import com.rameses.util.*;
+import java.rmi.server.*;
 
 //called by cash receipt list
 class CashReceiptListSummaryModel  { 
@@ -105,6 +106,7 @@ class CashReceiptListSummaryModel  {
         newparms.formno = o.formno;
         def op = Inv.lookupOpener(openerName, [customFilter: [ newcond, newparms ] ] );
         op.target = "popup";
+        op.id = "RCT" + new UID();
         return op;
     }
     

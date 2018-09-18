@@ -3,13 +3,12 @@
     schemaName="assessmentnotice"
     allowEdit="false"
     allowDelete="false"
-    allowCreate="false"
+    allowCreate="true"
 >
     <invokers>
         <invoker type="assessmentnotice:create" 
-            action="init" 
+            action="create" 
             caption="Notice of Assessment" 
-            target="self" 
             role="RECORD,RECORD_APPROVER" />
 
         <invoker type="assessmentnotice:open" 
@@ -44,7 +43,7 @@
     <code class="com.rameses.gov.etracs.rptis.models.AssessmentNoticeModel">
     </code>
     <pages>
-        <page name="init" template="com.rameses.gov.etracs.rpt.report.notice.AssessmentNoticeCreatePage" />
+        <page name="create" template="com.rameses.gov.etracs.rptis.views.AssessmentNoticeCreatePage" />
         <page template="com.rameses.gov.etracs.rptis.views.AssessmentNoticePage" />
     </pages>    
 </workunit>

@@ -37,7 +37,39 @@ where ft.refid = $P{objid}
 
 
 [getApprovedFaasList]
-SELECT ${fields}
+SELECT 
+	f.objid AS faasid,
+    f.effectivityyear,
+    f.effectivityqtr,
+    f.tdno,
+    f.taxpayer_objid,
+    e.name as taxpayer_name,
+    e.address_text as taxpayer_address,
+    f.owner_name,
+    f.owner_address,
+    f.administrator_name,
+    f.administrator_address,
+    f.rpuid, 
+    rpu.rputype,
+    rpu.ry,
+    rpu.fullpin ,
+    rpu.taxable,
+    rpu.totalareaha,
+    rpu.totalareasqm,
+    rpu.totalbmv,
+    rpu.totalmv,
+    rpu.totalav,
+    rp.section,
+    rp.parcel,
+    rp.surveyno,
+    rp.cadastrallotno,
+    rp.blockno,
+    rp.claimno,
+    rp.street,
+    o.name as lguname, 
+    b.name AS barangay,
+    pc.code AS classcode,
+    pc.name as classification 
 FROM faas f 
 	INNER JOIN rpu rpu ON f.rpuid = rpu.objid
 	INNER JOIN propertyclassification pc ON rpu.classification_objid = pc.objid
@@ -83,8 +115,6 @@ where f.state='CURRENT'
 	and r.ry=$P{revisionyear}
 	and rp.barangayid like $P{barangayid}
 	and rp.section like $P{section}
-
-
 
 
 

@@ -16,6 +16,14 @@ class RPTReportFieldInspectionDataService
 	@ProxyMethod
 	public def generateFieldInspectionDataBuilding( params )  {
 		params.barangayid = params.barangay?.objid
+
+		params.orderby = ''
+		if (params.ordertype.id == 'pin') {
+			params.orderby = 'ORDER BY t.pin, t.suffix, t.owner_name ' 
+		} else {
+			params.orderby = 'ORDER BY t.owner_name, t.pin, t.suffix' 
+		}
+
 		def list = em.getFieldInspectionDataBuilding(params)
 		if( ! list ) throw new Exception('Records not found.')
 		list.each{ rpu ->

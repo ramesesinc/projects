@@ -21,7 +21,7 @@ WHERE rp.ry = $P{ry}
   AND rp.section = $P{section} 
   ${txntypefilter}
   ${rputypefilter}
-ORDER BY f.tdno 
+order by  rp.pin, r.suffix, f.tdno
 
 
 [getTmcrList2]
@@ -41,7 +41,7 @@ WHERE rp.ry = $P{ry}
   AND f.state IN ('CURRENT', 'CANCELLED')
   AND rp.section LIKE $P{section} 
   ${txntypefilter}
-ORDER BY f.tdno 
+order by  rp.pin, r.suffix, f.tdno
 
 
 
@@ -58,7 +58,7 @@ WHERE rp.ry = $P{ry}
   AND f.state = 'CURRENT'
   AND rp.section = $P{section} 
   ${rputypefilter}
-ORDER BY f.tdno 
+order by  rp.pin, r.suffix, f.tdno
 
 
 [getCancelledTmcrFaases]
@@ -128,7 +128,7 @@ where rp.ry = $P{ry}
   and rp.section = $P{section} 
   ${txntypefilter}
   ${rputypefilter}
-order by f.tdno 
+order by  rp.pin, r.suffix, f.tdno
 
 
 

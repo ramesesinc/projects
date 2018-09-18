@@ -220,7 +220,7 @@ class TDReportService
 
 		//if multiple area, set mixedarea = 1 otherwise = 0
 		//in the report display sqm for the total area in cases of mixedarea = 1
-		def uniqueareatypelist = td.specificlands.areatype.unique()
+		def uniqueareatypelist = td.lands.areatype.unique()
 		if (uniqueareatypelist)
 			td.areatype = uniqueareatypelist[0]
 		if( uniqueareatypelist.size() > 1 ) {
@@ -229,16 +229,8 @@ class TDReportService
 			td.mixedarea =  1 
 		}
 		else {
-			td.lands.each{ 
-				it.mixedarea = 0
-				it.areatype = td.areatype
-				it.area = (td.areatype == 'HA' ? it.areaha : it.areasqm)
-			}
-			td.specificlands.each{ 
-				it.mixedarea = 0 
-				it.areatype = td.areatype
-				it.area = (td.areatype == 'HA' ? it.areaha : it.areasqm)
-			}
+			td.lands.each{ it.mixedarea = 0 }
+			td.specificlands.each{ it.mixedarea = 0 }
 			td.mixedarea  = 0
 		}
 	}

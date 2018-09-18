@@ -33,7 +33,7 @@
                 <key field="objid" target="rptledgerid" />
         </complex>
         <complex name="taxpayer" ref="entity" jointype="many-to-one" required="true"
-            includefields="name,address.text">
+            includefields="entityno,name,address.text">
                 <key field="taxpayer_objid" target="objid" />
         </complex>
         <complex name="barangay" ref="barangay" jointype="many-to-one" required="false"

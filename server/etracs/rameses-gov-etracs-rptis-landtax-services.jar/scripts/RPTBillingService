@@ -292,6 +292,7 @@ public class RPTBillingService
 		if (!bill.billto && bill.taxpayer){
 			bill.billto = [:]
 			bill.billto.objid = bill.taxpayer.objid
+			bill.billto.entityno = bill.taxpayer.entityno
 			bill.billto.name = bill.taxpayer.name
 			if (!(bill.taxpayer.address instanceof String)){
 				bill.billto.address = bill.taxpayer.address.text

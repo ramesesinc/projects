@@ -209,8 +209,9 @@ class RPTLedgerService
                     faashistory = getTaxableFaases(ledger)
                 }
                 ledger.faases = faashistory.findAll{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) }
-                if (!ledger.faases) throw new Exception('No FAAS history defined for the year ' + yr + '.')
-                postLedgerItem(ledger, yr)
+                if (ledger.faases){
+                    postLedgerItem(ledger, yr)
+                }
             }
         }
     }

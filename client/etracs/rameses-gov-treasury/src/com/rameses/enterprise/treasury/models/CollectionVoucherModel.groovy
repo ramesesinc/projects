@@ -100,11 +100,42 @@ class CollectionVoucherModel extends CrudFormModel {
         fundSummaryHandler.reload(); 
     }
     
+    def decFormat = new java.text.DecimalFormat('0.00'); 
     def getPrintFormData() { 
         def rdata = collSvc.getReportData([ objid: entity.objid ]); 
         if ( rdata ) rdata.putAll( entity ); 
         
+        def list = rdata.cashbreakdown; 
+        list.each{
+            it.indexno = ((Number) (it.denomination ? it.denomination : 0)).intValue(); 
+        }
+        list.sort{ -it.indexno }
+        list.each { 
+            it.caption = it.denomination.toString(); 
+            if ( it.denomination instanceof Number ) {
+                it.caption = decFormat.format( it.denomination ); 
+            }
+            println '> '+ it;
+        } 
+        rdata.cashbreakdown = list; 
         return rdata;
+    } 
+    
+    def getReportForm() { 
+        def path = 'com/rameses/gov/treasury/liquidation/report/rcd'; 
+        return [
+            mainreport: path + '/main.jasper', 
+            subreports: [
+                [name:"remittances", template: path + "/remittances.jasper"],
+                [name:"collectionsummary", template: path + "/collectionsummary.jasper"],
+                [name:"reportaforms", template: path + "/reportaforms.jasper"],
+                [name:"reportnsaforms", template: path + "/reportnsaforms.jasper"],
+                [name:"reportnonserialsummary", template: path + "/reportnonserialsummary.jasper"],
+                [name:"OtherPayments", template: path + "/otherpayments.jasper"],
+                [name:"Denomination", template: path + "/denomination.jasper"]
+            ], 
+            parameters: [ REPORTTYPE: 'SUMMARY' ] 
+        ] 
     } 
     
     public void changeLiqOfficer() {

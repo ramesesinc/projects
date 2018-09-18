@@ -9,11 +9,20 @@ public class DateInfo extends VariableInfo {
 		return this.datevalue;
 	}
 	
-	public void setValue( Date d ) {
+
+    public void setValue( def d ) {
+        this.dateFact = new DateFact( d );
+        this.datevalue = getDate();
+    }
+
+	/*
+    public void setValue( Date d ) {
 		this.datevalue = d;
 		this.dateFact = new DateFact( d );
 	}
+    */
 	
+
     public Date getDate() {
         return dateFact.date;
     }
@@ -65,7 +74,7 @@ public class DateInfo extends VariableInfo {
     public int getMilliSecond() {
         return dateFact.milliSecond;
     }
-
+    
 }
 
 

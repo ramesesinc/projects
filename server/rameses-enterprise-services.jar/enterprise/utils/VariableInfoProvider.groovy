@@ -26,7 +26,7 @@ public class VariableInfoProvider {
 			cf = createStringFact();
 		}
 		else if(dd.datatype == "date") {
-			if(!createDateFact) createStringFact = { new enterprise.facts.DateInfo() };
+			if(!createDateFact) createDateFact = { new enterprise.facts.DateInfo() };
 			cf = createDateFact();
 		}
 		else {

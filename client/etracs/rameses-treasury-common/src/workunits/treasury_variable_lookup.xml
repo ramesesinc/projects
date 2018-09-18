@@ -20,5 +20,9 @@
         <invoker type="treasury_variableinfo_string:lookup" caption="String Variable Info Lookup" 
                  role="MASTER" action="init"
                  customFilter=" datatype = 'string' "/>
+        
+        <invoker type="treasury_variableinfo_date:lookup" caption="Date Variable Info Lookup" 
+                 role="MASTER" action="init"
+                 customFilter=" datatype = 'date' "/>
     </invokers>
 </workunit>

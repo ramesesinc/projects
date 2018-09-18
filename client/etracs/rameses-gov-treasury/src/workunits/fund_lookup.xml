@@ -6,6 +6,9 @@
         <invoker type="fund:lookup" caption="Lookup Depository Fund" target="popup" 
                  cols="code,title,groupid" orderBy="code" action="init" customFilter="parentid IS NULL"/>
 
+        <invoker type="fund_depository:lookup" caption="Lookup Depository Fund" target="popup" 
+                 cols="code,title,groupid" orderBy="code" action="init" customFilter="groupid = :groupid"/>
+
     </invokers>
 </workunit>
 

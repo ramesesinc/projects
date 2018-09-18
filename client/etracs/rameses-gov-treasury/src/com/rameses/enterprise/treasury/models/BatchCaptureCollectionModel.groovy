@@ -145,6 +145,9 @@ class BatchCaptureCollectionModel  {
     } 
     
     def createItem() {
+        if ( entity.currentseries > entity.endseries ) 
+            throw new Exception('Series is already consumed'); 
+            
         def m  = [:];
         m.objid = "BCCE" + new java.rmi.server.UID();
         m.parentid = entity.objid; 

@@ -236,7 +236,8 @@ order by fundname, acctcode
 [getReceiptsGroupByFund]
 select 
   ai.fund_title as fundname, cr.formno, cr.receiptno, 
-  min(cr.paidby) as paidby, sum(cri.amount) as amount  
+  min(case when xx.voided=0 then cr.paidby else '*** VOIDED ***' end) as paidby, 
+  sum(case when xx.voided=0 then cri.amount else 0.0 end) as amount 
 from ( 
   select rc.objid, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 

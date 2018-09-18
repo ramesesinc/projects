@@ -1,3 +1,42 @@
+[getCollectionVoucherFund]
+select 
+  fund.depositoryfundid as fundid, 
+  sum(cv.totalcash + cv.totalcheck) as amount 
+from collectionvoucher v 
+  inner join collectionvoucher_fund cv on cv.parentid = v.objid 
+  inner join fund on fund.objid = cv.fund_objid 
+where v.depositvoucherid = $P{depositvoucherid}
+group by fund.depositoryfundid 
+
+
+[findCollectionVoucherWithoutDepositoryFund]
+select distinct 
+  fund.objid as fundid, fund.code as fundcode, fund.title as fundtitle
+from collectionvoucher v 
+  inner join collectionvoucher_fund cv on cv.parentid = v.objid 
+  inner join fund on fund.objid = cv.fund_objid 
+where v.depositvoucherid = $P{depositvoucherid} 
+  and fund.depositoryfundid is null 
+
+
+[updateChecksForDeposit]
+update checkpayment cp set 
+    cp.depositvoucherid = $P{depositvoucherid}, 
+    cp.fundid = (
+        select fund_objid from cashreceiptpayment_noncash 
+        where refid = cp.objid and amount = cp.amount 
+        limit 1 
+    ) 
+where cp.objid in (
+  select nc.refid from cashreceiptpayment_noncash nc 
+      inner join cashreceipt c on c.objid = nc.receiptid 
+      inner join remittance r on r.objid = c.remittanceid 
+      inner join collectionvoucher cv on cv.objid = r.collectionvoucherid 
+      left join cashreceipt_void v on v.receiptid = c.objid
+  where cv.depositvoucherid = $P{depositvoucherid}  and v.objid is null 
+) 
+
+
 [getBankAccountLedgerItems]
 SELECT 
   a.fundid,

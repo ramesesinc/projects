@@ -115,7 +115,6 @@ class CollectionVoucherModel extends CrudFormModel {
             if ( it.denomination instanceof Number ) {
                 it.caption = decFormat.format( it.denomination ); 
             }
-            println '> '+ it;
         } 
         rdata.cashbreakdown = list; 
         return rdata;

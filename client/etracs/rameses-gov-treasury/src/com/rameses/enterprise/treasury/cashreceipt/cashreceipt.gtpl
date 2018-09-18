@@ -1,17 +1,5 @@
 <%
-    /*
-    def entity = [:];
-    entity.paidby = 'FLORES, WORGIE';    
-    entity.paidbyaddress = 'CEBU CITY';
-    entity.items = [];
-    entity.items << [ item: [code:'B11', title: 'MAYORS PERMIT'], amount: 560.0 ];    
-    entity.items << [ item: [code:'B12', title: 'BUSINESS PERMIT'], amount: 570.0 ];
-    entity.totalcash = 500.0
-    entity.paymentitems = [];
-    entity.paymentitems << [ type:'CHECK', particulars: 'BANK', amount: 560.0 ];    
-    entity.paymentitems << [ type:'CHECK', particulars: 'BANK', amount: 570.0 ];
-    */
-    def df = new java.text.DecimalFormat("#,##0.00")
+def df = new java.text.DecimalFormat("#,##0.00")
 %>
 
 <table width="380" cellpadding="0" >

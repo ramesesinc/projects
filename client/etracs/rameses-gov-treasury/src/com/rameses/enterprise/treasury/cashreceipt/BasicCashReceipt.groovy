@@ -84,7 +84,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
             selectedItem.amount = o.remove("amount");
             selectedItem.remarks = o.remove("remarks");
         } 
-        return InvokerUtil.lookupOpener("cashreceiptitem:lookup",p );
+        return Inv.lookupOpener("cashreceiptitem:lookup",p );
     }
     
     void clearItems() {

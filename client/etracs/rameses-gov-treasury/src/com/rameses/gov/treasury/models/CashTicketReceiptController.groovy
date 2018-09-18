@@ -68,28 +68,36 @@ class  CashTicketReceiptController {
 
     def selectedItem;
     def getLookupItems() {
-        return Inv.lookupOpener("cashreceiptitem:lookup",[
-            "query.txntype" : "cashreceipt",
-            "query.collectorid" : entity.collector.objid,
-            "query.fund" : entity.collectiontype.fund,
-            "query.collectiontype": entity.collectiontype,
-            onselect:{ o->
-                if( entity.items.find{ it.item.objid == o.objid }!=null )
-                throw new Exception("This item has already been added");
-                selectedItem.item = o;
-            }
-        ]); 
+        def p = [:];
+        p.put( "query.txntype", "cashreceipt");
+        p.put( "query.collectorid" , entity.collector.objid );
+        p.put( "query.collectiontype" , entity.collectiontype );
+        if( entity.collectiontype.fund?.objid ) {
+            p.fundid = entity.collectiontype.fund?.objid;
+        }
+        
+        p.onselect = { o->
+            selectedItem.item = o;
+            selectedItem.amount = o.remove("amount");
+            selectedItem.remarks = o.remove("remarks");
+        } 
+        return Inv.lookupOpener("cashreceiptitem:lookup", p );
     }
             
     def save() {
-        if(!entity.items)
-        throw new Exception("Please specify at least one item");
-        if(itemAmount!= entity.amount)
-        throw new Exception("Total of items must be equal to amount collected");
+        if (!entity.items)
+            throw new Exception("Please specify at least one item");
+        if (itemAmount != entity.amount)
+            throw new Exception("Total of items must be equal to amount collected");
                     
         if( MsgBox.confirm('You are about to post this transaction. Continue?')) { 
             if ( !entity.paidby ) entity.paidby = entity.collector?.name;
             if ( !entity.paidbyaddress ) entity.paidbyaddress = "-";
+            
+            if ( !entity.receiptno ) { 
+                def key = "CT"+ com.rameses.util.Encoder.MD5.encode( entity.objid, "cashticket" ); 
+                entity.receiptno = key; 
+            }
                     
             entity = service.post( entity );
             mode = "completed"; 
@@ -98,5 +106,9 @@ class  CashTicketReceiptController {
             binding.refresh("infoHtml")
             return "completed";
         }
+    }
+    
+    void init() {
+        
     }
 } 

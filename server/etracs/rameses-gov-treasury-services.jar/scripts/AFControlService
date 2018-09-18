@@ -18,7 +18,8 @@ class AFControlService  {
 
 	@ProxyMethod
 	public def getNextAfSeries(def m ) {
-		if(!m.collectiontype?.objid) throw new Exception("Please specify collectiontype in AFControlService.getNextAfSeries");
+		if ( !m.collectiontype?.objid ) 
+			throw new Exception("Please specify collectiontype in AFControlService.getNextAfSeries");
 
 		def arr = [];
 		def p = [:];
@@ -60,31 +61,50 @@ class AFControlService  {
 		// }
 
 		def afc = em.where( arr.join(" AND "), p ).first();
-		if(!afc ) throw new Warning("select-afcontrol");
+		if ( !afc ) throw new Warning("select-afcontrol");
 
-		if(afc.af.serieslength <=0 ) 
+		if ( m.formtype == 'cashticket' ) { 
+			//
+			// do not check series for this af 
+			// 
+		} else if ( afc.af.serieslength <= 0 ) {  
 			throw new Exception("series length must be greater than zero for AFControlService.getNextAfSeries")
+		} 
 
 		def result = [:];
 		result.collector = afc.owner; 
 
 		//get the job title
-		result.collector.title = userEm.find( [objid: afc.owner.objid] ).select("jobtitle").val();
+		result.collector.title = userEm.find([ objid: afc.owner.objid ]).select("jobtitle").val();
 
-		if( afc.owner?.objid != afc.assignee?.objid  ) {
-			result.subcollector = afc.assignee;
-		}
-		result.stub = afc.stubno;
-		if(afc.af.serieslength) {
+		if ( afc.owner?.objid != afc.assignee?.objid  ) { 
+			result.subcollector = afc.assignee; 
+		} 
+		result.stub = afc.stubno; 
+
+		if ( m.formtype == 'cashticket' ) { 
+			result.denomination = afc.afunit?.denomination; 
+			if ( result.denomination == null ) result.denomination = 0.0; 
+
+		} else if ( afc.af.serieslength ) { 
 			def s = afc.currentseries.toString().padLeft(afc.af.serieslength, '0');
-			result.receiptno = ((afc.prefix)?afc.prefix:'') + s + ((afc.suffix)?afc.suffix:'');
-		}
+			result.receiptno = (( afc.prefix ? afc.prefix : '') + s + (afc.suffix ? afc.suffix : ''));
+		} 
+
 		result.controlid = afc.objid;
 		result.series = afc.currentseries;
 		result.endseries = afc.endseries; 
-		result.prefix = afc.prefix
-		result.suffix = afc.suffix
-		result.serieslength = afc.af.serieslength 
+		result.prefix = afc.prefix;
+		result.suffix = afc.suffix;
+		result.serieslength = afc.af.serieslength;
+		result.qtybalance = (afc.endseries - afc.currentseries)+1;
+		if ( result.qtybalance < 0 ) result.qtybalance = 0; 
+
+
+		println '** '
+		result.each{
+			println '> '+ it;
+		}
 		return result;
 	}
 

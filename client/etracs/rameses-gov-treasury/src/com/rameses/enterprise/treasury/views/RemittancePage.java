@@ -270,7 +270,7 @@ public class RemittancePage extends javax.swing.JPanel {
 
         xButton4.setName("updateCashByRemittance"); // NOI18N
         xButton4.setVisibleWhen("#{cashBreakdownByFund == false && entity.state == 'DRAFT'  }");
-        xButton4.setText("Edit Cash Breakdown");
+        xButton4.setText("Input Cash Breakdown");
         jPanel4.add(xButton4);
 
         jPanel3.add(jPanel4, java.awt.BorderLayout.SOUTH);

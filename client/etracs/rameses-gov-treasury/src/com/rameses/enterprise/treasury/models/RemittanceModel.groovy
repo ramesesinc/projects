@@ -63,7 +63,9 @@ class RemittanceModel extends CrudFormModel {
             m.findBy = [objid: entity.objid];
             m.cashbreakdown = o.cashbreakdown;
             m.totalcash = o.cashbreakdown.sum{ it.amount };
-            persistenceService.update( m )
+            persistenceService.update( m );
+            entity.cashbreakdown = m.cashbreakdown;
+            entity.totalcash = m.totalcash;
             binding.refresh();
         }
         return Inv.lookupOpener("cashbreakdown", p );

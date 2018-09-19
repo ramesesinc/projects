@@ -265,6 +265,13 @@ class RPTLedgerService
 
 
     @ProxyMethod
+    public def fixLedgerFaas(ledgerfaas){
+        em_rptledger_faas.save(ledgerfaas)
+        em_rptledger_item.find([parentid:ledgerfaas.rptledgerid]).delete()
+        return ledgerfaas
+    }
+
+    @ProxyMethod
     public def fixLedger( info ) {
         util.required('Ledger ID', info.objid)
         util.required('TD No.', info.tdno)

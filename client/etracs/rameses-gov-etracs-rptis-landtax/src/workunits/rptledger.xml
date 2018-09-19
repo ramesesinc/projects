@@ -24,7 +24,7 @@
                 mnemonic="D" visibleWhen="#{mode=='edit' &amp;&amp; entity.state=='PENDING' &amp;&amp; selectedItem &amp;&amp; selectedItem.systemcreated==0 &amp;&amp; entity.faases.last().objid == selectedItem.objid}" />
                 
         <invoker type="historyActions" action="fixLedgerFaas" caption="Fix FAAS" 
-                 visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' &amp;&amp; selectedItem != null &amp;&amp; selectedItem.systemcreated == 0}"  
+                 visibleWhen="#{mode=='read' &amp;&amp; entity.state=='APPROVED' &amp;&amp; selectedItem != null }"  
                  domain="LANDTAX" role="ADMIN" permission="rptledger.fix_ledger_faas" depends="selectedItem" />
                  
         <invoker type="historyActions" action="addNewLedgerFaas" caption="Add New FAAS" 

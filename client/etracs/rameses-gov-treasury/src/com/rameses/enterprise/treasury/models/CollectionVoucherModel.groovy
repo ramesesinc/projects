@@ -152,4 +152,22 @@ class CollectionVoucherModel extends CrudFormModel {
         Modal.show("liquidatingofficer:lookup", [onselect:s]);
     }
     
+    public void updateCashBreakdown() {
+        //get latest collectionvoucher from server
+        def mm = [_schemaname:"collectionvoucher"];
+        mm.findBy = [ objid: entity.objid ];
+        mm.select = "cashbreakdown";
+        def mz = queryService.findFirst(mm);
+        def p = [total: entity.totalcash, cashbreakdown: mz.cashbreakdown ];
+        p.handler = { o->
+            def m = [_schemaname: 'collectionvoucher'];
+            m.findBy = [objid: entity.objid];
+            m.cashbreakdown = o.cashbreakdown;
+            persistenceService.update( m );
+            entity.cashbreakdown = m.cashbreakdown;
+            binding.refresh();
+        }
+        Modal.show("cashbreakdown", p );
+    }
+    
 } 

@@ -100,8 +100,11 @@ class AFControlService  {
 		result.qtybalance = (afc.endseries - afc.currentseries)+1;
 		if ( result.qtybalance < 0 ) result.qtybalance = 0; 
 
-
-		println '** '
+		println '** getNextAfSeries '
+		afc.each{
+			println '> '+ it; 
+		}
+		println '--- '
 		result.each{
 			println '> '+ it;
 		}
@@ -110,8 +113,32 @@ class AFControlService  {
 
 	@ProxyMethod
 	public void updateNextSeries( p ) { 
-		em.find([ objid: p.controlid ]).update([ currentseries: p.series + 1 ]); 
-	}
+		// force update lock to table 
+		def afparam = [ objid: p.controlid ]; 
+		em.find( afparam ).update([ lockid: new java.rmi.server.UID().toString() ]); 
+
+		def afc = em.find( afparam ).select('objid,currentseries,endseries').first(); 
+		if ( afc == null ) return; 
+
+		if ( afc.currentseries > afc.endseries ) 
+			throw new Exception('Series is already consumed. Please verify'); 
+
+		println '** afc ' 
+		afc.each{
+			println '> '+ it;
+		}
+
+		def uparam = [ currentseries: p.series+1, lockid: '{NULL}' ]; 
+		if ( p.formtype == 'cashticket' ) { 
+			def qtyissued = ((Number) p.amount / p.denomination).intValue(); 
+			uparam.currentseries = afc.currentseries + qtyissued; 
+		} 
+
+		println '** afparam -> '+ afparam;
+		println '** uparam  -> '+ uparam;
+		em.find( afparam ).update( uparam ); 
+		//throw new Exception('stop'); 
+	} 
 
 
 	void checkCanPerformFunc( def o) {

@@ -6,8 +6,13 @@
          
          <invoker type="quick_launcher" code="FUND01" caption="Fund" role="MASTER" permission="fund.create"/>
           
-         <invoker type="formActions" caption="Activate" action="activate" visibleWhen="#{entity.state.matches('DRAFT|INACTIVE')}"/>
-         <invoker type="formActions" caption="Deactivate" action="deactivate" visibleWhen="#{entity.state == 'ACTIVE'}"/>
+         <invoker type="formActions" caption="Activate" action="activate" 
+                role="MASTER"
+                  visibleWhen="#{entity.state.matches('DRAFT|INACTIVE')}"/>
+         
+         <invoker type="formActions" caption="Deactivate" action="deactivate" 
+                role="ADMIN"
+                visibleWhen="#{entity.state == 'ACTIVE'}"/>
 
     </invokers>
    

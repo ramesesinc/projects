@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/FormList.xml" schemaName="itemaccount">
     <invokers>
+        <!--
         <invoker type="itemaccount:section"  
                 cols="code,title,org.name" 
                 allowCreate="false" 
@@ -7,7 +8,7 @@
                 caption="Sub Accounts" 
                 visibleWhen="#{ mode != 'create' }"
                 action="init"/> 
-
+        -->        
         <!-- actions inside list -->
         <invoker type="formActions" caption="Add" action="addSub" 
                  role="MASTER" permission="itemaccount.update"/> 

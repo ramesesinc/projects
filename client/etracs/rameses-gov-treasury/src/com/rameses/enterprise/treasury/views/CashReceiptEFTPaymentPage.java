@@ -56,7 +56,7 @@ public class CashReceiptEFTPaymentPage extends javax.swing.JPanel {
 
         xTextField2.setCaption("Received From");
         xTextField2.setDisableWhen("#{ true }");
-        xTextField2.setName("eft.receivedfrom"); // NOI18N
+        xTextField2.setName("eft.payer.name"); // NOI18N
         xTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 27));
         xFormPanel1.add(xTextField2);

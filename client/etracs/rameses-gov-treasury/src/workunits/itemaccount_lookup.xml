@@ -38,6 +38,12 @@
             cols="code,title,fund.title,type,org.code" hiddenCols="valuetype,defaultvalue,fund.objid,fund.code" 
             tag="CASHRECEIPT"/>
        -->
+       
+       <invoker type="parentaccount:lookup" caption="Lookup Parent Account" 
+                action="init" target="popup"
+                cols="code,title,fund.title,type" 
+                customFilter="parentid IS NULL AND type IN ('REVENEUE','NONREVENUE','PAYABLE')"
+                hiddenCols="fund.objid" />
     </invokers> 
    
     <code class="com.rameses.enterprise.treasury.models.ItemAccountLookupModel" />

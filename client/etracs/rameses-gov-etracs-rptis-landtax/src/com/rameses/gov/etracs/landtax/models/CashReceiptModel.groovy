@@ -145,10 +145,14 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
             bill.rptledgerid = item.objid;
             
             if (colname == 'pay' && item.pay == false){
+                item.total = 0.0;
                 item.amount = 0.0;
                 calcReceiptAmount();
             }
-            else {
+            else if (colname == 'pay' && item.pay == true){
+                fullPayment();
+                calcReceiptAmount();
+            } else {
                 if (colname == 'toyear') {
                     validateToYear(item);
                 }
@@ -216,14 +220,6 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         calcReceiptAmount();
     }
     
-    void buildShares(item){
-        def tmpbill = cloneBill();
-        tmpbill.rptledger = item; 
-        item.remove('shares');
-        item.shares = billSvc.getShares(tmpbill);
-    }
-
-    
     def getLookupLedger(){
         return InvokerUtil.lookupOpener('rptledger:lookup',[
 
@@ -252,7 +248,17 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         binding.focus('ledger');
     }
         
-    
+    void fullPayment() {
+        bill.billtoyear = bill.cy 
+        bill.billtoqtr = 4
+        selectedItem.toyear = bill.cy 
+        selectedItem.toqtr = 4
+        selectedItem.pay = true;
+        selectedItem.partialled = false;
+        updateItemDue(selectedItem);
+        listHandler.load();
+        calcReceiptAmount();
+    }
     
     void selectAll(){
         itemsforpayment.each{
@@ -293,7 +299,6 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
             },
         ])
     }
-    
     
     def cloneBill(){
         def b = [:];

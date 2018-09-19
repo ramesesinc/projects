@@ -235,7 +235,7 @@ class RPTReceiptService
 					if (partialamt <= 0) break;
 
 					def items = qtritems.findAll{it.priority == priorities[i]}
-					def itemtotal = items.total.sum()
+					def itemtotal = numSvc.round(items.total.sum())
 					if (partialamt >= itemtotal){
 						partialamt -= itemtotal 
 						rptledger.postingitems += items 
@@ -259,6 +259,7 @@ class RPTReceiptService
 		rptledger.toqtr = toqtr 
 		rptledger.partialled = rptledger.postingitems.find{it.partialled == true} != null 
 		rptledger.total = rptledger.postingitems.total.sum()
+
 		rptledger.billitems.each {
     		it.amount = numSvc.round(it.amount)
     	}
@@ -459,7 +460,7 @@ class RPTReceiptService
 
 			for (int i = 0; i < items.size() - 1; i++){
 				def item = items[i]
-				def partial = partialamt * numSvc.round(item.amount / totalamount)
+				def partial = numSvc.round(partialamt * numSvc.round(item.amount / totalamount))
 				distributePartialProportionally(partial, item) 
 				runningpartial -= partial 
 			}
@@ -468,7 +469,7 @@ class RPTReceiptService
 	}
 
 	void distributePartialProportionally(partial, item){
-		def totaldue = item.amount + item.interest 
+		def totaldue = numSvc.round(item.amount + item.interest )
 		def discrate = numSvc.round(item.discount / item.amount)
 
 		def amtpartial = numSvc.round(partial * (item.amount / totaldue))
@@ -483,7 +484,7 @@ class RPTReceiptService
 		}
 		item.interest = intpartial
 		item.discount = discpartial
-		item.total = item.amount + item.interest - item.discount
+		item.total = numSvc.round(item.amount + item.interest - item.discount)
 		item.amtdue = item.total 
 		item.partialled = true 
 	}

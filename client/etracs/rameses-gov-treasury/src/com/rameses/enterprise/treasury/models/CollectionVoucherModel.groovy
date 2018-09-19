@@ -105,6 +105,8 @@ class CollectionVoucherModel extends CrudFormModel {
         def rdata = collSvc.getReportData([ objid: entity.objid ]); 
         if ( rdata ) rdata.putAll( entity ); 
         
+        rdata.otherpayments = checkModel.fetchList([:]); 
+        
         def list = rdata.cashbreakdown; 
         list.each{
             it.indexno = ((Number) (it.denomination ? it.denomination : 0)).intValue(); 

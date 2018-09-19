@@ -54,7 +54,9 @@ class DepositVoucherInitialModel extends CrudListModel {
         m.amount = amount; 
         def z = depositSvc.create( m );
         MsgBox.alert("Deposit Voucher Control No. " + z.controlno + " created");
-        return "_close";
+        def op = Inv.lookupOpener("depositvoucher:open", [entity: [objid: z.objid ]]);
+        op.target = "self";
+        return op;
     }
     
     /*

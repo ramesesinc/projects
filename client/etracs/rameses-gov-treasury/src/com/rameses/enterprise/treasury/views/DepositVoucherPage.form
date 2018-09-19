@@ -134,13 +134,19 @@
                       <Component id="schemaList1" min="-2" pref="759" max="-2" attributes="0"/>
                       <EmptySpace pref="20" max="32767" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jPanel7" min="-2" pref="647" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="schemaList1" min="-2" pref="319" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="132" max="32767" attributes="0"/>
+                      <Component id="schemaList1" pref="404" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -157,6 +163,56 @@
                 <Property name="schemaName" type="java.lang.String" value="depositvoucher_fund"/>
               </Properties>
             </Component>
+            <Container class="javax.swing.JPanel" name="jPanel7">
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XButton" name="xButton11">
+                  <Properties>
+                    <Property name="name" type="java.lang.String" value="viewFund" noResource="true"/>
+                    <Property name="text" type="java.lang.String" value="View Fund"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+              <LayoutCode>
+                <CodeStatement>
+                  <CodeExpression id="1_jPanel7">
+                    <CodeVariable name="jPanel7" type="8194" declaredType="javax.swing.JPanel"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="ComponentRef">
+                        <ComponentRef name="jPanel7"/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="2">
+                      <ExpressionOrigin>
+                        <ExpressionProvider type="CodeConstructor">
+                          <CodeConstructor class="com.rameses.rcp.control.layout.XLayout" parameterTypes=""/>
+                        </ExpressionProvider>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="1_jPanel7"/>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="3_xButton11">
+                      <CodeVariable name="xButton11" type="8194" declaredType="com.rameses.rcp.control.XButton"/>
+                      <ExpressionOrigin>
+                        <ExpressionProvider type="ComponentRef">
+                          <ComponentRef name="xButton11"/>
+                        </ExpressionProvider>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+              </LayoutCode>
+            </Container>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel2">

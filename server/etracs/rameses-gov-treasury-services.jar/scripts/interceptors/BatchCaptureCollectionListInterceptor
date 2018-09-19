@@ -16,7 +16,7 @@ class BatchCaptureCollectionListInterceptor {
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'batchcapture_collection'}")
-	public void afterGetList( evt ) {
+	public void beforeGetList( evt ) {
 		def param = evt.args[0];
 		def qarr = [];
 		def qmap = [:]; 
@@ -36,10 +36,10 @@ class BatchCaptureCollectionListInterceptor {
 			qmap.userid = env.USERID; 
 		} 
 
-		if ( !(env.ORGROOT == 1)) { 
-			qarr << " org.objid = :orgid "; 
-			qmap.orgid = env.ORGID; 
-		} 
+		// if ( !(env.ORGROOT == 1)) { 
+		// 	qarr << " org.objid = :orgid "; 
+		// 	qmap.orgid = env.ORGID; 
+		// } 
 
 		def qstr = qarr.join(' AND '); 
 		if ( param.where ) { 

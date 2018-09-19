@@ -83,11 +83,11 @@ class CollectionVoucherModel extends CrudFormModel {
     def selectedCheck;
     def checkModel = [
         fetchList: { o->
-            def m = [_schemaname: 'cashreceiptpayment_noncash' ];
-            m.select = "refno,reftype,refdate,particulars,amount:{SUM(amount)}";
-            m.groupBy = "refno,reftype,refdate,particulars";
+            def m = [_schemaname: 'vw_cashreceiptpayment_noncash_liquidated' ];
+            m.select = "reftype,refno,refdate,particulars,amount:{SUM(amount)}";
+            m.groupBy = "reftype,refno,refdate,particulars";
             m.orderBy = "refdate,refno";
-            m.where = [ "receipt.remittance.collectionvoucherid = :cvid AND amount > 0", [cvid: entity.objid ]];
+            m.where = [ "collectionvoucherid = :cvid AND voided=0 AND amount > 0", [cvid: entity.objid ]];
             return queryService.getList( m );
         }
     ] as BasicListModel;

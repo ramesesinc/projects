@@ -10,7 +10,7 @@
         <field name="amount" required="true" type="decimal" caption="Sale Amount" />
         <field name="remarks" />
 
-        <complex name="faas" ref="faas_list" jointype="many-to-one" 
+        <complex name="faas" ref="faas_list" jointype="many-to-one" required="false"
             includefields="state,tdno,displaypin,barangay,owner.name,totalmv,totalav,titleno,cadastrallotno,totalareaha,totalareasqm" 
         >
             <key field="objid" target="objid" />

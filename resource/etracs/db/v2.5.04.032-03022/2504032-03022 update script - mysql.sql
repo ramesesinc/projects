@@ -283,3 +283,16 @@ from subdivision_task t
 inner join sys_user u on t.actor_objid = u.objid 
 where t.state not like '%cancelledfaas%'
 ;
+
+
+
+/*===================================================
+* DELINQUENCY UPDATE 
+====================================================*/
+
+
+alter table report_rptdelinquency_barangay add idx int
+;
+
+update report_rptdelinquency_barangay set idx = 0 where idx is null
+;

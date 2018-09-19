@@ -22,6 +22,7 @@
             <folder id="txn" caption="Transactions" index="1" icon="home/icons/af.png"/>
             <folder id="mgmt" caption="Management" index="5" icon="home/icons/postledger.png"/>
             <folder id="payer" caption="Property Payer" index="10" icon="home/icons/payer.png"/>
+            <folder id="util" caption="Utilities" index="15" icon="home/icons/admin.png"/>
         </folder>
     </folder>
 </folders>

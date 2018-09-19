@@ -19,6 +19,7 @@ class BuildDelinquencyTask implements Runnable
     def onComplete = {};
     def tasks = [];
     def cancelled = false;
+    def threadCount = 1;
     
     public void start(){
         new Thread(this).start();
@@ -32,7 +33,8 @@ class BuildDelinquencyTask implements Runnable
     }
     
     public void run(){
-        threadPool = Executors.newFixedThreadPool(3);
+        println 'Build Delinquency threadCount => ' + threadCount
+        threadPool = Executors.newFixedThreadPool(threadCount);
         
         entity.barangays.each{
             def task = new DelinquencyTask([svc: svc, entity: entity, item: it, updateStatus: updateStatus]);

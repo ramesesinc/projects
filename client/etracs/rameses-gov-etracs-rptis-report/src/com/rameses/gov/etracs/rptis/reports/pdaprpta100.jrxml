@@ -39,58 +39,58 @@
 	<parameter name="PERIODTYPE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="FORLGUNAME" isForPrompting="false" class="java.lang.String"/>
 
-	<field name="landtaxablecount" class="java.math.BigDecimal"/>
-	<field name="landexemptcount" class="java.math.BigDecimal"/>
-	<field name="landareataxable" class="java.math.BigDecimal"/>
-	<field name="landareaexempt" class="java.math.BigDecimal"/>
-	<field name="tdcount" class="java.lang.Integer"/>
-	<field name="landavtotal" class="java.math.BigDecimal"/>
-	<field name="improvavtotal" class="java.math.BigDecimal"/>
-	<field name="avtotal" class="java.math.BigDecimal"/>
-	<field name="avtaxable" class="java.math.BigDecimal"/>
-	<field name="avexempt" class="java.math.BigDecimal"/>
-	<field name="landareatotal" class="java.math.BigDecimal"/>
+	<field name="landtaxablecount" class="java.lang.Number"/>
+	<field name="landexemptcount" class="java.lang.Number"/>
+	<field name="landareataxable" class="java.lang.Number"/>
+	<field name="landareaexempt" class="java.lang.Number"/>
+	<field name="tdcount" class="java.lang.Number"/>
+	<field name="landavtotal" class="java.lang.Number"/>
+	<field name="improvavtotal" class="java.lang.Number"/>
+	<field name="avtotal" class="java.lang.Number"/>
+	<field name="avtaxable" class="java.lang.Number"/>
+	<field name="avexempt" class="java.lang.Number"/>
+	<field name="landareatotal" class="java.lang.Number"/>
 	<field name="indexno" class="java.lang.String"/>
-	<field name="tdtaxablecount" class="java.math.BigDecimal"/>
-	<field name="tdexemptcount" class="java.math.BigDecimal"/>
+	<field name="tdtaxablecount" class="java.lang.Number"/>
+	<field name="tdexemptcount" class="java.lang.Number"/>
 
-	<variable name="TLANDTAXABLECOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TLANDTAXABLECOUNT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landtaxablecount}]]></variableExpression>
 	</variable>
-	<variable name="TLANDEXEMPTCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TLANDEXEMPTCOUNT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landexemptcount}]]></variableExpression>
 	</variable>
-	<variable name="TLANDAREATAXALBE" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TLANDAREATAXALBE" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landareataxable}]]></variableExpression>
 	</variable>
-	<variable name="TLANDAREAEXEMPT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TLANDAREAEXEMPT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landareaexempt}]]></variableExpression>
 	</variable>
-	<variable name="TLANDAREATOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TLANDAREATOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landareatotal}]]></variableExpression>
 	</variable>
-	<variable name="TTDCOUNT" class="java.lang.Integer" resetType="Report" calculation="Sum">
+	<variable name="TTDCOUNT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{tdcount}]]></variableExpression>
 	</variable>
-	<variable name="TLANDAVTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TLANDAVTOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{landavtotal}]]></variableExpression>
 	</variable>
-	<variable name="TIMPROVAVTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TIMPROVAVTOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{improvavtotal}]]></variableExpression>
 	</variable>
-	<variable name="TAVTOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TAVTOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{avtotal}]]></variableExpression>
 	</variable>
-	<variable name="TAVEXEMPT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TAVEXEMPT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{avexempt}]]></variableExpression>
 	</variable>
-	<variable name="TAVTAXABLE" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TAVTAXABLE" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{avtaxable}]]></variableExpression>
 	</variable>
-	<variable name="TTDTAXABLECOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TTDTAXABLECOUNT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{tdtaxablecount}]]></variableExpression>
 	</variable>
-	<variable name="TTDEXEMPTCOUNT" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+	<variable name="TTDEXEMPTCOUNT" class="java.lang.Number" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{tdexemptcount}]]></variableExpression>
 	</variable>
 		<background>
@@ -507,23 +507,6 @@ Taxable]]></text>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="50"
-						y="0"
-						width="46"
-						height="15"
-						key="textField-35"/>
-					<box leftPadding="3" rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landtaxablecount}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
 						x="96"
 						y="0"
 						width="58"
@@ -537,7 +520,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landexemptcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{landexemptcount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -554,7 +537,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landareataxable}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{landareataxable}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -571,7 +554,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landareaexempt}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{landareaexempt}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -588,7 +571,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landareatotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{landareatotal}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -605,7 +588,7 @@ Taxable]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{tdcount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{tdcount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -622,7 +605,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{landavtotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{landavtotal}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -639,7 +622,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{improvavtotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{improvavtotal}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -656,7 +639,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{avtotal}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{avtotal}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -673,7 +656,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{avexempt}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{avexempt}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -690,7 +673,24 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{avtaxable}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{avtaxable}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="50"
+						y="0"
+						width="46"
+						height="15"
+						key="textField-66"/>
+					<box leftPadding="3" rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{landtaxablecount}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -875,7 +875,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TAVTAXABLE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TAVTAXABLE}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -892,7 +892,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TAVEXEMPT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TAVEXEMPT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -909,7 +909,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TAVTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TAVTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -926,7 +926,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TIMPROVAVTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TIMPROVAVTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -943,7 +943,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDAVTOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TLANDAVTOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -960,7 +960,7 @@ Taxable]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{TTDCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TTDCOUNT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -977,7 +977,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDAREATOTAL}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TLANDAREATOTAL}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -994,7 +994,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDAREAEXEMPT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TLANDAREAEXEMPT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.0000" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1011,7 +1011,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDAREATAXALBE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TLANDAREATAXALBE}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1028,7 +1028,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDEXEMPTCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TLANDEXEMPTCOUNT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1045,7 +1045,7 @@ Taxable]]></text>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TLANDTAXABLECOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TLANDTAXABLECOUNT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1102,7 +1102,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTDTAXABLECOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TTDTAXABLECOUNT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1116,7 +1116,7 @@ Taxable]]></text>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TTDEXEMPTCOUNT}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$V{TTDEXEMPTCOUNT}]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>

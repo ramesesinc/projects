@@ -20,12 +20,13 @@ where v.depositvoucherid = $P{depositvoucherid}
 
 
 [updateChecksForDeposit]
-update checkpayment cp set 
+update cp set 
     cp.depositvoucherid = $P{depositvoucherid}, 
     cp.fundid = (
         select top 1 fund_objid from cashreceiptpayment_noncash 
         where refid = cp.objid and amount = cp.amount 
     ) 
+from checkpayment cp  
 where cp.objid in (
   select nc.refid from cashreceiptpayment_noncash nc 
       inner join cashreceipt c on c.objid = nc.receiptid 

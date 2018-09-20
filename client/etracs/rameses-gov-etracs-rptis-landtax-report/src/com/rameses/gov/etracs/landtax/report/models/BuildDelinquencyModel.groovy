@@ -6,13 +6,16 @@ import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class BuildRPTDelinquencyModel 
+class BuildDelinquencyModel 
 {
     @Binding
     def binding;
     
     @Service('LandTaxBuildDelinquencyService') 
     def svc;
+
+    @Service('PersistenceService') 
+    def persistence;
     
     @Service('DateService')
     def dtSvc;
@@ -33,6 +36,9 @@ class BuildRPTDelinquencyModel
     def msg;
     def errors = [];
     def ignoredErrors = [];
+    def threadCount = 1;
+    def threadCounts = [1,2,3];
+
 
     
     def init(){
@@ -54,7 +60,7 @@ class BuildRPTDelinquencyModel
         entity.putAll(svc.build(entity));
         listHandler.reload();
         
-        task = new BuildDeliquentLedgesTask([
+        task = new BuildDeliquentLedgerTask([
                 svc           : svc,
                 entity        : entity,
                 updateStatus  : updateStatus,
@@ -102,10 +108,30 @@ class BuildRPTDelinquencyModel
         binding.refresh();
     }
     
+    def selectedItem;
+
     def listHandler = [
         getRows  : { entity.barangays ? entity.barangays.size() : 0},
         fetchList : { entity.barangays },
     ] as BasicListModel
+
+
+    void moveToTop() {
+        if (!selectedItem) return;
+        def idx = entity.barangays.indexOf(selectedItem);
+        def brgy = entity.barangays.remove(idx);
+        entity.barangays.add(0, brgy);
+        renumberBarangays();
+        listHandler.reload();
+    }
+
+    void renumberBarangays() {
+        entity.barangays.eachWithIndex{brgy, idx ->
+            brgy.idx = (idx + 1)
+            brgy._schemaname = 'report_rptdelinquency_barangay'
+            persistence.update(brgy);
+        }
+    }
     
     
     def getLedgerCount(){
@@ -129,7 +155,8 @@ class BuildRPTDelinquencyModel
                 svc           : svc,
                 entity        : entity,
                 updateStatus  : updateStatus,
-                onComplete : onComplete
+                onComplete    : onComplete,
+                threadCount   : threadCount,
         ]);
     
         task.start();

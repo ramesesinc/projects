@@ -87,3 +87,125 @@ go
 
 alter table faas alter column prevtdno varchar(1000)
 go 
+
+
+
+create view vw_txn_log 
+as 
+select 
+  distinct
+  u.objid as userid, 
+  u.name as username, 
+  txndate, 
+  ref,
+  action, 
+  1 as cnt 
+from txnlog t
+inner join sys_user u on t.userid = u.objid 
+
+union 
+
+select 
+  u.objid as userid, 
+  u.name as username,
+  t.enddate as txndate, 
+  'faas' as ref,
+  case 
+    when t.state like '%receiver%' then 'receive'
+    when t.state like '%examiner%' then 'examine'
+    when t.state like '%taxmapper_chief%' then 'approve taxmap'
+    when t.state like '%taxmapper%' then 'taxmap'
+    when t.state like '%appraiser%' then 'appraise'
+    when t.state like '%appraiser_chief%' then 'approve appraisal'
+    when t.state like '%recommender%' then 'recommend'
+    when t.state like '%approver%' then 'approve'
+    else t.state 
+  end action, 
+  1 as cnt 
+from faas_task t 
+inner join sys_user u on t.actor_objid = u.objid 
+where t.state not like '%assign%'
+
+union 
+
+select 
+  u.objid as userid, 
+  u.name as username,
+  t.enddate as txndate, 
+  'subdivision' as ref,
+  case 
+    when t.state like '%receiver%' then 'receive'
+    when t.state like '%examiner%' then 'examine'
+    when t.state like '%taxmapper_chief%' then 'approve taxmap'
+    when t.state like '%taxmapper%' then 'taxmap'
+    when t.state like '%appraiser%' then 'appraise'
+    when t.state like '%appraiser_chief%' then 'approve appraisal'
+    when t.state like '%recommender%' then 'recommend'
+    when t.state like '%approver%' then 'approve'
+    else t.state 
+  end action, 
+  1 as cnt 
+from subdivision_task t 
+inner join sys_user u on t.actor_objid = u.objid 
+where t.state not like '%assign%'
+
+union 
+
+select 
+  u.objid as userid, 
+  u.name as username,
+  t.enddate as txndate, 
+  'consolidation' as ref,
+  case 
+    when t.state like '%receiver%' then 'receive'
+    when t.state like '%examiner%' then 'examine'
+    when t.state like '%taxmapper_chief%' then 'approve taxmap'
+    when t.state like '%taxmapper%' then 'taxmap'
+    when t.state like '%appraiser%' then 'appraise'
+    when t.state like '%appraiser_chief%' then 'approve appraisal'
+    when t.state like '%recommender%' then 'recommend'
+    when t.state like '%approver%' then 'approve'
+    else t.state 
+  end action, 
+  1 as cnt 
+from subdivision_task t 
+inner join sys_user u on t.actor_objid = u.objid 
+where t.state not like '%consolidation%'
+
+union 
+
+
+select 
+  u.objid as userid, 
+  u.name as username,
+  t.enddate as txndate, 
+  'cancelledfaas' as ref,
+  case 
+    when t.state like '%receiver%' then 'receive'
+    when t.state like '%examiner%' then 'examine'
+    when t.state like '%taxmapper_chief%' then 'approve taxmap'
+    when t.state like '%taxmapper%' then 'taxmap'
+    when t.state like '%appraiser%' then 'appraise'
+    when t.state like '%appraiser_chief%' then 'approve appraisal'
+    when t.state like '%recommender%' then 'recommend'
+    when t.state like '%approver%' then 'approve'
+    else t.state 
+  end action, 
+  1 as cnt 
+from subdivision_task t 
+inner join sys_user u on t.actor_objid = u.objid 
+where t.state not like '%cancelledfaas%'
+go 
+
+
+
+/*===================================================
+* DELINQUENCY UPDATE 
+====================================================*/
+
+
+alter table report_rptdelinquency_barangay add idx int
+go 
+
+update report_rptdelinquency_barangay set idx = 0 where idx is null
+go 

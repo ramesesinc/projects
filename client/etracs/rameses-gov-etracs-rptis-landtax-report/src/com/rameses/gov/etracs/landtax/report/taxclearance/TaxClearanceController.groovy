@@ -36,20 +36,24 @@ class TaxClearanceController
     def address;
     def selectedItem;
     
+    def reportTypes;
+    
     String title = 'Realty Tax Clearance'
             
                 
     @PropertyChangeListener
     def listener = [
-        'entity.year|entity.qtr|taxpayer' : {
+        'entity.year|entity.qtr|taxpayer|entity.reporttype' : {
             loadProperties()
         },
     ]
     
     def init(){
-        entity = svc.initClearance()
-        entity.certifiedby = var.get('LANDTAX_CERTIFIEDBY');
-        entity.certifiedbytitle = var.get('LANDTAX_CERTIFIEDBY_TITLE');
+        taxpayer = null;
+        reportTypes = svc.getReportTypes();
+        entity = svc.initClearance();
+        entity.certifiedby = paramSvc.getStandardParameter().TREASURERNAME;
+        entity.certifiedbytitle = paramSvc.getStandardParameter().TREASURERTITLE;
         entity.office = 'landtax';
         entity.ordate = dtSvc.getServerDate();
         entity.oramount = toDecimal(var.get('LANDTAX_TAXCLEARANCE_RATE'));
@@ -100,23 +104,24 @@ class TaxClearanceController
     void initTaxpayer(tpay){
         if (!taxpayer || taxpayer.objid != tpay.objid){
             this.taxpayer = tpay;
-            this.address = tpay.address
+            this.address = tpay?.address
         }
         entity.taxpayer = taxpayer;
-        entity.taxpayer.address = address.text;
-        entity.requestedby = taxpayer.name;
-        entity.requestedbyaddress = address.text;
-        binding.refresh('entity.taxpayer.*|entity.requested.*')
+        entity.taxpayer?.address = address?.text;
+        entity.requestedby = taxpayer?.name;
+        entity.requestedbyaddress = address?.text;
+        binding.refresh('entity.taxpayer.*|entity.requested.*|taxpayer')
         loadProperties();
     }
     
     def getLookupLedger(){
         return InvokerUtil.lookupOpener('rptledger:lookup', [
-            taxpayerid : entity.taxpayer.objid,
+            taxpayerid : entity.taxpayer?.objid,
             state      : 'APPROVED',
                 
             onselect : { ledger ->
                 if (! entity.items.find{it.faasid == ledger.faasid}) {
+                    validateLedger(ledger);
                     ledger.refid   = ledger.objid
                     ledger.barangay = ledger.barangay.name;
                     ledger.rptcertificationid = entity.objid;
@@ -126,6 +131,60 @@ class TaxClearanceController
                 }
             },
         ])
+    }
+    
+    void validateLedger(ledger) {
+        def msg = '';
+        
+        if (!equalTaxpayerId(ledger)) {
+            if (!entity.items) {
+                msg = 'The Owner of the selected ledger is not equal to Taxpayer.\n';
+                msg += 'Proceeding will replace the Taxpayer that you selected with the ledger owner.\n\nContinue?'
+                if (MsgBox.confirm(msg)) {
+                    taxpayer = null;
+                    initTaxpayer(ledger.taxpayer)
+                } else {
+                    return;
+                }
+            } else  {
+                msg = 'The selected ledger Owner account #' + ledger.taxpayer.entityno + ' is not equal to the Taxpayer account #' + entity.taxpayer.entityno + '.\n';
+                msg += 'Verify that this ledger is currently owned by this taxpayer and if this \n';
+                msg += 'is the case, kindly request the Assessor to modify the Property Owner \n';
+                msg += 'of the FAAS before including this ledger in the certification.';
+                throw new Exception(msg);
+            }
+        }
+        
+        validateState(ledger);
+        
+        if ('fullypaid' == entity.reporttype.name) {
+            if (ledger.lastyearpaid < entity.year || 
+                (ledger.lastyearpaid == entity.year && ledger.lastqtrpaid < entity.qtr)) 
+            {
+                if (entity.qtr == 4) {
+                    msg = 'Ledger is not fully paid for the year ' + entity.year + '.'
+                } else {
+                    def qtrsuffixes = ['', 'st', 'nd', 'rd', 'th'];
+                    def sqtr = entity.qtr + qtrsuffixes[entity.qtr] + 'qtr';
+                    msg = 'Ledger is not fully paid for ' + sqtr + ' of ' + entity.year + '.'
+                }
+                throw new Exception(msg);
+            }
+        } else if ('zerovalue' == entity.reporttype.name) {
+            if (ledger.totalav > 0) {
+                throw new Exception('Ledger assessed value is not zero.');
+            }
+        } else if ('newdiscovery' == entity.reporttype.name) {
+            if (ledger.effectivityyear != entity.effectivityyear) {
+                throw new Exception('Ledger effectivity year msut be equal to ' + entity.effectivityyear);
+            }
+        } else if ('exempt' == entity.reporttype.name) {
+            if (ledger.taxable == 1 || ledger.taxable == true) {
+                throw new Exception('Ledger must be exempted.');
+            }
+        } else  {
+            throw new Exception('Clearance type ' + entity.reporttype.title + ' is not yet supported.')
+        }
     }
     
     def listHandler = [
@@ -138,16 +197,25 @@ class TaxClearanceController
         loadProperties();
     }
     
+    void validateState(ledger){
+        if (ledger.state == 'CANCELLED') {
+            throw new Exception('Ledger has already been cancelled.')
+        }
+        if (ledger.state != 'APPROVED') {
+            throw new Exception('Ledger is not yet approved.')
+        }
+    }
     
     void loadProperties(){
-        if (addoption == 'all'){
+        entity.items = []
+        if (entity.reporttype.name == 'fullypaid' && addoption == 'all'){
             entity.items = svc.getClearedLedgers(entity)
             entity.items.each{
                 it.rptcertificationid = entity.objid;
                 it.included = true;
             }
-            listHandler.load();
         }
+        listHandler?.load();
     }
     
     
@@ -205,5 +273,13 @@ class TaxClearanceController
         catch(e){
             return 0.0;
         }
+    }
+    
+    def equalTaxpayerId(ledger) {
+        return ledger.taxpayer.objid == entity.taxpayer.objid;
+    }
+    
+    def replaceTaxpayer(ledger) {
+        
     }
 }

@@ -16,7 +16,7 @@
 
         <invoker type="formActions" caption="Update Cashbreakdown" action="updateCashBreakdown" 
                  visibleWhen="#{entity.state == 'OPEN'}" 
-                 role="ADMIN"/>
+                 role="LIQUIDATING_OFFICER"/>
         
         <invoker type="formActions" caption="Post" action="post" visibleWhen="#{entity.state == 'OPEN'}"/>
         <invoker type="formActions" caption="Post To JEV" action="post" visibleWhen="#{entity.state == 'POSTED'}"/>        

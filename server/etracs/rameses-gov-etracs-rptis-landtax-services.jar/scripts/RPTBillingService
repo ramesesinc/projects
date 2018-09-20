@@ -292,6 +292,7 @@ public class RPTBillingService
 		if (!bill.billto && bill.taxpayer){
 			bill.billto = [:]
 			bill.billto.objid = bill.taxpayer.objid
+			bill.billto.entityno = bill.taxpayer.entityno
 			bill.billto.name = bill.taxpayer.name
 			if (!(bill.taxpayer.address instanceof String)){
 				bill.billto.address = bill.taxpayer.address.text
@@ -321,10 +322,13 @@ public class RPTBillingService
 
 		if (bill._forpayment && bill._forpayment == true){
         	rptledger.pay = true
-        	rptledger.billitems = tmpbill.billitems 
+        	rptledger.billitems = tmpbill.billitems
+        	rptledger.billitems.each {
+        		it.amount = numSvc.round(it.amount)
+        	}
         	rptledger.postingitems = buildPostingItems(tmpbill)
         	rptledger.shares = tmpbill.shares
-        	
+
         	def itemsTotal = numSvc.roundA(rptledger.items.sum{ (it.total ? it.total : 0) }, 2)
         	def postItemsTotal = numSvc.roundA(rptledger.postingitems.sum{ (it.total ? it.total : 0) }, 2)
         	def sharesTotal = 0.0
@@ -396,10 +400,10 @@ public class RPTBillingService
 		} 
 	}
 
-
 	def buildItemsForReport(bill){
 		bill.totals = [total:0.0]
 		def items = []
+		def minyear = bill.items.year.min() 
 		def groups = bill.items.groupBy{ it.year + '-' + (it.qtr ? it.qtr : 1) + ':' + it.taxdifference }
 		groups.each{k, list ->
 			def first = list.first() 
@@ -408,7 +412,7 @@ public class RPTBillingService
 			item.qtr = first.qtr 
 			item.originalav = first.rptledgerfaas.assessedvalue 
 			item.taxdifference = first.taxdifference
-			item.period = buildPeriod(list)
+			item.period = buildPeriod(bill, list, minyear)
 			item.total = 0.0 
 			item.flag = ''
 			list.each{
@@ -436,16 +440,38 @@ public class RPTBillingService
 		return items
 	}
 
-	def buildPeriod(list){
-		def period = list.first().year 
-		def minqtr = list.qtr.min()
-		def maxqtr = list.qtr.max()
-		if ((minqtr && minqtr != 1) || (maxqtr && maxqtr != 4)){
-			if (minqtr == maxqtr){
-				period += '-' + minqtr 
+	def buildPeriod(bill, list, minyear){
+		def firstitem = list.first()
+		def period = firstitem.year 
+
+		if (firstitem.qtr == null) {
+			def startqtr = (bill.rptledger.lastqtrpaid + 1)
+			def endqtr = (firstitem.year == bill.billtoyear ? bill.billtoqtr : 4)
+			if (endqtr == startqtr) endqtr = ''
+			if (firstitem.year == bill.rptledger.lastyearpaid) {
+				period += '-' + startqtr + '' +  endqtr
+			} else if (firstitem.year == bill.billtoyear){
+				if (bill.billtoqtr != 4){
+					period += '-1' + (bill.billtoqtr == 1 ? '' : bill.billtoqtr)
+				}
 			}
-			else {
-				period += '-' + minqtr + '' + maxqtr
+		} else if (!firstitem.qtrly  && firstitem.year == minyear) {
+			def startqtr = (bill.rptledger.lastqtrpaid == 4 ? 1 : bill.rptledger.lastqtrpaid + 1)
+			if (startqtr != 4) {
+				period += '-' + startqtr + '4'
+			} else {
+				period += '-4'
+			}
+		} else {
+			def minqtr = list.qtr.min()
+			def maxqtr = list.qtr.max()
+			if ((minqtr && minqtr != 1) || (maxqtr && maxqtr != 4)){
+				if (minqtr == maxqtr){
+					period += '-' + minqtr 
+				}
+				else {
+					period += '-' + minqtr + '' + maxqtr
+				}
 			}
 		}
 		return period 

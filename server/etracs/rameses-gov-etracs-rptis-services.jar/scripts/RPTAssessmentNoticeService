@@ -71,7 +71,7 @@ class RPTAssessmentNoticeService
 		notice.txndate  = dtSvc.serverDate
 		notice.taxpayerid = notice.taxpayer.objid
 		notice.taxpayername = notice.taxpayer.name
-		notice.taxpayeraddress = notice.taxpayer.address.text
+		notice.taxpayeraddress = (notice.taxpayer.address instanceof String ? notice.taxpayer.address : notice.taxpayer.address.text)
 		updateNoticeInfo(notice)
 		notice.assessmentyear = notice.items[0].effectivityyear
 		
@@ -138,6 +138,11 @@ class RPTAssessmentNoticeService
 		em.update(notice)
 		return notice
 	}	
+
+  @ProxyMethod
+  public def getApprovedFaasList(taxpayerid){
+    return  em.getApprovedFaasList([taxpayerid:taxpayerid])
+  }	
 
 	def getNextSeries(notice){
 		def cy = dtSvc.serverYear 

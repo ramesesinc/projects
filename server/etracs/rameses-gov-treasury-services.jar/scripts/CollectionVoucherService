@@ -145,7 +145,7 @@ class CollectionVoucherService  {
 
 
 	@ProxyMethod 
-	public def getReportData( params ) {
+	public def getReportData( params ) { 
 		return params; 
 	}
 }

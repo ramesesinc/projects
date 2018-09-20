@@ -91,6 +91,11 @@ public class BillingCashReceiptInterceptor {
 		def e = evt.args[0];
 		def res= evt.result;
 		def rct = res.receipt;
+		if ( rct.txnmode == 'CAPTURE' ) {
+			// captured receipts will not be process below 
+			return; 
+		}
+
 		rct.txntype = rct.collectiontype?.handler;
 		if ( !rct.txntype ) throw new Exception("'txntype parameter' is required in BillingCashReceiptInterceptor.voidPayment"); 
 

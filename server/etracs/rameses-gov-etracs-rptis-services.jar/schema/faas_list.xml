@@ -2,18 +2,18 @@
 	<element tablename="faas_list">
 		<field name="objid" primary="true"/>
 		<field name="state" />
-		<field name="tdno" />
+		<field name="tdno" searchable="true" caption="TD No."/>
 		<field name="utdno" />
 		<field name="datacapture" type="boolean" />
-		<field name="titleno" />
+		<field name="titleno"  searchable="true" caption="Title No."/>
 		<field name="txntype_objid" />
 		<field name="taxpayer_objid" />
-		<field name="owner_name" />
+		<field name="owner_name"  searchable="true" caption="Owner"/>
 		<field name="owner_address" />
 		<field name="administrator_name" />
 		<field name="administrator_address" />
-		<field name="pin" />
-		<field name="displaypin" />
+		<field name="pin"  searchable="true" caption="PIN" />
+		<field name="displaypin"  searchable="true" caption="PIN" />
 		<field name="ry" />
 		<field name="classification_objid" />
 		<field name="classcode" />
@@ -21,14 +21,15 @@
 		<field name="effectivityqtr" type="integer" />
 		<field name="cancelreason" />
 		<field name="cancelledbytdnos" />
-		<field name="cadastrallotno" />
+		<field name="cadastrallotno"  searchable="true" caption="Lot No." />
 		<field name="blockno" />
 		<field name="surveyno" />
 		<field name="prevtdno" />
-		<field name="totalareaha" type="decimal" />
-		<field name="totalareasqm" type="decimal" />
-		<field name="totalmv" type="decimal" />
-		<field name="totalav" type="decimal" />
+		<field name="barangay" caption="Barangay" searchable="true" indexed="true" />
+		<field name="totalareaha" type="decimal" caption="Area (ha)" />
+		<field name="totalareasqm" type="decimal" caption="Area (sqm)" />
+		<field name="totalmv" type="decimal" caption="Market Value"/>
+		<field name="totalav" type="decimal" caption="Assessed Value" />
 		<field name="publicland" type="boolean" />
 		<field name="taskid" />
 		<field name="taskstate" />

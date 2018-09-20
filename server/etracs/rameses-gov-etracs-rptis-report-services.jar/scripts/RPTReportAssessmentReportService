@@ -79,7 +79,7 @@ class RPTReportAssessmentReportService
 		updateBrgyInfo(brgys, em.getPreceedingList(params))
 		updateBrgyInfo(brgys, em.getCurrentList(params))
 		updateBrgyInfo(brgys, em.getCancelledList(params))
-		updateBrgyInfo(brgys, em.getEndingList(params))
+		summarizeEnding(brgys)
 		setZeroValuesToNull(brgys)
 		return brgys 
 	}
@@ -106,11 +106,19 @@ class RPTReportAssessmentReportService
 		updateLiftBrgyInfo(result, em.getPreceedingLiftList(params))
 		updateLiftBrgyInfo(result, em.getCurrentLiftList(params))
 		updateLiftBrgyInfo(result, em.getCancelledLiftList(params))
-		updateLiftBrgyInfo(result, em.getEndingLiftList(params))
+		summarizeEnding(result)
 		setZeroValuesToNull(result)
 		return result 
 	}
 
+	void summarizeEnding(list) {
+		list.each {
+			it.endtaxcnt = util.isNull(it.pretaxcnt,0) + util.isNull(it.currtaxcnt,0) - util.isNull(it.cancelledtaxcnt,0)
+			it.endtaxvalue = util.isNull(it.pretaxvalue,0) + util.isNull(it.currtaxvalue,0) - util.isNull(it.cancelledtaxvalue,0)
+			it.endexemptcnt = util.isNull(it.preexemptcnt,0) + util.isNull(it.currexemptcnt,0) - util.isNull(it.cancelledexemptcnt,0)
+			it.endexemptvalue = util.isNull(it.preexemptvalue,0) + util.isNull(it.currexemptvalue,0) - util.isNull(it.cancelledexemptvalue,0)
+		}
+	}
 
 	void setZeroValuesToNull(brgys){
 		brgys.each{brgy ->

@@ -4,12 +4,11 @@
     allowDelete="#{entity &amp;&amp; entity.state == 'DRAFT'}"
 >
     <invokers>
-        <invoker folderid="/explorer/txn/landtax/list" 
-                 action="init" caption="Compromise Agreements" 
-                 target="window" index="200"  role="SHARED" />
-        <invoker folderid="/home/landtax" 
-                 action="init" caption="Compromise Agreements" 
-                 target="window" index="1005"  role="SHARED" />
+        <invoker folderid="/menucategory/landtax/mgmt" 
+                action="init" caption="Compromise Agreements" 
+                target="window" 
+                index="10"  
+                role="SHARED" permission="rptcompromise.list"/>
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.RPTCompromiseListModel" />
     <pages>

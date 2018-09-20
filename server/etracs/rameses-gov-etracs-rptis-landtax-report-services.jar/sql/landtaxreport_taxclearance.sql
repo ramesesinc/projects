@@ -3,9 +3,9 @@ SELECT * FROM rpttaxclearance WHERE objid = $P{objid}
 
 [insertTaxClearance]
 INSERT INTO rpttaxclearance 
-	(objid, year, qtr)
+	(objid, year, qtr, reporttype)
 VALUES 
-	($P{objid}, $P{year}, $P{qtr})
+	($P{objid}, $P{year}, $P{qtr}, $P{reporttypename})
 
 
 [getItems]

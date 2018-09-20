@@ -12,7 +12,12 @@ public class SplitLedgerItem implements RuleActionHandler {
 		def amtpaid = item.amtpaid 
 		def fullint = item.interest 
 		def fulldisc = item.discount
-		def intrate = numSvc.round(item.interest / item.amtdue)
+
+		if (item.amtdue == null || item.amtdue == 0){
+			return;
+		}
+
+		def intrate = numSvc.round(item.discount / item.amtdue)
 		def discrate = numSvc.round(item.discount / item.amtdue)
 
 		drools.retract(item)

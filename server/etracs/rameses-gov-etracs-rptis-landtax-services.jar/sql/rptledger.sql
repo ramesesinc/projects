@@ -4,6 +4,7 @@ SELECT
 FROM rptledger rl 
     INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
     INNER JOIN barangay b ON rl.barangayid = b.objid 
+    LEFT JOIN faas f on rl.faasid = f.objid 
 WHERE 1=1
 ${fixfilters}
 ${filters}
@@ -19,3 +20,15 @@ where not exists(
 	and year = rptledger_avdifference.year 
 	and taxdifference = 1 
 )
+
+
+[findLastPayment]
+select 
+	cro.year, 
+	sum(cro.basic) as basic,
+	sum(cro.sef) as sef 
+from cashreceiptitem_rpt_online cro 
+where cro.rptledgerid = $P{objid}
+and cro.year = $P{year}
+group by year 
+

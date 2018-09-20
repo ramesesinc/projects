@@ -1,0 +1,21 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+          schemaName="rpt_sales_data" 
+          windowTitle="Miscellaneous Items"
+          cols="seller.name,buyer.name,saledate,amount,faas.barangay,faas.tdno,faas.displaypin,faas.totalmv,faas.totalav,faas.titleno,faas.totalareasqm" 
+          hiddenCols="faas.state"
+          orderBy="saledate desc" 
+          autoResize="false" 
+          allowCreate="false" 
+          allowDelete="false" 
+          allowOpen="false" 
+          allowPrint="false" 
+          customFilter="faas.state in('CURRENT','CANCELLED')"
+>
+    <invokers>
+        <invoker folderid="/home/rpt/monitoring" 
+                 action="init"  
+                 caption="Sales Data"  
+                 target="window" 
+                 role="TAXMAPPER,APPRAISER,RECOMMENDER,APPROVER"  />
+    </invokers>
+</workunit>

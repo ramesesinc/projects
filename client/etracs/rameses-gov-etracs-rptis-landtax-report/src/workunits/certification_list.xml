@@ -1,6 +1,14 @@
 <workunit extends="wtemplates/ListController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/landtax/list" action="initLandTaxClearances" caption="Tax Clearances"  target="window" role="LANDTAX,ADMIN" />
+        <invoker folderid="/explorer/txn/landtax/list" 
+            action="initLandTaxClearances" 
+            caption="Tax Clearances"  
+            target="window" role="LANDTAX,ADMIN" />
+
+        <invoker folderid="/menucategory/landtax/mgmt" 
+                action="initLandTaxClearances" 
+                caption="Tax Clearances"  
+                target="window" role="LANDTAX,ADMIN" index="5"/>
     </invokers>
     <code>
         import com.rameses.rcp.common.*

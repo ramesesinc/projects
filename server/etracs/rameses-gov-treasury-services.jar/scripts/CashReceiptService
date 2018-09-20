@@ -177,7 +177,7 @@ class CashReceiptService  {
 			p.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS";
 		} else { 
 			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
-		}
+		} 
 
 		// data compliant to previous versions 
 		p.totalnoncash = p.totalcheck; 

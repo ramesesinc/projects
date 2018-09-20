@@ -72,8 +72,16 @@ SELECT
 	pc.name AS classification,
 	case when lal.objid is not null then lal.code else ptl.code end AS actualusecode,
 	case when lal.objid is not null then lal.name else ptl.name end AS actualuse,
-	SUM(case when pc.name = 'AGRICULTURAL' then r.areaha else r.areasqm end ) AS area,
-	case when pc.name = 'AGRICULTURAL' then 'HA' else 'SQM' end as areatype,
+	SUM(case 
+			when pc.name = 'AGRICULTURAL' then r.areaha 
+			 when pc.name like 'MINERAL%' then r.areaha 
+			else r.areasqm 
+		end) AS area,
+	case 
+		when pc.name = 'AGRICULTURAL' then 'HA'
+		when pc.name LIKE 'MINERAL%' then 'HA'
+		else 'SQM' 
+	end as areatype,
 	SUM(r.marketvalue) AS marketvalue,
 	r.assesslevel,
 	SUM(r.assessedvalue) AS assessedvalue,

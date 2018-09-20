@@ -24,6 +24,9 @@ class RPTReceiptService
 
 	@Service('RPTUtil')
 	def util
+
+	@Service('RPTLedgerService')
+	def ledgerSvc
 	
 	@Service('Var')
 	def var 
@@ -121,35 +124,24 @@ class RPTReceiptService
 		def payments = em_rptpayment.select('objid,refid,voided,fromyear,fromqtr').find([receiptid:receipt.objid]).list()
 		payments.each{pmt ->
 			if (!util.isTrue(pmt.voided)){
-				def ledger = em_rptledger.select('objid,taxpayer.objid,taxpayer.name,taxpayer.address').find([objid:pmt.refid]).first()
-				
-				//revert ledger item payment 
-				def paiditems = em_rptpayment_item.select('year,revtype,amount').find([parentid:pmt.objid]).list()
-				paiditems.each{
-					def findparam = [parentid: pmt.refid, year: it.year, revtype: it.revtype]
-					em_rptledger_item.find(findparam).update([amtpaid:'{amtpaid - :amount}'], [amount:it.amount])
-				}
-
-				//reset ledger last year/qtr paid 
-				def paidinfo = [:]
-				paidinfo.lastyearpaid = (pmt.fromqtr == 1 ? pmt.fromyear - 1 : pmt.fromyear)
-				paidinfo.lastqtrpaid = (pmt.fromqtr == 1 ? 4 : pmt.fromqtr - 1)
-				paidinfo.nextbilldate = null 
-				em_rptledger.find([objid:pmt.refid]).update(paidinfo)
 
 				//void payment
 				em_rptpayment.find([objid:pmt.objid]).update([voided:true])
 
-				try{
-					def bill = billSvc.initBill()
-					bill.taxpayer = ledger.taxpayer 
-					bill.billto = ledger.taxpayer 
-					bill.ledgers = [ledger]
-					billSvc.generateBill(bill)
-				}
-				catch(e){
-					//ignore 
-				}
+				def ledger = em_rptledger.select('objid,tdno,fullpin,taxpayer.objid,taxpayer.name,taxpayer.address').find([objid:pmt.refid]).first()
+
+				ledgerSvc.fixLedger([
+					objid: ledger.objid,
+					tdno: ledger.tdno,
+					fullpin: ledger.fullpin,
+					taxpayer: ledger.taxpayer,
+					lastyearpaid: (pmt.fromqtr == 1 ? pmt.fromyear - 1 : pmt.fromyear),
+					lastqtrpaid: (pmt.fromqtr == 1 ? 4 : pmt.fromqtr - 1),
+					basicpaid : 0.0,
+					sefpaid: 0.0,
+				]) 
+
+				
 			}
 		}
 	}	
@@ -227,6 +219,8 @@ class RPTReceiptService
 		def priorities = postingitems.priority.unique().sort()
 		def yrs = postingitems.year.unique().sort();
 
+		def toqtr = 4
+
 		for (int idx = 0; idx < yrs.size(); idx++){
 			if (partialamt <= 0) break;
 
@@ -241,13 +235,15 @@ class RPTReceiptService
 					if (partialamt <= 0) break;
 
 					def items = qtritems.findAll{it.priority == priorities[i]}
-					def itemtotal = items.total.sum()
+					def itemtotal = numSvc.round(items.total.sum())
 					if (partialamt >= itemtotal){
 						partialamt -= itemtotal 
 						rptledger.postingitems += items 
 						continue
 					}
 					else if (partialamt > 0){
+						def partialledqtr = items.first().qtr 
+						toqtr = partialledqtr
 						distributePartial(partialamt, items)
 						rptledger.postingitems += items 
 						partialamt = 0
@@ -256,12 +252,17 @@ class RPTReceiptService
 				}
 			}
 		}
+
 		rptledger.shares = billSvc.getShares(bill)
 		def lastitem = rptledger.postingitems.last()
 		rptledger.toyear = lastitem.year 
-		rptledger.toqtr = (lastitem.qtr ? lastitem.qtr: 4)
+		rptledger.toqtr = toqtr 
 		rptledger.partialled = rptledger.postingitems.find{it.partialled == true} != null 
 		rptledger.total = rptledger.postingitems.total.sum()
+
+		rptledger.billitems.each {
+    		it.amount = numSvc.round(it.amount)
+    	}
 		return rptledger
 	}
 
@@ -459,7 +460,7 @@ class RPTReceiptService
 
 			for (int i = 0; i < items.size() - 1; i++){
 				def item = items[i]
-				def partial = partialamt * numSvc.round(item.amount / totalamount)
+				def partial = numSvc.round(partialamt * numSvc.round(item.amount / totalamount))
 				distributePartialProportionally(partial, item) 
 				runningpartial -= partial 
 			}
@@ -467,9 +468,8 @@ class RPTReceiptService
 		}
 	}
 
-
 	void distributePartialProportionally(partial, item){
-		def totaldue = item.amount + item.interest 
+		def totaldue = numSvc.round(item.amount + item.interest )
 		def discrate = numSvc.round(item.discount / item.amount)
 
 		def amtpartial = numSvc.round(partial * (item.amount / totaldue))
@@ -484,7 +484,7 @@ class RPTReceiptService
 		}
 		item.interest = intpartial
 		item.discount = discpartial
-		item.total = item.amount + item.interest - item.discount
+		item.total = numSvc.round(item.amount + item.interest - item.discount)
 		item.amtdue = item.total 
 		item.partialled = true 
 	}
@@ -506,48 +506,5 @@ class RPTReceiptService
 		}
 	}	
 
-
-//	/*==========================================================
-//	* aggregate revenues by itemaccount 
-//	* and add payables by tag 
-//	*==========================================================*/
-//	void buildReceiptItems(receipt, revenues, payables){
-//		def ZERO = new BigDecimal('0.0');
-//		receipt.items = [] 
-//		receipt.sharing = []
-//
-//		def groups = revenues.groupBy{ it.item.objid }
-//		groups.each{k, list ->
-//			def rctitem = createReceiptItem(receipt, list.first())
-//			rctitem.amount = list.sum{ it.amount ? it.amount : ZERO }
-//			def shares = buildReceiptShares(receipt, rctitem, payables)
-//			if (shares){
-//				rctitem.amount += shares.sum{ it.amount ? it.amount : ZERO }
-//			}
-//			receipt.items << rctitem
-//			receipt.sharing += shares 
-//		}
-//	}
-
-	///*==========================================================
-	//* shares are based on the item tag 
-	//* and summarized by itemaccount 
-	//*==========================================================*/
-	//def buildReceiptShares(receipt, rctitem, payables){
-		//def shares = []
-		//def itempayables = payables.findAll{it.item.tag == rctitem.item.tag}
-		//if (itempayables){
-			//def paygrps = itempayables.groupBy{it.item.objid}
-			//paygrps.each{k, list->
-				//def share = [:]
-				//share.receiptid = receipt.objid 
-				//share.refitem = [objid:rctitem.item.objid]
-				//share.payableitem = list.first().item 
-				//share.amount = list.sum{it.amount ? it.amount : ZERO}
-				//shares << share 
-			//}
-		//}
-		//return shares 
-	//}	
 }
 

@@ -13,10 +13,12 @@ class RPTSalesDataService extends ActiveCrudService
 
 
 	void beforeCreate(entity){
+		entity.faas = [objid: entity.objid]
 		validate(entity);
 	}
 
 	void beforeUpdate(entity){
+		entity.faas = [objid: entity.objid]
 		validate(entity)
 	}
 

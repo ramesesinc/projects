@@ -25,6 +25,11 @@ class FieldInspectionBldgController extends com.rameses.gov.etracs.rpt.report.As
     
     String reportName = 'com/rameses/gov/etracs/rpt/report/field_inspection_bldg.jasper';
     
+    def orderTypes = [
+        [id: 'pin', title: 'PIN'],
+        [id: 'name', title: 'Last Name'],
+    ]
+    
     void buildReportData(entity, asyncHandler){
         svc.generateFieldInspectionDataBuilding(entity, asyncHandler);
     }
@@ -34,7 +39,8 @@ class FieldInspectionBldgController extends com.rameses.gov.etracs.rpt.report.As
             return [
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', expression:'#{item.name}']),
                 new FormControl( "combo", [caption:'Barangay', name:'entity.barangay', required:true, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
-                new FormControl( "text", [caption:'Section', name:'entity.section', preferredSize:'50,19']),
+                new FormControl( "text", [caption:'Section', name:'entity.section', required:true, preferredSize:'50,19']),
+                new FormControl( "combo", [caption:'Order By', name:'entity.ordertype', required:true, items:'orderTypes', expression:'#{item.title}', allowNull:false,  preferredSize:'0,19']),
             ]    
         },
    ] as FormPanelModel;

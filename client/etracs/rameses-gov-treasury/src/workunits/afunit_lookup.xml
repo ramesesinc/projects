@@ -6,7 +6,7 @@
         <invoker type="afunit_collection:lookup" caption="Lookup AF" action="init" 
                  customFilter="usetype='collection' " tag="lookup" 
                  cols="itemid,title,unit,qty,saleprice" 
-                 hiddenCols="formtype,denomination,serieslength"/>
+                 hiddenCols="formtype,denomination,serieslength,interval"/>
     </invokers>
     
    

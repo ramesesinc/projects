@@ -3,6 +3,7 @@
        
        <!-- used in revenue sharing rules lookup -->
        <invoker type="mainitemaccount:lookup" caption="Lookup Main Item Account" action="init" target="popup"
+        customFilter="state = 'ACTIVE' AND " 
         cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="MAIN"/>
        
        <invoker type="mainrevenueaccount:lookup" caption="Lookup Main Revenue Account" action="init" target="popup"
@@ -32,20 +33,19 @@
        <invoker type="revenueitem:lookup" caption="Lookup Revenue" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="REVENUE"/>
        
-       <!-- used for looking up items in cash receipt -->
-       <!--
-       <invoker type="cashreceiptitem:lookup" caption="Lookup Revenue" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="valuetype,defaultvalue,fund.objid,fund.code" 
-            tag="CASHRECEIPT"/>
-       -->
+       <!-- used by collection type and collection group -->
+       <invoker type="parentitemaccount:lookup" caption="Lookup Parent Account" 
+                action="init" target="popup" 
+                cols="code,title,fund.title,type" 
+                customFilter="state='ACTIVE' AND parentid IS NULL AND org.objid IS NULL AND type IN ('REVENUE','NONREVENUE','PAYABLE')"
+                hiddenCols="fund.objid" />
        
-       <invoker type="parentaccount:lookup" caption="Lookup Parent Account" 
+       <invoker type="genericaccount:lookup" caption="Lookup Generic Account" 
                 action="init" target="popup"
                 cols="code,title,fund.title,type" 
-                customFilter="parentid IS NULL AND type IN ('REVENEUE','NONREVENUE','PAYABLE')"
+                customFilter=" state='ACTIVE' AND generic=1 "
                 hiddenCols="fund.objid" />
     </invokers> 
    
     <code class="com.rameses.enterprise.treasury.models.ItemAccountLookupModel" />
-    
 </workunit>

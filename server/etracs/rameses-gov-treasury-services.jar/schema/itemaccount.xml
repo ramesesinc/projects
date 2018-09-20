@@ -16,6 +16,7 @@
 		<field name="defaultvalue" defaultValue="0" datatype="integer"/>
 
 		<field name="org_name" />
+		<field name="generic" />
 
 		<complex name="org" ref="sys_org" jointype="many-to-one" includefields="objid,code,name" required="false">
 			<key field="org_objid" target="objid"/>

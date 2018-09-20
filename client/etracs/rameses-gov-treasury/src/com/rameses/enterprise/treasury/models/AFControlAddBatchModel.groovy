@@ -20,6 +20,7 @@ class AFControlAddBatchModel  {
     //this is the parent;
     def entry;
     def handler;
+    int interval;
     
     @FieldValidator
     def validators = [
@@ -42,12 +43,12 @@ class AFControlAddBatchModel  {
     def listener = [
         "entry.qty" : { o->
             if(refitem.afunit.formtype == 'serial') {
-                if(entry.startseries) entry.endseries =   formatSeries( Integer.parseInt(entry.startseries) + (o * refitem.afunit.qty) - 1) ; 
+                if(entry.startseries) entry.endseries = formatSeries( Integer.parseInt(entry.startseries) + (o * refitem.afunit.qty * interval) - 1) ; 
             }
             if( entry.startstub ) entry.endstub = entry.startstub + o - 1;
         },
         "entry.startseries" : { o->
-            entry.endseries = formatSeries( Integer.parseInt(o) + (entry.qty * refitem.afunit.qty ) - 1 ); 
+            entry.endseries = formatSeries( Integer.parseInt(o) + (entry.qty * refitem.afunit.qty * interval ) - 1 ); 
         },
         "entry.startstub" : { o->
             entry.endstub = o + entry.qty - 1;
@@ -55,6 +56,8 @@ class AFControlAddBatchModel  {
     ];
     
     void init() {
+        interval = 1;
+        if(refitem.afunit.interval) interval = refitem.afunit.interval;
         entry = [:];
         entry.aftxnitemid = refitem.objid;
         entry.qty = refitem.qty - refitem.qtyserved;

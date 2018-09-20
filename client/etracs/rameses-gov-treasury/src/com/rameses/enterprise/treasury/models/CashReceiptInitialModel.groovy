@@ -80,7 +80,7 @@ class CashReceiptInitialModel  {
         loadCollectionTypes();
     }
     
-    def lookupCollectorAF( param ) { 
+    def lookupCollectorAF( param, def role ) { 
         param.active = 1;
         def env = OsirisContext.env; 
         def p = [_schemaname: 'af_control']; 
@@ -96,10 +96,15 @@ class CashReceiptInitialModel  {
             afControlSvc.activateSelectedControl([ objid: o.objid ]);
             selAF = o;             
         }
-        Modal.show('cashreceipt:select-af', p ); 
+        def strc = "cashreceipt:select-af";
+        if( role == "subcollector" ) {
+            strc = "cashreceipt:select-af:subcollector";
+        }
+        Modal.show(strc, p ); 
         return selAF;
     }
     
+    /*
     def lookupSubCollectorAF( param ) {
         param.active = 1; 
 
@@ -120,13 +125,14 @@ class CashReceiptInitialModel  {
         Modal.show('cashreceipt:select-af:subcollector', p ); 
         return selAF;
     }
-    
+    */
+   
     def initReceipt(def entity) {
         def af = null ;
         if ( !subcollectorMode ) {
-            af = lookupCollectorAF( entity ); 
+            af = lookupCollectorAF( entity, null ); 
         } else {
-            af = lookupSubCollectorAF( entity ); 
+            af = lookupCollectorAF( entity, "subcollector" ); 
         }
         
         if ( af == null ) return null; 
@@ -166,7 +172,6 @@ class CashReceiptInitialModel  {
         opener.target = "self";
         return opener;
     }    
-    
     
     def loadBarcode() {
         def h = { o->

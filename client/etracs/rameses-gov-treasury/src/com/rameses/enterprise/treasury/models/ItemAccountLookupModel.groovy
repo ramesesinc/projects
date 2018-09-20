@@ -20,6 +20,7 @@ class ItemAccountLookupModel extends CrudLookupModel {
         if( queryFilter ) m._queryFilter = queryFilter;
     }
     
+    /*
     public def getCustomFilter() {
         def s = [ " state = 'ACTIVE' "];
         def parm = [:];
@@ -43,7 +44,7 @@ class ItemAccountLookupModel extends CrudLookupModel {
         }
         return [s.join(" AND "), parm ];
     }
-    
+    */
    
     
 }

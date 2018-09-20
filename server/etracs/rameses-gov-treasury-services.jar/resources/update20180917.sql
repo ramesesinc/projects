@@ -38,7 +38,8 @@ CREATE TABLE eftpayment (
   CONSTRAINT fk_eftpayment_fund FOREIGN KEY (fundid) REFERENCES fund (objid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+ALTER TABLE itemaccount ADD COLUMN generic INT(11);
+update itemaccount SET generic = 0;
 
 
 

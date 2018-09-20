@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="liquidation:reports" caption="Liquidation Report By Revenue Item" action="initReport" target="self" index="5"/>
+        <invoker type="collectionvoucher:reports" caption="Liquidation Report By Revenue Item" action="initReport" target="self" index="5"/>
         
         <invoker type="formActions" caption="Back" action="_close" mnemonic="b" shortcut="ctrl B" icon="images/toolbars/arrow_left.png"/>
     </invokers>

@@ -21,52 +21,52 @@ class CheckPaymentListInterceptor {
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'checkpayment' }")
-	public void loadList(def evt) {
+	public void beforeGetList(def evt) {
 		def o = evt.args[0];
 
 		//o.debug = true;
 		if( !o.node?.id ) return;
 		
-		def str = "";
+		def qarr = []; 
 		def m = [:]
+
+		//display only checks issued by this collector
+		if( o._tag == "COLLECTOR") {
+			qarr << "collector.objid = :collectorid";
+			m.collectorid = env.USERID;
+		}
+		else if( o._tag == "SUBCOLLECTOR") {
+			qarr << "subcollector.objid = :userid";
+			m.userid = env.USERID;
+		}
 
 		switch(o.node.id) {
 			case "all":
 				break;
 
 			case "unused":
-				str = " amtused = 0 ";
+				qarr << " amtused = 0 ";
 				break;
 
 			case "partial":
-				str = " (amtused > 0) and (amtused <> amount) ";
+				qarr << " (amtused > 0 and amtused <> amount) ";
 				break;	
 
 			case "fordeposit":
-				str = " state = 'FOR-DEPOSIT' ";
+				qarr << " state = 'FOR-DEPOSIT' ";
 				break;	
 
 			case "undeposited":
-				str = " (amtused = amount) AND (depositslipid IS NULL) ";
+				qarr << " (amtused = amount AND depositslipid IS NULL) ";
 				break;
 
 			case "deposited":
-				str = "NOT( depositslipid IS NULL )";
+				qarr << " depositslipid IS NOT NULL ";
 				break;
 		}
 
-		//display only checks issued by this collector
-		if( o._tag == "COLLECTOR") {
-			if( str ) str += " AND ";
-			str = "collector.objid = :collectorid";
-			m.collectorid = env.USERID;
-		}
-		else if( o._tag == "SUBCOLLECTOR") {
-			if( str ) str += " AND ";
-			str = "subcollector.objid = :userid";
-			m.userid = env.USERID;
-		}
-
+		
+		def str = qarr.join(' AND '); 
 		if( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	
 			o.where[1].putAll( m );

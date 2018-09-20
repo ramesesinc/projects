@@ -166,11 +166,6 @@ class RemittanceModel extends CrudFormModel {
             }
         } 
         data.cashbreakdown = list; 
-
-        println '** print form data'         
-        data.each{
-            println '> '+ it; 
-        }
         return data; 
     } 
     

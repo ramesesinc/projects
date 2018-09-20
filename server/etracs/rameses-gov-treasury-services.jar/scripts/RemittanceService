@@ -144,6 +144,13 @@ class RemittanceService  {
 		remo = draftRem_db.find([ objid: pp.objid ]).first(); 
 		if ( !remo?.objid ) throw new Exception('Invalid draft remittance id. Please recreate the transaction.'); 
 
+		def afcheck = draftRem_db.findDelegatedAFSummary([ remittanceid: remo.objid ]); 
+		if ( afcheck ) { 
+			def errmsg = 'There are still delegated receipts that needs to be remitted.'; 
+			errmsg += '\n Please check AF-'+ afcheck.formno +' Stub #'+ afcheck.stubno +' ('+ afcheck.fromseries +' - '+ afcheck.toseries +')'; 
+			throw new Exception( errmsg ); 
+		}
+
 		def m = [ objid: remo.objid ]; 
 		m.dtposted = dateSvc.getServerDate();
 		m.controldate = remo.remittancedate; 

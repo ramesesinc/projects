@@ -209,8 +209,9 @@ class RPTLedgerService
                     faashistory = getTaxableFaases(ledger)
                 }
                 ledger.faases = faashistory.findAll{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) }
-                if (!ledger.faases) throw new Exception('No FAAS history defined for the year ' + yr + '.')
-                postLedgerItem(ledger, yr)
+                if (ledger.faases){
+                    postLedgerItem(ledger, yr)
+                }
             }
         }
     }
@@ -264,6 +265,13 @@ class RPTLedgerService
 
 
     @ProxyMethod
+    public def fixLedgerFaas(ledgerfaas){
+        em_rptledger_faas.save(ledgerfaas)
+        em_rptledger_item.find([parentid:ledgerfaas.rptledgerid]).delete()
+        return ledgerfaas
+    }
+
+    @ProxyMethod
     public def fixLedger( info ) {
         util.required('Ledger ID', info.objid)
         util.required('TD No.', info.tdno)
@@ -285,7 +293,13 @@ class RPTLedgerService
 
         // post new ledger items
         em_rptledger_item.find([parentid:info.objid, taxdifference:false]).delete()
-        postLedgerItems(ledger, dtSvc.serverYear )
+        def cy = dtSvc.serverYear
+        def yr = (cy <= info.lastyearpaid ? info.lastyearpaid : cy)
+        def haspartial = (info.basicpaid > 0 || info.sefpaid > 0)
+        if (haspartial && info.lastqtrpaid == 4) {
+            yr += 1
+        }
+        postLedgerItems(ledger, yr)
         applyPartialPayment(info)
 
         info._remarks = 'Last Year Paid: ' + info.lastyearpaid + ' Last Qtr Paid: ' + info.lastqtrpaid 
@@ -671,7 +685,7 @@ class RPTLedgerService
         param.parentid = info.objid 
         param.year = (info.lastqtrpaid == 4 ? info.lastyearpaid + 1 : info.lastyearpaid)
         def where = ''' parentid = :parentid and year = :year and revtype in ('basic', 'sef') and taxdifference = 0 '''
-        def items = em_rptledger_item.select('objid,revtype,amount').where(where, param).list()
+        def items = em_rptledger_item.select('objid,revtype,year,amount').where(where, param).list()
 
         items.each{
             def partialamt = 0.0 
@@ -692,6 +706,17 @@ class RPTLedgerService
         }
         def qtrs = (info.lastqtrpaid == 4 ? 0 : info.lastqtrpaid) 
         def amtpaid = partialamt +  qtrlyamt * qtrs
+
+        def pmt = em_rptpayment.where('refid = :objid and :year >= fromyear and :year <= toyear and voided=0', [objid:info.objid, year: item.year])
+                            .orderBy('dtposted desc')
+                            .first()
+
+        if (pmt) {
+            def partial = em_rptpayment_item.select('amount').find([parentid: pmt.objid, year: item.year, partialled:1, revtype: item.revtype]).first() 
+            if (partial) {
+                amtpaid += partial.amount
+            }
+        }
         em_rptledger_item.find([objid:item.objid]).update([amtpaid:amtpaid])
     }
 
@@ -798,8 +823,9 @@ class RPTLedgerService
 
         for (int yr = fromyear; yr <= toyear; yr++){
             ledger.faases = faashistory.findAll{ yr >= it.fromyear && (yr <= it.toyear || it.toyear == 0) }
-            if (!ledger.faases) throw new Exception('No FAAS history defined for the year ' + yr + '.')
-            postLedgerItem(ledger, yr)
+            if (ledger.faases) {
+                postLedgerItem(ledger, yr)
+            }
         }
 
         ledger.remove('faases')

@@ -1,7 +1,10 @@
 <workunit extends="wtemplates/ListController.xml" serviceName="PropertyPayerListService" entityName="propertypayer" formName="propertypayer:list">
     <invokers>
-        <invoker folderid="/explorer/txn/landtax/list" caption="Property Payers" target="window" index="250"  role="SHARED" />
-        <invoker folderid="/home/landtax" caption="Property Payers" target="window" index="1006"  role="SHARED" />
+        <invoker folderid="/menucategory/landtax/payer" 
+                caption="List of Payers" 
+                 target="window" index="10"  
+                 role="SHARED" permission="propertypayer.list" />
+                
         <invoker type="quick_launcher" code="PP00" caption="Property Payers" target="window" index="250"  role="SHARED" />
     </invokers>
 </workunit>

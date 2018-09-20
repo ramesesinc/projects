@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="quick_launcher" code="RPTI01" action="create" caption="Realty Tax Incentive" role="LANDTAX" />
-        <invoker folderid="/home/landtax" action="create" caption="Issue Tax Incentive" role="LANDTAX" index="40"  />
+        <invoker folderid="/menucategory/landtax/txn" 
+                action="create" caption="Issue Tax Incentive" 
+                role="LANDTAX" permission="rptincentive.create" 
+                index="30" />
+        
         <invoker type="rpttaxincentive:create" action="init" caption="Realty Tax Incentive" role="LANDTAX" />
         <invoker type="rpttaxincentive:open" action="open" caption="Realty Tax Incentive" role="LANDTAX" />
     </invokers>

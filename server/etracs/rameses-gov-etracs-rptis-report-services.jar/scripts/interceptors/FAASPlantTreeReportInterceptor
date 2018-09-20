@@ -3,7 +3,7 @@ import com.rameses.common.*;
 import com.rameses.util.*;
 import com.rameses.services.extended.*;
 
-class FaasPlantTreeReportInterceptor
+class FAASPlantTreeReportInterceptor
 {
 	@ActiveDB('faasreport_planttree')
 	def em
@@ -20,7 +20,10 @@ class FaasPlantTreeReportInterceptor
 	@After(pattern="FAASReportService.getReportData", eval="#{result.rpu.rputype=='planttree'}")
 	public void buildReport(evt){
 		def faas = evt.result
-		faas.rpu += em.findInfoById(faas.rpu)
+		def rpu = em.findInfoById(faas.rpu)
+		if (rpu) {
+			faas.rpu.putAll(rpu)
+		}
 		buildPlantTreeAppraisals(faas)
 		buildAdjustments(faas)
 		buildAssessments(faas)

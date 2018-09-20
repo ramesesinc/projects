@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="landtax">
+    <invokers>
+        <invoker type="home.action" 
+                 caption="Land Tax" icon="home/icons/landtax.png"
+                 visibleWhen="#{self.hasChildren('menucategory/landtax')==true}" 
+                 index="1" action="init"/>
+    </invokers> 
+</workunit>

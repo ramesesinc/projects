@@ -16,7 +16,9 @@ FROM (
 		r.totalareaha,
 		r.totalareasqm,
 		null as dtoccupied,
-		null AS kind 
+		null AS kind,
+		rp.pin, 
+		r.suffix
 	FROM faas f
 		INNER JOIN rpu r ON f.rpuid = r.objid 
 		INNER JOIN landrpu l ON r.objid = l.objid 
@@ -35,14 +37,16 @@ FROM (
 		r.rputype, 
 		r.fullpin, 
 		r.objid,
-		r.suffix AS parcel,
+		concat(rp.parcel, '-', r.suffix) AS parcel,
 		f.owner_name,
 		f.owner_address,
 		f.tdno,
 		r.totalareaha,
 		r.totalareasqm,
 		b.dtoccupied,
-		bk.name AS kind 
+		bk.name AS kind,
+		rp.pin, 
+		r.suffix
 	FROM faas f
 		INNER JOIN rpu r ON f.rpuid = r.objid 
 		INNER JOIN bldgrpu b ON r.objid = b.objid 
@@ -54,7 +58,7 @@ FROM (
 	  AND rp.section = $P{section}
 	  AND f.state = 'CURRENT'
 ) t
-ORDER BY t.fullpin
+${orderby}
 
 
 

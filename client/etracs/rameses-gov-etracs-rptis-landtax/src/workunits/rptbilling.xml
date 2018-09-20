@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
+        <!-- 
         <invoker folderid="/explorer/txn/landtax" 
                  action="init"  caption="Generate Tax Bill"
                  role="LANDTAX" permission="rptbilling.create" 
@@ -10,11 +11,16 @@
                  action="init"  caption="Generate Tax Bill"
                  role="LANDTAX" permission="rptbilling.create" 
                  index="10" />
+        -->
             
+        <invoker folderid="/menucategory/landtax/txn" 
+                 action="init"  caption="Generate Tax Bill"  
+                 role="LANDTAX" permission="rptbilling.create" 
+                target="window" index="0" />
+        
         <invoker type="quick_launcher" 
                  code="RPTBILL" action="init"  caption="Generate Tax Bill"  
                 role="LANDTAX" permission="rptbilling.create" />
-        
         
         <invoker type="rptbill:preview" action="preview"  caption="Real Property Tax Bill" target="popup" />
         <invoker type="rptbill:print" action="print"  caption="Real Property Tax Bill" target="popup" />

@@ -173,6 +173,7 @@ WHERE r.taxable = 1
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
+  and not exists(select * from faas_restriction where parent_objid = f.objid and state = 'ACTIVE')  
   ${filter}
 GROUP BY pc.objid, pc.name, pc.orderno
 ORDER BY pc.orderno  
@@ -215,6 +216,7 @@ WHERE r.taxable = 0
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
+  and not exists(select * from faas_restriction where parent_objid = f.objid and state = 'ACTIVE')  
   ${filter}
 GROUP BY e.objid, e.name, e.orderno 
 ORDER BY e.orderno  
@@ -259,6 +261,7 @@ WHERE r.taxable = 1 and lr.idleland = 1
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
+  and not exists(select * from faas_restriction where parent_objid = f.objid and state = 'ACTIVE')  
   ${filter}
 GROUP BY pc.objid, pc.name, pc.orderno
 ORDER BY pc.orderno  
@@ -302,6 +305,7 @@ WHERE r.taxable = 0 and lr.idleland = 1
 		(f.dtapproved < $P{enddate} AND f.state = 'CURRENT' ) OR 
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
+  and not exists(select * from faas_restriction where parent_objid = f.objid and state = 'ACTIVE')  
   ${filter}
 GROUP BY e.objid, e.name, e.orderno 
 ORDER BY e.orderno  
@@ -352,6 +356,7 @@ WHERE (
 		(f.dtapproved < $P{enddate} AND f.canceldate >= $P{enddate} AND f.state = 'CANCELLED' )
   )
   and fr.state = 'ACTIVE'
+  and r.taxable = 1   
   ${filter}
 GROUP BY frt.name, frt.idx, pc.objid, pc.name, pc.orderno 
 ORDER BY frt.idx, pc.orderno 

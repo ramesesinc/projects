@@ -92,12 +92,18 @@ class AFTxnInterceptor {
 	public void beforeRemoveEntity( evt ) { 
 		def param = evt.args[0]; 
 		if ( !param?.objid ) return; 
+		def cnt = afcd.find([ aftxnid: param.objid ]).select("cnt:{COUNT(*)}").val();
+		if( cnt > 0 )
+			throw new Exception("Cannot remove this transaction. Please revert the accountable forms issued first");
 
+		//this should not matter anymore.	
+		/*
 		def m = [_schemaname: 'af_control_detail'];
 		afcd.find([ aftxnid: param.objid ]).select('objid').list().each{
 			m.putAll( it ); 
 			persistSvc.removeEntity( m ); 
 		} 
+		*/
 	} 
 
 

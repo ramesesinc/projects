@@ -8,7 +8,7 @@
 		<field name="generatedby_name" />
 		<field name="generatedby_title" />
 
-		<complex name="barangays" ref="report_rptdelinquency_barangay" jointype="one-to-many" orderBy="barangay.name">
+		<complex name="barangays" ref="report_rptdelinquency_barangay" jointype="one-to-many" orderBy="idx,barangay.name">
 			<key field="objid" target="parentid"/>
 		</complex>
 	</element>

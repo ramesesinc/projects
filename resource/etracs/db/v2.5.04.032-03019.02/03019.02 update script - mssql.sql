@@ -78,3 +78,21 @@ update examiner_finding set
 where inspectedby_objid is null 
 and notedby like 'MIRASOL%GASPAR%'
 go 
+
+
+
+
+
+
+
+/*======================================================
+*
+*  TAX CLEARANCE UPDATE
+*
+======================================================*/
+
+alter table rpttaxclearance add reporttype varchar(15)
+GO 
+
+update rpttaxclearance set reporttype = 'fullypaid' where reporttype is null
+go 	

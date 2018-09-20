@@ -20,6 +20,7 @@ from (
 			 and $P{year} >= fromyear 
 			 and ($P{year} <= toyear or toyear = 0)
 			and state = 'APPROVED' 
+			and taxable = 1 
 		 ) as totalav
 	from rptledger rl 
 		inner join entity e on rl.taxpayer_objid = e.objid 
@@ -29,10 +30,9 @@ from (
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
 	and rl.taxable = 1 
-	and rl.totalav > 0
-	and f.state = 'CURRENT'
 	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 
 )x
+where x.totalav > 0
 order by x.pin, x.suffix 
 

@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
-class BuildDeliquentLedgesTask implements Runnable
+class BuildDeliquentLedgerTask implements Runnable
 { 
     def threadPool;
     def svc;

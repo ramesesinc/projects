@@ -23,7 +23,7 @@
         <field name="totalav" type="decimal" caption="A.V." width="100"/>
         <field name="totalareaha" type="decimal"  caption="Area (ha)" width="90" />
         <field name="taxable" required="true" type="boolean" caption="Taxable" />
-        <field name="prevtdno" searchable="true" caption="Previous TD No."/>
+        <field name="prevtdno" searchable="true" caption="Previous TD No." indexed="true" />
         <field name="titleno" searchable="true" caption="Title No."  width="60"/>
         <field name="totalareasqm" expr="totalareaha * 10000" caption="Area (sqm)" width="70" type="decimal" />
         <field name="ismanual" expr="case when faasid is null then 'M' else null end" caption="" width="30"/>
@@ -33,7 +33,7 @@
                 <key field="objid" target="rptledgerid" />
         </complex>
         <complex name="taxpayer" ref="entity" jointype="many-to-one" required="true"
-            includefields="name,address.text">
+            includefields="entityno,name,address.text">
                 <key field="taxpayer_objid" target="objid" />
         </complex>
         <complex name="barangay" ref="barangay" jointype="many-to-one" required="false"

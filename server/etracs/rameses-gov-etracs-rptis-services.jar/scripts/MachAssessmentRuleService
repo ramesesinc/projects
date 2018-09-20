@@ -34,6 +34,9 @@ public class MachAssessmentRuleService
     @Service('RPTUtil')
     def util
 
+    @DataContext('propertyclassification')
+    def em_classification
+
 	
 	String RULESET = "machassessment";
 
@@ -56,10 +59,11 @@ public class MachAssessmentRuleService
         }
 
 		rpu.assessments.each{
+			it.classification = em_classification.select('objid,code,name').find([objid: it.classification.objid]).first()
 			it.actualuse = em.findActualUseInfo(it.actualuse)
 		}
 
-		return rpu;
+		return rpu
 	}
 
 	def createFacts(request){

@@ -93,7 +93,6 @@ WHERE rl.objid IN (
             or (exists(select * from rptledger_item where parentid = rl.objid))
      )
 )
-and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 ORDER BY rl.tdno  
 
 

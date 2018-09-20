@@ -10,6 +10,9 @@
                  index="10"/>
         
         <!-- Buttons -->
+        <invoker type="formActions" caption="Reports" name="popupReports" 
+                 visibleWhen="#{entity.state != 'OPEN' }" category="collectionvoucher:reports" index="-1"/>        
+        
         <invoker type="formActions" caption="Change Liq Officer" action="changeLiqOfficer" 
                  visibleWhen="#{entity.state == 'OPEN'}" 
                  role="ADMIN"/>

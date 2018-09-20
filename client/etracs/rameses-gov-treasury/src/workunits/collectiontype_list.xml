@@ -3,12 +3,15 @@
     <invokers>
         <invoker folderid="/explorer/master/treasury" caption="Collection Types" 
                  action="init" role="MASTER" permission="collectiontype.view" 
-                 cols="name,title,formno,handler,barcodekey,org.name,fund.title"/>
+                 cols="name,title,formno,handler,barcodekey,fund.title"/>
     </invokers>
     
+    <!--
     <code class="com.rameses.enterprise.treasury.models.CollectionTypeListModel" />
-    
+    -->
+    <!--
     <pages>
         <page name="queryForm" template="com.rameses.enterprise.treasury.views.CollectionTypeQuery"/>
     </pages>    
+    -->
 </workunit>

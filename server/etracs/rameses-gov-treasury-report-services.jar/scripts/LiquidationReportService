@@ -7,20 +7,17 @@ import java.text.DecimalFormat;
 
 class LiquidationReportService  {
 
-	@ActiveDB('liquidation')
+	@DataContext('collectionvoucher')
 	def liqEm;
 
 	@ActiveDB("liquidationreport")
 	def liqreport; 
 
-	@ActiveDB('fund')
+	@DataContext('fund')
 	def fund_em;	
 
 	@Service("NumberService")
 	def numSvc;
-
-	@Service("LiquidationService")
-	def liqSvc
 
 	@Service('RAAFReportService') 
 	def raafSvc; 	
@@ -37,41 +34,45 @@ class LiquidationReportService  {
 	@ProxyMethod 
 	def getReportOptions( params ) {
 		return [
-			funds : liqreport.getLiquidationFundlist([ liquidationid: params.objid ]) 
+			funds : liqreport.getCollectionFundlist([ collectionvoucherid: params.objid ]) 
 		]; 
 	}
 
 	@ProxyMethod 
-	def getFundlist( liquidationid ) {
-		return liqreport.getLiquidationFundlist([ liquidationid: liquidationid ]);
+	def getFundlist( collectionvoucherid ) {
+		return liqreport.getCollectionFundlist([ collectionvoucherid: collectionvoucherid ]);
 	}
 
 	@ProxyMethod 
 	def getRCDReportData( params ) {
-		def liquidation = liqreport.findLiquidationInfo( params ); 
-		if( !liquidation ) throw new Exception("Could not open liquidation with objid " + params.liquidationid ); 
+		def data = liqreport.findCollectionVoucherFund( params ); 
+		if( !data ) throw new Exception("Could not open Collection Voucher with objid " + params.collectionvoucherid ); 
 
+		data.txnno = data.controlno; 
+		data.dtposted = data.controldate; 
+
+		params.fundfilter = "''";
 		if ( params._INCLUDE_SUBFUND == true ) { 
-			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
+			def list = fund_em.find([ parentid: params.fundid ]).collect{ it.objid }   
 			if ( list ) { 
 				list << params.fundid; 
 				params.fundfilter = "'"+ list.join("','") +"'"; 
 			} 
 		} 
 
-		liquidation.remittances = liqreport.getRCDRemittances( params );
-		liquidation.collectionsummaries = liqreport.getRCDCollectionSummary( params );
+		data.remittances = liqreport.getRCDRemittances( params );
+		data.collectionsummaries = liqreport.getRCDCollectionSummary( params );
 
 		def allow_af = var.liquidation_report_show_accountable_forms.toString().toLowerCase(); 
 		if ( !allow_af.matches('false|0')) { 
-			def afinventories = raafSvc.getRAAFByLiquidation( params ); 		
-			liquidation.remittedforms = afinventories.findAll{ it.formtype=='serial' } 
-			liquidation.nonserialremittances = afinventories.findAll{ it.formtype=='cashticket' } 
+			// def afinventories = raafSvc.getRAAFByLiquidation( params ); 		
+			// data.remittedforms = afinventories.findAll{ it.formtype=='serial' } 
+			// data.nonserialremittances = afinventories.findAll{ it.formtype=='cashticket' } 
 		}
 
-		liquidation.otherpayments = liqreport.getRCDOtherPayments( params );
-		liquidation.amountinwords = numSvc.doubleToWords( liquidation.amount ); 
-		return liquidation;
+		data.otherpayments = liqreport.getRCDOtherPayments( params );
+		data.amountinwords = numSvc.doubleToWords( data.amount ); 
+		return data;
 	}
 
 	@ProxyMethod 
@@ -118,40 +119,42 @@ class LiquidationReportService  {
 
 	@ProxyMethod 
 	def getReportByFund( params ) {
-		if ( !params.fundid ) params.fundid = '%'; 
+		def data = liqEm.find([ objid: params.collectionvoucherid ]).first();  
+		if( !data ) throw new Exception("Could not open Collection Voucher with objid " + params.collectionvoucherid ); 
 
-		def data = liqEm.read([ objid: params.liquidationid ]); 
-		if( !data ) throw new Exception("Could not open liquidation with objid " + params.liquidationid ); 
-
+		def funds = [ params.fundid.toString() ]; 
 		if ( params._INCLUDE_SUBFUND == true ) { 
-			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			def list = fund_em.find([ parentid: params.fundid ]).collect{ it.objid }   
+			if ( list ) funds.addAll( list ); 
 		} 
+		params.fundfilter = "'"+ funds.join("','") +"'"; 
 
 		data.receipts = liqreport.getReceipts( params ); 
 		if ( !data.receipts ) throw new Exception('No record(s) found                  ');
 
 		data.acctsummaries = liqreport.getReceiptItemAccounts( params );  
 		data.user = [name: env.FULLNAME, title: env.JOBTITLE]; 
+		data.txnno = data.controlno;
 		return data;
 	}
 
 	@ProxyMethod 
 	def generateReportByRevenueItem( liq, fund ) {
-		def data = liq.clone();
+		def data = liqEm.find([ objid: liq.objid ]).first();  
+		if( !data ) throw new Exception("Could not open Collection Voucher with objid " + liq.objid ); 
 
-		def params = [liquidationid: data.objid,  fundid: (fund? fund.fundid : '%')]; 
-		if ( params._INCLUDE_SUBFUND == true ) { 
-			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
+		def params = [ collectionvoucherid: data.objid,  fundid: fund.fundid ]; 
+		params.fundfilter = ""; 
+
+		if ( fund?.fundid ) {
+			def funds = [ fund.fundid.toString() ]; 
+			if ( params._INCLUDE_SUBFUND == true ) { 
+				def list = fund_em.find([ parentid: params.fundid ]).collect{ it.objid }   
+				if ( list ) funds.addAll( list ); 
 			} 
-		} 
-
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
+		}
+		
 		data.acctsummaries = liqreport.getRevenueItemSummaryByFund( params ); 
 		if( ! data.acctsummaries ) throw new Exception("No record(s) found ");
 

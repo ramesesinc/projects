@@ -1,4 +1,4 @@
-[getLiquidationFundlist]
+[getCollectionFundlist]
 select * from ( 
   select 
     fund_objid as fundid, fund_title as fundname, 
@@ -8,44 +8,41 @@ select * from (
       when fund_objid='SEF' then 2       
       else 100   
     end as fundsortorder 
-  from liquidation_fund 
-  where liquidationid = $P{liquidationid} 
-)xx 
-order by xx.fundsortorder, xx.fundname 
+  from collectionvoucher_fund 
+  where parentid = $P{collectionvoucherid} 
+)t1  
+order by t1.fundsortorder, t1.fundname 
 
 
-[findLiquidationInfo]
+[findCollectionVoucherFund]
 select 
-  l.txnno, l.dtposted, l.liquidatingofficer_name, l.liquidatingofficer_title, 
-  lc.fund_title, lc.cashier_name, su.jobtitle as cashier_title, lc.amount, 
-  l.cashbreakdown
-from liquidation l  
-  inner join liquidation_fund lc on lc.liquidationid = l.objid 
-  inner join sys_user su on su.objid = lc.cashier_objid  
-where l.objid = $P{liquidationid} 
-  and lc.fund_objid = $P{fundid} 
+  cv.controlno, cv.controldate, 
+  cv.liquidatingofficer_name, cv.liquidatingofficer_title, 
+  cvf.fund_objid, cvf.fund_title, cvf.amount, cv.cashbreakdown 
+from collectionvoucher cv  
+  inner join collectionvoucher_fund cvf on cvf.parentid = cv.objid 
+where cv.objid = $P{collectionvoucherid}  
+  and cvf.fund_objid = $P{fundid} 
 
 
 [getRCDRemittances]
 select 
-  collectorname, dtposted, 
-  txnno, sum(amount) as amount  
+  collectorid, collectorname, dtposted, txnno, sum(amount) as amount  
 from ( 
   select 
-      r.collector_name as collectorname, r.txnno, 
-      convert(DATE, r.remittancedate) as dtposted, rf.amount 
-  from liquidation_remittance lr 
-    inner join remittance r on lr.objid = r.objid 
-    inner join remittance_fund rf ON r.objid = rf.remittanceid  
-  where lr.liquidationid = $P{liquidationid} 
+      r.collector_objid as collectorid, r.collector_name as collectorname, 
+      r.controlno as txnno, convert(DATE, r.controldate) as dtposted, rf.amount 
+  from remittance r 
+    inner join remittance_fund rf ON rf.remittanceid = r.objid   
+  where r.collectionvoucherid = $P{collectionvoucherid}   
     and rf.fund_objid in ( 
-      select objid from fund where objid like $P{fundid} 
+      select objid from fund where objid like $P{fundid}  
       union 
       select objid from fund where objid in (${fundfilter}) 
     ) 
-)xx 
-group by collectorname, dtposted, txnno 
-order by collectorname, dtposted, txnno 
+)t1  
+group by collectorid, collectorname, dtposted, txnno 
+order by collectorid, collectorname, dtposted, txnno 
 
 
 [getRCDRemittancesSummary]
@@ -59,7 +56,7 @@ from (
   from liquidation_remittance lr 
     inner join remittance r on lr.objid = r.objid 
     inner join remittance_fund rf ON r.objid = rf.remittanceid  
-  where lr.liquidationid = $P{liquidationid} 
+  where lr.liquidationid = $P{collectionvoucherid} 
     and rf.fund_objid in ( 
       select objid from fund where objid like $P{fundid} 
       union 
@@ -73,22 +70,22 @@ order by collectorname, dtposted, txnno
 [getRCDCollectionSummary]
 select * from ( 
   select  
-    lcf.fund_title as particulars, lcf.amount as amount, 
+    cvf.fund_title as particulars, cvf.amount, 
     case 
-        when fund_objid='GENERAL' then 1 
-        when fund_objid='SEF' then 2 
-        when fund_objid='TRUST' then 3 
+        when cvf.fund_objid='GENERAL' then 1 
+        when cvf.fund_objid='SEF' then 2 
+        when cvf.fund_objid='TRUST' then 3 
         else 100  
     end as fundsortorder
-  from liquidation_fund  lcf 
-  where lcf.liquidationid = $P{liquidationid} 
-    and lcf.fund_objid in ( 
+  from collectionvoucher_fund cvf  
+  where cvf.parentid = $P{collectionvoucherid} 
+    and cvf.fund_objid in ( 
       select objid from fund where objid like $P{fundid} 
       union 
       select objid from fund where objid in (${fundfilter}) 
     ) 
-)xx 
-order by xx.fundsortorder, xx.particulars 
+)t1 
+order by t1.fundsortorder, t1.particulars 
 
 
 [getRCDRemittedForms]
@@ -150,44 +147,39 @@ order by formno, sortseries
 
 [getRCDOtherPayments]
 select 
-  pc.reftype as paytype, pc.particulars, cri.amount as amount 
-from ( 
-  select lr.* from liquidation_remittance  lr 
-    inner join remittance_cashreceipt rc on lr.objid = rc.remittanceid 
-  where lr.liquidationid = $P{liquidationid}  
-    and rc.objid not in (select receiptid from cashreceipt_void where receiptid=rc.objid) 
-)xx 
-  inner join cashreceiptpayment_noncash pc on xx.objid = pc.receiptid 
-  inner join cashreceipt cr on xx.objid = cr.objid 
-  inner join cashreceiptitem cri on cr.objid = cri.receiptid 
-  inner join itemaccount ri on cri.item_objid = ri.objid 
-where ri.fund_objid in ( 
+  nc.reftype as paytype, nc.particulars, nc.amount 
+from remittance r 
+  inner join cashreceipt c on c.remittanceid = r.objid 
+  inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+  left join cashreceipt_void v on v.receiptid = c.objid 
+where r.collectionvoucherid = $P{collectionvoucherid}  
+  and v.objid is null 
+  and nc.fund_objid in ( 
     select objid from fund where objid like $P{fundid} 
     union 
     select objid from fund where objid in (${fundfilter}) 
   ) 
+order by nc.refdate, nc.refno 
 
 
 [getRevenueItemSummaryByFund]
 select 
-  ia.fund_title as fundname, cri.item_objid as acctid, cri.item_title as acctname,
+  fund.objid as fundid, fund.title as fundname, 
+  cri.item_objid as acctid, cri.item_title as acctname,
   cri.item_code as acctcode, sum( cri.amount ) as amount 
 from ( 
-  select rc.* from liquidation_remittance  lr 
-    inner join remittance_cashreceipt rc on lr.objid = rc.remittanceid 
-  where lr.liquidationid = $P{liquidationid}  
-    and rc.objid not in (select receiptid from cashreceipt_void where receiptid=rc.objid) 
-)xx 
-  inner join cashreceipt c on xx.objid = c.objid 
-  inner join cashreceiptitem cri on c.objid = cri.receiptid 
-  inner join itemaccount ia on cri.item_objid = ia.objid 
-where ia.fund_objid in ( 
-    select objid from fund where objid like $P{fundid} 
-    union 
-    select objid from fund where objid in (${fundfilter}) 
-  )  
-group by ia.fund_title, cri.item_objid, cri.item_title, cri.item_code 
-order by ia.fund_title, cri.item_code, cri.item_title 
+  select c.objid, c.remittanceid 
+  from remittance r 
+    inner join cashreceipt c on c.remittanceid = r.objid 
+    left join cashreceipt_void v on v.receiptid = c.objid 
+  where r.collectionvoucherid = $P{collectionvoucherid} 
+    and v.objid is null 
+)t1  
+  inner join cashreceiptitem cri on cri.receiptid = t1.objid 
+  inner join fund on fund.objid = cri.item_fund_objid 
+where 1=1 ${fundfilter}  
+group by fund.objid, fund.title, cri.item_objid, cri.item_title, cri.item_code 
+order by fund.title, cri.item_code, cri.item_title 
 
 
 [getFundSummaries]
@@ -252,53 +244,43 @@ where pc.account_fund_objid = $P{fundid}
 
 [getReceipts]
 select 
-  cr.formno as afid, cr.receiptno as serialno, cr.receiptdate as txndate, 
-  ai.fund_title as fundname, cr.remarks as remarks, 
-  case when xx.voided=0 then cr.paidby else '***VOIDED***' END AS payer,
-  case when xx.voided=0 then cri.item_title else '***VOIDED***' END AS particulars,
-  case when xx.voided=0 then cr.paidbyaddress else '' END AS payeraddress,
-  case when xx.voided=0 then cri.amount else 0.0 END AS amount 
+  t1.*, fund.title as fundname, fund.objid as fundid, 
+  case when t1.voided=0 then t1.paidby else '***VOIDED***' END AS payer,
+  case when t1.voided=0 then cri.item_title else '***VOIDED***' END AS particulars,
+  case when t1.voided=0 then t1.paidbyaddress else '' END AS payeraddress,
+  case when t1.voided=0 then cri.amount else 0.0 END AS amount 
 from ( 
-  select remc.*, 
-    (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
-  from liquidation_remittance lrem 
-    inner join remittance_cashreceipt remc on lrem.objid = remc.remittanceid 
-  where lrem.liquidationid = $P{liquidationid}  
-)xx 
-  inner join cashreceipt cr on xx.objid = cr.objid 
-  inner join cashreceiptitem cri on cr.objid = cri.receiptid 
-  inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid in ( 
-    select objid from fund where objid like $P{fundid} 
-    union 
-    select objid from fund where objid in (${fundfilter}) 
-  ) 
-order by afid, serialno, payer 
+  select 
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided, 
+    c.objid, c.remittanceid, c.formno as afid, c.receiptno as serialno, c.receiptdate as txndate, 
+    c.paidby, c.paidbyaddress, c.remarks     
+  from remittance r 
+    inner join cashreceipt c on c.remittanceid = r.objid 
+  where r.collectionvoucherid = $P{collectionvoucherid}
+)t1  
+  inner join cashreceiptitem cri on cri.receiptid = t1.objid 
+  inner join fund on fund.objid = cri.item_fund_objid 
+where fund.objid in (${fundfilter})
+order by t1.afid, t1.serialno 
 
 
 [getReceiptItemAccounts]
 select 
-  ai.fund_title as fundname, cri.item_objid as acctid, 
-  cri.item_title as acctname, cri.item_code as acctcode, 
-  sum( cri.amount ) as amount 
+  ia.fund_objid as fundid, ia.fund_title as fundname, 
+  ia.objid as acctid, cri.item_title as acctname, 
+  cri.item_code as acctcode, sum( cri.amount ) as amount 
 from ( 
-  select remc.*, 
-    (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
-  from liquidation_remittance lrem 
-    inner join remittance_cashreceipt remc on lrem.objid = remc.remittanceid 
-  where lrem.liquidationid = $P{liquidationid} 
-)xx 
-  inner join cashreceipt cr on xx.objid = cr.objid 
-  inner join cashreceiptitem cri on cr.objid = cri.receiptid 
-  inner join itemaccount ai on cri.item_objid = ai.objid 
-where ai.fund_objid in ( 
-    select objid from fund where objid like $P{fundid} 
-    union 
-    select objid from fund where objid in (${fundfilter}) 
-  ) 
-and xx.voided=0
+  select c.objid, c.remittanceid 
+  from remittance r 
+    inner join cashreceipt c on c.remittanceid = r.objid 
+    left join cashreceipt_void v on v.receiptid = c.objid 
+  where r.collectionvoucherid = $P{collectionvoucherid}
+    and v.objid is null 
+)t1  
+  inner join cashreceiptitem cri on cri.receiptid = t1.objid 
+  inner join itemaccount ia on ia.objid = cri.item_objid 
+where ia.fund_objid in (${fundfilter}) 
 group by 
-  ai.fund_title, cri.item_objid,  
+  ia.fund_objid, ia.fund_title, ia.objid, 
   cri.item_title, cri.item_code 
-order by fundname, acctcode 
-
+order by ia.fund_title, cri.item_code 

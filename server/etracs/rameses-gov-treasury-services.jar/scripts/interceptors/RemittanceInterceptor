@@ -29,29 +29,31 @@ class RemittanceInterceptor {
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'remittance' }")
-	public void loadList(def evt) {
+	public void beforeGetList(def evt) {
 		def o = evt.args[0];
 
-		if( !o.node?.state ) return;
+		if ( !o.node?.state ) return;
 
-		if( o.node.state != 'DRAFT' ) {
+		if ( o.node.state == 'POSTED' ) {
 			o.orderBy = ' controldate desc '; 
+		} else {
+			o.orderBy = ' controldate '; 
 		}
 
 		//o.debug = true;
 		def str = "state = :state";
-		def m = [state: o.node.state ]; 
+		def m = [ state : o.node.state ]; 
 
-		if(o.node.liquidated!=null) {
-			if(o.node.liquidated==false) {
+		if ( o.node.liquidated != null ) {
+			if ( o.node.liquidated == false ) {
 				str += " AND collectionvoucherid IS NULL ";
-			}
+			} 
 			else {
-				str += " AND NOT(collectionvoucherid IS NULL) ";
+				str += " AND collectionvoucherid IS NOT NULL ";
 			}
 		}
 
-		if( o.where ) {
+		if ( o.where ) {
 			o.where[0] = str + " AND " + o.where[0];	
 			o.where[1].putAll( m );
 		}

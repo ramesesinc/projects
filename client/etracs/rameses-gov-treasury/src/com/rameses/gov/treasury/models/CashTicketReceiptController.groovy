@@ -89,6 +89,8 @@ class  CashTicketReceiptController {
             throw new Exception("Please specify at least one item");
         if (itemAmount != entity.amount)
             throw new Exception("Total of items must be equal to amount collected");
+        if ( entity.qtyissued > entity.qtybalance ) 
+            throw new Exception('Qty Issued must be less than or equal to the Qty Balance'); 
                     
         if( MsgBox.confirm('You are about to post this transaction. Continue?')) { 
             if ( !entity.paidby ) entity.paidby = entity.collector?.name;

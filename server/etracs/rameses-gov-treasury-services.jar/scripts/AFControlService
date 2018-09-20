@@ -128,7 +128,6 @@ class AFControlService  {
 		} 
 
 		em.find( afparam ).update( uparam ); 
-		//throw new Exception('stop'); 
 	} 
 
 

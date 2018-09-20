@@ -15,7 +15,7 @@ select
 	) as voided 
 from cashreceipt c 
 	inner join af_control afc on afc.objid = c.controlid 
-	inner join af on (af.objid = afc.afid and af.formtype='serial') 
+	inner join af on af.objid = afc.afid 
 where c.collector_objid = $P{collectorid} 
 	and c.remittanceid is null 
 	and c.receiptdate < $P{txndate}  
@@ -51,6 +51,19 @@ from draftremittance rem
 	inner join af on (af.objid = afc.afid and af.formtype = 'serial') 
 where rem.objid = $P{remittanceid} 
 order by c.receiptdate, c.receiptno  
+
+
+[findDelegatedAFSummary]
+select 
+	r.remittanceid, c.controlid, afc.afid as formno, afc.stubno, 
+	min(c.series) as fromseries, max(c.series) as toseries, count(*) as qty  
+from draftremittanceitem r  
+	inner join cashreceipt c on c.objid = r.objid 
+	inner join af_control afc on afc.objid = c.controlid 
+where r.remittanceid = $P{remittanceid}  
+	and c.state = 'DELEGATED' 
+group by r.remittanceid, c.controlid, afc.afid, afc.stubno
+
 
 [bindRemittance]
 update cashreceipt c, draftremittanceitem remi set 

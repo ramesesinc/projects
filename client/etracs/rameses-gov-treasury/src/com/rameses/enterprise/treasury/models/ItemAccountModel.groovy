@@ -122,7 +122,7 @@ class ItemAccountModel extends CrudFormModel {
             open();
             binding.refresh();
         };
-        Modal.show("parentaccount:lookup", [onselect: s], [title:"Transfer to parent account"]);
+        Modal.show("genericaccount:lookup", [onselect: s], [title:"Transfer to parent account"]);
     }
     
     void changeType() {

@@ -14,7 +14,7 @@ class CashReceiptItemLookupModel extends CrudLookupModel {
 
     def fundid;
     def queryFilter;
-
+    
     public void beforeQuery( def m ) {
         m.orgid = OsirisContext.env.ORGID; 
         if( queryFilter ) m._queryFilter = queryFilter;

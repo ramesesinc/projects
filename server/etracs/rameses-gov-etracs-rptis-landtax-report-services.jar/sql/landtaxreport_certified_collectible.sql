@@ -30,6 +30,7 @@ from (
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
 	and rl.taxable = 1 
+	and rp.barangayid like $P{barangayid}
 	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 
 )x

@@ -20,11 +20,13 @@ class LandTaxReportCertifiedCollectibleService
 	@Async
     @ProxyMethod
 	public def buildReport(params){
-		println 'params => ' + params 
 		def cy = dtSvc.serverYear
 		if (params.year < 1930 || params.year > cy) {
 			throw new Exception('Year should be between 1930 and ' + cy + '.' )
 		}
+
+		params.barangayid = (params.barangay ? params.barangay.objid : '%')
+
 		def list = em.getList(params)
 
 		if (!list) throw new Exception('Results not found.')

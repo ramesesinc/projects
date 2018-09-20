@@ -65,10 +65,12 @@ class AFTxnService  {
 		
 		def afunit = afi.afunit;
 
+		int interval = (!afunit.interval) ? 1 : afunit.interval;
 		int len = (afunit.serieslength ? afunit.serieslength : 10);	
 		int stubno = o.startstub; 
  		int starter = (o.startseries ? Integer.parseInt( o.startseries ) : 0);
 		(1..o.qty).each { 
+			println starter;
 			def afc = [:];
 			afc.afid = afi.item.objid;
 			afc.unit = afi.unit;
@@ -76,7 +78,7 @@ class AFTxnService  {
 			afc.afunit = afi.afunit;
 			if( afunit.formtype == 'serial' ) {				
 				afc.startseries = starter;
-				afc.endseries = starter + afunit.qty - 1;
+				afc.endseries = starter + (afunit.qty * interval) - 1;
 				starter = afc.endseries + 1;
 			}
 			else {

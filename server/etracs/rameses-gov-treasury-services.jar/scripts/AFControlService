@@ -100,42 +100,33 @@ class AFControlService  {
 		result.qtybalance = (afc.endseries - afc.currentseries)+1;
 		if ( result.qtybalance < 0 ) result.qtybalance = 0; 
 
-		println '** getNextAfSeries '
-		afc.each{
-			println '> '+ it; 
-		}
-		println '--- '
-		result.each{
-			println '> '+ it;
-		}
 		return result;
 	}
 
 	@ProxyMethod
 	public void updateNextSeries( p ) { 
+
+
 		// force update lock to table 
 		def afparam = [ objid: p.controlid ]; 
 		em.find( afparam ).update([ lockid: new java.rmi.server.UID().toString() ]); 
 
-		def afc = em.find( afparam ).select('objid,currentseries,endseries').first(); 
+		def afc = em.find( afparam ).select('objid,currentseries,endseries,afunit.*').first(); 
 		if ( afc == null ) return; 
+
 
 		if ( afc.currentseries > afc.endseries ) 
 			throw new Exception('Series is already consumed. Please verify'); 
 
-		println '** afc ' 
-		afc.each{
-			println '> '+ it;
-		}
+		int interval = afc.afunit.interval;
+		if(!interval || interval < 0 ) interval = 1;
 
-		def uparam = [ currentseries: p.series+1, lockid: '{NULL}' ]; 
+		def uparam = [ currentseries: p.series+interval, lockid: '{NULL}' ]; 
 		if ( p.formtype == 'cashticket' ) { 
 			def qtyissued = ((Number) p.amount / p.denomination).intValue(); 
 			uparam.currentseries = afc.currentseries + qtyissued; 
 		} 
 
-		println '** afparam -> '+ afparam;
-		println '** uparam  -> '+ uparam;
 		em.find( afparam ).update( uparam ); 
 		//throw new Exception('stop'); 
 	} 

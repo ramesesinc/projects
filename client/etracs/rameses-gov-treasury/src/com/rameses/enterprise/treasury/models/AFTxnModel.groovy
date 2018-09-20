@@ -346,8 +346,18 @@ class AFTxnModel extends CrudPageFlowModel {
     }
     
     def issueBatch( def o ) {
+        int qty;
+        def pp = [fields:[]];
+        pp.fields << [name:'qty',caption:'Qty', datatype:'integer'];
+        pp.data = [qty:o.qty];
+        pp.formTitle = "Please enter qty to issue";
+        pp.handler = { iq->
+            qty = iq.qty;
+        }
+        Modal.show("dynamic:form", pp, [title:'Enter Qty']);
+        if(!qty) return null;
         try {
-            svc.issueBatch([ aftxnitemid: o.aftxnitemid ]);
+            svc.issueBatch([ aftxnitemid: o.aftxnitemid, qty: qty ]);
             reloadEntity();
         }
         catch(e) {

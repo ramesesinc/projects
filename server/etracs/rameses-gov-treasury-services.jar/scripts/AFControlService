@@ -18,7 +18,8 @@ class AFControlService  {
 
 	@ProxyMethod
 	public def getNextAfSeries(def m ) {
-		if(!m.collectiontype?.objid) throw new Exception("Please specify collectiontype in AFControlService.getNextAfSeries");
+		if ( !m.collectiontype?.objid ) 
+			throw new Exception("Please specify collectiontype in AFControlService.getNextAfSeries");
 
 		def arr = [];
 		def p = [:];
@@ -50,53 +51,99 @@ class AFControlService  {
 			arr <<"fund.objid IS NULL";
 		}
 
-		//filter by resp. center
-		if( env.ORGROOT != 1 ) {
-			arr << "respcenter.objid = :orgid";
-			p.orgid = env.ORGID;
-		}
-		else {
-			arr << "respcenter.objid IS NULL";
-		}
+		// //filter by resp. center
+		// if( env.ORGROOT != 1 ) {
+		// 	arr << "respcenter.objid = :orgid";
+		// 	p.orgid = env.ORGID;
+		// }
+		// else {
+		// 	arr << "respcenter.objid IS NULL";
+		// }
 
 		def afc = em.where( arr.join(" AND "), p ).first();
-		if(!afc ) throw new Warning("select-afcontrol");
+		if ( !afc ) throw new Warning("select-afcontrol");
 
-		if(afc.af.serieslength <=0 ) 
+		if ( m.formtype == 'cashticket' ) { 
+			//
+			// do not check series for this af 
+			// 
+		} else if ( afc.af.serieslength <= 0 ) {  
 			throw new Exception("series length must be greater than zero for AFControlService.getNextAfSeries")
+		} 
 
 		def result = [:];
 		result.collector = afc.owner; 
 
 		//get the job title
-		result.collector.title = userEm.find( [objid: afc.owner.objid] ).select("jobtitle").val();
+		result.collector.title = userEm.find([ objid: afc.owner.objid ]).select("jobtitle").val();
 
-		if( afc.owner?.objid != afc.assignee?.objid  ) {
-			result.subcollector = afc.assignee;
-		}
-		result.stub = afc.stubno;
-		if(afc.af.serieslength) {
+		if ( afc.owner?.objid != afc.assignee?.objid  ) { 
+			result.subcollector = afc.assignee; 
+		} 
+		result.stub = afc.stubno; 
+
+		if ( m.formtype == 'cashticket' ) { 
+			result.denomination = afc.afunit?.denomination; 
+			if ( result.denomination == null ) result.denomination = 0.0; 
+
+		} else if ( afc.af.serieslength ) { 
 			def s = afc.currentseries.toString().padLeft(afc.af.serieslength, '0');
-			result.receiptno = ((afc.prefix)?afc.prefix:'') + s + ((afc.suffix)?afc.suffix:'');
-		}
+			result.receiptno = (( afc.prefix ? afc.prefix : '') + s + (afc.suffix ? afc.suffix : ''));
+		} 
+
 		result.controlid = afc.objid;
 		result.series = afc.currentseries;
 		result.endseries = afc.endseries; 
-		result.prefix = afc.prefix
-		result.suffix = afc.suffix
-		result.serieslength = afc.af.serieslength 
+		result.prefix = afc.prefix;
+		result.suffix = afc.suffix;
+		result.serieslength = afc.af.serieslength;
+		result.qtybalance = (afc.endseries - afc.currentseries)+1;
+		if ( result.qtybalance < 0 ) result.qtybalance = 0; 
+
+		println '** getNextAfSeries '
+		afc.each{
+			println '> '+ it; 
+		}
+		println '--- '
+		result.each{
+			println '> '+ it;
+		}
 		return result;
 	}
 
 	@ProxyMethod
 	public void updateNextSeries( p ) { 
-		em.find([ objid: p.controlid ]).update([ currentseries: p.series + 1 ]); 
-	}
+		// force update lock to table 
+		def afparam = [ objid: p.controlid ]; 
+		em.find( afparam ).update([ lockid: new java.rmi.server.UID().toString() ]); 
+
+		def afc = em.find( afparam ).select('objid,currentseries,endseries').first(); 
+		if ( afc == null ) return; 
+
+		if ( afc.currentseries > afc.endseries ) 
+			throw new Exception('Series is already consumed. Please verify'); 
+
+		println '** afc ' 
+		afc.each{
+			println '> '+ it;
+		}
+
+		def uparam = [ currentseries: p.series+1, lockid: '{NULL}' ]; 
+		if ( p.formtype == 'cashticket' ) { 
+			def qtyissued = ((Number) p.amount / p.denomination).intValue(); 
+			uparam.currentseries = afc.currentseries + qtyissued; 
+		} 
+
+		println '** afparam -> '+ afparam;
+		println '** uparam  -> '+ uparam;
+		em.find( afparam ).update( uparam ); 
+		//throw new Exception('stop'); 
+	} 
 
 
 	void checkCanPerformFunc( def o) {
 		def z = cashRctEm.find( [controlid: o.objid] ).where("remittanceid IS NULL").first();
-		if(z) throw new Exception("Cannot perform thsi function. Please remit all open collections first");
+		if(z) throw new Exception("Cannot perform this function. Please remit all open collections first");
 	}
 
 	@ProxyMethod 
@@ -189,6 +236,10 @@ class AFControlService  {
 	@ProxyMethod
 	public def changeMode( p ) { 
 		checkCanPerformFunc( p ); 
+
+		if ( em.find([ objid: p.objid, txnmode: 'REMOTE' ]).select('objid').first()) {
+			throw new Exception('Change Mode Not Allowed. This record is currently exported'); 
+		}
 
 		//throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 

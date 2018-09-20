@@ -46,13 +46,14 @@ public class MeterPage extends javax.swing.JPanel {
         lOVList2 = new com.rameses.enterprise.components.LOVList();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
 
         setPreferredSize(new java.awt.Dimension(773, 589));
 
         xTabbedPane1.setItems("sections");
 
         xPanel2.setName("acctsection"); // NOI18N
+        xPanel2.setVisibleWhen("#{ entity.currentacctid != null }");
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Account Information");
         xPanel2.setBorder(xTitledBorder1);
@@ -60,27 +61,30 @@ public class MeterPage extends javax.swing.JPanel {
 
         xFormPanel2.setCaptionWidth(100);
 
-        xLabel1.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel1.setCaption("Account No.");
         xLabel1.setExpression("#{entity.account.acctno}");
+        xLabel1.setVisibleWhen("");
+        xLabel1.setBackground(new java.awt.Color(250, 250, 250));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel1.setOpaque(true);
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel1);
 
-        xLabel2.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel2.setCaption("Account Name");
         xLabel2.setExpression("#{entity.account.acctname}");
+        xLabel2.setVisibleWhen("");
+        xLabel2.setBackground(new java.awt.Color(250, 250, 250));
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
         xLabel2.setOpaque(true);
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel2);
 
+        xLabel3.setCaption("Address");
+        xLabel3.setExpression("#{entity.account.address.text}");
         xLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        xLabel3.setVisibleWhen("");
         xLabel3.setBackground(new java.awt.Color(250, 250, 250));
         xLabel3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)), javax.swing.BorderFactory.createEmptyBorder(2, 0, 0, 0)));
-        xLabel3.setCaption("Address");
-        xLabel3.setExpression("#{entity.account.addresstext}");
         xLabel3.setOpaque(true);
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 50));
         xFormPanel2.add(xLabel3);
@@ -92,14 +96,14 @@ public class MeterPage extends javax.swing.JPanel {
             .addGroup(xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(158, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
         xPanel2Layout.setVerticalGroup(
             xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(xPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -141,44 +145,44 @@ public class MeterPage extends javax.swing.JPanel {
         lOVList2.setRequired(true);
         xFormPanel1.add(lOVList2);
 
-        xIntegerField1.setName("entity.lastreading"); // NOI18N
         xIntegerField1.setCaption("Last Reading");
-        xIntegerField1.setDisableWhen("#{ 1 == 1 }");
+        xIntegerField1.setDisableWhen("#{ mode=='read' || entity.currentacctid != null }");
+        xIntegerField1.setName("entity.lastreading"); // NOI18N
+        xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
 
-        xDateField1.setName("entity.lastreadingdate"); // NOI18N
         xDateField1.setCaption("Last reading date");
-        xDateField1.setDisableWhen("#{ 1 == 1 }");
+        xDateField1.setDisableWhen("#{ mode=='read' || entity.currentacctid != null }");
+        xDateField1.setName("entity.lastreadingdate"); // NOI18N
         xFormPanel1.add(xDateField1);
 
-        xLabel4.setName("entity.state"); // NOI18N
-        xLabel4.setBackground(new java.awt.Color(250, 250, 250));
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 190, 190)));
-        xLabel4.setCaption("Status");
-        xLabel4.setExpression("#{entity.state}");
-        xLabel4.setOpaque(true);
-        xLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel1.add(xLabel4);
+        xComboBox2.setCaption("Meter Status");
+        xComboBox2.setDisableWhen("#{ mode=='read' || entity.currentacctid != null }");
+        xComboBox2.setExpression("");
+        xComboBox2.setItems("meterStates");
+        xComboBox2.setName("entity.state"); // NOI18N
+        xComboBox2.setRequired(true);
+        xFormPanel1.add(xComboBox2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 617, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(39, Short.MAX_VALUE)))
+                    .addContainerGap(43, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 213, Short.MAX_VALUE)
+            .addGap(0, 222, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(23, Short.MAX_VALUE)))
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -227,6 +231,7 @@ public class MeterPage extends javax.swing.JPanel {
     private com.rameses.enterprise.components.LOVList lOVList1;
     private com.rameses.enterprise.components.LOVList lOVList2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
@@ -234,7 +239,6 @@ public class MeterPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XPanel xPanel2;
     private com.rameses.rcp.control.XTabbedPane xTabbedPane1;
     private com.rameses.rcp.control.XTextField xTextField1;

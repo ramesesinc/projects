@@ -11,7 +11,7 @@
 		<field name="depositdate" required="true" type="date"/>
 		<field name="dtcreated" required="true" type="timestamp"/>
 
-		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.name,bank.objid,bank.depositsliphandler" required="false">
+		<complex name="bankaccount" ref="bankaccount" jointype="many-to-one" includefields="code,title,bank.*" required="false">
 			<key field="bankacctid" target="objid"/>
 		</complex>
 		<field name="amount" required="true"  type="decimal"/> 
@@ -27,6 +27,7 @@
 		<complex name="depositvoucherfund" ref="depositvoucher_fund" jointype="many-to-one" includefields="objid,parentid">
 			<key field="depositvoucherfundid" target="objid" />
 		</complex>	
+
 	</element>
 
 </schema>

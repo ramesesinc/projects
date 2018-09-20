@@ -4,14 +4,14 @@
     <invokers>
         <!-- CASH IN TREASURY -->
         
-        <invoker folderid="/menucategory/treasury/master" caption="Item Accounts (Cash In Treasury)" 
+        <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Cash In Treasury)" 
                  action="init" role="MASTER" permission="itemaccount.view" tag="CASH_IN_TREASURY"
                  customFilter="parentid IS NULL AND type='CASH_IN_TREASURY' " index="1"
                  formId="itemaccount_list_cash_in_treasury"/>  
         
         <!-- CASH IN BANK -->
         
-        <invoker folderid="/menucategory/treasury/master" caption="Item Accounts (Cash In Bank)" 
+        <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Cash In Bank)" 
                  action="init" role="MASTER" permission="itemaccount.view" tag="CASH_IN_BANK"
                  customFilter="parentid IS NULL AND type='CASH_IN_BANK' " index="2"
                  formId="itemaccount_list_cash_in_bank"/>     

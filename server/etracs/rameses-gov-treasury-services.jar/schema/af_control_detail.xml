@@ -26,8 +26,6 @@
 		<field name="qtyending" required="true" />
 		<field name="remarks" required="true" />
 
-		<field name="prevdetailid" />
-
 		<field name="issuedto_objid" />
 		<field name="issuedto_name" caption="Issued To"/>
 

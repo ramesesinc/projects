@@ -12,9 +12,9 @@ from (
     (case when xx.voided > 0 then 0.0 else cr.amount end) as amount, 
     (case when af.formtype='serial' then 1 else 2 end) as formtypeindexno 
   from ( 
-    select remc.*, 
-      (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
-    from remittance_cashreceipt remc  
+    select c.objid, 
+      (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+    from cashreceipt c  
     where remittanceid = $P{remittanceid} 
   )xx  
     inner join cashreceipt cr on xx.objid=cr.objid 
@@ -38,9 +38,9 @@ from (
     (case when xx.voided > 0 then 0.0 else cri.amount end) as amount, 
     (case when af.formtype='serial' then 1 else 2 end) as formtypeindexno 
   from ( 
-    select remc.*, 
-      (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
-    from remittance_cashreceipt remc  
+    select c.objid, 
+      (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+    from cashreceipt c  
     where remittanceid = $P{remittanceid} 
   )xx  
     inner join cashreceipt cr on xx.objid=cr.objid 
@@ -58,19 +58,18 @@ order by xx.formtypeindexno, xx.formno, min(xx.receiptno)
 select particulars, sum(amount) as amount 
 from (  
   select  
-    ('AF#'+ a.objid +':'+ ct.title +'-'+ ia.fund_title)  as particulars, 
+    ('AF#'+ a.objid +':'+ ct.title +'-'+ ia.fund_title) as particulars, 
     (case when xx.voided > 0 then 0.0 else cri.amount end) as amount 
   from ( 
-    select rem.*, 
-      (select count(*) from cashreceipt_void where receiptid=rem.objid) as voided 
-    from remittance_cashreceipt rem 
-    where rem.remittanceid = $P{remittanceid} 
+    select c.objid, c.collectiontype_objid, c.formno, 
+      (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+    from cashreceipt c  
+    where c.remittanceid = $P{remittanceid} 
   )xx 
-    inner join cashreceipt cr on xx.objid=cr.objid 
-    inner join cashreceiptitem cri on cr.objid=cri.receiptid 
-    inner join itemaccount ia on cri.item_objid=ia.objid 
-    inner join collectiontype ct on cr.collectiontype_objid=ct.objid    
-    inner join af a on cr.formno=a.objid 
+    inner join cashreceiptitem cri on cri.receiptid = xx.objid 
+    inner join itemaccount ia on ia.objid = cri.item_objid 
+    inner join collectiontype ct on ct.objid = xx.collectiontype_objid 
+    inner join af a on a.objid = xx.formno 
   where ia.fund_objid like $P{fundid} 
     and a.objid like $P{formno}  
 )xx 
@@ -78,30 +77,39 @@ group by particulars
 
 
 [getRCDOtherPayment]
-select pc.particulars, pc.amount, pc.reftype 
+select particulars, amount, reftype 
 from ( 
-  select rc.*, 
-    (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
-  where remittanceid = $P{remittanceid} 
-)xx 
-  inner join cashreceipt cr on xx.objid = cr.objid 
-  inner join cashreceiptpayment_noncash pc on cr.objid = pc.receiptid 
-where xx.voided=0 
-order by pc.bank, pc.refdate, pc.amount  
+  select nc.particulars, nc.amount, nc.reftype, nc.refdate, bank.name as bankname 
+  from remittance_noncashpayment remnc 
+    inner join cashreceiptpayment_noncash nc on nc.objid=remnc.objid 
+    inner join checkpayment cp on cp.objid = nc.refid 
+    inner join bank on bank.objid = cp.bankid 
+  where remnc.remittanceid = $P{remittanceid} 
+
+  union all 
+
+  select nc.particulars, nc.amount, nc.reftype, nc.refdate, bank.name as bankname 
+  from remittance_noncashpayment remnc 
+    inner join cashreceiptpayment_noncash nc on nc.objid=remnc.objid 
+    inner join creditmemo cm on cm.objid = nc.refid 
+    inner join bankaccount ba on ba.objid = cm.bankaccount_objid 
+    inner join bank on bank.objid = ba.bank_objid 
+  where remnc.remittanceid = $P{remittanceid} 
+)tmp1
+order by bankname, refdate, amount  
 
 
 [getNonCashPayments]
 select cc.* from ( 
   select rc.*, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  from cashreceipt rc 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join remittance r on xx.remittanceid = r.objid 
   inner join cashreceiptpayment_noncash cc ON xx.objid = cc.receiptid 
 where xx.voided = 0 
-order by cc.bank, cc.refno    
+order by cc.particulars   
 
 
 [getReceiptsByRemittanceCollectionType]
@@ -116,9 +124,9 @@ select
   ) as collectiontype, 
   cr.remarks 
 from ( 
-  select rc.*, 
-    (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc  
+  select c.objid, 
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+  from cashreceipt c  
   where remittanceid = $P{remittanceid}  
 )rem 
   inner join cashreceipt cr on rem.objid=cr.objid 
@@ -137,9 +145,9 @@ select
   case when xx.voided=0 then cri.amount else 0.0 END AS amount, 
   case when xx.voided=0 then cri.remarks else null end AS itemremarks 
 from ( 
-  select rc.*, 
-    (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  select c.objid, 
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+  from cashreceipt c 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
@@ -159,9 +167,9 @@ select
   ai.fund_title as fundname, cr.paidby as payer, cri.item_title as particulars, 
   case when xx.voided=0 then cri.amount else 0.0 end as amount 
 from ( 
-  select rc.*, 
-    (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  select c.objid, 
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+  from cashreceipt c 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
@@ -182,9 +190,9 @@ select
   ai.fund_title as fundname, cr.paidby as payer, cri.item_title as particulars, 
   case when xx.voided=0 then cri.amount else 0.0 end as amount 
 from ( 
-  select rc.*, 
+  select rc.objid, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  from cashreceipt rc 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
@@ -206,9 +214,9 @@ select
   cri.item_code as acctcode, 
   sum( cri.amount ) as amount 
 from ( 
-  select rc.*, 
+  select rc.objid, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  from cashreceipt rc 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
@@ -228,11 +236,12 @@ order by fundname, acctcode
 [getReceiptsGroupByFund]
 select 
   ai.fund_title as fundname, cr.formno, cr.receiptno, 
-  min(cr.paidby) as paidby, sum(cri.amount) as amount  
+  min(case when xx.voided=0 then cr.paidby else '*** VOIDED ***' end) as paidby, 
+  sum(case when xx.voided=0 then cri.amount else 0.0 end) as amount 
 from ( 
-  select rc.*, 
+  select rc.objid, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  from cashreceipt rc 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
@@ -247,9 +256,9 @@ order by fundname, formno, receiptno
 select distinct 
   ai.fund_objid as objid, ai.fund_title as title 
 from ( 
-  select rc.*, 
+  select rc.objid, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  from cashreceipt rc 
   where remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
@@ -261,13 +270,14 @@ from (
 select distinct 
   ct.objid, ct.title 
 from ( 
-  select rc.*, 
-    (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
-  where remittanceid = $P{remittanceid} 
+  select c.*, 
+    (select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
+  from cashreceipt c 
+  where c.remittanceid = $P{remittanceid} 
 )xx 
   inner join cashreceipt cr on xx.objid = cr.objid 
   inner join collectiontype ct on cr.collectiontype_objid = ct.objid 
+order by ct.title 
 
 
 [getCashTicketCollectionSummaries]
@@ -278,9 +288,9 @@ select
   END AS particulars,
   SUM(cr.amount) AS amount 
 from ( 
-  select rc.*, 
+  select rc.objid, 
     (select count(*) from cashreceipt_void where receiptid=rc.objid) as voided 
-  from remittance_cashreceipt rc 
+  from cashreceipt rc 
   where remittanceid = $P{objid}  
 )xx 
   inner join cashreceipt cr ON xx.objid = cr.objid 
@@ -302,11 +312,12 @@ from (
     (case when xx.voided=0 then cr.paidby else '*** VOIDED ***' end) as paidby, 
     (case when xx.voided=0 then cri.amount else 0.0 end) as amount 
   from ( 
-    select remc.*, 
+    select remc.objid, remc.remittanceid,  
       (select count(*) from cashreceipt_void where receiptid=remc.objid) as voided 
-    from remittance_cashreceipt remc 
+    from cashreceipt remc 
     where remittanceid = $P{remittanceid}     
-  )xx inner join remittance rem on xx.remittanceid = rem.objid 
+  )xx 
+    inner join remittance rem on xx.remittanceid = rem.objid 
     inner join cashreceipt cr on xx.objid=cr.objid 
     inner join cashreceiptitem cri on cr.objid=cri.receiptid 
     inner join itemaccount ia on cri.item_objid = ia.objid 
@@ -323,11 +334,10 @@ order by
 select 
   ia.fund_objid, cr.formno, af.title as formtitle   
 from remittance rem 
-  inner join remittance_cashreceipt remc on rem.objid=remc.remittanceid  
-  inner join cashreceipt cr on remc.objid=cr.objid 
-  inner join cashreceiptitem cri on cr.objid=cri.receiptid 
-  inner join itemaccount ia on cri.item_objid=ia.objid 
-  inner join af on cr.formno=af.objid 
+  inner join cashreceipt cr on cr.remittanceid = rem.objid 
+  inner join cashreceiptitem cri on cri.receiptid = cr.objid 
+  inner join itemaccount ia on ia.objid = cri.item_objid 
+  inner join af on af.objid = cr.formno 
 where rem.objid = $P{remittanceid} 
 group by ia.fund_objid, cr.formno, af.title 
 order by ia.fund_objid, cr.formno 

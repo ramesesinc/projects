@@ -10,7 +10,7 @@ class CashReceiptService  {
 	def em;
 
 	@ActiveDB("collector")
-	def collector;
+	def collector;	
 
 	@ActiveDB("cashreceipt")
 	def cashreceipt; 
@@ -111,6 +111,12 @@ class CashReceiptService  {
 		def test = p.paymentitems.findAll{ !it.reftype };
 		if(test) throw new Exception("All payment items must have a type. Please review the code");
 
+		if( p.checks ) {
+			p.checks.each {
+				checkPayment.create( it );	
+			}
+		}
+
 		p.paymentitems.each {
 			it.voidamount = 0.0;
 			if( it.reftype == 'CHECK' ) {				
@@ -169,8 +175,12 @@ class CashReceiptService  {
 		if( p.amount < 1 ) { 
 			def amount = Long.parseLong( p.amount.toString().split("\\.")[1] )
 			p.amountinwords = numSvc.doubleToWords( amount ).toUpperCase() + " CENTAVOS";
-		} else 
+		} else { 
 			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
+		} 
+
+		// data compliant to previous versions 
+		p.totalnoncash = p.totalcheck; 
 		return p;
 	}
 	

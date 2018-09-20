@@ -4,8 +4,17 @@
          <invoker type="fund:create" action="create" caption="Fund (New)" role="MASTER" permission="fund.create" target="popup"/>
          <invoker type="fund:open" action="open" caption="Fund" role="MASTER" permission="fund.open" target="popup"/>
          
-         <invoker type="quick_launcher" code="FUND01" caption="Fund" role="MASTER" permission="fund.create"/> 
-   </invokers>
+         <invoker type="quick_launcher" code="FUND01" caption="Fund" role="MASTER" permission="fund.create"/>
+          
+         <invoker type="formActions" caption="Activate" action="activate" 
+                role="MASTER"
+                  visibleWhen="#{entity.state.matches('DRAFT|INACTIVE')}"/>
+         
+         <invoker type="formActions" caption="Deactivate" action="deactivate" 
+                role="ADMIN"
+                visibleWhen="#{entity.state == 'ACTIVE'}"/>
+
+    </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.FundModel" />
    

@@ -12,6 +12,7 @@ class DepositVoucherModel extends CrudFormModel {
     @Service("DepositVoucherService")
     def depositSvc;   
     
+    def selectedFund;
     def selectedCheck;
     def checkListModel;
     
@@ -43,5 +44,9 @@ class DepositVoucherModel extends CrudFormModel {
         return "_close";
     }
     
+    def viewFund() {
+        if(!selectedFund) return null;
+        return Inv.lookupOpener("depositvoucher_fund:open", [ entity: [objid:selectedFund.objid] ] );
+    }
     
 }    

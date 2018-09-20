@@ -39,6 +39,10 @@ public class CashReceiptComputeShareInterceptor {
 		def rct = evt.args[0].params;
 		def facts = factBuilder.facts;
 
+		if ( rct.receiptdate instanceof String ) {
+			rct.receiptdate = java.sql.Date.valueOf( rct.receiptdate );  
+		} 
+
 		facts << new CashReceipt( receiptdate: rct.receiptdate ); 
 		if( rct.org?.objid ) {
 			def org = sys_org.find([ objid: rct.org.objid ]).first(); 

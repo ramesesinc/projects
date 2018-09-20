@@ -114,42 +114,32 @@ class AFTxnService  {
 	//remove batch is only applicable for PURCHASE_RECEIPT,BEGIN_BALANCE AND FORWARD
 	@ProxyMethod
 	public void removeBatch( def o ) { 
-		if( !o.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE|FORWARD|TRANSFER|RETURN' )) 
+		if( !o.txntype.matches('PURCHASE_RECEIPT|BEGIN_BALANCE')) 
 			throw new Exception( "AF Remove Batch Entry is only applicable for PURCHASE_RECEIPT, BEGIN_BALANCE, FORWARD, TRANSFER or RETURN"); 
 
-		if ( o.txntype.matches('TRANSFER|RETURN')) {
-			def p = [ aftxnitemid: o.aftxnitemid, batchno: o.batchno ];
-			afControl.where( "currentdetail.aftxnitemid = :aftxnitemid AND batchno = :batchno" , p ).list().each{ 
-				persistSvc.removeEntity([ _schemaname: 'af_control_detail', objid: it.currentdetail.objid ]); 
-				def afc = afControl.find([ objid: it.objid ]).first();
-				def upd = [:]; 
-				upd.state = "{currentdetail.statetype.poststate}";
-				upd.owner = [ objid: "{currentdetail.issuedto.objid}",  name: "{currentdetail.issuedto.name}" ];
-				upd.assignee = [ objid: "{currentdetail.issuedto.objid}",  name: "{currentdetail.issuedto.name}" ];
-				upd.respcenter = [ objid: "{currentdetail.respcenter.objid}",  name: "{currentdetail.respcenter.name}" ];
-				upd.lockid = "{NULL}";
-				afControl.where( "currentdetail.objid = :afdid", [ afdid: afc.currentdetail.objid ]).update( upd );
-			} 
+		def p = [ aftxnitemid: o.aftxnitemid, batchno: o.batchno ];
+		def afclist = afControl.where( "currentdetail.aftxnitemid = :aftxnitemid AND batchno = :batchno" , p ).list(); 
+		if ( !afclist ) throw new Exception('failed to locate AF Control with batch#'+ p.batchno); 
 
-			aftxnItem.find([ objid: o.aftxnitemid ]).update([ qtyserved: 0 ]);  
-			// exit immediately 
-			return; 
+		def u = [state:'DELETE', currentdetailid:'{NULL}'];
+		afclist.each{ a-> 
+			afControl.find([ objid: a.objid ]).update( u );
+			afControlDetail.find([ objid: a.currentdetailid ]).delete(); 
+
+			def x = afControlDetail.find([ controlid: a.objid ]).select('objid').orderBy('refdate desc, txndate desc, indexno desc').first(); 
+			if ( x?.objid ) {
+				afControl.find([ objid: a.objid ]).update([ currentdetailid: x.objid ]);
+			}
+			afControl.find([ objid: a.objid ]).delete(); 
 		}
 
 
-		def p = [ aftxnitemid: o.aftxnitemid, batchno: o.batchno ];
-		def u = [state:'DELETE', currentdetailid: '{currentdetail.prevdetailid}']
-		afControl.where( "currentdetail.aftxnitemid = :aftxnitemid AND batchno = :batchno" , p ).update( u );
-
 		def ws = "aftxnitemid = :aftxnitemid AND parent.batchno = :batchno"
-		int qty = afControlDetail.where(ws, p ).select("count:{COUNT(objid)}").val();
-		afControlDetail.where( ws, p ).delete();
-		afControl.where("state = 'DELETE'" ).delete();
+		int qty = afclist.size(); 
 
 		//update batchno for afcontrols 
 		afControl.where( "currentdetail.aftxnitemid=:aftxnitemid AND batchno > :batchno",p ).update( [batchno: "{batchno - 1}"] );
-
-		aftxnItem.find( [objid: o.aftxnitemid] ).update( [qtyserved: "{qtyserved - :qty}"], [qty: qty] ); 
+		aftxnItem.find([ objid: o.aftxnitemid ]).update([ qtyserved: "{qtyserved - :qty}"], [qty: qty] ); 
 	}	
 
 	@ProxyMethod
@@ -244,11 +234,14 @@ class AFTxnService  {
 			sbuff.append(  " AND allocid =:allocid " );
 			p.allocid = alloc.objid;
 		}
+
 		def list = afControl.select('objid,startseries,currentseries,endseries,prevdetailid').where( sbuff.toString(), p ).orderBy('dtfiled,batchno,stubno').limit( qty ).list();
-		if(!list)
-			throw new Exception("No available stock for " + p.afid + " " + p.unit);		
-		list.each {
-			afInvSvc.add( ref, it );
+		if ( !list ) throw new Exception("No available stock for " + p.afid + " " + p.unit);	
+
+		list.eachWithIndex { itm,idx-> 
+			if ( idx < qty ) {
+				afInvSvc.add( ref, itm );
+			}
 		}
 		aftxnItem.find([objid: afi.objid]).update( [qtyserved: '{qtyserved + :qty}'], [qty: list.size() ] );
 	}	

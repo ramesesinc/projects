@@ -8,11 +8,15 @@ import com.rameses.seti2.models.*;
 
 class BankAccountLookupModel extends CrudLookupModel {
             
+    def fundids;
     def fundid;
 
     def getCustomFilter() {
         if( fundid ) {
             return [ " fund.objid = :fundid", [fundid: fundid] ]; 
+        }
+        else if(fundids) {
+            return [ " fund.objid IN '(" + fundids.join("','") + "')" ]; 
         }
         return null;
     }

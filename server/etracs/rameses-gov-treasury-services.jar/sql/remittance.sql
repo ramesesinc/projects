@@ -56,4 +56,21 @@ FROM
 INNER JOIN af_control afc ON cr.controlid=afc.objid 
 INNER JOIN af ON afc.afid = af.objid 
 LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
-GROUP BY cr.collector_objid, afc.objid, afc.stubno,cr.formno, af.formtype, cr.remittanceid
+GROUP BY 
+CONCAT( cr.collector_objid, cr.remittanceid, afc.objid ) AS objid, af.formtype, cr.remittanceid, 
+cr.collector_objid, afc.objid, afc.stubno, cr.formno, afc.endseries 
+
+
+[getBuildRemittanceFunds]
+select 
+	c.remittanceid, r.controlno as remittanceno,  
+	fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+	SUM(c.amount) as amount, SUM(c.amount-c.totalnoncash) as totalcash, 
+	SUM(c.totalnoncash) as totalcheck, 0.0 as totalcr
+from remittance r 
+	inner join cashreceipt c on c.remittanceid = r.objid 
+	inner join cashreceiptitem ci on ci.receiptid = c.objid 
+	inner join fund on fund.objid = ci.item_fund_objid 
+where r.objid = $P{remittanceid} 
+	and c.objid not in ( select receiptid from cashreceipt_void where receiptid = c.objid ) 
+group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code 

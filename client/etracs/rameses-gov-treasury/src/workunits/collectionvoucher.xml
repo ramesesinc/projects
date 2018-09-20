@@ -10,7 +10,16 @@
                  index="10"/>
         
         <!-- Buttons -->
+        <invoker type="formActions" caption="Change Liq Officer" action="changeLiqOfficer" 
+                 visibleWhen="#{entity.state == 'OPEN'}" 
+                 role="ADMIN"/>
+
+        <invoker type="formActions" caption="Update Cashbreakdown" action="updateCashBreakdown" 
+                 visibleWhen="#{entity.state == 'OPEN'}" 
+                 role="LIQUIDATING_OFFICER"/>
+        
         <invoker type="formActions" caption="Post" action="post" visibleWhen="#{entity.state == 'OPEN'}"/>
+        <invoker type="formActions" caption="Post To JEV" action="post" visibleWhen="#{entity.state == 'POSTED'}"/>        
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.CollectionVoucherModel" />

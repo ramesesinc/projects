@@ -11,6 +11,7 @@
 		<field name="currentseries" required="true" caption="Current Series" type="integer" searchable="true"/> 
 		<field name="endseries" required="true" caption="End Series" type="integer"/> 
 		<field name="active" required="true" caption="Active" type="integer" indexed="true" datatype="checkbox" checkValue="1" uncheckValue="0" /> 
+		<field name="ukey" />
 		<field name="fund_objid"  /> 
 		<field name="fund_title"  caption="Fund Title" /> 
 		<field name="stubno" required="true" caption="Stub No" /> 
@@ -38,7 +39,7 @@
 			<key field="afid" target="objid" />
 		</complex>	
 
-		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,aftxnid,aftxnitemid,refid,refno,refdate,reftype,txntype,txndate,prevdetailid,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
+		<complex name="currentdetail" ref="af_control_detail" jointype="many-to-one" includefields="objid,aftxnid,aftxnitemid,refid,refno,refdate,reftype,txntype,txndate,statetype.*,endingstartseries,endingendseries,issuedto.*,respcenter.*" required="false">
 			<key field="currentdetailid" target="objid" />
 		</complex>
 

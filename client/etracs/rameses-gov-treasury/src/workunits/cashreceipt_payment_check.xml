@@ -6,13 +6,9 @@
 
     <pageflow>
         <start>
-            <transition to="ask-checkno" action="init"/>
+            <transition to="check-exists" action="init"/>
         </start>
-        <page name="ask-checkno" title="Specify Check No">
-            <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
-            <transition to="check-exists" caption="Next" action="searchCheckIfExists" mnemonic="N"/> 
-        </page>
-        <process name="check-exists">
+        <process name="check-exists" action="searchCheckIfExists">
             <transition to="select-check" cond="#{ check_exists == true }"/>
             <transition to="enter-check-details" cond="#{ check_exists == false }"/>
         </process> 
@@ -30,9 +26,11 @@
         </process> 
         <page name="complete-balance" title="Complete Balance Due">
             <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
-            <transition to="ask-checkno" name="add-check" caption="Add Another Check" action="initCheck" visibleWhen="#{false}" mnemonic="k"/> 
-            <transition to="determine-flow" name="add-cash" caption="Add Cash" action="addCash" visibleWhen="#{false}" mnemonic="A"/> 
-            
+            <transition to="enter-check-details" name="add-check" caption="Add Another Check" visibleWhen="#{false}" mnemonic="k"/> 
+            <transition to="add-cash-balance" name="add-cash" caption="Add Cash" visibleWhen="#{false}" mnemonic="A"/> 
+        </page>
+        <page name="add-cash-balance" title="Add Cash Balance">
+            <transition to="determine-flow" name="submit" visibleWhen="#{false}"/> 
         </page>
         <page name="view-summary" title="Check Payment Summary">
             <transition to="end"  caption="Cancel" confirm="If cancelled you will need to redo payment. Proceed?" mnemonic="C"/> 
@@ -46,6 +44,7 @@
         <page name="select-check" template="com.rameses.enterprise.treasury.views.CashReceiptCheckSelectPage"/>
         <page name="enter-check-details" template="com.rameses.enterprise.treasury.views.CashReceiptCheckDetailPage"/>
         <page name="complete-balance" template="com.rameses.enterprise.treasury.views.CheckPaymentCompleteBalancePage" />
+        <page name="add-cash-balance" template="com.rameses.enterprise.treasury.views.CashReceiptAddCashPage" />
         <page name="view-summary" template="com.rameses.enterprise.treasury.views.CashReceiptNoncashPaymentSummaryPage" />
     </pages>
     

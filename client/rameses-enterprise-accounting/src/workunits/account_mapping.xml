@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-         <invoker type="account_maingroup:formActions" caption="Map Item Account" />
+         <invoker type="account_maingroup:formActions" caption="Map Item Account" action="init" />
          <invoker type="formActions" action="_close" caption="Back"/>
    </invokers>
    

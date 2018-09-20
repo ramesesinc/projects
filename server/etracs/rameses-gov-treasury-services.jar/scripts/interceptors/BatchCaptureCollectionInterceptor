@@ -38,9 +38,13 @@ class BatchCaptureCollectionInterceptor {
 		def item = evt.args[0]; 
 		bcei_db.find([ parentid: item.objid ]).delete(); 
 		item.items.each { 
+			def fund = it.item.fund; 
+			if ( !fund ) fund = it.fund; 
+
 			it.objid ="BCCEI"+new java.rmi.server.UID();
 			it.parentid = item.objid;
-			it.item.fund = it.fund;
+			it.item.fund = fund; 
+			it.fund = fund;
 			it.amount = ( it.amount? it.amount : item.amount );
 			bcei_db.create( it ); 
 		} 

@@ -5,10 +5,9 @@
         <invoker folderid="/explorer/txn/treasury" caption="Subcollector Remittances" 
                  role="SUBCOLLECTOR,SHARED" permission="remittance.view">
             <action name="doInit" role="SHARED" tag="all"/> 
-            <action name="doInit" role="SUBCOLLECTOR" /> 
         </invoker>
         
-        <invoker folderid="menucategory/treasury/remittance" caption="Subcollector Remittances" 
+        <invoker folderid="menucategory/treasury/subcollection" caption="View Remittances" 
                  name="doInit" role="SUBCOLLECTOR" target="window" />
     </invokers>
     

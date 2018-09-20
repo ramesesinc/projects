@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:printout" name="standard"/> 
+        <invoker type="depositslip_printout:standard" action="print" target="process"/> 
+    </invokers>
+    
+    <code>
+        <![CDATA[
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+    import com.rameses.util.*;
+
+    class StandardDepositSlipPrintout extends com.rameses.enterprise.treasury.models.DepositSlipPrintoutModel {
+
+        def pkg = "com/rameses/gov/treasury/printforms/depositslip/lbp/";
+        
+        public def getPrintCheckReport() { 
+            return pkg + "checkfrontpage.jasper"; 
+        } 
+
+        public def getPrintCashReport() {
+            return [
+                [name: pkg + "cashfrontpage.jasper", title: 'Cash Front Page'], 
+                [name: pkg + "cashbreakdown.jasper", title: 'CashBreakdown'], 
+            ];
+        } 
+    } 
+    ]]>
+    </code>
+</workunit>

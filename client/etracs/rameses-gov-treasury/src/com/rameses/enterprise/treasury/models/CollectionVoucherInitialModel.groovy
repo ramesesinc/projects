@@ -41,8 +41,9 @@ class CollectionVoucherInitialModel extends CrudListModel {
         m.select = "controldate";
         m.where = [" NOT(state = 'DRAFT') AND collectionvoucherid IS NULL"];
         m.groupBy = "controldate";
+        m.orderBy = "controldate"; 
         def xlist  = queryService.getList(m);
-        if ( xlist ) datesList = xlist*.controldate.collect{ df.format(it) };
+        if ( xlist ) datesList = xlist*.controldate.collect{ df.format(it) }.unique();
     }
     
     void afterInit() {

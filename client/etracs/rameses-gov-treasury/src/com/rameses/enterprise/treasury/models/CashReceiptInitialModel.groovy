@@ -102,9 +102,19 @@ class CashReceiptInitialModel  {
     
     def lookupSubCollectorAF( param ) {
         param.active = 1; 
-        def p = [ entity: param ]; 
+
+        def env = OsirisContext.env; 
+        def p = [_schemaname: 'af_control', debug: true]; 
+        p.where = CashReceiptAFLookupFilter.getFilter( param ); 
+        def res = qryService.findFirst( p ); 
+        if ( res ) return res; 
+
+        param.active = 0; 
+        p = [ entity: param ]; 
+        
         def selAF = null; 
         p.onselect = { o-> 
+            afControlSvc.activateSelectedControl([ objid: o.objid ]);
             selAF = o;             
         }
         Modal.show('cashreceipt:select-af:subcollector', p ); 
@@ -118,18 +128,21 @@ class CashReceiptInitialModel  {
         } else {
             af = lookupSubCollectorAF( entity ); 
         }
+        
         if ( af == null ) return null; 
         return cashReceiptSvc.init( entity );
     }
     
     def doNext() {
-        def entity = [
+        def params = [
             txnmode         : mode, 
             formno          : afType, 
             formtype        : collectionType.af.formtype, 
             collectiontype  : collectionType 
         ]; 
-
+        
+        def entity = [:];
+        entity.putAll(params); 
         def info = initReceipt( entity );
         if( info == null ) return null;
         if( mode == "OFFLINE" ) {
@@ -142,12 +155,18 @@ class CashReceiptInitialModel  {
             ]);
             if ( !pass ) return null;
         }
-        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: info]);  
+        def ch = {
+            def newEntity = [:];
+            newEntity.putAll( params );
+            return initReceipt( newEntity );
+        }
+        def opener = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: info,createHandler:ch]);  
         if(!opener )
             throw new Exception('No available handler found');
         opener.target = "self";
         return opener;
     }    
+    
     
     def loadBarcode() {
         def h = { o->

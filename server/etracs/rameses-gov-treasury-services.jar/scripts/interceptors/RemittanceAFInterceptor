@@ -15,18 +15,13 @@ class RemittanceAFInterceptor {
 	void afterCreate( evt ) {
 		def result = evt.result; 
 		def p = [ remittanceid: result.objid ]; 
-		def afs = remaf_em.getOpenAFControls( p ); 
+		def afs = remaf_em.getBuildAFControls( p ); 
 
 		// initiate locked to the affected af controls 
 		def lockid = new java.rmi.server.UID().toString(); 
 		afs.each{ 
 			afc_em.find([ objid: it.controlid ]).update([ lockid: lockid ]);  
 		} 
-
-		remaf_em.getIssuedAFControls( p ).each{ o-> 
-			def afc = afs.find{( it.controlid == o.controlid )} 
-			if ( afc ) afc.putAll( o );  
-		}
 
 		remaf_em.getCancelledSeries( p ).groupBy{ it.controlid }.each{ k,v-> 
 			def afc = afs.find{( it.controlid == o.controlid )} 

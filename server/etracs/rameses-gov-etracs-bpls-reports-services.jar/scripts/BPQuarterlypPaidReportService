@@ -14,6 +14,8 @@ class BPQuarterlypPaidReportService {
 		if ( !params.permittype?.objid ) 
 			throw new Exception('permit type parameter is required'); 		
 
+		params.startdate = params.year.toString() +'-01-01'; 
+
 		def startdate = resolveDate( params.startdate ); 
 		if ( !startdate ) throw new Exception('startdate parameter is required'); 
 
@@ -22,15 +24,12 @@ class BPQuarterlypPaidReportService {
 
 		params.startdate = startdate; 
 		params.enddate = resolveDate( dateSvc.add( enddate, '1d' )); 
-		params.permittypeid = params.permittype.objid;  
+		params.permittypeid = params.permittype.objid; 
+		params.filter = params.taxfeetypefilter = ''; 
 
-		if ( params.appstates ) { 
-			params.appstatefilter = params.appstates.findAll{( it?.objid )}.collect{"'"+ it.objid +"'"}.join(','); 
-		} else { 
-			params.appstatefilter = "''";	
+		if ( params.showtaxonly.toString().matches('true|1')) {
+			params.taxfeetypefilter = " AND br.taxfeetype = 'TAX' "; 
 		}
-
-		params.filter = " AND ba.state IN (" + params.appstatefilter + ")"; 
 
 		def list = em.getQtrlyPaidBusinessList( params );
 		if ( !list ) throw new Exception('No record(s) found that matches your criteria.');

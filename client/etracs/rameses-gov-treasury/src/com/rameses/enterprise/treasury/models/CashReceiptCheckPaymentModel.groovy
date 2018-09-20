@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*; 
 import com.rameses.util.*;
+import java.rmi.server.UID
 
 class CashReceiptCheckPaymentModel extends PageFlowController { 
 
@@ -24,13 +25,17 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
     def entity;
     def saveHandler;
     
+    //for cash payments
     def balance = 0;
+    def cashtendered = 0;
+    
     def fundList;
     def fund;
     def check;
     def checks = [];
     def payments = [];
     def totalcash = 0;
+    def cashchange = 0;
     def openFundList;
     
     def noncashListHandler = [
@@ -44,6 +49,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         fundList.each {it.used=0};
         if( fundList.size() == 1 ) {
             fund = fundList[0].fund;
+            openFundList = [];
         }
         else {
             openFundList = fundList*.fund;
@@ -57,8 +63,7 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
     void searchCheckIfExists() {
         new_check = true;
         def m = [_schemaname:'checkpayment'];
-        m.findBy = [refno: check.refno ];
-        m.where = [ " amount - amtused > 0 " ];
+        m.where = [ " amount - amtused > 0 AND collector.objid =:collectorid", [collectorid: entity.collector.objid] ];
         selectionList = queryService.getList( m );
         if(selectionList ) {
             check_exists = true;
@@ -101,13 +106,23 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         check._schemaname = 'checkpayment';
         check.state = 'PENDING';
         check.amtused = 0;
-        
+        check.external = 0;
+        check.collector = entity.collector;
+        if( entity.subcollector ) {
+            check.subcollector = entity.subcollector;
+        };
         def _total = fundList.sum{ it.amount - it.used };
         if( check.amount > _total && check.split != 1 ) {
             throw new Exception("Amount of check must be less than or equal to amount to pay for non split checks");
         }
         
-        check = persistenceService.create( check );
+        if( check.split == 1 ) {
+            check = persistenceService.create( check );
+        }
+        else {
+            check.objid = "CHKPMT"+ new UID();
+            checks << check;
+        }
         if( check.split ==  1 && _total < check.amount ) {
             check.amount = _total;
         }
@@ -161,15 +176,12 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         balance = balance - check.amount;
     }
 
-    void initCheck() {
-        check = [:];
+    def addAnotherCheck() {
+        new_check = true;
+        check = [split:0];
+        check.receivedfrom = entity.paidby;
         fund = null;
         if(openFundList.size()==1) fund = openFundList[0];
-    }
-    
-    
-    
-    def addAnotherCheck() {
         return super.signal( "add-check" );
     }
     
@@ -177,21 +189,18 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         return super.signal( "add-cash" );
     }
     
-    void addCash() {
-        boolean pass= false;
-        def p = [:];
-        p.title = "Additional Cash";
-        p.value = balance;
-        p.handler = { o->
-            if(o!=balance)
-                throw new Exception("Cash must equal the balance due");
-            totalcash = o;
-            balance = 0;
-            fundList.clear();
-            pass = true;
-        }
-        Modal.show( "decimal:prompt", p );
-        if(!pass) throw new BreakException();
+    def getChange() {
+        if(cashtendered == 0 ) return 0;
+        return cashtendered - balance;
+    }
+    
+    def verifyCashPayment() {
+        if( balance > cashtendered ) throw new Exception("There is still unpaid balance");
+        totalcash = cashtendered;
+        cashchange = change;
+        balance = 0;
+        fundList.clear();
+        super.signal("submit");
     }
     
     //This will add adjusting entries for the fund just in case there are balances due;
@@ -210,11 +219,14 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
     }
     
     def saveCheck() {
-        if(balance != 0  )
-            throw new Exception("Amount paid must be exact " );
+        if(balance > 0  )
+            throw new Exception("There is still balance unpaid" );
         def m = [:];
         m.paymentitems = payments;
         m.totalcash = totalcash;
+        m.cashchange = cashchange;
+        m.checks = checks.unique();
+        
         saveHandler(m);  
         return "_close";
     }

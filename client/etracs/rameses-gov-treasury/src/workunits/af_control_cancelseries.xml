@@ -1,7 +1,7 @@
 <workunit>
     
    <invokers>
-         <invoker type="af_control:form:actions" caption="Cancel Series" action="init" />
+         <invoker type="af_control:form:actions" caption="Cancel Series" action="init" role="COLLECTOR,SUBCOLLECTOR" />
    </invokers>
    
    <code>

@@ -36,9 +36,9 @@ class RemoteServerDataExportController
     }
     
     void init() {
-        entity = [:]
-        entity.data = [:]
-        entity.data.state = 'DRAFT'
+        entity = [:];
+        entity.data = [:];
+        entity.data.state = 'DRAFT';
         mode  = INIT_CREATE;
     }
     

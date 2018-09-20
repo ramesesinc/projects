@@ -3,7 +3,7 @@
         <invoker type="collectiongroup:lookup" caption="Lookup Collection Group" 
                  action="init" target="popup" 
                  cols="name,org.name" 
-                 hiddenCols="org.objid" /> 
+                 hiddenCols="org.objid,sharing" /> 
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.CollectionGroupLookupModel" />    
 </workunit>

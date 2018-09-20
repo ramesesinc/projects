@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker type="business_create:market" caption="Select Market"  action="init"/>
+        <invoker type="formActions" caption="Back"  action="doBack"/>
+        <invoker type="formActions" caption="Next"  action="doNext"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[    
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.common.*
+        import com.rameses.common.*;
+        import java.rmi.server.*
+        import com.rameses.util.*;
+        
+        class BusinessNewMarket {
+        
+            String title = "Market Plugin"
+        
+            def handler;
+        
+            void init() {
+            }
+            
+            def doNext() {
+                handler.doNext();
+            }
+            
+            def doBack() {
+                handler.doBack();
+            }
+            
+            
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="com.rameses.gov.etracs.bpls.views.ZZMarketPlugin"/>
+    </pages>
+    
+</workunit>

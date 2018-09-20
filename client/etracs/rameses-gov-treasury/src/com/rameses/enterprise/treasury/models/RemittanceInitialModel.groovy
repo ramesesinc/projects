@@ -111,8 +111,6 @@ class RemittanceInitialModel {
             return Inv.lookupOpener("cashreceipt:open", [entity: [objid: o.objid ]] );
         }
     ] as BasicListModel;
-
-    
     
     void submitForRemittance() { 
         def p = [ objid: draftremid ]; 

@@ -27,12 +27,18 @@
 
 		<complex name="fund" ref="fund" jointype="many-to-one" required="false" includefields="objid,code,name">
 			<key field="fundid" target="objid" />
-		</complex>
+		</complex>		
+
+		<!-- collector info -->
+		<field name="collector_objid" />
+		<field name="collector_name" caption="Collector"/>
+
+		<!-- sub collector info -->
+		<field name="subcollector_objid" />
+		<field name="subcollector_name" caption="Subcollector"/>
+
 
 		<field name="deposited" expr="CASE WHEN depositslipid IS NULL THEN 0 ELSE 1 END" />
 		<field name="external" />
 	</element>
-
-
-
 </schema>

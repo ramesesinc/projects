@@ -68,9 +68,6 @@ class CollectionVoucherService  {
 		def z = [collectionvoucherid: m.objid]
 		cvEm.insertCollectionVoucherFund( z );
 
-		//in case there are EFTs, insert into funds that needs to be transferred
-		cvEm.insertCollectionVoucherFundTransfer( z );
-
 		//update cash breakdown totals in each collection fund
 		def lfList = cvFundEm.find( [ parentid: m.objid ] ).list();
 
@@ -113,10 +110,15 @@ class CollectionVoucherService  {
 				cvFundEm.find([ objid: it.objid ]).update([ controlno: txnno ]); 
 			} 
 		} 
-
 		cvEm.find([ objid: p.objid ]).update( m ); 	
+		return m; 
+	}	
 
+	@ProxyMethod 
+	public void postJev( def o ) { 
 		//post to jev
+		def p = cvEm.find([objid: o.objid]).first();
+		if(!p) throw new Exception("Collection Voucher not found!");
 		def ref = [refid:p.objid,refno:m.controlno,reftype:'collectionvoucher', refdate:p.controldate, txntype:'COLLECTION'];
 
 		def jevBatch = [:];
@@ -128,9 +130,7 @@ class CollectionVoucherService  {
 			jevBatch.funds << [ objid: it.objid, refno:m.controlno, fund: it.fund, amount: it.amount  ];	 
 		} 
 
-
 		def pm = [collectionvoucherid: p.objid ];
-
 		jevBatch.items.addAll( cvEm.getCashLedgerItems( pm ) );
 		jevBatch.items.addAll( cvEm.getBankAccountLedgerItems( pm ) );
 		jevBatch.items.addAll( cvEm.getIncomeLedgerItems( pm ) );
@@ -141,15 +141,11 @@ class CollectionVoucherService  {
 			it.acctname = it.itemacctname;
 		}
 		jevSvc.createBatch( jevBatch );
-
-		
-
-		return m; 
-	}	
+	}
 
 
 	@ProxyMethod 
-	public def getReportData( params ) {
+	public def getReportData( params ) { 
 		return params; 
 	}
 }

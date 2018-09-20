@@ -9,66 +9,38 @@ import com.rameses.seti2.models.*;
 class FundModel extends CrudFormModel {
 
    void afterCreate() {
-        entity.groupid = caller.selectedNode.objid;
-        entity.system = 0;
-        entity.state = 'DRAFT';
+       entity.groupid = caller.selectedNode.objid;
+       entity.system = 0;
+       entity.state = 'DRAFT';
     }
-    
-    def selectedFund;
-    
-    def subFundListHandler = [
-        fetchList: { o->
-            def m = [_schemaname:'fund'];
-            m.findBy = [parentid: entity.objid ];
-            m.orderBy = "code";
-            return queryService.getList( m );
+
+    @PropertyChangeListener
+    def listener = [
+        "entity.depositoryfund" : { o->
+            entity.depositoryfundid = o.objid;
         }
-    ] as BasicListModel;
+    ];
     
-    def showSubFundForm(def handler, def data ) {
-       def fields = [
-           [name:'code', caption:'Code', required:true],
-           [name:'title', caption:'Title', required:true] 
-       ];
-       if(!data) data = [:];
-       def op = Inv.lookupOpener("dynamic:form", [ data: data, fields: fields, handler: handler, formTitle: 'Enter Sub Fund' ] );
-       op.caption = "Sub Fund";
-       return op;
+    void activate() {
+        def m = [_schemaname: "fund"];
+        m.findBy = [objid: entity.objid];
+        m.state = "ACTIVE";
+        persistenceService.update( m );
+        entity.state = "ACTIVE";
     }
     
-    def addSubFund() {
-       def h = { o ->
-           persistenceService.create(o);
-           subFundListHandler.reload();
-       }
-       def m = [_schemaname : "fund" ];
-       m.groupid = caller.selectedNode.objid;
-       m.system = 0;
-       m.state = entity.state;
-       m.parentid = entity.objid;
-       return showSubFundForm( h, m );
+    void deactivate() {
+        def m = [_schemaname: "fund"];
+        m.findBy = [objid: entity.objid];
+        m.state = "INACTIVE";
+        persistenceService.update( m );
+        entity.state = "INACTIVE";
     }
-    
-    def editSubFund() {
-        if(!selectedFund) throw new Exception("Select a fund first");
-        def h = { o->
-            def m = [_schemaname: 'fund'];
-            m.findBy = [objid: selectedFund.objid];
-            m.code = o.code;
-            m.title = o.title;
-            persistenceService.update(m);
-            subFundListHandler.reload();
-        }
-        def d = [code:selectedFund.code, title: selectedFund.title];
-        return showSubFundForm( h, d );
-    }
-    
-    void removeSubFund() {
-        if(!selectedFund) throw new Exception("Select a fund first");
-        def m = [_schemaname: 'fund'];
-        m.findBy = [objid: selectedFund.objid];
-        persistenceService.removeEntity( m );
-        subFundListHandler.reload();
-    }
+
+    def getLookupDepositoryFund() {
+       def query = [:];
+       query.groupid = entity.groupid;
+       return Inv.lookupOpener("fund_depository:lookup", [query: query]);
+   }     
     
 }

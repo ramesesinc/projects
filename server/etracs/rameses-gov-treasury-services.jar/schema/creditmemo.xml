@@ -1,0 +1,29 @@
+<schema>
+
+	<element tablename="creditmemo" >
+		<field name="objid" primary="true" />
+		<field name="state" required="true" />
+		<field name="controlno" required="true" />
+		<field name="payer_objid" required="true" />
+		<field name="payer_name" required="true" />
+		<field name="payer_address_objid" required="true" />		
+		<field name="payer_address_text" required="true" />
+		<field name="refdate" required="true" />
+		<field name="refno" required="true" />
+		<field name="amount" required="true" type="decimal" />
+		<field name="particulars"  required="true"/>
+		<field name="bankaccount_objid" required="true"/>
+		<field name="bankaccount_code" required="true"/>
+		<field name="bankaccount_title"  required="true"/>
+		<field name="type_objid" required="true"/>
+		<field name="type_title" required="true"/>
+		<field name="dtissued" required="true" />
+		<field name="issuedby_objid" required="true" />
+		<field name="issuedby_name" required="true" />
+
+		<field name="receiptid" required="true" />
+		<field name="receiptno" required="true" />
+
+	</element>
+
+</schema>

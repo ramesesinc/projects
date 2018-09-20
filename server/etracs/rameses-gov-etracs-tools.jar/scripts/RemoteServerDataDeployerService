@@ -40,8 +40,6 @@ class RemoteServerDataDeployerService {
 		if ( !entity.data.orgs ) entity.data.orgs = []; 
 		if ( !entity.data.orgclasses ) entity.data.orgclasses = []; 
 
-		println '-'*50;
-
 		if ( entity.data.orgclass?.name ) { 
 			def x = entity.data.orgclasses.find{ it.name==entity.data.orgclass.name } 
 			if ( !x ) entity.data.orgclasses << entity.data.orgclass; 

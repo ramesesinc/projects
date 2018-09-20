@@ -1,6 +1,7 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"
           schemaName="waterworks_block_schedule">
     <invokers>
-        <invoker folderid="menucategory/waterworks/master" caption="Manage Schedules" action="init" role="MASTER" index="10" />
+        <invoker folderid="menucategory/waterworks/billing" caption="Billing Schedules" 
+                 action="init" role="MASTER" index="20" />
     </invokers>
 </workunit>

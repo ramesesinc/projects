@@ -1,4 +1,4 @@
-<workunit schemaName="waterworks_stubout" allowCreate="false">
+<workunit schemaName="waterworks_stubout">
     <invokers>
         <invoker type="waterworks_stubout:create" formTitle="New Stubout" 
                  action="create" target="popup"/>
@@ -7,10 +7,11 @@
                  action="open" target="popup"/>
         
         <!-- actions -->
+        <!--
         <invoker type="formActions" caption="Add Nodes" action="addNodes" visibleWhen="#{mode != 'create' }"/>
         <invoker type="formActions" caption="Edit Indexno" action="editIndexNo"  visibleWhen="#{mode != 'create' }"/>
         <invoker type="formActions" caption="Remove Nodes" action="removeNode"  visibleWhen="#{mode != 'create' }"/>
-        
+        -->
     </invokers> 
     <code class="com.rameses.gov.etracs.waterworks.models.StuboutModel"/>
     <pages>

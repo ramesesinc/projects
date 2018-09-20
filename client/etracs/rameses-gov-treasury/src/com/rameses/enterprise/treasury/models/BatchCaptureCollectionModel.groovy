@@ -68,7 +68,7 @@ class BatchCaptureCollectionModel  {
     } 
 
     def getLookupAccount() {
-        return InvokerUtil.lookupOpener("cashreceiptitem:lookup", [ 
+        return Inv.lookupOpener("cashreceiptitem:lookup", [ 
             "query.txntype" : "cashreceipt", 
             "query.collectorid": entity.collector.objid,
             "query.collectiontype": selectedItem.collectiontype,
@@ -94,9 +94,9 @@ class BatchCaptureCollectionModel  {
         fetchList: {
             return entity.batchitems;
         }, 
-        isAllowOpen: {
+        isAllowOpen: { 
             return (entity.state == 'DRAFT'); 
-        },  
+        }, 
         onOpenItem: { item, colname-> 
             return openItemImpl( item ); 
         }
@@ -145,6 +145,9 @@ class BatchCaptureCollectionModel  {
     } 
     
     def createItem() {
+        if ( entity.currentseries > entity.endseries ) 
+            throw new Exception('Series is already consumed'); 
+            
         def m  = [:];
         m.objid = "BCCE" + new java.rmi.server.UID();
         m.parentid = entity.objid; 
@@ -163,15 +166,21 @@ class BatchCaptureCollectionModel  {
         def lastitem = (entity.batchitems? entity.batchitems.last() : null); 
         if ( lastitem?.receiptdate ) m.receiptdate = lastitem.receiptdate; 
 
-        if( copyprevinfo ) {
-            if ( lastitem ) {
-                if ( lastitem.items && lastitem.items.size() == 1 ) {
-                    def nfo = lastitem.items[0].clone(); 
+        if( copyprevinfo ) { 
+            if ( lastitem ) { 
+                lastitem = svc.findItem([ objid: lastitem.objid ]);  
+            } 
+            if ( lastitem ) { 
+                m.items = []; 
+                m.amount = 0.0; 
+                lastitem.items.each{
+                    def nfo = it.clone(); 
                     nfo.item = nfo.item.clone(); 
                     nfo.fund = nfo.fund.clone(); 
-                    m.items = [ nfo ]; 
-                    m.amount = m.totalcash = nfo.amount; 
-                } 
+                    m.items << nfo; 
+                    m.amount += nfo.amount; 
+                }
+
                 m.acctinfo = lastitem.acctinfo; 
                 m.receiptdate = lastitem.receiptdate;
                 m.paidbyaddress = lastitem.paidbyaddress;

@@ -9,7 +9,10 @@ class ItemAccountListInterceptor {
 	def orgSvc;
 
 	@DataContext('collectiontype_account')
-	def coltypeAcct_db;	
+	def coltypeAcct_db;		
+
+	@DataContext('vw_collectiontype_account')
+	def vwcoltypeAcct_db;	
 
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public def getNodeList(evt) {
@@ -33,7 +36,7 @@ class ItemAccountListInterceptor {
 			else {
 				o.where = [str, m];
 			}
-		}
+		} 
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")
@@ -54,7 +57,7 @@ class ItemAccountListInterceptor {
 				def acctids = ctaem.list().collect{ it.account.objid } 
 				if ( acctids ) { 
 					str = " objid IN ('" + acctids.join("','") + "')";
-				}
+				}  
 			}			
 		} 
 
@@ -75,14 +78,19 @@ class ItemAccountListInterceptor {
 		def result = evt.result;
 
 		if( o.has_collection_account ) {
-			def acList = coltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]).list();
-			result.each { a-> 
-				def m = acList.find{  
-					it.account.objid == a.objid 
-				} 
-				if ( m.valuetype ) {
-					a.valuetype = m.valuetype; 
-					a.defaultvalue = m.defaultvalue; 
+			def startrow = (o._start ? o._start : 0); 
+			def rowcount = (o._limit ? o._limit : 20);
+			def adb = vwcoltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]); 
+			if ( o.searchtext ) { 
+				def stxt = o.searchtext + '%';
+				adb.where(' (code like :stxt OR title like :stxt) ', [stxt: stxt]) 
+			} 
+
+			def acList = adb.list(startrow, rowcount);
+			acList.each { a-> 
+				def m = result.find{ it.objid == a.objid } 
+				if ( m == null ) { 
+					result << a; 
 				}
 			}
 		}

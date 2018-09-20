@@ -41,6 +41,7 @@ class DepositSlipService  {
 	public def create( def o ) {
 		def tmp = [:];
 		tmp.depositvoucherfundid = o.depositvoucherfundid;
+		tmp.depositvoucherfund = [objid: o.depositvoucherfundid ];
 		tmp.createdby = [objid:env.USERID, name:env.FULLNAME];
 		tmp.dtcreated = dateSvc.getServerDate();
 		tmp.bankaccount = o.bankaccount;
@@ -98,27 +99,14 @@ class DepositSlipService  {
 	@ProxyMethod
 	public def removeDepositSlip( def o ) {
 		def r = depositSlipEm.find([objid: o.objid]).first();
-		depositSlipEm.find([objid: o.objid]).delete();
-		depositVoucherEm.find( [objid: r.depositvoucherid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
-
+		if( r.state != "DRAFT") throw new Exception("Only deposit slip in DRAFT state can be removed");	
 		//update all checks for the deposit slip to null
-		checkpaymentEm.find([depositslipid: o.objid]).update( [depositslipid: null ]);
-		return depositVoucherEm.find( [objid: r.depositvoucherid] ).select("amountdeposited").first();
+		checkpaymentEm.find([depositslipid: o.objid]).update( [depositslipid: "{NULL}" ]);
+
+		depositSlipEm.find([objid: o.objid]).delete();
+		depositVoucherFundEm.find( [objid: r.depositvoucherfundid] ).update( [ amountdeposited: '{amountdeposited - :amt}'], [amt: r.amount ]  );
+		return depositVoucherFundEm.find( [objid: r.depositvoucherfundid] ).select("amountdeposited").first();
 	}
 
-	/*
-	@ProxyMethod
-	public void approveDepositSlip( def o ) {
-		 depositSlipEm.find([objid: o.objid]).update( [state: 'APPROVED' ] );
-	}
-
-	@ProxyMethod
-	public void validateDepositSlip( def o ) {
-		def m = [:];
-		m.state = 'VALIDATED';
-		m.validation = o.validation; 
-		depositSlipEm.find([objid: o.objid]).update(m);
-	}
-	*/
 
 }

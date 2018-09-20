@@ -1,68 +1,112 @@
-[getOpenAFControls]
+[getBuildAFControls]
 select 
-	tmp2.remittanceid, tmp2.controlid, tmp2.formno, tmp2.formtype, tmp2.formtitle, tmp2.unit, 
-	tmp2.serieslength, tmp2.denomination, tmp2.stubno, tmp2.startseries, tmp2.endseries, tmp2.qtycancelled, 
-	(case when tmp2.received = 1 then tmp2.receivedstartseries else null end) as receivedstartseries, 
-	(case when tmp2.received = 1 then tmp2.receivedendseries else null end) as receivedendseries, 
-	(case when tmp2.received = 1 then tmp2.qtyreceived else 0 end) as qtyreceived, 
+	t3.remittanceid, t3.controlid, af.objid as formno, af.formtype, af.title as formtitle, afc.unit, 
+	af.serieslength, af.denomination, afc.stubno, afc.startseries, afc.endseries, 
+	t3.receivedstartseries, t3.receivedendseries, t3.beginstartseries, t3.beginendseries, 
+	t3.issuedstartseries, t3.issuedendseries, t3.endingstartseries, t3.endingendseries,
 	case 
-		when tmp2.received = 0 and tmp2.qtyreceived > 0 then tmp2.receivedstartseries 
-		when tmp2.received = 0 and tmp2.qtybegin > 0 then tmp2.beginstartseries 
-	end as beginstartseries, 
+		when (t3.receivedendseries-t3.receivedstartseries+1) is null then 0 
+		else (t3.receivedendseries-t3.receivedstartseries+1)
+	end as qtyreceived, 
 	case 
-		when tmp2.received = 0 and tmp2.qtyreceived > 0 then tmp2.receivedendseries 
-		when tmp2.received = 0 and tmp2.qtybegin > 0 then tmp2.beginendseries 
-	end as beginendseries, 
+		when (t3.beginendseries-t3.beginstartseries+1) is null then 0 
+		else (t3.beginendseries-t3.beginstartseries+1)
+	end as qtybegin, 
 	case 
-		when tmp2.received = 0 and tmp2.qtyreceived > 0 then tmp2.qtyreceived
-		when tmp2.received = 0 and tmp2.qtybegin > 0 then tmp2.qtybegin 
-	end as qtybegin  
+		when (t3.issuedendseries-t3.issuedstartseries+1) is null then 0 
+		else (t3.issuedendseries-t3.issuedstartseries+1)
+	end as qtyissued, 
+	case 
+		when (t3.endingendseries-t3.endingstartseries+1) is null then 0 
+		else (t3.endingendseries-t3.endingstartseries+1)
+	end as qtyending, 
+	0 as qtycancelled 
 from ( 
 
 	select 
-		tmp1.remittanceid, 
-		(case when af.formtype = 'serial' then 0 else 1 end) as formindex, 
-		afc.afid as formno, af.formtype, af.title as formtitle, afc.unit, 
-		af.serieslength, af.denomination, afc.stubno, afc.startseries, afc.endseries, 
-		case 
-			when afd.refdate >= convert(date, tmp1.controldate) and afd.refdate <= tmp1.controldate 
-			then 1 else 0 
-		end as received, 
-		afd.refdate, afd.controlid, afd.qtycancelled, 
-		afd.receivedstartseries, afd.receivedendseries, afd.qtyreceived, 
-		afd.beginstartseries, afd.beginendseries, afd.qtybegin, 
-		afd.endingstartseries, afd.endingendseries, afd.qtyending 
+		t2.remittanceid, t2.controlid, 
+		min(receivedstartseries) as receivedstartseries, max(receivedendseries) as receivedendseries, 
+		(
+			case 
+				when max(received) > 0 then null 
+				when max(qtybegin) > 0 then min(beginstartseries) 
+				else min(receivedstartseries) 
+			end 
+		) as beginstartseries, 
+		(
+			case 
+				when max(received) > 0 then null 
+				when max(qtybegin) > 0 then max(beginendseries) 
+				else max(receivedendseries) 
+			end 
+		) as beginendseries, 
+		min(issuedstartseries) as issuedstartseries, max(issuedendseries) as issuedendseries, 
+		max(endingstartseries) as endingstartseries, max(endingendseries) as endingendseries, 
+		max(received) as received 
 	from ( 
 		select 
-			rem.objid as remittanceid, rem.controldate, ( 
-				select top 1 objid from af_control_detail 
-				where controlid = afc.objid and refdate <= rem.controldate 
-				order by refdate desc, txndate desc 
-			) as detailid 
+			t1.remittanceid, afd.controlid, 
+			(case when afd.receivedstartseries=0 then null else afd.receivedstartseries end) as receivedstartseries, 
+			(case when afd.receivedendseries=0 then null else afd.receivedendseries end) as receivedendseries, 
+			(case when afd.beginstartseries=0 then null else afd.beginstartseries end) as beginstartseries, 
+			(case when afd.beginendseries=0 then null else afd.beginendseries end) as beginendseries,
+			null as issuedstartseries, null as issuedendseries, 
+			(case when afd.endingstartseries=0 then null else afd.endingstartseries end) as endingstartseries, 
+			(case when afd.endingendseries=0 then null else afd.endingendseries end) as endingendseries,
+			afd.qtyreceived, afd.qtybegin, afd.qtyissued, afd.qtyending, afd.qtycancelled, 
+			(case 
+				when t1.dtfiled >= convert(date, t1.controldate) and t1.dtfiled <= t1.controldate and afd.qtyreceived > 0 
+				then 1 else 0 
+			end) as received 
+		from ( 
+			select 
+				rem.objid as remittanceid, rem.controldate, 
+				afc.dtfiled, ( 
+					select top 1 objid from af_control_detail 
+					where controlid = afc.objid and refdate <= rem.controldate  
+					order by refdate desc, txndate desc 
+				) as detailid 
+			from remittance rem 
+				inner join af_control afc on afc.owner_objid = rem.collector_objid 
+			where rem.objid = $P{remittanceid} 
+				and afc.currentseries <= afc.endseries 
+				and afc.dtfiled <= rem.controldate 
+		)t1 
+			inner join af_control_detail afd on afd.objid = t1.detailid 
+		where afd.qtyending > 0 
+
+		union all 
+
+		select 
+			c.remittanceid, c.controlid, 
+			null as receivedstartseries, null as receivedendseries, 
+			min(c.series) as beginstartseries, max(afc.endseries) as beginendseries, 
+			min(c.series) as issuedstartseries, max(c.series) as issuedendseries, 
+			case 
+				when max(c.series) >= max(afc.endseries) then null else max(c.series)+1 
+			end as endingstartseries,  
+			case 
+				when max(c.series) >= max(afc.endseries) then null else max(afc.endseries)  
+			end as endingendseries, 
+			0 as qtyreceived,   
+			max(afc.endseries)-min(c.series)+1 as qtybegin, 
+			max(c.series)-min(c.series)+1 as qtyissued, 
+			case 
+				when max(c.series) >= max(afc.endseries) then 0 
+				else max(afc.endseries)-max(c.series)  
+			end as qtyending, 
+			0 as qtycancelled, 0 as received  
 		from remittance rem 
-			inner join af_control afc on afc.owner_objid = rem.collector_objid 
-		where rem.objid = $P{remittanceid}   
-			and afc.currentseries <= afc.endseries 
-			and afc.dtfiled <= rem.controldate 
-	)tmp1 
-		inner join af_control_detail afd on afd.objid = tmp1.detailid 
-		inner join af_control afc on afc.objid = afd.controlid 
-		inner join af on af.objid = afc.afid 
-	where afd.qtyending > 0 
+			inner join cashreceipt c on c.remittanceid = rem.objid 
+			inner join af_control afc on afc.objid = c.controlid 
+		where rem.objid = $P{remittanceid} 
+		group by c.remittanceid, c.controlid 
+	)t2  
+	group by t2.remittanceid, t2.controlid 
 
-)tmp2
-order by tmp2.formindex, tmp2.formno, tmp2.startseries 
-
-
-[getIssuedAFControls]
-select 
-	c.remittanceid, c.afcontrolid as controlid, 
-	c.fromseries as issuedstartseries, c.toseries as issuedendseries, c.qty as qtyissued, 
-	(case when c.toseries >= c.endseries then null else c.toseries+1 end) as endingstartseries, 
-	(case when c.toseries >= c.endseries then null else c.endseries end) as endingendseries, 
- 	(case when c.toseries >= c.endseries then 0 else (c.endseries-(c.toseries+1))+1 end) as qtyending 
-from cashreceipt_af_summary c 
-where c.remittanceid = $P{remittanceid}  
+)t3 
+	inner join af_control afc on afc.objid = t3.controlid 
+	inner join af on af.objid = afc.afid 
 
 
 [getCancelledSeries]

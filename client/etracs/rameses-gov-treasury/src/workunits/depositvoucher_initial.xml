@@ -1,13 +1,15 @@
 <workunit schemaName="depositvoucher">
     <invokers>
-        <invoker folderid="menucategory/treasury/remittance" role="CASHIER" 
+        <invoker folderid="menucategory/treasury/remittance" 
+                 role="CASHIER" 
                  caption="Prepare Deposit Voucher" 
                  windowTitle="New Deposit Voucher"
                  formTitle="New Deposit Voucher"
                  action="init" 
                  index="50" />
         
-        <invoker type="depositvoucher_fund:create" role="CASHIER" 
+        <invoker type="depositvoucher_fund:create" 
+                 role="CASHIER" 
                  caption="New Deposit Voucher" 
                  windowTitle="New Deposit Voucher"
                  formTitle="New Deposit Voucher"

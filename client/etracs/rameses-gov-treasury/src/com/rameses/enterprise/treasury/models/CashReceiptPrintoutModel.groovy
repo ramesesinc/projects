@@ -14,11 +14,13 @@ class CashReceiptPrintoutModel extends ReportModel {
 
     @Invoker
     def invoker;
-
+    
+    @Controller 
+    def controller; 
 
     def sdf = new SimpleDateFormat("yyyy-MM-dd");
     def reportData;
-    
+        
     public Map getParameters() {
         def params = paramSvc.getStandardParameter(); 
         params.RECEIPTITEMCOUNT = reportData.items.size(); 
@@ -50,8 +52,25 @@ class CashReceiptPrintoutModel extends ReportModel {
         return reportData; 
     }
     
-    public String getReportName() {
+    public String getReportName() { 
         return invoker.properties.reportName;
     }
     
-}    
+    
+    private def _subreports; 
+    public SubReport[] getSubReports(){ 
+        if ( _subreports == null ) { 
+            _subreports = new SubReport[0]; 
+            def actionProvider = com.rameses.rcp.framework.ClientContext.currentContext.actionProvider;
+            if (actionProvider) { 
+                def list = actionProvider.getActionsByType("subReport", controller); 
+                _subreports = new SubReport[ list.size() ];
+                list.eachWithIndex {o,idx-> 
+                    _subreports[idx] = new SubReport(o.properties.name, o.properties.template)
+                }
+            }
+        }
+        return _subreports; 
+    }
+
+} 

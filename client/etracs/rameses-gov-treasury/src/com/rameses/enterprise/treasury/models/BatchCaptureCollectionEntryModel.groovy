@@ -1,9 +1,10 @@
 package com.rameses.enterprise.treasury.models; 
 
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.util.*;
 
 class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudFormModel {
 
@@ -187,8 +188,8 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
     }
     
     def save() {
-        super.save(); 
-
+        if ( !super.save()) return null; 
+        
         caller.updateBatchItem( entity ); 
         if ( openForEditing ) return '_close'; 
         
@@ -203,19 +204,52 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
         return "_close";
     }
 
-    def getCollectionGroupHandler() {
-        return InvokerUtil.lookupOpener("collectiongroup:lookup", [ 
-            selectHandler: { items-> 
-                items.each{ it.fund = it.item.fund } 
-                if ( fund?.objid ) { 
-                    items = items.findAll{ it.fund?.objid==fund.objid }
+    def getCollectionGroupHandler() { 
+        def param = ['query.txntype': 'cashreceipt']; 
+        param.onselect = { o-> 
+            if ( !o?.items ) return; 
+
+            boolean has_sharing = ( o.sharing.toString() == "1"); 
+            if ( has_sharing ) { 
+                def amt = MsgBox.prompt( "Please enter amount" );
+                if( amt == null ) return null;
+                
+                def sharing_amount = new BigDecimal( amt.toString() );
+                o.items.each {
+                    it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
                 } 
-                entity.items.addAll( items );
-                rebuildTotals(); 
-                listModel.reload(); 
-                if (binding) binding.refresh(".*");
-            }
-        ]);
+            } 
+                
+            def newitems = []; 
+            o.items.each{ 
+                def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
+                if ( it.amount != null ) { 
+                    rci.amount = it.amount; 
+                } else {
+                    rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
+                }
+
+                rci.item = [ 
+                    objid : it.account?.objid, 
+                    code  : it.account?.code, 
+                    title : it.account?.title, 
+                    fund  : it.account?.fund, 
+                    valuetype : it.valuetype, 
+                    defaultvalue : it.defaultvalue 
+                ];                  
+                if ( it.valuetype == 'FIXEDUNIT' ) {
+                    rci.remarks = "qty@1"; 
+                } 
+                newitems << rci; 
+            } 
+            
+            newitems.sort{( it.orderno ? it.orderno : 0 )} 
+            entity.items.addAll( newitems ); 
+            rebuildTotals(); 
+            listModel.reload(); 
+            if (binding) binding.refresh(".*");            
+        } 
+        return Inv.lookupOpener("collectiongroup:lookup", param );
     }
 
     def getLookupBank(){

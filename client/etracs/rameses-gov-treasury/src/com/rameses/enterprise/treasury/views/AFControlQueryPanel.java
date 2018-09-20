@@ -26,12 +26,16 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
 
         setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.CenterLayout());
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(50);
@@ -44,14 +48,14 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(95, 20));
         xFormPanel1.add(xComboBox1);
 
-        xLookupField1.setName("query.issuedto"); // NOI18N
         xLookupField1.setCaption("Issued To");
-        xLookupField1.setCaptionWidth(70);
-        xLookupField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
         xLookupField1.setExpression("#{ query.issuedto.name }");
         xLookupField1.setHandler("collector:lookup");
-        xLookupField1.setPreferredSize(new java.awt.Dimension(150, 20));
+        xLookupField1.setName("query.issuedto"); // NOI18N
         xLookupField1.setVisibleWhen("#{ showIssuedToFilter == true }");
+        xLookupField1.setCaptionWidth(70);
+        xLookupField1.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
+        xLookupField1.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(xLookupField1);
 
         xLookupField2.setName("query.respcenter"); // NOI18N
@@ -64,9 +68,12 @@ public class AFControlQueryPanel extends javax.swing.JPanel {
         xLookupField2.setVisibleWhen("#{ showRespcenterFilter == true }");
         xFormPanel1.add(xLookupField2);
 
-        add(xFormPanel1, java.awt.BorderLayout.NORTH);
+        jPanel1.add(xFormPanel1);
+
+        add(jPanel1, java.awt.BorderLayout.EAST);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;

@@ -36,6 +36,7 @@ class CashReceiptAFLookupFilter {
         else {
             arr << " fund.objid IS NULL ";
         }
+        /*
         if(env.ORGROOT == 1 ) {
             arr << " respcenter.objid IS NULL ";
         }
@@ -43,6 +44,7 @@ class CashReceiptAFLookupFilter {
             arr << " respcenter.objid = :orgid ";
             p.orgid = env.ORGID;
         }
+        */
         return [ arr.join(" AND "), p ];
     }
     
@@ -80,6 +82,7 @@ class CashReceiptAFLookupFilter {
         else {
             arr << " fund.objid IS NULL ";
         }
+        /*
         if(env.ORGROOT == 1 ) {
             arr << " respcenter.objid IS NULL ";
         }
@@ -87,6 +90,7 @@ class CashReceiptAFLookupFilter {
             arr << " respcenter.objid = :orgid ";
             p.orgid = env.ORGID;
         }
+        */
         return [ arr.join(" AND "), p ];
     }    
 }

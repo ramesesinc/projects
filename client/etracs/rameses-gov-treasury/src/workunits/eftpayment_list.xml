@@ -1,0 +1,14 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="eftpayment" allowCreate="true">
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" caption="Incoming EFT Payments" action="init" 
+        cols="refno,payer.name,refdate,bankaccount.code,bankaccount.bank.name,amount,particulars"
+                  target="window" index="201" role="ADMIN"/> 
+        
+        <invoker folderid="menucategory/treasury/collection" caption="View EFT Payments" action="init" 
+        cols="refno,payer.name,refdate,bankaccount.code,bankaccount.bank.name,amount,particulars,createdby.name"
+                customFilter="createdby.objid = :userid"
+                target="window" index="201" role="COLLECTOR"/> 
+
+    </invokers>
+    
+</workunit>

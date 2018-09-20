@@ -36,24 +36,21 @@ public class BPAssessmentRuleService  {
 	String RULESET = "bpassessment";
 
 
-	def comparator = { agg, oldvalue, newvalue ->
+	def comparator = { agg, oldvalue, newvalue -> 
+		def oldnum = (oldvalue ? oldvalue : 0);
+		def newnum = (newvalue ? newvalue : 0);
 		switch(agg) {
 			case "COUNT":
-				return (oldvalue + 1);
+				return (oldnum + 1);
 
 			case "SUM":
-				return oldvalue + newvalue;
+				return (oldnum + newnum);
 
 			case "MIN":
-				if( oldvalue <= newvalue  )		
-					return oldvalue;
-				else
-					return newvalue;
+				return (oldnum <= newnum ? oldnum : newnum); 
+
 			case "MAX":
-				if( oldvalue >= newvalue  )		
-					return oldvalue;
-				else
-					return newvalue;
+				return (oldnum >= newnum ? oldnum : newnum); 
 		}
 		return 0;
 	}

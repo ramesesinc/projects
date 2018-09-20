@@ -35,10 +35,11 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
 
         xFormPanel1.setName("entity.name"); // NOI18N
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xTextField1.setCaption("Remote Name");
-        xTextField1.setCaptionWidth(100);
         xTextField1.setName("entity.objid"); // NOI18N
+        xTextField1.setCaptionWidth(100);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -59,13 +60,13 @@ public class RemoteServerDataInitPage extends javax.swing.JPanel {
         xFormPanel1.add(xComboBox1);
 
         xComboBox2.setCaption("Org Name");
-        xComboBox2.setCaptionWidth(100);
         xComboBox2.setDepends(new String[] {"entity.data.orgclass"});
-        xComboBox2.setDynamic(true);
         xComboBox2.setExpression("#{item.name}");
-        xComboBox2.setImmediate(true);
         xComboBox2.setItems("orgs");
         xComboBox2.setName("entity.data.org"); // NOI18N
+        xComboBox2.setCaptionWidth(100);
+        xComboBox2.setDynamic(true);
+        xComboBox2.setImmediate(true);
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 20));
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);

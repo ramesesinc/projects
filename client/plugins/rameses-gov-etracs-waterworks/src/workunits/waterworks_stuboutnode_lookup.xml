@@ -14,8 +14,9 @@
           caption="Lookup Unassigned Stubout Node" action="init"/>
         -->
         <invoker type="waterworks_stuboutnode_unassigned:lookup" 
-          cols="indexno,zone.code,sector.code,barangay.name" 
-          caption="Lookup Unassigned Stubout Node" action="init" customFilter="acctid IS NULL"/>
+          cols="indexno,stubout.code,zone.code,sector.code,barangay.name" 
+          caption="Lookup Unassigned Stubout Node" action="init" 
+          customFilter="currentacctid IS NULL"/>
     </invokers>
     <!--
     <code>

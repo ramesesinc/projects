@@ -20,7 +20,7 @@ LEFT JOIN waterworks_account wa ON wa.stuboutnodeid = son.objid;
 		<field name="zone_code" caption="Zone" indexed="true" searchable="true"/>
 		<field name="sector_code" caption="Sector" indexed="true" searchable="true"/>
 		<field name="barangay_name" caption="Barangay" indexed="true" searchable="true"/>
-		<field name="acctid" required="true"/>
+		<field name="currentacctid" required="true"/>
 		<field name="stubout_objid"/>
 		<field name="zone_objid" />
 		<field name="sector_objid" />

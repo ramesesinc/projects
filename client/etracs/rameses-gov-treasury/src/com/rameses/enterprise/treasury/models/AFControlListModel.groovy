@@ -48,17 +48,25 @@ class AFControlListModel extends CrudListModel {
         if( tag == 'COLLECTION' ) {
             str << " owner.objid = :userid ";
             m.userid = user.userid;
+            /*
             if(OsirisContext.env.ORGROOT != 1 ) {
                 str << "respcenter.objid =:orgid";
                 m.orgid = OsirisContext.env.ORGID;
             }
+            */
         };
+        else if( tag == "SUBCOLLECTION" ) {
+            str << " assignee.objid = :userid ";
+            m.userid = user.userid;
+        }
+        /*
         else {
             if( query.respcenter?.objid ) {
                 str << " respcenter.objid=:respcenterid ";
                 m.respcenterid = query.respcenter.objid;
             }
         }
+        */
         if( !str )  return null;
         return [ str.join( " AND "), m ];
     }

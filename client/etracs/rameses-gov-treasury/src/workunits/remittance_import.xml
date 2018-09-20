@@ -1,0 +1,17 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/explorer/txn/treasury/tools" action="init" caption="Import Remittance" role="COLLECTOR,LIQUIDATING_OFFICER"/>
+        <invoker type="quick_launcher" code="REM02" action="init" caption="Import Remittance" role="COLLECTOR,LIQUIDATING_OFFICER"/>
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/toolbars/cancel.png" />
+        <invoker type="formActions" action="upload" caption="Upload Remittance" mnemonic="u" visibleWhen="#{mode == 'read'}" />
+        <invoker type="formActions" action="doImport" caption="Import" mnemonic="i" visibleWhen="#{mode == 'init'}" />
+    </invokers>
+    
+    <code class="com.rameses.gov.treasury.models.RemittanceImportController"/>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.views.RemittanceImportPage"/>
+        <page name="processing" template="com.rameses.gov.treasury.views.ProcessingPage"/>
+    </pages>
+</workunit>

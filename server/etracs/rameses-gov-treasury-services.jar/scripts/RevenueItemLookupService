@@ -51,7 +51,9 @@ class RevenueItemLookupService  {
 
 			//check first if there are entries in collection type 
 			int c = em.findHasCollectionTypeAccount( m ).count; 
-			if ( c > 0 ) return em.getLookupByCollectionType( m ); 
+			if ( c > 0 ) { 
+				return em.getLookupByCollectionType( m ); 
+			} 
 
 			def cta = collectiontype_adb.read( m.collectiontype ); 
 			if ( cta.org?.objid ) { 

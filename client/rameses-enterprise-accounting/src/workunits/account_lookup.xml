@@ -1,26 +1,9 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="account">
     <invokers>
-         <invoker type="account:lookup" caption="Lookup Account" action="init" target="popup"
-            cols="code,title,group.title" />
+         <invoker type="account:lookup" 
+             caption="Lookup Account" action="init" target="popup"
+             customFilter="maingroupid = :maingroupid AND type='item' "
+            cols="code,title,group.title,type" />
    </invokers>
    
-    <code>
-        <![CDATA[
-        
-        import com.rameses.osiris2.common.*;
-        import com.rameses.rcp.common.*;
-        import com.rameses.rcp.annotations.*;
-        import com.rameses.osiris2.client.*;
-        import com.rameses.seti2.models.*;
-        
-        class AccountLookupModel extends CrudLookupModel {
-            def maingroupid;
-            def getCustomFilter() {
-                return [ "maingroupid =:id", [id:maingroupid] ]; 
-            }    
-        }
-        
-        
-        ]]>
-    </code>
 </workunit>

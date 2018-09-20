@@ -7,8 +7,8 @@
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
-                 role="LIQUIDATING_OFFICER,CASHIER,SHARED"
-                 action="init" target="window" index="10" tag="ALL"/>
+                 role="LIQUIDATING_OFFICER"
+                 action="init" target="window" index="-4" tag="ALL"/>
 
         <invoker folderid="menucategory/treasury/collection" 
                  caption="View Remittances" 
@@ -18,7 +18,7 @@
                  hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
                  role="COLLECTOR"
-                 action="init" target="window" index="250" tag="COLLECTOR"/>
+                 action="init" target="window" index="-4" tag="COLLECTOR"/>
     </invokers>
     
    <code class="com.rameses.enterprise.treasury.models.RemittanceListModel" />    

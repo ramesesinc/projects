@@ -262,48 +262,56 @@ group by tmpb.activeyear, tmpb.imonth
 
 [getQtrlyPaidBusinessList]
 select 
-	b.bin, b.businessname, b.address_text as businessaddress, 
-	tmp2.balance, tmp2.q1, tmp2.q2, tmp2.q3, tmp2.q4 
+	t2.businessid, b.bin, b.tradename, b.businessname, b.address_text as businessaddress, 
+	sum(t2.amtdue) as amtdue, sum(t2.amtpaid) as amtpaid, sum(t2.balance) as balance, 
+	sum(t2.q1) as q1, sum(t2.q2) as q2, sum(t2.q3) as q3, sum(t2.q4) as q4, sum(t2.q1+t2.q2+t2.q3+t2.q4) as totalpaidqtr 
 from ( 
 	select 
-		businessid, sum(balance) as balance, 
-		sum(q1) as q1, sum(q2) as q2, sum(q3) as q3, sum(q4) as q4 
+		tt1.businessid, sum(br.amount) as amtdue, sum(br.amtpaid) as amtpaid, 
+		sum(br.amount-br.amtpaid) as balance, 0.0 as q1, 0.0 as q2, 0.0 as q3, 0.0 as q4 
 	from ( 
 		select 
-			ba.business_objid as businessid, 
-			(case when datepart(quarter, bpay.refdate)=1 then bpay.amount else 0.0 end) as q1, 
-			(case when datepart(quarter, bpay.refdate)=2 then bpay.amount else 0.0 end) as q2, 
-			(case when datepart(quarter, bpay.refdate)=3 then bpay.amount else 0.0 end) as q3, 	
-			(case when datepart(quarter, bpay.refdate)=4 then bpay.amount else 0.0 end) as q4,  
-			0.0 as balance 
-		from business_payment bpay 
-			inner join business_application ba on ba.objid = bpay.applicationid 
-			inner join business b on (b.objid = ba.business_objid and b.permittype = $P{permittypeid}) 
-		where bpay.refdate >= $P{startdate}  
-			and bpay.refdate <  $P{enddate} 
-			and bpay.voided = 0 
-			${filter} 
+			b.objid as businessid, ba.objid as applicationid, count(*) as icount 
+		from business_payment p 
+			inner join business_application ba on ba.objid = p.applicationid 
+			inner join business b on (b.objid = ba.business_objid and b.permittype='BUSINESS') 
+			inner join business_receivable br on br.applicationid = ba.objid 
+		where p.refdate >= $P{startdate} 
+			and p.refdate <  $P{enddate} 
+			and p.voided = 0 ${filter} 
+		group by b.objid, ba.objid 
+	)tt1  
+		inner join business_receivable br on br.applicationid = tt1.applicationid 
+	group by tt1.businessid 
 
-		union all 
+	union all 
 
+	select 
+		tt1.businessid, 0.0 as amtdue, 0.0 as amtpaid, 0.0 as balance,  
+		sum(case when tt1.imonth between 1 and 3 then tt1.amount else 0.0 end) as q1, 
+		sum(case when tt1.imonth between 4 and 6 then tt1.amount else 0.0 end) as q2, 
+		sum(case when tt1.imonth between 7 and 9 then tt1.amount else 0.0 end) as q3, 
+		sum(case when tt1.imonth between 10 and 12 then tt1.amount else 0.0 end) as q4 
+	from ( 
 		select 
-			ba.business_objid as businessid, 
-			0.0 as q1, 0.0 as q2, 0.0 as q3, 0.0 as q4, 
-			(br.amount - br.amtpaid) as balance 
-		from business_payment bpay 
-			inner join business_application ba on ba.objid = bpay.applicationid 
-			inner join business b on (b.objid = ba.business_objid and b.permittype = $P{permittypeid}) 
-			inner join business_receivable br on br.applicationid = bpay.applicationid 
-		where bpay.refdate >= $P{startdate} 
-			and bpay.refdate <  $P{enddate} 
-			and bpay.voided = 0 
-			${filter} 
+			b.objid as businessid, month(p.refdate) as imonth, 
+			sum(pp.amount + pp.surcharge + pp.interest) as amount 
+		from business_payment p 
+			inner join business_application ba on ba.objid = p.applicationid 
+			inner join business b on (b.objid = ba.business_objid and b.permittype='BUSINESS') 
+			inner join business_payment_item pp on pp.parentid = p.objid 
+			left join business_receivable br on br.objid = pp.receivableid 
+		where p.refdate >= $P{startdate} 
+			and p.refdate <  $P{enddate} 
+			and p.voided = 0 ${filter} ${taxfeetypefilter} 
+		group by b.objid, month(p.refdate) 
+	)tt1 
+	group by tt1.businessid 
 
-	)tmp1 
-	group by businessid 
-)tmp2 
-	inner join business b on b.objid = tmp2.businessid 
-order by b.businessname 
+)t2, business b 
+where b.objid = t2.businessid 
+group by t2.businessid, b.bin, b.tradename, b.businessname, b.address_text 
+order by b.businessname   
 
 
 [getEmployerList]

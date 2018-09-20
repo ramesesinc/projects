@@ -22,7 +22,7 @@ public class BusinessApplicationNewModel extends CrudPageFlowModel {
     def officeTypes = ["MAIN", "BRANCH"];
     def permitTypes = [
         [id:'standard', title:"BUSINESS_PERMIT"],
-        [id:'market', title:"MARKET/GOV PROPERTY RENTAL"],
+        [id:'market', title:"MARKET/GOV PROPERTY RENTAL", handler:"business_create:market"],
         [id:'lessor', title:"LESSOR"]
     ];    
     def orgTypes = [ [key:"SING", value:"SINGLE PROPRIETORSHIP"] ] + LOV.JURIDICAL_ORG_TYPES + [ [key:"MULTIPLE", value:"MULTIPLE"] ];
@@ -42,7 +42,6 @@ public class BusinessApplicationNewModel extends CrudPageFlowModel {
         entity.business = [owner:[:], orgtype: "SING"];
     }
     
-    
     public String getEntityType() {
         if( entity.business.orgtype == "SING" ) {  
             return "individual";
@@ -53,6 +52,20 @@ public class BusinessApplicationNewModel extends CrudPageFlowModel {
         else {
             return "juridical:"+entity.business.orgtype.toLowerCase();
         }
+    }
+    
+    def handler;
+    
+    def initHandler() {
+        def h = [
+            doNext: {
+                binding.fireNavigation(signal("next"));
+            },
+            doBack: {
+                binding.fireNavigation(signal("back"));
+            }
+        ]
+        handler = Inv.lookupOpener("business_create:market", [handler: h]);
     }
     
     def selectedItem;

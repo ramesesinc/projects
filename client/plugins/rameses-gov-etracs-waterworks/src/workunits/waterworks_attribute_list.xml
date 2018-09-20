@@ -1,6 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="waterworks_attribute">
     <invokers>
         <invoker folderid="/explorer/master/waterworks" caption="Water Attributes" action="init" role="MASTER"/>
-        <invoker folderid="/menucategory/waterworks/master" caption="Manage Attributes" action="init" role="MASTER"/>
     </invokers>
 </workunit>

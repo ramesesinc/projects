@@ -5,18 +5,21 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.seti2.models.*;
-
+import com.rameses.osiris2.reports.*;
 
 class DepositVoucherFundModel extends CrudFormModel {
 
     @Service("DepositVoucherService")
-    def depositSvc;    
+    def depositSvc; 
+    
+    @Service("DepositSlipService")
+    def depositSlipSvc;
     
     @Service("DepositFundTransferService")
     def fundService;
     
     def selectedDepositSlip;
-    def depositSlipModel;
+    def depositSlipListModel;
     
     def checkListModel;
     def selectedCheck;
@@ -24,6 +27,13 @@ class DepositVoucherFundModel extends CrudFormModel {
     def selectedFundTransfer;
     def fundTransferModel;
     
+    def depositSlipModel;
+    
+    void afterOpen() {
+        depositSlipModel =  ManagedObjects.instance.create( DepositSlipModel.class );
+    }
+    
+    //DEPOSIT SLIP
     def addDepositSlip() {
         if( (entity.amount - entity.totaldr) == (entity.amountdeposited - entity.totalcr) )
             throw new Exception("No amount to deposit");
@@ -31,8 +41,48 @@ class DepositVoucherFundModel extends CrudFormModel {
         p.handler = { x->
             entity.putAll( x );
             reloadEntity();
+            depositSlipListModel.reload();
         };
         return Inv.lookupOpener("depositslip:create", p );
+    }
+    
+    void removeDepositSlips() {
+        if(!depositSlipListModel.selectedValue) throw new Exception("Please select a deposit slip by checking it");
+        if(!MsgBox.confirm("Only the deposit slips in DRAFT mode will be removed. Proceed?")) return;
+        def list = depositSlipListModel.selectedValue.findAll{it.state=="DRAFT"};
+        list.each {
+            depositSlipSvc.removeDepositSlip([objid: it.objid]);
+        }
+        reloadEntity();
+    }
+    
+    void approveDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.approve();
+        depositSlipListModel.reload();
+    }
+    
+    void printDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.print();
+        depositSlipListModel.reload();
+    }
+    
+    void markDepositSlipAsPrinted() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.markAsPrinted();
+        depositSlipListModel.reload();
+    }
+
+
+    void validateDepositSlip() {
+        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
+        depositSlipModel.entity = selectedDepositSlip;
+        depositSlipModel.validate();
+        depositSlipListModel.reload();
     }
     
     //CHECKS MANAGEMENT
@@ -74,25 +124,7 @@ class DepositVoucherFundModel extends CrudFormModel {
         binding.refresh("checksCount");
     }
     
-    void validateDepositSlip() {
-        if(!selectedDepositSlip) throw new Exception("Please select a deposit slip");
-        def m = [:];
-        m.fields = [
-            [caption: 'Validation Ref No', name:'refno', required:true],
-            [caption: 'Validation Ref Date', name:'refdate', required:true, datatype:'date'],            
-        ];
-        if(selectedDepositSlip.validation) {
-            m.data = selectedDepositSlip.validation;
-        }
-        m.handler = { o->
-            def zz = [_schemaname:"depositslip", validation: o];
-            zz.findBy = [objid: selectedDepositSlip.objid];
-            persistenceService.update( zz );
-            depositSlipModel.reload();
-            reloadEntity();
-        };
-        Modal.show( "dynamic:form", m, [title:"Validate Deposit Slip"] );
-    }
+    
     
     void addFundTransfer() {
         def h = { o->
@@ -106,23 +138,5 @@ class DepositVoucherFundModel extends CrudFormModel {
         fundService.removeEntity( selectedFundTransfer );
         reloadEntity();
     }
-    
-    /*
-    public def post() {
-        if(! MsgBox.confirm("You are about to post this voucher. Continue?")) return;
-        depositSvc.post( [objid: entity.objid ] );
-        MsgBox.alert("Posting successful");
-        return "_close";
-    }
-    public void printDepositSlip() {
-        if(!selectedItem) throw new Exception("Please select an item");
-        
-        def dephandler = selectedItem.bankaccount.bank.depositsliphandler; 
-        if ( !dephandler ) throw new Exception("Please define deposit slip handler in depository bank"); 
-        
-        def op = Inv.lookupOpener("depositslip:printout:"+ dephandler, [entity: [objid: selectedItem.objid]]); 
-        op.handle.print(); 
-    }
-    */
     
 }    

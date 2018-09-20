@@ -10,21 +10,8 @@ import com.rameses.util.*;
 
 public class SectorModel extends CrudFormModel {
     
-    @PropertyChangeListener
-    def l = [
-        "entity.code" : { o->
-            entity.objid = o;
-        }
-    ];
-    
-    def getQuery() {
-        return [sectorid: entity.objid];
+    void afterSave() {
+        caller.sectorListHandler.reload();
     }
-
-    def handler = [
-        createItem: {
-            return [sectorid: entity.objid, sector: entity];
-        }
-    ]
     
 }

@@ -127,6 +127,15 @@ public class BatchCaptureCollectionService  {
 		return entity; 
 	}
 
+	@ProxyMethod 
+	public def findItem( param ) {
+		def item = bce_db.find([ objid: param.objid ]).first(); 
+		if ( item ) {
+			item.items = bcei_db.find([ parentid: item.objid ]).list(); 
+		}
+		return item; 
+	}
+
 	@ProxyMethod  
 	public def removeItem( param ) { 
 		def item = bce_db.find([ objid: param.objid ]).first(); 
@@ -193,7 +202,7 @@ public class BatchCaptureCollectionService  {
 			} else { 
 				throw new Exception('Process failed. Receipt# '+ it.receiptno +' may have been tampered. Please verify');
 			} 
-		}
+		} 
 
 		def item = params.batchitems.find{it.amount == 0.0 && (it.voided == 0 || it.voided == false)}
 		validateAmount( item ); 

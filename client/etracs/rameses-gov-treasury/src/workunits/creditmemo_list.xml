@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="creditmemo">
+    <invokers>
+        <!--
+        <invoker folderid="menucategory/treasury/mgmt" caption="View Credit Memos" 
+            cols="controlno,refno,bankaccount.name,issuedby.name"
+            action="init" role="MASTER"/>
+        -->    
+        <!--
+        <invoker folderid="menucategory/treasury/collection" caption="View Cash Tickets" 
+                 action="init" index="50" 
+                 role="COLLECTOR" tag="collector"
+                 customFilter=" formtype='cashticket' "/>         
+        -->
+                 
+        <!--
+        <invoker xtype="formActions" action="viewReport" caption="Report" />
+        -->
+    </invokers>
+</workunit>

@@ -13,6 +13,7 @@ public abstract class AbstractCashReceipt {
     @Binding
     def binding;
     
+    
     @Service("CashReceiptService")
     def service;
     
@@ -39,7 +40,11 @@ public abstract class AbstractCashReceipt {
     
     def createAnother() { 
         if (createHandler) { 
-            createHandler(); 
+            clearAllPayments();
+            entity = createHandler();
+            if( !entity ) return "_close";
+            init();
+            return "default";
         } 
         return '_close'; 
     } 
@@ -143,15 +148,21 @@ public abstract class AbstractCashReceipt {
     void doCheckPayment() { 
         //if(!entity.items) throw new Exception("At least one item is required");
         if(entity.amount<=0) throw new Exception("Amount must be greater than 0");
+
+        def funds = summarizeByFund(); 
+        if ( !funds ) throw new Exception("Please provide the summarize amount by fund"); 
+        
         def success = false; 
         clearAllPayments();
         def handler = { o-> 
             entity.totalcash = o.totalcash; 
+            entity.cashchange = o.cashchange;
+            entity.checks = o.checks;
             entity.paymentitems = o.paymentitems; 
             entity.totalnoncash = o.paymentitems.sum{it.amount};
             success = true; 
         }
-        Modal.show( "cashreceipt:payment-check", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 
+        Modal.show( "cashreceipt:payment-check", [entity: entity, saveHandler: handler, fundList:funds] ); 
         if ( success ) {
             def outcome = post(); 
             binding.fireNavigation( outcome );  
@@ -166,6 +177,7 @@ public abstract class AbstractCashReceipt {
         def handler = { o-> 
             entity.paymentitems = o.paymentitems; 
             entity.totalnoncash = o.paymentitems.sum{it.amount};
+            entity.eft = o.eft;
             success = true; 
         }
         Modal.show( "cashreceipt:payment-eft", [entity: entity, saveHandler: handler, fundList:summarizeByFund() ] ); 

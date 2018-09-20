@@ -100,14 +100,6 @@ class AFControlService  {
 		result.qtybalance = (afc.endseries - afc.currentseries)+1;
 		if ( result.qtybalance < 0 ) result.qtybalance = 0; 
 
-		println '** getNextAfSeries '
-		afc.each{
-			println '> '+ it; 
-		}
-		println '--- '
-		result.each{
-			println '> '+ it;
-		}
 		return result;
 	}
 
@@ -123,21 +115,13 @@ class AFControlService  {
 		if ( afc.currentseries > afc.endseries ) 
 			throw new Exception('Series is already consumed. Please verify'); 
 
-		println '** afc ' 
-		afc.each{
-			println '> '+ it;
-		}
-
 		def uparam = [ currentseries: p.series+1, lockid: '{NULL}' ]; 
 		if ( p.formtype == 'cashticket' ) { 
 			def qtyissued = ((Number) p.amount / p.denomination).intValue(); 
 			uparam.currentseries = afc.currentseries + qtyissued; 
 		} 
 
-		println '** afparam -> '+ afparam;
-		println '** uparam  -> '+ uparam;
 		em.find( afparam ).update( uparam ); 
-		//throw new Exception('stop'); 
 	} 
 
 

@@ -15,7 +15,7 @@ select
 	) as voided 
 from cashreceipt c 
 	inner join af_control afc on afc.objid = c.controlid 
-	inner join af on (af.objid = afc.afid and af.formtype='serial') 
+	inner join af on af.objid = afc.afid  
 where c.collector_objid = $P{collectorid} 
 	and c.remittanceid is null 
 	and c.receiptdate < $P{txndate}  

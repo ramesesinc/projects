@@ -127,11 +127,7 @@ class RemittanceModel extends CrudFormModel {
         }
     ] as BasicListModel;
     
-    //for printing
-    def getPrintFormData() { 
-        return remSvc.getReportData([ objid: entity.objid ]);
-    } 
-    
+   
     /*
     def openPreview() {
         println 'open preview';
@@ -154,4 +150,44 @@ class RemittanceModel extends CrudFormModel {
         }
         return popupMenu;
     }    
+    
+    def decFormat = new java.text.DecimalFormat('0.00');     
+    def getPrintFormData() { 
+        def data = remSvc.getReportData([ objid: entity.objid ]);
+        def list = data.cashbreakdown; 
+        list.each{
+            it.indexno = ((Number) (it.denomination ? it.denomination : 0)).intValue(); 
+        }
+        list.sort{ -it.indexno }
+        list.each { 
+            it.caption = it.denomination.toString(); 
+            if ( it.denomination instanceof Number ) {
+                it.caption = decFormat.format( it.denomination ); 
+            }
+        } 
+        data.cashbreakdown = list; 
+
+        println '** print form data'         
+        data.each{
+            println '> '+ it; 
+        }
+        return data; 
+    } 
+    
+    def getReportForm() { 
+        def path = 'com/rameses/gov/treasury/remittance/report/rcd'; 
+        return [
+            mainreport: path + '/rcd_main.jasper', 
+            subreports: [
+                [name: 'CollectionType', template: path + '/collectiontype.jasper'], 
+                [name: 'CollectionSummary', template: path + '/collectionsummary.jasper'], 
+                [name: 'RemittedForms', template: path + '/remittedforms.jasper'], 
+                [name: 'NonSerialRemittances', template: path + '/nonserialremittances.jasper'], 
+                [name: 'NonSerialSummary', template: path + '/nonserialsummary.jasper'], 
+                [name: 'OtherPayments', template: path + '/otherpayments.jasper'], 
+                [name: 'Denomination', template: path + '/denomination.jasper'], 
+                [name: 'CancelSeries', template: path + '/cancelseries.jasper']
+            ] 
+        ] 
+    }     
 }    

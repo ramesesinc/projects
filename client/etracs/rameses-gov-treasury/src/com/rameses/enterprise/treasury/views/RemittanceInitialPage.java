@@ -105,7 +105,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "fromseries"}
+                new Object[]{"name", "strfromseries"}
                 , new Object[]{"caption", "From Series"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 50}
@@ -120,7 +120,7 @@ public class RemittanceInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.IntegerColumnHandler(null, -1, -1)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", "toseries"}
+                new Object[]{"name", "strtoseries"}
                 , new Object[]{"caption", "To Series"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 50}

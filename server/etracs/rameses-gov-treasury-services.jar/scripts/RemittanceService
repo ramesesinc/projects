@@ -103,6 +103,14 @@ class RemittanceService  {
 
 		if ( !o.items ) throw new Exception("No collections to be remitted.");
 
+		o.items.each{
+			it.strfromseries = it.fromseries.toString(); 
+			it.strtoseries = it.toseries.toString(); 
+			if ( it.formtype != 'serial') {
+				it.strfromseries = it.strtoseries = ''; 
+			}
+		}
+
 		o.voiditems = draftRem_db.getVoidReceipts( info );  
 		return o; 
 	}

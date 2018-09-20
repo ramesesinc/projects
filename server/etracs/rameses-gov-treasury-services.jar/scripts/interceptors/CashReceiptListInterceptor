@@ -78,7 +78,7 @@ class CashReceiptListInterceptor {
 		}
 		else {
 			o.where = [qarr.join(' AND '), qmap];
-		}
+		} 
 	}	
 
 }

@@ -11,9 +11,18 @@ class RemittanceAFInterceptor {
 	@DataContext('remittance_af') 
 	def remaf_em;
 
+
+	@After( pattern="RemittanceService.importData" ) 
+	void afterImportData( evt ) { 
+		buildAF( evt.args[0] );  
+	} 
+
 	@After( pattern="RemittanceService.create" ) 
 	void afterCreate( evt ) {
-		def result = evt.result; 
+		buildAF( evt.result ); 
+	} 	
+
+	private void buildAF( result ) {
 		def p = [ remittanceid: result.objid ]; 
 		def afs = remaf_em.getBuildAFs( p ); 
 		afs.each{

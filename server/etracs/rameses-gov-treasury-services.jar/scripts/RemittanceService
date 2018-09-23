@@ -320,7 +320,9 @@ class RemittanceService  {
 		def remfunds = remEm.getBuildRemittanceFunds( mparam ); 
 		remfunds.each{
 			it.objid = (it.remittanceid + it.fund.objid); 
-			it.controlno = (it.remittanceno +'-'+ it.fund.code); 
+			it.controlno = (it.controlno +'-'+ it.fund.code); 
+			it.remittance = [objid: it.remittanceid];
+			it.cashbreakdown = []; 
 			rfEm.create( it ); 
 		} 
 	} 

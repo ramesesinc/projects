@@ -165,8 +165,9 @@ class RemittanceService  {
 		draftRem_db.bindRemittance( remparam ); 
 		draftRem_db.getAFSummary( remparam ).findAll{( it.formtype == 'serial')}.each { itm-> 
 			//test to be sure. compare records affected with the fromseries and toseries 
-			def qty = cashReceiptEm.find([ remittanceid: m.objid, controlid: itm.controlid ]).select("x:{COUNT(*)}").val();
-			if ( qty != (itm.toseries - itm.fromseries + 1)) 
+			def interval = (itm.interval == null || itm.interval <= 0) ? 1 : itm.interval; 
+			def checksum = ((itm.qty-1) * interval) + itm.fromseries;
+			if ( itm.toseries != checksum )
 				throw new Exception("Mismatch qty with series. Please check the ff: " + itm.fromseries + " - " + itm.toseries + ". Please redo remittance" );
 		} 
 

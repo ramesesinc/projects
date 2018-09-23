@@ -52,6 +52,8 @@ class CashReceiptInitialModel  {
         m.orderBy = "sortorder,title";
         allCollectionTypes = qryService.getList( m );
         afTypeList = allCollectionTypes*.formno.unique();
+        afTypeList.sort{ it }
+        afType = afTypeList.find{( it == '51' )}
     }
     
     def getCollectionTypeList() {

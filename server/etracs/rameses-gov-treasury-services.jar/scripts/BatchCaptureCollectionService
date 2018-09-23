@@ -15,6 +15,9 @@ public class BatchCaptureCollectionService  {
 	@DataContext("batchcapture_collection_entry_item")
 	def bcei_db;
 
+	@DataContext("af_control")
+	def afc_db;
+
 	@DataContext("sys_user")
 	def user_db;
 
@@ -107,8 +110,11 @@ public class BatchCaptureCollectionService  {
 
 		entity.fund = entity.collectiontype?.fund; 
 
-		entity.batchitems = bce_db.find([ parentid: entity.objid ]).orderBy('receiptno').list();
+		entity.batchitems = bce_db.find([ parentid: entity.objid ]).orderBy('series').list(); 
 		entity.currentseries = entity.startseries; 
+		if ( entity.batchitems ) { 
+			entity.startseries = entity.batchitems.first().series; 
+		} 
 
 		entity.batchitems.each {
 			it.items = bcei_db.find([ parentid: it.objid ]).list(); 
@@ -139,20 +145,32 @@ public class BatchCaptureCollectionService  {
 	@ProxyMethod  
 	public def removeItem( param ) { 
 		def item = bce_db.find([ objid: param.objid ]).first(); 
+		def currentseries = item.series; 
 		def p = [ _schemaname: 'batchcapture_collection_entry', objid: item.objid ]; 
 		persistenceSvc.removeEntity( p ); 
 
 		def bes = bc_db.findBatchSummary([ objid : item.parentid ]); 
 		if ( bes == null ) bes = [:]; 
 
+		def header = bc_db.find([ objid: item.parentid ]).first();  
+		def afc = afc_db.find([ objid: header.controlid ]).first(); 
+		def interval = afc?.afunit?.interval; 
+		if ( interval == null || interval <= 0 ) interval = 1; 
 
-		bes.startseries = item.series; 
+		def previtem = bce_db.find([ parentid: item.parentid ]).select('maxseries:{MAX(series)}').first(); 
+		def maxseries = previtem?.maxseries; 
+		if ( maxseries == null ) { 
+			bes.startseries = currentseries; 
+		} else {
+			bes.startseries = (maxseries + interval); 
+		}
+		
 		bes.totalcash = ( bes.totalcash ? bes.totalcash : 0.0 ); 
 		bes.totalnoncash = ( bes.totalnoncash ? bes.totalnoncash : 0.0 ); 
 		bes.totalamount = bes.totalcash + bes.totalnoncash; 
 		bc_db.find([ objid: item.parentid ]).update( bes ); 
 
-		def header = bc_db.find([ objid: item.parentid ]).first(); 
+		header = bc_db.find([ objid: item.parentid ]).first(); 
 		header.currentseries = header.startseries; 
 		return header; 
 	} 
@@ -195,10 +213,14 @@ public class BatchCaptureCollectionService  {
 			throw new Exception('Invalid checksum value. Please reopen and verify the transaction');
 		}
 
-		def nextseries = entries.min{ it.series }.series; 
-		entries.each{
+		def afc = afc_db.find([ objid: header.controlid ]).first(); 
+		def interval = afc?.afunit?.interval; 
+		if ( interval == null || interval <= 0 ) interval = 1; 
+
+		def nextseries = entries.first().series; 
+		entries.each{ 
 			if ( it.series == nextseries ) {
-				nextseries = it.series + 1; 
+				nextseries = it.series + interval; 
 			} else { 
 				throw new Exception('Process failed. Receipt# '+ it.receiptno +' may have been tampered. Please verify');
 			} 

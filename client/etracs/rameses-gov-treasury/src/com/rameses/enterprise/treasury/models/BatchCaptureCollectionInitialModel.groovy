@@ -51,6 +51,8 @@ class BatchCaptureCollectionInitialModel  {
         m.orderBy = "sortorder,title";
         allCollectionTypes = qryService.getList( m );
         afTypeList = allCollectionTypes*.formno.unique();
+        afTypeList.sort{ it }
+        afType = afTypeList.find{( it == '51' )}        
     }
     
     def getCollectionTypeList() {
@@ -128,12 +130,7 @@ class BatchCaptureCollectionInitialModel  {
             afc = lookupSubCollectorAF( entity ); 
         }
         if ( afc == null ) return null; 
-        
-        println '** afc '
-        afc.each{
-            println '> '+ it;
-        }
-        
+                
         entity.defaultreceiptdate = entity.receiptdate;        
         entity.stub = afc.stubno;
         entity.collector = afc.owner;

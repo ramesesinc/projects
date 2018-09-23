@@ -71,6 +71,7 @@ class LiquidationReportService  {
 		}
 
 		data.otherpayments = liqreport.getRCDOtherPayments( params );
+		data.otherpayments.each{ it.reftype = it.paytype }
 		data.amountinwords = numSvc.doubleToWords( data.amount ); 
 		return data;
 	}

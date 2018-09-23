@@ -25,7 +25,6 @@ class ItemAccountListInterceptor {
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag != 'CASHRECEIPT' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
-				o.debug = true;
 
 		if( o.node?.state ) {
 			def str = "state = :state";
@@ -93,6 +92,10 @@ class ItemAccountListInterceptor {
 				def m = result.find{ it.objid == a.objid } 
 				if ( m == null ) { 
 					result << a; 
+
+				} else { 
+					m.valuetype = a.valuetype; 
+					m.defaultvalue = a.defaultvalue; 
 				}
 			}
 		}

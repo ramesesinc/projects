@@ -27,16 +27,17 @@ select
 	remi.remittanceid, rem.collector_objid, c.controlid, af.formtype, 
 	afc.afid as formno, afc.stubno, afc.startseries, afc.endseries, 
 	min(c.series) as fromseries, max(c.series) as toseries, count(*) as qty, 
-	sum(remi.amount) as amount
+	sum(remi.amount) as amount, afu.interval 
 from draftremittance rem 
 	inner join draftremittanceitem remi on remi.remittanceid = rem.objid 
 	inner join cashreceipt c on c.objid = remi.objid 
 	inner join af_control afc on afc.objid = c.controlid 
 	inner join af on af.objid = afc.afid 
+	inner join afunit afu on (afu.itemid = af.objid and afu.unit = afc.unit)	
 where rem.objid = $P{remittanceid} 
 group by concat(rem.collector_objid, remi.remittanceid, c.controlid), 
 	remi.remittanceid, rem.collector_objid, c.controlid, af.formtype,
-	afc.afid, afc.stubno, afc.startseries, afc.endseries 
+	afc.afid, afc.stubno, afc.startseries, afc.endseries, afu.interval 
 order by afc.afid, afc.startseries 
 
 [getVoidReceipts]

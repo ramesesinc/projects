@@ -142,35 +142,41 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
     def formatDate = { o-> 
         if ( o == null ) return null; 
         if ( o instanceof java.util.Date ) {
-            return df.parse( df.format( o ));
+            return new java.sql.Date( o.time ); 
         } 
-        return df.parse( o );     
+        return new java.sql.Date( df.parse( o ).time );     
     }
 
     void beforeSave( mode ) { 
         def rdate = formatDate( entity.receiptdate ); 
         if ( !rdate ) throw new Exception("Please enter a correct receipt date ");
 
+        def defaultdate = formatDate(caller.entity.defaultreceiptdate);
         def serverDate = dateSvc.getBasicServerDate(); 
-        if ( rdate.after( serverDate)) 
-            throw new Exception('Receipt date must not be greater than the current date'); 
-        
-        def defaultdate = formatDate(caller.entity.defaultreceiptdate);         
-        if ( rdate.before(defaultdate)) 
-           throw new Exception("Receipt date must not be less than the default date."); 
 
-        if ( caller.entity.batchitems.isEmpty()) { 
-            if ( rdate != defaultdate ) 
-                throw new Exception("Receipt date must be equal to the default date"); 
-        
+        def mindate = defaultdate; 
+        def maxdate = serverDate; 
+        def batchitems = caller.entity.batchitems;
+        if (mode == 'update') {
+            def item = batchitems.find{ it.objid == entity.objid }
+            def idx = batchitems.indexOf( item ); 
+            if ( idx-1 >= 0 && idx-1 < batchitems.size()) {
+                mindate = formatDate(batchitems[idx-1].receiptdate); 
+            }
+            if ( idx+1 < batchitems.size()) {
+                maxdate = formatDate(batchitems[idx+1].receiptdate);
+            }                 
         } else {
-            def lastdate = formatDate( caller.entity.batchitems.last().receiptdate ); 
-            if ( rdate.before( lastdate)) {
-                throw new Exception("Receipt date must not be lesser than the previous entry date"); 
+            if ( batchitems.size() > 1 ) {
+                mindate = formatDate(batchitems.last().receiptdate);
             }
         }
-        
-        
+
+        if ( rdate.before(mindate)) 
+            throw new Exception("Receipt date must not be less than "+ mindate); 
+        if ( rdate.after(maxdate)) 
+            throw new Exception("Receipt date must not be greater than "+ maxdate); 
+                
         if ( !entity.items ) 
             throw new Exception("Please specify at least one item"); 
         

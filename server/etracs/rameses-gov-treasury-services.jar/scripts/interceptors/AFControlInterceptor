@@ -22,4 +22,5 @@ class AFControlInterceptor {
 
 		afc_db.find( afcparam ).update([ currentseries: afcdata.currentseries-1 ]);  
 	}
+
 }

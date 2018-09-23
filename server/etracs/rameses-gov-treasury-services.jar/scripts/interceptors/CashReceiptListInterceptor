@@ -67,7 +67,7 @@ class CashReceiptListInterceptor {
 		if ( o.orderBy ) orderbys << o.orderBy;
 
 		if ( o.node?.id.toString().matches('unremitted|delegated')) {
-			orderbys << " receiptdate, receiptno "; 
+			orderbys << " formno, receiptdate, series "; 
 		} else { 
 			orderbys << " receiptdate desc, receiptno desc "; 
 		} 

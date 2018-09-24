@@ -150,10 +150,13 @@ class BatchCaptureCollectionModel  {
             throw new Exception('Series is already consumed'); 
             
         def m  = [:];
-        m.objid = "BCCE" + new java.rmi.server.UID();
         m.parentid = entity.objid; 
         m.series = entity.currentseries; 
         m.receiptno = formatSeries(m.series); 
+        
+        def itemid = ""+ m.parentid +","+ m.receiptno; 
+        m.objid = "BCCE-" + com.rameses.util.Encoder.MD5.encode(itemid, "bcc");
+        
         m.receiptdate = entity.defaultreceiptdate;
         m.collectiontype = entity.collectiontype;
         m.collector = entity.collector;

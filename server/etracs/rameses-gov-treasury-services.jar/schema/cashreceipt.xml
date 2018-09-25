@@ -10,7 +10,7 @@
 		<field name="payer_name"  caption="Payer" searchable="true"  indexed="true"/>
 		<field name="paidby" required="true" caption="Paid By"/>
 		<field name="paidbyaddress" required="true" />
-		<field name="series" required="true" />\
+		<field name="series" required="true" />
 		<field name="collector_objid" required="true" />
 		<field name="collector_name" required="true" indexed="true"/>
 		<field name="collector_title" required="true" />

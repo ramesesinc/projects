@@ -70,7 +70,6 @@ class AFTxnService  {
 		int stubno = o.startstub; 
  		int starter = (o.startseries ? Integer.parseInt( o.startseries ) : 0);
 		(1..o.qty).each { 
-			println starter;
 			def afc = [:];
 			afc.afid = afi.item.objid;
 			afc.unit = afi.unit;

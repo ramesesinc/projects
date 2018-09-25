@@ -237,7 +237,7 @@ class BatchCaptureCollectionModel  {
         def totalnoncash = 0.0; 
         def totalamount = 0.0;
         entity.batchitems.each{
-            if ( it.voided.toString() == '1' ) {
+            if ( it.voided.toString().matches("1|true") ) {
                 //do nothing 
             } else {
                 totalnoncash += (it.totalnoncash ? it.totalnoncash : 0.0); 

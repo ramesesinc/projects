@@ -59,11 +59,13 @@ class AFTxnModel extends CrudPageFlowModel {
             if( entity.txntype.matches("TRANSFER|RETURN") ) afListModel.reload();
         },
         "form.startseries" : { o->
+            int interval = form.afunit.interval;
+            if(!interval || interval < 0 ) interval = 1;
             int len = form.afunit.serieslength;
             if( (o+"").length() > len )
                 throw new Exception("Series length must be less than or equal to "+len);
             int starting = Integer.parseInt(""+o);    
-            int ending = (starting + form.afunit.qty);
+            int ending = (starting + (form.afunit.qty * interval) ) ;
             form.startseries = String.format( "%0"+len+"d", starting);
             form.endseries = String.format( "%0"+len+"d", ending - 1);
             binding.refresh("form.(start|end)series");
@@ -346,8 +348,18 @@ class AFTxnModel extends CrudPageFlowModel {
     }
     
     def issueBatch( def o ) {
+        int qty;
+        def pp = [fields:[]];
+        pp.fields << [name:'qty',caption:'Qty', datatype:'integer'];
+        pp.data = [qty:o.qty];
+        pp.formTitle = "Please enter qty to issue";
+        pp.handler = { iq->
+            qty = iq.qty;
+        }
+        Modal.show("dynamic:form", pp, [title:'Enter Qty']);
+        if(!qty) return null;
         try {
-            svc.issueBatch([ aftxnitemid: o.aftxnitemid ]);
+            svc.issueBatch([ aftxnitemid: o.aftxnitemid, qty: qty ]);
             reloadEntity();
         }
         catch(e) {

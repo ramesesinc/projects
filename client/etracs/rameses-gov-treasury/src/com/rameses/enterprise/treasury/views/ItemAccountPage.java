@@ -44,6 +44,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         schemaList1 = new com.rameses.seti2.components.SchemaList();
         jPanel7 = new javax.swing.JPanel();
@@ -133,6 +134,15 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField1);
 
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setName("entity.generic"); // NOI18N
+        xCheckBox1.setUncheckValue(0);
+        xCheckBox1.setVisibleWhen("#{ entity.parentid == null }");
+        xCheckBox1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xCheckBox1.setText("Use as Generic Account");
+        xFormPanel1.add(xCheckBox1);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -146,13 +156,13 @@ public class ItemAccountPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General", jPanel1);
 
-        xPanel2.setVisibleWhen("#{ mode!='create' && entity.parentid == null }");
+        xPanel2.setVisibleWhen("#{ mode!='create' && entity.generic == 1  }");
 
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -379,6 +389,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton12;
     private com.rameses.rcp.control.XButton xButton13;
     private com.rameses.rcp.control.XButton xButton5;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDataTable xDataTable1;

@@ -60,7 +60,7 @@ class RemittanceExportService  {
 		checkDuplicatePosting(data.entity)
 
 		//cashreceipts
-		data.cashreceipts.each {
+		data.cashreceipts.each { 
 			crSvc.post( it )
 
 			if( it.voided && it.voided == 1) {
@@ -72,7 +72,11 @@ class RemittanceExportService  {
 		data.entity.cashbreakdown = em.serializer.read( data.entity.cashbreakdown ) 
 		if ( data.entity.txnno ) data.entity.txnno = data.entity.txnno + '-R'; 
 		
-		remSvc.post( data.entity )
+		data.entity.controlno = data.entity.txnno;
+		data.entity.controldate = data.entity.remittancedate; 
+		data.entity.totalcheck  = data.entity.totalnoncash;
+		data.entity.totalcr = 0.0;
+		remSvc.importData( data.entity )
 		return "OK"
 	}
 

@@ -13,15 +13,16 @@ public class CollectionTypeAccountModel extends CrudFormModel {
     def fund;
 
     void afterCreate() {
-        entity.collectiontypeid = collectiontypeid;
+        entity.collectiontypeid = caller.entity.objid;
     }
 
     def getLookupAccount() { 
-        def params = ['query.fund' : fund ];  
+       // def params = ['query.fund' : fund ];  
+        def params = [:];
         params.onselect = { o->
             entity.account = o;
         }
-        return Inv.lookupOpener( "revenueitem:lookup", params );
+        return Inv.lookupOpener( "parentitemaccount:lookup", params );
     }
     
 }

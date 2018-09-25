@@ -40,7 +40,6 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
@@ -48,6 +47,8 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
+        xSeparator3 = new com.rameses.rcp.control.XSeparator();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
 
         formPanel1.setCaptionWidth(110);
 
@@ -97,13 +98,6 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
         );
 
         formPanel1.add(xSeparator1);
-
-        xLookupField1.setCaption("Allocate To");
-        xLookupField1.setExpression("#{ entry.allocation.objid }  ");
-        xLookupField1.setHandler("af_allocation:lookup");
-        xLookupField1.setName("entry.allocation"); // NOI18N
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        formPanel1.add(xLookupField1);
 
         xNumberField3.setCaption("Start Stub No");
         xNumberField3.setName("entry.startstub"); // NOI18N
@@ -162,6 +156,28 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
         xTextField2.setPreferredSize(new java.awt.Dimension(150, 20));
         formPanel1.add(xTextField2);
 
+        xSeparator3.setPreferredSize(new java.awt.Dimension(0, 20));
+
+        javax.swing.GroupLayout xSeparator3Layout = new javax.swing.GroupLayout(xSeparator3);
+        xSeparator3.setLayout(xSeparator3Layout);
+        xSeparator3Layout.setHorizontalGroup(
+            xSeparator3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 372, Short.MAX_VALUE)
+        );
+        xSeparator3Layout.setVerticalGroup(
+            xSeparator3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        formPanel1.add(xSeparator3);
+
+        xLookupField1.setCaption("Allocate To");
+        xLookupField1.setExpression("#{ entry.allocation.objid }  ");
+        xLookupField1.setHandler("af_allocation:lookup");
+        xLookupField1.setName("entry.allocation"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
+        formPanel1.add(xLookupField1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -192,6 +208,7 @@ public class AFControlAddBatchPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
+    private com.rameses.rcp.control.XSeparator xSeparator3;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;

@@ -47,6 +47,7 @@ public class CollectionTypeModel extends CrudFormModel {
         }
     ] as SuggestModel;
     
+    /*
     def addAccount() { 
         def params = [ fund: entity.fund, collectiontypeid: entity.objid ]; 
         params.handler = { o-> 
@@ -83,7 +84,8 @@ public class CollectionTypeModel extends CrudFormModel {
             return queryService.getList( m );
         }
     ] as BasicListModel;
-
+    */
+   
     boolean isEditAllowed() { 
         if ( entity.system == 1 ) return false; 
         return super.isEditAllowed(); 

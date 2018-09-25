@@ -43,7 +43,7 @@
 			<key field="currentdetailid" target="objid" />
 		</complex>
 
-		<complex name="afunit" ref="vw_afunit" jointype="many-to-one" required="false" includefields="serieslength,denomination,formtype,saleprice,qty">
+		<complex name="afunit" ref="vw_afunit" jointype="many-to-one" required="false" includefields="serieslength,denomination,formtype,saleprice,qty,interval">
 			<key field="afid" target="itemid" />
 			<key field="unit" target="unit" />
 		</complex>

@@ -116,6 +116,7 @@ class RemittanceInitialModel {
         def p = [ objid: draftremid ]; 
         def resp = remSvc.create( p ); 
         remittanceid = resp?.objid; 
+        MsgBox.alert('Remittance successfully saved');
         
         def op = Inv.lookupOpener("remittance:open", [ entity: p ]); 
         Inv.invoke( op );  

@@ -55,6 +55,8 @@ class CollectorReportService {
 			params.collectorid = '%'; 
 		} 
 
+		params.postingtypeid = params.postingtype?.objid.toString(); 
+
 		def funds = adb.getCollectorFundList( params )
 		if( !funds ) throw new Exception("No record(s) found.    ")
 		
@@ -181,7 +183,6 @@ class CollectorReportService {
 
 	void buildDateFilter(params) {
 		params.fromdate = dtSvc.parse('yyyy-MM-dd', params.year + '-' + params.month.index + '-01')
-		params.todate   = dtSvc.add( dtSvc.getMonthEndDate( params.fromdate ), '23h')
-		
+		params.todate   = dtSvc.add( dtSvc.getMonthEndDate( params.fromdate ), '1d'); 
 	}
 }

@@ -44,6 +44,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         xLabel7 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
         jPanel3 = new javax.swing.JPanel();
         xPanel1 = new com.rameses.rcp.control.XPanel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
@@ -115,6 +116,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         xFormPanel2.add(xLabel7);
 
         xLabel5.setCaption("Start Series");
+        xLabel5.setDepends(new String[] {"series"});
         xLabel5.setExpression("#{entity.sstartseries}");
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -122,11 +124,20 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
         xFormPanel2.add(xLabel5);
 
         xLabel6.setCaption("End Series");
+        xLabel6.setDepends(new String[] {"series"});
         xLabel6.setExpression("#{entity.sendseries}");
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel6);
+
+        xLabel8.setCaption("Current Series");
+        xLabel8.setDepends(new String[] {"series"});
+        xLabel8.setExpression("#{entity.scurrentseries}");
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel2.add(xLabel8);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -417,6 +428,7 @@ public class BatchCaptureCollectionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel5;
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
+    private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;

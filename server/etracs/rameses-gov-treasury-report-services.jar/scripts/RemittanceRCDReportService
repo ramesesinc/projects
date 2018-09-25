@@ -62,6 +62,13 @@ class RCDRemittanceReportService {
 
 		buildAF( result.remittedforms ); 
 		buildAF( result.nonserialremittances ); 
+		result.nonserialremittances.each{
+			it.receivedamt = (it.qtyreceived ? it.qtyreceived : 0) * it.denomination; 
+			it.beginamt = (it.qtybegin ? it.qtybegin : 0) * it.denomination; 
+			it.issuedamt = (it.qtyissued ? it.qtyissued : 0) * it.denomination; 
+			it.endingamt = (it.qtyending ? it.qtyending : 0) * it.denomination; 
+		}
+		
 		resolveCompatibility( result ); 
 
 		Base64Cipher cipher = new Base64Cipher();

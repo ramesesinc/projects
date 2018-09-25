@@ -5,6 +5,7 @@
 		<field name="unit" required="true"/>
 		<field name="qty" required="true" type="integer"/>
 		<field name="saleprice" required="true" type="decimal"/>
+		<field name="interval" required="true" type="integer" defaultValue="1" />		
 	</element>
 </schema>
 

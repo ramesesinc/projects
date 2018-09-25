@@ -9,6 +9,9 @@ class TCReportService {
 	@ActiveDB('tcreport')
 	def adb; 
 
+	@DataContext('fund') 
+	def fund_em;
+
 	@Env
 	def env; 
  
@@ -50,21 +53,27 @@ class TCReportService {
 			params.todate   =  new java.sql.Date( com.rameses.util.DateUtil.add( params.fromdate, "1M").getTime()); 
 		} 
 
+		// def funds = []; 
+		// if( params.fund?.objid ) { 
+		// 	params.fundid = params.fund.objid; 
+		// 	funds << params.fundid; 
+		// 	if ( params.withsubfund == true ) { 
+		// 		fund_em.find([ parentid: params.fundid ]).select('objid').list().each{ 
+		// 			funds << it; 
+		// 		} 
+		// 	} 
+		// } 
+
 		params.filter = ''; 
-		if( params.fund?.objid ) {
+		if ( params.fund?.objid ) { 
 			params.fundid = params.fund.objid; 
-			params.fundparentid = (params.withsubfund==true? params.fundid: null);  
-		} else { 
-			params.fundid = '%'; 
-		} 
+			params.filter = ''' AND fund.objid = $P{fundid} '''; 
+		}  
+
+		params.postingtypeid = params.postingtype.objid; 
 		
 		def reportdata = [:]
-		if ( params.postingtype?.objid == 'BY_REMITTANCE' ) { 
-			reportdata.items = adb.getCollectionByFund( params ); 
-		} else { 
-			reportdata.items = adb.getCollectionByFundByLiquidation( params ); 
-		} 
-		
+		reportdata.items = adb.getCollectionByFund( params ); 		
 		if ( !reportdata.items ) throw new Exception("No record(s) found.     "); 
 
 		reportdata.totalamount = reportdata.items.sum{( it.amount? it.amount : 0.0)}

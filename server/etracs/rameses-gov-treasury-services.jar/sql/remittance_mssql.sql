@@ -65,15 +65,53 @@ GROUP BY
 
 [getBuildRemittanceFunds]
 select 
-	c.remittanceid, r.controlno as remittanceno,  
-	fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
-	SUM(c.amount) as amount, SUM(c.amount-c.totalnoncash) as totalcash, 
-	SUM(c.totalnoncash) as totalcheck, 0.0 as totalcr
-from remittance r 
-	inner join cashreceipt c on c.remittanceid = r.objid 
-	inner join cashreceiptitem ci on ci.receiptid = c.objid 
-	inner join fund on fund.objid = ci.item_fund_objid 
-where r.objid = $P{remittanceid}  
-	and c.objid not in ( select receiptid from cashreceipt_void where receiptid = c.objid ) 
-group by 
-	c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+	remittanceid, controlno, fund_objid, fund_title, fund_code, 
+	sum(amount) as amount, sum(totalcheck) as totalcheck, sum(totalcr) as totalcr, 
+	(sum(amount)-sum(totalcheck)-sum(totalcr)) as totalcash 
+from ( 
+	select 
+		c.remittanceid, r.controlno,  
+		fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+		SUM(ci.amount) as amount, 0.0 as totalcash, 0.0 as totalcheck, 0.0 as totalcr
+	from remittance r 
+		inner join cashreceipt c on c.remittanceid = r.objid 
+		inner join cashreceiptitem ci on ci.receiptid = c.objid 
+		inner join fund on fund.objid = ci.item_fund_objid 
+		left join cashreceipt_void v on v.receiptid = c.objid 
+	where r.objid = $P{remittanceid} 
+		and v.objid is null 
+	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+
+	union all 
+
+	select 
+		c.remittanceid, r.controlno,  
+		fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+		0.0 as amount, 0.0 as totalcash, sum(nc.amount) as totalcheck, 0.0 as totalcr 
+	from remittance r 
+		inner join cashreceipt c on c.remittanceid = r.objid 
+		inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+		inner join fund on fund.objid = nc.fund_objid 
+		left join cashreceipt_void v on v.receiptid = c.objid 
+	where r.objid = $P{remittanceid} 
+		and nc.reftype = 'CHECK'
+		and v.objid is null 
+	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+
+	union all 
+
+	select 
+		c.remittanceid, r.controlno,  
+		fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+		0.0 as amount, 0.0 as totalcash, 0.0 as totalcheck, sum(nc.amount) as totalcr 
+	from remittance r 
+		inner join cashreceipt c on c.remittanceid = r.objid 
+		inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+		inner join fund on fund.objid = nc.fund_objid 
+		left join cashreceipt_void v on v.receiptid = c.objid 
+	where r.objid = $P{remittanceid} 
+		and nc.reftype <> 'CHECK'
+		and v.objid is null 
+	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+)t1 
+group by remittanceid, controlno, fund_objid, fund_title, fund_code 

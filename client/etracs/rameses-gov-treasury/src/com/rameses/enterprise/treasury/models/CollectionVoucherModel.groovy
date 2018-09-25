@@ -170,4 +170,12 @@ class CollectionVoucherModel extends CrudFormModel {
         Modal.show("cashbreakdown", p );
     }
     
+    def popupReports( inv ) {
+        def popupMenu = new PopupMenuOpener();
+        def list = Inv.lookupOpeners( inv.properties.category, [entity:entity] );
+        list.each{
+            popupMenu.add( it );
+        }
+        return popupMenu;
+    } 
 } 

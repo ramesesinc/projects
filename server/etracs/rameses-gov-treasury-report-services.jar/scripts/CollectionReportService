@@ -24,14 +24,10 @@ class CollectionReportService  {
 	public def getReportListing( params ) { 
 		buildParams( params ); 
 
-		def list = null; 
 		def postingtypeid = params.postingtype?.objid.toString().toUpperCase(); 
-		if ( postingtypeid == 'BY_LIQUIDATION_DATE' ) {
-			list = adb.getReportListingByLiquidation( params ); 
-		} else {
-			list = adb.getReportListing( params ); 
-		} 
+		params.postingtypeid = postingtypeid; 
 
+		def list = adb.getReportListing( params );  
 		if ( !list ) throw new Exception('No available record(s) found that matches your criteria'); 
 
 		return [

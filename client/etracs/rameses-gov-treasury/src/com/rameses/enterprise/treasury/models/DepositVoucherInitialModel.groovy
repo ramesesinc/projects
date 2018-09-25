@@ -34,12 +34,10 @@ class DepositVoucherInitialModel extends CrudListModel {
             return op;
         },
         afterSelectionChange: { o ->
-            if( o.selected ) {
-                amount += (o.data.totalcash + o.data.totalcheck) ;
-            }
-            else {
-                amount -= (o.data.totalcash + o.data.totalcheck);
-            }
+            amount = 0.0; 
+            collectionListModel.selectedValue.each{
+                amount += (it.totalcash + it.totalcheck); 
+            } 
             binding.notifyDepends("selectedItem");
         }
     ] as BasicListModel;

@@ -43,7 +43,7 @@ class CashReceiptListInterceptor {
 			if ( o.node.id == 'unremitted' ) { 
 				qarr << " remittanceid is null AND state = 'POSTED' ";
 			} else if ( o.node.id == 'delegated' ) { 
-				qarr << " remittanceid is null and subcollector.objid is not null and subcollector.remittanceid is null "; 
+				qarr << " remittanceid is null and subcollector.objid is not null "; 
 			} else { 
 				qarr << " remittanceid is not null "; 
 			}
@@ -56,17 +56,18 @@ class CashReceiptListInterceptor {
 			qmap.userid = env.USERID;
 
 		} else if ( o.node.id == 'unremitted' ) { 
-			qarr << " remittanceid IS NULL "; 
+			qarr << " remittanceid IS NULL AND state = 'POSTED' "; 
 
-		} else if( o.node.id == 'remitted' ){
-			qarr << " remittanceid IS NOT NULL ";
-		}
+		} else if( o.node.id == 'remitted' ) { 
+			qarr << " remittanceid IS NOT NULL "; 
+
+		} 
 
 		def orderbys = [];
 		if ( o.orderBy ) orderbys << o.orderBy;
 
 		if ( o.node?.id.toString().matches('unremitted|delegated')) {
-			orderbys << " receiptdate, receiptno "; 
+			orderbys << " formno, receiptdate, series "; 
 		} else { 
 			orderbys << " receiptdate desc, receiptno desc "; 
 		} 
@@ -78,7 +79,6 @@ class CashReceiptListInterceptor {
 		}
 		else {
 			o.where = [qarr.join(' AND '), qmap];
-		}
-	}	
-
+		} 
+	} 
 }

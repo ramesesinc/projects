@@ -36,7 +36,7 @@ class CollectionGroupListInterceptor {
 		def param = evt.args[0];
 		if ( param?.txntype.toString() == 'cashreceipt' ) {
 			evt.result.each{ o-> 
-				o.items = cgi_db.find([ collectiongroupid: o.objid ]).list(); 
+				o.items = cgi_db.find([ collectiongroupid: o.objid ]).orderBy('orderno').list(); 
 			}
 		}
 	} 

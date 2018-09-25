@@ -1,0 +1,30 @@
+import com.rameses.annotations.*;
+
+
+
+class AFInterceptor { 
+	
+	@DataContext("afunit")
+	def afunitEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'af' }")
+	public void beforeCreate( evt ) { 
+		def e = evt.args[0]; 
+		e.units.each {
+			it.objid = e.objid + '-' + it.unit;
+		}
+	} 
+
+	@Before(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'af' }")
+	public void beforeUpdate( evt ) { 
+		def e = evt.args[0];
+		e.units.each {
+			if(it.objid!=(e.objid + '-' + it.unit)) {
+				afunitEm.find([objid: it.objid]).delete();
+				it.objid = (e.objid + '-' + it.unit);
+			}
+		}
+	} 
+
+
+}

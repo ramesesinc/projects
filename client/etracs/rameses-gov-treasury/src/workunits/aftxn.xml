@@ -27,7 +27,7 @@
             <transition to="posted" name="posted"/>
         </start>
         <page name="initial" title="New Accountable Form Issue/Receipt" >
-            <transition to="check-path" caption="Next"  immediate="false"/>
+            <transition to="check-path" caption="Next" immediate="false" mnemonic="N"/>
         </page>
         <process name="check-path">
             <transition to="single-entry" cond="#{ entity.txntype == 'FORWARD' }" 
@@ -39,23 +39,24 @@
                         action="loadItemTxnTypes"/>
         </process>    
         <page name="single-entry" title="Forward AF - Enter Details">
-            <transition to="initial" caption="Back" />
-            <transition to="posted" caption="Next" immediate="false" action="saveCreate"/>
+            <transition to="initial" caption="Back"  mnemonic="B"/>
+            <transition to="posted" caption="Next"  mnemonic="N"  action="saveCreate" immediate="false"/>
         </page>
         <page name="select-af" title="Select AF to #{entity.txntype}">
-            <transition to="initial" caption="Back" action="clearItems"/>
-            <transition to="posted" caption="Next" immediate="false" action="saveCreate"/>
+            <transition to="initial" caption="Back" action="clearItems" mnemonic="B"/>
+            <transition to="posted" caption="Next" action="saveCreate" mnemonic="N" immediate="false" />
         </page>
         <page name="entry" title="Enter Qty and Details">
-            <transition to="initial" caption="Back" action="clearItems"/>
-            <transition to="view" caption="Next" action="saveCreate" immediate="false"/>
+            <transition to="initial" caption="Back" action="clearItems" mnemonic="B"/>
+            <transition to="view" caption="Next" action="saveCreate" mnemonic="N" immediate="false"/>
         </page>
         <page name="view" title="Accountable Form Issue/Receipt" action="open">
-            <transition to="end" caption="Close" />
-            <transition to="posted" caption="Post" confirm="This will immediately update the inventory. Proceed?" action="post"/>
+            <transition to="end" caption="Close" mnemonic="C"/>
+            <transition to="posted" caption="Post" action="post" mnemonic="P" 
+                        confirm="This will immediately update the inventory. Proceed?"/>
         </page>
         <page name="posted" title="Accountable Form Issue/Receipt" action="open">
-            <transition to="end" caption="Close" />
+            <transition to="end" caption="Close" mnemonic="C"/>
         </page>
         <end/>
     </pageflow>

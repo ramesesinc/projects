@@ -1,6 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="cashreceipt" allowCreate="false" allowDelete="false" 
-          cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name">
+          cols="formno,receiptno,receiptdate,stub,series,paidby,amount,voided,collector.name">
     
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" caption="View Cash Receipts" action="init"
@@ -38,5 +38,18 @@
         
    </invokers>
    
-   
+    <code>
+import com.rameses.rcp.annotations.*; 
+import com.rameses.rcp.common.*; 
+
+class CashReceiptListModel extends com.rameses.seti2.models.CrudListModel {
+        
+    public void initColumn( c ) { 
+        if ( c.name == 'series' ) { 
+            c.visible = false; 
+            c.hidden = true; 
+        } 
+    } 
+}         
+    </code>
 </workunit>

@@ -62,8 +62,9 @@ class BatchCaptureCollectionModel  {
             currentdate = formatDate( dtsvc.getServerDate());
             defaultdate = formatDate( entity.defaultreceiptdate );               
         }
-        entity.sstartseries = formatSeries(entity.currentseries); 
         entity.sendseries = formatSeries(entity.endseries); 
+        entity.sstartseries = formatSeries(entity.startseries); 
+        entity.scurrentseries = formatSeries(entity.currentseries); 
         rebuildTotals();
     } 
 
@@ -139,7 +140,7 @@ class BatchCaptureCollectionModel  {
             entity.currentseries = resp.currentseries; 
         }
         entity.batchitems.remove( selectedItem ); 
-        
+        rebuildSeries();
         rebuildTotals();         
         listModel.reload(); 
     } 
@@ -149,10 +150,13 @@ class BatchCaptureCollectionModel  {
             throw new Exception('Series is already consumed'); 
             
         def m  = [:];
-        m.objid = "BCCE" + new java.rmi.server.UID();
         m.parentid = entity.objid; 
         m.series = entity.currentseries; 
         m.receiptno = formatSeries(m.series); 
+        
+        def itemid = ""+ m.parentid +","+ m.receiptno; 
+        m.objid = "BCCE-" + com.rameses.util.Encoder.MD5.encode(itemid, "bcc");
+        
         m.receiptdate = entity.defaultreceiptdate;
         m.collectiontype = entity.collectiontype;
         m.collector = entity.collector;
@@ -201,17 +205,33 @@ class BatchCaptureCollectionModel  {
             entity.batchitems << item; 
             item.remove('mode'); 
             listModel.reload(); 
+            
+            if ( item.currentseries ) { 
+                entity.currentseries = item.currentseries; 
+            }
+            rebuildSeries();
+
         } else {
             selectedItem.clear();
             selectedItem.putAll( item ); 
             listModel.refreshSelectedItem(); 
         } 
         
-        if ( item.currentseries ) 
-            entity.currentseries = item.currentseries; 
-            
         rebuildTotals(); 
     } 
+    
+    void rebuildSeries() { 
+        if ( entity.currentseries )
+            entity.scurrentseries = formatSeries( entity.currentseries ); 
+        
+        if ( entity.batchitems ) 
+            entity.sstartseries = formatSeries( entity.batchitems.first().series ); 
+        else if ( entity.currentseries ) 
+            entity.sstartseries = formatSeries( entity.currentseries ); 
+        
+            
+        binding.notifyDepends('series'); 
+    }
     
     void rebuildTotals() {
         def totalnoncash = 0.0; 

@@ -26,9 +26,14 @@ class SubCollectorRemittanceListService extends ActiveListService {
 	}	
 
 	void beforeList( o ) { 
-		o.subcollectorid = env.USERID; 
+		o.filter = '';
+		o.userid = env.USERID; 
 		if ( o._tag == 'all') { 
-			o.subcollectorid = '%'; 
-		} 
+			// do nothing 
+		} else if ( o._tag == 'collector' ) {
+			o.filter = ''' AND r.collector_objid = $P{userid} '''; 
+		} else {
+			o.filter = ''' AND r.subcollector_objid = $P{userid} '''; 
+		}
 	} 
 } 

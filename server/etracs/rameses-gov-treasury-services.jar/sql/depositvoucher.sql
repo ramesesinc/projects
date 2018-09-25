@@ -23,8 +23,8 @@ where v.depositvoucherid = $P{depositvoucherid}
 update checkpayment cp set 
     cp.depositvoucherid = $P{depositvoucherid}, 
     cp.fundid = (
-        select fund_objid from cashreceiptpayment_noncash 
-        where refid = cp.objid and amount = cp.amount 
+        select fund.depositoryfundid from cashreceiptpayment_noncash a, fund 
+        where a.refid = cp.objid and a.amount = cp.amount and fund.objid = a.fund_objid  
         limit 1 
     ) 
 where cp.objid in (

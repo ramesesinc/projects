@@ -1,0 +1,11 @@
+<workunit extends="rpt_wtemplates/ReportController.xml" >
+    <invokers>
+        <invoker folderid="/explorer/report/landtax" 
+            action="init" 
+            caption="Real Property Tax Collectible and Payment Summary" 
+            target="window" 
+            role="LANDTAX_REPORT,REPORT"/>
+    </invokers>
+    <code class="com.rameses.gov.etracs.landtax.report.models.RealtyTaxCollectiblePaymentSummaryModel">
+    </code>
+</workunit>

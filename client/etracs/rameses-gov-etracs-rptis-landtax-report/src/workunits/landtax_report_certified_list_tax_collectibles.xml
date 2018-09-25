@@ -37,9 +37,11 @@ class CertifiedRealTaxCollectiblesModel extends com.rameses.gov.etracs.rpt.repor
     def formControl = [
          getFormControls: {
              return [
-                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true]),
-                 new FormControl( "decimal", [caption:'Basic (%)', name:'entity.basicrate', required:true, scale:4, pattern:'##0.0000']),
-                 new FormControl( "decimal", [caption:'SEF (%)', name:'entity.sefrate', required:true, scale:4, pattern:'##0.0000']),
+                new FormControl( "combo", [captionWidth:100, caption:'LGU', name:'entity.lgu', required:true, allowNull:false, items:'lgus', expression:'#{item.name}']),
+                new FormControl( "combo", [captionWidth:100, caption:'Barangay', name:'entity.barangay', required:true, allowNull:false, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, preferredSize:'0,21']),
+                 new FormControl( "integer", [captionWidth:100, caption:'Year', name:'entity.year', required:true]),
+                 new FormControl( "decimal", [captionWidth:100, caption:'Basic (%)', name:'entity.basicrate', required:true, scale:4, pattern:'##0.0000']),
+                 new FormControl( "decimal", [captionWidth:100, caption:'SEF (%)', name:'entity.sefrate', required:true, scale:4, pattern:'##0.0000']),
              ]    
          },
     ] as FormPanelModel;

@@ -37,7 +37,6 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xButton4 = new com.rameses.rcp.control.XButton();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
-        xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
         jPanel8 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         jPanel9 = new javax.swing.JPanel();
@@ -64,38 +63,28 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xButton2.setName("deselectAll"); // NOI18N
         xButton2.setText("Deselect All");
 
-        xButton3.setMnemonic('f');
         xButton3.setDepends(new String[] {"selectedItem"});
+        xButton3.setMnemonic('f');
         xButton3.setName("fullPayment"); // NOI18N
         xButton3.setText("Full Payment");
 
-        xButton4.setMnemonic('f');
         xButton4.setDepends(new String[] {"selectedItem"});
+        xButton4.setMnemonic('f');
         xButton4.setName("partialPayment"); // NOI18N
         xButton4.setText("Partial Payment");
 
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
 
-        xDecimalField1.setCaption("GENERAL");
-        xDecimalField1.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
+        xDecimalField1.setCaption("RPU Count");
         xDecimalField1.setDepends(new String[] {"selectedItem", "selectAll", "deselectAll", "fullPayment", "partialPayment", "ledger"});
+        xDecimalField1.setName("rpuCount"); // NOI18N
+        xDecimalField1.setPattern("#,##0");
+        xDecimalField1.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xDecimalField1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField1.setEnabled(false);
         xDecimalField1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xDecimalField1.setName("totalGeneral"); // NOI18N
         xDecimalField1.setPreferredSize(new java.awt.Dimension(150, 24));
         xFormPanel1.add(xDecimalField1);
-
-        xDecimalField2.setActionCommand(" ");
-        xDecimalField2.setCaption("SEF");
-        xDecimalField2.setCaptionWidth(40);
-        xDecimalField2.setDepends(new String[] {"selectedItem", "selectAll", "deselectAll", "fullPayment", "partialPayment", "ledger"});
-        xDecimalField2.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        xDecimalField2.setEnabled(false);
-        xDecimalField2.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        xDecimalField2.setName("totalSef"); // NOI18N
-        xDecimalField2.setPreferredSize(new java.awt.Dimension(150, 24));
-        xFormPanel1.add(xDecimalField2);
 
         org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -109,8 +98,8 @@ public class CashReceiptPage extends javax.swing.JPanel {
                 .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 24, Short.MAX_VALUE)
-                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 439, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 213, Short.MAX_VALUE)
+                .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -270,13 +259,13 @@ public class CashReceiptPage extends javax.swing.JPanel {
         formPanel6.setPreferredSize(new java.awt.Dimension(600, 35));
 
         xLookupField1.setCaption("Search Ledger");
+        xLookupField1.setExpression("#{''}");
+        xLookupField1.setHandler("lookupLedger");
+        xLookupField1.setName("ledger"); // NOI18N
         xLookupField1.setCaptionMnemonic('l');
         xLookupField1.setCaptionWidth(100);
         xLookupField1.setCellPadding(new java.awt.Insets(10, 5, 0, 0));
-        xLookupField1.setExpression("#{''}");
-        xLookupField1.setHandler("lookupLedger");
         xLookupField1.setIndex(-500);
-        xLookupField1.setName("ledger"); // NOI18N
         xLookupField1.setNullWhenEmpty(false);
         xLookupField1.setPreferredSize(new java.awt.Dimension(180, 19));
         formPanel6.add(xLookupField1);
@@ -318,7 +307,6 @@ public class CashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;
-    private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     // End of variables declaration//GEN-END:variables

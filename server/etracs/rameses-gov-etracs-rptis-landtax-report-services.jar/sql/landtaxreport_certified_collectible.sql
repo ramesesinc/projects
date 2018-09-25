@@ -30,9 +30,83 @@ from (
 		left join realproperty rp on f.realpropertyid = rp.objid 
 	where rl.state = 'APPROVED' 
 	and rl.taxable = 1 
+	and rp.barangayid like $P{barangayid}
 	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
 
 )x
 where x.totalav > 0
 order by x.pin, x.suffix 
+
+
+
+[getBarangayCollectibles]
+select 
+	x.pin, 
+	x.barangay, 
+	sum(x.totalav) as totalav,
+	0 as basicpmt,
+	0 as basicdisctaken,
+	0 as basicintpmt,
+	0 as sefpmt,
+	0 as sefdisctaken,
+	0 as sefintpmt
+from (
+	select 
+		b.pin, 
+		b.name as barangay, 
+		(select max(assessedvalue) from rptledgerfaas 
+		 where rptledgerid = rl.objid 
+			 and $P{year} >= fromyear 
+			 and ($P{year} <= toyear or toyear = 0)
+			and state = 'APPROVED' 
+			and taxable = 1 
+		 ) as totalav
+	from rptledger rl 
+		inner join barangay b on rl.barangayid = b.objid 
+	where rl.lguid = $P{lguid}
+	and rl.state = 'APPROVED' 
+	and rl.taxable = 1 
+	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
+)x
+where x.totalav > 0
+group by x.pin, x.barangay 
+order by x.pin 
+
+
+[getBarangayPayments]
+select 
+	x.pin, 
+	x.barangay, 
+	sum(x.basicpmt) as basicpmt,
+	sum(x.basicdisctaken) as basicdisctaken,
+	sum(x.basicintpmt) as basicintpmt,
+	sum(x.sefpmt) as sefpmt,
+	sum(x.sefdisctaken) as sefdisctaken,
+	sum(x.sefintpmt) as sefintpmt
+from (
+	select 
+		b.pin, 
+		b.name as barangay, 
+		(case when rpi.revtype = 'basic' then rpi.amount - rpi.discount else 0 end) as basicpmt,
+		(case when rpi.revtype = 'basic' then rpi.discount else 0 end) as basicdisctaken,
+		(case when rpi.revtype = 'basic' then rpi.interest else 0 end) as basicintpmt,
+		(case when rpi.revtype = 'sef' then rpi.amount - rpi.discount else 0 end) as sefpmt,
+		(case when rpi.revtype = 'sef' then rpi.discount else 0 end) as sefdisctaken,
+		(case when rpi.revtype = 'sef' then rpi.interest else 0 end) as sefintpmt
+	from rptledger rl 
+		inner join barangay b on rl.barangayid = b.objid 
+		inner join rptpayment rp on rl.objid = rp.refid
+		inner join rptpayment_item rpi on rp.objid = rpi.parentid
+	where rl.lguid = $P{lguid}
+	and rl.state = 'APPROVED' 
+	and rl.taxable = 1 
+	and not exists(select * from faas_restriction where ledger_objid = rl.objid and state='ACTIVE')
+	and rp.voided = 0
+	and rpi.year = $P{year}
+)x
+group by x.pin, x.barangay 
+order by x.pin 
+
+
+
 

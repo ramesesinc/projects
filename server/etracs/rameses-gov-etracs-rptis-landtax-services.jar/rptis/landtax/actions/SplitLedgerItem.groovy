@@ -17,7 +17,7 @@ public class SplitLedgerItem implements RuleActionHandler {
 			return;
 		}
 
-		def intrate = numSvc.round(item.discount / item.amtdue)
+		def intrate = numSvc.round(item.interest / item.amtdue)
 		def discrate = numSvc.round(item.discount / item.amtdue)
 
 		drools.retract(item)

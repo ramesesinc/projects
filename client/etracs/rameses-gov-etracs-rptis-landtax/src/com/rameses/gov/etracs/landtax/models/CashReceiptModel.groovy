@@ -70,9 +70,9 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         entity.billid = bill.objid; 
         if (payoption != PAY_OPTION_BYLEDGER){
             itemsforpayment = svc.getItemsForPaymentByTaxpayer(bill);
-            listHandler.load();
             calcReceiptAmount();
         }
+        listHandler?.load();
         mode = MODE_CREATE;
         return 'main'
     }    
@@ -332,6 +332,10 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
     
     void afterRefresh(binding, pagename){
         binding.requestFocus('ledger');
+    }
+    
+    def getRpuCount() {
+        return itemsforpayment.size();
     }
         
 }

@@ -46,7 +46,7 @@ class BatchCaptureCollectionInitialModel  {
         arr << " af.formtype = 'serial' ";
         arr << " allowbatch = 1";
 
-        def m = [_schemaname: "vw_collectiontype_org"];
+        def m = [_schemaname: "vw_collectiontype"];
         m.where = [arr.join(" AND "), parm];
         m.orderBy = "sortorder,title";
         allCollectionTypes = qryService.getList( m );
@@ -79,23 +79,15 @@ class BatchCaptureCollectionInitialModel  {
         loadCollectionTypes();
     }
     
-    def lookupCollectorAF( param ) { 
+    def lookupCollectorAF( param, boolean sub ) { 
         def p = [ entity: param ]; 
         def selAF = null; 
         p.onselect = { o-> 
             selAF = o;             
         }
-        Modal.show('cashreceipt:select-af', p ); 
-        return selAF;
-    }
-    
-    def lookupSubCollectorAF( param ) {
-        def p = [ entity: param ]; 
-        def selAF = null; 
-        p.onselect = { o-> 
-            selAF = o;             
-        }
-        Modal.show('cashreceipt:select-af:subcollector', p ); 
+        def s = "cashreceipt:select-af";
+        if(sub == true) s = "cashreceipt:select-af:subcollector";
+        Modal.show( s, p ); 
         return selAF;
     }
     
@@ -123,9 +115,9 @@ class BatchCaptureCollectionInitialModel  {
         
         def afc = null ;
         if ( !subcollectorMode ) {
-            afc = lookupCollectorAF( entity ); 
+            afc = lookupCollectorAF( entity, false ); 
         } else {
-            afc = lookupSubCollectorAF( entity ); 
+            afc = lookupCollectorAF( entity, true ); 
         }
         if ( afc == null ) return null; 
         

@@ -1,5 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package com.rameses.enterprise.treasury.views;
@@ -9,15 +10,15 @@ import com.rameses.seti2.views.CrudFormPage;
 
 /**
  *
- * @author Elmo Nazareno
+ * @author elmonazareno
  */
 @Template(CrudFormPage.class)
-public class CollectionTypeAccountPage extends javax.swing.JPanel {
+public class CollectionGroupAccountPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form CollectionTypeAccountPage
+     * Creates new form CollectionGroupAccountModel
      */
-    public CollectionTypeAccountPage() {
+    public CollectionGroupAccountPage() {
         initComponents();
     }
 
@@ -52,11 +53,12 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
         xLookupField1.setRequired(true);
         xFormPanel1.add(xLookupField1);
 
+        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Value Type");
         xComboBox1.setItems("valueTypes");
         xComboBox1.setName("entity.valuetype"); // NOI18N
-        xComboBox1.setAllowNull(false);
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
         xDecimalField1.setCaption("Default Value");
@@ -65,7 +67,7 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
         xFormPanel1.add(xDecimalField1);
 
         xIntegerField1.setCaption("Sort Order");
-        xIntegerField1.setName("entity.sortorder"); // NOI18N
+        xIntegerField1.setName("entity.orderno"); // NOI18N
         xIntegerField1.setPreferredSize(new java.awt.Dimension(40, 20));
         xIntegerField1.setRequired(true);
         xFormPanel1.add(xIntegerField1);
@@ -80,7 +82,7 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -107,6 +109,8 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XComboBox xComboBox1;

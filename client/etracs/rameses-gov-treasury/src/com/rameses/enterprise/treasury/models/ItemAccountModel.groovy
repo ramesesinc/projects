@@ -19,28 +19,6 @@ class ItemAccountModel extends CrudFormModel {
         return caller.tag;
     }
     
-    void activate() { 
-        if ( MsgBox.confirm('You are about to approve this account. Proceed?')) { 
-            getPersistenceService().update([ 
-               _schemaname: getSchemaName(), 
-               objid : entity.objid, 
-               state : 'ACTIVE' 
-            ]); 
-            loadData(); 
-        }
-    }
-    
-    void deactivate() {
-        if ( MsgBox.confirm('You are about to approve this account. Proceed?')) { 
-            getPersistenceService().update([ 
-               _schemaname: getSchemaName(), 
-               objid : entity.objid, 
-               state : 'INACTIVE' 
-            ]); 
-            loadData(); 
-        }
-    }
-    
     void addSubItems() { 
         def h = { arr-> 
             def sname = 'itemaccount'; 
@@ -147,6 +125,17 @@ class ItemAccountModel extends CrudFormModel {
             }
         ] as BasicListModel;
         Modal.show("simple_list_lookup", p);
+    }
+    
+    void removeParent() {
+        //check first if there are subitems. do not remove if there are.
+        if(!MsgBox.confirm("You are about to move this out from this parent account. Continjue?")) return ;
+        def z = [_schemaname:"itemaccount"];
+        z.findBy = [objid: entity.objid];
+        z.parentid = "{NULL}";
+        persistenceService.update( z );
+        open();
+        binding.refresh();
     }
     
 }

@@ -1,41 +1,47 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="itemaccount" 
+          allowDelete="#{ entity.state == 'DRAFT' }"
           cols="code,title,type,fund.code,fund.title">
     <invokers>
         <!-- CASH IN TREASURY -->
         
         <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Cash In Treasury)" 
                  action="init" role="MASTER" permission="itemaccount.view" tag="CASH_IN_TREASURY"
-                 customFilter="parentid IS NULL AND type='CASH_IN_TREASURY' " index="1"
+                 customFilter="parentid IS NULL AND type='CASH_IN_TREASURY' " 
+                 index="1"
                  formId="itemaccount_list_cash_in_treasury"/>  
         
         <!-- CASH IN BANK -->
         
         <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Cash In Bank)" 
                  action="init" role="MASTER" permission="itemaccount.view" tag="CASH_IN_BANK"
-                 customFilter="parentid IS NULL AND type='CASH_IN_BANK' " index="2"
+                 customFilter="parentid IS NULL AND type='CASH_IN_BANK' " 
+                 index="2"
                  formId="itemaccount_list_cash_in_bank"/>     
         
         
         <!-- REVENUE / NON-REVENUE -->
         
-        <invoker folderid="/menucategory/treasury/master" caption="Item Accounts (Revenue)" 
+        <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Revenue)" 
                  action="init" role="MASTER" permission="itemaccount.view" tag="REVENUE"
-                 customFilter="parentid IS NULL AND type='REVENUE' " index="3"
+                 customFilter="parentid IS NULL AND type='REVENUE' " 
+                 index="3"
                  formId="itemaccount_list_revenue"/>                    
         
         <!-- NON REVENUE -->         
         
-        <invoker folderid="/menucategory/treasury/master" caption="Item Accounts (Non-Revenue)" 
+        <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Non-Revenue)" 
                  action="init" role="MASTER" permission="itemaccount.view"  tag="NONREVENUE" 
-                 customFilter="parentid IS NULL AND type='NONREVENUE' " index="4"
+                 customFilter="parentid IS NULL AND type='NONREVENUE' " 
+                 index="4"
                  formId="itemaccount_list_nonrevenue"/>                    
 
         <!-- PAYABLE -->
         
-        <invoker folderid="/menucategory/treasury/master" caption="Item Accounts (Payable)" 
+        <invoker folderid="/explorer/master/treasury" caption="Item Accounts (Payable)" 
                  action="init" role="MASTER" permission="itemaccount.view"  tag="PAYABLE"
-                 customFilter="parentid IS NULL  AND type='PAYABLE'" index="5"
+                 customFilter="parentid IS NULL  AND type='PAYABLE'" 
+                 index="5"
                  cols="code,title,type"
                  formId="itemaccount_list_payable"/>   
         

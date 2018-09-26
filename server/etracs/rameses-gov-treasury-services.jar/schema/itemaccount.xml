@@ -16,7 +16,7 @@
 		<field name="defaultvalue" defaultValue="0" datatype="integer"/>
 
 		<field name="org_name" />
-		<field name="generic" />
+		<field name="generic" caption="Is Generic" datatype="checkbox" checkedValue="1" uncheckedValue="0"/>
 
 		<complex name="org" ref="sys_org" jointype="many-to-one" includefields="objid,code,name" required="false">
 			<key field="org_objid" target="objid"/>

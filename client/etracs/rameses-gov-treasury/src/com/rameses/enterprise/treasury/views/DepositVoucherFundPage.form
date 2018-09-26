@@ -334,7 +334,7 @@
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="printDepositSlip" noResource="true"/>
-                        <Property name="visibleWhen" type="java.lang.String" value="#{ selectedDepositSlip != null &amp;&amp; selectedDepositSlip.state == &apos;APPROVED&apos; }"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ selectedDepositSlip != null &amp;&amp; selectedDepositSlip.state != &apos;DRAFT&apos; ) }"/>
                         <Property name="text" type="java.lang.String" value="Print"/>
                       </Properties>
                     </Component>

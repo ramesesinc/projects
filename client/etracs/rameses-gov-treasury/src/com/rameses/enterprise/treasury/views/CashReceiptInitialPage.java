@@ -38,37 +38,38 @@ public class CashReceiptInitialPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(150);
 
-        xComboBox1.setName("mode"); // NOI18N
         xComboBox1.setCaption("Mode");
+        xComboBox1.setItems("modeList");
+        xComboBox1.setName("mode"); // NOI18N
         xComboBox1.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox1.setItems("modeList");
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xComboBox2.setName("afType"); // NOI18N
-        xComboBox2.setAllowNull(false);
         xComboBox2.setCaption("AF Type");
-        xComboBox2.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox2.setDepends(new String[] {"mode"});
+        xComboBox2.setItems("afTypeList");
+        xComboBox2.setName("afType"); // NOI18N
+        xComboBox2.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox2.setDynamic(true);
         xComboBox2.setEmptyText("- Select AF -");
         xComboBox2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox2.setItems("afTypeList");
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
 
-        xComboBox3.setName("collectionType"); // NOI18N
-        xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Collection Type");
-        xComboBox3.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox3.setDepends(new String[] {"mode", "afType"});
+        xComboBox3.setExpression("#{ item.title }");
+        xComboBox3.setItems("collectionTypeList");
+        xComboBox3.setName("collectionType"); // NOI18N
+        xComboBox3.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox3.setDynamic(true);
         xComboBox3.setEmptyText("- Select Collection Type -");
-        xComboBox3.setExpression("#{ item.title }");
         xComboBox3.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox3.setItems("collectionTypeList");
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
 
         xButton1.setMnemonic('N');

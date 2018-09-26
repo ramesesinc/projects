@@ -10,19 +10,16 @@ import com.rameses.seti2.models.*;
 
 public class CreditMemoModel extends CrudFormModel {
 
-    def getLookupAccount() {
-        return Inv.lookupOpener("creditmemoaccount:lookup", ["query.typeid": entity.type.objid] );            
+    def collectionTypes;
+    
+    void afterInit() {
+        def m = [:];
+        m._schemaname = "collectiontype";
+        m.where = ["state='ACTIVE' AND allowcreditmemo = 1"];
+        collectionTypes = queryService.getList(m);
     }
-
-    def getLookupBankAccount() {
-        def h = { o->
-            entity.bankaccount = o;
-            binding.refresh();
-        }
-        def fundid = entity.type.fund.objid;
-        return Inv.lookupOpener( "bankaccount:lookup", [onselect: h, "query.fundid": fundid ]);
-    }
-
+    
+    /*
     def submit(){
         if(!entity.items)    
             throw new Exception("Please include at least one item");
@@ -74,5 +71,6 @@ public class CreditMemoModel extends CrudFormModel {
             entity.amount = 0.0;
         binding.refresh('entity.amount');
     }
+    */
     
 }    

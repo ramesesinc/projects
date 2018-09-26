@@ -1,8 +1,8 @@
 import com.rameses.annotations.*;
 
-class CollectionGroupListInterceptor {
+class CollectionTypeListInterceptor {
 
-    @After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectiongroup' }")
+    @After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectiontype' }")
 	public def getNodeList(evt) {
 		def result = evt.result;
 		result << [title:'DRAFT', state:'DRAFT'];
@@ -10,7 +10,7 @@ class CollectionGroupListInterceptor {
 		result << [title:'INACTIVE', state:'INACTIVE'];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiongroup' }")
+	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectiontype' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
 		if( o.node?.state ) {

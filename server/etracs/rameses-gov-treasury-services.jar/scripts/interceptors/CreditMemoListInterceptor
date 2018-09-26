@@ -16,7 +16,7 @@ class CreditMemoListInterceptor {
 
 		if( !o.node?.state ) return;
 
-		def str = "parent.state = :state";
+		def str = "state = :state";
 		def m = [state: o.node.state];
 
 		if( o.where ) {

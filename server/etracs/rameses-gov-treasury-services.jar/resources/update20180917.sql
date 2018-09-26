@@ -40,6 +40,8 @@ CREATE TABLE eftpayment (
 
 ALTER TABLE itemaccount ADD COLUMN generic INT(11);
 update itemaccount SET generic = 0;
+ALTER TABLE itemaccount ADD column sortorder INT(11)
+UPDATE itemaccount SET sortorder = 0;
 
 
 

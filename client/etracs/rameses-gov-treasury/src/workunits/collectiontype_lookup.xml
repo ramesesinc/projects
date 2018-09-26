@@ -2,7 +2,8 @@
     <invokers>
         <invoker type="collectiontype:lookup" 
                  caption="Lookup Collection Types" 
-                 action="init"  
+                 action="init" 
+                 debug ="true" 
                  cols="objid,name,title,formno,handler,barcodekey"/>
         
         <invoker type="collectiontype:paymentorder:lookup" 

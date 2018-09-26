@@ -13,10 +13,6 @@ class ItemAccountListInterceptor {
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' }")
 	public void loadList(def evt) {
 		def o = evt.args[0];
-<<<<<<< HEAD
-=======
-
->>>>>>> 118f2bc74abc05fe21a21bb6b45c934641e91dac
 		if( o.node?.state ) {
 			def str = "state = :state";
 			def m = [state : o.node.state];
@@ -30,68 +26,5 @@ class ItemAccountListInterceptor {
 			}
 		} 
 	}
-<<<<<<< HEAD
-=======
 
-	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")
-	public void beforeGetListForCashReceipt(def evt) {
-		def o = evt.args[0];
-		o.has_collection_account = false;
-
-		def str = "";
-		def m = [:];
-
-		if ( o.collectiontype?.objid ) { 
-			def ctaparam = [ collectiontypeid: o.collectiontype?.objid ]; 
-			def cta = coltypeAcct_db.find( ctaparam ).select('objid').first(); 
-			if ( cta ) {
-				o.has_collection_account = true;
-
-				def ctaem = coltypeAcct_db.find( ctaparam ); 
-				def acctids = ctaem.list().collect{ it.account.objid } 
-				if ( acctids ) { 
-					str = " objid IN ('" + acctids.join("','") + "')";
-				}  
-			}			
-		} 
-
-		if ( !str ) return;
-
-		if( o.where ) {
-			o.where[0] = str + " AND " + o.where[0];	
-			o.where[1].putAll( m );
-		}
-		else {
-			o.where = [str, m];
-		}
-	}
-
-	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'itemaccount' && args[0]._tag == 'CASHRECEIPT' }")
-	public void afterGetListForCashReceipt(def evt) {
-		def o = evt.args[0];
-		def result = evt.result;
-
-		if( o.has_collection_account ) {
-			def startrow = (o._start ? o._start : 0); 
-			def rowcount = (o._limit ? o._limit : 20);
-			def adb = vwcoltypeAcct_db.find([ collectiontypeid: o.collectiontype.objid ]); 
-			if ( o.searchtext ) { 
-				def stxt = o.searchtext + '%';
-				adb.where(' (code like :stxt OR title like :stxt) ', [stxt: stxt]) 
-			} 
-
-			def acList = adb.list(startrow, rowcount);
-			acList.each { a-> 
-				def m = result.find{ it.objid == a.objid } 
-				if ( m == null ) { 
-					result << a; 
-
-				} else { 
-					m.valuetype = a.valuetype; 
-					m.defaultvalue = a.defaultvalue; 
-				}
-			}
-		}
-	}
->>>>>>> 118f2bc74abc05fe21a21bb6b45c934641e91dac
 }

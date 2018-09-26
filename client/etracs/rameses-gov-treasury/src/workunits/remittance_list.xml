@@ -1,34 +1,34 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="remittance" allowCreate="false">
+          schemaName="remittance" allowCreate="false" allowDelete="false">
     <invokers>
-        <invoker folderid="menucategory/treasury/collection" 
-                 caption="View Remittances" 
-                 windowTitle="Remittances By Collector"
-                 formTitle="Remittances By Collector"
+        <invoker folderid="menucategory/treasury/collection" action="init" 
+                 caption="View Remittances" windowTitle="Remittances By Collector"
+                 formTitle="Remittances By Collector" formId="treasury-collection-remittance"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
-                 role="COLLECTOR"
-                 action="init" target="window" index="-4" tag="COLLECTOR"/>
+                 role="COLLECTOR" 
+                 allowDelete="#{entity?.state == 'DRAFT'}" 
+                 target="window" index="-4" tag="COLLECTOR"/>
 
-        <invoker folderid="menucategory/treasury/remittance" 
-                 caption="View Remittances" 
-                 windowTitle="Remittances" formTitle="Remittances"
+        <invoker folderid="menucategory/treasury/remittance" action="init" 
+                 caption="View Remittances" windowTitle="Remittances" 
+                 formTitle="Remittances" formId="treasury-remittance" 
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  hiddenCols="collector.objid,liquidatingofficer.objid"
-                 orderBy="controlno"
+                 orderBy="controlno" 
                  role="LIQUIDATING_OFFICER"
-                 action="init" target="window" index="-4" tag="ALL"/>
+                 target="window" index="-4" tag="ALL" />
 
-        <invoker folderid="menucategory/treasury/mgmt" 
-                 caption="View Remittances" 
-                 windowTitle="Remittances" formTitle="Remittances"
+        <invoker folderid="menucategory/treasury/mgmt" action="init" 
+                 caption="View Remittances" windowTitle="Remittances" 
+                 formTitle="Remittances" formId="treasury-mgmt-remittance"
                  cols="controlno,controldate,collector.name,liquidatingofficer.name,amount,state"
                  hiddenCols="collector.objid,liquidatingofficer.objid"
                  orderBy="controlno"
                  role="SHARED"
-                 action="init" target="window" index="-4" tag="ALL"/>        
+                 target="window" index="-4" tag="ALL"/>        
     </invokers>
     
-   <code class="com.rameses.enterprise.treasury.models.RemittanceListModel" />    
+    <code class="com.rameses.enterprise.treasury.models.RemittanceListModel" />    
 </workunit>

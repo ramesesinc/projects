@@ -26,13 +26,16 @@ class BatchCaptureCollectionListInterceptor {
 		}
 
 		def tag = param._tag.toString(); 
-		if ( tag == 'collector' ) {
-			qarr << " collector.objid = :userid "; 
-			qmap.userid = env.USERID; 
-
-		} else if ( tag == 'subcollector' ) {
+		if ( tag == 'shared' ) {
+			// do nothing 
+		}
+		else if ( tag == 'subcollector' ) {
 			qarr << " capturedby.objid = :userid "; 
 			qarr << " capturedby.objid <> collector.objid ";
+			qmap.userid = env.USERID; 
+		} 
+		else {
+			qarr << " collector.objid = :userid "; 
 			qmap.userid = env.USERID; 
 		} 
 
@@ -50,7 +53,7 @@ class BatchCaptureCollectionListInterceptor {
 		} 
 
 		def orderbys = []; 
-		if ( param.node?.state.toString() != 'DRAFT' ) { 
+		if ( !param.node?.state.toString().matches('DRAFT|FORPOSTING')) { 
 			orderbys << " txndate desc ";
 		}
 		if ( param.orderBy ) { 

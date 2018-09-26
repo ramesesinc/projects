@@ -6,17 +6,20 @@
     <invokers>
         <invoker folderid="menucategory/treasury/mgmt" index="-5"
                  caption="Batch Capture List" action="init" 
-                 role="SHARED" tag="shared"/>
+                 role="DATA_CONTROLLER" tag="shared"
+                 allowCreate="false" allowDelete="false"/>
 
         <invoker folderid="menucategory/treasury/collection" 
                  caption="Batch Capture List" action="init" 
-                 role="COLLECTOR" tag="collector" />
+                 role="COLLECTOR" tag="collector" 
+                 allowDelete="#{entity?.state == 'DRAFT'}"/>
         
         <invoker folderid="menucategory/treasury/subcollection" 
                  caption="Batch Capture List" action="init" 
-                 role="SUBCOLLECTOR" tag="subcollector"
+                 role="SUBCOLLECTOR" tag="subcollector" 
+                 allowDelete="#{entity?.state == 'DRAFT'}" 
                  index="-5" />
 
     </invokers>
-
+    
 </workunit>

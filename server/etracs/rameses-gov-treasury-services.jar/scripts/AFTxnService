@@ -238,7 +238,7 @@ class AFTxnService  {
 			p.allocid = alloc.objid;
 		}
 
-		def list = afControl.select('objid,startseries,currentseries,endseries,prevdetailid').where( sbuff.toString(), p ).orderBy('dtfiled,batchno,stubno').limit( qty ).list();
+		def list = afControl.select('objid,startseries,currentseries,endseries,prevdetailid').where( sbuff.toString(), p ).orderBy('dtfiled,startseries,stubno').limit( qty ).list();
 		if ( !list ) throw new Exception("No available stock for " + p.afid + " " + p.unit);	
 		if( list.size() != qty )
 			throw new Exception("Not enough stock to issue");

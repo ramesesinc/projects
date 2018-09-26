@@ -41,26 +41,24 @@ from (
 		select 
 			t2.remittanceid, t2.controlid, a.afid as formno, af.formtype, af.title as formtitle, a.unit, 
 			af.serieslength, af.denomination, a.stubno, a.startseries, a.endseries, 
-			case when t2.refdate = t2.controldate then t2.beginstartseries else null end as receivedstartseries, 
-			case when t2.refdate = t2.controldate then t2.beginendseries else null end as receivedendseries, 
-			case when t2.refdate = t2.controldate then null else t2.beginstartseries end as beginstartseries, 
-			case when t2.refdate = t2.controldate then null else t2.beginendseries end as beginendseries, 
+			case when t2.reftype = 'ISSUE' then t2.beginstartseries else null end as receivedstartseries, 
+			case when t2.reftype = 'ISSUE' then t2.beginendseries else null end as receivedendseries, 
+			case when t2.reftype = 'ISSUE' then null else t2.beginstartseries end as beginstartseries, 
+			case when t2.reftype = 'ISSUE' then null else t2.beginendseries end as beginendseries, 
 			null as issuedstartseries, null as issuedendseries, 
-			case when t2.refdate = t2.controldate then t2.qtybegin else 0 end as qtyreceived, 
-			case when t2.refdate = t2.controldate then 0 else t2.qtybegin end as qtybegin, 
+			case when t2.reftype = 'ISSUE' then t2.qtybegin else 0 end as qtyreceived, 
+			case when t2.reftype = 'ISSUE' then 0 else t2.qtybegin end as qtybegin, 
 			t2.qtyissued, t2.qtycancelled 
 		from ( 
 			select 
-				d.controlid, remittanceid, convert(date, d.refdate) as refdate, t1.controldate, 
+				d.controlid, remittanceid, d.reftype, 
 				null as receivedstartseries, null as receivedendseries, 
 				case when d.qtyending = 0 then null else d.endingstartseries end beginstartseries, 
 				case when d.qtyending = 0 then null else d.endingendseries end beginendseries, 
 				null as issuedstartseries, null as issuedendseries, 
 				0 as qtyreceived, d.qtyending as qtybegin, 0 as qtyissued, 0 as qtycancelled 
 			from ( 
-				select 
-					r.objid as remittanceid,
-					convert(date, r.controldate) as controldate, 
+				select r.objid as remittanceid,
 					afc.owner_objid, afc.objid as controlid, 
 					(
 						select top 1 objid from af_control_detail 

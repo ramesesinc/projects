@@ -1,6 +1,8 @@
 <workunit>
     <invokers> 
         <invoker type="entityjuridical:matchname:warning" caption="Name Match Warning"/>
+        
+        <invoker type="entityjuridical:matchname:approve" role="APPROVER"/> 
     </invokers>
     <code class="com.rameses.entity.models.JuridicalEntityNameMatchWarningModel" />
     <pages>

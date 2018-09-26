@@ -11,11 +11,27 @@ class RemittanceAFInterceptor {
 	@DataContext('remittance_af') 
 	def remaf_em;
 
+
+	@After( pattern="RemittanceService.importData" ) 
+	void afterImportData( evt ) { 
+		buildAF( evt.args[0] );  
+	} 
+
 	@After( pattern="RemittanceService.create" ) 
 	void afterCreate( evt ) {
-		def result = evt.result; 
+		buildAF( evt.result ); 
+	} 	
+
+	private void buildAF( result ) {
 		def p = [ remittanceid: result.objid ]; 
-		def afs = remaf_em.getBuildAFControls( p ); 
+		def afs = remaf_em.getBuildAFs( p ); 
+		afs.each{
+			it.qtyreceived = (it.qtyreceived == null ? 0 : it.qtyreceived);
+			it.qtybegin = (it.qtybegin == null ? 0 : it.qtybegin);
+			it.qtyissued = (it.qtyissued == null ? 0 : it.qtyissued);
+			it.qtyending = (it.qtyending == null ? 0 : it.qtyending);
+			it.qtycancelled = (it.qtycancelled == null ? 0 : it.qtycancelled);
+		}
 
 		// initiate locked to the affected af controls 
 		def lockid = new java.rmi.server.UID().toString(); 

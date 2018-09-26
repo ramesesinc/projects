@@ -31,6 +31,7 @@ class CashReceiptInitialModel  {
     
     String title = "Cash Receipt Initial (Select Type of Collection)"
     
+
     def getAfTypeList() {
         return collectionTypes.getAfTypes();
     }

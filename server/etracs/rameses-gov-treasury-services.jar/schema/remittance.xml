@@ -1,7 +1,7 @@
 <schema>
 	<element  tablename="remittance" >
 		<field name="objid" primary="true" prefix="REM"/>
-		<field name="state" required="true"/>
+		<field name="state" required="true" caption="Status"/>
 		<field name="controlno" required="true" caption="Control No" searchable="true" indexed="true" />
 		<field name="controldate" required="true"  caption="Remittance Date" indexed="true" type="date"/>
 

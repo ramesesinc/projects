@@ -72,12 +72,12 @@ class RemittanceImportController
     void doImport(){
         def chooser = new JFileChooser();
         int i = chooser.showOpenDialog(null);
-        if(i==0) {
+        if ( i == 0 ) { 
             data = FileUtil.readObject( chooser.selectedFile );
             data.state = 'POSTED';
             receiptListHandler.reload();
             mode = MODE_READ;
-        }      
+        } 
     }
           
     
@@ -92,7 +92,7 @@ class RemittanceImportController
      *================================================================= */
     
     def receiptListHandler = [
-            fetchList : { return data.cashreceipts; }
+        fetchList : { return data.cashreceipts; }
     ] as BasicListModel;
     
 }

@@ -105,15 +105,13 @@ class AFControlService  {
 
 	@ProxyMethod
 	public void updateNextSeries( p ) { 
-
-
 		// force update lock to table 
 		def afparam = [ objid: p.controlid ]; 
 		em.find( afparam ).update([ lockid: new java.rmi.server.UID().toString() ]); 
 
-		def afc = em.find( afparam ).select('objid,currentseries,endseries,afunit.*').first(); 
+		def afc = em.find( afparam ).select('objid,txnmode,currentseries,endseries,afunit.*').first(); 
 		if ( afc == null ) return; 
-
+		if ( afc.txnmode == 'REMOTE' ) return; 
 
 		if ( afc.currentseries > afc.endseries ) 
 			throw new Exception('Series is already consumed. Please verify'); 
@@ -225,13 +223,10 @@ class AFControlService  {
 
 	@ProxyMethod
 	public def changeMode( p ) { 
-		checkCanPerformFunc( p ); 
-
 		if ( em.find([ objid: p.objid, txnmode: 'REMOTE' ]).select('objid').first()) {
 			throw new Exception('Change Mode Not Allowed. This record is currently exported'); 
 		}
 
-		//throw new Exception("change mode here " + [ownerid: o.owner.objid, afid: o.afid, txnmode: o.txnmode]);
 		em.find([ objid: p.objid ]).update([ txnmode: p.txnmode ]); 
 
 		def result = [txnmode: p.txnmode ];

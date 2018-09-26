@@ -252,7 +252,7 @@ public class RemittancePage extends javax.swing.JPanel {
         xDataTable1.setPreferredSize(new java.awt.Dimension(200, 160));
         jPanel3.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 10, 0));
+        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 0, 0));
         com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
         xLayout1.setSpacing(5);
         jPanel4.setLayout(xLayout1);
@@ -290,7 +290,7 @@ public class RemittancePage extends javax.swing.JPanel {
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

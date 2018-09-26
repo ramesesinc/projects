@@ -2,7 +2,20 @@
     <invokers>
         <invoker type="cashreceiptinfo:formActions" action="print" caption="Realty Tax Detail Printout" target="process" visibleWhen="#{entity.formno=='56'}"/>
         <invoker type="cashreceipt_rpt:formActions" action="print" caption="Realty Tax Detail Printout" target="process" visibleWhen="#{entity.formno=='56' &amp;&amp; completed}"/>
+
+        <invoker type="cashreceipt:form:formActions" 
+            action="print" caption="Realty Tax Detail Printout" 
+            target="process" 
+            applySecurity="true" 
+            visibleWhen="#{entity.formno=='56'}"/>
     </invokers>
+<!-- 
+    <invoker type="cashreceipt:form:formActions" action="printDetail" 
+            immediate="true" caption="Print Detail" 
+            applySecurity="true" 
+           visibleWhen="#{entity.voided == 0}" /> 
+
+       -->
     <code>
 
 <![CDATA[    
@@ -20,6 +33,10 @@ class  RPTTaxDetailController {
     def paramSvc
 
     void print() {
+        entity.refno = ''
+        if (entity.paymentitems) {
+            entity.refno = entity.paymentitems.particulars.unique().join('/');
+        }
         report.viewReport();
         ReportUtil.print( report.report, true) ;
     }

@@ -1,24 +1,23 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
           schemaName="cashreceipt" allowCreate="false" allowDelete="false" 
-          cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name">
+          cols="formno,receiptno,receiptdate,stub,series,paidby,amount,voided,collector.name">
     
     <invokers>
-        <invoker folderid="menucategory/treasury/mgmt" caption="View Cash Receipts" action="init"
+        <invoker folderid="menucategory/treasury/mgmt" action="init" 
+                 caption="View Cash Receipts" tag="mgmt" 
+                 role="SHARED" permission="cashreceipt.view" 
                  customFilter=" formtype='serial' "
-                 index="-1"
-                 role="SHARED" tag="mgmt"/>
+                 index="-9" />
 
-        <invoker folderid="menucategory/treasury/collection" caption="View Cash Receipts" 
+        <invoker folderid="menucategory/treasury/collection" action="init" 
+                 caption="View Cash Receipts" role="COLLECTOR" tag="collector" 
                  customFilter=" formtype='serial' "
-                 role="COLLECTOR"
-                 tag="collector"
-                 action="init" index="-9" /> 
+                 index="-9" /> 
         
-        <invoker folderid="menucategory/treasury/subcollection" caption="View Cash Receipts" 
+        <invoker folderid="menucategory/treasury/subcollection" action="init" 
+                 caption="View Cash Receipts" role="SUBCOLLECTOR" tag="subcollector" 
                  customFilter=" formtype='serial' "
-                 role="SUBCOLLECTOR"
-                 tag="subcollector"
-                 action="init" index="-9" /> 
+                 index="-9" /> 
 
         <invoker type="cashreceipt_list:afseries" caption="Cash Receipt List" action="init" 
                  customFilter=" controlid = :afcontrolid AND series BETWEEN :fromseries AND :toseries"
@@ -38,5 +37,18 @@
         
    </invokers>
    
-   
+    <code>
+import com.rameses.rcp.annotations.*; 
+import com.rameses.rcp.common.*; 
+
+class CashReceiptListModel extends com.rameses.seti2.models.CrudListModel {
+        
+    public void initColumn( c ) { 
+        if ( c.name == 'series' ) { 
+            c.visible = false; 
+            c.hidden = true; 
+        } 
+    } 
+}         
+    </code>
 </workunit>

@@ -1,22 +1,18 @@
 <workunit>
-   <invokers>
+    <invokers>
+        <invoker type="quick_launcher" code="BCM01" caption="Batch Capture Management" 
+                 action="init" role="DATA_CONTROLLER" permission="batchcapture.manage"/>
        
-       <invoker folderid="/menucategory/treasury/mgmt" caption="Batch Capture Management"   
-                 role="MASTER" permission="bank.view" action="init" index="10"/> 
+        <invoker folderid="menucategory/treasury/mgmt" caption="Batch Capture Mgmt"   
+                 action="init" role="DATA_CONTROLLER" permission="batchcapture.manage" index="-5"/> 
        
-       <!--
-        <invoker folderid="/explorer/txn/treasury" caption="Batch Capture Management" action="init" index="50" 
-            role="DATA_CONTROLLER" permission="batchcapture.manage"/>
-        <invoker type="quick_launcher" code="BCM01" caption="Batch Capture Management" action="init" index="50" 
-            role="DATA_CONTROLLER" permission="batchcapture.manage"/>
-        <invoker type="formActions" caption="Close" action="_close" immediate="true" mnemonic="c" shortcut="ctrl C" icon="images/toolbars/cancel.png"/>
-        -->
-   </invokers>
+        <invoker type="formActions" caption="Close" action="_close" immediate="true" mnemonic="c" icon="images/toolbars/cancel.png"/>
+    </invokers>
    
-   <code class="com.rameses.gov.treasury.batchcapture.BatchCaptureMgmtModel"/>
+    <code class="com.rameses.gov.treasury.models.BatchCaptureMgmtModel"/>
    
-   <pages>
-        <page template="com.rameses.gov.treasury.batchcapture.BatchCaptureMgmtPage"/>
-   </pages>
+    <pages>
+        <page template="com.rameses.gov.treasury.views.BatchCaptureMgmtPage"/>
+    </pages>
    
 </workunit>

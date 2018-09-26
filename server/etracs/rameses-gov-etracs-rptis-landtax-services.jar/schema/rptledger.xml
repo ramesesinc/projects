@@ -20,9 +20,9 @@
         <field name="classification_objid" required="true"/>
         <field name="classcode" required="true" caption="Class" />
         <field name="totalmv" type="decimal"  caption="M.V." width="100"/>
-        <field name="totalav" type="decimal" caption="A.V." width="100"/>
+        <field name="totalav" type="decimal" caption="A.V." width="100" indexed="true" />
         <field name="totalareaha" type="decimal"  caption="Area (ha)" width="90" />
-        <field name="taxable" required="true" type="boolean" caption="Taxable" />
+        <field name="taxable" required="true" type="boolean" caption="Taxable" index="true"  />
         <field name="prevtdno" searchable="true" caption="Previous TD No." indexed="true" />
         <field name="titleno" searchable="true" caption="Title No."  width="60"/>
         <field name="totalareasqm" expr="totalareaha * 10000" caption="Area (sqm)" width="70" type="decimal" />

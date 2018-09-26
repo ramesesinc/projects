@@ -17,6 +17,12 @@ class RemittanceInterceptor {
 	@DataContext("cashreceipt")
 	def cashreceipt_db;
 
+	@DataContext("af_control")
+	def afc_db;
+	
+	@DataContext("af_control_detail")
+	def afd_db;
+
 	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'remittance' }")
 	public void getNodes( evt ) { 
@@ -109,6 +115,14 @@ class RemittanceInterceptor {
 		remf_db.find( m ).delete(); 
 		remaf_db.find( m ).delete(); 
 		
+		afd_db.find([ refid: params.objid ]).list().each{
+			afc_db.find([ objid: it.controlid ]).update([ currentdetailid: '{NULL}']); 
+			afd_db.find([ objid: it.objid ]).delete();
+			def currentitem = afd_db.find([ controlid: it.controlid ]).select('objid').orderBy('refdate desc, txndate desc, indexno desc').first();  
+			if ( currentitem?.objid ) {
+				afc_db.find([ objid: it.controlid ]).update([ currentdetailid: currentitem.objid ]); 
+			}
+		}
 	} 
 
 

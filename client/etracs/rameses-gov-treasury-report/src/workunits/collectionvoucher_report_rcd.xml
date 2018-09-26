@@ -48,6 +48,9 @@
                 return svc.getRCDReportData([ collectionvoucherid: entity.objid, fundid: fund.fundid ]); 
             }
             
+            Map getParameters() {
+                return [REPORTTYPE : 'SUMMARY']; 
+            } 
             
             SubReport[] getSubReports() {
                return [ 

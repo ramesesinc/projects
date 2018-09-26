@@ -1,5 +1,45 @@
 [getCollectionByFund]
 select 
+  fund.objid as fundid, fund.title as fundname, fund.code as fundcode, 
+  cri.item_objid as acctid, cri.item_title as acctname, cri.item_code as acctcode, 
+  sum( cri.amount ) as amount, fund.parentid as fundparentid  
+from ( 
+  select c.objid, c.remittanceid 
+  from remittance r 
+    inner join collectionvoucher cv on cv.objid = r.collectionvoucherid 
+    inner join cashreceipt c on c.remittanceid = r.objid 
+    left join cashreceipt_void v on v.receiptid = c.objid 
+  where 'BY_REMITTANCE' = $P{postingtypeid}  
+    and r.controldate >= $P{fromdate} 
+    and r.controldate <  $P{todate} 
+    and v.objid is null 
+
+  union 
+
+  select c.objid, c.remittanceid 
+  from collectionvoucher cv 
+    inner join remittance r on r.collectionvoucherid = cv.objid 
+    inner join cashreceipt c on c.remittanceid = r.objid 
+    left join cashreceipt_void v on v.receiptid = c.objid 
+  where 'BY_REMITTANCE' <> $P{postingtypeid}  
+    and cv.controldate >= $P{fromdate} 
+    and cv.controldate <  $P{todate} 
+    and v.objid is null 
+)t1  
+  inner join cashreceipt cr on cr.objid = t1.objid 
+  inner join cashreceiptitem cri on cri.receiptid = cr.objid 
+  inner join itemaccount ia on ia.objid = cri.item_objid 
+  inner join fund on fund.objid = cri.item_fund_objid 
+where 1=1 ${filter}   
+group by 
+  fund.objid, fund.title, fund.code, fund.parentid, 
+  cri.item_objid, cri.item_title, cri.item_code 
+order by 
+  fund.code, fund.title, cri.item_code, cri.item_title  
+
+
+[xxxgetCollectionByFund]
+select 
   ri.fund_objid as fundid, ri.fund_title as fundname, fund.code as fundcode, 
   cri.item_objid as acctid, cri.item_title as acctname, cri.item_code as acctcode, 
   sum( cri.amount ) as amount, fund.parentid as fundparentid  

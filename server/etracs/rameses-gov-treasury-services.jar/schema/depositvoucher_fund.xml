@@ -9,7 +9,7 @@
 		<field name="postedby_name" />
 		<field name="dtposted" />
 		
-		<complex name="parent" ref="depositvoucher" jointype="many-to-one" includefields="objid,controlno,controldate,state">
+		<complex name="parent" ref="depositvoucher" jointype="many-to-one" includefields="objid,controlno,controldate,state,dtcreated">
 			<key field="parentid" target="objid" />
 		</complex>	
 		<!-- we need this for querying in deposit initial -->

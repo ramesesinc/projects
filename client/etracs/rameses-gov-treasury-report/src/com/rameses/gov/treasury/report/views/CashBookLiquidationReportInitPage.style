@@ -1,0 +1,22 @@
+"entity.*" [1==1] {
+    visible: false; 
+}
+"entity.(period|fund)" [1==1] {
+    visible: true; 
+}
+"entity.(month|year)" [ entity?.period?.code=='monthly' ] {
+    visible: true; 
+}
+"entity.date" [ entity?.period?.code=='daily' ] {
+    visible: true; 
+}
+"entity.account" [ tag=='SHARED' ] {
+    visible: true; 
+}
+
+"liqname" [1==1] {
+    visible: false; 
+}
+"liqname" [ tag == 'LIQ' ] {
+    visible: true; 
+} 

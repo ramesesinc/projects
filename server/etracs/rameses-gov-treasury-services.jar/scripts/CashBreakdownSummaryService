@@ -1,6 +1,4 @@
 import com.rameses.annotations.*;
-import com.rameses.util.*;
-import java.rmi.server.*;
 
 /*****************************************************
 * This accepts a list and returns a sum of qty
@@ -9,22 +7,22 @@ import java.rmi.server.*;
 class CashBreakdownSummaryService  {
 
 	@ProxyMethod
-	public def summarize( def list ) {
-		def newList = [];
+	public def summarize( list ) { 
+		if ( !list ) return []; 
 
-		def bdList = [];
-		list.each {
-			bdList.addAll( it );
-		}
-		
-		def gp = bdList.groupBy{ [caption: it.caption, denomination: it.denomination ] };
-		gp.each { k,v->
-			k.qty = v.sum{ it.qty };
-			k.amount = v.sum{ it.amount };
-			newList << k;
-		}
-		return newList;
-	}
+		def tmps = []; 
+		list.each{ tmps.addAll( it ); } 
 
-	
+		def result = []; 
+		tmps.groupBy{ it.denomination }.each { k,v-> 
+			def m = [:]; 
+			m.denomination = k; 
+			m.caption = v.first().caption;
+			m.qty = v.sum{( it.qty ? it.qty : 0 )} 
+			m.amount = v.sum{( it.amount ? it.amount: 0.0 )} 
+			result << m; 
+		} 
+		tmps.clear(); 
+		return result; 
+	} 
 }

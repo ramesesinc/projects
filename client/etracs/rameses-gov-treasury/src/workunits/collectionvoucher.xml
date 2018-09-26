@@ -1,5 +1,7 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="collectionvoucher" 
+<workunit extends="com/rameses/seti2/templates/CrudForm.xml" 
+          schemaName="collectionvoucher" 
           allowCreate="false" allowEdit="false">
+    
     <invokers>
         <invoker type="collectionvoucher:open" 
                  caption="Collection Voucher" 

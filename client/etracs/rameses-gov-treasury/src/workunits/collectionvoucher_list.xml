@@ -7,7 +7,8 @@
                  cols="controlno,controldate,liquidatingofficer.name,amount,state"
                  orderBy="controldate DESC" 
                  role="LIQUIDATING_OFFICER" 
-                 target="window" index="32" />
+                 target="window" index="32" 
+                 allowDelete="#{entity?.state == 'OPEN'}" />
         
         <invoker folderid="menucategory/treasury/mgmt" action="init" 
                  caption="View Collection Vouchers" windowTitle="Collection Vouchers"

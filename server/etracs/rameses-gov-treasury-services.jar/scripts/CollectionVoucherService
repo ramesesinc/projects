@@ -62,43 +62,66 @@ class CollectionVoucherService  {
 		m.liquidatingofficer = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
 		m = cvEm.create( m );
 
-		//update the collection voucher id for each remittance
-		remEm.where( wheres.join(' AND ')).update([ collectionvoucherid: m.objid ]);
+		println '\n\n----------'
 
-		def z = [collectionvoucherid: m.objid]
+		def z = [ collectionvoucherid: m.objid ]; 
+		//update the collection voucher id for each remittance
+		remEm.where( wheres.join(' AND ')).update( z );
+		//build voucher funds
 		cvEm.insertCollectionVoucherFund( z );
 
 		//update cash breakdown totals in each collection fund
 		def lfList = cvFundEm.find( [ parentid: m.objid ] ).list();
-
 		lfList.each {
-			def cc = [cvid: it.parentid, fundid: it.fund.objid]
-			def subList = remFundEm.select("cashbreakdown").where( "remittance.collectionvoucherid=:cvid AND fund.objid=:fundid" , cc).list()*.cashbreakdown;
-			def bd = cashBreakdownSvc.summarize( subList );
-			cvFundEm.find( [objid: it.objid] ).update( [cashbreakdown: bd ]);
-		}
+			def cc = [cvid: it.parentid, fundid: it.fund.objid]; 
+			def subList = remFundEm.select("cashbreakdown").where( "remittance.collectionvoucherid=:cvid AND fund.objid=:fundid" , cc).list()*.cashbreakdown; 
+			def bd = cashBreakdownSvc.summarize( subList ); 
+			cvFundEm.find([ objid: it.objid ]).update([ cashbreakdown: bd ]); 
+		} 
+
 
 		//totals in collection
 		def u = [cashbreakdown: [], totalcash:0, totalcheck:0, totalcr: 0, amount:0 ];
-		def remList = remEm.find( z ).list().each {
-			u.amount += it.amount;
-			u.totalcash += it.totalcash;
-			u.totalcheck += it.totalcheck;
-			u.totalcr += it.totalcr;
-			u.cashbreakdown << it.cashbreakdown;
+		def remList = remEm.find( z ).list().each { 
+			def bd = cashBreakdownSvc.summarize([ it.cashbreakdown ]); 
+
+			u.amount += it.amount; 
+			u.totalcash += it.totalcash; 
+			u.totalcheck += it.totalcheck; 
+			u.totalcr += it.totalcr; 
+			u.cashbreakdown << bd; 
 		} 
 
 		// there must be a cash,check or credit amount, if result is zero then this is not valid 
-		if ((u.totalcash + u.totalcheck + u.totalcr ) == 0 ) throw new Exception("Total Cash must not be zero"); 
+		if ((u.totalcash + u.totalcheck + u.totalcr) == 0) throw new Exception("Total Cash must not be zero"); 
 
-		u.cashbreakdown = cashBreakdownSvc.summarize( u.cashbreakdown );
-		cvEm.find( [objid: m.objid ] ).update( u );
+		//validate totalcashbreakdown = totalcash 
+		def bd = cashBreakdownSvc.summarize( u.cashbreakdown ); 
+		bd.sort{ -((Number) it.denomination).intValue() } 
+
+		u.cashbreakdown = bd; 
+		cvEm.find([ objid: m.objid ]).update( u );
 		return m;
 	}
 
 	@ProxyMethod 
 	public def post( p ) { 
-		def m = [ state: 'POSTED']; 
+		if ( !p.objid ) throw new Exception('objid parameter is required'); 
+
+		def cv = cvEm.find([ objid: p.objid ]).select('objid,state,totalcash,cashbreakdown').first(); 
+		if ( !cv ) throw new Exception('collection voucher record not found'); 
+
+		if ( cv.state.toString().toUpperCase() != 'OPEN' ) 
+			throw new Exception('Collection Voucher transaction no longer in OPEN status'); 
+
+		if ( cv.cashbreakdown == null ) cv.cashbreakdown = []; 
+
+		def cbamount = cv.cashbreakdown.sum{( it.amount ? it.amount: 0.0 )}
+		if ( cbamount == null ) cbamount = 0.0; 
+		if ( cbamount != cv.totalcash ) 
+			throw new Exception('Cash Breakdown does not matched with the Total Cash'); 
+
+		def m = [ state: 'POSTED' ]; 
 		m.dtposted = dateSvc.getServerDate(); 
 
 		if ( p.controlno.toString().toUpperCase().startsWith("TMP-")) {

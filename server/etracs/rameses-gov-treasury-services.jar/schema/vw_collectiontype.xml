@@ -25,7 +25,8 @@ SELECT
    af.denomination AS af_denomination,
    af.baseunit AS af_baseunit,
    c.allowpaymentorder AS allowpaymentorder,
-   c.allowkiosk AS allowkiosk
+   c.allowkiosk AS allowkiosk,
+   c.allowcreditmemo
 FROM collectiontype_org o
 INNER JOIN  collectiontype c on c.objid = o.collectiontypeid
 INNER JOIN af ON af.objid = c.formno
@@ -56,7 +57,8 @@ SELECT
    af.denomination AS af_denomination,
    af.baseunit AS af_baseunit,
    c.allowpaymentorder AS allowpaymentorder,
-   c.allowkiosk AS allowkiosk 
+   c.allowkiosk AS allowkiosk,
+   c.allowcreditmemo 
 FROM collectiontype c 
 INNER JOIN af ON af.objid = c.formno
 LEFT JOIN collectiontype_org o ON c.objid = o.collectiontypeid
@@ -78,6 +80,7 @@ WHERE o.objid IS NULL AND c.state = 'ACTIVE'
 
 		<field name="allowpaymentorder" />
 		<field name="allowkiosk"/>
+      <field name="allowcreditmemo"/>
 
 		<field name="sortorder"/> 
 		<field name="orgid"/> 

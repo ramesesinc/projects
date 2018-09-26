@@ -3,12 +3,12 @@
         <invoker type="sys_user_role:lookup" caption="Lookup User" target="popup" 
                 action="init"
                 cols="username,lastname,firstname,domain,role"
-                hiddenCols="name,orgid"/>
+                hiddenCols="name,orgid,txncode,jobtitle"/>
 
         <invoker type="user_role:lookup" caption="Lookup User" target="popup" 
                 action="init"
                 cols="username,lastname,firstname,domain,role"
-                hiddenCols="name,orgid"/>
+                hiddenCols="name,orgid,txncode,jobtitle"/>
 
     </invokers>
     <code class="com.rameses.admin.models.UserRoleLookupModel" />

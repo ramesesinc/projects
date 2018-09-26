@@ -1,8 +1,8 @@
 <schema>
 
 	<element tablename="creditmemo" >
-		<field name="objid" primary="true" />
-		<field name="state" required="true" />
+		<field name="objid" primary="true" prefix="CR"/>
+		<field name="state" required="true" defaultValue="DRAFT"/>
 		<field name="controlno" caption="Control No" required="true" />
 		<field name="payer_objid" required="true" />
 		<field name="payer_name" required="true" caption="Payer Name"/>
@@ -20,6 +20,10 @@
 		<field name="dtissued" required="true" />
 		<field name="issuedby_objid" required="true" />
 		<field name="issuedby_name" required="true" />
+
+		<complex name="items" ref="creditmemoitem" jointype="one-to-many">
+			<key field="objid" target="parentid" />
+		</complex>
 	</element>
 
 </schema>

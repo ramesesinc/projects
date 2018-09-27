@@ -17,7 +17,6 @@ public class CollectionTypeAccountModel extends CrudFormModel {
     }
 
     def getLookupAccount() { 
-       // def params = ['query.fund' : fund ];  
         def params = [:];
         params.onselect = { o->
             entity.account = o;

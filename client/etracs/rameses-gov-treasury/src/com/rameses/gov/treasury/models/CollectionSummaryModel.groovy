@@ -1,27 +1,16 @@
-<workunit>
-    <invokers>
-        <invoker type="cashreceiptinfo:formActions" caption="Collection Summary" target="popup" visibleWhen="#{entity.formno=='51'}"/>
-        <invoker type="misc_cashreceipt:formActions" caption="Collection Summary" target="popup" visibleWhen="#{entity.formno=='51' &amp;&amp; completed}"/>
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/toolbars/cancel.png" />
-    </invokers>
-    <code>
+package com.rameses.gov.treasury.models;
 
-<![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.common.*;
 
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import com.rameses.osiris2.reports.*;
+class CollectionSummaryModel {
 
-class  RPTCollectionTotalController 
-{
     @Binding
     def binding;
     
     @Service('CollectionSummaryService')
     def svc;
-    
     
     def entity;
     
@@ -32,7 +21,6 @@ class  RPTCollectionTotalController
     def items; 
     
     String title = 'Collection Summary Information'
-    
     
     @PropertyChangeListener
     def listener = [
@@ -83,11 +71,3 @@ class  RPTCollectionTotalController
     ] as BasicListModel
 
 }
-]]>
-
-
-    </code>
-    <pages>
-        <page template="com.rameses.gov.treasury.collection.CollectionSummaryPage"/>
-    </pages>
-</workunit>

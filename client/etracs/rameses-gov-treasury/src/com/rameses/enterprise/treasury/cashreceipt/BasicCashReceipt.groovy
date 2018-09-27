@@ -28,7 +28,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         m.select = "account.objid";
         queryFilter.acctids = queryService.getList( m )*.account.objid;
         clearItems();
-        clearAllPayments()
+        clearAllPayments();
         //MsgBox.alert( "org is " + user.env.ORGROOT );
     }
 

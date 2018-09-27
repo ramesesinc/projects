@@ -1,6 +1,0 @@
-<workunit extends="wtemplates/ServiceLookupController.xml"  
-    serviceName="UsergroupMemberLookupService" tag="CASHIER">
-    <invokers>
-        <invoker type="cashier:lookup" caption="Lookup Cashier" target="popup"/>
-    </invokers>
-</workunit>

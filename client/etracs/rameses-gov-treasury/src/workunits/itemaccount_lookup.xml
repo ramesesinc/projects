@@ -46,7 +46,7 @@
        -->
        
        <invoker type="genericaccount:lookup" caption="Lookup Generic Account" 
-                action="init" target="popup"
+                action="init" target="popup" width="800" 
                 cols="code,title,fund.title,type" 
                 customFilter=" state='ACTIVE' AND generic=1 "
                 hiddenCols="fund.objid" />

@@ -44,9 +44,13 @@ class CashReceiptInitialModel  {
     def listener = [
         "mode" : { o->
             collectionTypes.mode = o;
-            afType = null;
-            collectionType = null;
-            collectionTypes.afType = null;
+            
+            def formno = afType; 
+            if ( formno ) formno = collectionTypes.getAfTypes().find{ it == formno } 
+            if ( !formno ) formno = collectionTypes.getAfTypes().find{ it == '51' } 
+            
+            afType = formno; 
+            listener.afType( afType ); 
         },
         "afType" : { o->
             collectionType = null;
@@ -56,8 +60,8 @@ class CashReceiptInitialModel  {
     
     void init() {
         collectionTypes = ManagedObjects.instance.create( CollectionTypeListUtil.class );
-        collectionTypes.mode = mode;
-    }
+        listener.mode('ONLINE'); 
+    } 
     
     void initSubCollector() {
         subcollectorMode = true; 

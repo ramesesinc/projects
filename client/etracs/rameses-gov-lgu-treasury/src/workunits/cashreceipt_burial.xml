@@ -5,24 +5,23 @@
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.enterprise.treasury.cashreceipt.*
-        
-        class  BurialReceiptController extends BasicCashReceipt {
-            void init() {
-                super.init();
-                entity.nationality = 'FILIPINO';
-            }
-            
-            def sexList = ["MALE", "FEMALE"];
-            def permissionTypeList = ['INTER','DISINTER', 'REMOVE'];
-        }
-        ]]>
-        
+<![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.enterprise.treasury.cashreceipt.*;
+
+class BurialCashReceiptModel extends CashReceiptSingleAccountModel {
+    
+    def sexList = ["MALE", "FEMALE"];
+    def permissionTypeList = ['INTER','DISINTER', 'REMOVE'];
+
+    void afterInit() { 
+        entity.nationality = 'FILIPINO';
+    }
+}
+]]>
     </code>
     
     <pages>

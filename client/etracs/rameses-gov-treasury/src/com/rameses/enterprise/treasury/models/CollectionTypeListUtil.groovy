@@ -78,6 +78,7 @@ class CollectionTypeListUtil  {
             m.select = "formno";
             m.where = [wq[0].join(" AND "), wq[1]];
             _afTypes = qryService.getList( m )*.formno.unique();
+            _afTypes.sort{ it } 
         }
         return _afTypes;
     }
@@ -91,7 +92,6 @@ class CollectionTypeListUtil  {
             def m = [_schemaname: "vw_collectiontype"];
             m.where = [wq[0].join(" AND "), wq[1]];
             m.orderBy = "sortorder,title";
-            //m.debug = true;
             _collectionTypes = qryService.getList(m); 
         }
         return _collectionTypes;

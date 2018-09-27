@@ -39,9 +39,9 @@ class CashTicketInitialModel  {
 
         def parm = [:];    
         if( OsirisContext.env.ORGROOT == 1 ) {
-            arr << "org.objid IS NULL"
+            arr << "orgid IS NULL"
         } else { 
-            arr << "org.objid = :orgid";
+            arr << "orgid = :orgid";
             parm.orgid = OsirisContext.env.ORGID;
         }
         

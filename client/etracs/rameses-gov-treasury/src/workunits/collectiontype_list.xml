@@ -6,6 +6,7 @@
         <invoker folderid="/explorer/master/treasury" caption="Collection Types" 
                  action="init" role="MASTER" permission="collectiontype.view" 
                  cols="name,title,formno,handler,barcodekey,fund.title"
+                 orderBy="title" 
                  index="20" />
     </invokers>
     

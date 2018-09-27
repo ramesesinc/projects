@@ -310,6 +310,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
             })
         });
         schemaList1.setCustomFilter("collectiontypeid = :objid");
+        schemaList1.setOrderBy("sortorder");
         schemaList1.setQueryName("entity");
         schemaList1.setSchemaName("collectiontype_account");
         schemaList1.setAllowCreate(true);

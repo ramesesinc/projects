@@ -58,6 +58,8 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
 
+        setPreferredSize(new java.awt.Dimension(685, 424));
+
         xTabbedPane1.setItems("sections");
         xTabbedPane1.setDynamic(true);
 
@@ -67,20 +69,23 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLabel3.setCaption("Parent Account");
         xLabel3.setExpression("#{ entity.parentaccount.code } #{ entity.parentaccount.title }");
         xLabel3.setVisibleWhen("#{ entity.parentid != null }");
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel3);
 
         xTextField1.setCaption("Acct Code");
         xTextField1.setName("entity.code"); // NOI18N
         xTextField1.setEnabled(false);
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
         xTextField1.setSpaceChar('_');
         xTextField1.setStretchWidth(100);
         xFormPanel1.add(xTextField1);
 
         xTextField2.setCaption("Acct Title");
-        xTextField2.setEnabled(false);
         xTextField2.setName("entity.title"); // NOI18N
+        xTextField2.setEnabled(false);
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xTextField2.setStretchWidth(100);
         xFormPanel1.add(xTextField2);
@@ -101,28 +106,31 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField2.setHandler("fund:all:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
         xLookupField2.setEnabled(false);
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);
         xLookupField2.setStretchWidth(100);
         xFormPanel1.add(xLookupField2);
 
         xComboBox1.setCaption("Item Type");
-        xComboBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xComboBox1.setItems("listTypes.type");
         xComboBox1.setName("entity.type"); // NOI18N
-        xComboBox1.setStretchWidth(100);
         xComboBox1.setVisibleWhen("#{ mode == 'create' && defaultType == null }");
+        xComboBox1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xComboBox1.setStretchWidth(100);
         xFormPanel1.add(xComboBox1);
 
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         xLabel1.setCaption("Item Type");
-        xLabel1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xLabel1.setExpression("#{entity.type}");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLabel1.setVisibleWhen("#{ mode != 'create' || defaultType != null }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel1);
 
         xLabel2.setCaption("Status");
         xLabel2.setExpression("#{ entity.state }");
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
         xLookupField1.setCaption("Org");
@@ -140,7 +148,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xCheckBox1.setUncheckValue(0);
         xCheckBox1.setVisibleWhen("#{ entity.parentid == null }");
         xCheckBox1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
-        xCheckBox1.setText("Use as Generic Account");
+        xCheckBox1.setText("  Use as Generic Account");
         xFormPanel1.add(xCheckBox1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -149,20 +157,22 @@ public class ItemAccountPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 811, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 607, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("General", jPanel1);
 
         xPanel2.setVisibleWhen("#{ mode!='create' && entity.generic == 1  }");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        xPanel2.setLayout(new java.awt.BorderLayout());
 
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -246,8 +256,12 @@ public class ItemAccountPage extends javax.swing.JPanel {
         schemaList1.setQueryName("entity");
         schemaList1.setSchemaName("itemaccount");
         schemaList1.setMultiSelect(true);
+        xPanel2.add(schemaList1, java.awt.BorderLayout.CENTER);
 
-        jPanel7.setLayout(new com.rameses.rcp.control.layout.XLayout());
+        jPanel7.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout1.setSpacing(5);
+        jPanel7.setLayout(xLayout1);
 
         xButton5.setDepends(new String[] {"selectedItem"});
         xButton5.setName("addSubItems"); // NOI18N
@@ -271,28 +285,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xButton13.setText("Deselect All");
         jPanel7.add(xButton13);
 
-        javax.swing.GroupLayout xPanel2Layout = new javax.swing.GroupLayout(xPanel2);
-        xPanel2.setLayout(xPanel2Layout);
-        xPanel2Layout.setHorizontalGroup(
-            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 831, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(xPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        xPanel2Layout.setVerticalGroup(
-            xPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(xPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(schemaList1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        xPanel2.add(jPanel7, java.awt.BorderLayout.SOUTH);
 
         xTabbedPane1.addTab("Sub Accounts", xPanel2);
 
@@ -348,7 +341,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addGroup(xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
-                .addContainerGap(521, Short.MAX_VALUE))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,7 +349,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -368,14 +361,14 @@ public class ItemAccountPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 872, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

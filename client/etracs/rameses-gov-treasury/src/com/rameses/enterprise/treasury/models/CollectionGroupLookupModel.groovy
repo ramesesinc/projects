@@ -64,7 +64,9 @@ class CollectionGroupLookupModel extends CrudLookupModel {
         def items = queryService.getList(m);
         if(!items)
             throw new Exception("No items defined for this collection group");
-         
+            
+        items.sort{( it.sortorder ? it.sortorder : 0 )} 
+
         boolean has_sharing = ( o.sharing.toString() == "1"); 
         if ( has_sharing ) { 
             def amt = MsgBox.prompt( "Please enter amount" );
@@ -75,6 +77,7 @@ class CollectionGroupLookupModel extends CrudLookupModel {
                 it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
             }           
         }
+
         def newitems = []; 
         items.each{ 
             def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
@@ -96,7 +99,6 @@ class CollectionGroupLookupModel extends CrudLookupModel {
             } 
             newitems << rci; 
         }
-        newitems.sort{( it.orderno ? it.orderno : 0 )} 
         receipt.items.addAll( newitems ); 
         receipt.amount = receipt.items.sum{( it.amount ? it.amount : 0.0 )} 
     }    

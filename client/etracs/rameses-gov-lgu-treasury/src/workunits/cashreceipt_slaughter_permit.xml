@@ -5,41 +5,38 @@
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.enterprise.treasury.cashreceipt.*
-        
-        class  SlaughterPermitController extends BasicCashReceipt {
-        
-            def _permitAmount;
-            
-            void init() {
-                super.init();
-                _permitAmount = entity.items[0].amount;
-                entity.acctid = entity.items[0].item.objid;
-                entity.acctno = entity.items[0].item.code;
-                entity.acctitle = entity.items[0].item.title;
-                entity.permitamount = _permitAmount;
-            }
-            
-            def getPermitAmount() {
-                return _permitAmount;
-            }
+<![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.enterprise.treasury.cashreceipt.*;
 
-            void setPermitAmount( amount ) {
-                this._permitAmount = amount;
-                entity.amount = amount;
-                entity.items[0].amount = amount;
-                entity.permitamount = entity.amount;
-                updateBalances();
-            }
-            
-        }
-        ]]>
-        
+class SlaughterCashReceiptModel extends CashReceiptSingleAccountModel {
+
+    def _permitAmount;
+
+    void afterInit() { 
+        _permitAmount = entity.items[0].amount;
+        entity.acctid = entity.items[0].item.objid;
+        entity.acctno = entity.items[0].item.code;
+        entity.acctitle = entity.items[0].item.title;
+        entity.permitamount = _permitAmount;
+    }
+
+    def getPermitAmount() {
+        return _permitAmount;
+    }
+
+    void setPermitAmount( amount ) {
+        this._permitAmount = amount;
+        entity.amount = amount;
+        entity.items[0].amount = amount;
+        entity.permitamount = entity.amount;
+        updateBalances();
+    }
+}
+]]>
     </code>
     
     <pages>

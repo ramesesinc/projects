@@ -2,7 +2,7 @@
 
 	<element tablename="creditmemo" >
 		<field name="objid" primary="true" prefix="CR"/>
-		<field name="state" required="true" defaultValue="DRAFT"/>
+		<field name="state" required="true" defaultValue="OPEN"/>
 		<field name="controlno" caption="Control No" required="true" />
 		<field name="payer_objid" required="true" />
 		<field name="payer_name" required="true" caption="Payer Name"/>

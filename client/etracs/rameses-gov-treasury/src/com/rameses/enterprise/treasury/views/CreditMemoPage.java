@@ -62,7 +62,7 @@ public class CreditMemoPage extends javax.swing.JPanel {
         xFormPanel1.add(xLabel2);
 
         xLabel4.setCaption("Type");
-        xLabel4.setExpression("#{entity.collectiontype.name}");
+        xLabel4.setExpression("#{entity.type.name}");
         xLabel4.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel4);
@@ -104,7 +104,7 @@ public class CreditMemoPage extends javax.swing.JPanel {
 
         xLookupField1.setCaption("Bank Account");
         xLookupField1.setExpression("#{entity.bankaccount.code}");
-        xLookupField1.setHandler("bankaccount:lookup");
+        xLookupField1.setHandler("lookupBankAccount");
         xLookupField1.setName("entity.bankaccount"); // NOI18N
         xLookupField1.setCaptionWidth(100);
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -161,7 +161,7 @@ public class CreditMemoPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        xDataTable1.setHandler("itemListModel");
+        xDataTable1.setHandler("itemHandlers.items");
         xDataTable1.setName("selectedItem"); // NOI18N
         xDataTable1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{

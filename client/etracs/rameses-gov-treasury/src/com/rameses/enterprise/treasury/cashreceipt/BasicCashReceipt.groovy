@@ -24,7 +24,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         super.init();
         //check if there are collection type items.
         clearItems();
-        clearAllPayments()
+        clearAllPayments();
         //MsgBox.alert( "org is " + user.env.ORGROOT );
     }
 

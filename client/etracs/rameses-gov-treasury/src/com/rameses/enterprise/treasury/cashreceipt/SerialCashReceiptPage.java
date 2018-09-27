@@ -274,6 +274,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        setPreferredSize(new java.awt.Dimension(1024, 490));
         setLayout(new java.awt.BorderLayout());
 
         jPanel8.setLayout(new java.awt.BorderLayout());
@@ -289,22 +290,25 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         jPanel4.setPreferredSize(new java.awt.Dimension(550, 100));
         jPanel4.setLayout(new java.awt.BorderLayout());
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setCaptionWidth(100);
+
         xTextField1.setCaption("Form No");
-        xTextField1.setEnabled(false);
         xTextField1.setName("entity.formno"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField1.setEnabled(false);
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xTextField1);
 
         xDateField1.setCaption("Receipt Date");
-        xDateField1.setEnabled(false);
         xDateField1.setName("entity.receiptdate"); // NOI18N
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xDateField1.setEnabled(false);
+        xDateField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xDateField1);
 
         xTextField4.setCaption("Collector");
-        xTextField4.setEnabled(false);
         xTextField4.setName("entity.collector.name"); // NOI18N
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField4.setEnabled(false);
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xTextField4);
 
         jPanel4.add(xFormPanel2, java.awt.BorderLayout.CENTER);
@@ -320,9 +324,9 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xLabel2.setShowCaption(false);
         xFormPanel3.add(xLabel2);
 
-        xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         xLabel5.setCaption("Mode");
         xLabel5.setExpression("#{entity.txnmode}");
+        xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         xLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         xLabel5.setForeground(new java.awt.Color(255, 0, 0));
         xLabel5.setPreferredSize(new java.awt.Dimension(0, 20));
@@ -330,14 +334,17 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xFormPanel3.add(xLabel5);
 
         xLabel1.setExpression("stub no:  #{entity.stub}");
+        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         xLabel1.setShowCaption(false);
+        xLabel1.setStretchWidth(100);
         xFormPanel3.add(xLabel1);
 
         jPanel4.add(xFormPanel3, java.awt.BorderLayout.EAST);
 
         jPanel1.add(jPanel4, java.awt.BorderLayout.EAST);
 
-        xFormPanel1.setCaptionWidth(70);
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(90);
 
         entityLookup1.setCaption("Payer");
         entityLookup1.setEntityTypeName("entityType");
@@ -349,7 +356,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xTextField2.setDepends(new String[] {"entity.payer"});
         xTextField2.setName("entity.paidby"); // NOI18N
         xTextField2.setIndex(1);
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField2.setRequired(true);
         xFormPanel1.add(xTextField2);
 
@@ -357,7 +364,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xTextField3.setDepends(new String[] {"entity.payer"});
         xTextField3.setName("entity.paidbyaddress"); // NOI18N
         xTextField3.setIndex(2);
-        xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField3.setRequired(true);
         xFormPanel1.add(xTextField3);
 
@@ -369,7 +376,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 881, Short.MAX_VALUE)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -409,7 +416,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         jPanel6.setPreferredSize(new java.awt.Dimension(195, 45));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel8.setText("Amount due");
+        jLabel8.setText("Amount Due");
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel11.setText("Payment Methods");
@@ -460,7 +467,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
             .add(buttonCheck1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(buttonCheck2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(buttonCheck4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .add(buttonCheck3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, Short.MAX_VALUE)
+            .add(buttonCheck3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -483,7 +490,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
         xDecimalField11.setBackground(new java.awt.Color(204, 204, 255));
         xDecimalField11.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField11.setEnabled(false);
-        xDecimalField11.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
+        xDecimalField11.setFontStyle("font-size: 20; font-weight:bold;");
 
         org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -492,10 +499,10 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
             .add(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jLabel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel8)
                     .add(xDecimalField11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabel11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(

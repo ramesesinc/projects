@@ -1,5 +1,5 @@
 /*
- * BPCashReceipt.java
+ * MiscCashReceiptPage.java
  *
  * Created on August 2, 2013, 2:21 PM
  */
@@ -14,11 +14,11 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author  compaq
  */
 
-@Template(value=SerialCashReceiptPage.class, target="content")
 @StyleSheet
+@Template(value=SerialCashReceiptPage.class, target="content")
 public class MiscCashReceiptPage extends javax.swing.JPanel {
     
-    /** Creates new form BPCashReceipt */
+    /** Creates new form MiscCashReceiptPage */
     public MiscCashReceiptPage() {
         initComponents();
     }
@@ -31,16 +31,48 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jPanel2 = new javax.swing.JPanel();
+        xButton1 = new com.rameses.rcp.control.XButton();
         xButton3 = new com.rameses.rcp.control.XButton();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Account details");
+        xTitledBorder1.setTitle("Account Details          ");
         setBorder(xTitledBorder1);
+        setPreferredSize(new java.awt.Dimension(782, 444));
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jPanel3.setOpaque(false);
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 10, 10));
+        jPanel1.setOpaque(false);
+        com.rameses.rcp.control.layout.XLayout xLayout2 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout2.setSpacing(5);
+        jPanel1.setLayout(xLayout2);
+
+        jLabel1.setText("Collection Group :");
+        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 15));
+        jPanel1.add(jLabel1);
+
+        xLookupField1.setHandler("collectionGroupHandler");
+        xLookupField1.setName("collectiongroup"); // NOI18N
+        xLookupField1.setPreferredSize(new java.awt.Dimension(250, 20));
+        jPanel1.add(xLookupField1);
+
+        xButton2.setName("fireRules"); // NOI18N
+        xButton2.setVisibleWhen("#{ true }");
+        xButton2.setImmediate(true);
+        xButton2.setText("Run Rules");
+        jPanel1.add(xButton2);
+
+        jPanel3.add(jPanel1, java.awt.BorderLayout.NORTH);
 
         xDataTable1.setHandler("itemListModel");
         xDataTable1.setName("selectedItem"); // NOI18N
@@ -48,7 +80,7 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.title"}
                 , new Object[]{"caption", "Account Title"}
-                , new Object[]{"width", 200}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
                 , new Object[]{"required", true}
@@ -64,11 +96,11 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.code"}
                 , new Object[]{"caption", "Account Code"}
-                , new Object[]{"width", 80}
+                , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
@@ -80,11 +112,11 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "item.fund.title"}
                 , new Object[]{"caption", "Fund "}
-                , new Object[]{"width", 80}
+                , new Object[]{"width", 200}
                 , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", false}
                 , new Object[]{"visible", true}
@@ -96,11 +128,11 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 120}
-                , new Object[]{"minWidth", 120}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 120}
                 , new Object[]{"required", true}
-                , new Object[]{"resizable", false}
+                , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
                 , new Object[]{"editable", true}
                 , new Object[]{"editableWhen", null}
@@ -127,68 +159,35 @@ public class MiscCashReceiptPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setIndex(10);
+        jPanel3.add(xDataTable1, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 10, 10));
+        jPanel2.setOpaque(false);
+        com.rameses.rcp.control.layout.XLayout xLayout1 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout1.setSpacing(5);
+        jPanel2.setLayout(xLayout1);
 
         xButton1.setName("viewSharing"); // NOI18N
         xButton1.setImmediate(true);
         xButton1.setText("View Share");
-
-        jLabel1.setText("Collection Group :");
-
-        xLookupField1.setHandler("collectionGroupHandler");
-        xLookupField1.setName("collectiongroup"); // NOI18N
-
-        xButton2.setName("fireRules"); // NOI18N
-        xButton2.setVisibleWhen("#{ true }");
-        xButton2.setImmediate(true);
-        xButton2.setText("Run Rules");
+        jPanel2.add(xButton1);
 
         xButton3.setName("clearItems"); // NOI18N
         xButton3.setImmediate(true);
         xButton3.setText("Clear Items");
+        jPanel2.add(xButton3);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(layout.createSequentialGroup()
-                                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 97, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(xLookupField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 258, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 94, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .add(0, 161, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(xLookupField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        jPanel3.add(jPanel2, java.awt.BorderLayout.SOUTH);
+
+        add(jPanel3, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;

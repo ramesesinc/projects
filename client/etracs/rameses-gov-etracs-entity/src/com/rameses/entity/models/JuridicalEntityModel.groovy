@@ -19,6 +19,10 @@ class JuridicalEntityModel extends CrudFormModel {
         }
     }
     
+    void beforeSave( mode ) { 
+        entity.remove("ignore_warning"); 
+    } 
+    
     void afterCreate() {
         entity.objid = "JUR" + new UID();
         entity.orgtype = getOrgType();
@@ -27,6 +31,4 @@ class JuridicalEntityModel extends CrudFormModel {
     def changeName() {
         return "change-name";
     }
-    
-      
 }

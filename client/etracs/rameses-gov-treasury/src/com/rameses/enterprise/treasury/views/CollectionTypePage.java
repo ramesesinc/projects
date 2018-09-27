@@ -52,11 +52,13 @@ public class CollectionTypePage extends javax.swing.JPanel {
         schemaList1 = new com.rameses.seti2.components.SchemaList();
         xPanel2 = new com.rameses.rcp.control.XPanel();
         schemaList2 = new com.rameses.seti2.components.SchemaList();
+        jPanel1 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
 
         xTabbedPane1.setItems("sections");
         xTabbedPane1.setDynamic(true);
 
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(150);
 
         xTextField1.setCaption("Name");
@@ -107,7 +109,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xSuggest1.setTextCase(com.rameses.rcp.constant.TextCase.UPPER);
         xFormPanel1.add(xSuggest1);
 
-        xLabel2.setCellPadding(new java.awt.Insets(10, 0, 5, 0));
+        xLabel2.setCellPadding(new java.awt.Insets(20, 0, 10, 0));
         xLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         xLabel2.setPadding(new java.awt.Insets(1, 0, 1, 1));
         xLabel2.setShowCaption(false);
@@ -118,7 +120,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xLookupField2.setExpression("#{item.code} #{item.title}");
         xLookupField2.setHandler("fund:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLookupField2);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -132,6 +134,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
         xCheckBox3.setName("entity.allowonline"); // NOI18N
         xCheckBox3.setUncheckValue(0);
         xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox3.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
         xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox3.setShowCaption(false);
         xCheckBox3.setText("Show in Online Mode");
@@ -209,23 +212,23 @@ public class CollectionTypePage extends javax.swing.JPanel {
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(xFormPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 508, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(57, 57, 57)
+                .add(27, 27, 27)
                 .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 225, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .add(21, 21, 21)
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
+                    .add(xFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
                     .add(jPanel3Layout.createSequentialGroup()
-                        .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 217, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(xFormPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 232, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        xTabbedPane1.addTab("General Information", jPanel3);
+        xTabbedPane1.addTab("  General Information   ", jPanel3);
 
         xPanel1.setVisibleWhen("#{ mode != 'create' }");
 
@@ -318,19 +321,22 @@ public class CollectionTypePage extends javax.swing.JPanel {
             xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(schemaList1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
+                .add(schemaList1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
                 .addContainerGap())
         );
         xPanel1Layout.setVerticalGroup(
             xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(xPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(schemaList1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
+                .add(schemaList1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        xTabbedPane1.addTab("Accounts", xPanel1);
+        xTabbedPane1.addTab("  Accounts     ", xPanel1);
 
         xPanel2.setVisibleWhen("#{ mode != 'create' }");
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        xPanel2.setLayout(new java.awt.BorderLayout());
 
         schemaList2.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
@@ -384,34 +390,18 @@ public class CollectionTypePage extends javax.swing.JPanel {
         schemaList2.setQueryName("entity");
         schemaList2.setSchemaName("collectiontype_org");
         schemaList2.setAllowDelete(true);
+        xPanel2.add(schemaList2, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         xButton1.setName("addOrg"); // NOI18N
         xButton1.setText("Add Org");
+        jPanel1.add(xButton1);
 
-        org.jdesktop.layout.GroupLayout xPanel2Layout = new org.jdesktop.layout.GroupLayout(xPanel2);
-        xPanel2.setLayout(xPanel2Layout);
-        xPanel2Layout.setHorizontalGroup(
-            xPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(xPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(xPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(schemaList2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
-                    .add(xPanel2Layout.createSequentialGroup()
-                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        xPanel2Layout.setVerticalGroup(
-            xPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(xPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(schemaList2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 342, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
-        );
+        xPanel2.add(jPanel1, java.awt.BorderLayout.SOUTH);
 
-        xTabbedPane1.addTab("Orgs", xPanel2);
+        xTabbedPane1.addTab("  Orgs      ", xPanel2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -419,7 +409,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 858, Short.MAX_VALUE)
+                .add(xTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -441,6 +431,7 @@ public class CollectionTypePage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.seti2.components.SchemaList schemaList2;

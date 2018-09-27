@@ -21,68 +21,50 @@ class CashReceiptInitialModel  {
     def afControlSvc;    
     
     def modeList = ["ONLINE", "OFFLINE"];
-    def afTypeList;
+    def collectionTypes;
     
     def mode = "ONLINE";
     def afType;
     def collectionType;
-    def allCollectionTypes;
+    
+    boolean subcollectorMode;
     
     String title = "Cash Receipt Initial (Select Type of Collection)"
     
-    void loadCollectionTypes() {
-        def arr = [];
-        def parm = [:];    
-        if( OsirisContext.env.ORGROOT == 1 ) {
-            arr << "org.objid IS NULL"
-        } else { 
-            arr << "org.objid = :orgid";
-            parm.orgid = OsirisContext.env.ORGID;
-        }
-        
-        arr << " af.formtype = 'serial' ";
-        if( mode == "ONLINE") {
-            arr << " allowonline = 1";
-        }
-        else {
-            arr << " allowoffline = 1";
-        }
-        def m = [_schemaname: "vw_collectiontype_org"];
-        m.where = [arr.join(" AND "), parm];
-        m.orderBy = "sortorder,title";
-        allCollectionTypes = qryService.getList( m );
-        afTypeList = allCollectionTypes*.formno.unique();
-        afTypeList.sort{ it }
-        afType = afTypeList.find{( it == '51' )}
+
+    def getAfTypeList() {
+        return collectionTypes.getAfTypes();
     }
-    
+
     def getCollectionTypeList() {
-        if( !afType ) return allCollectionTypes;
-        return allCollectionTypes.findAll{ it.formno == afType }; 
+        return collectionTypes.getCollectionTypes();
     }
     
     @PropertyChangeListener
     def listener = [
         "mode" : { o->
+            collectionTypes.mode = o;
             afType = null;
             collectionType = null;
-            loadCollectionTypes();
+            collectionTypes.afType = null;
+        },
+        "afType" : { o->
+            collectionType = null;
+            collectionTypes.afType = o;
         }
-    ]
-    
-    boolean subcollectorMode;
+    ];
     
     void init() {
-        //MsgBox.alert( "ctx " + OsirisContext.env.ORGID + " is root? " + OsirisContext.env.ORGROOT );
-        loadCollectionTypes();
+        collectionTypes = ManagedObjects.instance.create( CollectionTypeListUtil.class );
+        collectionTypes.mode = mode;
     }
     
     void initSubCollector() {
         subcollectorMode = true; 
-        loadCollectionTypes();
+        init();
     }
     
-    def lookupCollectorAF( param, def role ) { 
+    def lookupCollectorAF( param, boolean sub ) { 
         param.active = 1;
         def env = OsirisContext.env; 
         def p = [_schemaname: 'af_control']; 
@@ -99,49 +81,26 @@ class CashReceiptInitialModel  {
             selAF = o;             
         }
         def strc = "cashreceipt:select-af";
-        if( role == "subcollector" ) {
+        if( sub == true ) {
             strc = "cashreceipt:select-af:subcollector";
         }
         Modal.show(strc, p ); 
         return selAF;
     }
     
-    /*
-    def lookupSubCollectorAF( param ) {
-        param.active = 1; 
-
-        def env = OsirisContext.env; 
-        def p = [_schemaname: 'af_control', debug: true]; 
-        p.where = CashReceiptAFLookupFilter.getFilter( param ); 
-        def res = qryService.findFirst( p ); 
-        if ( res ) return res; 
-
-        param.active = 0; 
-        p = [ entity: param ]; 
-        
-        def selAF = null; 
-        p.onselect = { o-> 
-            afControlSvc.activateSelectedControl([ objid: o.objid ]);
-            selAF = o;             
-        }
-        Modal.show('cashreceipt:select-af:subcollector', p ); 
-        return selAF;
-    }
-    */
-   
     def initReceipt(def entity) {
         def af = null ;
         if ( !subcollectorMode ) {
-            af = lookupCollectorAF( entity, null ); 
+            af = lookupCollectorAF( entity, false ); 
         } else {
-            af = lookupCollectorAF( entity, "subcollector" ); 
+            af = lookupCollectorAF( entity, true ); 
         }
-        
         if ( af == null ) return null; 
         return cashReceiptSvc.init( entity );
     }
     
     def doNext() {
+        collectionTypes.checkHasItems( collectionType );
         def params = [
             txnmode         : mode, 
             formno          : afType, 

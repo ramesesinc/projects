@@ -52,7 +52,7 @@ class CashTicketInitialModel  {
             arr << " allowoffline = 1";
         }
         
-        def m = [_schemaname: "vw_collectiontype_org"];
+        def m = [_schemaname: "vw_collectiontype"];
         m.where = [arr.join(" AND "), parm];
         m.orderBy = "formno,title,sortorder";
         allCollectionTypes = qryService.getList( m );

@@ -1,9 +1,17 @@
-<workunit>
+<workunit allowCreate="true" allowOpen="true">  
     <invokers>
         <invoker type="collectiongroup:create" caption="Collection Group" action="create" 
                  role="MASTER" permission="collectiongroup.create" target="popup"/>
         <invoker type="collectiongroup:open" caption="Collection Group" action="open"  
-                 role="MASTER" permission="collectiongroup.open" target="popup" />        
+                 role="MASTER" permission="collectiongroup.open" target="popup" /> 
+        
+        
+        <!-- state actions -->
+        <invoker type="formActions" caption="Activate" 
+                  action="changeState" state="ACTIVE" visibleWhen="#{mode=='read' &amp;&amp; entity.state != 'ACTIVE' }" />
+        <invoker type="formActions" caption="Deactivate" 
+                  action="changeState" state="INACTIVE" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'ACTIVE' }" />
+        
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.CollectionGroupModel"/>

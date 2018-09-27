@@ -1,16 +1,27 @@
 <!--
 DROP VIEW IF EXISTS vw_cashreceipt_itemaccount;
 CREATE VIEW vw_cashreceipt_itemaccount AS 
-SELECT objid, code, title, fund_objid, fund_code, fund_title, parentid, NULL AS orgid 
-FROM itemaccount WHERE parentid IS NULL AND generic = 0 AND type IN ('REVENUE','NONREVENUE','PAYABLE')
-UNION 
-SELECT ia.objid, ia.code, ia.title, ia.fund_objid, ia.fund_code, ia.fund_title, ia.parentid, ia.org_objid AS orgid 
-FROM itemaccount ia
-INNER JOIN itemaccount ip ON ia.parentid = ip.objid
-WHERE ip.generic=1 AND ip.type IN ('REVENUE','NONREVENUE','PAYABLE')
--->
 
+SELECT 
+objid,state,code,title,description,type,fund_objid,fund_code,fund_title,defaultvalue,valuetype,sortorder,org_objid AS orgid
+FROM itemaccount 
+WHERE (generic = 0 OR generic IS NULL) 
+AND state='ACTIVE' AND type IN ('REVENUE','NONREVENUE','PAYABLE')
+-->
 <schema>
 	<element tablename="vw_cashreceipt_itemaccount">
+		<field name="objid" primary="true"/>		
+		<field name="state" />	
+		<field name="code" searchable="true" indexed="true"/>	
+		<field name="title" searchable="true" indexed="true"/>	
+		<field name="description" />	
+		<field name="type" />	
+		<field name="fund_objid" />	
+		<field name="fund_code" />	
+		<field name="fund_title" />	
+		<field name="defaultvalue" />	
+		<field name="valuetype" />	
+		<field name="sortorder" />	
+		<field name="orgid" />	
 	</element>
 </schema>

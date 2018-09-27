@@ -33,9 +33,8 @@ public class CreditMemoPage extends javax.swing.JPanel {
 
         jPanel2 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         entityLookup1 = new com.rameses.entity.components.EntityLookup();
         entityAddressLookup1 = new com.rameses.entity.components.EntityAddressLookup();
         jPanel1 = new javax.swing.JPanel();
@@ -54,33 +53,31 @@ public class CreditMemoPage extends javax.swing.JPanel {
 
         xFormPanel1.setCaptionWidth(100);
 
-        xLabel1.setCaption("CR Type");
-        xLabel1.setExpression("#{entity.type.title}");
-        xLabel1.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel1);
-
         xLabel2.setCaption("CR Control No");
         xLabel2.setExpression("#{entity.controlno}");
         xLabel2.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xLabel2);
 
-        xLabel4.setCaption("Fund");
-        xLabel4.setExpression("#{entity.type.fund.code} #{entity.type.fund.title}");
-        xLabel4.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 20));
-        xFormPanel1.add(xLabel4);
+        xComboBox1.setCaption("Type");
+        xComboBox1.setExpression("#{ item.name }");
+        xComboBox1.setItems("collectionTypes");
+        xComboBox1.setName("entity.type"); // NOI18N
+        xComboBox1.setVisibleWhen("#{ mode == 'create' }");
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 27));
+        xFormPanel1.add(xComboBox1);
 
-        entityLookup1.setCaption("Payer");
+        entityLookup1.setCaption("Payer Name");
         entityLookup1.setName("entity.payer"); // NOI18N
         entityLookup1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(entityLookup1);
 
         entityAddressLookup1.setCaption("Payer Address");
+        entityAddressLookup1.setDepends(new String[] {"entity.payer"});
         entityAddressLookup1.setName("entity.payer.address"); // NOI18N
-        entityAddressLookup1.setParentIdName("entity.payer");
-        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 53));
+        entityAddressLookup1.setParentIdName("entity.business.owner.objid");
+        entityAddressLookup1.setPreferredSize(new java.awt.Dimension(0, 60));
+        entityAddressLookup1.setShowEditAddress("#{ false }");
         xFormPanel1.add(entityAddressLookup1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -95,7 +92,7 @@ public class CreditMemoPage extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -106,15 +103,17 @@ public class CreditMemoPage extends javax.swing.JPanel {
         xFormPanel3.setCaptionWidth(150);
 
         xLookupField1.setCaption("Bank Account");
-        xLookupField1.setCaptionWidth(100);
         xLookupField1.setExpression("#{entity.bankaccount.code}");
-        xLookupField1.setHandler("lookupBankAccount");
+        xLookupField1.setHandler("bankaccount:lookup");
+        xLookupField1.setName("entity.bankaccount"); // NOI18N
+        xLookupField1.setCaptionWidth(100);
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLookupField1);
 
         xLabel3.setCaption("Account Details");
-        xLabel3.setCaptionWidth(100);
+        xLabel3.setDepends(new String[] {"entity.bankaccount"});
         xLabel3.setExpression("#{entity.bankaccount.bank.name} - #{entity.bankaccount.fund.title}");
+        xLabel3.setCaptionWidth(100);
         xLabel3.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xLabel3);
@@ -240,14 +239,13 @@ public class CreditMemoPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XFormPanel xFormPanel3;
-    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
-    private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField2;

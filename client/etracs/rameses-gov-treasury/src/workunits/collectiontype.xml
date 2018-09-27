@@ -3,6 +3,13 @@
    <invokers>
          <invoker type="collectiontype:open" caption="Collection Type" action="open" role="MASTER" permission="collectiontype.open" target="popup"/>
          <invoker type="collectiontype:create" caption="Collection Type" action="create" role="MASTER" permission="collectiontype.create" target="popup"/>
+
+         <!-- state actions -->
+         <invoker type="formActions" caption="Activate" 
+                  action="changeState" state="ACTIVE" visibleWhen="#{mode=='read' &amp;&amp; entity.state != 'ACTIVE' }" />
+         <invoker type="formActions" caption="Deactivate" 
+                  action="changeState" state="INACTIVE" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'ACTIVE' }" />
+
    </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.CollectionTypeModel" />

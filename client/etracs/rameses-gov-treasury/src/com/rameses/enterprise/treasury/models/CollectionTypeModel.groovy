@@ -14,9 +14,10 @@ public class CollectionTypeModel extends CrudFormModel {
     def handlers;
     def batchHandlers;
     def selectedAccount;
+    def orgListHandler;
     
     void afterCreate() { 
-        entity.state = 'APPROVED';
+        entity.state = 'ACTIVE';
         entity.sortorder = 0; 
         entity.allowonline = 1;
         entity.allowoffline = 0;
@@ -47,47 +48,23 @@ public class CollectionTypeModel extends CrudFormModel {
         }
     ] as SuggestModel;
     
-    /*
-    def addAccount() { 
-        def params = [ fund: entity.fund, collectiontypeid: entity.objid ]; 
-        params.handler = { o-> 
-            accountListHandler.reload();
-        }
-        return Inv.lookupOpener( "collectiontype_account:create", params );
-    }
-    
-    def editAccount() {
-        if(!selectedAccount) throw new Exception("Please select an account"); 
-        def params = [ fund: entity.fund, entity: selectedAccount ]; 
-        params.handler = { o-> 
-            accountListHandler.reload(); 
+    void addOrg() {
+        def h = { arr-> 
+            try { 
+                arr.each {o-> 
+                    def item = [ _schemaname: "collectiontype_org" ];
+                    item.objid = entity.objid + ":" + o.objid;
+                    item.collectiontypeid = entity.objid;
+                    item.org = o;
+                    item.org.type = o.orgclass;
+                    persistenceService.save( item );
+                }
+            } finally {  
+                orgListHandler.reload(); 
+            }  
         } 
-        return Inv.lookupOpener( "collectiontype_account:edit", params ); 
-    }
-    
-    def removeAccount() {
-        if(!selectedAccount) throw new Exception("Please select an account");
-        def m = [_schemaname: 'collectiontype_account'];
-        m.findBy = [objid: selectedAccount.objid ];
-        persistenceService.removeEntity( m );
-        accountListHandler.reload();
+        Modal.show( "org:lookup", [onselect: h, multiSelect: true] );
     }
 
-    void reloadAccount() {
-        accountListHandler.reload();
-    }
-    
-    def accountListHandler = [
-        fetchList: { o-> 
-            def m = [_schemaname: 'collectiontype_account'];
-            m.findBy = [collectiontypeid: entity.objid ];
-            return queryService.getList( m );
-        }
-    ] as BasicListModel;
-    */
-   
-    boolean isEditAllowed() { 
-        if ( entity.system == 1 ) return false; 
-        return super.isEditAllowed(); 
-    }
+
 }

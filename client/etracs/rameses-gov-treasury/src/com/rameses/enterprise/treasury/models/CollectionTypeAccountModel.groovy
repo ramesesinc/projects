@@ -16,12 +16,5 @@ public class CollectionTypeAccountModel extends CrudFormModel {
         entity.collectiontypeid = caller.entity.objid;
     }
 
-    def getLookupAccount() { 
-        def params = [:];
-        params.onselect = { o->
-            entity.account = o;
-        }
-        return Inv.lookupOpener( "parentitemaccount:lookup", params );
-    }
     
 }

@@ -1,12 +1,11 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bankaccount">
     <invokers>
-        <invoker folderid="/explorer/master/treasury" caption="Bank Accounts" action="init" 
+        <invoker folderid="/explorer/master/treasury" caption="Bank Accounts" 
+                 action="init" 
                  cols="code,title,fund.title,bank.name,bank.branchname,account.title"
-                 role="MASTER" permission="bank.view" index="11" /> 
+                 index="16"
+                 role="MASTER" permission="bank.view"  /> 
         
-        <invoker folderid="/menucategory/treasury/master" caption="Bank Accounts" action="init" 
-                 cols="code,title,fund.title,bank.name,bank.branchname,account.title"
-                 role="MASTER" permission="bank.view" index="11"/> 
         
    </invokers>
 </workunit>

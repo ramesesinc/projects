@@ -1,0 +1,15 @@
+<workunit schemaName="collectiongroup_account">
+    <invokers>
+        <invoker type="collectiongroup_account:create" caption="Collection Group Account" action="create" 
+                 role="MASTER"  target="popup"/>
+        
+        <invoker type="collectiongroup_account:open" caption="Collection Group Account" action="open"  
+                 role="MASTER"  target="popup" />        
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.CollectionGroupAccountModel"/>
+   
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.CollectionTypeAccountPage"/>
+    </pages>   
+</workunit>

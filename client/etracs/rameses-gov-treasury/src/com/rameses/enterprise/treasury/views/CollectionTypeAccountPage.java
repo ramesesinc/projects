@@ -40,7 +40,6 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setPreferredSize(new java.awt.Dimension(491, 300));
-        setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Account Information");
@@ -52,7 +51,7 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
 
         xLookupField1.setCaption("Account");
         xLookupField1.setExpression("#{entity.account.title}");
-        xLookupField1.setHandler("lookupAccount");
+        xLookupField1.setHandler("itemaccount:lookup");
         xLookupField1.setName("entity.account"); // NOI18N
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);
@@ -63,7 +62,6 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
         xComboBox1.setName("entity.valuetype"); // NOI18N
         xComboBox1.setAllowNull(false);
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
-        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
         xDecimalField1.setCaption("Default Value");
@@ -92,11 +90,20 @@ public class CollectionTypeAccountPage extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        add(jPanel2, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel2;

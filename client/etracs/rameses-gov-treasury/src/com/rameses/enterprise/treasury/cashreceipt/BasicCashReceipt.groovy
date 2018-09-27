@@ -23,10 +23,6 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     void init() {
         super.init();
         //check if there are collection type items.
-        def m = [_schemaname:'collectiontype_account'];
-        m.findBy = [collectiontypeid: entity.collectiontype.objid ];
-        m.select = "account.objid";
-        queryFilter.acctids = queryService.getList( m )*.account.objid;
         clearItems();
         clearAllPayments();
         //MsgBox.alert( "org is " + user.env.ORGROOT );
@@ -77,7 +73,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         p.put( "query.collectorid" , entity.collector.objid );
         p.put( "query.collectiontype" , entity.collectiontype );
         if( entity.collectiontype.fund?.objid ) {
-            p.fundid = entity.collectiontype.fund?.objid;
+            p.put("query.fundid", entity.collectiontype.fund?.objid);
         }
         p.queryFilter = queryFilter;    
         p.onselect = { o->
@@ -98,47 +94,10 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         def param = [
             "query.txntype" : "cashreceipt", 
             "query.fund" : entity.collectiontype.fund, 
-            "query.collectiontype": entity.collectiontype 
+            "query.collectiontype": entity.collectiontype,
+            receipt: entity
         ]; 
         param.onselect = { o-> 
-            if ( !o?.items ) return; 
-
-            boolean has_sharing = ( o.sharing.toString() == "1"); 
-            if ( has_sharing ) { 
-                def amt = MsgBox.prompt( "Please enter amount" );
-                if( amt == null ) return null;
-                
-                def sharing_amount = new BigDecimal( amt.toString() );
-                o.items.each {
-                    it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
-                }           
-            }
-            
-            def newitems = []; 
-            o.items.each{ 
-                def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
-                if ( it.amount != null ) { 
-                    rci.amount = it.amount; 
-                } else {
-                    rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
-                }
-                
-                rci.item = [ 
-                    objid : it.account?.objid, 
-                    code  : it.account?.code, 
-                    title : it.account?.title, 
-                    fund  : it.account?.fund, 
-                    valuetype : it.valuetype, 
-                    defaultvalue : it.defaultvalue 
-                ];                  
-                if ( it.valuetype == 'FIXEDUNIT' ) {
-                    rci.remarks = "qty@1"; 
-                } 
-                newitems << rci; 
-            }
-            
-            entity.items.addAll( newitems ); 
-            entity.amount = entity.items.sum{( it.amount ? it.amount : 0.0 )} 
             itemListModel.reload();
             super.updateBalances();             
         }  
@@ -149,7 +108,6 @@ public class BasicCashReceipt extends AbstractCashReceipt {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
     
-    
     //def rProcessor = new RuleProcessor( { params-> collectionRuleService.execute(params) } );
     
     void fireRules() {
@@ -159,7 +117,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
             params.collectiongroup = o;
             pass = true;
         }
-        Modal.show("collectiongroup:lookup", [onselect:h]);
+        Modal.show("collectiongroup:lookup", [onselect:h, tag:"rules"]);
         if(!pass) return;
         def h1 = { result->
             if( !result.items ) MsgBox.err( new Exception("No items defined"));

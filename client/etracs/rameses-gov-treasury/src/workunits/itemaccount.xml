@@ -7,26 +7,30 @@
                  role="MASTER" permission="itemaccount.read" target="popup"
                  formId="#{entity.objid}" formTitle="Item: #{entity.code}"/>
 
-        <invoker type="formActions" caption="Activate" action="activate" 
-                 role="MASTER" permission="itemaccount.update" 
-                 visibleWhen="#{mode == 'read' &amp;&amp; entity.state != 'ACTIVE' }"/> 
-                 
-        <invoker type="formActions" caption="Deactivate" action="deactivate" 
-                 role="ADMIN" permission="itemaccount.deactivate" 
-                 visibleWhen="#{mode == 'read' &amp;&amp; entity.state == 'ACTIVE' }"/>  
+        <!-- state actions -->
+        <invoker type="formActions" caption="Activate" 
+                  action="changeState" state="ACTIVE" visibleWhen="#{mode=='read' &amp;&amp; entity.state != 'ACTIVE' }" />
+        <invoker type="formActions" caption="Deactivate" 
+                  action="changeState" state="INACTIVE" visibleWhen="#{mode=='read' &amp;&amp; entity.state == 'ACTIVE' }" />
 
         <!-- ADMIN -->                          
         <invoker type="formActions" 
-                 caption="Shift To Subaccount" 
+                 caption="Change To Subaccount" 
                  action="changeToSubAccount" 
                  role="ADMIN"  
-                 visibleWhen="#{entity.state!='DRAFT' &amp;&amp; mode=='read' &amp;&amp; entity.parentid == null}"/> 
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null}"/> 
                  
         <invoker type="formActions" 
-                 caption="Shift Acct Type" 
+                 caption="Change Acct Type" 
                  action="changeType" 
                  role="ADMIN"  
-                 visibleWhen="#{entity.state!='DRAFT' &amp;&amp; mode=='read' &amp;&amp; entity.parentid == null}"/>           
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid == null}"/>           
+
+        <invoker type="formActions" 
+                 caption="Remove Parent" 
+                 action="removeParent" 
+                 role="ADMIN"  
+                 visibleWhen="#{ mode=='read' &amp;&amp; entity.parentid != null}"/>           
 
     </invokers> 
    

@@ -26,7 +26,7 @@ public class AggregateLedgerItem implements RuleActionHandler {
 			aitem.amtdue += entity.amtdue 
 			aitem.interest += entity.interest 
 			aitem.discount += entity.discount 
-			def factitem = request.facts.findAll{it instanceof RPTLedgerItemFact}.find{it.objid == aitem.objid}
+			def factitem = request.facts.findAll{it instanceof RPTLedgerItemFact}.find{it.objid == aitem.objid && it.qtr == null}
 			if (!factitem) throw new Exception('Ledger Item is expected here.')
 			factitem.amtdue = aitem.amtdue
 			factitem.interest = aitem.interest

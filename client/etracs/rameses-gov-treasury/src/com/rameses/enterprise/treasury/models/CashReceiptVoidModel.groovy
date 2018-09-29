@@ -64,11 +64,16 @@ class CashReceiptVoidModel  {
             entity.reason = remarks;
             service.post( entity );
             receipt.voided = true;
+
             if ( handler ) { 
                 handler(receipt);
             } else if ( caller ) {
                 try { 
-                    caller.refresh(); 
+                    if ( caller.metaClass.respondsTo(caller, 'refresh')) {
+                        caller.refresh(); 
+                    } else if ( caller.metaClass.hasProperty(caller, 'binding')) {
+                        caller.binding.refresh(); 
+                    } 
                 } catch(Throwable t) {
                     t.printStackTrace(); 
                 } 
@@ -88,6 +93,4 @@ class CashReceiptVoidModel  {
         
         return true; 
     } 
-  
-    
 }    

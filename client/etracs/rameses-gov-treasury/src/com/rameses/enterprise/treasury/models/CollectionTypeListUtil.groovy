@@ -18,6 +18,7 @@ class CollectionTypeListUtil  {
     def _mode;
     def _org;
     def _afType;
+    def _formType = 'serial'; 
     
     def getWhereQuery() {
         def arr = [];
@@ -39,8 +40,16 @@ class CollectionTypeListUtil  {
         else {
             arr << " allowoffline = 1";
         }
-        arr << " af.formtype = 'serial' ";
+        arr << " af.formtype = :formtype ";
+        parm.formtype = getFormType(); 
         return [arr, parm];
+    }
+    
+    public def getFormType() { 
+        return (_formType ? _formType : 'serial'); 
+    }
+    public void setFormType( def v ) {
+        this._formType = v; 
     }
     
     public void setOrg(def o) {

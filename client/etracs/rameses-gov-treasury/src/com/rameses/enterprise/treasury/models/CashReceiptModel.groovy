@@ -18,5 +18,8 @@ class CashReceiptModel extends CrudFormModel {
         return true; 
     } 
     
-    
+    boolean isAllowRevertVoid() { 
+        if ( !entity?.voided.toString().matches("1|true") ) return false; 
+        return ( entity?.remittance?.objid ? false : true ); 
+    } 
 } 

@@ -37,29 +37,37 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
 
+        setPreferredSize(new java.awt.Dimension(547, 220));
+
+        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 10, 10, 10));
+
         xLabel1.setExpression("Please enter name of approver");
-        xLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        xLabel1.setShowCaption(false);
         xLabel1.setVisibleWhen("#{ applySecurity == true }");
+        xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        xLabel1.setFontStyle("font-size:14; font-weight: bold;");
+        xLabel1.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xLabel1.setShowCaption(false);
+        xLabel1.setStretchWidth(100);
         xFormPanel1.add(xLabel1);
 
         xTextField1.setCaption("User Name");
         xTextField1.setName("username"); // NOI18N
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField1.setRequired(true);
         xTextField1.setVisibleWhen("#{ applySecurity == true }");
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 22));
+        xTextField1.setRequired(true);
         xFormPanel1.add(xTextField1);
 
-        xPasswordField1.setText("xPasswordField1");
         xPasswordField1.setCaption("Password");
         xPasswordField1.setName("password"); // NOI18N
-        xPasswordField1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xPasswordField1.setRequired(true);
+        xPasswordField1.setText("xPasswordField1");
         xPasswordField1.setVisibleWhen("#{ applySecurity == true }");
+        xPasswordField1.setPreferredSize(new java.awt.Dimension(0, 22));
+        xPasswordField1.setRequired(true);
         xFormPanel1.add(xPasswordField1);
 
         jScrollPane1.setName("entity.remarks"); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 63));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 100));
 
         xTextArea1.setCaption("Remarks");
         xTextArea1.setName("remarks"); // NOI18N
@@ -74,15 +82,15 @@ public class SupervisorApprovalPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

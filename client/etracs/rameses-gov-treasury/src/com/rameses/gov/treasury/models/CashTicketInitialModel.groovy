@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
-import com.rameses.enterprise.treasury.models.CashReceiptAFLookupFilter;
+import com.rameses.enterprise.treasury.models.*;
 
 class CashTicketInitialModel  {
 
@@ -25,8 +25,9 @@ class CashTicketInitialModel  {
     
     def afType;
     def afTypeList;
+    def collectionTypes;
     def modeList = ["ONLINE", "OFFLINE"];
-    
+
     def mode = "ONLINE";
     def collectionType;
     def allCollectionTypes;
@@ -73,13 +74,19 @@ class CashTicketInitialModel  {
         }
     ]
     
+    private void init0() {
+        collectionTypes = ManagedObjects.instance.create( CollectionTypeListUtil.class );
+        collectionTypes.formType = 'cashticket'; 
+    }
     
     void init() {
+        init0();
         loadCollectionTypes();
     }
     
     void initSubCollector() {
         subcollectorMode = true; 
+        init0();
         loadCollectionTypes();
     }
     
@@ -137,6 +144,7 @@ class CashTicketInitialModel  {
     }
     
     def doNext() {
+        collectionTypes.checkHasItems( collectionType );
         def entity = [
             txnmode         : mode, 
             formno          : afType, 

@@ -19,7 +19,7 @@ class RemittanceReportService  {
 	@Service("DateService")
 	def dtsvc;
 
-	@Service("AFRemittanceService")
+	//@Service("AFRemittanceService")
 	def afremSvc
 
 	@Service('RAAFReportService') 

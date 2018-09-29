@@ -1,23 +1,25 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" 
-            cols="lastname,firstname,username,orgid"
-            hiddenCols="name,txncode,jobtitle,domain"
-            schemaName="sys_user_role">
+          cols="lastname,firstname,username,orgid"
+          hiddenCols="name,txncode,jobtitle,domain"
+          orderBy="lastname,firstname,middlename"
+          schemaName="sys_user_role">
+    
     <invokers>
         <invoker type="collector:lookup"  caption="Lookup Collectors"
-                customFilter=" role = 'COLLECTOR' "
+                 customFilter=" role = 'COLLECTOR' "
                  action="init" target="popup"/>
         
         <invoker type="subcollector:lookup" caption="Lookup Subollectors"  
-            customFilter=" role = 'SUBCOLLECTOR' "
-            action="init" target="popup"/> 
+                 customFilter=" role = 'SUBCOLLECTOR' "
+                 action="init" target="popup"/> 
         
         <invoker type="liquidatingofficer:lookup" caption="Lookup Liquidating Officer"
-            customFilter=" role = 'LIQUIDATING_OFFICER' "
-            action="init" target="popup"/> 
+                 customFilter=" role = 'LIQUIDATING_OFFICER' "
+                 action="init" target="popup" width="500"/> 
         
         <invoker type="cashier:lookup" caption="Lookup Cashier"
-            customFilter=" role = 'CASHIER' "
-            action="init" target="popup"/> 
+                 customFilter=" role = 'CASHIER' "
+                 action="init" target="popup"/> 
         
     </invokers>
 </workunit>

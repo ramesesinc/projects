@@ -174,41 +174,41 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         formPanel2.setBorder(xTitledBorder2);
         formPanel2.setCaptionWidth(120);
 
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel9.setCaption("TD No.");
+        xLabel9.setExpression("#{entity.rptledger.tdno}");
+        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel9.setCaptionWidth(120);
-        xLabel9.setExpression("#{entity.tdno}");
         xLabel9.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel9.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel2.add(xLabel9);
 
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel10.setCaption("Taxpayer Name");
+        xLabel10.setExpression("#{entity.rptledger.taxpayer.name}");
+        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel10.setCaptionWidth(120);
-        xLabel10.setExpression("#{entity.taxpayer.name}");
         xLabel10.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel10.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel2.add(xLabel10);
 
-        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setCaption("PIN");
+        xLabel11.setExpression("#{entity.rptledger.fullpin}");
+        xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setCaptionWidth(120);
-        xLabel11.setExpression("#{entity.fullpin}");
         xLabel11.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel11.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel2.add(xLabel11);
 
-        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel12.setCaption("Cadastral Lot No.");
+        xLabel12.setExpression("#{entity.rptledger.cadastrallotno}");
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel12.setCaptionWidth(120);
-        xLabel12.setExpression("#{entity.cadastrallotno}");
         xLabel12.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel2.add(xLabel12);
 
         xDecimalField3.setCaption("Assessed Value");
+        xDecimalField3.setName("entity.rptledger.totalav"); // NOI18N
         xDecimalField3.setEnabled(false);
-        xDecimalField3.setName("entity.assessedvalue"); // NOI18N
         xDecimalField3.setPreferredSize(new java.awt.Dimension(120, 20));
         formPanel2.add(xDecimalField3);
 

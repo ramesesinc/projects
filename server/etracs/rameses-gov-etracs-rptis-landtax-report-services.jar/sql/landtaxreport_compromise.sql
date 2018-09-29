@@ -22,7 +22,7 @@ select
   sum(cro.sh - cro.shdisc) as sh,
   sum(cro.firecode) as firecode,
   sum(cro.basicint + cro.sefint + cro.basicidleint + cro.shint) as penalty 
-from rptledger_compromise rc 
+from rptcompromise rc 
   inner join cashreceipt cr on rc.downpaymentreceiptid = cr.objid
   inner join rptpayment rp on cr.objid = rp.receiptid 
   inner join vw_rptpayment_item cro on rp.objid = cro.parentid
@@ -53,7 +53,7 @@ group by cr.receiptno, cr.receiptdate
 
 [getLedgerCredits]
 select c.installmentid, c.ordate, c.orno, c.amount as oramount, c.remarks 
-from rptledger_compromise_credit c
-	left join rptledger_compromise_installment i on c.installmentid = i.objid 
-where c.rptcompromiseid = $P{objid}
+from rptcompromise_credit c
+	left join rptcompromise_installment i on c.installmentid = i.objid 
+where c.parentid = $P{objid}
 order by i.installmentno, c.ordate, c.orno 

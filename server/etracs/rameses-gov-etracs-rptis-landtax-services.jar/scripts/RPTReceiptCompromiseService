@@ -202,9 +202,9 @@ class RPTReceiptCompromiseService
 
 
 	@ProxyMethod
-	public def getUnpaidInstallments(compromise) {
+	public def getUnpaidInstallments(compromiseid) {
 		def list = em_compromise_installment
-						.find([parentid:compromise.objid, fullypaid:false])
+						.find([parentid:compromiseid, fullypaid:false])
 						.orderBy('installmentno')
 						.list()
 		list.each{ it.amtdue = 0}
@@ -302,6 +302,7 @@ class RPTReceiptCompromiseService
 		receipt.installments = receipt.installments.findAll{it.pay == true}
 		receipt.installments.each{
 			it.fullypaid = (it.amtdue >= it.balance ? true : false)
+			it.partial = !it.fullypaid 
 
 			def credit = createCredit(receipt, it)
 			em_compromise_credit.create(credit)
@@ -535,7 +536,7 @@ class RPTReceiptCompromiseService
 
 	def createCredit(receipt, installment){
 		def remarks = 'Payment for Installment No. ' + installment.installmentno 
-		if (installment.partial == 1){
+		if (installment.partial == 1 || installment.partial){
 			remarks = 'Partial ' + remarks 
 		}
 		return [
@@ -547,7 +548,7 @@ class RPTReceiptCompromiseService
 			ordate 			: receipt.receiptdate,
 			oramount 		: receipt.amount,
 			amount 			: installment.amtdue, 
-			mode 			: 'ONLINE',
+			mode 			: (receipt.objid ? 'ONLINE' : 'CAPTURE'),
 			paidby 			: receipt.paidby,
 			paidbyaddress   : receipt.paidbyaddress,
 			partial 		: (installment.partial == 1 ? 1 : 0),
@@ -571,49 +572,86 @@ class RPTReceiptCompromiseService
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-	
-
-
-
 	@ProxyMethod
 	public void postCapturedInstallmentPayment( compromise, pmt, installments ){
 		def receipt = createCapturedReceipt(compromise, pmt)
 		receipt.installments = installments
 		postInstallmentPayments(receipt)
-		buildReceiptPostingItems(receipt)
-		receipt.paiditems.each{ item ->
-			buildPaidItemInfo(receipt, item)
-			em_rptpayment_item.create(item)
-			if (item.fullypaid == 1 || item.fullypaid == true )
-				em.fullyPaidCompromiseItem(item)
-			else 
-				em.partiallyPaidCompromiseItem(item)
-		}
-		updateCompromiseAmountPaid(compromise, pmt)
+		postCapturedItemCredit(compromise, receipt)
+
+		//update amtpaid 
+		def amtpaid = compromise.amtpaid + pmt.amount
+		def fullypaid = compromise.amount <= amtpaid 
+		def state = (fullypaid  ? 'CLOSED' : 'APPROVED')
+		em_compromise.find([objid: compromise.objid])
+			.update([amtpaid: amtpaid, state: state])
 	}	
 
 
-	void updateCompromiseAmountPaid(compromise, pmt){
-		def compromiseparam = [objid:compromise.objid, amtpaid:pmt.amount]
-		em.updateCompromiseAmountPaid(compromiseparam)
+	//distribute payment proportionally to compromise items 
+	void postCapturedItemCredit(compromise, receipt) {
+		def partialamt = receipt.amount 
+		def openitems = em_compromise_item.find([parentid: compromise.objid]).orderBy('year asc').list().findAll{it.balance > 0}
+
+		def priorities = openitems.priority.unique().sort()
+		def yrs = openitems.year.unique().sort();
+
+		for (int idx = 0; idx < yrs.size(); idx++){
+			if (partialamt <= 0) break;
+
+			def yritems = openitems.findAll{it.year == yrs[idx]}
+
+			for (int i = 0; i < priorities.size(); i++){
+				if (partialamt <= 0) break;
+
+				def items = yritems.findAll{it.priority == priorities[i]}
+				def itembalance = numSvc.round(items.balance.sum())
+				if (partialamt >= itembalance){
+					partialamt -= itembalance 
+					//fully paid items 
+					items.each{
+						it.amtpaid = it.amount
+						it.interestpaid = it.interest 
+						it.balance = 0 
+						em_compromise_item.update(it)
+					}
+					continue
+				}
+				else if (partialamt > 0){
+					distributePartial(partialamt, items)
+					break;
+				}
+			}
+		}
 	}
+
+	void distributePartial(partialamt, items){
+		if (items.size() == 1){
+			distributePartialProportionally(partialamt, items.first())
+		} 
+		else {
+			def runningpartial = partialamt
+			def totalbalance = items.balance.sum() 
+
+			for (int i = 0; i < items.size() - 1; i++){
+				def item = items[i]
+				def partial = numSvc.round(partialamt * numSvc.round(item.balance / totalbalance))
+				distributePartialProportionally(partial, item) 
+				runningpartial -= partial 
+			}
+			distributePartialProportionally(runningpartial, items.last()) 
+		}
+	}
+
+	void distributePartialProportionally(partial, item){
+		def amtpartial = numSvc.round(partial * ((item.amount - item.amtpaid) / item.balance))
+		def intpartial = numSvc.round(partial - amtpartial)
+		item.amtpaid += amtpartial
+		item.interestpaid += intpartial
+		item.balance -= (amtpartial + intpartial)
+		em_compromise_item.update(item)
+	}	
+
 
 	def createReceiptItem(receipt, item){
 		return [

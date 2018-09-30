@@ -144,9 +144,11 @@ class RPTReceiptCompromiseService
 		def bill = [:]
 
 		if (receipt.requiredpayment == null || receipt.requiredpayment.type == 'downpayment'){
+			em_compromise.debug = true 
 			rptledger.postingitems = em_compromise.getUnpaidItems([objid:receipt.compromise.objid])
 			bill = [billdate: receipt.receiptdate, rptledger: rptledger, cy: dtSvc.serverYear]
 			bill.partial = [amount:receipt.amount]
+			bill.rptledger = rptledger
 			receiptSvc.applyPartialPayment(bill)
 		}
 		else {
@@ -202,9 +204,10 @@ class RPTReceiptCompromiseService
 
 
 	@ProxyMethod
-	public def getUnpaidInstallments(compromiseid) {
+	public def getUnpaidInstallments(compromise) {
+		em_compromise_installment.debug = true 
 		def list = em_compromise_installment
-						.find([parentid:compromiseid, fullypaid:false])
+						.find([parentid:compromise.objid, fullypaid:false])
 						.orderBy('installmentno')
 						.list()
 		list.each{ it.amtdue = 0}

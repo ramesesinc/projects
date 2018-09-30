@@ -24,6 +24,7 @@ class CashReceiptCompromiseInstallmentModel
     void init(){
         compromise = entity.compromise;
         entity.installments = svc.getUnpaidInstallments([objid:compromise.objid]);
+        installmentListHandler?.reload();
     }
     
     
@@ -81,7 +82,7 @@ class CashReceiptCompromiseInstallmentModel
     
     
     void calcReceiptAmount(){
-        entity.amount = entity.installments.sum{ it.pay == true ? it.balance : 0.0 }
+        entity.amount = entity.installments.sum{ it.pay == true ? it.amtdue : 0.0 }
         caller.calcReceiptAmount();
     }
 }

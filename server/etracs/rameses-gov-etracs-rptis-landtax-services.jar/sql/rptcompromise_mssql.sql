@@ -174,7 +174,7 @@ WHERE receiptid = $P{receiptid}
 SELECT i.*
 FROM rptcompromise_installment  i 
 	inner join rptcompromise_credit c on i.objid = c.installmentid 
-WHERE c.rptreceiptid = $P{objid}
+WHERE c.receiptid = $P{objid}
 ORDER BY i.installmentno
 
 
@@ -191,68 +191,82 @@ ORDER BY installmentno
 
 [getUnpaidItems]
 select 
-	objid, rptcompromiseid, year, qtr, 
-	(basic - basicpaid ) as basic,
-	(basicint - basicintpaid ) as basicint,
-	(basicidle - basicidlepaid ) as basicidle,
-	(basicidleint - basicidleintpaid ) as basicidleint,
-	(sef - sefpaid ) as sef,
-	(sefint - sefintpaid ) as sefint,
-	(firecode - firecodepaid ) as firecode,
-	(sh - shpaid ) as sh,
-	(shint - shintpaid ) as shint
+	objid, 
+	parentid,
+	rptledgerfaasid, 
+	year, 
+	revtype,
+	revperiod,
+	amount - amtpaid as amount,
+	interest - interestpaid as interest,
+	0 as discount,
+	amount - amtpaid + interest - interestpaid as total, 
+	priority,
+	taxdifference
 from rptcompromise_item
-where rptcompromiseid = $P{objid}
-  and fullypaid = 0
-order by year, qtr  
+where parentid = $P{objid}
+and amount - amtpaid + interest - interestpaid > 0 
+order by year 
 
 
 [getItemsForPrinting]
-SELECT 
-	rl.objid AS rptledgerid,
-	rl.tdno,
+SELECT
 	rl.owner_name, 
+	rl.tdno,
 	rl.rputype,
 	rl.totalav, 
 	rl.fullpin,
+	rl.totalareaha * 10000 AS  totalareasqm,
 	rl.cadastrallotno,
 	rl.classcode,
-	rl.totalareaha * 10000 as totalareasqm,
 	b.name AS barangay,
 	md.name as munidistrict,
 	pct.name as provcity, 
-	cc.basic,
-	0.0 AS basicdisc,
-	cc.basicint,
-	cc.basicint as basicdp,
-	cc.basic + cc.basicint as basicnet,
-	(cc.basicidle + cc.basicidleint) AS basicidle,
-	cc.sef,
-	0.0 as sefdisc,
-	cc.sefint,
-	cc.sefint as sefdp,
-	cc.sef + cc.sefint as sefnet,
-	cc.firecode,
-	cc.sh,
-	0.0 as shdisc,
-	cc.shint,
-	cc.shint as shdp,
-	cc.sh + cc.shint as shnet,
-	(cc.basic + cc.basicint + 
-	 cc.basicidle + cc.basicidleint + 
-	 cc.sef + cc.sefint + cc.firecode +
- 	 cc.sh + cc.shint) as amount,
-	cc.partial,
-	ci.installmentno
-FROM rptcompromise_credit cc 
-	inner join rptcompromise_installment ci ON cc.installmentid = ci.objid 
-	INNER JOIN rptcompromise c ON cc.rptcompromiseid = c.objid 
-	INNER JOIN rptledger rl ON c.rptledgerid = rl.objid 
+	rp.fromyear, 
+	rp.fromqtr, 
+	rp.toyear,
+	rp.toqtr,
+	SUM(rpi.basic) AS basic,
+	SUM(rpi.basicint) AS basicint,
+	SUM(rpi.basicdisc) AS basicdisc,
+	SUM(rpi.basicdp) AS basicdp,
+	SUM(rpi.basicnet) AS basicnet,
+	SUM(rpi.basicidle) AS basicidle,
+	SUM(rpi.sef) AS sef,
+	SUM(rpi.sefint) AS sefint,
+	SUM(rpi.sefdisc) AS sefdisc,
+	SUM(rpi.sefdp) AS sefdp,
+	SUM(rpi.sefnet) AS sefnet,
+	SUM(rpi.firecode) AS firecode,
+	SUM(rpi.sh) AS sh,
+	SUM(rpi.amount) AS amount,
+	MAX(rpi.partialled) AS partialled 
+FROM rptpayment rp 
+	inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
+	inner join rptcompromise rc on rp.refid = rc.objid 
+	INNER JOIN rptledger rl ON rc.rptledgerid = rl.objid 
 	INNER JOIN sys_org b ON rl.barangayid = b.objid
 	inner join sys_org md on md.objid = b.parent_objid 
 	inner join sys_org pct on pct.objid = md.parent_objid
-WHERE cc.receiptid = $P{objid}
-ORDER BY ci.installmentno 
+WHERE rp.receiptid = $P{objid}
+GROUP BY 
+	rl.owner_name, 
+	rl.tdno,
+	rl.rputype,
+	rl.totalav, 
+	rl.fullpin,
+	rl.totalareaha,
+	rl.cadastrallotno,
+	rl.classcode,
+	b.name,
+	md.name,
+	pct.name,
+	rp.fromyear, 
+	rp.fromqtr, 
+	rp.toyear,
+	rp.toqtr
+ORDER BY rp.fromyear 	
+
 
 
 
@@ -311,7 +325,7 @@ WHERE objid = $P{objid}
 
 
 [findCompromiseByReceiptForVoiding]
-SELECT DISTINCT cr.rptcompromiseid, cr.rptreceiptid
+SELECT DISTINCT cr.parentid, cr.rptreceiptid
 FROM rptcompromise_credit cr 
 WHERE rptreceiptid = $P{objid}
 
@@ -338,7 +352,7 @@ UPDATE i SET
 	i.fullypaid = 0
 from rptcompromise_item i, rptcompromise_item_credit cr 
 WHERE i.objid = cr.rptcompromiseitemid 
-  AND i.rptcompromiseid = $P{rptcompromiseid}
+  AND i.parentid = $P{rptcompromiseid}
   AND cr.rptreceiptid = $P{rptreceiptid}
 
 
@@ -348,7 +362,7 @@ UPDATE ci SET
 	ci.fullypaid = 0
 from rptcompromise_installment ci, rptcompromise_credit cr 
 WHERE ci.objid = cr.installmentid 
-  AND ci.rptcompromiseid = $P{rptcompromiseid}
+  AND ci.parentid = $P{rptcompromiseid}
   AND cr.rptreceiptid = $P{rptreceiptid}
 
 

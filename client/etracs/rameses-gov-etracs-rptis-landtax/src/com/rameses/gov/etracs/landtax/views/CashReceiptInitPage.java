@@ -39,6 +39,9 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xButton1 = new com.rameses.rcp.control.XButton();
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Payment Options");
@@ -159,13 +162,35 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
         formPanel2.add(xSeparator1);
 
         xButton1.setMnemonic('p');
+        xButton1.setName("process"); // NOI18N
         xButton1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
         xButton1.setDefaultCommand(true);
-        xButton1.setName("process"); // NOI18N
         xButton1.setPreferredSize(new java.awt.Dimension(100, 23));
         xButton1.setShowCaption(false);
         xButton1.setText("Process");
         formPanel2.add(xButton1);
+
+        xPanel1.setDepends(new String[] {"processing", "msg"});
+        xPanel1.setVisibleWhen("#{processing || msg != null}");
+        xPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createEmptyBorder(0, 7, 0, 0)));
+        xPanel1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xPanel1.setOpaque(false);
+        xPanel1.setPreferredSize(new java.awt.Dimension(0, 34));
+        xPanel1.setShowCaption(false);
+        xPanel1.setLayout(new java.awt.BorderLayout());
+
+        xLabel4.setName("loadingicon"); // NOI18N
+        xLabel4.setVisibleWhen("#{processing}");
+        xLabel4.setIconResource("com/rameses/rcp/icons/loading16.gif");
+        xPanel1.add(xLabel4, java.awt.BorderLayout.WEST);
+
+        xLabel2.setExpression("#{msg}");
+        xLabel2.setVisibleWhen("#{msg != null}");
+        xLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        xLabel2.setForeground(new java.awt.Color(153, 0, 0));
+        xPanel1.add(xLabel2, java.awt.BorderLayout.CENTER);
+
+        formPanel2.add(xPanel1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -192,6 +217,9 @@ public class CashReceiptInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel4;
+    private com.rameses.rcp.control.XPanel xPanel1;
     private com.rameses.rcp.control.XRadio xRadio1;
     private com.rameses.rcp.control.XRadio xRadio2;
     private com.rameses.rcp.control.XRadio xRadio3;

@@ -94,6 +94,31 @@ class RPTReceiptService
 
 
 	@ProxyMethod
+	public def loadBarcode(barcode){
+		if (!barcode.barcodeid) {
+			throw new Exception('barcodeid must be specified.')
+		}
+		
+		def bill = billSvc.getBillByBarcode(barcode)
+
+		def entity = [:]
+		entity.formtype = 'serial'
+		entity.formno = '56'
+		entity.txnmode = 'ONLINE'
+		entity.txntype = 'online'
+		entity.amount = 0.0 
+        entity.payer = bill.taxpayer
+        entity.paidby = bill.taxpayer.name
+        entity.paidbyaddress = bill.taxpayer.address
+        entity.collectiontype = bill.collectiontype
+        entity.putAll(cashReceiptSvc.init(entity))
+		entity.billid = bill.objid
+		bill.billdate = entity.receiptdate
+		entity.bill = bill 
+		return entity
+	}
+
+	@ProxyMethod
 	public def initReceiptFromBarcode(barcode){
 		if (!barcode.barcodeid) {
 			throw new Exception('barcodeid must be specified.')
@@ -146,6 +171,10 @@ class RPTReceiptService
 		}
 	}	
 
+	@ProxyMethod
+	public def getLedgersForPayment(bill) {
+		return billSvc.getOpenLedgers(bill);
+	}
 
 	@ProxyMethod
 	public def getItemsForPaymentByTaxpayer( bill ) {

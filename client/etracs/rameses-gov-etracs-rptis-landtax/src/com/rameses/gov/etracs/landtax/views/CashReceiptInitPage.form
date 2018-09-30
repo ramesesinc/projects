@@ -217,11 +217,11 @@
         <Component class="com.rameses.rcp.control.XButton" name="xButton1">
           <Properties>
             <Property name="mnemonic" type="int" value="112"/>
+            <Property name="name" type="java.lang.String" value="process" noResource="true"/>
             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[0, 10, 0, 0]"/>
             </Property>
             <Property name="defaultCommand" type="boolean" value="true"/>
-            <Property name="name" type="java.lang.String" value="process" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[100, 23]"/>
             </Property>
@@ -229,6 +229,67 @@
             <Property name="text" type="java.lang.String" value="Process"/>
           </Properties>
         </Component>
+        <Container class="com.rameses.rcp.control.XPanel" name="xPanel1">
+          <Properties>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="processing"/>
+                <StringItem index="1" value="msg"/>
+              </StringArray>
+            </Property>
+            <Property name="visibleWhen" type="java.lang.String" value="#{processing || msg != null}"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.CompoundBorderInfo">
+                <CompoundBorder>
+                  <Border PropertyName="inside" info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="0" left="7" right="0" top="0"/>
+                  </Border>
+                </CompoundBorder>
+              </Border>
+            </Property>
+            <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[0, 10, 0, 0]"/>
+            </Property>
+            <Property name="opaque" type="boolean" value="false"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 34]"/>
+            </Property>
+            <Property name="showCaption" type="boolean" value="false"/>
+          </Properties>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel4">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="loadingicon" noResource="true"/>
+                <Property name="visibleWhen" type="java.lang.String" value="#{processing}"/>
+                <Property name="iconResource" type="java.lang.String" value="com/rameses/rcp/icons/loading16.gif"/>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                  <BorderConstraints direction="West"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
+              <Properties>
+                <Property name="expression" type="java.lang.String" value="#{msg}"/>
+                <Property name="visibleWhen" type="java.lang.String" value="#{msg != null}"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="12" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="99" type="rgb"/>
+                </Property>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                  <BorderConstraints direction="Center"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
   </SubComponents>

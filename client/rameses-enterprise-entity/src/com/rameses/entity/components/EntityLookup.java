@@ -52,6 +52,13 @@ public class EntityLookup extends XComponentPanel {
         this.entityType = entitytype;
     }    
 
+    public void setIndex(int index) {
+        super.setIndex(index);
+        xLookupField1.setIndex(index); 
+    }
+    
+    
+
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);

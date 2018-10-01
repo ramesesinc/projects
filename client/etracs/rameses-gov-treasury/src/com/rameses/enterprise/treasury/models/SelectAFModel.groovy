@@ -13,6 +13,8 @@ class SelectAFModel extends CrudLookupModel {
     def user;
 
     def entity;
+    
+    boolean init
 
     String title = "Select Stub to use";
     

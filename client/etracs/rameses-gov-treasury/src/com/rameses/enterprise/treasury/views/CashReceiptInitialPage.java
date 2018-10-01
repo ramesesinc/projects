@@ -42,6 +42,7 @@ public class CashReceiptInitialPage extends javax.swing.JPanel {
         xComboBox1.setCaption("Mode");
         xComboBox1.setItems("modeList");
         xComboBox1.setName("mode"); // NOI18N
+        xComboBox1.setAllowNull(false);
         xComboBox1.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 30));

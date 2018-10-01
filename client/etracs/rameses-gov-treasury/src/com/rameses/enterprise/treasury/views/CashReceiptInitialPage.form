@@ -45,6 +45,7 @@
             <Property name="caption" type="java.lang.String" value="Mode"/>
             <Property name="items" type="java.lang.String" value="modeList"/>
             <Property name="name" type="java.lang.String" value="mode" noResource="true"/>
+            <Property name="allowNull" type="boolean" value="false"/>
             <Property name="captionFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Arial" size="16" style="0"/>
             </Property>

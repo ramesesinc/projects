@@ -2,12 +2,12 @@
     <invokers>
         <invoker type="sys_user_role:lookup" caption="Lookup User" target="popup" 
                 action="init"
-                cols="username,lastname,firstname,domain,role"
+                cols="username,lastname,firstname,middlename,domain,role"
                 hiddenCols="name,orgid,txncode,jobtitle"/>
 
         <invoker type="user_role:lookup" caption="Lookup User" target="popup" 
                 action="init"
-                cols="username,lastname,firstname,domain,role"
+                cols="username,lastname,firstname,middlename,domain,role"
                 hiddenCols="name,orgid,txncode,jobtitle"/>
 
     </invokers>

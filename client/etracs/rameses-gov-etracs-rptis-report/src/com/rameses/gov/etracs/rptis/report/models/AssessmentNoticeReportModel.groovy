@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*;
 import com.rameses.etracs.shared.*;
+import com.rameses.gov.etracs.rptis.util.*;
 
 class AssessmentNoticeReportModel 
 {
@@ -19,6 +20,7 @@ class AssessmentNoticeReportModel
     String reportpath = 'com/rameses/gov/etracs/rpt/report/notice/';
     
     def preview(){
+        saveSignatures(entity);
         report.viewReport();
         return 'preview';
     }
@@ -44,4 +46,14 @@ class AssessmentNoticeReportModel
         }
     ] as ReportModel
 	
+    void saveSignatures(reportdata){
+        reportdata.signatories.each{ k, v ->
+            def objid = v.objid + '-' + v.state 
+            if (v.signature?.image){
+                v.signatureis = DBImageUtil.getInstance().saveImageToFile(objid, v.signature.image)
+                v.signature2is = DBImageUtil.getInstance().saveImageToFile(objid+'2', v.signature.image)
+            }
+                
+        }
+    }    
 }

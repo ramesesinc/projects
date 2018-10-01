@@ -37,12 +37,6 @@ public class RealPropertyPage extends javax.swing.JPanel {
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        formPanel6 = new com.rameses.rcp.util.FormPanel();
-        xTextField9 = new com.rameses.rcp.control.XTextField();
-        xTextField11 = new com.rameses.rcp.control.XTextField();
-        xTextField10 = new com.rameses.rcp.control.XTextField();
-        xTextField12 = new com.rameses.rcp.control.XTextField();
         formPanel4 = new com.rameses.rcp.util.FormPanel();
         xTextField16 = new com.rameses.rcp.control.XTextField();
         xTextField17 = new com.rameses.rcp.control.XTextField();
@@ -50,8 +44,9 @@ public class RealPropertyPage extends javax.swing.JPanel {
         xTextField19 = new com.rameses.rcp.control.XTextField();
         xTextField20 = new com.rameses.rcp.control.XTextField();
         xTextField21 = new com.rameses.rcp.control.XTextField();
+        xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
 
-        setPreferredSize(new java.awt.Dimension(702, 430));
+        setPreferredSize(new java.awt.Dimension(702, 532));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Real Property Information");
@@ -125,56 +120,9 @@ public class RealPropertyPage extends javax.swing.JPanel {
         xIntegerField2.setRequired(true);
         formPanel3.add(xIntegerField2);
 
-        xTextField2.setCaption("Claim No.");
-        xTextField2.setDepends(new String[] {"faas.info.txn", "barangay"});
-        xTextField2.setName("entity.claimno"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(100, 19));
-        xTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xTextField2ActionPerformed(evt);
-            }
-        });
-        formPanel3.add(xTextField2);
-
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Boundary Details");
-        formPanel6.setBorder(xTitledBorder2);
-
-        xTextField9.setCaption("North");
-        xTextField9.setCaptionWidth(60);
-        xTextField9.setIndex(100);
-        xTextField9.setName("entity.north"); // NOI18N
-        xTextField9.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField9.setRequired(true);
-        formPanel6.add(xTextField9);
-
-        xTextField11.setCaption("East");
-        xTextField11.setCaptionWidth(60);
-        xTextField11.setIndex(100);
-        xTextField11.setName("entity.east"); // NOI18N
-        xTextField11.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField11.setRequired(true);
-        formPanel6.add(xTextField11);
-
-        xTextField10.setCaption("South");
-        xTextField10.setCaptionWidth(60);
-        xTextField10.setIndex(100);
-        xTextField10.setName("entity.south"); // NOI18N
-        xTextField10.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField10.setRequired(true);
-        formPanel6.add(xTextField10);
-
-        xTextField12.setCaption("West");
-        xTextField12.setCaptionWidth(60);
-        xTextField12.setIndex(100);
-        xTextField12.setName("entity.west"); // NOI18N
-        xTextField12.setPreferredSize(new java.awt.Dimension(0, 20));
-        xTextField12.setRequired(true);
-        formPanel6.add(xTextField12);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder3 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder3.setTitle("Lot No. and Survey Information");
-        formPanel4.setBorder(xTitledBorder3);
+        xTitledBorder2.setTitle("Lot No. and Survey Information");
+        formPanel4.setBorder(xTitledBorder2);
         formPanel4.setCaptionWidth(105);
 
         xTextField16.setCaption("Cadastral Lot No.");
@@ -214,6 +162,21 @@ public class RealPropertyPage extends javax.swing.JPanel {
         xTextField21.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel4.add(xTextField21);
 
+        xSubFormPanel1.setHandler("sketchOpener");
+        xSubFormPanel1.setName("sketchOpener"); // NOI18N
+        xSubFormPanel1.setDynamic(true);
+
+        org.jdesktop.layout.GroupLayout xSubFormPanel1Layout = new org.jdesktop.layout.GroupLayout(xSubFormPanel1);
+        xSubFormPanel1.setLayout(xSubFormPanel1Layout);
+        xSubFormPanel1Layout.setHorizontalGroup(
+            xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 0, Short.MAX_VALUE)
+        );
+        xSubFormPanel1Layout.setVerticalGroup(
+            xSubFormPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 287, Short.MAX_VALUE)
+        );
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -221,11 +184,11 @@ public class RealPropertyPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 345, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(formPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 320, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(formPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 320, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -236,20 +199,15 @@ public class RealPropertyPage extends javax.swing.JPanel {
                     .add(formPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 129, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .add(xSubFormPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void xTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xTextField2ActionPerformed
-// TODO add your handling code here:
-    }//GEN-LAST:event_xTextField2ActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
-    private com.rameses.rcp.util.FormPanel formPanel6;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XIntegerField xIntegerField1;
@@ -258,17 +216,13 @@ public class RealPropertyPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
-    private com.rameses.rcp.control.XTextField xTextField10;
-    private com.rameses.rcp.control.XTextField xTextField11;
-    private com.rameses.rcp.control.XTextField xTextField12;
+    private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     private com.rameses.rcp.control.XTextField xTextField16;
     private com.rameses.rcp.control.XTextField xTextField17;
     private com.rameses.rcp.control.XTextField xTextField18;
     private com.rameses.rcp.control.XTextField xTextField19;
-    private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField20;
     private com.rameses.rcp.control.XTextField xTextField21;
-    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -26,11 +26,14 @@ class FaasSketchInfoController
     def image;
     def mode;
     
-    
        
     void init(){
         mode = MODE_READ;
         image = DBImageUtil.getInstance().getImage(entity.objid);
+    }
+
+    void initNew() {
+        mode = MODE_EDIT;
     }
     
     void afterUpload(){}

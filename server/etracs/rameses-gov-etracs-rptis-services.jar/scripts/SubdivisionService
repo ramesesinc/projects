@@ -59,6 +59,12 @@ class SubdivisionService
     @Service('FAASAnnotationService')
     def annotationSvc 
 
+    @DataContext(value='dbimage_header', adapter='image')
+    def em_header
+
+    @DataContext(value='dbimage_chunk', adapter='image')
+    def em_chunk
+
 
     def SCHEMA_SUBDIVISION      = 'subdivision'
     def SCHEMA_SUBDIVIDED_LAND  = 'subdividedland'
@@ -207,6 +213,7 @@ class SubdivisionService
     @ProxyMethod
     public def createSubdividedLand( land, subdivision ) {
         util.required('Real Property', land.rp)
+        def oldrpid = land.rp.objid 
         
         def faas = faasSvc.initCapture(buildInitInfo(land))
         land.rp.objid = faas.rp.objid 
@@ -216,6 +223,7 @@ class SubdivisionService
         land.newrpid = faas.rp.objid
         land.newrpuid = faas.rpu.objid
         land.newfaasid = faas.objid 
+        updateSketch(oldrpid, land)
         em.save(land, SCHEMA_SUBDIVIDED_LAND)
         return land 
     }
@@ -752,6 +760,24 @@ class SubdivisionService
             cancelledbytdnos    : cancelledbytdnos,
         ]
         faasSvc.cancelFaas(params)
+    }
+
+
+    void updateSketch(oldrpid, land) {
+        def header = em_header.find([objid: oldrpid]).first()
+        def chunks = em_chunk.find([parentid: header.objid]).list()
+        header.objid = land.newfaasid
+        header.refid = land.newfaasid
+
+        em_header.create(header)
+        chunks.each{
+            it.objid = 'C' + new java.rmi.server.UID()
+            it.parentid = header.objid
+            em_chunk.create(it)
+        }
+
+        em_chunk.find([parentid: oldrpid]).delete()
+        em_header.find([objid: oldrpid]).delete()
     }
 }
 

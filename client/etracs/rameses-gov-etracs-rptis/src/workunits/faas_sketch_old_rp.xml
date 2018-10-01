@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="sketch:rp" action="initNew" caption="Sketch (old)" index="6" />
+   </invokers>
+   <code class="com.rameses.gov.etracs.rpt.faas.ui.FaasSketchInfoController">
+  </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rpt.util.SketchPage"/>
+    </pages>
+</workunit>

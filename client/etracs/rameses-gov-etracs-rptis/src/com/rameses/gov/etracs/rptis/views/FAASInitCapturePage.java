@@ -38,6 +38,7 @@ public class FAASInitCapturePage extends javax.swing.JPanel {
         xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xIntegerField4 = new com.rameses.rcp.control.XIntegerField();
+        xIntegerField5 = new com.rameses.rcp.control.XIntegerField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
 
@@ -127,6 +128,11 @@ public class FAASInitCapturePage extends javax.swing.JPanel {
         xIntegerField4.setRequired(true);
         formPanel1.add(xIntegerField4);
 
+        xIntegerField5.setCaption("Post Fix");
+        xIntegerField5.setDepends(new String[] {"entity.rputype"});
+        xIntegerField5.setName("entity.subsuffix"); // NOI18N
+        formPanel1.add(xIntegerField5);
+
         xTextField2.setCaption("Claim No.");
         xTextField2.setDepends(new String[] {"entity.rputype"});
         xTextField2.setName("entity.claimno"); // NOI18N
@@ -163,10 +169,10 @@ public class FAASInitCapturePage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 315, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 38, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -186,6 +192,7 @@ public class FAASInitCapturePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XIntegerField xIntegerField4;
+    private com.rameses.rcp.control.XIntegerField xIntegerField5;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTextField xTextField2;

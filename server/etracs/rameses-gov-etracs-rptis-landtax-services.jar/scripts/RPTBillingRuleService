@@ -277,12 +277,12 @@ public class RPTBillingRuleService
 	}	
 
 	boolean checkBacktax( item ) {
-		if (util.isTrue(item.backtax)) return true
+		if (util.isTrue(item.rptledgerfaas.backtax)) return true
 
 		if (item.effectivityyear == null)
-			item.effectivityyear = item.effectiveyear 
+			item.effectivityyear = item.rptledgerfaas.fromyear 
 
-		def txntype_objid = item.txntype?.objid; 
+		def txntype_objid = item.rptledgerfaas.txntype?.objid; 
 		return ( 'ND'.equalsIgnoreCase(txntype_objid) && item.year == item.effectivityyear ); 
 	}
 

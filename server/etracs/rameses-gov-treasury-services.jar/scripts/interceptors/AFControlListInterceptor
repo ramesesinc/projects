@@ -44,10 +44,10 @@ class AFControlListInterceptor {
 			//do nothing 
 		}
 		else if( o.node.state == 'ISSUED' ) {
-			str.append( " state='ISSUED' AND currentseries < endseries " );
+			str.append( " state='ISSUED' AND currentseries <= endseries " );
 		}
 		else if( o.node.state == 'CONSUMED' ) {
-			str.append(" currentseries >= endseries ");
+			str.append(" currentseries > endseries ");
 		}
 		else if ( o.node.state ) { 
 			str.append(" state = :state ");

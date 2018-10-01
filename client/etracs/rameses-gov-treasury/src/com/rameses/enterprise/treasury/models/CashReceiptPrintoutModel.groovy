@@ -36,7 +36,7 @@ class CashReceiptPrintoutModel extends ReportModel {
         def checks = [];
         def dates = [];
         reportData.paymentitems.each{
-            checks << it.bank + ' - ' + it.refno; 
+            checks << it.check?.bank?.code + ' - ' + it.refno; 
             if( it.refdate instanceof String ) it.refdate = sdf.parse(it.refdate); 
             
             dates << sdf.format( it.refdate );

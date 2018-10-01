@@ -348,7 +348,7 @@ public class SerialCashReceiptPage extends javax.swing.JPanel {
 
         entityLookup1.setCaption("Payer");
         entityLookup1.setEntityTypeName("entityType");
-        entityLookup1.setIndex(-1);
+        entityLookup1.setIndex(-1000);
         entityLookup1.setName("entity.payer"); // NOI18N
         entityLookup1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(entityLookup1);

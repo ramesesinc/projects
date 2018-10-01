@@ -31,85 +31,14 @@ class RAAFReportService {
 		def items = adb.getReportData([startdate: startdate, enddate: enddate, collectorid: collectorid]); 
 		if ( !items ) throw new Exception('No record(s) found                  ');
 
-		items.eachWithIndex{ o,idx-> o.lineno = idx; }
+		items.eachWithIndex{ o,idx-> o.lineno = idx; } 
 
-		def unissuedlist = items.findAll{( it.qtyissued==0 )} 
-		items.removeAll( unissuedlist ); 
+		def serials = items.findAll{( it.formtype == 'serial' )}
+		def nonserials = items.findAll{( it.formtype != 'serial' )}
+ 		items.clear(); 
 
-		items.findAll{ it.formtype != 'serial' }.each{
-			it.beginstartseries = it.beginendseries = null; 
-			it.issuedstartseries = it.issuedendseries = null; 
-			it.endingstartseries = it.endingendseries = null; 
-			it.receivedstartseries = it.receivedendseries = null; 
-		}
-
-		def groupindex = 1000; 
-		def serials = unissuedlist.findAll{ it.formtype == 'serial' } 
-		unissuedlist.removeAll( serials ); 
-
-		serials.groupBy{[ ownerid: it.ownerid, formno: it.formno, prefix: it.prefix, suffix: it.suffix ]}.each{ k,v-> 
-			v.sort{ it.startseries } 
-
-			def nextseries = 0; 
-			v.each{ vo-> 
-				if ( vo.startseries == nextseries ) {
-					vo.groupindex = groupindex;  
-				} else {
-					vo.groupindex = groupindex + 1; 
-				} 
-				groupindex = vo.groupindex; 
-				nextseries = vo.nextseries; 
-			} 
-
-			v.groupBy{ it.groupindex }.each{ kk,vv-> 
-				def fo = vv.first(); 
-				def receivedstartseries = vv.collect{ it.receivedstartseries }.findAll{( it )}.min{( it )}
-				def receivedendseries = vv.collect{ it.receivedendseries }.findAll{( it )}.max{( it )}
-				def endingstartseries = vv.collect{ it.endingstartseries }.findAll{( it )}.min{( it )}
-				def endingendseries = vv.collect{ it.endingendseries }.findAll{( it )}.min{( it )}
-				def beginstartseries = vv.collect{ it.beginstartseries }.findAll{( it )}.min{( it )}
-				def beginendseries = vv.collect{ it.beginendseries }.findAll{( it )}.min{( it )}
-
-				fo.qtyreceived = vv.findAll{( it.qtyreceived > 0 )}.sum{ it.qtyreceived } 
-				if ( fo.qtyreceived == null ) fo.qtyreceived = 0; 
-
-				fo.qtyending = vv.findAll{( it.qtyending > 0 )}.sum{ it.qtyending } 
-				if ( fo.qtyending == null ) fo.qtyending = 0; 
-
-				fo.qtybegin = vv.findAll{( it.qtybegin > 0 )}.sum{ it.qtybegin } 
-				if ( fo.qtybegin == null ) fo.qtybegin = 0; 
-
-				fo.receivedstartseries = receivedstartseries; 
-				fo.receivedendseries = receivedendseries; 
-				fo.beginstartseries = beginstartseries; 
-				fo.beginendseries = beginendseries; 
-
-				def e1 = [ receivedstartseries, beginstartseries ].findAll{( it )}.min{( it )} 
-				def e2 = [ receivedendseries, beginendseries ].findAll{( it )}.max{( it )} 
-				fo.endingstartseries = ( e1 ? e1 : endingstartseries ); 
-				fo.endingendseries = ( e2 ? e2 : endingendseries ); 
-				items << fo; 
-			} 
-		} 
-		serials.clear(); 
-
-		unissuedlist.groupBy{[ ownerid: it.ownerid, formno: it.formno, prefix: it.prefix, suffix: it.suffix ]}.each{ k,v-> 
-			def fo = v.first(); 
-			def qtyreceived = 0; def qtyending = 0; def qtybegin = 0; 
-			v.each{
-				if ( it.qtyreceived > 0 ) qtyreceived += it.qtyreceived; 
-				if ( it.qtyending > 0 ) qtyending += it.qtyending; 
-				if ( it.qtybegin > 0 ) qtybegin += it.qtybegin; 
-			} 
-			fo.qtyreceived = qtyreceived;
-			fo.qtyending = qtyending; 
-			fo.qtybegin = qtybegin; 
-			fo.receivedstartseries = fo.receivedendseries = null; 
-			fo.endingstartseries = fo.endingendseries = null; 
-			fo.beginstartseries = fo.beginendseries = null; 
-			items << fo; 
-		} 
-		unissuedlist.clear(); 
+ 		buildRAAFSerial( items, serials ); 
+ 		buildRAAFNonSerial( items, nonserials )
 		items.sort{ it.lineno } 	
 		items.each{
 			it.qtyreceived = (it.qtyreceived ? it.qtyreceived : null); 
@@ -323,5 +252,82 @@ class RAAFReportService {
 		o.endingamt = ( qtyending ? qtyending * o.denomination : null ); 
 		targetlist << o; 
 		list.clear(); 
+	}
+
+	private void buildRAAFSerial( result, serials ) {
+		def groupindex = 1000; 
+		def unissuedlist = serials.findAll{( it.qtyissued == 0 )} 
+		unissuedlist.groupBy{[ formno: it.formno, prefix: it.prefix, suffix: it.suffix ]}.each{ k,v-> 
+			v.sort{ it.lineno } 
+
+			def nextseries = 0; 
+			v.each{ vo-> 
+				if ( vo.startseries == nextseries ) {
+					vo.groupindex = groupindex;  
+				} else {
+					vo.groupindex = groupindex + 1; 
+				} 
+				groupindex = vo.groupindex; 
+				nextseries = vo.nextseries; 
+			} 			
+		}
+		unissuedlist.groupBy{ it.groupindex }.each{ kk,vv-> 
+			vv.sort{ it.lineno } 
+
+			def fo = vv.first(); 
+			def receivedstartseries = vv.collect{ it.receivedstartseries }.findAll{( it )}.min{( it )}
+			def receivedendseries = vv.collect{ it.receivedendseries }.findAll{( it )}.max{( it )}
+			def endingstartseries = vv.collect{ it.endingstartseries }.findAll{( it )}.max{( it )}
+			def endingendseries = vv.collect{ it.endingendseries }.findAll{( it )}.max{( it )}
+			def beginstartseries = vv.collect{ it.beginstartseries }.findAll{( it )}.min{( it )}
+			def beginendseries = vv.collect{ it.beginendseries }.findAll{( it )}.max{( it )}
+
+			fo.qtyreceived = vv.findAll{( it.qtyreceived > 0 )}.sum{ it.qtyreceived } 
+			if ( fo.qtyreceived == null ) fo.qtyreceived = 0; 
+
+			fo.qtyending = vv.findAll{( it.qtyending > 0 )}.sum{ it.qtyending } 
+			if ( fo.qtyending == null ) fo.qtyending = 0; 
+
+			fo.qtybegin = vv.findAll{( it.qtybegin > 0 )}.sum{ it.qtybegin } 
+			if ( fo.qtybegin == null ) fo.qtybegin = 0; 
+
+			fo.issuedstartseries = fo.issuedendseries = null; 
+			fo.receivedstartseries = receivedstartseries; 
+			fo.receivedendseries = receivedendseries; 
+			fo.beginstartseries = beginstartseries; 
+			fo.beginendseries = beginendseries; 
+			fo.endingstartseries = endingstartseries; 
+			fo.endingendseries = endingendseries
+			fo.formindex = 0; 
+			result << fo; 			
+		}
+		serials.findAll{( it.qtyissued > 0 )}.each{ o-> 
+			o.formindex = 0;
+			result << o; 
+		} 
 	} 
+
+	private void buildRAAFNonSerial( result, nonserials ) {
+		nonserials.groupBy{ it.formno }.each{ k,v-> 
+			v.sort{ it.lineno } 
+
+			def fo = v.first();
+			fo.receivedstartseries = fo.receivedendseries = null;   
+			fo.beginstartseries = fo.beginendseries = null;   
+			fo.issuedstartseries = fo.issuedendseries = null;   
+			fo.endingstartseries = fo.endingendseries = null;   
+			fo.qtyreceived = v.sum{ it.qtyreceived } 
+			fo.qtyending = v.sum{ it.qtyending }
+			fo.qtyissued = v.sum{ it.qtyissued }
+			fo.qtybegin = v.sum{ it.qtybegin } 
+			fo.formindex = 1; 
+
+			if ( !fo.qtyreceived ) fo.qtyreceived = null; 
+			if ( !fo.qtyending ) fo.qtyending = null; 
+			if ( !fo.qtyissued ) fo.qtyissued = null; 
+			if ( !fo.qtybegin ) fo.qtybegin = null; 
+
+			result << fo; 
+		} 
+	}
 }

@@ -53,8 +53,8 @@ class BatchCaptureCollectionInitialModel  {
             str = "assignee.objid = :userid"
         }
         def m = [_schemaname:'af_control'];
-        m.where = ["startseries = :startseries AND currentseries <= endseries AND txnmode='CAPTURE' AND " + str, 
-                    [startseries: startseries, userid: userid ]];
+        m.where = ["currentseries = :currentseries AND currentseries <= endseries AND txnmode='CAPTURE' AND " + str, 
+                    [currentseries: startseries, userid: userid ]];
         def list = qryService.getList(m);
         if(!list) throw new Exception("No items found with the specified start series assigned for this user");
         def selectedItem = null;
@@ -69,11 +69,17 @@ class BatchCaptureCollectionInitialModel  {
         def h = { o->
             collectiontype = o;
         }
-        def filter = ["orgid IS NULL AND allowbatch=1"];
+        
+        str = "formno = :formno";
+        def qparam = [formno: selectedItem.afid]; 
         if( selectedItem.respcenter?.objid ) {
-            filter = ["orgid =:orgid AND allowbatch=1", [orgid: selectedItem.respcenter.objid ]];
+            str += " AND orgid =:orgid AND allowbatch=1"; 
+            qparam.orgid = selectedItem.respcenter.objid;
+        } else {
+            str += " AND orgid IS NULL AND allowbatch=1"; 
         }
-        Modal.show("collectiontype:lookup", [customFilter: filter, onselect: h]);
+        
+        Modal.show("collectiontype:lookup", [customFilter: [str, qparam], onselect: h]);
         if(!collectiontype) {
             return null;
         }
@@ -88,7 +94,7 @@ class BatchCaptureCollectionInitialModel  {
             serieslength: selectedItem.af.serieslength,
             prefix:selectedItem.prefix,
             suffix:selectedItem.suffix,
-            startseries: selectedItem.startseries,
+            startseries: selectedItem.currentseries,
             endseries: selectedItem.endseries,
             totalamount: 0,
             totalcash: 0,

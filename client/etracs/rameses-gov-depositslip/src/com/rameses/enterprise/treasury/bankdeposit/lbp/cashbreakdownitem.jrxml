@@ -36,7 +36,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="40"  isSplitAllowed="true" >
+			<band height="45"  isSplitAllowed="true" >
 			</band>
 		</title>
 		<pageHeader>
@@ -51,7 +51,7 @@
 			<band height="16"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="118"
+						x="85"
 						y="0"
 						width="63"
 						height="16"
@@ -63,13 +63,13 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{caption}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="82"
+						x="24"
 						y="0"
 						width="36"
 						height="16"
@@ -79,13 +79,13 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{qty}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="287"
+						x="270"
 						y="0"
 						width="83"
 						height="16"
@@ -95,7 +95,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="9"/>
+						<font fontName="SansSerif" size="10"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
@@ -110,11 +110,11 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="17"  isSplitAllowed="true" >
+			<band height="79"  isSplitAllowed="true" >
 				<line direction="TopDown">
 					<reportElement
-						x="187"
-						y="1"
+						x="131"
+						y="-2"
 						width="185"
 						height="0"
 						key="line-1"/>
@@ -124,27 +124,27 @@
 				</line>
 				<staticText>
 					<reportElement
-						x="189"
-						y="1"
+						x="144"
+						y="58"
 						width="97"
 						height="16"
 						key="staticText-1"/>
 					<box></box>
 					<textElement verticalAlignment="Middle">
-						<font size="9"/>
+						<font size="10"/>
 					</textElement>
 				<text><![CDATA[TOTAL DEPOSIT :]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="286"
-						y="0"
+						x="269"
+						y="57"
 						width="84"
 						height="16"
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="9"/>
+						<font size="10"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TOTALAMT}]]></textFieldExpression>
 				</textField>

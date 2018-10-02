@@ -1,0 +1,31 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:check" caption="LBP Revised Jun 2016" name="lbp_check_revmay2016"/> 
+        <invoker type="depositslip_printout:lbp_check_revmay2016" action="print" target="process"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+    import com.rameses.util.*;
+    import com.rameses.enterprise.treasury.models.*;
+
+    class LbpCheckDepositSlipPrintout extends DepositSlipPrintoutModel {
+
+        def pkg = "com/rameses/enterprise/treasury/bankdeposit/lbp/";
+        
+        public def getPrintReport() { 
+            return pkg + "check.jasper";
+        } 
+
+        public def formatData( def d, def opt ) {
+            return super.formatOldReport( d );
+        }
+                
+    } 
+    ]]>
+    </code>
+</workunit>

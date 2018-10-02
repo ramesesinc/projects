@@ -54,6 +54,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         clearAllPayments();
         bill = billSvc.initBill();
         bill.itemcount = 5;
+        bill.billdate = entity.receiptdate 
         mode = MODE_INIT;
         payoption = PAY_OPTION_ALL;
     }

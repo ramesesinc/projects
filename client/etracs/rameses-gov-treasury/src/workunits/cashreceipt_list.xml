@@ -38,17 +38,23 @@
    </invokers>
    
     <code>
-import com.rameses.rcp.annotations.*; 
-import com.rameses.rcp.common.*; 
+        import com.rameses.rcp.annotations.*; 
+        import com.rameses.rcp.common.*; 
 
-class CashReceiptListModel extends com.rameses.seti2.models.CrudListModel {
-        
-    public void initColumn( c ) { 
-        if ( c.name == 'series' ) { 
-            c.visible = false; 
-            c.hidden = true; 
-        } 
-    } 
-}         
+        class CashReceiptListModel extends com.rameses.seti2.models.CrudListModel {
+
+            
+            public void initColumn( c ) { 
+                if ( c.name == 'series' ) { 
+                    c.visible = false; 
+                    c.hidden = true; 
+                } 
+            } 
+        }         
     </code>
+    <!--
+    <pages>
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.AFListQueryPanel"/>
+    </pages>
+    -->
 </workunit>

@@ -112,7 +112,7 @@ class CashTicketInitialModel  {
     
     def lookupSubCollectorAF( param ) {
         param.active = 1; 
-
+        param.subcollector = true;
         def env = OsirisContext.env; 
         def p = [_schemaname: 'af_control', debug: true]; 
         p.where = CashReceiptAFLookupFilter.getFilter( param ); 
@@ -151,9 +151,11 @@ class CashTicketInitialModel  {
             formtype        : collectionType.af.formtype, 
             collectiontype  : collectionType 
         ]; 
-
+        if(subcollectorMode) entity._subcollector = true;
+        
         def info = initReceipt( entity );
         if( info == null ) return null;
+        
         if( mode == "OFFLINE" ) {
             boolean pass = false;
             Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 

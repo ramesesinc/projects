@@ -8,6 +8,9 @@ import com.rameses.osiris2.common.*;
 class CashReceiptAFLookupFilter {
 
     public static def getFilter( param ) {
+        boolean subcol = false;
+        if(param.subcollector) subcol = true;
+        
         def env = OsirisContext.env;
         def p = [:];
         def arr = [];
@@ -16,6 +19,16 @@ class CashReceiptAFLookupFilter {
         arr << "assignee.objid = :uid";
         arr << "txnmode=:mode";
         arr << "currentseries <= endseries";
+        
+        //this is to fix if the collector also has a subcollector role.
+        //normally if he is a subcollector, then he should not be the owner
+        if(!subcol) {
+            arr << "assignee.objid = owner.objid";
+        }
+        else {
+            arr << " NOT(assignee.objid = owner.objid)";
+        }
+        
         if ( param.active != null ) {
             arr << "active=:active";
             p.active = param.active;

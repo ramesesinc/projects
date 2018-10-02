@@ -70,6 +70,8 @@ class CashReceiptInitialModel  {
     
     def lookupCollectorAF( param, boolean sub ) { 
         param.active = 1;
+        if(sub==true) param.subcollector = true;
+        
         def env = OsirisContext.env; 
         def p = [_schemaname: 'af_control']; 
         p.where = CashReceiptAFLookupFilter.getFilter( param ); 
@@ -109,13 +111,16 @@ class CashReceiptInitialModel  {
             txnmode         : mode, 
             formno          : afType, 
             formtype        : collectionType.af.formtype, 
-            collectiontype  : collectionType 
+            collectiontype  : collectionType,
         ]; 
+        if(subcollectorMode) params._subcollector = true;
         
         def entity = [:];
         entity.putAll(params); 
         def info = initReceipt( entity );
         if( info == null ) return null;
+        
+
         if( mode == "OFFLINE" ) {
             boolean pass = false;
             Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 

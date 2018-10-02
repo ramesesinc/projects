@@ -1,0 +1,31 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:cash" caption="DBP OCS01704 (Rev 1-07May14)" name="dbp_cash_ocs01704"/> 
+        <invoker type="depositslip_printout:dbp_cash_ocs01704" action="print" target="process"/> 
+    </invokers>
+    
+    <code>
+        <![CDATA[
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+    import com.rameses.util.*;
+    import com.rameses.enterprise.treasury.models.*;
+
+    class DbpCashDepositSlipPrintout extends DepositSlipPrintoutModel {
+
+        def pkg = "com/rameses/enterprise/treasury/bankdeposit/dbp/";
+        
+        public def getPrintReport() {
+            return pkg + "cashdbp.jasper"; 
+        } 
+        
+        public def formatData( def d, def opt ) {
+            return super.formatOldReport( d );
+        }
+
+    } 
+    ]]>
+    </code>
+</workunit>

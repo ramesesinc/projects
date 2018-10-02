@@ -323,7 +323,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
 
         xButton6.setDepends(new String[] {"selectedDepositSlip"});
         xButton6.setName("printDepositSlip"); // NOI18N
-        xButton6.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state != 'DRAFT' ) }");
+        xButton6.setVisibleWhen("#{ selectedDepositSlip != null && selectedDepositSlip.state != 'DRAFT'  }");
         xButton6.setText("Print");
         jPanel7.add(xButton6);
 

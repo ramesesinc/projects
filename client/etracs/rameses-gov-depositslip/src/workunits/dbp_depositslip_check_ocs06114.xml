@@ -1,0 +1,31 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:check" caption="DBP OCS06114 (Rev 0-07May14)" name="dbp_check_ocs06114"/> 
+        <invoker type="depositslip_printout:dbp_check_ocs06114" action="print" target="process"/> 
+    </invokers>
+    
+    <code>
+        <![CDATA[
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+    import com.rameses.util.*;
+    import com.rameses.enterprise.treasury.models.*;
+
+    class DbpCheckDepositSlipPrintout extends DepositSlipPrintoutModel {
+
+        def pkg = "com/rameses/enterprise/treasury/bankdeposit/dbp/";
+        
+        public def getPrintReport() { 
+            return pkg + "checkdbp.jasper"; 
+        } 
+
+        public def formatData( def d, def opt ) {
+            return super.formatOldReport( d );
+        }
+
+    } 
+    ]]>
+    </code>
+</workunit>

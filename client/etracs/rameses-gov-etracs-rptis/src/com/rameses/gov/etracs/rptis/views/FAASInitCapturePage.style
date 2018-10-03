@@ -49,3 +49,11 @@
     enabled:false;
 }
 
+
+"entity.subsuffix" [entity.rputype == 'bldg'] {
+    visible:true;
+}   
+
+"entity.subsuffix" [entity.rputype != 'bldg'] {
+    visible:false;
+}   

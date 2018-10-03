@@ -24,11 +24,11 @@ where not exists(
 
 [findLastPayment]
 select 
-	cro.year, 
-	sum(cro.basic) as basic,
-	sum(cro.sef) as sef 
-from cashreceiptitem_rpt_online cro 
-where cro.rptledgerid = $P{objid}
-and cro.year = $P{year}
+	rpi.year, 
+	sum(rpi.basic) as basic,
+	sum(rpi.sef) as sef 
+from vw_rptpayment_item rpi 
+where rpi.rptledgerid  =   $P{objid}
+and rpi.year = $P{year}
+and rpi.voided = 0 
 group by year 
-

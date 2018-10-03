@@ -6,9 +6,13 @@
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" visibleWhen="#{mode=='read'}"/>
         <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" visibleWhen="#{mode=='create'}" immediate="true" />
-        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='read' &amp;&amp; allowEdit==true &amp;&amp; showActions==true}"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='read'}"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode=='create'}"/>
         <invoker type="formActions" action="update" caption="Update" mnemonic="u" shortcut="ctrl S" visibleWhen="#{mode=='edit'}"/>
+        <invoker type="formActions" action="delete" caption="Delete" 
+            mnemonic="d" 
+            visibleWhen="#{mode=='read'}"
+            role="APPRAISAL_CHIEF,TAXMAPPER_CHIEF,ADMIN" />
    </invokers>
    <code>
 
@@ -25,7 +29,7 @@ class ExaminationFindingController
 {
     @Binding
     def binding;
-    
+
     @Service('ExaminationService')
     def svc;
     
@@ -33,8 +37,9 @@ class ExaminationFindingController
     def MODE_CREATE = 'create';
     def MODE_EDIT = 'edit';
     
-    def onadd; //add handler
-    def onupdate; //edit handler
+    def onadd = {}; //add handler
+    def onupdate = {}; //edit handler
+    def ondelete = {}; //delete handler
     def mode; 
     def showActions;
     
@@ -78,6 +83,14 @@ class ExaminationFindingController
     
     void edit(){
         mode = MODE_EDIT;
+    }
+
+    def delete() {
+        if (MsgBox.confirm('Delete examination?')) {
+            svc.removeFinding(finding);
+            ondelete(finding);
+            return '_close';
+        }
     }
     
     

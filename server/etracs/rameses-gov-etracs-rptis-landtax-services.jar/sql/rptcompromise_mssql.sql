@@ -6,7 +6,7 @@ SELECT
 	c.amount, c.amtpaid, c.enddate, c.cypaymentrequired, c.cypaymentorno, 
 	rl.tdno, e.objid as taxpayer_objid, e.name AS taxpayer_name, e.address_text AS taxpayer_address, 
 	rl.fullpin, rl.cadastrallotno
-FROM rptledger_compromise c 
+FROM rptcompromise c 
 	INNER JOIN rptledger rl ON c.rptledgerid = rl.objid 
 	INNER JOIN entity e ON rl.taxpayer_objid = e.objid 
 WHERE (c.txnno LIKE $P{searchtext} 
@@ -76,13 +76,13 @@ ORDER BY li.year, li.qtr
 
 [getLookupList]
 SELECT c.* , rl.tdno, rl.cadastrallotno 
-FROM rptledger_compromise c 
+FROM rptcompromise c 
 	INNER JOIN rptledger rl ON c.rptledgerid = rl.objid 
 WHERE ${whereclause} 
 
 [findRPTCompromiseById]
 SELECT * 
-FROM rptledger_compromise
+FROM rptcompromise
 WHERE objid = $P{objid} 
 
 [getRPTCompromiseItems]
@@ -92,13 +92,13 @@ SELECT
 	 f.basicidlepaid + f.basicidleintpaid + 
 	 f.sefpaid + f.sefintpaid +
 	 f.shpaid + f.shintpaid) as payment
-FROM rptledger_compromise_item f
+FROM rptcompromise_item f
 WHERE f.rptcompromiseid  = $P{rptcompromiseid}
 ORDER BY f.year, f.qtr 
 
 [getRPTCompromiseInstallments]
 SELECT * 
-FROM rptledger_compromise_installment  
+FROM rptcompromise_installment  
 WHERE rptcompromiseid = $P{rptcompromiseid} 
 ORDER BY installmentno
 
@@ -111,13 +111,13 @@ SELECT
 	cr.amount,
 	cr.collector_name AS collectorname,
 	cr.paidby
-FROM rptledger_compromise_credit cr	
+FROM rptcompromise_credit cr	
 WHERE cr.rptcompromiseid = $P{rptcompromiseid}	 
 ORDER BY cr.ordate DESC, cr.orno DESC  
 
 [findActiveCompromiseByLedgerId]
 SELECT * 
-FROM rptledger_compromise
+FROM rptcompromise
 WHERE rptledgerid = $P{rptledgerid} 
   AND state NOT IN ('CLOSED')
 
@@ -131,19 +131,19 @@ WHERE objid = $P{objid}
 
 [getOpenInstallments]
 SELECT  * 
-FROM rptledger_compromise_installment 
+FROM rptcompromise_installment 
 WHERE rptcompromiseid = $P{rptcompromiseid} 
   AND (fullypaid = 0 or amount - amtpaid > 0 )
 ORDER BY installmentno 
 
 [updateInstallmentPayment]
-UPDATE rptledger_compromise_installment SET 
+UPDATE rptcompromise_installment SET 
 	fullypaid = CASE WHEN amount = amtpaid + $P{amtpaid} THEN 1 ELSE 0 END ,
 	amtpaid = amtpaid + $P{amtpaid}
 WHERE objid = $P{objid}	 
 
 [updateCapturedInstallmentPayment]
-UPDATE rptledger_compromise_installment SET 
+UPDATE rptcompromise_installment SET 
 	fullypaid = 1,
 	amtpaid = amount 
 WHERE objid = $P{objid}	 
@@ -163,7 +163,7 @@ WHERE rl.objid = $P{objid}
 
 [getCredits]
 SELECT *
-FROM rptledger_compromise_credit 
+FROM rptcompromise_credit 
 WHERE receiptid = $P{receiptid} 
 
 	
@@ -172,9 +172,9 @@ WHERE receiptid = $P{receiptid}
 
 [getPaidInstallmentsByReceipt]
 SELECT i.*
-FROM rptledger_compromise_installment  i 
-	inner join rptledger_compromise_credit c on i.objid = c.installmentid 
-WHERE c.rptreceiptid = $P{objid}
+FROM rptcompromise_installment  i 
+	inner join rptcompromise_credit c on i.objid = c.installmentid 
+WHERE c.receiptid = $P{objid}
 ORDER BY i.installmentno
 
 
@@ -183,7 +183,7 @@ ORDER BY i.installmentno
 SELECT c.*, 
 	c.amount - c.amtpaid AS balance,
 	0.0 AS amtdue
-FROM rptledger_compromise_installment  c 
+FROM rptcompromise_installment  c 
 WHERE rptcompromiseid = $P{rptcompromiseid} 
   AND fullypaid = 0
 ORDER BY installmentno
@@ -191,73 +191,87 @@ ORDER BY installmentno
 
 [getUnpaidItems]
 select 
-	objid, rptcompromiseid, year, qtr, 
-	(basic - basicpaid ) as basic,
-	(basicint - basicintpaid ) as basicint,
-	(basicidle - basicidlepaid ) as basicidle,
-	(basicidleint - basicidleintpaid ) as basicidleint,
-	(sef - sefpaid ) as sef,
-	(sefint - sefintpaid ) as sefint,
-	(firecode - firecodepaid ) as firecode,
-	(sh - shpaid ) as sh,
-	(shint - shintpaid ) as shint
-from rptledger_compromise_item
-where rptcompromiseid = $P{objid}
-  and fullypaid = 0
-order by year, qtr  
+	objid, 
+	parentid,
+	rptledgerfaasid, 
+	year, 
+	revtype,
+	revperiod,
+	amount - amtpaid as amount,
+	interest - interestpaid as interest,
+	0 as discount,
+	amount - amtpaid + interest - interestpaid as total, 
+	priority,
+	taxdifference
+from rptcompromise_item
+where parentid = $P{objid}
+and amount - amtpaid + interest - interestpaid > 0 
+order by year 
 
 
 [getItemsForPrinting]
-SELECT 
-	rl.objid AS rptledgerid,
-	rl.tdno,
+SELECT
 	rl.owner_name, 
+	rl.tdno,
 	rl.rputype,
 	rl.totalav, 
 	rl.fullpin,
+	rl.totalareaha * 10000 AS  totalareasqm,
 	rl.cadastrallotno,
 	rl.classcode,
-	rl.totalareaha * 10000 as totalareasqm,
 	b.name AS barangay,
 	md.name as munidistrict,
 	pct.name as provcity, 
-	cc.basic,
-	0.0 AS basicdisc,
-	cc.basicint,
-	cc.basicint as basicdp,
-	cc.basic + cc.basicint as basicnet,
-	(cc.basicidle + cc.basicidleint) AS basicidle,
-	cc.sef,
-	0.0 as sefdisc,
-	cc.sefint,
-	cc.sefint as sefdp,
-	cc.sef + cc.sefint as sefnet,
-	cc.firecode,
-	cc.sh,
-	0.0 as shdisc,
-	cc.shint,
-	cc.shint as shdp,
-	cc.sh + cc.shint as shnet,
-	(cc.basic + cc.basicint + 
-	 cc.basicidle + cc.basicidleint + 
-	 cc.sef + cc.sefint + cc.firecode +
- 	 cc.sh + cc.shint) as amount,
-	cc.partial,
-	ci.installmentno
-FROM rptledger_compromise_credit cc 
-	inner join rptledger_compromise_installment ci ON cc.installmentid = ci.objid 
-	INNER JOIN rptledger_compromise c ON cc.rptcompromiseid = c.objid 
-	INNER JOIN rptledger rl ON c.rptledgerid = rl.objid 
+	rp.fromyear, 
+	rp.fromqtr, 
+	rp.toyear,
+	rp.toqtr,
+	SUM(rpi.basic) AS basic,
+	SUM(rpi.basicint) AS basicint,
+	SUM(rpi.basicdisc) AS basicdisc,
+	SUM(rpi.basicdp) AS basicdp,
+	SUM(rpi.basicnet) AS basicnet,
+	SUM(rpi.basicidle) AS basicidle,
+	SUM(rpi.sef) AS sef,
+	SUM(rpi.sefint) AS sefint,
+	SUM(rpi.sefdisc) AS sefdisc,
+	SUM(rpi.sefdp) AS sefdp,
+	SUM(rpi.sefnet) AS sefnet,
+	SUM(rpi.firecode) AS firecode,
+	SUM(rpi.sh) AS sh,
+	SUM(rpi.amount) AS amount,
+	MAX(rpi.partialled) AS partialled 
+FROM rptpayment rp 
+	inner join vw_rptpayment_item rpi on rp.objid = rpi.parentid
+	inner join rptcompromise rc on rp.refid = rc.objid 
+	INNER JOIN rptledger rl ON rc.rptledgerid = rl.objid 
 	INNER JOIN sys_org b ON rl.barangayid = b.objid
 	inner join sys_org md on md.objid = b.parent_objid 
 	inner join sys_org pct on pct.objid = md.parent_objid
-WHERE cc.receiptid = $P{objid}
-ORDER BY ci.installmentno 
+WHERE rp.receiptid = $P{objid}
+GROUP BY 
+	rl.owner_name, 
+	rl.tdno,
+	rl.rputype,
+	rl.totalav, 
+	rl.fullpin,
+	rl.totalareaha,
+	rl.cadastrallotno,
+	rl.classcode,
+	b.name,
+	md.name,
+	pct.name,
+	rp.fromyear, 
+	rp.fromqtr, 
+	rp.toyear,
+	rp.toqtr
+ORDER BY rp.fromyear 	
+
 
 
 
 [fullyPaidCompromiseItem]
-UPDATE rptledger_compromise_item SET
+UPDATE rptcompromise_item SET
 	basicpaid = basic,
 	basicintpaid = basicint,
 	basicidlepaid = basicidle,
@@ -272,7 +286,7 @@ WHERE objid = $P{itemid}
 
 
 [partiallyPaidCompromiseItem]
-UPDATE rptledger_compromise_item SET
+UPDATE rptcompromise_item SET
 	basicpaid = basicpaid + $P{basic},
 	basicintpaid = basicintpaid + $P{basicint},
 	basicidlepaid = basicidlepaid + $P{basicidle},
@@ -287,7 +301,7 @@ WHERE objid = $P{itemid}
 
 
 [postInstallmentPayment]
-UPDATE rptledger_compromise_installment SET 
+UPDATE rptcompromise_installment SET 
 	fullypaid = CASE WHEN amount = amtpaid + $P{amtdue} 
 					THEN 1
 					ELSE 0
@@ -297,7 +311,7 @@ WHERE objid = $P{objid}
 
 
 [updateCompromiseAmountPaid]
-UPDATE rptledger_compromise SET 
+UPDATE rptcompromise SET 
 	state = CASE WHEN amtpaid + $P{amtpaid} >= amount 
 				THEN 'CLOSED'
 				ELSE state 
@@ -311,8 +325,8 @@ WHERE objid = $P{objid}
 
 
 [findCompromiseByReceiptForVoiding]
-SELECT DISTINCT cr.rptcompromiseid, cr.rptreceiptid
-FROM rptledger_compromise_credit cr 
+SELECT DISTINCT cr.parentid, cr.rptreceiptid
+FROM rptcompromise_credit cr 
 WHERE rptreceiptid = $P{objid}
 
 
@@ -320,7 +334,7 @@ WHERE rptreceiptid = $P{objid}
 UPDATE rc SET
 	rc.amtpaid = rc.amtpaid - $P{debitamount},
 	rc.state = case when rc.state = 'CLOSED' then 'APPROVED' else rc.state END 
-from rptledger_compromise rc 
+from rptcompromise rc 
 WHERE rc.objid = $P{rptcompromiseid}
 
 
@@ -336,9 +350,9 @@ UPDATE i SET
 	i.shpaid = i.shpaid - cr.sh,
 	i.shintpaid = i.shintpaid - cr.shint,
 	i.fullypaid = 0
-from rptledger_compromise_item i, rptledger_compromise_item_credit cr 
+from rptcompromise_item i, rptcompromise_item_credit cr 
 WHERE i.objid = cr.rptcompromiseitemid 
-  AND i.rptcompromiseid = $P{rptcompromiseid}
+  AND i.parentid = $P{rptcompromiseid}
   AND cr.rptreceiptid = $P{rptreceiptid}
 
 
@@ -346,22 +360,22 @@ WHERE i.objid = cr.rptcompromiseitemid
 UPDATE ci SET
 	ci.amtpaid = ci.amtpaid - cr.amount,
 	ci.fullypaid = 0
-from rptledger_compromise_installment ci, rptledger_compromise_credit cr 
+from rptcompromise_installment ci, rptcompromise_credit cr 
 WHERE ci.objid = cr.installmentid 
-  AND ci.rptcompromiseid = $P{rptcompromiseid}
+  AND ci.parentid = $P{rptcompromiseid}
   AND cr.rptreceiptid = $P{rptreceiptid}
 
 
 [deleteVoidedItemCredit]
-DELETE FROM rptledger_compromise_item_credit WHERE rptreceiptid = $P{rptreceiptid}
+DELETE FROM rptcompromise_item_credit WHERE rptreceiptid = $P{rptreceiptid}
 
 
 [deleteVoidedCredit]
-DELETE FROM rptledger_compromise_credit WHERE rptreceiptid = $P{rptreceiptid}
+DELETE FROM rptcompromise_credit WHERE rptreceiptid = $P{rptreceiptid}
 
 
 [updateDownpaymentPaymentInfo]
-UPDATE rptledger_compromise SET 
+UPDATE rptcompromise SET 
 	downpaymentreceiptid = $P{objid},
 	downpaymentorno = $P{receiptno},
 	downpaymentordate = $P{receiptdate}
@@ -369,7 +383,7 @@ WHERE objid = $P{rptcompromiseid}
 
 
 [updateCurrentYearPaymentInfo]
-UPDATE rptledger_compromise SET 
+UPDATE rptcompromise SET 
 	cypaymentreceiptid = $P{objid},
 	cypaymentorno = $P{receiptno},
 	cypaymentordate = $P{receiptdate}
@@ -406,13 +420,13 @@ where rptledgerid = $P{objid}
 
 [getDefaultedCompromises]
 select objid, rptledgerid, txnno, startyear, endyear   
-from rptledger_compromise
+from rptcompromise
 where DATEADD(D, 1, enddate) < $P{currentdate}
   and state = 'APPROVED' 
 
 
 [setDefaultedCompromise]
-update rptledger_compromise set 
+update rptcompromise set 
 	state = 'DEFAULTED'
 where objid = $P{objid}	
 
@@ -427,14 +441,14 @@ where objid = $P{rptledgerid}
 
 [findLastPaidCompromiseItem]
 select * 
-from rptledger_compromise_item
+from rptcompromise_item
 where rptcompromiseid = $P{objid}
   and fullypaid = 1
 order by year desc, qtr desc 
 
 [findFirstUnpaidCompromiseItem]
 select * 
-from rptledger_compromise_item
+from rptcompromise_item
 where rptcompromiseid = $P{objid}
   and fullypaid = 0
 order by year, qtr
@@ -481,8 +495,8 @@ select * from rptledgeritem where rptledgerid = $P{rptledgerid} and year = $P{pa
 
 [findDefaultedInstallment]
 select * 
-from rptledger_compromise c 
-	inner join rptledger_compromise_installment ci on c.objid = ci.rptcompromiseid
+from rptcompromise c 
+	inner join rptcompromise_installment ci on c.objid = ci.rptcompromiseid
 where c.objid = $P{objid}
   and c.state = 'APPROVED' 
   and DATEADD(D, 1, ci.duedate) < $P{currentdate}
@@ -490,7 +504,7 @@ where c.objid = $P{objid}
   
 
 [fullyPaidItem]	
-update rptledger_compromise_item set 
+update rptcompromise_item set 
 	fullypaid = 1,
 	basicpaid = basic,
 	basicintpaid = basicint,
@@ -506,7 +520,7 @@ where objid = $P{objid}
 
 [findCompromiseReferenceByLedger]
 select objid, state, txnno
-from rptledger_compromise 
+from rptcompromise 
 where rptledgerid = $P{objid}
 and state not in ('DEFAULTED', 'CLOSED')
 
@@ -515,8 +529,8 @@ and state not in ('DEFAULTED', 'CLOSED')
 
 [findCompromiseByReceipt]
 select c.*
-from rptledger_compromise c 
-	inner join rptledger_compromise_credit cr on c.objid = cr.rptcompromiseid  
+from rptcompromise c 
+	inner join rptcompromise_credit cr on c.objid = cr.rptcompromiseid  
 where cr.rptreceiptid = $P{objid}
 
 

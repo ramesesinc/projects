@@ -1,4 +1,5 @@
-<workunit  schemaName="cashreceipt" allowCreate="false" allowEdit="false">
+<workunit  schemaName="cashreceipt" 
+           allowCreate="false" allowEdit="false" allowViewReport="false">
     
     <invokers>
         <invoker type="cashreceipt:open" caption="Cash Receipt" action="open" target="popup"/>

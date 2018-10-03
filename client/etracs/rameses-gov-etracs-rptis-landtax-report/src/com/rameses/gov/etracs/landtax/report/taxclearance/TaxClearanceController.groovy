@@ -52,8 +52,8 @@ class TaxClearanceController
         taxpayer = null;
         reportTypes = svc.getReportTypes();
         entity = svc.initClearance();
-        entity.certifiedby = paramSvc.getStandardParameter().TREASURERNAME;
-        entity.certifiedbytitle = paramSvc.getStandardParameter().TREASURERTITLE;
+        entity.certifiedby = var.getProperty('LANDTAX_CERTIFIEDBY', paramSvc.getStandardParameter().TREASURERNAME);
+        entity.certifiedbytitle = var.getProperty('LANDTAX_CERTIFIEDBY_TITLE', paramSvc.getStandardParameter().TREASURERTITLE);
         entity.office = 'landtax';
         entity.ordate = dtSvc.getServerDate();
         entity.oramount = toDecimal(var.get('LANDTAX_TAXCLEARANCE_RATE'));

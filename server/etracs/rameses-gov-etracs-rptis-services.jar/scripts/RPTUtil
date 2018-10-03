@@ -670,8 +670,12 @@ class RPTUtil
             newpin += sparcel ;
         }
         if (entity.rputype != 'land'){
-            if (validSuffix(entity))
+            if (validSuffix(entity)) {
                 newpin += '-' + entity.suffix;
+                if (entity.subsuffix) {
+                    newpin += '-' + entity.subsuffix;
+                }
+            }
         }
 
         if (entity.claimno){

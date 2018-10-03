@@ -129,6 +129,9 @@ class RPTUtil
         if (entity.rputype != 'land'){
             if (entity.suffix){
                 newpin += '-' + entity.suffix;
+                if (entity.subsuffix) {
+                    newpin += '-' + entity.subsuffix;
+                }
             }
         }
 

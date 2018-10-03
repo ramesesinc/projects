@@ -16,7 +16,7 @@
         <field name="taxdifference" type="boolean" required="true" />
         <field name="system" type="boolean" required="true" />
         <complex name="rptledgerfaas" ref="rptledger_faas" jointype="many-to-one" 
-            includefields="classification.objid,classification.code,actualuse.objid,actualuse.code,txntype.objid,backtax,idleland,reclassed,assessedvalue">
+            includefields="classification.objid,classification.code,actualuse.objid,actualuse.code,txntype.objid,backtax,idleland,reclassed,assessedvalue,fromyear">
                 <key field="rptledgerfaasid" target="objid" />
         </complex>
     </element>  

@@ -33,6 +33,7 @@ class CashReceiptCompromiseModel extends com.rameses.enterprise.treasury.cashrec
     
     void init(){
         super.init();
+        compromise = null;
         entity.txntype = 'compromise';
         entity.amount = 0.0;
         entity.rptitems = [];
@@ -81,10 +82,12 @@ class CashReceiptCompromiseModel extends com.rameses.enterprise.treasury.cashrec
                 entity.payer = it.taxpayer 
                 entity.paidby = it.taxpayer.name 
                 entity.paidbyaddress = it.taxpayer.address.replaceAll('[^\\S]',' ')
-                binding.refresh('entity.payer|entity.paidby.*');
+                binding?.refresh('entity.payer|entity.paidby.*');
+                super.binding?.refresh('entity.payer|entity.paidby.*');
             },
             onempty: {
                 compromise = null;
+                calcReceiptAmount();
             }
         ])
     }    

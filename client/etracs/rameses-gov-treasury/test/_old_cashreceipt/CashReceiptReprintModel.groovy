@@ -21,6 +21,9 @@ class CashReceiptReprintModel  {
     @Script("User")
     def user;
     
+    @Binding 
+    def binding;
+    
     def report;  
     
     def username;
@@ -41,7 +44,7 @@ class CashReceiptReprintModel  {
         receipt = caller.entity;
     }
     
-    def doOk() {
+    void doOk() {
         if( applySecurity ) {
             entity.username = username;
             entity.password = user.encodePwd( password, username );
@@ -50,8 +53,16 @@ class CashReceiptReprintModel  {
         entity.receiptid = receipt.objid;
         entity.reason = remarks;
         service.verifyReprint( entity );
-        reprint();
-        return "_close";
+        
+        def op = reprint(); 
+        if ( op instanceof Opener ) { 
+            binding.fireNavigation('_close'); 
+            if (caller.metaClass.hasProperty(caller, 'binding')) {
+                caller.binding.fireNavigation( op ); 
+            } 
+        } else {
+            binding.fireNavigation('_close'); 
+        }
     } 
 
     def doCancel() {
@@ -72,16 +83,32 @@ class CashReceiptReprintModel  {
         } 
         return o.handle; 
     } 
+    
 
-    void reprint() {
+    def reprint() {
         def handle = findReportOpener(entity);
         def opt = handle.viewReport(); 
         if ( opt instanceof Opener ) { 
             handle = opt.handle; 
             handle.viewReport(); 
         } 
+        
+        def report = null; 
+        if ( handle instanceof com.rameses.osiris2.reports.ReportModel ) {
+            report = handle; 
+        } else { 
+            report = handle.report; 
+        } 
+        
+        if ( ReportUtil.isDeveloperMode() ) {
+            def op = Inv.lookupOpener("report:view", [report: report]); 
+            op.target = "self"; 
+            return op; 
+        } 
+        
         def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
-        ReportUtil.print(handle.report, canShowPrinterDialog);
+        ReportUtil.print(report.report, canShowPrinterDialog);
+        return null; 
     }
 
     

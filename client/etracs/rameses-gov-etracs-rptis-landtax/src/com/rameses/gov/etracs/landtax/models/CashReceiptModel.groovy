@@ -41,6 +41,9 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
     def itemsforpayment;
     def quarters = [1,2,3,4];
     def barcodeprocessing = false;
+    def processing = false;
+    def msg;
+
                 
     
     void init(){
@@ -51,6 +54,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         clearAllPayments();
         bill = billSvc.initBill();
         bill.itemcount = 5;
+        bill.billdate = entity.receiptdate 
         mode = MODE_INIT;
         payoption = PAY_OPTION_ALL;
     }
@@ -69,13 +73,53 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         bill._forpayment = true;
         entity.billid = bill.objid; 
         if (payoption != PAY_OPTION_BYLEDGER){
-            itemsforpayment = svc.getItemsForPaymentByTaxpayer(bill);
-            calcReceiptAmount();
+            loadItemsForPaymentAsync()
+            return 'default';
+        } else {
+            listHandler?.load();
+            mode = MODE_CREATE;
+            return 'main'
         }
-        listHandler?.load();
-        mode = MODE_CREATE;
-        return 'main'
     }    
+
+    /*===================================
+    *
+    * Async Support
+    *
+    ====================================*/
+
+    def task;
+
+    def onLoadComplete() {
+        processing = false;
+        msg = null;
+        binding.fireNavigation('main');
+    }
+
+
+    def loadLedgerTask = {
+        run: {
+            def ledgers = svc.getLedgersForPayment(bill);
+            ledgers.each {
+                try {
+                    msg = 'Processing ledger ' + it.tdno
+                    loadItemByLedger(it)
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            onLoadComplete();
+        }
+    } as Runnable;
+
+    
+
+    void loadItemsForPaymentAsync() {
+        processing = true;
+        msg = 'Loading items for payment. Please wait...';
+        itemsforpayment = [];
+        new Thread(loadLedgerTask).start();
+    }
     
     
     public void validateBeforePost() {
@@ -101,30 +145,43 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
     
     
     def initBarcode(){
-        entity = svc.initReceiptFromBarcode([barcodeid:barcodeid]);
+        entity = svc.loadBarcode([barcodeid:barcodeid]);
         super.init();
         bill = entity.remove('bill');
-        itemsforpayment = bill.remove('ledgers');
         loadedBarcodes << barcodeid;
         clearAllPayments();
         calcReceiptAmount();
         payoption = PAY_OPTION_BYLEDGER;
-        mode = MODE_CREATE;
+        mode = MODE_INIT;
         barcodeprocessing = true;
         barcodeid = null;
-        return 'main';
+        loadItemsForPaymentAsync();
+        return 'default';
     }    
     
     void mergeBarcode(){
         if (!barcodeid) return;
-        if (loadedBarcodes.find{it.matches('.*'+barcodeid +'.*')}) return;
-        itemsforpayment += svc.getItemsForPaymentByBarcode([barcodeid:barcodeid]);
+        if (loadedBarcodes.find{it.matches('.*'+barcodeid +'.*')}) {
+            clearBarcodeId();
+            return;
+        }
+        def items = svc.getItemsForPaymentByBarcode([barcodeid:barcodeid]);
+        items.each{item -> 
+            def exist = itemsforpayment.find{it.objid == item.objid}
+            if (! exist) {
+                itemsforpayment << item 
+            }
+        }
         calcReceiptAmount();
         listHandler.load();
         loadedBarcodes << barcodeid;
+        clearBarcodeId();
+    }
+
+    void clearBarcodeId(){
         barcodeid = null;
-        binding.refresh('barcodeid|selectedItem');
-        binding.focus('barcodeid');
+        binding?.refresh('barcodeid|selectedItem');
+        binding?.focus('barcodeid');
     }
     
     
@@ -237,8 +294,6 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
     void loadItemByLedger(rptledger){
         if ( !itemsforpayment.find{it.objid == rptledger.objid}){
             def tmpbill = cloneBill();
-            tmpbill.billtoyear = tmpbill.cy;
-            tmpbill.billtoqtr = 4;
             tmpbill.rptledgerid = rptledger.objid;
             def ledgers = svc.getItemsForPayment(tmpbill);
             itemsforpayment += ledgers;

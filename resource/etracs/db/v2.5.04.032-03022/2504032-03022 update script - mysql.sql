@@ -296,3 +296,27 @@ alter table report_rptdelinquency_barangay add idx int
 
 update report_rptdelinquency_barangay set idx = 0 where idx is null
 ;
+
+
+create view vw_faas_lookup
+as 
+SELECT 
+f.*,
+e.name as taxpayer_name, 
+e.address_text as taxpayer_address,
+pc.code AS classification_code, 
+pc.code AS classcode, 
+pc.name AS classification_name, 
+pc.name AS classname, 
+r.ry, r.rputype, r.totalmv, r.totalav,
+r.totalareasqm, r.totalareaha, r.suffix, r.rpumasterid, 
+rp.barangayid, rp.cadastrallotno, rp.blockno, rp.surveyno, rp.pintype, 
+rp.section, rp.parcel, rp.stewardshipno, rp.pin, 
+b.name AS barangay_name 
+FROM faas f 
+INNER JOIN faas_list fl on f.objid = fl.objid 
+INNER JOIN rpu r ON f.rpuid = r.objid 
+INNER JOIN realproperty rp ON f.realpropertyid = rp.objid 
+INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
+INNER JOIN barangay b ON rp.barangayid = b.objid 
+INNER JOIN entity e on f.taxpayer_objid = e.objid;

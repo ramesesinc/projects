@@ -104,10 +104,10 @@ class CashReceiptReprintModel  {
             def op = Inv.lookupOpener("report:view", [report: report]); 
             op.target = "self"; 
             return op; 
-        }         
+        } 
         
         def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
-        ReportUtil.print(report, canShowPrinterDialog);
+        ReportUtil.print(report.report, canShowPrinterDialog);
         return null; 
     }
 

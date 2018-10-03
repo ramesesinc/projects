@@ -33,25 +33,12 @@ class CashReceiptVoidModel  {
     def receipt;
     def handler;
 
-    void create( invo ) { 
+    void create() { 
         if (receipt.voided) {
             throw new Exception("This transaction is already voided") 
         }    
-        if( !allowVoid ) throw new Exception("Void is not allowed"); 
         entity = [objid: "CRVOID"+ new java.rmi.server.UID() ];
         entity.receipt = receipt;
-        applySecurity = false;
-    }
-
-    void open( invo ) { 
-        receipt = caller.entity;
-        if ( receipt.voided ) {
-            throw new Exception("This transaction is already voided") 
-        } 
-        if( !allowVoid ) throw new Exception("Void is not allowed");
-        entity = [objid: "CRVOID"+ new java.rmi.server.UID() ];
-        entity.receipt = receipt;
-        applySecurity = true;
     }
 
     def doOk() {
@@ -86,11 +73,12 @@ class CashReceiptVoidModel  {
         return "_close";
     }
           
-    
+    /*
     boolean isAllowVoid() { 
         if ( entity.remitted==true || entity.remitted==1 ) return false; 
         if ( entity.voided==true || entity.voided==1 ) return false; 
         
         return true; 
     } 
+    */
 }    

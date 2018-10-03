@@ -1,0 +1,7 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="afunit">
+    <invokers>
+        <invoker folderid="explorer/master/treasury" caption="AF Units" 
+            cols="itemid,unit,qty,saleprice,af.title,cashreceiptprintout,cashreceiptdetailprintout"
+            role="AFO" action="init" index="-19"/>
+   </invokers>
+</workunit>

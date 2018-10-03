@@ -1,13 +1,16 @@
 <workunit>
     <invokers>
+        <!--
         <invoker type="cashreceiptinfo:formActions" caption="Print Detail" action="print"  
                  role="COLLECTOR" index="1" target="process"/> 
                 
         <invoker type="misc_cashreceipt:formActions" caption="Print Detail" action="print" 
                  target="process" index="1" visibleWhen="#{completed}"/>
 
+
         <invoker type="cashreceipt:form:formActions" caption="Print Detail" action="print" 
                  target="process" index="1"/>
+        -->
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.CashReceiptPrintDetailModel"  />

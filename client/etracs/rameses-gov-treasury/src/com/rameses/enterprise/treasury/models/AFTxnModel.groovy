@@ -98,6 +98,7 @@ class AFTxnModel extends CrudPageFlowModel {
         entity.request = [objid:req.objid , reqno: req.reqno];
         entity.issueto = req.requester;
         entity.respcenter = req.respcenter;
+        entity.items = [];
         req.items.each {
             def m = [:];
             m.item = it.item;
@@ -125,7 +126,6 @@ class AFTxnModel extends CrudPageFlowModel {
                 it.txntype = itemTxnTypes.first(); 
             } 
         }
-        
         if ( !entity.txntype.toString().matches('TRANSFER|RETURN|FORWARD')) { 
             entity.items.findAll{( it.txntype )}.each{
                 if ( !itemTxnTypes.contains(it.txntype) ) {

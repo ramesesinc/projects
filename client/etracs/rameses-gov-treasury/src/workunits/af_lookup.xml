@@ -5,6 +5,9 @@
         <invoker type="af_collection:lookup" caption="Lookup AF" action="init" 
                  customFilter="usetype='collection' " tag="lookup" 
             cols="objid,title" hiddenCols="formtype"/>
+        
+        <invoker type="af:lookup" caption="Lookup AF" action="init" 
+            cols="objid,title" hiddenCols="formtype"/>
     </invokers>
     
    

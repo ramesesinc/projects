@@ -1,5 +1,10 @@
 <workunit>
     <invokers>
+        <!-- this is for the new setup -->
+        <invoker type="cashreceiptdetail:printout" caption="AF 51 (Print Details)" name="cashreceiptdetail:printout:51"/>
+        <invoker type="cashreceiptdetail:printout:51" />
+        
+        <!-- this is for the old setup -->
         <invoker type="cashreceipt:printdetail:51" />
     </invokers>
     
@@ -10,10 +15,10 @@
         import com.rameses.osiris2.client.*
         import com.rameses.osiris2.common.*
         import com.rameses.osiris2.reports.*;
+        import com.rameses.enterprise.treasury.models.*; 
 
-        class CashReceiptForm51Detail  extends ReportModel {
+        class CashReceiptForm51Detail extends CashReceiptPrintoutModel {
 
-           def reportData; 
            def reportPath = 'com/rameses/gov/treasury/cashreceipt/forms/'
 
            public String getReportName() { 

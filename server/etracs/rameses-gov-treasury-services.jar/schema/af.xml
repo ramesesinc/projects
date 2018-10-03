@@ -8,10 +8,7 @@
 		<field name="system" required="true"/>
 		<field name="denomination" required="true"/>
 		<field name="formtype" required="true"/>
-		
-		<complex name="units" ref="afunit" jointype="one-to-many" >
-			<key field="objid" target="itemid" />
-		</complex>	
+			
 	</element>
 </schema>
 

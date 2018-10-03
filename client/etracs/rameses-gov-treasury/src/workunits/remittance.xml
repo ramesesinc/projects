@@ -14,7 +14,10 @@
                  action="remit" visibleWhen="#{ entity.state == 'DRAFT' }"/>
         
         <invoker type="formActions" caption="Reports" name="popupReports" 
-                 visibleWhen="#{entity.state != 'DRAFT' }" category="remittance:reports" />        
+                 visibleWhen="#{entity.state != 'DRAFT' }" category="remittance:reports" /> 
+        
+        <invoker type="formActions" caption="Cash Breakdown" name="updateCashByRemittance" 
+                 visibleWhen="#{entity.state == 'DRAFT' }"  />
     </invokers>
    
    <code class="com.rameses.enterprise.treasury.models.RemittanceModel" />

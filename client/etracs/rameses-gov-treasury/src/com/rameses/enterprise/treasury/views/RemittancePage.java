@@ -48,7 +48,6 @@ public class RemittancePage extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         xButton1 = new com.rameses.rcp.control.XButton();
         xButton2 = new com.rameses.rcp.control.XButton();
-        xButton4 = new com.rameses.rcp.control.XButton();
         jPanel9 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
@@ -268,11 +267,6 @@ public class RemittancePage extends javax.swing.JPanel {
         xButton2.setText("Edit Cash Breakdown By Fund");
         jPanel4.add(xButton2);
 
-        xButton4.setName("updateCashByRemittance"); // NOI18N
-        xButton4.setVisibleWhen("#{cashBreakdownByFund == false && entity.state == 'DRAFT'  }");
-        xButton4.setText("Input Cash Breakdown");
-        jPanel4.add(xButton4);
-
         jPanel3.add(jPanel4, java.awt.BorderLayout.SOUTH);
 
         jPanel13.add(jPanel3);
@@ -442,7 +436,6 @@ public class RemittancePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel9;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable3;
     private com.rameses.rcp.control.XDecimalField xDecimalField5;

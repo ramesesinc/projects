@@ -26,6 +26,9 @@ public abstract class AbstractCashReceipt {
 
     //handlers pass by the caller
     def createHandler; 
+    
+    //new receipting process
+    def mainProcessHandler;
 
     def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd');  
     
@@ -284,7 +287,7 @@ public abstract class AbstractCashReceipt {
             }
             
             try {
-                if(entity.txnmode.equalsIgnoreCase("ONLINE")) { 
+                if(entity.txnmode.equalsIgnoreCase("ONLINE") && mainProcessHandler==null) { 
                     print();
                 }    
             }
@@ -292,8 +295,15 @@ public abstract class AbstractCashReceipt {
                 e.printStackTrace();
                 MsgBox.alert("warning! no form handler found for.  " + entity.formno +". Printout is not handled" );
             }
-            completed = true;
-            return "completed";
+            
+            if( mainProcessHandler ) {
+                mainProcessHandler.forward();
+                return null;
+            }
+            else {
+                completed = true;
+                return "completed";
+            }
         } 
     }
 
@@ -340,4 +350,14 @@ public abstract class AbstractCashReceipt {
     def createEntity() { 
         return null; 
     } 
+    
+    def doClose() {
+        if( mainProcessHandler ) {
+            mainProcessHandler.back();
+        }
+        else {
+            return "_close";
+        }
+    }
+    
 }

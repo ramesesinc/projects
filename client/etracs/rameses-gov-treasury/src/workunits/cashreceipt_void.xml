@@ -12,6 +12,7 @@
         -->
         
         <!-- this is called from outside receipt -->
+        <!--
         <invoker 
            type="cashreceipt:form:formActions" caption="Void Receipt" action="open" 
            role="COLLECTOR,SUBCOLLECTOR"
@@ -19,7 +20,9 @@
            visibleWhen="#{entity?.formtype=='serial' &amp;&amp; entity?.voided == 0 &amp;&amp; entity?.remittanceid == null }"
            target="popup"> 
         </invoker>     
-
+        -->
+        
+        <!--
         <invoker 
            type="misc_cashreceipt:formActions" caption="Void Receipt" action="open" 
            role="COLLECTOR,SUBCOLLECTOR"
@@ -27,15 +30,20 @@
            visibleWhen="#{entity?.formtype=='serial' &amp;&amp; entity?.voided == 0 &amp;&amp; entity?.remittanceid == null }"
            target="popup"> 
         </invoker> 
-            
-        <!-- called from receipt after issuance -->    
+        -->
+        <!--    
         <invoker 
            type="cashreceipt:void" caption="Void Receipt" action="create" 
            role="COLLECTOR,SUBCOLLECTOR"  
            visibleWhen="#{entity?.formtype=='serial' &amp;&amp; entity?.voided == 0 &amp;&amp; entity?.remittanceid == null }"
            target="popup"> 
         </invoker>
+        -->
+        
+        <!-- called from receipt after issuance. called by cashreceipt_transaction  -->    
+        <invoker  type="void_cashreceipt" caption="Void Receipt" action="create"  target="popup" /> 
 
+        <!-- internal codes -->
         <invoker type="formActions" caption="Post" action="save"  mnemonic="p" shortcut="ctrl P"/>
     </invokers>
    
@@ -43,9 +51,6 @@
    
     <pages>
         <page template="com.rameses.enterprise.treasury.views.SupervisorApprovalPage"/>
-        <!--
-        <page template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptVoidPage"/>
-        -->
     </pages>
    
 </workunit>

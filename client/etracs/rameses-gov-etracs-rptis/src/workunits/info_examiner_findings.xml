@@ -81,7 +81,9 @@ class ExaminationFindingsInfoController
             
             onadd  : {
                 init();
-            }
+            },
+
+            ondelete : ondelete,
         ])
     }
        
@@ -94,8 +96,16 @@ class ExaminationFindingsInfoController
             
             onupdate : {
                 init();
-            }
+            },
+
+            ondelete : ondelete,
         ])
+    }
+
+    def ondelete = {
+
+        findings.remove(it);
+        listHandler.load();
     }
        
     def delete(){

@@ -669,9 +669,8 @@ class RPTLedgerService
                             .find([parentid:ledger.objid, year:yr, taxdifference:0])
                             .first()
 
-        if (item && ledger.nextbilldate) return true 
-        if (util.isTrue(var.landtax_check_posted_ledger_items)){
-            return item != null 
+        if (item && ledger.nextbilldate) {
+            return true 
         }
         return false 
     }

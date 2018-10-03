@@ -17,3 +17,12 @@
     enabled:false;
 }
 
+
+"entity.(payer|paidby|paidbyaddress)|process|payoption|bill.(billtoyear|billtoqtr|itemcount)" [processing == true] {
+    enabled:false;
+}
+
+
+"entity.(paidby|paidbyaddress)|process|payoption|bill.(billtoyear|billtoqtr|itemcount)" [processing == false] {
+    enabled:true;
+}

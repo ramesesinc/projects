@@ -62,7 +62,8 @@ FROM faas f
 	INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid 
 	INNER JOIN barangay b ON rp.barangayid = b.objid 
 WHERE f.state = 'CANCELLED' 
-  and f.canceldate >= $P{startdate} AND  f.canceldate < $P{enddate}
+  and f.dtapproved is not null 
+  and f.canceldate >= $P{startdate} AND  f.canceldate < $P{enddate} 
   ${filter}
 GROUP BY b.objid, b.name , b.indexno 	 
 ORDER BY b.indexno 	 

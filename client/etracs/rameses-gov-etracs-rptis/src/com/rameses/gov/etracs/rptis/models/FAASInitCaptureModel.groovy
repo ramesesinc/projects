@@ -79,6 +79,7 @@ class FAASInitCaptureModel
         entity.rputype = null;
         entity.isection = null;
         entity.iparcel = null;
+        entity.subsuffix = null;
         entity.claimno = null;
         
         return InvokerUtil.lookupOpener(filetype, [entity:faas])

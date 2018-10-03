@@ -66,7 +66,6 @@ WHERE rl.objid IN (
     WHERE rl.taxpayer_objid = $P{taxpayerid} 
      and rl.objid like $P{rptledgerid}
      AND rl.state = 'APPROVED'
-     AND rl.taxable = 1 
      and rl.totalav > 0 
      and rl.rputype like $P{rputype}
      and rl.barangayid like $P{barangayid}
@@ -84,7 +83,6 @@ WHERE rl.objid IN (
     WHERE pp.taxpayer_objid = $P{taxpayerid}
     and rl.objid like $P{rptledgerid}
      AND rl.state = 'APPROVED'
-     AND rl.taxable = 1 
      and rl.totalav > 0 
      and rl.rputype like $P{rputype}
      and rl.barangayid like $P{barangayid}

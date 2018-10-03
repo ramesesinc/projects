@@ -44,10 +44,11 @@ public class BankPage extends javax.swing.JPanel {
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
+        xComboBox7 = new com.rameses.rcp.control.XComboBox();
 
         xTabbedPane1.setItems("sections");
 
-        xFormPanel1.setCaptionWidth(120);
+        xFormPanel1.setCaptionWidth(200);
 
         xTextField1.setCaption("Bank Code");
         xTextField1.setName("entity.code"); // NOI18N
@@ -83,7 +84,7 @@ public class BankPage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
+            .addGap(0, 442, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,7 +111,7 @@ public class BankPage extends javax.swing.JPanel {
         xSeparator2.setLayout(xSeparator2Layout);
         xSeparator2Layout.setHorizontalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
+            .addGap(0, 442, Short.MAX_VALUE)
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,13 +128,25 @@ public class BankPage extends javax.swing.JPanel {
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xComboBox1);
 
-        xComboBox6.setCaption("Deposit Slip Handler");
+        xComboBox6.setCaption("Cash Deposit Slip Handler");
         xComboBox6.setDepends(new String[] {"entity.depository"});
-        xComboBox6.setItems("depositHandlerList");
-        xComboBox6.setName("entity.depositsliphandler"); // NOI18N
+        xComboBox6.setExpression("#{ item.caption }");
+        xComboBox6.setItemKey("name");
+        xComboBox6.setItems("cashReportListHandler");
+        xComboBox6.setName("entity.cashreport"); // NOI18N
         xComboBox6.setVisibleWhen("#{entity.depository == 1}");
         xComboBox6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xComboBox6);
+
+        xComboBox7.setCaption("Check Deposit Slip Handler");
+        xComboBox7.setDepends(new String[] {"entity.depository"});
+        xComboBox7.setExpression("#{ item.caption }");
+        xComboBox7.setItemKey("name");
+        xComboBox7.setItems("checkReportListHandler");
+        xComboBox7.setName("entity.checkreport"); // NOI18N
+        xComboBox7.setVisibleWhen("#{entity.depository == 1}");
+        xComboBox7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xComboBox7);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -141,8 +154,8 @@ public class BankPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(184, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -176,6 +189,7 @@ public class BankPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox6;
+    private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;

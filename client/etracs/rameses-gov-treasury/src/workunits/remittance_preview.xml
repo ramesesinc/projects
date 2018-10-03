@@ -7,7 +7,7 @@
                  formTitle="Remittance #{entity.controlno}"
                  formId="#{entity.objid}"
                  action="view" target="popup" 
-                 index="10"/>        
+                 index="10" width="1024" height="600"/>        
         
         <!--
         <invoker type="remittance:form_report" caption="Remittance" action="view" target="popup" 

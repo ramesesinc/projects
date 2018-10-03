@@ -1,15 +1,15 @@
 <schema>
 	<element  tablename="depositvoucher" >
 		<field name="objid" primary="true" prefix="DV"/>
-		<field name="state" required="true" />
+		<field name="state" required="true" caption="Status"/>
 		<field name="controlno" required="true" caption="Control No"/>
 		<field name="controldate" required="true" type="date" caption="Control Date"/>
 		<field name="createdby_objid" required="true" />
-		<field name="createdby_name" required="true" />
-		<field name="dtcreated" required="true" />
+		<field name="createdby_name" required="true" caption="CreatedBy" />
+		<field name="dtcreated" required="true" caption="DateCreated"/>
 		<field name="postedby_objid" />
-		<field name="postedby_name" />
-		<field name="dtposted" />
-		<field name="amount" required="true" type="decimal"/>
+		<field name="postedby_name" caption="PostedBy"/>
+		<field name="dtposted" caption="DatePosted"/>
+		<field name="amount" caption="Amount" required="true" type="decimal"/>
 	</element>
 </schema>

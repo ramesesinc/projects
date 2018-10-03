@@ -1,4 +1,4 @@
-[getBuildAFControls]
+[getBuildAFs]
 select 
 	t3.remittanceid, t3.controlid, af.objid as formno, af.formtype, af.title as formtitle, afc.unit, 
 	af.serieslength, af.denomination, afc.stubno, afc.startseries, afc.endseries, 

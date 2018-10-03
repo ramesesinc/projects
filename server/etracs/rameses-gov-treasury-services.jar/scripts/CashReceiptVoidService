@@ -9,6 +9,9 @@ class CashReceiptVoidService  {
 	@PersistenceContext("main")
 	def em;
 
+	@DataContext('cashreceipt') 
+	def cashreceipt_db;
+
 	@DataContext('cashreceipt_void') 
 	def cashreceipt_void;
 
@@ -39,6 +42,8 @@ class CashReceiptVoidService  {
 
 	@ProxyMethod
 	public def post( def p ) { 
+		if ( !p.receipt ) throw new Exception('receipt parameter is required'); 
+
 		def usr = null; 
 		if ( p.txnmode == 'CAPTURE' ) {
 			usr = p.postedby; 
@@ -50,6 +55,14 @@ class CashReceiptVoidService  {
 			usr = [objid:env.USERID, name:env.FULLNAME];
 		}
 		
+		def rct = cashreceipt_db.find([ objid: p.receipt?.objid ]).select('objid,formtype,remittanceid').first();
+		if ( !rct?.objid ) throw new Exception('Cash Receipt record not found');
+
+		if ( rct.formtype.toString() != 'serial')
+			throw new Exception('Void Receipt is only applicable to serial receipt transaction'); 
+		if ( rct?.remittanceid ) 
+			throw new Exception('Void Receipt is not allowed. This transaction has already been remitted'); 
+
 		def v = [objid: "VOID"+new UID()];
 		v.postedby = [ objid:usr.objid, name:usr.name ];
 		v.receiptid = p.receipt.objid;
@@ -92,6 +105,7 @@ class CashReceiptVoidService  {
 
 		def o = cashreceipt_void.find([ receiptid: params.objid ]).first(); 
 		if ( !o ) throw new Exception('void receipt transaction not found');  
+		if ( o.receipt?.remittanceid ) throw new Exception('Revert is not allowed. This transaction has already been remitted'); 
 
 		cashreceipt_void.find([ receiptid: params.objid ]).delete(); 
 

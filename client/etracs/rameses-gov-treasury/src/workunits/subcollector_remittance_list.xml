@@ -2,18 +2,19 @@
           serviceName="SubCollectorRemittanceListService" 
           entityName="subcollector_remittance">
     <invokers>
-        <invoker folderid="/explorer/txn/treasury" caption="Subcollector Remittances" 
-                 role="SUBCOLLECTOR,SHARED" permission="remittance.view">
-            <action name="doInit" role="SHARED" tag="all"/> 
-        </invoker>
-        
-        <invoker folderid="menucategory/treasury/subcollection" caption="View Remittances" 
-                 name="doInit" role="SUBCOLLECTOR" target="window" />
+        <invoker folderid="menucategory/treasury/subcollection" caption="View Remittances" action="doInit" 
+                 role="SUBCOLLECTOR" permission="subremittance.view" target="window" tag="subcollector"/>
+
+        <invoker folderid="menucategory/treasury/collection" caption="View Subcollector Remittances" action="doInit" 
+                 role="COLLECTOR" permission="subremittance.view" target="window" tag="collector" index="-4"/>
+
+        <invoker folderid="menucategory/treasury/mgmt" caption="View Subcollector Remittances" action="doInit" 
+                 role="SHARED" permission="subremittance.view" target="window" tag="all" index="-1"/>
     </invokers>
     
     <code> 
     <![CDATA[ 
-    
+
 import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
@@ -24,12 +25,16 @@ class SubCollectorRemittanceListController extends DefaultListController {
 
     def tag;
     
-    void doInit( invo ) {
+    void doInit( invo ) { 
         tag = invo?.properties?.tag; 
     } 
-
+    
+    String getTitle() { 
+        return 'Subcollector Remittances'; 
+    } 
+    
     boolean isAllowCreate() { 
-        return (tag=='all' ? false: true); 
+        return (tag == 'subcollector' ? true : false); 
     }
 
     void beforeFetchList( Map params ) { 

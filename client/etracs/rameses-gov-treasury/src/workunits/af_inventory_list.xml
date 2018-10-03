@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" 
+        allowCreate="false" allowUpdate="false" allowDelete="false"
+        schemaName="vw_af_inventory_summary">
+   <invokers>
+         <invoker folderid="/menucategory/treasury/af" 
+                  caption="AF Inventory Summary" 
+                  role="AFO"
+                  action="init" />
+   </invokers>
+</workunit>

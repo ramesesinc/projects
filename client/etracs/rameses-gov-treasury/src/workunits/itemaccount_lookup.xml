@@ -1,7 +1,19 @@
 <workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="itemaccount" allowCreate="false" allowOpen="false">
     <invokers>
+       <!-- used in looking up in rules --> 
+       <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
+            customFilter=" state = 'ACTIVE' AND type IN ('REVENUE','NONREVENUE','PAYABLE')"
+            cols="code,title,fund.title,generic,type,org.code" hiddenCols="fund.objid,fund.code" />
        
-       <!-- used in revenue sharing rules lookup -->
+       <invoker type="cashinbankaccount:lookup" caption="Lookup Cash In Bank Account" action="init" target="popup"
+            customFilter=" state='ACTIVE' AND type = 'CASH_IN_BANK' "
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code"/>
+       
+       <invoker type="cashaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
+            customFilter=" state='ACTIVE' AND type = 'CASH' "
+            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code"/>
+
+            <!-- used in revenue sharing rules lookup -->
        <invoker type="mainitemaccount:lookup" caption="Lookup Main Item Account" action="init" target="popup"
         customFilter="state = 'ACTIVE' AND " 
         cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid" tag="MAIN"/>
@@ -15,33 +27,26 @@
        <invoker type="payableaccount:lookup" caption="Lookup Payable Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="PAYABLE"/>
 
-
-       <!-- used in looking up in rules --> 
-       <invoker type="itemaccount:lookup" caption="Lookup Item Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" />
-
        <!-- -->
        <invoker type="receivableaccount:lookup" caption="Lookup Receivable Account" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="RECEIVABLE"/>
        
-       <invoker type="cashinbankaccount:lookup" caption="Lookup Cash In Bank Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="CASH_IN_BANK"/>
        
-       <invoker type="cashaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="CASH"/>
-       
+       <!-- DO NOT REMOVE THIS BECAUSE THIS IS BEING USED BY the RULES -->
        <invoker type="revenueitem:lookup" caption="Lookup Revenue" action="init" target="popup"
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code" tag="REVENUE"/>
        
        <!-- used by collection type and collection group -->
+       <!--
        <invoker type="parentitemaccount:lookup" caption="Lookup Parent Account" 
                 action="init" target="popup" 
                 cols="code,title,fund.title,type" 
                 customFilter="state='ACTIVE' AND parentid IS NULL AND org.objid IS NULL AND type IN ('REVENUE','NONREVENUE','PAYABLE')"
                 hiddenCols="fund.objid" />
+       -->
        
        <invoker type="genericaccount:lookup" caption="Lookup Generic Account" 
-                action="init" target="popup"
+                action="init" target="popup" width="800" 
                 cols="code,title,fund.title,type" 
                 customFilter=" state='ACTIVE' AND generic=1 "
                 hiddenCols="fund.objid" />

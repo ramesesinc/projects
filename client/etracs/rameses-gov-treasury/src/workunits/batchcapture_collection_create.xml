@@ -1,12 +1,11 @@
 <workunit>
     <invokers>
-        <invoker type="batchcapture_collection:create" caption="Batch Cash Receipt">
-            <action role="COLLECTOR" name="init"/>
-            <action role="SUBCOLLECTOR" name="initSubCollector"/>
-        </invoker>
+        <invoker type="batchcapture_collection:create" 
+                role="COLLECTOR,SUBCOLLECTOR"
+                caption="New Batch Cash Receipt" action="init" />
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.BatchCaptureCollectionInitialModel" />
     <pages>
-        <page template="com.rameses.enterprise.treasury.views.CashReceiptInitialPage" />
+        <page template="com.rameses.enterprise.treasury.views.BatchCaptureCollectionInitialPage" />
     </pages>
 </workunit>

@@ -1,0 +1,16 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="UnremittedCollectionMonitorService"
+          allowCreate="false" allowOpen="false">
+    
+    <invokers>
+        <invoker type="unremitted-collection-detail-monitor:list" 
+                 caption="Unremitted Collection Monitoring: Details" 
+                 target="self" />        
+    </invokers>
+    
+    <code class="com.rameses.gov.treasury.models.UnremittedCollectionDetailMonitorModel"/>
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.views.UnremittedCollectionPage"/>
+    </pages>    
+</workunit>

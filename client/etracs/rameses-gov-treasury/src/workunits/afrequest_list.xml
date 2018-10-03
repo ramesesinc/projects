@@ -1,14 +1,21 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="afrequest" allowCreate="false">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
+          schemaName="afrequest" allowCreate="false" allowDelete="false">
     <invokers>
-        <invoker folderid="menucategory/treasury/af" caption="AF Requests" 
-                 action="init"
-                 cols="reqno,dtfiled,reqtype,requester.name,org.name"
-                 formTitle="View AF Requests" role="AFO" index="1"/>
+        <invoker folderid="menucategory/treasury/af" 
+                 action="init" caption="AF Requests" 
+                 role="AFO" index="1" 
+                 cols="reqno,dtfiled,reqtype,requester.name,org.name" 
+                 hiddenCols="state" 
+                 formTitle="View AF Requests" 
+                 allowDelete="#{entity?.state == 'OPEN'}" />
         
-        <invoker folderid="menucategory/treasury/collection" caption="View AF Requests" 
-                 action="init"
+        <invoker folderid="menucategory/treasury/collection" 
+                 action="init" caption="View AF Requests" 
+                 role="COLLECTOR" index="101" 
                  cols="reqno,dtfiled,reqtype,requester.name,org.name"
+                 hiddenCols="state" 
                  customFilter="requester.objid =:userid"
-                 formTitle="View AF Requests" role="COLLECTOR" index="101"/>
+                 formTitle="View AF Requests" 
+                 allowDelete="#{entity?.state == 'OPEN'}" />
     </invokers>
 </workunit>

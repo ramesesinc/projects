@@ -28,6 +28,15 @@ class AFControlService  {
 		arr << "assignee.objid = :assigneeid";
 		p.assigneeid = env.USERID;
 
+		//if subcollection, assignee must not equal to owner/collector
+		if(m._subcollector == true ) {
+			arr << "NOT(assignee.objid = owner.objid)";
+		}		
+		else {
+			arr << "assignee.objid = owner.objid";
+		}
+
+
 		//filter by af form no
 		arr << "afid = :afid";
 		p.afid = m.collectiontype.formno;

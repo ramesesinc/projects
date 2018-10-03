@@ -36,67 +36,71 @@ public class CashReceiptInitialPage extends javax.swing.JPanel {
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xButton1 = new com.rameses.rcp.control.XButton();
 
-        xFormPanel1.setCaptionWidth(150);
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setCaptionWidth(180);
 
-        xComboBox1.setName("mode"); // NOI18N
         xComboBox1.setCaption("Mode");
+        xComboBox1.setItems("modeList");
+        xComboBox1.setName("mode"); // NOI18N
+        xComboBox1.setAllowNull(false);
         xComboBox1.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox1.setItems("modeList");
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
+        xComboBox2.setCaption("AF Type");
+        xComboBox2.setDepends(new String[] {"mode"});
+        xComboBox2.setItems("afTypeList");
         xComboBox2.setName("afType"); // NOI18N
         xComboBox2.setAllowNull(false);
-        xComboBox2.setCaption("AF Type");
         xComboBox2.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox2.setDepends(new String[] {"mode"});
         xComboBox2.setDynamic(true);
         xComboBox2.setEmptyText("- Select AF -");
         xComboBox2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox2.setItems("afTypeList");
         xComboBox2.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
 
+        xComboBox3.setCaption("Collection Type");
+        xComboBox3.setDepends(new String[] {"mode", "afType"});
+        xComboBox3.setExpression("#{ item.title }");
+        xComboBox3.setItems("collectionTypeList");
         xComboBox3.setName("collectionType"); // NOI18N
         xComboBox3.setAllowNull(false);
-        xComboBox3.setCaption("Collection Type");
         xComboBox3.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox3.setDepends(new String[] {"mode", "afType"});
         xComboBox3.setDynamic(true);
         xComboBox3.setEmptyText("- Select Collection Type -");
-        xComboBox3.setExpression("#{ item.title }");
         xComboBox3.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox3.setItems("collectionTypeList");
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
 
+        xButton1.setCaption(" ");
         xButton1.setMnemonic('N');
         xButton1.setName("doNext"); // NOI18N
-        xButton1.setText("Next");
+        xButton1.setAutoRefresh(false);
+        xButton1.setCellPadding(new java.awt.Insets(40, 0, 0, 0));
+        xButton1.setFontStyle("font-size:14");
+        xButton1.setMargin(new java.awt.Insets(6, 14, 6, 14));
+        xButton1.setText("  Next  ");
+        xFormPanel1.add(xButton1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(176, 176, 176)
-                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(106, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(241, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

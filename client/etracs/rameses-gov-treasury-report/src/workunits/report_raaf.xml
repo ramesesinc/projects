@@ -51,7 +51,8 @@ class RAAFController extends com.rameses.etracs.shared.ReportController
         def users = userroleSvc.getUsers([ domain:'TREASURY', roles:'COLLECTOR' ]).collect{[ 
             objid:it.objid, name:it.name, title:it.title, 
             fullname: it.lastname +', '+ it.firstname +' '+ (it.middlename? it.middlename: '')  
-        ]}                 
+        ]}.unique(); 
+        
         if ( tag == 'all' ) { 
             collectors = users; 
         } else { 

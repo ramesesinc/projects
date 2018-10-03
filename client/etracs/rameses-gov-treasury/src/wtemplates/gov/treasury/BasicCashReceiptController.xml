@@ -1,9 +1,12 @@
 <workunit>
     <invokers>
-        <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{!completed}" 
-            icon="images/toolbars/arrow_left.png" mnemonic="c"/>
-        <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
-            icon="images/toolbars/save.png" mnemonic="s" />
+        <invoker type="formActions" action="_close" caption="Back" 
+                 visibleWhen="#{!completed}" immediate="true" mnemonic="c" 
+                 icon="images/toolbars/arrow_left.png" />
+        
+        <invoker type="formActions" action="post" caption="Save" 
+                 visibleWhen="#{!completed}" mnemonic="s" 
+                 icon="images/toolbars/save.png" />
             
         <invoker type="formActions" action="_close" caption="Quit" visibleWhen="#{completed}" mnemonic="q"/>
         <invoker type="formActions" action="createAnother" caption="New" visibleWhen="#{completed}" mnemonic="n"/>

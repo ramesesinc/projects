@@ -5,7 +5,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
-import com.rameses.enterprise.treasury.models.CashReceiptAFLookupFilter;
+import com.rameses.enterprise.treasury.models.*;
 
 class CashTicketInitialModel  {
 
@@ -25,8 +25,9 @@ class CashTicketInitialModel  {
     
     def afType;
     def afTypeList;
+    def collectionTypes;
     def modeList = ["ONLINE", "OFFLINE"];
-    
+
     def mode = "ONLINE";
     def collectionType;
     def allCollectionTypes;
@@ -39,9 +40,9 @@ class CashTicketInitialModel  {
 
         def parm = [:];    
         if( OsirisContext.env.ORGROOT == 1 ) {
-            arr << "org.objid IS NULL"
+            arr << "orgid IS NULL"
         } else { 
-            arr << "org.objid = :orgid";
+            arr << "orgid = :orgid";
             parm.orgid = OsirisContext.env.ORGID;
         }
         
@@ -52,7 +53,7 @@ class CashTicketInitialModel  {
             arr << " allowoffline = 1";
         }
         
-        def m = [_schemaname: "vw_collectiontype_org"];
+        def m = [_schemaname: "vw_collectiontype"];
         m.where = [arr.join(" AND "), parm];
         m.orderBy = "formno,title,sortorder";
         allCollectionTypes = qryService.getList( m );
@@ -73,13 +74,19 @@ class CashTicketInitialModel  {
         }
     ]
     
+    private void init0() {
+        collectionTypes = ManagedObjects.instance.create( CollectionTypeListUtil.class );
+        collectionTypes.formType = 'cashticket'; 
+    }
     
     void init() {
+        init0();
         loadCollectionTypes();
     }
     
     void initSubCollector() {
         subcollectorMode = true; 
+        init0();
         loadCollectionTypes();
     }
     
@@ -105,7 +112,7 @@ class CashTicketInitialModel  {
     
     def lookupSubCollectorAF( param ) {
         param.active = 1; 
-
+        param.subcollector = true;
         def env = OsirisContext.env; 
         def p = [_schemaname: 'af_control', debug: true]; 
         p.where = CashReceiptAFLookupFilter.getFilter( param ); 
@@ -137,15 +144,18 @@ class CashTicketInitialModel  {
     }
     
     def doNext() {
+        collectionTypes.checkHasItems( collectionType );
         def entity = [
             txnmode         : mode, 
             formno          : afType, 
             formtype        : collectionType.af.formtype, 
             collectiontype  : collectionType 
         ]; 
-
+        if(subcollectorMode) entity._subcollector = true;
+        
         def info = initReceipt( entity );
         if( info == null ) return null;
+        
         if( mode == "OFFLINE" ) {
             boolean pass = false;
             Modal.show( "date:prompt", [ entity  : [date: info.receiptdate], 

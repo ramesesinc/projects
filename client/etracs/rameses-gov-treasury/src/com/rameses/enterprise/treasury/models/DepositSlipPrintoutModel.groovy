@@ -24,8 +24,7 @@ abstract class DepositSlipPrintoutModel  {
         return data;
     };
     
-    public abstract def getPrintCheckReport();
-    public abstract def getPrintCashReport();
+    public abstract def getPrintReport();
     public def getParameters() {return [:]}
     
     public void print() {
@@ -34,14 +33,14 @@ abstract class DepositSlipPrintoutModel  {
         def data = querySvc.findFirst( m ); 
         def v = null; 
         if ( data.deposittype == 'CASH' ) {
-            v = getPrintCashReport(); 
+            v = getPrintReport(); 
             
         } else { 
             m._schemaname = 'checkpayment';
             m.findBy = [depositslipid: data.objid ];
             m.orderBy = "refno"; 
             data.checks = querySvc.getList( m ); 
-            v = getPrintCheckReport(); 
+            v = getPrintReport(); 
         } 
         if ( v == null ) return; 
         
@@ -93,6 +92,7 @@ abstract class DepositSlipPrintoutModel  {
         m.checktype = d.checktype;
         m.depositedbyname = d.createdby.name;
         m.cash = d.totalcash;
+        m.amtinwords = "*** " + NumberToWords.instance.convert( d.totalcash ).toUpperCase() + " PESOS ***";
         if(d.checks) {
             m.noncashpayments = d.checks.collect {
                 [bank: it.bank?.name, checkno: it.refno, amount: it.amount ]

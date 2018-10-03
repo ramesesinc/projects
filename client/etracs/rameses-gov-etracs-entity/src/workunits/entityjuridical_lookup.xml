@@ -3,66 +3,77 @@
          <invoker type="entityjuridical:lookup" caption="Lookup Juridical Entity" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text,orgtype" 
-                hiddenCols="entityname,type" />
+                hiddenCols="entityname,type" 
+                surroundSearch="false" />
 
          <invoker type="juridicalentity:lookup" caption="Lookup Juridical Entity" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text,orgtype" 
-                hiddenCols="entityname,type" />
+                hiddenCols="entityname,type" 
+                surroundSearch="false" />
          
          <invoker type="entityjuridical:corp:lookup" caption="Lookup Corporation" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'CORP' "/>
+                customFilter="orgtype = 'CORP' " 
+                surroundSearch="false" />
 
         <invoker type="entityjuridical:coop:lookup" caption="Lookup Cooperative" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'COOP' "/>
+                customFilter="orgtype = 'COOP' " 
+                surroundSearch="false" />                
 
         <invoker type="entityjuridical:asso:lookup" caption="Lookup Association" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'ASSO' "/>
+                customFilter="orgtype = 'ASSO' " 
+                surroundSearch="false" />
          
         <invoker type="entityjuridical:rel:lookup" caption="Lookup Religious" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'REL' "/>
+                customFilter="orgtype = 'REL' " 
+                surroundSearch="false" />
          
         <invoker type="entityjuridical:found:lookup" caption="Lookup Foundation" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'FOUND' "/>
+                customFilter="orgtype = 'FOUND' " 
+                surroundSearch="false" />
 
         <invoker type="entityjuridical:part:lookup" caption="Lookup Partnership" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'PART' "/>
+                customFilter="orgtype = 'PART' " 
+                surroundSearch="false" />
 
         <invoker type="entityjuridical:gov:lookup" caption="Lookup Government" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text,orgtype" 
                 hiddenCols="entityname,type" 
-                customFilter="orgtype = 'GOV' "/>
+                customFilter="orgtype = 'GOV' " 
+                surroundSearch="false" />
 
         <invoker type="entityjuridical:sch:lookup" caption="Lookup School" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text,orgtype" 
                 hiddenCols="entityname,type" 
-                customFilter="orgtype = 'SCH' "/>
+                customFilter="orgtype = 'SCH' " 
+                surroundSearch="false" />
 
         <invoker type="entityjuridical:ngo:lookup" caption="Lookup NGO" 
          	action="init" target="popup" height="350"
                 cols="entityno,name,address.text" 
                 hiddenCols="entityname,type,orgtype" 
-                customFilter="orgtype = 'NGO' "/>
+                customFilter="orgtype = 'NGO' " 
+                surroundSearch="false" />
 
    </invokers>
 </workunit>

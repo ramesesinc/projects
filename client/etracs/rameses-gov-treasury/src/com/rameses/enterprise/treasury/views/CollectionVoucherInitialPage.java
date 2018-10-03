@@ -30,37 +30,39 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jPanel2 = new javax.swing.JPanel();
         xButton2 = new com.rameses.rcp.control.XButton();
+        xFormPanel2 = new com.rameses.rcp.control.XFormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel2 = new com.rameses.rcp.control.XLabel();
+
+        setPreferredSize(new java.awt.Dimension(854, 470));
+
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setLayout(new com.rameses.rcp.control.layout.XLayout());
+
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel1.setPadding(new java.awt.Insets(0, 0, 10, 0));
 
         xComboBox1.setCaption("Select Remittance Date");
         xComboBox1.setItems("datesList");
         xComboBox1.setName("controldate"); // NOI18N
         xComboBox1.setAllowNull(false);
-        xComboBox1.setCaptionWidth(180);
+        xComboBox1.setCaptionWidth(160);
         xComboBox1.setDynamic(true);
-        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
+        xComboBox1.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
+        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 22));
         xFormPanel1.add(xComboBox1);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(734, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
-        );
+        jPanel1.add(xFormPanel1);
+
+        jPanel3.add(jPanel1, java.awt.BorderLayout.NORTH);
 
         xDataTable1.setHandler("remittanceListHandler");
         xDataTable1.setName("selectedRemittance"); // NOI18N
@@ -83,9 +85,9 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "controlno"}
                 , new Object[]{"caption", "Control No"}
-                , new Object[]{"width", 130}
-                , new Object[]{"minWidth", 130}
-                , new Object[]{"maxWidth", 150}
+                , new Object[]{"width", 200}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -127,10 +129,48 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             })
         });
         xDataTable1.setDynamic(true);
+        jPanel3.add(xDataTable1, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
         xButton2.setDepends(new String[] {"controldate"});
         xButton2.setName("viewRemittance"); // NOI18N
         xButton2.setText("View");
+        jPanel2.add(xButton2, java.awt.BorderLayout.WEST);
+
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        xFormPanel2.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xFormPanel2.setPadding(new java.awt.Insets(0, 0, 0, 0));
+
+        xLabel1.setCaption("Remaining Balance");
+        xLabel1.setDepends(new String[] {"controldate", "totals"});
+        xLabel1.setExpression("#{remBalance}");
+        xLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel1.setCaptionFontStyle("font-size: 12;");
+        xLabel1.setCaptionWidth(130);
+        xLabel1.setCellPadding(new java.awt.Insets(0, 0, 0, 20));
+        xLabel1.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
+        xLabel1.setNumberFormat("#,##0.00");
+        xLabel1.setPreferredSize(new java.awt.Dimension(160, 22));
+        xFormPanel2.add(xLabel1);
+
+        xLabel2.setCaption("Amount To Liquidate");
+        xLabel2.setDepends(new String[] {"controldate", "totals"});
+        xLabel2.setExpression("#{totalAmount}");
+        xLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel2.setCaptionFontStyle("font-size: 12;");
+        xLabel2.setCaptionWidth(140);
+        xLabel2.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
+        xLabel2.setNumberFormat("#,##0.00");
+        xLabel2.setPreferredSize(new java.awt.Dimension(160, 22));
+        xFormPanel2.add(xLabel2);
+
+        jPanel2.add(xFormPanel2, java.awt.BorderLayout.EAST);
+
+        jPanel3.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -138,32 +178,27 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
+    private com.rameses.rcp.control.XFormPanel xFormPanel2;
+    private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLabel xLabel2;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,9 +5,15 @@ class CollectionVoucherInterceptor {
 	@Service("NumberService")
 	def numSvc;
 
+	@DataContext('remittance')
+	def rem_db;
+
+	@DataContext('collectionvoucher_fund')
+	def cvf_db;
+
 	
 	@After(pattern="QueryService.getNodeList", eval="#{ args[0]._schemaname == 'collectionvoucher' }")
-	public void getNodes( evt ) { 
+	public void afterGetNodes( evt ) { 
 		def x = evt.args[0];
 		def result = evt.result;
 		result << [  title: 'Open', state:'OPEN' ];
@@ -15,7 +21,7 @@ class CollectionVoucherInterceptor {
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'collectionvoucher' }")
-	public void loadList(def evt) {
+	public void beforeGetList(def evt) {
 		def o = evt.args[0];
 
 		if( !o.node?.state ) return;
@@ -31,6 +37,13 @@ class CollectionVoucherInterceptor {
 			o.where = [str, m];
 		} 
 	}	
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'collectionvoucher' }" )
+	public void beforeRemove( evt ) { 
+		def param = evt.args[0]; 
+		rem_db.find([ collectionvoucherid: param.objid ]).update([ collectionvoucherid: '{NULL}' ]); 
+		cvf_db.find([ parentid: param.objid ]).delete(); 
+	}
 
 	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'collectionvoucher' }" )
 	public void afterRead(def evt) {

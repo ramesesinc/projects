@@ -1,0 +1,39 @@
+<workunit>
+    <invokers>
+        <invoker type="depositslip:cash" caption="LBP Revised May 2016" name="lbp_cash_revmay2016"/> 
+        <invoker type="depositslip_printout:lbp_cash_revmay2016" action="print" target="process"/> 
+    </invokers>
+    
+    <code>
+        <![CDATA[
+    import com.rameses.rcp.annotations.*;
+    import com.rameses.rcp.common.*;
+    import com.rameses.osiris2.client.*;
+    import com.rameses.osiris2.common.*;
+    import com.rameses.util.*;
+    import com.rameses.enterprise.treasury.models.*;
+
+    class LbpCashDepositSlipPrintout extends DepositSlipPrintoutModel {
+
+        def pkg = "com/rameses/enterprise/treasury/bankdeposit/lbp/";
+        
+        public def getPrintReport() {
+            return [
+                [name: pkg + "cashfront.jasper", title: 'Cash Front Page'], 
+                [name: pkg + "cashbreakdownitem.jasper", title: 'Cash Breakdown Back Page', option:"cashbreakdown"], 
+            ];
+        } 
+        
+        public def formatData( def d, def opt ) {
+            if(opt?.option == "cashbreakdown") {
+                return super.formatOldCashBreakdownList( d );
+            }
+            else {
+                return super.formatOldReport( d );
+            }
+        }
+                
+    } 
+    ]]>
+    </code>
+</workunit>

@@ -9,32 +9,69 @@ import com.rameses.util.*;
 
 /******************************************************************************
 * The itemaccount is used everywhere
+* The lookup criteria is as follows:
+*    a) NO client code, no account in collection type
+*           Display all itemaccount 
+*    b) NO client code, there is account in collection type
+*           Display all itemaccount for collection type
+*    c) There is client code, no account in collection type
+*           Display only itemaccount where orgid = clientcode
+*    d) There is client code, there is account in collection type         
+*           Display items in itemaccount for collectiontype
+*           where orgid is NULL or orgid = clientcode
 *******************************************************************************/
 class CashReceiptItemLookupModel extends CrudLookupModel {
 
-    def fundid;
     def queryFilter;
+    def collectiontypeid;
     
     public void beforeQuery( def m ) {
-        m.orgid = OsirisContext.env.ORGID; 
         if( queryFilter ) m._queryFilter = queryFilter;
+        //m.debug = true;
+    }
+    
+    public String getSchemaName() {
+        if(query.collectiontype?.hasitems ) {
+            return "vw_cashreceipt_itemaccount_collectiontype";
+        }
+        else {
+            return "vw_cashreceipt_itemaccount";
+        }
     }
     
     public def getCustomFilter() {
         def s = [];
         def parm = [:];
-        if( OsirisContext.env.ORGROOT == 1 ) {
-            s << "parentid IS NULL";
+        
+        //_orgid is the org id that is not the root
+        def _orgid = null;
+        if( query.customorgid ) {
+            _orgid = query.customorgid;
+        }
+        else if( OsirisContext.env.ORGROOT != 1 ) {
+            _orgid = OsirisContext.env.ORGID;
         } 
-        else {
-            s << "parentid IS NOT NULL AND org.objid =:orgid";
-            parm.orgid = OsirisContext.env.ORGID;
+        
+        if( query.collectiontype?.hasitems ) {
+            s << "collectiontypeid = :colltypeid";
+            parm.colltypeid = query.collectiontype.objid;
         }
-        if(fundid) {
+        else if( query.collectiontype.fund?.objid !=null ) {
             s << "fund.objid = :fundid";
-            parm.fundid = fundid;
+            parm.fundid = query.collectiontype.fund?.objid;
         }
-        s << "type IN ('REVENUE','NONREVENUE','PAYABLE')";
+        
+        //determine org
+        if(_orgid) {
+            if( query.collectiontype?.hasitems ) {
+                s << "(orgid IS NULL OR orgid = :orgid)";
+            }  
+            else {
+                s << "orgid = :orgid";
+            }
+            parm.orgid = _orgid;
+        }
+        
         return [s.join(" AND "), parm ];
     }
     

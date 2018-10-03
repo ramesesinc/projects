@@ -1,0 +1,16 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="AFControlMonitorService" 
+          allowCreate="false" allowOpen="false"> 
+    
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" action="init" 
+                 caption="AF Control Monitoring" role="ADMIN,AFO" 
+                 target="window" index="1000"/>
+    </invokers>
+   
+    <code class="com.rameses.gov.treasury.models.AFControlMonitorModel"/>
+
+    <pages>
+        <page name="queryform" template="com.rameses.gov.treasury.views.AFControlMonitorQuery"/>
+    </pages>   
+</workunit>

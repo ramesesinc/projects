@@ -5,6 +5,7 @@ import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
 import com.rameses.util.*;
 
 //This is not a standlone report. It is called from RemittanceModel
@@ -21,17 +22,50 @@ class RemittanceApprovalModel extends com.rameses.seti2.models.SimpleFormReportM
     def onReject;
     def _reportData;
     
+    def decFormat = new java.text.DecimalFormat('0.00');     
     public Object getReportData() {
-        if(_reportData) return _reportData;
+        if( _reportData) return _reportData;
+        
         _reportData = service.getReportData([ objid: entity.objid ]); 
+        def list = _reportData.cashbreakdown; 
+        list.each{
+            it.indexno = ((Number) (it.denomination ? it.denomination : 0)).intValue(); 
+        }
+        list.sort{ -it.indexno }
+        list.each { 
+            it.caption = it.denomination.toString(); 
+            if ( it.denomination instanceof Number ) {
+                it.caption = decFormat.format( it.denomination ); 
+            }
+        } 
+        _reportData.cashbreakdown = list; 
         return _reportData;
     }
     
-    
-    public String getReportName() {
-        return "com/rameses/enterprise/treasury/printforms/remittance.jasper";    
+    void view() { 
+        def path = 'com/rameses/gov/treasury/remittance/report/rcd'; 
+        def mainreport = path + '/rcd_main.jasper'; 
+        def subreports = new SubReport[8]; 
+        subreports[0] = new SubReport('CollectionType', path + '/collectiontype.jasper');
+        subreports[1] = new SubReport('CollectionSummary', path + '/collectionsummary.jasper');
+        subreports[2] = new SubReport('RemittedForms', path + '/remittedforms.jasper');
+        subreports[3] = new SubReport('NonSerialRemittances', path + '/nonserialremittances.jasper');
+        subreports[4] = new SubReport('NonSerialSummary', path + '/nonserialsummary.jasper');
+        subreports[5] = new SubReport('OtherPayments', path + '/otherpayments.jasper');
+        subreports[6] = new SubReport('Denomination', path + '/denomination.jasper');
+        subreports[7] = new SubReport('CancelSeries', path + '/cancelseries.jasper');
+        
+        reportHandler = [
+            getReportName: {
+                return mainreport; 
+            },
+            getSubReports: {
+                return subreports; 
+            }
+        ]; 
+        super.view(); 
     }
-
+    
     void accept() {
         service.acceptForLiquidation( [objid: reportData.objid ] );
         reportData.state = 'POSTED';

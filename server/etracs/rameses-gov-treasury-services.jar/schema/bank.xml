@@ -10,6 +10,7 @@
 		<field name="address"  visible="false"/>
 		<field name="manager" visible="false"/>
 
-		<field name="depositsliphandler" />
+		<field name="cashreport" />
+		<field name="checkreport" />		
 	</element>
 </schema>

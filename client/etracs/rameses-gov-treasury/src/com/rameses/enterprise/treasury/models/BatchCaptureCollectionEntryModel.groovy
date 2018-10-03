@@ -5,8 +5,9 @@ import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.util.*;
+import com.rameses.seti2.models.*;
 
-class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudFormModel {
+class BatchCaptureCollectionEntryModel extends CrudFormModel {
 
     //to be feed by the caller
     boolean openForEditing;
@@ -211,46 +212,8 @@ class BatchCaptureCollectionEntryModel extends com.rameses.seti2.models.CrudForm
     }
 
     def getCollectionGroupHandler() { 
-        def param = ['query.txntype': 'cashreceipt']; 
+        def param = ['query.txntype': 'cashreceipt', receipt: entity ]; 
         param.onselect = { o-> 
-            if ( !o?.items ) return; 
-
-            boolean has_sharing = ( o.sharing.toString() == "1"); 
-            if ( has_sharing ) { 
-                def amt = MsgBox.prompt( "Please enter amount" );
-                if( amt == null ) return null;
-                
-                def sharing_amount = new BigDecimal( amt.toString() );
-                o.items.each {
-                    it.amount = NumberUtil.round( sharing_amount * (it.defaultvalue ? it.defaultvalue : 0.0));
-                } 
-            } 
-                
-            def newitems = []; 
-            o.items.each{ 
-                def rci = [objid: 'RCTI-'+ new java.rmi.server.UID()]; 
-                if ( it.amount != null ) { 
-                    rci.amount = it.amount; 
-                } else {
-                    rci.amount = ( it.defaultvalue ? it.defaultvalue : 0.0 );
-                }
-
-                rci.item = [ 
-                    objid : it.account?.objid, 
-                    code  : it.account?.code, 
-                    title : it.account?.title, 
-                    fund  : it.account?.fund, 
-                    valuetype : it.valuetype, 
-                    defaultvalue : it.defaultvalue 
-                ];                  
-                if ( it.valuetype == 'FIXEDUNIT' ) {
-                    rci.remarks = "qty@1"; 
-                } 
-                newitems << rci; 
-            } 
-            
-            newitems.sort{( it.orderno ? it.orderno : 0 )} 
-            entity.items.addAll( newitems ); 
             rebuildTotals(); 
             listModel.reload(); 
             if (binding) binding.refresh(".*");            

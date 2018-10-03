@@ -5,18 +5,17 @@
     </invokers>
     
     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.enterprise.treasury.cashreceipt.*
-        
-        class  LaregCattleOwnershipReceiptController extends BasicCashReceipt {
-            def sexList = ["MALE", "FEMALE"];
-        }
-        ]]>
-        
+<![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.enterprise.treasury.cashreceipt.*;
+
+class LCOCashReceiptModel extends CashReceiptSingleAccountModel { 
+    def sexList = ["MALE", "FEMALE"];
+}
+]]>
     </code>
     
     <pages>

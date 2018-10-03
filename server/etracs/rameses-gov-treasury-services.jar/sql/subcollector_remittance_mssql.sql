@@ -1,7 +1,7 @@
 [getList]
-SELECT r.*
-FROM subcollector_remittance r
-where subcollector_objid like $P{subcollectorid}
+select r.* 
+from subcollector_remittance r 
+where 1=1 ${filter} 
 order by r.dtposted desc 
 
 [getCollectors]
@@ -102,34 +102,32 @@ where c.state='DELEGATED'
     and cv.objid is null 
 
 
-[getCollectionSummaries]    
-SELECT 
-  x.formno,
-  CASE WHEN x.issuedstartseries IS NULL THEN x.receivedstartseries ELSE x.issuedstartseries END AS receivedstartseries,
-  x.receivedendseries,
-  x.issuedstartseries,
-  x.issuedendseries,
-  CASE WHEN x.issuedstartseries IS NULL THEN x.endingstartseries ELSE x.issuedendseries + 1 END AS endingstartseries,
-  x.endingendseries,
-  x.amount
-FROM (
-  SELECT 
-    ai.afid AS formno,
-    ai.currentseries AS receivedstartseries,
-    ai.endseries AS receivedendseries,
-    (SELECT MIN(series) FROM cashreceipt 
-     WHERE controlid = ai.objid AND subcollector_objid = ac.assignee_objid AND state = 'DELEGATED') AS issuedstartseries,
-    (SELECT MAX(series) FROM cashreceipt 
-     WHERE controlid = ai.objid AND subcollector_objid = ac.assignee_objid AND state = 'DELEGATED') AS issuedendseries,
-    ai.currentseries AS endingstartseries,
-    ai.endseries AS endingendseries,
-    (SELECT SUM(c.amount) FROM cashreceipt c LEFT JOIN cashreceipt_void cv ON c.objid = cv.receiptid 
-     WHERE c.controlid = ai.objid AND c.subcollector_objid = ac.assignee_objid AND c.state = 'DELEGATED' AND cv.objid IS NULL ) AS amount
-  FROM af_inventory ai
-    INNER JOIN af_control ac ON ai.objid = ac.objid 
-  WHERE ac.assignee_objid = $P{subcollectorid}
-) x
-WHERE x.amount > 0.0 
+[getCollectionSummaries]
+select 
+  controlid, formno, startseries, endseries, 
+  min(series) as receivedstartseries, endseries as receivedendseries, 
+  min(series) as issuedstartseries, max(series) as issuedendseries, 
+  case when max(series) >= endseries then null else max(series)+1 end as endingstartseries, 
+  case when max(series) >= endseries then null else endseries end as endingendseries, 
+  endseries-min(series)+1 as qtyreceived, 
+  max(series)-min(series)+1 as qtyissued, 
+  case when max(series) >= endseries then 0 else endseries-max(series) end as qtyending, 
+  sum(amount) as amount 
+from ( 
+  select distinct 
+    c.objid, c.controlid, c.formno, afc.startseries, afc.endseries, c.series, 
+    case when v.objid is null then 1 else 0 end as txncount, 
+    case when v.objid is null then 0 else 1 end as voidcount,  
+    case when v.objid is null then c.amount else 0.0 end as amount 
+  from subcollector_remittance r 
+    inner join subcollector_remittance_cashreceipt rc on rc.remittanceid = r.objid 
+    inner join cashreceipt c on c.objid = rc.objid 
+    inner join af_control afc on afc.objid = c.controlid 
+    left join cashreceipt_void v on v.receiptid = c.objid 
+  where r.objid = $P{remittanceid} 
+)t1 
+group by controlid, formno, startseries, endseries  
+order by formno, startseries 
 
 
 [getRemittedChecks]

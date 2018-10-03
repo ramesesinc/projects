@@ -6,6 +6,7 @@ package com.rameses.entity.components;
 
 import com.rameses.common.PropertyResolver;
 import com.rameses.rcp.control.XComponentPanel;
+import com.rameses.rcp.ui.UIFocusableContainer;
 import com.rameses.rcp.ui.annotations.ComponentBean;
 
 /**
@@ -13,7 +14,7 @@ import com.rameses.rcp.ui.annotations.ComponentBean;
  * @author dell
  */
 @ComponentBean("com.rameses.entity.components.EntityLookupModel")
-public class EntityLookup extends XComponentPanel {
+public class EntityLookup extends XComponentPanel implements UIFocusableContainer {
 
     private String onselect; 
     private String onempty;
@@ -51,6 +52,10 @@ public class EntityLookup extends XComponentPanel {
     public void setEntityType(String entitytype) {
         this.entityType = entitytype;
     }    
+    
+    public boolean focusFirstInput() { 
+        return xLookupField1.focusFirstInput(); 
+    } 
 
     @Override
     public void setEnabled(boolean enabled) {

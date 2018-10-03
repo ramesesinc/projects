@@ -71,34 +71,6 @@ public abstract class AbstractCashReceipt {
         beforeUpdateBalance();
         entity.amount = getTotalAmount(); 
         if(binding) binding.refresh('entity.amount');
-        /*
-        
-        beforeUpdateBalance();
-        entity.cashchange = 0; entity.balancedue = 0; entity.totalcredit = 0;
-        def amt = getTotalAmount();
-        entity.amount = amt; 
-        
-        entity.totalnoncash = 0;
-        if( entity.paymentitems ) {
-            entity.totalnoncash = entity.paymentitems.sum{( it.amount ? it.amount : 0.0)};
-        }
-
-        if( entity.totalnoncash > 0 && entity.totalnoncash > amt ) {
-            entity.totalcredit = entity.totalnoncash - amt;
-            entity.amount = amt + entity.totalcredit; 
-        }
-        else {
-            amt = amt - entity.totalnoncash;
-            if( entity.totalcash > 0 && entity.totalcash > amt ) {
-                entity.cashchange = entity.totalcash - amt;
-            }
-            else {
-                entity.balancedue = NumberUtil.round( amt - entity.totalcash );
-            }
-        }
-
-        if(binding) binding.refresh('entity.(amount|totalcash|totalnoncash|totalcredit|balancedue|cashchange)');
-        */
     }
 
     

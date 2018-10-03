@@ -64,6 +64,7 @@ class CashReceiptService  {
 	*/
 	@ProxyMethod
 	public def init( def entity ) {
+
 		entity.objid = "RCT"+new java.rmi.server.UID();
 		if(!entity.receiptdate) {
 			entity.receiptdate =  dateService.serverDate;

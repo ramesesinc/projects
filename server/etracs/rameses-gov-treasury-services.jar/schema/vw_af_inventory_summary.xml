@@ -1,0 +1,27 @@
+<!--
+DROP VIEW IF EXISTS vw_af_inventory_summary;
+CREATE VIEW vw_af_inventory_summary AS 
+ SELECT 
+   af.objid, 
+   af.title, 
+   u.unit,
+   (SELECT COUNT(*) FROM af_control WHERE state = 'OPEN' AND afid = af.objid ) AS countopen,  
+   (SELECT COUNT(*) FROM af_control WHERE state = 'ISSUED' AND afid = af.objid ) AS countissued,  
+   (SELECT COUNT(*) FROM af_control WHERE state = 'OPEN' AND afid = af.objid ) AS countclosed,  
+   (SELECT COUNT(*) FROM af_control WHERE state = 'PROCESSING' AND afid = af.objid ) AS countprocessing  
+ FROM af 
+ INNER JOIN afunit u ON af.objid = u.itemid;
+-->
+<schema>
+	<element tablename="vw_af_inventory_summary">
+		<field name="objid" caption="AF"/>
+		<field name="title" caption="Title"/>
+		<field name="unit" caption="Unit"/>		
+		<field name="countopen" caption="Open" type="integer"/>
+		<field name="countissued" caption="Issued" type="integer"/>
+		<field name="countclosed" caption="Closed" type="integer"/>
+		<field name="countprocessing" caption="Processing" type="integer"/>	
+	</element>
+</schema>
+
+

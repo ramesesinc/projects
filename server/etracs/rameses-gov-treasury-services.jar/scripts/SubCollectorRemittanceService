@@ -94,36 +94,29 @@ class SubCollectorRemittanceService  {
 
 
 	@ProxyMethod
-	public def getCollectionSummaries( params ) {
-		return em.getCollectionSummaries(params).each{
-			//calculate qtys
-			it.qtyreceived = (it.receivedendseries - it.receivedstartseries + 1) + ''
-			if (it.issuedstartseries != null){
-				it.qtyissued = (it.issuedendseries - it.issuedstartseries + 1) + ''
-			}
-			it.qtyending = (it.endingendseries - it.endingstartseries + 1) + ''
-		}	
+	public def getCollectionSummaries( params ) { 
+		return em.getCollectionSummaries( params ); 
 	}
 
 	@ProxyMethod
 	public def generateDCR( objid ) {
 		def entity = open([ objid: objid ]);
+		entity.cashbreakdown.sort{ -it.denomination.toInteger() } 
+
 		entity.denomination = [:]; 
 		entity.cashbreakdown.each{ o-> 
 			entity.denomination.put( o.denomination.toInteger(), [qty: o.qty, amount: o.amount]); 
+		} 
+		entity.collectionsummaries.each { 
+			if ( it.qtyreceived instanceof String ) it.qtyreceived = Integer.parseInt(it.qtyreceived); 
+			if ( it.qtyissued instanceof String ) it.qtyissued = Integer.parseInt(it.qtyissued); 
+			if ( it.qtyending instanceof String ) it.qtyending = Integer.parseInt(it.qtyending); 
+
+			if ( it.qtyending == 0 ) {
+				it.endingstartseries = it.endingendseries = it.qtyending = null; 
+			}
 		}
-
-		entity.collectionsummaries.each{
-			it.receivedstartseries = it.receivedstartseries.toString()
-			it.receivedendseries = it.receivedendseries.toString()
-
-			it.issuedstartseries = ( it.issuedstartseries == null ? null : it.issuedstartseries.toString() )
-			it.issuedendseries = ( it.issuedendseries == null ? null : it.issuedendseries.toString() )
-
-			it.endingstartseries = it.endingstartseries.toString()
-			it.endingendseries = it.endingendseries.toString()
-		}
-		return entity 
+		return entity; 
 	}
 
 }

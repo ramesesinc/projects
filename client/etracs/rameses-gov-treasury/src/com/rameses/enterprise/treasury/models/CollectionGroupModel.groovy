@@ -4,84 +4,29 @@ import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
+import com.rameses.seti2.models.*;
 
-class CollectionGroupModel extends CRUDController {
+class CollectionGroupModel extends CrudFormModel {
 
-    @Service("CollectionTypeService")
-    def svc;
-
-    String serviceName = "CollectionGroupService";
-    String entityName = "collectiongroup";
-    String title = "Collection Group";
-    
-    def valueTypes = [ "ANY", "FIXED", "FIXEDUNIT" ];
-    def deletedItems = [];
     def selectedItem;
+    def listModel;
+    def orgListHandler;
 
-    def listModel = [
-        isMultiSelect: {
-            return true; 
-        }, 
-        fetchList: {         
-            if (entity.revenueitems == null) {
-                entity.revenueitems = []; 
-            }
-            return entity.revenueitems;
-        },
-        createItem: {
-            return [valuetype:'ANY', defaultvalue:0.0];
-        },
-        addItem: {
-            entity.revenueitems << it; 
-        }  
-    ] as EditorListModel;
-
-    void afterOpen( o ) {
-        listModel.reload();
-    }
-    
-    void afterUpdate( o ) {
-        listModel.reload();
-    }
-    
-    def getFormTypes() {
-        return svc.getFormTypes()*.objid;
-    }
-    
-    def getLookupAccount() {
-        def params = [:]; 
-        params.onselect = {o-> 
-            if ( selectedItem==null ) return;
-            
-            selectedItem.revenueitemid = o.objid;
-            selectedItem.code = o.code;                    
-            selectedItem.title = o.title; 
-            selectedItem.orderno = 0; 
+    void addOrg() {
+        def h = { arr-> 
+            try { 
+                arr.each {o-> 
+                    def item = [ _schemaname: "collectiongroup_org" ];
+                    item.objid = entity.objid + ":" + o.objid;
+                    item.collectiongroupid = entity.objid;
+                    item.org = o;
+                    item.org.type = o.orgclass;
+                    persistenceService.save( item );
+                }
+            } finally {  
+                orgListHandler.reload(); 
+            }  
         } 
-        return Inv.lookupOpener('revenueitem:lookup', params);
-    } 
-        
-    void removeAccounts(){ 
-        def values = listModel.getSelectedValue(); 
-        values = values.findAll{( it )} 
-        if( values ) {
-            values.each{ o-> 
-                entity.revenueitems.remove( o ); 
-            } 
-            listModel.reload(); 
-        } else {
-            MsgBox.alert("Please select at least one item"); 
-        } 
-    } 
-    void selectAll() {
-        listModel.selectAll();
-    }
-    void deselectAll() {
-        listModel.deselectAll();
-    }
-    boolean isAllowSelections() { 
-        if ( mode == 'read' ) return false; 
-        
-        return ( entity.revenueitems ? true: false );
+        Modal.show( "org:lookup", [onselect: h, multiSelect: true] );
     }
 }      

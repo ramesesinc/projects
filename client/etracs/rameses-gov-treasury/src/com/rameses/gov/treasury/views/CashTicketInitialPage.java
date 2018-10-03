@@ -39,12 +39,13 @@ public class CashTicketInitialPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(150);
 
-        xComboBox1.setName("mode"); // NOI18N
         xComboBox1.setCaption("Mode");
+        xComboBox1.setItems("modeList");
+        xComboBox1.setName("mode"); // NOI18N
         xComboBox1.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         xComboBox1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        xComboBox1.setItems("modeList");
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 30));
+        xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
         xComboBox2.setName("afType"); // NOI18N

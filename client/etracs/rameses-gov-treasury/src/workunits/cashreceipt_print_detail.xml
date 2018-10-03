@@ -4,62 +4,12 @@
                  role="COLLECTOR" index="1" target="process"/> 
                 
         <invoker type="misc_cashreceipt:formActions" caption="Print Detail" action="print" 
-                 target="process" index="1" visibleWhen="#{completed &amp;&amp; entity.formno == '51'}"/>
+                 target="process" index="1" visibleWhen="#{completed}"/>
 
         <invoker type="cashreceipt:form:formActions" caption="Print Detail" action="print" 
-                 target="process" index="1" visibleWhen="#{entity.formno == '51'}"/>
+                 target="process" index="1"/>
     </invokers>
    
-    <code>
-    <![CDATA[
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import com.rameses.osiris2.reports.*;
-
- class CashReceiptForm51Detail  {
-
-    @Service("ReportParameterService")
-    def paramSvc
-    
-    @Caller 
-    def caller; 
-    
-    def entity;
-
-
-    def reportPath = 'com/rameses/gov/treasury/cashreceipt/forms/'
-    
-    def report = [
-        getReportName : { return reportPath + "af51detail.jasper" },
-        getReportData : { return entity }, 
-        getParameters : { return paramSvc.getStandardParameter() },
-        getSubReports : {
-            return [
-                new SubReport("ITEM", reportPath + "af51detailitem.jasper")
-            ] as SubReport[];  
-        }
-    ] as ReportModel
-
-    void print() { 
-        if ( ReportUtil.isDeveloperMode() ) { 
-            boolean has_callback_method = false;  
-            try { 
-                if ( caller.showReport ) has_callback_method = true; 
-            } catch(Throwable t){;} 
-            
-            if ( has_callback_method ) { 
-                caller.showReport( report ); 
-                return; 
-            } 
-        } 
-
-        report.viewReport();                
-        ReportUtil.print( report.report, true) ; 
-    } 
-}
-    ]]>
-    </code>
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptPrintDetailModel"  />
     
 </workunit> 

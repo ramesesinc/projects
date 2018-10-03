@@ -1,5 +1,6 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="af_allocation">
     <invokers>
-        <invoker folderid="explorer/master/treasury" caption="AF Allocation" role="AFO" action="init"/>
+        <invoker folderid="explorer/master/treasury" caption="AF Allocation" 
+                 role="AFO" action="init" index="-10"/>
    </invokers>
 </workunit>

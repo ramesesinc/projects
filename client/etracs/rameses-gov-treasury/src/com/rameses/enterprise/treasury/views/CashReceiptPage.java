@@ -58,80 +58,86 @@ public class CashReceiptPage extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
 
+        xFormPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel2.setCaptionWidth(100);
 
         xTextField1.setCaption("Paid By");
         xTextField1.setName("entity.paidby"); // NOI18N
         xTextField1.setEnabled(false);
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xTextField1);
 
         xTextField4.setCaption("Paid By Address");
         xTextField4.setName("entity.paidbyaddress"); // NOI18N
         xTextField4.setEnabled(false);
-        xTextField4.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xTextField4);
 
         xDecimalField1.setCaption("Amount");
-        xDecimalField1.setEnabled(false);
         xDecimalField1.setName("entity.amount"); // NOI18N
+        xDecimalField1.setEnabled(false);
+        xDecimalField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xDecimalField1);
 
         xLabel4.setCaption("State");
         xLabel4.setExpression("#{entity.state}");
         xLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel4.setPreferredSize(new java.awt.Dimension(0, 26));
         xFormPanel2.add(xLabel4);
 
-        xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         xLabel7.setCaption("");
         xLabel7.setExpression("#{entity.voided == 0 ? '' : 'VOIDED'  }");
-        xLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel7.setFontStyle("font-size:14; font-weight:bold;");
         xLabel7.setForeground(new java.awt.Color(255, 0, 0));
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 24));
         xFormPanel2.add(xLabel7);
 
+        xFormPanel3.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel3.setCaptionWidth(100);
 
         xTextField2.setCaption("Form No");
-        xTextField2.setEnabled(false);
         xTextField2.setName("entity.formno"); // NOI18N
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField2.setEnabled(false);
+        xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField2);
 
         xDateField2.setCaption("Receipt Date");
-        xDateField2.setEnabled(false);
         xDateField2.setName("entity.receiptdate"); // NOI18N
-        xDateField2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xDateField2.setEnabled(false);
+        xDateField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xDateField2);
 
         xTextField5.setCaption("Collector");
-        xTextField5.setEnabled(false);
         xTextField5.setName("entity.collector.name"); // NOI18N
-        xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField5.setEnabled(false);
+        xTextField5.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField5);
 
         xTextField6.setCaption("Sub Collector");
         xTextField6.setName("entity.subcollector.name"); // NOI18N
         xTextField6.setVisibleWhen("#{ entity.subcollector.objid != null }");
         xTextField6.setEnabled(false);
-        xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel3.add(xTextField6);
 
         xLabel3.setCaption("Receipt No");
         xLabel3.setExpression("#{entity.receiptno}");
         xLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        xLabel3.setFontStyle("font-size:18; font-weight:bold;");
         xLabel3.setPreferredSize(new java.awt.Dimension(0, 26));
         xFormPanel3.add(xLabel3);
 
-        xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         xLabel6.setCaption("Txn Mode");
         xLabel6.setExpression("#{entity.txnmode}");
-        xLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        xLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
+        xLabel6.setFontStyle("font-size:14; font-weight:bold;");
         xLabel6.setForeground(new java.awt.Color(255, 0, 0));
-        xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
+        xLabel6.setPreferredSize(new java.awt.Dimension(0, 24));
+        xLabel6.setStretchWidth(100);
         xFormPanel3.add(xLabel6);
 
         xDataTable1.setHandler("itemHandlers.items");
@@ -244,14 +250,14 @@ public class CashReceiptPage extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(322, Short.MAX_VALUE)
+                .addContainerGap(332, Short.MAX_VALUE)
                 .addComponent(xFormPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(xDataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(42, Short.MAX_VALUE)))
+                    .addContainerGap(47, Short.MAX_VALUE)))
         );
 
         xTabbedPane1.addTab("Items", jPanel1);
@@ -371,7 +377,6 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xDecimalField6.setCaption("Total Non Cash");
         xDecimalField6.setDisableWhen("#{ true }");
         xDecimalField6.setName("entity.totalnoncash"); // NOI18N
-        xDecimalField6.setText("entity.totalnoncash");
         xDecimalField6.setCaptionWidth(150);
         xDecimalField6.setEnabled(false);
         xFormPanel6.add(xDecimalField6);
@@ -508,11 +513,11 @@ public class CashReceiptPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xFormPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xFormPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(xFormPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                .addComponent(xTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

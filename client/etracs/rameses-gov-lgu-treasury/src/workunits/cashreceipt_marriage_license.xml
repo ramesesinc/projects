@@ -4,26 +4,25 @@
         <invoker type="cashreceipt:marriage" action="init" />
     </invokers>
     
-     <code>
-        <![CDATA[    
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.enterprise.treasury.cashreceipt.*
-        
-        class  MarriageController extends BasicCashReceipt {
-            @Service('Var')
-            def var
-            
-                void init() {
-                    super.init();
-                    entity.lcrofficer = var.get('lcr_officer_name');
-                    entity.lcrofficertitle = var.get('lcr_officer_title');
-                }
-            
-        }
-        ]]>
+    <code>
+<![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.enterprise.treasury.cashreceipt.*;
+
+class MarriageCashReceiptModel extends CashReceiptSingleAccountModel { 
+
+    @Service('Var')
+    def var; 
+
+    void afterInit() {
+        entity.lcrofficer = var.get('lcr_officer_name');
+        entity.lcrofficertitle = var.get('lcr_officer_title');
+    } 
+}
+]]>
     </code>
     
     <pages>

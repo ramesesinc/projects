@@ -1,21 +1,25 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="cashreceipt" allowDelete="false" 
+          schemaName="cashreceipt" allowDelete="false" allowCreate="false" 
           cols="formno,receiptno,receiptdate,stub,paidby,amount,voided,collector.name">
     
     <invokers>
-        <invoker folderid="menucategory/treasury/mgmt" caption="Views Cash Tickets" 
-                 action="init" role="SHARED" tag="mgmt" 
-                 customFilter=" formtype='cashticket' "/>
+        <invoker folderid="menucategory/treasury/mgmt" action="init" 
+                 caption="View Cash Tickets" role="SHARED" tag="mgmt" 
+                 customFilter=" formtype='cashticket' "
+                 formId="treasury-mgmt-cashtickets" 
+                 index="-9" />
 
-        <invoker folderid="menucategory/treasury/collection" caption="View Cash Tickets" 
-                 action="init" index="-7" 
-                 role="COLLECTOR" tag="collector"
-                 customFilter=" formtype='cashticket' "/> 
+        <invoker folderid="menucategory/treasury/collection" action="init" 
+                 caption="View Cash Tickets" role="COLLECTOR" tag="collector" 
+                 customFilter=" formtype='cashticket' "
+                 formId="treasury-collection-cashtickets" 
+                 index="-7" /> 
         
-        <invoker folderid="menucategory/treasury/subcollection" caption="View Cash Tickets" 
-                 action="init" index="-7" 
-                 role="SUBCOLLECTOR" tag="subcollector"
-                 customFilter=" formtype='cashticket' " /> 
+        <invoker folderid="menucategory/treasury/subcollection" action="init" 
+                 caption="View Cash Tickets" role="SUBCOLLECTOR" tag="subcollector" 
+                 customFilter=" formtype='cashticket' " 
+                 formId="treasury-subcollection-cashtickets" 
+                 index="-7" /> 
                                       
    </invokers>
    

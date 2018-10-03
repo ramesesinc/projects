@@ -19,10 +19,7 @@ class RPTReportRestrictedPropertyService
    
     @ProxyMethod
     public def getRestrictedProperties(params) {
-        params.lguid = (params.lgu ? params.lgu.objid :'%')
-        params.barangayid = (params.barangay ? params.barangay.objid : '%')
-        params.section = (params.section ? params.section :'%')
-        util.buildStartEndDateFilter(params)
+        buildParams(params)
 
         def list = em.getRestrictedProperties(params)
         if (!list) throw new Exception('There are no records found.')
@@ -48,11 +45,8 @@ class RPTReportRestrictedPropertyService
 
     @ProxyMethod
     public def getUnrestrictedProperties(params) {
-        params.lguid = (params.lgu ? params.lgu.objid :'%')
-        params.barangayid = (params.barangay ? params.barangay.objid : '%')
-        params.section = (params.section ? params.section :'%')
-        util.buildStartEndDateFilter(params)
-
+        buildParams(params)
+        
         def list = em.getUnrestrictedProperties(params)
         if (!list) throw new Exception('There are no records found.')
 
@@ -76,6 +70,12 @@ class RPTReportRestrictedPropertyService
         ]
     }    
 
+    void buildParams(params) {
+        params.lguid = (params.lgu ? params.lgu.objid :'%')
+        params.barangayid = (params.barangay ? params.barangay.objid : '%')
+        params.restrictiontypeid = (params.restrictiontype ? params.restrictiontype.objid : '%')
+    }
+
 
     def buildTitle(type, params){
         def title = 'List of ' + type + ' Properties'
@@ -95,6 +95,10 @@ class RPTReportRestrictedPropertyService
             if (params.section && params.section != '%')
             subtitle += ' (Section ' + params.section + ')' 
         }
+        if (subtitle) {
+            subtitle += '\n'
+        }
+        subtitle += 'As of ' + dtSvc.format('MMMMM dd, yyyy', dtSvc.serverDate)
         return subtitle
     }
 

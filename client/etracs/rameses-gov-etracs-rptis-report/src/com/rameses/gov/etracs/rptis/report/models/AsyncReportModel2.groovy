@@ -55,10 +55,10 @@ abstract class AsyncReportModel2
         return [
             new FormControl( "combo", [captionWidth:110, caption:'Report Type', name:'entity.reporttype', required:true, items:'reporttypes', allowNull:false, expression:'#{item.caption}', visibleWhen:'#{reporttypes!=null}']),
             new FormControl( "integer", [captionWidth:110, caption:'Year', name:'entity.year', required:true]),
-            new FormControl( "combo", [captionWidth:110, caption:'Quarter', name:'entity.qtr', required:true, items:'quarters']),
+            new FormControl( "combo", [captionWidth:110, caption:'Quarter', name:'entity.qtr', required:true, items:'quarters', visibleWhen:'#{quarters != null}']),
             new FormControl( "combo", [captionWidth:110, caption:'Month', name:'entity.month', required:true, depends:'entity.reporttype,entity.qtr', items:'months', expression:'#{item.caption}', dynamic:true]),
             new FormControl( "combo", [captionWidth:110, caption:'LGU', name:'entity.lgu', required:true, allowNull:false, items:'lgus', expression:'#{item.name}']),
-            new FormControl( "combo", [captionWidth:110, caption:'Barangay', name:'entity.barangay', required:barangayRequired, allowNull:barangayRequired, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true]),
+            new FormControl( "combo", [captionWidth:110, caption:'Barangay', name:'entity.barangay', required:barangayRequired, allowNull:!barangayRequired, items:'barangays', expression:'#{item.name}', depends:'entity.lgu', dynamic:true, emptyText:'ALL']),
             new FormControl( "combo", [captionWidth:110, caption:'Revision Year', name:'entity.ry', required:true, allowNull:false, items:'revisionyears', visibleWhen:'#{revisionyears.size() > 0}']),
             new FormControl( "text", [captionWidth:110, caption:'Section', name:'entity.section', visibleWhen:'#{showSection}']),
         ]

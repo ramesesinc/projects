@@ -322,3 +322,14 @@ group by
 go     
 
 
+
+
+drop index faas.ix_canceldate 
+go 
+
+alter table faas alter column canceldate date 
+go 
+
+create index ix_faas_canceldate on faas(canceldate)
+go 
+

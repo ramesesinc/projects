@@ -408,4 +408,14 @@ group by
 
 
 
+alter table faas drop key ix_canceldate
+;
+
+
+alter table faas modify column canceldate date 
+;
+
+create index ix_faas_canceldate on faas(canceldate)
+;
+
 

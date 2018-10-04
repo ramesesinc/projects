@@ -234,3 +234,102 @@ INNER JOIN propertyclassification pc ON r.classification_objid = pc.objid
 INNER JOIN barangay b ON rp.barangayid = b.objid 
 INNER JOIN entity e on f.taxpayer_objid = e.objid
 go 
+
+drop  view vw_rptpayment_item_detail
+go 
+
+create view vw_rptpayment_item_detail
+as 
+select
+  rpi.objid,
+  rpi.parentid,
+  rp.refid as rptledgerid, 
+  rpi.rptledgerfaasid,
+  rpi.year,
+  rpi.qtr,
+  rpi.revperiod, 
+  case when rpi.revtype = 'basic' then rpi.amount else 0 end as basic,
+  case when rpi.revtype = 'basic' then rpi.interest else 0 end as basicint,
+  case when rpi.revtype = 'basic' then rpi.discount else 0 end as basicdisc,
+  case when rpi.revtype = 'basic' then rpi.interest - rpi.discount else 0 end as basicdp,
+  case when rpi.revtype = 'basic' then rpi.amount + rpi.interest - rpi.discount else 0 end as basicnet,
+  case when rpi.revtype = 'basicidle' then rpi.amount + rpi.interest - rpi.discount else 0 end as basicidle,
+  case when rpi.revtype = 'basicidle' then rpi.interest else 0 end as basicidleint,
+  case when rpi.revtype = 'basicidle' then rpi.discount else 0 end as basicidledisc,
+  case when rpi.revtype = 'basicidle' then rpi.interest - rpi.discount else 0 end as basicidledp,
+  case when rpi.revtype = 'sef' then rpi.amount else 0 end as sef,
+  case when rpi.revtype = 'sef' then rpi.interest else 0 end as sefint,
+  case when rpi.revtype = 'sef' then rpi.discount else 0 end as sefdisc,
+  case when rpi.revtype = 'sef' then rpi.interest - rpi.discount else 0 end as sefdp,
+  case when rpi.revtype = 'sef' then rpi.amount + rpi.interest - rpi.discount else 0 end as sefnet,
+  case when rpi.revtype = 'firecode' then rpi.amount + rpi.interest - rpi.discount else 0 end as firecode,
+  case when rpi.revtype = 'sh' then rpi.amount + rpi.interest - rpi.discount else 0 end as sh,
+  case when rpi.revtype = 'sh' then rpi.interest else 0 end as shint,
+  case when rpi.revtype = 'sh' then rpi.discount else 0 end as shdisc,
+  case when rpi.revtype = 'sh' then rpi.interest - rpi.discount else 0 end as shdp,
+  rpi.amount + rpi.interest - rpi.discount as amount,
+  rpi.partialled as partialled,
+  rp.voided 
+from rptpayment_item rpi
+inner join rptpayment rp on rpi.parentid = rp.objid
+
+go 
+
+drop view vw_rptpayment_item 
+go 
+
+create view vw_rptpayment_item 
+as 
+select 
+    x.rptledgerid, 
+    x.parentid,
+    x.rptledgerfaasid,
+    x.year,
+    x.qtr,
+    x.revperiod,
+    sum(x.basic) as basic,
+    sum(x.basicint) as basicint,
+    sum(x.basicdisc) as basicdisc,
+    sum(x.basicdp) as basicdp,
+    sum(x.basicnet) as basicnet,
+    sum(x.basicidle) as basicidle,
+    sum(x.basicidleint) as basicidleint,
+    sum(x.basicidledisc) as basicidledisc,
+    sum(x.basicidledp) as basicidledp,
+    sum(x.sef) as sef,
+    sum(x.sefint) as sefint,
+    sum(x.sefdisc) as sefdisc,
+    sum(x.sefdp) as sefdp,
+    sum(x.sefnet) as sefnet,
+    sum(x.firecode) as firecode,
+    sum(x.sh) as sh,
+    sum(x.shint) as shint,
+    sum(x.shdisc) as shdisc,
+    sum(x.shdp) as shdp,
+    sum(x.amount) as amount,
+    max(x.partialled) as partialled,
+    x.voided 
+from vw_rptpayment_item_detail x
+group by 
+  x.rptledgerid, 
+    x.parentid,
+    x.rptledgerfaasid,
+    x.year,
+    x.qtr,
+    x.revperiod,
+    x.voided
+
+go     
+
+
+
+
+drop index faas.ix_canceldate 
+go 
+
+alter table faas alter column canceldate date 
+go 
+
+create index ix_faas_canceldate on faas(canceldate)
+go 
+

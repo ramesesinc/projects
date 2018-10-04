@@ -3,7 +3,6 @@
         <!-- this is for the new setup -->
         <invoker type="cashreceipt:printout" caption="AF 51 (Cash Receipt)" name="cashreceipt:printout:51"/>
         <invoker type="cashreceipt:printout:51" />
-        
     </invokers>
     
     <code>

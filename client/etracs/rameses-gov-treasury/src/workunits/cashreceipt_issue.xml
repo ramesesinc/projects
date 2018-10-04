@@ -50,6 +50,7 @@
         </start>
         <page name="initial" title="Cash Receipt Initial (Select Type of Transaction)">
             <transition to="process" caption="Next" mnemonic="n" action="launchNew" immediate="false"/>
+            <transition name="movenext" to="process" visibleWhen="#{false}"/>
         </page>
         <page name="process" title="#{title}">
             <transition name="back" to="initial" caption="Cancel"  />

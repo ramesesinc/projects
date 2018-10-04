@@ -22,10 +22,9 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     
     void init() {
         super.init();
-        //check if there are collection type items.
+
         clearItems();
         clearAllPayments();
-        //MsgBox.alert( "org is " + user.env.ORGROOT );
     }
 
     def itemListModel = [
@@ -69,10 +68,10 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     def selectedItem;
     def getLookupItems() {
         def p = [:];
-        p.put("query.txntype", "cashreceipt");
+        p.put( "query.txntype", "cashreceipt");
         p.put( "query.collectorid" , entity.collector.objid );
         p.put( "query.collectiontype" , entity.collectiontype );
-        if( entity.collectiontype.fund?.objid ) {
+        if ( entity.collectiontype.fund?.objid ) {
             p.put("query.fundid", entity.collectiontype.fund?.objid);
         }
         p.queryFilter = queryFilter;    
@@ -107,9 +106,7 @@ public class BasicCashReceipt extends AbstractCashReceipt {
     def getTotalAmount() {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
     }   
-    
-    //def rProcessor = new RuleProcessor( { params-> collectionRuleService.execute(params) } );
-    
+        
     void fireRules() {
         def params = [billdate:entity.receiptdate];
         boolean pass = false;

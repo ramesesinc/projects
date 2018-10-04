@@ -13,11 +13,11 @@ class AFUnitModel extends CrudFormModel  {
     
     def loadHandlers(def typename) {
         try {
-            return Inv.lookupOpener( typename ).collect {
+            return Inv.lookupOpeners( typename ).collect {
                 [name:it.properties.name, caption:it.caption]
             };
         }
-        catch(e) {
+        catch(Throwable t) {
             return [];
         }
     }

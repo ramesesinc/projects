@@ -21,23 +21,24 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
         return "serial";
     }
 
+    def processHandler = [
+        back : {
+            def op = super.signal("back");
+            binding.fireNavigation( op );
+        },
+        forward: {
+            //print will be done here
+            if( mode == "ONLINE" ) {
+                printReceipt();
+            }
+            def op = super.signal("forward");
+            binding.fireNavigation( op );
+        }
+    ];
+    
     void launchNew() {
         createNew();
-        def mp = [
-            back : {
-                def op = super.signal("back");
-                binding.fireNavigation( op );
-            },
-            forward: {
-                //print will be done here
-                if( mode == "ONLINE" ) {
-                    printReceipt();
-                }
-                def op = super.signal("forward");
-                binding.fireNavigation( op );
-            }
-        ];
-        handler = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: entity, mainProcessHandler: mp]);         
+        handler = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: entity, mainProcessHandler: processHandler]);         
     }
     
     void cleanUp() {
@@ -56,7 +57,12 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
             collectionType = o.collectiontype;
             afType = o.collectiontype.formno;
             
-            //initialize the entity
+            //loaded collection type
+            collectionTypes.mode = "ONLINE";
+            collectionTypes.afType = afType; 
+            
+            //initialize the entity. If there is _paymentorderid 
+            //it means there is a related payment order for this.
             createNew();
             def op = null;
             if ( o._paymentorderid ) {
@@ -66,16 +72,22 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
                 entity.amount = o.info.amount;
                 entity.items = o.info.items.collect{ [item: it.item, amount:it.amount, remarks:it.remarks ] };
                 entity.remarks = o.info.particulars;
-                handler = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, [entity: entity, _paymentorderid:o._paymentorderid ]);
+                def pp = [:];
+                pp.entity = entity;
+                pp.mainProcessHandler = processHandler;
+                pp._paymentorderid = o._paymentorderid;
+                handler = Inv.lookupOpener("cashreceipt:"+ collectionType.handler, pp);
             }
             else {
                 def pp = [:];
                 pp.info = o.info;
                 pp.entity = entity;
                 pp.barcodeid = o.barcodeid;
+                pp.mainProcessHandler = processHandler;
                 handler = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
             }
-            super.signal();
+            def np = super.signal("movenext");
+            binding.fireNavigation( np );
         }
         return Inv.lookupOpener( "cashreceipt_barcode", [handler: h] );
     }

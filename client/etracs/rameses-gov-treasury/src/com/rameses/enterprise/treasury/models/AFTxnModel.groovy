@@ -98,6 +98,7 @@ class AFTxnModel extends CrudPageFlowModel {
         entity.request = [objid:req.objid , reqno: req.reqno];
         entity.issueto = req.requester;
         entity.respcenter = req.respcenter;
+        entity.items = [];
         req.items.each {
             def m = [:];
             m.item = it.item;
@@ -125,7 +126,6 @@ class AFTxnModel extends CrudPageFlowModel {
                 it.txntype = itemTxnTypes.first(); 
             } 
         }
-        
         if ( !entity.txntype.toString().matches('TRANSFER|RETURN|FORWARD')) { 
             entity.items.findAll{( it.txntype )}.each{
                 if ( !itemTxnTypes.contains(it.txntype) ) {
@@ -347,16 +347,22 @@ class AFTxnModel extends CrudPageFlowModel {
         return Inv.lookupOpener("af_control:editbatch", ['aftxnitemid': o.aftxnitemid, entity: e, txntype:entity.txntype ]);
     }
     
-    def issueBatch( def o ) {
+    def issueBatch( def o ) {       
+        def itm = entity.items.find{( it.objid == o.aftxnitemid )}
+        def selformno = itm?.item?.objid; 
+        def selqtyrequested = itm?.qty; 
+        
         int qty;
         def pp = [fields:[]];
-        pp.fields << [name:'qty',caption:'Qty', datatype:'integer'];
+        pp.fields << [name:'formno', caption:'Form No. ', datatype:'label', expression: (selformno ? selformno : "") ];
+        pp.fields << [name:'qtyrequested', caption:'Qty Requested ', datatype:'label', expression: ""+(selqtyrequested ? selqtyrequested : 0)];
+        pp.fields << [name:'qty',caption:'Qty to Issue', datatype:'integer', required: true];
         pp.data = [qty:o.qty];
-        pp.formTitle = "Please enter qty to issue";
+        pp.formTitle = "<html><br><b>Please enter qty to issue</b><br><br></html>";
         pp.handler = { iq->
             qty = iq.qty;
         }
-        Modal.show("dynamic:form", pp, [title:'Enter Qty']);
+        Modal.show("dynamic:form", pp, [title:'Enter Qty', height:250]);
         if(!qty) return null;
         try {
             svc.issueBatch([ aftxnitemid: o.aftxnitemid, qty: qty ]);
@@ -418,7 +424,9 @@ class AFTxnModel extends CrudPageFlowModel {
             }
         }
         
+        data.totalcost = 0;
         data.items.each{ o-> 
+            data.totalcost += (o.linetotal ? o.linetotal : 0.0); 
             if ( o.series ) return; 
             
             def buff = []; 
@@ -426,7 +434,7 @@ class AFTxnModel extends CrudPageFlowModel {
                 o.items.each {
                     buff << (
                         it.startseries.toString() +' - '+ it.endseries.toString() + 
-                        ' ( '+ ((it.endstub - it.startstub)+1) +' )' 
+                        ' ( '+ it.startstub +' - '+ it.endstub +' )' 
                     ); 
                 }
             } else if ( o.afunit?.formtype != 'serial') { 

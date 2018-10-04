@@ -23,6 +23,6 @@
                                       
    </invokers>
    
-   <code class="com.rameses.enterprise.treasury.models.CashTicketListModel"/> 
+   <code class="com.rameses.gov.treasury.models.CashTicketListModel"/> 
    
 </workunit>

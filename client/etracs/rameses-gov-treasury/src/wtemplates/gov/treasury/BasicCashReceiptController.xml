@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="formActions" action="_close" caption="Back" 
+        <invoker type="formActions" action="doClose" caption="Back" 
                  visibleWhen="#{!completed}" immediate="true" mnemonic="c" 
                  icon="images/toolbars/arrow_left.png" />
         

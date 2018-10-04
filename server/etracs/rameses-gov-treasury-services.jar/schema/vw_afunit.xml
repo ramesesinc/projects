@@ -13,7 +13,9 @@ SELECT
    `u`.`unit` AS `unit`,
    `u`.`qty` AS `qty`,
    `u`.`saleprice` AS `saleprice`,
-    u.interval 
+    u.interval,
+    u.cashreceiptprintout,
+    u.cashreceiptdetailprintout
 FROM afunit u 
 INNER JOIN af on af.objid = u.itemid;
 -->	
@@ -31,5 +33,7 @@ INNER JOIN af on af.objid = u.itemid;
 		<field name="qty" />
 		<field name="saleprice" />
 		<field name="interval" />
+		<field name="cashreceiptprintout" />
+		<field name="cashreceiptdetailprintout" />
 	</element>
 </schema>

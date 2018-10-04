@@ -1,0 +1,72 @@
+<workunit>
+    
+    <invokers>
+        <!--
+        <invoker type="quick_launcher" code="CRCT" caption="Cash Receipt" target="window">   
+            <action role="COLLECTOR" action="init"/>
+            <action role="SUBCOLLECTOR" action="initSubCollector"/>
+        </invoker>
+        -->
+        
+        <!-- menu panel -->
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="Issue Cash Receipt" 
+                 windowTitle="Issue Cash Receipt"
+                 formTitle="Issue Cash Receipt"
+                 role="COLLECTOR" action="startCollector"
+                 target="window" index="-11" />
+        
+        <invoker folderid="menucategory/treasury/subcollection" 
+                 caption="Issue Cash Receipt" 
+                 windowTitle="Issue Cash Receipt"
+                 formTitle="Issue Cash Receipt"
+                 role="SUBCOLLECTOR" action="startSubCollector"
+                 target="window" index="-11" />
+        
+        <!-- actions -->
+        <invoker type="formActions" caption="Barcode" 
+                visibleWhen="#{ state!='process' }"
+                icon="images/toolbars/barcode.png" action="loadBarcode" mnemonic="B"/>
+
+        <invoker type="formActions" caption="Reprint" 
+                visibleWhen="#{ state=='completed' }"
+                action="printReceipt" mnemonic="r"/>
+
+        <invoker type="formActions" caption="Print Detail" 
+                visibleWhen="#{ state=='completed' }"
+                action="printReceiptDetail" mnemonic="d"/>
+        
+        <invoker type="formActions" caption="Void" 
+                visibleWhen="#{ state=='completed' &amp;&amp; !entity.voided }"
+                action="voidReceipt" mnemonic="v"/>
+
+    </invokers>
+   
+    <code class="com.rameses.enterprise.treasury.models.CashReceiptIssueModel" />
+   
+    <pageflow>
+        <start>
+            <transition to="initial"/>
+        </start>
+        <page name="initial" title="Cash Receipt Initial (Select Type of Transaction)">
+            <transition to="process" caption="Next" mnemonic="n" action="launchNew" immediate="false"/>
+            <transition name="movenext" to="process" visibleWhen="#{false}"/>
+        </page>
+        <page name="process" title="#{title}">
+            <transition name="back" to="initial" caption="Cancel"  />
+            <transition name="forward" to="completed" caption="Next" visibleWhen="#{false}"/>
+        </page>
+        <page name="completed" title="Cash Receipt Completed">
+            <transition to="initial" action="cleanUp" caption="Quit" /> 
+            <transition to="process" action="launchNew" caption="Add Another" /> 
+        </page>
+        <end/>
+    </pageflow>
+    
+    <pages>
+        <page name="initial" template="com.rameses.enterprise.treasury.views.CashReceiptIssueInitialPage" />
+        <page name="process" template="com.rameses.enterprise.treasury.views.CashReceiptIssueProcessPage" />
+        <page name="completed" template="com.rameses.enterprise.treasury.views.CashReceiptIssuePrintoutPage" />
+    </pages>
+   
+</workunit>

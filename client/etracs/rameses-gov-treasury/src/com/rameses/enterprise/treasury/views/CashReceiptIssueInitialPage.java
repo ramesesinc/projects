@@ -1,23 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.gov.treasury.views;
+package com.rameses.enterprise.treasury.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;
 
 /**
  *
- * @author Elmo Nazareno
+ * @author elmonazareno
  */
 @Template(FormPage.class)
-public class CashTicketInitialPage extends javax.swing.JPanel {
+public class CashReceiptIssueInitialPage extends javax.swing.JPanel {
 
     /**
-     * Creates new form CashTicketInitialPage
+     * Creates new form CashReceiptTransactionInitialPage
      */
-    public CashTicketInitialPage() {
+    public CashReceiptIssueInitialPage() {
         initComponents();
     }
 
@@ -34,10 +35,10 @@ public class CashTicketInitialPage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
-        xButton1 = new com.rameses.rcp.control.XButton();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
 
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        xFormPanel1.setCaptionWidth(150);
+        xFormPanel1.setCaptionWidth(180);
 
         xComboBox1.setCaption("Mode");
         xComboBox1.setItems("modeList");
@@ -76,41 +77,41 @@ public class CashTicketInitialPage extends javax.swing.JPanel {
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);
 
-        xButton1.setMnemonic('N');
-        xButton1.setName("doNext"); // NOI18N
-        xButton1.setDefaultCommand(true);
-        xButton1.setFontStyle("font-size:14;");
-        xButton1.setText("Next");
+        xDateField1.setCaption("Offline Receipt Date");
+        xDateField1.setDepends(new String[] {"mode"});
+        xDateField1.setName("receiptdate"); // NOI18N
+        xDateField1.setVisibleWhen("#{ mode == 'OFFLINE' }");
+        xDateField1.setCaptionFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xDateField1.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
+        xDateField1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 30));
+        xDateField1.setRequired(true);
+        xFormPanel1.add(xDateField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(176, 176, 176)
-                        .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addGap(22, 22, 22)
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(xButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }

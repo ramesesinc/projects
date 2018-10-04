@@ -1,0 +1,45 @@
+<workunit>
+    
+    <invokers>
+        <!--
+        <invoker type="quick_launcher" code="CT" caption="Cash Ticket" target="window">   
+            <action role="COLLECTOR" action="init"/>
+            <action role="SUBCOLLECTOR" action="initSubCollector"/>
+        </invoker>
+        -->
+        
+        <invoker folderid="menucategory/treasury/collection" 
+                 caption="Issue Cash Ticket" 
+                 windowTitle="Issue Cash Ticket"
+                 formTitle="Issue Cash Ticket"
+                 role="COLLECTOR" action="startCollector"
+                 target="window" index="-08" />
+        
+        <invoker folderid="menucategory/treasury/subcollection" 
+                 caption="Issue Cash Ticket" 
+                 windowTitle="Issue Cash Ticket"
+                 formTitle="Issue Cash Ticket"
+                 role="SUBCOLLECTOR" action="startSubCollector"
+                 target="window" index="-08" />
+    </invokers>
+   
+    <code class="com.rameses.gov.treasury.models.CashTicketIssueModel" />
+    <pageflow>
+        <start>
+            <transition to="initial" />
+        </start>
+        <page name="initial" title="Select Type of Collection">
+            <transition to="entry" caption="Next" action="initNew"/>
+        </page>
+        <page name="entry" title="Enter Cash Ticket Details">
+            <transition to="initial" caption="Back" action="cleanUp"/>
+            <transition to="initial" caption="Save" action="save" />
+        </page>
+        <end/>
+    </pageflow>
+    <pages>
+        <page name="initial" template="com.rameses.enterprise.treasury.views.CashReceiptIssueInitialPage" />
+        <page name="entry" template="com.rameses.gov.treasury.views.CashTicketReceiptPage" />
+    </pages>
+   
+</workunit>

@@ -8,10 +8,12 @@
         <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
             icon="images/toolbars/save.png" mnemonic="s" />
 
+        <!--    
         <invoker type="formActions" action="_close:_close" caption="Quit" visibleWhen="#{completed}" mnemonic="n"/>
         <invoker type="formActions" action="_close" caption="New" visibleWhen="#{completed}" mnemonic="n"/>
         <invoker type="formActions" action="reprint" caption="Reprint" mnemonic="p" visibleWhen="#{completed}"/>
         <invoker type="formActions" action="doVoid" caption="Void XX" visibleWhen="#{completed}"/>        
+        -->
     </invokers>	
     
     <code>
@@ -90,6 +92,8 @@
     
     <pages>
 	<page template="com.rameses.enterprise.treasury.cashreceipt.SingleItemCashReceiptPage"/>
+        <!--
         <page name="completed" template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+        -->
     </pages>		
 </workunit>

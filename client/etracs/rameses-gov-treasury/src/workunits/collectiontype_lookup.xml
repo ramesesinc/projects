@@ -9,7 +9,7 @@
         <invoker type="collectiontype:paymentorder:lookup" 
                  caption="Lookup Collection Type for Payment Order" 
                  action="init"  
-                 customFilter="allowpaymentorder = 1 AND org.objid = :orgid"
+                 customFilter="allowpaymentorder = 1 AND orgid = :orgid"
                  cols="objid,name,title"/>
         
          <invoker type="collectiontype:kiosk:lookup" 

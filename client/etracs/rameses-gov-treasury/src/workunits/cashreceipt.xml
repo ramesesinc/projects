@@ -1,7 +1,23 @@
-<workunit  schemaName="cashreceipt" allowCreate="false" allowEdit="false">
+<workunit  schemaName="cashreceipt" 
+           allowCreate="false" allowEdit="false" allowViewReport="false">
     
     <invokers>
         <invoker type="cashreceipt:open" caption="Cash Receipt" action="open" target="popup"/>
+
+        <!-- action buttons in cash receipt -->        
+        <invoker type="formActions" caption="Reprint"
+                visibleWhen="#{entity.formtype == 'serial' }"
+                action="printReceipt" mnemonic="r"/>
+
+        <invoker type="formActions" caption="Print Detail" 
+                visibleWhen="#{entity.formtype == 'serial' }"
+                action="printReceiptDetail" mnemonic="d"/>
+        
+        <invoker type="formActions" caption="Void" 
+                visibleWhen="#{ allowVoid }"
+                action="voidReceipt" mnemonic="v"/>
+
+        
     </invokers>
    
     <code class="com.rameses.enterprise.treasury.models.CashReceiptModel" />

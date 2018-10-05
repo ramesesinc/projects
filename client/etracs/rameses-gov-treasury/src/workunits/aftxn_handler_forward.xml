@@ -1,0 +1,15 @@
+<!-- REQUISITION ISSUE SLIP -->
+<workunit>
+    <invokers>
+        <invoker type="aftxn:handler" name="FORWARD" caption="FORWARD" index="3" />
+        <invoker type="aftxn:handler:forward" action="init"/>
+        
+        <!-- buttons -->
+        <invoker type="formActions" action="doClose" caption="Back" immediate="true"/>
+        <invoker type="formActions" action="save" caption="Save" />
+    </invokers>
+    <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerForward" />
+    <pages>
+        <page template="com.rameses.enterprise.treasury.views.AFTxnSingleEntryPage" />
+    </pages>
+</workunit>

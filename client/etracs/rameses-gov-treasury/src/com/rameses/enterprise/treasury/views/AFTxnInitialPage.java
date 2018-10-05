@@ -45,7 +45,9 @@ public class AFTxnInitialPage extends javax.swing.JPanel {
         xFormPanel2.setPadding(new java.awt.Insets(0, 10, 5, 5));
 
         xComboBox1.setCaption("Select Type of Transaction");
-        xComboBox1.setItems("formTypes");
+        xComboBox1.setExpression("#{ item.caption }");
+        xComboBox1.setItemKey("name");
+        xComboBox1.setItems("txnTypes");
         xComboBox1.setName("entity.txntype"); // NOI18N
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xComboBox1);

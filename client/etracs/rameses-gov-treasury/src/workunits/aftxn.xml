@@ -1,5 +1,6 @@
 <!-- REQUISITION ISSUE SLIP -->
 <workunit schemaName="aftxn">
+    <!--
     <invokers>
         <invoker folderid="menucategory/treasury/af"
                  caption="New AF Transaction" formTitle="New AF Transaction" action="start" role="AFO"/>
@@ -17,7 +18,7 @@
                  visibleWhen="#{state == 'posted'}"/> 
             
     </invokers>
-    
+    -->
     <code class="com.rameses.enterprise.treasury.models.AFTxnModel" />
     
     <pageflow>

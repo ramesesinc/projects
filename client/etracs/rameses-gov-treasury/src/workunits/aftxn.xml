@@ -63,8 +63,8 @@
     
     <pages>
         <page name="initial" template="com.rameses.enterprise.treasury.views.AFTxnInitialPage" />
-        <page name="single-entry" template="com.rameses.enterprise.treasury.views.AFSingleEntryPage" />
-        <page name="select-af" template="com.rameses.enterprise.treasury.views.AFSelectionPage" />
+        <page name="single-entry" template="com.rameses.enterprise.treasury.views.AFTxnSingleEntryPage" />
+        <page name="select-af" template="com.rameses.enterprise.treasury.views.AFTxnSelectionPage" />
         <page name="entry"   template="com.rameses.enterprise.treasury.views.AFTxnEntryPage" />
         <page name="view"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
         <page name="posted"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />

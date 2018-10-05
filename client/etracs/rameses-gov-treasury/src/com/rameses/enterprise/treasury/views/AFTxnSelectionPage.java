@@ -13,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author elmonazareno
  */
 @Template(FormPage.class)
-public class AFSelectionPage extends javax.swing.JPanel {
+public class AFTxnSelectionPage extends javax.swing.JPanel {
 
     /**
      * Creates new form AFSelectionPage
      */
-    public AFSelectionPage() {
+    public AFTxnSelectionPage() {
         initComponents();
     }
 

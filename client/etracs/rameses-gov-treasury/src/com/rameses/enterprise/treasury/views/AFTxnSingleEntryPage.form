@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
               <Component id="xFormPanel1" min="-2" pref="429" max="-2" attributes="0"/>
               <EmptySpace pref="37" max="32767" attributes="0"/>
@@ -27,8 +27,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-              <Component id="xFormPanel1" min="-2" pref="330" max="-2" attributes="0"/>
-              <EmptySpace pref="21" max="32767" attributes="0"/>
+              <Component id="xFormPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="76" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -75,7 +75,7 @@
                 <StringItem index="0" value="form.afunit"/>
               </StringArray>
             </Property>
-            <Property name="expression" type="java.lang.String" value="#{ form.afunit.unit }"/>
+            <Property name="expression" type="java.lang.String" value="#{ form.afunit?.unit }"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                 <LineBorder>
@@ -133,7 +133,7 @@
               </StringArray>
             </Property>
             <Property name="name" type="java.lang.String" value="form.startseries" noResource="true"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.formtype == &apos;serial&apos; }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.serieslength &gt; 0 }"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="12" style="0"/>
             </Property>
@@ -153,7 +153,7 @@
               </StringArray>
             </Property>
             <Property name="name" type="java.lang.String" value="form.currentseries" noResource="true"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.formtype == &apos;serial&apos; }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.serieslength &gt; 0 }"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="12" style="0"/>
             </Property>
@@ -174,7 +174,7 @@
             </Property>
             <Property name="disableWhen" type="java.lang.String" value="#{ true }"/>
             <Property name="name" type="java.lang.String" value="form.endseries" noResource="true"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.formtype == &apos;serial&apos; }"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.serieslength &gt; 0 }"/>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Courier New" size="12" style="0"/>
@@ -184,6 +184,21 @@
               <Dimension value="[150, 20]"/>
             </Property>
             <Property name="required" type="boolean" value="true"/>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XIntegerField" name="txtqtyrcv">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Qty Received"/>
+            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="form.afunit"/>
+              </StringArray>
+            </Property>
+            <Property name="name" type="java.lang.String" value="form.qty" noResource="true"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit!=null &amp;&amp; form.afunit?.serieslength == 0 }"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[150, 20]"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XLabel" name="lblbalance">
@@ -197,6 +212,7 @@
             </Property>
             <Property name="expression" type="java.lang.String" value="#{(form.endseries.toInteger() - form.currentseries.toInteger())+1}"/>
             <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.objid !=null &amp;&amp; form.afunit.serieslength &gt; 0 }"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                 <LineBorder>
@@ -207,21 +223,6 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="12" style="0"/>
             </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[150, 20]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XIntegerField" name="txtqtyrcv">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Qty Received"/>
-            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
-                <StringItem index="0" value="form.afunit"/>
-              </StringArray>
-            </Property>
-            <Property name="name" type="java.lang.String" value="form.qty" noResource="true"/>
-            <Property name="visibleWhen" type="java.lang.String" value="#{ form.afunit?.formtype == &apos;cashticket&apos; }"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 20]"/>
             </Property>

@@ -13,12 +13,12 @@ import com.rameses.rcp.ui.annotations.Template;
  * @author elmonazareno
  */
 @Template(FormPage.class)
-public class AFSingleEntryPage extends javax.swing.JPanel {
+public class AFTxnSingleEntryPage extends javax.swing.JPanel {
 
     /**
      * Creates new form AFSingleEntryPage
      */
-    public AFSingleEntryPage() {
+    public AFTxnSingleEntryPage() {
         initComponents();
     }
 
@@ -40,8 +40,8 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtstartseries = new com.rameses.rcp.control.XTextField();
         txtcurrentseries = new com.rameses.rcp.control.XTextField();
         txtendseries = new com.rameses.rcp.control.XTextField();
-        lblbalance = new com.rameses.rcp.control.XLabel();
         txtqtyrcv = new com.rameses.rcp.control.XIntegerField();
+        lblbalance = new com.rameses.rcp.control.XLabel();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
 
@@ -67,7 +67,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
 
         xLabel1.setCaption("Unit");
         xLabel1.setDepends(new String[] {"form.afunit"});
-        xLabel1.setExpression("#{ form.afunit.unit }");
+        xLabel1.setExpression("#{ form.afunit?.unit }");
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         xLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(xLabel1);
@@ -98,7 +98,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtstartseries.setCaption("Start Series");
         txtstartseries.setDepends(new String[] {"form.afunit"});
         txtstartseries.setName("form.startseries"); // NOI18N
-        txtstartseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
+        txtstartseries.setVisibleWhen("#{ form.afunit?.serieslength > 0 }");
         txtstartseries.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         txtstartseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         txtstartseries.setPreferredSize(new java.awt.Dimension(150, 20));
@@ -108,7 +108,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtcurrentseries.setCaption("Current Series");
         txtcurrentseries.setDepends(new String[] {"form.afunit"});
         txtcurrentseries.setName("form.currentseries"); // NOI18N
-        txtcurrentseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
+        txtcurrentseries.setVisibleWhen("#{ form.afunit?.serieslength > 0 }");
         txtcurrentseries.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         txtcurrentseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         txtcurrentseries.setPreferredSize(new java.awt.Dimension(150, 20));
@@ -119,7 +119,7 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtendseries.setDepends(new String[] {"form.afunit"});
         txtendseries.setDisableWhen("#{ true }");
         txtendseries.setName("form.endseries"); // NOI18N
-        txtendseries.setVisibleWhen("#{ form.afunit?.formtype == 'serial' }");
+        txtendseries.setVisibleWhen("#{ form.afunit?.serieslength > 0 }");
         txtendseries.setEnabled(false);
         txtendseries.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         txtendseries.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -127,21 +127,22 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
         txtendseries.setRequired(true);
         xFormPanel1.add(txtendseries);
 
+        txtqtyrcv.setCaption("Qty Received");
+        txtqtyrcv.setDepends(new String[] {"form.afunit"});
+        txtqtyrcv.setName("form.qty"); // NOI18N
+        txtqtyrcv.setVisibleWhen("#{ form.afunit!=null && form.afunit?.serieslength == 0 }");
+        txtqtyrcv.setPreferredSize(new java.awt.Dimension(150, 20));
+        xFormPanel1.add(txtqtyrcv);
+
         lblbalance.setCaption("Qty Balance");
         lblbalance.setDepends(new String[] {"form.afunit", "form.currentseries"});
         lblbalance.setExpression("#{(form.endseries.toInteger() - form.currentseries.toInteger())+1}");
         lblbalance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblbalance.setVisibleWhen("#{ form.afunit?.objid !=null && form.afunit.serieslength > 0 }");
         lblbalance.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
         lblbalance.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         lblbalance.setPreferredSize(new java.awt.Dimension(150, 20));
         xFormPanel1.add(lblbalance);
-
-        txtqtyrcv.setCaption("Qty Received");
-        txtqtyrcv.setDepends(new String[] {"form.afunit"});
-        txtqtyrcv.setName("form.qty"); // NOI18N
-        txtqtyrcv.setVisibleWhen("#{ form.afunit?.formtype == 'cashticket' }");
-        txtqtyrcv.setPreferredSize(new java.awt.Dimension(150, 20));
-        xFormPanel1.add(txtqtyrcv);
 
         xTextField3.setCaption("Prefix");
         xTextField3.setName("form.prefix"); // NOI18N
@@ -166,8 +167,8 @@ public class AFSingleEntryPage extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(76, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

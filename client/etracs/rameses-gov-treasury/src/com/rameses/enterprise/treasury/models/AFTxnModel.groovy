@@ -33,6 +33,10 @@ class AFTxnModel extends CrudPageFlowModel {
     @FieldValidator
     def validators = [
         "form.startseries" : { o->
+            int len = form.afunit.serieslength;
+            if( (o+"").length() > len )
+                throw new Exception("XSeries length must be less than or equal to "+len);
+            
             try {
                 Integer.parseInt(o);
             }
@@ -59,11 +63,9 @@ class AFTxnModel extends CrudPageFlowModel {
             if( entity.txntype.matches("TRANSFER|RETURN") ) afListModel.reload();
         },
         "form.startseries" : { o->
+            int len = form.afunit.serieslength;
             int interval = form.afunit.interval;
             if(!interval || interval < 0 ) interval = 1;
-            int len = form.afunit.serieslength;
-            if( (o+"").length() > len )
-                throw new Exception("Series length must be less than or equal to "+len);
             int starting = Integer.parseInt(""+o);    
             int ending = (starting + (form.afunit.qty * interval) ) ;
             form.startseries = String.format( "%0"+len+"d", starting);

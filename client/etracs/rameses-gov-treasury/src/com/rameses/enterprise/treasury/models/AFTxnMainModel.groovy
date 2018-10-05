@@ -65,6 +65,18 @@ class AFTxnMainModel extends CrudPageFlowModel {
         }
     }
 
+    public def getInfo() {
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPage.gtpl", [entity:entity] );
+    }
     
+    /*
+    void clearItems() {
+        afType = null;
+        entity.issuefrom = null;
+        entity.issueto = null;
+        entity.respcenter = null;        
+        afListModel.reload();
+    }
+    */
     
 }    

@@ -18,12 +18,23 @@ class AFTxnHandler {
     @Service("AFTxnService")
     def svc;
     
+    @Service("QueryService")
+    def queryService;
+    
     def entity;
     def handler;
+    
+    String title;
     
     def doClose() {
         handler.back();
         return "_close";
     }
+    
+    def doForward() {
+        handler.forward();
+        return "_close";
+    }
+    
     
 }    

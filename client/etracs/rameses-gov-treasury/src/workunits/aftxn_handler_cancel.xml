@@ -1,8 +1,0 @@
-<!-- REQUISITION ISSUE SLIP -->
-<workunit>
-    <invokers>
-        <invoker type="aftxn:handler" name="CANCEL" caption="CANCEL" index="6"/>
-        <invoker type="aftxn:handler:cancel" action="init"/>
-    </invokers>
-    <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerCancel" /> 
-</workunit>

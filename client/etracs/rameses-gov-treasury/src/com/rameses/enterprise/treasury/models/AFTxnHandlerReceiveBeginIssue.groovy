@@ -10,10 +10,18 @@ import com.rameses.util.*;
 import com.rameses.rcp.framework.ValidatorException;
 
 
-class AFTxnHandlerPurchaseReceipt extends AFTxnHandler {
+class AFTxnHandlerReceiveBeginIssue extends AFTxnHandler {
 
-     void init() {
-        MsgBox.alert("PURCHASE RECEIPT");
+    void initBeginBalance() {
+        title = "Accountable Form Begin Balance";
     }
     
+    void initPurchaseReceipt() {
+        title = "Accountable Form Purchase Receipt";
+    }
+
+    void initIssue() {
+        title = "Accountable Form Issue";
+    }
+
 }    

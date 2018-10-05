@@ -32,7 +32,7 @@
         </page>
         <page name="process" title="#{title}" >
             <transition to="initial" name="back" visibleWhen="#{false}"/>
-            <transition to="completed" name="complete" visibleWhen="#{false}"/>
+            <transition to="forward" name="complete" visibleWhen="#{false}"/>
         </page>
         <page name="completed" title="AF Transaction" >
             <transition to="end" caption="Close"/>

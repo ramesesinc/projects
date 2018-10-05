@@ -1,8 +1,0 @@
-<!-- REQUISITION ISSUE SLIP -->
-<workunit>
-    <invokers>
-        <invoker type="aftxn:handler" name="PURCHASE_RECEIPT" caption="PURCHASE RECEIPT" index="0" />
-        <invoker type="aftxn:handler:purchase_receipt" action="init"/>
-    </invokers>
-    <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerPurchaseReceipt" />
-</workunit>

@@ -1,8 +1,0 @@
-<!-- REQUISITION ISSUE SLIP -->
-<workunit>
-    <invokers>
-        <invoker type="aftxn:handler" name="ISSUE" caption="ISSUE" index="1"/>
-        <invoker type="aftxn:handler:issue" action="init"/>
-    </invokers>
-    <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerIssue" />
-</workunit>

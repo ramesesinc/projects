@@ -1,8 +1,0 @@
-<!-- REQUISITION ISSUE SLIP -->
-<workunit>
-    <invokers>
-        <invoker type="aftxn:handler" name="RETURN" caption="RETURN" index="5"/>
-        <invoker type="aftxn:handler:return" action="init"/>
-    </invokers>
-    <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerReturn" />        
-</workunit>

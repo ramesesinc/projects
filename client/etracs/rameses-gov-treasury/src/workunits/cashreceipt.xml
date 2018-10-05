@@ -14,7 +14,7 @@
                 action="printReceiptDetail" mnemonic="d"/>
         
         <invoker type="formActions" caption="Void" 
-                visibleWhen="#{ allowVoid }"
+                visibleWhen="#{ allowVoid == true }"
                 action="voidReceipt" mnemonic="v"/>
 
         

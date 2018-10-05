@@ -73,7 +73,7 @@ public class AssessmentNoticeModel extends CrudFormModel
                 if (! entity.items.find{it.faasid == faas.objid}) {
                     faas.faasid = faas.objid;
                     faas.barangay = faas.barangay.name 
-                    faas.objid = RPTUtil.generateId('ANI');
+                    faas.objid = 'ANI' + new java.rmi.server.UID();
                     faas.assessmentnoticeid = entity.objid;
                     faas.included = true; 
                     entity.items.add(faas);

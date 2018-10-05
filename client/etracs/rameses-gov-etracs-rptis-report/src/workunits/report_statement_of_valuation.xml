@@ -38,7 +38,7 @@ class StatementOfValuationModel extends com.rameses.gov.etracs.rpt.report.AsyncR
             return [
                 new FormControl( "combo", [caption:'LGU', name:'entity.lgu', required:true, items:'lgus', allowNull:false, expression:'#{item.name}']),
                 new FormControl( "integer", [caption:'Year', name:'entity.year', required:true, preferredSize:'100,21']),
-                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.name}', dynamic:true, preferredSize:'100,21']),
+                new FormControl( "combo", [caption:'Month', name:'entity.month', items:'months', depends:'entity.qtr', expression:'#{item.caption}', dynamic:true, preferredSize:'100,21']),
             ]    
         },
    ] as FormPanelModel;

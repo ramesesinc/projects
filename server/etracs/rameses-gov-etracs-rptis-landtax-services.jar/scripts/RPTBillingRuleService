@@ -39,6 +39,9 @@ public class RPTBillingRuleService
 	@DataContext('org')
 	def em_org 
 
+	@DataContext('rpttaxincentive_item')
+	def em_incentive_item 
+
 	def RULESET 			= 'rptbilling'
 	def FACT_PACKAGE 		= 'rptbilling.'
 
@@ -157,7 +160,8 @@ public class RPTBillingRuleService
 
 	def createIncentiveFacts(bill){
 		def facts = []
-		bill.incentives.each{
+		def incentives = em_incentive_item.find([rptledgerid:bill.ledgerfact.objid]).list()
+		incentives.each{
 			facts << new RPTIncentive(bill.ledgerfact, it)
 		}
 		return facts 

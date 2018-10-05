@@ -203,56 +203,6 @@ public abstract class AbstractCashReceipt {
             }
         }
     ];
-    
-    /*
-    def getLookupEntity() {
-        def params = [:]; 
-        beforeLookupEntity( params ); 
-
-        params.onselect = { o-> 
-            def newdata = entity.clone();
-            newdata.payer = o;
-            newdata.items = null; 
-            service.validatePayer( newdata );  
-             
-            entity.payer = o;
-            entity.paidby = o.name;
-            entity.paidbyaddress = o.address.text;
-            binding.refresh("entity.(payer.*|paidby.*)");
-            binding.refresh('createEntity|openEntity');
-                        
-            def opener = payerChanged( o );
-            if( opener != null ) { 
-                return opener;
-            } else {  
-                return "_close"; 
-            } 
-        }
-        params.onempty = { 
-            entity.payer = null; 
-            binding.refresh('createEntity|openEntity'); 
-        } 
-        return InvokerUtil.lookupOpener( getLookupEntityName(), params );
-    } 
-    */
-
-    /*
-    def cancelSeries(){
-        def oldentity = entity.clone()
-        return InvokerUtil.lookupOpener( "cashreceipt:cancelseries", [entity:oldentity,
-            handler: { o-> 
-                def newentity = service.init( o );
-                entity.objid = newentity.objid 
-                entity.stub = newentity.stub
-                entity.receiptno = newentity.receiptno;
-                entity.controlid = newentity.controlid;
-		entity.series = newentity.series;
-                binding.refresh("entity.*") ;
-            }
-        ]); 
-    }
-    */
-
 
     void beforePost() {}
     void postError() {}
@@ -271,47 +221,59 @@ public abstract class AbstractCashReceipt {
         validateBeforePost();
         
         boolean pass = false;
-        def h = {
-            pass = true;
-        }
+        def h = { pass = true; }
         Modal.show("cashreceipt_confirm", [handler:h, receiptno: entity.receiptno] );
-        if(pass) {
-            try { 
-                beforePost();
-                entity._paymentorderid = _paymentorderid;
-                def res = service.post( entity );
-                if ( res ) entity = res;  
-            } catch(e) { 
-                postError(); 
-                throw e; 
-            }
-            
-            try {
-                if(entity.txnmode.equalsIgnoreCase("ONLINE") && mainProcessHandler==null) { 
-                    print();
-                }    
-            }
-            catch(e) {
-                e.printStackTrace();
-                MsgBox.alert("warning! no form handler found for.  " + entity.formno +". Printout is not handled" );
-            }
-            
-            if( mainProcessHandler ) {
-                mainProcessHandler.forward();
-                return null;
-            }
-            else {
-                completed = true;
-                return "completed";
-            }
+        if ( !pass ) return null; 
+        
+        boolean postok = false;
+        try { 
+            beforePost();
+            entity._paymentorderid = _paymentorderid; 
+            def res = service.post( entity ); 
+            if ( res ) entity = res; 
+            postok = true; 
+        } catch(e) { 
+            postError(); 
+            throw e; 
+        }
+
+        if ( postok ) {
+            completed = true; 
+            binding.fireNavigation('completed'); 
+            binding.refresh(); 
         } 
+        
+        println 'txnmode='+ entity.txnmode + ', mainProcessHandler='+ mainProcessHandler; 
+        try {
+            if(entity.txnmode.equalsIgnoreCase("ONLINE") && mainProcessHandler==null) { 
+                print();
+            }    
+        }
+        catch(e) {
+            e.printStackTrace();
+            MsgBox.alert("warning! no form handler found for.  " + entity.formno +". Printout is not handled" );
+        }
+
+        if( mainProcessHandler ) {
+            mainProcessHandler.forward();
+        }
+        return null; 
     }
 
     def findReportOpener( reportData ) { 
         //check first if form handler exists. 
-        def o = InvokerUtil.lookupOpener( "cashreceipt-form:"+entity.formno, [reportData:reportData] );
-        if ( !o ) throw new Exception("Handler not found"); 
-
+        def op = null;
+        try {
+            def handlerName = "cashreceipt-form:" + entity.formno; 
+            op = Inv.lookupOpener( handlerName, [ reportData: reportData ]);
+        } 
+        catch(Throwable t) {;} 
+        
+        if ( op == null ) { 
+            MsgBox.alert("No available handler found for "+ handlerName); 
+            return null; 
+        } 
+        
         if ( reportData.receiptdate instanceof String ) { 
             // this is only true when txnmode is OFFLINE 
             try {
@@ -319,24 +281,36 @@ public abstract class AbstractCashReceipt {
                 reportData.receiptdate = dateobj;  
             } catch( Throwable t ) {;} 
         } 
-        return o.handle; 
+        return op; 
     } 
-
+    
     void print() {
-        def handle = findReportOpener(entity);
-        def opt = handle.viewReport(); 
-        if ( opt instanceof Opener ) { 
-            // 
-            // possible routing of report opener has been configured 
-            // 
-            handle = opt.handle; 
+        def op = findReportOpener( entity ); 
+
+        def handlerName = "cashreceipt-form:" + entity.formno; 
+        def handle = findReportModel( op ); 
+        if ( handle == null ) {
+            MsgBox.alert("No available handler found for "+ handlerName); 
+
+        } else {
             handle.viewReport(); 
-        } 
-        
-        def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
-        ReportUtil.print(handle.report, canShowPrinterDialog);
+
+            def canShowPrinterDialog = ( entity._options?.canShowPrinterDialog == false ? false : true ); 
+            ReportUtil.print(handle.report, canShowPrinterDialog);
+        }
     }
     
+    private def findReportModel( o ) {
+        if ( o == null ) return null; 
+        else if (o instanceof ReportModel ) return o; 
+        else if (o instanceof Opener) return findReportModel( o.handle ); 
+        
+        if ( o.metaClass.hasProperty(o, 'report' )) {
+            return findReportModel( o.report ); 
+        } else {
+            return null; 
+        }
+    }    
     
     def getInfoHtml() {
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/cashreceipt/cashreceipt.gtpl", [entity:entity] );

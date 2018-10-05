@@ -63,7 +63,7 @@ from (
 					(
 						select top 1 objid from af_control_detail 
 						where controlid = afc.objid and refdate <= r.dtposted 
-						order by refdate desc, txndate desc, indexno desc 
+						order by convert(date, refdate) desc, txndate desc, indexno desc 
 					) as detailid 
 				from remittance r 
 					inner join af_control afc on afc.owner_objid = r.collector_objid 
@@ -92,7 +92,7 @@ from (
 			select t1.*, ( 
 					select top 1 objid from af_control_detail 
 					where controlid = t1.controlid and refdate <= t1.dtposted 
-					order by refdate desc, txndate desc, indexno desc 
+					order by convert(date, refdate) desc, txndate desc, indexno desc 
 				) as detailid 
 			from ( 
 				select c.remittanceid, c.controlid, r.dtposted, count(*) as icount 
@@ -139,7 +139,7 @@ from (
 			select t1.*, ( 
 					select top 1 objid from af_control_detail 
 					where controlid = t1.controlid and refdate <= t1.dtposted 
-					order by refdate desc, txndate desc, indexno desc 
+					order by convert(date, refdate) desc, txndate desc, indexno desc 
 				) as detailid 
 			from ( 
 				select c.remittanceid, r.dtposted, afc.objid as controlid, 

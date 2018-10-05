@@ -64,7 +64,6 @@ class CashReceiptService  {
 	*/
 	@ProxyMethod
 	public def init( def entity ) {
-
 		entity.objid = "RCT"+new java.rmi.server.UID();
 		if(!entity.receiptdate) {
 			entity.receiptdate =  dateService.serverDate;
@@ -180,8 +179,6 @@ class CashReceiptService  {
 			p.amountinwords = numSvc.doubleToWords( p.amount ).toUpperCase() + " PESOS ONLY";
 		} 
 
-		// data compliant to previous versions 
-		p.totalnoncash = p.totalcheck; 
 		return p;
 	}
 	

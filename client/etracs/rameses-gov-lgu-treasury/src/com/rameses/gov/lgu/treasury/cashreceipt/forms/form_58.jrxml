@@ -28,7 +28,7 @@
 
 	<field name="receiptdate" class="java.util.Date"/>
 	<field name="amountinwords" class="java.lang.String"/>
-	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="amount" class="java.lang.Number"/>
 	<field name="collector.name" class="java.lang.String"/>
 	<field name="collector.title" class="java.lang.String"/>
 	<field name="paidby" class="java.lang.String"/>
@@ -36,7 +36,7 @@
 	<field name="name" class="java.lang.String"/>
 	<field name="permissiontype" class="java.lang.String"/>
 	<field name="nationality" class="java.lang.String"/>
-	<field name="age" class="java.lang.String"/>
+	<field name="age" class="java.lang.Number"/>
 	<field name="sex" class="java.lang.String"/>
 	<field name="dtdeath" class="java.lang.String"/>
 	<field name="deathcause" class="java.lang.String"/>
@@ -230,7 +230,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{age}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{age}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -430,7 +430,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -490,7 +490,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{amount}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
 			</band>
 		</pageHeader>

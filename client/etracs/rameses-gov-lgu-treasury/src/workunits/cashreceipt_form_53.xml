@@ -1,37 +1,40 @@
 <workunit>
     <invokers>
+        <invoker type="cashreceipt:printout" caption="AF 53 Printout" name="cashreceipt-form:53"/>        
         <invoker type="cashreceipt-form:53" />
     </invokers>
     
     <code>
         <![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
 
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.osiris2.reports.*;
+class  CashReceiptForm53 extends ReportModel {
+
+    def reportData;
+
+    def reportPath = 'com/rameses/gov/lgu/treasury/cashreceipt/forms/'
+
+    public Object getReportData() {
+        return this.reportData; 
+    }
+    public String getReportName() {
+        return reportPath + "form_53.jasper";
+    }
+    
+    private def resolveDate( value ) { 
+        if ( !value ) return null; 
         
-        class  CashReceiptForm53 extends ReportModel {
-        
-            def reportData;
-            
-            @Service("ReportParameterService")
-            def paramSvc
-            
-            def reportPath = 'com/rameses/gov/lgu/treasury/cashreceipt/forms/'
-            
-            public Map getParameters() {
-                return paramSvc.getStandardParameter();
-            }
-            public Object getReportData() {
-                return reportData;
-            }
-            public String getReportName() {
-                return reportPath + "form_53.jasper";
-            }
-        }
-        ]]>
+        if ( value.toString().matches('[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}') ) {
+            return java.sql.Date.valueOf( value.toString()); 
+        } 
+        return value; 
+    }     
+}
+    ]]>
     </code>
     
 </workunit>

@@ -93,36 +93,60 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
     }
     
     public void printReceipt() {
-        //load the report forms. This is temporarily loaded,
-        if(!afcontrol.afunit.cashreceiptprintout ) {
-            throw new Exception("Please define a cashreceipt printout in the af unit")
+        if ( afcontrol?.afunit?.cashreceiptprintout ) { 
+            print( afcontrol.afunit.cashreceiptprintout );
+        } else {
+            MsgBox.alert("Unable to print receipt. Please define a setting for cashreceipt printout in AF Unit"); 
         }
-        print( afcontrol.afunit.cashreceiptprintout );
     }
     
     public void printReceiptDetail() {
-        if(!afcontrol.afunit.cashreceiptdetailprintout ) {
-            throw new Exception("Please define a cashreceipt detail printout in the af unit")
+        if ( afcontrol?.afunit?.cashreceiptdetailprintout ) {
+            print( afcontrol.afunit.cashreceiptdetailprintout );
+        } else {
+            MsgBox.alert("Unable to print receipt detail. Please define a setting for cashreceipt detail printout in AF Unit"); 
         }
-        print( afcontrol.afunit.cashreceiptdetailprintout );
     }
 
     public void print( def name ) {
         def op = Inv.lookupOpener( name, [reportData: entity] );
-        if( !(op.handle instanceof ReportModel )) {
-            throw new Exception("Report Handle for " + n + " must be a ReportModel " );
+        def opHandle = op.handle;
+        def reportHandle = findReportModel( opHandle ); 
+        if ( reportHandle == null ) {
+            MsgBox.alert("Report Handle for " + name + " must be a ReportModel " );
+            return; 
         }
-        op.handle.viewReport(); 
+        
+        reportHandle.viewReport(); 
         showPrintDialog = true;
-        ReportUtil.print(op.handle.report, showPrintDialog);
+        ReportUtil.print(reportHandle.report, showPrintDialog);
     }
     
-    public void voidReceipt() {
-        Modal.show( "void_cashreceipt", [applySecurity : false, receipt: entity ]);
+    public void voidReceipt() { 
+        if ( entity.voided.toString().matches('1|true')) {
+            MsgBox.alert('Cash Receipt is already voided'); 
+        } else {
+            Modal.show( "void_cashreceipt", [applySecurity : false, receipt: entity ]);
+        }
     }
 
     public viewCollectionSummary() {
         Modal.show( "cashreceipt_collection_summary:view", [:] );
     }    
     
+    private def findReportModel( o ) {
+        if ( o == null ) return null; 
+        else if (o instanceof ReportModel ) return o; 
+        else if (o instanceof Opener) return findReportModel( o.handle ); 
+        
+        if ( o.metaClass.respondsTo(o, 'viewReport' )) {
+            def oo = o.viewReport(); 
+            return findReportModel( oo ); 
+        } else if ( o.metaClass.hasProperty(o, 'report' )) {
+            return findReportModel( o.report ); 
+        } else {
+            return null; 
+        }
+    }
+
 }    

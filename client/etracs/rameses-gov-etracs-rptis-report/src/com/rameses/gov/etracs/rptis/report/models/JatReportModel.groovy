@@ -12,10 +12,14 @@ class JatReportModel extends AsyncReportModel2
     
     String reportName = 'com/rameses/gov/etracs/rptis/reports/jat.jasper';
 
-    def showSection = true;
-    def barangayRequired = true;
+    def showSection = false;
+    def barangayRequired = false;
     
     void buildReportData(entity, asyncHandler){
         svc.generateJAT(entity, asyncHandler);
+    }
+
+    List getQuarters() {
+        return null;
     }
 }

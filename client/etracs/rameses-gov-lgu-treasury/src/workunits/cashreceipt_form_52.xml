@@ -1,37 +1,43 @@
 <workunit>
     <invokers>
+        <invoker type="cashreceipt:printout" caption="AF 52 Printout" name="cashreceipt-form:52"/>
         <invoker type="cashreceipt-form:52"/>
     </invokers>
     
     <code>
-        <![CDATA[    
+    <![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.reports.*;
 
-        import com.rameses.rcp.annotations.*
-        import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
-        import com.rameses.osiris2.common.*
-        import com.rameses.osiris2.reports.*;
+class CashReceiptForm52 extends ReportModel {
+
+    def reportData;
+    def reportPath = 'com/rameses/gov/lgu/treasury/cashreceipt/forms/';
+
+    public Object getReportData() { 
+        def data = this.reportData; 
+        if ( !data ) return data;  
         
-        class  CashReceiptForm52 extends ReportModel {
+        data.issuedate = resolveDate( data.issuedate ); 
+        return data; 
+    }
+    public String getReportName() {
+        return reportPath + "form_52.jasper";
+    }
+    
+    private def resolveDate( value ) { 
+        if ( !value ) return null; 
         
-            def reportData;
-            
-            @Service("ReportParameterService")
-            def paramSvc
-            
-            def reportPath = 'com/rameses/gov/lgu/treasury/cashreceipt/forms/'
-            
-            public Map getParameters() {
-                return paramSvc.getStandardParameter();
-            }
-            public Object getReportData() {
-                return reportData;
-            }
-            public String getReportName() {
-                return reportPath + "form_52.jasper";
-            }
-        }
-        ]]>
+        if ( value.toString().matches('[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}') ) {
+            return java.sql.Date.valueOf( value.toString()); 
+        } 
+        return value; 
+    } 
+}
+    ]]>
     </code>
     
 </workunit>

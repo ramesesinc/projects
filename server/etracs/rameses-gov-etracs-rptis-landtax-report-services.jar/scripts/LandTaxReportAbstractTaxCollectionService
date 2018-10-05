@@ -43,7 +43,7 @@ class LandTaxReportAbstractTaxCollectionService {
         header.TITLE = 'ABSTRACT OF REAL PROPERTY TAX COLLECTION'
         header.PERIOD = ''
         header.REMITTANCENO = entity.txnno
-        header.REMITTANCEDATE = dtsvc.format('MMMMM dd, yyyy', entity.dtposted )
+        header.dtposted = dtsvc.format('MMMMM dd, yyyy', entity.dtposted )
         header.REMITTANCEAMOUNT = entity.amount
         header.COLLECTORNAME = entity.collector.name
         header.COLLECTORTITLE = entity.collector.title
@@ -73,7 +73,7 @@ class LandTaxReportAbstractTaxCollectionService {
         header.TITLE = 'ABSTRACT OF REAL PROPERTY TAX COLLECTION DETAIL'
         header.PERIOD = ''
         header.REMITTANCENO = entity.txnno
-        header.REMITTANCEDATE = dtsvc.format('MMMMM dd, yyyy', entity.dtposted )
+        header.dtposted = dtsvc.format('MMMMM dd, yyyy', entity.dtposted )
         header.REMITTANCEAMOUNT = entity.amount
         header.COLLECTORNAME = entity.collector.name
         header.COLLECTORTITLE = entity.collector.title
@@ -120,7 +120,7 @@ class LandTaxReportAbstractTaxCollectionService {
 
         params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+            params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
         }
 
         def items = em.getAbstractOfRPTCollection(params).each{buildPeriod(it)};

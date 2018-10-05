@@ -142,7 +142,7 @@ class LandTaxReportService
 
 		params.filter = ' liq.dtposted >= $P{fromdate} AND liq.dtposted < $P{todate} '
 		if (params.postingtype && params.postingtype.code == 'byrem'){
-			params.filter = ' rem.remittancedate between $P{fromdate} AND $P{todate} '
+			params.filter = ' rem.dtposted between $P{fromdate} AND $P{todate} '
 		}
 
 		def data = [:]

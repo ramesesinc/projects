@@ -24,7 +24,7 @@ class LandTaxReportConsolidatedCollectionService
 
         params.filter = ' liq.dtposted >= $P{startdate} AND liq.dtposted < $P{enddate} '
         if (params.postingtype && params.postingtype.code == 'byrem'){
-            params.filter = ' rem.remittancedate >= $P{startdate} AND rem.remittancedate < $P{enddate} '
+            params.filter = ' rem.dtposted >= $P{startdate} AND rem.dtposted < $P{enddate} '
         }
 
         def list = em.getConsolidatedCollections(params)

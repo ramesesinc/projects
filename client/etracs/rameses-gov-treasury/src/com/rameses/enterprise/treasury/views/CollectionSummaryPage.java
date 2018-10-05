@@ -1,4 +1,4 @@
-package com.rameses.gov.treasury.views;
+package com.rameses.enterprise.treasury.views;
 
 import com.rameses.osiris2.themes.FormPage;
 import com.rameses.rcp.ui.annotations.Template;

@@ -121,4 +121,8 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
         Modal.show( "void_cashreceipt", [applySecurity : false, receipt: entity ]);
     }
 
+    public viewCollectionSummary() {
+        Modal.show( "cashreceipt_collection_summary:view", [:] );
+    }    
+    
 }    

@@ -39,6 +39,10 @@
         <invoker type="formActions" caption="Void" 
                 visibleWhen="#{ state=='completed' &amp;&amp; !entity.voided }"
                 action="voidReceipt" mnemonic="v"/>
+                
+        <invoker type="formActions" caption="Collection Summary" 
+                visibleWhen="#{ state=='completed'  }"
+                action="viewCollectionSummary" mnemonic="c"/>
 
     </invokers>
    

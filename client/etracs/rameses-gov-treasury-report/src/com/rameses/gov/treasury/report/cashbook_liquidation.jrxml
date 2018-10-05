@@ -232,7 +232,7 @@ order by refdate, sortindex, username, refno]]></queryString>
 					<textElement textAlignment="Center">
 						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
-				<text><![CDATA[LIQUIDATION REPORT]]></text>
+				<text><![CDATA[CASHBOOK LIQUIDATION REPORT]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

@@ -1,5 +1,5 @@
 <workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" 
-          schemaName="batchcapture_collection"
+          schemaName="vw_batchcapture_collection" entitySchemaName="batchcapture_collection" 
           cols="txndate,formno,collector.name,startseries,endseries,totalamount,capturedby.name" 
           hiddenCols="state"
           allowDelete="#{ entity.state == 'DRAFT' }"

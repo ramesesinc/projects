@@ -333,3 +333,6 @@ go
 create index ix_faas_canceldate on faas(canceldate)
 go 
 
+
+alter table machdetail alter column depreciation decimal(16,6)
+go

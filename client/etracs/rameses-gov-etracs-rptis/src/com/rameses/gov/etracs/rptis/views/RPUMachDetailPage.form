@@ -661,11 +661,13 @@
                     <StringItem index="1" value="autodepreciate"/>
                   </StringArray>
                 </Property>
+                <Property name="name" type="java.lang.String" value="depreciation" noResource="true"/>
+                <Property name="pattern" type="java.lang.String" value="#,##0.0000"/>
+                <Property name="scale" type="int" value="4"/>
                 <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="0" type="rgb"/>
                 </Property>
                 <Property name="enabled" type="boolean" value="false"/>
-                <Property name="name" type="java.lang.String" value="depreciation" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[0, 20]"/>
                 </Property>

@@ -172,7 +172,7 @@ class MachRPUService
             if (dep > (100 - getResidualRate())) {
                 dep = 100 - getResidualRate()
             }
-            machine.depreciation = numberSvc.roundA( dep, 0 )
+            machine.depreciation = numberSvc.roundA( dep, 6)
             machine.depreciationvalue =  numberSvc.round( machine.replacementcost *  machine.depreciation / 100.0 )
         }
         else {

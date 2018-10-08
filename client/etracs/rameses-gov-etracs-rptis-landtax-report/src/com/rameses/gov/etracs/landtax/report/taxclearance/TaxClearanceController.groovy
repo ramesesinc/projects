@@ -208,7 +208,7 @@ class TaxClearanceController
     
     void loadProperties(){
         entity.items = []
-        if (entity.reporttype.name == 'fullypaid' && addoption == 'all'){
+        if (taxpayer && entity.reporttype.name == 'fullypaid' && addoption == 'all'){
             entity.items = svc.getClearedLedgers(entity)
             entity.items.each{
                 it.rptcertificationid = entity.objid;

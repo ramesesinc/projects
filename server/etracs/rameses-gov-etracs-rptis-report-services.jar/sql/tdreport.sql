@@ -107,7 +107,7 @@ FROM faas f
 	INNER JOIN propertyclassification dc ON r.classification_objid = dc.objid 
 WHERE f.objid = $P{faasid}
 GROUP BY dc.code, dc.name, pc.code, pc.name, lal.code, lal.name, ld.areatype, ld.assesslevel,
-	lspc.code, lspc.name, sub.code, sub.name, r.rputype, 
+	lspc.code, lspc.name, sub.code, sub.name, r.rputype
 
 UNION ALL 
 

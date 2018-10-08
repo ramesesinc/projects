@@ -419,3 +419,7 @@ create index ix_faas_canceldate on faas(canceldate)
 ;
 
 
+
+
+alter table machdetail modify column depreciation decimal(16,6)
+;

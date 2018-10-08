@@ -417,15 +417,11 @@ class FAASService
 				em.updateFaasTdNo(it)
 				em.updateFaasListTdNo(it)
 			}
-			def pf = em.findPreviousFaas(it)
-			if(pf){
-				em_faas.update([objid:pf.faasid, prevtdno:it.tdno])
-				em_faaslist.update([objid:pf.faasid, prevtdno:it.tdno])
-			}
+
+			em_faas_previous.find([prevfaasid: it.objid]).update([prevtdno: it.tdno])
 		}
 
 		cancelBackTaxes(faas)
-
 	}
 
 	void approveParentFaas(faas){
@@ -848,6 +844,10 @@ class FAASService
 		info.prevareaha = bt.prevareaha
 		info.preveffectivity = bt.preveffectivity
 		em_faas.update(info)
+
+		bt.previousfaases.each {
+			em_faas_previous.save(it)
+		}
 	}
 
     void checkTxnReference(faas){

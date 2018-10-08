@@ -97,15 +97,15 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Machine Information");
         jPanel2.setBorder(xTitledBorder1);
 
+        xCheckBox1.setName("newlyinstalled"); // NOI18N
         xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox1.setIndex(-10);
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox1.setName("newlyinstalled"); // NOI18N
         xCheckBox1.setText("Newly Installed?");
 
+        xCheckBox2.setName("imported"); // NOI18N
         xCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox2.setName("imported"); // NOI18N
         xCheckBox2.setText("Is Imported?");
 
         formPanel2.setCaptionWidth(110);
@@ -222,10 +222,10 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
         xCheckBox3.setText("Auto Depreciate?");
 
+        xCheckBox5.setName("machdetail.taxable"); // NOI18N
         xCheckBox5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox5.setIndex(-10);
         xCheckBox5.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox5.setName("machdetail.taxable"); // NOI18N
         xCheckBox5.setText("Taxable?");
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
@@ -370,9 +370,11 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
 
         xDecimalField13.setCaption("Depreciation (%)");
         xDecimalField13.setDepends(new String[] {"machdetail.autodepreciate", "autodepreciate"});
+        xDecimalField13.setName("depreciation"); // NOI18N
+        xDecimalField13.setPattern("#,##0.0000");
+        xDecimalField13.setScale(4);
         xDecimalField13.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         xDecimalField13.setEnabled(false);
-        xDecimalField13.setName("depreciation"); // NOI18N
         xDecimalField13.setPreferredSize(new java.awt.Dimension(0, 20));
         formPanel5.add(xDecimalField13);
 
@@ -388,9 +390,9 @@ public class RPUMachDetailPage extends javax.swing.JPanel {
         xTitledBorder3.setTitle("Sworn Statement");
         jPanel3.setBorder(xTitledBorder3);
 
+        xCheckBox4.setName("machdetail.useswornamount"); // NOI18N
         xCheckBox4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox4.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xCheckBox4.setName("machdetail.useswornamount"); // NOI18N
         xCheckBox4.setText("Use Sworn Amount?");
 
         formPanel6.setCaptionWidth(95);

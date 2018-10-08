@@ -178,7 +178,9 @@ public class FAASBackTaxModel
         else{
             for(int i=1; i<entity.backtaxes.size(); i++){
                 if (entity.backtaxes[i].objid == it.objid){
-                    updatePrevInfo(entity.backtaxes[i-1], it)
+                    def bt = entity.backtaxes[i-1]
+                    updatePrevInfo(bt, it)
+                    svc.updateFaasPrevInfo(bt);
                     break;
                 }
             }
@@ -197,8 +199,27 @@ public class FAASBackTaxModel
         faas.prevareasqm = RPTUtil.format('#,##0.00', prevfaas.rpu.totalareasqm);
         faas.prevareaha = RPTUtil.format('#,##0.000000', prevfaas.rpu.totalareaha);
         faas.preveffectivity = prevfaas.effectivityyear;
-        faas.previousfaases = [];
-        faas.previousfaases << [faasid:faas.objid, prevfaasid:prevfaas.objid];            
+
+        def pf = null;
+        if (!faas.previousfaases) {
+            faas.previousfaases = [];
+            pf = [objid: 'PF' + new java.rmi.server.UID()];
+            faas.previousfaases << pf;
+        }
+
+        pf = faas.previousfaases.first();
+        pf.faasid  =  faas.objid
+        pf.prevfaasid  =  prevfaas.objid
+        pf.prevrpuid  =  prevfaas.rpuid 
+        pf.prevtdno  =  prevfaas.tdno 
+        pf.prevpin  =  prevfaas.fullpin 
+        pf.prevowner  =  prevfaas.owner?.name 
+        pf.prevadministrator  =  prevfaas.administrator?.name
+        pf.prevav  =  prevfaas.rpu.totalav
+        pf.prevmv  =  prevfaas.rpu.totalmv 
+        pf.prevareasqm  =  prevfaas.rpu.totalareasqm
+        pf.prevareaha  =  prevfaas.rpu.totalareaha
+        pf.preveffectivity  =  prevfaas.effectivityyear
     }
     
     def addBacktaxItem(){

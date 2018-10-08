@@ -12,6 +12,7 @@ public class AssessedValue
     Double basicav
     Double sefav
     Boolean taxdifference 
+    Boolean idleland  
 
     public AssessedValue(){}
 
@@ -26,5 +27,6 @@ public class AssessedValue
         this.basicav = item.basicav
         this.sefav = item.sefav
         this.taxdifference = (item.taxdifference ? item.taxdifference : false)
+        this.idleland = (item.idleland ? item.idleland : false)
     }
 }

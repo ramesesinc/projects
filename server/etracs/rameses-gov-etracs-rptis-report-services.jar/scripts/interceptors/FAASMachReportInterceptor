@@ -52,7 +52,7 @@ class FaasMachReportInterceptor
 			if( it.othercost )
 				additionalcost.add( it.othercost )
 				
-			def depreciation = numberSvc.format("#,##0", it.depreciation) + ' %'
+			def depreciation = numberSvc.format("#,##0.0000", it.depreciation) + ' %'
 			
 			it.machinename 		= it.machine.name 
 			it.additionalcost	= additionalcost

@@ -24,6 +24,7 @@ SELECT
 	rl.cadastrallotno,
 	rl.barangayid,
 	rl.classcode,
+  rl.titleno,
     rl.nextbilldate,
     case when m.objid is not null then m.parentid else null end as parentlguid,
     case when m.objid is not null then m.objid else d.parentid end as lguid
@@ -48,6 +49,7 @@ SELECT
     rl.lastyearpaid,
     rl.lastqtrpaid,
     rl.tdno,
+    rl.titleno,
     rl.rputype,
     rl.fullpin,
     rl.totalareaha,

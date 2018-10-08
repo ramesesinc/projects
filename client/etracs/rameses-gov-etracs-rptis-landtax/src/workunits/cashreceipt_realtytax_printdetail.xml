@@ -1,62 +1,42 @@
 <workunit>
     <invokers>
-        <invoker type="cashreceiptinfo:formActions" action="print" caption="Realty Tax Detail Printout" target="process" visibleWhen="#{entity.formno=='56'}"/>
-        <invoker type="cashreceipt_rpt:formActions" action="print" caption="Realty Tax Detail Printout" target="process" visibleWhen="#{entity.formno=='56' &amp;&amp; completed}"/>
-
-        <invoker type="cashreceipt:form:formActions" 
-            action="print" caption="Realty Tax Detail Printout" 
-            target="process" 
-            applySecurity="true" 
-            visibleWhen="#{entity.formno=='56'}"/>
+        <invoker type="cashreceiptdetail:printout" caption="AF 56 Printout Detail" name="cashreceiptdetail:printout:56"/>
+        <invoker type="cashreceiptdetail:printout:56" />
     </invokers>
-<!-- 
-    <invoker type="cashreceipt:form:formActions" action="printDetail" 
-            immediate="true" caption="Print Detail" 
-            applySecurity="true" 
-           visibleWhen="#{entity.voided == 0}" /> 
-
-       -->
+    
     <code>
-
-<![CDATA[    
-
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
+    <![CDATA[    
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
 
-class  RPTTaxDetailController {
-    def entity;
-            
-    @Service("ReportParameterService")
-    def paramSvc
+class RPTTaxDetailController extends ReportModel {
 
-    void print() {
-        entity.refno = ''
-        if (entity.paymentitems) {
-            entity.refno = entity.paymentitems.particulars.unique().join('/');
-        }
-        report.viewReport();
-        ReportUtil.print( report.report, true) ;
+    def reportData;
+
+    String reportPath = 'com/rameses/gov/etracs/rpt/collection/ui/';
+
+    public String getReportName() { 
+         return reportPath + "AF56Detail.jasper"; 
     }
 
-    String reportPath = 'com/rameses/gov/etracs/rpt/collection/ui/'
+    public Object getReportData() { 
+        def data = this.reportData; 
+        data.refno = '';
+        if ( data.paymentitems ) { 
+            data.refno = data.paymentitems.particulars.unique().join('/'); 
+        } 
+        return data; 
+    } 
 
-     def report = [
-        getReportName : { return reportPath + "AF56Detail.jasper" },
-        getReportData : { return entity }, 
-        getParameters : { return paramSvc.getStandardParameter() },
-        getSubReports : {
-            return [
-                new SubReport("AF56Item", reportPath + "AF56DetailItem.jasper")
-            ] as SubReport[];  
-         }
-    ] as ReportModel
-
+    public SubReport[] getSubReports() { 
+        return [
+            new SubReport("AF56Item", reportPath + "AF56DetailItem.jasper")
+        ] as SubReport[];  
+    } 
 }
-]]>
-
-
+    ]]>
     </code>
 </workunit>

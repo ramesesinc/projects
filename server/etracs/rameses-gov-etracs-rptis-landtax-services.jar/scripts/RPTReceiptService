@@ -103,14 +103,14 @@ class RPTReceiptService
 
 		def entity = [:]
 		entity.formtype = 'serial'
-		entity.formno = '56'
 		entity.txnmode = 'ONLINE'
 		entity.txntype = 'online'
 		entity.amount = 0.0 
         entity.payer = bill.taxpayer
         entity.paidby = bill.taxpayer.name
         entity.paidbyaddress = bill.taxpayer.address
-        entity.collectiontype = bill.collectiontype
+        entity.collectiontype = bill.collectiontype;
+		entity.formno = entity.collectiontype.formno;
         entity.putAll(cashReceiptSvc.init(entity))
 		entity.billid = bill.objid
 		bill.billdate = entity.receiptdate

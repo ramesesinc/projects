@@ -7,7 +7,7 @@
 		<field name="defaultreceiptdate" required="true"/>
 		<field name="txnmode" required="true"/>
 		<field name="stub" required="true" caption="Stub No."/>
-		<field name="formno" required="true" caption="Form No."/>
+		<field name="formno" required="true" caption="Form No." indexed="true"/>
 		<field name="formtype" required="true" caption="Form Type"/>
 		<field name="controlid" required="true"/>
 		<field name="serieslength" required="true" caption="Series Length"/>

@@ -230,7 +230,8 @@ public abstract class AbstractCashReceipt {
             beforePost();
             entity._paymentorderid = _paymentorderid; 
             def res = service.post( entity ); 
-            if ( res ) entity = res; 
+            if ( res ) entity.putAll( res ); 
+            
             postok = true; 
         } catch(e) { 
             postError(); 
@@ -243,7 +244,6 @@ public abstract class AbstractCashReceipt {
             binding.refresh(); 
         } 
         
-        println 'txnmode='+ entity.txnmode + ', mainProcessHandler='+ mainProcessHandler; 
         try {
             if(entity.txnmode.equalsIgnoreCase("ONLINE") && mainProcessHandler==null) { 
                 print();

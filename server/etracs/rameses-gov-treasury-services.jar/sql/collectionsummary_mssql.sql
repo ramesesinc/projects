@@ -1,7 +1,7 @@
 [getCollectionsByCount]
 SELECT 
 	TOP ${receiptcount}   
-	cr.receiptno, c.formno, 
+	cr.receiptno, cr.formno, 
 	CASE WHEN cv.objid IS NULL THEN cr.amount  ELSE 0.0 END AS amount, 
 	CASE WHEN cv.objid IS NULL THEN 0  ELSE 1 END AS voided 
 FROM cashreceipt cr 

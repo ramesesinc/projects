@@ -37,8 +37,9 @@ public class AFPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField1 = new com.rameses.rcp.control.XDecimalField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xIntegerField1 = new com.rameses.rcp.control.XIntegerField();
 
         xFormPanel1.setCaptionWidth(150);
 
@@ -68,19 +69,27 @@ public class AFPage extends javax.swing.JPanel {
         xComboBox2.setRequired(true);
         xFormPanel1.add(xComboBox2);
 
-        xIntegerField1.setCaption("Series Length");
-        xIntegerField1.setDepends(new String[] {"entity.formtype"});
-        xIntegerField1.setName("entity.serieslength"); // NOI18N
-        xIntegerField1.setRequired(true);
-        xIntegerField1.setVisibleWhen("#{ entity.formtype != 'cashticket' }");
-        xFormPanel1.add(xIntegerField1);
-
         xDecimalField1.setCaption("Denomination");
         xDecimalField1.setDepends(new String[] {"entity.formtype"});
         xDecimalField1.setName("entity.denomination"); // NOI18N
         xDecimalField1.setRequired(true);
         xDecimalField1.setVisibleWhen("#{ entity.formtype == 'cashticket' }");
         xFormPanel1.add(xDecimalField1);
+
+        xCheckBox1.setCaption("");
+        xCheckBox1.setDepends(new String[] {"entity.formtype"});
+        xCheckBox1.setDisableWhen("#{ mode == 'read' }");
+        xCheckBox1.setName("serial"); // NOI18N
+        xCheckBox1.setVisibleWhen("#{ entity.formtype == 'cashticket' }");
+        xCheckBox1.setText("Serial");
+        xFormPanel1.add(xCheckBox1);
+
+        xIntegerField1.setCaption("Series Length");
+        xIntegerField1.setDepends(new String[] {"entity.formtype", "serial"});
+        xIntegerField1.setName("entity.serieslength"); // NOI18N
+        xIntegerField1.setVisibleWhen("#{ entity.formtype != 'cashticket' || serial == true }");
+        xIntegerField1.setRequired(true);
+        xFormPanel1.add(xIntegerField1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -100,6 +109,7 @@ public class AFPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDecimalField xDecimalField1;

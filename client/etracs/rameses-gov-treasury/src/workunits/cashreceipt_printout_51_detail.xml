@@ -2,7 +2,7 @@
     <invokers>
         <!-- this is for the new setup -->
         <invoker type="cashreceiptdetail:printout" caption="AF 51 (Print Details)" name="cashreceiptdetail:printout:51"/>
-        <invoker type="cashreceiptdetail:printout:51" />
+        <invoker type="cashreceiptdetail:printout:51" index="-1000"/>
         
         <!-- this is for the old setup -->
         <invoker type="cashreceipt:printdetail:51" />

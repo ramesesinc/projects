@@ -5,6 +5,8 @@
         <invoker type="formActions" caption="Action" action="showMenu" 
                  context="actions"  visibleWhen="#{entity.currentseries &lt;= entity.endseries }"/>
         
+        <invoker type="af-control-admin-rights" role="AFO"/> 
+        
         <!-- control menu -->                  
         <invoker type="af_control:form:actions" caption="Activate" action="activate" target="process"
                  visibleWhen="#{ context.showAction==true &amp;&amp; context.entity.active ==0}" role="COLLECTOR,SUBCOLLECTOR"/>
@@ -25,19 +27,19 @@
             visibleWhen="#{ context.showAction==true &amp;&amp; entity.fund?.objid!=null}" role="COLLECTOR"/>
             
         <invoker type="af_control:form:actions" caption="Change Mode to ONLINE" action="changeModeOnline"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='ONLINE' }" role="COLLECTOR"/>
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='ONLINE' }" role="COLLECTOR,AFO"/>
 
         <invoker type="af_control:form:actions" caption="Change Mode to OFFLINE" action="changeModeOffline"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='OFFLINE' }" role="COLLECTOR"/>
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='OFFLINE' }" role="COLLECTOR,AFO"/>
          
         <invoker type="af_control:form:actions" caption="Change Mode to CAPTURE" action="changeModeCapture"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='CAPTURE' }" role="COLLECTOR"/>
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.txnmode!='CAPTURE' }" role="COLLECTOR,AFO"/>
             
         <invoker type="af_control:form:actions" caption="Change Responsibility Center" action="changeRespCenter"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.respcenter?.objid==null }" role="COLLECTOR"/>  
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.respcenter?.objid==null }" role="COLLECTOR,AFO"/>  
             
         <invoker type="af_control:form:actions" caption="Remove Responsibility Center" action="removeRespCenter"  target="process"
-            visibleWhen="#{ context.showAction==true &amp;&amp; entity.respcenter?.objid!=null }" role="COLLECTOR"/>    
+            visibleWhen="#{ context.showAction==true &amp;&amp; entity.respcenter?.objid!=null }" role="COLLECTOR,AFO"/>    
                 
     </invokers>
    

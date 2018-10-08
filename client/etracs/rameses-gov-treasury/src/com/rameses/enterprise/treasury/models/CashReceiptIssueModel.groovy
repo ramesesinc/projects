@@ -130,6 +130,10 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
         }
     }
 
+    public viewCollectionSummary() {
+        Modal.show( "cashreceipt_collection_summary:view", [:] );
+    }    
+    
     private def findReportModel( o ) {
         if ( o == null ) return null; 
         else if (o instanceof ReportModel ) return o; 
@@ -144,4 +148,5 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
             return null; 
         }
     }
+
 }    

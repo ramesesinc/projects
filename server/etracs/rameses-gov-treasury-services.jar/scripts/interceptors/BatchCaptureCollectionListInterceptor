@@ -5,7 +5,7 @@ class BatchCaptureCollectionListInterceptor {
 	@Env 
 	def env; 
 
-	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'batchcapture_collection'}")
+	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname.toString().matches('vw_batchcapture_collection|batchcapture_collection')==true}")
 	public void afterGetNodeList( evt ) { 
 		def p = evt.args[0];
 		def result = evt.result;
@@ -15,7 +15,7 @@ class BatchCaptureCollectionListInterceptor {
 		result << [  title: 'Closed', state:'CLOSED' ];
 	}
 
-	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'batchcapture_collection'}")
+	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname.toString().matches('vw_batchcapture_collection|batchcapture_collection')==true}")
 	public void beforeGetList( evt ) {
 		def param = evt.args[0];
 		def qarr = [];

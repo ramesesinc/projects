@@ -40,19 +40,19 @@ class BusinessOnlineWorkflowInterceptor {
 		def result = evt.result;
 		def a = appEm.find([objid: e.data.objid ]).first();
 		def mobileno = a.business?.mobileno;
-		if(!mobileno) mobileno = a.business.owner.mobileno; 
+		if(!mobileno) mobileno = a.business?.owner?.mobileno; 
 
-		if(mobileno) {
-			def b = generateBilling( a ); 
-			def m = [:];
-			m.message = "Your business application is now ready for payment. Your amount due is " + b.amount;
-			m.orgcode = orgSvc.getRoot().code;
-			m.params = [appno: a.appno ];
-			m.txntype = 'bpls';
-			m.action = 'bill';
-			m.mobileno = mobileno;
-			self.sendSMS( m ); 
-		}
+		// if(mobileno) {
+		// 	def b = generateBilling( a ); 
+		// 	def m = [:];
+		// 	m.message = "Your business application is now ready for payment. Your amount due is " + b.amount;
+		// 	m.orgcode = orgSvc.getRoot().code;
+		// 	m.params = [appno: a.appno ];
+		// 	m.txntype = 'bpls';
+		// 	m.action = 'bill';
+		// 	m.mobileno = mobileno;
+		// 	self.sendSMS( m ); 
+		// }
 	}
 
 	@Async 

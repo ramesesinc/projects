@@ -12,15 +12,22 @@ class AFControlModel extends CrudFormModel {
     @Service("AFControlService")
     def service;
     
+    boolean has_admin_rights; 
+        
     public boolean getShowAction() { 
         if ( entity.state != 'ISSUED' ) return false;
-        
         if ( entity.owner.objid == OsirisContext.env.USERID ) return true; 
-        return ( entity.assignee.objid == OsirisContext.env.USERID ); 
+        if ( entity.assignee.objid == OsirisContext.env.USERID ) return true; 
+        return has_admin_rights; 
     }
     
-    void afterOpen() {
-        _details = null;       
+    void afterOpen() { 
+        try {
+            has_admin_rights = (Inv.lookup('af-control-admin-rights') ? true : false); 
+        } catch(Throwable t) {
+            has_admin_rights = false; 
+        }
+        _details = null;  
         if(binding) binding.refresh("detailInfo");
     }
     

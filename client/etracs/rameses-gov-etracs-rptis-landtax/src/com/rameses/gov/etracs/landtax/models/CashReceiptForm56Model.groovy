@@ -1,30 +1,19 @@
 package com.rameses.gov.etracs.landtax.models;
 
-
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
 import com.rameses.osiris2.reports.*;
         
-class  CashReceiptForm56 extends ReportModel 
-{
-    @Service("ReportParameterService")
-    def svcParams;
-        
+class CashReceiptForm56 extends ReportModel {
+
     def reportData;
-    def parameters = [:];
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
     
     def reportPath = 'com/rameses/gov/etracs/rpt/collection/ui/';
     // def newReportPath = 'com/rameses/gov/etracs/landtax/reports/';
     
-    
-    public Map getParameters() {
-        return svcParams.getStandardParameter();
-    }
-    
-            
     public Object getReportData() {
         def checks = [];
         def dates = [];

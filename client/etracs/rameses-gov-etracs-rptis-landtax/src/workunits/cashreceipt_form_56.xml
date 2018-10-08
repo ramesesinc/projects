@@ -1,5 +1,6 @@
 <workunit>
     <invokers>
+        <invoker type="cashreceipt:printout" caption="AF 56 Printout" name="cashreceipt-form:56"/>
         <invoker type="cashreceipt-form:56" />
     </invokers>
     <code class="com.rameses.gov.etracs.landtax.models.CashReceiptForm56Model">

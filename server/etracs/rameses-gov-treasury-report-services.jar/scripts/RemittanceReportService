@@ -174,20 +174,25 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	public def generateReportByFund( rem, fund ) { 
+		def funds = [];
+		if ( fund?.objid ) funds << fund.objid; 
+
 		def data = rem.clone();
-		def params = [ remittanceid: data.objid, fundid: (fund ? fund.objid : '%'), fundfilter:null]; 
+		def params = [ remittanceid: data.objid ]; 
 		if ( data._INCLUDE_SUBFUND == true ) { 			
-			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			def list = fund_em.findAllSubAcct([ objid: fund?.objid ]).collect{ it.objid }   
+			if ( list ) funds.addAll( list );  
+		} 
+
+		params.fundfilter = ""; 
+		if ( funds ) { 
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"')"; 
 		} 
 
 		data.receipts = db.getReceiptsByRemittanceFund( params );
-		if( ! data.receipts ) throw new Exception("No record(s) found ");
+		if ( !data.receipts ) throw new Exception("No record(s) found ");
 
-		data.acctsummaries = db.getRevenueItemSummaryByFund( params );
+		data.acctsummaries = db.getRevenueItemSummaryByFund( params ); 
 		resolveCompatibility( data ); 		
 		return data;
 	}
@@ -195,15 +200,20 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def generateDetailedReportByFund(rem, fund) {
-		def data = rem.clone() 
-		def params = [ remittanceid: data.objid,  fundid: (fund ? fund.objid : '%')];
+		def funds = []; 
+		if ( fund?.objid ) funds << fund.objid; 
+
+		def data = rem.clone();
+		def params = [ remittanceid: data.objid ];
  		if ( data._INCLUDE_SUBFUND == true ) { 			
 			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			if ( list ) funds.addAll( list );  
 		} 
+
+		params.fundfilter = ""; 
+		if ( funds ) {
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
+		}
 
 		data.serials = db.getSerialReceiptsByRemittanceFund( params ); 
 		data.nonserials = db.getNonSerialReceiptDetailsByFund( params );
@@ -214,7 +224,7 @@ class RemittanceReportService  {
 	@ProxyMethod 
 	def generateDetailedReport(rem) {
 		def data = rem.clone() 
-		def params = [remittanceid: data.objid, fundid: '%' ]
+		def params = [ remittanceid: data.objid, fundfilter: '' ]; 
 		data.receipts = db.getReceiptsGroupByFund( params );
 		data.acctsummaries = db.getRevenueItemSummaryByFund( params ); 
 		resolveCompatibility( data ); 
@@ -223,14 +233,19 @@ class RemittanceReportService  {
 
 	@ProxyMethod 
 	def generateReportByRevenueItem( rem, fund ) {
-		def params = [ remittanceid: rem.objid,  fundid: (fund? fund.objid: '%') ]; 
+		def funds = []; 
+		if ( fund?.objid ) funds << fund.objid; 
+
+		def params = [ remittanceid: rem.objid ]; 
  		if ( rem._INCLUDE_SUBFUND == true ) { 			
 			def list = fund_em.findAllSubAcct([ objid: params.fundid ]).collect{ it.objid }   
-			if ( list ) { 
-				list << params.fundid; 
-				params.fundfilter = "'"+ list.join("','") +"'"; 
-			} 
+			if ( list ) funds.addAll( list );  
 		} 
+
+		params.fundfilter = ""; 
+		if ( funds ) {
+			params.fundfilter = " AND fund.objid IN ('"+ funds.join("','") +"') "; 
+		}
 
 		rem.acctsummaries = db.getRevenueItemSummaryByFund( params );
 		if ( !rem.acctsummaries ) throw new Exception("No record(s) found ");

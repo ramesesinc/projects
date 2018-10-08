@@ -277,10 +277,10 @@ class RAAFReportService {
 			def fo = vv.first(); 
 			def receivedstartseries = vv.collect{ it.receivedstartseries }.findAll{( it )}.min{( it )}
 			def receivedendseries = vv.collect{ it.receivedendseries }.findAll{( it )}.max{( it )}
-			def endingstartseries = vv.collect{ it.endingstartseries }.findAll{( it )}.max{( it )}
-			def endingendseries = vv.collect{ it.endingendseries }.findAll{( it )}.max{( it )}
 			def beginstartseries = vv.collect{ it.beginstartseries }.findAll{( it )}.min{( it )}
 			def beginendseries = vv.collect{ it.beginendseries }.findAll{( it )}.max{( it )}
+			def endingstartseries = vv.collect{ it.endingstartseries }.findAll{( it )}.min{( it )}
+			def endingendseries = vv.collect{ it.endingendseries }.findAll{( it )}.max{( it )}
 
 			fo.qtyreceived = vv.findAll{( it.qtyreceived > 0 )}.sum{ it.qtyreceived } 
 			if ( fo.qtyreceived == null ) fo.qtyreceived = 0; 

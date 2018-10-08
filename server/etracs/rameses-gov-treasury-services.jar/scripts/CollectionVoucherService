@@ -41,6 +41,7 @@ class CollectionVoucherService  {
 	public def create( def pp ) {
 		if ( !pp.ids ) throw new Exception('Please specify at least one remittance to liquidate'); 
 
+
 		def wheres = []; 
 		wheres << "objid IN ('"+ pp.ids.join("','") +"')"; 
 		wheres << "state = 'POSTED' AND collectionvoucherid IS NULL"; 
@@ -62,7 +63,6 @@ class CollectionVoucherService  {
 		m.liquidatingofficer = [objid:env.USERID, name: env.FULLNAME, title: env.JOBTITLE ]; 
 		m = cvEm.create( m );
 
-		println '\n\n----------'
 
 		def z = [ collectionvoucherid: m.objid ]; 
 		//update the collection voucher id for each remittance

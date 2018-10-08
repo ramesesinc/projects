@@ -16,14 +16,14 @@ class MunicipalityFAASSupportController
     @Binding 
     def binding;
     
-    @Service('MunicipalityFAASService')
+    @Service('FAASSyncService')
     def svc; 
     
     def entity;
     
     void resendToProvince(){
         if (MsgBox.confirm('Resubmit FAAS to Province?')){
-            svc.resubmitToProvince(entity);
+            svc.scheduleDataCapturedFAAS(entity);
             MsgBox.alert('FAAS has been successfully submitted to province.')
         }
     }

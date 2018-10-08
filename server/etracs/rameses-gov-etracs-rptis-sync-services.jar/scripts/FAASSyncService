@@ -62,6 +62,33 @@ class FAASSyncService
 
 	/*---------------------------------------------------------
 	*
+	* TESTSUPPORT 
+	*
+	---------------------------------------------------------*/
+	@ProxyMethod
+	public void testDataCapturedFAAS(faas) {
+		faas = faasSvc.getFaasByTdNo(faas.tdno)
+
+        if (!faas) {
+            throw new Exception('FAAS does not exist for the specified TD No.')
+        }
+
+        scheduleDataCapturedFAAS(faas)
+	}
+
+	@ProxyMethod
+	public void testOnlineApproval(faas) {
+		faas = faasSvc.getFaasByTdNo(faas.tdno)
+
+        if (!faas) {
+            throw new Exception('FAAS does not exist for the specified TD No.')
+        }
+
+        scheduleOnlineApprovedFAAS(faas)
+	}
+
+	/*---------------------------------------------------------
+	*
 	* SCHEDULING SYNC SUPPORT 
 	*
 	---------------------------------------------------------*/

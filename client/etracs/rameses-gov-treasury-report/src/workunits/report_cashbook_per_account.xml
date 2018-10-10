@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/gov/treasury/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury/collector" action="init" caption="Cashbook" target="window" index="7" role="COLLECTOR,LIQUIDATING_OFFICER,CASHIER"/>
+        <invoker xfolderid="/explorer/report/treasury/collector" action="init" caption="Cashbook" target="window" index="7" role="COLLECTOR,LIQUIDATING_OFFICER,CASHIER"/>
     </invokers>
     <code>
 <![CDATA[

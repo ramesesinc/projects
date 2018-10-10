@@ -1,6 +1,6 @@
 <workunit extends="wtemplates/gov/treasury/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury/admin" action="init" caption="Report of Abstract on Collection" target="window" index="7" 
+        <invoker folderid="/explorer/report/treasury" action="init" caption="Report of Abstract on Collection" target="window" index="7" 
             role="REPORT" permission="abstractofcollection.viewreport"/>
     </invokers>
     <code>

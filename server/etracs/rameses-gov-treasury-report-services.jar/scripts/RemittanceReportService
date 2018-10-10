@@ -331,11 +331,12 @@ class RemittanceReportService  {
 		return [ header:header, items:items]
 	}
 
-	// edit after the cash ticket will be done
 	@ProxyMethod
 	def generateReportByCashTicket( entity ) {
-		entity.cashticketsummaries = db.getCashTicketCollectionSummaries(entity)
-		entity.amount = 0.0 
+		if ( !entity.remittanceid ) entity.remittanceid = entity.objid; 
+
+		entity.amount = 0.0;
+		entity.cashticketsummaries = db.getCashTicketCollectionSummaries(entity); 
 		if (entity.cashticketsummaries) {
 			entity.amount = entity.cashticketsummaries.amount.sum();
 		}

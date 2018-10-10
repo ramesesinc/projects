@@ -51,8 +51,7 @@ from (
   from liquidation liq 
     inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
     inner join remittance rem on lr.objid =rem.objid 
-    inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
-    inner join cashreceipt cr on rc.objid = cr.objid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -110,8 +109,7 @@ from (
   from liquidation liq 
     inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
     inner join remittance rem on lr.objid =rem.objid 
-    inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
-    inner join cashreceipt cr on rc.objid = cr.objid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -185,8 +183,7 @@ from (
   from liquidation liq 
     inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
     inner join remittance rem on lr.objid =rem.objid 
-    inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
-    inner join cashreceipt cr on rc.objid = cr.objid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -245,8 +242,7 @@ from (
   from liquidation liq 
     inner join liquidation_remittance lr on liq.objid = lr.liquidationid 
     inner join remittance rem on lr.objid =rem.objid 
-    inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
-    inner join cashreceipt cr on rc.objid = cr.objid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -273,8 +269,7 @@ select
   select
     case when m.name is null then c.name else m.name end as municityname 
   from remittance rem 
-    inner join remittance_cashreceipt rc on rem.objid = rc.remittanceid
-    inner join cashreceipt cr on rc.objid = cr.objid 
+    inner join cashreceipt cr on cr.remittanceid = rem.objid 
     left join cashreceipt_void cv on cr.objid = cv.receiptid 
     inner join rptpayment rp on cr.objid = rp.receiptid
     inner join vw_rptpayment_item cri on rp.objid = cri.parentid
@@ -295,10 +290,9 @@ select
   case when cv.objid is null then c.paidby else '*** VOIDED ***' end as taxpayername, 
   case when cv.objid is null then c.amount else 0.0 end AS amount 
 from cashreceipt c 
-  inner join remittance_cashreceipt rc on rc.objid = c.objid 
   inner join cashreceipt_rpt crpt on crpt.objid = c.objid
   left join cashreceipt_void cv on cv.receiptid  = c.objid 
-where rc.remittanceid=$P{remittanceid} 
+where c.remittanceid=$P{remittanceid} 
   and cv.objid is null 
 order by c.receiptno  
 

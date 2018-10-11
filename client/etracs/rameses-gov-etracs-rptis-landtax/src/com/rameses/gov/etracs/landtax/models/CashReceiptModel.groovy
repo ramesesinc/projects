@@ -43,6 +43,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
     def barcodeprocessing = false;
     def processing = false;
     def msg;
+    def billedLedgers = [];
 
                 
     
@@ -72,6 +73,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         bill.payoption = payoption;
         bill._forpayment = true;
         entity.billid = bill.objid; 
+        billedLedgers = [];
         if (payoption != PAY_OPTION_BYLEDGER){
             loadItemsForPaymentAsync()
             return 'default';
@@ -99,10 +101,12 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
 
     def loadLedgerTask = {
         run: {
-            def ledgers = svc.getLedgersForPayment(bill);
-            ledgers.each {
+            if (!billedLedgers) {
+                billedLedgers = svc.getLedgersForPayment(bill);    
+            }
+            billedLedgers.each {
                 try {
-                    msg = 'Processing ledger ' + it.tdno
+                    msg = 'Processing ledger ' + (it.rptledger ? it.rptledger.tdno : '...');
                     loadItemByLedger(it)
                 } catch(Exception ex) {
                     ex.printStackTrace();
@@ -148,6 +152,7 @@ class CashReceiptModel extends com.rameses.enterprise.treasury.cashreceipt.Abstr
         entity = svc.loadBarcode([barcodeid:barcodeid]);
         super.init();
         bill = entity.remove('bill');
+        billedLedgers = bill.remove('ledgers');
         loadedBarcodes << barcodeid;
         clearAllPayments();
         calcReceiptAmount();

@@ -87,7 +87,7 @@ class BatchCaptureCollectionInitialModel  {
         
         Modal.show("collectiontype:lookup", [customFilter: [str, qparam], onselect: h, debug: true]);
         if ( !collectiontype ) return null;
-                
+
         def entity = [
             state: "DRAFT",
             defaultreceiptdate: startdate, 

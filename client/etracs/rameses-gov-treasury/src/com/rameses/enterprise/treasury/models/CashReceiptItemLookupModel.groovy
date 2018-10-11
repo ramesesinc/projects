@@ -31,12 +31,22 @@ class CashReceiptItemLookupModel extends CrudLookupModel {
     }
     
     public String getSchemaName() {
-        if(query.collectiontype?.hasitems ) {
+        if ( query.collectiontype?.hasitems ) {
             return "vw_cashreceipt_itemaccount_collectiontype";
-        }
-        else {
+        } else {
             return "vw_cashreceipt_itemaccount";
         }
+    }
+    
+    public String getOrderBy() {
+        def o1 = null; 
+        def o2 = super.getOrderBy(); 
+        if ( query.collectiontype?.hasitems ) {
+            o1 = "sortorder, code"; 
+        } else {
+            o1 = "code"; 
+        } 
+        return [o1, o2].findAll{( it )}.join(', '); 
     }
     
     public def getCustomFilter() {

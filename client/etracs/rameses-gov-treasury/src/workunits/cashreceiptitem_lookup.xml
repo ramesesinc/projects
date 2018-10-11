@@ -5,7 +5,7 @@
        <invoker type="cashreceiptitem:lookup" 
                 caption="Lookup Revenue" action="init" 
                 cols="code,title,fund.title,type,org.code" 
-                hiddenCols="valuetype,defaultvalue,fund.objid,fund.code" 
+                hiddenCols="valuetype,defaultvalue,fund.objid,fund.code,sortorder" 
                 tag="CASHRECEIPT" target="popup" width="800"/>
     </invokers> 
    

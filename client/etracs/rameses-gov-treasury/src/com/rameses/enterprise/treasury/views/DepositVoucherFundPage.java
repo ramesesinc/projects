@@ -61,6 +61,11 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         jPanel6 = new javax.swing.JPanel();
         schemaList3 = new com.rameses.seti2.components.SchemaList();
         schemaList4 = new com.rameses.seti2.components.SchemaList();
+        jPanel8 = new javax.swing.JPanel();
+        xButton3 = new com.rameses.rcp.control.XButton();
+        xButton12 = new com.rameses.rcp.control.XButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(963, 539));
         setLayout(new java.awt.BorderLayout());
@@ -122,7 +127,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         xLabel6.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel6);
 
-        xLabel7.setCaption("Amount Due From");
+        xLabel7.setCaption("Incoming");
         xLabel7.setExpression("#{ entity.totaldr }");
         xLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -130,7 +135,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         xLabel7.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel2.add(xLabel7);
 
-        xLabel8.setCaption("Amount Due To");
+        xLabel8.setCaption("Outgoing");
         xLabel8.setExpression("#{ entity.totalcr }");
         xLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -466,15 +471,14 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         xTabbedPane1.addTab("  Checks   ", jPanel4);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        jPanel6.setLayout(new com.rameses.rcp.control.layout.DividerLayout());
 
         schemaList3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "todepositvoucherfund.fund.code"}
                 , new Object[]{"caption", "To Fund Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -502,9 +506,9 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 150}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -522,18 +526,15 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         schemaList3.setQueryName("entity");
         schemaList3.setSchemaName("vw_deposit_fund_transfer");
         schemaList3.setAllowOpen(false);
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Outgoing Funds");
-        schemaList3.setBorder(xTitledBorder1);
-        jPanel6.add(schemaList3);
+        schemaList3.setShowNavbar(false);
 
         schemaList4.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "fromdepositvoucherfund.fund.code"}
                 , new Object[]{"caption", "From Fund Code"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"minWidth", 100}
+                , new Object[]{"maxWidth", 100}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -561,9 +562,9 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 0}
-                , new Object[]{"maxWidth", 0}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 150}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -579,10 +580,65 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         schemaList4.setName("selectedFundTransfer"); // NOI18N
         schemaList4.setQueryName("entity");
         schemaList4.setSchemaName("vw_deposit_fund_transfer");
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Incoming Funds");
-        schemaList4.setBorder(xTitledBorder2);
-        jPanel6.add(schemaList4);
+        schemaList4.setShowNavbar(false);
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        com.rameses.rcp.control.layout.XLayout xLayout4 = new com.rameses.rcp.control.layout.XLayout();
+        xLayout4.setSpacing(5);
+        jPanel8.setLayout(xLayout4);
+
+        xButton3.setName("addFundTransfer"); // NOI18N
+        xButton3.setVisibleWhen("#{ entity.parent.state != 'POSTED' }");
+        xButton3.setText("Add Fund Transfer");
+        jPanel8.add(xButton3);
+
+        xButton12.setDepends(new String[] {"selectedFundTransfer"});
+        xButton12.setName("removeFundTransfer"); // NOI18N
+        xButton12.setVisibleWhen("#{ entity.parent.state != 'POSTED' && selectedCheck!=null }");
+        xButton12.setText("Remove Fund Transfer");
+        jPanel8.add(xButton12);
+
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel1.setText("Incoming ");
+
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel2.setText("Outgoing ");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addComponent(schemaList4, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(schemaList3, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 902, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(277, 277, 277)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(schemaList4, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                    .addComponent(schemaList3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(125, Short.MAX_VALUE))
+        );
 
         xTabbedPane1.addTab("  Fund Transfers   ", jPanel6);
 
@@ -593,6 +649,8 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -600,13 +658,16 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private com.rameses.seti2.components.SchemaList schemaList1;
     private com.rameses.seti2.components.SchemaList schemaList2;
     private com.rameses.seti2.components.SchemaList schemaList3;
     private com.rameses.seti2.components.SchemaList schemaList4;
     private com.rameses.rcp.control.XButton xButton10;
     private com.rameses.rcp.control.XButton xButton11;
+    private com.rameses.rcp.control.XButton xButton12;
     private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XButton xButton5;
     private com.rameses.rcp.control.XButton xButton6;
     private com.rameses.rcp.control.XButton xButton7;

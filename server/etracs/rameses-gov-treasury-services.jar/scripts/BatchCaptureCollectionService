@@ -36,6 +36,9 @@ public class BatchCaptureCollectionService  {
 	@Service('PersistenceService')
 	def persistenceSvc; 
 
+	@Service('QueryService')
+	def querySvc; 
+
 	@Env
 	def env
 
@@ -108,7 +111,16 @@ public class BatchCaptureCollectionService  {
 		def entity = bc_db.find([ objid: params.objid ]).first(); 
 		if ( !entity ) throw new Exception("Could not open selected item.  ")
 
-		entity.fund = entity.collectiontype?.fund; 
+		def ct = entity.collectiontype; 
+		if ( ct == null ) { 
+			ct = [:]; 
+			entity.collectiontype = ct; 
+		} 
+
+        def ctaparam = [_schemaname: "collectiontype_account", select: 'objid'];
+        ctaparam.findBy = [ collectiontypeid: ct?.objid ];
+        ct.hasitems = ( querySvc.findFirst( ctaparam ) ? true : false ); 
+		entity.fund = ct.fund; 
 
 		entity.batchitems = bce_db.find([ parentid: entity.objid ]).orderBy('series').list(); 
 		entity.currentseries = entity.startseries; 

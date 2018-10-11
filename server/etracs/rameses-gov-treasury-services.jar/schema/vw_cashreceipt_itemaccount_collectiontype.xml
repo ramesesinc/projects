@@ -37,18 +37,18 @@ WHERE NOT(ia.org_objid IS NULL) AND ia.state='ACTIVE' AND ia.type IN ('REVENUE',
 <schema>
 	<element tablename="vw_cashreceipt_itemaccount_collectiontype">
 		<field name="objid" primary="true"/>		
-		<field name="state" />	
-		<field name="code" searchable="true" indexed="true"/>	
-		<field name="title" searchable="true"  indexed="true"/>	
+		<field name="state" caption="Status"/>	
+		<field name="code" caption="Code" searchable="true" indexed="true"/>	
+		<field name="title" caption="Title" searchable="true"  indexed="true"/>	
 		<field name="description" />	
-		<field name="type" />	
+		<field name="type" caption="Type"/>	
 		<field name="fund_objid" />	
 		<field name="fund_code" />	
-		<field name="fund_title" />	
-		<field name="defaultvalue" />	
-		<field name="valuetype" />	
+		<field name="fund_title" caption="Fund"/>	
+		<field name="defaultvalue" caption="DefaultValue"/>	
+		<field name="valuetype" caption="ValueType"/>	
 		<field name="orgid" />	
-		<field name="sortorder" />	
+		<field name="sortorder" caption="SortOrder"/>	
 		<field name="collectiontypeid" />
 	</element>
 </schema>

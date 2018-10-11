@@ -11,17 +11,17 @@ AND state='ACTIVE' AND type IN ('REVENUE','NONREVENUE','PAYABLE')
 <schema>
 	<element tablename="vw_cashreceipt_itemaccount">
 		<field name="objid" primary="true"/>		
-		<field name="state" />	
-		<field name="code" searchable="true" indexed="true"/>	
-		<field name="title" searchable="true" indexed="true"/>	
+		<field name="state" caption="Status"/>	
+		<field name="code" caption="Code" searchable="true" indexed="true"/>	
+		<field name="title" caption="Title" searchable="true" indexed="true"/>	
 		<field name="description" />	
-		<field name="type" />	
+		<field name="type" caption="Type"/>	
 		<field name="fund_objid" />	
 		<field name="fund_code" />	
-		<field name="fund_title" />	
-		<field name="defaultvalue" />	
-		<field name="valuetype" />	
-		<field name="sortorder" />	
+		<field name="fund_title" caption="Fund"/>	
+		<field name="defaultvalue" caption="DefaultValue"/>	
+		<field name="valuetype" caption="ValueType"/>	
+		<field name="sortorder" caption="SortOrder"/>	
 		<field name="orgid" />	
 	</element>
 </schema>

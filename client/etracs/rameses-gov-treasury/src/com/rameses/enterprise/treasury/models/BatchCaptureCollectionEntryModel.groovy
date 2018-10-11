@@ -51,7 +51,7 @@ class BatchCaptureCollectionEntryModel extends CrudFormModel {
 
     def getLookupAccount() { 
         def parentEntity = caller.entity; 
-        return InvokerUtil.lookupOpener("cashreceiptitem:lookup", [ 
+        return Inv.lookupOpener("cashreceiptitem:lookup", [ 
             "query.txntype"     : "cashreceipt", 
             "query.collectorid" : parentEntity.collector.objid,
             "query.collectiontype": parentEntity.collectiontype,

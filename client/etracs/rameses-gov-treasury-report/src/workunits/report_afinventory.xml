@@ -1,6 +1,8 @@
 <workunit extends="wtemplates/gov/treasury/ReportController.xml" >
     <invokers>
-        <invoker folderid="/explorer/report/treasury" action="init" caption="AF Inventory Report" target="window" index="10" role="AFO" />
+        <invoker folderid="/explorer/report/treasury" action="init" 
+                 caption="AF Inventory Report" target="window" 
+                 role="AFO" />
     </invokers>
     <code>
 

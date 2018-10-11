@@ -1,10 +1,10 @@
 <workunit extends="wtemplates/gov/treasury/ReportController.xml" >
     <invokers>
         <invoker folderid="/explorer/report/treasury" action="init" caption="CRAAF" 
-                 role="AFO,REPORT" permission="craaf.viewreport" target="window" index="-10"/>
+                 role="AFO,REPORT" permission="craaf.viewreport" target="window"/>
         
         <invoker type="report:craaf" action="init" caption="CRAAF" 
-                 role="AFO" target="window" index="-10"/>
+                 role="AFO" target="window"/>
     </invokers>
     <code>
 

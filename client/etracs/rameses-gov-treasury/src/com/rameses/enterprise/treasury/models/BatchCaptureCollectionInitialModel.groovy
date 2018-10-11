@@ -67,22 +67,27 @@ class BatchCaptureCollectionInitialModel  {
         
         def collectiontype = null;
         def h = { o->
-            collectiontype = o;
+            def ctfundid = o.fund?.objid; 
+            def affundid = selectedItem.fund?.objid; 
+            if ( affundid == null && ctfundid == null ) {;}
+            else if ( affundid != null && ctfundid != null && affundid == ctfundid ) {;} 
+            else throw new Exception(o.title +" is not allowed. Please select another."); 
+
+            collectiontype = o;            
         }
         
-        str = "formno = :formno";
-        def qparam = [formno: selectedItem.afid]; 
+        str = "formno = :formno AND allowbatch=1 ";
+        def qparam = [ formno: selectedItem.afid ];         
         if( selectedItem.respcenter?.objid ) {
-            str += " AND orgid =:orgid AND allowbatch=1"; 
             qparam.orgid = selectedItem.respcenter.objid;
+            str += " AND orgid =:orgid "; 
         } else {
-            str += " AND orgid IS NULL AND allowbatch=1"; 
+            str += " AND orgid IS NULL "; 
         }
         
-        Modal.show("collectiontype:lookup", [customFilter: [str, qparam], onselect: h]);
-        if(!collectiontype) {
-            return null;
-        }
+        Modal.show("collectiontype:lookup", [customFilter: [str, qparam], onselect: h, debug: true]);
+        if ( !collectiontype ) return null;
+                
         def entity = [
             state: "DRAFT",
             defaultreceiptdate: startdate, 

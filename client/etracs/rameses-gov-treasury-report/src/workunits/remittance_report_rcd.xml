@@ -1,0 +1,37 @@
+<workunit>
+    <invokers>
+        <invoker xtype="remittance:reports" caption="Remittance RCD" action="init" target="self"/>
+        
+        <invoker type="formActions" caption="Close" action="_close"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[ 
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RemittanceRCDModel extends com.rameses.seti2.models.ReportViewModel {
+
+    @Service("RemittanceReportService")
+    def svc;
+
+    String title = "Remittance RCD";
+    String reportPath =  'com/rameses/gov/treasury/remittance/report/rcd';
+
+    def getReportData(){
+       return svc.generateReportByCollectionType( entity, collectiontype)
+    }
+
+
+    SubReport[] getSubReports() {
+        return [ 
+            new SubReport("ReportBItem", reportpath + "reportbycollectiontypeitem.jasper"),
+        ] as SubReport[];    
+    }
+}      
+    ]]>
+    </code>
+</workunit>

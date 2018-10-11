@@ -13,7 +13,7 @@ class CashbookLiquidationReportModel extends ReportController {
     @Script('ReportPeriod') 
     def reportPeriod;
     
-    String title = 'Liquidation Report';
+    String title = 'Cashbook Liquidation Report';
     String reportpath = 'com/rameses/gov/treasury/report/';
     String reportName = reportpath + 'cashbook_liquidation.jasper';
 

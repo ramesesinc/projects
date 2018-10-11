@@ -15,6 +15,9 @@ class AFTxnHandler {
     @Binding
     def binding;
 
+    @Invoker
+    def invoker;
+    
     @Service("AFTxnService")
     def svc;
     
@@ -36,5 +39,8 @@ class AFTxnHandler {
         return "_close";
     }
     
+    String getTitle() {
+        return invoker.caption;
+    }
     
 }    

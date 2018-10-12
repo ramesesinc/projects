@@ -6,16 +6,8 @@ import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
 import com.rameses.gov.etracs.rptis.util.*;
-import com.rameses.rcp.draw.figures.ImageFigure
-import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
-import com.rameses.rcp.draw.utils.DataUtil;
-import com.rameses.rcp.draw.figures.ImageFigure
 
-import com.rameses.rcp.draw.figures.ImageFigure
-import java.awt.Rectangle
-
-class FAASChangeSketchModel extends FAASSketchModel
+class FAASChangeSketchOldModel extends com.rameses.gov.etracs.rpt.faas.ui.FaasSketchInfoController
 {
     @Caller
     def caller 
@@ -30,7 +22,6 @@ class FAASChangeSketchModel extends FAASSketchModel
     def svc;  
     
     def changeinfo = [:]
-    def converted = false; 
     
     void init() {
         super.init();
@@ -58,11 +49,6 @@ class FAASChangeSketchModel extends FAASSketchModel
         init();
         mode = 'changeinfo'
     }
-
-    void initConvert() {
-        initChangeInfo();
-        converted = true;
-    }
     
     def getChangeinfo() {
         updateInfo();
@@ -74,21 +60,29 @@ class FAASChangeSketchModel extends FAASSketchModel
         changeinfo.newinfo.east = entity.rp.east;
         changeinfo.newinfo.west = entity.rp.west;
         changeinfo.newinfo.south = entity.rp.south;
-        changeinfo.sketch = [objid: entity.objid, drawing: handler.data];
     }
     
     def save(){
         if (MsgBox.confirm('Save and apply changes?')){
             updateInfo();
             svc.updateInfo(changeinfo);
-            if (converted) {
-                return '_exit';
-            } else {
-                return '_close';
-            }
             caller.refreshForm();
+            return '_close';
         }
         return null;
+    }
+
+    def convertToDrawing() {
+        if (MsgBox.confirm('Are you sure you want to convert image sketch to drawing format?')){
+            return Inv.lookupOpener('faas:changeinfo:convert', [
+                entity : entity
+            ])
+        }
+        return null;
+    }
+
+    void refreshForm() {
+        caller.refreshForm();
     }
 
 }

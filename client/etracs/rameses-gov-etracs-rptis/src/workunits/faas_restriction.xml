@@ -26,12 +26,13 @@
         <invoker type="faas_restriction:open" action="open" caption="Restriction" target="popup"/>
         
         <invoker type="formActions" action="approve" caption="Approve" 
-                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'"
+                 visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read'}"
                  domain="RPT" role="RECORD_APPROVER" permission="faas_restriction.approve"/>
-                 
+        <!--          
         <invoker type="formActions" action="approve" caption="Approve" 
                  visibleWhen="#{entity.state=='DRAFT' &amp;&amp; mode == 'read' &amp;&amp; entity._type=='ledger'}"
                  domain="LANDTAX" role="RECORD_APPROVER" permission="faas_restriction.approve"/>
+         -->
    </invokers>
    
    <code class="com.rameses.gov.etracs.rptis.models.FAASRestrictionModel">

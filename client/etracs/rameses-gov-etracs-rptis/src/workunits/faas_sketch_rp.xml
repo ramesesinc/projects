@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="sketch:drawing:rp:open" action="initConvert" caption="Convert Sketch" index="6" />
+        
+        <invoker type="formActions" action="back" caption="Back" mnemonic="B" visibleWhen="#{mode=='read'}"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="E" visibleWhen="#{mode=='read'}" role="TAXMAPPER,ADMIN"/>
+        <invoker type="formActions" action="update" caption="Update" mnemonic="U" visibleWhen="#{mode=='edit'}" role="TAXMAPPER,ADMIN"/>
+        
+   </invokers>
+   <code class="com.rameses.gov.etracs.rptis.models.FAASSketchRealPropertyModel">
+  </code>
+    
+    <pages> 
+        <page template="com.rameses.gov.etracs.rptis.views.SketchPage"/>
+    </pages>
+</workunit>
+
+

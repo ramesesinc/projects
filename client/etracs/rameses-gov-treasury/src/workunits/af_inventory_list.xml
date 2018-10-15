@@ -7,4 +7,33 @@
                   role="AFO"
                   action="init" />
    </invokers>
+   <code>
+       <![CDATA[
+       import com.rameses.rcp.annotations.*;
+       import com.rameses.seti2.models.*;
+       
+       class AFInventoryList extends CrudListModel {
+       
+            @PropertyChangeListener
+            def listener = [
+                "query.af" : { o->
+                    reload();
+                }
+            ]          
+       
+            def getCustomFilter() {
+                if( query.af ) {
+                    return ["objid = :afid", [afid: query.af.objid] ];
+                }
+                else {
+                    return null;
+                }
+            }
+       }
+       
+       ]]>
+   </code>
+   <pages>
+       <page name="queryForm" template="com.rameses.enterprise.treasury.views.AFListQueryPanel" />
+   </pages>
 </workunit>

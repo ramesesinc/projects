@@ -15,11 +15,19 @@ class AFTxnHandlerTransferReturnCancel extends AFTxnHandler {
     def afType;
     def afTypes;
     
-    void init() {
+    @PropertyChangeListener
+    def listener = [
+        "afType" : { o->
+            afListModel.reload();
+        }
+    ];
+    
+    def init() {
         def m = [_schemaname: 'af'];
         m.where = ["1=1"];
         m.orderBy = "objid";
         afTypes = queryService.getList(m);
+        return super.init();
     }
     
     def afListModel = [
@@ -46,22 +54,29 @@ class AFTxnHandlerTransferReturnCancel extends AFTxnHandler {
         }
     ] as BasicListModel;
 
-    void initReturn() {
-        title = "Return Accountable Form";
-        init();
-    }
-    
-    void initTransfer() {
-        title = "Transfer Accountable Form";
-        init();
-    }
-    void initCancel() {
-        title = "Cancel Accountable Form";
-        init();
-    }
-    
-    void save() {
+    def save() {
+        if ( (entity.txntype == "TRANSFER") && (entity.issuefrom.objid == entity.issueto.objid) ) 
+                throw new Exception("Issued To must not be the same with the Issued From. Please select another");
         
-    }
-    
+        if(!MsgBox.confirm("You are about to save this record. Proceed?")) return null;
+        entity._schemaname = "aftxn";
+
+        entity.afitems = afListModel.selectedValue; 
+        entity.afitems.each{
+            it.remove('currentdetail'); 
+
+            def m = [:]; 
+            m.item = it.afunit; 
+            m.item.putAll( it.af ); 
+            m.unit = it.unit;
+            m.txntype = entity.txntype; 
+            m.qtyserved = m.qty = 1; 
+            m.linetotal = m.cost = it.cost; 
+            entity.items << m; 
+        }
+        def e = persistenceService.create(entity);
+        entity.clear();
+        entity.putAll(e);
+        return forward();
+    }    
 }    

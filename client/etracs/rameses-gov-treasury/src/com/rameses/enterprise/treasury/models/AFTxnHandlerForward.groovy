@@ -14,7 +14,6 @@ class AFTxnHandlerForward extends AFTxnHandler {
 
     def form;
     
-    String title = "Forward Issuance of Accountable Forms";
     
     @FieldValidator
     def validators = [
@@ -54,10 +53,31 @@ class AFTxnHandlerForward extends AFTxnHandler {
         }
     ];
     
-    void init() {
+    def init() {
         form = [:];
+        return super.init();
     }
     
+    def save() {
+        if(!MsgBox.confirm("You are about to save this record. Proceed?")) return null;
+        entity._schemaname = "aftxn";
+
+        def m = [:]; 
+        m.item = form.afunit;
+        m.item.objid = m.item.itemid;
+        m.unit = m.item.unit;
+        m.txntype = entity.txntype;
+        m.qtyserved = m.qty = 1;
+        m.linetotal = m.cost = 0.0;
+        entity.items << m; 
+        entity.form = form;
+            
+        def e = persistenceService.create(entity);
+        entity.clear();
+        entity.putAll(e);
+        return forward();
+    }
     
+
     
 }    

@@ -3,19 +3,23 @@
      <invokers>
         <invoker type="aftxn:handler" name="TRANSFER" caption="TRANSFER" index="4"/>
         <invoker type="aftxn:handler" name="RETURN" caption="RETURN" index="5"/>
+        <!--
         <invoker type="aftxn:handler" name="CANCEL" caption="CANCEL" index="6"/>
-
-        <invoker type="aftxn:handler:cancel" action="initCancel"/>
-        <invoker type="aftxn:handler:return" action="initReturn"/>
-        <invoker type="aftxn:handler:transfer" action="initTransfer"/>
+        -->
+        
+        <invoker type="aftxn:handler:cancel" action="init" />
+        <invoker type="aftxn:handler:return" action="init" caption="Return AF"/>
+        <invoker type="aftxn:handler:transfer" action="init" caption="Transfer AF"/>
         
         <!-- actions -->
-        <invoker type="formActions" action="doClose" caption="Back" immediate="true" />
-        <invoker type="formActions" action="save" caption="Next" />
+        <invoker type="formActions" action="close" caption="Back" immediate="true" visibleWhen="#{ mode == 'create' }"/>
+        <invoker type="formActions" action="exit" caption="Close" immediate="true" visibleWhen="#{ mode == 'open' }"/>
+        <invoker type="formActions" action="save" caption="Next"  visibleWhen="#{ mode == 'create' }" />
+
         
     </invokers>
     <code class="com.rameses.enterprise.treasury.models.AFTxnHandlerTransferReturnCancel" /> 
     <papges>
-        <page template="com.rameses.enterprise.treasury.views.AFTxnSelectionPage" />
+        <page name="create" template="com.rameses.enterprise.treasury.views.AFTxnSelectionPage" />
     </papges>
 </workunit>

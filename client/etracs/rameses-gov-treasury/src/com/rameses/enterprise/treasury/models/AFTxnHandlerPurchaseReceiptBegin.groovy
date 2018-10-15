@@ -10,12 +10,19 @@ import com.rameses.util.*;
 import com.rameses.rcp.framework.ValidatorException;
 
 
-class AFTxnHandlerReceiveBeginIssue extends AFTxnHandler {
+class AFTxnHandlerPurchaseReceiptBegin extends AFTxnHandler {
 
-    def itemTxnTypes;
+    def getTxnType() {
+        return ((entity.txntype == "BEGIN_BALANCE") ? "BEGIN" : "PURCHASE");
+    }
     
-    void init() {
-        MsgBox.alert("entity is " + entity );
+    def init() {
+        if( mode =="create" ) {
+            entity.items.each {
+                it.txntype = txnType;
+            } 
+        }
+        return super.init();
     }
     
     def itemListHandler = [
@@ -23,11 +30,7 @@ class AFTxnHandlerReceiveBeginIssue extends AFTxnHandler {
             return entity.items;
         },
         createItem: {
-           def m = [:]; 
-           if ( itemTxnTypes != null && itemTxnTypes.size() == 1 ) {
-               m.txntype = itemTxnTypes.first();
-           }
-           return m; 
+           return [txntype: txnType]; 
         }, 
         onAddItem: { o-> 
             entity.items << o;
@@ -57,5 +60,28 @@ class AFTxnHandlerReceiveBeginIssue extends AFTxnHandler {
         o.linetotal = (o.qty ? o.qty : 0) * (o.cost ? o.cost : 0.0);
     }
     
+    public def getInfo() {
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPurchaseReceiptBegin.gtpl", [entity:entity] );
+    }
+    
+    def addBatch( def o ) {
+        def item = entity.items.find{ it.objid == o.aftxnitemid };
+        return Inv.lookupOpener( "af_control:addbatch", [ 
+            refitem:item, handler:{ vv-> reloadEntity(); } 
+        ]);
+    }
+    
+    void removeBatch(def o) {
+        if( !MsgBox.confirm('You are about to remove the entered accountable forms. Proceed?') ) return;
+        o.refid = entity.objid;
+        o.txntype = entity.txntype;
+        try {
+            svc.removeBatch(o);
+            reloadEntity();
+        }
+        catch(e) {
+            MsgBox.err(e);
+        }
+    }
 
 }    

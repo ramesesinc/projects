@@ -10,7 +10,7 @@ import com.rameses.util.*;
 import com.rameses.rcp.framework.ValidatorException;
 
 
-class AFTxnHandler {
+abstract class AFTxnHandler {
 
     @Binding
     def binding;
@@ -24,23 +24,65 @@ class AFTxnHandler {
     @Service("QueryService")
     def queryService;
     
+    @Service("PersistenceService")
+    def persistenceService;
+
     def entity;
     def handler;
+    def afrequest;
+    def mode = "create";
     
-    String title;
+    def init() { 
+        return (mode == "create") ? "create" : "open"; 
+    }
     
-    def doClose() {
+    public def getInfo() {
+        return null;
+    }
+
+    
+    def saveCreate() {
+        if(mode!='create') throw new Exception("Save only applicable for create");
+        def b = MsgBox.confirm( "You are about to save the draft document. Proceed?" );
+        if ( !b ) throw new BreakException();
+        entity._schemaname = "aftxn";
+        def e = persistenceService.create(entity);
+        entity.objid = e.objid;
+        reloadEntity();
+        mode = "open";
+        return "open";
+    }
+
+    String getTitle() {
+        return invoker.caption;
+    }
+
+    def close() {
         handler.back();
         return "_close";
     }
     
-    def doForward() {
+    def exit()  {
+        handler.exit();
+        return "_close";
+    }
+    
+    def forward() {
         handler.forward();
         return "_close";
     }
     
-    String getTitle() {
-        return invoker.caption;
+    def post() {
+        if(!MsgBox.confirm("You are about to post this to inventory. Please verify if this is correct")) return false;
+        svc.post([objid:entity.objid ]);
+        return forward();
     }
-    
+
+    void reloadEntity() {
+        def e = persistenceService.read( [_schemaname:'aftxn', objid:entity.objid ] );
+        entity.clear();
+        entity.putAll( e );
+        binding.refresh();
+    }
+   
 }    

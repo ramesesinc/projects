@@ -7,7 +7,8 @@ CREATE VIEW vw_af_inventory_summary AS
    u.unit,
    (SELECT COUNT(*) FROM af_control WHERE state = 'OPEN' AND afid = af.objid ) AS countopen,  
    (SELECT COUNT(*) FROM af_control WHERE state = 'ISSUED' AND afid = af.objid ) AS countissued,  
-   (SELECT COUNT(*) FROM af_control WHERE state = 'OPEN' AND afid = af.objid ) AS countclosed,  
+   (SELECT COUNT(*) FROM af_control WHERE state = 'CLOSED' AND afid = af.objid ) AS countclosed,  
+   (SELECT COUNT(*) FROM af_control WHERE state = 'SOLD' AND afid = af.objid ) AS countsold, 
    (SELECT COUNT(*) FROM af_control WHERE state = 'PROCESSING' AND afid = af.objid ) AS countprocessing  
  FROM af 
  INNER JOIN afunit u ON af.objid = u.itemid;
@@ -17,10 +18,11 @@ CREATE VIEW vw_af_inventory_summary AS
 		<field name="objid" caption="AF"/>
 		<field name="title" caption="Title"/>
 		<field name="unit" caption="Unit"/>		
-		<field name="countopen" caption="Open" type="integer"/>
-		<field name="countissued" caption="Issued" type="integer"/>
-		<field name="countclosed" caption="Closed" type="integer"/>
-		<field name="countprocessing" caption="Processing" type="integer"/>	
+		<field name="countopen" caption="Open" type="integer" width="100"/>
+		<field name="countissued" caption="Issued" type="integer" width="100"/>
+		<field name="countclosed" caption="Consumed" type="integer" width="100"/>
+		<field name="countsold" caption="Sold" type="integer" width="100"/>
+		<field name="countprocessing" caption="Processing" type="integer" width="100"/>	
 	</element>
 </schema>
 

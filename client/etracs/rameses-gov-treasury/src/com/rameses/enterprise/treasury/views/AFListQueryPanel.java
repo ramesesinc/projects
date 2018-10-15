@@ -28,27 +28,26 @@ public class AFListQueryPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        aFDropdownList1 = new com.rameses.enterprise.treasury.components.AFDropdownList();
 
         setLayout(new java.awt.BorderLayout());
 
+        xFormPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setCaptionWidth(50);
         xFormPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         xFormPanel1.setPadding(new java.awt.Insets(4, 0, 0, 0));
 
-        xComboBox1.setCaption("AF ");
-        xComboBox1.setItems("afTypes");
-        xComboBox1.setName("query.formno"); // NOI18N
-        xComboBox1.setPreferredSize(new java.awt.Dimension(95, 20));
-        xFormPanel1.add(xComboBox1);
+        aFDropdownList1.setCaption("AF");
+        aFDropdownList1.setName("query.af"); // NOI18N
+        xFormPanel1.add(aFDropdownList1);
 
         add(xFormPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.enterprise.treasury.components.AFDropdownList aFDropdownList1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     // End of variables declaration//GEN-END:variables
 }

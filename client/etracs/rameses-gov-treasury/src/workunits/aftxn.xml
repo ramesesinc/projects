@@ -1,74 +1,47 @@
 <!-- REQUISITION ISSUE SLIP -->
 <workunit schemaName="aftxn">
-    <!--
     <invokers>
         <invoker folderid="menucategory/treasury/af"
-                 caption="New AF Transaction" formTitle="New AF Transaction" action="start" role="AFO"/>
+                 caption="New AF Transaction" formTitle="New AF Transaction" action="startCreate" role="AFO"/>
         
         <invoker type="aftxn:create" 
-                 caption="New AF Transaction" formTitle="New AF Transaction" action="start" role="AFO"/>
+                 caption="New AF Transaction" formTitle="New AF Transaction" action="startCreate" role="AFO"/>
         
-        <invoker type="aftxn:open" 
+        <invoker type="aftxn:open"
                  formTitle="#{ entity.controlno }"
-                 formId="#{entity.objid }"
-                 caption="AF Issue/Receipt" 
-                 action="startOpen" role="AFO"/>
-        
+                 formId="#{entity.objid }" 
+                 caption="AF Transaction" 
+                 action="startOpen" />
+
         <invoker type="formActions" caption="Preview" action="preview" 
-                 visibleWhen="#{state == 'posted'}"/> 
-            
+                 visibleWhen="#{entity.state == 'POSTED'}"/>
     </invokers>
-    -->
+    
     <code class="com.rameses.enterprise.treasury.models.AFTxnModel" />
     
     <pageflow>
         <start>
-            <transition to="initial" name="default" action="create"/>
-            <transition to="view" name="view"/>
-            <transition to="posted" name="posted"/>
+            <transition to="initial" name="default" />
+            <transition to="process" name="process"/>
+            <transition to="completed" name="view"/>
         </start>
-        <page name="initial" title="New Accountable Form Issue/Receipt" >
-            <transition to="check-path" caption="Next" immediate="false" mnemonic="N"/>
+        <page name="initial" title="Select AF Transaction Type" >
+            <transition to="process" caption="Next" mnemonic="N" action="initCreate"/>
         </page>
-        <process name="check-path">
-            <transition to="single-entry" cond="#{ entity.txntype == 'FORWARD' }" 
-                        action="initSingleForm"/>
-            <transition to="select-af" cond="#{entity.txntype.matches('TRANSFER|RETURN')}"/>            
-            <transition to="entry" cond="#{!entity.txntype.matches('FORWARD|TRANSFER|RETURN') &amp;&amp; afrequest!=null}"  
-                        action="copyRequest"/>
-            <transition to="entry" cond="#{!entity.txntype.matches('FORWARD|TRANSFER|RETURN') &amp;&amp; afrequest==null}"  
-                        action="loadItemTxnTypes"/>
-        </process>    
-        <page name="single-entry" title="Forward AF - Enter Details">
-            <transition to="initial" caption="Back"  mnemonic="B"/>
-            <transition to="posted" caption="Next"  mnemonic="N"  action="saveCreate" immediate="false"/>
+        <page name="process" title="#{title}" >
+            <transition to="initial" name="back" visibleWhen="#{false}"/>
+            <transition to="completed" name="forward" visibleWhen="#{false}"/>
+            <transition to="end" name="exit" visibleWhen="#{false}"/>
         </page>
-        <page name="select-af" title="Select AF to #{entity.txntype}">
-            <transition to="initial" caption="Back" action="clearItems" mnemonic="B"/>
-            <transition to="posted" caption="Next" action="saveCreate" mnemonic="N" immediate="false" />
-        </page>
-        <page name="entry" title="Enter Qty and Details">
-            <transition to="initial" caption="Back" action="clearItems" mnemonic="B"/>
-            <transition to="view" caption="Next" action="saveCreate" mnemonic="N" immediate="false"/>
-        </page>
-        <page name="view" title="Accountable Form Issue/Receipt" action="open">
-            <transition to="end" caption="Close" mnemonic="C"/>
-            <transition to="posted" caption="Post" action="post" mnemonic="P" 
-                        confirm="This will immediately update the inventory. Proceed?"/>
-        </page>
-        <page name="posted" title="Accountable Form Issue/Receipt" action="open">
-            <transition to="end" caption="Close" mnemonic="C"/>
+        <page name="completed" title="AF Transaction" >
+            <transition to="end" caption="Close"/>
         </page>
         <end/>
     </pageflow>
-    
     <pages>
         <page name="initial" template="com.rameses.enterprise.treasury.views.AFTxnInitialPage" />
-        <page name="single-entry" template="com.rameses.enterprise.treasury.views.AFTxnSingleEntryPage" />
-        <page name="select-af" template="com.rameses.enterprise.treasury.views.AFTxnSelectionPage" />
-        <page name="entry"   template="com.rameses.enterprise.treasury.views.AFTxnEntryPage" />
-        <page name="view"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
-        <page name="posted"    template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
+        <page name="process" template="com.rameses.enterprise.treasury.views.AFTxnProcessPage" />
+        <page name="completed" template="com.rameses.enterprise.treasury.views.AFTxnViewPage" />
     </pages>
     
 </workunit>

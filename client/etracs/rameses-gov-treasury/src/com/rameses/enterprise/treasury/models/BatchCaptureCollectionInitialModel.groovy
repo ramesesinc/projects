@@ -47,28 +47,30 @@ class BatchCaptureCollectionInitialModel  {
     }
     
     def doNext() {
-        //lookup stubs assigned to this collector having this number
-        def str = "owner.objid = :userid";
-        if( subcollector) {
-            str = "assignee.objid = :userid"
-        }
-        def m = [_schemaname:'af_control'];
-        m.where = ["currentseries = :currentseries AND currentseries <= endseries AND txnmode='CAPTURE' AND " + str, 
-                    [currentseries: startseries, userid: userid ]];
-        def list = qryService.getList(m);
-        if(!list) throw new Exception("No items found with the specified start series assigned for this user");
-        def selectedItem = null;
-        if( list.size() > 1 ) {
-            throw new Exception("There are two active accountable forms having the same start series")
-        }
-        else {
-            selectedItem = list[0];
-        }
+        def wheres = []; 
+        def wheremap = [ userid: userid ]; 
+        if ( subcollector ) { 
+            wheres << " assignee.objid = :userid AND assignee.objid <> owner.objid "; 
+        } else {
+            wheres << " owner.objid = :userid AND assignee.objid = owner.objid "; 
+        } 
+
+        wheres << " currentseries = :currentseries AND currentseries <= endseries AND txnmode='CAPTURE' "; 
+        wheremap.currentseries = startseries;
         
+        def list = qryService.getList([ _schemaname:'af_control', where: [wheres.join(" AND "), wheremap]]); 
+        if ( !list ) { 
+            throw new Exception("No accountable forms matches the specified start series. Please verify"); 
+        }
+        if ( list.size() > 1 ) {
+            throw new Exception("There are two active accountable forms having the same start series"); 
+        }
+
+        def afc = list.first(); 
         def collectiontype = null;
         def h = { o->
             def ctfundid = o.fund?.objid; 
-            def affundid = selectedItem.fund?.objid; 
+            def affundid = afc.fund?.objid; 
             if ( affundid == null && ctfundid == null ) {;}
             else if ( affundid != null && ctfundid != null && affundid == ctfundid ) {;} 
             else throw new Exception(o.title +" is not allowed. Please select another."); 
@@ -76,39 +78,44 @@ class BatchCaptureCollectionInitialModel  {
             collectiontype = o;            
         }
         
-        str = "formno = :formno AND allowbatch=1 ";
-        def qparam = [ formno: selectedItem.afid ];         
-        if( selectedItem.respcenter?.objid ) {
-            qparam.orgid = selectedItem.respcenter.objid;
-            str += " AND orgid =:orgid "; 
-        } else {
-            str += " AND orgid IS NULL "; 
+        wheres = [" formno = :formno AND allowbatch=1 "]; 
+        wheremap = [ formno: afc.afid ]; 
+        if ( OsirisContext.env.ORGROOT.toString() == '0' ) { 
+            wheres << " orgid = :orgid "; 
+            wheremap.orgid = OsirisContext.env.ORGID; 
+        }
+        else if( afc.respcenter?.objid ) { 
+            wheres << " orgid = :orgid "; 
+            wheremap.orgid = afc.respcenter.objid;
+        } 
+        else {
+            wheres << " orgid IS NULL "; 
         }
         
-        Modal.show("collectiontype:lookup", [customFilter: [str, qparam], onselect: h, debug: true]);
+        Modal.show("collectiontype:lookup", [onselect: h, customFilter: [wheres.join(" AND "), wheremap]]);
         if ( !collectiontype ) return null;
 
         def entity = [
-            state: "DRAFT",
-            defaultreceiptdate: startdate, 
+            state: "DRAFT", 
             txnmode: "CAPTURE",
-            stub: selectedItem.stubno,
-            formno: selectedItem.afid,
-            formtype: selectedItem.af.formtype,
-            controlid: selectedItem.objid,
-            serieslength: selectedItem.af.serieslength,
-            prefix:selectedItem.prefix,
-            suffix:selectedItem.suffix,
-            startseries: selectedItem.currentseries,
-            endseries: selectedItem.endseries,
-            totalamount: 0,
+            defaultreceiptdate: startdate, 
+            stub: afc.stubno,
+            formno: afc.afid,
+            formtype: afc.af.formtype,
+            controlid: afc.objid,
+            serieslength: afc.af.serieslength,
+            prefix: afc.prefix,
+            suffix: afc.suffix,
+            startseries: afc.currentseries,
+            endseries: afc.endseries,
             totalcash: 0,
-            totalnoncash : 0,
-            collector: selectedItem.owner,
-            capturedby:selectedItem.assignee, 
-            org: selectedItem.respcenter,
+            totalnoncash: 0,
+            totalamount: 0,
+            collector: afc.owner,
+            capturedby:afc.assignee, 
+            org: afc.respcenter,
             collectiontype: collectiontype
-        ]
+        ]; 
         
         entity = batchSvc.create( entity ); 
         def op = Inv.lookupOpener('batchcapture_collection:open', [entity: [objid: entity.objid]]);  

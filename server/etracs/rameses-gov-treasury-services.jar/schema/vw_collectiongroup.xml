@@ -17,7 +17,7 @@ WHERE cg.state = 'ACTIVE';
 <schema>
 	<element tablename="vw_collectiongroup">
 		<field name="objid" primary="true"/> 
-		<field name="name"/> 
+		<field name="name" searchable="true"/> 
 		<field name="sharing"/> 
 	</element>
 </schema>

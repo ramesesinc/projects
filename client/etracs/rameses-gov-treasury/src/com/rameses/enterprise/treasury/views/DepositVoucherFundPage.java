@@ -170,8 +170,23 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "bankaccount.bank.code"}
+                , new Object[]{"caption", "BankCode"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "bankaccount.bank.name"}
-                , new Object[]{"caption", "Bank"}
+                , new Object[]{"caption", "BankName"}
                 , new Object[]{"width", 200}
                 , new Object[]{"minWidth", 200}
                 , new Object[]{"maxWidth", 250}
@@ -294,7 +309,6 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
         schemaList1.setCustomFilter("depositvoucherfundid = :objid");
         schemaList1.setFormActions("depositSlipActions");
         schemaList1.setHandlerName("depositSlipListModel");
-        schemaList1.setHiddenCols("");
         schemaList1.setName("selectedDepositSlip"); // NOI18N
         schemaList1.setQueryName("entity");
         schemaList1.setSchemaName("depositslip");
@@ -637,7 +651,7 @@ public class DepositVoucherFundPage extends javax.swing.JPanel {
                     .addComponent(schemaList3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(43, 43, 43)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
 
         xTabbedPane1.addTab("  Fund Transfers   ", jPanel6);

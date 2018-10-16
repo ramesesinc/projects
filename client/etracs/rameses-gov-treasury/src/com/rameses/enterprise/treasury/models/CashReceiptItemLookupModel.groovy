@@ -73,15 +73,11 @@ class CashReceiptItemLookupModel extends CrudLookupModel {
         
         //determine org
         if(_orgid) {
-            if( query.collectiontype?.hasitems ) {
-                s << "(orgid IS NULL OR orgid = :orgid)";
-            }  
-            else {
-                s << "orgid = :orgid";
-            }
+            s << "orgid = :orgid";
             parm.orgid = _orgid;
+        } else {
+            s << "orgid IS NULL";
         }
-        
         return [s.join(" AND "), parm ];
     }
     

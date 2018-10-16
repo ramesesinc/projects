@@ -94,9 +94,11 @@ abstract class DepositSlipPrintoutModel  {
         m.cash = d.totalcash;
         m.amtinwords = "*** " + NumberToWords.instance.convert( d.totalcash ).toUpperCase() + " PESOS ***";
         if(d.checks) {
-            m.noncashpayments = d.checks.collect {
-                [bank: it.bank?.name, checkno: it.refno, amount: it.amount ]
-            }
+            m.noncashpayments = d.checks.collect {[ 
+                bank: it.bank?.name, bankcode: it.bank?.code, 
+                checkno: it.refno, amount: it.amount, 
+                deposittype: it.bank?.deposittype 
+            ]}
         }
         if( d.cashbreakdown ) {
             m.dqty1000="0"; m.dqty500="0"; m.dqty200="0"; m.dqty100="0";
@@ -119,7 +121,8 @@ abstract class DepositSlipPrintoutModel  {
                     m.damtCoins += it.amount;
                 }    		
             }
-        }        
+        }
+              
         return m;
     } 
     

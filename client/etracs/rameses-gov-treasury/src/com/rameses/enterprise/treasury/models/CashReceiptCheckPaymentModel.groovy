@@ -155,6 +155,10 @@ class CashReceiptCheckPaymentModel extends PageFlowController {
         if ( !check.bank ) throw new Exception('Please specify a bank'); 
         if( check.amount==null || check.amount <= 0 ) 
             throw new Exception("Amount must be greater than 0.0 ");
+        
+        def numformat = new java.text.DecimalFormat('0.00'); 
+        balance = new BigDecimal(numformat.format( balance )); 
+        check.amount = new BigDecimal(numformat.format( check.amount )); 
         if(balance - check.amount < 0 )
             throw new Exception("Check amount must be greater than the balance unpaid");
         cashReceiptSvc.validateCheckDate( check.refdate );

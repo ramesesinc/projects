@@ -62,7 +62,7 @@ public class AFTxnSelectionPage extends javax.swing.JPanel {
         xLookupField1.setExpression("#{ entity.issueto.lastname }, #{ entity.issueto.firstname }");
         xLookupField1.setHandler("collector:lookup");
         xLookupField1.setName("entity.issueto"); // NOI18N
-        xLookupField1.setVisibleWhen("#{entity.txntype == 'TRANSFER' }");
+        xLookupField1.setVisibleWhen("#{entity.txntype.matches('TRANSFER|MANUAL_ISSUE') }");
         xLookupField1.setCaptionWidth(120);
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField1.setRequired(true);

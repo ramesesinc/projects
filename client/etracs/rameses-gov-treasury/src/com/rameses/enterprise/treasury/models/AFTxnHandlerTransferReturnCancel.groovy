@@ -36,20 +36,32 @@ class AFTxnHandlerTransferReturnCancel extends AFTxnHandler {
         },
         fetchList: { o->
             if(!afType) return [];
-            if(!entity.issuefrom?.objid ) return [];
+            //if not manual issue it must require issuefrom
+            if(entity.txntype!='MANUAL_ISSUE' && !entity.issuefrom?.objid ) return [];
+            
             def list = [];
             def p = [:];
             def m = [_schemaname:"af_control"];
-            list << "owner.objid = :ownerid";
-            list << "afid = :afid";
-            list << "owner.objid = assignee.objid";
-            list << "currentseries <= endseries";
+            
+            if( afType ) {
+                list << "afid = :afid";
+                p.afid = afType.objid;
+            }
+            
+            if( entity.txntype == "MANUAL_ISSUE") {
+                list << "state = 'OPEN' ";
+            }
+            else {
+                list << "owner.objid = :ownerid";
+                list << "owner.objid = assignee.objid";
+                list << "currentseries <= endseries";
+                list << "NOT(txnmode = 'REMOTE')";
+                p.ownerid = entity.issuefrom?.objid;
+            }
             list << "active = 0";
-            list << "NOT(txnmode = 'REMOTE')";
-            p.ownerid = entity.issuefrom.objid;
-            p.afid = afType.objid;
             m.where = [ list.join(" AND "), p ];
             m.orderBy = "stubno";
+            //m.debug = true;
             return queryService.getList( m );    
         }
     ] as BasicListModel;

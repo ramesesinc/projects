@@ -3,6 +3,7 @@
      <invokers>
         <invoker type="aftxn:handler" name="TRANSFER" caption="TRANSFER" index="4"/>
         <invoker type="aftxn:handler" name="RETURN" caption="RETURN" index="5"/>
+        <invoker type="aftxn:handler" name="MANUAL_ISSUE" caption="MANUAL ISSUE" index="6"/>
         <!--
         <invoker type="aftxn:handler" name="CANCEL" caption="CANCEL" index="6"/>
         -->
@@ -10,6 +11,7 @@
         <invoker type="aftxn:handler:cancel" action="init" />
         <invoker type="aftxn:handler:return" action="init" caption="Return AF"/>
         <invoker type="aftxn:handler:transfer" action="init" caption="Transfer AF"/>
+        <invoker type="aftxn:handler:manual_issue" action="init" caption="Manual Issue AF"/>
         
         <!-- actions -->
         <invoker type="formActions" action="close" caption="Back" immediate="true" visibleWhen="#{ mode == 'create' }"/>

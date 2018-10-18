@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="account_maingroup">
+    <invokers>
+        <!--
+        <invoker folderid="home/financial" caption="Account Master" action="init" index="-1"/> 
+        -->
+        <invoker folderid="menucategory/financial/master" caption="Account Master" action="init" role="MASTER" index="-1"/> 
+    </invokers>
+</workunit>

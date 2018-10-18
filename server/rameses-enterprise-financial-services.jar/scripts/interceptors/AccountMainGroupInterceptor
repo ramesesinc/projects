@@ -1,0 +1,18 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.common.*
+
+
+class AccountMainGroupInterceptor  {
+
+	
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'account_maingroup' }")
+	public def beforeCreate(evt) {
+		def o = evt.args[0];
+		o.objid = o.name;
+	}
+
+
+
+}

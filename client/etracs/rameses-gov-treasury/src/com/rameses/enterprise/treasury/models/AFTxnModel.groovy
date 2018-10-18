@@ -10,189 +10,122 @@ import com.rameses.util.*;
 import com.rameses.rcp.framework.ValidatorException;
 
 
-class AFTxnModel extends CrudPageFlowModel {
+class AFTxnMainModel extends CrudPageFlowModel {
 
-    @Service("AFTxnService")
-    def svc;
-    
     @Service("DateService")
     def dateSvc;
     
+    def txnTypes;
+    def txntype;
+    def dtfiled;
     boolean withrequest = false;
     def afrequest;
-    
-    def formTypes;
-    def afTypes;
-    def afType;
     def reqtype = null;
-    def form;
-    def itemTxnTypes;
+    def handler;
+    def mode;
     
-    def targetListHandler;
-    
-    @FieldValidator
-    def validators = [
-        "form.startseries" : { o->
-            try {
-                Integer.parseInt(o);
-            }
-            catch(e) {
-                throw new ValidatorException("Start series must be a number" );
-            }
-            if( !o.endsWith("1") )
-                throw new ValidatorException("Start series must end with 1" );
-            if(o.length() != form.afunit.serieslength ) {
-                throw new ValidatorException("Start series length must be " + form.afunit.serieslength );
-            }      
-        }
-    ];
-    
-    @PropertyChangeListener
-    def listener = [
-        "entity.issueto" : { o->
-            entity.respcenter = [objid:o.orgid, name:o.orgname];
-        },
-        "afType" : { o->
-            afListModel.reload();
-        },
-        "entity.issuefrom" : { o->
-            if( entity.txntype.matches("TRANSFER|RETURN") ) afListModel.reload();
-        },
-        "form.startseries" : { o->
-            int interval = form.afunit.interval;
-            if(!interval || interval < 0 ) interval = 1;
-            int len = form.afunit.serieslength;
-            if( (o+"").length() > len )
-                throw new Exception("Series length must be less than or equal to "+len);
-            int starting = Integer.parseInt(""+o);    
-            int ending = (starting + (form.afunit.qty * interval) ) ;
-            form.startseries = String.format( "%0"+len+"d", starting);
-            form.endseries = String.format( "%0"+len+"d", ending - 1);
-            binding.refresh("form.(start|end)series");
-        }
-    ];
-    
-    void create() { 
-        entity = [:]; 
-        entity.state = 'DRAFT'; 
-        entity.items = [];
-        afrequest = null; 
-        itemListHandler.reload();
-        entity.dtfiled = dateSvc.getBasicServerDate();
-        
-        def m = [_schemaname:'aftxn_type'];
-        m.select = "formtype";
-        m.where = ["1=1"];
-        m.orderBy = "sortorder";
-        formTypes = queryService.getList(m)*.formtype.unique();
-        
-        //load formTypes
-        m = [_schemaname: 'af'];
-        m.where = ["1=1"];
-        m.orderBy = "objid";
-        afTypes = queryService.getList(m);
-    }
-    
-    void copyRequest() {
-        def req = persistenceService.read( [_schemaname:'afrequest', objid: afrequest.objid ] );
-        entity.request = [objid:req.objid , reqno: req.reqno];
-        entity.issueto = req.requester;
-        entity.respcenter = req.respcenter;
-        entity.items = [];
-        req.items.each {
-            def m = [:];
-            m.item = it.item;
-            m.unit = it.unit;
-            m.qtyrequested = it.qty;
-            m.qty = it.qty;
-            m.qtyserved = 0;
-            m.cost = it.afunit.saleprice;
-            m.txntype = req.reqtype;
-            m.afunit = it.afunit;
-            computeLineTotal(m);
-            entity.items << m;
-        }
-        itemTxnTypes = [ req.reqtype ];
-    }
-    
-    void loadItemTxnTypes() {
-        def m = [_schemaname:"aftxn_type"];
-        m.findBy = [formtype: entity.txntype];
-        m.orderBy = "sortorder";
-        itemTxnTypes = queryService.getList( m )*.txntype;
 
-        if ( itemTxnTypes.size() == 1 ) {
-            entity.items.each{ 
-                it.txntype = itemTxnTypes.first(); 
-            } 
+    def startCreate() {
+        afrequest = null; 
+        dtfiled = dateSvc.getBasicServerDate();
+        try {
+            txnTypes = Inv.lookupOpeners("aftxn:handler").collect { [caption:it.caption, name:it.properties.name] };
         }
-        if ( !entity.txntype.toString().matches('TRANSFER|RETURN|FORWARD')) { 
-            entity.items.findAll{( it.txntype )}.each{
-                if ( !itemTxnTypes.contains(it.txntype) ) {
-                    entity.items.remove( it ); 
+        catch(e){;}
+        mode  = "create";
+        return super.start("default");
+    }
+    
+    def startOpen() {
+        entity._schemaname = "aftxn";
+        entity = persistenceService.read( entity );
+        mode = "open";
+        if( entity.state  == "DRAFT") {
+            buildOpener("open");
+            return super.start("process");
+        }
+        else {
+            return super.start("view");
+        }
+    }
+    
+    void initCreate() {
+        initData();
+        buildOpener("create");
+    }
+
+    
+    void initData() {
+        entity = [:];
+        entity.state = "DRAFT";
+        entity.items = [];
+        entity.txntype = txntype;
+        entity.dtfiled = dtfiled;
+        if(withrequest) {
+            def req = persistenceService.read( [_schemaname:'afrequest', objid: afrequest.objid ] );
+            entity.request = [objid:req.objid , reqno: req.reqno];
+            entity.issueto = req.requester;
+            entity.respcenter = req.respcenter;
+            req.items.each {
+                def m = [:];
+                m.item = it.item;
+                m.unit = it.unit;
+                m.qtyrequested = it.qty;
+                m.qty = it.qty;
+                m.qtyserved = 0;
+                m.cost = it.afunit.saleprice;
+                m.txntype = req.reqtype;
+                if(m.txntype.matches("ISSUE")) {
+                    m.txntype = null;
                 }
-            }
-            itemListHandler.reload();
+                m.afunit = it.afunit;
+                m.linetotal = (m.qty ? m.qty : 0) * (m.cost ? m.cost : 0.0);
+                entity.items << m;
+            };
         }
     }
     
-    void initSingleForm() {
-        form = [:];
-    }
+    void buildOpener(def _mode) {
+        String hname = "aftxn:handler:"+ entity.txntype.toLowerCase();
+        try {
+            def h = [
+                back : {
+                    def op = super.signal("back");
+                    binding.fireNavigation( op );
+                },
+                forward: {
+                    entity = persistenceService.read( [_schemaname:'aftxn', objid: entity.objid ] );                    
+                    def op = super.signal("forward");
+                    binding.fireNavigation( op );
+                },
+                exit: {
+                    def op = super.signal("exit");
+                    binding.fireNavigation( op );
+                }
+            ];
+            handler = Inv.lookupOpener(hname, [handler: h, entity: entity, afrequest: entity.request, mode: _mode ]);
+        }
+        catch(e) {
+            throw new Exception("Txn Type " + hname + " not found!" );
+        }    
+    }    
     
-    //the only lookup here is for the request because the other request os for purchase (af receipt)
+    
+     //the only lookup here is for the request because the other request os for purchase (af receipt)
     public def getLookupRequest() {
-        if( entity.txntype == "ISSUE" ) {
+        if( txntype == "ISSUE" ) {
             return Inv.lookupOpener( "afrequest_collection:lookup", [:] );
         }
         else {
             return Inv.lookupOpener( "afrequest_purchase:lookup", [:] );
         }
     }
-    
-    def itemListHandler = [
-        fetchList : { o->
-            return entity.items;
-        },
-        createItem: {
-           def m = [:]; 
-           if ( itemTxnTypes != null && itemTxnTypes.size() == 1 ) {
-               m.txntype = itemTxnTypes.first();
-           }
-           return m; 
-        }, 
-        onAddItem: { o-> 
-            entity.items << o;
-        },
-        onRemoveItem: { o->
-            entity.items.remove(o);
-        },
-        onColumnUpdate: { o,colName->
-            if ( colName == "item" ) {
-                o.item.objid = o.item.itemid;
-                o.unit = o.item.unit; 
-                o.cost = o.item.saleprice; 
-                computeLineTotal( o ); 
-            }
-            else if(colName=="qty") {
-                if ( afrequest && o.qty > o.qtyrequested ) 
-                    throw new Exception("Qty must be less than qty requested");
-                computeLineTotal( o ); 
-            } 
-            else if(colName=="cost") {
-                computeLineTotal( o ); 
-            } 
-        }
-    ] as EditorListModel;
-    
-    private void computeLineTotal( o ) {
-        o.linetotal = (o.qty ? o.qty : 0) * (o.cost ? o.cost : 0.0);
-    }
-    
+
     public def getInfo() {
-        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewPage.gtpl", [entity:entity] );
+        return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFTxnViewInfo.gtpl", [entity:entity] );
     }
     
+    /*
     void clearItems() {
         afType = null;
         entity.issuefrom = null;
@@ -200,203 +133,15 @@ class AFTxnModel extends CrudPageFlowModel {
         entity.respcenter = null;        
         afListModel.reload();
     }
-    
-    def afListModel = [
-        isMultiSelect: {
-            return true;
-        },
-        fetchList: { o->
-            if(!afType) return [];
-            if(!entity.issuefrom?.objid ) return [];
-            def list = [];
-            def p = [:];
-            def m = [_schemaname:"af_control"];
-            list << "owner.objid = :ownerid";
-            list << "afid = :afid";
-            list << "owner.objid = assignee.objid";
-            list << "currentseries <= endseries";
-            list << "active = 0";
-            list << "NOT(txnmode = 'REMOTE')";
-            p.ownerid = entity.issuefrom.objid;
-            p.afid = afType.objid;
-            m.where = [ list.join(" AND "), p ];
-            m.orderBy = "stubno";
-            return queryService.getList( m );    
-        }
-    ] as BasicListModel;
-    
-    void buildItems() {
-        entity.items.clear(); 
-        entity.afitems = null; 
-        entity.form = null; 
-        
-        if( entity.txntype == 'FORWARD' ) { 
-            def m = [:]; 
-            m.item = form.afunit;
-            m.item.objid = m.item.itemid;
-            m.unit = m.item.unit;
-            m.txntype = entity.txntype;
-            m.qtyserved = m.qty = 1;
-            m.linetotal = m.cost = 0.0;
-            entity.items << m; 
-            entity.form = form;
-        } else {
-            entity.afitems = afListModel.selectedValue; 
-            entity.afitems.each{
-                it.remove('currentdetail'); 
-
-                def m = [:]; 
-                m.item = it.afunit; 
-                m.item.putAll( it.af ); 
-                m.unit = it.unit;
-                m.txntype = entity.txntype; 
-                m.qtyserved = m.qty = 1; 
-                m.linetotal = m.cost = it.cost; 
-                entity.items << m; 
-            }
-        }
-    }
-    
-    void saveCreate() { 
-        def confirmMsg = null; 
-        if ( entity.txntype == 'TRANSFER' ) {
-            if ( entity.issuefrom.objid == entity.issueto.objid ) 
-                throw new Exception("Issued To must not be the same with the Issued From. Please select another");
-                
-            buildItems(); 
-            confirmMsg = "You are about to save this transaction. Proceed?"; 
-        }
-        else if( entity.txntype.toString().matches('RETURN|FORWARD')) {
-            buildItems(); 
-            confirmMsg = "You are about to save this transaction. Proceed?"; 
-        } 
-        
-        if ( !confirmMsg ) {
-            confirmMsg = "You are about to save the draft document. Proceed?"; 
-        }
-        
-        def b = MsgBox.confirm( confirmMsg );
-        if ( !b ) throw new BreakException(); 
-        
-        super.saveCreate();
-    }
-    
-    void open() {
-        def e = [_schemaname:'aftxn', objid: entity.objid];
-        entity = persistenceService.read( e );
-    }
-    
-    def startOpen() {
-        open();
-        String state = (entity.state == 'DRAFT') ? 'view' : 'posted';
-        return super.start( state );
-    }
-    
-    void post() {
-        svc.post([objid:entity.objid ]);
-        reloadEntity();
-    }
-
-    void reloadEntity() {
-        open();
-        binding.refresh();
-    }
-    
-    //**************************************************************************
-    //PURCHASE RECEIPT 
-    //**************************************************************************/
-    def addBatch( def o ) {
-        def item = entity.items.find{ it.objid == o.aftxnitemid };
-        return Inv.lookupOpener( "af_control:addbatch", [ 
-            refitem:item, handler:{ vv-> reloadEntity(); } 
-        ]);
-    }
-    
-    void removeBatch(def o) {
-        if( !MsgBox.confirm('You are about to remove the entered accountable forms. Proceed?') ) return;
-        o.refid = entity.objid;
-        o.txntype = entity.txntype;
-        try {
-            svc.removeBatch(o);
-            reloadEntity();
-        }
-        catch(e) {
-            MsgBox.err(e);
-        }
-    }
-    
-    void revertBatch(def o) {
-        if( !MsgBox.confirm('You are about to revert the entries. Proceed?') ) return;
-        o.refid = entity.objid;
-        o.txntype = entity.txntype;
-        try {
-            svc.revertBatch(o);
-            reloadEntity();
-        }
-        catch(e) {
-            MsgBox.err(e);
-        }
-    }
-
-    def editBatch( def o ) {
-        def item = entity.items.find{ it.objid == o.aftxnitemid };
-        def e= [:];
-        e.afid = item.item.objid;
-        e.unit = item.unit;
-        e.afunit = item.afunit;
-        return Inv.lookupOpener("af_control:editbatch", ['aftxnitemid': o.aftxnitemid, entity: e, txntype:entity.txntype ]);
-    }
-    
-    def issueBatch( def o ) {       
-        def itm = entity.items.find{( it.objid == o.aftxnitemid )}
-        def selformno = itm?.item?.objid; 
-        def selqtyrequested = itm?.qty; 
-        
-        int qty;
-        def pp = [fields:[]];
-        pp.fields << [name:'formno', caption:'Form No. ', datatype:'label', expression: (selformno ? selformno : "") ];
-        pp.fields << [name:'qtyrequested', caption:'Qty Requested ', datatype:'label', expression: ""+(selqtyrequested ? selqtyrequested : 0)];
-        pp.fields << [name:'qty',caption:'Qty to Issue', datatype:'integer', required: true];
-        pp.data = [qty:o.qty];
-        pp.formTitle = "<html><br><b>Please enter qty to issue</b><br><br></html>";
-        pp.handler = { iq->
-            qty = iq.qty;
-        }
-        Modal.show("dynamic:form", pp, [title:'Enter Qty', height:250]);
-        if(!qty) return null;
-        try {
-            svc.issueBatch([ aftxnitemid: o.aftxnitemid, qty: qty ]);
-            reloadEntity();
-        }
-        catch(e) {
-            MsgBox.err(e);
-        }
-    }
-    
-    def moveBatch( def o ) {
-        def item = entity.items.find{ it.objid == o.aftxnitemid };
-        item.parent = entity;
-        def strname = "af_control_batch:" + item.afunit.formtype + ":lookup"
-        def h = { v ->
-            try {
-                svc.moveBatch( item, v );
-                reloadEntity();
-            }
-            catch(e) {
-                MsgBox.err(e);
-            }
-        }
-        return Inv.lookupOpener(strname, [refitem: item, onselect: h ] );
-    }
-    
+    */
+   
+    //for printing purposes
     def preview() {
         buildCompatibility( entity ); 
-
         def path = 'com/rameses/gov/treasury/ris/report/';
         def mainreport = path + 'ris.jasper';
         def subreports = new SubReport[1]; 
         subreports[0] = new SubReport("ReportRISItem", path + "risitem.jasper"); 
-        
         def params = [ title: 'RIS Report']; 
         params.reportHandler = [ 
            getData : { return entity; }, 
@@ -410,11 +155,9 @@ class AFTxnModel extends CrudPageFlowModel {
         data.reqno = data.request?.reqno;
         if ( !data.reqno ) data.reqno = data.controlno;
         if ( !data.requester ) data.requester = data.issueto; 
-        
         data.items.each{ o-> 
             if ( o.qtyreceived == null ) o.qtyreceived = o.qtyserved;
         }
-        
         if ( !data.reqtype ) {
             data.reqtype = null; 
             if ( data.reqtype.toString().toUpperCase().startsWith('PURCHASE')) {
@@ -423,12 +166,10 @@ class AFTxnModel extends CrudPageFlowModel {
                 data.reqtype = 'ISSUANCE'; 
             }
         }
-        
         data.totalcost = 0;
         data.items.each{ o-> 
             data.totalcost += (o.linetotal ? o.linetotal : 0.0); 
             if ( o.series ) return; 
-            
             def buff = []; 
             if ( o.afunit?.formtype == 'serial') {
                 o.items.each {
@@ -447,4 +188,5 @@ class AFTxnModel extends CrudPageFlowModel {
             o.series = buff.join(', ');
         }
     }
+    
 }    

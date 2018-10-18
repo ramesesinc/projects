@@ -1,0 +1,12 @@
+<workunit>
+    <invokers>
+         <invoker type="account_maingroup:formActions" caption="Map Item Account" action="init" />
+         <invoker type="formActions" action="_close" caption="Back"/>
+   </invokers>
+   
+    <code class="com.rameses.enterprise.financial.models.AccountMappingModel" />
+   
+    <pages>
+         <page template="com.rameses.enterprise.financial.views.AccountMappingPage" />
+    </pages>
+</workunit>

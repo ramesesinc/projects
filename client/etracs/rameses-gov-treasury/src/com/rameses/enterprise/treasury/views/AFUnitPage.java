@@ -36,7 +36,6 @@ public class AFUnitPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xIntegerField3 = new com.rameses.rcp.control.XIntegerField();
         xDecimalField2 = new com.rameses.rcp.control.XDecimalField();
-        xIntegerField2 = new com.rameses.rcp.control.XIntegerField();
         xComboBox6 = new com.rameses.rcp.control.XComboBox();
         xComboBox7 = new com.rameses.rcp.control.XComboBox();
 
@@ -71,13 +70,6 @@ public class AFUnitPage extends javax.swing.JPanel {
         xDecimalField2.setName("entity.saleprice"); // NOI18N
         xDecimalField2.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xFormPanel2.add(xDecimalField2);
-
-        xIntegerField2.setCaption("Interval");
-        xIntegerField2.setDepends(new String[] {"af"});
-        xIntegerField2.setName("entity.interval"); // NOI18N
-        xIntegerField2.setVisibleWhen("#{entity.af.formtype == 'cashticket' }");
-        xIntegerField2.setRequired(true);
-        xFormPanel2.add(xIntegerField2);
 
         xComboBox6.setCaption("Receipt Printout");
         xComboBox6.setExpression("#{ item.caption }");
@@ -120,7 +112,6 @@ public class AFUnitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox7;
     private com.rameses.rcp.control.XDecimalField xDecimalField2;
     private com.rameses.rcp.control.XFormPanel xFormPanel2;
-    private com.rameses.rcp.control.XIntegerField xIntegerField2;
     private com.rameses.rcp.control.XIntegerField xIntegerField3;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XTextField xTextField2;

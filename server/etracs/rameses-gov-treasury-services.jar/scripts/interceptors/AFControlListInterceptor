@@ -16,6 +16,7 @@ class AFControlListInterceptor {
 			result << [  title: 'Consumed', state:'CLOSED' ];
 			result << [  title: 'Cancelled', state:'CANCELLED' ];
 			result << [  title: 'Processing', state:'PROCESSING' ];
+			result << [  title: 'On Hold', state:'HOLD' ];
 		} 
 		else if( x._tag == 'COLLECTION' ) {
 			result << [  title: 'Open', state:'ISSUED', _filter: "txnmode <> 'REMOTE'" ];

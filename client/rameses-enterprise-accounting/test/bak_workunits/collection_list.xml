@@ -1,6 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="jev" entitySchemaName="collection"
-        cols="refno,fund.title,postedby.name,amount,dtposted,jevno,jevdate,verifiedby.name" customFilter=" txntype='COLLECTION' ">
-    <invokers>
-        <invoker folderid="home/accounting" caption="Collection JEV" action="init" role="MASTER" index="3"/>
-    </invokers>
-</workunit>

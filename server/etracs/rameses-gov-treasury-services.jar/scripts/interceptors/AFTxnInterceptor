@@ -111,9 +111,9 @@ class AFTxnInterceptor {
 	public void afterCreateForward( evt ) { 
 		def res = evt.result; 
 		aftxn.find([ objid: res.objid ]).update([ state: 'POSTED']); 
-
 		def form = res.form;
 		def afunit = form.afunit;
+
 		res.items.each{ a-> 
 			aftxnItem.find([ objid: a.objid ]).update([ qtyserved: a.qty ]); 
 
@@ -203,6 +203,7 @@ class AFTxnInterceptor {
 			ref.respcenter = res.respcenter;
 			afInvSvc.add( ref, res.afitems[idx] );
 		} 
+
 	} 
 
 }

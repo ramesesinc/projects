@@ -1,0 +1,11 @@
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="jev">
+    <invokers>
+        <invoker folderid="/menucategory/financial/jev" 
+                 caption="Collection Journal Entry Vouchers" 
+                 action="init" role="MASTER" permission="jev.view" 
+                 index="1"
+                 cols="refno,jevdate,fund.title,postedby.name,amount,jevno"
+                 orderBy="jevdate DESC, refno"
+                 customFilter="txntype = 'COLLECTION' "/> 
+    </invokers>
+</workunit>

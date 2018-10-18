@@ -13,10 +13,16 @@ class AFControlModel extends CrudFormModel {
     def service;
     
     public boolean getShowAction() { 
-        if ( entity.state != 'ISSUED' ) return false;
-        
-        if ( entity.owner.objid == OsirisContext.env.USERID ) return true; 
-        return ( entity.assignee.objid == OsirisContext.env.USERID ); 
+        if( entity.state == 'ISSUED' ) {
+            if ( entity.owner.objid == OsirisContext.env.USERID ) return true; 
+            return ( entity.assignee.objid == OsirisContext.env.USERID ); 
+        }
+        else if(entity.state.matches('OPEN|HOLD') ) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     void afterOpen() {
@@ -104,6 +110,10 @@ class AFControlModel extends CrudFormModel {
         if(caller) caller.reloadEntity();
     }
     
+    def cancelSeries() {
+         Modal.show("af_control:cancelseries", [entity: entity] );
+    }
+    
     //second page
     public def getDetailInfo() { 
         return TemplateProvider.instance.getResult( "com/rameses/enterprise/treasury/views/AFControlPage.gtpl", [details: details] );
@@ -125,4 +135,23 @@ class AFControlModel extends CrudFormModel {
         op.target = "popup";
         return op;
     }
+    
+    void hold() {
+        def m = [_schemaname: 'af_control'];
+        m.findBy = [objid: entity.objid];
+        m.state = "HOLD";
+        persistenceService.update( m );
+        entity.state = "HOLD";
+        if(caller) caller.reloadEntity();
+    }
+    
+    void reopen() {
+        def m = [_schemaname: 'af_control'];
+        m.findBy = [objid: entity.objid];
+        m.state = "OPEN";
+        persistenceService.update( m );
+        entity.state = "OPEN";
+        if(caller) caller.reloadEntity();
+    }
+    
 }    

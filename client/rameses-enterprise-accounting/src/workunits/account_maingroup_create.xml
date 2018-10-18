@@ -1,9 +1,0 @@
-<workunit extends="com/rameses/seti2/templates/CrudForm.xml" schemaName="account_maingroup">
-    <invokers>
-         <invoker type="account_maingroup:create" caption="New Account Main Group" 
-                  action="create" target="popup"/>
-   </invokers>
-    <pages>
-        <page template="com.rameses.enterprise.accounting.views.AccountMainGroupPage" />
-    </pages>
-</workunit>

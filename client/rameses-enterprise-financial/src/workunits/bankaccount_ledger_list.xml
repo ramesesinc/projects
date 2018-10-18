@@ -1,0 +1,10 @@
+<workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bankaccount_ledger">
+    <invokers>
+         <invoker folderid="menucategory/financial/ledger" caption="Bank Account Ledger" index="1" role="MASTER"  action="init"/>
+   </invokers>
+   <!--
+   <pages>
+        <page name="queryForm" template="com.rameses.enterprise.treasury.views.BankAccountFilterPanel" />
+   </pages>
+   -->
+</workunit>

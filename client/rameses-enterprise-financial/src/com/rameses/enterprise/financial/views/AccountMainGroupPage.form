@@ -100,6 +100,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton1">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="addRoot" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/plus.png"/>
@@ -112,6 +113,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton2">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="editRoot" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/edit.png"/>
@@ -124,6 +126,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton3">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="removeRoot" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/trash.png"/>
@@ -241,6 +244,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton4">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="addGroup" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/plus.png"/>
@@ -253,6 +257,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton13">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="addSubGroup" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -265,6 +270,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton5">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="editGroup" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/edit.png"/>
@@ -277,6 +283,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton6">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="removeGroup" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/trash.png"/>
@@ -420,6 +427,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton7">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="addItem" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/plus.png"/>
@@ -432,6 +440,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton8">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="editItem" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/edit.png"/>
@@ -444,6 +453,7 @@
                     <Component class="com.rameses.rcp.control.XButton" name="xButton9">
                       <Properties>
                         <Property name="name" type="java.lang.String" value="removeItem" noResource="true"/>
+                        <Property name="visibleWhen" type="java.lang.String" value="#{ entity.system == 0 }"/>
                         <Property name="focusable" type="boolean" value="false"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
                         <Property name="iconResource" type="java.lang.String" value="images/toolbars/trash.png"/>

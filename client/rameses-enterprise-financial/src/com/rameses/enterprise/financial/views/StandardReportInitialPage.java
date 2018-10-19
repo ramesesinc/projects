@@ -50,22 +50,22 @@ public class StandardReportInitialPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setPadding(new java.awt.Insets(5, 5, 5, 5));
 
-        xComboBox1.setAllowNull(false);
         xComboBox1.setCaption("Account Group");
-        xComboBox1.setCaptionWidth(120);
         xComboBox1.setExpression("#{   item.title}");
         xComboBox1.setItems("mainGroupList");
         xComboBox1.setName("query.maingroup"); // NOI18N
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setCaptionWidth(120);
         xComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox1.setRequired(true);
         xFormPanel1.add(xComboBox1);
 
-        xComboBox3.setAllowNull(false);
         xComboBox3.setCaption("Template");
-        xComboBox3.setCaptionWidth(120);
         xComboBox3.setExpression("#{item.caption}");
         xComboBox3.setItems("reportTemplates");
-        xComboBox3.setName("query.template"); // NOI18N
+        xComboBox3.setName("reportTemplate"); // NOI18N
+        xComboBox3.setAllowNull(false);
+        xComboBox3.setCaptionWidth(120);
         xComboBox3.setPreferredSize(new java.awt.Dimension(200, 20));
         xComboBox3.setRequired(true);
         xFormPanel1.add(xComboBox3);

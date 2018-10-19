@@ -87,6 +87,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar1.setPreferredSize(new java.awt.Dimension(100, 30));
 
         xButton1.setName("addRoot"); // NOI18N
+        xButton1.setVisibleWhen("#{ entity.system == 0 }");
         xButton1.setFocusable(false);
         xButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton1.setIconResource("images/toolbars/plus.png");
@@ -95,6 +96,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar1.add(xButton1);
 
         xButton2.setName("editRoot"); // NOI18N
+        xButton2.setVisibleWhen("#{ entity.system == 0 }");
         xButton2.setFocusable(false);
         xButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton2.setIconResource("images/toolbars/edit.png");
@@ -103,6 +105,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar1.add(xButton2);
 
         xButton3.setName("removeRoot"); // NOI18N
+        xButton3.setVisibleWhen("#{ entity.system == 0 }");
         xButton3.setFocusable(false);
         xButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton3.setIconResource("images/toolbars/trash.png");
@@ -153,6 +156,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar5.setPreferredSize(new java.awt.Dimension(100, 30));
 
         xButton4.setName("addGroup"); // NOI18N
+        xButton4.setVisibleWhen("#{ entity.system == 0 }");
         xButton4.setFocusable(false);
         xButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton4.setIconResource("images/toolbars/plus.png");
@@ -161,6 +165,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar5.add(xButton4);
 
         xButton13.setName("addSubGroup"); // NOI18N
+        xButton13.setVisibleWhen("#{ entity.system == 0 }");
         xButton13.setFocusable(false);
         xButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton13.setMargin(new java.awt.Insets(5, 5, 5, 5));
@@ -169,6 +174,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar5.add(xButton13);
 
         xButton5.setName("editGroup"); // NOI18N
+        xButton5.setVisibleWhen("#{ entity.system == 0 }");
         xButton5.setFocusable(false);
         xButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton5.setIconResource("images/toolbars/edit.png");
@@ -177,6 +183,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar5.add(xButton5);
 
         xButton6.setName("removeGroup"); // NOI18N
+        xButton6.setVisibleWhen("#{ entity.system == 0 }");
         xButton6.setFocusable(false);
         xButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton6.setIconResource("images/toolbars/trash.png");
@@ -235,6 +242,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar3.setPreferredSize(new java.awt.Dimension(100, 30));
 
         xButton7.setName("addItem"); // NOI18N
+        xButton7.setVisibleWhen("#{ entity.system == 0 }");
         xButton7.setFocusable(false);
         xButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton7.setIconResource("images/toolbars/plus.png");
@@ -243,6 +251,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar3.add(xButton7);
 
         xButton8.setName("editItem"); // NOI18N
+        xButton8.setVisibleWhen("#{ entity.system == 0 }");
         xButton8.setFocusable(false);
         xButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton8.setIconResource("images/toolbars/edit.png");
@@ -251,6 +260,7 @@ public class AccountMainGroupPage extends javax.swing.JPanel {
         jToolBar3.add(xButton8);
 
         xButton9.setName("removeItem"); // NOI18N
+        xButton9.setVisibleWhen("#{ entity.system == 0 }");
         xButton9.setFocusable(false);
         xButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         xButton9.setIconResource("images/toolbars/trash.png");

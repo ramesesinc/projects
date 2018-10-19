@@ -7,6 +7,7 @@
 		<field name="reporttype" required="true" lov="ACCOUNT_REPORT_TYPE"/>
 		<field name="role" />
 		<field name="domain" />
+		<field name="system" type="integer"/>
 	</element>
 
 </schema>

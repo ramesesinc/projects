@@ -8,7 +8,7 @@
 			<key field="acctid" target="objid" />	
 		</complex> 
 
-		<complex name="item" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title"  required="true">
+		<complex name="item" ref="itemaccount" jointype="many-to-one" includefields="objid,code,title,type"  required="true">
 			<key field="itemid" target="objid" />	
 		</complex> 
 	</element>

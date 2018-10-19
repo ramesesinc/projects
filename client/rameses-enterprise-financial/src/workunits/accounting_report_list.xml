@@ -1,0 +1,10 @@
+<workunit>
+    <invokers>
+         <invoker folderid="menucategory/financial/report" caption="Listing Report" role="REPORT" index="1"/>
+         <invoker type="formActions" caption="Next" />
+   </invokers>
+    <code class="com.rameses.enterprise.financial.models.ListReportModel" />
+    <pages>
+        <page template="com.rameses.enterprise.financial.views.ListReportInitialPage" />
+    </pages>
+</workunit>

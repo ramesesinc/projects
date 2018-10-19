@@ -35,7 +35,7 @@ public class AFDropdownList extends XComponentPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        xComboBox1.setExpression("#{ item.objid } #{item.title}");
+        xComboBox1.setExpression("#{ item.objid }");
         xComboBox1.setItems("afList");
         xComboBox1.setName("af"); // NOI18N
         xComboBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));

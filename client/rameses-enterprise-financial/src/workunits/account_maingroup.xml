@@ -1,0 +1,12 @@
+<workunit schemaName="account_maingroup" formName="account_maingroup" allowCreate="false"  allowDelete="false">
+    <invokers>
+         <invoker type="account_maingroup:open" caption="#{entity.name} Accounts" action="open" 
+            formTitle="#{entity.name} Account Main Group" formId="#{entity.objid}"/>
+         
+         <invoker type="formActions" caption="Reindex" action="reindex"/>
+   </invokers>
+   <code class="com.rameses.enterprise.financial.models.AccountMainGroupModel" />
+    <pages>
+        <page template="com.rameses.enterprise.financial.views.AccountMainGroupPage" />
+    </pages>
+</workunit>

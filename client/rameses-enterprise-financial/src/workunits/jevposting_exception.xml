@@ -1,0 +1,73 @@
+<workunit>
+    <invokers>
+        <invoker type="jevposting_exception" caption="JEV Posting Exception" action="init"/>
+    </invokers>
+    
+    <code>
+        
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+
+        class JevExceptionModel  {
+            def info;
+            def err;
+            def err2;
+
+            void init() {
+                def sb = new StringBuilder();
+                /*
+                info.items?.each {
+                    def m = it;
+                    sb.append( "------------------------------------------------\n");
+                    sb.append( "Fund: " + m.fund.title + " Ref:" + m.refno +  "AMOUNT: " + m.amount +  "\n");
+                    m.dr.each { d->
+                        sb.append( d.account.title + "  " + d.dr + "\n" );
+                    };
+                    m.cr.each { d->
+                        sb.append( "   " + d.account.title + "  " + d.cr + "\n" ); 
+                    };
+                    sb.append( "------------------------------------------------\n");
+                }
+                err = sb.toString();
+                
+                def sb = new StringBuilder();
+                */
+                
+                info.items?.each {
+                    def m = it;
+                    sb.append( "<table border=1>");
+                    sb.append( "<tr>");
+                    sb.append( "<td>Fund: " + m.fund.title + " Ref:" + m.refno +  "AMOUNT: " + m.amount +  "</td>");
+                    sb.append( "</tr>");
+                    
+                    m.dr.each { d->
+                        sb.append( "<tr>");
+                        sb.append( "<td>"+d.account.title + "  " + d.dr + "</td>" );
+                        sb.append( "</tr>");
+                    };
+                    m.cr.each { d->
+                        sb.append( "<tr>");
+                        sb.append( "<td>&nbsp;&nbsp;&nbsp;&nbsp;" + d.account.title + "  " + d.cr + "</td>" );
+                        sb.append( "</tr>");
+                    };
+                    sb.append( "</table>");
+                }
+                err2 = sb.toString();
+                
+                
+            }        
+            
+            def doClose() {
+                return "_close";
+            }
+
+        }
+        ]]>        
+    </code>
+    <pages>
+        <page template="com.rameses.enterprise.financial.views.JevPostingExceptionPage"/>
+    </pages>
+</workunit>

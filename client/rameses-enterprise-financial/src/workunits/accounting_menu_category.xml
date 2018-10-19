@@ -1,0 +1,8 @@
+<workunit extends="com/rameses/menu/templates/MenuCategory.xml" context="financial" cols="2">
+    <invokers>
+        <invoker type="home.action" 
+                 caption="Financials" icon="home/icons/financial.png"
+                 role=".*" 
+                 index="-2" action="init"/>
+    </invokers> 
+</workunit>

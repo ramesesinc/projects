@@ -24,6 +24,7 @@ class AFInventoryService {
 		def oldref = ref; 
 		def oldafc = afc;
 
+		//this routine will create a new afcontrol
 		if ( !afc?.objid ) {
 			if ( afc.prefix == null ) afc.prefix = ''; 
 			if ( afc.suffix == null ) afc.suffix = '';
@@ -147,7 +148,7 @@ class AFInventoryService {
 			d.qtyending = d.qtyissued;
 
 		}
-		else if ( ref.reftype.matches('TRANSFER')) {
+		else if ( ref.reftype.matches('TRANSFER|MANUAL_ISSUE')) {
 			d.receivedstartseries = afc.currentseries;
 			d.receivedendseries = afc.endseries; 
 			d.qtyreceived = (d.receivedendseries.toInteger() - d.receivedstartseries.toInteger() ) +1;
@@ -155,7 +156,6 @@ class AFInventoryService {
 			d.endingendseries = d.receivedendseries;
 			d.qtyending = d.qtyreceived;
 			u.state = 'ISSUED';
-
 		} else if ( ref.reftype == 'RETURN') {
 			d.beginstartseries = afc.currentseries;
 			d.beginendseries = afc.endseries; 
@@ -182,6 +182,8 @@ class AFInventoryService {
 
 			u.remove('state'); 
 		} 
+	
+
 
 		d = afDetail.create( d ); 
 		oldref.objid = d.objid;

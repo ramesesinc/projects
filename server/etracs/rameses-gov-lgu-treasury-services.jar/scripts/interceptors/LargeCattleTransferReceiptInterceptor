@@ -18,7 +18,7 @@ class LargeCattleTransferInterceptor {
 		afterOpenImpl( evt.result ); 
 	} 
 
-	@After(pattern="PersistenceService.read", eval="#{result.collectiontype?.handler == 'lct'}")
+	@After(pattern="PersistenceService.read", eval="#{result?.collectiontype?.handler == 'lct'}")
 	public void afterOpen2( evt ) { 
 		afterOpenImpl( evt.result ); 
 	} 

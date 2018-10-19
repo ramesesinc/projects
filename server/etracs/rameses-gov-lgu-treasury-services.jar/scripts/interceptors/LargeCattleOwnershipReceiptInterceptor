@@ -16,7 +16,7 @@ class LargeCattleOwnershipInterceptor {
 		afterOpenImpl( evt.result ); 
 	}
 
-	@After(pattern="PersistenceService.read", eval="#{result.collectiontype?.handler == 'lco'}")
+	@After(pattern="PersistenceService.read", eval="#{result?.collectiontype?.handler == 'lco'}")
 	public void afterOpen2( evt ) { 
 		afterOpenImpl( evt.result ); 
 	} 	

@@ -6,10 +6,44 @@ import com.rameses.services.extended.*
 
 public class CreditMemoService  {
 	
+	@Env
+	def env;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("creditmemo")
+	def cmEm;
+
+	@Service("JevService")
+	def jevSvc;	
+
 	@ProxyMethod
 	public void post( def o ) {
 		//post to accounting
+		cmEm.find( [objid: o.objid]).update([state:'POSTED']);
+		//auto post to ledger
+		postJev( [objid: o.objid] );
 	}
  
+
+ 	@ProxyMethod 
+	public void postJev( def o ) { 
+		//post to jev
+		def p = cmEm.find([objid: o.objid]).first();
+		if(!p) throw new Exception("Credit Memo not found!");
+		def ref = [refid:p.objid,refno:p.controlno,reftype:'creditmemo', refdate:p.dtissued, txntype:'COLLECTION', amount: p.amount];
+		ref.fundid = p.bankaccount.fund.objid; 
+		
+		ref.items = [];
+		ref.items.addAll( cmEm.getBankAccountLedgerItems([objid: p.objid]) );
+		ref.items.addAll( cmEm.getIncomeLedgerItems([objid: p.objid]) );
+		ref.items.each {
+			it.acctid = it.itemacctid; 
+			it.acctcode = it.itemacctcode; 
+			it.acctname = it.itemacctname;
+		}		 		
+		jevSvc.create( ref );
+	}
 
 }

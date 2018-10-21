@@ -34,34 +34,15 @@ class JevService  {
 		if( vdr != vcr  )
 			throw new Exception("Total DR " + vdr + " must equal total CR " + vcr);
 
-		def dtposted = dateSvc.getServerDate();
-
 		def ref = o.ref;
 		def itemGroups = o.items.groupBy{ it.fundid };
 		o.funds.each {
-
-			def jev = [ objid: 'JEV'+ new java.rmi.server.UID()];
-
 			def fundid = it.fund.objid;
+			def jev = [:];
+			jev.putAll( ref );
 			jev.items = itemGroups.get( fundid );
 			if( !jev.items ) 
 				throw new Exception("No jev items found in posting with fund " + jev.jevno );
-
-			//check it jev items is balanced
-			def dr = jev.items.sum{ it.dr } 
-			def cr = jev.items.sum{ it.cr } 
-			if ( dr != cr ) 
-				throw new Exception("Total DR " + dr +   " and Total CR " + cr + " must be equal per fund");
-
-			jev.state = 'OPEN'; 
-			jev.refid = ref.refid; 
-			jev.refno = ref.refno; 
-			jev.refdate = ref.refdate;
-			jev.jevdate = ref.refdate; 
-			jev.reftype = ref.reftype; 
-			jev.txntype = ref.txntype; 
-			jev.postedby = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
-			jev.dtposted = dtposted; 
 			jev.amount = it.amount; 
 			jev.fundid = fundid; 
 			create( jev ); 
@@ -69,11 +50,25 @@ class JevService  {
 	} 
 
 	@ProxyMethod 
-	public def create( def o ) { 
-		if(!o.dtposted) {
-			o.dtposted = dateSvc.getServerDate();
-		}
-			
+	public def create( def ref ) { 
+		//check it jev items is balanced
+		def dr = ref.items.sum{ it.dr } 
+		def cr = ref.items.sum{ it.cr } 
+		if ( dr != cr ) 
+			throw new Exception("Total DR " + dr +   " and Total CR " + cr + " must be equal per fund");
+
+		def jev = [ objid: 'JEV'+ new java.rmi.server.UID()]; 
+		jev.putAll( ref );
+		jev.state = 'OPEN'; 
+		jev.refid = ref.refid; 
+		jev.refno = ref.refno; 
+		jev.refdate = ref.refdate;
+		jev.jevdate = ref.refdate; 
+		jev.reftype = ref.reftype; 
+		jev.txntype = ref.txntype; 
+		jev.postedby = [ objid: env.USERID, name: env.FULLNAME, title: env.JOBTITLE ];
+		jev.dtposted = dateSvc.getServerDate();; 
+
 		def emMap = [:];
 		def emLookup = { name ->
 			if( !emMap.containsKey(name)) {
@@ -82,8 +77,8 @@ class JevService  {
 			return emMap.get(name);
 		}
 
-		def j = jevEm.create( o );
-		o.items.each {
+		def j = jevEm.create( jev );
+		jev.items.each {
 			it.jevid = j.objid;
 			def db = emLookup( it._schemaname );
 			db.create( it );

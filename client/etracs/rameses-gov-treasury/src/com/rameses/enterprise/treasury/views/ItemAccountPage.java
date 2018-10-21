@@ -105,6 +105,7 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xLookupField2.setExpression("#{item.code} #{item.title}");
         xLookupField2.setHandler("fund:all:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
+        xLookupField2.setVisibleWhen("#{ !entity.type.matches('CASH_IN_TREASURY|CASH_IN_BANK') }");
         xLookupField2.setEnabled(false);
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xLookupField2.setRequired(true);

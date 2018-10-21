@@ -5,10 +5,6 @@
             customFilter=" state = 'ACTIVE' AND type IN ('REVENUE','NONREVENUE','PAYABLE')"
             cols="code,title,fund.title,generic,type,org.code" hiddenCols="fund.objid,fund.code" />
        
-       <invoker type="cashinbankaccount:lookup" caption="Lookup Cash In Bank Account" action="init" target="popup"
-            customFilter=" state='ACTIVE' AND type = 'CASH_IN_BANK' "
-            cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code"/>
-       
        <invoker type="cashaccount:lookup" caption="Lookup Cash In Treasury Account" action="init" target="popup"
             customFilter=" state='ACTIVE' AND type = 'CASH' "
             cols="code,title,fund.title,type,org.code" hiddenCols="fund.objid,fund.code"/>

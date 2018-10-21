@@ -102,10 +102,10 @@ public class BankAccountPage extends javax.swing.JPanel {
         xFormPanel1.add(xLookupField2);
 
         xLookupField3.setCaption("Cash In Bank Account");
-        xLookupField3.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xLookupField3.setExpression("#{item.code} #{item.title}");
-        xLookupField3.setHandler("lookupCashInBankAccount");
+        xLookupField3.setHandler("cashinbankaccount:lookup");
         xLookupField3.setName("entity.account"); // NOI18N
+        xLookupField3.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
         xFormPanel1.add(xLookupField3);
 

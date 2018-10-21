@@ -1,4 +1,4 @@
-<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="jev">
+<workunit extends="com/rameses/seti2/templates/CrudNodeList.xml" schemaName="jev" allowCreate="false" allowDelete="false">
     <invokers>
          <invoker folderid="/menucategory/financial/jev" 
                  caption="Deposit Journal Entry Vouchers" 

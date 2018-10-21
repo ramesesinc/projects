@@ -42,7 +42,7 @@ SELECT tmp.*, ia.code as itemacctcode, ia.title as itemacctname
 FROM ( 
   SELECT 
     cv.fund_objid AS fundid,
-    (SELECT objid FROM itemaccount WHERE fund_objid = cv.fund_objid AND TYPE = 'CASH_IN_TREASURY' LIMIT 1 ) AS itemacctid,
+    'CASH_IN_TREASURY' AS itemacctid,
     (cv.totalcash + cv.totalcheck) AS dr,
     0 AS cr,
     'cash_treasury_ledger' AS _schemaname

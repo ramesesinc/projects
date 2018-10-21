@@ -9,19 +9,22 @@ import com.rameses.seti2.models.*
 
 class StandardReportModel extends ReportModel { 
     
+    @Service('AccountingStandardReportService') 
+    def reportSvc;
+    
     // def reportpath = 'com/rameses/enterprise/accounting/reports/';
     def query;
     def reportData = [:];
     String reportName;
     
     void initA() {
-        reportData = [:];
+        reportData = reportSvc.getReport( query );
         reportName = invoker.properties.reportName;
         viewReport();
     }
 
     void initB() {
-        reportData = [:];
+        reportData = reportSvc.getReport( query );
         reportName = invoker.properties.reportName;
         viewReport();
     }

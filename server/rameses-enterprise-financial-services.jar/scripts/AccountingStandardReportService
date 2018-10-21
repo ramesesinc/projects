@@ -20,20 +20,27 @@ class AccountingStandardReportService  {
 	@ProxyMethod 
 	public def init() {
 		def p = [ fields:[] ];  
-		p.fields << [name:'m.acctid', caption:'Account', type:'list', schemaname:'account', lookupkey:'objid', lookupvalue:'title']; 
-		p.fields << [name:'inc.fundid', caption:'Fund', type:'list', schemaname:'fund', lookupkey:'objid', lookupvalue:'title']; 
-		p.fields << [name:'inc.acctid', caption:'Item Account', type:'list', schemaname:'itemaccount', lookupkey:'objid', lookupvalue:'title']; 
-		p.fields << [name:'inc.liquidationdate', caption:'Liquidation Date', type:'date']; 
-		p.fields << [name:'inc.liquidationyear', caption:'Liquidation Year', type:'integer']; 
-		p.fields << [name:'inc.remittancedate', caption:'Remittance Date', type:'date'];  
-		p.fields << [name:'inc.remittanceyear', caption:'Remittance Year', type:'integer'];  
-		p.fields << [name:'inc.refdate', caption:'Reference Date', type:'date']; 
-		p.fields << [name:'inc.refyear', caption:'Reference Year', type:'integer']; 
+		p.fields << [name:'acctid', caption:'Account', type:'list', schemaname:'account', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'fundid', caption:'Fund', type:'list', schemaname:'fund', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'itemid', caption:'Item Account', type:'list', schemaname:'itemaccount', lookupkey:'objid', lookupvalue:'title']; 
+		p.fields << [name:'month', caption:'Month', type:'integer']; 
+		p.fields << [name:'year', caption:'Year', type:'integer']; 
 		return p; 
 	}
 
 	@ProxyMethod 
 	public def getReport( params ) { 
+		params.criteriaList.each {
+			/*
+			println it.field.name + " " + it.get( it.field.type + "operator" ).key + " " + it.value;
+			println "************";
+			*/
+			it.each {k,v->
+				println k+"="+v;
+			}
+		}
+		throw new Exception("Stop at income");
+
 		def arr = reportUtil.buildFilters( params.filters ); 
 		if ( arr != null && arr.size() > 0 ) params.filter = ' AND '+ arr[0]; 
 		if ( arr != null && arr.size() > 1 ) params.putAll( arr[1] ); 

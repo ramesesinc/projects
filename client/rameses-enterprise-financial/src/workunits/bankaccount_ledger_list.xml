@@ -1,6 +1,9 @@
 <workunit extends="com/rameses/seti2/templates/CrudList.xml" schemaName="bankaccount_ledger">
     <invokers>
-         <invoker folderid="menucategory/financial/ledger" caption="Bank Account Ledger" index="1" role="MASTER"  action="init"/>
+         <invoker folderid="menucategory/financial/ledger" caption="Bank Account Ledger" index="1" 
+                cols="jev.jevdate,jev.refno,bankaccount.code,bankaccount.title,dr,cr"
+                orderBy="jev.jevdate"    
+                role="MASTER"  action="init"/>
    </invokers>
    <!--
    <pages>

@@ -64,8 +64,11 @@ class StandardReportInitialModel {
     }
     
     def preview() { 
+        def qry = [:];
+        qry.putAll( query );
+        qry.criteriaList = criteriaList;
         if(!reportTemplate) throw new Exception("Please select a report template");
-        return Inv.lookupOpener( "financial:report_template:standard:" + reportTemplate.name, [query: query] );
+        return Inv.lookupOpener( "financial:report_template:standard:" + reportTemplate.name, [query: qry] );
     } 
     
     def back() {

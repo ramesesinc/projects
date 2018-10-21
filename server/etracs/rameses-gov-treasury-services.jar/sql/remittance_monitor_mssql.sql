@@ -4,10 +4,9 @@ select t3.*,
 	r.controldate as lastremittancedate  
 from ( 
 	select t2.*, ( 
-			select objid from remittance 
+			select top 1 objid from remittance 
 			where collector_objid = t2.collector_objid 
 			order by controldate desc, dtposted desc 
-			limit 1 
 		) as remittanceid 
 	from ( 
 		select 

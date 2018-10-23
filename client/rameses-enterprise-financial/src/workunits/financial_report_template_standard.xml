@@ -1,16 +1,18 @@
 <workunit>
     <invokers>
          <invoker type="financial:report_template:standard" caption="Template A" name="a" />
-         <invoker type="financial:report_template:standard" caption="Template B" name="b" />
          
          <invoker type="financial:report_template:standard:a" 
                 reportName="com/rameses/enterprise/financial/reports/report_standard_a.jasper"
                 caption="Standard Report A" action="initA" />
-         
-         <invoker type="financial:report_template:standard:b" 
-                reportName="com/rameses/enterprise/financial/reports/report_standard_b.jasper"
-                caption="Standard Report B" action="initB" />
-         
+         <!--
+         <invoker type="financial:report_template:standard" caption="Template B" name="b" />
+         -->
+            <!--
+            <invoker type="financial:report_template:standard:b" 
+            reportName="com/rameses/enterprise/financial/reports/report_standard_b.jasper"
+            caption="Standard Report B" action="initB" />
+         -->
          <invoker type="formActions" caption="Close" action="_close" />
     </invokers>
     <code class="com.rameses.enterprise.financial.models.StandardReportModel" />

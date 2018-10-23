@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="accountingreport_standard_a"
+		 name="report_standard_a"
 
 		 language="groovy"		 columnCount="1"
 		 printOrder="Vertical"
@@ -46,13 +46,10 @@
 	<field name="title" class="java.lang.String"/>
 	<field name="amount" class="java.lang.Number"/>
 	<field name="type" class="java.lang.String"/>
-	<field name="haschildren" class="java.lang.Boolean"/>
 	<field name="objid" class="java.lang.String"/>
-	<field name="actual" class="java.lang.Number"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="level" class="java.lang.Integer"/>
 
-	<variable name="TOTAL" class="java.lang.Number" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[($F{haschildren}==true? $F{amount} : 0.00)]]></variableExpression>
-	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -295,98 +292,15 @@
 		</columnHeader>
 		<detail>
 			<band height="13"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="456"
-						y="0"
-						width="78"
-						height="13"
-						key="textField-34"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[($F{type}.toString().matches("root|group")==true)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{actual}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="456"
-						y="0"
-						width="78"
-						height="13"
-						key="textField-46"
-						stretchType="RelativeToBandHeight">
-							<printWhenExpression><![CDATA[($F{type}.toString().matches("root|group")==false)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="2" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{actual}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="0"
+						x="61"
 						y="0"
-						width="389"
-						height="13"
-						key="textField-24"
-						stretchType="RelativeToBandHeight"
-						isPrintWhenDetailOverflows="true">
-							<printWhenExpression><![CDATA[($F{type}.toString().matches("root|group")==true)]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="3" topPadding="2">					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-</box>
-					<textElement verticalAlignment="Top">
-						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{title}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="389"
-						height="13"
-						forecolor="#FF0000"
-						key="textField-51"
-						stretchType="RelativeToBandHeight"
-						isPrintWhenDetailOverflows="true">
-							<printWhenExpression><![CDATA[($F{objid}=="unmapped")]]></printWhenExpression>
-						</reportElement>
-					<box leftPadding="2" rightPadding="3" topPadding="2">					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-</box>
-					<textElement verticalAlignment="Top">
-						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{title}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="395"
+						width="334"
 						height="13"
 						key="textField-44"
 						stretchType="RelativeToBandHeight"
-						isPrintWhenDetailOverflows="true">
-							<printWhenExpression><![CDATA[($F{type}.toString().matches("root|group")==false)]]></printWhenExpression>
-						</reportElement>
+						isPrintWhenDetailOverflows="true"/>
 					<box leftPadding="2" rightPadding="3" topPadding="2">					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -396,7 +310,35 @@
 					<textElement verticalAlignment="Top">
 						<font pdfFontName="Helvetica" size="7" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{title}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["  ".multiply($F{level}) + $F{title}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="55"
+						height="13"
+						key="textField">
+							<printWhenExpression><![CDATA[$F{type} != 'extended']]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{code}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="461"
+						y="0"
+						width="75"
+						height="13"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -614,19 +556,6 @@
 						key="line-6"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-				<staticText>
-					<reportElement
-						x="291"
-						y="8"
-						width="98"
-						height="18"
-						key="staticText-26"/>
-					<box leftPadding="3" rightPadding="3" topPadding="1"></box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
-					</textElement>
-				<text><![CDATA[TOTAL :]]></text>
-				</staticText>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
@@ -636,22 +565,6 @@
 						key="line-7"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="415"
-						y="8"
-						width="121"
-						height="18"
-						key="textField-50"
-						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="2" rightPadding="3" topPadding="2">					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Top">
-						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.Number"><![CDATA[$P{TOTAL_ACTUAL}]]></textFieldExpression>
-				</textField>
 			</band>
 		</summary>
 </jasperReport>

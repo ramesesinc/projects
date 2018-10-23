@@ -26,7 +26,6 @@ public class CreditMemoService  {
 		postJev( [objid: o.objid] );
 	}
  
-
  	@ProxyMethod 
 	public void postJev( def o ) { 
 		//post to jev

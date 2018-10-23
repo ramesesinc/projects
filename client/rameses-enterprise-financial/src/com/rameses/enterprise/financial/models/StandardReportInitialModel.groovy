@@ -21,7 +21,7 @@ class StandardReportInitialModel {
     def mode = 'init';
     
     def report = null;    
-    def reportTypes = ['standard', 'extended', 'details'];
+    def reportTypes = ['standard', 'details', 'itemaccount'];
     
     def reportTemplate;
     def reportTemplates;
@@ -50,8 +50,9 @@ class StandardReportInitialModel {
         add: { o->
             criteriaList << o; 
         },
-        remove: {
-            criteriaList.remove(o);
+        removeItem: {
+            def z = criteriaList.last();
+            criteriaList.remove(z);
         },
         clear: { 
             criteriaList.clear(); 
@@ -66,7 +67,20 @@ class StandardReportInitialModel {
     def preview() { 
         def qry = [:];
         qry.putAll( query );
-        qry.criteriaList = criteriaList;
+        if( criteriaList ) {
+            def cl = [];
+            criteriaList.each {
+                if(it.field) {
+                    def cmm = [:];
+                    cmm.field = it.field;
+                    cmm.operator = it.get( it.field.type + "operator" ).key;
+                    cmm.value = it.value;
+                    if(it.value2) cmm.value2 = it.value2;
+                    cl << cmm;
+                }
+            }
+            qry.criteriaList = cl;
+        }
         if(!reportTemplate) throw new Exception("Please select a report template");
         return Inv.lookupOpener( "financial:report_template:standard:" + reportTemplate.name, [query: qry] );
     } 

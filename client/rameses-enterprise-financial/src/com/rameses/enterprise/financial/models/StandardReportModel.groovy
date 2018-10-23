@@ -15,19 +15,29 @@ class StandardReportModel extends ReportModel {
     // def reportpath = 'com/rameses/enterprise/accounting/reports/';
     def query;
     def reportData = [:];
+    def _parameters = [:];
+    
     String reportName;
     
+    public Map getParameters() {
+        return _parameters;
+    }
+    
     void initA() {
+        parameters.TITLE = query.reporttitle;
         reportData = reportSvc.getReport( query );
         reportName = invoker.properties.reportName;
         viewReport();
     }
 
+    
+    /*
     void initB() {
         reportData = reportSvc.getReport( query );
         reportName = invoker.properties.reportName;
         viewReport();
     }
+    */
     
     /*
         if ( !query.template?.name ) throw new Exception('Please select a template'); 

@@ -1,56 +1,42 @@
 [getCollectionTypes]
 select 
-	formtypeindex, controlid, formno, formtype, stubno, 
-	min(series) as startseries, max(series) as endseries, 
-	min(receiptno) as fromseries, max(receiptno) as toseries, 
-	(sum(amount)-sum(voidamt)) as amount 
-from ( 
-	select tmp1.*, 
-		(case when tmp1.voided > 0 then tmp1.amount else 0.0 end) as voidamt 
-	from ( 
-		select c.controlid, afc.afid as formno, af.formtype, afc.stubno,  
-			(case when af.formtype = 'serial' then c.series else null end) as series, 
-			(case when af.formtype = 'serial' then c.receiptno else null end) as receiptno, 
-			(case when af.formtype = 'serial' then 1 else 2 end) as formtypeindex, c.amount, 
-			(select count(*) from cashreceipt_void where receiptid=c.objid) as voided 
-		from cashreceipt c 
-			inner join af_control afc on afc.objid = c.controlid 
-			inner join af on af.objid = afc.afid 
-		where c.remittanceid = $P{remittanceid} 
-	)tmp1 
-)tmp2
-group by formtypeindex, controlid, formno, formtype, stubno 
-order by formtypeindex, formno, min(receiptno) 
+	v.formtypeindexno, v.formno, v.formtype, v.controlid, v.stubno, 
+	min(v.series) as minseries, max(v.series) as maxseries, 
+	case when v.formtype = 'serial' then min(v.receiptno) else null end as fromseries, 
+	case when v.formtype = 'serial' then max(v.receiptno) else null end as toseries, 
+	sum(v.amount)-sum(v.voidamount) as amount 
+from vw_remittance_cashreceipt v
+where v.remittanceid = $P{remittanceid} 
+group by v.formtypeindexno, v.formno, v.formtype, v.controlid, v.stubno 
+order by v.formtypeindexno, v.formno, min(v.series) 
+
 
 [getCollectionSummaries]
 select 
-	formindex, formno, collectiontypetitle, fundtitle, sum(amount) as amount 
-from ( 
-select 
-	(case when af.formtype = 'serial' then 1 else 2 end) as formindex, 
-	c.formno, ct.title as collectiontypetitle, fund.title as fundtitle, ci.amount  
-from cashreceipt c 
-	inner join collectiontype ct on ct.objid = c.collectiontype_objid 
-	inner join cashreceiptitem ci on ci.receiptid = c.objid 
-	inner join fund on fund.objid = ci.item_fund_objid 
-	inner join af on af.objid = c.formno  
-where c.remittanceid = $P{remittanceid} 
-	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
-)tmp1
-group by formindex, formno, collectiontypetitle, fundtitle 
-order by formindex, formno, collectiontypetitle 
+	v.formtypeindex as formindex, v.formno, 
+	v.collectiontype_objid, v.collectiontype_name as collectiontypetitle,
+	v.fundid, fund.title as fundtitle, sum(v.amount) as amount 
+from vw_remittance_cashreceiptitem v 
+	inner join fund on fund.objid = v.fundid 
+where v.remittanceid = $P{remittanceid} 
+group by 
+	v.formtypeindex, v.formno, v.collectiontype_objid, 
+	v.collectiontype_name, v.fundid, fund.title 
+order by v.formtypeindex, v.formno, v.collectiontype_name 
+
 
 [getOtherPayments]
-select 
-	pc.bank_name, nc.reftype, nc.particulars, 
-	sum(nc.amount) as amount, min(nc.refdate) as refdate  
-from cashreceipt c 
-	inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
-	left join checkpayment pc on (pc.objid = nc.refid and nc.reftype='CHECK') 
-where c.remittanceid = $P{remittanceid} 
-	and c.objid not in (select receiptid from cashreceipt_void where receiptid=c.objid) 
-group by pc.bank_name, nc.reftype, nc.particulars 
-order by pc.bank_name, min(nc.refdate), sum(nc.amount) 
+select * from ( 
+	select 
+		bankid, bank_name, reftype, particulars, 
+		sum(amount)-sum(voidamount) as amount, min(refdate) as refdate 
+	from vw_remittance_cashreceiptpayment_noncash 
+	where remittanceid = $P{remittanceid} 
+	group by bankid, bank_name, reftype, particulars 
+)t1 
+where amount > 0 
+order by bank_name, refdate, amount 
+
 
 [getRemittedAFs]
 select tmp1.* 

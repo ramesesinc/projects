@@ -16,7 +16,7 @@ class BurialPermitReceiptInterceptor {
 		afterOpenImpl( evt.result ); 
 	} 
 
-	@After(pattern="PersistenceService.read", eval="#{result.collectiontype?.handler == 'burial'}")
+	@After(pattern="PersistenceService.read", eval="#{result?.collectiontype?.handler == 'burial'}")
 	public void afterOpen2( evt ) { 
 		afterOpenImpl( evt.result ); 
 	} 	

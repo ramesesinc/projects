@@ -1,4 +1,4 @@
-package com.rameses.enterprise.treasury.models; 
+package com.rameses.enterprise.financial.models; 
 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;

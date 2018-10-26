@@ -1,4 +1,4 @@
-package com.rameses.enterprise.treasury.models;
+package com.rameses.enterprise.financial.models;
 
 import com.rameses.osiris2.common.*;
 import com.rameses.rcp.common.*;
@@ -8,16 +8,27 @@ import com.rameses.seti2.models.*;
         
 class FundModel extends CrudFormModel {
 
+    boolean depositoryFund;
+    
    void afterCreate() {
-       entity.groupid = caller.selectedNode.objid;
+       entity.groupid = caller.selectedNode.groupid;
        entity.system = 0;
        entity.state = 'DRAFT';
+       depositoryFund = true;
+    }
+    
+    void afterOpen() {
+       depositoryFund = (entity.objid == entity.depositoryfundid );
     }
 
     @PropertyChangeListener
     def listener = [
         "entity.depositoryfund" : { o->
             entity.depositoryfundid = o.objid;
+        },
+        "depositoryFund" : { o->
+            entity.depositoryfundid = null; 
+            entity.depositoryfund  = null;
         }
     ];
     
@@ -42,5 +53,6 @@ class FundModel extends CrudFormModel {
        query.groupid = entity.groupid;
        return Inv.lookupOpener("fund_depository:lookup", [query: query]);
    }     
+    
     
 }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.views;
+package com.rameses.enterprise.financial.views;
 
 import com.rameses.rcp.ui.annotations.StyleSheet;
 import com.rameses.rcp.ui.annotations.Template;
@@ -54,7 +54,6 @@ public class BankPage extends javax.swing.JPanel {
         xTextField1.setName("entity.code"); // NOI18N
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField1.setRequired(true);
-        xTextField1.setSpaceChar('_');
         xFormPanel1.add(xTextField1);
 
         xTextField2.setCaption("Bank Name");

@@ -153,13 +153,27 @@
                     </DimensionLayout>
                   </Layout>
                 </Container>
+                <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value=""/>
+                    <Property name="disableWhen" type="java.lang.String" value="#{ mode ==&apos;read&apos; || entity.state == &apos;ACTIVE&apos; }"/>
+                    <Property name="name" type="java.lang.String" value="depositoryFund" noResource="true"/>
+                    <Property name="text" type="java.lang.String" value="Is a Depository Fund"/>
+                  </Properties>
+                </Component>
                 <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField3">
                   <Properties>
                     <Property name="caption" type="java.lang.String" value="Depository Fund"/>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="depositoryFund"/>
+                      </StringArray>
+                    </Property>
                     <Property name="disableWhen" type="java.lang.String" value="#{ mode ==&apos;read&apos; || entity.state == &apos;ACTIVE&apos; }"/>
                     <Property name="expression" type="java.lang.String" value="#{item.code} #{item.title}"/>
                     <Property name="handler" type="java.lang.String" value="lookupDepositoryFund"/>
                     <Property name="name" type="java.lang.String" value="entity.depositoryfund" noResource="true"/>
+                    <Property name="visibleWhen" type="java.lang.String" value="#{ depositoryFund != true }"/>
                     <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[20, 0, 0, 0]"/>
                     </Property>

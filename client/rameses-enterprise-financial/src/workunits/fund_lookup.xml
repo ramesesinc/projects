@@ -1,0 +1,19 @@
+<workunit extends="com/rameses/seti2/templates/CrudLookup.xml" schemaName="fund">
+    <invokers>
+        <invoker type="fund:all:lookup" caption="Lookup Fund" action="init" 
+                 cols="code,title,groupid" orderBy="depositoryfund.title,code" 
+                 customFilter="state = 'ACTIVE' "
+                 target="popup" width="800"/>
+
+        <invoker type="fund:lookup" caption="Lookup Fund" target="popup" 
+                 cols="code,title,groupid" orderBy="code" action="init" customFilter="parentid IS NULL AND state='ACTIVE' "/>
+
+        <invoker type="fund_depository:lookup" caption="Lookup Depository Fund" target="popup" 
+                 cols="code,title,groupid" orderBy="code" action="init" customFilter="objid=depositoryfundid AND groupid = :groupid AND state='ACTIVE' "/>
+
+        <invoker type="depositoryfund:lookup" caption="Lookup Depository Fund" target="popup" 
+                 cols="code,title,groupid" orderBy="code" action="init" customFilter="objid=depositoryfundid AND state='ACTIVE' "/>
+
+    </invokers>
+</workunit>
+

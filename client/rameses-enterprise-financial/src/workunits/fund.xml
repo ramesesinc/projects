@@ -8,7 +8,7 @@
           
          <invoker type="formActions" caption="Activate" action="activate" 
                 role="MASTER"
-                  visibleWhen="#{entity.state.matches('DRAFT|INACTIVE')}"/>
+                  visibleWhen="#{mode!='create' &amp;&amp; entity.state.matches('DRAFT|INACTIVE')}"/>
          
          <invoker type="formActions" caption="Deactivate" action="deactivate" 
                 role="ADMIN"
@@ -16,10 +16,10 @@
 
     </invokers>
    
-   <code class="com.rameses.enterprise.treasury.models.FundModel" />
+   <code class="com.rameses.enterprise.financial.models.FundModel" />
    
    <pages>
-       <page template="com.rameses.enterprise.treasury.views.FundPage"/>
+       <page template="com.rameses.enterprise.financial.views.FundPage"/>
    </pages>
    
 </workunit>

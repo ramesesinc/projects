@@ -21,7 +21,6 @@
             <folder id="master" caption="Accounts" index="0" icon="home/icons/book.png"/>
             <folder id="ledger" caption="Ledgers" index="1" icon="home/icons/book.png"/>
             <folder id="jev" caption="Journal Entries" index="2" icon="home/icons/book.png"/>
-            <folder id="treasury" caption="Treasury" index="3" icon="home/icons/book.png"/>
             <folder id="report" caption="Reports" index="1" icon="home/icons/book.png" />
         </folder>
     </folder>

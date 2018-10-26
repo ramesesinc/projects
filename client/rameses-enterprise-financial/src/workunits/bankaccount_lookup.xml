@@ -3,6 +3,6 @@
          <invoker type="bankaccount:lookup" caption="Bank Account Lookup" action="init" 
             cols="code,title,bank.code,bank.name,branchname,fund.title" hiddenCols="fund.objid,fund.code"/>
    </invokers>
-   <code class="com.rameses.enterprise.treasury.models.BankAccountLookupModel" />
+   <code class="com.rameses.enterprise.financial.models.BankAccountLookupModel" />
 
 </workunit>

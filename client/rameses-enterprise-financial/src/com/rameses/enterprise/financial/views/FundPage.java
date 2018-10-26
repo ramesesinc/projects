@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.views;
+package com.rameses.enterprise.financial.views;
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
@@ -39,6 +39,7 @@ public class FundPage extends javax.swing.JPanel {
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
 
         xFormPanel1.setCaptionWidth(120);
@@ -88,11 +89,19 @@ public class FundPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xSeparator1);
 
+        xCheckBox1.setCaption("");
+        xCheckBox1.setDisableWhen("#{ mode =='read' || entity.state == 'ACTIVE' }");
+        xCheckBox1.setName("depositoryFund"); // NOI18N
+        xCheckBox1.setText("Is a Depository Fund");
+        xFormPanel1.add(xCheckBox1);
+
         xLookupField3.setCaption("Depository Fund");
+        xLookupField3.setDepends(new String[] {"depositoryFund"});
         xLookupField3.setDisableWhen("#{ mode =='read' || entity.state == 'ACTIVE' }");
         xLookupField3.setExpression("#{item.code} #{item.title}");
         xLookupField3.setHandler("lookupDepositoryFund");
         xLookupField3.setName("entity.depositoryfund"); // NOI18N
+        xLookupField3.setVisibleWhen("#{ depositoryFund != true }");
         xLookupField3.setCellPadding(new java.awt.Insets(20, 0, 0, 0));
         xLookupField3.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField3.setRequired(true);
@@ -146,6 +155,7 @@ public class FundPage extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;

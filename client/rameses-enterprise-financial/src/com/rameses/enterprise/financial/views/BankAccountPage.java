@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.views;
+package com.rameses.enterprise.financial.views;
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
@@ -43,8 +43,8 @@ public class BankAccountPage extends javax.swing.JPanel {
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLookupField3 = new com.rameses.rcp.control.XLookupField();
 
-        xTabbedPane1.setDynamic(true);
         xTabbedPane1.setItems("sections");
+        xTabbedPane1.setDynamic(true);
 
         xFormPanel1.setCaptionWidth(150);
 
@@ -95,7 +95,7 @@ public class BankAccountPage extends javax.swing.JPanel {
 
         xLookupField2.setCaption("Fund");
         xLookupField2.setExpression("#{item.code} #{item.title}");
-        xLookupField2.setHandler("fund:lookup");
+        xLookupField2.setHandler("depositoryfund:lookup");
         xLookupField2.setName("entity.fund"); // NOI18N
         xLookupField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField2.setRequired(true);

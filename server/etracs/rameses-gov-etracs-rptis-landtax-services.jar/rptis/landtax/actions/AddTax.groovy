@@ -22,6 +22,7 @@ public class AddTax implements RuleActionHandler {
 		item.sefav = (params.sefav ? params.sefav.getDecimalValue() : item.av)
 		item.classification = avfact.classification.objid 
 		item.actualuse = avfact.actualuse.objid 
+		item.idleland = avfact.idleland
 		item.amount = 0.0
 		item.amtpaid = 0.0
 

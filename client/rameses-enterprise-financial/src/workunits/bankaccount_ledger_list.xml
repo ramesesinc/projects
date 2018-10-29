@@ -5,9 +5,4 @@
                 orderBy="jev.jevdate"    
                 role="MASTER"  action="init"/>
    </invokers>
-   <!--
-   <pages>
-        <page name="queryForm" template="com.rameses.enterprise.treasury.views.BankAccountFilterPanel" />
-   </pages>
-   -->
 </workunit>

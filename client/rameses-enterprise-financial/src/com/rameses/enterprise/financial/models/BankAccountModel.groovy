@@ -1,4 +1,4 @@
-package com.rameses.enterprise.treasury.models;
+package com.rameses.enterprise.financial.models;
 
 import com.rameses.rcp.common.*;
 import com.rameses.rcp.annotations.*;
@@ -11,6 +11,14 @@ class BankAccountModel extends CrudFormModel {
     
     def acctTypes = ["CHECKING", "SAVINGS", "TIME DEPOSIT", "HYSA"];
     def currencyTypes = [ "PHP", "USD" ];
+    
+    
+    @PropertyChangeListener
+    def listener = [
+        "entity.account" : { o->
+            entity.acctid = o.objid;
+        }
+    ]
     
     def getLookupCashInBankAccount() {
         if(!entity.fund?.objid) {

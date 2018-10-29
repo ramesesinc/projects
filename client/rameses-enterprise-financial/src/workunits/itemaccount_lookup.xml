@@ -48,5 +48,5 @@
                 hiddenCols="fund.objid" />
     </invokers> 
    
-    <code class="com.rameses.enterprise.treasury.models.ItemAccountLookupModel" />
+    <code class="com.rameses.enterprise.financial.models.ItemAccountLookupModel" />
 </workunit>

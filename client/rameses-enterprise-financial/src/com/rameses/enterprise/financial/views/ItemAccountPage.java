@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.rameses.enterprise.treasury.views;
+package com.rameses.enterprise.financial.views;
 
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.CrudFormPage;
@@ -78,7 +78,6 @@ public class ItemAccountPage extends javax.swing.JPanel {
         xTextField1.setEnabled(false);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xTextField1.setRequired(true);
-        xTextField1.setSpaceChar('_');
         xTextField1.setStretchWidth(100);
         xFormPanel1.add(xTextField1);
 

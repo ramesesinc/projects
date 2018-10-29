@@ -48,7 +48,7 @@ class RPTReceiptBatchModel extends PageFlowController
     def BARCODE_KEY = '56001';
     
     def init(){
-        entity = [payoption:PAYOPTION_TAXPAYER, itemsperreceipt:5, totalcash:0.0, totalnoncash:0.0, amount:0.0];
+        entity.putAll([payoption:PAYOPTION_TAXPAYER, itemsperreceipt:5, totalcash:0.0, totalnoncash:0.0, amount:0.0]);
         entity.showprinterdialog = true;
         bill = billSvc.initBill();
         bill._forpayment = true;
@@ -74,14 +74,70 @@ class RPTReceiptBatchModel extends PageFlowController
         listHandler.load();
         mode = MODE_SELECT;
     }
-    
+
     void loadItemsByTaxpayer(){
+        processing = true;
         bill.taxpayer = entity.taxpayer;
         entity.paidby = bill.taxpayer.name;
         entity.paidbyaddress = bill.taxpayer.address.text;
-        itemsforpayment = svc.getItemsForPaymentByTaxpayer(bill);
+        loadItemsForPaymentAsync();
         calcReceiptAmount();
     }
+
+    /*===================================
+    *
+    * Async Support
+    *
+    ====================================*/
+
+    def task;
+    def billedLedgers;
+
+    def onLoadComplete() {
+        processing = false;
+        msg = null;
+        calcReceiptAmount();
+        binding.refresh('entity.*|msg|msgpnl');
+    }
+
+
+    void loadItemByLedger(rptledger){
+        if ( !itemsforpayment.find{it.objid == rptledger.objid}){
+            def tmpbill = cloneBill();
+            tmpbill.rptledgerid = rptledger.objid;
+            def ledgers = svc.getItemsForPayment(tmpbill);
+            itemsforpayment += ledgers;
+            listHandler.load();
+            calcReceiptAmount();
+        }
+        binding.focus('ledger');
+    }
+        
+
+    def loadLedgerTask = {
+        run: {
+            if (!billedLedgers) {
+                billedLedgers = svc.getLedgersForPayment(bill);    
+            }
+            billedLedgers.each {
+                try {
+                    msg = 'Processing ledger ' + (it.rptledger ? it.rptledger.tdno : '...');
+                    loadItemByLedger(it)
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            onLoadComplete();
+        }
+    } as Runnable;
+
+
+    void loadItemsForPaymentAsync() {
+        processing = true;
+        msg = 'Processing items for payment. Please wait...';
+        itemsforpayment = [];
+        new Thread(loadLedgerTask).start();
+    }    
     
     void loadItemsByBarcode(){
         def res = svc.initReceiptFromBarcode([barcodeid:entity.barcodeid]);
@@ -202,15 +258,14 @@ class RPTReceiptBatchModel extends PageFlowController
             entity.amount = paiditems.total.sum();
             entity.itemcount = paiditems.size();
         }
-        binding?.refresh('entity.(itemcount|amount)');
+        binding?.refresh('entity.(itemcount|amount)|msg|msgpnl');
     }
     
     void selectAll(){
         itemsforpayment.each{
             it.pay = true;
-            if (it._total){
-                it.total = it._total;
-            }
+            it.partialled = false;
+            updateItemDue(it);
         }
         calcReceiptAmount();
     }
@@ -218,7 +273,7 @@ class RPTReceiptBatchModel extends PageFlowController
     void deselectAll(){
         itemsforpayment.each{
             it.pay = false;
-            it._total = it.total;
+            it.partialled = false;
             it.total = 0.0;
         }
         listHandler.load();
@@ -311,9 +366,9 @@ class RPTReceiptBatchModel extends PageFlowController
                 createReceipt();
                 receipt.putAll(receiptSvc.post(receipt));
                 MsgBox.alert('Insert Receipt No. ' + receipt.receiptno + ' into the printer.');
-                print(receipt);
                 issuedreceipts << [objid:receipt.objid, receiptno:receipt.receiptno, amount:receipt.amount];
                 receiptHandler.reload();
+                print(receipt);
                 paymentlist.remove(0);
                 if (!paymentlist) {
                     mode = MODE_PAID;
@@ -343,13 +398,17 @@ class RPTReceiptBatchModel extends PageFlowController
         
         return 'payment'
     }
+
+    def doClose() {
+        return '_exit';
+    }
     
-    def createReceipt(){
+    def createReceipt() {
         receipt  = [
             txnmode         : 'ONLINE', 
-            formno          : '56', 
+            formno          : entity.formno, 
             formtype        : 'serial',
-            collectiontype  : findCollectionType(),
+            collectiontype  : entity.collectiontype,
         ]; 
         
         receipt = receiptSvc.init(receipt)
@@ -365,13 +424,14 @@ class RPTReceiptBatchModel extends PageFlowController
         receipt.totalnoncash = 0.0;
         receipt.cashchange = 0.0;
         receipt.totalcredit = 0.0;
+
+        receipt.sharing = [] 
+        receipt.items = []
+        receipt.ledgers.each {
+            receipt.sharing += it.shares 
+            receipt.items += it.billitems 
+        }
         return receipt;
-    }
-    
-    def findCollectionType(){
-        def p = [_schemaname:'collectiontype']
-        p.findBy = [formno:'56', handler:'rptbatch', ]
-        return qrySvc.findFirst(p)
     }
     
     void print(receipt) {

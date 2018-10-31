@@ -1,4 +1,8 @@
-
+if object_id('dbo.sys_user_role', 'V') IS NOT NULL 
+  drop view dbo.sys_user_role; 
+go 
+CREATE VIEW sys_user_role AS select u.objid AS objid,u.lastname AS lastname,u.firstname AS firstname,u.middlename AS middlename,u.username AS username,concat(u.lastname,', ',u.firstname,(case when isnull(u.middlename) then '' else (' ' + u.middlename) end)) AS name,ug.role AS role,ug.domain AS domain,ugm.org_objid AS orgid,u.txncode AS txncode,u.jobtitle AS jobtitle,ugm.objid AS usergroupmemberid,ugm.usergroup_objid AS usergroup_objid from ((sys_usergroup_member ugm join sys_usergroup ug on((ug.objid = ugm.usergroup_objid))) join sys_user u on((u.objid = ugm.user_objid))) 
+go 
 
 -- ----------------------------
 -- View structure for vw_af_control_detail
@@ -551,3 +555,21 @@ from remittance r
   inner join itemaccount ia on ia.objid = cs.payableitem_objid 
   left join cashreceipt_void v on v.receiptid = c.objid
 GO
+
+-- ----------------------------
+-- View structure for vw_rptpayment_item
+-- ----------------------------
+if object_id('dbo.vw_rptpayment_item', 'V') IS NOT NULL 
+  drop view dbo.vw_rptpayment_item; 
+go 
+CREATE VIEW `vw_rptpayment_item` AS select `x`.`rptledgerid` AS `rptledgerid`,`x`.`parentid` AS `parentid`,`x`.`rptledgerfaasid` AS `rptledgerfaasid`,`x`.`year` AS `year`,`x`.`qtr` AS `qtr`,`x`.`revperiod` AS `revperiod`,sum(`x`.`basic`) AS `basic`,sum(`x`.`basicint`) AS `basicint`,sum(`x`.`basicdisc`) AS `basicdisc`,sum(`x`.`basicdp`) AS `basicdp`,sum(`x`.`basicnet`) AS `basicnet`,sum(`x`.`basicidle`) AS `basicidle`,sum(`x`.`basicidleint`) AS `basicidleint`,sum(`x`.`basicidledisc`) AS `basicidledisc`,sum(`x`.`basicidledp`) AS `basicidledp`,sum(`x`.`sef`) AS `sef`,sum(`x`.`sefint`) AS `sefint`,sum(`x`.`sefdisc`) AS `sefdisc`,sum(`x`.`sefdp`) AS `sefdp`,sum(`x`.`sefnet`) AS `sefnet`,sum(`x`.`firecode`) AS `firecode`,sum(`x`.`sh`) AS `sh`,sum(`x`.`shint`) AS `shint`,sum(`x`.`shdisc`) AS `shdisc`,sum(`x`.`shdp`) AS `shdp`,sum(`x`.`amount`) AS `amount`,max(`x`.`partialled`) AS `partialled`,`x`.`voided` AS `voided` from `vw_rptpayment_item_detail` `x` group by `x`.`rptledgerid`,`x`.`parentid`,`x`.`rptledgerfaasid`,`x`.`year`,`x`.`qtr`,`x`.`revperiod`,`x`.`voided` 
+go 
+
+-- ----------------------------
+-- View structure for vw_rptpayment_item_detail
+-- ----------------------------
+if object_id('dbo.vw_rptpayment_item_detail', 'V') IS NOT NULL 
+  drop view dbo.vw_rptpayment_item_detail; 
+go 
+CREATE VIEW `vw_rptpayment_item_detail` AS select `rpi`.`objid` AS `objid`,`rpi`.`parentid` AS `parentid`,`rp`.`refid` AS `rptledgerid`,`rpi`.`rptledgerfaasid` AS `rptledgerfaasid`,`rpi`.`year` AS `year`,`rpi`.`qtr` AS `qtr`,`rpi`.`revperiod` AS `revperiod`,(case when (`rpi`.`revtype` = 'basic') then `rpi`.`amount` else 0 end) AS `basic`,(case when (`rpi`.`revtype` = 'basic') then `rpi`.`interest` else 0 end) AS `basicint`,(case when (`rpi`.`revtype` = 'basic') then `rpi`.`discount` else 0 end) AS `basicdisc`,(case when (`rpi`.`revtype` = 'basic') then (`rpi`.`interest` - `rpi`.`discount`) else 0 end) AS `basicdp`,(case when (`rpi`.`revtype` = 'basic') then ((`rpi`.`amount` + `rpi`.`interest`) - `rpi`.`discount`) else 0 end) AS `basicnet`,(case when (`rpi`.`revtype` = 'basicidle') then ((`rpi`.`amount` + `rpi`.`interest`) - `rpi`.`discount`) else 0 end) AS `basicidle`,(case when (`rpi`.`revtype` = 'basicidle') then `rpi`.`interest` else 0 end) AS `basicidleint`,(case when (`rpi`.`revtype` = 'basicidle') then `rpi`.`discount` else 0 end) AS `basicidledisc`,(case when (`rpi`.`revtype` = 'basicidle') then (`rpi`.`interest` - `rpi`.`discount`) else 0 end) AS `basicidledp`,(case when (`rpi`.`revtype` = 'sef') then `rpi`.`amount` else 0 end) AS `sef`,(case when (`rpi`.`revtype` = 'sef') then `rpi`.`interest` else 0 end) AS `sefint`,(case when (`rpi`.`revtype` = 'sef') then `rpi`.`discount` else 0 end) AS `sefdisc`,(case when (`rpi`.`revtype` = 'sef') then (`rpi`.`interest` - `rpi`.`discount`) else 0 end) AS `sefdp`,(case when (`rpi`.`revtype` = 'sef') then ((`rpi`.`amount` + `rpi`.`interest`) - `rpi`.`discount`) else 0 end) AS `sefnet`,(case when (`rpi`.`revtype` = 'firecode') then ((`rpi`.`amount` + `rpi`.`interest`) - `rpi`.`discount`) else 0 end) AS `firecode`,(case when (`rpi`.`revtype` = 'sh') then ((`rpi`.`amount` + `rpi`.`interest`) - `rpi`.`discount`) else 0 end) AS `sh`,(case when (`rpi`.`revtype` = 'sh') then `rpi`.`interest` else 0 end) AS `shint`,(case when (`rpi`.`revtype` = 'sh') then `rpi`.`discount` else 0 end) AS `shdisc`,(case when (`rpi`.`revtype` = 'sh') then (`rpi`.`interest` - `rpi`.`discount`) else 0 end) AS `shdp`,((`rpi`.`amount` + `rpi`.`interest`) - `rpi`.`discount`) AS `amount`,`rpi`.`partialled` AS `partialled`,`rp`.`voided` AS `voided` from (`rptpayment_item` `rpi` join `rptpayment` `rp` on((`rpi`.`parentid` = `rp`.`objid`))) 
+go 

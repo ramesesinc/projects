@@ -1,12 +1,15 @@
 <!--
-DROP VIEW IF EXISTS vw_cashreceipt_itemaccount;
+DROP VIEW IF EXISTS vw_cashreceipt_itemaccount
+;
 CREATE VIEW vw_cashreceipt_itemaccount AS 
-
 SELECT 
-objid,state,code,title,description,type,fund_objid,fund_code,fund_title,defaultvalue,valuetype,sortorder,org_objid AS orgid
+  objid, state, code, title, description, type, fund_objid, fund_code, fund_title, 
+  defaultvalue, valuetype, sortorder, org_objid AS orgid 
 FROM itemaccount 
-WHERE (generic = 0 OR generic IS NULL) 
-AND state='ACTIVE' AND type IN ('REVENUE','NONREVENUE','PAYABLE')
+WHERE state='ACTIVE' 
+  AND type IN ('REVENUE','NONREVENUE','PAYABLE') 
+  AND (generic = 0 OR generic IS NULL)
+;
 -->
 <schema>
 	<element tablename="vw_cashreceipt_itemaccount">

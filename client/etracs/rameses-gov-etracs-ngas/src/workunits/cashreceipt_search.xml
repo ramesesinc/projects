@@ -1,5 +1,0 @@
-<workunit extends="workunits/liquidation.xml">
-    <invokers>
-        <invoker folderid="home/accounting" caption="Search Receipts" action="open" role="MASTER" index="1"/>
-    </invokers>
-</workunit>

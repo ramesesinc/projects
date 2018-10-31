@@ -1,5 +1,0 @@
-<workunit extends="workunits/liquidation.xml">
-    <invokers>
-        <invoker folderid="home/accounting" caption="Chart of Accounts" action="open" role="MASTER" index="0"/>
-    </invokers>
-</workunit>

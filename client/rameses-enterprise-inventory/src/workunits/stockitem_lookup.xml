@@ -1,6 +1,0 @@
-<!-- REQUISITION ISSUE SLIP -->
-<workunit extends="wtemplates/ServiceLookupController.xml"  serviceName="StockItemLookupService">
-    <invokers>
-       <invoker type="stockitem:lookup" caption="Lookup Stock Items" />
-    </invokers>
-</workunit>

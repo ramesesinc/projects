@@ -49,7 +49,7 @@ public class RPTBillingRuleService
 	@ProxyMethod
 	public def getBilling(bill){
 		def request = buildRequest(bill);
-		executeRules(request)
+		executeRules(bill, request)
 		bill.remove('_pdate')
 		bill.remove('ledgerfact')
 		return bill
@@ -95,10 +95,15 @@ public class RPTBillingRuleService
 	}
 
 
-	void executeRules(request){
+	void executeRules(bill, request){
 		def grps = ruleDB.getRulegroups( [ruleset: RULESET] );
 		grps.each{g ->
 			ruleSvc.execute( RULESET, request.facts, request.actions, g.name);
+			if ('INIT'.equalsIgnoreCase(g.name)) {
+				request.facts.findAll{it instanceof RPTLedgerItemFact}.each {
+					recalcPenaltyRate(bill, it)
+				}
+			}
 		}
 	}
 
@@ -244,6 +249,11 @@ public class RPTBillingRuleService
 		return false
 	}
 
+	void recalcPenaltyRate(bill, item) {
+		def ledgerfact = bill.ledgerfact
+		item.monthsfromqtr = calculateNoOfMonthsFromQtr(bill._pdate, item.year, item.qtr)
+		item.monthsfromjan = calculateNoOfMonthsFromJan(bill._pdate, item.year, item.qtr)
+	}
 
 	def createLedgerItemFact( bill, item) {
 		def ledgerfact = bill.ledgerfact

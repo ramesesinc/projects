@@ -85,15 +85,20 @@ class LandRPUService
 	@ProxyMethod
 	public def openLandRpu( objid ) {
 		def landrpu = em.read([objid:objid])
-		if (!landrpu) {
-			return [landdetails:[], planttrees:[], landadjustments:[]]
+		if (landrpu) {
+			landrpu.idleland			= util.toBoolean(landrpu.idleland, false)
+			landrpu.publicland			= util.toBoolean(landrpu.publicland, false)
+			landrpu.landdetails 		= getLandDetails(landrpu)
+			landrpu.planttrees 			= getPlantTrees(landrpu)
+			landrpu.landadjustments 	= getLandAdjustments(landrpu)
+			landrpu.assessments 		= em.getAssessments(landrpu)
+		} else {
+			landrpu = [objid: objid, idleland: false, publicland: false]
+			landrpu.landdetails = []
+			landrpu.planttrees = []
+			landrpu.landadjustments = []
+			landrpu.assessments = []
 		}
-		landrpu.idleland			= util.toBoolean(landrpu.idleland, false)
-		landrpu.publicland			= util.toBoolean(landrpu.publicland, false)
-		landrpu.landdetails 		= getLandDetails(landrpu)
-		landrpu.planttrees 			= getPlantTrees(landrpu)
-		landrpu.landadjustments 	= getLandAdjustments(landrpu)
-		landrpu.assessments 		= em.getAssessments(landrpu)
 		return landrpu 
 	}
 

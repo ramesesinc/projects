@@ -96,14 +96,18 @@ class BldgRPUService
 	@ProxyMethod
 	public def openBldgRpu( objid ) {
 		def rpu = em.read([objid:objid])
-		if (!rpu) {
-			throw new Exception('Building RPU does not exists or has been deleted.')
+		if (rpu) {
+			rpu.bldgassesslevel = bldgSettingSvc.lookupBldgAssessLevelById(rpu.bldgassesslevel?.objid)
+			rpu.condominium		= util.toBoolean(rpu.condominium, false)
+			rpu.structures 		= getStructures(rpu)
+			rpu.structuraltypes = getStructuralTypes(rpu)
+			rpu.assessments 	= em.getAssessments(rpu)
+		} else {
+			rpu = [objid: objid, condominium: false]
+			rpu.structures = []
+			rpu.structuraltypes = []
+			rpu.assessments = []
 		}
-		rpu.bldgassesslevel = bldgSettingSvc.lookupBldgAssessLevelById(rpu.bldgassesslevel?.objid)
-		rpu.condominium		= util.toBoolean(rpu.condominium, false)
-		rpu.structures 		= getStructures(rpu)
-		rpu.structuraltypes = getStructuralTypes(rpu)
-		rpu.assessments 	= em.getAssessments(rpu)
 		return rpu 
 	}
 

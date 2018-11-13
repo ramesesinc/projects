@@ -25,7 +25,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xFormPanel1 = new com.rameses.rcp.control.XFormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
-        xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        entityLookup1 = new com.rameses.entity.components.EntityLookup();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
@@ -46,12 +46,12 @@ public class CashReceiptPage extends javax.swing.JPanel {
         xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         xFormPanel1.setPadding(new java.awt.Insets(10, 5, 5, 5));
 
+        xLabel2.setCaption("Receipt No.");
+        xLabel2.setExpression("#{entity.receiptno}");
         com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
         xLineBorder1.setLineColor(new java.awt.Color(153, 153, 153));
         xLabel2.setBorder(xLineBorder1);
-        xLabel2.setCaption("Receipt No.");
         xLabel2.setCaptionWidth(130);
-        xLabel2.setExpression("#{entity.receiptno}");
         xLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 28));
         xFormPanel1.add(xLabel2);
@@ -71,17 +71,15 @@ public class CashReceiptPage extends javax.swing.JPanel {
 
         xFormPanel1.add(xSeparator2);
 
-        xLookupField2.setCaption("Payer");
-        xLookupField2.setCaptionWidth(130);
-        xLookupField2.setExpression("#{item.name}");
-        xLookupField2.setFontStyle("font-size:12;");
-        xLookupField2.setHandler("lookupEntity");
-        xLookupField2.setIndex(-1000);
-        xLookupField2.setName("entity.payer"); // NOI18N
-        xLookupField2.setPreferredSize(new java.awt.Dimension(0, 25));
-        xLookupField2.setRequired(true);
-        xLookupField2.setStretchWidth(100);
-        xFormPanel1.add(xLookupField2);
+        entityLookup1.setCaption("Payer");
+        entityLookup1.setCaptionWidth(130);
+        entityLookup1.setEntityTypeName("entityType");
+        entityLookup1.setFontStyle("font-size:12;");
+        entityLookup1.setIndex(-1000);
+        entityLookup1.setName("entity.payer"); // NOI18N
+        entityLookup1.setPreferredSize(new java.awt.Dimension(0, 25));
+        entityLookup1.setRequired(true);
+        xFormPanel1.add(entityLookup1);
 
         xTextField1.setCaption("Paid By");
         xTextField1.setCaptionMnemonic('b');
@@ -215,6 +213,7 @@ public class CashReceiptPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.entity.components.EntityLookup entityLookup1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -224,7 +223,6 @@ public class CashReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDecimalField xDecimalField3;
     private com.rameses.rcp.control.XFormPanel xFormPanel1;
     private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
     private com.rameses.rcp.control.XTextArea xTextArea1;

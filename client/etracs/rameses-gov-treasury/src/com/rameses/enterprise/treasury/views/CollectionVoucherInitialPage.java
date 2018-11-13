@@ -83,10 +83,25 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.CheckBoxColumnHandler(java.lang.Integer.class, 1, 0)}
             }),
             new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "controldate"}
+                , new Object[]{"caption", "Control Date"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 10}
+                , new Object[]{"maxWidth", 100}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "controlno"}
                 , new Object[]{"caption", "Control No"}
-                , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 0}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 10}
                 , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -115,9 +130,9 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
-                , new Object[]{"width", 150}
-                , new Object[]{"minWidth", 120}
-                , new Object[]{"maxWidth", 180}
+                , new Object[]{"width", 120}
+                , new Object[]{"minWidth", 50}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -134,7 +149,8 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        xButton2.setDepends(new String[] {"controldate"});
+        xButton2.setDepends(new String[] {"controldate", "selectedRemittance"});
+        xButton2.setDisableWhen("#{selectedRemittance == null}");
         xButton2.setName("viewRemittance"); // NOI18N
         xButton2.setText("View");
         jPanel2.add(xButton2, java.awt.BorderLayout.WEST);
@@ -179,7 +195,7 @@ public class CollectionVoucherInitialPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

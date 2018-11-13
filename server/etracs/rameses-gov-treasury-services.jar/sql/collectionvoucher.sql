@@ -51,6 +51,7 @@ FROM (
 )tmp 
   left join itemaccount ia on ia.objid = tmp.itemacctid 
 
+
 [getBankAccountLedgerItems]
 SELECT  
   nc.fund_objid AS fundid,

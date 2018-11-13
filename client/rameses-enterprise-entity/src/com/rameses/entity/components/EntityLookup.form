@@ -19,7 +19,7 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
   <SubComponents>
-    <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+    <Component class="com.rameses.rcp.control.XLookupField" name="xlookup">
       <Properties>
         <Property name="expression" type="java.lang.String" value="#{entity.name} - #{entity.entityno} "/>
         <Property name="handler" type="java.lang.String" value="lookupEntity"/>

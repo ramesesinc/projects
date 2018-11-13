@@ -30,10 +30,10 @@ public class EntityLookup extends XComponentPanel implements UIFocusableContaine
     }
     
     public String getExpression() {
-        return xLookupField1.getExpression(); 
+        return xlookup.getExpression(); 
     }
     public void setExpression( String expression ) {
-        xLookupField1.setExpression( expression ); 
+        xlookup.setExpression( expression ); 
     } 
     
     public String getOnselect() { return onselect; } 
@@ -54,13 +54,13 @@ public class EntityLookup extends XComponentPanel implements UIFocusableContaine
     }    
     
     public boolean focusFirstInput() { 
-        return xLookupField1.focusFirstInput(); 
+        return xlookup.focusFirstInput(); 
     } 
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        xLookupField1.setEnabled(enabled);
+        xlookup.setEnabled(enabled);
         btnAdd.setEnabled(enabled);
         com.rameses.rcp.common.ComponentBean bean = (com.rameses.rcp.common.ComponentBean)getComponentBean(); 
         bean.setProperty("allowCreate", enabled);
@@ -85,19 +85,20 @@ public class EntityLookup extends XComponentPanel implements UIFocusableContaine
         pr.setProperty(bean, "entityTypeCaller", new EntityTypeCaller(getEntityTypeName(), getEntityType(), caller));
     }
 
-    /**
-     * @return the entityTypeName
-     */
     public String getEntityTypeName() {
         return entityTypeName;
     }
-
-    /**
-     * @param entityTypeName the entityTypeName to set
-     */
     public void setEntityTypeName(String entityTypeName) {
         this.entityTypeName = entityTypeName;
     }
+    
+    public String getFontStyle() {
+        return xlookup.getFontStyle(); 
+    }
+    public void setFontStyle( String style ) {
+        xlookup.setFontStyle(style); 
+    }
+    
 
     public class EntityTypeCaller { 
         private String type;
@@ -134,7 +135,7 @@ public class EntityLookup extends XComponentPanel implements UIFocusableContaine
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        xLookupField1 = new com.rameses.rcp.control.XLookupField();
+        xlookup = new com.rameses.rcp.control.XLookupField();
         jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         btnView = new com.rameses.rcp.control.XButton();
@@ -144,10 +145,10 @@ public class EntityLookup extends XComponentPanel implements UIFocusableContaine
         setOpaque(false);
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        xLookupField1.setExpression("#{entity.name} - #{entity.entityno} ");
-        xLookupField1.setHandler("lookupEntity");
-        xLookupField1.setName("entity"); // NOI18N
-        add(xLookupField1);
+        xlookup.setExpression("#{entity.name} - #{entity.entityno} ");
+        xlookup.setHandler("lookupEntity");
+        xlookup.setName("entity"); // NOI18N
+        add(xlookup);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 0, 0));
         jPanel1.setOpaque(false);
@@ -189,7 +190,7 @@ public class EntityLookup extends XComponentPanel implements UIFocusableContaine
     private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
-    private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xlookup;
     // End of variables declaration//GEN-END:variables
 
 

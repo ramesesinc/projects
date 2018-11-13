@@ -56,7 +56,7 @@ public class ApplicationListingReportController extends com.rameses.etracs.share
                 [type:'date', caption:'End Date', name:'entity.enddate', required:true, depends:'entity.period', visibleWhen:'#{ entity.period.type=="range" }', preferredSize:'100,20', captionWidth:100],
 
                 [type:'checklist', caption:'App Type', name:'entity.apptypes', immediate:true, preferredSize:'0,20', items:'appTypeList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
-                [type:'checklist', caption:'App Status', name:'entity.appstates', immediate:true, preferredSize:'0,20', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
+                [type:'checklist', caption:'App Status', name:'entity.appstates', immediate:true, preferredSize:'0,45', items:'appStatusList', itemExpression:'#{item.title}', selectionMode:'MULTIPLE', itemCount:3, captionWidth:100 ],
                 
                 [type:'combo', caption:'Barangay', name:'entity.barangay', items:'barangaylist',  expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],
                 [type:'combo', caption:'Classification', name:'entity.classification', items:'classificationlist', expression:'#{item.name}', preferredSize:'0,20', captionWidth:100],

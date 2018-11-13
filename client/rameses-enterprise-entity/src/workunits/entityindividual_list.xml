@@ -1,20 +1,13 @@
-<!--
-<workunit extends="wtemplates/ListController.xml" serviceName="IndividualEntityService"
-    entityName="individualentity" allowCreate="false"  allowOpen="false" formName="individualentity:list">
-    <invokers>
-        <invoker folderid="/explorer/master/entity" caption="Individual" role="MASTER" />
-        <invoker type="formActions" caption="New" action="create" role="MASTER" permission="individualentity.create" />
-        <invoker type="formActions" caption="Open" action="open" role="MASTER" permission="individualentity.open" />
-   </invokers>
-</workunit>
--->
 <workunit extends="com/rameses/seti2/templates/CrudList.xml"  
-          schemaName="entityindividual" allowDelete="false">
+          schemaName="entityindividual" allowDelete="false" debug="true">
     <invokers>
-        <invoker folderid="/explorer/master/entity" caption="Individual" role="MASTER" action="init" 
+        <invoker folderid="/explorer/master/entity" caption="Individual" action="init" 
+                 role="MASTER" permission="entityindividual.view" 
                  cols="entityno,entityname,lastname,firstname,middlename,address.text,birthdate"
                  orderBy="lastname,firstname"/>
-        <invoker folderid="/home/entity" caption="Individual" role="MASTER" action="init" 
+        
+        <invoker folderid="/home/entity" caption="Individual" action="init" 
+                 role="MASTER" permission="entityindividual.view" 
                  cols="entityno,entityname,lastname,firstname,middlename,address.text,birthdate"
                  icon="home/icons/entity.png"
                  orderBy="lastname,firstname"/>        

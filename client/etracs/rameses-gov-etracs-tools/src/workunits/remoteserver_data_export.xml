@@ -4,9 +4,6 @@
         
         <invoker type="quick_launcher" code="EXP01" caption="Export Remote Server Data" action="init" role="SYSADMIN"/>
         
-        <!--invoker type="remoteserverdata:create" action="init" caption="Export Remote Server Data" role="SYSADMIN"/>
-        <invoker type="remoteserverdata:open" action="open" caption="Export Remote Server Data" role="SYSADMIN"/-->
-        
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" 
                  immediate="true" visibleWhen="#{mode == 'read'}" icon="images/toolbars/cancel.png" />
         

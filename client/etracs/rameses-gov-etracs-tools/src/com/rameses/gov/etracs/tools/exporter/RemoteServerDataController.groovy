@@ -1,14 +1,14 @@
 package com.rameses.gov.etracs.tools.exporter;
 
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.*
-import com.rameses.osiris2.common.*
-import javax.swing.*
-import com.rameses.io.*
+import com.rameses.rcp.annotations.*;
+import com.rameses.rcp.common.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.common.*;
+import com.rameses.io.*;
+import javax.swing.*;
         
-class RemoteServerDataExportController 
-{
+class RemoteServerDataExportController {
+    
     @Binding
     def binding;
     
@@ -62,17 +62,15 @@ class RemoteServerDataExportController
         entity = new com.rameses.util.Base64Cipher().decode( result ); 
         mode = MODE_PREVIEW;
         [
-            collectionTypeListHandler, revenueListHandler, fundListHandler, 
-            afListHandler, userListHandler, usergroupListHandler, 
-            collectionGroupListHandler, orgListHandler 
+            userListHandler, usergroupHandler, orgListHandler, afListHandler, 
+            fundListHandler, revenueListHandler, collectionTypeListHandler, 
+            collectionGroupListHandler, bankListHandler   
         ].each { 
             it.load(); 
         } 
         
         entity.data.orgs.each{ it.root=0 }
-        orginfo = entity.data.orgs.find{ it.objid==orginfo.objid } 
-        if ( orginfo ) orginfo.root = 1; 
-        
+        orginfo = entity.data.orgs.find{ it.objid==orginfo.objid }         
         return 'main'; 
     } 
     
@@ -168,37 +166,40 @@ class RemoteServerDataExportController
     def selectedRevenueItem;
     def selectedUser;
             
- 
-    def collectionTypeListHandler = [
-            fetchList : { return entity.data.collectiontypes; }
+    def userListHandler = [
+           fetchList : { return entity.data.users; }
     ] as BasicListModel;
-    
-    def revenueListHandler = [
-            fetchList : { return entity.data.itemaccounts; } 
+
+    def usergroupHandler = [
+           fetchList : { return entity.data.usergroups; }
+    ] as BasicListModel;
+ 
+    def orgListHandler = [
+           fetchList : { return entity.data.orgs; }
+    ] as BasicListModel; 
+
+    def afListHandler = [
+            fetchList : { return entity.data.afs; } 
     ] as BasicListModel;
     
     def fundListHandler = [
             fetchList : { return entity.data.funds; } 
     ] as BasicListModel;
 
-    def afListHandler = [
-            fetchList : { return entity.data.afs; } 
+    def revenueListHandler = [
+            fetchList : { return entity.data.itemaccounts; } 
     ] as BasicListModel;
     
-    def userListHandler = [
-           fetchList : { return entity.data.users; }
-    ] as BasicListModel;
-
-    def usergroupListHandler = [
-           fetchList : { return entity.data.usergroups; }
+    def collectionTypeListHandler = [
+            fetchList : { return entity.data.collectiontypes; }
     ] as BasicListModel;
     
     def collectionGroupListHandler = [
            fetchList : { return entity.data.collectiongroups; }
     ] as BasicListModel;   
-    
-    def orgListHandler = [
-           fetchList : { return entity.data.orgs; }
-    ] as BasicListModel; 
+
+    def bankListHandler = [
+           fetchList : { return entity.data.banks; }
+    ] as BasicListModel;       
 }
 

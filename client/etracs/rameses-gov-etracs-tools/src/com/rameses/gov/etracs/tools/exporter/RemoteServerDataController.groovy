@@ -31,6 +31,8 @@ class RemoteServerDataExportController {
     def entity;
     def mode;
     
+    def formats = ['v254', 'v255'];
+    
     String getTitle(){
         return 'Export Remote Server Data (' + ( entity.objid ? entity.objid : 'NEW')  + ')';
     }

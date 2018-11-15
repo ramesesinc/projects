@@ -74,6 +74,10 @@ class RemoteServerDataService {
 		entity.data.itemaccounts = adb.getItemAccounts( params );
 		entity.data.itemaccounttags = adb.getItemAccountTags( params );
 		entity.data.banks = adb.getBanks( params ); 
+
+		if ( entity.data.outputformat == 'v254' ) { 
+			resolve254Compatibility( entity.data ); 
+		}
 		return new Base64Cipher().encode(entity); 
 	}
 
@@ -103,9 +107,46 @@ class RemoteServerDataService {
 		def o = adb.findFund([ objid: param.objid ]);
 		if ( !o ) return; 
 
+		o.objid = (o.objid ? o.objid.toString().toUpperCase() : o.objid);
+		o.groupid = (o.groupid ? o.groupid.toString().toUpperCase() : o.groupid);
+		o.depositoryfundid = (o.depositoryfundid ? o.depositoryfundid.toString().toUpperCase() : o.depositoryfundid);
+
 		list << o; 
 		if ( o.depositoryfundid && o.depositoryfundid != o.objid ) {
 			loadFund( list, [ objid: o.depositoryfundid ] );  
+		} 
+	} 
+
+	private void resolve254Compatibility( data ) {
+		data.users.each{
+			if ( it.state.toString().equalsIgnoreCase("ACTIVE")) it.state = 'APPROVED';  
+		}
+		data.collectiontypes.each{
+			it.state = 'APPROVED'; 
+		}
+		data.collectiongroups.each{
+			it.state = 'APPROVED'; 
+		}
+		data.funds.each{
+			it.state = 'APPROVED'; 
+			it.parentid = it.groupid; 
+		} 
+
+		data.funds.collect{ it.parentid }.findAll{( it )}.unique().each{ k-> 
+			def o = data.funds.find{( it.objid == k )} 
+			if ( o ) return; 
+
+			o = adb.findFund([ objid: k ]); 
+			if ( o ) { 
+				o.state = 'APPROVED'; 
+				o.remove('parentid'); 
+				o.remove('groupid'); 
+				data.funds << o; 
+			} 
+		} 
+
+		data.itemaccounts.each{ 
+			it.state = 'APPROVED'; 
 		} 
 	} 
 } 

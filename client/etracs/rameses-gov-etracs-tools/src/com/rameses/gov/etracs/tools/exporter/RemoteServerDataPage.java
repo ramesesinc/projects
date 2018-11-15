@@ -35,6 +35,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
+        xTextField4 = new com.rameses.rcp.control.XTextField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         pnluser = new javax.swing.JPanel();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
@@ -59,27 +60,35 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
         xLabel2 = new com.rameses.rcp.control.XLabel();
 
         xFormPanel1.setName("entity.name"); // NOI18N
+        xFormPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
 
         xTextField1.setCaption("Remote Name");
         xTextField1.setName("entity.objid"); // NOI18N
-        xTextField1.setCaptionWidth(100);
+        xTextField1.setCaptionWidth(120);
         xTextField1.setEnabled(false);
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField1);
 
         xTextField2.setCaption("Org Class");
         xTextField2.setName("entity.data.orgclass.name"); // NOI18N
-        xTextField2.setCaptionWidth(100);
+        xTextField2.setCaptionWidth(120);
         xTextField2.setEnabled(false);
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField2);
 
         xTextField3.setCaption("Org");
         xTextField3.setName("entity.data.org.name"); // NOI18N
-        xTextField3.setCaptionWidth(100);
+        xTextField3.setCaptionWidth(120);
         xTextField3.setEnabled(false);
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 20));
         xFormPanel1.add(xTextField3);
+
+        xTextField4.setCaption("Output Format");
+        xTextField4.setName("entity.data.outputformat"); // NOI18N
+        xTextField4.setCaptionWidth(120);
+        xTextField4.setEnabled(false);
+        xTextField4.setPreferredSize(new java.awt.Dimension(0, 20));
+        xFormPanel1.add(xTextField4);
 
         xDataTable3.setHandler("userListHandler");
         xDataTable3.setName("selectedUser"); // NOI18N
@@ -175,7 +184,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnluserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnluserLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable3, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -245,7 +254,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlusergroupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlusergroupLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable8, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable8, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -315,7 +324,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlorgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlorgLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable6, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable6, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -386,7 +395,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlafLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlafLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable7, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable7, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -471,7 +480,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlfundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlfundLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable4, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -541,7 +550,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlitemacctLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlitemacctLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable2, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -611,7 +620,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlcolltypeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlcolltypeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -651,7 +660,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlcollgroupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlcollgroupLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable5, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable5, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -735,7 +744,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             pnlbankLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlbankLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(xDataTable9, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(xDataTable9, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -775,8 +784,8 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
@@ -811,6 +820,7 @@ public class RemoteServerDataPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
+    private com.rameses.rcp.control.XTextField xTextField4;
     // End of variables declaration//GEN-END:variables
     
 }

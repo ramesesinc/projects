@@ -1,0 +1,21 @@
+<workunit extends="wtemplates/ListController.xml" 
+          serviceName="CashReceiptQueryService" 
+          entityName="cashreceipt" 
+          allowCreate="false" allowSearch="false">
+    
+    <invokers>
+        <invoker folderid="menucategory/treasury/mgmt" action="init" 
+                 caption="Cash Receipts Query" tag="mgmt" 
+                 role="SHARED" permission="cashreceipt.query" />
+        
+        <invoker type="formActions" caption="Revert Void" action="revertVoid" 
+                 role="ADMIN" permission="cashreceiptvoid.revert" 
+                 visibleWhen="#{allowRevertVoid==true}"/> 
+   </invokers>
+   
+    <code class="com.rameses.gov.treasury.tool.models.CashReceiptQueryListModel"/>      
+    
+    <pages>
+        <page template="com.rameses.gov.treasury.tool.views.CashReceiptQueryPage"/>
+    </pages>        
+</workunit>

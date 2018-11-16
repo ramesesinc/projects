@@ -6,7 +6,7 @@ SELECT c.*,
 	CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
 	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
 FROM cashreceipt c 
-	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
+	LEFT JOIN remittance r on r.objid = c.remittanceid 
 	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 WHERE c.receiptno LIKE $P{searchtext} 
 ORDER BY ${orderBy} 
@@ -17,7 +17,7 @@ SELECT c.*,
 	CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
 	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
 FROM cashreceipt c 
-	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
+	LEFT JOIN remittance r on r.objid = c.remittanceid 
 	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 WHERE c.paidby LIKE $P{searchtext} 
 ORDER BY ${orderBy} 
@@ -28,7 +28,7 @@ SELECT c.*,
 	CASE WHEN v.receiptid IS NULL THEN 0 ELSE 1 END AS voided,  
 	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted  
 FROM cashreceipt c 
-	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
+	LEFT JOIN remittance r on r.objid = c.remittanceid 
 	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
 WHERE c.payer_name LIKE $P{searchtext} 
 ORDER BY ${orderBy} 
@@ -40,10 +40,10 @@ SELECT c.*,
 	CASE WHEN r.objid IS NULL THEN 0 ELSE 1 END AS remitted,
 	ct.handler AS collectiontype_handler  
 FROM cashreceipt c 
-	LEFT JOIN remittance_cashreceipt r ON c.objid=r.objid
-	LEFT JOIN cashreceipt_void v ON c.objid=v.receiptid
-	LEFT JOIN collectiontype ct ON ct.objid=c.collectiontype_objid
-WHERE c.objid = $P{objid}
+	LEFT JOIN remittance r ON r.objid = c.remittanceid 
+	LEFT JOIN cashreceipt_void v ON c.objid = v.receiptid
+	LEFT JOIN collectiontype ct ON ct.objid = c.collectiontype_objid
+WHERE c.objid = $P{objid} 
 
 [getItems]
 SELECT ci.*, r.fund_objid AS item_fund_objid, r.fund_title AS item_fund_title

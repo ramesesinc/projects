@@ -18,10 +18,9 @@ where cr.controlid=$P{controlid}
 
 [getRemittances]
 select distinct 
-	remc.remittanceid 
+	cr.remittanceid 
 from cashreceipt cr 
-	inner join remittance_cashreceipt remc on cr.objid=remc.objid 
-	inner join remittance rem on remc.remittanceid=rem.objid 
+	inner join remittance rem on cr.remittanceid=rem.objid 
 where cr.controlid=$P{controlid} 
 
 [getLiquidationRemittances]

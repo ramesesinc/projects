@@ -47,30 +47,75 @@ GROUP BY
 
 [getCashReceiptsForRemittance]
 SELECT 
-CONCAT( cr.collector_objid, cr.remittanceid, afc.objid ) AS objid, af.formtype, cr.remittanceid,  
-cr.collector_objid,afc.objid AS afcontrolid, afc.stubno,cr.formno,  
-MIN(cr.series) AS fromseries, MAX(cr.series) AS toseries, afc.endseries,
-COUNT(*) AS qty, SUM( CASE WHEN cv.objid IS NULL THEN cr.amount ELSE 0 END ) AS amount  
-FROM
-( SELECT * FROM cashreceipt WHERE collector_objid = $P{collectorid} AND remittanceid IS NULL AND receiptdate<= $P{remdate} ) cr
-INNER JOIN af_control afc ON cr.controlid=afc.objid 
-INNER JOIN af ON afc.afid = af.objid 
-LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
+	CONCAT( cr.collector_objid, cr.remittanceid, afc.objid ) AS objid, 
+	af.formtype, cr.remittanceid, cr.collector_objid, 
+	afc.objid AS afcontrolid, afc.stubno, cr.formno,  
+	MIN(cr.series) AS fromseries, MAX(cr.series) AS toseries, afc.endseries,
+	COUNT(*) AS qty, SUM( CASE WHEN cv.objid IS NULL THEN cr.amount ELSE 0 END ) AS amount  
+FROM ( 
+	SELECT * FROM cashreceipt 
+	WHERE remittanceid IS NULL 
+		AND collector_objid = $P{collectorid} 
+		AND receiptdate <= $P{remdate} 
+)cr 
+	INNER JOIN af_control afc ON cr.controlid=afc.objid 
+	INNER JOIN af ON afc.afid = af.objid 
+	LEFT JOIN cashreceipt_void cv ON cr.objid = cv.receiptid
 GROUP BY 
-CONCAT( cr.collector_objid, cr.remittanceid, afc.objid ) AS objid, af.formtype, cr.remittanceid, 
-cr.collector_objid, afc.objid, afc.stubno, cr.formno, afc.endseries 
+	CONCAT( cr.collector_objid, cr.remittanceid, afc.objid ), 
+	af.formtype, cr.remittanceid, cr.collector_objid, 
+	afc.objid, afc.stubno, cr.formno, afc.endseries 
 
 
 [getBuildRemittanceFunds]
 select 
-	c.remittanceid, r.controlno as remittanceno,  
-	fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
-	SUM(c.amount) as amount, SUM(c.amount-c.totalnoncash) as totalcash, 
-	SUM(c.totalnoncash) as totalcheck, 0.0 as totalcr
-from remittance r 
-	inner join cashreceipt c on c.remittanceid = r.objid 
-	inner join cashreceiptitem ci on ci.receiptid = c.objid 
-	inner join fund on fund.objid = ci.item_fund_objid 
-where r.objid = $P{remittanceid} 
-	and c.objid not in ( select receiptid from cashreceipt_void where receiptid = c.objid ) 
-group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code 
+	remittanceid, controlno, fund_objid, fund_title, fund_code, 
+	sum(amount) as amount, sum(totalcheck) as totalcheck, sum(totalcr) as totalcr, 
+	(sum(amount)-sum(totalcheck)-sum(totalcr)) as totalcash 
+from ( 
+	select 
+		c.remittanceid, r.controlno,  
+		fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+		SUM(ci.amount) as amount, 0.0 as totalcash, 0.0 as totalcheck, 0.0 as totalcr
+	from remittance r 
+		inner join cashreceipt c on c.remittanceid = r.objid 
+		inner join cashreceiptitem ci on ci.receiptid = c.objid 
+		inner join fund on fund.objid = ci.item_fund_objid 
+		left join cashreceipt_void v on v.receiptid = c.objid 
+	where r.objid = $P{remittanceid} 
+		and v.objid is null 
+	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+
+	union all 
+
+	select 
+		c.remittanceid, r.controlno,  
+		fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+		0.0 as amount, 0.0 as totalcash, sum(nc.amount) as totalcheck, 0.0 as totalcr 
+	from remittance r 
+		inner join cashreceipt c on c.remittanceid = r.objid 
+		inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+		inner join fund on fund.objid = nc.fund_objid 
+		left join cashreceipt_void v on v.receiptid = c.objid 
+	where r.objid = $P{remittanceid} 
+		and nc.reftype = 'CHECK'
+		and v.objid is null 
+	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+
+	union all 
+
+	select 
+		c.remittanceid, r.controlno,  
+		fund.objid as fund_objid, fund.title as fund_title, fund.code as fund_code, 
+		0.0 as amount, 0.0 as totalcash, 0.0 as totalcheck, sum(nc.amount) as totalcr 
+	from remittance r 
+		inner join cashreceipt c on c.remittanceid = r.objid 
+		inner join cashreceiptpayment_noncash nc on nc.receiptid = c.objid 
+		inner join fund on fund.objid = nc.fund_objid 
+		left join cashreceipt_void v on v.receiptid = c.objid 
+	where r.objid = $P{remittanceid} 
+		and nc.reftype <> 'CHECK'
+		and v.objid is null 
+	group by c.remittanceid, r.controlno, fund.objid, fund.title, fund.code
+)t1 
+group by remittanceid, controlno, fund_objid, fund_title, fund_code 

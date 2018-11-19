@@ -79,6 +79,7 @@ class LandTaxReportTaxClearanceService
         cert.putAll(em.findInfo([objid:objid]))
         buildIssuanceInfo(cert)
         cert.items = em.getItems([rptcertificationid:objid])
+        buildEffectivityYear(cert)
         buildAdministratorInfo(cert)
         buildLguNameInfo(cert)
         loadPaymentInfo(cert)
@@ -146,6 +147,13 @@ class LandTaxReportTaxClearanceService
     void buildLguNameInfo(cert){
         if (cert.items && cert.items.size() == 1){
             cert.lguname = cert.items[0].lguname
+        }
+    }
+
+    void buildEffectivityYear(cert) {
+        cert.effectivityyear = cert.year 
+        if (cert.items){
+            cert.effectivityyear = cert.items[0].effectivityyear
         }
     }
 }

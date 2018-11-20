@@ -85,7 +85,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "code"}
-                , new Object[]{"caption", " "}
+                , new Object[]{"caption", "Code"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -108,7 +108,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList1.setShowFilter(false);
         schemaList1.setShowInfo(false);
         schemaList1.setShowNavbar(false);
-        schemaList1.setShowRowHeader(false);
         jPanel1.add(schemaList1, java.awt.BorderLayout.CENTER);
 
         jPanel4.setPreferredSize(new java.awt.Dimension(147, 20));
@@ -156,8 +155,8 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
 
         schemaList3.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
-                new Object[]{"name", null}
-                , new Object[]{"caption", " "}
+                new Object[]{"name", "code"}
+                , new Object[]{"caption", "Code"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -169,6 +168,37 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
                 , new Object[]{"visibleWhen", null}
                 , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
                 , new Object[]{"expression", "#{ (item.objid) ?  item.code + ' - ' + item.description : '' }"}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", "schedule.objid"}
+                , new Object[]{"caption", "Schedule "}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"typeHandler", new com.rameses.rcp.common.TextColumnHandler()}
+            }),
+            new com.rameses.rcp.common.Column(new Object[]{
+                new Object[]{"name", " "}
+                , new Object[]{"caption", "Last Date Billed"}
+                , new Object[]{"width", 100}
+                , new Object[]{"minWidth", 0}
+                , new Object[]{"maxWidth", 0}
+                , new Object[]{"required", false}
+                , new Object[]{"resizable", true}
+                , new Object[]{"nullWhenEmpty", true}
+                , new Object[]{"editable", false}
+                , new Object[]{"visible", true}
+                , new Object[]{"visibleWhen", null}
+                , new Object[]{"textCase", com.rameses.rcp.constant.TextCase.NONE}
+                , new Object[]{"expression", "#{ com.rameses.util.DateUtil.getMonthStr( item.month) } #{ item.year } "}
                 , new Object[]{"typeHandler", new com.rameses.rcp.common.LabelColumnHandler()}
             })
         });
@@ -184,7 +214,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList3.setShowFilter(false);
         schemaList3.setShowInfo(false);
         schemaList3.setShowRefresh(false);
-        schemaList3.setShowRowHeader(false);
         jPanel6.add(schemaList3, java.awt.BorderLayout.CENTER);
 
         jSplitPane2.setRightComponent(jPanel6);
@@ -225,7 +254,7 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList4.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
-                , new Object[]{"caption", " "}
+                , new Object[]{"caption", "Description"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 0}
                 , new Object[]{"maxWidth", 0}
@@ -252,7 +281,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList4.setShowFilter(false);
         schemaList4.setShowInfo(false);
         schemaList4.setShowRefresh(false);
-        schemaList4.setShowRowHeader(false);
         jPanel3.add(schemaList4, java.awt.BorderLayout.CENTER);
 
         jSplitPane3.setLeftComponent(jPanel3);
@@ -343,7 +371,6 @@ public class WaterworksOrgPage extends javax.swing.JPanel {
         schemaList2.setShowFilter(false);
         schemaList2.setShowInfo(false);
         schemaList2.setShowRefresh(false);
-        schemaList2.setShowRowHeader(false);
         jPanel2.add(schemaList2, java.awt.BorderLayout.CENTER);
 
         jSplitPane3.setRightComponent(jPanel2);

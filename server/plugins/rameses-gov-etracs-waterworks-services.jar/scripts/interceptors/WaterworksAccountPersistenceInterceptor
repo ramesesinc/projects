@@ -54,7 +54,6 @@ class WaterworksAccountPersistenceInterceptor{
 		else if( o._tag == "change_meter" ) {
 			throw new Exception("change meter is fired");
 		}
-		throw new Exception("fired tag " + o._tag);
 	}
 
 

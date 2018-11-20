@@ -8,7 +8,6 @@
 		<field name="filedby_objid" required="true" />
 		<field name="filedby_name" required="true" />
 		<field name="action" required="true"/>
-		<field name="keyfield" />
 		<complex name="oldvalue" serializer="default" />
 		<complex name="newvalue" serializer="default" />
 		<field name="remarks" required="true"/>

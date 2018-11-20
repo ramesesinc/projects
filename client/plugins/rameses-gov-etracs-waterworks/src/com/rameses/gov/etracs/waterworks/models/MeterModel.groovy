@@ -11,10 +11,13 @@ public class MeterModel extends CrudFormModel {
     
     def meterStates = ["ACTIVE","DISCONNECTED","DEFECTIVE"];
     
-    /*
     def edit() {
         return showDropdownMenu("edit");
     }
-    */
+   
+    void openFormAccount() {
+        entity = caller.entity.meter;
+        super.open();
+    }
 
 }

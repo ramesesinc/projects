@@ -9,12 +9,22 @@ public class WaterAccount {
     String metersize;	
     String barangay;
     int units = 1;
+    String state;
+    boolean metered;
 
 	public WaterAccount( def acct ) {
 		this.classification = acct.classificationid;
-		this.metersize = acct.meter?.size?.objid;
 		this.barangay = acct.stuboutnode?.barangay?.objid;
 		if ( !this.barangay ) this.barangay = acct.address?.barangay?.objid;
 		if( acct.units ) this.units = acct.units; 
+		this.state = acct.state;
+		if( !acct.meter?.objid ) {
+			this.state = "UNMETERED";
+			this.metered = false;
+		}
+		else {
+			this.metersize = acct.meter?.size?.objid;
+			this.metered = true;
+		}
 	} 
 }

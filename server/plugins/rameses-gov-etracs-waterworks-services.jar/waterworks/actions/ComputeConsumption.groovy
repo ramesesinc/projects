@@ -9,6 +9,8 @@ import com.rameses.osiris3.common.*;
 public class ComputeConsumption implements RuleActionHandler {
 
 	public void execute(def params, def drools) {
+		if(params.amount == null )
+			throw new Exception("ComputeConsumption action error. amount must not be null");
 		def amt = NumberUtil.round(params.amount.doubleValue).doubleValue();	
 		def cw = params.ref;
 		cw.amount = amt;

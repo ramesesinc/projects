@@ -1,18 +1,18 @@
-<workunit extends="com/rameses/treasury/common/templates/ChangeInfoList.xml"
+<workunit extends="com/rameses/seti2/templates/ChangeInfoList.xml"
           schemaName="waterworks_changelog"
           contextName="waterworks"
           title="Change Info">
     <invokers>
         <invoker type="waterworks_account:section" caption="Change Info" 
                  index="100" action="init" 
-                 parentkey="refid"
+                 parentid="refid"
                  cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
                  orderBy="dtfiled DESC"
                  visibleWhen="#{mode=='read'}"  />
         
          <invoker type="waterworks_meter:section" caption="Change Info" 
                  index="100" action="init" 
-                 parentkey="refid"
+                 parentid="refid"
                  cols="controlno,dtfiled,filedby.name,action,keyfield,oldvalue,newvalue,remarks"
                  orderBy="dtfiled DESC"
                  visibleWhen="#{mode=='read'}"  />

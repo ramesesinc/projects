@@ -15,12 +15,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
    @Service("WaterworksComputationService")
    def compSvc;
     
-   @Service("WaterworksBatchBillingService")
+   @Service("WaterworksBatchBillProcessorService")
    def batchSvc;
     
-   @Service("WaterworksScheduleService")
-   def scheduleSvc;
-   
    @Script("ReportService")
    def reportSvc;
     
@@ -29,7 +26,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
    def selectedBillItem;
    
    boolean hasDate = false; 
-    
+   def stat;
+     
    /*
     *   This method is used in style rule condition and DataTable column expression 
     */
@@ -43,61 +41,9 @@ public class BatchBillingModel extends WorkflowTaskModel {
    } 
     
    public String getTitle() {
-       if(mode == "create" ) {
-           return "New Batch Billing";
-       }
-       else {
-           return "Zone " + entity.zone?.code + " " + entity.year + "-" + entity.month.toString().padLeft(2, "0") + " (" + task.title + ")";
-       }
+        return "Zone " + entity.zone?.code + " " + entity.year + "-" + String.format('%06d', entity.month) + " (" + task.title + ")";
    } 
     
-   void reloadSchedule() {
-        def m = [scheduleid: entity.zone.schedule.objid, year: entity.year, month: entity.month ];
-        try {
-            def sked = scheduleSvc.getSchedule(m);
-            entity.putAll(sked);
-            entity.schedule = entity.zone.schedule;
-            binding.refresh();
-        }
-        catch( e) {
-            throw e;
-        }    
-   } 
-    
-   @PropertyChangeListener
-   def listener = [
-       "entity.zone" : { o->
-            if( !o.schedule?.objid ) {
-                MsgBox.err("Please specify schedule in zone");
-                return;
-            }
-            if( o.year ) {
-                int xx = ((o.year * 12)+o.month) + 1;
-                entity.year = (int)(xx / 12);
-                entity.month = (xx % 12);
-                if ( entity.month <= 0 ) entity.month = 12;
-                hasDate = true;
-                reloadSchedule();
-            }
-            else {
-                entity.year = 0;
-                entity.month = 0;
-            }
-       },
-       "entity.year" : { o->
-            if( entity.month > 0 ) reloadSchedule();
-            binding.refresh();
-       },
-       "entity.month" : { o->
-            if( entity.year > 0 ) reloadSchedule();
-            binding.refresh();
-       }
-   ];
-  
-   void afterSave() {
-       open(); 
-   }
-   
    public def open() {
         def v = super.open();
         if( task.state == 'processing' ) {
@@ -106,17 +52,24 @@ public class BatchBillingModel extends WorkflowTaskModel {
         return v;
     }
     
-    def stat;
+    public void afterSignal(def transition, def task) {
+       if( task.state == 'processing') {
+           stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
+       }
+    }
+    
     def progress = [
         getTotalCount : {
             if(stat == null ) throw new Exception("getTotalCount error. stat must not be null");
             return stat.totalcount;
         },
         fetchList: { o->
-            def p = [ _schemaname: 'waterworks_consumption' ];
+            def p = [ _schemaname: 'waterworks_billing' ];
             p.putAll( o );
-            p.select = 'objid,acctid,billed,account.meter.*';
+            p.select = 'objid,acctid,consumptionid';
             p.findBy = [ batchid: entity.objid ];
+            p.where = ["billed = 0"];
+            p.orderBy = "billno";
             return queryService.getList( p );
         },
         processItem: { o->
@@ -134,18 +87,14 @@ public class BatchBillingModel extends WorkflowTaskModel {
     
     public boolean beforeSignal( def param  ) {
        if( task.state == 'processing' ) {
-           //check stat balance befopre submitting process
+           //check stat balance before submitting process
             stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
             if( stat.balance > 0 ) throw new Exception("Cannot submit. Please complete process first");
        }
        return true;
    } 
     
-   public void afterSignal(def transition, def task) {
-       if( task.state == 'processing') {
-           stat = batchSvc.getBilledStatus([ objid: entity.objid ]); 
-       }
-   }
+   
     
    void updateVolumeAmount( def objid, def m ) {
         def p = [_schemaname: 'waterworks_consumption'];

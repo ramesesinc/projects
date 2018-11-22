@@ -4,7 +4,6 @@ import java.util.*;
 import com.rameses.util.*;
 
 public class WaterConsumption {
-
     int month = 0;
     int year = 0;
     int volume = 0;
@@ -14,6 +13,7 @@ public class WaterConsumption {
     Date duedate;
     String refid;
     Date disconnectiondate;
+    double rate;
 
     public WaterConsumption(def o) {
 		if(o.month) month = o.month;

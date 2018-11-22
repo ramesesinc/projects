@@ -1,11 +1,14 @@
 <workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_account"
     logSchemaName="waterworks_changelog">
     <invokers>
-        <invoker type="waterworks_account:form:edit" caption="Change Address" 
-                 target="popup" action="init" index="10" tag="address" />
-        
         <invoker type="waterworks_account:form:edit" caption="Change Owner" action="init"  
-                 target="popup" index="11" tag="owner"/>            
+                 target="popup" index="10" tag="owner"/>   
+
+        <invoker type="waterworks_account:form:edit" caption="Change Address" 
+                 target="popup" action="init" index="11" tag="address" />
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Classification" action="init"  
+                 target="popup" index="12" tag="classification"/>          
         
         <invoker type="waterworks_account:form:edit" caption="Change No. of Units" action="init"  
                  target="popup" index="13" tag="units" fields="units" />
@@ -15,7 +18,7 @@
         
         <!-- Meter actions -->
         <invoker type="waterworks_account:form:edit" caption="Change Meter" action="init" 
-                 target="popup" index="12" tag="meter" />
+                 target="popup" index="15" tag="meter" />
         
     </invokers>
     

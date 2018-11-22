@@ -9,13 +9,14 @@ import java.text.*;
 
 class AccountEditModel extends DataEditorModel {
 
-    def getEntity() {
-        if(schemaName == "waterworks_account") {
-            return super.getEntity();
-        }
-        else if( schemaName == "waterworks_meter") {
-            return super.getEntity().meter;
-        }
+    @Service("QueryService")
+    def qrySvc;
+    
+    def getClassificationList() {
+        def m = [_schemaname: 'waterworks_classification'];
+        m.select = "objid";
+        m.where = ["1=1"]
+        return qrySvc.getList( m )*.objid;
     }
     
     def getFormFields() {
@@ -25,6 +26,9 @@ class AccountEditModel extends DataEditorModel {
         }
         else if( tag == "owner") {
             zfields << [name:"owner", caption:"Owner", datatype: "lookup", handler:"entity:lookup", expression:"#{data.owner.name}"  ];
+        }
+        else if( tag == "classification") {
+            zfields << [name:"classificationid", caption:"Classification", datatype: "combo", items: "classificationList" ];
         }
         else if( tag == "stuboutnode" ) {
             zfields << [name:"stuboutnode", caption:"Stubout Node", datatype: "lookup", 

@@ -1,0 +1,34 @@
+<schema adapter="waterworks">
+	<element tablename="vw_waterworks_billing">
+		<field name="objid"	primary="true"/>
+		<field name="batchid"/>
+		<field name="acctid"/>
+		<field name="billno" searchable="true"/>
+		<field name="consumptionid"	/>
+		<field name="state"/>
+		<field name="surcharge"/>
+		<field name="interest"/>
+		<field name="otherfees"/>
+		<field name="credits"/>
+		<field name="arrears"/>
+		<field name="averageconsumption"/>
+		<field name="billed"/>
+		<field name="unpaidmonths"/>
+		<field name="acctno" searchable="true"/>
+		<field name="acctname"	searchable="true"/>
+		<field name="classificationid"	indexed="true"/>
+		<field name="indexno"	/>
+		<field name="meterstate" indexed="true"/>
+		<field name="prevreading" type="integer"/>
+		<field name="reading" type="integer"/>
+		<field name="volume" type="integer"/>
+		<field name="rate" type="decimal"/>
+		<field name="amount" type="decimal"/>	
+		<field name="subtotal" type="decimal"/>	
+		<field name="meterid" type="decimal"/>	
+		<field name="meter_capacity" type="decimal"/>	
+		<field name="meter_size" type="decimal"/>	
+	</element>
+</schema>
+
+

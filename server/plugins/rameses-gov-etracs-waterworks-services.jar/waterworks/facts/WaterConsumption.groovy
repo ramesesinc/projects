@@ -4,7 +4,6 @@ import java.util.*;
 import com.rameses.util.*;
 
 public class WaterConsumption {
-
     int month = 0;
     int year = 0;
     int volume = 0;
@@ -14,6 +13,10 @@ public class WaterConsumption {
     Date duedate;
     String refid;
     Date disconnectiondate;
+    double rate;
+
+    //this is only an internal flag. This will be set if the amount was already updated so it wont update again
+    boolean updated = false;
 
     public WaterConsumption(def o) {
 		if(o.month) month = o.month;

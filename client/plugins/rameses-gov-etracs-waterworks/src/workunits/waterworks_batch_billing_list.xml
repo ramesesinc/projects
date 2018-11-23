@@ -4,7 +4,7 @@
           allowNotify="true">
     <invokers>
         <invoker folderid="/menucategory/waterworks/billing" action="init" 
-            cols="year,monthname,zone.code,zone.sector.code,readingdate,reader.name,dtcreated,createdby.nam"
+            cols="objid,year,monthname,zone.code,zone.sector.code,readingdate,reader.name,dtcreated,createdby.nam"
             caption="View Batch Billing List" index="1" role="MASTER"/>
     </invokers>
 </workunit>

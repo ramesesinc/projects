@@ -1,11 +1,18 @@
-<workunit extends="com/rameses/treasury/common/templates/ChangeInfo.xml" schemaName="waterworks_changelog" 
-    reftype="waterworks_meter">
+<workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_meter" 
+    logSchemaName="waterworks_changelog">
     <invokers>
-        <invoker type="waterworks_meter:edit" target="popup" caption="Change Last Reading" action="init" index="10"
-                 keyfield="lastreading"  datatype="integer" />
+        <!-- menus inside meter -->    
+        <invoker type="waterworks_meter:form:edit" target="popup" 
+            caption="Change Meter Status" action="init" index="1"
+            tag="state"  />
         
-        <invoker type="waterworks_meter:edit" caption="Change Last Reading Date" action="init"  target="popup" index="11"
-            keyfield="lastreadingdate"  datatype="date"/>
+        <invoker type="waterworks_meter:form:edit" target="popup" 
+            caption="Change Last Reading" action="init" index="2"
+            fields="lastreading"  tag="reading" />
+        
+        <invoker type="waterworks_meter:form:edit" target="popup"
+            caption="Change Last Reading Date" action="init" index="3"
+            fields="lastreadingdate"/>
         
     </invokers>
     

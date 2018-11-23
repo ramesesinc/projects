@@ -25,16 +25,17 @@
 		<field name="address_pin" caption="PIN"/>
 
 		<field name="stuboutnodeid" />
-		<complex name="stuboutnode" ref="vw_waterworks_stubout_node" jointype="many-to-one" required="false">
+		<complex name="stuboutnode" ref="vw_waterworks_stubout_node" jointype="many-to-one" required="true">
 			<key field="stuboutnodeid" target="objid"/> 
 		</complex>
 		
 		<field name="meterid" />
 		<complex name="meter" ref="waterworks_meter" jointype="many-to-one"  required="false" 
-			includefields="objid,serialno,brand,capacity,size.*,state,lastreading,lastreadingdate">
+			includefields="objid,serialno,brand,capacity,size.*,state,lastreading">
 			<key field="meterid" target="objid"/>
 		</complex>
 		
+		<field name="classificationid" required="true"/>
 		<complex name="classification" ref="waterworks_classification" jointype="many-to-one" required="true">
 			<key field="classificationid" target="objid"/>
 		</complex>	

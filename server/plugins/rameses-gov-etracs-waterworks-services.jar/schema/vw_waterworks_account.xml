@@ -16,7 +16,6 @@ SELECT
    ms.title AS meter_size_title,
    m.state  AS meter_state,
    m.lastreading  AS meter_lastreading,
-   m.lastreadingdate  AS meter_lastreadingdate,
    CASE WHEN m.objid IS NULL THEN 'UNMETERED' WHEN m.state = 'ACTIVE' THEN 'METERED' ELSE m.state END AS meterstatus
 FROM waterworks_account wa 
 LEFT JOIN waterworks_meter m ON wa.meterid = m.objid 
@@ -40,7 +39,6 @@ LEFT JOIN waterworks_stubout ws ON sn.stuboutid = ws.objid
 		<field name="meter_size_title" />
 		<field name="meter_state" />
 		<field name="meter_lastreading" />
-		<field name="meter_lastreadingdate" />
 		<field name="meterstatus" />
 	</element>
 </schema>

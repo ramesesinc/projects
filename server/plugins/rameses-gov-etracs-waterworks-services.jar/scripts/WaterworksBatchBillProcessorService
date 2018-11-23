@@ -1,0 +1,72 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+
+class WaterworksBatchBillProcessorService {
+	
+	@DataContext('waterworks_batch_billing')
+	def batchEm; 
+
+	@DataContext("waterworks_billing")
+	def wbillEm;
+
+	@DataContext("waterworks_consumption")
+	def wConsumptionEm;
+
+	@Service("CreditPaymentService")
+	def crPmtSvc;
+
+	@Service("WaterworksComputationService")
+	def computeSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BillingProcessService")
+	def billingSvc;
+
+	@ProxyMethod 
+	def getBilledStatus( param ) { 
+		if ( !param.objid ) throw new Exception('objid parameter is required'); 
+		def m = [batchid: param.objid]; 
+		return batchEm.findBilledStatus( m ); 
+	} 
+
+	@ProxyMethod
+	public void processBilling( o ) {
+		//parameters must be objid,acctid and consumptionid 
+
+		def u = [:];
+		u.billed = 1;
+		u.arrears = 0;
+		u.surcharge = 0;
+		u.interest = 0;
+		u.otherfees = 0;
+		u.credits = 0;
+
+		def b = billingSvc.process([rulename:'waterworksbilling', params:[objid:o.acctid ]]); 
+		if( b?.billitems) {
+			def arrears = b.billitems.findAll{ it.reftype == 'waterworks_consumption' }.sum{ it.amount  };
+			def surcharge = b.billitems.findAll{it.surcharge}?.sum{ it.surcharge };
+			def interest = b.billitems.findAll{it.interest}?.sum{ it.interest };
+			def otherFees = b.billitems.findAll{ it.reftype == 'waterworks_otherfee' }?.sum{ it.amount };
+			def credits = b.billitems.findAll{ it.reftype == 'waterworks_credit' }?.sum{ it.amount };
+
+			if( arrears ) u.arrears = arrears;
+			if( surcharge ) u.surcharge = surcharge;
+			if( interest ) u.interest = interest;
+			if( otherFees ) u.otherfees = otherFees;
+			if( credits ) {
+				u.credits = credits * -1;
+			}	
+		}
+		//update the waterworks_billing.
+		wbillEm.find([ objid: o.objid ]).update( u );
+
+		//if there is no meter, run the computeSvc to get the volume and compute the consumption amount.
+		if( !b.meterid ) {
+			computeSvc.compute([acctid:o.acctid, consumptionid: o.consumptionid, meterstate: o.meterstate  ]);
+		}
+	}
+
+	
+} 

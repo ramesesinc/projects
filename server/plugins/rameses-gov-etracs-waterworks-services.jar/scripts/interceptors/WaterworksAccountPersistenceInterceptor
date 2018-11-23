@@ -17,6 +17,7 @@ class WaterworksAccountPersistenceInterceptor{
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
+		o.classificationid = o.classification.objid;
         if( !o.acctno ) {
         	def prefix = "WACC" + dateSvc.getServerYear();
         	o.acctno = prefix  + seqSvc.getNextFormattedSeriesA( prefix, 5 );
@@ -42,20 +43,7 @@ class WaterworksAccountPersistenceInterceptor{
 		}
 	}
 
-	@After(pattern="PersistenceService.update", eval="#{args[0]._schemaname == 'waterworks_account'}")
-	public void afterUpdate(def evt) {
-		def o = evt.args[0];
-		if( o._tag == "detach" ) {
-			throw new Exception("detach meter is fired");
-		}
-		else if( o._tag == "attach_meter" ) {
-			throw new Exception("attach meter is fired");
-		}
-		else if( o._tag == "change_meter" ) {
-			throw new Exception("change meter is fired");
-		}
-		throw new Exception("fired tag " + o._tag);
-	}
+	
 
 
 

@@ -67,7 +67,6 @@ class WaterworksBillingInfoInterceptor {
 		select = "year,month,item.*,amount:{amount-amtpaid},refid:{objid},reftype:{'waterworks_otherfee'}";
 		conList = wotherEm.find([acctid: bill.acctid]).select(select).where(arr.join(" AND "), wp).orderBy("year,month").list();
 		list.addAll( conList );
-
 	}
 
  	@After(pattern="BillingInfoHandler.getCreditItems",  eval="#{ args[0].rulename == 'waterworksbilling' }" )

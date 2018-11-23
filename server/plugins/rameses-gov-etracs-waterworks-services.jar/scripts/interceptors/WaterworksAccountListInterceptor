@@ -1,21 +1,14 @@
 import com.rameses.annotations.*;
 
-class WaterworksAccountQueryInterceptor{
+class WaterworksAccountListInterceptor{
 	
 	@After(pattern="QueryService.getNodeList", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void getAcctNodeList(def evt) {
 		def result = evt.result;
-		result << [ title: 'Active', id:'active'];
-		result << [ title: 'Inactive', id:'inactive'];
-		/*
-		result << [ title: 'For Reading', id:'for-reading'];
-		result << [ title: 'Unread', id:'unread'];
-		result << [ title: 'Processing', id:'processing'];
-		result << [ title: 'Past Due', id:'pastdue'];
-		result << [ title: 'For Disconnection', id:'for-disconnection'];
+		result << [ title: 'Active (Metered)', id:'active'];
+		result << [ title: 'Active (Unmetered)', id:'unmetered'];
+		result << [ title: 'Defective', id:'defective'];
 		result << [ title: 'Disconnected', id:'disconnected'];
-		result << [ title: 'For Reconnection', id:'for-reconnection'];
-		*/
 	}
 
 	@Before(pattern="QueryService.getList", eval="#{args[0]._schemaname == 'waterworks_account'}")
@@ -23,17 +16,26 @@ class WaterworksAccountQueryInterceptor{
 		def o = evt.args[0];
 		if( !o.node?.id ) return;
 
-		
-		def str = "state=:state";
+		def str = '';
 		def m = [:];
-		def status;
+		def status = o.node.id;
 
-		switch( o.node.id ) {
+		switch( status ) {
 			case 'active':
-				status = 'active';
-				m.state = 'ACTIVE';
+				str = "meter.state = 'ACTIVE' ";
 				break;
-			
+
+			case 'unmetered': 	
+				str = "meterid IS NULL";
+				break;
+
+			case 'defective':
+				str = "meter.state = 'DEFECTIVE' ";
+				break;
+
+			case 'disconnected':
+				str = "meter.state = 'DISCONNECTED' ";
+				break;
 		}
 
 		//add to first position of where

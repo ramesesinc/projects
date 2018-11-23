@@ -13,4 +13,11 @@ class WaterworksAccountConsumptionPersistenceInterceptor{
 		}
 	}
 
+	@Before(pattern="PersistenceService.removeEntity", eval="#{args[0]._schemaname == 'waterworks_consumption'}")
+	public void beforeRemove( evt ) {
+		def zz = evt.args[0];
+		if( zz.amtpaid > 0 )
+			throw new Exception("Cannot delete consumption since payment was already made");
+	}
+
 }

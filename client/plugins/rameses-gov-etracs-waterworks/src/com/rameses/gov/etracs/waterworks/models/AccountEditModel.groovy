@@ -12,6 +12,17 @@ class AccountEditModel extends DataEditorModel {
     @Service("QueryService")
     def qrySvc;
     
+    def meterStates =  ["ACTIVE","DISCONNECTED","DEFECTIVE"];
+    
+    public def getEntity() {
+        if( schemaName == "waterworks_meter") {
+            return caller.entity.meter;
+        }
+        else {
+            return caller.entity;
+        }
+    }
+    
     def getClassificationList() {
         def m = [_schemaname: 'waterworks_classification'];
         m.select = "objid";
@@ -39,6 +50,9 @@ class AccountEditModel extends DataEditorModel {
             zfields << [name:"meter", caption:"Meter", datatype: "lookup", 
                         handler:"waterworks_meter_wo_account:lookup", 
                         expression:"#{data.meter.serialno}"]            
+        }
+        else if( tag == "meter_state") {
+            zfields << [name:"state", caption:"Status", datatype: "combo", items:"meterStates"]            
         }
         else {
             return null;

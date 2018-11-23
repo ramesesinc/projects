@@ -15,6 +15,9 @@ public class WaterConsumption {
     Date disconnectiondate;
     double rate;
 
+    //this is only an internal flag. This will be set if the amount was already updated so it wont update again
+    boolean updated = false;
+
     public WaterConsumption(def o) {
 		if(o.month) month = o.month;
 		if(o.year)  year = o.year;

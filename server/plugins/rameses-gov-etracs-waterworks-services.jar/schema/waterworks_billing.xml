@@ -20,14 +20,12 @@
 			<key field="acctid" target="objid"/>
 		</complex>
 
-		<field name="discount" type="decimal"/>
 		<field name="surcharge" type="decimal"/>
 		<field name="interest" type="decimal"/>
 		<field name="otherfees" type="decimal"/>
 		<field name="credits" type="decimal"/>
 		<field name="arrears" type="decimal"/>
 		<field name="averageconsumption" type="integer"/>
-		<field name="subtotal" expr="(arrears + otherfees + surcharge + interest) - credits" />
 		<field name="unpaidmonths"/>
 		<field name="billed"/>	
 

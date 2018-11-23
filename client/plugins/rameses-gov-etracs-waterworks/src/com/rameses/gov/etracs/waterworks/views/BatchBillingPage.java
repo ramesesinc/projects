@@ -4,6 +4,7 @@
  */
 package com.rameses.gov.etracs.waterworks.views;
 
+import com.rameses.osiris2.client.ManagedObjects;
 import com.rameses.rcp.ui.annotations.Template;
 import com.rameses.seti2.views.WorkflowTaskFormPage;
 
@@ -146,6 +147,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
 
         xPanel1.setVisibleWhen("#{ task.properties.show_reading == true }");
 
+        schemaList1.setActionContext("readingMenu");
         schemaList1.setColumns(new com.rameses.rcp.common.Column[]{
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", null}
@@ -166,8 +168,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "billno"}
                 , new Object[]{"caption", "Bill No"}
-                , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
+                , new Object[]{"width", 150}
+                , new Object[]{"minWidth", 150}
                 , new Object[]{"maxWidth", 200}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
@@ -227,8 +229,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 new Object[]{"name", "acctname"}
                 , new Object[]{"caption", "Acct Name"}
                 , new Object[]{"width", 200}
-                , new Object[]{"minWidth", 250}
-                , new Object[]{"maxWidth", 300}
+                , new Object[]{"minWidth", 200}
+                , new Object[]{"maxWidth", 250}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -242,8 +244,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 new Object[]{"name", "meterstate"}
                 , new Object[]{"caption", "Meter Status"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 80}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"minWidth", 120}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}
@@ -270,7 +272,7 @@ public class BatchBillingPage extends javax.swing.JPanel {
             }),
             new com.rameses.rcp.common.Column(new Object[]{
                 new Object[]{"name", "reading"}
-                , new Object[]{"caption", "Curr. Readng"}
+                , new Object[]{"caption", "Curr. Reading"}
                 , new Object[]{"width", 100}
                 , new Object[]{"minWidth", 100}
                 , new Object[]{"maxWidth", 100}
@@ -304,8 +306,8 @@ public class BatchBillingPage extends javax.swing.JPanel {
                 new Object[]{"name", "amount"}
                 , new Object[]{"caption", "Amount"}
                 , new Object[]{"width", 100}
-                , new Object[]{"minWidth", 100}
-                , new Object[]{"maxWidth", 120}
+                , new Object[]{"minWidth", 120}
+                , new Object[]{"maxWidth", 150}
                 , new Object[]{"required", false}
                 , new Object[]{"resizable", true}
                 , new Object[]{"nullWhenEmpty", true}

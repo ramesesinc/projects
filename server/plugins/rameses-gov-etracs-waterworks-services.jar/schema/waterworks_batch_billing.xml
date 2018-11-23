@@ -1,6 +1,6 @@
 <schema adapter="waterworks">
 	<element tablename="waterworks_batch_billing">
-		<field name="objid" primary="true" prefix="WBATCH" />
+		<field name="objid" primary="true" caption="Control No" visible="true"/>
 		
 		<field name="state" required="true"/>
 		<field name="dtcreated" required="true"/>

@@ -46,11 +46,14 @@ public class BatchBillingInitialModel extends CrudFormModel {
    void processBill() {
        if(!selectedItem) throw new Exception("Please select an item first");
        entity.zone = selectedItem;
-       super.save();
-       if( !entity.state  ) return;
+       def z = [_schemaname:schemaName];
+       z.putAll( entity );
+       z.objid = null;
+       z = persistenceService.create(z);
+       if( !z.objid  ) return;
+       MsgBox.alert( "Batch " + z.objid +  " is created" );
        create();
        listHandler.reload();
-       MsgBox.alert("batch " + entity.objid + " was created");
    } 
     
     

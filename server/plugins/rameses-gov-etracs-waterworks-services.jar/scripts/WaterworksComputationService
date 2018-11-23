@@ -10,23 +10,52 @@ class WaterworksComputationService  {
 	@Service("RuleExecutorService")
 	def ruleSvc;
 
+	@DataContext("waterworks_consumption")
+	def consEm;
+
+	@DataContext("waterworks_account")
+	def acctEm;
+
+	@DataContext("waterworks_meter")
+	def meterEm;
+
 	/*************************************************************************************
 	* Check first if there is meter, then compute volume = current reading - prev reading
 	**************************************************************************************/
 	@ProxyMethod
 	public def compute( def o ) {
+		if(!o.meterstate) throw new Exception("meterstate is required in WaterworksComputationService")
 
-		//if no meter then do not compute 
-		def meter = o.acct.meter;
-		if( meter?.objid ) {
+		//open the account and meter
+		if(!o.acctid) throw new Exception("acctid is required in WaterworksComputationService");
+
+		//add account fact
+		def acct = acctEm.find( [objid: o.acctid] ).first(1); 
+		
+
+		def facts = [];
+		facts << new WaterAccount( acct );
+		if( acct.attributes ) {
+			acct.attributes*.attribute.each {
+				facts << new WaterworksAttribute(name:it.name);
+			}
+		}
+
+		def meterid = o.meterid;
+		def meterstate = o.meterstate;
+
+		//if no meter then do not compute volume based on reading
+		if( meterid ) {
+			def meter = meterEm.find([objid: meterid]).first();
+
 			if( o.prevreading >= meter.capacity ) {
                 throw new Exception("Prev reading must be less than meter capacity");
             }
             if( o.reading >= meter.capacity ) {
                 throw new Exception("Reading must be less than meter capacity");
             }
-            //calculate volume if volume is not equal to zero
-            if(o.volume == 0 ) {
+            //calculate volume if volume is not equal to zero or force compute volume if meter is active 
+            if( meterstate == 'ACTIVE' ) {
                 if( o.reading < o.prevreading ) {
                     o.volume = (meter.capacity + o.reading) - o.prevreading; 
                 }
@@ -34,13 +63,9 @@ class WaterworksComputationService  {
                     o.volume = o.reading - o.prevreading;
                 }
             }
+			facts << new WaterMeter( meter );            
         }
 
-		def facts = [];
-		facts << new WaterAccount( o.acct );
-		if( meter?.objid ) {
-			facts << new WaterMeter( meter );
-		};
 		facts << new WaterConsumption( o );
 		ruleSvc.execute( "waterworkscomputation", facts, null, null );
 
@@ -52,6 +77,16 @@ class WaterworksComputationService  {
 				res.rate = it.rate;
 			}
 		}
+		//if there is consumption id then update it. update also the current reading of the meter
+		if(o.consumptionid) {
+			if( meterid ) {
+				res.prevreading = o.prevreading;
+				res.reading = o.reading;
+				meterEm.find([objid: meterid]).update( [lastreading: o.reading ] );
+			}
+			consEm.find( [objid: o.consumptionid ] ).update( res );
+		}
+		//throw new Exception("res is " + res);
 		return res;
 	}
 

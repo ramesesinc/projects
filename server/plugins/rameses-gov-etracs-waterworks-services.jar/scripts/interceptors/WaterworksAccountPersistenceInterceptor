@@ -17,6 +17,7 @@ class WaterworksAccountPersistenceInterceptor{
 	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'waterworks_account'}")
 	public void beforeCreate(def evt) {
 		def o  = evt.args[0];
+		o.classificationid = o.classification.objid;
         if( !o.acctno ) {
         	def prefix = "WACC" + dateSvc.getServerYear();
         	o.acctno = prefix  + seqSvc.getNextFormattedSeriesA( prefix, 5 );

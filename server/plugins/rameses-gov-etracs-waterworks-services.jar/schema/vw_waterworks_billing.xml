@@ -6,7 +6,6 @@
 		<field name="billno" searchable="true"/>
 		<field name="consumptionid"	/>
 		<field name="state"/>
-		<field name="discount"/>
 		<field name="surcharge"/>
 		<field name="interest"/>
 		<field name="otherfees"/>
@@ -25,7 +24,10 @@
 		<field name="volume" type="integer"/>
 		<field name="rate" type="decimal"/>
 		<field name="amount" type="decimal"/>	
-		<field name="subtotal" expr="(arrears + otherfees + surcharge + interest) - credits" />	
+		<field name="subtotal" type="decimal"/>	
+		<field name="meterid" type="decimal"/>	
+		<field name="meter_capacity" type="decimal"/>	
+		<field name="meter_size" type="decimal"/>	
 	</element>
 </schema>
 

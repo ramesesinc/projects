@@ -2,6 +2,8 @@
     <invokers> 
         <invoker type="waterworks_batch_billing:open" caption="Batch Billing" action="open" formId="#{entity.objid}" formTitle="#{entity.batchno}"/>
         
+        <invoker type="readingMenu" caption="View Actions" visibleWhen="#{selectedItem != null }"/>
+        
         <invoker type="formActions" caption="Print Bill" action="printBill" visibleWhen="#{ task.state == 'approved' }"/>
     </invokers>
     

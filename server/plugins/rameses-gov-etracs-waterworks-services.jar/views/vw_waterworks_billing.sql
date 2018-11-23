@@ -10,7 +10,11 @@ SELECT wb.*,
    wc.reading,
    wc.volume,
    wc.rate,
-   wc.amount
+   wc.amount,
+   ((wb.arrears + wb.otherfees + wb.surcharge + wb.interest) - wb.credits) AS subtotal,
+   wm.objid AS meter_objid,
+   wm.capacity AS meter_capacity,
+   wm.sizeid AS meter_size
 FROM waterworks_billing wb
 INNER JOIN waterworks_consumption wc ON wb.consumptionid=wc.objid
 LEFT JOIN waterworks_meter wm ON wc.meterid = wm.objid

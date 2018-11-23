@@ -63,9 +63,8 @@ class WaterworksBatchBillProcessorService {
 		wbillEm.find([ objid: o.objid ]).update( u );
 
 		//if there is no meter, run the computeSvc to get the volume and compute the consumption amount.
-		if( !b.meter?.objid ) {
-			def res = computeSvc.compute([acct:b]);
-			wConsumptionEm.find( [ objid: o.consumptionid ] ).update( res );
+		if( !b.meterid ) {
+			computeSvc.compute([acctid:o.acctid, consumptionid: o.consumptionid, meterstate: o.meterstate  ]);
 		}
 	}
 

@@ -1,6 +1,6 @@
 <workunit schemaName="waterworks_meter">
     <invokers>
-        <invoker type="waterworks_account:form:edit" caption="Edit Meter"
+        <invoker type="waterworks_account:form:edit" caption="View Meter"
          visibleWhen="#{entity.meter?.objid!=null}"  
             action="openFormAccount" target="popup" index="17" />
 

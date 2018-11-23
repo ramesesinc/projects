@@ -1,6 +1,12 @@
 <workunit extends="com/rameses/seti2/templates/DataEditor.xml" schemaName="waterworks_account"
     logSchemaName="waterworks_changelog">
     <invokers>
+        <invoker type="waterworks_account:form:edit" caption="Change Acct No" action="init"  
+                 target="popup" index="8" fields="acctno"/> 
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Acct Name" action="init"  
+                 target="popup" index="9" fields="acctname"/>
+        
         <invoker type="waterworks_account:form:edit" caption="Change Owner" action="init"  
                  target="popup" index="10" tag="owner"/>   
 
@@ -20,6 +26,14 @@
         <invoker type="waterworks_account:form:edit" caption="Change Meter" action="init" 
                  target="popup" index="15" tag="meter" />
         
+        <invoker type="waterworks_account:form:edit" caption="Edit Last Meter Reading" action="init"  
+                visibleWhen="#{entity.meter?.objid!=null}"
+                target="popup" index="18" fields="lastreading" schemaName="waterworks_meter"/>   
+        
+        <invoker type="waterworks_account:form:edit" caption="Change Meter Status" action="init"  
+                visibleWhen="#{entity.meter?.objid!=null}"
+                target="popup" index="19" tag="meter_state" schemaName="waterworks_meter"/>   
+
     </invokers>
     
     <code class="com.rameses.gov.etracs.waterworks.models.AccountEditModel" />

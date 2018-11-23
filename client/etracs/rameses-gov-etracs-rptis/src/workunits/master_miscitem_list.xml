@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Miscellaneous Items"  index="10" 
+        <!--invoker folderid="/home/rpt/master" caption="Miscellaneous Items"  index="10" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/miscitems.png"/>
+                 icon="home/icons/miscitems.png"/-->
         
         <invoker type="quick_launcher" code="MI00" caption="Miscellaneous Items"  
                 action="init" 

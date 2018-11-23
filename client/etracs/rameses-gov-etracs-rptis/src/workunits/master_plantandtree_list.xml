@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist"/>
         
-        <invoker folderid="/home/rpt/master" caption="Plants/Trees"  index="9" 
+        <!--invoker folderid="/home/rpt/master" caption="Plants/Trees"  index="9" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/planttrees.png"/>
+                 icon="home/icons/planttrees.png"/-->
         
         <invoker type="quick_launcher" code="PT00" caption="Plants/Trees"  
                 action="init" 

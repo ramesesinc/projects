@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Exemption Types"  index="2" 
+        <!--invoker folderid="/home/rpt/master" caption="Exemption Types"  index="2" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/exemptiontypes.png"/>
+                 icon="home/icons/exemptiontypes.png"/-->
         
         <invoker type="quick_launcher" code="ET00" caption="Exemption Types"  
                 action="init" 

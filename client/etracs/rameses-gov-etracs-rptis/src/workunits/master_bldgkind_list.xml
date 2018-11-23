@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Kind of Buildings"  index="5" 
+        <!-- invoker folderid="/home/rpt/master" caption="Kind of Buildings"  index="5" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/bldgkinds.png"/>
+                 icon="home/icons/bldgkinds.png"/-->
         
         <invoker type="quick_launcher" code="BK00" caption="Kind of Buildings"  
                 action="init" 

@@ -1,0 +1,18 @@
+<workunit extends="wtemplates/ListController.xml">
+    <invokers>
+        <invoker folderid="/menucategory/rpt/txn" 
+            action="init" 
+            caption="New FAAS Transaction"  
+            target="window" 
+            index="1" 
+            role="APPRAISER,EXAMINER,RECEIVER"  />
+        
+        <invoker type="formActions" action="_close" caption="Close" />
+        <invoker type="formActions" action="process" caption="Process Transaction" />
+        
+    </invokers>
+    <code class="com.rameses.gov.etracs.rptis.models.TransactionInitModel" />
+    <pages>
+        <page template="com.rameses.gov.etracs.rptis.views.TransactionInitPage" />
+    </pages>
+</workunit>

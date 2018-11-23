@@ -9,13 +9,8 @@
                  action="create" caption="Restriction (New)" 
                  domain="LANDTAX" role="LANDTAX" target="popup"/>
         
-        <invoker folderid="/menu/txn/rpt"
-                 action="create" caption="Restriction" 
-                 domain="LANDTAX" role="LANDTAX" target="popup" 
-                 index="140" />
-        
-        <invoker folderid="/home/rpt/txn"
-                 action="create" caption="Restriction" 
+        <invoker folderid="/menucategory/rpt/txn"
+                 action="create" caption="Post FAAS Restriction" 
                  domain="LANDTAX" role="LANDTAX" target="popup"
                  index="140" />
         

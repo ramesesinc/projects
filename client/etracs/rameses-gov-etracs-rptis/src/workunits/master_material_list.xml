@@ -9,11 +9,11 @@
                  role="MASTER" 
                  permission="master.viewlist" />
         
-        <invoker folderid="/home/rpt/master" caption="Materials"  index="6" 
+        <!--invoker folderid="/home/rpt/master" caption="Materials"  index="6" 
                  action="init" 
                  role="MASTER" 
                  permission="master.viewlist"
-                 icon="home/icons/materials.png"/>
+                 icon="home/icons/materials.png"/-->
         
         <invoker type="quick_launcher" code="MAT00" caption="Materials"  
                 action="init" 

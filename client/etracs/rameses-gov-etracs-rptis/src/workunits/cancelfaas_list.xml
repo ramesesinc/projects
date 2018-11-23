@@ -1,11 +1,24 @@
-
-
 <workunit extends="wtemplates/ExplorerViewController.xml" defaultFileType="cancelledfaaslist" autoSelect="true">
     <invokers>
-        <invoker folderid="/home/rpt" caption="Cancellations"  role="ASSESSOR_SHARED,SHARED" index="102" icon="home/icons/cancellations.png"/>
-        <invoker folderid="/explorer/txn/rpt/list" caption="FAAS Cancellations"  role="ASSESSOR_SHARED,SHARED" index="250"/>
-        <invoker type="quick_launcher" code="CF00" caption="FAAS Cancellations"  role="ASSESSOR_SHARED,SHARED" />
-        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedEntity != null}" depends="listHandler.selectedEntity" index="-100" target="window"/>        
+        <invoker folderid="/menucategory/rpt/mgmt" 
+            caption="View Cancellations"  
+            role="ASSESSOR_SHARED,SHARED" 
+            index="102" 
+            icon="home/icons/cancellations.png"/>
+
+        <invoker type="quick_launcher" 
+            code="CF00" 
+            caption="FAAS Cancellations"  
+            role="ASSESSOR_SHARED,SHARED" />
+
+        <invoker type="formActions" 
+            action="open" 
+            caption="Open" 
+            mnemonic="o" 
+            shortcut="ctrl O" 
+            visibleWhen="#{selectedEntity != null}" 
+            depends="listHandler.selectedEntity" 
+            index="-100" target="window"/>        
     </invokers>
         <code>
      import com.rameses.rcp.common.*

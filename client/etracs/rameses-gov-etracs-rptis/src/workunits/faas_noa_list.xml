@@ -9,10 +9,10 @@
     orderBy="txndate desc,tdno"
 >
     <invokers>
-        <invoker folderid="/home/rpt" 
+        <invoker folderid="/menucategory/rpt/mgmt" 
             action="init"
-            caption="Notice of Assessments"  
-            target="window" index="500" role="ASSESSOR_SHARED,SHARED" 
+            caption="View Notice of Assessments"  
+            target="window" index="115" role="ASSESSOR_SHARED,SHARED" 
             icon="home/icons/notices.png" />
 
         <invoker type="quick_launcher" code="NOA00" 

@@ -9,13 +9,13 @@
                  serviceName="MiscRYSettingService"
                  index="5"/>
         
-        <invoker folderid="/home/rpt/setting"
+        <!--invoker folderid="/home/rpt/setting"
                  caption="Miscellaneous" 
                  target="window" 
                  role="ASSESSOR_DATAMGMT,MASTER" 
                  entityName="miscrysetting"
                  serviceName="MiscRYSettingService"
                  icon="home/icons/settingmisc.png"
-                 index="5"/>        
+                 index="5"/-->        
     </invokers>
 </workunit>

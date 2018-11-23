@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit extends="rpt_wtemplates/CertificationController.xml">
     <invokers>
-        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land Holding with No Improvement" 
-            opener="landholdingwithnoimprov" index="3" role="CERTIFICATION_ISSUER,RECORD" permission="certification.landholding"/>
-            
-        <invoker folderid="/menu/txn/rpt/cert" action="init" caption="Land Holding with No Improvement" 
-            opener="landholdingwithnoimprov" index="3" role="CERTIFICATION_ISSUER,RECORD" permission="certification.landholding"/>
-            
-        <invoker type="quick_launcher" action="init" code="RC03" caption="Land Holding with No Improvement" 
-            opener="landholdingwithnoimprov" index="3" role="CERTIFICATION_ISSUER,RECORD" permission="certification.landholding"/>
+        <invoker type="rptcertification" 
+                 action="init" 
+                 caption="Land Holding with No Improvement" 
+                 opener="landholdingwithnoimprov" 
+                 index="3" 
+                 role="CERTIFICATION_ISSUER,RECORD" 
+                 permission="certification.landholding"/>
             
         <invoker type="landholdingwithnoimprov:open" action="open" caption="Land Holding with No Improvement" /> 
     </invokers>

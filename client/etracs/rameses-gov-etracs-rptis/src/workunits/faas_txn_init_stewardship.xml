@@ -4,13 +4,7 @@
         <invoker type="quick_launcher" code="STW01" action="init" caption="Stewardship" 
             txntype="ST" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createStewardship" index="150"/>
             
-        <invoker folderid="/explorer/txn/rpt/online" action="init" caption="Stewardship" 
-            txntype="ST" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createStewardship" index="150"  />
-            
-        <invoker folderid="/home/rpt/txn" action="init" caption="Stewardship" 
-            txntype="ST" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createStewardship" index="150"  />
-        
-        <invoker folderid="/menu/txn/rpt" action="init" caption="Stewardship" 
+        <invoker type="faas:transaction" action="init" caption="Stewardship" 
             txntype="ST" role="APPRAISER,EXAMINER,RECEIVER" permission="faas.createStewardship" index="150"  />
     </invokers>
     <code class="com.rameses.gov.etracs.rptis.models.FAASInitStewardshipModel">

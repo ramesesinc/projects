@@ -28,6 +28,11 @@
 		<field name="meterid" type="decimal"/>	
 		<field name="meter_capacity" type="decimal"/>	
 		<field name="meter_size" type="decimal"/>	
+
+		<!-- pahabol in waterworks_billing -->
+		<field name="refbillno" />	
+		<field name="printed" />	
+
 	</element>
 </schema>
 

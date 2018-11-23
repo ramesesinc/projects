@@ -83,6 +83,7 @@ class WaterworksBatchBillingInterceptor {
 			wb.averageconsumption = 0;
 			wb.unpaidmonths = 0;
 			wb.billed = 0;
+			wb.printed = 0;
 			wbillEm.create( wb );
 		}
 		def p = [:];

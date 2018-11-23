@@ -31,6 +31,8 @@
 
 		<field name="meterstatus" expr="CASE WHEN consumption.meterid IS NULL THEN 'UNMETERED' ELSE consumption.meter.state END" />
 
+		<field name="printed"/>
+		<field name="refbillno"/>
 	</element>
 </schema>
 

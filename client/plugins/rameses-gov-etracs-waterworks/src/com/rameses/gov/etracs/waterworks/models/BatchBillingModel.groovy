@@ -18,8 +18,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
    @Service("WaterworksBatchBillProcessorService")
    def batchSvc;
     
-   @Script("ReportService")
-   def reportSvc;
+   @Service("WaterworksBatchBillPrintingService")
+   def printSvc;
     
    def consumptionUtil = ManagedObjects.instance.create(ConsumptionUtil.class);
     
@@ -29,6 +29,8 @@ public class BatchBillingModel extends WorkflowTaskModel {
    boolean hasDate = false; 
    def stat;
      
+   def printerService = new PrinterService();
+   
    /*
     *   This method is used in style rule condition and DataTable column expression 
     */
@@ -102,20 +104,21 @@ public class BatchBillingModel extends WorkflowTaskModel {
         def z = [prevreading:o.prevreading, reading:o.reading, 
             volume:o.volume, consumptionid:o.consumptionid, acctid:o.acctid, 
             meterid:o.meterid, meterstate: o.meterstate];
-        def h = { x->
-            //o.putAll( x );
-        }
-        consumptionUtil.compute(z, h)
+        consumptionUtil.compute(z, null);
+        readingHandler.reload();
     }
    
     def viewMeter = { o->
         Modal.show("waterworks_meter:open", [entity:item.meter] );
         readingHandler.reload();
+        billHandler.reload();
     }
     
     def viewAccount = { o->
         Modal.show("waterworks_account:open", [entity: [objid:o.acctid] ]); 
-    }
+        readingHandler.reload();
+        billHandler.reload();
+   }
 
     def viewBilling = { item->
         Modal.show("waterworks_account_billing", ['query.objid': item.acctid ]);
@@ -127,41 +130,13 @@ public class BatchBillingModel extends WorkflowTaskModel {
     
     def rebill = { item->
         batchSvc.processBilling( [objid:item.objid,acctid:item.acctid,consumptionid:item.consumptionid] );
-        readingHandler.reload();
         billHandler.reload();
     }
    
-    def changePrevReading = { item->
-        def h = [:];
-        h.fields = [
-            [name:'prevreading', caption:'Enter Prev Reading', datatype:'integer'],
-            [name:'prevreadingdate', caption:'Prev Reading Date', datatype:'date' ]
-        ];
-        h.data = [ prevreading: item.prevreading, prevreadingdate: item.prevreadingdate ];
-        h.entity = item;
-        h.reftype = "waterworks_consumption";
-        h.refid = item.objid;
-        Modal.show("waterworks_changeinfo", h, [title:"Enter Prev Reading"]);
-    }
-
-    def changeVolume = { item->
-        def h = [:];
-        h.fields = [
-            [name:'volume', caption:'Enter Volume', datatype:'integer'],
-            [name:'amount', caption:'Amount', datatype:'decimal', enabled:false, depends:"volume" ]
-        ];
-        h.data = [ volume: item.volume, amount: item.amount ];
-        h.entity = item;
-        h.listener = [ "volume" :  { ii, newValue -> ii.amount = newValue * 10; } ]
-        h.reftype = "waterworks_consumption";
-        h.refid = item.objid;
-        Modal.show("waterworks_changeinfo", h, [title:"Enter Volume"]);
-    }
-
     def getBillHandlerList() {
         def mnuList = [];
         mnuList << [value: 'View Account', func: viewAccount];
-        if(task?.state == 'for-review' ) {
+        if(task?.state == 'for-review|for-reading' ) {
             mnuList << [value: 'Recompute Bill', func:rebill]
         } 
         mnuList << [value: 'View Bill', func: viewBilling];
@@ -186,7 +161,6 @@ public class BatchBillingModel extends WorkflowTaskModel {
 	}, 
 	callContextMenu: { item, menuitem-> 
             menuitem.func( item );
-            billHandler.reload();
 	}    
     ];
 
@@ -196,26 +170,41 @@ public class BatchBillingModel extends WorkflowTaskModel {
 	}, 
 	callContextMenu: { item, menuitem-> 
            menuitem.func( item );
-           readingHandler.reload();
 	}
     ];
     
-   def df = new java.text.SimpleDateFormat("yyyy-MM-dd"); 
+   def cancelPrint = false;
    public void printBill() {
-       def mz = [_schemaname: 'waterworks_consumption'];
-       mz.findBy = [batchid: entity.objid];
-       mz.orderBy = 'account.stuboutnode.indexno'; 
-       def list = queryService.getList(mz);
-       list.each {
-           def p = [:];
-            p.putAll( entity ); 
-            p.putAll( it );
-            p.penalty = it.surcharge + it.interest;
-            p.grandtotal = it.amount + p.penalty;
-            p.classification = p.account.classification?.toString().padRight(3," ")[0..2];
-            p.blockseqno = (p.zone?.code +'-'+ p.account.stuboutnode?.indexno);
-            reportSvc.print( "waterworks_consumption" , [ o: p ] );
+       def printerList = printerService.getPrinters();
+       /*
+       if(printerList.size()==0)
+            throw new Exception("There are no printer names registered in printer list");
+       def printerName = printerList.iterator().next();
+       */
+        def printerName = "epson";
+       
+       def startno = null;
+       def h = [:];
+       h.handler = { v->
+           startno = v.billno;
+       };
+       h.fields = [];
+       h.fields << [name:"billno", caption:'Enter Start Bill No', type:'integer', required:true ];
+       Modal.show("dynamic:form", h, [title: 'Start Bill Printing'] );
+       if(!startno) return;
+       
+       def parm = [refbillno: startno, batchid : entity.objid ]
+       while(true) {
+           def res = printSvc.process( parm );
+           def list = res.list;
+           if(!list) break;
+           if(cancelPrint) break;
+           list.each {
+               printerService.printString(printerName, it.toString() );
+           }
+           parm.refbillno = res.refbillno;
        }
+       MsgBox.alert("printing finished");
    } 
     
 }

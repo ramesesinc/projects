@@ -24,6 +24,7 @@ public class ConsumptionUtil  {
         def acctid = param.acctid;
         def meterid = param.meterid;
         def meterstate = param.meterstate;  
+        if(handler==null) handler = {v->};
         
         if(!handler) throw new Exception("Please provide handler in ConsumptionUtil");
         

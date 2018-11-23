@@ -13,6 +13,7 @@ SELECT wb.*,
    wc.amount,
    ((wb.arrears + wb.otherfees + wb.surcharge + wb.interest) - wb.credits) AS subtotal,
    wm.objid AS meter_objid,
+   wm.objid AS meterid,   
    wm.capacity AS meter_capacity,
    wm.sizeid AS meter_size
 FROM waterworks_billing wb

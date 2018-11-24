@@ -1,4 +1,4 @@
-package com.rameses.enterprise.treasury.cashreceipt; 
+package com.rameses.enterprise.treasury.models;
 
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
@@ -7,18 +7,8 @@ import com.rameses.osiris2.reports.*;
 import com.rameses.osiris2.common.*
 import com.rameses.util.*;
 
-/***************************************************************************
-* DO NOT TOUCH THIS CODE. 
-* For new developments refer instead to 
-* com.rameses.enterprise.treasury.models.AbstractCashReceipt
-***************************************************************************/
-@Deprecated        
-public abstract class AbstractCashReceipt {
+public abstract class AbstractCashReceipt extends PageFlowController  {
         
-    @Binding
-    def binding;
-    
-    
     @Service("CashReceiptService")
     def service;
     
@@ -34,6 +24,9 @@ public abstract class AbstractCashReceipt {
     
     //new receipting process
     def mainProcessHandler;
+    
+    //for barcode processor
+    def barcodeid;
 
     def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd');  
     
@@ -64,7 +57,15 @@ public abstract class AbstractCashReceipt {
     public String getEntityType() {
         return null;
     }
-   
+    
+    public def loadInfo(def o ) {
+        MsgBox.alert("Please override the 'void loadInfo(def o)' method ");
+        return super.start();
+    }
+    
+    public def loadBarcode() {
+        return loadInfo( [id: barcodeid, action:'barcode'] );
+    } 
     
     //this is overridable bec. some might not follow this convention.
     public void validateBeforePost() {
@@ -251,7 +252,7 @@ public abstract class AbstractCashReceipt {
 
         if ( postok ) {
             completed = true; 
-            binding.fireNavigation('completed'); 
+            //binding.fireNavigation('completed'); 
             binding.refresh(); 
         } 
         

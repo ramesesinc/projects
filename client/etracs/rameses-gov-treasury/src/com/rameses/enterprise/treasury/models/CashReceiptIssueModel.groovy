@@ -84,7 +84,16 @@ class CashReceiptIssueModel extends CashReceiptAbstractIssueModel  {
                 pp.entity = entity;
                 pp.barcodeid = o.barcodeid;
                 pp.mainProcessHandler = processHandler;
-                handler = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
+                handler = null;
+                try {
+                    handler = Inv.lookupOpener("cashreceipt:barcode:"+ o.prefix, pp );
+                }catch(ee){;}
+                if(handler==null) {
+                    def handlerName = entity.collectiontype.handler;
+                    def op1 = Inv.lookupOpener("cashreceipt:"+ handlerName, pp);
+                    op1.handle.loadBarcode();
+                    handler = op1;
+                }
             }
             def np = super.signal("movenext");
             binding.fireNavigation( np );

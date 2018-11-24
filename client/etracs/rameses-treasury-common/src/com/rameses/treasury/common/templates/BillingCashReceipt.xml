@@ -1,32 +1,33 @@
 <workunit>
+    <!--
     <invokers>
-        <invoker type="formActions" action="_close" caption="Back" immediate="true" visibleWhen="#{!completed}" 
+        <invoker type="formActions" action="doClose" caption="Back" immediate="true" visibleWhen="#{!completed}" 
             icon="images/toolbars/arrow_left.png" mnemonic="b" shortcut="ctrl B"/>
 
-        <!-- remove this later -->        
         <invoker type="formActions" action="post" caption="Save" visibleWhen="#{!completed}"
             icon="images/toolbars/save.png" shortcut="ctrl S" mnemonic="s" />
-        <!--
-        <invoker type="formActions" action="cancelSeries" caption="Cancel Series" visibleWhen="#{!completed}"
-            shortcut="ctrl C" mnemonic="c" immediate="true"/>     
-        -->
         
-        <invoker type="formActions" action="_close" caption="Quit" 
-                 visibleWhen="#{completed}" shortcut="ctrl Q" mnemonic="q" />
-            
-        <invoker type="formActions" action="createAnother" caption="New" 
-                 visibleWhen="#{completed}" shortcut="ctrl N" mnemonic="n"/>
-            
-        <invoker type="formActions" action="reprint" caption="Reprint" 
-                 visibleWhen="#{completed}" shortcut="ctrl P"/>
-            
-        <invoker type="formActions" action="doVoid" caption="Void" immediate="true" 
-                 visibleWhen="#{completed &amp;&amp; !entity.voided}" shortcut="ctrl V" mnemonic="v"/> 
     </invokers>
+    -->
     <code class="com.rameses.treasury.common.models.BasicBillingCashReceiptModel" />
+    <pageflow>
+        <start>
+            <transition to="initial" />
+            <transition name="entry" to="entry" />
+        </start>
+        <page name="initial" title="Billing Initial">
+            <transition to="end" action="doClose" caption="Back" mnemonic="B"/>
+            <transition to="entry" caption="Next" action="findTxn" mnemonic="N"/>
+        </page>
+        <page name="entry" title="#{title}">
+            <transition to="initial" caption="Back" mnemonic="B"/>
+            <transition to="end" caption="Save" action="post"/>
+        </page>
+        <end/>
+    </pageflow>
     <pages>
-        <page name="default" template="com.rameses.treasury.common.views.BillingCashReceiptPage"/>
-        <page name="completed" template="com.rameses.enterprise.treasury.cashreceipt.CashReceiptInfoPage"/>
+        <page name="initial" template="com.rameses.treasury.common.views.BillingCashReceiptInitialPage"/>
+        <page name="entry" template="com.rameses.treasury.common.views.BillingCashReceiptPage"/>
     </pages>
     
 </workunit>

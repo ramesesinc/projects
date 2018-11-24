@@ -4,23 +4,14 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.rcp.common.*;
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.common.*
-import com.rameses.enterprise.treasury.cashreceipt.*;
 import com.rameses.util.*;
 
-public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
-    
-    @Controller
-    def workunit;
-        
-    @Invoker
-    def invoker;
+public class BasicBillingCashReceiptModel extends com.rameses.enterprise.treasury.models.AbstractCashReceipt {
     
     @Service("BillingCashReceiptService")
     def billingSvc;
     
-    String entityName = "misc_cashreceipt"
     def prefix;
-    def barcodeid;
 
     def status;   
     def selectedItem;
@@ -29,7 +20,6 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
     def billAmount = 0;
     
     def billItemList = [];
-    
     
     boolean amountSpecified = false;
     
@@ -47,7 +37,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         return true;
     }
     
-     public String getContextName() {
+    public String getContextName() {
         def pfn = invoker.properties.contextName;
         if(pfn) return pfn;
         pfn = workunit?.info?.workunit_properties?.contextName;
@@ -80,29 +70,39 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
     void afterLoadInfo() {;}
     boolean onNoItemsFound() { return false;}
     
-    void init() {
-        def opener = null;
+    void lookupTxn() {
+        def lookupName = getContextName() + ":cashreceipt_lookup"
         try {
             def h = { o->
-                txnid = o?.objid; 
+                txnid = o.txnid;
+                binding.refresh();
                 return null;
             }
-            opener = Inv.lookupOpener(getContextName() + ":cashreceipt_lookup", [onselect: h ]);
+            opener = Inv.lookupOpener(lookupName, [onselect: h ]);
             Modal.show( opener );
-        }catch(ign){;}
-        
-        if( opener==null && txnid==null ) {
-            txnid = MsgBox.prompt("Enter Transaction No");
         }
-        if(!txnid) throw new BreakException();
+        catch(ex) {
+            MsgBox.alert(lookpName + " not found");
+        }
+    }
+    
+    void findTxn() {
+        if(txnid.contains(":")) txnid = txnid.split(":")[1];
         loadInfo([id:txnid, action:'open']);
     }
     
-    void loadInfo(def p) {
+    def loadInfo(def p) {
         p.collectiontype = entity.collectiontype;
         p.billdate = entity.receiptdate;
         def pp = [ rulename: getRulename(), params: p ]; 
-        def info = billingSvc.getInfo( pp );
+        def info = null;
+        try {
+            info = billingSvc.getInfo( pp );
+        }
+        catch(serverErr) {
+            if(p.action == "barcode") super.doClose();
+            throw serverErr;
+        }
         
         if( !info.billitems ) {
             if( getAllowDeposit() ) {
@@ -123,6 +123,7 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         reloadItems(); 
         //afterLoadInfo();
         //loadPayOptions();
+        return super.start("entry");
     }
     
     void reloadItems() {
@@ -138,10 +139,6 @@ public class BasicBillingCashReceiptModel extends AbstractCashReceipt {
         super.updateBalances();
     }
     
-    void loadBarcode() {
-        txnid = barcodeid;
-        loadInfo( [id: txnid, action:'barcode'] );
-    }   
     
     def getTotalAmount() {
         return NumberUtil.round( entity.items.sum{ it.amount } );  
